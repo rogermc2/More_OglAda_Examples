@@ -99,7 +99,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Ogldev_Camera.Init_Camera (Game_Camera,
                                     Int (Window_Width), Int (Window_Height),
                                     Position, Target, Up);
-         Ogldev_Basic_Lighting.Init (theLighting_Technique);
+         Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
          Ogldev_Basic_Lighting.Set_Directional_Light (theLighting_Technique, Dir_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit
            (theLighting_Technique, Ogldev_Engine_Common.Colour_Texture_Unit_Index);
