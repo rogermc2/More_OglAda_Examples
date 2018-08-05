@@ -77,6 +77,7 @@ package body Ogldev_Basic_Lighting is
          OK := GL.Objects.Programs.Validate_Status (Lighting_Technique.Lighting_Program);
          if not OK then
             Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program validation failed");
+            Put_Line ("Info log:");
             Put_Line (GL.Objects.Programs.Info_Log (Lighting_Technique.Lighting_Program));
          else
             Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program validated");
