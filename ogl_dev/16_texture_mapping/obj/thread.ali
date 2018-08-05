@@ -1,0 +1,55 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U thread%s		thread.ads		49b21dba NE OO PK
+W sys_pthread_mutex%s	sys_pthread_mutex.ads	sys_pthread_mutex.ali
+W sys_pthread_types%s	sys_pthread_types.ads	sys_pthread_types.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D sys_pthread_mutex.ads	20180622014517 e6d15d1c sys_pthread_mutex%s
+D sys_pthread_types.ads	20180622014537 35581402 sys_pthread_types%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+D thread.ads		20180622014455 9a3b54a4 thread%s
+X 5 sys_pthread_mutex.ads
+4K9*Sys_PThread_Mutex 9e22 11|2w6 9r26 32r34 33r34
+6R12*PThread_Mutex_t{6|36R9} 11|9r44 32r52 33r52
+X 6 sys_pthread_types.ads
+5K9*Sys_PThread_Types 99e22 11|3w6 35r35
+96P9*darwin_pthread_t(71R9)
+97P12*PThread_t{96P9} 11|35r53
+X 11 thread.ads
+5K9*Thread 37l5 37e11
+7K9*Class_Mutex_Lock 29e7
+8R12*Mutex_Lock 10e17 11r27 13r38 16r50 19r37 22r39 25r43 26r56 27r43
+9r10*Mutex{5|6R12}
+13V16*New_Mutex_Lock{8R12} 14r31
+16U17*Delete_Mutex_Lock 16^36 17b<cpp,_ZN6Magick9MutexLockD1Ev>27
+16p36 this(8R12)
+19U17*Lock 19^23 20b<cpp,_ZN6Magick9MutexLock4lockEv>27
+19p23 this(8R12)
+22U17*Unlock 22^25 23b<cpp,_ZN6Magick9MutexLock6unlockEv>27
+22p25 this(8R12)
+25V16*Operator_As(8R12) 25^29 26^29 28b<cpp,_ZN6Magick9MutexLockaSERKS0_>27
+25p29 this(8R12)
+26p29 Original(8R12)
+32R9*Magick_Mutex_Type<6|36R9>
+33R9*Magick_Mutex_Lock<6|36R9>
+35P9*Magick_Thread_Type<6|96P9>
+

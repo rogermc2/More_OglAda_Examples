@@ -1,0 +1,4 @@
+magick_image-api.ads:12:46: "AI_Image" is not visible (more references follow)
+magick_image-api.ads:12:46: non-visible declaration at magick_core_image.ads:218
+magick_image-api.ads:19:42: "AI_Image_Info" is not visible
+magick_image-api.ads:19:42: non-visible declaration at magick_core_image.ads:153

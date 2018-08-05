@@ -1,0 +1,40 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -gnat05
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -gnatc
+A -mmacosx-version-min=10.13.5
+A -mtune=core2
+A -fPIC
+P NO FX
+
+RN
+RV NO_LONG_LONG_INTEGERS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+
+U sys_types_int64_t%s	sys_types_int64_t.ads	395143b3 EE OO PK
+
+D sys_types_int64_t.ads	20180419025724 395143b3 sys_types_int64_t%s
+X 1 sys_types_int64_t.ads
+4K9*Sys_Types_Int64_T 8l5 8e22
+6I12*Int64_T{long_long_integer}
+

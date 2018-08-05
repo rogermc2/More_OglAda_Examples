@@ -1,0 +1,62 @@
+V "GNAT Lib v6"
+A -gnatA
+A -gnatyc
+A -gnatyl
+A -gnatyt
+A -gnatyu
+A -gnatyx
+A -gnatc
+A -mmacosx-version-min=10.12.5
+A -mtune=core2
+A -fPIC
+P NO ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+
+U load_dds%s		dds_loader.ads		5dcbca97 EE OO SU
+W gl%s			gl.adb			gl.ali
+W gl.objects%s		gl-objects.adb		gl-objects.ali
+W gl.objects.textures%s	gl-objects-textures.adb	gl-objects-textures.ali
+
+D ada.ads		20070406091342 3ffc8e18 ada%s
+D a-finali.ads		20151020095656 bf4f806b ada.finalization%s
+D gl.ads		20170303224401 b5cd5543 gl%s
+D gl-algebra.ads	20170323021544 87897079 gl.algebra%s
+D gl-low_level.ads	20170303224401 c3ce3b42 gl.low_level%s
+D gl-low_level-enums.ads  20170303224401 9cb41c01 gl.low_level.enums%s
+D gl-matrices.ads	20170420013537 7eb1e31d gl.matrices%s
+D gl-objects.ads	20170303224401 9a940007 gl.objects%s
+D gl-objects-textures.ads  20170303224401 420a747e gl.objects.textures%s
+D gl-pixels.ads		20170303224401 1bb83255 gl.pixels%s
+D gl-types.ads		20170308072531 bdcc9f27 gl.types%s
+D gl-types-colors.ads	20170303224401 323d62ec gl.types.colors%s
+D gl-vectors.ads	20170323021544 236bf575 gl.vectors%s
+D interfac.ads		20151118101227 4be8ce1b interfaces%s
+D i-c.ads		20110801143639 5421119b interfaces.c%s
+D i-cpoint.ads		20130104124955 ee8a93ec interfaces.c.pointers%s
+D i-cstrin.ads		20140611122922 341d0ddf interfaces.c.strings%s
+D dds_loader.ads	20170421163406 1fc1bee9 load_dds%s
+D system.ads		20151123113124 c3282aa7 system%s
+D s-finroo.ads		20120426095924 4ff27390 system.finalization_root%s
+D s-parame.ads		20140801093848 7e2a0d7f system.parameters%s
+X 3 gl.ads
+19K9*GL 59e7 18|2r6 5r42
+X 4 gl-algebra.ads
+23+9 Element_Type
+25V19 "+"{23+9} 7|20i19 13|20i19
+26V19 "-"{23+9} 7|21i19 13|21i19
+27V19 "-"{23+9} 7|22i19 13|22i19
+28V19 "*"{23+9} 7|23i19 13|23i19
+29V19 "/"{23+9} 13|24i19
+X 8 gl-objects.ads
+23K12*Objects 91e15 18|2r9 5r45
+X 9 gl-objects-textures.ads
+22K20*Textures 238e24 18|2w17 5r53
+191R9*Texture<8|30R9> 236e50 18|5r62
+X 18 dds_loader.ads
+4U15*Load_DDS 4>25 5<25
+4a25 File_Name{string}
+5r25 theTexture{9|191R9}
+

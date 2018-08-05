@@ -1,0 +1,207 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -g
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -mmacosx-version-min=10.13.6
+A -mtune=core2
+A -fPIC
+A -feliminate-unused-debug-symbols
+P SS ZX
+
+RN
+RV NO_FLOATING_POINT
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U ogldev_pipeline%b	ogldev_pipeline.adb	628d7073 NE OO PK
+W ada.tags%s		a-tags.adb		a-tags.ali
+
+U ogldev_pipeline%s	ogldev_pipeline.ads	bb3a0fd7 EE NE OO PK
+W ada.tags%s		a-tags.adb		a-tags.ali
+W gl%s			gl.adb			gl.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+W ogldev_camera%s	ogldev_camera.adb	ogldev_camera.ali
+W ogldev_math%s		ogldev_math.adb		ogldev_math.ali
+
+D ada.ads		20170516105951 76789da1 ada%s
+D a-contai.ads		20170516105950 61e5e089 ada.containers%s
+D a-conhel.ads		20170516105951 20298884 ada.containers.helpers%s
+D a-ciorma.ads		20170516105951 e1f95638 ada.containers.indefinite_ordered_maps%s
+D a-crbltr.ads		20170516105954 c3e90a86 ada.containers.red_black_trees%s
+D a-except.ads		20170516105953 291912d5 ada.exceptions%s
+D a-finali.ads		20170516105954 bf4f806b ada.finalization%s
+D a-iteint.ads		20170516105952 7c7305e9 ada.iterator_interfaces%s
+D a-numeri.ads		20170516105951 bb51c45a ada.numerics%s
+D a-ngelfu.ads		20170516105954 7e738940 ada.numerics.generic_elementary_functions%s
+D a-stream.ads		20170516105952 119b8fb3 ada.streams%s
+D a-tags.ads		20170516105955 d3a89129 ada.tags%s
+D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
+D api_vectors.ads	20180503034333 3394de11 api_vectors%s
+D assimp_types.ads	20180503032757 2f8f7f2c assimp_types%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D interfac.ads		20170516105950 5ab55268 interfaces%s
+D i-c.ads		20170516105948 5421119b interfaces.c%s
+D i-cpoint.ads		20170516105956 ee8a93ec interfaces.c.pointers%s
+D maths.ads		20180420054944 f7347e00 maths%s
+D matrix_4x4.ads	20180428083445 3ef0766f matrix_4x4%s
+D ogldev_camera.ads	20180421053315 e95b886d ogldev_camera%s
+D ogldev_math.ads	20180522065704 ef4fa992 ogldev_math%s
+D ogldev_pipeline.ads	20180428123956 00e2b10f ogldev_pipeline%s
+D ogldev_pipeline.adb	20180429120933 626fc17c ogldev_pipeline%b
+D system.ads		20170516105953 085b6ffb system%s
+D s-atocou.ads		20170516105956 b45c2d8d system.atomic_counters%s
+D s-exctab.ads		20170516105954 54135002 system.exception_table%s
+D s-finmas.ads		20170516105954 7811a767 system.finalization_masters%s
+D s-finroo.ads		20170516105954 4ff27390 system.finalization_root%s
+D s-parame.ads		20170516105955 7e2a0d7f system.parameters%s
+D s-secsta.ads		20170516105955 9751b57e system.secondary_stack%s
+D s-soflin.ads		20170516105951 14e1eb6c system.soft_links%s
+D s-stache.ads		20170516105955 a37c21ec system.stack_checking%s
+D s-stalib.ads		20170516105955 09bd3940 system.standard_library%s
+D s-stoele.ads		20170516105956 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20170516105954 ed88f8fb system.storage_elements%b
+D s-stopoo.ads		20170516105951 b16154c2 system.storage_pools%s
+D s-stposu.ads		20170516105949 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20170516105949 aedef97e system.stream_attributes%s
+D s-traent.ads		20170516105950 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20170516105953 34867c83 system.unsigned_types%s
+X 4 a-ciorma.ads
+54R9*Map<7|43R9>
+X 8 a-iteint.ads
+24h9 Forward_Iterator
+32h9 Reversible_Iterator<24R9[4|70]>
+X 16 gl.ads
+6K9*GL 46e7 28|2r6 2r20
+X 17 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 18|7i19 20|7i19
+13V19 "-"{10+9} 18|8i19 20|8i19
+14V19 "-"{10+9} 18|9i19 20|9i19
+15V19 "*"{10+9} 18|10i19 20|10i19
+16V19 "/"{10+9} 20|11i19
+33A9*Vector3<20|15A9[27[19|101]]>(20|6F9[27[19|101]])<16|25E9> 28|18r52[19|101]
+. 26r58[19|101] 28r67[19|101] 30r61[19|101] 35r26[19|101] 36r26[19|101] 37r26[19|101]
+. 41r26[19|101] 42r26[19|101] 43r26[19|101] 47r35[19|101] 48r35[19|101] 49r35[19|101]
+. 29|35r52[19|101] 58r58[19|101] 88r67[19|101] 102r61[19|101]
+65A9*Matrix4<18|20A9[59[19|101]]>(18|6F9[59[19|101]])<16|25E9><16|25E9> 28|12r63[19|101]
+. 13r60[19|101] 14r61[19|101] 53r35[19|101] 54r35[19|101] 55r35[19|101] 56r35[19|101]
+. 57r35[19|101] 58r35[19|101] 59r35[19|101] 29|4r61[19|101] 11r61[19|101]
+. 18r60[19|101]
+X 18 gl-matrices.ads
+20A9*Matrix(19|31F9)<16|25E9><16|25E9>
+X 19 gl-types.ads
+8K12*Types 173e13 28|2w9 2r23
+31F9*Single<22|64F9> 28|24r50 25r56 27r65 29r59 29|44r50 51r56 81r65 95r59
+101K12*Singles[17|18] 28|12r55 13r52 14r53 18r44 26r50 28r59 30r53 35r18
+. 36r18 37r18 41r18 42r18 43r18 47r27 48r27 49r27 53r27 54r27 55r27 56r27
+. 57r27 58r27 59r27 29|4r53 11r53 18r52 35r44 58r50 88r59 102r53
+X 20 gl-vectors.ads
+15A9*Vector(19|31F9)<16|25E9>
+X 22 i-c.ads
+64F9*C_float<float>
+X 26 ogldev_camera.ads
+6K9*Ogldev_Camera 37e18 28|4w6 16r51 29|25r51 27r28 28r26 29r22
+8R9*Camera 35e14 28|16r65 29|25r65
+10V13*Get_Position{17|33A9[19|101]} 29|27s42
+11V13*Get_Target{17|33A9[19|101]} 29|28s40
+12V13*Get_Up{17|33A9[19|101]} 29|29s36
+X 27 ogldev_math.ads
+9K9*Ogldev_Math 46e16 28|5w6 20r32 22r32 50r27 51r27 29|66r28 74r28
+20R9*Perspective_Projection_Info 26e14 28|22r44 50r39 29|74r40
+28R9*Orthographic_Projection_Info 35e14 28|20r44 51r39 29|66r40
+X 28 ogldev_pipeline.ads
+7K9*Ogldev_Pipeline 34E9 62l5 62e20 29|2b14 109l5 109t20
+9R9*Orientation 40c9 44e14
+10R9*Pipeline 12r38 13r35 14r36 16r37 17r37 19r48 21r47 24r36 25r36 26r36
+. 27r45 28r45 29r39 30r39 46c9 60e14 29|4r36 11r36 18r35 25r37 34r37 44r36
+. 51r36 58r36 65r48 73r47 81r45 88r45 95r39 102r39
+12V13*Get_World_Transform{17|65A9[19|101]} 12>34 29|4b11 7l8 7t27
+12r34 P{10R9} 29|4b32 6r14
+13V13*Get_VP_Transform{17|65A9[19|101]} 13>31 29|18b13 21l8 21t24
+13r31 P{10R9} 29|18b31 20r14
+14V13*Get_WVP_Transform{17|65A9[19|101]} 14>32 29|11b13 14l8 14t25
+14r32 P{10R9} 29|11b32 13r14
+16U14*Set_Camera 16=26 16>47 29|25b14 30l8 30t18
+16r26 P{10R9} 29|25b26 27m7 28m7 29m7
+16r47 C{26|8R9} 29|25b47 27r56 28r52 29r44
+17U14*Set_Camera 17=26 18>26 18>31 18>39 29|34b14 40l8 40t18
+17r26 P{10R9} 29|34b26 37m7 38m7 39m7
+18a26 Pos{17|33A9[19|101]} 29|35b26 37r28
+18a31 Target{17|33A9[19|101]} 29|35b31 38r26
+18a39 Up{17|33A9[19|101]} 29|35b39 39r22
+19U14*Set_Orthographic_Proj 19=37 20>27 29|65b14 69l8 69t29
+19r37 P{10R9} 29|65b37 68m7
+20r27 OP{27|28R9} 29|66b23 68r30
+21U14*Set_Perspective_Proj 21=36 22>27 29|73b14 77l8 77t28
+21r36 P{10R9} 29|73b36 76m7
+22r27 PP{27|20R9} 29|74b23 76r29
+24U14*Set_Scale 24=25 24>46 29|44b14 47l8 47t17
+24r25 P{10R9} 29|44b25 46m7
+24f46 S{19|31F9} 29|44b46 46r19 46r22 46r25
+25U14*Set_Scale 25=25 25>46 25>49 25>52 29|51b14 54l8 54t17
+25r25 P{10R9} 29|51b25 53m7
+25f46 X{19|31F9} 29|51b46 53r19
+25f49 Y{19|31F9} 29|51b49 53r22
+25f52 Z{19|31F9} 29|51b52 53r25
+26U14*Set_Scale 26=25 26>46 29|58b14 61l8 61t17
+26r25 P{10R9} 29|58b25 60m7
+26a46 S{17|33A9[19|101]} 29|58b46 60r18
+27U14*Set_World_Position 27=34 27>55 27>58 27>61 29|81b14 84l8 84t26
+27r34 P{10R9} 29|81b34 83m7
+27f55 X{19|31F9} 29|81b55 83r23
+27f58 Y{19|31F9} 29|81b58 83r26
+27f61 Z{19|31F9} 29|81b61 83r29
+28U14*Set_World_Position 28=34 28>55 29|88b14 91l8 91t26
+28r34 P{10R9} 29|88b34 90m7
+28a55 S{17|33A9[19|101]} 29|88b55 90r22
+29U14*Set_Rotation 29=28 29>49 29>52 29>55 29|95b14 98l8 98t20
+29r28 P{10R9} 29|95b28 97m7
+29f49 X{19|31F9} 29|95b49 97r27
+29f52 Y{19|31F9} 29|95b52 97r30
+29f55 Z{19|31F9} 29|95b55 97r33
+30U14*Set_Rotation 30=28 30>49 29|102b14 105l8 105t20
+30r28 P{10R9} 29|102b28 104m7
+30a49 S{17|33A9[19|101]} 29|102b49 104r26
+34R9 Camera_Data 38e14 52r27
+35a7*Position{17|33A9[19|101]} 29|27m16 37m16
+36a7*Target{17|33A9[19|101]} 29|28m16 38m16
+37a7*Up{17|33A9[19|101]} 29|29m16 39m16
+41a7*Scale{17|33A9[19|101]}
+42a7*Rotation{17|33A9[19|101]}
+43a7*Position{17|33A9[19|101]}
+47a7*Scale{17|33A9[19|101]} 29|46m9 53m9 60m9
+48a7*World_Pos{17|33A9[19|101]} 29|83m9 90m9
+49a7*Rotation_Info{17|33A9[19|101]} 29|97m9 104m9
+50r7*Perspective_Proj{27|20R9} 29|76m9
+51r7*Orthographic_Proj{27|28R9} 29|68m9
+52r7*Camera{34R9} 29|27m9 28m9 29m9 37m9 38m9 39m9
+53a7*WVP_Transform{17|65A9[19|101]} 29|13r16
+54a7*VP_Transform{17|65A9[19|101]} 29|20r16
+55a7*WP_Transform{17|65A9[19|101]}
+56a7*WV_Transform{17|65A9[19|101]}
+57a7*W_Transform{17|65A9[19|101]} 29|6r16
+58a7*V_Transform{17|65A9[19|101]}
+59a7*P_Transform{17|65A9[19|101]}
+

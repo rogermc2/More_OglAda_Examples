@@ -1,0 +1,29 @@
+with "../../common/common.gpr";
+with "../../../opengl.gpr";
+limited with "../../../opengl-glfw.gpr";
+
+project Texture_Mapping is
+
+   for Source_Dirs use ("src", "../common/**", "../magick", "../sys");
+   for Object_Dir use "obj";
+   for Exec_Dir use ".";
+   for Main use ("map_texture.adb");
+
+   package Compiler renames Opengl.Compiler;
+
+  for Languages use ("Ada", "C++");
+
+  package Naming is
+    for Spec_Suffix ("C++") use ".h";
+  end Naming;
+
+   package Builder is
+     for Switches ("ada") use ("-g");
+   end Builder;
+
+   package Linker is
+for Switches ("ada") use ("-L/opt/lib", "-lMagick++-7.Q16HDRI", "-lMagickCore-7.Q16HDRI", "-g");
+   end Linker;
+
+end Texture_Mapping;
+

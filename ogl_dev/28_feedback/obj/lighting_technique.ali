@@ -1,0 +1,89 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -gnat05
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -gnatc
+A -mmacosx-version-min=10.13.5
+A -mtune=core2
+A -fPIC
+P NO FX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+
+U lighting_technique%b	lighting_technique.adb	8d13309a OO PK KM
+
+U lighting_technique%s	lighting_technique.ads	00838921 EE OO PK KM
+W gl%s			gl.adb			gl.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+W gl.uniforms%s		gl-uniforms.adb		gl-uniforms.ali
+
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-uniforms.ads	20180310020627 463cde62 gl.uniforms%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D interfac.ads		20170516105950 5ab55268 interfaces%s
+D i-c.ads		20170516105948 5421119b interfaces.c%s
+D i-cpoint.ads		20170516105956 ee8a93ec interfaces.c.pointers%s
+D lighting_technique.ads  20180426060115 fb73c864 lighting_technique%s
+D lighting_technique.adb  20180426060135 7660f8fe lighting_technique%b
+D system.ads		20170516105953 085b6ffb system%s
+D s-parame.ads		20170516105955 7e2a0d7f system.parameters%s
+X 1 gl.ads
+6K9*GL 46e7 10|3r6 4r6 14r45 17r49 22r31 23r31 11|36r49 38r7 44r45 46r7
+X 2 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 3|7i19 6|7i19
+13V19 "-"{10+9} 3|8i19 6|8i19
+14V19 "-"{10+9} 3|9i19 6|9i19
+15V19 "*"{10+9} 3|10i19 6|10i19
+16V19 "/"{10+9} 6|11i19
+65A9*Matrix4<3|20A9[59[4|101]]>(3|6F9[59[4|101]])<1|25E9><1|25E9> 10|14r62[4|101]
+. 17r66[4|101] 11|36r66[4|101] 44r62[4|101]
+X 3 gl-matrices.ads
+20A9*Matrix(4|31F9)<1|25E9><1|25E9>
+X 4 gl-types.ads
+8K12*Types 173e13 10|3w9 14r48 17r52 11|36r52 44r48
+19I9*Int<8|35I9>
+31F9*Single<8|64F9>
+101K12*Singles[2|18] 10|14r54 17r58 11|36r58 44r54
+X 5 gl-uniforms.ads
+6K12*Uniforms 74e16 10|4w9 22r34 23r34 11|38r10 46r10
+9I9*Uniform<4|19I9> 10|22r43 23r43
+26U14*Set_Single 11|38s19 46s19
+X 8 i-c.ads
+35I9*int<integer>
+64F9*C_float<float>
+X 10 lighting_technique.ads
+6K9*Lighting_Technique 20E9 26l5 26e23 11|6b14 51l5 51t23
+8R9*Technique 13r47 16r51 20c9 24e14 11|35r51 43r47
+13U14*Set_World_Matrix 13>32 14>32 11|43b14 47l8 47t24
+13r32 theTechnique{8R9} 11|43b32 46r31
+14a32 View_Point{2|65A9[4|101]} 11|44b32 46r67
+16U14*Set_World_View_Point 16>36 17>36 11|35b14 39l8 39t28
+16r36 theTechnique{8R9} 11|35b36 38r31
+17a36 View_Point{2|65A9[4|101]} 11|36b36 38r58
+22i7*WVP_Location{5|9I9} 11|38r44
+23i7*World_Matrix_Location{5|9I9} 11|46r44
+

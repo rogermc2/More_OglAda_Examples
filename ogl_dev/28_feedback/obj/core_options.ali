@@ -1,0 +1,69 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -g
+A -gnat05
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -gnatc
+A -mmacosx-version-min=10.13.5
+A -mtune=core2
+A -fPIC
+A -feliminate-unused-debug-symbols
+P NO FX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+RV SPARK_05
+
+U core_options%s	core_options.ads	a819c964 EE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+W magick_type%s		magick_type.adb		magick_type.ali
+
+D core_options.ads	20180528041036 de14c54e core_options%s
+D interfac.ads		20170516105950 5ab55268 interfaces%s
+D i-c.ads		20170516105948 5421119b interfaces.c%s
+D i-cstrin.ads		20170516105953 341d0ddf interfaces.c.strings%s
+D magick_type.ads	20180527024654 421001f5 magick_type%s
+D system.ads		20170516105953 085b6ffb system%s
+D s-parame.ads		20170516105955 7e2a0d7f system.parameters%s
+X 1 core_options.ads
+6K9*Core_Options 18l5 18e17
+9R9*Option_Info 15e14 16r39
+10p7*Mnemonic{4|47P9}
+11i7*C_Type{5|16I9}
+12i7*Flags{5|16I9}
+13e7*Stealth{5|10E9}
+X 2 interfac.ads
+38K9*Interfaces 1|2r6 2r32 2|184e15
+X 3 i-c.ads
+18K20*C 1|2r17 2r43 3|230e17
+X 4 i-cstrin.ads
+36K22*Strings 1|2w19 2r45 4|106e25
+47P9*chars_ptr 1|10r18
+60V13*New_String{47P9} 1|10s31
+X 5 magick_type.ads
+5K9*Magick_Type 1|4w6 11r26 12r26 13r26 14r9 5|111e16
+10E9*Magick_Boolean_Type 1|13r38 5|10e57
+10n33*Magic_False{10E9} 1|14r21
+16I9*ssize_t<long_integer> 1|11r38 12r38
+

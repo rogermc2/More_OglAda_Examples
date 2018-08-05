@@ -1,0 +1,32 @@
+[GENERATED OBJECT FILE]
+b__picking.o
+[PROJECT FILES]
+/Ada_Source/OpenGLAda/examples/ogl_tutorials/misc05_picking_easy/misc_05.gpr
+20180323114351
+/Ada_Source/OpenGLAda/FreeTypeAda/freetype.gpr
+20180621013446
+/Ada_Source/OpenGLAda/opengl-text.gpr
+20180316002936
+/Ada_Source/OpenGLAda/opengl.gpr
+20180621011751
+/Ada_Source/OpenGLAda/opengl-glfw.gpr
+20180323114352
+/Ada_Source/OpenGLAda/examples/common/common.gpr
+20180323114234
+[BOUND OBJECT FILES]
+/Ada_Source/OpenGLAda/examples/ogl_tutorials/misc05_picking_easy/obj/main_loop.o
+/Ada_Source/OpenGLAda/examples/ogl_tutorials/misc05_picking_easy/obj/picking.o
+[GENERATED SOURCE FILES]
+b__picking.ads
+b__picking.adb
+b__picking.ali
+[RESULTING OPTIONS]
+-L/Ada_Source/OpenGLAda/examples/ogl_tutorials/misc05_picking_easy/obj/
+-L/Ada_Source/OpenGLAda/examples/ogl_tutorials/misc05_picking_easy/obj/
+-L/Ada_Source/OpenGLAda/examples/common/lib/
+-L/Ada_Source/OpenGLAda/lib/
+-L/Ada_Source/OpenGLAda/FreeTypeAda/lib/
+-L/opt/gnat/2018/lib/gcc/x86_64-apple-darwin16.7.0/7.3.1/adalib/
+-static
+/opt/gnat/2018/lib/gcc/x86_64-apple-darwin16.7.0/7.3.1/adalib/libgnarl.a
+/opt/gnat/2018/lib/gcc/x86_64-apple-darwin16.7.0/7.3.1/adalib/libgnat.a

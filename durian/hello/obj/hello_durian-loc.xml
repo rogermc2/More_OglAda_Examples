@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file />
+    <file_marker current="true" column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/initialize.adb</vfs_file>
+    </file_marker>
+  </Project>
+  <Project >
+    <vfs_file >/Ada_Source/OpenGLAda/examples/durian/hello/hello_durian.gpr</vfs_file>
+    <file_marker current="true" column=" 1" line=" 1">
+      <vfs_project >/Ada_Source/OpenGLAda/examples/common/common.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/examples/common/src/initialize.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

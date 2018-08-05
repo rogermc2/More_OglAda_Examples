@@ -1,0 +1,58 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.7
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_FLOATING_POINT
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U api_vectors%s		api_vectors.ads		67b5cf8a NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D api_vectors.ads	20180622013254 3394de11 api_vectors%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+X 3 api_vectors.ads
+4K9*API_Vectors 42l5 42e16
+6R9*API_Colour_3D 10e14 11r39
+7f7*R{5|64F9}
+8f7*G{5|64F9}
+9f7*B{5|64F9}
+13R9*API_Colour_4D 18e14 19r39
+14f7*R{5|64F9}
+15f7*G{5|64F9}
+16f7*B{5|64F9}
+17f7*A{5|64F9}
+21R9*API_Quaternion 26e14 27r39
+22f7*W{5|64F9}
+23f7*X{5|64F9}
+24f7*Y{5|64F9}
+25f7*Z{5|64F9}
+29R8*API_Vector_2D 32e14 33r39
+30f7*X{5|64F9}
+31f7*Y{5|64F9}
+35R9*API_Vector_3D 39e14 40r39
+36f7*X{5|64F9}
+37f7*Y{5|64F9}
+38f7*Z{5|64F9}
+X 4 interfac.ads
+38K9*Interfaces 3|2r6 7r11 8r11 9r11 14r11 15r11 16r11 17r11 22r11 23r11
+. 24r11 25r11 30r11 31r11 36r11 37r11 38r11 4|184e15
+X 5 i-c.ads
+18K20*C 3|2w17 7r22 8r22 9r22 14r22 15r22 16r22 17r22 22r22 23r22 24r22 25r22
+. 30r22 31r22 36r22 37r22 38r22 5|230e17
+64F9*C_float<float> 3|7r24 8r24 9r24 14r24 15r24 16r24 17r24 22r24 23r24
+. 24r24 25r24 30r24 31r24 36r24 37r24 38r24
+

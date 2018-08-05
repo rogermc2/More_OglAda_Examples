@@ -1,0 +1,59 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U magick_profile%s	magick_profile.ads	95bae204 NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+W method_attribute%s	method_attribute.ads	method_attribute.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cstrin.ads		20180524051735 341d0ddf interfaces.c.strings%s
+D magick_profile.ads	20180622013255 94788b2b magick_profile%s
+D method_attribute.ads	20180622013255 61fe756b method_attribute%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+X 3 interfac.ads
+38K9*Interfaces 184e15 6|2r6 2r24 3r6 3r32
+X 4 i-c.ads
+18K20*C 230e17 6|2w17 2r35 3r17 3r43
+43M9*unsigned 6|16r32 16r54 20r19
+45M9*unsigned_long
+60M9*size_t 6|22r19 23r9
+X 5 i-cstrin.ads
+36K22*Strings 106e25 6|3w19 3r45
+47P9*chars_ptr 6|19r19
+X 6 magick_profile.ads
+7K9*Magick_Profile 27l5 27e19
+9E9*Rendering_Intent 13e46 14r26
+9n30*Undefined_Intent{9E9}
+10n30*Saturation_Intent{9E9}
+11n30*Perceptual_Intent{9E9}
+12n30*Absolute_Intent{9E9}
+13n30*Relative_Intent{9E9}
+16A9*Profile_Data(4|43M9)<4|43M9> 21r26
+18R9*Profile_Info 24e14 25r39
+19p7*Name{5|47P9}
+20m7*Length{4|43M9}
+21p7*Info(16A9)
+22m7*Signature{4|60M9}
+X 7 method_attribute.ads
+4K9*Method_Attribute 6|5w6 23r17 7|10e21
+6m4*Magick_Core_Signature{4|45M9} 6|23r34
+

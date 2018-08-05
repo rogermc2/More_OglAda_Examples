@@ -1,0 +1,29 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U ogldev_engine_common%s  ogldev_engine_common.ads  7f23b26e NE OO PK
+
+D ogldev_engine_common.ads  20180622013255 7f23b26e ogldev_engine_common%s
+D system.ads		20180524051735 085b6ffb system%s
+X 1 ogldev_engine_common.ads
+2K9*Ogldev_Engine_Common 22E13 25l5 25e25
+4E6*Texture_Unit_Index 11e64 13r8 22r55
+4n29*Colour_Texture_Unit_Index{4E6} 13r32
+5n29*Shadow_Texture_Unit_Index{4E6} 14r32 23r14
+6n29*Normal_Texture_Unit_Index{4E6} 15r32
+7n29*Random_Texture_Unit_Index{4E6} 16r32
+8n29*Displacement_Texture_Unit_Index{4E6} 17r32
+9n29*Motion_Texture_Unit_Index{4E6} 18r32
+10n29*Cascade_Shadow_Texture_Unit1_Index{4E6} 19r32
+11n29*Cascade_Shadow_Texture_Unit2_Index{4E6} 20r32
+22V13 Cascade_Shadow_Texture_Unit0_Index=23:14{4E6}
+

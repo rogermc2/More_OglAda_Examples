@@ -1,0 +1,88 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U composite%s		composite.ads		e68156d9 NE OO PK
+
+D composite.ads		20180622013255 e68156d9 composite%s
+D system.ads		20180524051735 085b6ffb system%s
+X 1 composite.ads
+2K9*Composite 79l5 79e14
+4E9*Composite_Operator 75e62 76r26
+4n32*Undefined_Composite_Op{4E9}
+5n32*No_Composite_Op{4E9}
+6n32*ModulusAdd_Composite_Op{4E9}
+7n32*Atop_Composite_Op{4E9}
+8n32*Blend_Composite_Op{4E9}
+9n32*Bumpmap_Composite_Op{4E9}
+10n32*ChangeMask_Composite_Op{4E9}
+11n32*Clear_Composite_Op{4E9}
+12n32*ColorBurn_Composite_Op{4E9}
+13n32*ColorDodge_Composite_Op{4E9}
+14n32*Colorize_Composite_Op{4E9}
+15n32*CopyBlack_Composite_Op{4E9}
+16n32*CopyBlue_Composite_Op{4E9}
+17n32*Copy_Composite_Op{4E9}
+18n32*CopyCyan_Composite_Op{4E9}
+19n32*CopyGreen_Composite_Op{4E9}
+20n32*CopyMagenta_Composite_Op{4E9}
+21n32*CopyOpacity_Composite_Op{4E9}
+22n32*CopyRed_Composite_Op{4E9}
+23n32*CopyYellow_Composite_Op{4E9}
+24n32*Darken_Composite_Op{4E9}
+25n32*DstAtop_Composite_Op{4E9}
+26n32*Dst_Composite_Op{4E9}
+27n32*DstIn_Composite_Op{4E9}
+28n32*DstOut_Composite_Op{4E9}
+29n32*DstOver_Composite_Op{4E9}
+30n32*Difference_Composite_Op{4E9}
+31n32*Displace_Composite_Op{4E9}
+32n32*Dissolve_Composite_Op{4E9}
+33n32*Exclusion_Composite_Op{4E9}
+34n32*HardLight_Composite_Op{4E9}
+35n32*Hue_Composite_Op{4E9}
+36n32*In_Composite_Op{4E9}
+37n32*Lighten_Composite_Op{4E9}
+38n32*LinearLight_Composite_Op{4E9}
+39n32*Luminize_Composite_Op{4E9}
+40n32*MinusDst_Composite_Op{4E9}
+41n32*Modulate_Composite_Op{4E9}
+42n32*Multiply_Composite_Op{4E9}
+43n32*Out_Composite_Op{4E9}
+44n32*Over_Composite_Op{4E9}
+45n32*Overlay_Composite_Op{4E9}
+46n32*Plus_Composite_Op{4E9}
+47n32*Replace_Composite_Op{4E9}
+48n32*Saturate_Composite_Op{4E9}
+49n32*Screen_Composite_Op{4E9}
+50n32*SoftLight_Composite_Op{4E9}
+51n32*SrcAtop_Composite_Op{4E9}
+52n32*Src_Composite_Op{4E9}
+53n32*SrcIn_Composite_Op{4E9}
+54n32*SrcOut_Composite_Op{4E9}
+55n32*SrcOver_Composite_Op{4E9}
+56n32*ModulusSubtract_Composite_Op{4E9}
+57n32*Threshold_Composite_Op{4E9}
+58n32*Xor_Composite_Op{4E9}
+63n32*DivideDst_Composite_Op{4E9}
+64n32*Distort_Composite_Op{4E9}
+65n32*Blur_Composite_Op{4E9}
+66n32*PegtopLight_Composite_Op{4E9}
+67n32*VividLight_Composite_Op{4E9}
+68n32*PinLight_Composite_Op{4E9}
+69n32*LinearDodge_Composite_Op{4E9}
+70n32*LinearBurn_Composite_Op{4E9}
+71n32*Mathematics_Composite_Op{4E9}
+72n32*DivideSrc_Composite_Op{4E9}
+73n32*MinusSrc_Composite_Op{4E9}
+74n32*DarkenIntensity_Composite_Op{4E9}
+75n32*LightenIntensity_Composite_Op{4E9}
+

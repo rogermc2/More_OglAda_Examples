@@ -1,0 +1,9 @@
+20180705040207
+-c
+-x
+c++
+-I/opt/include/ImageMagick-7/Magick++
+-I/opt/include/ImageMagick-7
+-DMAGICKCORE_QUANTUM_DEPTH=16
+-DMAGICKCORE_HDRI_ENABLE=1
+-g

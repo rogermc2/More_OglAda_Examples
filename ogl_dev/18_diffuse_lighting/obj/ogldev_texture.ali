@@ -1,0 +1,329 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.7
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_IO
+RV NO_NESTED_FINALIZATION
+RV NO_SECONDARY_STACK
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_ATTRIBUTES
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+RV SPARK_05
+
+U ogldev_texture%b	ogldev_texture.adb	f7662e40 NE OO PK
+W ada%s			ada.ads			ada.ali
+Z ada.exceptions%s	a-except.adb		a-except.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W gl%s			gl.adb			gl.ali
+W gl.objects%s		gl-objects.adb		gl-objects.ali
+W gl.objects.textures%s	gl-objects-textures.adb	gl-objects-textures.ali
+W gl.objects.textures.targets%s  gl-objects-textures-targets.adb  gl-objects-textures-targets.ali
+W gl.pixels%s		gl-pixels.adb		gl-pixels.ali
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W magick_blob%s		magick_blob.adb		magick_blob.ali
+W magick_blob.api%s	magick_blob-api.ads	magick_blob-api.ali
+W magick_image%s	magick_image.adb	magick_image.ali
+W magick_image.api%s	magick_image-api.ads	magick_image-api.ali
+Z system%s		system.ads		system.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+Z system.soft_links%s	s-soflin.adb		s-soflin.ali
+Z system.standard_library%s  s-stalib.adb	s-stalib.ali
+
+U ogldev_texture%s	ogldev_texture.ads	960796fe EE OO PK KM
+W ada%s			ada.ads			ada.ali
+W ada.containers%s	a-contai.ads		a-contai.ali
+W ada.containers.indefinite_ordered_maps%s
+Z ada.exceptions%s	a-except.adb		a-except.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W core_image%s		core_image.adb		core_image.ali
+W gl%s			gl.adb			gl.ali
+W gl.low_level%s	gl-low_level.ads	gl-low_level.ali
+W gl.low_level.enums%s	gl-low_level-enums.ads	gl-low_level-enums.ali
+W gl.objects%s		gl-objects.adb		gl-objects.ali
+W gl.objects.textures%s	gl-objects-textures.adb	gl-objects-textures.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+W magick_blob%s		magick_blob.adb		magick_blob.ali
+W magick_blob.api%s	magick_blob-api.ads	magick_blob-api.ali
+W magick_image%s	magick_image.adb	magick_image.ali
+W magick_image.api%s	magick_image-api.ads	magick_image-api.ali
+W ogldev_engine_common%s  ogldev_engine_common.ads  ogldev_engine_common.ali
+Z system%s		system.ads		system.ali
+Z system.exception_table%s  s-exctab.adb	s-exctab.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+Z system.soft_links%s	s-soflin.adb		s-soflin.ali
+Z system.standard_library%s  s-stalib.adb	s-stalib.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-charac.ads		20180524051735 2d3ec45b ada.characters%s
+D a-chlat1.ads		20180524051735 66457d31 ada.characters.latin_1%s
+D a-contai.ads		20180524051734 61e5e089 ada.containers%s
+D a-cdlili.ads		20180524051734 8e06b4f2 ada.containers.doubly_linked_lists%s
+D a-conhel.ads		20180524051735 20298884 ada.containers.helpers%s
+D a-ciorma.ads		20180524051735 e1f95638 ada.containers.indefinite_ordered_maps%s
+D a-crbltr.ads		20180524051736 c3e90a86 ada.containers.red_black_trees%s
+D a-except.ads		20180524051735 291912d5 ada.exceptions%s
+D a-finali.ads		20180524051736 bf4f806b ada.finalization%s
+D a-ioexce.ads		20180524051734 e4a01f64 ada.io_exceptions%s
+D a-iteint.ads		20180524051735 7c7305e9 ada.iterator_interfaces%s
+D a-stream.ads		20180524051735 119b8fb3 ada.streams%s
+D a-string.ads		20180524051735 90ac6797 ada.strings%s
+D a-strmap.ads		20180524051735 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20180524051736 8098c91f ada.strings.unbounded%s
+D a-tags.ads		20180524051736 491b781d ada.tags%s
+D a-textio.ads		20180524051736 881db35a ada.text_io%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D blob_reference.ads	20180707115752 1f64382a blob_reference%s
+D cache.ads		20180622014431 42d0c373 cache%s
+D colour.ads		20180622013255 e03c44b2 colour%s
+D colour_space.ads	20180622013255 db19c26b colour_space%s
+D composite.ads		20180622013255 e68156d9 composite%s
+D compress.ads		20180622013255 094fb960 compress%s
+D core_blob.ads		20180622013255 43d5189d core_blob%s
+D core_blob-api.ads	20180622013255 4dfe6bb8 core_blob.api%s
+D core_image.ads	20180622013255 43294988 core_image%s
+D draw.ads		20180622013255 a314be3e draw%s
+D geometry.ads		20180622013255 91be8c0c geometry%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-low_level.ads	20180323114352 3e559055 gl.low_level%s
+D gl-low_level-enums.ads  20180406035624 9cb41c01 gl.low_level.enums%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-objects.ads	20180310020627 0f493599 gl.objects%s
+D gl-objects-textures.ads  20180310020627 f6430b76 gl.objects.textures%s
+D gl-objects-textures-targets.ads  20180310020627 9820857c gl.objects.textures.targets%s
+D gl-objects-textures-with_1d_loader.ads  20180310020627 256e852d gl.objects.textures.with_1d_loader%s
+D gl-objects-textures-with_2d_loader.ads  20180310020627 5229c7ea gl.objects.textures.with_2d_loader%s
+D gl-objects-textures-with_3d_loader.ads  20180310020627 efdb0c4a gl.objects.textures.with_3d_loader%s
+D gl-pixels.ads		20180310020627 0629bde8 gl.pixels%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-types-colors.ads	20180310020627 323d62ec gl.types.colors%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D image_reference.ads	20180622013255 59c793f0 image_reference%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cexten.ads		20180524051734 47f3eec4 interfaces.c.extensions%s
+D i-cpoint.ads		20180524051736 ee8a93ec interfaces.c.pointers%s
+D i-cstrin.ads		20180524051735 341d0ddf interfaces.c.strings%s
+D i-cstrea.ads		20180524051734 e53d8b8e interfaces.c_streams%s
+D layer.ads		20180622013255 e62db32d layer%s
+D magick_blob.ads	20180708113523 4ea08a9d magick_blob%s
+D magick_blob-api.ads	20180707115752 366a1a16 magick_blob.api%s
+D magick_exception.ads	20180622013255 92413496 magick_exception%s
+D magick_image.ads	20180707115753 0194c241 magick_image%s
+D magick_image-api.ads	20180707115752 7d4870b4 magick_image.api%s
+D magick_options.ads	20180622013255 35a0c0b6 magick_options%s
+D magick_pixel.ads	20180622013255 95aee6fe magick_pixel%s
+D magick_profile.ads	20180622013255 94788b2b magick_profile%s
+D magick_type.ads	20180622013255 17b9d4b3 magick_type%s
+D method.ads		20180622013255 439df4d2 method%s
+D method_attribute.ads	20180622013255 61fe756b method_attribute%s
+D monitor.ads		20180622013255 842a7008 monitor%s
+D ogldev_engine_common.ads  20180622013255 7f23b26e ogldev_engine_common%s
+D ogldev_texture.ads	20180708113523 577510cd ogldev_texture%s
+D ogldev_texture.adb	20180803010626 a8900c3b ogldev_texture%b
+D quantize.ads		20180622013255 06e2f185 quantize%s
+D quantum.ads		20180622013255 21a6f8ac quantum%s
+D resample.ads		20180622013255 3b4f34f4 resample%s
+D semaphore.ads		20180622013255 ebf085b2 semaphore%s
+D std_io.ads		20180622013255 7ac00d71 std_io%s
+D stream.ads		20180622013255 670072c0 stream%s
+D sys_pthread_mutex.ads	20180622014517 e6d15d1c sys_pthread_mutex%s
+D sys_pthread_types.ads	20180622014537 35581402 sys_pthread_types%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-atocou.ads		20180524051736 b45c2d8d system.atomic_counters%s
+D s-crtl.ads		20180524051734 0ebbdb71 system.crtl%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-ficobl.ads		20180524051736 078245e4 system.file_control_block%s
+D s-finmas.ads		20180524051736 7811a767 system.finalization_masters%s
+D s-finroo.ads		20180524051736 4ff27390 system.finalization_root%s
+D s-memory.ads		20180524051735 597d6634 system.memory%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-secsta.ads		20180524051736 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20180524051735 a7318a92 system.soft_links%s
+D s-stache.ads		20180524051736 a37c21ec system.stack_checking%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+D s-stalib.adb		20180524051734 f2fe2716 system.standard_library%b
+D s-stoele.ads		20180524051736 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20180524051735 b16154c2 system.storage_pools%s
+D s-stposu.ads		20180524051734 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20180524051734 aedef97e system.stream_attributes%s
+D s-traent.ads		20180524051734 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20180524051735 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20180524051736 1b7d22d2 system.wch_con%s
+D thread.ads		20180622014455 9a3b54a4 thread%s
+D timer.ads		20180622013255 40711ea6 timer%s
+X 1 ada.ads
+16K9*Ada 20e8 67|2r6 3r6 18r24 19r9 68|4r6 4r23 37r11 46r11
+X 4 a-contai.ads
+16K13*Containers 24e19 67|2r10
+20I9*Count_Type<integer>
+X 5 a-cdlili.ads
+51R9*List<10|43R9>
+60R9*Cursor 68|74r24[54|15]
+67V13*Has_Element{boolean} 68|77s16[54|15]
+74V13*Length{4|20I9} 68|71s57[54|15]
+80V13*Element{43|26M9} 68|79s29[54|15]
+198V13*First{60R9[54|15]} 68|74s44[54|15]
+208U14*Next 68|80s13[54|15]
+X 7 a-ciorma.ads
+47k24*Indefinite_Ordered_Maps 388e43 67|2w21
+X 12 a-iteint.ads
+24h9 Forward_Iterator
+32h9 Reversible_Iterator<24R9[5|69]>
+X 14 a-string.ads
+16K13*Strings 35e16 67|3r10 18r28 19r13 68|37r15 46r15
+X 16 a-strunb.ads
+76K21*Unbounded 491e26 67|3w18 18r36 19r21 68|37r23 46r23
+79R9*Unbounded_String<10|43R9> 474e14 67|18r46
+94V13*To_Unbounded_String{79R9} 67|19s31 68|39s31
+100V13*To_String{string} 68|50s53
+X 18 a-textio.ads
+49K13*Text_IO 471e16 68|4w10 4r27
+263U14*Put_Line 68|94s10
+X 28 core_image.ads
+34K9*Core_Image 500e15 67|5w6
+227m9*Columns{48|60M9} 68|85r76
+228m9*Rows{48|60M9} 68|86r76
+X 31 gl.ads
+6K9*GL 46e7 67|7r6 7r20 8r6 9r6 20r24 21r24 35r42 68|6r6 7r6 17r8 18r8 20r7
+. 35r21 47r11 48r11 75r33 84r47 87r40 87r56 88r40 89r46 90r47
+X 32 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 35|7i19 45|7i19
+13V19 "-"{10+9} 35|8i19 45|8i19
+14V19 "-"{10+9} 35|9i19 45|9i19
+15V19 "*"{10+9} 35|10i19 45|10i19
+16V19 "/"{10+9} 45|11i19
+X 33 gl-low_level.ads
+6K12*Low_Level 61e17 67|8r9 20r27 35r45 68|17r11 35r24 47r14
+X 34 gl-low_level-enums.ads
+4K22*Enums 112e23 67|8w19 20r37 35r55 68|22r15 23r15 24r15 35r34 55r15 56r15
+. 57r15
+10E9*Texture_Kind 21e65 67|20r43 35r61 68|35r40
+10n26*Texture_1D{10E9} 68|22r21 55r21
+10n38*Texture_2D{10E9} 68|23r21 56r21
+11n44*Texture_3D{10E9} 68|24r21 57r21
+X 36 gl-objects.ads
+10K12*Objects 85e15 67|9r9 21r27 68|6r9 18r11 20r10 48r14 75r36 88r43 89r49
+. 90r50
+22U14*Initialize_Id 68|53s33
+X 37 gl-objects-textures.ads
+9K20*Textures 230e24 67|9w17 21r35 68|6r17 18r19 20r18 48r22 75r44 88r51
+. 89r57 90r58
+16n41*Linear{16E9} 68|89r66 90r67
+44I12*Mipmap_Level{43|19I9} 68|75r53
+49M9*Image_Source<77|67M9> 68|88r60
+111U14*Set_Minifying_Filter 68|89s24
+116U14*Set_Magnifying_Filter 68|90s24
+178R9*Texture<36|17R9> 222e50 67|21r44
+180U14*Bind 68|22s46 23s46 24s46 55s46 56s46 57s46
+195U14*Set_Active_Unit 68|20s27
+X 38 gl-objects-textures-targets.ads
+8K29*Targets 143e32 68|6w26 18r28 48r31
+40r4*Texture_1D{39|20R9[15]} 68|22r35 55r35
+41r4*Texture_2D{40|20R9[16]} 68|23r35 56r35 84r13 89r13 90r13
+42r4*Texture_3D{41|21R9[17]} 68|24r35 57r35
+X 39 gl-objects-textures-with_1d_loader.ads
+5R9 Base<37|60R9>
+9R9*Target<37|108R9>
+20R9*Fillable_Target<9R9[38|15]>
+X 40 gl-objects-textures-with_2d_loader.ads
+5R9 Base<37|60R9>
+9R9*Target<37|108R9>
+20R9*Fillable_Target<9R9[38|16]>
+22U14*Load_From_Data 68|84s24[38|16]
+X 41 gl-objects-textures-with_3d_loader.ads
+5R9 Base<37|60R9>
+9R9*Target<37|108R9>
+21R9*Fillable_Target<9R9[38|17]>
+X 42 gl-pixels.ads
+8K12*Pixels 386e14 68|7w9 84r50 87r43 87r59
+13n63*RGBA{13E9} 68|84r57
+81n30*RGBA{80E9} 68|87r50
+85n29*Unsigned_Byte{85E9} 68|87r66
+X 43 gl-types.ads
+8K12*Types 173e13 67|7w9 7r23
+19I9*Int<48|35I9> 68|85r40 86r40
+26M9*UByte<48|47M9> 68|72r52
+28M9*UInt<48|43M9> 68|71r33 71r41 73r24
+X 46 image_reference.ads
+14p10*Image(28|218R10) 68|85r70 86r70
+X 47 interfac.ads
+38K9*Interfaces 184e15 68|2r6
+X 48 i-c.ads
+18K20*C 230e17 68|2w17
+35I9*int<integer>
+43M9*unsigned
+47M9*unsigned_char
+60M9*size_t
+X 54 magick_blob.ads
+9K9*Magick_Blob 20e16 67|11r6 23r32 68|9r6 69r14 70r33 70r58
+15K12*Blob_Package[5|46] 68|69r26
+16R9*Blob_Data<5|51R9[15]> 16e60 68|70r45
+18V13*Get_Data{16R9} 68|70s70
+X 55 magick_blob-api.ads
+8K21*API 35e20 67|11w18 23r44 68|9w18
+12K12*Class_Blob 33e18 67|23r48
+15R12*Blob 18e17 67|23r59
+X 57 magick_image.ads
+5K9*Magick_Image 17e17 67|12r6 22r24 68|10w6 11r6 50r7 51r7
+9U14*Read_File 68|50s20
+13U14*Write_Blob 68|51s20
+X 58 magick_image-api.ads
+7K22*API 44e21 67|12w19 22r37 68|11w19
+9K12*Class_Image 42e19 67|22r41
+11R12*MPP_Image 13e17 67|22r53
+12p10*Ref(46|13R12) 68|85r66 86r66
+X 66 ogldev_engine_common.ads
+2K9*Ogldev_Engine_Common 25e25 67|13w6 33r35 68|16r35
+4E6*Texture_Unit_Index 11e64 67|33r56 68|16r56
+X 67 ogldev_texture.ads
+15K9*Ogldev_Texture 41l5 41e19 68|13b14 100l5 100t19
+17R9*Ogl_Texture 24e14 32r33 34r48 37r40 68|15r33 34r27 45r40
+18r7*File_Name{16|79R9} 68|39m18 50r75
+20e7*Texture_Target{34|10E9} 68|21r23 40m18 54r23
+21r7*Texture_Object{37|178R9} 68|22r63 23r63 24r63 53m18 55r63 56r63 57r63
+22r7*Image_Ref{58|11R12} 68|50m42 51m43 85m56 86m56
+23r7*Blob_Ref{55|15R12} 68|51m65 70r91
+30X4*Texture_Exception 68|26r19 59r19
+32U14*Bind 32>20 33>20 68|15b14 29l8 29t12
+32r20 theTexture{17R9} 68|15b20 21r12 22r52 23r52 24r52
+33e20 Texture_Unit{66|4E6} 68|16b20 20r44
+34U14*Init_Texture 34=28 35>28 36>28 68|33b14 41l8 41t20
+34r28 theTexture{17R9} 68|34b7 39m7 40m7
+35e28 Target_Type{34|10E9} 68|35b7 40r36
+36a28 File_Name{string} 68|36b7 39r52
+37U14*Load 37=20 68|45b14 96l8 96t12
+37r20 theTexture{17R9} 68|45b20 50m31 50r31 50r64 51m32 51r32 51m54 51r54
+. 53m7 53r7 54r12 55r52 56r52 57r52 70r80 85r45 86r45
+X 68 ogldev_texture.adb
+70r10 Data_Blob{54|16R9} 71r47 74r34
+71m10 Blob_Length{43|28M9} 72r36
+72a10 Data(43|26M9) 79m13 88m74 88r74
+73m10 Index{43|28M9} 78m13 78r22 79r19
+74r10 Curs{5|60R9[54|15]} 77r29 79r38 80m19 80r19
+75i10 Level{37|44I12} 84r40
+X 77 system.ads
+67M9*Address
+X 84 s-memory.ads
+53V13*Alloc{77|67M9} 103i<c,__gnat_malloc>22
+68U14*Free 104i<c,__gnat_free>22
+76V13*Realloc{77|67M9} 105i<c,__gnat_realloc>22
+X 90 s-stalib.adb
+93U14 Break_Start 94i<c,__gnat_break_start>22
+

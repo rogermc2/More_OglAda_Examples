@@ -1,0 +1,9 @@
+20180803010854
+-c
+-x
+c++
+-I/usr/local/include/ImageMagick-7/Magick++
+-I/usr/local/include/ImageMagick-7
+-DMAGICKCORE_QUANTUM_DEPTH=16
+-DMAGICKCORE_HDRI_ENABLE=1
+-g

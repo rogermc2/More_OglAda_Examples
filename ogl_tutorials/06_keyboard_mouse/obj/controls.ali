@@ -1,0 +1,172 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -mmacosx-version-min=10.12.7
+A -mtune=core2
+A -fPIC
+P SS ZX
+
+RN
+RV NO_FLOATING_POINT
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+RV SPARK_05
+
+U controls%b		controls.adb		8e9dd68b OO PK
+W ada%s			ada.ads			ada.ali
+W ada.numerics%s	a-numeri.ads		a-numeri.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W gl%s			gl.adb			gl.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+W glfw%s		glfw.adb		glfw.ali  AD
+W glfw.input%s		glfw-input.adb		glfw-input.ali
+W glfw.input.keys%s	glfw-input-keys.ads	glfw-input-keys.ali
+W glfw.input.mouse%s	glfw-input-mouse.ads	glfw-input-mouse.ali
+W maths%s		maths.adb		maths.ali
+
+U controls%s		controls.ads		2f2631db EE NE OO PK
+W gl%s			gl.adb			gl.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+W glfw%s		glfw.adb		glfw.ali
+W glfw.windows%s	glfw-windows.adb	glfw-windows.ali
+
+D ada.ads		20170516105951 76789da1 ada%s
+D a-except.ads		20170516105953 291912d5 ada.exceptions%s
+D a-finali.ads		20170516105954 bf4f806b ada.finalization%s
+D a-numeri.ads		20170516105951 bb51c45a ada.numerics%s
+D a-ngelfu.ads		20170516105954 7e738940 ada.numerics.generic_elementary_functions%s
+D a-stream.ads		20170516105952 119b8fb3 ada.streams%s
+D a-tags.ads		20170516105955 d3a89129 ada.tags%s
+D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
+D controls.ads		20170519030023 f55b1368 controls%s
+D controls.adb		20170519030023 ee890a46 controls%b
+D gl.ads		20170303224401 b5cd5543 gl%s
+D gl-algebra.ads	20170323021544 87897079 gl.algebra%s
+D gl-matrices.ads	20170420013537 7eb1e31d gl.matrices%s
+D gl-types.ads		20170308072531 bdcc9f27 gl.types%s
+D gl-vectors.ads	20170323021544 236bf575 gl.vectors%s
+D glfw.ads		20170303224401 5cecf13b glfw%s
+D glfw-input.ads	20170323021544 cc20d32a glfw.input%s
+D glfw-input-keys.ads	20170303224401 b0d52173 glfw.input.keys%s
+D glfw-input-mouse.ads	20170303224401 725dacf3 glfw.input.mouse%s
+D glfw-monitors.ads	20170303224401 8a5ba4bb glfw.monitors%s
+D glfw-windows.ads	20170831090251 67b1bd94 glfw.windows%s
+D interfac.ads		20170516105950 5ab55268 interfaces%s
+D i-c.ads		20170516105948 5421119b interfaces.c%s
+D i-cpoint.ads		20170516105956 ee8a93ec interfaces.c.pointers%s
+D maths.ads		20170831085430 515a1958 maths%s
+D system.ads		20170516105953 085b6ffb system%s
+D s-exctab.ads		20170516105954 54135002 system.exception_table%s
+D s-finmas.ads		20170516105954 7811a767 system.finalization_masters%s
+D s-finroo.ads		20170516105954 4ff27390 system.finalization_root%s
+D s-parame.ads		20170516105955 7e2a0d7f system.parameters%s
+D s-pooglo.ads		20170516105948 ede33ef8 system.pool_global%s
+D s-secsta.ads		20170516105955 9751b57e system.secondary_stack%s
+D s-soflin.ads		20170516105951 14e1eb6c system.soft_links%s
+D s-stache.ads		20170516105955 a37c21ec system.stack_checking%s
+D s-stalib.ads		20170516105955 09bd3940 system.standard_library%s
+D s-stoele.ads		20170516105956 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20170516105951 b16154c2 system.storage_pools%s
+D s-stposu.ads		20170516105949 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20170516105949 aedef97e system.stream_attributes%s
+D s-traent.ads		20170516105950 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20170516105953 34867c83 system.unsigned_types%s
+X 1 ada.ads
+16K9*Ada 20e8 10|2r6 12r51 15r36
+X 4 a-numeri.ads
+16K13*Numerics 32e17 10|2w10 12r55 15r40
+21N4*Pi 10|12r64 15r49
+X 5 a-ngelfu.ads
+82V13*Sin<23|64F9> 10|70s46[25|26] 71s23[25|26] 73s19[25|26]
+90V13*Cos<23|64F9> 10|70s23[25|26] 72s23[25|26] 72s46[25|26] 74s19[25|26]
+X 9 controls.ads
+6K9*Controls 9l5 9e13 10|11b14 98l5 98t13
+7U15*Compute_Matrices_From_Inputs 7=45 8=12 8=31 10|24b15 94l9 94t37
+7r45 Window{21|27R9} 10|24b45 49m9 49r9 50m9 50r9 57m9 57r9 77m12 77r12 79m15
+. 79r15 81m15 81r15 83m15 83r15
+8a12 Projection_Matrix{12|78A9[14|114]} 10|25b12 89m37
+8a31 View_Matrix{12|78A9[14|114]} 10|25b31 91m38
+X 10 controls.adb
+12f5 Half_Pi{14|44F9} 73r43 74r43
+14a5 Position{12|46A9[14|114]} 78m13 78r25 80m13 80r25 82m13 82r25 84m13
+. 84r25 90r38
+15f5 Horizontal_Angle{14|44F9} 65m9 65r29 70r51 72r51 73r24 74r24
+16f5 Vertical_Angle{14|44F9} 67m9 67r27 70r28 71r28 72r28
+17f5 Initial_View_Angle{25|10F10} 41r46
+18f5 Speed{14|44F9} 78r61 80r61 82r57 84r57
+19f5 Mouse_Speed{14|44F9} 66r11 68r11
+20f5 Last_Time{14|45F9} 32r63 93m9
+31f9 Current_Time{14|45F9} 32r48 93r22
+32f9 Delta_Time{14|44F9} 66r25 68r25 78r48 80r48 82r44 84r44
+33i9 Window_Width{16|23I12} 50m33 51r44 87r63
+34i9 Window_Height{16|23I12} 50m47 52r45 88r45
+35f9 Half_Window_Width{14|44F9} 51m9 57r57 66r39
+36f9 Half_Window_Height{14|44F9} 52m9 58r57 68r39
+41f9 View_Angle{25|10F10} 87r43
+42f9 X_Position{19|29F12} 49m39 66r67
+43f9 Y_Position{19|29F12} 49m51 68r68
+45a9 Direction{12|46A9[14|114]} 70m9 75r45 78r36 80r36 90r48
+46a9 Right{12|46A9[14|114]} 73m9 75r38 82r36 84r36
+47a9 Up{12|46A9[14|114]} 75m9 90r59
+X 11 gl.ads
+19K9*GL 9|2r6 8r52 10|4r6 4r20 14r26 25r52 26r13 27r13 31r30 31r49 11|59e7
+X 12 gl-algebra.ads
+23+9 Element_Type
+25V19 "+"{23+9} 13|20i19 15|20i19
+26V19 "-"{23+9} 13|21i19 15|21i19
+27V19 "-"{23+9} 13|22i19 15|22i19
+28V19 "*"{23+9} 13|23i19 15|23i19
+29V19 "/"{23+9} 15|24i19
+46A9*Vector3<15|28A9[40[14|114]]>(15|19F9[40[14|114]])<11|38E9> 10|14r43[14|114]
+. 45r30[14|114] 46r30[14|114] 47r30[14|114]
+78A9*Matrix4<13|33A9[72[14|114]]>(13|19F9[72[14|114]])<11|38E9><11|38E9>
+. 9|8r69[14|114] 10|25r69[14|114]
+121V13*Cross_Product{46A9[14|114]} 10|75s23[14|114]
+X 13 gl-matrices.ads
+33A9*Matrix(14|44F9)<11|38E9><11|38E9>
+X 14 gl-types.ads
+21K12*Types 9|2w9 8r55 10|4w9 4r23 14r29 25r55 26r16 27r16 31r33 31r52 14|186e13
+44F9*Single<23|64F9> 10|12r35 15r26 16r26 18r26 19r26 32r30 32r40 35r30 36r30
+. 51r36 52r37 66r59 68r60 87r55 88r37
+45F9*Double<23|65F9> 10|20r26 20r36 31r39 31r58
+114K12*Singles[12|31] 9|8r61 10|14r35 25r61 27r22 75r15
+X 15 gl-vectors.ads
+28A9*Vector(14|44F9)<11|38E9>
+31V14*"+"{28A9[12|40[14|114]]} 10|78s34[12|40[14|114]] 82s34[12|40[14|114]]
+33V14*"-"{28A9[12|40[14|114]]} 10|80s34[12|40[14|114]] 84s34[12|40[14|114]]
+36V14*"*"{28A9[12|40[14|114]]} 10|78s46[12|40[14|114]] 78s59[12|40[14|114]]
+. 80s46[12|40[14|114]] 80s59[12|40[14|114]] 82s42[12|40[14|114]] 82s55[12|40[14|114]]
+. 84s42[12|40[14|114]] 84s55[12|40[14|114]]
+X 16 glfw.ads
+19K9*Glfw 9|4r6 7r61 10|6r6 7r6 20r44 24r61 28r13 31r66 33r30 34r30 16|58e9
+21F12*Seconds{23|65F9}
+23I12*Size{23|35I9} 10|33r35 34r35
+40V13*Time{21F12} 10|20s49 31s71
+X 17 glfw-input.ads
+17K14*Input 10|6r11 7r11 28r18 17|36e15
+18n36*Pressed{18E9} 10|77r48 79r53 81r54 83r53
+X 18 glfw-input-keys.ads
+17K20*Keys 10|6w17 77r37 79r40 81r40 83r40 18|291e20
+77n17*Right{20E9} 10|81r45
+79n17*Down{20E9} 10|79r45 83r45
+80n17*Up{20E9} 10|77r42
+X 19 glfw-input-mouse.ads
+17K20*Mouse 10|7w17 42r30 43r30 57r39 58r39 19|43e21
+29F12*Coordinate{23|65F9} 10|42r36 43r36 57r45 58r45
+X 21 glfw-windows.ads
+25K14*Windows 9|4w11 7r66 10|24r66 21|146e17
+27R9*Window<3|43R9> 9|7r74 10|24r74 21|145e14
+59V13*Key_State{17|18E9} 10|77s26 79s29 81s29 83s29
+75U14*Get_Cursor_Pos 10|49s23
+77U14*Set_Cursor_Pos 10|57s23
+85U14*Get_Size 10|50s23
+X 23 i-c.ads
+35I9*int<integer>
+64F9*C_float<float>
+65F9*double<long_float>
+X 25 maths.ads
+8K9*Maths 10|9w6 17r26 29r13 41r30 87r9 90r9 25|58e10
+10F10*Degree<14|44F9> 10|17r32 41r36
+26K13*Single_Math_Functions[5|39] 10|29r19
+35U15*Init_Lookat_Transform 10|90s15
+40U15*Init_Perspective_Transform 10|87s15
+

@@ -1,0 +1,175 @@
+V "GNAT Lib v2018"
+A -O3
+A -gnatA
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -gnatn2
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+P ZX
+
+RN
+RV NO_DIRECT_BOOLEAN_OPERATORS
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_FLOATING_POINT
+RV NO_IO
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U main_loop%b		main_loop.adb		fa2c5015 NE OO SU
+W ada%s			ada.ads			ada.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W gl%s			gl.adb			gl.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+W gl.types.colors%s	gl-types-colors.ads	gl-types-colors.ali
+W glfw%s		glfw.adb		glfw.ali
+W glfw.input%s		glfw-input.adb		glfw-input.ali
+W glfw.input.keys%s	glfw-input-keys.ads	glfw-input-keys.ali
+W glfw.windows%s	glfw-windows.adb	glfw-windows.ali
+W glfw.windows.context%s  glfw-windows-context.adb  glfw-windows-context.ali
+W utilities%s		utilities.adb		utilities.ali
+
+U main_loop%s		main_loop.ads		bdd35137 EE NE OO SU
+W glfw%s		glfw.adb		glfw.ali
+W glfw.windows%s	glfw-windows.adb	glfw-windows.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-except.ads		20180524051735 291912d5 ada.exceptions%s
+D a-finali.ads		20180524051736 bf4f806b ada.finalization%s
+D a-ioexce.ads		20180524051734 e4a01f64 ada.io_exceptions%s
+D a-numeri.ads		20180524051735 bb51c45a ada.numerics%s
+D a-ngelfu.ads		20180524051736 55716239 ada.numerics.generic_elementary_functions%s
+D a-stream.ads		20180524051735 119b8fb3 ada.streams%s
+D a-tags.ads		20180524051736 491b781d ada.tags%s
+D a-textio.ads		20180524051736 881db35a ada.text_io%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-algebra.adb	20180310020627 3368ea6f gl.algebra%b
+D gl-attributes.ads	20180310020627 f55351c4 gl.attributes%s
+D gl-buffers.ads	20180310020627 32f14426 gl.buffers%s
+D gl-culling.ads	20180310020627 1388c76d gl.culling%s
+D gl-low_level.ads	20180323114352 3e559055 gl.low_level%s
+D gl-low_level-enums.ads  20180406035624 9cb41c01 gl.low_level.enums%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-matrices.adb	20180310020627 4e950949 gl.matrices%b
+D gl-objects.ads	20180310020627 0f493599 gl.objects%s
+D gl-objects-buffers.ads  20180620134915 897e5832 gl.objects.buffers%s
+D gl-objects-lists.ads	20180310020627 96b9f2bc gl.objects.lists%s
+D gl-objects-programs.ads  20180620135014 15d95c56 gl.objects.programs%s
+D gl-objects-shaders.ads  20180310020627 9f6d1d96 gl.objects.shaders%s
+D gl-objects-shaders-lists.ads  20180310020627 eb291c74 gl.objects.shaders.lists%s
+D gl-pixels.ads		20180310020627 0629bde8 gl.pixels%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-types-colors.ads	20180310020627 323d62ec gl.types.colors%s
+D gl-uniforms.ads	20180310020627 463cde62 gl.uniforms%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D gl-vectors.adb	20180310020627 c21ceddc gl.vectors%b
+D glfw.ads		20180620135029 ada68d8e glfw%s
+D glfw-input.ads	20171019015312 cc20d32a glfw.input%s
+D glfw-input-keys.ads	20171019015312 b0d52173 glfw.input.keys%s
+D glfw-input-mouse.ads	20171019015312 725dacf3 glfw.input.mouse%s
+D glfw-monitors.ads	20171019015312 8a5ba4bb glfw.monitors%s
+D glfw-windows.ads	20171019015312 12766f7a glfw.windows%s
+D glfw-windows-context.ads  20171019015312 34036718 glfw.windows.context%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cpoint.ads		20180524051736 ee8a93ec interfaces.c.pointers%s
+D i-cpoint.adb		20180524051736 d5172521 interfaces.c.pointers%b
+D i-cstrin.ads		20180524051735 341d0ddf interfaces.c.strings%s
+D i-cstrea.ads		20180524051734 e53d8b8e interfaces.c_streams%s
+D main_loop.ads		20170305020023 afa53e4d main_loop%s
+D main_loop.adb		20171124073637 31495153 main_loop%b
+D maths.ads		20180620134915 c84902d1 maths%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-crtl.ads		20180524051734 0ebbdb71 system.crtl%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-ficobl.ads		20180524051736 078245e4 system.file_control_block%s
+D s-finmas.ads		20180524051736 7811a767 system.finalization_masters%s
+D s-finroo.ads		20180524051736 4ff27390 system.finalization_root%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-pooglo.ads		20180524051734 ede33ef8 system.pool_global%s
+D s-secsta.ads		20180524051736 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20180524051735 a7318a92 system.soft_links%s
+D s-stache.ads		20180524051736 a37c21ec system.stack_checking%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+D s-stoele.ads		20180524051736 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20180524051735 b16154c2 system.storage_pools%s
+D s-stposu.ads		20180524051734 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20180524051734 aedef97e system.stream_attributes%s
+D s-traent.ads		20180524051734 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20180524051735 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20180524051736 1b7d22d2 system.wch_con%s
+D utilities.ads		20180620135014 96167bfc utilities%s
+X 1 ada.ads
+16K9*Ada 20e8 47|2r6 2r23
+X 9 a-textio.ads
+49K13*Text_IO 471e16 47|2w10 2r27
+263U14*Put_Line 47|23s10 42s7
+X 11 gl.ads
+6K9*GL 46e7 47|4r6 17r30
+X 12 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 19|7i19 31|7i19
+13V19 "-"{10+9} 19|8i19 31|8i19
+14V19 "-"{10+9} 19|9i19 31|9i19
+15V19 "*"{10+9} 19|10i19 31|10i19
+16V19 "/"{10+9} 31|11i19
+X 28 gl-types.ads
+8K12*Types 173e13 47|4r9 17r33
+31F9*Single<41|64F9>
+X 29 gl-types-colors.ads
+6K18*Colors 27e20 47|4w15 17r39
+12F12*Component{28|31F9}
+14A9*Color(12F12)<9E9> 47|17r46
+X 33 glfw.ads
+6K9*Glfw 43e9 46|2r6 4r43 47|6r6 7r6 8r6 14r43 29r8 34r7 35r7 37r35 37r61
+X 34 glfw-input.ads
+4K14*Input 23e15 47|6w11 7r11 29r13 35r12 37r40 37r66
+5n36*Pressed{5E9} 47|37r72
+9U14*Poll_Events 47|35s18
+X 35 glfw-input-keys.ads
+4K20*Keys 278e20 47|7w17 37r46
+58n17*Escape{7E9} 47|37r51
+X 38 glfw-windows.ads
+12K14*Windows 136e17 46|2w11 4r48 47|8r11 14r48 34r12
+14R9*Window<3|43R9> 132e14 46|4r56 47|14r56
+46V13*Key_State{34|5E9} 47|37s24
+84V13*Should_Close{boolean} 47|38s46
+X 39 glfw-windows-context.ads
+4K22*Context 58e25 47|8w19 34r20
+17U14*Swap_Buffers 47|34s28
+X 41 i-c.ads
+64F9*C_float<float>
+X 46 main_loop.ads
+4U11*Main_Loop 4=22 47|14b11 44l5 44t14
+4r22 Main_Window{38|14R9} 47|14b22 34m42 34r42 37r12 38r34
+X 47 main_loop.adb
+16U14 Render 16b14 25l8 25t14 33s7
+17a7 Back_Colour{29|14A9} 19r52
+30b4 Running{boolean} 32r10 36m7 36r18 38m7 38r18
+X 68 utilities.ads
+11K9*Utilities 47|10w6 19r7 68|64e14
+18U14*Clear_Background_Colour_And_Depth 47|19s17
+

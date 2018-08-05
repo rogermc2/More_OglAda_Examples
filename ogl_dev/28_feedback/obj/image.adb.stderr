@@ -1,0 +1,2 @@
+image.adb:13:29: expected an access type with designated type "Image" defined at image.ads:116
+image.adb:13:29: found type "Image" defined at image.ads:116

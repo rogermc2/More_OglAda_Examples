@@ -1,0 +1,109 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.7
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_DISPATCH
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U magick_blob.api%s	magick_blob-api.ads	3bd4d6c1 NE OO PK
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W blob_reference%s	blob_reference.ads	blob_reference.ali
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W magick_blob%s		magick_blob.adb		magick_blob.ali
+W system%s		system.ads		system.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-contai.ads		20180524051734 61e5e089 ada.containers%s
+D a-cdlili.ads		20180524051734 8e06b4f2 ada.containers.doubly_linked_lists%s
+D a-conhel.ads		20180524051735 20298884 ada.containers.helpers%s
+D a-except.ads		20180524051735 291912d5 ada.exceptions%s
+D a-finali.ads		20180524051736 bf4f806b ada.finalization%s
+D a-iteint.ads		20180524051735 7c7305e9 ada.iterator_interfaces%s
+D a-stream.ads		20180524051735 119b8fb3 ada.streams%s
+D a-tags.ads		20180524051736 491b781d ada.tags%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D blob_reference.ads	20180707115752 1f64382a blob_reference%s
+D core_blob.ads		20180622013255 43d5189d core_blob%s
+D core_image.ads	20180622013255 43294988 core_image%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cpoint.ads		20180524051736 ee8a93ec interfaces.c.pointers%s
+D i-cstrin.ads		20180524051735 341d0ddf interfaces.c.strings%s
+D magick_blob.ads	20180708113523 4ea08a9d magick_blob%s
+D magick_blob-api.ads	20180707115752 366a1a16 magick_blob.api%s
+D magick_type.ads	20180622013255 17b9d4b3 magick_type%s
+D method_attribute.ads	20180622013255 61fe756b method_attribute%s
+D semaphore.ads		20180622013255 ebf085b2 semaphore%s
+D stream.ads		20180622013255 670072c0 stream%s
+D sys_pthread_mutex.ads	20180622014517 e6d15d1c sys_pthread_mutex%s
+D sys_pthread_types.ads	20180622014537 35581402 sys_pthread_types%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-atocou.ads		20180524051736 b45c2d8d system.atomic_counters%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-finmas.ads		20180524051736 7811a767 system.finalization_masters%s
+D s-finroo.ads		20180524051736 4ff27390 system.finalization_root%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-secsta.ads		20180524051736 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20180524051735 a7318a92 system.soft_links%s
+D s-stache.ads		20180524051736 a37c21ec system.stack_checking%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+D s-stoele.ads		20180524051736 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20180524051735 b16154c2 system.storage_pools%s
+D s-stposu.ads		20180524051734 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20180524051734 aedef97e system.stream_attributes%s
+D s-traent.ads		20180524051734 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20180524051735 34867c83 system.unsigned_types%s
+D thread.ads		20180622014455 9a3b54a4 thread%s
+X 3 a-cdlili.ads
+51R9*List<6|43R9>
+X 7 a-iteint.ads
+24h9 Forward_Iterator
+32h9 Reversible_Iterator<24R9[3|69]>
+X 11 blob_reference.ads
+12K9*Blob_Reference 51e19 24|6w6 16r32
+14K12*Class_Blob_Ref 47e22 24|16r47
+16R12*Blob_Ref 22e17 24|16r62
+X 15 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 16|7i19 18|7i19
+13V19 "-"{10+9} 16|8i19 18|8i19
+14V19 "-"{10+9} 16|9i19 18|9i19
+15V19 "*"{10+9} 16|10i19 18|10i19
+16V19 "/"{10+9} 18|11i19
+X 19 interfac.ads
+38K9*Interfaces 184e15 24|4r6 30r66
+X 20 i-c.ads
+18K20*C 230e17 24|4w17 30r77
+60M9*size_t 24|30r79
+X 23 magick_blob.ads
+9K9*Magick_Blob 20e16 24|8r9 35r5
+X 24 magick_blob-api.ads
+8K21*API 23|9k9 24|35l17 35e20
+12K12*Class_Blob 33l8 33e18
+15R12*Blob 18e17 19r27 21r32 24p17 24r44 27r45 30r47
+16p14*Blob_Ref(11|16R12)
+21V16*New_Blob{15R12} 22r31
+24U17*Delete_Blob 24^30 25b<cpp,_ZN6Magick4BlobD1Ev>27
+24p30 this(15R12)
+27V16*Data{31|67M9} 27^22 28b<cpp,_ZNK6Magick4Blob4dataEv>27
+27p22 this(15R12)
+30V16*Length{20|60M9} 30^24 31b<cpp,_ZNK6Magick4Blob6lengthEv>27
+30p24 this(15R12)
+X 31 system.ads
+37K9*System 24|2w6 27r64 31|174e11
+67M9*Address 24|27r71
+

@@ -1,0 +1,27 @@
+[GENERATED OBJECT FILE]
+b__hello.o
+[PROJECT FILES]
+/Ada_Source/OpenGLAda/examples/durian/hello/hello_durian.gpr
+20170303034251
+/Ada_Source/OpenGLAda/opengl.gpr
+20170302224710
+/Ada_Source/OpenGLAda/opengl_shared.gpr
+20170302224710
+/Ada_Source/OpenGLAda/opengl-glfw.gpr
+20170302224710
+[BOUND OBJECT FILES]
+/Ada_Source/OpenGLAda/examples/durian/hello/obj/hello.o
+/Ada_Source/OpenGLAda/examples/durian/hello/obj/utilities.o
+/Ada_Source/OpenGLAda/examples/durian/hello/obj/main_loop.o
+/Ada_Source/OpenGLAda/examples/durian/hello/obj/initialize.o
+[GENERATED SOURCE FILES]
+b__hello.ads
+b__hello.adb
+b__hello.ali
+[RESULTING OPTIONS]
+-L/Ada_Source/OpenGLAda/examples/durian/hello/obj/
+-L/Ada_Source/OpenGLAda/examples/durian/hello/obj/
+-L/Ada_Source/OpenGLAda/lib/
+-L/opt/gcc-6.1.0/lib/gcc/x86_64-apple-darwin15/6.1.0/adalib/
+-static
+/opt/gcc-6.1.0/lib/gcc/x86_64-apple-darwin15/6.1.0/adalib/libgnat.a

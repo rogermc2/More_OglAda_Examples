@@ -1,0 +1,84 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -gnat05
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -mmacosx-version-min=10.13.5
+A -mtune=core2
+A -fPIC
+P ZX
+
+RN
+RV NO_FLOATING_POINT
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U ogldev_math_3d%s	ogldev_math_3d.ads	6744813f NE OO PK KM
+W gl%s			gl.adb			gl.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+
+D ada.ads		20170516105951 76789da1 ada%s
+D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D interfac.ads		20170516105950 5ab55268 interfaces%s
+D i-c.ads		20170516105948 5421119b interfaces.c%s
+D i-cpoint.ads		20170516105956 ee8a93ec interfaces.c.pointers%s
+D ogldev_math_3d.ads	20180423001954 da881e18 ogldev_math_3d%s
+D system.ads		20170516105953 085b6ffb system%s
+D s-exctab.ads		20170516105954 54135002 system.exception_table%s
+D s-parame.ads		20170516105955 7e2a0d7f system.parameters%s
+D s-stalib.ads		20170516105955 09bd3940 system.standard_library%s
+D s-unstyp.ads		20170516105953 34867c83 system.unsigned_types%s
+X 3 gl.ads
+6K9*GL 46e7 11|2r6 2r20
+X 4 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 5|7i19 7|7i19
+13V19 "-"{10+9} 5|8i19 7|8i19
+14V19 "-"{10+9} 5|9i19 7|9i19
+15V19 "*"{10+9} 5|10i19 7|10i19
+16V19 "/"{10+9} 7|11i19
+X 6 gl-types.ads
+8K12*Types 173e13 11|2w9 2r23
+28M9*UInt<9|43M9> 11|8r19 9r19
+31F9*Single<9|64F9> 11|7r19 10r19 11r19 15r16 16r16 17r16 18r16 19r16 20r16
+X 9 i-c.ads
+43M9*unsigned
+64F9*C_float<float>
+X 11 ogldev_math_3d.ads
+4K9*Ogldev_Math_3D 23l5 23e19
+6R9*Perspective_Projection_Info 12e14
+7f7*FOV{6|31F9}
+8m7*Width{6|28M9}
+9m7*Height{6|28M9}
+10f7*Z_Near{6|31F9}
+11f7*Z_Far{6|31F9}
+14R9*Orthographic_Projection_Info 21e14
+15f7*Right{6|31F9}
+16f7*Left{6|31F9}
+17f7*Bottom{6|31F9}
+18f7*Top{6|31F9}
+19f7*Z_Near{6|31F9}
+20f7*Z_Far{6|31F9}
+

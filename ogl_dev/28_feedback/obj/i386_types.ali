@@ -1,0 +1,48 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -gnat05
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -gnatc
+A -mmacosx-version-min=10.13.5
+A -mtune=core2
+A -fPIC
+P NO FX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_ELABORATION_CODE
+
+U i386_types%s		i386_types.ads		01f30301 EE OO PK
+W sys_types_int64_t%s	sys_types_int64_t.ads	sys_types_int64_t.ali
+
+D i386_types.ads	20180419025815 38a240b2 i386_types%s
+D sys_types_int64_t.ads	20180419025724 395143b3 sys_types_int64_t%s
+X 1 i386_types.ads
+5K9*i386_Types 20l5 20e15
+10I12*register_t{2|6I12}
+13I12*user_ssize_t{2|6I12}
+14I12*user_long_t{2|6I12}
+16I12*user_time_t{2|6I12}
+17I12*user_off_t{2|6I12}
+X 2 sys_types_int64_t.ads
+4K9*Sys_Types_Int64_T 1|2w6 10r26 13r28 14r27 16r27 17r26 2|8e22
+6I12*Int64_T{long_long_integer} 1|10r44 13r46 14r45 16r45 17r44
+

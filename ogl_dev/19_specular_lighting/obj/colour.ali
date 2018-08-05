@@ -1,0 +1,112 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.7
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_FLOATING_POINT
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U colour%s		colour.ads		87ef8a9e NE OO PK
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+W magick_exception%s	magick_exception.adb	magick_exception.ali
+W magick_pixel%s	magick_pixel.adb	magick_pixel.ali
+Z system.unsigned_types%s  s-unstyp.ads		s-unstyp.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-charac.ads		20180524051735 2d3ec45b ada.characters%s
+D a-chlat1.ads		20180524051735 66457d31 ada.characters.latin_1%s
+D a-except.ads		20180524051735 291912d5 ada.exceptions%s
+D a-finali.ads		20180524051736 bf4f806b ada.finalization%s
+D a-stream.ads		20180524051735 119b8fb3 ada.streams%s
+D a-string.ads		20180524051735 90ac6797 ada.strings%s
+D a-strmap.ads		20180524051735 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20180524051736 8098c91f ada.strings.unbounded%s
+D a-tags.ads		20180524051736 491b781d ada.tags%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D colour.ads		20180622013255 e03c44b2 colour%s
+D colour_space.ads	20180622013255 db19c26b colour_space%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cpoint.ads		20180524051736 ee8a93ec interfaces.c.pointers%s
+D i-cstrin.ads		20180524051735 341d0ddf interfaces.c.strings%s
+D magick_exception.ads	20180622013255 92413496 magick_exception%s
+D magick_pixel.ads	20180622013255 95aee6fe magick_pixel%s
+D magick_type.ads	20180622013255 17b9d4b3 magick_type%s
+D method_attribute.ads	20180622013255 61fe756b method_attribute%s
+D semaphore.ads		20180622013255 ebf085b2 semaphore%s
+D sys_pthread_mutex.ads	20180622014517 e6d15d1c sys_pthread_mutex%s
+D sys_pthread_types.ads	20180622014537 35581402 sys_pthread_types%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-atocou.ads		20180524051736 b45c2d8d system.atomic_counters%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-finmas.ads		20180524051736 7811a767 system.finalization_masters%s
+D s-finroo.ads		20180524051736 4ff27390 system.finalization_root%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-secsta.ads		20180524051736 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20180524051735 a7318a92 system.soft_links%s
+D s-stache.ads		20180524051736 a37c21ec system.stack_checking%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+D s-stoele.ads		20180524051736 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20180524051735 b16154c2 system.storage_pools%s
+D s-stposu.ads		20180524051734 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20180524051734 aedef97e system.stream_attributes%s
+D s-traent.ads		20180524051734 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20180524051735 34867c83 system.unsigned_types%s
+D thread.ads		20180622014455 9a3b54a4 thread%s
+X 12 colour.ads
+8K9*Colour 10E9 39l5 39e11
+10E9*Compliance_Type 12e60 21r35 22r34 27r47 33r7
+10n29*Undefined_Compliance{10E9} 22r58 33r28
+10n51*CSS_Compliance{10E9} 21r59 34r28
+11n29*X11_Compliance{10E9} 35r28
+11n45*XPM_Compliance{10E9} 36r28
+12n29*MVG_Compliance{10E9} 37r28
+12n45*All_Compliance{10E9} 38r28
+14R9*Error_Info 18e14 19r39
+15f7*Mean_Error_Per_Pixel{20|65F9}
+16f7*Normalized_Mean_Error{20|65F9}
+17f7*Normalized_Maximum_Error{20|65F9}
+21V13*SVG_Compliance=21:59{10E9}
+22V13*No_Compliance=22:58{10E9}
+26U14*Query_Color_Compliance 26>38 27>38 28^38 29^38 30b<c,QueryColorCompliance>22
+26p38 Colour_Name{22|47P9}
+27e38 Comply{10E9}
+28p38 Info(24|102R9)
+29p38 Except(23|86R9)
+X 15 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 16|7i19 18|7i19
+13V19 "-"{10+9} 16|8i19 18|8i19
+14V19 "-"{10+9} 16|9i19 18|9i19
+15V19 "*"{10+9} 16|10i19 18|10i19
+16V19 "/"{10+9} 18|11i19
+X 19 interfac.ads
+38K9*Interfaces 12|2r6 2r24 3r6 3r32 19|184e15
+X 20 i-c.ads
+18K20*C 12|2w17 2r35 3r17 3r43 20|230e17
+65F9*double<long_float> 12|15r34 16r34 17r34
+X 22 i-cstrin.ads
+36K22*Strings 12|3w19 3r45 22|106e25
+47P9*chars_ptr 12|26r52
+X 23 magick_exception.ads
+15K9*Magick_Exception 12|5w6 29r54 23|192e21
+86R9*Exception_Info 12|29r71 23|122e14
+X 24 magick_pixel.ads
+10K9*Magick_Pixel 12|6w6 28r52 24|176e17
+102R9*Pixel_Info 12|28r65 24|116e14
+

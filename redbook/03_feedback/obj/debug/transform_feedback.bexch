@@ -1,0 +1,31 @@
+[GENERATED OBJECT FILE]
+b__transform_feedback.o
+[PROJECT FILES]
+/Ada_Source/OpenGLAda/examples/redbook/03_feedback/feedback.gpr
+20180410124708
+/Ada_Source/OpenGLAda/FreeTypeAda/freetype.gpr
+20180323114351
+/Ada_Source/OpenGLAda/opengl-text.gpr
+20180316002936
+/Ada_Source/OpenGLAda/opengl.gpr
+20171124072602
+/Ada_Source/OpenGLAda/opengl-glfw.gpr
+20180323114352
+/Ada_Source/OpenGLAda/examples/common/common.gpr
+20180323114234
+[BOUND OBJECT FILES]
+/Ada_Source/OpenGLAda/examples/redbook/03_feedback/obj/debug/main_loop.o
+/Ada_Source/OpenGLAda/examples/redbook/03_feedback/obj/debug/transform_feedback.o
+[GENERATED SOURCE FILES]
+b__transform_feedback.ads
+b__transform_feedback.adb
+b__transform_feedback.ali
+[RESULTING OPTIONS]
+-L/Ada_Source/OpenGLAda/examples/redbook/03_feedback/obj/debug/
+-L/Ada_Source/OpenGLAda/examples/redbook/03_feedback/obj/debug/
+-L/Ada_Source/OpenGLAda/examples/common/lib/debug/
+-L/Ada_Source/OpenGLAda/lib/debug/
+-L/Ada_Source/OpenGLAda/FreeTypeAda/lib/debug/
+-L/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/6.3.1/adalib/
+-static
+/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/6.3.1/adalib/libgnat.a
