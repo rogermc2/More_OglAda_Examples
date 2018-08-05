@@ -80,9 +80,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     procedure Setup_Graphic is
         use Ada.Strings.Unbounded;
-        use GL.Objects.Buffers;
         use GL.Objects.Shaders;
-        use GL.Objects.Textures;
         use Program_Loader;
         Images  : constant My_Buffers.tImage_Sources (1 .. 2) :=
                     (To_Unbounded_String ("src/hello1.tga"),
