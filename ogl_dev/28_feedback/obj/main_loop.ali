@@ -1,0 +1,401 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -g
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -mmacosx-version-min=10.13.6
+A -mtune=core2
+A -fPIC
+A -feliminate-unused-debug-symbols
+P SS ZX
+
+RN
+RV NO_DELAY
+RV NO_DIRECT_BOOLEAN_OPERATORS
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_FIXED_POINT
+RV NO_FLOATING_POINT
+RV NO_IO
+RV NO_NESTED_FINALIZATION
+RV NO_RELATIVE_DELAY
+RV NO_SECONDARY_STACK
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U main_loop%b		main_loop.adb		7987c6b1 NE OO SU
+W ada%s			ada.ads			ada.ali
+W ada.calendar.delays%s	a-caldel.adb		a-caldel.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W gl%s			gl.adb			gl.ali
+W gl.low_level%s	gl-low_level.ads	gl-low_level.ali
+W gl.low_level.enums%s	gl-low_level-enums.ads	gl-low_level-enums.ali
+W gl.objects%s		gl-objects.adb		gl-objects.ali
+W gl.objects.programs%s	gl-objects-programs.adb	gl-objects-programs.ali
+W gl.objects.shaders%s	gl-objects-shaders.adb	gl-objects-shaders.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+W gl.types.colors%s	gl-types-colors.ads	gl-types-colors.ali
+W gl.window%s		gl-window.adb		gl-window.ali
+W glfw%s		glfw.adb		glfw.ali
+W glfw.input%s		glfw-input.adb		glfw-input.ali
+W glfw.input.keys%s	glfw-input-keys.ads	glfw-input-keys.ali
+W glfw.windows%s	glfw-windows.adb	glfw-windows.ali
+W glfw.windows.context%s  glfw-windows-context.adb  glfw-windows-context.ali
+W ogldev_basic_lighting%s  ogldev_basic_lighting.adb  ogldev_basic_lighting.ali
+W ogldev_camera%s	ogldev_camera.adb	ogldev_camera.ali
+W ogldev_engine_common%s  ogldev_engine_common.ads  ogldev_engine_common.ali
+W ogldev_lights_common%s  ogldev_lights_common.adb  ogldev_lights_common.ali
+W ogldev_math%s		ogldev_math.adb		ogldev_math.ali
+W ogldev_pipeline%s	ogldev_pipeline.adb	ogldev_pipeline.ali
+W ogldev_texture%s	ogldev_texture.adb	ogldev_texture.ali
+W particle_system%s	particle_system.adb	particle_system.ali
+W program_loader%s	program_loader.adb	program_loader.ali
+W ps_update_technique%s	ps_update_technique.adb	ps_update_technique.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.standard_library%s  s-stalib.adb	s-stalib.ali
+W utilities%s		utilities.adb		utilities.ali
+
+U main_loop%s		main_loop.ads		bdd35137 EE NE OO SU
+W glfw%s		glfw.adb		glfw.ali
+W glfw.windows%s	glfw-windows.adb	glfw-windows.ali
+
+D ada.ads		20170516105951 76789da1 ada%s
+D a-calend.ads		20170516105954 2d5f01d4 ada.calendar%s
+D a-caldel.ads		20170516105949 9f20b83d ada.calendar.delays%s
+D a-charac.ads		20170516105954 2d3ec45b ada.characters%s
+D a-chlat1.ads		20170516105952 66457d31 ada.characters.latin_1%s
+D a-contai.ads		20170516105950 61e5e089 ada.containers%s
+D a-cdlili.ads		20170516105949 8e06b4f2 ada.containers.doubly_linked_lists%s
+D a-conhel.ads		20170516105951 20298884 ada.containers.helpers%s
+D a-ciorma.ads		20170516105951 e1f95638 ada.containers.indefinite_ordered_maps%s
+D a-crbltr.ads		20170516105954 c3e90a86 ada.containers.red_black_trees%s
+D a-except.ads		20170516105953 291912d5 ada.exceptions%s
+D a-finali.ads		20170516105954 bf4f806b ada.finalization%s
+D a-ioexce.ads		20170516105949 e4a01f64 ada.io_exceptions%s
+D a-iteint.ads		20170516105952 7c7305e9 ada.iterator_interfaces%s
+D a-numeri.ads		20170516105951 bb51c45a ada.numerics%s
+D a-ngelfu.ads		20170516105954 7e738940 ada.numerics.generic_elementary_functions%s
+D a-stream.ads		20170516105952 119b8fb3 ada.streams%s
+D a-string.ads		20170516105953 90ac6797 ada.strings%s
+D a-strmap.ads		20170516105953 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20170516105950 ecdfa332 ada.strings.unbounded%s
+D a-tags.ads		20170516105955 d3a89129 ada.tags%s
+D a-textio.ads		20170516105955 386df5d4 ada.text_io%s
+D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
+D ant_tweak_bar.ads	20180421111651 64a3913c ant_tweak_bar%s
+D api_vectors.ads	20180503034333 3394de11 api_vectors%s
+D assimp_types.ads	20180503032757 2f8f7f2c assimp_types%s
+D billboard_technique.ads  20180426053806 a7a700e5 billboard_technique%s
+D cache.ads		20180520132626 c6c194b9 cache%s
+D colour.ads		20180520075101 e03c44b2 colour%s
+D colour_space.ads	20180411235030 db19c26b colour_space%s
+D composite.ads		20180411235229 e68156d9 composite%s
+D compress.ads		20180412021056 094fb960 compress%s
+D core_blob.ads		20180606131822 43d5189d core_blob%s
+D core_blob-api.ads	20180606132952 4dfe6bb8 core_blob.api%s
+D core_image.ads	20180606133120 43294988 core_image%s
+D geometry.ads		20180530065950 91be8c0c geometry%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-attributes.ads	20180310020627 f55351c4 gl.attributes%s
+D gl-buffers.ads	20180310020627 32f14426 gl.buffers%s
+D gl-culling.ads	20180310020627 1388c76d gl.culling%s
+D gl-low_level.ads	20180323114352 3e559055 gl.low_level%s
+D gl-low_level-enums.ads  20180406035624 9cb41c01 gl.low_level.enums%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-objects.ads	20180310020627 0f493599 gl.objects%s
+D gl-objects-buffers.ads  20180422124241 8c505590 gl.objects.buffers%s
+D gl-objects-lists.ads	20180310020627 96b9f2bc gl.objects.lists%s
+D gl-objects-programs.ads  20180410032239 aeb73b3a gl.objects.programs%s
+D gl-objects-shaders.ads  20180310020627 9f6d1d96 gl.objects.shaders%s
+D gl-objects-shaders-lists.ads  20180310020627 eb291c74 gl.objects.shaders.lists%s
+D gl-objects-textures.ads  20180310020627 f6430b76 gl.objects.textures%s
+D gl-pixels.ads		20180310020627 0629bde8 gl.pixels%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-types-colors.ads	20180310020627 323d62ec gl.types.colors%s
+D gl-uniforms.ads	20180310020627 463cde62 gl.uniforms%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D gl-window.ads		20180310020627 2ca3a990 gl.window%s
+D glfw.ads		20180619160346 5cecf13b glfw%s
+D glfw-input.ads	20171019015312 cc20d32a glfw.input%s
+D glfw-input-keys.ads	20171019015312 b0d52173 glfw.input.keys%s
+D glfw-input-mouse.ads	20171019015312 725dacf3 glfw.input.mouse%s
+D glfw-monitors.ads	20171019015312 8a5ba4bb glfw.monitors%s
+D glfw-windows.ads	20171019015312 12766f7a glfw.windows%s
+D glfw-windows-context.ads  20171019015312 34036718 glfw.windows.context%s
+D interfac.ads		20170516105950 5ab55268 interfaces%s
+D i-c.ads		20170516105948 5421119b interfaces.c%s
+D i-cpoint.ads		20170516105956 ee8a93ec interfaces.c.pointers%s
+D i-cstrin.ads		20170516105953 341d0ddf interfaces.c.strings%s
+D i-cstrea.ads		20170516105950 e53d8b8e interfaces.c_streams%s
+D layer.ads		20180412001733 e62db32d layer%s
+D magick_blob.ads	20180607013427 5d7b51fb magick_blob%s
+D magick_exception.ads	20180608122250 92413496 magick_exception%s
+D magick_pixel.ads	20180520124229 95aee6fe magick_pixel%s
+D magick_profile.ads	20180516073405 94788b2b magick_profile%s
+D magick_type.ads	20180530061809 17b9d4b3 magick_type%s
+D main_loop.ads		20180410124741 afa53e4d main_loop%s
+D main_loop.adb		20180519045224 a2c2f08b main_loop%b
+D maths.ads		20180420054944 f7347e00 maths%s
+D matrix_4x4.ads	20180428083445 3ef0766f matrix_4x4%s
+D method.ads		20180417131936 439df4d2 method%s
+D method_attribute.ads	20180511001822 61fe756b method_attribute%s
+D monitor.ads		20180509042510 842a7008 monitor%s
+D ogldev_basic_lighting.ads  20180426055755 5a51e4bf ogldev_basic_lighting%s
+D ogldev_camera.ads	20180421053315 e95b886d ogldev_camera%s
+D ogldev_engine_common.ads  20180420005354 7f23b26e ogldev_engine_common%s
+D ogldev_lights_common.ads  20180423002837 8657a417 ogldev_lights_common%s
+D ogldev_math.ads	20180522065704 ef4fa992 ogldev_math%s
+D ogldev_pipeline.ads	20180428123956 00e2b10f ogldev_pipeline%s
+D ogldev_texture.ads	20180607012701 ed5fd8db ogldev_texture%s
+D particle_system.ads	20180426061211 1a577689 particle_system%s
+D program_loader.ads	20180412232418 9455f6fb program_loader%s
+D ps_update_technique.ads  20180426060941 cf88302c ps_update_technique%s
+D quantum.ads		20180520132122 21a6f8ac quantum%s
+D resample.ads		20180412002447 3b4f34f4 resample%s
+D semaphore.ads		20180527030742 ebf085b2 semaphore%s
+D std_io.ads		20180506005519 7ac00d71 std_io%s
+D stream.ads		20180523040256 670072c0 stream%s
+D sys_pthread_mutex.ads	20180517003027 8db4d9b5 sys_pthread_mutex%s
+D sys_pthread_types.ads	20180518065512 b0e4b5ca sys_pthread_types%s
+D system.ads		20170516105953 085b6ffb system%s
+D s-atocou.ads		20170516105956 b45c2d8d system.atomic_counters%s
+D s-crtl.ads		20170516105948 0ebbdb71 system.crtl%s
+D s-exctab.ads		20170516105954 54135002 system.exception_table%s
+D s-ficobl.ads		20170516105956 078245e4 system.file_control_block%s
+D s-finmas.ads		20170516105954 7811a767 system.finalization_masters%s
+D s-finroo.ads		20170516105954 4ff27390 system.finalization_root%s
+D s-memory.ads		20170516105953 597d6634 system.memory%s
+D s-parame.ads		20170516105955 7e2a0d7f system.parameters%s
+D s-pooglo.ads		20170516105948 ede33ef8 system.pool_global%s
+D s-secsta.ads		20170516105955 9751b57e system.secondary_stack%s
+D s-soflin.ads		20170516105951 14e1eb6c system.soft_links%s
+D s-stache.ads		20170516105955 a37c21ec system.stack_checking%s
+D s-stalib.ads		20170516105955 09bd3940 system.standard_library%s
+D s-stalib.adb		20170516105948 f2fe2716 system.standard_library%b
+D s-stoele.ads		20170516105956 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20170516105954 ed88f8fb system.storage_elements%b
+D s-stopoo.ads		20170516105951 b16154c2 system.storage_pools%s
+D s-stposu.ads		20170516105949 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20170516105949 aedef97e system.stream_attributes%s
+D s-traent.ads		20170516105950 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20170516105953 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20170516105954 1b7d22d2 system.wch_con%s
+D thread.ads		20180527030712 439daa55 thread%s
+D timer.ads		20180520123118 40711ea6 timer%s
+D utilities.ads		20180410122908 ed285722 utilities%s
+X 1 ada.ads
+16K9*Ada 20e8 77|2r6 2r23
+X 7 a-cdlili.ads
+51R9*List<12|43R9>
+X 9 a-ciorma.ads
+54R9*Map<12|43R9>
+X 14 a-iteint.ads
+24h9 Forward_Iterator
+32h9 Reversible_Iterator<24R9[7|69]>
+X 22 a-textio.ads
+49K13*Text_IO 471e16 77|2w10 2r27
+263U14*Put_Line 77|71s10 72s10 74s10 80s10 108s10 129s10 176s10 199s7
+X 37 gl.ads
+6K9*GL 46e7 77|4r6 5r6 6r6 7r6 8r6 9r6 32r8 34r43 36r34 37r34 53r11 62r13
+. 69r20 70r14 72r20 87r11 94r38 113r51 118r51 136r11 145r7 145r37 146r31
+X 38 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 44|7i19 56|7i19
+13V19 "-"{10+9} 44|8i19 56|8i19
+14V19 "-"{10+9} 44|9i19 56|9i19
+15V19 "*"{10+9} 44|10i19 56|10i19
+16V19 "/"{10+9} 56|11i19
+33A9*Vector3<56|15A9[27[53|101]]>(56|6F9[27[53|101]])<37|25E9> 77|91r46[53|101]
+. 92r46[53|101] 93r46[53|101] 94r55[53|101]
+65A9*Matrix4<44|20A9[59[53|101]]>(44|6F9[59[53|101]])<37|25E9><37|25E9>
+X 42 gl-low_level.ads
+6K12*Low_Level 61e17 77|4r9 113r54 118r54
+X 43 gl-low_level-enums.ads
+4K22*Enums 112e23 77|4w19 113r64 118r64
+10n38*Texture_2D{10E9} 77|113r70 118r70
+X 44 gl-matrices.ads
+20A9*Matrix(53|31F9)<37|25E9><37|25E9>
+X 45 gl-objects.ads
+10K12*Objects 85e15 77|5w9 6r9 7r9 36r37 37r37 53r14 62r16 69r23 70r17 72r23
+. 87r14
+X 48 gl-objects-programs.ads
+11K20*Programs 152e24 77|6w17 36r45 37r45 62r24 69r31 70r25 72r31 87r22
+21R9*Program<45|17R9> 130e50 77|36r54 37r54
+33V13*Link_Status{boolean} 77|62s33 69s40 70s34
+39V13*Info_Log{string} 77|72s40
+X 49 gl-objects-shaders.ads
+6K20*Shaders 43e23 77|7w17 53r22
+9n25*Fragment_Shader{9E9} 77|60r94 66r94
+9n42*Vertex_Shader{9E9} 77|59r95 65r95
+9n57*Geometry_Shader{9E9} 77|61r94 67r94
+X 53 gl-types.ads
+8K12*Types 173e13 77|8r9 32r11 34r46 94r41 136r14 145r40 146r34
+19I9*Int<66|35I9> 77|101r37 101r57 145r46 146r40 170r51
+28M9*UInt<66|43M9> 77|142r30 149r25
+31F9*Single<66|64F9> 77|48r34 98r35 141r30 148r37
+101K12*Singles[38|18] 77|91r38 92r38 93r38 94r47 136r20
+X 54 gl-types-colors.ads
+6K18*Colors 27e20 77|8w15 34r52
+12F12*Component{53|31F9}
+14A9*Color(12F12)<9E9> 77|34r59
+X 56 gl-vectors.ads
+15A9*Vector(53|31F9)<37|25E9>
+X 57 gl-window.ads
+6K12*Window 15e14 77|9w9 145r10
+9U14*Set_Viewport 77|145s17
+X 58 glfw.ads
+6K9*Glfw 45e9 76|2r6 4r43 77|11w6 12r6 13r6 14r6 31r44 86r36 89r29 90r29
+. 98r43 135r44 138r30 139r30 148r45 182r8 189r7 190r7 193r33 193r59
+8F12*Seconds{66|65F9}
+10I12*Size{66|35I9} 77|89r34 90r34 138r35 139r35
+27V13*Time{8F12} 77|98s48 148s50
+X 59 glfw-input.ads
+4K14*Input 23e15 77|12w11 13r11 182r13 190r12 193r38 193r64
+5n36*Pressed{5E9} 77|193r70
+9U14*Poll_Events 77|190s18
+X 60 glfw-input-keys.ads
+4K20*Keys 278e20 77|13w17 193r44
+58n17*Escape{7E9} 77|193r49
+X 63 glfw-windows.ads
+12K14*Windows 136e17 76|2w11 4r48 77|14r11 31r49 86r41 135r49 189r12
+14R9*Window<12|43R9> 132e14 76|4r56 77|31r57 86r49 135r57
+46V13*Key_State{59|5E9} 77|193s22
+77U14*Get_Framebuffer_Size 77|99s17 144s14
+84V13*Should_Close{boolean} 77|194s46
+X 64 glfw-windows-context.ads
+4K22*Context 58e25 77|14w19 189r20
+17U14*Swap_Buffers 77|189s28
+X 66 i-c.ads
+35I9*int<integer>
+43M9*unsigned
+64F9*C_float<float>
+65F9*double<long_float>
+X 76 main_loop.ads
+4U11*Main_Loop 4=22 77|31b11 201l5 201t14
+4r22 Main_Window{63|14R9} 77|31b22 185m10 188m21 189m42 189r42 193r10 194r34
+X 77 main_loop.adb
+34a4 Background{54|14A9} 154r52
+36r4 Buildboard_Program{48|21R9} 58m7 62r46
+37r4 Update_Program{48|21R9} 64m7 69r53 70r47 72r50 123r54
+39r4 theLighting_Technique{83|11R9} 103m38 103r38 104r55 106r13 164r38 167r47
+40r4 Game_Camera{84|8R9} 100m37 100r37 152m29 152r29 160r55 161r47 161r69
+. 172r45
+41r4 Dir_Light{86|8R9} 104r78
+43r4 theTexture{89|16R9} 113m39 113r39 115m31 115r31 116r31 156r28
+44r4 Normal_Map{89|16R9} 118m39 118r39 120m31 120r31
+45r4 Perspective_Proj_Info{87|20R9} 162r51
+46r4 theUpdate_Technique{92|8R9} 123m33 123r33
+47r4 theParticle_System{90|14R9} 123m13 123r13 170m31 170r31
+48f4 Current_Time_MilliSec{53|31F9} 98m10 149r51 150m7
+52V13 Build_Shader_Programs{boolean} 52b13 82l8 82t29 96s17
+55b7 OK{boolean} 62m7 69m7 69r13 76r14
+86U14 Init 86b14 86=20 86<57 131l8 131t12 185s4
+86r20 Window{63|14R9} 99r10
+86b57 Result{boolean} 96m7 97r10
+89i7 Window_Width{58|10I12} 99m39 101r42
+90i7 Window_Height{58|10I12} 99m53 101r62
+91a7 Position{38|33A9[53|101]} 102r37
+92a7 Target{38|33A9[53|101]} 102r47
+93a7 Up{38|33A9[53|101]} 102r55
+94a7 Particle_System_Pos{38|33A9[53|101]} 124r13
+135U14 Render_Scene 135b14 135=28 178l8 178t20 188s7
+135r28 Window{63|14R9} 144r7
+138i7 Window_Width{58|10I12} 144m36 145r51
+139i7 Window_Height{58|10I12} 144m50 146r45
+140r7 Pipe{88|10R9} 158m34 158r34 159m37 159r37 160m35 160r35 162m45 162r45
+. 165r73 168r69 171r65
+141f7 Time_Now_Millisec{53|31F9} 148m7 149r31 150r32
+142m7 Delta_Millisec{53|28M9} 149m7 170r56
+183b4 Running{boolean} 185m23 186r10 192m7 192r18 194m7 194r18
+X 83 ogldev_basic_lighting.ads
+9K9*Ogldev_Basic_Lighting 77|19w6 39r34 103r10 104r10 105r10 164r7 167r7
+. 83|117e26
+11R9*Basic_Lighting_Technique 77|39r56 83|115e14
+26U14*Init 77|103s32
+46U14*Set_Color_Texture_Unit 77|105s32
+48U14*Set_Directional_Light 77|104s32
+62U14*Set_World_Matrix 77|167s29
+64U14*Set_WVP 77|164s29
+X 84 ogldev_camera.ads
+6K9*Ogldev_Camera 77|21w6 40r34 100r10 137r11 152r7 84|37e18
+8R9*Camera 77|40r48 84|35e14
+10V13*Get_Position{38|33A9[53|101]} 77|160s41 172s31
+11V13*Get_Target{38|33A9[53|101]} 77|161s35
+12V13*Get_Up{38|33A9[53|101]} 77|161s61
+16U14*Init_Camera 77|100s24
+19U14*Update 77|152s21
+X 85 ogldev_engine_common.ads
+2K9*Ogldev_Engine_Common 77|22w6 106r36 116r43 156r40 85|25e25
+4n29*Colour_Texture_Unit_Index{4E6} 77|106r57 116r64 156r61
+X 86 ogldev_lights_common.ads
+6K9*Ogldev_Lights_Common 77|23w6 41r34 86|74e25
+8R9*Directional_Light 77|41r55 86|52e14
+X 87 ogldev_math.ads
+9K9*Ogldev_Math 77|24w6 45r34 87|46e16
+20R9*Perspective_Projection_Info 77|45r46 87|26e14
+X 88 ogldev_pipeline.ads
+7K9*Ogldev_Pipeline 77|25w6 140r30 158r7 159r7 160r7 162r7 165r38 168r32
+. 171r31 88|62e20
+10R9*Pipeline 77|140r46 88|60e14
+12V13*Get_World_Transform{38|65A9[53|101]} 77|168s48
+13V13*Get_VP_Transform{38|65A9[53|101]} 77|171s47
+14V13*Get_WVP_Transform{38|65A9[53|101]} 77|165s54
+17U14*Set_Camera 77|160s23
+21U14*Set_Perspective_Proj 77|162s23
+25U14*Set_Scale 77|158s23
+29U14*Set_Rotation 77|159s23
+X 89 ogldev_texture.ads
+14K9*Ogldev_Texture 77|26w6 43r34 44r34 113r10 115r10 116r10 118r10 120r10
+. 156r7 89|40e19
+16R9*Ogl_Texture 77|43r49 44r49 89|23e14
+31U14*Bind 77|116s25 156s22
+33U14*Init_Texture 77|113s25 118s25
+36U14*Load 77|115s25 120s25
+X 90 particle_system.ads
+12K9*Particle_System 77|28w6 47r34 122r10 170r7 90|42e20
+14R9*Particle_System 77|47r50 90|40e14
+16U14*Init_Particle_System 77|122s26
+21U14*Render 77|170s23
+X 91 program_loader.ads
+6K9*Program_Loader 77|16w6 54r11 91|26e19
+13V14*Src{7R10} 77|59s11 60s10 61s10 65s11 66s10 67s10
+19V14*Program_From{48|21R9} 77|58s29 64s25
+X 92 ps_update_technique.ads
+6K9*PS_Update_Technique 77|29w6 46r34 92|36e24
+8R9*Update_Technique 77|46r54 92|34e14
+X 100 system.ads
+67M9*Address
+X 107 s-memory.ads
+53V13*Alloc{100|67M9} 103i<c,__gnat_malloc>22
+68U14*Free 104i<c,__gnat_free>22
+76V13*Realloc{100|67M9} 105i<c,__gnat_realloc>22
+X 114 s-stalib.adb
+93U14 Break_Start 94i<c,__gnat_break_start>22
+X 125 utilities.ads
+11K9*Utilities 77|17w6 154r7 125|64e14
+18U14*Clear_Background_Colour_And_Depth 77|154s17
+

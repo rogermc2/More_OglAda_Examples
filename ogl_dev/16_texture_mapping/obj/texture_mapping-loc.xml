@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project >
+    <file_marker column=" 26" line=" 137" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/ogl_dev/16_texture_mapping/texture_mapping.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_dev/16_texture_mapping/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 242" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/ogl_dev/16_texture_mapping/texture_mapping.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_dev/common/ogldev_camera.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/common/common.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/maths.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 31" line=" 290" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/common/common.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/maths.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 45" line=" 287" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/common/common.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/maths.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 289" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/common/common.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/maths.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 45" line=" 287" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/common/common.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/maths.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 7" line=" 289" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/common/common.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/maths.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 137" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/ogl_dev/16_texture_mapping/texture_mapping.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_dev/16_texture_mapping/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 10" line=" 7" >
+      <vfs_project>/Ada_Source/OpenGLAda/examples/ogl_dev/16_texture_mapping/texture_mapping.gpr</vfs_project>
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_dev/magick/image_io.h</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

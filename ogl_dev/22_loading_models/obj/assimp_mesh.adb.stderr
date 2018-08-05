@@ -1,0 +1,7 @@
+assimp_mesh.adb:6:13: missing body for "Init_From_Scene"
+assimp_mesh.adb:6:68: "AI_Scene" is undefined (more references follow)
+assimp_mesh.adb:8:15: missing body for "Init_Mesh"
+assimp_mesh.adb:8:26: default initialization only allowed for "in" parameters
+assimp_mesh.adb:8:50: ":" should be ":="
+assimp_mesh.adb:8:52: "Mesh_Index" is undefined
+assimp_mesh.adb:9:13: missing body for "Init_Materials"

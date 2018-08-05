@@ -1,0 +1,25 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.7
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U layer%s		layer.ads		e62db32d NE OO PK
+
+D layer.ads		20180622013255 e62db32d layer%s
+D system.ads		20180524051735 085b6ffb system%s
+X 1 layer.ads
+2K9*Layer 4E9 20l5 20e10
+4E9*Dispose_Type 7e43 8r26 10r38 14r8
+4n26*Unrecognized_Dispose{4E9} 10r59 14r26
+5n26*None_Dispose{4E9} 15r26
+6n26*Background_Dispose{4E9} 16r26
+7n26*Previous_Dispose{4E9} 17r26
+10V13*Undefined_Dispose=10:59{4E9}
+

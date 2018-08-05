@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file />
+    <file_marker column=" 1" line=" 120" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 40" line=" 66" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 13" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/gl/interface/gl-attributes.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 58" line=" 55" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 55" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 55" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 28" line=" 45" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 44" line=" 54" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 24" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/controls.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 72" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 67" line=" 40" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 41" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/load_object_file.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 183" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/load_object_file.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 31" line=" 7" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/load_object_file.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 128" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 67" line=" 40" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/program_loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/program_loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 67" line=" 40" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/load_object_file.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 33" line=" 13" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/load_object_file.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/load_object_file.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 3" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/06_keyboard_mouse/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 61" line=" 107" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/06_keyboard_mouse/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 3" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 45" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/utilities.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 28" line=" 45" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 30" line=" 87" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/07_model_loading/src/main_loop.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

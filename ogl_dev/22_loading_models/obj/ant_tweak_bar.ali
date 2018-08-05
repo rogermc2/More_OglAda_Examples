@@ -1,0 +1,75 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.7
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U ant_tweak_bar%s	ant_tweak_bar.ads	049f8d78 NE OO PK
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D ant_tweak_bar.ads	20180622013254 64a3913c ant_tweak_bar%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cstrin.ads		20180524051735 341d0ddf interfaces.c.strings%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+X 3 ant_tweak_bar.ads
+5K9*Ant_Tweak_Bar 19E9 51l5 51e18
+7R9*TW_Bar 33c9 36e14 37r39
+9E9*TW_Type 14e74 15r26 27r21 39r8
+9n21*Type_Undef{9E9} 39r21
+9n33*Type_Bool_CPP{9E9} 39r38
+9n48*Type_Bool_8{9E9} 40r21
+9n61*Type_Bool_16{9E9} 40r39
+10n21*Type_Bool_32{9E9} 41r21
+10n35*Type_Char{9E9} 41r40
+10n46*Type_Int_8{9E9} 42r21
+10n58*Type_UInt_8{9E9} 42r38
+11n21*Type_Int_16{9E9} 43r21
+11n34*Type_UInt_16{9E9} 43r39
+11n48*Type_Int_32{9E9} 44r21
+11n61*Type_UInt_32{9E9} 44r40
+12n21*Type_Float{9E9} 45r21
+12n33*Type_Double{9E9} 45r39
+12n46*Type_Colour_32{9E9} 46r21
+12n62*Type_Colour_3F{9E9} 46r43
+13n21*Type_Colour_4F{9E9} 47r21
+13n37*Type_CD_String{9E9} 47r43
+13n53*Type_STD_String{9E9} 48r21
+14n21*Type_Quat_4F{9E9} 49r21
+14n35*Type_Quat_4D{9E9} 49r41
+14n49*Type_Dir_3F{9E9} 50r21
+14n62*Type_Dir_3D{9E9} 50r40
+19R9 Tw_Enum_Val 22e14 23r39 34r23
+20i7*Value{5|35I9}
+21p7*Label{6|47P9}
+25R9 Tw_Struct_Member 30e14 31r39 35r23
+26p7*Name{6|47P9}
+27e7*Struct_Type{9E9}
+28m7*Offset{5|60M9}
+29p7*Def_String{6|47P9}
+34r7*Enum_Val{19R9}
+35r7*Struct_Member{25R9}
+X 4 interfac.ads
+38K9*Interfaces 3|2r6 2r24 3r6 4|184e15
+X 5 i-c.ads
+18K20*C 3|2w17 2r35 3r17 5|230e17
+35I9*int<integer> 3|20r15
+60M9*size_t 3|28r21
+X 6 i-cstrin.ads
+36K22*Strings 3|3w19 21r15 26r21 29r21 6|106e25
+47P9*chars_ptr 3|21r23 26r29 29r29
+

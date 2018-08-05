@@ -1,0 +1,806 @@
+<?xml version="1.0"?>
+<Locations>
+  <Project>
+    <vfs_file />
+    <file_marker column=" 14" line=" 638" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/soil_extract.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 302" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/soil_extract.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 250" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/soil_extract.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/run.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 264" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/run.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 78" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 77" line=" 113" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 2" line=" 144" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 99" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-convec.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 23" line=" 114" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 251" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 36" line=" 121" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 284" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 86" line=" 294" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 86" line=" 292" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 31" line=" 306" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 24" line=" 305" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 27" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-ioexce.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 298" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-textio.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 36" line=" 121" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 284" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 23" line=" 114" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 251" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 32" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 81" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 113" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 36" line=" 121" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 37" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 112" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 36" line=" 121" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 37" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 279" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 288" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 131" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 36" line=" 135" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 288" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 291" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 288" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 284" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 28" line=" 286" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 37" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 121" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 51" line=" 131" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 291" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 32" line=" 296" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 291" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 79" line=" 296" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 291" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 20" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-flteio.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 18" line=" 21" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-flteio.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 74" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-tiflio.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 291" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 20" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-flteio.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 86" line=" 292" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 292" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 294" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 61" line=" 292" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 27" line=" 289" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 291" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 58" line=" 284" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 79" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-strunb.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 36" line=" 121" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 37" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 283" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 288" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 131" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 79" line=" 292" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 49" line=" 285" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 284" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 37" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 5" line=" 27" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 200" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 84" line=" 278" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 24" line=" 270" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 35" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 5" line=" 27" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 127" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 200" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 56" line=" 201" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 84" line=" 276" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 127" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 55" line=" 135" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 203" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 203" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 200" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 203" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 203" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 202" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 135" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 5" line=" 27" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 200" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 226" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 56" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-tiinio.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 66" line=" 213" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 34" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 230" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 38" line=" 204" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 67" line=" 201" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 66" line=" 213" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 38" line=" 227" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 56" line=" 227" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 5" line=" 247" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 57" line=" 201" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 27" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 77" line=" 28" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 56" line=" 135" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 95" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 56" line=" 135" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 45" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 82" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 55" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 39" line=" 227" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 204" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 67" line=" 31" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 68" line=" 222" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 52" line=" 273" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 68" line=" 222" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 217" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 45" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 39" line=" 227" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 29" line=" 216" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 8" line=" 227" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 66" line=" 213" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 34" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 34" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 8" line=" 227" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 66" line=" 213" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 34" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 8" line=" 227" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 8" line=" 227" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 48" line=" 229" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 82" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 55" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 23" line=" 58" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 34" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 45" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 82" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 58" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 53" line=" 57" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 76" line=" 28" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 20" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 2" line=" 144" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 38" line=" 147" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 36" line=" 124" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 85" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 38" line=" 147" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 149" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 76" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/run.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 211" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/run.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 78" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 149" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 20" line=" 167" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 12" line=" 146" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 149" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 149" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 82" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 70" line=" 157" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 149" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 34" line=" 148" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 115" >
+      <vfs_project />
+      <vfs_file>/usr/local/gnat/lib/gcc/x86_64-apple-darwin14.5.0/4.9.4/rts-native/adainclude/a-convec.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 148" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 82" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 20" line=" 19" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 66" line=" 213" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 34" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 66" line=" 213" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 17" line=" 149" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 18" line=" 169" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 22" line=" 149" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 53" line=" 151" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 9" line=" 19" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 41" line=" 93" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 53" line=" 151" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 45" line=" 153" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 42" line=" 82" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/OGL_OpenGL_Tutorials/tutorial14_render_to_texture/src/loader.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/open_gl/very_simple/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/open_gl/very_simple/src/main_loop.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/open_gl/very_simple/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/open_gl/very_simple/src/vertex_data.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/redbook/03_draw_commands/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 1" line=" 227" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/utilities.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

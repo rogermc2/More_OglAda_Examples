@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file />
+    <file_marker column=" 78" line=" 125" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/square_test/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 17" line=" 8" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/square_test/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/square_test/square_test.gpr</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 39" line=" 327" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/rotating_squares/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 11" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/spinner.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 136" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/vertex_data.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 61" line=" 91" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 73" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 74" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 30" line=" 140" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 138" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 27" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/maths.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 35" line=" 58" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 35" line=" 59" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 74" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 74" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 40" line=" 71" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 40" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 52" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 54" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 46" line=" 141" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 42" line=" 71" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 40" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 12" line=" 21" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 74" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 27" line=" 62" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 71" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 30" line=" 42" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 32" line=" 62" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 49" line=" 42" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 12" line=" 64" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 28" line=" 63" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 15" line=" 65" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 28" line=" 63" >
+      <vfs_project />
+      <vfs_file>/OpenGL_Projects/superbible/spinning_cubes/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/tumbling_squares/src/vertex_data.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/tumbling_squares/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/tumbling_squares/src/main_loop.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/tumbling_squares/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 22" line=" 46" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/tumbling_squares/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 55" line=" 64" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/tumbling_squares/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 22" line=" 46" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/tumbling_squares/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 55" line=" 64" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/tumbling_squares/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/rotating_squares/src/vertex_data.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/rotating_squares/src/main_loop.ads</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/superbible/rotating_squares/src/main_loop.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

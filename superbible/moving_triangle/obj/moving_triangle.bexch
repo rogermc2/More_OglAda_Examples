@@ -1,0 +1,31 @@
+[GENERATED OBJECT FILE]
+b__moving_triangle.o
+[PROJECT FILES]
+/Ada_Source/OpenGLAda/examples/superbible/moving_triangle/moving_triangle.gpr
+20171124073637
+/Ada_Source/OpenGLAda/FreeTypeAda/freetype.gpr
+20180621013446
+/Ada_Source/OpenGLAda/opengl-text.gpr
+20180316002936
+/Ada_Source/OpenGLAda/opengl.gpr
+20180621011751
+/Ada_Source/OpenGLAda/opengl-glfw.gpr
+20180323114352
+/Ada_Source/OpenGLAda/examples/common/common.gpr
+20180323114234
+[BOUND OBJECT FILES]
+/Ada_Source/OpenGLAda/examples/superbible/moving_triangle/obj/main_loop.o
+/Ada_Source/OpenGLAda/examples/superbible/moving_triangle/obj/moving_triangle.o
+[GENERATED SOURCE FILES]
+b__moving_triangle.ads
+b__moving_triangle.adb
+b__moving_triangle.ali
+[RESULTING OPTIONS]
+-L/Ada_Source/OpenGLAda/examples/superbible/moving_triangle/obj/
+-L/Ada_Source/OpenGLAda/examples/superbible/moving_triangle/obj/
+-L/Ada_Source/OpenGLAda/examples/common/lib/
+-L/Ada_Source/OpenGLAda/lib/
+-L/Ada_Source/OpenGLAda/FreeTypeAda/lib/
+-L/opt/gnat/2018/lib/gcc/x86_64-apple-darwin16.7.0/7.3.1/adalib/
+-static
+/opt/gnat/2018/lib/gcc/x86_64-apple-darwin16.7.0/7.3.1/adalib/libgnat.a

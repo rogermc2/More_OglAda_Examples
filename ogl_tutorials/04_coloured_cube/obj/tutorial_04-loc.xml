@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file />
+    <file_marker column=" 17" line=" 70" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 40" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/opengl-freetype.gpr</vfs_file>
+    </file_marker>
+    <file_marker column=" 17" line=" 3" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/opengl-freetype.gpr</vfs_file>
+    </file_marker>
+    <file_marker column=" 22" line=" 105" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/freetype/ft.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 39" line=" 327" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 17" line=" 70" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 40" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 7" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 16" line=" 11" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 56" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 6" line=" 8" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 66" line=" 123" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 30" line=" 77" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 58" line=" 54" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 20" line=" 112" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 90" line=" 255" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering/src/texture_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 28" line=" 101" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering_2/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 43" line=" 78" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/src/text_management.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 30" line=" 76" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/text_rendering_2/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 70" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/02_red_triangle/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 7" line=" 544" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/gl/implementation/gl-objects-textures.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 66" line=" 90" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/03_matrices/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 7" line=" 544" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/gl/implementation/gl-objects-textures.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 62" line=" 44" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/04_coloured_cube/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 32" line=" 45" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/04_coloured_cube/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 61" line=" 120" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/04_coloured_cube/src/main_loop.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

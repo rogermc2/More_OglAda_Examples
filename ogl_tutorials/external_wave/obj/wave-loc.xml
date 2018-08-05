@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file />
+    <file_marker column=" 1" line=" 177" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/vertex_data.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 177" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/control_wave.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 177" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/vertex_data.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 41" line=" 27" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/vertex_data.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 39" line=" 327" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 61" line=" 148" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/main_loop.adb</vfs_file>
+    </file_marker>
+  </Project>
+  <Project >
+    <vfs_file >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_file>
+    <file_marker column=" 1" line=" 178">
+      <vfs_project >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1">
+      <vfs_project >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/vertex_data.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 178">
+      <vfs_project >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1">
+      <vfs_project >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/control_wave.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 178">
+      <vfs_project >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1">
+      <vfs_project >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/vertex_data.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 41" line=" 27">
+      <vfs_project >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/vertex_data.ads</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 39" line=" 327">
+      <vfs_project >/Ada_Source/OpenGLAda/opengl-glfw.gpr</vfs_project>
+      <vfs_file >/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+  </Project>
+  <Project >
+    <vfs_file >/Volumes/Macintosh HD-1/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_file>
+    <file_marker current="true" column=" 1" line=" 47">
+      <vfs_project >/Volumes/Macintosh HD-1/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/wave.gpr</vfs_project>
+      <vfs_file >/Volumes/Macintosh HD-1/Ada_Source/OpenGLAda/examples/ogl_tutorials/external_wave/src/vertex_data.ads</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

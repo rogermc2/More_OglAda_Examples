@@ -1,0 +1,5 @@
+api_vectors_matrices.ads:58:04: missing actual "Default_Terminator"
+api_vectors_matrices.ads:58:04: in instantiation of "Pointers" declared at i-cpoint.ads:44
+api_vectors_matrices.ads:58:04: instantiation abandoned
+api_vectors_matrices.ads:60:38: "Unsigned_Array_Pointers" is undefined
+api_vectors_matrices.ads:60:38: possible misspelling of "Unsigned_Array_Pointer"

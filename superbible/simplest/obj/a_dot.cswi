@@ -1,0 +1,11 @@
+20180708122221
+-c
+-x
+ada
+-gnatA
+-gnatwa
+-gnatwl
+-gnatwe
+-fstack-check
+-gnaty3abcefhiklmNprt
+-E

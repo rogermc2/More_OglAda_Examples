@@ -1,0 +1,51 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U resample%s		resample.ads		3b4f34f4 NE OO PK
+
+D resample.ads		20180622013255 3b4f34f4 resample%s
+D system.ads		20180524051735 085b6ffb system%s
+X 1 resample.ads
+2K9*Resample 39l5 39e13
+4E8*Filter_Types 36e26 37r26
+4n25*Undefined_Filter{4E8}
+5n25*Point_Filter{4E8}
+6n25*Box_Filter{4E8}
+7n25*Triangle_Filter{4E8}
+8n25*Hermite_Filter{4E8}
+9n25*Hanning_Filter{4E8}
+10n25*Hamming_Filter{4E8}
+11n25*Blackman_Filter{4E8}
+12n25*Gaussian_Filter{4E8}
+13n25*Quadratic_Filter{4E8}
+14n25*Cubic_Filter{4E8}
+15n25*Catrom_Filter{4E8}
+16n25*Mitchell_Filter{4E8}
+17n25*Jinc_Filter{4E8}
+18n25*Sinc_Filter{4E8}
+19n25*SincFast_Filter{4E8}
+20n25*Kaiser_Filter{4E8}
+21n25*Welsh_Filter{4E8}
+22n25*Parzen_Filter{4E8}
+23n25*Bohman_Filter{4E8}
+24n25*Bartlett_Filter{4E8}
+25n25*Lagrange_Filter{4E8}
+26n25*Lanczos_Filter{4E8}
+27n25*Lanczos_Sharp_Filter{4E8}
+28n25*Lanczos2_Filter{4E8}
+29n25*Lanczos2_Sharp_Filter{4E8}
+30n25*Robidoux_Filter{4E8}
+31n25*Robidoux_Sharp_Filter{4E8}
+32n25*Cosine_Filter{4E8}
+33n25*Spline_Filter{4E8}
+34n25*Sentinel_Filter{4E8}
+

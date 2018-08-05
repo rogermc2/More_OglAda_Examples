@@ -1,0 +1,13 @@
+20180528005131
+-c
+-x
+ada
+-gnatA
+-g
+-gnat05
+-gnatwa
+-gnatwl
+-gnatwe
+-fstack-check
+-gnaty3abcefhiklmNprt
+-E

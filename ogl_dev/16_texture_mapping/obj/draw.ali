@@ -1,0 +1,283 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_FLOATING_POINT
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U draw%s		draw.ads		f4eb32b3 NE OO PK
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W colour%s		colour.ads		colour.ali
+W composite%s		composite.ads		composite.ali
+W core_image%s		core_image.adb		core_image.ali
+W geometry%s		geometry.ads		geometry.ali
+W interfaces%s		interfac.ads		interfac.ali
+W interfaces.c%s	i-c.adb			i-c.ali
+W interfaces.c.strings%s  i-cstrin.adb		i-cstrin.ali
+W magick_pixel%s	magick_pixel.adb	magick_pixel.ali
+W magick_type%s		magick_type.adb		magick_type.ali
+W method_attribute%s	method_attribute.ads	method_attribute.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-charac.ads		20180524051735 2d3ec45b ada.characters%s
+D a-chlat1.ads		20180524051735 66457d31 ada.characters.latin_1%s
+D a-except.ads		20180524051735 291912d5 ada.exceptions%s
+D a-finali.ads		20180524051736 bf4f806b ada.finalization%s
+D a-stream.ads		20180524051735 119b8fb3 ada.streams%s
+D a-string.ads		20180524051735 90ac6797 ada.strings%s
+D a-strmap.ads		20180524051735 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20180524051736 8098c91f ada.strings.unbounded%s
+D a-tags.ads		20180524051736 491b781d ada.tags%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D cache.ads		20180622014431 42d0c373 cache%s
+D colour.ads		20180622013255 e03c44b2 colour%s
+D colour_space.ads	20180622013255 db19c26b colour_space%s
+D composite.ads		20180622013255 e68156d9 composite%s
+D compress.ads		20180622013255 094fb960 compress%s
+D core_blob.ads		20180622013255 43d5189d core_blob%s
+D core_blob-api.ads	20180622013255 4dfe6bb8 core_blob.api%s
+D core_image.ads	20180622013255 43294988 core_image%s
+D draw.ads		20180622013255 a314be3e draw%s
+D geometry.ads		20180622013255 91be8c0c geometry%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-low_level.ads	20180323114352 3e559055 gl.low_level%s
+D gl-low_level-enums.ads  20180406035624 9cb41c01 gl.low_level.enums%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-objects.ads	20180310020627 0f493599 gl.objects%s
+D gl-objects-textures.ads  20180310020627 f6430b76 gl.objects.textures%s
+D gl-pixels.ads		20180310020627 0629bde8 gl.pixels%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-types-colors.ads	20180310020627 323d62ec gl.types.colors%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cpoint.ads		20180524051736 ee8a93ec interfaces.c.pointers%s
+D i-cstrin.ads		20180524051735 341d0ddf interfaces.c.strings%s
+D layer.ads		20180622013255 e62db32d layer%s
+D magick_exception.ads	20180622013255 92413496 magick_exception%s
+D magick_pixel.ads	20180622013255 95aee6fe magick_pixel%s
+D magick_profile.ads	20180622013255 94788b2b magick_profile%s
+D magick_type.ads	20180622013255 17b9d4b3 magick_type%s
+D method.ads		20180622013255 439df4d2 method%s
+D method_attribute.ads	20180622013255 61fe756b method_attribute%s
+D monitor.ads		20180622013255 842a7008 monitor%s
+D quantum.ads		20180622013255 21a6f8ac quantum%s
+D resample.ads		20180622013255 3b4f34f4 resample%s
+D semaphore.ads		20180622013255 ebf085b2 semaphore%s
+D std_io.ads		20180622013255 7ac00d71 std_io%s
+D stream.ads		20180622013255 670072c0 stream%s
+D sys_pthread_mutex.ads	20180622014517 e6d15d1c sys_pthread_mutex%s
+D sys_pthread_types.ads	20180622014537 35581402 sys_pthread_types%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-atocou.ads		20180524051736 b45c2d8d system.atomic_counters%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-finmas.ads		20180524051736 7811a767 system.finalization_masters%s
+D s-finroo.ads		20180524051736 4ff27390 system.finalization_root%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-secsta.ads		20180524051736 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20180524051735 a7318a92 system.soft_links%s
+D s-stache.ads		20180524051736 a37c21ec system.stack_checking%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+D s-stoele.ads		20180524051736 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20180524051735 b16154c2 system.storage_pools%s
+D s-stposu.ads		20180524051734 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20180524051734 aedef97e system.stream_attributes%s
+D s-traent.ads		20180524051734 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20180524051735 34867c83 system.unsigned_types%s
+D thread.ads		20180622014455 9a3b54a4 thread%s
+D timer.ads		20180622013255 40711ea6 timer%s
+X 13 colour.ads
+8K9*Colour 39e11 20|5w6 149r27
+10E9*Compliance_Type 12e60 20|149r34
+X 15 composite.ads
+2K9*Composite 79e14 20|6w6 113r27
+4E9*Composite_Operator 75e62 20|113r37
+X 19 core_image.ads
+34K9*Core_Image 500e15 20|8w6 77r22 99r34 100r34 130r27 148r34 150r34
+109R10*Segment_Info 112e15 20|77r33 130r38
+336R10*Image 428e15 20|99r45 100r45 148r45 150r45
+X 20 draw.ads
+13K9*Draw 154l5 154e9
+15E9*Align_Type 16e50 17r26 125r27
+15n24*Undefined_Align{15E9}
+15n41*LeftAlign{15E9}
+16n24*Center_Align{15E9}
+16n38*Right_Align{15E9}
+19E9*Clip_Path_Units 20e68 21r26 131r27
+19n29*Undefined_Path_Units{19E9}
+19n51*User_Space{19E9}
+20n29*User_Space_On_Use{19E9}
+20n48*Object_Bounding_Box{19E9}
+23E9*Decoration_Type 25e53 26r26 112r27
+23n29*Undefined_Decoration{23E9}
+23n51*No_Decoration{23E9}
+24n29*Underline_Decoration{23E9}
+24n51*Overline_Decoration{23E9}
+25n29*Line_Through_Decoration{23E9}
+28E9*Direction_Type 29e77 30r26 139r27
+28n28*Undefined_Direction{28E9}
+29n28*Right_To_Left_Direction{28E9}
+29n53*Left_To_Right_Direction{28E9}
+32E9*Fill_Rule 32e67 33r26 107r27
+32n23*Undefined_Rule{32E9}
+32n39*Even_Odd_Rule{32E9}
+32n54*Nonzero_Rule{32E9}
+35E9*Gradient_Type 36e60 37r26 61r19 75r22
+35n27*Undefined_Gradient{35E9}
+36n27*Linear_Gradient{35E9}
+36n44*Radial_Gradient{35E9}
+39E9*Line_Cap 40e44 41r26 108r27
+39n22*Undefined_Cap{39E9}
+39n37*ButtCap{39E9}
+40n22*Round_Cap{39E9}
+40n33*Square_Cap{39E9}
+43E9*Line_Join 44e46 45r26 109r27
+43n23*Undefined_Join{43E9}
+43n39*Mitre_Join{43E9}
+44n23*Round_Join{43E9}
+44n35*Bevel_Join{43E9}
+47E9*Paint_Method 48e80 49r26
+47n26*Undefined_Method{47E9}
+47n44*Point_Method{47E9}
+47n58*Replace_Method{47E9}
+48n26*Floodfill_Method{47E9}
+48n44*Fill_To_Border_Method{47E9}
+48n67*Reset_Method{47E9}
+51E9*Reference_Type 51e68 52r26 60r19
+51n28*Undefined_Reference{51E9}
+51n49*Gradient_Reference{51E9}
+54E9*Spread_Method 55e57 56r26 80r22
+54n27*Undefined_Spread{54E9}
+54n45*Pad_Spread{54E9}
+55n27*Reflect_Spread{54E9}
+55n43*Repeat_Spread{54E9}
+58R9*Element_Reference 65e14
+59p7*ID{36|47P9}
+60e7*Ref_Type{51E9}
+61e7*Gradient{35E9}
+62p7*Previous
+63p7*Next
+64m7*Signature{34|60M9}
+68R9*Stop_Info 71e14 72r39 78r22
+69r7*Colour{39|102R9}
+70f7*Offset{34|65F9}
+74R9*Gradient_Info 87e14 88r39 102r27
+75e7*Grad_Type{35E9}
+76r7*Bounding_Box{21|46R9}
+77r7*Grad_Vector{19|109R10}
+78r7*Stop{68R9}
+79m7*Num_Stops{34|60M9}
+80e7*Spread{54E9}
+81e7*Debug{41|10E9}
+82r7*Centre{21|40R9}
+83r7*Radii{21|40R9}
+84f7*Radius{34|65F9}
+85f7*Angle{34|65F9}
+86m7*Signature{34|60M9}
+90R9*Draw_Info 151e14 152r39
+91p7*Primitive{36|47P9}
+92p7*Geom{36|47P9}
+93r7*View_Box{21|46R9}
+94r7*Affine{21|21R9}
+95r7*Fill{39|102R9}
+96r7*Stroke{39|102R9}
+97r7*Under_Colour{39|102R9}
+98r7*Border_Colour{39|102R9}
+99p7*Fill_Pattern(19|336R10)
+100p7*Stroke_Pattern(19|336R10)
+101f7*Stroke_Width{34|65F9}
+102r7*Gradient{74R9}
+103e7*Stroke_Antialias{41|10E9}
+105e7*Text_Antialias{41|10E9}
+107e7*Fill_Method{32E9}
+108e7*L_Cap{39E9}
+109e7*L_Join{43E9}
+110m7*Mitre_Limit{34|60M9}
+111f7*Dash_Offset{34|65F9}
+112e7*Decorate{23E9}
+113e7*Compose{15|4E9}
+114p7*Text{36|47P9}
+115p7*Font{36|47P9}
+116p7*Metrics{36|47P9}
+117p7*Family{36|47P9}
+118m7*Face{34|60M9}
+119e7*Style{41|52E9}
+120e7*Stretch{41|44E9}
+121m7*Weight{34|60M9}
+122p7*Encoding{36|47P9}
+123f7*Point_Size{34|65F9}
+124p7*Density{36|47P9}
+125e7*Align{15E9}
+126e7*Gravity{21|8E9}
+127p7*Server_Name{36|47P9}
+128p7*Dash_Pattern(34|65F9)
+129p7*Clip_Mask{36|47P9}
+130r7*Bounds{19|109R10}
+131e7*Clip_Units{19E9}
+132f7*Alpha{41|20F12}
+133e7*Render{41|10E9}
+135r7*Element_Ref{58R9}
+136f7*Kerning{34|65F9}
+137f7*Interword_Spacing{34|65F9}
+138f7*Interline_Spacing{34|65F9}
+139e7*Direction{28E9}
+140e7*Debug{41|10E9}
+142m7*Signature{34|60M9}
+144f7*Fill_Alpha{34|65F9}
+145f7*Stroke_Alpha{34|65F9}
+146e7*Clip_Path{41|10E9}
+148p7*Clipping_Mask(19|336R10)
+149e7*Compliance{13|10E9}
+150p7*Composite_Mask(19|336R10)
+X 21 geometry.ads
+6K9*Geometry 20|7w6 76r22 82r22 83r22 93r27 94r27 126r27 21|75e13
+8E9*Gravity_Type 20|126r36 21|18e41
+21R9*Affine_Matrix 20|94r36 21|28e14
+40R9*Point_Info 20|82r31 83r31 21|43e14
+46R9*Rectangle_Info 20|76r31 93r36 21|51e14
+X 23 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 26|7i19 32|7i19
+13V19 "-"{10+9} 26|8i19 32|8i19
+14V19 "-"{10+9} 26|9i19 32|9i19
+15V19 "*"{10+9} 26|10i19 32|10i19
+16V19 "/"{10+9} 32|11i19
+X 33 interfac.ads
+38K9*Interfaces 20|2r6 2r24 3r6 3r32 33|184e15
+X 34 i-c.ads
+18K20*C 20|2w17 2r35 3r17 3r43 34|230e17
+45M9*unsigned_long
+60M9*size_t 20|64r19 64r29 79r22 86r22 86r32 110r27 118r27 121r27 142r27
+. 143r9
+65F9*double<long_float> 20|70r19 84r22 85r22 101r27 111r27 123r27 128r34
+. 136r27 137r27 138r27 144r27 145r27
+X 36 i-cstrin.ads
+36K22*Strings 20|3w19 3r45 36|106e25
+47P9*chars_ptr 20|59r19 91r27 92r27 114r27 115r27 116r27 117r27 122r27 124r27
+. 127r27 129r27
+60V13*New_String{47P9} 20|91s40 92s40 114s40 115s40 116s40 117s40 122s40
+. 124s40 129s40
+X 39 magick_pixel.ads
+10K9*Magick_Pixel 20|9w6 69r19 95r27 96r27 97r27 98r27 39|176e17
+102R9*Pixel_Info 20|69r32 95r40 96r40 97r40 98r40 39|116e14
+X 41 magick_type.ads
+5K9*Magick_Type 20|10w6 81r22 81r57 103r27 104r9 105r27 106r9 119r27 120r27
+. 132r27 133r27 134r9 140r27 141r9 146r27 147r9 41|111e16
+10E9*Magick_Boolean_Type 20|81r34 103r39 105r39 133r39 140r39 146r39 41|10e57
+10n33*Magic_False{10E9} 20|81r69 104r21 106r21 134r21 141r21 147r21
+20F12*Quantum{34|65F9} 20|132r39
+44E9*Stretch_Type 20|120r39 41|49e38
+52E9*Style_Type 20|119r39 41|53e49
+X 43 method_attribute.ads
+4K9*Method_Attribute 20|11w6 64r37 86r40 143r17 43|10e21
+6m4*Magick_Core_Signature{34|45M9} 20|64r54 86r57 143r34
+

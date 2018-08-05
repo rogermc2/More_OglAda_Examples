@@ -1,0 +1,196 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -gnatyB
+A -gnatyc
+A -gnatyl
+A -gnatyt
+A -gnatyu
+A -mmacosx-version-min=10.12.7
+A -mtune=core2
+A -fPIC
+P SS ZX
+
+RN
+RV NO_DISPATCHING_CALLS
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_IO
+RV NO_IMPLICIT_CONDITIONALS
+RV NO_LOCAL_ALLOCATORS
+RV NO_NESTED_FINALIZATION
+RV NO_SECONDARY_STACK
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_IMPLICIT_LOOPS
+RV NO_ELABORATION_CODE
+RV SPARK_05
+
+U program_loader%b	program_loader.adb	237dde2e NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W gl%s			gl.adb			gl.ali
+W gl.files%s		gl-files.adb		gl-files.ali
+W gl.objects%s		gl-objects.adb		gl-objects.ali
+W gl.objects.programs%s	gl-objects-programs.adb	gl-objects-programs.ali
+W gl.objects.shaders%s	gl-objects-shaders.adb	gl-objects-shaders.ali
+W system%s		system.ads		system.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.standard_library%s  s-stalib.adb	s-stalib.ali
+W system.storage_pools.subpools%s  s-stposu.adb	s-stposu.ali
+
+U program_loader%s	program_loader.ads	c88442f1 EE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W gl%s			gl.adb			gl.ali
+W gl.objects%s		gl-objects.adb		gl-objects.ali
+W gl.objects.programs%s	gl-objects-programs.adb	gl-objects-programs.ali
+W gl.objects.shaders%s	gl-objects-shaders.adb	gl-objects-shaders.ali
+W system%s		system.ads		system.ali
+W system.exception_table%s  s-exctab.adb	s-exctab.ali
+W system.finalization_masters%s  s-finmas.adb	s-finmas.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.standard_library%s  s-stalib.adb	s-stalib.ali
+W system.storage_elements%s  s-stoele.adb	s-stoele.ali
+
+D ada.ads		20170516105951 76789da1 ada%s
+D a-charac.ads		20170516105954 2d3ec45b ada.characters%s
+D a-chlat1.ads		20170516105952 66457d31 ada.characters.latin_1%s
+D a-except.ads		20170516105953 291912d5 ada.exceptions%s
+D a-finali.ads		20170516105954 bf4f806b ada.finalization%s
+D a-ioexce.ads		20170516105949 e4a01f64 ada.io_exceptions%s
+D a-stream.ads		20170516105952 119b8fb3 ada.streams%s
+D a-string.ads		20170516105953 90ac6797 ada.strings%s
+D a-strmap.ads		20170516105953 e8bb714a ada.strings.maps%s
+D a-strunb.ads		20170516105950 ecdfa332 ada.strings.unbounded%s
+D a-tags.ads		20170516105955 d3a89129 ada.tags%s
+D a-textio.ads		20170516105955 386df5d4 ada.text_io%s
+D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
+D gl.ads		20170303224401 b5cd5543 gl%s
+D gl-algebra.ads	20170323021544 87897079 gl.algebra%s
+D gl-attributes.ads	20170303224401 f55351c4 gl.attributes%s
+D gl-buffers.ads	20170303224401 32f14426 gl.buffers%s
+D gl-culling.ads	20170303224401 1388c76d gl.culling%s
+D gl-files.ads		20170303224401 2dd0c22a gl.files%s
+D gl-low_level.ads	20170303224401 c3ce3b42 gl.low_level%s
+D gl-matrices.ads	20170420013537 7eb1e31d gl.matrices%s
+D gl-objects.ads	20170303224401 9a940007 gl.objects%s
+D gl-objects-lists.ads	20170303224401 96b9f2bc gl.objects.lists%s
+D gl-objects-programs.ads  20170303224401 537effa4 gl.objects.programs%s
+D gl-objects-shaders.ads  20170303224401 c079a497 gl.objects.shaders%s
+D gl-objects-shaders-lists.ads  20170303224401 eb291c74 gl.objects.shaders.lists%s
+D gl-types.ads		20170308072531 bdcc9f27 gl.types%s
+D gl-types-colors.ads	20170303224401 323d62ec gl.types.colors%s
+D gl-uniforms.ads	20170303224401 463cde62 gl.uniforms%s
+D gl-vectors.ads	20170323021544 236bf575 gl.vectors%s
+D interfac.ads		20170516105950 5ab55268 interfaces%s
+D i-c.ads		20170516105948 5421119b interfaces.c%s
+D i-cpoint.ads		20170516105956 ee8a93ec interfaces.c.pointers%s
+D i-cstrin.ads		20170516105953 341d0ddf interfaces.c.strings%s
+D i-cstrea.ads		20170516105950 e53d8b8e interfaces.c_streams%s
+D program_loader.ads	20170303224401 b75cbaf0 program_loader%s
+D program_loader.adb	20170831090251 3b821ac6 program_loader%b
+D system.ads		20170516105953 085b6ffb system%s
+D s-atocou.ads		20170516105956 b45c2d8d system.atomic_counters%s
+D s-crtl.ads		20170516105948 0ebbdb71 system.crtl%s
+D s-exctab.ads		20170516105954 54135002 system.exception_table%s
+D s-ficobl.ads		20170516105956 078245e4 system.file_control_block%s
+D s-finmas.ads		20170516105954 7811a767 system.finalization_masters%s
+D s-finroo.ads		20170516105954 4ff27390 system.finalization_root%s
+D s-memory.ads		20170516105953 597d6634 system.memory%s
+D s-parame.ads		20170516105955 7e2a0d7f system.parameters%s
+D s-secsta.ads		20170516105955 9751b57e system.secondary_stack%s
+D s-soflin.ads		20170516105951 14e1eb6c system.soft_links%s
+D s-stache.ads		20170516105955 a37c21ec system.stack_checking%s
+D s-stalib.ads		20170516105955 09bd3940 system.standard_library%s
+D s-stalib.adb		20170516105948 f2fe2716 system.standard_library%b
+D s-stoele.ads		20170516105956 2dc34a04 system.storage_elements%s
+D s-stoele.adb		20170516105954 ed88f8fb system.storage_elements%b
+D s-stopoo.ads		20170516105951 b16154c2 system.storage_pools%s
+D s-stposu.ads		20170516105949 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20170516105949 aedef97e system.stream_attributes%s
+D s-traent.ads		20170516105950 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20170516105953 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20170516105954 1b7d22d2 system.wch_con%s
+X 1 ada.ads
+16K9*Ada 20e8 36|1r6 20r16 37|2r6 2r26 3r6 3r24 35r56 64r39
+X 4 a-except.ads
+54K13*Exceptions 349e19 37|2w10 2r30
+X 8 a-string.ads
+16K13*Strings 35e16 36|1r10 20r20 37|35r60 64r43
+X 10 a-strunb.ads
+76K21*Unbounded 490e26 36|1w18 20r28 37|35r68 64r51
+79R9*Unbounded_String<5|43R9> 474e14 36|20r38
+94V13*To_Unbounded_String{79R9} 37|64s61
+100V13*To_String{string} 37|35s78
+X 12 a-textio.ads
+49K13*Text_IO 471e16 37|3w10 3r28
+263U14*Put_Line 37|14s13 15s13 16s13 43s13 44s13 45s13 54s13 68s13
+X 14 gl.ads
+19K9*GL 59e7 36|3r6 4r6 13r41 17r14 21r16 37|4r6 5r6 6r6 10r40 24r35 25r26
+. 31r29 34r17 45r23 49r9 60r41
+X 15 gl-algebra.ads
+23+9 Element_Type
+25V19 "+"{23+9} 21|20i19 30|20i19
+26V19 "-"{23+9} 21|21i19 30|21i19
+27V19 "-"{23+9} 21|22i19 30|22i19
+28V19 "*"{23+9} 21|23i19 30|23i19
+29V19 "/"{23+9} 30|24i19
+X 19 gl-files.ads
+21K12*Files 26e13 37|4w9 34r20
+23U14*Load_Shader_Source_From_File 37|34s26
+X 22 gl-objects.ads
+23K12*Objects 91e15 36|3r9 4r9 13r44 17r17 21r19 37|5r9 6r9 10r43 24r38 25r29
+. 31r32 45r26 49r12 60r44
+X 24 gl-objects-programs.ads
+24K20*Programs 150e24 36|4w17 17r25 37|5w17 24r46 25r37 45r34
+34R9*Program<22|30R9> 135e50 36|17r34 37|24r55 25r46
+42U14*Attach 37|37s32
+44U14*Link 37|41s24
+46V13*Link_Status{boolean} 37|42s31
+52V13*Info_Log{string} 37|45s43
+131U14*Initialize_Id<22|44p14> 37|27s24
+X 25 gl-objects-shaders.ads
+19K20*Shaders 53e23 36|3w17 13r52 21r27 37|6w17 10r51 31r40 49r20 60r52
+22E9*Shader_Type 23e69 36|13r60 21r35 37|60r60
+25R9*Shader<22|30R9> 44e70 37|10r59 31r48
+30U14*Compile 37|12s16
+32U14*Release_Shader_Compiler 37|49s28
+34V13*Compile_Status{boolean} 37|13s23
+36V13*Info_Log{string} 37|16s30
+39U14*Initialize_Id<22|44p14> 37|33s27
+X 36 program_loader.ads
+6K9*Program_Loader 19E10 23l5 23e19 37|8b14 74l5 74t19
+7R10*Shader_Source 9r57 14r14 19c10 22e15 37|61r26 63r16
+9A10*Shader_Sources(7R10)<integer> 16r35 37|23r35
+11X5*Shader_Loading_Error 37|17r19 46r19 55r19
+13V14*Src{7R10} 13>19 13>34 37|60b14 70l9 70t12
+13a19 Path{string} 37|60b19 64r82
+13e34 Kind{25|22E9} 37|60b34 65r39
+16V14*Program_From{24|34R9} 16>28 37|23b14 56l9 56t21
+16a28 List{9A10} 37|23b28 29r18 31r56 35r89
+20r9*Path{10|79R9} 37|35r98 64m31
+21e9*Kind{25|22E9} 37|31r65 65m31
+X 37 program_loader.adb
+10U15 Compile_Shader 10b15 10>31 19l9 19t23 36s17
+10r31 Shader{25|25R9} 12r9 13r16 16r23
+25r9 Shader_Program{24|34R9} 27m9 27r9 37r17 41r9 42r16 45r53 50r16
+29i13 I{integer} 31r62 35r95
+31r17 My_Shader{25|25R9} 33m17 33r17 34r56 36r33 37r40
+X 38 system.ads
+67M9*Address
+X 45 s-memory.ads
+53V13*Alloc{38|67M9} 103i<c,__gnat_malloc>22
+68U14*Free 104i<c,__gnat_free>22
+76V13*Realloc{38|67M9} 105i<c,__gnat_realloc>22
+X 51 s-stalib.adb
+93U14 Break_Start 94i<c,__gnat_break_start>22
+

@@ -1,0 +1,32 @@
+[GENERATED OBJECT FILE]
+b__coloured_square.o
+[PROJECT FILES]
+/Ada_Source/OpenGLAda/examples/open_gl/square/coloured_square.gpr
+20171124073637
+/Ada_Source/OpenGLAda/FreeTypeAda/freetype.gpr
+20180621013446
+/Ada_Source/OpenGLAda/opengl-text.gpr
+20180316002936
+/Ada_Source/OpenGLAda/opengl.gpr
+20180621011751
+/Ada_Source/OpenGLAda/opengl-glfw.gpr
+20180323114352
+/Ada_Source/OpenGLAda/examples/common/common.gpr
+20180323114234
+[BOUND OBJECT FILES]
+/Ada_Source/OpenGLAda/examples/open_gl/square/obj/vertex_data.o
+/Ada_Source/OpenGLAda/examples/open_gl/square/obj/main_loop.o
+/Ada_Source/OpenGLAda/examples/open_gl/square/obj/coloured_square.o
+[GENERATED SOURCE FILES]
+b__coloured_square.ads
+b__coloured_square.adb
+b__coloured_square.ali
+[RESULTING OPTIONS]
+-L/Ada_Source/OpenGLAda/examples/open_gl/square/obj/
+-L/Ada_Source/OpenGLAda/examples/open_gl/square/obj/
+-L/Ada_Source/OpenGLAda/examples/common/lib/
+-L/Ada_Source/OpenGLAda/lib/
+-L/Ada_Source/OpenGLAda/FreeTypeAda/lib/
+-L/opt/gnat/2018/lib/gcc/x86_64-apple-darwin16.7.0/7.3.1/adalib/
+-static
+/opt/gnat/2018/lib/gcc/x86_64-apple-darwin16.7.0/7.3.1/adalib/libgnat.a

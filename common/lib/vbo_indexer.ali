@@ -1,0 +1,199 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_FLOATING_POINT
+RV NO_IO
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U vbo_indexer%b		vbo_indexer.adb		88343753 NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+Z interfaces%s		interfac.ads		interfac.ali
+
+U vbo_indexer%s		vbo_indexer.ads		02913d25 EE NE OO PK
+W gl%s			gl.adb			gl.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-except.ads		20180524051735 291912d5 ada.exceptions%s
+D a-ioexce.ads		20180524051734 e4a01f64 ada.io_exceptions%s
+D a-stream.ads		20180524051735 119b8fb3 ada.streams%s
+D a-tags.ads		20180524051736 491b781d ada.tags%s
+D a-textio.ads		20180524051736 881db35a ada.text_io%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cpoint.ads		20180524051736 ee8a93ec interfaces.c.pointers%s
+D i-cstrea.ads		20180524051734 e53d8b8e interfaces.c_streams%s
+D system.ads		20180524051735 085b6ffb system%s
+D s-crtl.ads		20180524051734 0ebbdb71 system.crtl%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-ficobl.ads		20180524051736 078245e4 system.file_control_block%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-secsta.ads		20180524051736 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20180524051735 a7318a92 system.soft_links%s
+D s-stache.ads		20180524051736 a37c21ec system.stack_checking%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+D s-stoele.ads		20180524051736 2dc34a04 system.storage_elements%s
+D s-traent.ads		20180524051734 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20180524051735 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20180524051736 1b7d22d2 system.wch_con%s
+D vbo_indexer.ads	20180323114351 bf5da202 vbo_indexer%s
+D vbo_indexer.adb	20180420010046 bf74260b vbo_indexer%b
+X 1 ada.ads
+16K9*Ada 20e8 31|2r6 2r23
+X 6 a-textio.ads
+49K13*Text_IO 471e16 31|2w10 2r27
+263U14*Put_Line 31|118s10 169s10
+X 8 gl.ads
+6K9*GL 46e7 30|2r6 6r33 6r59 8r42 9r42 10r42 11r46 12r46 13r46 14r46 15r46
+. 16r46 18r42 19r42 20r46 21r46 22r46 23r46 24r46 31|6r31 11r24 12r24 13r24
+. 14r24 15r24 16r24 17r28 18r11 24r41 24r70 25r34 25r63 26r34 26r63 27r29
+. 27r53 28r29 28r53 29r33 29r61 30r33 30r61 31r33 31r61 33r23 43r24 44r24
+. 45r24 46r24 47r28 48r11 54r41 54r70 55r34 55r63 56r34 56r63 57r29 57r53
+. 58r29 58r53 60r23 69r42 70r42 71r42 72r46 73r46 74r46 75r46 76r46 77r46
+. 78r11 79r11 89r24 124r42 125r42 126r46 127r46 128r46 129r46 130r46 131r11
+. 132r11 143r24 175r31 176r11
+25n31*X{25E9} 31|24r44 24r73 27r32 27r56 29r36 29r64 54r44 54r73 57r32 57r56
+25n34*Y{25E9} 31|25r37 25r66 28r32 28r56 30r36 30r64 55r37 55r66 58r32 58r56
+25n37*Z{25E9} 31|26r37 26r66 31r36 31r64 56r37 56r66 89r27 143r27
+X 9 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 10|7i19 12|7i19
+13V19 "-"{10+9} 10|8i19 12|8i19
+14V19 "-"{10+9} 10|9i19 12|9i19
+15V19 "*"{10+9} 10|10i19 12|10i19
+16V19 "/"{10+9} 12|11i19
+32A9*Vector2<12|15A9[25[11|101]]>(12|6F9[25[11|101]])<8|25E9> 31|12r41[11|101]
+. 44r41[11|101]
+33A9*Vector3<12|15A9[27[11|101]]>(12|6F9[27[11|101]])<8|25E9> 31|11r41[11|101]
+. 13r41[11|101] 43r41[11|101] 87r30[11|101] 141r30[11|101]
+80A9*Vector2_Array(32A9[11|101])<11|19I9> 30|9r59[11|101] 12r63[11|101] 19r59[11|101]
+. 21r63[11|101] 31|15r41[11|101] 46r41[11|101] 70r59[11|101] 73r63[11|101]
+. 125r59[11|101] 127r63[11|101]
+81A9*Vector3_Array(33A9[11|101])<11|19I9> 30|8r59[11|101] 10r59[11|101] 11r63[11|101]
+. 13r63[11|101] 18r59[11|101] 20r63[11|101] 31|14r41[11|101] 16r41[11|101]
+. 45r41[11|101] 69r59[11|101] 71r59[11|101] 72r63[11|101] 74r63[11|101] 124r59[11|101]
+. 126r63[11|101]
+X 11 gl-types.ads
+8K12*Types 173e13 30|2w9 6r36 6r62 8r45 9r45 10r45 11r49 12r49 13r49 14r49
+. 15r49 16r49 18r45 19r45 20r49 21r49 22r49 23r49 24r49 31|6r34 11r27 12r27
+. 13r27 14r27 15r27 16r27 17r31 18r14 33r26 43r27 44r27 45r27 46r27 47r31
+. 48r14 60r26 69r45 70r45 71r45 72r49 73r49 74r49 75r49 76r49 77r49 79r14
+. 124r45 125r45 126r49 127r49 128r49 129r49 130r49 132r14 175r34 176r14
+19I9*Int<14|35I9> 30|6r42 6r68 16r55 24r55 31|77r55 80r37 86r24 107r27 108r22
+. 109r26 113r22 130r55 133r37 140r24 159r27 160r22 164r22
+22I12*Size{19I9} 30|15r55 23r55 31|76r55 82r28 129r55 135r28
+28M9*UInt<14|43M9> 31|17r37 33r32 47r37 60r32 81r28 83r28 134r28 136r28
+31F9*Single<14|64F9> 31|6r40 175r40
+36A9*UInt_Array(28M9)<19I9> 30|14r55 22r55 31|75r55 128r55
+101K12*Singles[9|18] 30|8r51 9r51 10r51 11r55 12r55 13r55 18r51 19r51 20r55
+. 21r55 31|11r33 12r33 13r33 14r33 15r33 16r33 43r33 44r33 45r33 46r33 69r51
+. 70r51 71r51 72r55 73r55 74r55 87r22 124r51 125r51 126r55 127r55 141r22
+X 12 gl-vectors.ads
+15A9*Vector(11|31F9)<8|25E9>
+X 14 i-c.ads
+35I9*int<integer>
+43M9*unsigned
+64F9*C_float<float>
+X 30 vbo_indexer.ads
+4K9*VBO_Indexer 25l5 25e16 31|4b14 183l5 183t16
+6A9*Indices_Array(11|19I9)<11|19I9>
+8U14*Index_VBO 8>25 9>25 10>25 11<25 12<25 13<25 14<25 15<25 16<25 31|69b14
+. 120l8 120t17
+8a25 Vertices_In{9|81A9[11|101]} 31|69b25 80r44 97r36 107r47
+9a25 UVs_In{9|80A9[11|101]} 31|70b25 97r56 108r42
+10a25 Normals_In{9|81A9[11|101]} 31|71b25 97r71 109r46
+11a25 Vertices_Out{9|81A9[11|101]} 31|72b25 86r29 88m13 98r36 107m13
+12a25 UVs_Out{9|80A9[11|101]} 31|73b25 90m16 98r50 108m13
+13a25 Normals_Out{9|81A9[11|101]} 31|74b25 92m13 98r59 109m13
+14a25 VBO_Indices{11|36A9} 31|75b25 103m13 110m13
+15i25 Last_VBO_Index{11|22I12} 31|76b25 114m7
+16i25 Last_Vertex{11|19I9} 31|77b25 113m7
+18U14*Index_VBO 18>25 19>25 20<25 21<25 22<25 23<25 24<25 31|124b14 171l8
+. 171t17
+18a25 Vertices_In{9|81A9[11|101]} 31|124b25 133r44 150r36 159r47
+19a25 UVs_In{9|80A9[11|101]} 31|125b25 150r56 160r42
+20a25 Vertices_Out{9|81A9[11|101]} 31|126b25 140r29 142m13 151r36 159m13
+21a25 UVs_Out{9|80A9[11|101]} 31|127b25 144m16 151r50 160m13
+22a25 VBO_Indices{11|36A9} 31|128b25 155m13 161m13
+23i25 Last_VBO_Index{11|22I12} 31|129b25 165m7
+24i25 Last_Vertex{11|19I9} 31|130b25 164m7
+X 31 vbo_indexer.adb
+6V13 Is_Near{boolean} 6>22 6>26 24s19 25s12 26s12 27s12 28s12 29s12 30s12
+. 31s12 54s19 55s12 56s12 57s12 58s12 175b13 179l8 179t15
+6f22 V1{11|31F9} 175b22 178r24
+6f26 V2{11|31F9} 175b26 178r19
+10U14 Get_Similar_Vertex_Index 10b14 11>7 12>7 13>7 14>7 15>7 16>7 17<7 17<43
+. 38l8 38t32 97s10
+11a7 Vertices_In{9|33A9[11|101]} 24r28 25r21 26r21
+12a7 UVs_In{9|32A9[11|101]} 27r21 28r21
+13a7 Normals_In{9|33A9[11|101]} 29r21 30r21 31r21
+14a7 Vertices_Out{9|81A9[11|101]} 23r20 24r48 25r41 26r41
+15a7 UVs_Out{9|80A9[11|101]} 27r36 28r36
+16a7 Normals_Out{9|81A9[11|101]} 29r40 30r40 31r40
+17m7 Result{11|28M9} 21m7 33m13
+17b43 Found{boolean} 20m7 24m10 32r13
+23i11 Index<14|35I9> 24r62 25r55 26r55 27r45 28r45 29r53 30r53 31r53 33r38
+42U14 Get_Similar_Vertex_Index 42b14 43>7 44>7 45>7 46>7 47<7 47<43 65l8
+. 65t32 150s10
+43a7 Vertices_In{9|33A9[11|101]} 54r28 55r21 56r21
+44a7 UVs_In{9|32A9[11|101]} 57r21 58r21
+45a7 Vertices_Out{9|81A9[11|101]} 53r20 54r48 55r41 56r41
+46a7 UVs_Out{9|80A9[11|101]} 57r36 58r36
+47m7 Result{11|28M9} 51m7 60m13
+47b43 Found{boolean} 50m7 54m10 59r13
+53i11 Index<14|35I9> 54r62 55r55 56r55 57r45 58r45 60r38
+80i7 In_Size{11|19I9} 96r24
+81m7 Index{11|28M9} 99m36 103r48
+82i7 VBO_Indices_Index{11|22I12} 100m10 100r31 103r26 110r26 114r26
+83m7 Out_Index{11|28M9} 106m13 106r26 107r32 108r27 109r31 110r48 113r27
+84b7 Found{boolean} 99m43 101r13
+86i11 Vert<14|35I9> 88r27 90r25 92r26
+87e14 elem{8|25E9} 88r34 89r16 90r32 92r33
+96i11 Vert<14|35I9> 97r49 97r64 97r83 107r60 108r50 109r58
+133i7 In_Size{11|19I9} 149r24
+134m7 Index{11|28M9} 151m59 155r48
+135i7 VBO_Indices_Index{11|22I12} 152m10 152r31 155r26 161r26 165r26
+136m7 Out_Index{11|28M9} 158m13 158r26 159r32 160r27 161r48 164r27
+137b7 Found{boolean} 151m66 153r13
+140i11 Vert<14|35I9> 142r27 144r25
+141e14 elem{8|25E9} 142r34 143r16 144r32
+149i11 Vert<14|35I9> 150r49 150r64 159r60 160r50
+

@@ -1,0 +1,247 @@
+V "GNAT Lib v2018"
+A -gnatA
+A -g
+A -gnatwa
+A -gnatwl
+A -gnatwe
+A -fstack-check=specific
+A -gnaty3
+A -gnatya
+A -gnatyb
+A -gnatyc
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyN
+A -gnatyp
+A -gnatyr
+A -gnatyt
+A -mtune=core2
+A -mmacosx-version-min=10.13.6
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTION_PROPAGATION
+RV NO_EXCEPTIONS
+RV NO_IO
+RV NO_IMPLICIT_CONDITIONALS
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_STREAMS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_IMPLICIT_LOOPS
+RV SPARK_05
+
+U load_dds%b		load_dds.adb		5d2af317 NE OO SU
+W ada%s			ada.ads			ada.ali
+Z ada.exceptions%s	a-except.adb		a-except.ali
+W ada.io_exceptions%s	a-ioexce.ads		a-ioexce.ali
+W ada.streams%s		a-stream.adb		a-stream.ali
+W ada.streams.stream_io%s  a-ststio.adb		a-ststio.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W gl%s			gl.adb			gl.ali
+W gl.objects%s		gl-objects.adb		gl-objects.ali
+W gl.objects.textures%s	gl-objects-textures.adb	gl-objects-textures.ali
+W gl.objects.textures.targets%s  gl-objects-textures-targets.adb  gl-objects-textures-targets.ali
+W gl.pixels%s		gl-pixels.adb		gl-pixels.ali
+W gl.types%s		gl-types.ads		gl-types.ali
+Z system%s		system.ads		system.ali
+Z system.concat_2%s	s-conca2.adb		s-conca2.ali
+Z system.concat_3%s	s-conca3.adb		s-conca3.ali
+Z system.exception_table%s  s-exctab.adb	s-exctab.ali
+Z system.standard_library%s  s-stalib.adb	s-stalib.ali
+Z system.stream_attributes%s  s-stratt.adb	s-stratt.ali
+Z system.strings.stream_ops%s  s-ststop.adb	s-ststop.ali
+
+U load_dds%s		load_dds.ads		e982b59f EE NE OO SU
+W gl%s			gl.adb			gl.ali
+W gl.objects%s		gl-objects.adb		gl-objects.ali
+W gl.objects.textures%s	gl-objects-textures.adb	gl-objects-textures.ali
+
+D ada.ads		20180524051735 76789da1 ada%s
+D a-except.ads		20180524051735 291912d5 ada.exceptions%s
+D a-finali.ads		20180524051736 bf4f806b ada.finalization%s
+D a-ioexce.ads		20180524051734 e4a01f64 ada.io_exceptions%s
+D a-stream.ads		20180524051735 119b8fb3 ada.streams%s
+D a-ststio.ads		20180524051735 a75f3183 ada.streams.stream_io%s
+D a-tags.ads		20180524051736 491b781d ada.tags%s
+D a-textio.ads		20180524051736 881db35a ada.text_io%s
+D a-unccon.ads		20180524051736 0e9b276f ada.unchecked_conversion%s
+D a-uncdea.ads		20180524051735 eff36322 ada.unchecked_deallocation%s
+D gl.ads		20180310020627 b5cd5543 gl%s
+D gl-algebra.ads	20180323114352 41bc17e5 gl.algebra%s
+D gl-low_level.ads	20180323114352 3e559055 gl.low_level%s
+D gl-low_level-enums.ads  20180406035624 9cb41c01 gl.low_level.enums%s
+D gl-matrices.ads	20180310020627 7eb1e31d gl.matrices%s
+D gl-objects.ads	20180310020627 0f493599 gl.objects%s
+D gl-objects-textures.ads  20180310020627 f6430b76 gl.objects.textures%s
+D gl-objects-textures-targets.ads  20180310020627 9820857c gl.objects.textures.targets%s
+D gl-objects-textures-with_1d_loader.ads  20180310020627 256e852d gl.objects.textures.with_1d_loader%s
+D gl-objects-textures-with_2d_loader.ads  20180310020627 5229c7ea gl.objects.textures.with_2d_loader%s
+D gl-objects-textures-with_3d_loader.ads  20180310020627 efdb0c4a gl.objects.textures.with_3d_loader%s
+D gl-pixels.ads		20180310020627 0629bde8 gl.pixels%s
+D gl-types.ads		20180310020627 bdcc9f27 gl.types%s
+D gl-types-colors.ads	20180310020627 323d62ec gl.types.colors%s
+D gl-vectors.ads	20180310020627 236bf575 gl.vectors%s
+D interfac.ads		20180524051734 5ab55268 interfaces%s
+D i-c.ads		20180524051734 5421119b interfaces.c%s
+D i-cpoint.ads		20180524051736 ee8a93ec interfaces.c.pointers%s
+D i-cstrea.ads		20180524051734 e53d8b8e interfaces.c_streams%s
+D load_dds.ads		20180323114234 1fc1bee9 load_dds%s
+D load_dds.adb		20180620135056 aacc77f0 load_dds%b
+D system.ads		20180524051735 085b6ffb system%s
+D s-conca2.ads		20180524051735 02a0d7d0 system.concat_2%s
+D s-conca3.ads		20180524051736 0b705ca5 system.concat_3%s
+D s-crtl.ads		20180524051734 0ebbdb71 system.crtl%s
+D s-exctab.ads		20180524051736 54135002 system.exception_table%s
+D s-ficobl.ads		20180524051736 078245e4 system.file_control_block%s
+D s-finmas.ads		20180524051736 7811a767 system.finalization_masters%s
+D s-finroo.ads		20180524051736 4ff27390 system.finalization_root%s
+D s-parame.ads		20180524051736 48ec542b system.parameters%s
+D s-secsta.ads		20180524051736 20bbe636 system.secondary_stack%s
+D s-soflin.ads		20180524051735 a7318a92 system.soft_links%s
+D s-stache.ads		20180524051736 a37c21ec system.stack_checking%s
+D s-stalib.ads		20180524051736 09bd3940 system.standard_library%s
+D s-stoele.ads		20180524051736 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20180524051735 b16154c2 system.storage_pools%s
+D s-stposu.ads		20180524051734 97a6219c system.storage_pools.subpools%s
+D s-stratt.ads		20180524051734 aedef97e system.stream_attributes%s
+D s-string.ads		20180524051736 8fe54fb7 system.strings%s
+D s-ststop.ads		20180524051734 5fbf1b38 system.strings.stream_ops%s
+D s-traent.ads		20180524051734 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20180524051735 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20180524051736 1b7d22d2 system.wch_con%s
+X 1 ada.ads
+16K9*Ada 20e8 31|5r6 6r6 7r6 7r23 36r45 38r45 42r45 50r46 92r42 94r13 127r45
+. 131r13 185r9 187r20 188r20 193r14 197r29 203r10
+X 4 a-ioexce.ads
+18K13*IO_Exceptions 30e22 31|5w10 203r14
+23X4*Name_Error 31|203r28
+X 5 a-stream.ads
+36K13*Streams 87e16 31|6r10 36r49 38r49 42r49 50r50 92r46 94r17 127r49 131r17
+. 185r13 187r24 188r24 193r18 197r33
+44I9*Stream_Element_Offset<long_long_integer>
+X 6 a-ststio.ads
+39K21*Stream_IO 223e26 31|6w18 36r57 38r57 42r57 50r58 92r54 94r25 127r57
+. 131r25 185r21 187r32 188r32 193r26 197r41
+42P9*Stream_Access(5|39R9) 31|38r67 42r67 50r68 97r36 127r67 188r42
+44P9*File_Type 31|36r67 92r64 187r42
+46n23*In_File{46E9} 31|191r20
+57I9*Count<5|44I9> 31|197r51
+60I12*Positive_Count{57I9}
+73U14*Open 31|191s5
+91V13*Stream{42P9} 31|97s53 198s24
+121U14*Set_Index 31|100s9 104s9 106s9 197s9
+123V13*Index{60I12} 31|100s29 104s29 106s29
+124V13*Size{57I9} 31|193s36
+X 8 a-textio.ads
+49K13*Text_IO 471e16 31|7w10 7r27
+263U14*Put_Line 31|67s13 86s13 110s13 115s13 121s13 169s13 194s9 205s9 208s9
+X 11 gl.ads
+6K9*GL 46e7 30|5r6 8r42 31|9r6 10r6 11r6 15r38 17r29 17r56 21r26 22r26 23r26
+. 24r26 26r26 40r49 44r45 45r45 52r50 53r13 54r13 55r13 58r24 74r9 74r39
+. 76r21 95r13 129r45 130r45 132r13 133r13 184r9
+X 12 gl-algebra.ads
+10+9 Element_Type
+12V19 "+"{10+9} 15|7i19 25|7i19
+13V19 "-"{10+9} 15|8i19 25|8i19
+14V19 "-"{10+9} 15|9i19 25|9i19
+15V19 "*"{10+9} 15|10i19 25|10i19
+16V19 "/"{10+9} 25|11i19
+X 16 gl-objects.ads
+10K12*Objects 85e15 30|5r9 8r45 31|10r9 15r41 40r52 52r53 53r16 132r16
+22U14*Initialize_Id 31|72s20
+X 17 gl-objects-textures.ads
+9K20*Textures 230e24 30|5w17 8r53 31|10r17 15r49 40r60 52r61 53r24 132r24
+49M9*Image_Source<32|67M9> 31|150r53
+178R9*Texture<16|17R9> 222e50 30|8r62 31|15r58 40r69 52r70
+180U14*Bind 31|73s28
+X 18 gl-objects-textures-targets.ads
+8K29*Targets 143e32 31|10w26 73r9 148r17
+41r4*Texture_2D{20|20R9[16]} 31|73r17 148r25
+X 19 gl-objects-textures-with_1d_loader.ads
+5R9 Base<17|60R9>
+X 20 gl-objects-textures-with_2d_loader.ads
+5R9 Base<17|60R9>
+9R9*Target<17|108R9>
+20R9*Fillable_Target<9R9[18|16]>
+38U14*Load_Compressed 31|148s36[18|16]
+X 21 gl-objects-textures-with_3d_loader.ads
+5R9 Base<17|60R9>
+9R9*Target<17|108R9>
+X 22 gl-pixels.ads
+8K12*Pixels 386e14 31|11w9 45r48 54r16 58r27 74r12 74r42 76r24 130r48
+13E9*Internal_Format 75e64 31|45r55 58r34 130r55
+27n55*Compressed_RGBA_S3TC_DXT1{13E9} 31|61r23 76r31
+28n29*Compressed_RGBA_S3TC_DXT3{13E9} 31|63r23
+29n29*Compressed_RGBA_S3TC_DXT5{13E9} 31|65r23
+102n23*Bytes{102E9} 31|74r49
+111U14*Set_Pack_Alignment 31|74s19
+X 23 gl-types.ads
+8K12*Types 173e13 31|9w9 17r32 17r59 21r29 22r29 23r29 24r29 26r29 44r48
+. 55r16 95r16 129r48 133r16 184r12
+19I9*Int<27|35I9> 31|135r24 135r31 136r24 136r31 138r24 141r41 149r53
+26M9*UByte<27|47M9> 31|17r65
+28M9*UInt<27|43M9> 31|17r38 21r35 22r35 23r35 24r35 26r35 44r54 57r24 101r9
+. 102r9 103r9 105r9 129r54 137r24 137r32 142r25 193r8
+X 27 i-c.ads
+35I9*int<integer>
+43M9*unsigned
+47M9*unsigned_char
+X 30 load_dds.ads
+7U15*Load_DDS 7>25 8<25 31|14b11 210l5 210t13
+7a25 File_Name{string} 31|14b21 191r29 194r43 205r53
+8r25 theTexture{17|178R9} 31|15b21 199m45
+X 31 load_dds.adb
+17A10 DDS_Data(23|26M9)<23|28M9> 145r28 147r17
+19R10 DDS_Header 27e15 37r45 39r45 43r45 51r46 93r46 128r45 189r20
+20a9 Magic{string} 99m44 109r19
+21m9 Height{23|28M9} 101m42 136r43
+22m9 Width{23|28M9} 102m42 135r43
+23m9 Linear_Size{23|28M9} 103m42
+24m9 Mip_Map_Count{23|28M9} 105m42 141r53
+25a9 Four_CC{string} 60r19 62r22 64r22 68r32 107m44 114r40 115r68
+26m9 Byte_Size{23|28M9} 197r65
+31X5 Header_Error 111r19 116r19 195r15
+32X5 Image_Error 69r20
+36U15 Load_DDS_Header 36>32 37<32 92b15 123l9 123t24 192s5
+36p32 File_ID{6|44P9} 92b32 97r61 100r20 100r36 104r20 104r36 106r20 106r36
+37r32 Header{19R10} 93b32 99m37 99r37 101m35 101r35 102m35 102r35 103m35
+. 103r35 105m35 105r35 107m37 107r37 109r12 114r33 115r61
+38U15 Load_DDS_Data 38>30 39>30 40<30 50b15 88l9 88t22 199s9
+38p30 Data_Stream{6|42P9} 50b30 82r23
+39r30 Header{19R10} 51b30 60r12 62r15 64r15 68r25 82r36
+40r30 theTexture{17|178R9} 52b30 72m9 72r9 73r34
+42U15 Load_Mipmaps 42>29 43>29 44>29 45>29 82s9 127b15 171l9 171t21
+42p29 Data_Stream{6|42P9} 127b29 147r32
+43r29 Header{19R10} 128b29 135r36 136r36 141r46
+44m29 Block_Size{23|28M9} 129b29 137r80 142r73
+45e29 Format{22|13E9} 130b29 148r60
+46V14 Test_DW_Four_CC{boolean} 46>31 114s16 175b14 180l9 180t24
+46a31 DW_Four_CC{string} 175b31 177r16 178r11 179r11
+57m9 Block_Size{23|28M9} 77m13 79m13 82r44
+58e9 Format{22|13E9} 61m13 63m13 65m13 76r12 82r56
+97p9 Header_Stream{6|42P9} 99r22 101r20 102r20 103r20 105r20 107r22
+135i9 Width{23|19I9} 137r40 139r35 142r33 148r68 153r26 156m17 156r26 159r20
+. 160m21
+136i9 Height{23|19I9} 137r60 139r54 142r53 148r75 153r45 157m17 157r27 162r20
+. 163m21
+137m9 Mip_Size{23|28M9} 142m13 145r43 149r58
+138i9 Level{23|19I9} 141r33 148r53 155m17 155r26
+139b9 Continue{boolean} 141r15 153m13 154r16
+145a17 Mip_Data{17A10} 147m45 147r45 150m67 150r67
+187p5 File_ID{6|44P9} 191m11 191r11 192r22 193r42 197r20 198r32
+188p5 Data_Stream{6|42P9} 198m9 199r24
+189r5 Header{19R10} 192m31 193r55 197r58 199r37
+X 32 system.ads
+67M9*Address
+

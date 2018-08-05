@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file />
+    <file_marker column=" 59" line=" 107" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/single_character/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 31" line=" 82" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/single_character/src/texture_manager.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 39" line=" 58" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/free_type/ft_interface.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 49" line=" 65" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/free_type/ft_interface.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 21" line=" 60" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/free_type/ft_types.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/maths.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 53" line=" 54" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/maths.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 39" line=" 327" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 31" line=" 82" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/freetype_gl/single_character/src/texture_manager.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 82" line=" 45" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/maths.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/maths.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 82" line=" 45" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/common/maths.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 39" line=" 327" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 18" line=" 163" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/examples/ogl_tutorials/05_textured_cube/src/main_loop.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 39" line=" 327" >
+      <vfs_project />
+      <vfs_file>/Ada_Source/OpenGLAda/src/glfw/v3/glfw-api.ads</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

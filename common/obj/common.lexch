@@ -1,0 +1,25 @@
+[LIBRARY PATH]
+/Ada_Source/OpenGLAda/examples/common/libcommon.a
+[OBJECT FILES]
+/Ada_Source/OpenGLAda/examples/common/obj/controls.o
+20180709190109
+/Ada_Source/OpenGLAda/examples/common/obj/initialize.o
+20180709190109
+/Ada_Source/OpenGLAda/examples/common/obj/load_dds.o
+20180709005120
+/Ada_Source/OpenGLAda/examples/common/obj/load_object_file.o
+20180709005121
+/Ada_Source/OpenGLAda/examples/common/obj/load_vb_object.o
+20180709005119
+/Ada_Source/OpenGLAda/examples/common/obj/maths.o
+20180710014136
+/Ada_Source/OpenGLAda/examples/common/obj/program_loader.o
+20180709005120
+/Ada_Source/OpenGLAda/examples/common/obj/quaternions.o
+20180709190107
+/Ada_Source/OpenGLAda/examples/common/obj/text_management.o
+20180709190109
+/Ada_Source/OpenGLAda/examples/common/obj/utilities.o
+20180709190108
+/Ada_Source/OpenGLAda/examples/common/obj/vbo_indexer.o
+20180709005122
