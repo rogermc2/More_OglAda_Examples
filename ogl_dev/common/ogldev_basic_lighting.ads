@@ -5,58 +5,33 @@ with GL.Uniforms;
 
 with Ant_Tweak_Bar;
 with Ogldev_Engine_Common;
-with Ogldev_Lights_Common; use  Ogldev_Lights_Common;
+with Ogldev_Lights_Common; use Ogldev_Lights_Common;
 
 package Ogldev_Basic_Lighting is
 
    type Basic_Lighting_Technique is private;
-   type Point_Light is private;
-   type Spot_Light is private;
 
    Max_Point_Lights : constant Int := 2;
    Max_Spot_Lights  : constant Int := 2;
 
-   type Point_Lights is private;
-   type Spot_Lights  is private;
+   type Point_Light_Location_Array is private;
+   type Spot_Light_Location_Array  is private;
 
-   type Point_Light_Array is array (Int range <>) of Ogldev_Lights_Common.Point_Light;
-   type Spot_Light_Array is array (Int range <>) of Ogldev_Lights_Common.Spot_Light;
-
-   procedure Add_To_ATB (Base : Base_Light; Bar : Ant_Tweak_Bar.TW_Bar);
-   procedure Add_Directional_To_ATB (theLight : Directional_Light;
-                                     Bar : Ant_Tweak_Bar.TW_Bar);
-   procedure Add_Point_To_ATB (theLight : Point_Lights; Bar : Ant_Tweak_Bar.TW_Bar);
-   procedure Add_Spot_To_ATB (theLight : Spot_Lights; Bar : Ant_Tweak_Bar.TW_Bar);
-   function Init (Lighting_Technique : in out Basic_Lighting_Technique) return Boolean;
+   function Init (Lighting_Technique : in out Basic_Lighting_Technique)
+                    return Boolean;
 
    function Lighting_Program (Technique : Basic_Lighting_Technique) return GL.Objects.Programs.Program;
 
---     function Point_Light_Ambient_ID (Technique : Basic_Lighting_Technique;
---                                      Index : Int) return GL.Uniforms.Uniform;
---     function Spot_Light_Ambient_ID (Technique : Basic_Lighting_Technique;
---                                     Index : Int) return GL.Uniforms.Uniform;
---     function Point_Light_Attenuation_Const_ID (Technique : Basic_Lighting_Technique;
---                                                Index : Int) return GL.Uniforms.Uniform;
---     function Point_Light_Attenuation_Exp_ID (Technique : Basic_Lighting_Technique;
---                                                Index : Int) return GL.Uniforms.Uniform;
---     function Point_Light_Attenuation_Linear_ID (Technique : Basic_Lighting_Technique;
---                                                Index : Int) return GL.Uniforms.Uniform;
---    function Point_Light_Diffuse_ID (Technique : Basic_Lighting_Technique;
---                                       Index : Int) return GL.Uniforms.Uniform;
---     function Point_Light_Direction_ID (Technique : Basic_Lighting_Technique;
---                                        Index : Int) return GL.Uniforms.Uniform;
---     function Point_Light_Colour_ID (Technique : Basic_Lighting_Technique;
---                                     Index : Int) return GL.Uniforms.Uniform;
---     function Spot_Light_Colour_ID (Technique : Basic_Lighting_Technique;
---                                    Index : Int) return GL.Uniforms.Uniform;
    procedure Set_Color_Texture_Unit (Technique : Basic_Lighting_Technique;
                    Texture_Unit : Ogldev_Engine_Common.Texture_Unit_Index);
    procedure Set_Directional_Light (Technique : Basic_Lighting_Technique;
                                     Light : Directional_Light);
    procedure Set_Point_Lights (Technique : Basic_Lighting_Technique;
-                               Lights : Point_Lights);
+                               Lights : Point_Light_Array);
    procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
-                              Spot : Spot_Lights);
+                              Spots : Spot_Light_Array);
+   procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
+                              Spot : Spot_Light);
    procedure Set_EyeWorld_Pos (Technique : Basic_Lighting_Technique;
                                EyeWorldPos : Singles.Vector3);
    procedure Set_Mat_Specular_Intensity (Technique : Basic_Lighting_Technique;
@@ -83,7 +58,7 @@ private
       Exp               : GL.Uniforms.Uniform;
    end record;
 
-   type Point_Light is record
+   type Point_Light_Locations is record
       Colour            : GL.Uniforms.Uniform;
       Ambient_Intensity : GL.Uniforms.Uniform;
       Diffuse_Intensity : GL.Uniforms.Uniform;
@@ -91,7 +66,7 @@ private
       Attenuation       : Atten;
    end record;
 
-   type Spot_Light is record
+   type Spot_Light_Locations is record
       Colour            : GL.Uniforms.Uniform;
       Ambient_Intensity : GL.Uniforms.Uniform;
       Diffuse_Intensity : GL.Uniforms.Uniform;
@@ -101,8 +76,8 @@ private
       Attenuation       : Atten;
    end record;
 
-   type Point_Lights is array (1 .. Max_Point_Lights) of Point_Light;
-   type Spot_Lights  is array (1 .. Max_Spot_Lights) of Spot_Light;
+   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
+   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
 
    type Basic_Lighting_Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
@@ -115,8 +90,8 @@ private
       Num_Point_Lights_Location       : GL.Uniforms.Uniform;
       Num_Spot_Lights_Location        : GL.Uniforms.Uniform;
       Dir_Light_Location              : Direct_Light;
-      Point_Lights_Location           : Point_Lights;
-      Spot_Lights_Location            : Spot_Lights;
+      Point_Lights_Location           : Point_Light_Location_Array;
+      Spot_Lights_Location            : Spot_Light_Location_Array;
    end record;
 
 end Ogldev_Basic_Lighting;

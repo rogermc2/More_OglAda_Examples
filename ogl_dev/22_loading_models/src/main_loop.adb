@@ -102,9 +102,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
       use Maths.Single_Math_Functions;
       use Ogldev_Basic_Lighting;
+      use Ogldev_Lights_Common;
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
-      Point                : array (1 .. 2) of Point_Light;
+      Point                : Point_Light_Array (1 .. 2);
       Spot                 : Spot_Light;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
@@ -123,10 +124,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Diffuse_Intensity (Point (2), 0.25);
       Set_Point_Light (Point (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
       Set_Linear_Attenuation (Point (2), 0.1);
-      Ogldev_Basic_Lighting.Set_Point_Lights (Light_Technique, 2, Point);
+      Ogldev_Basic_Lighting.Set_Point_Lights (Light_Technique, Point);
 
       Set_Diffuse_Intensity (Spot, 0.9);
-
+      Set_Spot_Light (Spot, Ogldev_Camera.Get_Position (Game_Camera), (0.0, 1.0, 1.0));
+      Set_Direction (Spot, Ogldev_Camera.Get_Target (Game_Camera));
+      Set_Attenuation_Constant (Spot, 0.1);
+      Set_Cut_Off (Spot, 10.0);
+      Ogldev_Basic_Lighting.Set_Spot_Lights (Light_Technique, Spot);
 
       Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
       Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);

@@ -13,6 +13,35 @@ package body Ogldev_Lights_Common is
 
    --  -------------------------------------------------------------------------
 
+   procedure Add_To_ATB (Base : Base_Light; Bar : Ant_Tweak_Bar.TW_Bar) is
+   begin
+      null;
+   end Add_To_ATB;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Add_Directional_To_ATB (theLight : Directional_Light;
+                         Bar : Ant_Tweak_Bar.TW_Bar) is
+   begin
+      null;
+   end Add_Directional_To_ATB;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Add_Point_To_ATB (theLight : Point_Light_Array; Bar : Ant_Tweak_Bar.TW_Bar) is
+   begin
+      null;
+   end Add_Point_To_ATB;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Add_Spot_To_ATB (theLight : Spot_Light_Array; Bar : Ant_Tweak_Bar.TW_Bar) is
+   begin
+      null;
+   end Add_Spot_To_ATB;
+
+   --  -------------------------------------------------------------------------
+
    function Ambient_Intensity (Light : Directional_Light) return Single is
    begin
       return Light.Ambient_Intensity;
@@ -158,6 +187,14 @@ package body Ogldev_Lights_Common is
    end Set_Attenuation_Constant;
 
    --  ------------------------------------------------------------------------
+
+   procedure Set_Direction (Light : in out Spot_Light; Direction : Singles.Vector3) is
+   begin
+      Light.Direction := Direction;
+   end Set_Direction;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Exp_Attenuation (Light : in out Point_Light; Attenuation : Single) is
    begin
       Light.Attenuation.Exp := Attenuation;
@@ -169,13 +206,6 @@ package body Ogldev_Lights_Common is
    begin
       Light.Attenuation.Linear := Attenuation;
    end Set_Linear_Attenuation;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Set_Direction (Light : in out Spot_Light; Direction : Singles.Vector3) is
-   begin
-      Light.Direction := Direction;
-   end Set_Direction;
 
    --  ------------------------------------------------------------------------
 
