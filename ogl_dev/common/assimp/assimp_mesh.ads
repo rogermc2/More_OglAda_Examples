@@ -9,7 +9,7 @@ with GL.Objects.Buffers;
 with GL.Types; use GL.Types;
 
 with Assimp_Texture;
-with Colour;
+with Assimp_Colour;
 with API_Vectors_Matrices; use API_Vectors_Matrices;
 
 package Assimp_Mesh is
@@ -60,7 +60,7 @@ package Assimp_Mesh is
 
     type API_Face is record
         Num_Indices : Interfaces.C.unsigned;
-        Indices     : Unsigned_Int_Array_Pointer;
+        Indices     : Unsigned_Array_Pointer;
     end record;
 
    type API_Faces_Array is array
@@ -86,7 +86,7 @@ package Assimp_Mesh is
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Vertices);
    type  Vertices_Map is new  Vertices_Package.Map with null Record;
 
-    type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Colour.AI_Colour_4D;
+    type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
     type AI_Mesh is record
         Name         : Ada.Strings.Unbounded.Unbounded_String :=
                          Ada.Strings.Unbounded.To_Unbounded_String ("");
@@ -119,7 +119,7 @@ package Assimp_Mesh is
         Bit_Tangents      : Vector_3D_Array_Pointer;
         Colours           : Colours_4D_Array_Pointer;
         Texture_Coords    : Vector_3D_Array_Pointer;
-        Num_UV_Components : Unsigned_Int_Array_Pointer;
+        Num_UV_Components : Unsigned_Array_Pointer;
         Faces             : Faces_Map;
         Bones             : Bones_Map;
         Material_Index    : UInt;
@@ -146,7 +146,7 @@ package Assimp_Mesh is
 --     end record;
 --     pragma Convention (C_Pass_By_Copy, API_Mesh);
 
-   procedure Load_Mesh (File_Name : Ada.Strings.Unbounded.Unbounded_String;
+   procedure Load_Mesh (File_Name : String;
                         theMesh   : in out Mesh);
     private
          for AI_Primitive_Type use
