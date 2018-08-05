@@ -3,6 +3,8 @@ with Ada.Strings.Unbounded;
 
 with GL.Types; use GL.Types;
 
+with Ant_Tweak_Bar;
+
 package Ogldev_Lights_Common is
    type Base_Light is private;
    type Directional_Light is private;
@@ -10,11 +12,20 @@ package Ogldev_Lights_Common is
    type Point_Light is private;
    type Spot_Light is private;
 
+   type Point_Light_Array is array (UInt range <>) of Point_Light;
+   type Spot_Light_Array  is array (UInt range <>) of Spot_Light;
+
    Colour_White : constant Singles.Vector3 := (1.0, 1.0, 1.0);
    Colour_Red : constant Singles.Vector3 := (1.0, 0.0, 0.0);
    Colour_Green : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    Colour_Cyan : constant Singles.Vector3 := (0.0, 1.0, 1.0);
    Colour_Blue : constant Singles.Vector3 := (0.0, 0.0, 1.0);
+
+   procedure Add_To_ATB (Base : Base_Light; Bar : Ant_Tweak_Bar.TW_Bar);
+   procedure Add_Directional_To_ATB (theLight : Directional_Light;
+                                     Bar : Ant_Tweak_Bar.TW_Bar);
+   procedure Add_Point_To_ATB (theLight : Point_Light_Array; Bar : Ant_Tweak_Bar.TW_Bar);
+   procedure Add_Spot_To_ATB (theLight : Spot_Light_Array; Bar : Ant_Tweak_Bar.TW_Bar);
 
    function Ambient_Intensity (Light : Directional_Light) return Single;
    function Ambient_Intensity (Light : Point_Light) return Single;
@@ -37,6 +48,8 @@ package Ogldev_Lights_Common is
 
    procedure Set_Ambient_Intensity (Light : in out Point_Light; Intensity : Single);
    procedure Set_Attenuation_Constant (Light : in out Point_Light; Attenuation : Single);
+   procedure Set_Attenuation_Constant (Light : in out Spot_Light; Attenuation : Single);
+   procedure Set_Direction (Light : in out Spot_Light; Direction : Singles.Vector3);
    procedure Set_Exp_Attenuation (Light : in out Point_Light; Attenuation : Single);
    procedure Set_Linear_Attenuation (Light : in out Point_Light; Attenuation : Single);
    procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off : Single);
