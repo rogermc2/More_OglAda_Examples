@@ -5,3 +5,6 @@ bin
 .#*#
 *~
 *.exe
+*.ali
+*.cswi
+*.o
