@@ -1,4 +1,0 @@
-blob_reference.ads:6:06: circular unit dependency
-blob_reference.ads:6:06: "Blob_Reference (spec)" depends on "Blob (spec)"
-blob_reference.ads:6:06: "Blob (spec)" depends on "Blob_Reference (spec)"
-blob_reference.ads:6:06: "Blob_Reference (spec)" depends on "Blob_Reference (spec)"
