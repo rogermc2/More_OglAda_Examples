@@ -1,2 +1,0 @@
-ogldev_texture.adb:51:32: expected type "Image" defined at core_image.ads:336
-ogldev_texture.adb:51:32: found type "MPP_Image" defined at magick_image-api.ads:11
