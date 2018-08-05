@@ -64,8 +64,8 @@ package body Ogldev_Basic_Lighting is
 
    begin
       Lighting_Technique.Lighting_Program :=
-        Program_From ((Src ("/Ada_Source/OpenGLAda/examples/ogl_dev/common/shaders/basic_lighting.vs", Vertex_Shader),
-                       Src ("/Ada_Source/OpenGLAda/examples/ogl_dev/common/shaders/basic_lighting.fs", Fragment_Shader)));
+        Program_From ((Src ("../common/shaders/basic_lighting.vs", Vertex_Shader),
+                       Src ("../common/shaders/basic_lighting.fs", Fragment_Shader)));
 
       OK := GL.Objects.Programs.Link_Status (Lighting_Technique.Lighting_Program);
       if not OK then
