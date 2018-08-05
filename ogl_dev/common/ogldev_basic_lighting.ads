@@ -19,6 +19,9 @@ package Ogldev_Basic_Lighting is
    type Point_Lights is private;
    type Spot_Lights  is private;
 
+   type Point_Light_Array is array (Int range <>) of Ogldev_Lights_Common.Point_Light;
+   type Spot_Light_Array is array (Int range <>) of Ogldev_Lights_Common.Spot_Light;
+
    procedure Add_To_ATB (Base : Base_Light; Bar : Ant_Tweak_Bar.TW_Bar);
    procedure Add_Directional_To_ATB (theLight : Directional_Light;
                                      Bar : Ant_Tweak_Bar.TW_Bar);
@@ -51,11 +54,9 @@ package Ogldev_Basic_Lighting is
    procedure Set_Directional_Light (Technique : Basic_Lighting_Technique;
                                     Light : Directional_Light);
    procedure Set_Point_Lights (Technique : Basic_Lighting_Technique;
-                               Num_Lights : UInt;
-                               Light : Ogldev_Lights_Common.Point_Light);
+                               Lights : Point_Lights);
    procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
-                              Num_Lights : UInt;
-                              Spot : Ogldev_Lights_Common.Spot_Light);
+                              Spot : Spot_Lights);
    procedure Set_EyeWorld_Pos (Technique : Basic_Lighting_Technique;
                                EyeWorldPos : Singles.Vector3);
    procedure Set_Mat_Specular_Intensity (Technique : Basic_Lighting_Technique;

@@ -255,19 +255,19 @@ package body Ogldev_Basic_Lighting is
    --  -------------------------------------------------------------------------
 
   procedure Set_Point_Lights (Technique : Basic_Lighting_Technique;
-                              Num_Lights : UInt;
-                              Light : Ogldev_Lights_Common.Point_Light) is
-      Location : Point_Light;
+                              Lights : Point_Lights) is
+      Num_Lights : constant UInt :=  Lights'Length;
+      Location   : Point_Light;
    begin
       GL.Uniforms.Set_UInt (Technique.Num_Point_Lights_Location, Num_Lights);
       for index in Int range 1 .. Int (Num_Lights) loop
          Location := Technique.Point_Lights_Location (index);
-         Set_Single (Location.Colour, Colour (Light));
-         Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Light));
-         Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Light));
+         Set_Single (Location.Colour, Colour (Lights (index)));
+         Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Lights (index)));
+         Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Lights (index)));
          Set_Single (Location.Attenuation.Atten_Constant,
-                     Attenuation_Constant (Light));
-         Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Light));
+                     Attenuation_Constant (Lights (index)));
+         Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Lights (index)));
       end loop;
 
    end Set_Point_Lights;

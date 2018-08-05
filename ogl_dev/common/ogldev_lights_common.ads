@@ -6,6 +6,7 @@ with GL.Types; use GL.Types;
 package Ogldev_Lights_Common is
    type Base_Light is private;
    type Directional_Light is private;
+   type Light_Attenuation is private;
    type Point_Light is private;
    type Spot_Light is private;
 
@@ -34,6 +35,18 @@ package Ogldev_Lights_Common is
    function Exponent (Light : Spot_Light) return Single;
    function Position (Light : Point_Light) return Singles.Vector3;
 
+   procedure Set_Ambient_Intensity (Light : in out Point_Light; Intensity : Single);
+   procedure Set_Attenuation_Constant (Light : in out Point_Light; Attenuation : Single);
+   procedure Set_Exp_Attenuation (Light : in out Point_Light; Attenuation : Single);
+   procedure Set_Linear_Attenuation (Light : in out Point_Light; Attenuation : Single);
+   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off : Single);
+   procedure Set_Diffuse_Intensity (Light : in out Point_Light; Intensity : Single);
+   procedure Set_Diffuse_Intensity (Light : in out Spot_Light; Intensity : Single);
+
+   procedure Set_Point_Light (Light : in out Point_Light; Position : Singles.Vector3;
+                              Colour : Singles.Vector3);
+   procedure Set_Spot_Light (Light : in out Spot_Light; Position : Singles.Vector3;
+                              Colour : Singles.Vector3);
 private
 
    type Base_Light is record
@@ -50,8 +63,6 @@ private
       Colure             : Singles.Vector3 := (1.0, 1.0, 1.0);
       Direction          : Singles.Vector3 := (1.0, 0.0, 0.0);
    end record;
-
-
 
    type Light_Attenuation is record
       Atten_Constant : Single := 1.0;

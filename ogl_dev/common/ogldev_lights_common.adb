@@ -138,4 +138,84 @@ package body Ogldev_Lights_Common is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Ambient_Intensity (Light : in out Point_Light; Intensity : Single) is
+   begin
+      Light.Base.Ambient_Intensity := Intensity;
+   end Set_Ambient_Intensity;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Ambient_Intensity (Light : in out Spot_Light; Intensity : Single) is
+   begin
+      Light.Point.Base.Ambient_Intensity := Intensity;
+   end Set_Ambient_Intensity;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Attenuation_Constant (Light : in out Point_Light; Attenuation : Single) is
+   begin
+      Light.Attenuation.Atten_Constant := Attenuation;
+   end Set_Attenuation_Constant;
+
+   --  ------------------------------------------------------------------------
+   procedure Set_Exp_Attenuation (Light : in out Point_Light; Attenuation : Single) is
+   begin
+      Light.Attenuation.Exp := Attenuation;
+   end Set_Exp_Attenuation;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Linear_Attenuation (Light : in out Point_Light; Attenuation : Single) is
+   begin
+      Light.Attenuation.Linear := Attenuation;
+   end Set_Linear_Attenuation;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Direction (Light : in out Spot_Light; Direction : Singles.Vector3) is
+   begin
+      Light.Direction := Direction;
+   end Set_Direction;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Diffuse_Intensity (Light : in out Point_Light; Intensity : Single) is
+   begin
+      Light.Base.Diffuse_Intensity := Intensity;
+   end Set_Diffuse_Intensity;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Diffuse_Intensity (Light : in out Spot_Light; Intensity : Single) is
+   begin
+      Light.Point.Base.Diffuse_Intensity := Intensity;
+   end Set_Diffuse_Intensity;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off : Single) is
+   begin
+      Light.Cut_Off := Cut_Off;
+   end Set_Cut_Off;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Point_Light (Light : in out Point_Light; Position : Singles.Vector3;
+                              Colour : Singles.Vector3) is
+   begin
+      Light.Position := Position;
+      Light.Base.Colour := Colour;
+   end Set_Point_Light;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Spot_Light (Light : in out Spot_Light; Position : Singles.Vector3;
+                              Colour : Singles.Vector3) is
+   begin
+      Light.Point.Position := Position;
+      Light.Point.Base.Colour := Colour;
+   end Set_Spot_Light;
+
+   --  ------------------------------------------------------------------------
+
 end Ogldev_Lights_Common;
