@@ -42,9 +42,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Render (Window : in out Glfw.Windows.Window) is
-        use GL.Types.Singles;
         use GL.Objects.Buffers;
-        use Maths;
         Window_Width  : Glfw.Size;
         Window_Height : Glfw.Size;
     begin
@@ -120,7 +118,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Setup (Window : in out Glfw.Windows.Window) is
-        use GL.Types.Singles;
         use GL.Objects.Buffers;
         use GL.Objects.Shaders;
     begin
@@ -141,6 +138,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
              Fragment_Shader)));
         Utilities.Show_Shader_Program_Data (Render_Program);
 
+      Put_Line (" shaders loaded.");
         Set_MVP_Matrix (Window, Render_Program);
 
         Vertex_Buffer.Initialize_Id;
@@ -151,6 +149,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Array_Buffer.Bind (Colour_Buffer);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Cube_Data.Colour_Data, Static_Draw);
 
+      Put_Line (" Setup complete.");
     exception
         when others =>
             Put_Line ("An exception occurred in Setup.");
