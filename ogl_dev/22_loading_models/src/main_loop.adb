@@ -32,6 +32,8 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
+with Assimp_Mesh;
+
 with Buffers;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
@@ -47,6 +49,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Texture_Buffer         : GL.Objects.Buffers.Buffer;
    Normals_Buffer         : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
+   theMesh                : Assimp_Mesh.Mesh;
    theTexture             : Ogldev_Texture.Ogl_Texture;
    Light_Technique        : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
@@ -63,10 +66,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Target              : Singles.Vector3 := (0.0, 0.0, 0.1);  --  Normalized by Camera.Init
       Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
+      VAO.Initialize_Id;
+      VAO.Bind;
       Result := Ogldev_Basic_Lighting.Init (Light_Technique);
       if Result then
-         VAO.Initialize_Id;
-         VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
@@ -75,14 +78,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Culling.Set_Front_Face (Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
          GL.Toggles.Enable (GL.Toggles.Cull_Face);
-
-         Buffers.Create_Buffers (Vertex_Buffer, Texture_Buffer, Normals_Buffer, Indices_Buffer);
-
+         GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit
               (Light_Technique, Ogldev_Engine_Common.Colour_Texture_Unit_Index);
-         Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "/Ada_Source/OpenGLAda/examples/ogl_dev/content/phoenix_ugv.md2");
-         Ogldev_Texture.Load (theTexture);
+
+         Assimp_Mesh.Load_Mesh ( "/Ada_Source/OpenGLAda/examples/ogl_dev/content/phoenix_ugv.md2", theMesh);
+
+         Buffers.Create_Buffers (Vertex_Buffer, Texture_Buffer, Normals_Buffer, Indices_Buffer);
 
          Perspective_Proj_Info.FOV := 60.0;
          Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);

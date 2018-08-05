@@ -26,6 +26,8 @@ package Ogldev_Basic_Lighting is
    procedure Add_Spot_To_ATB (theLight : Spot_Lights; Bar : Ant_Tweak_Bar.TW_Bar);
    function Init (Lighting_Technique : in out Basic_Lighting_Technique) return Boolean;
 
+   function Lighting_Program (Technique : Basic_Lighting_Technique) return GL.Objects.Programs.Program;
+
 --     function Point_Light_Ambient_ID (Technique : Basic_Lighting_Technique;
 --                                      Index : Int) return GL.Uniforms.Uniform;
 --     function Spot_Light_Ambient_ID (Technique : Basic_Lighting_Technique;

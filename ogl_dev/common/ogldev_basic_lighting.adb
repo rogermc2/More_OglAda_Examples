@@ -160,6 +160,13 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
+   function Lighting_Program (Technique : Basic_Lighting_Technique) return GL.Objects.Programs.Program is
+   begin
+      return Technique.Lighting_Program;
+   end Lighting_Program;
+
+   --  -------------------------------------------------------------------------
+
 --     function Point_Light_Ambient_ID (Technique : Basic_Lighting_Technique;
 --                                        Index : Int) return GL.Uniforms.Uniform is
 --     begin
