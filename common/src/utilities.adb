@@ -344,6 +344,7 @@ package body Utilities is
       Put_Line (Shaders.Source (Shader1));
 
       while Shaders.Lists.Has_Next (List_Cursor)  loop
+      Put_Line (" Show_Shader_Program_Data loop entry");
          List_Cursor := Shaders.Lists.Next (List_Cursor);
          declare
             ShaderN  : constant Shaders.Shader :=
@@ -352,6 +353,7 @@ package body Utilities is
             Shader_Count := Shader_Count + 1;
             Put_Line ("Shader: " & Positive'Image (Shader_Count));
             Put_Line (Shaders.Source (ShaderN));
+            New_Line;
          end;
       end loop;
       New_Line;
