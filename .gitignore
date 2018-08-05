@@ -1,3 +1,15 @@
+lib
+obj
+bin
 .DS_Store
-*/.xml
-*/.db
+.#*#
+*~
+*.exe
+*.xml
+*.db
+*.ali
+*.o
+*.stderr
+*.stdout
+*.db-shm
+*.db-wal
