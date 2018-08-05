@@ -1,6 +1,6 @@
-with "../../opengl-glfw.gpr";
-with "../../opengl-text.gpr";
-with "../../opengl.gpr";
+with "../../OpenGLAda/opengl-glfw.gpr";
+with "../../OpenGLAda/opengl-text.gpr";
+with "../../OpenGLAda/opengl.gpr";
 
 project Common is
 
