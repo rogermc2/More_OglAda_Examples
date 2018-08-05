@@ -22,12 +22,14 @@ with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 with Glfw.Windows.Context;
 
+with Maths;
 with Program_Loader;
 with Utilities;
 
 with Ogldev_Basic_Lighting;
 with Ogldev_Camera;
 with Ogldev_Engine_Common;
+with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
@@ -50,7 +52,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Normals_Buffer         : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
    theMesh                : Assimp_Mesh.Mesh;
-   theTexture             : Ogldev_Texture.Ogl_Texture;
+--     theTexture             : Ogldev_Texture.Ogl_Texture;
    Light_Technique        : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
 
@@ -84,14 +86,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Assimp_Mesh.Load_Mesh ( "/Ada_Source/OpenGLAda/examples/ogl_dev/content/phoenix_ugv.md2", theMesh);
 
-         Buffers.Create_Buffers (Vertex_Buffer, Texture_Buffer, Normals_Buffer, Indices_Buffer);
-
-         Perspective_Proj_Info.FOV := 60.0;
-         Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
-         Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-         Perspective_Proj_Info.Z_Near := 1.0;
-         Perspective_Proj_Info.Z_Far := 100.0;
-
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
         Glfw.Input.Poll_Events;
@@ -106,27 +100,48 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
+      use Maths.Single_Math_Functions;
+      use Ogldev_Basic_Lighting;
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
-      World_Transformation : GL.Types.Singles.Matrix4;
+      Point                : array (1 .. 2) of Point_Light;
+      Spot                 : Spot_Light;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
+      Scale := Scale + 0.1;
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
-      Scale := Scale + 0.1;
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
+
+      Set_Diffuse_Intensity (Point (1), 0.25);
+      Set_Point_Light (Point (1), (3.0, 1.0, Field_Depth * (Cos (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
+      Set_Linear_Attenuation (Point (1), 0.1);
+
+      Set_Diffuse_Intensity (Point (2), 0.25);
+      Set_Point_Light (Point (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
+      Set_Linear_Attenuation (Point (2), 0.1);
+      Ogldev_Basic_Lighting.Set_Point_Lights (Light_Technique, 2, Point);
+
+      Set_Diffuse_Intensity (Spot, 0.9);
+
+
       Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
       Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
+
+      Perspective_Proj_Info.FOV := 60.0;
+      Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
+      Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
+      Perspective_Proj_Info.Z_Near := 1.0;
+      Perspective_Proj_Info.Z_Far := 100.0;
 
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
       Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
 
-      World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
        GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
@@ -151,7 +166,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Element_Array_Buffer.Bind (Indices_Buffer);
 
       GL.Objects.Textures.Set_Active_Unit (0);
-      GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
+--        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
       GL.Objects.Buffers.Draw_Elements (Triangles, 12, UInt_Type, 0);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
