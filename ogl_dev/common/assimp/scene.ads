@@ -21,6 +21,10 @@ package Scene is
 
     --     package Mesh_Address_Conversion is new
     --       System.Address_To_Access_Conversions (Mesh.API_Mesh_Array);
+    type Scene_Flags is (AI_Scene_Flags_Incomplete, AI_Scene_Flags_Validated,
+                         AI_Scene_Flags_Validation_Warning, AI_Scene_Flags_Non_Verbose_Format,
+                         AI_Scene_Flags_Terrain);
+    pragma Convention (C, Scene_Flags);
 
     type Cameras_Ptr is access Camera.API_Camera_Array;
     type Lights_Ptr is access Light.API_Light_Array;
@@ -85,4 +89,9 @@ private
 
     type API_Node_Ptr is access API_Node;
 
+    for Scene_Flags use (AI_Scene_Flags_Incomplete         => 1,
+                         AI_Scene_Flags_Validated          => 2,
+                         AI_Scene_Flags_Validation_Warning => 4,
+                         AI_Scene_Flags_Non_Verbose_Format => 8,
+                         AI_Scene_Flags_Terrain            => 16);
 end Scene;
