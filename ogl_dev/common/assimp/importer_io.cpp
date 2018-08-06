@@ -10,7 +10,7 @@
 //  use the latter's constructor or assignment operator.
 
 //  Read_File returns a pointer to the imported data; NULL if the import failed.
-const aiScene* Read_File(const char* fileName, unsigned int Flags)
+const aiScene* aiReadFile(const char* fileName, unsigned int Flags)
   {
   const aiScene*   theScene_Ptr;
   Assimp::Importer aiScene_Object;
