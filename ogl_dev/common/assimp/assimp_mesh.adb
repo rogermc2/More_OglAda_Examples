@@ -34,14 +34,16 @@ package body Assimp_Mesh is
 
     procedure Init_Mesh (theMesh : in out AI_Mesh; Mesh_Index : UInt) is
     begin
-        Assimp.API.Init_Mesh (theMesh : in out API_Mesh; Mesh_Index : UInt)
-          (Material, Tex_Type, unsigned (Tex_Index), C_Path'Access);
+        null;
+--          Assimp.API.Init_Mesh (theMesh : in out API_Mesh; Mesh_Index : UInt)
+--            (Material, Tex_Type, unsigned (Tex_Index), C_Path'Access);
     end Init_Mesh;
 
     --  ------------------------------------------------------------------------
 
-    procedure Load_Mesh (File_Name : Ada.Strings.Unbounded.Unbounded_String;
+    procedure Load_Mesh (File_Name : String;
                          theMesh   : in out AI_Mesh) is
+       theImporter : Importer;
     begin
         null;
     end Load_Mesh;
