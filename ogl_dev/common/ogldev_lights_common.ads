@@ -46,6 +46,9 @@ package Ogldev_Lights_Common is
    function Exponent (Light : Spot_Light) return Single;
    function Position (Light : Point_Light) return Singles.Vector3;
 
+   procedure Init_Directional_Light (Light : in out Directional_Light;
+                                     Ambient_Intensity, Diffuse_Intensity : Single;
+                                     Colour, Direction : Singles.Vector3);
    procedure Set_Ambient_Intensity (Light : in out Point_Light; Intensity : Single);
    procedure Set_Attenuation_Constant (Light : in out Point_Light; Attenuation : Single);
    procedure Set_Attenuation_Constant (Light : in out Spot_Light; Attenuation : Single);
@@ -71,9 +74,9 @@ private
    end record;
 
    type Directional_Light is record
-      Ambient_Intensity  : Single := 0.2;
-      Diffuse_Intensity  : Single := 0.8;
-      Colure             : Singles.Vector3 := (1.0, 1.0, 1.0);
+      Ambient_Intensity  : Single := 1.0;
+      Diffuse_Intensity  : Single := 0.1;
+      Colour             : Singles.Vector3 := (1.0, 1.0, 1.0);
       Direction          : Singles.Vector3 := (1.0, 0.0, 0.0);
    end record;
 

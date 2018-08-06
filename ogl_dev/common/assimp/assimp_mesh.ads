@@ -146,8 +146,9 @@ package Assimp_Mesh is
 --     end record;
 --     pragma Convention (C_Pass_By_Copy, API_Mesh);
 
-   procedure Load_Mesh (File_Name : String;
-                        theMesh   : in out Mesh);
+   procedure Load_Mesh (File_Name : String; theMesh : in out Mesh);
+   procedure Render_Mesh (theMesh : Mesh);
+
     private
          for AI_Primitive_Type use
         (AI_Primitive_Type_Point       => 1,

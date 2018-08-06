@@ -294,26 +294,26 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_EyeWorld_Pos (Technique   : Basic_Lighting_Technique;
-                               EyeWorldPos : Singles.Vector3) is
+   procedure Set_Eye_World_Pos (Technique :  Basic_Lighting_Technique;
+                                Position : Singles.Vector3) is
    begin
-      null;
-   end Set_EyeWorld_Pos;
+      Set_Single (Technique.Eye_World_Pos_Location, Position);
+   end Set_Eye_World_Pos;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Mat_Specular_Intensity (Technique : Basic_Lighting_Technique;
                                          Intensity : Single) is
    begin
-      null;
+      Set_Single (Technique.Mat_Specular_Intensity_Location, Intensity);
    end  Set_Mat_Specular_Intensity;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Mat_Specular_Power (Technique : Basic_Lighting_Technique;
-                                     Power     : Single) is
+                                     Power     : UInt) is
    begin
-      null;
+      Set_UInt (Technique.Mat_Specular_Power_Location, Power);
    end Set_Mat_Specular_Power;
 
    --  -------------------------------------------------------------------------

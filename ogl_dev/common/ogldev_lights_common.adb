@@ -160,6 +160,18 @@ package body Ogldev_Lights_Common is
 
    --  -------------------------------------------------------------------------
 
+procedure Init_Directional_Light (Light : in out Directional_Light;
+                                    Ambient_Intensity, Diffuse_Intensity : Single;
+                                    Colour, Direction : Singles.Vector3) is
+   begin
+      Light.Ambient_Intensity := Ambient_Intensity;
+      Light.Diffuse_Intensity := Diffuse_Intensity;
+      Light.Colour := Colour;
+      Light.Direction := Direction;
+   end Init_Directional_Light;
+
+   --  ------------------------------------------------------------------------
+
    function Position (Light : Point_Light) return Singles.Vector3 is
    begin
       return Light.Position;
@@ -184,6 +196,13 @@ package body Ogldev_Lights_Common is
    procedure Set_Attenuation_Constant (Light : in out Point_Light; Attenuation : Single) is
    begin
       Light.Attenuation.Atten_Constant := Attenuation;
+   end Set_Attenuation_Constant;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Attenuation_Constant (Light : in out Spot_Light; Attenuation : Single) is
+   begin
+      Light.Point.Attenuation.Atten_Constant := Attenuation;
    end Set_Attenuation_Constant;
 
    --  ------------------------------------------------------------------------
