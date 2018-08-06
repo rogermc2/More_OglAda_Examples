@@ -22,13 +22,13 @@ Package Ogldev_Texture is
       Texture_Target : GL.Low_Level.Enums.Texture_Kind;
       Texture_Object : GL.Objects.Textures.Texture;
       --  DON't Change Image_Ref or Blob_Ref
-      Image_Ref      : Magick_Image.API.Class_Image.MPP_Image;
-      Blob_Ref       : aliased Magick_Blob.API.Class_Blob.Blob;
+      Image_Ref      : Core_Image.AI_Image;
+      Blob_Ref       : Magick_Blob.Blob_Data;
    end record;
 
---     package Mesh_Texture_Package is new
---       Ada.Containers.Indefinite_Ordered_Maps (UInt, Ogl_Texture);
---     subtype Mesh_Texture_Map is Mesh_Texture_Package.Map;
+   package Mesh_Texture_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Ogl_Texture);
+   subtype Mesh_Texture_Map is Mesh_Texture_Package.Map;
    Texture_Exception : Exception;
 
    procedure Bind (theTexture : Ogl_Texture;

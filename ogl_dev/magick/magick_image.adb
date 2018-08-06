@@ -8,16 +8,18 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Magick_Image.API;
 
+with Image_Reference;
+
 package body Magick_Image is
 
---     type Raw_Data is array (Interfaces.C.size_t range <>) of GL.Types.UByte;
-
-   procedure Read_File (theImage : out Magick_Image.API.Class_Image.MPP_Image;
+--     procedure Read_File (theImage : out Magick_Image.API.Class_Image.MPP_Image;
+   procedure Read_File (theImage : in out Core_Image.AI_Image;
                         File_Name : String) is
 
---        CPP_Image    : Magick_Image.API.Class_Image.MPP_Image;
+      CPP_Image  : Magick_Image.API.Class_Image.MPP_Image;
    begin
-      theImage.Read (Interfaces.C.Strings.New_String (File_Name));
+      CPP_Image.Read (Interfaces.C.Strings.New_String (File_Name));
+      theImage := CPP_Image.Ref.Image.all;
    exception
       when others =>
          New_Line;
