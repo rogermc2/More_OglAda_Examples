@@ -11,7 +11,6 @@ package Magick_Blob.API is
 
    package Class_Blob is
 
---    type BlobRef is private;
       type Blob is tagged limited record
              Blob_Ref : access Blob_Reference.Class_Blob_Ref.Blob_Ref;
 --           Blob_Ref : System.Address;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:75
