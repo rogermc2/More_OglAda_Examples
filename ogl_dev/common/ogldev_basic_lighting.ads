@@ -32,12 +32,12 @@ package Ogldev_Basic_Lighting is
                               Spots : Spot_Light_Array);
    procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
                               Spot : Spot_Light);
-   procedure Set_EyeWorld_Pos (Technique : Basic_Lighting_Technique;
-                               EyeWorldPos : Singles.Vector3);
+   procedure Set_Eye_World_Pos (Technique : Basic_Lighting_Technique;
+                                Position : Singles.Vector3);
    procedure Set_Mat_Specular_Intensity (Technique : Basic_Lighting_Technique;
                                          Intensity : Single);
    procedure Set_Mat_Specular_Power (Technique : Basic_Lighting_Technique;
-                                     Power : Single);
+                                     Power : UInt);
    procedure Set_World_Matrix (Technique : Basic_Lighting_Technique;
                                World_Inverse : Singles.Matrix4);
    procedure Set_WVP (Technique : Basic_Lighting_Technique;
