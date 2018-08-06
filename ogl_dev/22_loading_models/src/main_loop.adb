@@ -34,9 +34,8 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
-with Assimp_Mesh;
-
 with Buffers;
+with Mesh;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
@@ -51,7 +50,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Texture_Buffer         : GL.Objects.Buffers.Buffer;
    Normals_Buffer         : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
-   theMesh                : Assimp_Mesh.Mesh;
+   theMesh                : Mesh.Mesh;
 --     theTexture             : Ogldev_Texture.Ogl_Texture;
    Light_Technique        : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Direct_Light           : Ogldev_Lights_Common.Directional_Light;
@@ -159,7 +158,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Mat_Specular_Intensity (Light_Technique, 0.0);
       Set_Mat_Specular_Power (Light_Technique, 0);
 
-      Assimp_Mesh.Render_Mesh (theMesh);
+      Mesh.Render_Mesh (theMesh);
 --         GL.Attributes.Enable_Vertex_Attrib_Array (0);
 --        GL.Attributes.Enable_Vertex_Attrib_Array (1);
 --        GL.Attributes.Enable_Vertex_Attrib_Array (2);

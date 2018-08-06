@@ -14,17 +14,17 @@ Package Mesh is
                           World_Matrix_VB, Invalid_Material);
    pragma Convention (C, Material_Type);
 
-   type Basic_Mesh is private;
+   type Mesh_22 is private;
    type Mesh_Entry is private;
 
-   procedure Load_Mesh (theMesh : in out Basic_Mesh; File_Name : String);
-   procedure Render (theMesh : Basic_Mesh);
-   procedure Render (theMesh : Basic_Mesh;
-                     WVP_Matrix, World_Matrix : Singles.Matrix4_Array);
+   procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String);
+   procedure Render (theMesh : Mesh_22);
+--     procedure Render (theMesh : Mesh_22;
+--                       WVP_Matrix, World_Matrix : Singles.Matrix4_Array);
 
 private
-   Num_Buffers : constant UInt := 6;
-
+--     Num_Buffers : constant UInt := 6;
+--
    for Material_Type use (Index_Buffer     => 0,
                           Pos_VB           => 1,
                           Normal_VB        => 2,
@@ -46,10 +46,10 @@ private
    type Mesh_Entry_Map is new Mesh_Entry_Package.Map with
      null Record;
 
-   type Basic_Mesh is record
+   type Mesh_22 is record
       Basic_Entry : Mesh_Entry;
       Entries     : Mesh_Entry_Package.Map;
---      Textures    : Ogldev_Texture.Mesh_Texture_Package.Map;
+      Textures    : Ogldev_Texture.Mesh_Texture_Package.Map;
    end record;
 
 end Mesh;

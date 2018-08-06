@@ -1,10 +1,6 @@
 
-pragma Warnings (Off);
-
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
-
---  with GNAT.Directory_Operations;
 
 with GL.Attributes;
 with GL.Low_Level.Enums;
