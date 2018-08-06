@@ -2,8 +2,6 @@
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
---  with GNAT.Directory_Operations;
-
 with GL.Attributes;
 with GL.Low_Level.Enums;
 
@@ -26,13 +24,13 @@ package body Mesh is
    Tex_Coord_Location : constant GL.Attributes.Attribute := 1;
    Normal_Location    : constant GL.Attributes.Attribute := 2;
 
---     procedure Init_Materials (Initial_Mesh : in out Basic_Mesh;
+--     procedure Init_Materials (Initial_Mesh : in out Mesh_22;
 --                               File_Name : String;
 --                               theScene : Scene.AI_Scene);
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_From_Scene (Initial_Mesh : in out Basic_Mesh;
+   procedure Init_From_Scene (Initial_Mesh : in out Mesh_22;
                               File_Name : String;
                               theScene : Scene.AI_Scene) is
       use Mesh_Entry_Package;
@@ -83,7 +81,7 @@ package body Mesh is
 
    -------------------------------------------------------------------------
 
-   procedure Init_Materials (Initial_Mesh : in out Basic_Mesh;
+   procedure Init_Materials (Initial_Mesh : in out Mesh_22;
                              File_Name : String;
                              theScene : Scene.AI_Scene) is
       use Material.AI_Material_Package;
@@ -135,7 +133,7 @@ package body Mesh is
 --                          Positions, Normals : out GL.Types.Singles.Vector3_Array;
 --                          Tex_Coords : out GL.Types.Singles.Vector2_Array;
 --                          Indices : out GL.Types.UInt_Array) is
-   procedure Init_Mesh (aMesh : in out Basic_Mesh; Index : GL.Types.UInt;
+   procedure Init_Mesh (aMesh : in out Mesh_22; Index : GL.Types.UInt;
                         Base_Mesh : Ogldev_Basic_Mesh.AI_Mesh) is
       use Ada.Containers;
       use Mesh_Entry_Package;
@@ -159,7 +157,7 @@ package body Mesh is
 
   --  -------------------------------------------------------------------------
 
-   procedure Init_Mesh_Entry (aMesh : in out Basic_Mesh;
+   procedure Init_Mesh_Entry (aMesh : in out Mesh_22;
                               Vertices : GL.Types.Singles.Vector3_Array;
                               Indices : GL.Types.UInt_Array) is
         use GL.Objects.Buffers;
@@ -181,7 +179,7 @@ package body Mesh is
 
   --  -------------------------------------------------------------------------
 
-   procedure Load_Mesh (theMesh : in out Basic_Mesh; File_Name : String) is
+   procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String) is
       theScene : Scene.AI_Scene;
    begin
       Put_Line (" Mesh.Load_Mesh, import scene.");
@@ -204,18 +202,25 @@ package body Mesh is
 
    -------------------------------------------------------------------------
 
-   procedure Render (theMesh : Basic_Mesh) is
+   procedure Render (theMesh : Mesh_22) is
       use Ada.Containers;
       use Mesh_Entry_Package;
       procedure Draw (Entry_Cursor :  Mesh_Entry_Package.Cursor) is
          use Ogldev_Texture.Mesh_Texture_Package;
          Material_Kind  : constant Material_Type
            := Element (Entry_Cursor).Material_Index;
-         Material_Index : constant Natural := Natural (Material_Kind'Enum_Rep);
+         Material_Index :  Material_Type;
          Tex_Curs       : Ogldev_Texture.Mesh_Texture_Package.Cursor;
          Num_Indices    : constant UInt := Element (Entry_Cursor).Num_Indices;
       begin
-         if Material_Index < Natural (theMesh.Textures.Length) then
+         GL.Objects.Buffers.Array_Buffer.Bind (Element (Entry_Cursor).VBO);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
+
+         GL.Objects.Buffers.Element_Array_Buffer.Bind (Element (Entry_Cursor).IBO);
+         Material_Index := Element (Entry_Cursor).Material_Index;
+         if Material_Index'Enum_Rep < theMesh.Textures.Length then
             if not theMesh.Textures.Is_Empty then
                Ogldev_Texture.Bind (Element (Tex_Curs),
                                     Ogldev_Engine_Common.Colour_Texture_Unit_Index);
@@ -229,8 +234,16 @@ package body Mesh is
          end if;
       end Draw;
    begin
-      theMesh.VAO.Bind;
+      theMesh.Basic_Entry.VAO.Bind;
+         GL.Attributes.Enable_Vertex_Attrib_Array (0);
+         GL.Attributes.Enable_Vertex_Attrib_Array (1);
+         GL.Attributes.Enable_Vertex_Attrib_Array (2);
+
       Iterate (theMesh.Entries, Draw'Access);
+
+         GL.Attributes.Disable_Vertex_Attrib_Array (0);
+         GL.Attributes.Disable_Vertex_Attrib_Array (1);
+         GL.Attributes.Disable_Vertex_Attrib_Array (2);
 
    exception
       when others =>
@@ -240,7 +253,7 @@ package body Mesh is
 
    --  -------------------------------------------------------------------------
 
-   procedure Render (theMesh : Basic_Mesh;
+   procedure Render (theMesh : Mesh_22;
                      WVP_Matrix, World_Matrix : Singles.Matrix4_Array) is
 
       use GL.Objects.Buffers;
