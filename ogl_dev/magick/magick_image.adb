@@ -1,14 +1,14 @@
 
+with System;
+
 with Interfaces.C;
 with Interfaces.C.Strings;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
---  with GL.Types;
+with GL.Types;
 
 with Magick_Image.API;
-
-with Image_Reference;
 
 package body Magick_Image is
 
@@ -29,13 +29,15 @@ package body Magick_Image is
 
    --  -------------------------------------------------------------------------
 
-    procedure Write_File (theImage : in out Magick_Image.API.Class_Image.MPP_Image;
+    procedure Write_File (theImage : Core_Image.AI_Image;
                           File_Name : String) is
       use Interfaces.C;
 
---        CPP_Image    : Magick_Image.API.Class_Image.MPP_Image;
+      Local_Image : Core_Image.AI_Image := theImage;
+      CPP_Image   : Magick_Image.API.Class_Image.MPP_Image;
    begin
-         theImage.Write (Interfaces.C.Strings.New_String (File_Name));
+        CPP_Image.Ref.Image.all := Local_Image;
+        CPP_Image.Write (Interfaces.C.Strings.New_String (File_Name));
    exception
       when others =>
          New_Line;
@@ -45,12 +47,31 @@ package body Magick_Image is
 
    --  -------------------------------------------------------------------------
 
-   procedure Write_Blob (theImage : in out Magick_Image.API.Class_Image.MPP_Image;
-                         theBlob  : in out Magick_Blob.API.Class_Blob.Blob;
+   procedure Write_Blob (theImage : Core_Image.AI_Image;
+                         theBlob  : Magick_Blob.Blob_Data;
                          Data_Type : String) is
       use Interfaces.C;
+      use GL.Types;
+      use Magick_Blob.Blob_Package;
+      Blob_Cursor : Cursor := theBlob.First;
+      Data        : Magick_Blob.Data_Array (1 .. UInt (theBlob.Length));
+--    --    Local_Image : Core_Image.AI_Image := theImage;
+      CPP_Image   : Magick_Image.API.Class_Image.MPP_Image;
+--        CPP_Blob    : Magick_Blob.API.Class_Blob.Blob;
+      Blob_Index  : UInt := 0;
+      procedure Add_Element (Elem : Cursor) is
+      begin
+          Blob_Index := Blob_Index + 1;
+          Data (Blob_Index) := Element (Elem);
+      end Add_Element;
    begin
-         theImage.Write_Blob (theBlob, Interfaces.C.Strings.New_String (Data_Type));
+        CPP_Image.Ref.Image.all := theImage;
+        theBlob.Iterate (Add_Element'Access);
+        --  CPP_Blob.Blob_Ref.Data is a pointer (system address) to the Blob data
+--          CPP_Blob.Blob_Ref.Data := Data'Address;
+         Put_Line ("Magick_Image.Write_Blob.");
+        Magick_Blob.API.New_Blob (Data, size_t (Blob_Index));
+--          CPP_Image.Write_Blob (CPP_Blob, Interfaces.C.Strings.New_String (Data_Type));
    exception
       when others =>
          New_Line;

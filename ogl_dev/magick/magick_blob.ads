@@ -9,12 +9,14 @@ limited with Magick_Blob.API;
 package Magick_Blob is
    use GL.Types;
 
+   type Data_Array is  array (UInt range <>) of UByte;
+
    type Allocator is (Malloc_Allocator, New_Allocator);
    pragma Convention (C, Allocator);
 
    package Blob_Package is new Ada.Containers.Doubly_Linked_Lists (UByte);
-   type Blob_Data is new Blob_Package.List with null record;
+   subtype Blob_Data is Blob_Package.List;
 
-   function Get_Data (aBlob : Magick_Blob.API.Class_Blob.Blob) return Blob_Data;
+--     function Get_Data (aBlob : Magick_Blob.API.Class_Blob.Blob) return Blob_Data;
 
 end Magick_Blob;

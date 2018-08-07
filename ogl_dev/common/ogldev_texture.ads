@@ -23,7 +23,7 @@ Package Ogldev_Texture is
       Texture_Object : GL.Objects.Textures.Texture;
       --  DON't Change Image_Ref or Blob_Ref
       Image_Ref      : Core_Image.AI_Image;
-      Blob_Ref       : Magick_Blob.Blob_Data;
+      Blob_Data      : Magick_Blob.Blob_Data;
    end record;
 
    package Mesh_Texture_Package is new

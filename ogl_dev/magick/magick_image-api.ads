@@ -34,7 +34,7 @@ package Magick_Image.API is
 --        pragma Import (Cpp, Write, "_ZN6Magick5Image5writeERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE");
 
       procedure Write_Blob (this : in out MPP_Image;
-                            theBlob  : in out Magick_Blob.API.Class_Blob.Blob;
+                            theBlob : in out Magick_Blob.API.Class_Blob.Blob;
                             RGBA : Interfaces.C.Strings.chars_ptr);
       pragma Import (Cpp, Write_Blob, "writeBlob");
 --        pragma Import (Cpp, Write_Blob, "_ZN6Magick5Image5writeEPNS_4BlobERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE");

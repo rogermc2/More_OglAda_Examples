@@ -6,7 +6,6 @@ with  Magick_Blob.API;
 --  Magic_Blob corresponds to Magic++.Blob
 package body Magick_Blob is
     use Magick_Blob.API.Class_Blob;
-    type Data_Array is  array (UInt range <>) of UByte;
 
     --  -----------------------------------------------------------------------------------
 
@@ -28,7 +27,7 @@ package body Magick_Blob is
         Blob_Length : constant UInt := Length (aBlob);
         Data        : Data_Array (1 .. Blob_Length);
         for Data'Address use Data_Addr (aBlob);
-        theData     : Blob_Data;
+        theData     : Blob_Data;   -- Blob_Package.List
     begin
         for index in UInt range 1 .. Blob_Length loop
             theData.Append (Data (index));

@@ -7,6 +7,7 @@
 //  To "convert" a C array char* to a C++ std::string
 //  simply use the latter's constructor or assignment operator.
 
+
 void readFile (Magick::Image& anImage, char* fileName)
   {
   std::string cppString (fileName);

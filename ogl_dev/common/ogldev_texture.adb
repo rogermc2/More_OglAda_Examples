@@ -47,8 +47,13 @@ package body Ogldev_Texture is
       use GL.Low_Level;
       use GL.Objects.Textures.Targets;
    begin
+      --  Type of Image_Ref is Core_Image.AI_Image;
+      --  Type of Blob_Data  is Magick_Blob.Blob_Data;Index
+      Put_Line ("Ogldev_Texture.Load, Read_File. ");
       Magick_Image.Read_File (theTexture.Image_Ref, To_String (theTexture.File_Name));
-      Magick_Image.Write_Blob (theTexture.Image_Ref, theTexture.Blob_Ref, "RGBA");
+      Put_Line ("Ogldev_Texture.Load, Write_Blob. ");
+      Magick_Image.Write_Blob (theTexture.Image_Ref, theTexture.Blob_Data, "RGBA");
+      Put_Line ("Ogldev_Texture.Load, Blob written. ");
 
       theTexture.Texture_Object.Initialize_Id;
       case theTexture.Texture_Target is
@@ -60,14 +65,14 @@ package body Ogldev_Texture is
               "Ogldev_Texture.Load, unhandled texture type.";
       end case;
 
---        Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
---                    Interfaces.C.size_t'Image (theTexture.Image_Ref.Ref.Image.Columns) & "  " &
---                    Interfaces.C.size_t'Image (theTexture.Image_Ref.Ref.Image.Rows) & "  " &
---                    Interfaces.C.size_t'Image (theTexture.Image_Ref.Ref.Image.Depth) & "  " &
---                    Interfaces.C.size_t'Image (theTexture.Image_Ref.Ref.Image.Colours));
+      Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
+                  Interfaces.C.size_t'Image (theTexture.Image_Ref.Columns) & "  " &
+                  Interfaces.C.size_t'Image (theTexture.Image_Ref.Rows) & "  " &
+                  Interfaces.C.size_t'Image (theTexture.Image_Ref.Depth) & "  " &
+                  Interfaces.C.size_t'Image (theTexture.Image_Ref.Colours));
       declare
          use Magick_Blob.Blob_Package;
-         Data_Blob   : constant Magick_Blob.Blob_Data := Magick_Blob.Get_Data (theTexture.Blob_Ref);
+         Data_Blob   : constant Magick_Blob.Blob_Data := theTexture.Blob_Data;
          Blob_Length : constant UInt := UInt (Data_Blob.Length);
          Data        : array (1 .. Blob_Length) of UByte;
          Index       : UInt := 0;
@@ -75,19 +80,22 @@ package body Ogldev_Texture is
          Level       : constant GL.Objects.Textures.Mipmap_Level := 0;
       begin
          while Has_Element (Curs) loop
+                Put_Line ("Ogldev_Texture.Load Index:" & UInt'Image (Index));
             Index := Index + 1;
             Data (Index) := Element (Curs);
             Next (Curs);
          end loop;
 
             -- load Texture_2D buffer with data from Data array.
+         Put_Line ("Ogldev_Texture.Load Load_From_Data.");
             Texture_2D.Load_From_Data (Level, GL.Pixels.RGBA,
-                                       Int (theTexture.Image_Ref.Ref.Image.Columns),
-                                       Int (theTexture.Image_Ref.Ref.Image.Rows),
+                                       Int (theTexture.Image_Ref.Columns),
+                                       Int (theTexture.Image_Ref.Rows),
                                        GL.Pixels.RGBA, GL.Pixels.Unsigned_Byte,
                                        GL.Objects.Textures.Image_Source (Data'Address));
             Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
             Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+         Put_Line ("Ogldev_Texture.Load Data loaded.");
       end;  --  declare
    exception
       when others =>
