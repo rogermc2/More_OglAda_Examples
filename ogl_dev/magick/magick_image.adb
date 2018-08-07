@@ -57,6 +57,7 @@ package body Magick_Image is
       Data        : Magick_Blob.Data_Array (1 .. UInt (theBlob.Length));
 --    --    Local_Image : Core_Image.AI_Image := theImage;
       CPP_Image   : Magick_Image.API.Class_Image.MPP_Image;
+      CPP_Data_Type : Strings.chars_ptr := Strings.New_String (Data_Type);
 --        CPP_Blob    : Magick_Blob.API.Class_Blob.Blob;
       Blob_Index  : UInt := 0;
       procedure Add_Element (Elem : Cursor) is
@@ -70,7 +71,7 @@ package body Magick_Image is
         --  CPP_Blob.Blob_Ref.Data is a pointer (system address) to the Blob data
 --          CPP_Blob.Blob_Ref.Data := Data'Address;
          Put_Line ("Magick_Image.Write_Blob.");
-        Magick_Blob.API.New_Blob (Data, size_t (Blob_Index));
+        Magick_Blob.API.New_Blob (Data'Address, CPP_Data_Type, size_t (Blob_Index));
 --          CPP_Image.Write_Blob (CPP_Blob, Interfaces.C.Strings.New_String (Data_Type));
    exception
       when others =>

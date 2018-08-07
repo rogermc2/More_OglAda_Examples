@@ -2,6 +2,7 @@
 with System;
 
 with Interfaces.C;
+with Interfaces.C.Strings;
 
 --  with Blob_Reference;
 
@@ -11,14 +12,13 @@ package Magick_Blob.API is
     --
     --     package Class_Blob is
     --
-    --        type Blob is tagged limited record
-    --              null;
-    --               Blob_Ref : access Blob_Reference.Class_Blob_Ref.Blob_Ref;
-    --           Blob_Ref : System.Address;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:75
-    --        end record;
-    --        pragma Import (CPP, Blob);
+    type Blob is record
+        Blob_Ref : System.Address;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:75
+    end record;
+    pragma Convention (C_Pass_By_Copy, Blob);
 
-    function New_Blob return Blob;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:31
+   function New_Blob (Data : System.Address; Data_Type : Interfaces.C.Strings.chars_ptr;
+                      Data_Length : Interfaces.C.size_t) return Blob;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:31
     pragma Import (C, New_Blob, "newBlob");
     --        pragma Cpp_Constructor (New_Blob, "");
 
@@ -26,11 +26,11 @@ package Magick_Blob.API is
     pragma Import (C, Delete_Blob, "deleteBlob");
     --        pragma Import (CPP, Delete_Blob, "_ZN6Magick4BlobD1Ev");
 
-    function Data (this : access constant Blob'Class) return System.Address;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:55
+    function Data (this : access Blob) return System.Address;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:55
     pragma Import (C, Data, "data");
       --      pragma Import (CPP, Data, "_ZNK6Magick4Blob4dataEv");
 
-    function Length (this : access constant Blob'Class) return Interfaces.C.size_t;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:58
+    function Length (this : access Blob) return Interfaces.C.size_t;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:58
     pragma Import (C, Length, "length");
       --  pragma Import (CPP, Length, "_ZNK6Magick4Blob6lengthEv");
       --     end Class_Blob;
