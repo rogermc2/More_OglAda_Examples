@@ -15,7 +15,7 @@ package Magick_Image is
                           File_Name : String);
 --     procedure Write_Blob (Image_Ptr : in out Image_Reference.Class_Image_Ref.Image_Ref;
    procedure Write_Blob (theImage : Core_Image.AI_Image;
-                         theBlob  : Magick_Blob.Blob_Data;
+                         theBlob  : out Magick_Blob.Blob_Data;
                          Data_Type : String);
 
 end Magick_Image;
