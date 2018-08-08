@@ -2,7 +2,7 @@
 with Magick_Blob.API;
 limited with Magick_Image.API;
 with Core_Image;
-with Image_Reference;
+--  with Image_Reference;
 
 package Magick_Image is
 

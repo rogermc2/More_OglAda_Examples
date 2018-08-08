@@ -61,7 +61,7 @@ package Core_Blob is
    type Custom_Stream_Teller is
      access function (aBlob : access Blob; arg2 : System.Address;
                       arg3 : size_t) return Magick_Type.Magick_Offset_Type;
-   pragma Convention (C, Custom_Stream_Teller);
+    pragma Convention (C, Custom_Stream_Teller);
 
    type Custom_Stream_Info is record
       Reader    : Custom_Stream_Handler;
@@ -71,7 +71,7 @@ package Core_Blob is
       Data      : System.Address;
       Signature : size_t := size_t (Method_Attribute.Magick_Core_Signature);
    end record;
-   pragma Convention (C, Custom_Stream_Info);
+    pragma Convention (C_Pass_By_Copy, Custom_Stream_Info);
 
    type Custom_Stream_Ptr is access all Custom_Stream_Info;
 
@@ -107,7 +107,7 @@ private
       Signature     : size_t :=
         size_t (Method_Attribute.Magick_Core_Signature);
    end record;
-   pragma Convention (C, Blob_Info);
+    pragma Convention (C_Pass_By_Copy, Blob_Info);
 
  --  From Blob.c
 --     type File_Info is record

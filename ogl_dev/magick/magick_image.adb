@@ -18,8 +18,8 @@ package body Magick_Image is
 
       CPP_Image  : Magick_Image.API.MPP_Image;
    begin
-      CPP_Image.Read (Interfaces.C.Strings.New_String (File_Name));
-      theImage := CPP_Image.Ref.Image.all;
+      Magick_Image.API.Read (CPP_Image, Interfaces.C.Strings.New_String (File_Name));
+      theImage := CPP_Image.Ref;
    exception
       when others =>
          New_Line;
