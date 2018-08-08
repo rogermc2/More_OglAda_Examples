@@ -11,7 +11,6 @@
 
 extern "C"
 {
-  Magick::Blob* newBlob(const void* data,const size_t length);
   void deleteBlob (Magick::Blob&);
   // Obtain pointer to data.
   const void* data(Magick::Blob&);

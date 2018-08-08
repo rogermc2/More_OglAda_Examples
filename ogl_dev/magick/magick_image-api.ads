@@ -6,7 +6,7 @@ with Image_Reference;
 
 package Magick_Image.API is
 
-   package Class_Image is
+--     package Class_Image is
 
       type MPP_Image is tagged limited record
          Ref : access Image_Reference.Class_Image_Ref.Image_Ref;
@@ -34,11 +34,11 @@ package Magick_Image.API is
 --        pragma Import (Cpp, Write, "_ZN6Magick5Image5writeERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE");
 
       procedure Write_Blob (this : in out MPP_Image;
-                            theBlob : in out Magick_Blob.Blob;
+                            theBlob : in out Magick_Blob.API.Blob;
                             RGBA : Interfaces.C.Strings.chars_ptr);
       pragma Import (Cpp, Write_Blob, "writeBlob");
 --        pragma Import (Cpp, Write_Blob, "_ZN6Magick5Image5writeEPNS_4BlobERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE");
 
-   end Class_Image;
+--     end Class_Image;
 
 end Magick_Image.API;
