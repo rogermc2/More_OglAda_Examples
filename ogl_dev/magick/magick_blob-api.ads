@@ -17,9 +17,8 @@ package Magick_Blob.API is
     end record;
     pragma Convention (C_Pass_By_Copy, Blob);
 
-   function New_Blob (Data : System.Address; Data_Type : Interfaces.C.Strings.chars_ptr;
-                      Data_Length : Interfaces.C.size_t) return Blob;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:31
-    pragma Import (C, New_Blob, "newBlob");
+--     function New_Blob return Blob;  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:31
+--      pragma Import (C, New_Blob, "newBlob");
     --        pragma Cpp_Constructor (New_Blob, "");
 
     procedure Delete_Blob (this : access Blob);  -- /usr/local/Cellar/imagemagick/7.0.7-31/include/ImageMagick-7/Magick++/Blob.h:40

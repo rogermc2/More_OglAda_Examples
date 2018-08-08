@@ -16,7 +16,7 @@ package body Magick_Image is
    procedure Read_File (theImage : in out Core_Image.AI_Image;
                         File_Name : String) is
 
-      CPP_Image  : Magick_Image.API.Class_Image.MPP_Image;
+      CPP_Image  : Magick_Image.API.MPP_Image;
    begin
       CPP_Image.Read (Interfaces.C.Strings.New_String (File_Name));
       theImage := CPP_Image.Ref.Image.all;
@@ -34,7 +34,7 @@ package body Magick_Image is
       use Interfaces.C;
 
       Local_Image : Core_Image.AI_Image := theImage;
-      CPP_Image   : Magick_Image.API.Class_Image.MPP_Image;
+      CPP_Image   : Magick_Image.API.MPP_Image;
    begin
         CPP_Image.Ref.Image.all := Local_Image;
         CPP_Image.Write (Interfaces.C.Strings.New_String (File_Name));
@@ -48,7 +48,7 @@ package body Magick_Image is
    --  -------------------------------------------------------------------------
 
    procedure Write_Blob (theImage : Core_Image.AI_Image;
-                         theBlob  : Magick_Blob.Blob_Data;
+                         theBlob  : out Magick_Blob.Blob_Data;
                          Data_Type : String) is
       use Interfaces.C;
       use GL.Types;
@@ -56,7 +56,7 @@ package body Magick_Image is
       Blob_Cursor : Cursor := theBlob.First;
       Data        : Magick_Blob.Data_Array (1 .. UInt (theBlob.Length));
 --    --    Local_Image : Core_Image.AI_Image := theImage;
-      CPP_Image   : Magick_Image.API.Class_Image.MPP_Image;
+      CPP_Image   : Magick_Image.API.MPP_Image;
       CPP_Data_Type : Strings.chars_ptr := Strings.New_String (Data_Type);
 --        CPP_Blob    : Magick_Blob.API.Class_Blob.Blob;
       Blob_Index  : UInt := 0;
@@ -71,7 +71,8 @@ package body Magick_Image is
         --  CPP_Blob.Blob_Ref.Data is a pointer (system address) to the Blob data
 --          CPP_Blob.Blob_Ref.Data := Data'Address;
          Put_Line ("Magick_Image.Write_Blob.");
-        Magick_Blob.API.New_Blob (Data'Address, CPP_Data_Type, size_t (Blob_Index));
+      Magick_Image.API.Write_Blob (Data'Address, CPP_Data_Type, size_t (Blob_Index));
+
 --          CPP_Image.Write_Blob (CPP_Blob, Interfaces.C.Strings.New_String (Data_Type));
    exception
       when others =>

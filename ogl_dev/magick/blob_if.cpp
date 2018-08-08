@@ -3,11 +3,6 @@
 
 #include "blob_if.h"
 
-Magick::Blob* newBlob(const void* data,const size_t length)
-{
-  return newBlob(data, length);
-}
-
 void deleteBlob (Magick::Blob& theBlob)
 {
   theBlob.~Blob();
