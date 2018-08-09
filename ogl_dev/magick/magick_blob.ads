@@ -17,6 +17,4 @@ package Magick_Blob is
    package Blob_Package is new Ada.Containers.Doubly_Linked_Lists (UByte);
    subtype Blob_Data is Blob_Package.List;
 
---     function Get_Data (aBlob : Magick_Blob.API.Class_Blob.Blob) return Blob_Data;
-
 end Magick_Blob;
