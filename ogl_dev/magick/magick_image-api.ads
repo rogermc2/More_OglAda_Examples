@@ -29,6 +29,9 @@ package Magick_Image.API is
 --     function Get_Blob_Data (File_Name : Interfaces.C.Strings.chars_ptr;
 --                         Data_Type : Interfaces.C.Strings.chars_ptr) return int;
 
+   function Get_Image_Data return Interfaces.C.Strings.chars_ptr;
+   pragma Import (Cpp, Get_Image_Data, "imageData");  --  image_io.data
+
    function Load_Blob (File_Name : Interfaces.C.Strings.chars_ptr;
                        Data_Type : Interfaces.C.Strings.chars_ptr) return int;
    pragma Import (Cpp, Load_Blob, "loadBlob");  --  image_io.writeBlob

@@ -17,6 +17,7 @@ extern "C"
 {
   const void* blobData();
   size_t blobLength();
+  const void* imageData();
   bool loadBlob (char* fileName, char* magickType);
   void readFile (Magick::Image& anImage, char* fileName);
   void writeFile (Magick::Image& anImage, char* fileName);

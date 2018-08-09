@@ -12,16 +12,34 @@ with Magick_Image.API;
 
 package body Magick_Image is
 
-
+   --  Blob_Data is Blob_Package.List;
    function Get_Blob_Data return Magick_Blob.Blob_Data is
       use Interfaces.C;
       use Interfaces.C.Strings;
-      CPP_Data : chars_ptr := Magick_Image.API.Get_Blob_Data;
-      theData  : Magick_Blob.Blob_Data;
+      use Magick_Blob.Blob_Package;
+      CPP_Data      : chars_ptr := Magick_Image.API.Get_Blob_Data;
+      Data_Length   : size_t := Magick_Image.API.Blob_Length;
+      theData       : Magick_Blob.Blob_Data;
+      Index         : size_t := 0;
+   begin
+      while Index <= Data_Length loop
+         Index := Index + 1;
+         theData.Update_Element := CPP_Data (Index);
+      end loop;
+      return theData;
+   end Get_Blob_Data;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Image_Data return Core_Image.AI_Image is
+      use Interfaces.C;
+      use Interfaces.C.Strings;
+      CPP_Data : chars_ptr := Magick_Image.API.Get_Image_Data;
+      theData  : Core_Image.AI_Image;
    begin
 
       return theData;
-   end Get_Blob_Data;
+   end Get_Image_Data;
 
    --  -------------------------------------------------------------------------
 

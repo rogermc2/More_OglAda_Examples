@@ -13,6 +13,11 @@ const void* blobData()
 return theBlob.data();
 }
 
+const void* imageData()
+{
+return theImage.image();
+}
+
 size_t blobLength()
 {
   return theBlob.length();
