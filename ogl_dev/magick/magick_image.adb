@@ -49,11 +49,11 @@ package body Magick_Image is
 --     procedure Read_File (theImage : out Magick_Image.API.Class_Image.MPP_Image;
    procedure Read_File (theImage : in out Core_Image.AI_Image;
                         File_Name : String) is
-
+      Image_Address : System.Address;
       CPP_Image  : Magick_Image.API.MPP_Image;
    begin
       Magick_Image.API.Read (CPP_Image, Interfaces.C.Strings.New_String (File_Name));
---        theImage := CPP_Image.Ref.;
+      Image_Address := CPP_Image.Ref;
    exception
       when others =>
          New_Line;

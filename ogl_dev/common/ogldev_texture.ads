@@ -21,9 +21,9 @@ Package Ogldev_Texture is
         Ada.Strings.Unbounded.To_Unbounded_String ("");
       Texture_Target : GL.Low_Level.Enums.Texture_Kind;
       Texture_Object : GL.Objects.Textures.Texture;
-      --  DON't Change Image_Ref or Blob_Ref
+      --  DON't Change Image_Ref or Blob_Data
       Image_Ref      : Core_Image.AI_Image;
-      Blob_Data      : Magick_Blob.Blob_Data;
+      Blob_Data      : Magick_Blob.Blob_Data;  --  Blob_Package.List
    end record;
 
    package Mesh_Texture_Package is new
