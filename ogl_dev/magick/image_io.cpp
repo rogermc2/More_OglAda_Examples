@@ -6,20 +6,34 @@
 static Magick::Blob theBlob;
 static Magick::Image theImage;
 
+
+// Obtain pointer to data.
+const void* blobData()
+{
+return theBlob.data();
+}
+
+size_t blobLength()
+{
+  return theBlob.length();
+}
+
 bool loadBlob (char* fileName, char* magickType)
 {
   std::string cppString (magickType);
+  bool        result;
   try
   {
     theImage.read(fileName);
     theImage.write(&theBlob, cppString);
-    return true;
+    result = true;
   }
   catch (Magick::Error& Error)
   {
-    printf ("Error loading texture %s: %s/n", fileName, Error.what());
-    return false;
+    printf ("image_io.loadBlob Error loading texture %s: %s/n", fileName, Error.what());
+    result = false;
   }
+  return result;
 }
 
 //  std::string has a member c_str() which returns a C-style array.

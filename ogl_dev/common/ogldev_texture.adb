@@ -50,6 +50,7 @@ package body Ogldev_Texture is
       --  Type of Image_Ref is Core_Image.AI_Image;
       --  Type of Blob_Data  is Magick_Blob.Blob_Data;Index
       Magick_Image.Load_Blob (To_String (theTexture.File_Name), "RGBA");
+      theTexture.Blob_Data := Magick_Image.Get_Blob_Data;
 
 --        Put_Line ("Ogldev_Texture.Load, Read_File. ");
 --        Magick_Image.Read_File (theTexture.Image_Ref, To_String (theTexture.File_Name));
