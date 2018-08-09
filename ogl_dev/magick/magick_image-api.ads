@@ -21,6 +21,14 @@ package Magick_Image.API is
 --        procedure Delete_Image (this : access Image);  -- ../Magick++/lib/Magick++/imagePP.h:95
 --        pragma Import (CPP, Delete_Image, "_ZN6Magick5ImageD1Ev");
 
+   function Blob_Length return size_t;
+   pragma Import (Cpp, Blob_Length, "blobLength");  --  image_io.data
+
+   function Get_Blob_Data return Interfaces.C.Strings.chars_ptr;
+   pragma Import (Cpp, Get_Blob_Data, "blobData");  --  image_io.data
+--     function Get_Blob_Data (File_Name : Interfaces.C.Strings.chars_ptr;
+--                         Data_Type : Interfaces.C.Strings.chars_ptr) return int;
+
    function Load_Blob (File_Name : Interfaces.C.Strings.chars_ptr;
                        Data_Type : Interfaces.C.Strings.chars_ptr) return int;
    pragma Import (Cpp, Load_Blob, "loadBlob");  --  image_io.writeBlob

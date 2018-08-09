@@ -12,16 +12,35 @@ with Magick_Image.API;
 
 package body Magick_Image is
 
+
+   function Get_Blob_Data return Magick_Blob.Blob_Data is
+      use Interfaces.C;
+      use Interfaces.C.Strings;
+      CPP_Data : chars_ptr := Magick_Image.API.Get_Blob_Data;
+      theData  : Magick_Blob.Blob_Data;
+   begin
+
+      return theData;
+   end Get_Blob_Data;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Blob_Length return GL.Types.UInt is
+   begin
+      return GL.Types.UInt (Magick_Image.API.Blob_Length);
+   end Get_Blob_Length;
+
+   --  -------------------------------------------------------------------------
+
    procedure Load_Blob (File_Name, Data_Type : String) is
       use Interfaces.C;
       use Interfaces.C.Strings;
-      Error_Code : constant int := Magick_Image.API.Load_Blob (New_String (File_Name),
-                                     New_String (Data_Type)) ;
+      Result : constant Boolean := Magick_Image.API.Load_Blob (New_String (File_Name),
+                                     New_String (Data_Type)) = 1;
    begin
-      if Error_Code /= 0 then
+      if not Result then
          raise Image_Exception with
-           "Magick_Image.Load_Blob failed to load image: " & File_Name &
-           ", Error code:" & int'Image (Error_Code);
+           "Magick_Image.Load_Blob failed to load image: " & File_Name;
       end if;
    end Load_Blob;
 
