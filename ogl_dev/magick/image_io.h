@@ -15,10 +15,12 @@
 
 extern "C"
 {
+bool loadBlob (char* fileName, char* magickType);
 void readFile (Magick::Image& anImage, char* fileName);
 void writeFile (Magick::Image& anImage, char* fileName);
-void writeBlob (Magick::Image& anImage, Magick::Blob* theBlob,
-                char* fileName);
+//void writeBlob (Magick::Image& anImage, char* Blob_Data,
+//		  char* magickType);
+//void writeBlob (char* Blob_Data, char* magickType);
 }
 
 #endif /* IMAGE_IO_H */

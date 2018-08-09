@@ -21,6 +21,10 @@ package Magick_Image.API is
 --        procedure Delete_Image (this : access Image);  -- ../Magick++/lib/Magick++/imagePP.h:95
 --        pragma Import (CPP, Delete_Image, "_ZN6Magick5ImageD1Ev");
 
+   function Load_Blob (File_Name : Interfaces.C.Strings.chars_ptr;
+                       Data_Type : Interfaces.C.Strings.chars_ptr) return int;
+   pragma Import (Cpp, Load_Blob, "loadBlob");  --  image_io.writeBlob
+
 --        function New_Image return MPP_Image;
 --        pragma Cpp_Constructor (New_Image, "_ZN6Magick5ImageC1Ev");
 
@@ -28,20 +32,21 @@ package Magick_Image.API is
       --  there is no need to indicate the C++ mangled names associated
       --  with each subprogram because it is assumed that all the calls to
       --  these primitives will be dispatching calls.
-      procedure Read (Image : in out MPP_Image;
+      --  The CPP wrappers are inimag-io.h
+      procedure Read (theImage : in out MPP_Image;
                       File_Name : Interfaces.C.Strings.chars_ptr);  -- ../Magick++/lib/Magick++/ImagePP.h:1236
       pragma Import (Cpp, Read, "readFile");
 --        pragma Import (Cpp, Read, "_ZN6Magick5Image4readERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE");
 
-      procedure Write (this : in out MPP_Image;
+      procedure Write (anImage : in out MPP_Image;
                        File_Name : Interfaces.C.Strings.chars_ptr);
       pragma Import (Cpp, Write, "writeFile");
 --        pragma Import (Cpp, Write, "_ZN6Magick5Image5writeERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE");
 
-      procedure Write_Blob (this : in out MPP_Image;
-                            theBlob : in out Magick_Blob.API.Blob;
-                            RGBA : Interfaces.C.Strings.chars_ptr);
-      pragma Import (Cpp, Write_Blob, "writeBlob");
+      procedure Write_Blob (Data_Blob : Interfaces.C.char_array;
+                            RGBA : Interfaces.C.Strings.chars_ptr;
+                            Data_Length: size_t);
+      pragma Import (Cpp, Write_Blob, "loadBlob");  --  image_io.writeBlob
 --        pragma Import (Cpp, Write_Blob, "_ZN6Magick5Image5writeEPNS_4BlobERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE");
 
 --     end Class_Image;
