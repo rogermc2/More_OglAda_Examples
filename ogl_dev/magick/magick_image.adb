@@ -15,11 +15,13 @@ package body Magick_Image is
    procedure Load_Blob (File_Name, Data_Type : String) is
       use Interfaces.C;
       use Interfaces.C.Strings;
+      Error_Code : constant int := Magick_Image.API.Load_Blob (New_String (File_Name),
+                                     New_String (Data_Type)) ;
    begin
-      if Magick_Image.API.Load_Blob (New_String (File_Name),
-                                     New_String (Data_Type)) /= 0 then
+      if Error_Code /= 0 then
          raise Image_Exception with
-           "Magick_Image.Load_Blob failed to load " & File_Name;
+           "Magick_Image.Load_Blob failed to load image: " & File_Name &
+           ", Error code:" & int'Image (Error_Code);
       end if;
    end Load_Blob;
 
