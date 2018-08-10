@@ -11,14 +11,13 @@ with Assimp_Types;
 
 --  with C_Import;
 with Material;
-with Mesh;
 
 with Ogldev_Engine_Common;
 with Ogldev_Basic_Mesh;
 --  with Ogldev_Util;
 with Scene;
 
-package body Mesh is
+package body Mesh_22 is
 
    Position_Location  : constant GL.Attributes.Attribute := 0;
    Tex_Coord_Location : constant GL.Attributes.Attribute := 1;
@@ -30,7 +29,7 @@ package body Mesh is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_From_Scene (Initial_Mesh : in out Mesh_22;
+   procedure Init_From_Scene (Initial_Mesh : in out Mesh;
                               File_Name : String;
                               theScene : Scene.AI_Scene) is
       use Mesh_Entry_Package;
@@ -39,7 +38,7 @@ package body Mesh is
       Curs         : Cursor := Initial_Mesh.Entries.First;
       Index        : UInt := 0;
 --        aMesh        : Mesh.AI_Mesh;
---        anEntry      : Basic_Mesh_Entry;
+--        anEntry      : Mesh_Entry;
    begin
       while Has_Element (Curs) loop
          Index := Index + 1;
@@ -81,7 +80,7 @@ package body Mesh is
 
    -------------------------------------------------------------------------
 
-   procedure Init_Materials (Initial_Mesh : in out Mesh_22;
+   procedure Init_Materials (Initial_Mesh : in out Mesh;
                              File_Name : String;
                              theScene : Scene.AI_Scene) is
       use Material.AI_Material_Package;
@@ -133,7 +132,7 @@ package body Mesh is
 --                          Positions, Normals : out GL.Types.Singles.Vector3_Array;
 --                          Tex_Coords : out GL.Types.Singles.Vector2_Array;
 --                          Indices : out GL.Types.UInt_Array) is
-   procedure Init_Mesh (aMesh : in out Mesh_22; Index : GL.Types.UInt;
+   procedure Init_Mesh (aMesh : in out Mesh; Index : GL.Types.UInt;
                         Base_Mesh : Ogldev_Basic_Mesh.AI_Mesh) is
       use Ada.Containers;
       use Mesh_Entry_Package;
@@ -157,7 +156,7 @@ package body Mesh is
 
   --  -------------------------------------------------------------------------
 
-   procedure Init_Mesh_Entry (aMesh : in out Mesh_22;
+   procedure Init_Mesh_Entry (aMesh : in out Mesh;
                               Vertices : GL.Types.Singles.Vector3_Array;
                               Indices : GL.Types.UInt_Array) is
         use GL.Objects.Buffers;
@@ -179,7 +178,7 @@ package body Mesh is
 
   --  -------------------------------------------------------------------------
 
-   procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String) is
+   procedure Load_Mesh (theMesh : in out Mesh; File_Name : String) is
       theScene : Scene.AI_Scene;
    begin
       Put_Line (" Mesh.Load_Mesh, import scene.");
@@ -202,7 +201,7 @@ package body Mesh is
 
    -------------------------------------------------------------------------
 
-   procedure Render (theMesh : Mesh_22) is
+   procedure Render (theMesh : Mesh) is
       use Ada.Containers;
       use Mesh_Entry_Package;
       procedure Draw (Entry_Cursor :  Mesh_Entry_Package.Cursor) is
@@ -253,7 +252,7 @@ package body Mesh is
 
    --  -------------------------------------------------------------------------
 
-   procedure Render (theMesh : Mesh_22;
+   procedure Render (theMesh : Mesh;
                      WVP_Matrix, World_Matrix : Singles.Matrix4_Array) is
 
       use GL.Objects.Buffers;
@@ -275,7 +274,7 @@ package body Mesh is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Base_Vertex (theEntry : in out Basic_Mesh_Entry;
+   procedure Set_Base_Vertex (theEntry : in out Mesh_Entry;
                               Base_Vertex : UInt) is
    begin
       theEntry.Base_Vertex := Base_Vertex;
@@ -283,7 +282,7 @@ package body Mesh is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Base_Index (theEntry : in out Basic_Mesh_Entry;
+   procedure Set_Base_Index (theEntry : in out Mesh_Entry;
                              Base_Index : UInt) is
    begin
       theEntry.Base_Index := Base_Index;
@@ -291,7 +290,7 @@ package body Mesh is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Entry (theEntry : in out Basic_Mesh_Entry;
+   procedure Set_Entry (theEntry : in out Mesh_Entry;
                         Base_Index, Base_Vertex, Num_Indices : UInt;
                         Material : Material_Type) is
    begin
@@ -303,7 +302,7 @@ package body Mesh is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Material_Type (theEntry : in out Basic_Mesh_Entry;
+   procedure Set_Material_Type (theEntry : in out Mesh_Entry;
                                 Material : Material_Type) is
    begin
       theEntry.Material_Index := Material;
@@ -311,11 +310,11 @@ package body Mesh is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Num_Indices (theEntry : in out Basic_Mesh_Entry; Num : UInt) is
+   procedure Set_Num_Indices (theEntry : in out Mesh_Entry; Num : UInt) is
    begin
       theEntry.Num_Indices := Num;
    end Set_Num_Indices;
 
    --  -------------------------------------------------------------------------
 
-end Mesh;
+end Mesh_22;
