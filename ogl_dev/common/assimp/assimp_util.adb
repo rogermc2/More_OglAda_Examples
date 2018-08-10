@@ -20,7 +20,7 @@ package body Assimp_Util is
 
    --  ------------------------------------------------------------------------
 
-   function To_OGL_Vector2 (C_Vec : API_Vectors.API_Vector_2D)
+   function To_OGL_Vector2 (C_Vec : API_Vectors_Matrices.API_Vector_2D)
                             return Singles.Vector2 is
       Vec : Singles.Vector2;
    begin
@@ -31,7 +31,7 @@ package body Assimp_Util is
 
    --  ------------------------------------------------------------------------
 
-   function To_OGL_Vector3 (C_Vec : API_Vectors.API_Vector_3D)
+   function To_OGL_Vector3 (C_Vec : API_Vectors_Matrices.API_Vector_3D)
                             return Singles.Vector3 is
       Vec : Singles.Vector3;
    begin
@@ -43,7 +43,7 @@ package body Assimp_Util is
 
    --  ------------------------------------------------------------------------
 
-   function To_Colour3D (C_Colours : API_Vectors.API_Colour_3D)
+   function To_Colour3D (C_Colours : API_Vectors_Matrices.API_Colour_3D)
                           return Singles.Vector3 is
       theColours : Singles.Vector3;
    begin
@@ -54,7 +54,7 @@ package body Assimp_Util is
 
    --  ------------------------------------------------------------------------
 
-   function To_Colour4D (C_Colours : API_Vectors.API_Colour_4D)
+   function To_Colour4D (C_Colours : API_Vectors_Matrices.API_Colour_4D)
                           return Singles.Vector4 is
       theColours : Singles.Vector4;
    begin

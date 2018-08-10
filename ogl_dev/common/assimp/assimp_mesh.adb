@@ -70,9 +70,11 @@ package body Assimp_Mesh is
     --  ------------------------------------------------------------------------
 
     function To_API_Mesh (anAI_Mesh : AI_Mesh) return API_Mesh is
-        newMesh : API_Mesh;
+        use Interfaces;
+        C_Mesh : API_Mesh;
     begin
-        return newMesh;
+        C_Mesh.Num_Vertices := C.unsigned (Length (anAI_Mesh.Vertices));
+        return C_Mesh;
     end To_API_Mesh;
 
     --  ------------------------------------------------------------------------
