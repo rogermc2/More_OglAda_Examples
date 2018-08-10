@@ -23,8 +23,8 @@ Package Mesh_22 is
 --                       WVP_Matrix, World_Matrix : Singles.Matrix4_Array);
 
 private
---     Num_Buffers : constant UInt := 6;
---
+   Num_Buffers : constant UInt := 6;
+
    for Material_Type use (Index_Buffer     => 0,
                           Pos_VB           => 1,
                           Normal_VB        => 2,
