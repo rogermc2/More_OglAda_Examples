@@ -22,7 +22,7 @@ Package Ogldev_Texture is
       Texture_Target : GL.Low_Level.Enums.Texture_Kind;
       Texture_Object : GL.Objects.Textures.Texture;
       --  DON't Change Image_Ref or Blob_Data
-      Image_Ref      : Core_Image.AI_Image;
+      Image          : Core_Image.Image;
       Blob_Data      : Magick_Blob.Blob_Data;  --  Blob_Package.List
    end record;
 
