@@ -7,18 +7,18 @@ with GL.Types; use GL.Types;
 
 with Ogldev_Texture;
 
-Package Mesh is
+Package Mesh_22 is
 
    type Material_Type is (Index_Buffer, Pos_VB, Normal_VB,
                           Tex_Coord_VB, WVP_Matrix_VB,
                           World_Matrix_VB, Invalid_Material);
    pragma Convention (C, Material_Type);
 
-   type Mesh_22 is private;
+   type Mesh is private;
    type Mesh_Entry is private;
 
-   procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String);
-   procedure Render (theMesh : Mesh_22);
+   procedure Load_Mesh (theMesh : in out Mesh; File_Name : String);
+   procedure Render (theMesh : Mesh);
 --     procedure Render (theMesh : Mesh_22;
 --                       WVP_Matrix, World_Matrix : Singles.Matrix4_Array);
 
@@ -46,10 +46,10 @@ private
    type Mesh_Entry_Map is new Mesh_Entry_Package.Map with
      null Record;
 
-   type Mesh_22 is record
+   type Mesh is record
       Basic_Entry : Mesh_Entry;
       Entries     : Mesh_Entry_Package.Map;
       Textures    : Ogldev_Texture.Mesh_Texture_Package.Map;
    end record;
 
-end Mesh;
+end Mesh_22;
