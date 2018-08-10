@@ -17,19 +17,18 @@ package Magick_Image.API is
       end record;
     pragma Convention (C_Pass_By_Copy, MPP_Image);
 --        pragma Import (Cpp, MPP_Image);
-
 --        procedure Delete_Image (this : access Image);  -- ../Magick++/lib/Magick++/imagePP.h:95
 --        pragma Import (CPP, Delete_Image, "_ZN6Magick5ImageD1Ev");
 
    function Blob_Length return size_t;
    pragma Import (Cpp, Blob_Length, "blobLength");  --  image_io.data
 
-   function Get_Blob_Data return Interfaces.C.Strings.chars_ptr;
+   function Get_Blob_Data return System.Address;
    pragma Import (Cpp, Get_Blob_Data, "blobData");  --  image_io.data
 --     function Get_Blob_Data (File_Name : Interfaces.C.Strings.chars_ptr;
 --                         Data_Type : Interfaces.C.Strings.chars_ptr) return int;
 
-   function Get_Image_Data return Interfaces.C.Strings.chars_ptr;
+   function Get_Image_Data return System.Address;
    pragma Import (Cpp, Get_Image_Data, "imageData");  --  image_io.data
 
    function Load_Blob (File_Name : Interfaces.C.Strings.chars_ptr;

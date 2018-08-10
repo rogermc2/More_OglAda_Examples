@@ -102,14 +102,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Index_Buffer (IBO);
 
          GL.Uniforms.Set_Int (Sampler_Location, 0);
-         Put_Line (" Main_Loop.Int Init_Texture.");
 
          Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                       "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png");
-
-         Put_Line (" Main_Loop.Int Ogldev_Texture.Load.");
          Ogldev_Texture.Load (theTexture);
-         Put_Line (" Main_Loop.Int ITexture loaded.");
 
          Perspective_Proj_Info.FOV := 60.0;
          Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
