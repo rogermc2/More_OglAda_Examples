@@ -7,14 +7,16 @@ with GL.Low_Level.Enums;
 
 with Utilities;
 
+with Assimp_Mesh;
 with Assimp_Types;
 
---  with C_Import;
+with Importer;
 with Material;
 
 with Ogldev_Engine_Common;
 with Ogldev_Basic_Mesh;
---  with Ogldev_Util;
+with Ogldev_Util;
+
 with Scene;
 
 package body Mesh_22 is
@@ -133,7 +135,7 @@ package body Mesh_22 is
 --                          Tex_Coords : out GL.Types.Singles.Vector2_Array;
 --                          Indices : out GL.Types.UInt_Array) is
    procedure Init_Mesh (aMesh : in out Mesh; Index : GL.Types.UInt;
-                        Base_Mesh : Ogldev_Basic_Mesh.AI_Mesh) is
+                        Base_Mesh : Assimp_Mesh.AI_Mesh) is
       use Ada.Containers;
       use Mesh_Entry_Package;
       anEntry  : Mesh_Entry;
@@ -146,7 +148,6 @@ package body Mesh_22 is
        begin
             null;
        end;
-
 
    exception
       when others =>
@@ -182,16 +183,20 @@ package body Mesh_22 is
       theScene : Scene.AI_Scene;
    begin
       Put_Line (" Mesh.Load_Mesh, import scene.");
---        theScene :=
---          C_Import.Import_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
-      theMesh.VAO.Initialize_Id;
-      theMesh.VAO.Bind;
+      theScene :=
+        Importer.Import_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
+      theMesh.Basic_Entry.VAO.Initialize_Id;
+      theMesh.Basic_Entry.VAO.Bind;
+      theMesh.Basic_Entry.VBO.Initialize_Id;
+      GL.Objects.Buffers.Array_Buffer.Bind (theMesh.Basic_Entry.VBO);
+      theMesh.Basic_Entry.IBO.Initialize_Id;
+      GL.Objects.Buffers.Array_Buffer.Bind (theMesh.Basic_Entry.IBO);
       --   Create the buffers for the vertices attributes
-      for index in 1 .. Num_Buffers loop
-         theMesh.Buffers (index).Initialize_Id;
-      end loop;
+--        for index in 1 .. Num_Buffers loop
+--           theMesh.Buffers (index).Initialize_Id;
+--        end loop;
 
---        Init_From_Scene (theMesh, File_Name, theScene);
+      Init_From_Scene (theMesh, File_Name, theScene);
 
    exception
       when others =>
@@ -224,10 +229,10 @@ package body Mesh_22 is
                Ogldev_Texture.Bind (Element (Tex_Curs),
                                     Ogldev_Engine_Common.Colour_Texture_Unit_Index);
             end if;
-            GL.Objects.Buffers.Draw_Elements_Base_Vertex
-              (Triangles, Num_Indices, UInt_Type,
-               Element (Entry_Cursor).Base_Index,
-               Element (Entry_Cursor).Base_Vertex);
+--              GL.Objects.Buffers.Draw_Elements_Base_Vertex
+--                (Triangles, Num_Indices, UInt_Type,
+--                 Element (Entry_Cursor).Base_Index,
+--                 Element (Entry_Cursor).Base_Vertex);
          else
             Put_Line ("Ogldev_Basic_Mesh.Render_Mesh, Invalid Material_Index.");
          end if;
@@ -258,13 +263,10 @@ package body Mesh_22 is
       use GL.Objects.Buffers;
       use Mesh_Entry_Package;
    begin
-      Array_Buffer.Bind (theMesh.Buffers (WVP_Matrix_VB'Enum_Rep));
+      Array_Buffer.Bind (theMesh.Basic_Entry.VBO);
       Utilities.Load_Texture_Buffer (Array_Buffer, WVP_Matrix, Dynamic_Draw);
 
-      Array_Buffer.Bind (theMesh.Buffers (World_Matrix_VB'Enum_Rep));
-      Utilities.Load_Texture_Buffer (Array_Buffer, World_Matrix, Dynamic_Draw);
-
-      Render (theMesh);
+      Render_Mesh (theMesh);
 
    exception
       when others =>
@@ -274,19 +276,19 @@ package body Mesh_22 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Base_Vertex (theEntry : in out Mesh_Entry;
-                              Base_Vertex : UInt) is
-   begin
-      theEntry.Base_Vertex := Base_Vertex;
-   end Set_Base_Vertex;
+--     procedure Set_Base_Vertex (theEntry : in out Mesh_Entry;
+--                                Base_Vertex : UInt) is
+--     begin
+--        theEntry := Base_Vertex;
+--     end Set_Base_Vertex;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Base_Index (theEntry : in out Mesh_Entry;
-                             Base_Index : UInt) is
-   begin
-      theEntry.Base_Index := Base_Index;
-   end Set_Base_Index;
+--     procedure Set_Base_Index (theEntry : in out Mesh_Entry;
+--                               Base_Index : UInt) is
+--     begin
+--        theEntry.Base_Index := Base_Index;
+--     end Set_Base_Index;
 
    --  -------------------------------------------------------------------------
 
@@ -295,8 +297,8 @@ package body Mesh_22 is
                         Material : Material_Type) is
    begin
       theEntry.Num_Indices := Num_Indices;
-      theEntry.Base_Vertex := Base_Vertex;
-      theEntry.Base_Index := Base_Index;
+--        theEntry.Base_Vertex := Base_Vertex;
+--        theEntry.Base_Index := Base_Index;
       theEntry.Material_Index := Material;
    end Set_Entry;
 
