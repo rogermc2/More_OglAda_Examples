@@ -26,6 +26,8 @@ with Maths;
 with Program_Loader;
 with Utilities;
 
+with Assimp_Mesh;
+
 with Ogldev_Basic_Lighting;
 with Ogldev_Camera;
 with Ogldev_Engine_Common;
@@ -35,7 +37,7 @@ with Ogldev_Pipeline;
 with Ogldev_Texture;
 
 with Buffers;
-with Mesh;
+with Mesh_22;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
@@ -50,7 +52,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Texture_Buffer         : GL.Objects.Buffers.Buffer;
    Normals_Buffer         : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
-   theMesh                : Mesh.Mesh;
+   theMesh                : Mesh_22.Mesh_22;
 --     theTexture             : Ogldev_Texture.Ogl_Texture;
    Light_Technique        : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Direct_Light           : Ogldev_Lights_Common.Directional_Light;
@@ -85,7 +87,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit
               (Light_Technique, Ogldev_Engine_Common.Colour_Texture_Unit_Index);
 
-         Assimp_Mesh.Load_Mesh ( "/Ada_Source/OpenGLAda/examples/ogl_dev/content/phoenix_ugv.md2", theMesh);
+         Mesh_22.Load_Mesh (theMesh, "/Ada_Source/OpenGLAda/examples/ogl_dev/content/phoenix_ugv.md2", theMesh);
 
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
@@ -158,7 +160,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Mat_Specular_Intensity (Light_Technique, 0.0);
       Set_Mat_Specular_Power (Light_Technique, 0);
 
-      Mesh.Render_Mesh (theMesh);
+      Mesh_22.Render_Mesh (theMesh);
 --         GL.Attributes.Enable_Vertex_Attrib_Array (0);
 --        GL.Attributes.Enable_Vertex_Attrib_Array (1);
 --        GL.Attributes.Enable_Vertex_Attrib_Array (2);
