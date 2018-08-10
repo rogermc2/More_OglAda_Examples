@@ -10,7 +10,7 @@ with API_Vectors_Matrices;
 package Assimp_Util is
 
    function To_Assimp_AI_String
-     (UB_String :  Ada.Strings.Unbounded.Unbounded_String)
+     (UB_String : Ada.Strings.Unbounded.Unbounded_String)
       return Assimp_Types.AI_String;
    function To_OGL_Vector2 (C_Vec : API_Vectors_Matrices.API_Vector_2D)
                             return Singles.Vector2;

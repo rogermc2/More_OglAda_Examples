@@ -98,6 +98,7 @@ package Assimp_Mesh is
    type Vertices_Map is new  Vertices_Package.Map with null Record;
 
     type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
+    type Texture_Coords_Array is new Singles.Vector3_Array (1 .. AI_Max_Texture_Coords);
     type AI_Mesh is record
         Name         : Ada.Strings.Unbounded.Unbounded_String :=
                          Ada.Strings.Unbounded.To_Unbounded_String ("");
@@ -105,8 +106,8 @@ package Assimp_Mesh is
         Normals           : Vertices_Map;
         Tangents          : Vertices_Map;
         Bit_Tangents      : Vertices_Map;
-        Colours           : API_Colour_4D;
-        Texture_Coords    : Singles.Vector3_Array (1 .. AI_Max_Texture_Coords);
+        Colours           : Colour_Array;
+        Texture_Coords    : Texture_Coords_Array;
         Num_UV_Components : UInt;
         Faces             : Faces_Map;
         Bones             : Bones_Map;
@@ -128,8 +129,8 @@ package Assimp_Mesh is
         Normals           : Vector_3D_Array_Pointer;
         Tangents          : Vector_3D_Array_Pointer;
         Bit_Tangents      : Vector_3D_Array_Pointer;
-        Colours           : Colours_4D_Array_Pointer;
-        Texture_Coords    : Vector_3D_Array_Pointer;
+        Colours           : API_Colours_4D_Array (1 .. AI_Max_Colour_Sets);
+        Texture_Coords    : API_Vector_3D_Array (1 .. AI_Max_Texture_Coords);
         Num_UV_Components : Interfaces.C.unsigned := 0;
         Faces             : Vector_3D_Array_Pointer;
         Num_Bones         : Interfaces.C.unsigned := 0;
