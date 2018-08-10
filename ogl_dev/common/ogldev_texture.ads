@@ -10,7 +10,7 @@ with GL.Types; use GL.Types;
 with GL.Low_Level.Enums;
 with GL.Objects.Textures;
 
-with Magick_Blob.API;
+with Magick_Blob;
 with Magick_Image.API;
 with Ogldev_Engine_Common;
 
@@ -37,7 +37,5 @@ Package Ogldev_Texture is
                            Target_Type : GL.Low_Level.Enums.Texture_Kind;
                            File_Name  :  String);
    procedure Load (theTexture : in out Ogl_Texture);
-
-private
 
 end Ogldev_Texture;

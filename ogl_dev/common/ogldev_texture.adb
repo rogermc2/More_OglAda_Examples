@@ -6,7 +6,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
 
-with Magick_Blob.API;
 with Magick_Image;
 with Magick_Image.API;
 
