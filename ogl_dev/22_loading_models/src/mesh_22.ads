@@ -18,7 +18,7 @@ Package Mesh_22 is
    type Mesh_Entry is private;
 
    procedure Load_Mesh (theMesh : in out Mesh; File_Name : String);
-   procedure Render (theMesh : Mesh);
+   procedure Render_Mesh (theMesh : Mesh);
 --     procedure Render (theMesh : Mesh_22;
 --                       WVP_Matrix, World_Matrix : Singles.Matrix4_Array);
 

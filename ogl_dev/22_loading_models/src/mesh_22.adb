@@ -201,7 +201,7 @@ package body Mesh_22 is
 
    -------------------------------------------------------------------------
 
-   procedure Render (theMesh : Mesh) is
+   procedure Render_Mesh (theMesh : Mesh) is
       use Ada.Containers;
       use Mesh_Entry_Package;
       procedure Draw (Entry_Cursor :  Mesh_Entry_Package.Cursor) is
@@ -229,7 +229,7 @@ package body Mesh_22 is
                Element (Entry_Cursor).Base_Index,
                Element (Entry_Cursor).Base_Vertex);
          else
-            Put_Line ("Ogldev_Basic_Mesh.Render, Invalid Material_Index.");
+            Put_Line ("Ogldev_Basic_Mesh.Render_Mesh, Invalid Material_Index.");
          end if;
       end Draw;
    begin
@@ -246,9 +246,9 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Render 1.");
+         Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Render_Mesh .");
          raise;
-   end Render;
+   end Render_Mesh;
 
    --  -------------------------------------------------------------------------
 
