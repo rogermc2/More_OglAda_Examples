@@ -74,6 +74,9 @@ package body Assimp_Mesh is
         C_Mesh : API_Mesh;
     begin
         C_Mesh.Num_Vertices := C.unsigned (Length (anAI_Mesh.Vertices));
+        C_Mesh.Num_Faces := C.unsigned (Length (anAI_Mesh.Faces));
+        C_Mesh.Num_UV_Components := C.unsigned (anAI_Mesh.Num_UV_Components);
+
         return C_Mesh;
     end To_API_Mesh;
 

@@ -8,8 +8,9 @@ with Ada.Containers.Indefinite_Ordered_Maps;
 with GL.Objects.Buffers;
 with GL.Types; use GL.Types;
 
-with Assimp_Texture;
 with Assimp_Colour;
+with Assimp_Texture;
+with Assimp_Types;
 with API_Vectors_Matrices; use API_Vectors_Matrices;
 
 package Assimp_Mesh is
@@ -19,8 +20,18 @@ package Assimp_Mesh is
     AI_Max_Vertices       : constant Int := 16#7FFFFFFF#;
     AI_Max_Faces          : constant Int := 16#7FFFFFFF#;
 
-    type  Entries_Map is private;
     type Entry_Ptr is private;
+
+    type Mesh_Entry is record
+        Vertex_Buffer  : GL.Objects.Buffers.Buffer;
+        Index_Buffer   : GL.Objects.Buffers.Buffer;
+        Num_Indices    : UInt;
+        Material_Index : UInt;
+    end record;
+
+   package Entries_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Mesh_Entry);
+   subtype Entries_Map is Entries_Package.Map;
 
     type AI_Primitive_Type is
         (AI_Primitive_Type_Point, AI_Primitive_Type_Line, AI_Primitive_Type_Triangle,
@@ -80,11 +91,11 @@ package Assimp_Mesh is
 
    package Faces_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Face);
-   subtype Faces_Map is Faces_Package.Map;
+   type Faces_Map is new Faces_Package.Map with null Record;
 
    package Vertices_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Vertices);
-   type  Vertices_Map is new  Vertices_Package.Map with null Record;
+   type Vertices_Map is new  Vertices_Package.Map with null Record;
 
     type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
     type AI_Mesh is record
@@ -96,7 +107,7 @@ package Assimp_Mesh is
         Bit_Tangents      : Vertices_Map;
         Colours           : API_Colour_4D;
         Texture_Coords    : Singles.Vector3_Array (1 .. AI_Max_Texture_Coords);
-        Num_UV_Components : UInt_Array (1 .. AI_Max_Texture_Coords);
+        Num_UV_Components : UInt;
         Faces             : Faces_Map;
         Bones             : Bones_Map;
         Material_Index    : UInt;
@@ -119,10 +130,14 @@ package Assimp_Mesh is
         Bit_Tangents      : Vector_3D_Array_Pointer;
         Colours           : Colours_4D_Array_Pointer;
         Texture_Coords    : Vector_3D_Array_Pointer;
-        Num_UV_Components : Unsigned_Array_Pointer;
-        Faces             : Faces_Map;
-        Bones             : Bones_Map;
-        Material_Index    : UInt;
+        Num_UV_Components : Interfaces.C.unsigned := 0;
+        Faces             : Vector_3D_Array_Pointer;
+        Num_Bones         : Interfaces.C.unsigned := 0;
+        Bones             : Vector_3D_Array_Pointer;
+        Material_Index    : Interfaces.C.unsigned := 0;
+        Name              : Assimp_Types.AI_String;
+        Num_Anim_Meshes   : Interfaces.C.unsigned := 0;
+        Anim_Meshes       : Vector_3D_Array_Pointer;
     end record;
     pragma Convention (C_Pass_By_Copy, API_Mesh);
 
@@ -156,18 +171,6 @@ package Assimp_Mesh is
          AI_Primitive_Type_Triangle    => 4,
          AI_Primitive_Type_Polygon     => 8,
          AI_Primitive_Type_Force32Bit  => Integer'Last);
-
-    type Mesh_Entry is record
-        Vertex_Buffer  : GL.Objects.Buffers.Buffer;
-        Index_Buffer   : GL.Objects.Buffers.Buffer;
-        Num_Indices    : UInt;
-        Material_Index : UInt;
-    end record;
-
-   package Entries_Package is new
-     Ada.Containers.Indefinite_Ordered_Maps (UInt, Mesh_Entry);
-   type  Entries_Map is new  Entries_Package.Map with
-     null Record;
 
     type API_Mesh_Entry is record
         Vertex_Buffer  : GL.Objects.Buffers.Buffer;
