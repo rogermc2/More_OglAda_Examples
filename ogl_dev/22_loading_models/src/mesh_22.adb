@@ -41,12 +41,12 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Entry (theEntry : in out Mesh_Entry;
-                        Vertices : Vertex_Array;
-                        Indices  : GL.Types.UInt_Array) is
+   procedure Init_Buffers (theEntry : in out Mesh_Entry;
+                           Vertices : Vertex_Array;
+                           Indices  : GL.Types.UInt_Array) is
    begin
       theEntry.Num_Indices := Indices'Length;
-   end Init_Entry;
+   end Init_Buffers;
 
    --  -------------------------------------------------------------------------
 
@@ -160,7 +160,7 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
       use Assimp_Mesh.Vertices_Package;
       Num_Vertices : constant Int := Int (aMesh.Vertices.Length);
       Vertices     : Vertex_Array (1 .. Num_Vertices);
-      Indices      : GL.Types.UInt_Array (1 .. Num_Vertices);
+      Indices      : GL.Types.UInt_Array (1 .. 3 * Num_Vertices);
       Position     : GL.Types.Singles.Vector3;
       Normal       : GL.Types.Singles.Vector3;
       Tex_Coord    : GL.Types.Singles.Vector3;
@@ -183,7 +183,7 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
          Index_Index := Index_Index + 1;
          Indices (Int (Index)) := Face.Indices(3);
       end loop;
-      Init_Entry (anEntry, Vertices, Indices);
+      Init_Buffers (anEntry, Vertices, Indices);
    exception
       when others =>
          Put_Line ("An exception occurred in Mesh.Init_Mesh.");
