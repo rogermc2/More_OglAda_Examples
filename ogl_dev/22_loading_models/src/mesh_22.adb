@@ -21,7 +21,7 @@ with Scene;
 package body Mesh_22 is
    type Vertex is record
       Pos    : GL.Types.Singles.Vector3;
-      Tex    : GL.Types.Singles.Vector2;
+      Tex    : GL.Types.Singles.Vector3;
       Normal : GL.Types.Singles.Vector3;
    end record;
   type Vertex_Array is array (Int range <>) of Vertex;
@@ -163,7 +163,7 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
       Indices      : GL.Types.UInt_Array (1 .. Num_Vertices);
       Position     : GL.Types.Singles.Vector3;
       Normal       : GL.Types.Singles.Vector3;
-      Tex_Coord    : GL.Types.Singles.Vector2;
+      Tex_Coord    : GL.Types.Singles.Vector3;
       Face         : Assimp_Mesh.AI_Face;
       Index_Index  : Int := 0;
    begin
