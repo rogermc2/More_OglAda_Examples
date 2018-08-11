@@ -24,9 +24,10 @@ package body Mesh_22 is
 --     Tex_Coord_Location : constant GL.Attributes.Attribute := 1;
 --     Normal_Location    : constant GL.Attributes.Attribute := 2;
 
---     procedure Init_Materials (Initial_Mesh : in out Mesh_22;
---                               File_Name : String;
---                               theScene : Scene.AI_Scene);
+   procedure Init_Materials (Initial_Mesh : in out Mesh;
+                             File_Name : String;
+                             theScene : Scene.AI_Scene);
+procedure Init_Mesh (aMesh : in out Assimp_Mesh.AI_Mesh; anEntry : Mesh_Entry);
 procedure Set_Entry (theEntry : in out Mesh_Entry;
                      Base_Index, Base_Vertex, Num_Indices : UInt;
                      Material : Material_Type);
@@ -47,34 +48,34 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
       while Has_Element (Curs) loop
          Index := Index + 1;
          aMesh := theScene.Meshes (Index);
-         Set_Entry (anEntry, Num_Indices, Num_Vertices, 3 * aMesh.Faces,
-                    Material_Type'Enum_Val (aMesh.Material_Index));
-         Mesh_Entry_Package.Replace_Element (Initial_Mesh.Entries, Curs, anEntry);
+         Init_Mesh (aMesh, anEntry);
+--           Set_Entry (anEntry, Num_Indices, Num_Vertices, 3 * aMesh.Faces,
+--                      Material_Type'Enum_Val (aMesh.Material_Index));
+--           Mesh_Entry_Package.Replace_Element (Initial_Mesh.Entries, Curs, anEntry);
 --           Num_Vertices := Num_Vertices + aMesh.;
 --           Num_Indices := Num_Indices + anEntry.Num_Indices;
          Next (Curs);
       end loop;
 
       --  Initialize the meshes in the scene one by one
-      declare
-         Positions    : GL.Types.Singles.Vector3_Array (1 .. Int (Num_Vertices));
-         Normals      : GL.Types.Singles.Vector3_Array (1 .. Int (Num_Vertices));
-         Tex_Coords   : GL.Types.Singles.Vector2_Array (1 .. Int (Num_Vertices));
-         Indices      : GL.Types.UInt_Array (1 .. Int (Num_Indices));
-      begin
-         Curs := Initial_Mesh.Entries.First;
-         Index := 0;
-         while Has_Element (Curs) loop
-            Index := Index + 1;
+--        declare
+--           Positions    : GL.Types.Singles.Vector3_Array (1 .. Int (Num_Vertices));
+--           Normals      : GL.Types.Singles.Vector3_Array (1 .. Int (Num_Vertices));
+--           Tex_Coords   : GL.Types.Singles.Vector2_Array (1 .. Int (Num_Vertices));
+--           Indices      : GL.Types.UInt_Array (1 .. Int (Num_Indices));
+--        begin
+--           Curs := Initial_Mesh.Entries.First;
+--           Index := 0;
+--           while Has_Element (Curs) loop
+--              Index := Index + 1;
 --              aMesh := theScene.Meshes (Index);
 --              Init_Mesh (aMesh, Positions, Normals, Tex_Coords, Indices);
-            Next (Curs);
-         end loop;
+--       end loop;
 
---           Init_Materials (Initial_Mesh, File_Name, theScene);
+         Init_Materials (Initial_Mesh, File_Name, theScene);
 --           Init_Buffers (Initial_Mesh.Buffers, Positions, Normals,
 --                         Tex_Coords, Indices);
-      end; --  declare block;
+--        end; --  declare block;
 
    exception
       when others =>
@@ -136,20 +137,22 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
 --                          Positions, Normals : out GL.Types.Singles.Vector3_Array;
 --                          Tex_Coords : out GL.Types.Singles.Vector2_Array;
 --                          Indices : out GL.Types.UInt_Array) is
-   procedure Init_Mesh (aMesh : in out Mesh; Index : GL.Types.UInt;
-                        Base_Mesh : Assimp_Mesh.AI_Mesh) is
+   procedure Init_Mesh (aMesh : in out Assimp_Mesh.AI_Mesh;
+                        anEntry : Mesh_Entry) is
       use Ada.Containers;
-      use Mesh_Entry_Package;
-      anEntry  : Mesh_Entry;
-      Num_Vertices : Int := 1;
+      use Assimp_Mesh.Vertices_Package;
+      Num_Vertices : constant Int := Int (aMesh.Vertices.Length);
+      Vertices     : GL.Types.Singles.Vector3_Array (1 .. Num_Vertices);
+      Indices      : GL.Types.UInt_Array (1 .. Num_Vertices);
+      Position     : Assimp_Mesh.Vertices;
+      Normal       : Assimp_Mesh.Vertices;
+      Tex_Coord    : GL.Types.Singles.Vector3;
    begin
-       anEntry := aMesh.Entries.Element (Index);
-       declare
-            Vertices : GL.Types.Singles.Vector3_Array (1 .. Num_Vertices);
-            Indices : GL.Types.UInt_Array (1 .. Num_Vertices);
-       begin
-            null;
-       end;
+      for Index in 1 .. Num_Vertices loop
+         Position := aMesh.Vertices.Element (UInt (Index));
+         Normal := aMesh.Normals.Element (UInt (Index));
+         Tex_Coord := aMesh.Texture_Coords (Index);
+      end loop;
 
    exception
       when others =>

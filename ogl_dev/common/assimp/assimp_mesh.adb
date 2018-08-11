@@ -78,33 +78,38 @@ package body Assimp_Mesh is
       C_Mesh   : API_Mesh;
       V_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Vertices));
 --        V_Array  : API_Vector_3D_Array (1 .. V_Length);
-      V_Curs   : Cursor := anAI_Mesh.Vertices.First;
+--        V_Curs   : Cursor := anAI_Mesh.Vertices.First;
    begin
       C_Mesh.Num_Vertices := C.unsigned (V_Length);
-      C_Mesh.Num_Faces := C.unsigned (Length (anAI_Mesh.Faces));
-      C_Mesh.Num_UV_Components := C.unsigned (anAI_Mesh.Num_UV_Components);
-      C_Mesh.Num_Bones := C.unsigned (Length (anAI_Mesh.Bones));
-      C_Mesh.Material_Index := C.unsigned (anAI_Mesh.Material_Index);
-      C_Mesh.Name := Assimp_Util.To_Assimp_AI_String (anAI_Mesh.Name);
-      for index in 1 .. AI_Max_Colour_Sets loop
-         C_Mesh.Colours (C.unsigned (index)).R :=
-           C.C_float (anAI_Mesh.Colours (index).R);
-         C_Mesh.Colours (C.unsigned (index)).G :=
-           C.C_float (anAI_Mesh.Colours (index).G);
-         C_Mesh.Colours (C.unsigned (index)).B :=
-           C.C_float (anAI_Mesh.Colours (index).B);
-         C_Mesh.Colours (C.unsigned (index)).A :=
-           C.C_float (anAI_Mesh.Colours (index).A);
-      end loop;
-      for index in 1 .. AI_Max_Texture_Coords loop
-         C_Mesh.Texture_Coords (C.unsigned (index)).X :=
-           C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
-         C_Mesh.Texture_Coords (C.unsigned (index)).Y :=
-           C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y));
-         C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
-           C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
-      end loop;
-
+--        C_Mesh.Num_Faces := C.unsigned (Length (anAI_Mesh.Faces));
+--        C_Mesh.Num_UV_Components := C.unsigned (anAI_Mesh.Num_UV_Components);
+--        C_Mesh.Num_Bones := C.unsigned (Length (anAI_Mesh.Bones));
+--        C_Mesh.Material_Index := C.unsigned (anAI_Mesh.Material_Index);
+--        C_Mesh.Name := Assimp_Util.To_Assimp_AI_String (anAI_Mesh.Name);
+--        for index in 1 .. AI_Max_Colour_Sets loop
+--           C_Mesh.Colours (C.unsigned (index)).R :=
+--             C.C_float (anAI_Mesh.Colours (index).R);
+--           C_Mesh.Colours (C.unsigned (index)).G :=
+--             C.C_float (anAI_Mesh.Colours (index).G);
+--           C_Mesh.Colours (C.unsigned (index)).B :=
+--             C.C_float (anAI_Mesh.Colours (index).B);
+--           C_Mesh.Colours (C.unsigned (index)).A :=
+--             C.C_float (anAI_Mesh.Colours (index).A);
+--        end loop;
+--        for index in 1 .. AI_Max_Texture_Coords loop
+--           C_Mesh.Texture_Coords (C.unsigned (index)).X :=
+--             C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
+--           C_Mesh.Texture_Coords (C.unsigned (index)).Y :=
+--             C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y));
+--           C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
+--             C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
+--        end loop;
+--        while Has_Element (V_Curs) loop
+--           V_Array (C.unsigned (Key (V_Curs))).X := C.C_float (Element (V_Curs).X);
+--           V_Array (C.unsigned (Key (V_Curs))).Y := C.C_float (Element (V_Curs).Y);
+--           V_Array (C.unsigned (Key (V_Curs))).Z := C.C_float (Element (V_Curs).Z);
+--          Next  (V_Curs);
+--        end loop;
 
       return C_Mesh;
    end To_API_Mesh;
