@@ -19,6 +19,11 @@ with Ogldev_Util;
 with Scene;
 
 package body Mesh_22 is
+   type Vertex is record
+      Pos    : GL.Types.Singles.Vector3;
+      Tex    : GL.Types.Singles.Vector2;
+      Normal : GL.Types.Singles.Vector3;
+   end record;
 
 --     Position_Location  : constant GL.Attributes.Attribute := 0;
 --     Tex_Coord_Location : constant GL.Attributes.Attribute := 1;
@@ -142,16 +147,19 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
       use Ada.Containers;
       use Assimp_Mesh.Vertices_Package;
       Num_Vertices : constant Int := Int (aMesh.Vertices.Length);
-      Vertices     : GL.Types.Singles.Vector3_Array (1 .. Num_Vertices);
+      Vertices     : array (1 .. Num_Vertices) of Vertex;
       Indices      : GL.Types.UInt_Array (1 .. Num_Vertices);
-      Position     : Assimp_Mesh.Vertices;
-      Normal       : Assimp_Mesh.Vertices;
-      Tex_Coord    : GL.Types.Singles.Vector3;
+      Position     : GL.Types.Singles.Vector3;
+      Normal       : GL.Types.Singles.Vector3;
+      Tex_Coord    : GL.Types.Singles.Vector2;
+      V            : Vertex;
    begin
       for Index in 1 .. Num_Vertices loop
          Position := aMesh.Vertices.Element (UInt (Index));
          Normal := aMesh.Normals.Element (UInt (Index));
          Tex_Coord := aMesh.Texture_Coords (Index);
+         V := (Position, Tex_Coord, Normal);
+         Vertices (Index) := V;
       end loop;
 
    exception

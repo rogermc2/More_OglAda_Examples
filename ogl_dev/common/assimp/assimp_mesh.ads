@@ -83,24 +83,25 @@ package Assimp_Mesh is
       API_Face'(others => <>));
    subtype Faces_Array_Pointer is Faces_Array_Pointers.Pointer;
 
-   type Vertices is record
-        X : UInt;
-        Y : UInt;
-        Z : UInt;
-   end record;
-   type Vertices_Array is array (UInt range <>) of Vertices;
+--     type Vertices is record
+--          X : UInt;
+--          Y : UInt;
+--          Z : UInt;
+--     end record;
+--     type Vertices_Array is array (UInt range <>) of Vertices;
 
    package Faces_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Face);
    type Faces_Map is new Faces_Package.Map with null Record;
 
+   use Singles;
    package Vertices_Package is new
-     Ada.Containers.Indefinite_Ordered_Maps (UInt, Vertices);
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    type Vertices_Map is new  Vertices_Package.Map with null Record;
 
     type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
    type Texture_Coords_Array is new
-     Singles.Vector3_Array (1 .. AI_Max_Texture_Coords);
+     Singles.Vector2_Array (1 .. AI_Max_Texture_Coords);
     type AI_Mesh is record
         Name         : Ada.Strings.Unbounded.Unbounded_String :=
                          Ada.Strings.Unbounded.To_Unbounded_String ("");
