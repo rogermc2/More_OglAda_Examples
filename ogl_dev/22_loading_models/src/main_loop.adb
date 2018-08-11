@@ -148,13 +148,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Mat_Specular_Power (Light_Technique, 0);
 
       Mesh_22.Render_Mesh (theMesh);
---         GL.Attributes.Enable_Vertex_Attrib_Array (0);
---        GL.Attributes.Enable_Vertex_Attrib_Array (1);
---        GL.Attributes.Enable_Vertex_Attrib_Array (2);
---
---        GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
---        GL.Objects.Buffers.Array_Buffer.Bind (Texture_Buffer);
---        GL.Objects.Buffers.Array_Buffer.Bind (Normals_Buffer);
 --
 --        --  First attribute buffer : Vertices
 --        GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -168,16 +161,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --        GL.Attributes.Enable_Vertex_Attrib_Array (2);
 --        GL.Objects.Buffers.Array_Buffer.Bind (Normals_Buffer);
 --        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 0);
---
---        GL.Objects.Buffers.Element_Array_Buffer.Bind (Indices_Buffer);
---
---        GL.Objects.Textures.Set_Active_Unit (0);
---  --        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
---        GL.Objects.Buffers.Draw_Elements (Triangles, 12, UInt_Type, 0);
---
---        GL.Attributes.Disable_Vertex_Attrib_Array (0);
---        GL.Attributes.Disable_Vertex_Attrib_Array (1);
---        GL.Attributes.Disable_Vertex_Attrib_Array (2);
 
    exception
       when  others =>
@@ -192,7 +175,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 begin
    Init (Main_Window, Running);
    while Running loop
-      Render_Scene (Main_Window);
+--        Render_Scene (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and not
