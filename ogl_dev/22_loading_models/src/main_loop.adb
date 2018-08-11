@@ -1,19 +1,12 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Attributes;
 with GL.Culling;
-with GL.Low_Level.Enums;
 with GL.Objects;
-with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Shaders;
-with GL.Objects.Textures;
-with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types.Colors;
-with GL.Uniforms;
 with GL.Window;
 
 with Glfw;
@@ -23,10 +16,7 @@ with Glfw.Input.Mouse;
 with Glfw.Windows.Context;
 
 with Maths;
-with Program_Loader;
 with Utilities;
-
-with Assimp_Mesh;
 
 with Ogldev_Basic_Lighting;
 with Ogldev_Camera;
@@ -34,23 +24,19 @@ with Ogldev_Engine_Common;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
-with Ogldev_Texture;
 
-with Buffers;
 with Mesh_22;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
    Background             : constant GL.Types.Colors.Color := (0.4, 0.4, 0.4, 0.0);
-   Shader_Program         : GL.Objects.Programs.Program;
-   Field_Depth            : Single := 10.0;
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Indices_Buffer         : GL.Objects.Buffers.Buffer;
-   Vertex_Buffer          : GL.Objects.Buffers.Buffer;
-   Texture_Buffer         : GL.Objects.Buffers.Buffer;
-   Normals_Buffer         : GL.Objects.Buffers.Buffer;
+--     Indices_Buffer         : GL.Objects.Buffers.Buffer;
+--     Vertex_Buffer          : GL.Objects.Buffers.Buffer;
+--     Texture_Buffer         : GL.Objects.Buffers.Buffer;
+--     Normals_Buffer         : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
    theMesh                : Mesh_22.Mesh;
 --     theTexture             : Ogldev_Texture.Ogl_Texture;
@@ -66,9 +52,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (3.0, 2.0, 10.0); --  Normalized by Camera.Init
-      Target              : Singles.Vector3 := (0.0, 0.0, 0.1);  --  Normalized by Camera.Init
-      Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
+      Position            : constant Singles.Vector3 := (3.0, 2.0, 10.0); --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, 0.0, 0.1);  --  Normalized by Camera.Init
+      Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
       VAO.Bind;
@@ -109,6 +95,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Ogldev_Lights_Common;
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
+      Field_Depth          : constant Single := 10.0;
       Point                : Point_Light_Array (1 .. 2);
       Spot                 : Spot_Light;
       Pipe                 : Ogldev_Pipeline.Pipeline;

@@ -14,20 +14,22 @@ with Importer;
 with Material;
 
 with Ogldev_Engine_Common;
-with Ogldev_Basic_Mesh;
 with Ogldev_Util;
 
 with Scene;
 
 package body Mesh_22 is
 
-   Position_Location  : constant GL.Attributes.Attribute := 0;
-   Tex_Coord_Location : constant GL.Attributes.Attribute := 1;
-   Normal_Location    : constant GL.Attributes.Attribute := 2;
+--     Position_Location  : constant GL.Attributes.Attribute := 0;
+--     Tex_Coord_Location : constant GL.Attributes.Attribute := 1;
+--     Normal_Location    : constant GL.Attributes.Attribute := 2;
 
 --     procedure Init_Materials (Initial_Mesh : in out Mesh_22;
 --                               File_Name : String;
 --                               theScene : Scene.AI_Scene);
+procedure Set_Entry (theEntry : in out Mesh_Entry;
+                     Base_Index, Base_Vertex, Num_Indices : UInt;
+                     Material : Material_Type);
 
    --  -------------------------------------------------------------------------
 
@@ -35,20 +37,20 @@ package body Mesh_22 is
                               File_Name : String;
                               theScene : Scene.AI_Scene) is
       use Mesh_Entry_Package;
-      Num_Vertices : constant UInt := 0;
+      Num_Vertices : UInt := 0;
       Num_Indices  : constant UInt := 0;
       Curs         : Cursor := Initial_Mesh.Entries.First;
       Index        : UInt := 0;
---        aMesh        : Mesh.AI_Mesh;
---        anEntry      : Mesh_Entry;
+      aMesh        : Assimp_Mesh.AI_Mesh;
+      anEntry      : Mesh_Entry;
    begin
       while Has_Element (Curs) loop
          Index := Index + 1;
---           aMesh := theScene.Meshes (Index);
---           Set_Entry (anEntry, Num_Indices, Num_Vertices, 3 * aMesh.Num_Faces,
---                      Material_Type'Enum_Val (aMesh.Material_Index));
---           Mesh_Entry_Package.Replace_Element (Initial_Mesh.Entries, Curs, anEntry);
---           Num_Vertices := Num_Vertices + aMesh.Num_Vertices;
+         aMesh := theScene.Meshes (Index);
+         Set_Entry (anEntry, Num_Indices, Num_Vertices, 3 * aMesh.Faces,
+                    Material_Type'Enum_Val (aMesh.Material_Index));
+         Mesh_Entry_Package.Replace_Element (Initial_Mesh.Entries, Curs, anEntry);
+--           Num_Vertices := Num_Vertices + aMesh.;
 --           Num_Indices := Num_Indices + anEntry.Num_Indices;
          Next (Curs);
       end loop;
