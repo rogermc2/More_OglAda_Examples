@@ -1,8 +1,6 @@
 
 with Interfaces.C.Strings;
 
-with Ada.Containers.Doubly_Linked_Lists;
-
 with Ogldev_Util;
 
 with Assimp.API;
@@ -79,7 +77,7 @@ package body Assimp_Mesh is
       use Vertices_Package;
       C_Mesh   : API_Mesh;
       V_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Vertices));
-      V_Array  : API_Vector_3D_Array (1 .. V_Length);
+--        V_Array  : API_Vector_3D_Array (1 .. V_Length);
       V_Curs   : Cursor := anAI_Mesh.Vertices.First;
    begin
       C_Mesh.Num_Vertices := C.unsigned (V_Length);
