@@ -4,78 +4,16 @@ limited with "../../../OpenGLAda/opengl-glfw.gpr";
 
 project Loader is
 
-   type Glfw_Version_Type is
-      ("2", "3");
-
-   -- Different operating systems need different linker
-   -- flags. Moreover, some features (such as WGL, GLX,
-   -- CGL) are only available on one specific platform.
-   -- Supported values:
-   --  * windows : Microsoft Windows
-   --  * x11     : X Window System
-   --  * quartz  : Quartz Compositor (OS X)
-   type Windowing_System_Type is
-      ("windows", "x11", "quartz");
-   type Toggle_Type is
-      ("enabled", "disabled");
-   type Library_Kinds is
-      ("static", "relocatable");
-   type Mode_Type is
-      ("debug", "release");
    for Source_Dirs use ("src", "../common/**", "../magick");
    for Object_Dir use "obj";
    for Exec_Dir use ".";
    for Main use ("model_loader");
    for Languages use ("Ada", "C++");
-   Mode : Mode_Type := external ("Mode");
-   Library_Type : Library_Kinds := external ("Library_Type");
-   Auto_Exceptions : Toggle_Type := external ("Auto_Exceptions");
-   Windowing_System : Windowing_System_Type := external ("Windowing_System");
-   GLFW_Version : Glfw_Version_Type := external ("GLFW_Version");
 
    package Compiler is
       for Switches ("c++") use ("-I/usr/local/include/assimp", "-I/usr/local/include/ImageMagick-7/Magick++", "-I/usr/local/include/ImageMagick-7", "-DMAGICKCORE_QUANTUM_DEPTH=16", "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
 
-      case Mode is
-
-         when "debug" =>
-
-            case Library_Type is
-
-               when "static" =>
-
-                  case Auto_Exceptions is
-
-                     when "enabled" =>
-
-                        case Windowing_System is
-
-                           when "windows" =>
-
-                           when "x11" =>
-
-                           when "quartz" =>
-
-                              case GLFW_Version is
-
-                                 when "2" =>
-
-                                 when "3" =>
-                                    for Switches ("ada") use ("-gnatwa", "-gnatf");
-                              end case;
-                        end case;
-
-                     when "disabled" =>
-
-                  end case;
-
-               when "relocatable" =>
-
-            end case;
-
-         when "release" =>
-
-      end case;
+      for Switches ("ada") use ("-gnatwa", "-gnatf");
    end Compiler;
 
    package Naming is
