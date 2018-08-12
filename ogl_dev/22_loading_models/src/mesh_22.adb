@@ -98,34 +98,9 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
          Index := Index + 1;
          aMesh := theScene.Meshes (Index);
          Init_Mesh (aMesh, anEntry);
---           Set_Entry (anEntry, Num_Indices, Num_Vertices, 3 * aMesh.Faces,
---                      Material_Type'Enum_Val (aMesh.Material_Index));
---           Mesh_Entry_Package.Replace_Element (Initial_Mesh.Entries, Curs, anEntry);
---           Num_Vertices := Num_Vertices + aMesh.;
---           Num_Indices := Num_Indices + anEntry.Num_Indices;
          Next (Curs);
       end loop;
-
-      --  Initialize the meshes in the scene one by one
---        declare
---           Positions    : GL.Types.Singles.Vector3_Array (1 .. Int (Num_Vertices));
---           Normals      : GL.Types.Singles.Vector3_Array (1 .. Int (Num_Vertices));
---           Tex_Coords   : GL.Types.Singles.Vector2_Array (1 .. Int (Num_Vertices));
---           Indices      : GL.Types.UInt_Array (1 .. Int (Num_Indices));
---        begin
---           Curs := Initial_Mesh.Entries.First;
---           Index := 0;
---           while Has_Element (Curs) loop
---              Index := Index + 1;
---              aMesh := theScene.Meshes (Index);
---              Init_Mesh (aMesh, Positions, Normals, Tex_Coords, Indices);
---       end loop;
-
-         Init_Materials (Initial_Mesh, File_Name, theScene);
---           Init_Buffers (Initial_Mesh.Buffers, Positions, Normals,
---                         Tex_Coords, Indices);
---        end; --  declare block;
-
+      Init_Materials (Initial_Mesh, File_Name, theScene);
    exception
       when others =>
          Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Init_From_Scene.");
@@ -182,10 +157,6 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
 
    -------------------------------------------------------------------------
 
---     procedure Init_Mesh (aMesh : Mesh.AI_Mesh;
---                          Positions, Normals : out GL.Types.Singles.Vector3_Array;
---                          Tex_Coords : out GL.Types.Singles.Vector2_Array;
---                          Indices : out GL.Types.UInt_Array) is
    procedure Init_Mesh (aMesh : in out Assimp_Mesh.AI_Mesh;
                         anEntry : in out Mesh_Entry) is
       use Ada.Containers;
@@ -258,10 +229,6 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
       GL.Objects.Buffers.Array_Buffer.Bind (theMesh.Basic_Entry.VBO);
       theMesh.Basic_Entry.IBO.Initialize_Id;
       GL.Objects.Buffers.Array_Buffer.Bind (theMesh.Basic_Entry.IBO);
-      --   Create the buffers for the vertices attributes
---        for index in 1 .. Num_Buffers loop
---           theMesh.Buffers (index).Initialize_Id;
---        end loop;
 
       Init_From_Scene (theMesh, File_Name, theScene);
 
