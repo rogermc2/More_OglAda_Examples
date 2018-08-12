@@ -19,8 +19,6 @@ Package Mesh_22 is
 
    procedure Load_Mesh (theMesh : in out Mesh; File_Name : String);
    procedure Render_Mesh (theMesh : Mesh);
---     procedure Render (theMesh : Mesh_22;
---                       WVP_Matrix, World_Matrix : Singles.Matrix4_Array);
 
 private
    Num_Buffers : constant UInt := 6;
