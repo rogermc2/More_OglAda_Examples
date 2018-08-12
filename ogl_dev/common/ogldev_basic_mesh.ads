@@ -22,7 +22,7 @@ Package Ogldev_Basic_Mesh is
    function Get_Material_Index (theEntry : Basic_Mesh_Entry) return Material_Type;
    function Get_Num_Indices (theEntry : Basic_Mesh_Entry) return UInt;
    function Get_Orientation  (theMesh : Basic_Mesh) return Orientation;
---     procedure Load_Mesh (theMesh : in out Basic_Mesh; File_Name : String);
+   procedure Load_Mesh (theMesh : in out Basic_Mesh; File_Name : String);
    procedure Render (theMesh : Basic_Mesh);
    procedure Render (theMesh : Basic_Mesh;
                      WVP_Matrix, World_Matrix : Singles.Matrix4_Array);
