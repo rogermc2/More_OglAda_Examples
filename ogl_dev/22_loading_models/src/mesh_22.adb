@@ -1,10 +1,14 @@
 
+with Interfaces.C.Pointers;
+
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Low_Level.Enums;
+with GL.Vectors;
 
+with Maths;
 with Utilities;
 
 with Assimp_Mesh;
@@ -21,7 +25,7 @@ with Scene;
 package body Mesh_22 is
    type Vertex is record
       Pos    : GL.Types.Singles.Vector3;
-      Tex    : GL.Types.Singles.Vector3;
+      Tex    : GL.Types.Singles.Vector2;
       Normal : GL.Types.Singles.Vector3;
    end record;
   type Vertex_Array is array (Int range <>) of Vertex;
@@ -44,8 +48,36 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
    procedure Init_Buffers (theEntry : in out Mesh_Entry;
                            Vertices : Vertex_Array;
                            Indices  : GL.Types.UInt_Array) is
-   begin
-      theEntry.Num_Indices := Indices'Length;
+      use GL;
+      use GL.Objects.Buffers;
+      Vertices_Length : constant Int := Vertices'Length;
+      Indices_Length  : constant Int := Indices'Length;
+      Vertices_Array  : Maths.Vector8_Array (1 .. Vertices_Length);
+      Indices_Array   : GL.Types.UInt_Array (1 .. Indices_Length);
+      begin
+      theEntry.Num_Indices := UInt (Indices_Length);
+      theEntry.VBO.Initialize_Id;
+      Array_Buffer.Bind (theEntry.VBO);
+      Array_Buffer.Bind (theEntry.VBO);
+
+      for index in 1 ..  Vertices_Length loop
+            Vertices_Array (index) :=
+              (Vertices (index).Pos (X), Vertices (index).Pos (Y), Vertices (index).Pos (Z),
+               Vertices (index).Tex (X), Vertices (index).Tex (Y),
+               Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
+      end loop;
+      Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
+
+      for index in 1 ..  Indices_Length loop
+            Indices_Array (index) := Indices (index);
+      end loop;
+      Utilities.Load_Element_Buffer (Array_Buffer, Indices, Static_Draw);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Init_Buffers.");
+         raise;
+
    end Init_Buffers;
 
    --  -------------------------------------------------------------------------
@@ -171,7 +203,7 @@ procedure Set_Entry (theEntry : in out Mesh_Entry;
          Position := aMesh.Vertices.Element (UInt (Index));
          Normal := aMesh.Normals.Element (UInt (Index));
          Tex_Coord := aMesh.Texture_Coords (Index);
-         Vertices (Index) := (Position, Tex_Coord, Normal);
+         Vertices (Index) := (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
       end loop;
 
       for Index in 1 .. aMesh.Faces.Length loop
