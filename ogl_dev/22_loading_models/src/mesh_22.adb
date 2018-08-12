@@ -143,7 +143,6 @@ package body Mesh_22 is
     procedure Init_Mesh (aMesh : in out Assimp_Mesh.AI_Mesh;
                          anEntry : in out Mesh_Entry) is
         use Ada.Containers;
-        use Assimp_Mesh.Vertices_Package;
         Num_Vertices : constant Int := Int (aMesh.Vertices.Length);
         Vertices     : Vertex_Array (1 .. Num_Vertices);
         Indices      : GL.Types.UInt_Array (1 .. 3 * Num_Vertices);
