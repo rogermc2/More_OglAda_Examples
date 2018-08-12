@@ -1,13 +1,10 @@
 
-with Interfaces.C;
-
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
 
 with Magick_Image;
-with Magick_Image.API;
 
 package body Ogldev_Texture is
 
