@@ -34,6 +34,8 @@ package Utilities is
      (Maths.Vector5_Pointers);
    procedure Load_Vector6_Buffer is new GL.Objects.Buffers.Load_To_Buffer
      (Maths.Vector6_Pointers);
+   procedure Load_Vector8_Buffer is new GL.Objects.Buffers.Load_To_Buffer
+     (Maths.Vector8_Pointers);
    procedure Load_Vertex_Sub_Buffer is new
      GL.Objects.Buffers.Set_Sub_Data (GL.Types.Singles.Vector3_Pointers);
    procedure Load_Vertex_Sub_Buffer is new
