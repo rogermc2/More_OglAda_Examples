@@ -2,8 +2,6 @@
 with Ada.Containers.Indefinite_Ordered_Maps;
 with Ada.Strings.Unbounded;
 
-with System;
-
 with Core_Image;
 
 with GL.Types; use GL.Types;
@@ -11,7 +9,6 @@ with GL.Low_Level.Enums;
 with GL.Objects.Textures;
 
 with Magick_Blob;
-with Magick_Image.API;
 with Ogldev_Engine_Common;
 
 Package Ogldev_Texture is

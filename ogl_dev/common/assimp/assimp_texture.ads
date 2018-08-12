@@ -31,7 +31,7 @@ package Assimp_Texture is
    type API_Texture is record
       Width           : Interfaces.C.unsigned := 0;
       Height          : Interfaces.C.unsigned := 0;
-      Ach_Format_Hint : ACH_Format_Hint_Array;
+      Ach_Format_Hint : ACH_Format_Hint_Array := "    ";
       PC_Data_Ptr     : Texel_Array_Pointers.Pointer;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Texture);
@@ -59,10 +59,11 @@ private
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Texel);
    type AI_Texel_Map is new AI_Texel_Package.Map with null Record;
 
+   type Hint_String is new String (1 .. 4);
    type AI_Texture is record
       Width       : GL.Types.UInt := 0;
       Height      : GL.Types.UInt := 0;
-      Format_Hint : String (1 .. 4);
+      Format_Hint : Hint_String := "    ";
       PC_Data     : AI_Texel_Map;
    end record;
 

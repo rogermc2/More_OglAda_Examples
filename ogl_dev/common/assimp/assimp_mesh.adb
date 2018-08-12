@@ -1,26 +1,23 @@
 
-with Interfaces.C.Strings;
-
 with Ogldev_Util;
 
-with Assimp.API;
 with Assimp_Util;
 with Importer;
 with Scene;
 
 package body Assimp_Mesh is
 
-   function Init_From_Scene (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
-                             File_Name : String) return Boolean;
-   function Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
-                            File_Name : String) return Boolean;
+   procedure Init_From_Scene (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
+                             File_Name : String);
+   procedure Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
+                            File_Name : String);
    procedure Init_Mesh (theMesh : in out Mesh; Mesh_Index : UInt; anAI_Mesh : AI_Mesh);
    function To_API_Mesh (anAI_Mesh : AI_Mesh) return API_Mesh;
 
    --  ------------------------------------------------------------------------
 
-   function Init_From_Scene (theMesh   : in out Mesh; theScene  : Scene.AI_Scene;
-                             File_Name : String) return Boolean is
+   procedure Init_From_Scene (theMesh   : in out Mesh; theScene  : Scene.AI_Scene;
+                             File_Name : String) is
       use AI_Mesh_Package;
       anAI_Mesh : AI_Mesh;
       Index     : UInt := 0;
@@ -31,15 +28,15 @@ package body Assimp_Mesh is
          Init_Mesh (theMesh, Index, anAI_Mesh);
       end loop;
 
-      return Init_Materials (theMesh, theScene, File_Name);
+      Init_Materials (theMesh, theScene, File_Name);
    end Init_From_Scene;
 
    --  ------------------------------------------------------------------------
 
-   function Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
-                            File_Name : String) return Boolean is
+   procedure Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
+                            File_Name : String) is
    begin
-      return False;
+      null;
    end Init_Materials;
 
    --  ------------------------------------------------------------------------
@@ -57,10 +54,9 @@ package body Assimp_Mesh is
 
    procedure Load_Mesh (File_Name : String; theMesh : in out Mesh) is
       theScene : Scene.AI_Scene;
-      Ok       : Boolean := False;
    begin
       theScene := Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
-      Ok := Init_From_Scene (theMesh, theScene, File_Name);
+      Init_From_Scene (theMesh, theScene, File_Name);
    end Load_Mesh;
 
    --  ------------------------------------------------------------------------
@@ -80,7 +76,7 @@ package body Assimp_Mesh is
       V_Array  : API_Vector_3D_Array (1 .. V_Length);
       V_Curs   : Cursor := anAI_Mesh.Vertices.First;
    begin
-      C_Mesh.Num_Vertices := C.unsigned (V_Length);
+      C_Mesh.Num_Vertices := V_Length;
       C_Mesh.Num_Faces := C.unsigned (Length (anAI_Mesh.Faces));
       C_Mesh.Num_UV_Components := C.unsigned (anAI_Mesh.Num_UV_Components);
       C_Mesh.Num_Bones := C.unsigned (Length (anAI_Mesh.Bones));
