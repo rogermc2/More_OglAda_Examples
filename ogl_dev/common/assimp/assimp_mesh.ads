@@ -83,13 +83,6 @@ package Assimp_Mesh is
       API_Face'(others => <>));
    subtype Faces_Array_Pointer is Faces_Array_Pointers.Pointer;
 
---     type Vertices is record
---          X : UInt;
---          Y : UInt;
---          Z : UInt;
---     end record;
---     type Vertices_Array is array (UInt range <>) of Vertices;
-
    package Faces_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Face);
    type Faces_Map is new Faces_Package.Map with null Record;
