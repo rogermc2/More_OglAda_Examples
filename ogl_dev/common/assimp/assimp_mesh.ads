@@ -92,7 +92,7 @@ package Assimp_Mesh is
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    type Vertices_Map is new  Vertices_Package.Map with null Record;
 
-    type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
+   type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
    type Texture_Coords_Array is new
      Singles.Vector3_Array (1 .. AI_Max_Texture_Coords);
     type AI_Mesh is record
@@ -113,7 +113,6 @@ package Assimp_Mesh is
    package AI_Mesh_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Mesh);
    subtype  AI_Mesh_Map is AI_Mesh_Package.Map;
-
     --  C arrays are constrained. To pass C arrays around function calls,
     --  either terminate them with a zero element or with a separate length parameter.
 
@@ -152,14 +151,9 @@ package Assimp_Mesh is
         Textures  : Assimp_Texture.AI_Texture_Map;
     end record;
 
---     type API_Mesh is record
---          Entries   : Entry_Ptr;
---          Textures  : Assimp_Texture.Texture_Pointers.Pointer;
---     end record;
---     pragma Convention (C_Pass_By_Copy, API_Mesh);
-
    procedure Load_Mesh (File_Name : String; theMesh : in out Mesh);
---     procedure Render_Mesh (theMesh : Mesh);
+   procedure Render_Mesh (theMesh : Mesh);
+   function To_API_Mesh (anAI_Mesh : AI_Mesh) return API_Mesh;
 
     private
          for AI_Primitive_Type use

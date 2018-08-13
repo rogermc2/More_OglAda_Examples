@@ -35,7 +35,7 @@ package body Assimp_Texture is
          aTexture.Width := UInt (C_Texture.Width);
          aTexture.Height := UInt (C_Texture.Height);
          aTexture.Format_Hint :=
-           To_Ada (C_Texture.Ach_Format_Hint);
+           Hint_String (To_Ada (C_Texture.Ach_Format_Hint));
          aTexture.PC_Data :=
            To_AI_Texel_Map (aTexture.Width * aTexture.Height, C_Texture.PC_Data_Ptr);
          Tex_Map.Insert (UInt (index), aTexture);

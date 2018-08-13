@@ -1,7 +1,6 @@
 
 
 with Magick_Blob;
-limited with Magick_Image.API;
 with Core_Image;
 
 package Magick_Image is
