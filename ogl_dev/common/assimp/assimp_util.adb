@@ -1,5 +1,6 @@
 
 with Interfaces.C;
+with Interfaces.C.Strings;
 
 package body Assimp_Util is
 
@@ -63,6 +64,20 @@ package body Assimp_Util is
          Single (C_Colours.B), Single (C_Colours.A));
       return theColours;
    end To_Colour4D;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Unbounded_String (AI_String : Assimp_Types.AI_String)
+                                 return Ada.Strings.Unbounded.Unbounded_String is
+      use Interfaces.C.Strings;
+      use Ada.Strings.Unbounded;
+      AI_String_Ptr : constant chars_ptr := New_Char_Array (AI_String.Data);
+      UB_String     :  Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      UB_String :=
+        To_Unbounded_String (Value (AI_String_Ptr, AI_String.Length));
+      return UB_String;
+   end To_Unbounded_String;
 
    --  ------------------------------------------------------------------------
 
