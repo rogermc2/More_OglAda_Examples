@@ -60,11 +60,11 @@ package body Importer is
 
     ------------------------------------------------------------------------
 
-    procedure To_AI_Scene (C_Scene : API_Scene;
+     procedure To_AI_Scene (C_Scene : API_Scene;
                            theScene : in out Scene.AI_Scene) is
---          C_Mesh_Array : constant Assimp_Mesh.API_Mesh_Array
---            := Assimp_Mesh.Mesh_Array_Pointers.Value
---              (C_Scene.Meshes, ptrdiff_t (C_Scene.Num_Meshes));
+        C_Mesh_Array : constant Assimp_Mesh.API_Mesh_Array
+          := Assimp_Mesh.Mesh_Array_Pointers.Value
+            (C_Scene.Meshes, ptrdiff_t (C_Scene.Num_Meshes));
         C_Materials_Array : constant Material.API_Material_Array
           := Material.Material_Pointers.Value
             (C_Scene.Materials, ptrdiff_t (C_Scene.Num_Materials));
@@ -88,8 +88,8 @@ package body Importer is
         Put_Line ("C_Import.To_AI_Scene, calling To_Node_List");
         Scene.To_Node_List (C_Root_Node,  theScene.Nodes);
         Put_Line ("C_Import.To_AI_Scene, calling To_AI_Mesh_Map");
---          theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (C_Scene.Num_Meshes, C_Mesh_Array);
---          Put_Line ("C_Import.To_AI_Scene, calling To_AI_Materials_Map");
+        theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (C_Scene.Num_Meshes, C_Mesh_Array);
+        Put_Line ("C_Import.To_AI_Scene, calling To_AI_Materials_Map");
         theScene.Materials :=
           Material.To_AI_Materials_Map (C_Scene.Num_Materials, C_Materials_Array);
         Put_Line ("C_Import.To_AI_Scene, calling To_AI_Animation_Map");
