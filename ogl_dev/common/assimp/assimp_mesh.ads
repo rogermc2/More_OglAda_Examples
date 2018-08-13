@@ -153,6 +153,8 @@ package Assimp_Mesh is
 
    procedure Load_Mesh (File_Name : String; theMesh : in out Mesh);
    procedure Render_Mesh (theMesh : Mesh);
+   function To_AI_Mesh_Map (Num_Meshes : Interfaces.C.unsigned := 0;
+                            C_Mesh_Array : API_Mesh_Array) return AI_Mesh_Map;
    function To_API_Mesh (anAI_Mesh : AI_Mesh) return API_Mesh;
 
     private
