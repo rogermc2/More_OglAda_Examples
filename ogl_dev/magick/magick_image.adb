@@ -18,7 +18,7 @@ package body Magick_Image is
         use Interfaces.C.Strings;
         use Magick_Blob.Blob_Package;
         Data_Address  : constant System.Address := Magick_Image.API.Get_Blob_Data;
-        Data_Length   : size_t := Magick_Image.API.Blob_Length;
+        Data_Length   : constant size_t := Magick_Image.API.Blob_Length;
         theData       : Magick_Blob.Blob_Data;
         Index         : size_t := 0;
     begin
@@ -59,10 +59,10 @@ package body Magick_Image is
 
     --  -------------------------------------------------------------------------
 
-    function Get_Blob_Length return GL.Types.UInt is
-    begin
-        return GL.Types.UInt (Magick_Image.API.Blob_Length);
-    end Get_Blob_Length;
+--      function Get_Blob_Length return GL.Types.UInt is
+--      begin
+--          return GL.Types.UInt (Magick_Image.API.Blob_Length);
+--      end Get_Blob_Length;
 
     --  -------------------------------------------------------------------------
 

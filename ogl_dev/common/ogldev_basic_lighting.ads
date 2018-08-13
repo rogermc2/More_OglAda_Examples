@@ -3,7 +3,7 @@ with GL.Objects.Programs;
 with GL.Types; use GL.Types;
 with GL.Uniforms;
 
-with Ant_Tweak_Bar;
+--  with Ant_Tweak_Bar;
 with Ogldev_Engine_Common;
 with Ogldev_Lights_Common; use Ogldev_Lights_Common;
 

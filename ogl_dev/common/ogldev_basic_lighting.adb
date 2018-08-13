@@ -231,7 +231,7 @@ package body Ogldev_Basic_Lighting is
       Location   : Point_Light_Locations;
    begin
       GL.Uniforms.Set_UInt (Technique.Num_Point_Lights_Location, Num_Lights);
-      for index in UInt range 1 .. UInt (Num_Lights) loop
+      for index in UInt range 1 .. Num_Lights loop
          Location := Technique.Point_Lights_Location (Int (index));
          Set_Single (Location.Colour, Colour (Lights (index)));
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Lights (index)));
@@ -250,12 +250,12 @@ package body Ogldev_Basic_Lighting is
       Num_Lights      : constant UInt :=  Spots'Length;
       Location        : Spot_Light_Locations;
       Spot            : Spot_Light;
-      Light_Direction : Singles.Vector3;
+--        Light_Direction : Singles.Vector3;
    begin
       GL.Uniforms.Set_UInt (Technique.Num_Spot_Lights_Location, Num_Lights);
       for index in Int range 1 .. Int (Num_Lights) loop
          Spot := Spots (UInt (index));
-         Light_Direction := Maths.Normalized (Direction (Spot));
+--           Light_Direction := Maths.Normalized (Direction (Spot));
          Location := Technique.Spot_Lights_Location (index);
          Set_Single (Location.Colour, Colour (Spot));
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
@@ -275,9 +275,9 @@ package body Ogldev_Basic_Lighting is
    procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
                               Spot      : Ogldev_Lights_Common.Spot_Light) is
       Location        : Spot_Light_Locations;
-      Light_Direction : Singles.Vector3 := Direction (Spot);
+--        Light_Direction : Singles.Vector3 := Direction (Spot);
    begin
-      Light_Direction := Maths.Normalized (Light_Direction);
+--        Light_Direction := Maths.Normalized (Light_Direction);
       GL.Uniforms.Set_UInt (Technique.Num_Spot_Lights_Location, 1);
       Location := Technique.Spot_Lights_Location (1);
       Set_Single (Location.Colour, Colour (Spot));

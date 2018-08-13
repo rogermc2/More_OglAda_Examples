@@ -12,8 +12,8 @@ package body Scene is
           (Interfaces.C.To_Ada (Root_Node.Name.Data));
         aNode.Transformation :=
           Ogldev_Math.To_GL_Matrix4 (Root_Node.Transformation);
-        aNode.Meshes :=
-          Mesh.To_AI_Mesh_Map (Root_Node.Num_Meshes, Root_Node.Meshes.all);
+--          aNode.Meshes :=
+--            Assimp_Mesh.To_AI_Mesh_Map (Root_Node.Num_Meshes, Root_Node.Meshes.all);
         Nodes.Append (aNode);
         for index in 1 .. Root_Node.Num_Children loop
             null;
