@@ -67,6 +67,71 @@ package body Assimp_Mesh is
 
    --  ------------------------------------------------------------------------
 
+   function To_AI_Mesh (C_Mesh : API_Mesh) return AI_Mesh is
+      use Interfaces;
+      use Vertices_Package;
+      theAI_Mesh : AI_Mesh;
+      Num_Vertices : constant C.unsigned := C_Mesh.Num_Vertices;
+      Num_Faces    : constant C.unsigned :=C_Mesh.Num_Faces;
+      Num_UV       : constant C.unsigned := C_Mesh.Num_UV_Components;
+      Num_Bones    : constant C.unsigned := C_Mesh.Num_Bones;
+      V_Array      : API_Vector_3D_Array (1 .. Num_Vertices);
+      V_Curs    : Cursor := theAI_Mesh.Vertices.First;
+   begin
+      theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
+      theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
+      for index in 1 .. AI_Max_Colour_Sets loop
+         theAI_Mesh.Colours (index).R :=
+           Single (C_Mesh.Colours (C.unsigned (index)).R);
+         theAI_Mesh.Colours (index).G :=
+           Single (C_Mesh.Colours (C.unsigned (index)).G);
+         theAI_Mesh.Colours (index).B :=
+           Single (C_Mesh.Colours (C.unsigned (index)).B);
+         theAI_Mesh.Colours (index).A :=
+           Single (C_Mesh.Colours (C.unsigned (index)).A);
+      end loop;
+      for index in 1 .. Num_Vertices loop
+         theAI_Mesh.Vertices.Update_Element (index, C_Mesh.Vertices (C.unsigned (index));
+           Single (C_Mesh.Vertices (C.unsigned (index)) (1));
+         theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y):=
+           Single (C_Mesh.Texture_Coords (C.unsigned (index)).Y);
+         theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z):=
+           Single (C_Mesh.Texture_Coords (C.unsigned (index)).Z);
+      end loop;for index in 1 .. AI_Max_Texture_Coords loop
+         theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X):=
+           Single (C_Mesh.Texture_Coords (C.unsigned (index)).X);
+         theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y):=
+           Single (C_Mesh.Texture_Coords (C.unsigned (index)).Y);
+         theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z):=
+           Single (C_Mesh.Texture_Coords (C.unsigned (index)).Z);
+      end loop;
+--        while Has_Element (V_Curs) loop
+--           V_Array (C.unsigned (Key (V_Curs))).X := C.C_float (Element (V_Curs) (GL.X));
+--           V_Array (C.unsigned (Key (V_Curs))).Y := C.C_float (Element (V_Curs) (GL.Y));
+--           V_Array (C.unsigned (Key (V_Curs))).Z := C.C_float (Element (V_Curs) (GL.Z));
+--          Next  (V_Curs);
+--        end loop;
+
+      return theAI_Mesh;
+   end To_AI_Mesh;
+
+   --  ------------------------------------------------------------------------
+
+   function To_AI_Mesh_Map (Num_Meshes : Interfaces.C.unsigned := 0;
+                            C_Mesh_Array : API_Mesh_Array)
+                            return AI_Mesh_Map is
+      Meshs  : AI_Mesh_Map;
+      aMesh  : AI_Mesh;
+   begin
+      for index in 1 .. Num_Meshes loop
+         aMesh := To_AI_Mesh (C_Mesh_Array (index));
+         Materials.Insert (UInt (index), aMesh);
+      end loop;
+      return Meshs;
+   end To_AI_Mesh_Map;
+
+   --  ------------------------------------------------------------------------
+
    function To_API_Mesh (anAI_Mesh : AI_Mesh) return API_Mesh is
       use Interfaces;
       use Vertices_Package;
@@ -105,7 +170,7 @@ package body Assimp_Mesh is
          V_Array (C.unsigned (Key (V_Curs))).Z := C.C_float (Element (V_Curs) (GL.Z));
         Next  (V_Curs);
       end loop;
-        C_Mesh.Vertices := V_Array;
+
       return C_Mesh;
    end To_API_Mesh;
 
