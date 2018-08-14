@@ -130,11 +130,10 @@ package body Assimp_Mesh is
 
    --  ------------------------------------------------------------------------
 
-   function Vertices_To_API (Vertices : Vertices_Map) return API_Vector_3D_Array is
+   procedure Vertices_To_API (Vertices : Vertices_Map; V_Array  : in out API_Vector_3D_Array) is
       use Interfaces;
       use Vertices_Package;
-      V_Length : constant C.unsigned := C.unsigned (Length (Vertices));
-      V_Array  : aliased  API_Vector_3D_Array (1 .. V_Length);
+
       V_Curs   : Vertices_Package.Cursor := Vertices.First;
     begin
       while Has_Element (V_Curs) loop
@@ -142,9 +141,7 @@ package body Assimp_Mesh is
          V_Array (C.unsigned (Key (V_Curs))).Y := C.C_float (Element (V_Curs) (GL.Y));
          V_Array (C.unsigned (Key (V_Curs))).Z := C.C_float (Element (V_Curs) (GL.Z));
          Next (V_Curs);
-         return V_Array;
       end loop;
-   return V_Array;
 
    exception
       when others =>
@@ -154,11 +151,9 @@ package body Assimp_Mesh is
 
    --  ------------------------------------------------------------------------
 
-   function To_API_Mesh (anAI_Mesh : AI_Mesh) return API_Mesh is
+   procedure To_API_Mesh (anAI_Mesh : AI_Mesh; C_Mesh : in out API_Mesh) is
       use Interfaces;
       use Faces_Package;
-
-      C_Mesh   : API_Mesh;
       V_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Vertices));
       V_Array  : aliased  API_Vector_3D_Array (1 .. V_Length);
       F_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Faces));
@@ -189,7 +184,7 @@ package body Assimp_Mesh is
          C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
            C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
       end loop;
-      V_Array := Vertices_To_API (anAI_Mesh.Vertices);
+      Vertices_To_API (anAI_Mesh.Vertices, V_Array);
 
       while Has_Element (F_Curs) loop
          declare
@@ -209,7 +204,6 @@ package body Assimp_Mesh is
       --  Vertices : Vector_3D_Array_Pointer;
       C_Mesh.Vertices := V_Array(V_Array'First)'Unchecked_Access;
       C_Mesh.Faces := F_Array(F_Array'First)'Unchecked_Access;
-      return C_Mesh;
 
    exception
       when others =>
