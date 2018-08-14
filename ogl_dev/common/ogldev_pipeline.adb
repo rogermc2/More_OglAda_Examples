@@ -1,8 +1,6 @@
 
 with Maths;
 
-with Ogldev_Math;
-
 package body Ogldev_Pipeline is
 
    function Get_World_Transform (P : in out Pipeline) return Singles.Matrix4 is
