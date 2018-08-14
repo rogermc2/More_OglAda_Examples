@@ -127,7 +127,7 @@ package Assimp_Mesh is
         Colours           : API_Colours_4D_Array (1 .. AI_Max_Colour_Sets);
         Texture_Coords    : API_Vector_3D_Array (1 .. AI_Max_Texture_Coords);
         Num_UV_Components : Interfaces.C.unsigned := 0;
-        Faces             : Vector_3D_Array_Pointer;
+        Faces             : Faces_Array_Pointer;
         Num_Bones         : Interfaces.C.unsigned := 0;
         Bones             : Vector_3D_Array_Pointer;
         Material_Index    : Interfaces.C.unsigned := 0;
