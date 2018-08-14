@@ -154,16 +154,24 @@ package body Assimp_Mesh is
    procedure To_API_Mesh (anAI_Mesh : AI_Mesh; C_Mesh : in out API_Mesh) is
       use Interfaces;
       use Faces_Package;
-      V_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Vertices));
-      V_Array  : aliased  API_Vector_3D_Array (1 .. V_Length);
-      F_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Faces));
-      F_Array  : aliased  API_Faces_Array (1 .. F_Length);
-      F_Curs   : Faces_Package.Cursor := anAI_Mesh.Faces.First;
+      V_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Vertices));
+      N_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Normals));
+      T_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Tangents));
+      BT_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bit_Tangents));
+      B_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bones));
+      F_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Faces));
+      V_Array   : aliased  API_Vector_3D_Array (1 .. V_Length);
+      N_Array   : aliased  API_Vector_3D_Array (1 .. N_Length);
+      T_Array   : aliased  API_Vector_3D_Array (1 .. T_Length);
+      BT_Array  : aliased  API_Vector_3D_Array (1 .. BT_Length);
+      B_Array   : aliased  API_Vector_3D_Array (1 .. B_Length);
+      F_Array   : aliased  API_Faces_Array (1 .. F_Length);
+      F_Curs    : Faces_Package.Cursor := anAI_Mesh.Faces.First;
    begin
       C_Mesh.Num_Vertices := V_Length;
-      C_Mesh.Num_Faces := C.unsigned (Length (anAI_Mesh.Faces));
+      C_Mesh.Num_Faces := F_Length;
+      C_Mesh.Num_Bones := B_Length;
       C_Mesh.Num_UV_Components := C.unsigned (anAI_Mesh.Num_UV_Components);
-      C_Mesh.Num_Bones := C.unsigned (Length (anAI_Mesh.Bones));
       C_Mesh.Material_Index := C.unsigned (anAI_Mesh.Material_Index);
       C_Mesh.Name := Assimp_Util.To_Assimp_AI_String (anAI_Mesh.Name);
       for index in 1 .. AI_Max_Colour_Sets loop
@@ -185,6 +193,9 @@ package body Assimp_Mesh is
            C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
       end loop;
       Vertices_To_API (anAI_Mesh.Vertices, V_Array);
+      Vertices_To_API (anAI_Mesh.Normals, N_Array);
+      Vertices_To_API (anAI_Mesh.Tangents, T_Array);
+      Vertices_To_API (anAI_Mesh.Bit_Tangents, BT_Array);
 
       while Has_Element (F_Curs) loop
          declare
@@ -201,9 +212,13 @@ package body Assimp_Mesh is
          end;
          Next (F_Curs);
       end loop;
-      --  Vertices : Vector_3D_Array_Pointer;
-      C_Mesh.Vertices := V_Array(V_Array'First)'Unchecked_Access;
-      C_Mesh.Faces := F_Array(F_Array'First)'Unchecked_Access;
+
+      C_Mesh.Vertices := V_Array (V_Array'First)'Unchecked_Access;
+      C_Mesh.Normals := N_Array (N_Array'First)'Unchecked_Access;
+      C_Mesh.Tangents := T_Array (T_Array'First)'Unchecked_Access;
+      C_Mesh.Bit_Tangents := BT_Array (BT_Array'First)'Unchecked_Access;
+      C_Mesh.Bones := B_Array (B_Array'First)'Unchecked_Access;
+      C_Mesh.Faces := F_Array (F_Array'First)'Unchecked_Access;
 
    exception
       when others =>
