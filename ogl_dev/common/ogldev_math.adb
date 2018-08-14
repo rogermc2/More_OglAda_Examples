@@ -7,8 +7,8 @@ package body Ogldev_Math is
       use GL;
       use Maths;
       N     : constant Vector3 := Normalized (Target);
-      U     : Vector3 := Normalized (Cross_Product (Up, N));
-      V     : Vector3 := Cross_Product (N, U);
+      U     : constant Vector3 := Normalized (Cross_Product (Up, N));
+      V     : constant Vector3 := Cross_Product (N, U);
       Trans : Matrix4 := Identity4;
    begin
       Trans (X, X) := U (X);
