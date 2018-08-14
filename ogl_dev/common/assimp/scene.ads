@@ -9,7 +9,7 @@ with GL.Types;
 
 with Animation;
 with Assimp_Texture;
-with Assimp_Types; use Assimp_Types;
+with Assimp_Types;
 with Camera;
 with Light;
 with Material;
