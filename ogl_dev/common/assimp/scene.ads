@@ -1,7 +1,6 @@
 
 with Interfaces.C;
 with Interfaces.C.Pointers;
-with Interfaces.C.Strings;
 
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Strings.Unbounded;
@@ -109,7 +108,6 @@ package Scene is
             Cameras         : Camera.Camera_Pointers.Pointer;
 --              Cameras        : Camera.API_Camera_Array
 --                (1 .. Array_Sizes.Num_Cameras);
-            Private_Data   : Interfaces.C.Strings.chars_ptr;
          end record;
          pragma Convention (C_Pass_By_Copy, API_Scene);
     procedure To_AI_Scene (C_Scene : API_Scene;

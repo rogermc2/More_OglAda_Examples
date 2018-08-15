@@ -68,8 +68,6 @@ package body Scene is
           Light.To_AI_Light_Map (C_Scene.Num_Lights, C_Light_Array);
         theScene.Cameras :=
           Camera.To_AI_Camera_Map (C_Scene.Num_Cameras, C_Camera_Array);
-        theScene.Private_Data := Ada.Strings.Unbounded.To_Unbounded_String
-          (Interfaces.C.Strings.Value (C_Scene.Private_Data));
 
     exception
         when  others =>
