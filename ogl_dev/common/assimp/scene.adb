@@ -35,12 +35,6 @@ package body Scene is
         C_Materials_Array : constant Material.API_Material_Array
           := Material.Material_Pointers.Value
             (C_Scene.Materials, ptrdiff_t (C_Scene.Num_Materials));
-        C_Animation_Array : constant Animation.API_Animation_Array
-          := Animation.Animation_Pointers.Value
-            (C_Scene.Animations, ptrdiff_t (C_Scene.Num_Animations));
-        C_Texture_Array : constant Assimp_Texture.API_Texture_Array
-          := Assimp_Texture.Texture_Pointers.Value
-            (C_Scene.Textures, ptrdiff_t (C_Scene.Num_Textures));
         C_Light_Array : constant Light.API_Light_Array
           := Light.Light_Pointers.Value
             (C_Scene.Lights, ptrdiff_t (C_Scene.Num_Lights));
@@ -59,15 +53,34 @@ package body Scene is
         Put_Line ("C_Import.To_AI_Scene, calling To_AI_Materials_Map");
         theScene.Materials :=
           Material.To_AI_Materials_Map (C_Scene.Num_Materials, C_Materials_Array);
-        Put_Line ("C_Import.To_AI_Scene, calling To_AI_Animation_Map");
-        theScene.Animations :=
-          Animation.To_AI_Animation_Map (C_Scene.Num_Animations, C_Animation_Array);
-        theScene.Textures :=
-          Assimp_Texture.To_AI_Texture_Map (C_Scene.Num_Textures, C_Texture_Array);
-        theScene.Lights :=
-          Light.To_AI_Light_Map (C_Scene.Num_Lights, C_Light_Array);
-        theScene.Cameras :=
-          Camera.To_AI_Camera_Map (C_Scene.Num_Cameras, C_Camera_Array);
+        if C_Scene.Num_Textures > 0 then
+            Put_Line ("C_Import.To_AI_Scene, setting C_Texture_Array");
+            declare
+                C_Texture_Array : constant Assimp_Texture.API_Texture_Array :=
+                Assimp_Texture.Texture_Pointers.Value (C_Scene.Textures, ptrdiff_t (C_Scene.Num_Textures));
+            begin
+                theScene.Textures :=
+                  Assimp_Texture.To_AI_Texture_Map (C_Scene.Num_Textures, C_Texture_Array);
+            end;
+        end if;
+        if C_Scene.Num_Animations > 0 then
+            Put_Line ("C_Import.To_AI_Scene, calling To_AI_Animation_Map");
+            declare
+                C_Animation_Array : constant Animation.API_Animation_Array :=
+                Animation.Animation_Pointers.Value (C_Scene.Animations, ptrdiff_t (C_Scene.Num_Animations));
+            begin
+            theScene.Animations :=
+              Animation.To_AI_Animation_Map (C_Scene.Num_Animations, C_Animation_Array);
+            end;
+        end if;
+        if C_Scene.Num_Lights > 0 then
+            theScene.Lights :=
+              Light.To_AI_Light_Map (C_Scene.Num_Lights, C_Light_Array);
+        end if;
+        if C_Scene.Num_Cameras > 0 then
+            theScene.Cameras :=
+              Camera.To_AI_Camera_Map (C_Scene.Num_Cameras, C_Camera_Array);
+        end if;
 
     exception
         when  others =>
