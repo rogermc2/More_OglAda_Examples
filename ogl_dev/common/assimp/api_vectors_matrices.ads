@@ -38,16 +38,17 @@ package API_Vectors_Matrices is
    end record;
    pragma Convention (C_Pass_By_Copy, API_Quaternion);
 
+  --  It is erroneous to dereference a Pointer that does not designate an aliased Element.
   type API_Vector_2D is record
-      X : Interfaces.C.C_float;
-      Y : Interfaces.C.C_float;
+      X : aliased Interfaces.C.C_float;
+      Y : aliased Interfaces.C.C_float;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Vector_2D);
 
    type API_Vector_3D is record
-      X : Interfaces.C.C_float;
-      Y : Interfaces.C.C_float;
-      Z : Interfaces.C.C_float;
+      X : aliased Interfaces.C.C_float;
+      Y : aliased Interfaces.C.C_float;
+      Z : aliased Interfaces.C.C_float;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Vector_3D);
 
@@ -58,7 +59,7 @@ package API_Vectors_Matrices is
    package Vector_3D_Array_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Vector_3D, API_Vector_3D_Array,
       API_Vector_3D'(others => <>));
-   subtype Vector_3D_Array_Pointer is Vector_3D_Array_Pointers.Pointer;
+--     subtype Vector_3D_Array_Pointer is Vector_3D_Array_Pointers.Pointer;
 
    type API_Colours_3D_Array is array
      (Interfaces.C.unsigned range <>) of aliased API_Colour_3D;
