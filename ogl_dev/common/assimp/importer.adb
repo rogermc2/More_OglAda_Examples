@@ -19,6 +19,7 @@ package body Importer is
         C_Scene   : API_Scene;
         theScene  : AI_Scene;
     begin
+        Put_Line ("Importer.Import_File File_Name: " & File_Name);
         C_Scene := Assimp.API.Import_File
           (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
 
