@@ -1,6 +1,7 @@
 
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Pointers;
+--  with Interfaces.C.Strings;
 
 with Ada.Containers.Indefinite_Ordered_Maps;
 
@@ -11,8 +12,7 @@ package Assimp_Texture is
    type AI_Texel is private;
    type AI_Texel_Map is private;
    type AI_Texture_Map is private;
-   subtype ACH_Format_Hint_Array is char_array (1 .. 4);
-
+   subtype ACH_Format_Hint_Array is char_array (1 .. 9);  --  8 for string + 1 for terminator
    type API_Texel is record
       B  : Interfaces.C.unsigned_char := 0;
       G  : Interfaces.C.unsigned_char := 0;
@@ -31,8 +31,8 @@ package Assimp_Texture is
    type API_Texture is record
       Width           : Interfaces.C.unsigned := 0;
       Height          : Interfaces.C.unsigned := 0;
-      Ach_Format_Hint : ACH_Format_Hint_Array := "    ";
-      PC_Data_Ptr     : Texel_Array_Pointers.Pointer;
+      Ach_Format_Hint : ACH_Format_Hint_Array; --  := Interfaces.C.To_C ("        "); --  To_C adds terminator
+      PC_Data_Ptr     : Texel_Array_Pointers.Pointer := Null;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Texture);
 
