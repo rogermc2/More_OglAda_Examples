@@ -1,6 +1,7 @@
 
 with Interfaces.C;
 with Interfaces.C.Pointers;
+with Interfaces.C.Strings;
 
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Strings.Unbounded;
@@ -24,7 +25,7 @@ package Scene is
     type Scene_Flags is (AI_Scene_Flags_Incomplete, AI_Scene_Flags_Validated,
                          AI_Scene_Flags_Validation_Warning, AI_Scene_Flags_Non_Verbose_Format,
                          AI_Scene_Flags_Terrain);
-    pragma Convention (C, Scene_Flags);
+   pragma Convention (C, Scene_Flags);
 
     type Cameras_Ptr is access Camera.API_Camera_Array;
     type Lights_Ptr is access Light.API_Light_Array;
@@ -82,6 +83,37 @@ package Scene is
    package Node_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Node, API_Node_Array, API_Node'(others => <>));
 
+   type API_Scene is record
+            Flags          : Interfaces.C.unsigned := 0;
+            Root_Node      : Scene.Node_Pointers.Pointer;
+            Num_Meshes     : Interfaces.C.unsigned := 0;
+            Meshes         : Assimp_Mesh.Mesh_Array_Pointer;
+--              Meshes         : Mesh.API_Mesh_Array (1 .. Array_Sizes.Num_Meshes);
+            Num_Materials  : Interfaces.C.unsigned := 0;
+            Materials      : Material.Material_Pointers.Pointer;
+--              Materials      : Material.API_Material_Array
+--                (1 .. Array_Sizes.Num_Materials);
+            Num_Animations : Interfaces.C.unsigned := 0;
+            Animations     : Animation.Animation_Pointers.Pointer;
+--              Animations     : Animation.API_Animation_Array
+--                (1 .. Array_Sizes.Num_Animations);
+            Num_Textures   : Interfaces.C.unsigned := 0;
+            Textures       : Assimp_Texture.Texture_Pointers.Pointer;
+--              Textures       : Assimp_Texture.API_Texture_Array
+--                (1 .. Array_Sizes.Num_Textures);
+            Num_Lights     : Interfaces.C.unsigned := 0;
+            Lights         : Light.Light_Pointers.Pointer;
+--              Lights         : Light.API_Light_Array
+--                (1 .. Array_Sizes.Num_Lights);
+            Num_Cameras    : Interfaces.C.unsigned := 0;
+            Cameras         : Camera.Camera_Pointers.Pointer;
+--              Cameras        : Camera.API_Camera_Array
+--                (1 .. Array_Sizes.Num_Cameras);
+            Private_Data   : Interfaces.C.Strings.chars_ptr;
+         end record;
+         pragma Convention (C_Pass_By_Copy, API_Scene);
+    procedure To_AI_Scene (C_Scene : API_Scene;
+                           theScene : in out Scene.AI_Scene);
     procedure To_Node_List (Root_Node : API_Node;
                             Nodes : in out Scene.AI_Nodes_List);
 

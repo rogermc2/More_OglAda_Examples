@@ -5,8 +5,8 @@ with Interfaces.C.Strings;
 with Assimp_Types;
 
 with Assimp_Mesh;
-with Importer;
 with Material;
+with Scene;
 
 package Assimp.API is
 
@@ -38,11 +38,11 @@ package Assimp.API is
    pragma Import (C, Get_Material_Texture_Count, "aiGetMaterialTextureCount");
 
    function Import_File (File_Name : Interfaces.C.Strings.chars_ptr;
-                         Flags : Interfaces.C.unsigned) return access Importer.API_Scene;
+                         Flags : Interfaces.C.unsigned) return access Scene.API_Scene;
    pragma Import (C, Import_File, "aiImportFile");
 
    function Read_File (File_Name : Interfaces.C.Strings.chars_ptr;
-                       Flags : Interfaces.C.unsigned) return access Importer.API_Scene;
+                       Flags : Interfaces.C.unsigned) return access Scene.API_Scene;
    pragma Import (C, Read_File, "aiReadFile");
 
    procedure Init_Mesh (theMesh : in out Assimp_Mesh.Mesh_Array_Pointer;
