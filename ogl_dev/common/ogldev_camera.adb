@@ -10,18 +10,11 @@ with Glfw.Input.Mouse;
 
 package body Ogldev_Camera is
 
-   Half_Pi            : constant Single := 0.5 * Ada.Numerics.Pi;
    Initial_View_Angle : constant Maths.Degree := 45.0;
-   Last_Time          : Double := Double (Glfw.Time);
-   Mouse_Speed        : constant Single := 0.5;  -- orig: 0.005
-   Speed              : constant Single := 3.0;  -- units per second
 
    Step_Scale         : constant GL.Types.Single := 0.2;  --  orig: 1.0
    Edge_Step          : constant Maths.Degree := 0.5;
    Margin             : constant Glfw.Input.Mouse.Coordinate := 10.0;
-
-   Horizontal_Angle   : Single := Ada.Numerics.Pi;
-   Vertical_Angle     : Single := 0.0;
 
    procedure Update (theCamera : in out Camera);
    procedure Update_Render (theCamera : in out Camera);
