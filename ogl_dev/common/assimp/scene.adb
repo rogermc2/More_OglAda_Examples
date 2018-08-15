@@ -8,7 +8,7 @@ with Ogldev_Math;
 package body Scene is
 
 
-    procedure To_Node_List (Root_Node : API_Node;
+    procedure To_Node_List (Root_Node : in out API_Node;
                             Nodes : in out AI_Nodes_List) is
 --          C_Node  : API_Node;
         aNode   : AI_Node;
@@ -27,17 +27,28 @@ package body Scene is
 
     --  -------------------------------------------------------------------------
 
-   procedure To_AI_Scene (C_Scene : API_Scene;
-                           theScene : in out Scene.AI_Scene) is
-        C_Mesh_Array : constant Assimp_Mesh.API_Mesh_Array (1 .. C_Scene.Num_Meshes)
+   procedure To_AI_Scene (C_Scene : in out API_Scene;
+                          theScene : in out Scene.AI_Scene) is
+
+        C_Mesh_Array : Assimp_Mesh.API_Mesh_Array (1 .. C_Scene.Num_Meshes)
           := Assimp_Mesh.Mesh_Array_Pointers.Value
             (C_Scene.Meshes, ptrdiff_t (C_Scene.Num_Meshes));
-        C_Materials_Array : constant Material.API_Material_Array  (1 .. C_Scene.Num_Materials)
+        C_Materials_Array : Material.API_Material_Array  (1 .. C_Scene.Num_Materials)
           := Material.Material_Pointers.Value
             (C_Scene.Materials, ptrdiff_t (C_Scene.Num_Materials));
-        C_Root_Node : constant Scene.API_Node
+        C_Root_Node : Scene.API_Node
           := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
-    begin
+   begin
+        Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations");
+        Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
+        Put_Line (unsigned'Image (C_Scene.Num_Meshes) &
+                    unsigned'Image (C_Scene.Num_Materials) &
+                    unsigned'Image (C_Scene.Num_Animations) &
+                    unsigned'Image (C_Scene.Num_Textures) &
+                    unsigned'Image (C_Scene.Num_Lights) &
+                    unsigned'Image (C_Scene.Num_Cameras));
+
+
         theScene.Flags := C_Scene.Flags;
         Put_Line ("Scene.To_AI_Scene, calling To_Node_List");
         Scene.To_Node_List (C_Root_Node,  theScene.Nodes);

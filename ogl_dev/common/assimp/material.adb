@@ -113,7 +113,7 @@ package body Material is
    --  ------------------------------------------------------------------------
 
    function To_AI_Materials_Map (Num_Materials : Interfaces.C.unsigned := 0;
-                                 C_Material_Array : API_Material_Array)
+                                 C_Material_Array : in out API_Material_Array)
                                  return AI_Material_Map is
       Materials  : AI_Material_Map;
       aMaterial  : AI_Material;
