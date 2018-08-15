@@ -29,6 +29,7 @@ package body Importer is
 
         Put_Line ("Importer.Import_File calling To_AI_Scene.");
         To_AI_Scene (C_Scene, theScene);
+        Put_Line ("Importer.Import_File returned from To_AI_Scene.");
         return theScene;
 
     exception

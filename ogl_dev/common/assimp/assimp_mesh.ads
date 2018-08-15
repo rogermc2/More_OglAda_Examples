@@ -120,20 +120,20 @@ package Assimp_Mesh is
         Primitive_Types   : Interfaces.C.unsigned := 0;
         Num_Vertices      : Interfaces.C.unsigned := 0;
         Num_Faces         : Interfaces.C.unsigned := 0;
-        Vertices          : Vector_3D_Array_Pointer;
-        Normals           : Vector_3D_Array_Pointer;
-        Tangents          : Vector_3D_Array_Pointer;
-        Bit_Tangents      : Vector_3D_Array_Pointer;
+        Vertices          : Vector_3D_Array_Pointers.Pointer;
+        Normals           : Vector_3D_Array_Pointers.Pointer;
+        Tangents          : Vector_3D_Array_Pointers.Pointer;
+        Bit_Tangents      : Vector_3D_Array_Pointers.Pointer;
         Colours           : API_Colours_4D_Array (1 .. AI_Max_Colour_Sets);
         Texture_Coords    : API_Vector_3D_Array (1 .. AI_Max_Texture_Coords);
         Num_UV_Components : Interfaces.C.unsigned := 0;
         Faces             : Faces_Array_Pointer;
         Num_Bones         : Interfaces.C.unsigned := 0;
-        Bones             : Vector_3D_Array_Pointer;
+        Bones             : Vector_3D_Array_Pointers.Pointer;
         Material_Index    : Interfaces.C.unsigned := 0;
         Name              : Assimp_Types.AI_String;
         Num_Anim_Meshes   : Interfaces.C.unsigned := 0;
-        Anim_Meshes       : Vector_3D_Array_Pointer;
+        Anim_Meshes       : Vector_3D_Array_Pointers.Pointer;
     end record;
     pragma Convention (C_Pass_By_Copy, API_Mesh);
 
