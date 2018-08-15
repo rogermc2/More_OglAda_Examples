@@ -12,9 +12,10 @@ package body Ogldev_Camera is
 
    Initial_View_Angle : constant Maths.Degree := 45.0;
 
-   Step_Scale         : constant GL.Types.Single := 0.2;  --  orig: 1.0
-   Edge_Step          : constant Maths.Degree := 0.5;
-   Margin             : constant Glfw.Input.Mouse.Coordinate := 10.0;
+   Step_Scale  : constant GL.Types.Single := 0.2;  --  orig: 1.0
+   Edge_Step   : constant Maths.Degree := 0.5;
+   Margin      : constant Glfw.Input.Mouse.Coordinate := 10.0;
+   Last_Time   : GL.Types.Double := 0.0;
 
    procedure Update (theCamera : in out Camera);
    procedure Update_Render (theCamera : in out Camera);
