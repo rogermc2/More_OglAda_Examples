@@ -1,4 +1,6 @@
 
+with Interfaces.C;
+
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -60,7 +62,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Init_Buffers.");
+         Put_Line ("An exception occurred in Mesh_22.Init_Buffers.");
          raise;
 
    end Init_Buffers;
@@ -75,17 +77,23 @@ package body Mesh_22 is
       Index        : UInt := 0;
       aMesh        : Assimp_Mesh.AI_Mesh;
       anEntry      : Mesh_Entry;
+
+       Prim : UInt;
    begin
       while Has_Element (Curs) loop
          Index := Index + 1;
          aMesh := theScene.Meshes (Index);
+        Prim := aMesh.Material_Index;
+
+        Put_Line ("Mesh_22.Init_From_Scene, aMesh.Material_Index: " & UInt'Image (Prim));
          Init_Mesh (aMesh, anEntry);
          Next (Curs);
       end loop;
       Init_Materials (Initial_Mesh, File_Name, theScene);
+
    exception
       when others =>
-         Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Init_From_Scene.");
+         Put_Line ("An exception occurred in Mesh_22.Init_From_Scene.");
          raise;
    end Init_From_Scene;
 
@@ -122,7 +130,7 @@ package body Mesh_22 is
                     (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name);
                   Initial_Mesh.Textures.Insert (UInt (index), aTexture);
                   Ogldev_Texture.Load (aTexture);
-                  Put_Line ("Init_Materials loaded texture from " & File_Name);
+                  Put_Line ("Mesh_22.Init_Materials loaded texture from " & File_Name);
                end if;
             end if;
          end loop;
@@ -133,7 +141,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Init_Materials.");
+         Put_Line ("An exception occurred in Mesh_22.Init_Materials.");
          raise;
    end Init_Materials;
 
@@ -169,7 +177,7 @@ package body Mesh_22 is
       Init_Buffers (anEntry, Vertices, Indices);
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh.Init_Mesh.");
+         Put_Line ("An exception occurred in Mesh_22.Init_Mesh.");
          raise;
    end Init_Mesh;
 
@@ -178,9 +186,10 @@ package body Mesh_22 is
    procedure Load_Mesh (theMesh : in out Mesh; File_Name : String) is
       theScene : Scene.AI_Scene;
    begin
-      Put_Line (" Mesh.Load_Mesh, import scene.");
+      Put_Line (" Mesh_22.Load_Mesh, import scene.");
       theScene :=
-        Importer.Import_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
+        Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
+      Put_Line (" Mesh_22.Load_Mesh, imported scene.");
       theMesh.Basic_Entry.VAO.Initialize_Id;
       theMesh.Basic_Entry.VAO.Bind;
       theMesh.Basic_Entry.VBO.Initialize_Id;
@@ -192,7 +201,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Load_Mesh.");
+         Put_Line ("An exception occurred in Mesh_22.Load_Mesh.");
          raise;
    end Load_Mesh;
 
@@ -222,7 +231,7 @@ package body Mesh_22 is
                                     Ogldev_Engine_Common.Colour_Texture_Unit_Index);
             end if;
          else
-            Put_Line ("Ogldev_Basic_Mesh.Render_Mesh, Invalid Material_Index.");
+            Put_Line ("Mesh_22.Render_Mesh, Invalid Material_Index.");
          end if;
          GL.Objects.Buffers.Draw_Elements
            (Triangles, Num_Indices, UInt_Type, 0);
@@ -241,7 +250,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Ogldev_Basic_Mesh.Render_Mesh .");
+         Put_Line ("An exception occurred in Mesh_22.Render_Mesh .");
          raise;
    end Render_Mesh;
 

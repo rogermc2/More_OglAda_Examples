@@ -2,6 +2,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp.API;
+with Assimp_Mesh;
 
 package body Importer is
 
@@ -44,9 +45,15 @@ package body Importer is
         use Scene;
         C_Scene   : API_Scene;
         theScene  : AI_Scene;
+        C_Mesh : Assimp_Mesh.API_Mesh;
+        Prim : Interfaces.C.unsigned;
     begin
         C_Scene := Assimp.API.Read_File
           (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
+        C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value (C_Scene.Meshes, 1) (0);
+        Prim := C_Mesh.Primitive_Types;
+         Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num_Vertices");
+         Put_Line (unsigned'Image (C_Mesh.Primitive_Types) & unsigned'Image (C_Mesh.Num_Vertices));
         To_AI_Scene (C_Scene, theScene);
         return theScene;
     exception
