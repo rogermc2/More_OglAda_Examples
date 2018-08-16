@@ -3,7 +3,6 @@ with Interfaces.C; use Interfaces.C;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Assimp_Mesh;
 with Ogldev_Math;
 
 package body Scene is
@@ -28,25 +27,21 @@ package body Scene is
 
     --  -------------------------------------------------------------------------
 
-   procedure To_AI_Scene (C_Scene : in out API_Scene;
+   procedure To_AI_Scene (C_Scene : access API_Scene;
                           theScene : in out Scene.AI_Scene) is
-        use Assimp_Mesh;
+
         C_Mesh_Array : Assimp_Mesh.API_Mesh_Array (1 .. C_Scene.Num_Meshes)
           := Assimp_Mesh.Mesh_Array_Pointers.Value
-            (C_Scene.Meshes, ptrdiff_t (C_Scene.Num_Meshes));
+          (C_Scene.Meshes, ptrdiff_t (C_Scene.Num_Meshes));
+
         C_Materials_Array : Material.API_Material_Array  (1 .. C_Scene.Num_Materials)
           := Material.Material_Pointers.Value
             (C_Scene.Materials, ptrdiff_t (C_Scene.Num_Materials));
         C_Root_Node : Scene.API_Node
           := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
-        C_Mesh : API_Mesh := Mesh_Array_Pointers.Value
-          (C_Scene.Meshes, 1) (0);
-        Prim : Interfaces.C.unsigned := C_Mesh.Primitive_Types;
    begin
-
-        Put_Line ("Scene.To_AI_Scene, C_Mesh.Primitive_Types: " & Interfaces.C.unsigned'Image (Prim));
-        Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations,");
-        Put_Line ("Num_Textures, Num_Lights, Num_Cameras:");
+        Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations");
+        Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
         Put_Line (unsigned'Image (C_Scene.Num_Meshes) &
                     unsigned'Image (C_Scene.Num_Materials) &
                     unsigned'Image (C_Scene.Num_Animations) &
@@ -54,20 +49,23 @@ package body Scene is
                     unsigned'Image (C_Scene.Num_Lights) &
                     unsigned'Image (C_Scene.Num_Cameras));
 
+      Put_Line ("AScene.To_AI_Scene, C_Mesh_Array (1):");
+      Put_Line ("Primitive_Types, Num_Vertices, Num_Faces, Num_UV_Components");
+   Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
+                   unsigned'Image (C_Mesh_Array (1).Num_Vertices) &
+                   unsigned'Image (C_Mesh_Array (1).Num_Faces) &
+                   unsigned'Image (C_Mesh_Array (1).Num_UV_Components));
+         Put_Line ("Num_Animations, Num_Bones, Material_Index:");
+         Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
+                   unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
+                   unsigned'Image (C_Mesh_Array (1).Material_Index));
+      New_Line;
+
         theScene.Flags := C_Scene.Flags;
+        Put_Line ("Scene.To_AI_Scene, calling To_Node_List");
         Scene.To_Node_List (C_Root_Node,  theScene.Nodes);
-
-         Put_Line ("Scene.To_AI_Scene, C_Scene Primitive_Types, Num_Vertices, Num_Faces, Num_UV_Components");
-         Put_Line (unsigned'Image (C_Mesh.Primitive_Types) & unsigned'Image (C_Mesh.Num_Vertices) &
-                   unsigned'Image (C_Mesh.Num_Faces) & unsigned'Image (C_Mesh.Num_UV_Components));
-         Put_Line ("C_Scene Num_Animations, Num_Bones, Material_Index:");
-         Put_Line (unsigned'Image (C_Mesh.Num_Bones) & unsigned'Image (C_Mesh.Num_Anim_Meshes) &
-                   unsigned'Image (C_Mesh.Material_Index));
-         New_Line;
-
-        Put_Line ("Scene.To_AI_Scene, calling To_AI_Mesh_Map, C_Mesh_Array size: "  &
-                    GL.Types.uint'Image (C_Mesh_Array'Length));
-       theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (C_Scene.Num_Meshes, C_Mesh_Array);
+        Put_Line ("Scene.To_AI_Scene, calling To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
+        theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (C_Scene.Num_Meshes, C_Mesh_Array);
         Put_Line ("Scene.To_AI_Scene, calling To_AI_Materials_Map");
         theScene.Materials :=
           Material.To_AI_Materials_Map (C_Scene.Num_Materials, C_Materials_Array);
@@ -81,7 +79,6 @@ package body Scene is
                   Assimp_Texture.To_AI_Texture_Map (C_Scene.Num_Textures, C_Texture_Array);
             end;
         end if;
-
         if C_Scene.Num_Animations > 0 then
             Put_Line ("Scene.To_AI_Scene, calling To_AI_Animation_Map");
             declare
@@ -92,7 +89,6 @@ package body Scene is
               Animation.To_AI_Animation_Map (C_Scene.Num_Animations, C_Animation_Array);
             end;
         end if;
-
         if C_Scene.Num_Lights > 0 then
             declare
                 C_Light_Array : constant Light.API_Light_Array

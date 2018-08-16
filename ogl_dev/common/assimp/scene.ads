@@ -110,7 +110,7 @@ package Scene is
 --                (1 .. Array_Sizes.Num_Cameras);
          end record;
          pragma Convention (C_Pass_By_Copy, API_Scene);
-    procedure To_AI_Scene (C_Scene : in out API_Scene;
+    procedure To_AI_Scene (C_Scene : access API_Scene;
                            theScene : in out Scene.AI_Scene);
     procedure To_Node_List (Root_Node : in out API_Node;
                             Nodes : in out Scene.AI_Nodes_List);
