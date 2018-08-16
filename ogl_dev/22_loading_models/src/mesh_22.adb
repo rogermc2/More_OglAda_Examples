@@ -186,7 +186,6 @@ package body Mesh_22 is
    procedure Load_Mesh (theMesh : in out Mesh; File_Name : String) is
       theScene : Scene.AI_Scene;
    begin
-      Put_Line (" Mesh_22.Load_Mesh, import scene.");
       theScene :=
         Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
       Put_Line (" Mesh_22.Load_Mesh, imported scene.");

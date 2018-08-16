@@ -131,7 +131,7 @@ package Assimp_Mesh is
         Num_Bones         : Interfaces.C.unsigned := 0;
         Bones             : Vector_3D_Array_Pointers.Pointer;
         Material_Index    : Interfaces.C.unsigned := 0;
-        Name              : Assimp_Types.AI_String;
+        Name              : Assimp_Types.API_String;
         Num_Anim_Meshes   : Interfaces.C.unsigned := 0;
         Anim_Meshes       : Vector_3D_Array_Pointers.Pointer;
     end record;

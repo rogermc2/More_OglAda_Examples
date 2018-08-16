@@ -15,7 +15,7 @@ package Camera is
    type AI_Camera_Map is private;
 
    type API_Camera is record
-      Name           : Assimp_Types.AI_String;
+      Name           : Assimp_Types.API_String;
       Position       : API_Vectors_Matrices.API_Vector_3D;
       Up             : API_Vectors_Matrices.API_Vector_3D;
       Look_At        : API_Vectors_Matrices.API_Vector_3D;

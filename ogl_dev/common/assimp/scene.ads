@@ -1,4 +1,6 @@
 
+with System;
+
 with Interfaces.C;
 with Interfaces.C.Pointers;
 
@@ -59,19 +61,19 @@ package Scene is
         Textures       : Assimp_Texture.AI_Texture_Map;
         Lights         : Light.AI_Light_Map;
         Cameras        : Camera.AI_Camera_Map;
-        Private_Data   : Ada.Strings.Unbounded.Unbounded_String :=
-                           Ada.Strings.Unbounded.To_Unbounded_String ("");
+--          Private_Data   : Ada.Strings.Unbounded.Unbounded_String :=
+--                             Ada.Strings.Unbounded.To_Unbounded_String ("");
     end record;
 
     type API_Node_Array;
     type API_Node is record
-        Name           : Assimp_Types.AI_String;
+        Name           : Assimp_Types.API_String;
         Transformation : API_Vectors_Matrices.API_Matrix_4D;
-        Parent         : access API_Node := Null;
+        Parent         : System.Address := System.Null_Address;
         Num_Children   : Interfaces.C.unsigned := 0;
-        Children       : access API_Node_Array := Null;
+        Children       : System.Address := System.Null_Address;
         Num_Meshes     : Interfaces.C.unsigned := 0;
-        Meshes         : access Assimp_Mesh.API_Mesh_Array := Null;
+        Meshes         : Assimp_Mesh.Mesh_Array_Pointer := Null;
         Meta_Data      : access Metadata.API_Metadata := Null;
     end record;
     pragma Convention (C_Pass_By_Copy, API_Node);
@@ -84,32 +86,33 @@ package Scene is
 
    type API_Scene is record
             Flags          : Interfaces.C.unsigned := 0;
-            Root_Node      : Scene.Node_Pointers.Pointer;
+            Root_Node      : Scene.Node_Pointers.Pointer := null;
             Num_Meshes     : Interfaces.C.unsigned := 0;
-            Meshes         : Assimp_Mesh.Mesh_Array_Pointer;
+            Meshes         : Assimp_Mesh.Mesh_Array_Pointer := null;
 --              Meshes         : Mesh.API_Mesh_Array (1 .. Array_Sizes.Num_Meshes);
             Num_Materials  : Interfaces.C.unsigned := 0;
-            Materials      : Material.Material_Pointers.Pointer;
+            Materials      : Material.Material_Pointers.Pointer := null;
 --              Materials      : Material.API_Material_Array
 --                (1 .. Array_Sizes.Num_Materials);
             Num_Animations : Interfaces.C.unsigned := 0;
-            Animations     : Animation.Animation_Pointers.Pointer;
+            Animations     : Animation.Animation_Pointers.Pointer := null;
 --              Animations     : Animation.API_Animation_Array
 --                (1 .. Array_Sizes.Num_Animations);
             Num_Textures   : Interfaces.C.unsigned := 0;
-            Textures       : Assimp_Texture.Texture_Pointers.Pointer;
+            Textures       : Assimp_Texture.Texture_Pointers.Pointer := null;
 --              Textures       : Assimp_Texture.API_Texture_Array
 --                (1 .. Array_Sizes.Num_Textures);
             Num_Lights     : Interfaces.C.unsigned := 0;
-            Lights         : Light.Light_Pointers.Pointer;
+            Lights         : Light.Light_Pointers.Pointer := null;
 --              Lights         : Light.API_Light_Array
 --                (1 .. Array_Sizes.Num_Lights);
             Num_Cameras    : Interfaces.C.unsigned := 0;
-            Cameras         : Camera.Camera_Pointers.Pointer;
+            Cameras         : Camera.Camera_Pointers.Pointer := null;
 --              Cameras        : Camera.API_Camera_Array
 --                (1 .. Array_Sizes.Num_Cameras);
          end record;
          pragma Convention (C_Pass_By_Copy, API_Scene);
+
     procedure To_AI_Scene (C_Scene : access API_Scene;
                            theScene : in out Scene.AI_Scene);
     procedure To_Node_List (Root_Node : in out API_Node;

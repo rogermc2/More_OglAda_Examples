@@ -113,7 +113,7 @@ private
     --  Material data is stored using a key-value structure.
     --  A single key-value pair is called a 'material property'.
    type API_Material_Property is record
-      Key         : Assimp_Types.AI_String;  --  One of the AI_MATKEY_XXX constants
+      Key         : Assimp_Types.API_String;  --  One of the AI_MATKEY_XXX constants
       Semantic    : Interfaces.C.unsigned := 0;
       Index       : Interfaces.C.unsigned := 0;
       Data_Length : Interfaces.C.unsigned := 0;

@@ -71,7 +71,7 @@ package Animation is
       API_Mesh_Key'(others => <>));
 
    type API_Mesh_Anim is record
-      Name      : Assimp_Types.AI_String;
+      Name      : Assimp_Types.API_String;
       Num_Keys  : unsigned := 0;
       Keys      : Mesh_Key_Pointers.Pointer;
    end record;
@@ -86,7 +86,7 @@ package Animation is
       API_Mesh_Anim'(others => <>));
 
    type API_Mesh_Morph_Anim is record
-               Name      : Assimp_Types.AI_String;
+               Name      : Assimp_Types.API_String;
                Num_Keys  : unsigned;
                Keys      : Morph.Mesh_Morph_Key_Pointers.Pointer;
             end record;
@@ -101,7 +101,7 @@ package Animation is
       API_Mesh_Morph_Anim'(others => <>));
 
    type API_Node_Anim is record
-      Name              : Assimp_Types.AI_String;
+      Name              : Assimp_Types.API_String;
       Num_Position_Keys : unsigned := 0;
       Position_Keys     : Vector_Key_Pointers.Pointer;
       Num_Rotation_Keys : unsigned := 0;
@@ -122,7 +122,7 @@ package Animation is
       API_Node_Anim'(others => <>));
 
    type API_Animation is record
-      Name                      : Assimp_Types.AI_String;
+      Name                      : Assimp_Types.API_String;
       Duration                  : Interfaces.C.double := -1.0;
       Ticks_Per_Second          : Interfaces.C.double := 0.0;
       Num_Channels              : unsigned := 0;
