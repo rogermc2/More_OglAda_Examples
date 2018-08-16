@@ -263,7 +263,7 @@ package body Assimp_Mesh is
       C_Mesh.Num_Bones := B_Length;
       C_Mesh.Num_UV_Components := C.unsigned (anAI_Mesh.Num_UV_Components);
       C_Mesh.Material_Index := C.unsigned (anAI_Mesh.Material_Index);
-      C_Mesh.Name := Assimp_Util.To_Assimp_AI_String (anAI_Mesh.Name);
+      C_Mesh.Name := Assimp_Util.To_Assimp_API_String (anAI_Mesh.Name);
       for index in 1 .. AI_Max_Colour_Sets loop
          C_Mesh.Colours (C.unsigned (index)).R :=
            C.C_float (anAI_Mesh.Colours (index).R);

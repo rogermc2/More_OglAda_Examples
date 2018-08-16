@@ -16,14 +16,14 @@ package Assimp.API is
    function Get_Material_Texture1 (aMaterial : Material.API_Material;
                                   Tex_Type : Material.AI_Texture_Type;
                                   Index : Interfaces.C.unsigned;
-                                  Path : access Assimp_Types.AI_String)
+                                  Path : access Assimp_Types.API_String)
                                   return Assimp_Types.AI_Return;
    pragma Import (C, Get_Material_Texture1, "aiGetMaterialTexture");
 
    function Get_Material_Texture (aMaterial : Material.API_Material;
                                   Tex_Type : Material.AI_Texture_Type;
                                   Index : Interfaces.C.unsigned;
-                                  Path : access Assimp_Types.AI_String;
+                                  Path : access Assimp_Types.API_String;
                                   Mapping : Material.AI_Texture_Mapping;
                                   UV_Index : access Interfaces.C.unsigned;
                                   Blend : access Interfaces.C.C_float;

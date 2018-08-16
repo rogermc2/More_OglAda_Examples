@@ -20,7 +20,7 @@ package body Material is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
       Material : constant API_Material := To_API_Material (aMaterial);
-      C_Path   : aliased Assimp_Types.AI_String;
+      C_Path   : aliased Assimp_Types.API_String;
    begin
       Result :=
         Assimp.API.Get_Material_Texture1
@@ -47,7 +47,7 @@ package body Material is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
       C_Material : constant API_Material := To_API_Material (aMaterial);
-      C_Path     : aliased Assimp_Types.AI_String;
+      C_Path     : aliased Assimp_Types.API_String;
       UV         : aliased unsigned;
       C_Blend    : aliased C_float;
    begin
@@ -171,7 +171,7 @@ package body Material is
          Prop_Index := Prop_Index + 1;
          aProperty := Element (Curs);
          Property_Array (Prop_Index).Key :=
-           Assimp_Util.To_Assimp_AI_String (aProperty.Key);
+           Assimp_Util.To_Assimp_API_String (aProperty.Key);
          Property_Array (Prop_Index).Semantic := unsigned (aProperty.Semantic);
          Property_Array (Prop_Index).Index := unsigned (aProperty.Index);
          Property_Array (Prop_Index).Data_Length := unsigned (aProperty.Data_Length);

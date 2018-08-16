@@ -4,12 +4,11 @@ with Interfaces.C.Strings;
 
 package body Assimp_Util is
 
-   function To_Assimp_AI_String
-     (UB_String :  Ada.Strings.Unbounded.Unbounded_String)
-      return Assimp_Types.AI_String is
+   function To_Assimp_API_String
+     (UB_String :  Ada.Strings.Unbounded.Unbounded_String) return Assimp_Types.API_String is
       use Interfaces.C;
       theString     : constant String := Ada.Strings.Unbounded.To_String (UB_String);
-      Assimp_String : Assimp_Types.AI_String;
+      Assimp_String : Assimp_Types.API_String;
    begin
       Assimp_String.Length := theString'Length;
       for index in 1 ..  Assimp_String.Length loop
@@ -17,7 +16,7 @@ package body Assimp_Util is
       end loop;
       Assimp_String.Data (Assimp_String.Length) := nul;
       return Assimp_String;
-   end To_Assimp_AI_String;
+   end To_Assimp_API_String;
 
    --  ------------------------------------------------------------------------
 
@@ -67,15 +66,15 @@ package body Assimp_Util is
 
    --  ------------------------------------------------------------------------
 
-   function To_Unbounded_String (AI_String : Assimp_Types.AI_String)
+   function To_Unbounded_String (API_String : Assimp_Types.API_String)
                                  return Ada.Strings.Unbounded.Unbounded_String is
       use Interfaces.C.Strings;
       use Ada.Strings.Unbounded;
-      AI_String_Ptr : constant chars_ptr := New_Char_Array (AI_String.Data);
+      API_String_Ptr : constant chars_ptr := New_Char_Array (API_String.Data);
       UB_String     :  Ada.Strings.Unbounded.Unbounded_String;
    begin
       UB_String :=
-        To_Unbounded_String (Value (AI_String_Ptr, AI_String.Length));
+        To_Unbounded_String (Value (API_String_Ptr, API_String.Length));
       return UB_String;
    end To_Unbounded_String;
 
