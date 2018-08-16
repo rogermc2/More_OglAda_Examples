@@ -65,12 +65,12 @@ package body Importer is
                     unsigned'Image (C_Scene_Ptr.Num_Textures) &
                     unsigned'Image (C_Scene_Ptr.Num_Lights) &
                     unsigned'Image (C_Scene_Ptr.Num_Cameras));
-        C_Mesh_Ptr := C_Scene_Ptr.Meshes;
-        C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value (C_Scene_Ptr.Meshes, 1) (0);
-        Prim := C_Scene_Ptr.Meshes.Primitive_Types;
+        C_Mesh_Ptr := C_Scene_Ptr.Meshes.all;
+        C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value (C_Scene_Ptr.Meshes.all, 1) (0);
+        Prim := C_Scene_Ptr.Meshes.all.Primitive_Types;
         Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num_Vertices" &
                   unsigned'Image (Prim) &
-                    unsigned'Image (C_Scene_Ptr.Meshes.Num_Vertices));
+                    unsigned'Image (C_Scene_Ptr.Meshes.all.Num_Vertices));
         New_Line;
         To_AI_Scene (C_Scene_Ptr, theScene);
         return theScene;
