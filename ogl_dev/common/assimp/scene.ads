@@ -88,10 +88,10 @@ package Scene is
             Flags          : Interfaces.C.unsigned := 0;
             Root_Node      : Scene.Node_Pointers.Pointer := null;
             Num_Meshes     : Interfaces.C.unsigned := 0;
-            Meshes         : Assimp_Mesh.Mesh_Array_Pointer := null;
+            Meshes         : access Assimp_Mesh.Mesh_Array_Pointer := null;
 --              Meshes         : Mesh.API_Mesh_Array (1 .. Array_Sizes.Num_Meshes);
             Num_Materials  : Interfaces.C.unsigned := 0;
-            Materials      : Material.Material_Pointers.Pointer := null;
+            Materials      :  access Material.Material_Pointers.Pointer := null;
 --              Materials      : Material.API_Material_Array
 --                (1 .. Array_Sizes.Num_Materials);
             Num_Animations : Interfaces.C.unsigned := 0;
