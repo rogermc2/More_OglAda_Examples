@@ -18,6 +18,7 @@ package body Assimp_Mesh is
    procedure Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
                              File_Name : String);
    procedure Init_Mesh (theMesh : in out Mesh; Mesh_Index : UInt; anAI_Mesh : AI_Mesh);
+   procedure Vertices_To_API (Vertices : Vertices_Map; V_Array  : in out API_Vector_3D_Array);
 
    ------------------------------------------------------------------------
 
@@ -220,27 +221,6 @@ package body Assimp_Mesh is
 
    --  ------------------------------------------------------------------------
 
-   procedure Vertices_To_API (Vertices : Vertices_Map; V_Array  : in out API_Vector_3D_Array) is
-      use Interfaces;
-      use Vertices_Package;
-
-      V_Curs   : Vertices_Package.Cursor := Vertices.First;
-   begin
-      while Has_Element (V_Curs) loop
-         V_Array (C.unsigned (Key (V_Curs))).X := C.C_float (Element (V_Curs) (GL.X));
-         V_Array (C.unsigned (Key (V_Curs))).Y := C.C_float (Element (V_Curs) (GL.Y));
-         V_Array (C.unsigned (Key (V_Curs))).Z := C.C_float (Element (V_Curs) (GL.Z));
-         Next (V_Curs);
-      end loop;
-
-   exception
-      when others =>
-         Put_Line ("An exception occurred in Assimp_Mesh.Vertices_To_API.");
-         raise;
-   end Vertices_To_API;
-
-   --  ------------------------------------------------------------------------
-
    procedure To_API_Mesh (anAI_Mesh : AI_Mesh; C_Mesh : in out API_Mesh) is
       use Interfaces;
       use Faces_Package;
@@ -317,6 +297,27 @@ package body Assimp_Mesh is
          Put_Line ("An exception occurred in Assimp_Mesh.To_API_Mesh.");
          raise;
    end To_API_Mesh;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Vertices_To_API (Vertices : Vertices_Map; V_Array  : in out API_Vector_3D_Array) is
+      use Interfaces;
+      use Vertices_Package;
+
+      V_Curs   : Vertices_Package.Cursor := Vertices.First;
+   begin
+      while Has_Element (V_Curs) loop
+         V_Array (C.unsigned (Key (V_Curs))).X := C.C_float (Element (V_Curs) (GL.X));
+         V_Array (C.unsigned (Key (V_Curs))).Y := C.C_float (Element (V_Curs) (GL.Y));
+         V_Array (C.unsigned (Key (V_Curs))).Z := C.C_float (Element (V_Curs) (GL.Z));
+         Next (V_Curs);
+      end loop;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Assimp_Mesh.Vertices_To_API.");
+         raise;
+   end Vertices_To_API;
 
    --  ------------------------------------------------------------------------
 
