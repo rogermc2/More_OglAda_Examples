@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Assimp.API;
 with Assimp_Util;
 
@@ -24,6 +26,11 @@ package body Material is
         Assimp.API.Get_Material_Texture1
           (Material, Tex_Type, unsigned (Tex_Index), C_Path'Access);
       Path := To_Unbounded_String (To_Ada (C_Path.Data));
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.Get_Texture.");
+         raise;
    end Get_Texture;
 
    --  -------------------------------------------------------------------------
@@ -51,6 +58,11 @@ package body Material is
       UV_Index := UInt (UV);
       Blend := Single (C_Blend);
       Path := To_Unbounded_String (To_Ada (C_Path.Data));
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.Get_Texture.");
+         raise;
    end Get_Texture;
 
    --  -------------------------------------------------------------------------
@@ -75,6 +87,11 @@ package body Material is
          theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
          return theMaterial;
       end;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_API_Material.");
+         raise;
    end To_AI_Material;
 
    --  ------------------------------------------------------------------------
@@ -92,6 +109,10 @@ package body Material is
       theProperty.Data := C_Property.Data;
       return theProperty;
 
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_AI_Property.");
+         raise;
    end To_AI_Property;
 
    --  ------------------------------------------------------------------------
@@ -108,6 +129,11 @@ package body Material is
          Properties.Append (aProperty);
       end loop;
       return Properties;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_AI_Property_List.");
+         raise;
    end To_AI_Property_List;
 
    --  ------------------------------------------------------------------------
@@ -123,6 +149,10 @@ package body Material is
          Materials.Insert (UInt (index), aMaterial);
       end loop;
       return Materials;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_AI_Materials_Map.");
+         raise;
    end To_AI_Materials_Map;
 
    --  ------------------------------------------------------------------------
@@ -154,6 +184,10 @@ package body Material is
       theAPI_Material.Num_Allocated := Interfaces.C.unsigned (aMaterial.Num_Allocated);
       return theAPI_Material;
 
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_API_Material.");
+         raise;
    end To_API_Material;
 
    --  ------------------------------------------------------------------------
