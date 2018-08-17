@@ -64,9 +64,14 @@ package body Importer is
         C_Mesh_Ptr := C_Scene.Meshes;
         C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value (C_Scene.Meshes.all, 1) (0);
         Prim := C_Scene.Meshes.all.Primitive_Types;
-        Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num_Vertices" &
+        Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num_Vertices, Num_Faces" &
                   unsigned'Image (Prim) &
-                    unsigned'Image (C_Scene.Meshes.all.Num_Vertices));
+                    unsigned'Image (C_Scene.Meshes.all.Num_Vertices) &
+                  unsigned'Image (C_Scene.Meshes.all.Num_Faces));
+        Put_Line ("Importer.Read_File, Num_UV_Components, Num_Bones, Num_Anim_Meshes" &
+                    unsigned'Image (C_Scene.Meshes.all.Num_UV_Components) &
+                    unsigned'Image (C_Scene.Meshes.all.Num_Bones)&
+                    unsigned'Image (C_Scene.Meshes.all.Num_Anim_Meshes));
         New_Line;
         To_AI_Scene (C_Scene, theScene);
         return theScene;
