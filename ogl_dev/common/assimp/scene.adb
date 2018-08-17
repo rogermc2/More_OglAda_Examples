@@ -27,7 +27,7 @@ package body Scene is
 
     --  -------------------------------------------------------------------------
 
-   procedure To_AI_Scene (C_Scene : access API_Scene;
+   procedure To_AI_Scene (C_Scene : API_Scene;
                           theScene : in out Scene.AI_Scene) is
 
         C_Mesh_Array : Assimp_Mesh.API_Mesh_Array (1 .. C_Scene.Num_Meshes)
