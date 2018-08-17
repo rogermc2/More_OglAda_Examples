@@ -91,7 +91,7 @@ package body Scene is
             declare
                 C_Light_Array : constant Light.API_Light_Array
                   := Light.Light_Pointers.Value
-                    (C_Scene.Lights, ptrdiff_t (C_Scene.Num_Lights));
+                    (C_Scene.Lights.all, ptrdiff_t (C_Scene.Num_Lights));
             begin
                 theScene.Lights :=
                   Light.To_AI_Light_Map (C_Scene.Num_Lights, C_Light_Array);
@@ -101,7 +101,7 @@ package body Scene is
             declare
                 C_Camera_Array : constant Camera.API_Camera_Array
                   := Camera.Camera_Pointers.Value
-                    (C_Scene.Cameras, ptrdiff_t (C_Scene.Num_Cameras));
+                    (C_Scene.Cameras.all, ptrdiff_t (C_Scene.Num_Cameras));
             begin
                 theScene.Cameras :=
                   Camera.To_AI_Camera_Map (C_Scene.Num_Cameras, C_Camera_Array);
