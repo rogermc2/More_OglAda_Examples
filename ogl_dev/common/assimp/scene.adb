@@ -62,15 +62,13 @@ package body Scene is
       New_Line;
 
         theScene.Flags := C_Scene.Flags;
-        Put_Line ("Scene.To_AI_Scene, calling To_Node_List");
         Scene.To_Node_List (C_Root_Node,  theScene.Nodes);
-        Put_Line ("Scene.To_AI_Scene, calling To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
+        Put_Line ("Scene.To_AI_Scene, calling To_AI_Mesh_Map, C_Mesh_Array size: "  &
+                    GL.Types.uint'Image (C_Mesh_Array'Length));
         theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (C_Scene.Num_Meshes, C_Mesh_Array);
-        Put_Line ("Scene.To_AI_Scene, calling To_AI_Materials_Map");
         theScene.Materials :=
           Material.To_AI_Materials_Map (C_Scene.Num_Materials, C_Materials_Array);
         if C_Scene.Num_Textures > 0 then
-            Put_Line ("Scene.To_AI_Scene, setting C_Texture_Array");
             declare
                 C_Texture_Array : constant Assimp_Texture.API_Texture_Array :=
                 Assimp_Texture.Texture_Pointers.Value (C_Scene.Textures, ptrdiff_t (C_Scene.Num_Textures));
@@ -83,7 +81,7 @@ package body Scene is
             Put_Line ("Scene.To_AI_Scene, calling To_AI_Animation_Map");
             declare
                 C_Animation_Array : constant Animation.API_Animation_Array :=
-                Animation.Animation_Pointers.Value (C_Scene.Animations, ptrdiff_t (C_Scene.Num_Animations));
+                Animation.Animation_Pointers.Value (C_Scene.Animations.all, ptrdiff_t (C_Scene.Num_Animations));
             begin
             theScene.Animations :=
               Animation.To_AI_Animation_Map (C_Scene.Num_Animations, C_Animation_Array);

@@ -90,9 +90,9 @@ package Scene is
             Num_Meshes     : Interfaces.C.unsigned := 0;
             Meshes         : access Assimp_Mesh.Mesh_Array_Pointer := null;
             Num_Materials  : Interfaces.C.unsigned := 0;
-            Materials      :  access Material.Material_Pointers.Pointer := null;
+            Materials      : access Material.Material_Pointers.Pointer := null;
             Num_Animations : Interfaces.C.unsigned := 0;
-            Animations     : Animation.Animation_Pointers.Pointer := null;
+            Animations     : access Animation.Animation_Pointers.Pointer := null;
             Num_Textures   : Interfaces.C.unsigned := 0;
             Textures       : Assimp_Texture.Texture_Pointers.Pointer := null;
             Num_Lights     : Interfaces.C.unsigned := 0;

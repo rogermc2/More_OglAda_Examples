@@ -125,21 +125,18 @@ package body Assimp_Mesh is
       --          anAPI_Vertex : API_Vector_3D;
       --          anAI_Vertex  : Singles.Vector3;
    begin
-      Put_Line ("To_AI_Mesh entered.");
       CV_Array_Ptr := C_Mesh.Vertices;
       if CV_Array_Ptr = null then
          Put_Line ("To_AI_Mesh exception: CV_Array_Ptr is null.");
          raise C.Strings.Dereference_Error;
       end if;
 
-      Put_Line ("To_AI_Mesh CV_Array_Ptr set.");
       CV_Array := Vector_3D_Array_Pointers.Value (CV_Array_Ptr, C.ptrdiff_t (Num_Vertices));
       Put_Line ("To_AI_Mesh C_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
       theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
       Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
       theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
       --          Put_Line ("To_AI_Mesh  CV_Array_Ptr X." & C.C_Float'Image (CV_Array_Ptr.X));
-      Put_Line ("To_AI_Mesh setting Colours.");
       for index in 1 .. AI_Max_Colour_Sets loop
          theAI_Mesh.Colours (index).R :=
            Single (C_Mesh.Colours (C.unsigned (index)).R);
@@ -153,7 +150,7 @@ package body Assimp_Mesh is
       --   Vertices : Vector_3D_Array_Pointer
       Put_Line ("To_AI_Mesh setting V_Array C_Mesh.Num_Vertices: " & C.unsigned 'Image (C_Mesh.Num_Vertices));
       --          V_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value (CV_Array_Ptr, C_Mesh.Num_Vertices);
-      Put_Line ("To_AI_Mesh setting Vertices.");
+--        Put_Line ("To_AI_Mesh setting Vertices.");
       --          for index in 1 .. Num_Vertices loop
       --              anAPI_Vertex := V_Array (index);
       --              anAI_Vertex (GL.X) := Single (anAPI_Vertex.X);
@@ -172,7 +169,6 @@ package body Assimp_Mesh is
            Single (C_Mesh.Texture_Coords (C.unsigned (index)).Z);
       end loop;
 
-      Put_Line ("leaving To_AI_Mesh.");
       return theAI_Mesh;
 
    exception
