@@ -44,8 +44,6 @@ package body Ogldev_Basic_Lighting is
          Put_Line (GL.Objects.Programs.Info_Log (Lighting_Technique.Lighting_Program));
       end if;
 --        else
-         Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program link OK.");
-
          --  Can't GL.Objects.Programs.Validate_Status to work.
          --           OK := GL.Objects.Programs.Validate_Status (Lighting_Technique.Lighting_Program);
          --           if not OK then
