@@ -96,9 +96,9 @@ package Scene is
             Num_Textures   : Interfaces.C.unsigned := 0;
             Textures       : access Assimp_Texture.Texture_Pointers.Pointer := null;
             Num_Lights     : Interfaces.C.unsigned := 0;
-            Lights         : Light.Light_Pointers.Pointer := null;
+            Lights         : access Light.Light_Pointers.Pointer := null;
             Num_Cameras    : Interfaces.C.unsigned := 0;
-            Cameras         : Camera.Camera_Pointers.Pointer := null;
+            Cameras        : access Camera.Camera_Pointers.Pointer := null;
          end record;
          pragma Convention (C_Pass_By_Copy, API_Scene);
 
