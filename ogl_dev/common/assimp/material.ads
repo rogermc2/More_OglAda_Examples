@@ -73,11 +73,29 @@ package Material is
      Ada.Containers.Indefinite_Ordered_Maps (GL.Types.UInt, AI_Material);
    type AI_Material_Map is new AI_Material_Package.Map with null Record;
 
-   type API_Property_Array (<>) is private;
-   type API_Property_Array_Ptr is access API_Property_Array;
+    --  Material data is stored using a key-value structure.
+    --  A single key-value pair is called a 'material property'.
+   type API_Material_Property is record
+      Key         : Assimp_Types.API_String;  --  One of the AI_MATKEY_XXX constants
+      Semantic    : Interfaces.C.unsigned := 0;
+      Index       : Interfaces.C.unsigned := 0;
+      Data_Length : Interfaces.C.unsigned := 0;
+      Data_Type   : AI_Property_Type_Info := PTI_Float;
+      Data        : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
+   end record;
+   pragma Convention (C_Pass_By_Copy, API_Material_Property);
+
+   type API_Property_Array is array (Interfaces.C.unsigned range <>)
+     of aliased API_Material_Property;
+   pragma Convention (C, API_Property_Array);
+
+   package Property_Array_Pointers_Package is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Material_Property, API_Property_Array,
+      API_Material_Property'(others => <>));
+   subtype API_Property_Array_Ptr is Property_Array_Pointers_Package.Pointer;
 
    type API_Material is record
-      Properties     : API_Property_Array_Ptr;
+      Properties     : access API_Property_Array_Ptr;
       Num_Properties : Interfaces.C.unsigned := 0;
       Num_Allocated  : Interfaces.C.unsigned := 0;
    end record;
@@ -87,8 +105,9 @@ package Material is
      of aliased API_Material;
    pragma Convention (C, API_Material_Array);
 
-   package Material_Pointers is new Interfaces.C.Pointers
+   package Material_Pointers_Package is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Material, API_Material_Array, API_Material'(others => <>));
+   subtype Material_Array_Pointer is Material_Pointers_Package.Pointer;
 
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
@@ -110,21 +129,7 @@ package Material is
                                  return AI_Material_Map;
 private
 
-    --  Material data is stored using a key-value structure.
-    --  A single key-value pair is called a 'material property'.
-   type API_Material_Property is record
-      Key         : Assimp_Types.API_String;  --  One of the AI_MATKEY_XXX constants
-      Semantic    : Interfaces.C.unsigned := 0;
-      Index       : Interfaces.C.unsigned := 0;
-      Data_Length : Interfaces.C.unsigned := 0;
-      Data_Type   : AI_Property_Type_Info := PTI_Float;
-      Data        : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
-   end record;
-   pragma Convention (C_Pass_By_Copy, API_Material_Property);
-
-   type API_Property_Array is array (Interfaces.C.unsigned range <>)
-     of API_Material_Property;
-   pragma Convention (C, API_Property_Array);
+   subtype API_Property_Array_Pointer is Property_Array_Pointers_Package.Pointer;
 
    for AI_Texture_Map_Mode use (AI_Texture_Map_Mode_Wrap       => 0,
                                 AI_Texture_Map_Mode_Clamp      => 1,
