@@ -52,8 +52,6 @@ package body Importer is
         C_Scene := Assimp.API.Read_File
           (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
       Num_Meshes := C_Scene.Num_Meshes;
-      Put_Line ("Importer.Read_File, Num_Meshes: " &
-                  Interfaces.C.unsigned'Image (Num_Meshes));
 
       Put ("Importer.Read_File, Num_Meshes, Num_Materials, Num_Animations");
         Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
@@ -64,9 +62,7 @@ package body Importer is
                     unsigned'Image (C_Scene.Num_Lights) &
                     unsigned'Image (C_Scene.Num_Cameras));
         C_Mesh_Ptr := C_Scene.Meshes;
-      Put_Line ("Importer.Read_File, C_Mesh_Ptr set.");
         C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value (C_Scene.Meshes.all, 1) (0);
-      Put_Line ("Importer.Read_File, C_Mesh set.");
         Prim := C_Scene.Meshes.all.Primitive_Types;
         Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num_Vertices" &
                   unsigned'Image (Prim) &

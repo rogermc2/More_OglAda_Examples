@@ -19,6 +19,6 @@ const aiScene* aiReadFile(const char* fileName, unsigned int Flags)
 
   aiScene_Object.ReadFile(cppString, Flags);
   theScene_Ptr = aiScene_Object.GetScene();
-  printf ("importer_IO.aiReadFile theScene_Ptr: %p\n", theScene_Ptr);
+ //  printf ("importer_IO.aiReadFile theScene_Ptr: %p\n", theScene_Ptr);
   return theScene_Ptr;
   }
