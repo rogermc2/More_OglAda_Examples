@@ -89,31 +89,20 @@ package Scene is
             Root_Node      : Scene.Node_Pointers.Pointer := null;
             Num_Meshes     : Interfaces.C.unsigned := 0;
             Meshes         : access Assimp_Mesh.Mesh_Array_Pointer := null;
---              Meshes         : Mesh.API_Mesh_Array (1 .. Array_Sizes.Num_Meshes);
             Num_Materials  : Interfaces.C.unsigned := 0;
             Materials      :  access Material.Material_Pointers.Pointer := null;
---              Materials      : Material.API_Material_Array
---                (1 .. Array_Sizes.Num_Materials);
             Num_Animations : Interfaces.C.unsigned := 0;
             Animations     : Animation.Animation_Pointers.Pointer := null;
---              Animations     : Animation.API_Animation_Array
---                (1 .. Array_Sizes.Num_Animations);
             Num_Textures   : Interfaces.C.unsigned := 0;
             Textures       : Assimp_Texture.Texture_Pointers.Pointer := null;
---              Textures       : Assimp_Texture.API_Texture_Array
---                (1 .. Array_Sizes.Num_Textures);
             Num_Lights     : Interfaces.C.unsigned := 0;
             Lights         : Light.Light_Pointers.Pointer := null;
---              Lights         : Light.API_Light_Array
---                (1 .. Array_Sizes.Num_Lights);
             Num_Cameras    : Interfaces.C.unsigned := 0;
             Cameras         : Camera.Camera_Pointers.Pointer := null;
---              Cameras        : Camera.API_Camera_Array
---                (1 .. Array_Sizes.Num_Cameras);
          end record;
          pragma Convention (C_Pass_By_Copy, API_Scene);
 
-    procedure To_AI_Scene (C_Scene : access API_Scene;
+    procedure To_AI_Scene (C_Scene : API_Scene;
                            theScene : in out Scene.AI_Scene);
     procedure To_Node_List (Root_Node : in out API_Node;
                             Nodes : in out Scene.AI_Nodes_List);
