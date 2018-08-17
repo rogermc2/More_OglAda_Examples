@@ -44,7 +44,7 @@ package body Importer is
         use Scene;
         C_Scene   : API_Scene;
         theScene  : AI_Scene;
-        C_Mesh_Ptr : access Assimp_Mesh.API_Mesh;
+        C_Mesh_Ptr : access Assimp_Mesh.Mesh_Array_Pointer;
         C_Mesh    : Assimp_Mesh.API_Mesh;
         Prim      : Interfaces.C.unsigned;
         Num_Meshes : Interfaces.C.unsigned;
@@ -63,8 +63,10 @@ package body Importer is
                     unsigned'Image (C_Scene.Num_Textures) &
                     unsigned'Image (C_Scene.Num_Lights) &
                     unsigned'Image (C_Scene.Num_Cameras));
-        C_Mesh_Ptr := C_Scene.Meshes.all;
+        C_Mesh_Ptr := C_Scene.Meshes;
+      Put_Line ("Importer.Read_File, C_Mesh_Ptr set.");
         C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value (C_Scene.Meshes.all, 1) (0);
+      Put_Line ("Importer.Read_File, C_Mesh set.");
         Prim := C_Scene.Meshes.all.Primitive_Types;
         Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num_Vertices" &
                   unsigned'Image (Prim) &
