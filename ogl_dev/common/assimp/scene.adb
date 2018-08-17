@@ -71,7 +71,7 @@ package body Scene is
         if C_Scene.Num_Textures > 0 then
             declare
                 C_Texture_Array : constant Assimp_Texture.API_Texture_Array :=
-                Assimp_Texture.Texture_Pointers.Value (C_Scene.Textures, ptrdiff_t (C_Scene.Num_Textures));
+                Assimp_Texture.Texture_Pointers.Value (C_Scene.Textures.all, ptrdiff_t (C_Scene.Num_Textures));
             begin
                 theScene.Textures :=
                   Assimp_Texture.To_AI_Texture_Map (C_Scene.Num_Textures, C_Texture_Array);
