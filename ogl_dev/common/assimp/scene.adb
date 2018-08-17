@@ -41,7 +41,7 @@ package body Scene is
           := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
    begin
         Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations");
-        Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
+        Put_Line ("Num_Textures, Num_Lights, Num_Cameras:");
         Put_Line (unsigned'Image (C_Scene.Num_Meshes) &
                     unsigned'Image (C_Scene.Num_Materials) &
                     unsigned'Image (C_Scene.Num_Animations) &
@@ -49,7 +49,7 @@ package body Scene is
                     unsigned'Image (C_Scene.Num_Lights) &
                     unsigned'Image (C_Scene.Num_Cameras));
 
-      Put_Line ("AScene.To_AI_Scene, C_Mesh_Array (1):");
+      Put_Line ("Scene.To_AI_Scene, C_Mesh_Array (1):");
       Put_Line ("Primitive_Types, Num_Vertices, Num_Faces, Num_UV_Components");
    Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
                    unsigned'Image (C_Mesh_Array (1).Num_Vertices) &

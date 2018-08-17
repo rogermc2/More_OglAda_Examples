@@ -18,7 +18,7 @@ package body Assimp_Mesh is
    procedure Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
                              File_Name : String);
    procedure Init_Mesh (theMesh : in out Mesh; Mesh_Index : UInt; anAI_Mesh : AI_Mesh);
-   procedure Vertices_To_API (Vertices : Vertices_Map; V_Array  : in out API_Vector_3D_Array);
+   procedure Vertices_To_API (Vertices : Vertices_Map; V_Array : in out API_Vector_3D_Array);
 
    ------------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ package body Assimp_Mesh is
          theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z) :=
            Single (C_Mesh.Texture_Coords (C.unsigned (index)).Z);
       end loop;
-
+        New_Line;
       return theAI_Mesh;
 
    exception
