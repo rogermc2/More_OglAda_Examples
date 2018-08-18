@@ -1,4 +1,6 @@
 
+with System;
+
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp.API;
@@ -7,9 +9,9 @@ with Assimp_Util;
 package body Material is
 
    function To_AI_Property_List (Num_Properties : Interfaces.C.unsigned := 0;
-                                 C_Properties : API_Property_Array)
+                                 C_Properties_Array : API_Property_Array_Ptr)
                                  return AI_Material_Property_List;
-   function To_API_Material (aMaterial : AI_Material) return API_Material;
+    procedure To_API_Material (aMaterial : AI_Material; theAPI_Material : in out API_Material);
 
    --  -------------------------------------------------------------------------
 
@@ -19,9 +21,10 @@ package body Material is
                           Result : out Assimp_Types.AI_Return) is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
-      Material : constant API_Material := To_API_Material (aMaterial);
+      Material : API_Material;
       C_Path   : aliased Assimp_Types.API_String;
    begin
+      To_API_Material (aMaterial, Material);
       Result :=
         Assimp.API.Get_Material_Texture1
           (Material, Tex_Type, unsigned (Tex_Index), C_Path'Access);
@@ -46,11 +49,12 @@ package body Material is
                           Result : out Assimp_Types.AI_Return) is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
-      C_Material : constant API_Material := To_API_Material (aMaterial);
+      C_Material : API_Material;
       C_Path     : aliased Assimp_Types.API_String;
       UV         : aliased unsigned;
       C_Blend    : aliased C_float;
    begin
+      To_API_Material (aMaterial, C_Material);
       Result := Assimp.API.Get_Material_Texture
         (C_Material, Tex_Type, unsigned (Tex_Index), C_Path'Access,
           Mapping, UV'Access, C_Blend'Access, Op, Map_Mode);
@@ -69,21 +73,22 @@ package body Material is
 
    function Get_Texture_Count (aMaterial : AI_Material;
                                Tex_Type : AI_Texture_Type) return GL.Types.UInt is
-      C_Material : constant API_Material := To_API_Material (aMaterial);
+      C_Material : API_Material;
    begin
+      To_API_Material (aMaterial, C_Material);
       return UInt (Assimp.API.Get_Material_Texture_Count (C_Material, Tex_Type));
    end Get_Texture_Count;
 
    --  -------------------------------------------------------------------------
 
-   function To_AI_Material (C_Material : API_Material) return AI_Material is
+   function To_AI_Material (C_Material : in out API_Material) return AI_Material is
    begin
       declare
          theMaterial : AI_Material;
       begin
          theMaterial.Properties :=
            To_AI_Property_List (C_Material.Num_Properties,
-                                C_Material.Properties.all);
+                                C_Material.Properties.all);  --  API_Property_Array_Ptr
          theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
          return theMaterial;
       end;
@@ -118,16 +123,26 @@ package body Material is
    --  ------------------------------------------------------------------------
 
    function To_AI_Property_List (Num_Properties : Interfaces.C.unsigned := 0;
-                                 C_Properties : API_Property_Array)
+                                 C_Properties_Array : API_Property_Array_Ptr)
                                  return AI_Material_Property_List is
+      use Interfaces.C;
+      use Property_Array_Pointers_Package;
+      C_Properties : API_Property_Array (1 .. Num_Properties);
       Properties : AI_Material_Property_List;
       aProperty  : AI_Material_Property;
    begin
-      for index in 1 .. Num_Properties loop
-         aProperty :=
-           To_AI_Property (C_Properties (Interfaces.C.unsigned (index)));
-         Properties.Append (aProperty);
-      end loop;
+        C_Properties := Value (C_Properties_Array);
+      Put_Line (" Material.To_AI_Property_List : Num_Properties: " &
+                  unsigned'Image (Num_Properties));
+      if Num_Properties > 0 then
+            for index in 1 .. Num_Properties loop
+      Put_Line (" Material.To_AI_Property_List : index: " &
+                  unsigned'Image (index));
+                aProperty :=
+                  To_AI_Property (C_Properties (unsigned (index)));
+                Properties.Append (aProperty);
+            end loop;
+      end if;
       return Properties;
 
    exception
@@ -157,15 +172,16 @@ package body Material is
 
    --  ------------------------------------------------------------------------
 
-   function To_API_Material (aMaterial : AI_Material) return API_Material is
+   procedure To_API_Material (aMaterial : AI_Material; theAPI_Material : in out API_Material) is
       use Interfaces.C;
       use AI_Material_Property_Package;
-      Properties      : constant  AI_Material_Property_List := aMaterial.Properties;
-      Curs            : Cursor := Properties.First;
-      aProperty       : AI_Material_Property;
-      theAPI_Material : API_Material;
-      Property_Array  : API_Property_Array (1 .. unsigned (Properties.Length));
-      Prop_Index      : unsigned := 0;
+      use Property_Array_Pointers_Package;
+      Properties         : constant  AI_Material_Property_List := aMaterial.Properties;
+      Curs               : Cursor := Properties.First;
+      aProperty          : AI_Material_Property;
+      Property_Array     : API_Property_Array (1 .. unsigned (Properties.Length));
+--        Property_Array_Ptr : API_Property_Array_Ptr;
+      Prop_Index         : unsigned := 0;
    begin
       while Has_Element (Curs) loop
          Prop_Index := Prop_Index + 1;
@@ -179,10 +195,10 @@ package body Material is
          Property_Array (Prop_Index).Data := aProperty.Data;
          Next (Curs);
       end loop;
-      theAPI_Material.Properties := Property_Array'Unrestricted_Access;
+--        Property_Array_Ptr := Property_Array (0)'access;
+--        theAPI_Material.Properties := Property_Array_Ptr'access;
       theAPI_Material.Num_Properties := Interfaces.C.unsigned (aMaterial.Num_Allocated);
       theAPI_Material.Num_Allocated := Interfaces.C.unsigned (aMaterial.Num_Allocated);
-      return theAPI_Material;
 
    exception
       when others =>
