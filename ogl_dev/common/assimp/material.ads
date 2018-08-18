@@ -10,6 +10,7 @@ with Ada.Strings.Unbounded;
 with GL.Types; use GL.Types;
 
 with Assimp_Types;
+with API_Vectors_Matrices;
 
 package Material is
 
@@ -109,6 +110,13 @@ package Material is
      (Interfaces.C.unsigned, API_Material, API_Material_Array, API_Material'(others => <>));
    subtype Material_Array_Pointer is Material_Pointers_Package.Pointer;
 
+   type API_UV_Transform is record
+      Translation  : API_Vectors_Matrices.API_Vector_2D;
+      Scaling      : API_Vectors_Matrices.API_Vector_2D;
+      Rotation      : Interfaces.C.C_float := 0.0;
+   end record;
+   pragma Convention (C_Pass_By_Copy, API_UV_Transform);
+
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
                           Path : out Ada.Strings.Unbounded.Unbounded_String;
@@ -128,8 +136,6 @@ package Material is
                                  C_Material_Array : in out API_Material_Array)
                                  return AI_Material_Map;
 private
-
-   subtype API_Property_Array_Pointer is Property_Array_Pointers_Package.Pointer;
 
    for AI_Texture_Map_Mode use (AI_Texture_Map_Mode_Wrap       => 0,
                                 AI_Texture_Map_Mode_Clamp      => 1,

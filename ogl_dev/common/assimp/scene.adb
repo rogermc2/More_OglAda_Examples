@@ -29,14 +29,13 @@ package body Scene is
 
    procedure To_AI_Scene (C_Scene : API_Scene;
                           theScene : in out Scene.AI_Scene) is
-
+        use Material.Material_Pointers_Package;
         C_Mesh_Array : Assimp_Mesh.API_Mesh_Array (1 .. C_Scene.Num_Meshes)
           := Assimp_Mesh.Mesh_Array_Pointers.Value
           (C_Scene.Meshes.all, ptrdiff_t (C_Scene.Num_Meshes));
 
         C_Materials_Array : Material.API_Material_Array  (1 .. C_Scene.Num_Materials)
-          := Material.Material_Pointers.Value
-            (C_Scene.Materials.all, ptrdiff_t (C_Scene.Num_Materials));
+          := Value (C_Scene.Materials.all, ptrdiff_t (C_Scene.Num_Materials));
         C_Root_Node : Scene.API_Node
           := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
    begin
