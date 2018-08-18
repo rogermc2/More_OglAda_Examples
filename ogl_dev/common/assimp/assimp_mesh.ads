@@ -92,12 +92,12 @@ package Assimp_Mesh is
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    type Vertices_Map is new  Vertices_Package.Map with null Record;
 
-   type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
-   type Texture_Coords_Array is new
-     Singles.Vector3_Array (1 .. AI_Max_Texture_Coords);
+   type Colour_Array is array (UInt range 1 .. AI_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
+   type Texture_Coords_Array is new Singles.Vector3_Array (1 .. AI_Max_Texture_Coords);
+
     type AI_Mesh is record
-        Name         : Ada.Strings.Unbounded.Unbounded_String :=
-                         Ada.Strings.Unbounded.To_Unbounded_String ("");
+        Name              : Ada.Strings.Unbounded.Unbounded_String :=
+                              Ada.Strings.Unbounded.To_Unbounded_String ("");
         Vertices          : Vertices_Map;
         Normals           : Vertices_Map;
         Tangents          : Vertices_Map;
@@ -124,16 +124,16 @@ package Assimp_Mesh is
         Normals           : Vector_3D_Array_Pointers.Pointer;
         Tangents          : Vector_3D_Array_Pointers.Pointer;
         Bit_Tangents      : Vector_3D_Array_Pointers.Pointer;
-        Colours           : API_Colours_4D_Array (1 .. AI_Max_Colour_Sets);
-        Texture_Coords    : API_Vector_3D_Array (1 .. AI_Max_Texture_Coords);
+        Colours           : access API_Colours_4D_Array := null;
+        Texture_Coords    : access API_Vector_3D_Array := null;
         Num_UV_Components : Interfaces.C.unsigned := 0;
         Faces             : Faces_Array_Pointer;
         Num_Bones         : Interfaces.C.unsigned := 0;
-        Bones             : Vector_3D_Array_Pointers.Pointer;
+        Bones             : access Vector_3D_Array_Pointers.Pointer := null;
         Material_Index    : Interfaces.C.unsigned := 0;
         Name              : Assimp_Types.API_String;
         Num_Anim_Meshes   : Interfaces.C.unsigned := 0;
-        Anim_Meshes       : Vector_3D_Array_Pointers.Pointer;
+        Anim_Meshes       : access Vector_3D_Array_Pointers.Pointer := null;
     end record;
     pragma Convention (C_Pass_By_Copy, API_Mesh);
 

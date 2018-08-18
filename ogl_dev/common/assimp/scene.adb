@@ -39,7 +39,7 @@ package body Scene is
         C_Root_Node : Scene.API_Node
           := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
    begin
-        Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations");
+        Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations ");
         Put_Line ("Num_Textures, Num_Lights, Num_Cameras:");
         Put_Line (unsigned'Image (C_Scene.Num_Meshes) &
                     unsigned'Image (C_Scene.Num_Materials) &
@@ -65,8 +65,11 @@ package body Scene is
         Put_Line ("Scene.To_AI_Scene, calling To_AI_Mesh_Map, C_Mesh_Array size: "  &
                     GL.Types.uint'Image (C_Mesh_Array'Length));
         theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (C_Scene.Num_Meshes, C_Mesh_Array);
+        Put_Line ("Scene.To_AI_Scene, Meshes loaded");
         theScene.Materials :=
           Material.To_AI_Materials_Map (C_Scene.Num_Materials, C_Materials_Array);
+        Put_Line ("Scene.To_AI_Scene, Materials_Map loaded");
+
         if C_Scene.Num_Textures > 0 then
             declare
                 C_Texture_Array : constant Assimp_Texture.API_Texture_Array :=
@@ -76,6 +79,7 @@ package body Scene is
                   Assimp_Texture.To_AI_Texture_Map (C_Scene.Num_Textures, C_Texture_Array);
             end;
         end if;
+
         if C_Scene.Num_Animations > 0 then
             Put_Line ("Scene.To_AI_Scene, calling To_AI_Animation_Map");
             declare
