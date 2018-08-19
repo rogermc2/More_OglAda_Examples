@@ -135,16 +135,8 @@ package body Material is
             Property_Array : API_Property_Array :=
                                    Property_Array_Pointers_Package.Value
                                      (theProperties_Ptr, Interfaces.C.ptrdiff_t (C_Material_Array (mat).Num_Properties));
-           C_Property      : API_Material_Property;
             Property_Key   : Assimp_Types.API_String;
 --              Property_Data  : Ada.Strings.Unbounded.Unbounded_String;
-            Key_length     : Interfaces.C.size_t := Property_Key.Length;
-            type API_Data_String is record
-                Length  : Interfaces.C.size_t := Key_length;
-                Data    : Interfaces.C.char_array (0 .. Key_length) := (others => Interfaces.C.char'Val (0));
-             end record;
-             pragma Convention (C_Pass_By_Copy, API_Data_String);
-             Key_String    : API_Data_String;
              aProperty     : AI_Material_Property;
              theProperties  : AI_Material_Property_List;
          begin
@@ -156,8 +148,8 @@ package body Material is
                     declare
                         Key_length  : size_t := Property_Key.Length;
                         type API_Key_Data is record
-                            Length  : size_t := Key_length;
-                            Data    : char_array (0 .. Key_length) := (others => Interfaces.C.char'Val (0));
+                            Length  : Interfaces.C.size_t := Key_length;
+                            Data    : Interfaces.C.char_array (0 .. Key_length) := (others => Interfaces.C.char'Val (0));
                         end record;
                         pragma Convention (C_Pass_By_Copy, API_Key_Data);
                         Key_Data   : API_Key_Data;
@@ -174,7 +166,7 @@ package body Material is
 --                          Data_String := Strings.Value (Property_Array (Property_Index).Data);
 --                          Put_Line ("Material.To_AI_Materials_Map Data_String set");
 
-                        aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (To_Ada (Key_String.Data));
+                        aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (To_Ada (Key_Data.Data));
                         aProperty.Semantic := UInt (Property_Array (Property_Index).Semantic);
                         aProperty.Index := UInt (Property_Array (Property_Index).Index);
                         aProperty.Data_Type := Property_Array (Property_Index).Data_Type;
