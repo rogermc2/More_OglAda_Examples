@@ -56,9 +56,8 @@ package Material is
       Key         : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
       Semantic    : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
       Index       : GL.Types.UInt := 0;  --  Index for textures
-      Data_Length : GL.Types.UInt := 0;
       Data_Type   : AI_Property_Type_Info := PTI_Float;
-      Data        : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
+      Data        : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
    end record;
 
    package AI_Material_Property_Package is new
@@ -76,8 +75,10 @@ package Material is
 
     --  Material data is stored using a key-value structure.
     --  A single key-value pair is called a 'material property'.
+
    type API_Material_Property is record
       Key         : Assimp_Types.API_String;  --  One of the AI_MATKEY_XXX constants
+                                              --  http://assimp.sourceforge.net/lib_html/material_8h.html
       Semantic    : Interfaces.C.unsigned := 0;
       Index       : Interfaces.C.unsigned := 0;
       Data_Length : Interfaces.C.unsigned := 0;
@@ -96,7 +97,7 @@ package Material is
    subtype API_Property_Array_Ptr is Property_Array_Pointers_Package.Pointer;
 
    type API_Material is record
-      Properties     : access API_Property_Array_Ptr;
+      Properties     : access API_Property_Array_Ptr := null;
       Num_Properties : Interfaces.C.unsigned := 0;
       Num_Allocated  : Interfaces.C.unsigned := 0;
    end record;
@@ -133,7 +134,7 @@ package Material is
    function Get_Texture_Count (aMaterial : AI_Material;
                                Tex_Type : AI_Texture_Type) return GL.Types.UInt;
    function To_AI_Materials_Map (Num_Materials : Interfaces.C.unsigned := 0;
-                                 C_Material_Array : in out API_Material_Array)
+                                 C_Material_Array : API_Material_Array)
                                  return AI_Material_Map;
 private
 
