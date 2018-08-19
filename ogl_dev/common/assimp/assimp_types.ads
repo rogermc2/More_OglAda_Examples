@@ -27,6 +27,7 @@ package Assimp_Types is
 
    type API_String is record
       Length  : Interfaces.C.size_t := 0;
+--        Data    : Interfaces.C.char_array (0 .. 12) := (others => Interfaces.C.char'Val (0));
       Data    : API_String_Data_Array := (others => Interfaces.C.char'Val (0));
    end record;
    pragma Convention (C_Pass_By_Copy, API_String);
