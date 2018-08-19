@@ -14,17 +14,20 @@ package Assimp_Types is
 
    type Colors_Array is array (1 .. 8) of access API_Vectors_Matrices.API_Colour_4D;
    pragma Convention (C, Colors_Array);
+
    type Texture_Coords_Array is array (1 .. 8) of
      access API_Vectors_Matrices.API_Vector_2D;
    pragma Convention (C, Texture_Coords_Array);
+
    type Unsigned_Array is array (UInt range <>) of access Interfaces.C.unsigned;
    pragma Convention (C, Unsigned_Array);
+
    type Vector3_Array is array (Int range <>) of access API_Vectors_Matrices.API_Vector_3D;
    pragma Convention (C, Vector3_Array);
 
    type API_String is record
       Length  : Interfaces.C.size_t := 0;
-      Data    : API_String_Data_Array;
+      Data    : API_String_Data_Array := (others => Interfaces.C.char'Val (0));
    end record;
    pragma Convention (C_Pass_By_Copy, API_String);
 
