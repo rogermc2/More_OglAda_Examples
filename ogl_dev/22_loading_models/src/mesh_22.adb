@@ -77,15 +77,12 @@ package body Mesh_22 is
       Index        : UInt := 0;
       aMesh        : Assimp_Mesh.AI_Mesh;
       anEntry      : Mesh_Entry;
-
-       Prim : UInt;
    begin
       while Has_Element (Curs) loop
          Index := Index + 1;
          aMesh := theScene.Meshes (Index);
-        Prim := aMesh.Material_Index;
-
-        Put_Line ("Mesh_22.Init_From_Scene, aMesh.Material_Index: " & UInt'Image (Prim));
+         Put_Line ("Mesh_22.Init_From_Scene, aMesh.Material_Index: " &
+                     UInt'Image (aMesh.Material_Index));
          Init_Mesh (aMesh, anEntry);
          Next (Curs);
       end loop;
@@ -175,6 +172,7 @@ package body Mesh_22 is
          Indices (Int (Index)) := Face.Indices (3);
       end loop;
       Init_Buffers (anEntry, Vertices, Indices);
+
    exception
       when others =>
          Put_Line ("An exception occurred in Mesh_22.Init_Mesh.");
