@@ -87,184 +87,206 @@ package body Material is
       use Interfaces.C;
       Key_Data      : String := To_Ada (API_Property.Key.Data);
       aProperty     : AI_Material_Property;
-      begin
+   begin
 
-         aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
-         aProperty.Semantic := UInt (API_Property.Semantic);
-         aProperty.Index := UInt (API_Property.Index);
-         aProperty.Data_Type := API_Property.Data_Type;
-         if API_Property.Data_Length > 0 then
-            declare
-               Str_Length  : size_t := Strings.Strlen (API_Property.Data);
-               Data_String : string (1 .. Integer (Str_Length));
-            begin
-               Data_String := Strings.Value (API_Property.Data);
-               aProperty.Data := Ada.Strings.Unbounded.To_Unbounded_String (Data_String);
-            end;
-         end if;
-         return aProperty;
-      end Set_Property;
+      aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
+      aProperty.Semantic := UInt (API_Property.Semantic);
+      aProperty.Index := UInt (API_Property.Index);
+      aProperty.Data_Type := API_Property.Data_Type;
+      if API_Property.Data_Length > 0 then
+         declare
+            Str_Length  : size_t := Strings.Strlen (API_Property.Data);
+            Data_String : string (1 .. Integer (Str_Length));
+         begin
+            Data_String := Strings.Value (API_Property.Data);
+            aProperty.Data := Ada.Strings.Unbounded.To_Unbounded_String (Data_String);
+         end;
+      end if;
+      return aProperty;
 
-      --  ----------------------------------------------------------------------
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.Set_Property.");
+         raise;
 
-      function To_AI_Material (C_Material : API_Material) return AI_Material is
-         use Interfaces.C;
-         use Property_Array_Pointers_Package;
-         theMaterial           : AI_Material;
-         Property_Array_Access : access API_Property_Array_Ptr := C_Material.Properties;
-         Property_Array        : API_Property_Array :=
-                                   Property_Array_Pointers_Package.Value (Property_Array_Access.all, ptrdiff_t (C_Material.Num_Properties));
-      begin
-         Put_Line ("Material.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
-                     unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
-         theMaterial.Properties :=
-           To_AI_Property_List (C_Material.Num_Properties, C_Material.Properties);  --  API_Property_Array_Ptr
+   end Set_Property;
 
-         Put_Line ("Material.To_AI_Material Properties set.");
-         theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
-         return theMaterial;
+   --  ----------------------------------------------------------------------
 
-      exception
-         when others =>
-            Put_Line ("An exception occurred in Material.To_AI_Material.");
-            raise;
-      end To_AI_Material;
+   function Set_Property_List (theProperties_Ptr : API_Property_Array_Ptr;
+                               Num_Property      : Interfaces.C.unsigned)
+                               return AI_Material_Property_List is
+      use Interfaces.C;
+      use Property_Array_Pointers_Package;
+      Property_Array : API_Property_Array :=
+                       Property_Array_Pointers_Package.Value
+                                 (theProperties_Ptr, ptrdiff_t (Num_Property));
+      theProperties  : AI_Material_Property_List;
+   begin
+      for Property_Index in 0 .. Num_Property - 1 loop
+          theProperties.Append (Set_Property (Property_Array (Property_Index)));
+         Put_Line ("Material.Set_Property_List completed Property_Index " &
+                     unsigned'Image (Property_Index));
+      end loop;
+      return theProperties;
 
-      --  ------------------------------------------------------------------------
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.Set_Property_List.");
+         raise;
 
-      function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
-                                    C_Material_Array : API_Material_Array)
-                                 return AI_Material_Map is
-         use Interfaces.C;
-         use Property_Array_Pointers_Package;
-         Material_Map          : AI_Material_Map;
-         aMaterial             : AI_Material;
-         Property_Array_Access : access API_Property_Array_Ptr;
-         theProperties_Ptr     : API_Property_Array_Ptr;
-      begin
-         Put_Line ("Material.To_AI_Materials_Map Num_Materials: " &
-                     Interfaces.C.unsigned'Image (Num_Materials));
-         for mat in 1 .. Num_Materials loop
-            Put_Line ("Material.To_AI_Materials_Map Num_Properties: " &
-                        Interfaces.C.unsigned'Image (C_Material_Array (mat).Num_Properties));
-            Property_Array_Access := C_Material_Array (mat).Properties;
-            theProperties_Ptr := Property_Array_Access.all;
-            declare
-               Property_Array : API_Property_Array :=
-                                  Property_Array_Pointers_Package.Value
-                                    (theProperties_Ptr, Interfaces.C.ptrdiff_t (C_Material_Array (mat).Num_Properties));
-               theProperties  : AI_Material_Property_List;
-            begin
-               Put_Line ("Material.To_AI_Materials_Map declare 1 entered");
-               for Property_Index in 0 .. C_Material_Array (mat).Num_Properties - 1 loop
-                  theProperties.Append (Set_Property (Property_Array (Property_Index)));
-                  Put_Line ("Material.To_AI_Materials_Map completed Property_Index " & unsigned'Image (Property_Index));
-               end loop;
-            end;
-            Put_Line ("Material.To_AI_Materials_Map Property_Index block completed");
-            New_Line;
-            aMaterial := To_AI_Material (C_Material_Array (mat));
-            Material_Map.Insert (UInt (mat), aMaterial);
-            Put_Line ("Material.To_AI_Materials_Map completed mat " & unsigned'Image (mat));
+   end Set_Property_List;
+
+   --  ----------------------------------------------------------------------
+
+   function To_AI_Material (C_Material : API_Material) return AI_Material is
+      use Interfaces.C;
+      use Property_Array_Pointers_Package;
+      theMaterial           : AI_Material;
+      Property_Array_Access : access API_Property_Array_Ptr := C_Material.Properties;
+      Property_Array        : API_Property_Array :=
+                                Property_Array_Pointers_Package.Value (Property_Array_Access.all, ptrdiff_t (C_Material.Num_Properties));
+   begin
+      Put_Line ("Material.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
+                  unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
+      theMaterial.Properties :=
+        To_AI_Property_List (C_Material.Num_Properties, C_Material.Properties);  --  API_Property_Array_Ptr
+
+      Put_Line ("Material.To_AI_Material Properties set.");
+      theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
+      return theMaterial;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_AI_Material.");
+         raise;
+   end To_AI_Material;
+
+   --  ------------------------------------------------------------------------
+
+   function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
+                                 C_Material_Array : API_Material_Array)
+                                    return AI_Material_Map is
+      use Interfaces.C;
+      use Property_Array_Pointers_Package;
+      Material_Map          : AI_Material_Map;
+      aMaterial             : AI_Material;
+      Property_Array_Access : access API_Property_Array_Ptr;
+      theProperties_Ptr     : API_Property_Array_Ptr;
+      Num_Property          : unsigned;
+      Property_List         : AI_Material_Property_List;
+   begin
+      Put_Line ("Material.To_AI_Materials_Map Num_Materials: " &
+                  Interfaces.C.unsigned'Image (Num_Materials));
+      for mat in 1 .. Num_Materials loop
+         Num_Property := C_Material_Array (mat).Num_Properties;
+         Put_Line ("Material.To_AI_Materials_Map Num_Properties: " &
+                     unsigned'Image (Num_Property));
+         Property_Array_Access := C_Material_Array (mat).Properties;
+         theProperties_Ptr := Property_Array_Access.all;
+         Property_List := Set_Property_List (theProperties_Ptr, Num_Property);
+         aMaterial := To_AI_Material (C_Material_Array (mat));
+         Material_Map.Insert (UInt (mat), aMaterial);
+         Put_Line ("Material.To_AI_Materials_Map completed mat " & unsigned'Image (mat));
+      end loop;
+      return Material_Map;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_AI_Materials_Map.");
+         raise;
+   end To_AI_Materials_Map;
+
+   --  ------------------------------------------------------------------------
+
+   function To_AI_Property (C_Property : API_Material_Property)
+                               return AI_Material_Property is
+      theProperty : AI_Material_Property;
+   begin
+      theProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String
+        (Interfaces.C.To_Ada (C_Property.Key.Data));
+      theProperty.Semantic := UInt (C_Property.Semantic);
+      theProperty.Index := UInt (C_Property.Index);
+      --        theProperty.Data_Length := UInt (C_Property.Data_Length);
+      --        theProperty.Data_Type := C_Property.Data_Type;
+      --        theProperty.Data := C_Property.Data;
+      return theProperty;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_AI_Property.");
+         raise;
+   end To_AI_Property;
+
+   --  ------------------------------------------------------------------------
+
+   function To_AI_Property_List (Num_Properties          : Interfaces.C.unsigned := 0;
+                                 Properties_Array_Access : access API_Property_Array_Ptr)
+                                    return AI_Material_Property_List is
+      use Interfaces.C;
+      use Property_Array_Pointers_Package;
+      Properties_Array_Ptr : API_Property_Array_Ptr:= Properties_Array_Access.all;
+      C_Properties         : API_Property_Array (1 .. Num_Properties);
+      Properties           : AI_Material_Property_List;
+      aProperty            : AI_Material_Property;
+   begin
+      Put_Line (" Material.To_AI_Property_List, Num_Properties: " &
+                  unsigned'Image (Num_Properties));
+      C_Properties := Value (Properties_Array_Ptr);
+      Put_Line (" Material.To_AI_Property_List C_Properties set.");
+      if Num_Properties > 0 then
+         for index in 1 .. Num_Properties loop
+            Put_Line (" Material.To_AI_Property_List : index: " &
+                        unsigned'Image (index));
+            aProperty :=
+              To_AI_Property (C_Properties (unsigned (index)));
+            Properties.Append (aProperty);
          end loop;
-         return Material_Map;
+      end if;
+      return Properties;
 
-      exception
-         when others =>
-            Put_Line ("An exception occurred in Material.To_AI_Materials_Map.");
-            raise;
-      end To_AI_Materials_Map;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_AI_Property_List.");
+         raise;
+   end To_AI_Property_List;
 
-      --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
-      function To_AI_Property (C_Property : API_Material_Property)
-                            return AI_Material_Property is
-         theProperty : AI_Material_Property;
-      begin
-         theProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String
-           (Interfaces.C.To_Ada (C_Property.Key.Data));
-         theProperty.Semantic := UInt (C_Property.Semantic);
-         theProperty.Index := UInt (C_Property.Index);
-         --        theProperty.Data_Length := UInt (C_Property.Data_Length);
-         --        theProperty.Data_Type := C_Property.Data_Type;
-         --        theProperty.Data := C_Property.Data;
-         return theProperty;
+   --     procedure To_API_Material (aMaterial : AI_Material; theAPI_Material : in out API_Material) is
+   --        use Interfaces.C;
+   --        use AI_Material_Property_Package;
+   --        use Property_Array_Pointers_Package;
+   --        Properties         : constant  AI_Material_Property_List := aMaterial.Properties;
+   --        Curs               : Cursor := Properties.First;
+   --        aProperty          : AI_Material_Property;
+   --        Property_Array     : API_Property_Array (1 .. unsigned (Properties.Length));
+   --  --        Property_Array_Ptr : API_Property_Array_Ptr;
+   --        Prop_Index         : unsigned := 0;
+   --     begin
+   --        while Has_Element (Curs) loop
+   --           Prop_Index := Prop_Index + 1;
+   --           aProperty := Element (Curs);
+   --           Property_Array (Prop_Index).Key :=
+   --             Assimp_Util.To_Assimp_API_String (aProperty.Key);
+   --           Property_Array (Prop_Index).Semantic := unsigned (aProperty.Semantic);
+   --           Property_Array (Prop_Index).Index := unsigned (aProperty.Index);
+   --           Property_Array (Prop_Index).Data_Length := unsigned (aProperty.Data_Length);
+   --           Property_Array (Prop_Index).Data_Type := aProperty.Data_Type;
+   --           Property_Array (Prop_Index).Data := aProperty.Data;
+   --           Next (Curs);
+   --        end loop;
+   --  --        Property_Array_Ptr := Property_Array (0)'access;
+   --  --        theAPI_Material.Properties := Property_Array_Ptr'access;
+   --        theAPI_Material.Num_Properties := Interfaces.C.unsigned (aMaterial.Num_Allocated);
+   --        theAPI_Material.Num_Allocated := Interfaces.C.unsigned (aMaterial.Num_Allocated);
+   --
+   --     exception
+   --        when others =>
+   --           Put_Line ("An exception occurred in Material.To_API_Material.");
+   --           raise;
+   --     end To_API_Material;
 
-      exception
-         when others =>
-            Put_Line ("An exception occurred in Material.To_AI_Property.");
-            raise;
-      end To_AI_Property;
+   --  ------------------------------------------------------------------------
 
-      --  ------------------------------------------------------------------------
-
-      function To_AI_Property_List (Num_Properties          : Interfaces.C.unsigned := 0;
-                                    Properties_Array_Access : access API_Property_Array_Ptr)
-                                 return AI_Material_Property_List is
-         use Interfaces.C;
-         use Property_Array_Pointers_Package;
-         Properties_Array_Ptr : API_Property_Array_Ptr:= Properties_Array_Access.all;
-         C_Properties         : API_Property_Array (1 .. Num_Properties);
-         Properties           : AI_Material_Property_List;
-         aProperty            : AI_Material_Property;
-      begin
-         Put_Line (" Material.To_AI_Property_List, Num_Properties: " &
-                     unsigned'Image (Num_Properties));
-         C_Properties := Value (Properties_Array_Ptr);
-         Put_Line (" Material.To_AI_Property_List C_Properties set.");
-         if Num_Properties > 0 then
-            for index in 1 .. Num_Properties loop
-               Put_Line (" Material.To_AI_Property_List : index: " &
-                           unsigned'Image (index));
-               aProperty :=
-                 To_AI_Property (C_Properties (unsigned (index)));
-               Properties.Append (aProperty);
-            end loop;
-         end if;
-         return Properties;
-
-      exception
-         when others =>
-            Put_Line ("An exception occurred in Material.To_AI_Property_List.");
-            raise;
-      end To_AI_Property_List;
-
-      --  ------------------------------------------------------------------------
-
-      --     procedure To_API_Material (aMaterial : AI_Material; theAPI_Material : in out API_Material) is
-      --        use Interfaces.C;
-      --        use AI_Material_Property_Package;
-      --        use Property_Array_Pointers_Package;
-      --        Properties         : constant  AI_Material_Property_List := aMaterial.Properties;
-      --        Curs               : Cursor := Properties.First;
-      --        aProperty          : AI_Material_Property;
-      --        Property_Array     : API_Property_Array (1 .. unsigned (Properties.Length));
-      --  --        Property_Array_Ptr : API_Property_Array_Ptr;
-      --        Prop_Index         : unsigned := 0;
-      --     begin
-      --        while Has_Element (Curs) loop
-      --           Prop_Index := Prop_Index + 1;
-      --           aProperty := Element (Curs);
-      --           Property_Array (Prop_Index).Key :=
-      --             Assimp_Util.To_Assimp_API_String (aProperty.Key);
-      --           Property_Array (Prop_Index).Semantic := unsigned (aProperty.Semantic);
-      --           Property_Array (Prop_Index).Index := unsigned (aProperty.Index);
-      --           Property_Array (Prop_Index).Data_Length := unsigned (aProperty.Data_Length);
-      --           Property_Array (Prop_Index).Data_Type := aProperty.Data_Type;
-      --           Property_Array (Prop_Index).Data := aProperty.Data;
-      --           Next (Curs);
-      --        end loop;
-      --  --        Property_Array_Ptr := Property_Array (0)'access;
-      --  --        theAPI_Material.Properties := Property_Array_Ptr'access;
-      --        theAPI_Material.Num_Properties := Interfaces.C.unsigned (aMaterial.Num_Allocated);
-      --        theAPI_Material.Num_Allocated := Interfaces.C.unsigned (aMaterial.Num_Allocated);
-      --
-      --     exception
-      --        when others =>
-      --           Put_Line ("An exception occurred in Material.To_API_Material.");
-      --           raise;
-      --     end To_API_Material;
-
-      --  ------------------------------------------------------------------------
-
-   end Material;
+end Material;
