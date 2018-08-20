@@ -88,7 +88,7 @@ package body Material is
       Key_Data      : String := To_Ada (API_Property.Key.Data);
       aProperty     : AI_Material_Property;
       begin
-         Put_Line ("Material.Set_Property entered");
+
          aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
          aProperty.Semantic := UInt (API_Property.Semantic);
          aProperty.Index := UInt (API_Property.Index);
@@ -98,9 +98,7 @@ package body Material is
                Str_Length  : size_t := Strings.Strlen (API_Property.Data);
                Data_String : string (1 .. Integer (Str_Length));
             begin
-               Put_Line ("Material.To_AI_Materials_Map Str_Length: " & size_t'Image (Str_Length));
                Data_String := Strings.Value (API_Property.Data);
-               Put_Line ("Material.To_AI_Materials_Map Data_String: " & Data_String);
                aProperty.Data := Ada.Strings.Unbounded.To_Unbounded_String (Data_String);
             end;
          end if;
