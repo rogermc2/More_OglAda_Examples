@@ -34,7 +34,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
     VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Game_Camera            : Ogldev_Camera.Camera;
-    theMesh                : Mesh_22.Mesh;
     Light_Technique        : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
     Direct_Light           : Ogldev_Lights_Common.Directional_Light;
     Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
@@ -43,7 +42,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Init (Window : in out Glfw.Windows.Window; Result : out Boolean) is
+    procedure Init (Window : in out Glfw.Windows.Window;
+                    theMesh : out Mesh_22.Mesh; Result : out Boolean) is
 
         Window_Width        : Glfw.Size;
         Window_Height       : Glfw.Size;
@@ -83,7 +83,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
+    procedure Render_Scene (Window : in out Glfw.Windows.Window;
+                            theMesh : Mesh_22.Mesh) is
         use Maths.Single_Math_Functions;
         use Ogldev_Basic_Lighting;
         use Ogldev_Camera;
@@ -153,11 +154,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     use Glfw.Input;
+    theMesh : Mesh_22.Mesh;
     Running : Boolean;
 begin
-    Init (Main_Window, Running);
+    Init (Main_Window, theMesh, Running);
     while Running loop
-        Render_Scene (Main_Window);
+        Render_Scene (Main_Window, theMesh);
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
         Glfw.Input.Poll_Events;
         Running := Running and not
