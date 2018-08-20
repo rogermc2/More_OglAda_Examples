@@ -85,12 +85,11 @@ package body Material is
    function Set_Property (API_Property : API_Material_Property)
                           return AI_Material_Property is
       use Interfaces.C;
-      Property_Key  : Assimp_Types.API_String := API_Property.Key;
-      Key_length    : size_t := Property_Key.Length;
+      Key_Data      : String := To_Ada (API_Property.Key.Data);
       aProperty     : AI_Material_Property;
       begin
          Put_Line ("Material.Set_Property entered");
-         aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (To_Ada (Property_Key.Data));
+         aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
          aProperty.Semantic := UInt (API_Property.Semantic);
          aProperty.Index := UInt (API_Property.Index);
          aProperty.Data_Type := API_Property.Data_Type;
