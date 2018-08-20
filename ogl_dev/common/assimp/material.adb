@@ -136,7 +136,6 @@ package body Material is
                                    Property_Array_Pointers_Package.Value
                                      (theProperties_Ptr, Interfaces.C.ptrdiff_t (C_Material_Array (mat).Num_Properties));
             Property_Key   : Assimp_Types.API_String;
---              Property_Data  : Ada.Strings.Unbounded.Unbounded_String;
              aProperty     : AI_Material_Property;
              theProperties  : AI_Material_Property_List;
          begin
@@ -144,18 +143,16 @@ package body Material is
 
                 for Property_Index in 0 .. C_Material_Array (mat).Num_Properties - 1 loop
                     Property_Key := Property_Array (Property_Index).Key;
-                    Put_Line ("Material.To_AI_Materials_Map Property_Key set");
+                    Put_Line ("Material.To_AI_Materials_Map Property_Key set, Property_Index" & unsigned'Image (Property_Index));
                     declare
                         Key_length   : size_t := Property_Key.Length;
                         Data_length  : unsigned := Property_Array (Property_Index).Data_Length;
                         type API_Key_Data is record
-                            Length  : Interfaces.C.size_t := Key_length;
-                            Data    : Interfaces.C.char_array (0 .. Key_length) := (others => Interfaces.C.char'Val (0));
+                            Length  : size_t := Key_length;
+                            Data    : char_array (0 .. Key_length) := (others => char'Val (0));
                         end record;
                         pragma Convention (C_Pass_By_Copy, API_Key_Data);
-                        Key_Data   : API_Key_Data;
---                          Property_Data  : char_array (0 .. size_t (Property_Array (Property_Index).Data_Length)) :=
---                                             (others => Interfaces.C.char'Val (0));
+                        Key_Data      : API_Key_Data;
                     begin
                         Put_Line ("Material.To_AI_Materials_Map declare 2 entered");
                         --  Setting Key_String.Data  := Property_Key.Data causes erroneous memory access
@@ -170,15 +167,13 @@ package body Material is
                         Put_Line ("Material.To_AI_Materials_Map aProperty.Data_Type set");
                         if Data_length > 0 then
                             declare
---                                  C_Data       : Interfaces.C.Strings.chars_ptr;
-                                Data_String  : string (1 .. Integer (Data_Length));
+                                Str_Length    : size_t := Strings.Strlen ( Property_Array (Property_Index).Data);
+                                Data_String   : string (1 .. Integer (Str_Length));
                             begin
-                                Put_Line ("Material.To_AI_Materials_Map Data_String length: " & Integer'Image (Data_String'Length));
---                                  for index in 0 .. Data_Length loop
---                                      Key_Data.Data (index) := Property_Key (index);
---                                  end loop;
---                                  Data_String := Strings.Value (Property_Array (Property_Index).Data, Data_Length);
---                                  Put_Line ("Material.To_AI_Materials_Map Data_String set");
+                                Put_Line ("Material.To_AI_Materials_Map Data_String length: " & unsigned'Image (Data_Length));
+                                Put_Line ("Material.To_AI_Materials_Map Str_Length: " & size_t'Image (Str_Length));
+                                Data_String := Strings.Value (Property_Array (Property_Index).Data);
+                                Put_Line ("Material.To_AI_Materials_Map Data_String: " & Data_String);
                                 aProperty.Data := Ada.Strings.Unbounded.To_Unbounded_String (Data_String);
                                 Put_Line ("Material.To_AI_Materials_Map aProperty.Data set");
                             end;
@@ -188,7 +183,7 @@ package body Material is
                      Put_Line ("Material.To_AI_Materials_Map completed Property_Index " & unsigned'Image (Property_Index));
               end loop;
          end;
-         Put_Line ("Material.To_AI_Materials_Map Property_Index loop completed");
+         Put_Line ("Material.To_AI_Materials_Map Property_Index block completed");
          New_Line;
          aMaterial := To_AI_Material (C_Material_Array (mat));
          Material_Map.Insert (UInt (mat), aMaterial);
