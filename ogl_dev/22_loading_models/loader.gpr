@@ -8,16 +8,17 @@ project Loader is
    for Object_Dir use "obj";
    for Exec_Dir use ".";
    for Main use ("model_loader");
+   for Languages use ("Ada", "C++");
 
-    for Languages use ("Ada", "C++");
+   package Compiler is
+      for Switches ("c++") use ("-I/usr/local/include/assimp", "-I/usr/local/include/ImageMagick-7/Magick++", "-I/usr/local/include/ImageMagick-7", "-DMAGICKCORE_QUANTUM_DEPTH=16", "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
 
-    package Compiler is
-        for Switches ("c++") use ("-I/usr/local/include/assimp", "-I/usr/local/include/ImageMagick-7/Magick++", "-I/usr/local/include/ImageMagick-7", "-DMAGICKCORE_QUANTUM_DEPTH=16", "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
-    end Compiler;
+      for Switches ("ada") use ("-gnato", "-fstack-check", "-g", "-gnatf", "-gnata");
+   end Compiler;
 
-    package Naming is
-        for Spec_Suffix ("C++") use ".h";
-    end Naming;
+   package Naming is
+      for Spec_Suffix ("c++") use ".h";
+   end Naming;
 
    package Builder is
       for Switches ("ada") use ("-g");
@@ -27,6 +28,10 @@ project Loader is
       for Switches ("ada") use ("-L/usr/local/lib", "-lMagick++-7.Q16HDRI", "-lMagickCore-7.Q16HDRI", "-L/usr/local/Cellar/assimp/4.1.0/lib", "-lassimp", "-g");
       for Switches ("c++") use ("-g");
    end Linker;
+
+   package Binder is
+    for Switches ("ada") use ("-E");
+   end Binder;
 
 end Loader;
 
