@@ -126,15 +126,22 @@ package body Mesh_22 is
                   Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name);
                   Initial_Mesh.Textures.Insert (UInt (index), aTexture);
-                  Ogldev_Texture.Load (aTexture);
                   Put_Line ("Mesh_22.Init_Materials loaded texture from " & File_Name);
+               else
+                  Put_Line ("Mesh_22.Init_Materials loading default texture");
+                  Ogldev_Texture.Init_Texture
+                    (aTexture, GL.Low_Level.Enums.Texture_2D, "../../Content/white.png");
+                  Initial_Mesh.Textures.Insert (UInt (index), aTexture);
+                  Put_Line ("Mesh_22.Init_Materials loaded texture from Content/white.png");
                end if;
+                  Ogldev_Texture.Load (aTexture);
             end if;
          end loop;
       end Load_Textures;
 
    begin
       Material.Iterate (Load_Textures'Access);
+      Put_Line ("Mesh_22.Init_Materials textures loaded");
 
    exception
       when others =>
