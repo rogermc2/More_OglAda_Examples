@@ -14,7 +14,7 @@ with API_Vectors_Matrices;
 
 package Material is
 
-   type AI_Property_Type_Info is (PTI_Float, PTI_Double, PTI_String,
+   type AI_Property_Type_Info is (PTI_Float, PTI_String,
                                   PTI_Integer, PTI_Buffer, PTI_Force32Bit);
    pragma Convention (C, AI_Property_Type_Info);
 
@@ -46,7 +46,6 @@ package Material is
    pragma Convention (C, AI_Texture_Type);
 
    for AI_Property_Type_Info use (PTI_Float      => 1,
-                                  PTI_Double     => 2,
                                   PTI_String     => 3,
                                   PTI_Integer    => 4,
                                   PTI_Buffer     => 5,
@@ -83,7 +82,7 @@ package Material is
       Index       : Interfaces.C.unsigned := 0;
       Data_Length : Interfaces.C.unsigned := 0;
       Data_Type   : AI_Property_Type_Info := PTI_Float;
-      Data        : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
+      Data        : Assimp_Types.API_String;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material_Property);
 
@@ -121,7 +120,7 @@ package Material is
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
                           Path : out Ada.Strings.Unbounded.Unbounded_String;
-                          Result : out Assimp_Types.AI_Return);
+                          Result : out Assimp_Types.API_Return);
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
                           Path : out Ada.Strings.Unbounded.Unbounded_String;
@@ -130,7 +129,7 @@ package Material is
                           Blend : out GL.Types.Single;
                           Op : AI_Texture_Op;
                           Map_Mode : AI_Texture_Map_Mode;
-                          Result : out Assimp_Types.AI_Return);
+                          Result : out Assimp_Types.API_Return);
    function Get_Texture_Count (aMaterial : AI_Material;
                                Tex_Type : AI_Texture_Type) return GL.Types.UInt;
    function To_AI_Materials_Map (Num_Materials : Interfaces.C.unsigned := 0;

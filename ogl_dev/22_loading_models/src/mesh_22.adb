@@ -110,7 +110,7 @@ package body Mesh_22 is
                   := GNAT.Directory_Operations.Dir_Name (File_Name);
       Path       : Ada.Strings.Unbounded.Unbounded_String;
       --        Full_Path   : constant String := Current_Dir & Dir;
-      Result     : Assimp_Types.AI_Return;
+      Result     : Assimp_Types.API_Return;
       Material   : constant AI_Material_Map := theScene.Materials;
 
       procedure Load_Textures (Curs : AI_Material_Package.Cursor) is
@@ -124,7 +124,7 @@ package body Mesh_22 is
          for index in 1 .. Initial_Mesh.Textures.Length loop
             if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
                Get_Texture (aMaterial, AI_Texture_Diffuse, UInt (index), Path, Result);
-               if Result = Assimp_Types.AI_Return_Success then
+               if Result = Assimp_Types.API_Return_Success then
                   Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name);
                   Initial_Mesh.Textures.Insert (UInt (index), aTexture);
