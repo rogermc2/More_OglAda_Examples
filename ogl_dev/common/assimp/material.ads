@@ -134,7 +134,7 @@ package Material is
    function Get_Texture_Count (aMaterial : AI_Material;
                                Tex_Type : AI_Texture_Type) return GL.Types.UInt;
    function To_AI_Materials_Map (Num_Materials : Interfaces.C.unsigned := 0;
-                                 C_Material_Array : API_Material_Array)
+                                 C_Material_Array : in out API_Material_Array)
                                  return AI_Material_Map;
 private
 

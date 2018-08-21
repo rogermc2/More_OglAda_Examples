@@ -27,7 +27,7 @@ package body Scene is
 
     --  -------------------------------------------------------------------------
 
-   procedure To_AI_Scene (C_Scene : API_Scene;
+   procedure To_AI_Scene (C_Scene : in out API_Scene;
                           theScene : in out Scene.AI_Scene) is
         use Material.Material_Pointers_Package;
         Num_Meshes     : constant unsigned := (C_Scene.Num_Meshes);
