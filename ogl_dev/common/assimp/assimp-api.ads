@@ -17,7 +17,7 @@ package Assimp.API is
                                   Tex_Type : Material.AI_Texture_Type;
                                   Index : Interfaces.C.unsigned;
                                   Path : access Assimp_Types.API_String)
-                                  return Assimp_Types.AI_Return;
+                                  return Assimp_Types.API_Return;
    pragma Import (C, Get_Material_Texture1, "aiGetMaterialTexture");
 
    function Get_Material_Texture (aMaterial : Material.API_Material;
@@ -29,7 +29,7 @@ package Assimp.API is
                                   Blend : access Interfaces.C.C_float;
                                   Op : Material.AI_Texture_Op;
                                   Map_Mode : Material.AI_Texture_Map_Mode)
-                                  return Assimp_Types.AI_Return;
+                                  return Assimp_Types.API_Return;
    pragma Import (C, Get_Material_Texture, "aiGetMaterialTexture");
 
    function Get_Material_Texture_Count (aMaterial : Material.API_Material;
