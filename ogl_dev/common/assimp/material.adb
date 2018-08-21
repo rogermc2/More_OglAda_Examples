@@ -15,15 +15,6 @@ package body Material is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Material_String (aMaterial : AI_Material; Key : out Interfaces.C.Strings.chars_ptr;
-                                 Property_Type, Property_Index : out Interfaces.C.unsigned;
-                                 Data_String : out Assimp_Types.API_String) return Assimp_Types.API_Return is
-   begin
-    return Assimp_Types.API_Return_Failure;
-   end Get_Material_String;
-
-   --  -------------------------------------------------------------------------
-
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
                           Path      : out Ada.Strings.Unbounded.Unbounded_String;
