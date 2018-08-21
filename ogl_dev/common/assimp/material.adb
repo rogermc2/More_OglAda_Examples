@@ -15,10 +15,19 @@ package body Material is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Material_String (aMaterial : AI_Material; Key : out Interfaces.C.Strings.chars_ptr;
+                                 Property_Type, Property_Index : out Interfaces.C.unsigned;
+                                 Data_String : out Assimp_Types.API_String) return Assimp_Types.API_Return is
+   begin
+    return Assimp_Types.API_Return_Failure;
+   end Get_Material_String;
+
+   --  -------------------------------------------------------------------------
+
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
                           Path      : out Ada.Strings.Unbounded.Unbounded_String;
-                          Result    : out Assimp_Types.AI_Return) is
+                          Result    : out Assimp_Types.ApI_Return) is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
       Material : API_Material;
@@ -46,7 +55,7 @@ package body Material is
                           Blend     : out Single;
                           Op        : AI_Texture_Op;
                           Map_Mode  : AI_Texture_Map_Mode;
-                          Result    : out Assimp_Types.AI_Return) is
+                          Result    : out Assimp_Types.API_Return) is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
       C_Material : API_Material;
@@ -95,7 +104,9 @@ package body Material is
       aProperty.Data_Type := API_Property.Data_Type;
       Put_Line ("Material.To_AI_Property Semantic, Index: " &
                 UInt'Image (aProperty.Semantic) & UInt'Image (aProperty.Index));
-      if API_Property.Data_Length > 0 and API_Property.Data /= Null_Ptr then
+--        if API_Property.Data_Length > 0 and API_Property.Data /= Null_Ptr then
+      if API_Property.Data_Length > 0  then
+            Get_Material_String;
          declare
             Str_Length  : size_t := Strlen (API_Property.Data);
             Data_String : string (1 .. Integer (Str_Length));
@@ -124,10 +135,12 @@ package body Material is
                        Property_Array_Pointers_Package.Value
                                  (theProperties_Ptr, ptrdiff_t (Num_Property));
       theProperties  : AI_Material_Property_List;
+      aProperty      : API_Material_Property;
    begin
        Put_Line ("Material.To_AI_Property_List Num_Property " & unsigned'Image (Num_Property));
       for Property_Index in 0 .. Num_Property - 1 loop
-          theProperties.Append (To_AI_Property (Property_Array (Property_Index)));
+          aProperty := Property_Array (Property_Index);
+          theProperties.Append (To_AI_Property (aProperty));
          Put_Line ("Material.To_AI_Property_List completed Property_Index " &
                      unsigned'Image (Property_Index));
       end loop;
