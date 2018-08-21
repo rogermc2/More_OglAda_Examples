@@ -7,8 +7,8 @@ with API_Vectors_Matrices;
 
 package Assimp_Types is
 
-   type AI_Return is (AI_Return_Out_Of_Memory, AI_Return_Failure,
-                      AI_Return_Success, AI_Enforce_Enum_Size);
+   type API_Return is (API_Return_Out_Of_Memory, API_Return_Failure,
+                       API_Return_Success, API_Enforce_Enum_Size);
    Max_Length : constant Interfaces.C.size_t := 1023;
    subtype API_String_Data_Array is Interfaces.C.char_array (0 .. Max_Length);
 
@@ -34,9 +34,9 @@ package Assimp_Types is
 
 private
 
-   for AI_Return use (AI_Return_Out_Of_Memory => -3,
-                      AI_Return_Failure       => -1,
-                      AI_Return_Success       => 0,
-                      AI_Enforce_Enum_Size    => 16#7FFFFFFF#);
+   for API_Return use (API_Return_Out_Of_Memory => -3,
+                       API_Return_Failure       => -1,
+                       API_Return_Success       => 0,
+                       API_Enforce_Enum_Size    => 16#7FFFFFFF#);
 
 end Assimp_Types;
