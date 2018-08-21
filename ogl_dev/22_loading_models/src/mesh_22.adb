@@ -1,6 +1,8 @@
 
 with Interfaces.C;
 
+with GNAT.Directory_Operations;
+
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -104,12 +106,12 @@ package body Mesh_22 is
       use Material;
       --        Current_Dir : constant GNAT.Directory_Operations.Dir_Name_Str
       --          := GNAT.Directory_Operations.Get_Current_Dir;
-      --        Dir         : constant GNAT.Directory_Operations.Dir_Name_Str
-      --          := GNAT.Directory_Operations.Dir_Name (File_Name);
-      Path          : Ada.Strings.Unbounded.Unbounded_String;
+      Dir        : constant GNAT.Directory_Operations.Dir_Name_Str
+                  := GNAT.Directory_Operations.Dir_Name (File_Name);
+      Path       : Ada.Strings.Unbounded.Unbounded_String;
       --        Full_Path   : constant String := Current_Dir & Dir;
-      Result        : Assimp_Types.AI_Return;
-      Material      : constant AI_Material_Map := theScene.Materials;
+      Result     : Assimp_Types.AI_Return;
+      Material   : constant AI_Material_Map := theScene.Materials;
 
       procedure Load_Textures (Curs : AI_Material_Package.Cursor) is
          use Ogldev_Texture.Mesh_Texture_Package;
@@ -140,6 +142,7 @@ package body Mesh_22 is
       end Load_Textures;
 
    begin
+      Put_Line ("Mesh_22.Init_Materials Dir: " & Dir);
       Material.Iterate (Load_Textures'Access);
       Put_Line ("Mesh_22.Init_Materials textures loaded");
 
