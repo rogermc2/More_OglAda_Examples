@@ -34,6 +34,10 @@ package body Ogldev_Texture is
    begin
       theTexture.File_Name := To_Unbounded_String (File_Name);
       theTexture.Texture_Target := Target_Type;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Ogldev_Texture.Init_Texture.");
+         raise;
    end Init_Texture;
 
    --  -------------------------------------------------------------------------
