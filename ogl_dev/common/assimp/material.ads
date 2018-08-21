@@ -14,7 +14,7 @@ with API_Vectors_Matrices;
 
 package Material is
 
-   type AI_Property_Type_Info is (PTI_Float, PTI_String,
+   type AI_Property_Type_Info is (PTI_Float, PTI_Double, PTI_String,
                                   PTI_Integer, PTI_Buffer, PTI_Force32Bit);
    pragma Convention (C, AI_Property_Type_Info);
 
@@ -46,6 +46,7 @@ package Material is
    pragma Convention (C, AI_Texture_Type);
 
    for AI_Property_Type_Info use (PTI_Float      => 1,
+                                  PTI_Double     => 2,
                                   PTI_String     => 3,
                                   PTI_Integer    => 4,
                                   PTI_Buffer     => 5,
@@ -56,7 +57,7 @@ package Material is
       Semantic    : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
       Index       : GL.Types.UInt := 0;  --  Index for textures
       Data_Type   : AI_Property_Type_Info := PTI_Float;
-      Data        : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
+      Data_Buffer : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
    end record;
 
    package AI_Material_Property_Package is new
@@ -82,7 +83,8 @@ package Material is
       Index       : Interfaces.C.unsigned := 0;
       Data_Length : Interfaces.C.unsigned := 0;
       Data_Type   : AI_Property_Type_Info := PTI_Float;
-      Data        : Assimp_Types.API_String;
+      --  Data holds the property's value. Its size is always Data_Length
+      Data        : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material_Property);
 
