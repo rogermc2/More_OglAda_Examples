@@ -85,6 +85,7 @@ package body Material is
    function To_AI_Property (API_Property : API_Material_Property)
                            return AI_Material_Property is
       use Interfaces.C;
+      use Interfaces.C.Strings;
       Key_Data      : String := To_Ada (API_Property.Key.Data);
       aProperty     : AI_Material_Property;
    begin
@@ -93,9 +94,9 @@ package body Material is
       aProperty.Semantic := UInt (API_Property.Semantic);
       aProperty.Index := UInt (API_Property.Index);
       aProperty.Data_Type := API_Property.Data_Type;
-      if API_Property.Data_Length > 0 then
+      if API_Property.Data_Length > 0 and API_Property.Data /= Null_Ptr then
          declare
-            Str_Length  : size_t := Strings.Strlen (API_Property.Data);
+            Str_Length  : size_t := Strlen (API_Property.Data);
             Data_String : string (1 .. Integer (Str_Length));
          begin
             Data_String := Strings.Value (API_Property.Data);
