@@ -85,6 +85,7 @@ package Material is
       Data_Type   : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
       Data        : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
+      Size_String : String (1 .. 4);
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material_Property);
 

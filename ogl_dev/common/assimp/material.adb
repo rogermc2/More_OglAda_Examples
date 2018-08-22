@@ -5,13 +5,15 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp.API;
 with Assimp_Util;
+with Material_System;
 
 package body Material is
 
    --      procedure To_API_Material (aMaterial : AI_Material; theAPI_Material : in out API_Material);
-   function To_AI_Property_List (theProperties_Ptr : in out API_Property_Array_Ptr;
-                               Num_Property      : Interfaces.C.unsigned)
-                               return AI_Material_Property_List;
+   function To_AI_Property_List (anAPI_Material : API_Material;
+                                 theProperties_Ptr : in out API_Property_Array_Ptr;
+                                 Num_Property      : Interfaces.C.unsigned)
+                                 return AI_Material_Property_List;
 
    --  -------------------------------------------------------------------------
 
@@ -82,12 +84,14 @@ package body Material is
 
    --  -------------------------------------------------------------------------
 
-   function To_AI_Property (API_Property : API_Material_Property)
-                           return AI_Material_Property is
+   function To_AI_Property (anAPI_Material : API_Material;
+                            API_Property : API_Material_Property) return AI_Material_Property is
       use Interfaces.C;
       use Interfaces.C.Strings;
       Key_Data      : String := To_Ada (API_Property.Key.Data);
       aProperty     : AI_Material_Property;
+      Data_String   : Assimp_Types.API_String;
+      Result        : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
       aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
       aProperty.Semantic := UInt (API_Property.Semantic);
@@ -97,13 +101,15 @@ package body Material is
                 UInt'Image (aProperty.Semantic) & UInt'Image (aProperty.Index));
 --        if API_Property.Data_Length > 0 and API_Property.Data /= Null_Ptr then
       if API_Property.Data_Length > 0  then
-            Get_Material_String;
+            Result := Material_System.Get_Material_String (anAPI_Material, API_Property.Key,
+                                                           API_Property.Data_Type'Enum_Rep,
+                                                           API_Property.Index, Data_String);
          declare
             Str_Length  : size_t := Strlen (API_Property.Data);
             Data_String : string (1 .. Integer (Str_Length));
          begin
             Data_String := Value (API_Property.Data);
-            aProperty.Data := Ada.Strings.Unbounded.To_Unbounded_String (Data_String);
+--              aProperty.Data := Ada.Strings.Unbounded.To_Unbounded_String (Data_String);
          end;
       end if;
       return aProperty;
@@ -117,7 +123,8 @@ package body Material is
 
    --  ----------------------------------------------------------------------
 
-   function To_AI_Property_List (theProperties_Ptr : in out API_Property_Array_Ptr;
+   function To_AI_Property_List (anAPI_Material : API_Material;
+                                 theProperties_Ptr : in out API_Property_Array_Ptr;
                                  Num_Property      : Interfaces.C.unsigned)
                                  return AI_Material_Property_List is
       use Interfaces.C;
@@ -131,7 +138,7 @@ package body Material is
        Put_Line ("Material.To_AI_Property_List Num_Property " & unsigned'Image (Num_Property));
       for Property_Index in 0 .. Num_Property - 1 loop
           aProperty := Property_Array (Property_Index);
-          theProperties.Append (To_AI_Property (aProperty));
+          theProperties.Append (To_AI_Property (anAPI_Material, aProperty));
          Put_Line ("Material.To_AI_Property_List completed Property_Index " &
                      unsigned'Image (Property_Index));
       end loop;
@@ -162,7 +169,7 @@ package body Material is
          theProperties_Ptr := Property_Array_Access.all;
       Put_Line ("Material.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
                   unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
-      theMaterial.Properties := To_AI_Property_List (theProperties_Ptr, Num_Property);
+      theMaterial.Properties := To_AI_Property_List (C_Material, theProperties_Ptr, Num_Property);
 
       Put_Line ("Material.To_AI_Material Properties set.");
       theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
