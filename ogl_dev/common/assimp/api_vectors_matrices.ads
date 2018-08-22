@@ -74,10 +74,10 @@ package API_Vectors_Matrices is
      (Interfaces.C.unsigned range <>) of aliased API_Colour_4D;
    pragma Convention (C, API_Colours_4D_Array);
 
---     package Colours_4D_Array_Pointers is new Interfaces.C.Pointers
---       (Interfaces.C.unsigned, API_Colour_4D, API_Colours_4D_Array,
---        API_Colour_4D'(others => <>));
---     subtype Colours_4D_Array_Pointer is Colours_4D_Array_Pointers.Pointer;
+   package Colours_4D_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Colour_4D, API_Colours_4D_Array,
+      API_Colour_4D'(others => <>));
+   subtype Colours_4D_Array_Pointer is Colours_4D_Array_Pointers.Pointer;
 
    type API_Unsigned_Array is array
      (Interfaces.C.unsigned range <>) of aliased Interfaces.C.unsigned;

@@ -124,8 +124,8 @@ package Assimp_Mesh is
         Normals           : Vector_3D_Array_Pointers.Pointer;
         Tangents          : Vector_3D_Array_Pointers.Pointer;
         Bit_Tangents      : Vector_3D_Array_Pointers.Pointer;
-        Colours           : access API_Colours_4D_Array := null;
-        Texture_Coords    : access API_Vector_3D_Array := null;
+        Colours           : Colours_4D_Array_Pointer;
+        Texture_Coords    : Vector_3D_Array_Pointers.Pointer;
         Num_UV_Components : Interfaces.C.unsigned := 0;
         Faces             : Faces_Array_Pointer;
         Num_Bones         : Interfaces.C.unsigned := 0;
