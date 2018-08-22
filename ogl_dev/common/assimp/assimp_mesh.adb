@@ -112,7 +112,8 @@ package body Assimp_Mesh is
     --  ------------------------------------------------------------------------
 
     function To_AI_Mesh (C_Mesh : API_Mesh) return AI_Mesh is
-        use Interfaces.C;
+      use Interfaces.C;
+      use Colours_4D_Array_Pointers;
         use Vector_3D_Array_Pointers;
         use API_Vectors_Matrices;
         theAI_Mesh   : AI_Mesh;
@@ -123,10 +124,8 @@ package body Assimp_Mesh is
         --          V_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
         CV_Array_Ptr : Vector_3D_Array_Pointers.Pointer;
         CV_Array     : API_Vector_3D_Array (1 .. Num_Vertices);
-        Colour_Array_Length : constant ptrdiff_t :=
-                                Colours_4D_Array_Pointers.Virtual_Length (C_Mesh.Colours);
-        Texture_Array_Length : constant ptrdiff_t :=
-                                Vector_3D_Array_Pointers.Virtual_Length (C_Mesh.Texture_Coords);
+        Colour_Array_Length : ptrdiff_t;
+        Texture_Array_Length : ptrdiff_t;
         --          anAPI_Vertex : API_Vector_3D;
         --          anAI_Vertex  : Singles.Vector3;
     begin
@@ -142,7 +141,8 @@ package body Assimp_Mesh is
         Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
         theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
         --          Put_Line ("To_AI_Mesh  CV_Array_Ptr X." & C.C_Float'Image (CV_Array_Ptr.X));
-        if Colour_Array_Length > 0 then
+        if C_Mesh.Colours /= Null then
+            Colour_Array_Length := Colours_4D_Array_Pointers.Virtual_Length (C_Mesh.Colours);
             declare
                 API_Colours  : API_Colours_4D_Array (1 .. unsigned (Colour_Array_Length)) :=
                                  Colours_4D_Array_Pointers.Value (C_Mesh.Colours);
@@ -168,7 +168,8 @@ package body Assimp_Mesh is
         --              theAI_Mesh.Vertices.Insert (UInt (index), anAI_Vertex);
         --          end loop;
 
-        if Texture_Array_Length > 0 then
+      if C_Mesh.Texture_Coords /= null then
+          Texture_Array_Length := Vector_3D_Array_Pointers.Virtual_Length (C_Mesh.Texture_Coords);
             declare
                 API_Textures_Coords  : API_Vector_3D_Array (1 .. unsigned (Texture_Array_Length)) :=
                                          Vector_3D_Array_Pointers.Value  (C_Mesh.Texture_Coords);
@@ -216,7 +217,9 @@ package body Assimp_Mesh is
                         unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
                         unsigned'Image (C_Mesh_Array (index).Material_Index));
             New_Line;
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, calling To_AI_Mesh");
             aMesh := To_AI_Mesh (C_Mesh_Array (index));
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, returned from To_AI_Mesh");
             Meshs.Insert (UInt (index), aMesh);
         end loop;
 
