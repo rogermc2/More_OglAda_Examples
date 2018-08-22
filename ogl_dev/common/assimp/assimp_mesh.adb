@@ -125,6 +125,8 @@ package body Assimp_Mesh is
         CV_Array     : API_Vector_3D_Array (1 .. Num_Vertices);
         Colour_Array_Length : constant ptrdiff_t :=
                                 Colours_4D_Array_Pointers.Virtual_Length (C_Mesh.Colours);
+        Texture_Array_Length : constant ptrdiff_t :=
+                                Vector_3D_Array_Pointers.Virtual_Length (C_Mesh.Texture_Coords);
         --          anAPI_Vertex : API_Vector_3D;
         --          anAI_Vertex  : Singles.Vector3;
     begin
@@ -166,19 +168,19 @@ package body Assimp_Mesh is
         --              theAI_Mesh.Vertices.Insert (UInt (index), anAI_Vertex);
         --          end loop;
 
-        if C_Mesh.Texture_Coords /= null then
+        if Texture_Array_Length > 0 then
             declare
-                API_Textures_Coords  : API_Vector_3D_Array (1 .. AI_Max_Texture_Coords) :=
-                                         C_Mesh.Texture_Coords.all;
+                API_Textures_Coords  : API_Vector_3D_Array (1 .. unsigned (Texture_Array_Length)) :=
+                                         Vector_3D_Array_Pointers.Value  (C_Mesh.Texture_Coords);
             begin
                 Put_Line ("To_AI_Mesh setting Texture_Coords.");
                 for index in 1 .. AI_Max_Texture_Coords loop
                     theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X) :=
-                      Single (API_Textures_Coords (C.unsigned (index)).X);
+                      Single (API_Textures_Coords (unsigned (index)).X);
                     theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y) :=
-                      Single (API_Textures_Coords (C.unsigned (index)).Y);
+                      Single (API_Textures_Coords (unsigned (index)).Y);
                     theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z) :=
-                      Single (API_Textures_Coords (C.unsigned (index)).Z);
+                      Single (API_Textures_Coords (unsigned (index)).Z);
                 end loop;
                 New_Line;
             end;
@@ -259,13 +261,14 @@ package body Assimp_Mesh is
             Colours (C.unsigned (index)).B := C.C_float (anAI_Mesh.Colours (index).B);
             Colours (C.unsigned (index)).A := C.C_float (anAI_Mesh.Colours (index).A);
         end loop;
-        for index in 1 .. AI_Max_Texture_Coords loop
-            C_Mesh.Texture_Coords (C.unsigned (index)).X :=
-              C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
-            C_Mesh.Texture_Coords (C.unsigned (index)).Y :=
-              C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y));
-            C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
-              C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
+      for index in 1 .. AI_Max_Texture_Coords loop
+         null;
+--              C_Mesh.Texture_Coords (C.unsigned (index)).X :=
+--                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
+--              C_Mesh.Texture_Coords (C.unsigned (index)).Y :=
+--                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y));
+--              C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
+--                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
         end loop;
         Vertices_To_API (anAI_Mesh.Vertices, V_Array);
         Vertices_To_API (anAI_Mesh.Normals, N_Array);
