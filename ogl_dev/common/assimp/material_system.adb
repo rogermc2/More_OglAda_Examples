@@ -21,10 +21,10 @@ package body Material_System is
       Found      : Boolean := False;
       Prop_Index : unsigned := 0;
    begin
-      Put_Line ("Material_System.Get_Material_Property, Num_Props: " & unsigned'Image (Num_Props));
-      Put_Line ("Material_System.Get_Material_Property, requested Key.Length, Property_Type, Property_Index: " &
-                  size_t'Image (Key.Length) & unsigned'Image (Property_Type) &
-                  unsigned'Image (Property_Index));
+--        Put_Line ("Material_System.Get_Material_Property, Num_Props: " & unsigned'Image (Num_Props));
+--        Put_Line ("Material_System.Get_Material_Property, requested Key.Length, Property_Type, Property_Index: " &
+--                    size_t'Image (Key.Length) & unsigned'Image (Property_Type) &
+--                    unsigned'Image (Property_Index));
       if Property_Array_Ptr = null then
             raise Interfaces.C.Strings.Dereference_Error with
               "Material_System.Get_Material_Property, Property_Array_Ptr is null";
@@ -36,11 +36,11 @@ package body Material_System is
                 Property_Array := Value (Property_Array_Ptr, ptrdiff_t (Num_Props));
                 while Prop_Index < Num_Props and not Found loop
                     Prop_Index := Prop_Index + 1;
-                    Put_Line ("Material_System.Get_Material_Property Prop_Index: " & unsigned'Image (Prop_Index));
+--                      Put_Line ("Material_System.Get_Material_Property Prop_Index: " & unsigned'Image (Prop_Index));
                     aProperty := Property_Array (Prop_Index);
-                    Put_Line ("Material_System.Get_Material_Property, Key.Length, Property_Type, Property_Index: " &
-                                size_t'Image (aProperty.Key.Length) & unsigned'Image (aProperty.Data_Type'Enum_Rep) &
-                                unsigned'Image (aProperty.Index));
+--                      Put_Line ("Material_System.Get_Material_Property, Key.Length, Property_Type, Property_Index: " &
+--                                  size_t'Image (aProperty.Key.Length) & unsigned'Image (aProperty.Data_Type'Enum_Rep) &
+--                                  unsigned'Image (aProperty.Index));
                     Found := aProperty.Key.Data = Key.Data and aProperty.Data_Type'Enum_Rep = Property_Type and
                       aProperty.Index = Property_Index;
                     if Found then

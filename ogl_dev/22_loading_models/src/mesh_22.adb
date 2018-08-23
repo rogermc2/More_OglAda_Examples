@@ -121,6 +121,8 @@ package body Mesh_22 is
          for index in 1 .. Initial_Mesh.Textures.Length loop
             Initial_Mesh.Textures.Delete_First;
          end loop;
+         Put_Line ("Mesh_22.Init_Materials.Load_Textures Textures.Length: " &
+                     Ada.Containers.Count_Type'Image (Initial_Mesh.Textures.Length));
          for index in 1 .. Initial_Mesh.Textures.Length loop
             if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
                Get_Texture (aMaterial, AI_Texture_Diffuse, UInt (index), Path, Result);
@@ -128,13 +130,13 @@ package body Mesh_22 is
                   Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name);
                   Initial_Mesh.Textures.Insert (UInt (index), aTexture);
-                  Put_Line ("Mesh_22.Init_Materials loaded texture from " & File_Name);
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from " & File_Name);
                else
-                  Put_Line ("Mesh_22.Init_Materials loading default texture");
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loading default texture");
                   Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, "../../Content/white.png");
                   Initial_Mesh.Textures.Insert (UInt (index), aTexture);
-                  Put_Line ("Mesh_22.Init_Materials loaded texture from Content/white.png");
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from Content/white.png");
                end if;
                   Ogldev_Texture.Load (aTexture);
             end if;
@@ -232,6 +234,7 @@ package body Mesh_22 is
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (Element (Entry_Cursor).IBO);
          Material_Index := Element (Entry_Cursor).Material_Index;
+         Put_Line ("Mesh_22.Render_Mesh, Material_Index: " & Material_Type'Image (Material_Index));
          if Material_Index'Enum_Rep < theMesh.Textures.Length then
             if not theMesh.Textures.Is_Empty then
                Ogldev_Texture.Bind (Element (Tex_Curs),
