@@ -105,6 +105,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                                 GL.Types.Int (Window_Height));
 
+        Put_Line ("Main_Loop.Render_Scene setting Set_Diffuse_Intensity.");
         Set_Diffuse_Intensity (Point (1), 0.25);
         Set_Point_Light (Point (1), (3.0, 1.0, Field_Depth * (Cos (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
         Set_Linear_Attenuation (Point (1), 0.1);
@@ -113,6 +114,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Set_Point_Light (Point (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
         Set_Linear_Attenuation (Point (2), 0.1);
         Set_Point_Lights (Light_Technique, Point);
+        Put_Line ("Main_Loop.Render_Scene setting Set_Point_Lights set.");
 
         Set_Diffuse_Intensity (Spot, 0.9);
         Set_Spot_Light (Spot, Get_Position (Game_Camera), (0.0, 1.0, 1.0));
@@ -120,6 +122,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Set_Attenuation_Constant (Spot, 0.1);
         Set_Cut_Off (Spot, 10.0);
         Set_Spot_Lights (Light_Technique, Spot);
+
+        Put_Line ("Main_Loop.Render_Scene setting Set_Spot_Lights set.");
 
         Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
         Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
