@@ -1,4 +1,6 @@
 
+with Interfaces.C.Strings;
+
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp_Util;
@@ -136,6 +138,7 @@ package body Animation is
    begin
       for index in 1 .. Num_Channels loop
          Mesh_Anim.Name := To_Unbounded_String (To_Ada (C_Array (index).Name.Data));
+
          declare
             Mesh_Key    : AI_Mesh_Key;
             Mesh_Keys   : AI_Mesh_Key_List;

@@ -1,5 +1,6 @@
 
 with Interfaces.C; use Interfaces.C;
+with Interfaces.C.Strings;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -7,22 +8,31 @@ with Ogldev_Math;
 
 package body Scene is
 
-
     procedure To_Node_List (Root_Node : in out API_Node;
                             Nodes : in out AI_Nodes_List) is
---          C_Node  : API_Node;
+        Name_Length : constant size_t := Root_Node.Name.Length;
         aNode   : AI_Node;
     begin
-        aNode.Name :=  Ada.Strings.Unbounded.To_Unbounded_String
-          (Interfaces.C.To_Ada (Root_Node.Name.Data));
+        Put_Line ("Scene.To_Node_List, Name length: " & size_t'Image (Name_Length));
+        if Name_Length > 0 then
+            aNode.Name :=  Ada.Strings.Unbounded.To_Unbounded_String
+              (Interfaces.C.To_Ada (Root_Node.Name.Data));
+        end if;
+        Put_Line ("Scene.To_Node_List, Name: " & Ada.Strings.Unbounded.To_String (aNode.Name));
         aNode.Transformation :=
           Ogldev_Math.To_GL_Matrix4 (Root_Node.Transformation);
 --          aNode.Meshes :=
 --            Assimp_Mesh.To_AI_Mesh_Map (Root_Node.Num_Meshes, Root_Node.Meshes.all);
         Nodes.Append (aNode);
+
         for index in 1 .. Root_Node.Num_Children loop
             null;
         end loop;
+
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in Scene.To_Node_List.");
+            raise;
     end To_Node_List;
 
     --  -------------------------------------------------------------------------
@@ -54,12 +64,12 @@ package body Scene is
                   unsigned'Image (Num_Lights) & unsigned'Image (Num_Cameras));
 
       Put_Line ("Scene.To_AI_Scene, C_Mesh_Array (1):");
-      Put_Line ("Primitive_Types, Num_Vertices, Num_Faces, Num_UV_Components");
+      Put ("Primitive_Types, Num_Vertices, Num_Faces, Num_UV_Components: ");
         Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
                    unsigned'Image (C_Mesh_Array (1).Num_Vertices) &
                    unsigned'Image (C_Mesh_Array (1).Num_Faces) &
                    unsigned'Image (C_Mesh_Array (1).Num_UV_Components));
-         Put_Line ("Num_Animations, Num_Bones, Material_Index:");
+         Put ("Num_Animations, Num_Bones, Material_Index: ");
          Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
                    unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
                    unsigned'Image (C_Mesh_Array (1).Material_Index));
@@ -119,7 +129,7 @@ package body Scene is
 
     exception
         when  others =>
-            Put_Line ("An exception occurred in Importer.To_AI_Scene.");
+            Put_Line ("An exception occurred in Scene.To_AI_Scene.");
             raise;
     end To_AI_Scene;
 

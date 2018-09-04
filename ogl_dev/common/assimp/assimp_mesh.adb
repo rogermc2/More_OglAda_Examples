@@ -136,7 +136,6 @@ package body Assimp_Mesh is
         end if;
 
         CV_Array := Vector_3D_Array_Pointers.Value (CV_Array_Ptr, ptrdiff_t (Num_Vertices));
-        Put_Line ("To_AI_Mesh C_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
         theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
         Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
         theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
@@ -216,6 +215,8 @@ package body Assimp_Mesh is
                         unsigned'Image (C_Mesh_Array (index).Num_Bones) &
                         unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
                         unsigned'Image (C_Mesh_Array (index).Material_Index));
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name length: " &  size_t'Image (C_Mesh_Array (index).Name.Length) );
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name: '" &  Interfaces.C.To_Ada (C_Mesh_Array (index).Name.Data) & "'");
             New_Line;
             Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, calling To_AI_Mesh");
             aMesh := To_AI_Mesh (C_Mesh_Array (index));

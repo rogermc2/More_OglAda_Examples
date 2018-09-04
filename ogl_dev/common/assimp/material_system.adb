@@ -31,6 +31,7 @@ package body Material_System is
 
       elsif Num_Props > 0 then
             declare
+                use Interfaces.C.Strings;
                 Property_Array  : Material.API_Property_Array (1 .. Num_Props);
             begin
                 Property_Array := Value (Property_Array_Ptr, ptrdiff_t (Num_Props));
@@ -69,7 +70,8 @@ package body Material_System is
 
    function Get_Material_String (aMaterial : Material.API_Material; Key : Assimp_Types.API_String;
                                  Property_Type, Property_Index : Interfaces.C.unsigned;
-                                 Data_String : out Assimp_Types.API_String) return Assimp_Types.API_Return is
+                                 Data_String : out Assimp_Types.API_String)
+                                 return Assimp_Types.API_Return is
       use Interfaces.C;
       use Assimp_Types;
       use Material;
@@ -85,6 +87,7 @@ package body Material_System is
       String_Length : Interfaces.C.size_t := 0;
       Result     : API_Return := API_Return_Failure;
    begin
+      Data_String.Length := 0;
       Result := Get_Material_Property  (aMaterial, Key, Property_Type, Property_Index, aProperty);
       if Result = Assimp_Types.API_Return_Success then
             if aProperty.Data_Type = Material.PTI_String then

@@ -88,13 +88,24 @@ package body Material is
                             API_Property : API_Material_Property) return AI_Material_Property is
       use Interfaces.C;
       use Interfaces.C.Strings;
-      Key_Data      : String := To_Ada (API_Property.Key.Data);
+      use Assimp_Types;
+      Key_Length    : constant size_t := API_Property.Key.Length;
+      Key_Data      : String (1 .. Integer (Key_Length));
+--        Key_Data      : String := To_Ada (API_Property.Key.Data);
       aProperty     : AI_Material_Property;
+      Str_Length    : size_t;
       Data_String   : Assimp_Types.API_String;
       Result        : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
+      Put_Line ("Material.To_AI_Property Key_Length: " & size_t'Image (Key_Length));
+--        Str_Length := Strlen (API_Property.Key.Data);
+--        Put_Line ("Material.To_AI_Property Str_Length: " & size_t'Image (Str_Length));
+--        Key_Data := Interfaces.C.To_Ada (API_Property.Key.Data);
+      Key_Data := To_Ada (API_Property.Key.Data);
+      Put_Line ("Material.To_AI_Property Key_Data: " & Key_Data);
       aProperty.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
       aProperty.Semantic := UInt (API_Property.Semantic);
+      Put_Line ("Material.To_AI_Property aProperty.Semantic: " & UInt'Image (aProperty.Semantic));
       aProperty.Index := UInt (API_Property.Index);
       aProperty.Data_Type := API_Property.Data_Type;
       Put_Line ("Material.To_AI_Property Semantic, Index: " &
@@ -104,13 +115,18 @@ package body Material is
             Result := Material_System.Get_Material_String (anAPI_Material, API_Property.Key,
                                                            API_Property.Data_Type'Enum_Rep,
                                                            API_Property.Index, Data_String);
-         declare
-            Str_Length  : size_t := Strlen (API_Property.Data);
-            Data_String : string (1 .. Integer (Str_Length));
-         begin
-            Data_String := Value (API_Property.Data);
---              aProperty.Data := Ada.Strings.Unbounded.To_Unbounded_String (Data_String);
-         end;
+            Put_Line ("Material.To_AI_Property Result: " & API_Return'Image (Result));
+            if Result = API_RETURN_SUCCESS then
+                Str_Length := Strlen (API_Property.Data);
+                Put_Line ("Material.To_AI_Property Str_Length: " & size_t'Image (Str_Length));
+                declare
+                    Data_String : string (1 .. Integer (Str_Length));
+                begin
+                    Data_String := Value (API_Property.Data);
+                    Put_Line ("Material.To_AI_Property Data_String: " & Data_String);
+                    aProperty.Data_Buffer := Ada.Strings.Unbounded.To_Unbounded_String (Data_String);
+                end;
+         end if;
       end if;
       return aProperty;
 
@@ -135,9 +151,12 @@ package body Material is
       theProperties  : AI_Material_Property_List;
       aProperty      : API_Material_Property;
    begin
+        New_line;
        Put_Line ("Material.To_AI_Property_List Num_Property " & unsigned'Image (Num_Property));
       for Property_Index in 0 .. Num_Property - 1 loop
           aProperty := Property_Array (Property_Index);
+         Put_Line ("Material.To_AI_Property_List appending Property_Index " &
+                     unsigned'Image (Property_Index));
           theProperties.Append (To_AI_Property (anAPI_Material, aProperty));
          Put_Line ("Material.To_AI_Property_List completed Property_Index " &
                      unsigned'Image (Property_Index));

@@ -11,10 +11,10 @@ package body Assimp_Util is
       Assimp_String : Assimp_Types.API_String;
    begin
       Assimp_String.Length := theString'Length;
-      for index in 1 ..  Assimp_String.Length loop
-         Assimp_String.Data (index - 1) := To_C (theString (Integer (index)));
-      end loop;
-      Assimp_String.Data (Assimp_String.Length) := nul;
+--        for index in 1 ..  Assimp_String.Length loop
+--           Assimp_String.Data (index - 1) := To_C (theString (Integer (index)));
+--        end loop;
+--        Assimp_String.Data (Assimp_String.Length) := nul;
       return Assimp_String;
    end To_Assimp_API_String;
 
