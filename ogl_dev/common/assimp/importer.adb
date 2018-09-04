@@ -70,6 +70,8 @@ package body Importer is
                   unsigned'Image (C_Mesh.Num_UV_Components) &
                   unsigned'Image (C_Mesh.Num_Bones) &
                   unsigned'Image (C_Mesh.Num_Anim_Meshes));
+        Put_Line ("Importer.Read_File, Name size: " &  size_t'Image (C_Mesh.Name.Length) &
+                  " Name: " & Interfaces.C.To_Ada (C_Mesh.Name.Data));
         New_Line;
         To_AI_Scene (C_Scene, theScene);
         return theScene;

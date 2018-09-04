@@ -32,9 +32,9 @@ package body Ogldev_Math is
       Vec     : Singles.Vector3;
    begin
       for index in 1 .. Num_Vecs loop
-         Vec (GL.X) := Single (Vectors (Int (index)).X);
-         Vec (GL.Y) := Single (Vectors (Int (index)).Y);
-         Vec (GL.Z) := Single (Vectors (Int (index)).Z);
+         Vec (GL.X) := Single (Vectors (index).X);
+         Vec (GL.Y) := Single (Vectors (index).Y);
+         Vec (GL.Z) := Single (Vectors (index).Z);
          Vec_Map.Insert (index, Vec);
       end loop;
       return Vec_Map;
