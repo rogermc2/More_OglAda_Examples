@@ -70,6 +70,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
             Mesh_22.Load_Mesh (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
 
+            Put_Line ("Main_Loop.Init returned from Mesh_22.Load_Mesh.");
             Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
             Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
             Glfw.Input.Poll_Events;
@@ -143,6 +144,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Set_Mat_Specular_Intensity (Light_Technique, 0.0);
         Set_Mat_Specular_Power (Light_Technique, 0);
 
+        Put_Line ("Main_Loop.Render_Scene calling Mesh_22.Render_Mesh.");
         Mesh_22.Render_Mesh (theMesh);
 
     exception
