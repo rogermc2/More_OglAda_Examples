@@ -45,7 +45,6 @@ package body Material_System is
                     Found := aProperty.Key.Data = Key.Data and aProperty.Data_Type'Enum_Rep = Property_Type and
                       aProperty.Index = Property_Index;
                     if Found then
-                        Put_Line ("Material_System.Get_Material_Property aProperty found");
                         theProperty := aProperty;
                         Result :=  Assimp_Types.API_Return_Success;
                     end if;
@@ -82,15 +81,18 @@ package body Material_System is
 --          Data    : Data_Array;
 --        end record;
 --        anObject   : Property_Object;
-      aProperty  : API_Material_Property;
-      Size_String : String (1 .. 4);
+      aProperty     : API_Material_Property;
+      Size_String   : String (1 .. 4);
       String_Length : Interfaces.C.size_t := 0;
-      Result     : API_Return := API_Return_Failure;
+      Result        : API_Return := API_Return_Failure;
    begin
       Data_String.Length := 0;
       Result := Get_Material_Property  (aMaterial, Key, Property_Type, Property_Index, aProperty);
       if Result = Assimp_Types.API_Return_Success then
+         Put_Line ("Material_System.Get_Material_String property found Data_Type: " &
+                  AI_Property_Type_Info'Image (aProperty.Data_Type));
             if aProperty.Data_Type = Material.PTI_String then
+            Put_Line ("Material_System.Get_Material_String PTI_String.");
                 if aProperty.Data_Length >= 5 then
 
                     Size_String := Interfaces.C.Strings.Value (aProperty.Data, 4);
