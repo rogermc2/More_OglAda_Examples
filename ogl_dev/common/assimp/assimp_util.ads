@@ -22,5 +22,6 @@ package Assimp_Util is
                          return Singles.Vector4;
    function To_Unbounded_String (API_String : Assimp_Types.API_String)
                                  return Ada.Strings.Unbounded.Unbounded_String;
+   function To_String (API_String : Assimp_Types.API_String) return String;
 
 end Assimp_Util;
