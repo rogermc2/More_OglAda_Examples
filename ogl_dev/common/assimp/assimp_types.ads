@@ -3,6 +3,8 @@ with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
 
+with Ada.Containers.Doubly_Linked_Lists;
+
 with GL.Types; use GL.Types;
 
 with API_Vectors_Matrices;
@@ -28,16 +30,20 @@ package Assimp_Types is
    type Vector3_Array is array (UInt range <>) of access API_Vectors_Matrices.API_Vector_3D;
    pragma Convention (C, Vector3_Array);
 
+    --  This declaration has been checked OK for Key data. DON'T CHANGE
    type API_String is record
       Length  : Interfaces.C.size_t := 0;
-      Data    : access API_String_Data_Array := null;
---        Data    : API_String_Data_Array := (others => Interfaces.C.char'Val (0));
+      Data    : API_String_Data_Array := (others => Interfaces.C.char'Val (0));
    end record;
    pragma Convention (C_Pass_By_Copy, API_String);
 
    type Raw_Byte_Data is array (UInt range <>) of aliased UByte;
    package Raw_Data_Pointers is new
      Interfaces.C.Pointers (UInt, UByte, Raw_Byte_Data, UByte'Last);
+   subtype Data_Pointer is Raw_Data_Pointers.Pointer;
+
+   package Byte_Data_Package is new Ada.Containers.Doubly_Linked_Lists (Ubyte);
+   type Byte_Data_List is new Byte_Data_Package.List with null record;
 
 private
 
