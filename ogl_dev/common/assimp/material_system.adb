@@ -83,7 +83,6 @@ package body Material_System is
 --        anObject   : Property_Object;
       aProperty     : API_Material_Property;
       Size_String   : String (1 .. 4);
-      String_Length : Interfaces.C.size_t := 0;
       Result        : API_Return := API_Return_Failure;
    begin
       Data_String.Length := 0;
@@ -94,8 +93,10 @@ package body Material_System is
             if aProperty.Data_Type = Material.PTI_String then
             Put_Line ("Material_System.Get_Material_String PTI_String.");
                 if aProperty.Data_Length >= 5 then
-
-                    Size_String := Interfaces.C.Strings.Value (aProperty.Data, 4);
+                    for index in 1 .. 4 loop
+                        Size_String (index) :=  Character'Val (aProperty.Data.all);
+                        Raw_Data_Pointers.Increment (aProperty.Data);  --  Data is access Assimp_Types.Raw_Byte_Data;
+                    end loop;
                     Put_Line ("Material_System.Get_Material_String : Size_String: " & Size_String);
                 end if;
             end if;
