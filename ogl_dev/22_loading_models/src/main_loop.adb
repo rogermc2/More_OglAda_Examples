@@ -7,6 +7,7 @@ with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types.Colors;
+with GL.Uniforms;
 with GL.Window;
 
 with Glfw;
@@ -93,7 +94,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Window_Width         : Glfw.Size;
         Window_Height        : Glfw.Size;
         Field_Depth          : constant Single := 10.0;
-        Point                : Point_Light_Array (1 .. 2);
+        Point_Lights         : Point_Light_Array (1 .. 2);
         Spot                 : Spot_Light;
         Pipe                 : Ogldev_Pipeline.Pipeline;
     begin
@@ -104,26 +105,24 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
         GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                                 GL.Types.Int (Window_Height));
+        GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
 
-        Put_Line ("Main_Loop.Render_Scene setting Set_Diffuse_Intensity.");
-        Set_Diffuse_Intensity (Point (1), 0.25);
-        Set_Point_Light (Point (1), (3.0, 1.0, Field_Depth * (Cos (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
-        Set_Linear_Attenuation (Point (1), 0.1);
+        Set_Diffuse_Intensity (Point_Lights (1), 0.25);
+        Set_Point_Light (Point_Lights (1), (3.0, 1.0, Field_Depth * (Cos (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
+        Set_Linear_Attenuation (Point_Lights (1), 0.1);
 
-        Set_Diffuse_Intensity (Point (2), 0.25);
-        Set_Point_Light (Point (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
-        Set_Linear_Attenuation (Point (2), 0.1);
-        Set_Point_Lights (Light_Technique, Point);
-        Put_Line ("Main_Loop.Render_Scene setting Set_Point_Lights set.");
+        Set_Diffuse_Intensity (Point_Lights (2), 0.25);
+        Set_Point_Light (Point_Lights (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
+        Set_Linear_Attenuation (Point_Lights (2), 0.1);
+
+        Set_Point_Lights (Light_Technique, Point_Lights);
 
         Set_Diffuse_Intensity (Spot, 0.9);
         Set_Spot_Light (Spot, Get_Position (Game_Camera), (0.0, 1.0, 1.0));
         Set_Direction (Spot, Get_Target (Game_Camera));
         Set_Attenuation_Constant (Spot, 0.1);
         Set_Cut_Off (Spot, 10.0);
-        Set_Spot_Lights (Light_Technique, Spot);
-
-        Put_Line ("Main_Loop.Render_Scene setting Set_Spot_Lights set.");
+        Set_Spot_Light (Light_Technique, Spot);
 
         Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
         Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
@@ -148,7 +147,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Set_Mat_Specular_Intensity (Light_Technique, 0.0);
         Set_Mat_Specular_Power (Light_Technique, 0);
 
-        Put_Line ("Main_Loop.Render_Scene calling Mesh_22.Render_Mesh.");
         Mesh_22.Render_Mesh (theMesh);
 
     exception
