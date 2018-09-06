@@ -44,7 +44,7 @@ package body Ogldev_Basic_Lighting is
          Put_Line (GL.Objects.Programs.Info_Log (Lighting_Technique.Lighting_Program));
       end if;
 --        else
-         --  Can't GL.Objects.Programs.Validate_Status to work.
+         --  Can't get GL.Objects.Programs.Validate_Status to work.
          --           OK := GL.Objects.Programs.Validate_Status (Lighting_Technique.Lighting_Program);
          --           if not OK then
          --              Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program validation failed");
@@ -229,8 +229,11 @@ package body Ogldev_Basic_Lighting is
       Num_Lights : constant UInt :=  Lights'Length;
       Location   : Point_Light_Locations;
    begin
+      GL.Objects.Programs.Use_Program (Technique.Lighting_Program);
+      Put_Line ("Ogldev_Basic_Lighting.Set_Point_Lights Num_Lights: " & UInt'Image (Num_Lights));
       GL.Uniforms.Set_UInt (Technique.Num_Point_Lights_Location, Num_Lights);
       for index in UInt range 1 .. Num_Lights loop
+         Put_Line ("Ogldev_Basic_Lighting.Set_Point_Lights index: " & UInt'Image (index));
          Location := Technique.Point_Lights_Location (Int (index));
          Set_Single (Location.Colour, Colour (Lights (index)));
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Lights (index)));
@@ -240,6 +243,10 @@ package body Ogldev_Basic_Lighting is
          Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Lights (index)));
       end loop;
 
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in Ogldev_Basic_Lighting.Set_Point_Lights.");
+            raise;
    end Set_Point_Lights;
 
    --  -------------------------------------------------------------------------
@@ -271,7 +278,7 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
+   procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
                               Spot      : Ogldev_Lights_Common.Spot_Light) is
       Location        : Spot_Light_Locations;
 --        Light_Direction : Singles.Vector3 := Direction (Spot);
@@ -289,7 +296,7 @@ package body Ogldev_Basic_Lighting is
       Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Spot));
       Set_Single (Location.Attenuation.Exp, Exponent (Spot));
 
-   end Set_Spot_Lights;
+   end Set_Spot_Light;
 
    --  -------------------------------------------------------------------------
 
