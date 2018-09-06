@@ -89,14 +89,15 @@ package body Material is
         use Interfaces.C;
         use Interfaces.C.Strings;
         use Assimp_Types;
-        API_Prop     : API_Material_Property := API_Property;
-        Key_Length   : constant size_t := API_Property.Key.Length;
+        API_Prop     : API_Material_Property;
+        Key_Length   : constant size_t := API_Prop.Key.Length;
         AI_Property  : AI_Material_Property;
-        Data_Length  : constant size_t := size_t (API_Property.Data_Length);
+        Data_Length  : constant size_t := size_t (API_Prop.Data_Length);
         Data_String  : Assimp_Types.API_String;
         Raw_Data     : AI_Material_Property_List;
         Result       : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
     begin
+        API_Prop := API_Property;
         Put_Line ("Material.To_AI_Property Key_Length: " & size_t'Image (Key_Length));
         if Key_Length > 0 then
             declare
