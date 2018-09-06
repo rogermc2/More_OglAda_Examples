@@ -24,9 +24,9 @@ struct DirectionalLight
                                                                                     
 struct Attenuation                                                                  
     {
-    float Constant;                                                                 
-    float Linear;                                                                   
-    float Exp;                                                                      
+    float Constant;
+    float Linear;
+    float Exp;
     };
                                                                                     
 struct PointLight                                                                           
@@ -42,8 +42,8 @@ struct SpotLight
     vec3 Direction;                                                                         
     float Cutoff;                                                                           
     };
-                                                                                            
-uniform int gNumPointLights;                                                                
+                               
+uniform int gNumPointLights;
 uniform int gNumSpotLights;                                                                 
 uniform DirectionalLight gDirectionalLight;                                                 
 uniform PointLight gPointLights[MAX_POINT_LIGHTS];                                          
