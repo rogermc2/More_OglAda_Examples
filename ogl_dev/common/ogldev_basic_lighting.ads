@@ -9,7 +9,7 @@ with Ogldev_Lights_Common; use Ogldev_Lights_Common;
 
 package Ogldev_Basic_Lighting is
 
-   type Basic_Lighting_Technique is private;
+   type Basic_Lighting_Technique; --  is private;
 
    Max_Point_Lights : constant Int := 2;
    Max_Spot_Lights  : constant Int := 2;
@@ -43,55 +43,56 @@ package Ogldev_Basic_Lighting is
    procedure Set_WVP (Technique : Basic_Lighting_Technique;
                       WVP : Singles.Matrix4);
 
-private
+--  private
 
    type Direct_Light is record
-      Colour            : GL.Uniforms.Uniform;
-      Ambient_Intensity : GL.Uniforms.Uniform;
-      Diffuse_Intensity : GL.Uniforms.Uniform;
-      Direction         : GL.Uniforms.Uniform;
+      Colour            : GL.Uniforms.Uniform := 0;
+      Ambient_Intensity : GL.Uniforms.Uniform := 0;
+      Diffuse_Intensity : GL.Uniforms.Uniform := 0;
+      Direction         : GL.Uniforms.Uniform := 0;
    end record;
 
    type Atten is record
-      Atten_Constant    : GL.Uniforms.Uniform;
-      Linear            : GL.Uniforms.Uniform;
-      Exp               : GL.Uniforms.Uniform;
+      Atten_Constant    : GL.Uniforms.Uniform := 0;
+      Linear            : GL.Uniforms.Uniform := 0;
+      Exp               : GL.Uniforms.Uniform := 0;
    end record;
 
    type Point_Light_Locations is record
-      Colour            : GL.Uniforms.Uniform;
-      Ambient_Intensity : GL.Uniforms.Uniform;
-      Diffuse_Intensity : GL.Uniforms.Uniform;
-      Position          : GL.Uniforms.Uniform;
+      Colour            : GL.Uniforms.Uniform := 0;
+      Ambient_Intensity : GL.Uniforms.Uniform := 0;
+      Diffuse_Intensity : GL.Uniforms.Uniform := 0;
+      Position          : GL.Uniforms.Uniform := 0;
       Attenuation       : Atten;
    end record;
 
    type Spot_Light_Locations is record
-      Colour            : GL.Uniforms.Uniform;
-      Ambient_Intensity : GL.Uniforms.Uniform;
-      Diffuse_Intensity : GL.Uniforms.Uniform;
-      Position          : GL.Uniforms.Uniform;
-      Direction         : GL.Uniforms.Uniform;
-      Cut_Off           : GL.Uniforms.Uniform;
+      Colour            : GL.Uniforms.Uniform := 0;
+      Ambient_Intensity : GL.Uniforms.Uniform := 0;
+      Diffuse_Intensity : GL.Uniforms.Uniform := 0;
+      Position          : GL.Uniforms.Uniform := 0;
+      Direction         : GL.Uniforms.Uniform := 0;
+      Cut_Off           : GL.Uniforms.Uniform := 0;
       Attenuation       : Atten;
    end record;
 
-   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
-   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
-
    type Basic_Lighting_Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
-      WVP_Location                    : GL.Uniforms.Uniform;
-      World_Matrix_Location           : GL.Uniforms.Uniform;
-      Colour_Texture_Location         : GL.Uniforms.Uniform;
-      Eye_World_Pos_Location          : GL.Uniforms.Uniform;
-      Mat_Specular_Intensity_Location : GL.Uniforms.Uniform;
-      Mat_Specular_Power_Location     : GL.Uniforms.Uniform;
-      Num_Point_Lights_Location       : GL.Uniforms.Uniform;
-      Num_Spot_Lights_Location        : GL.Uniforms.Uniform;
+      WVP_Location                    : GL.Uniforms.Uniform := 0;
+      World_Matrix_Location           : GL.Uniforms.Uniform := 0;
+      Colour_Texture_Location         : GL.Uniforms.Uniform := 0;
+      Eye_World_Pos_Location          : GL.Uniforms.Uniform := 0;
+      Mat_Specular_Intensity_Location : GL.Uniforms.Uniform := 0;
+      Mat_Specular_Power_Location     : GL.Uniforms.Uniform := 0;
+      Num_Point_Lights_Location       : GL.Uniforms.Uniform := 0;
+      Num_Spot_Lights_Location        : GL.Uniforms.Uniform := 0;
       Dir_Light_Location              : Direct_Light;
       Point_Lights_Location           : Point_Light_Location_Array;
       Spot_Lights_Location            : Spot_Light_Location_Array;
    end record;
+
+private
+   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
+   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
 
 end Ogldev_Basic_Lighting;
