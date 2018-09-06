@@ -30,7 +30,7 @@ package Ogldev_Basic_Lighting is
                                Lights : Point_Light_Array);
    procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
                               Spots : Spot_Light_Array);
-   procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
+   procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
                               Spot : Spot_Light);
    procedure Set_Eye_World_Pos (Technique : Basic_Lighting_Technique;
                                 Position : Singles.Vector3);
