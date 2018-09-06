@@ -320,7 +320,7 @@ package body Ogldev_Basic_Lighting is
    procedure Set_Mat_Specular_Power (Technique : Basic_Lighting_Technique;
                                      Power     : UInt) is
    begin
-      Set_UInt (Technique.Mat_Specular_Power_Location, Power);
+      Set_Single (Technique.Mat_Specular_Power_Location, Single (Power));
    end Set_Mat_Specular_Power;
 
    --  -------------------------------------------------------------------------
