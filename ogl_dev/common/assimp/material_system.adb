@@ -8,7 +8,8 @@ with Utilities;
 package body Material_System is
 
   function Get_Material_Property (aMaterial : Material.API_Material; Key : Assimp_Types.API_String;
-                                 Property_Type, Property_Index : Interfaces.C.unsigned;
+                                  Property_Type  : Material.AI_Property_Type_Info;
+                                  Property_Index : Interfaces.C.unsigned;
                                  theProperty : out Material.API_Material_Property)
                                  return Assimp_Types.API_Return is
       use Interfaces.C;
@@ -22,9 +23,10 @@ package body Material_System is
       Prop_Index : unsigned := 0;
    begin
 --        Put_Line ("Material_System.Get_Material_Property, Num_Props: " & unsigned'Image (Num_Props));
---        Put_Line ("Material_System.Get_Material_Property, requested Key.Length, Property_Type, Property_Index: " &
---                    size_t'Image (Key.Length) & unsigned'Image (Property_Type) &
---                    unsigned'Image (Property_Index));
+      Put_Line ("Material_System.Get_Material_Property, requested Key.Length, Property_Type, Property_Index: ");
+      Put_Line (size_t'Image (Key.Length) & " " &
+                  Material.AI_Property_Type_Info'Image (Property_Type) &
+                  unsigned'Image (Property_Index));
       if Property_Array_Ptr = null then
             raise Interfaces.C.Strings.Dereference_Error with
               "Material_System.Get_Material_Property, Property_Array_Ptr is null";
@@ -37,12 +39,12 @@ package body Material_System is
                 Property_Array := Value (Property_Array_Ptr, ptrdiff_t (Num_Props));
                 while Prop_Index < Num_Props and not Found loop
                     Prop_Index := Prop_Index + 1;
---                      Put_Line ("Material_System.Get_Material_Property Prop_Index: " & unsigned'Image (Prop_Index));
+                    Put_Line ("Material_System.Get_Material_Property Prop_Index: " & unsigned'Image (Prop_Index));
                     aProperty := Property_Array (Prop_Index);
---                      Put_Line ("Material_System.Get_Material_Property, Key.Length, Property_Type, Property_Index: " &
---                                  size_t'Image (aProperty.Key.Length) & unsigned'Image (aProperty.Data_Type'Enum_Rep) &
---                                  unsigned'Image (aProperty.Index));
-                    Found := aProperty.Key.Data = Key.Data and aProperty.Data_Type'Enum_Rep = Property_Type and
+                    Put_Line ("Material_System.Get_Material_Property, Key.Length, Property_Type, Property_Index: " &
+                                size_t'Image (aProperty.Key.Length) & unsigned'Image (aProperty.Data_Type'Enum_Rep) &
+                                unsigned'Image (aProperty.Index));
+                    Found := aProperty.Key.Data = Key.Data and aProperty.Data_Type = Property_Type and
                       aProperty.Index = Property_Index;
                     if Found then
                         theProperty := aProperty;
@@ -68,7 +70,8 @@ package body Material_System is
    --  -------------------------------------------------------------------------
 
    function Get_Material_String (aMaterial : Material.API_Material; Key : Assimp_Types.API_String;
-                                 Property_Type, Property_Index : Interfaces.C.unsigned;
+                                 Property_Type  : Material.AI_Property_Type_Info;
+                                 Property_Index : Interfaces.C.unsigned;
                                  Data_String : out Assimp_Types.API_String)
                                  return Assimp_Types.API_Return is
       use Interfaces.C;
@@ -86,7 +89,10 @@ package body Material_System is
       Result        : API_Return := API_Return_Failure;
    begin
       Data_String.Length := 0;
-      Result := Get_Material_Property  (aMaterial, Key, Property_Type, Property_Index, aProperty);
+      Put_Line ("Material_System.Get_Material_String requested Data_Type: " &
+                  AI_Property_Type_Info'Image (Property_Type));
+      Result := Get_Material_Property  (aMaterial, Key, Property_Type,
+                                        Property_Index, aProperty);
       if Result = Assimp_Types.API_Return_Success then
          Put_Line ("Material_System.Get_Material_String property found Data_Type: " &
                   AI_Property_Type_Info'Image (aProperty.Data_Type));
