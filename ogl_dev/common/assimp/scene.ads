@@ -3,6 +3,7 @@ with System;
 
 with Interfaces.C;
 with Interfaces.C.Pointers;
+with Interfaces.C.Strings;
 
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Strings.Unbounded;
@@ -61,8 +62,6 @@ package Scene is
         Textures       : Assimp_Texture.AI_Texture_Map;
         Lights         : Light.AI_Light_Map;
         Cameras        : Camera.AI_Camera_Map;
---          Private_Data   : Ada.Strings.Unbounded.Unbounded_String :=
---                             Ada.Strings.Unbounded.To_Unbounded_String ("");
     end record;
 
     type API_Node_Array;
@@ -99,6 +98,8 @@ package Scene is
             Lights         : access Light.Light_Pointers.Pointer := null;
             Num_Cameras    : Interfaces.C.unsigned := 0;
             Cameras        : access Camera.Camera_Pointers.Pointer := null;
+            mPrivate       : Interfaces.C.Strings.chars_ptr :=
+                             Interfaces.C.Strings.Null_Ptr;
          end record;
          pragma Convention (C_Pass_By_Copy, API_Scene);
 
