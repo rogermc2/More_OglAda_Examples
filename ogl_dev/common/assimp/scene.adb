@@ -80,10 +80,8 @@ package body Scene is
         Put_Line ("Scene.To_AI_Scene, calling To_AI_Mesh_Map, C_Mesh_Array size: "  &
                     GL.Types.uint'Image (C_Mesh_Array'Length));
         theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Mesh_Array);
-        Put_Line ("Scene.To_AI_Scene, Meshes loaded");
         theScene.Materials :=
           Material.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
-        Put_Line ("Scene.To_AI_Scene, Materials_Map loaded");
 
         if Num_Textures > 0 then
             declare
@@ -96,7 +94,6 @@ package body Scene is
         end if;
 
         if Num_Animations > 0 then
-            Put_Line ("Scene.To_AI_Scene, calling To_AI_Animation_Map");
             declare
                 C_Animation_Array : constant Animation.API_Animation_Array :=
                 Animation.Animation_Pointers.Value (C_Scene.Animations.all, ptrdiff_t (Num_Animations));

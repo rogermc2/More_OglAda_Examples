@@ -71,7 +71,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
             Mesh_22.Load_Mesh (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
 
-            Put_Line ("Main_Loop.Init returned from Mesh_22.Load_Mesh.");
             Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
             Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
             Glfw.Input.Poll_Events;
@@ -163,6 +162,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 begin
     Init (Main_Window, theMesh, Running);
     while Running loop
+        Delay (1.0);
         Render_Scene (Main_Window, theMesh);
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
         Glfw.Input.Poll_Events;
