@@ -173,7 +173,6 @@ package body Assimp_Mesh is
                 API_Textures_Coords  : API_Vector_3D_Array (1 .. unsigned (Texture_Array_Length)) :=
                                          Vector_3D_Array_Pointers.Value  (C_Mesh.Texture_Coords);
             begin
-                Put_Line ("To_AI_Mesh setting Texture_Coords.");
                 for index in 1 .. AI_Max_Texture_Coords loop
                     theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X) :=
                       Single (API_Textures_Coords (unsigned (index)).X);
@@ -218,9 +217,7 @@ package body Assimp_Mesh is
             Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name length: " &  size_t'Image (C_Mesh_Array (index).Name.Length) );
             Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name: '" &  Interfaces.C.To_Ada (C_Mesh_Array (index).Name.Data) & "'");
             New_Line;
-            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, calling To_AI_Mesh");
             aMesh := To_AI_Mesh (C_Mesh_Array (index));
-            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, returned from To_AI_Mesh");
             Meshs.Insert (UInt (index), aMesh);
         end loop;
 

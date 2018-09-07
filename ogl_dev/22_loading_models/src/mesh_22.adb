@@ -89,7 +89,6 @@ package body Mesh_22 is
          Next (Curs);
       end loop;
       Init_Materials (Initial_Mesh, File_Name, theScene);
-      Put_Line ("Mesh_22.Init_From_Scene, returned from Init_Materials.");
 
    exception
       when others =>
@@ -133,11 +132,10 @@ package body Mesh_22 is
                   Initial_Mesh.Textures.Insert (UInt (index), aTexture);
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from " & File_Name);
                else
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loading default texture");
                   Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, "../../Content/white.png");
                   Initial_Mesh.Textures.Insert (UInt (index), aTexture);
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from Content/white.png");
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded default texture from Content/white.png");
                end if;
                   Ogldev_Texture.Load (aTexture);
             end if;
@@ -147,7 +145,6 @@ package body Mesh_22 is
    begin
       Put_Line ("Mesh_22.Init_Materials Dir: " & Dir);
       Material.Iterate (Load_Textures'Access);
-      Put_Line ("Mesh_22.Init_Materials textures loaded");
 
    exception
       when others =>
@@ -199,7 +196,6 @@ package body Mesh_22 is
    begin
       theScene :=
         Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
-      Put_Line (" Mesh_22.Load_Mesh, imported scene.");
       theMesh.Basic_Entry.VAO.Initialize_Id;
       theMesh.Basic_Entry.VAO.Bind;
       theMesh.Basic_Entry.VBO.Initialize_Id;
@@ -208,7 +204,6 @@ package body Mesh_22 is
       GL.Objects.Buffers.Array_Buffer.Bind (theMesh.Basic_Entry.IBO);
 
       Init_From_Scene (theMesh, File_Name, theScene);
-      Put_Line ("Mesh_22.Load_Mesh returned from Init_From_Scene.");
 
    exception
       when others =>
