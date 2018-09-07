@@ -123,20 +123,18 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Set_Cut_Off (Spot, 10.0);
         Set_Spot_Light (Light_Technique, Spot);
 
-        Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-        Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
-
         Perspective_Proj_Info.FOV := 60.0;
         Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
         Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
         Perspective_Proj_Info.Z_Near := 1.0;
         Perspective_Proj_Info.Z_Far := 100.0;
 
-        Ogldev_Pipeline.Set_Scale (Pipe, 0.04, 0.04, 0.04);
+--          Ogldev_Pipeline.Set_Scale (Pipe, 0.4);  --  orig 0.04,  Default 1.0
         Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);
-        Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),  Get_Target (Game_Camera),
-                                    Get_Up (Game_Camera));
+        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);  --  orig z -10
+--          Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),  Get_Target (Game_Camera),
+--                                      Get_Up (Game_Camera));
+        Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
         Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
 
         Set_WVP (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (pipe));
