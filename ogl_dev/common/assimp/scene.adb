@@ -8,7 +8,7 @@ with Ogldev_Math;
 
 package body Scene is
 
-    procedure To_Node_List (Root_Node : in out API_Node;
+    procedure To_Node_List (Root_Node : API_Node;
                             Nodes : in out AI_Nodes_List) is
         Name_Length : constant size_t := Root_Node.Name.Length;
         aNode   : AI_Node;
@@ -37,7 +37,7 @@ package body Scene is
 
     --  -------------------------------------------------------------------------
 
-   procedure To_AI_Scene (C_Scene : in out API_Scene;
+   procedure To_AI_Scene (C_Scene : API_Scene;
                           theScene : in out Scene.AI_Scene) is
         use Material.Material_Pointers_Package;
         Num_Meshes     : constant unsigned := (C_Scene.Num_Meshes);

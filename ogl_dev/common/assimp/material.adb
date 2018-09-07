@@ -11,7 +11,7 @@ package body Material is
 
     --      procedure To_API_Material (aMaterial : AI_Material; theAPI_Material : in out API_Material);
     function To_AI_Property_List (anAPI_Material : API_Material;
-                                  theProperties_Ptr : in out API_Property_Array_Ptr;
+                                  theProperties_Ptr : API_Property_Array_Ptr;
                                   Num_Property      : Interfaces.C.unsigned)
                                  return AI_Material_Property_List;
 
@@ -56,7 +56,6 @@ package body Material is
         UV         : aliased unsigned;
         C_Blend    : aliased C_float;
     begin
-        --        To_API_Material (aMaterial, C_Material);
         Result := Assimp.API.Get_Material_Texture
           (C_Material, Tex_Type, unsigned (Tex_Index), C_Path'Access,
            Mapping, UV'Access, C_Blend'Access, Op, Map_Mode);
@@ -75,14 +74,63 @@ package body Material is
 
     function Get_Texture_Count (aMaterial : AI_Material;
                                 Tex_Type  : AI_Texture_Type) return GL.Types.UInt is
-    --        C_Material : API_Material;
     begin
         return 0;
-        --        To_API_Material (aMaterial, C_Material);
-        --        return UInt (Assimp.API.Get_Material_Texture_Count (C_Material, Tex_Type));
     end Get_Texture_Count;
 
     --  -------------------------------------------------------------------------
+
+    function To_AI_Material (C_Material : API_Material) return AI_Material is
+        use Interfaces.C;
+        use Property_Array_Pointers_Package;
+        Property_Array_Access : access API_Property_Array_Ptr;
+        theProperties_Ptr     : API_Property_Array_Ptr;
+        Num_Property          : unsigned;
+        Property_List         : AI_Material_Property_List;
+        theMaterial           : AI_Material;
+    begin
+        Num_Property := C_Material.Num_Properties;
+        Put_Line ("Material.To_AI_Material Num_Properties: " &
+                    unsigned'Image (Num_Property));
+        Property_Array_Access := C_Material.Properties;
+        theProperties_Ptr := Property_Array_Access.all;
+        Put_Line ("Material.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
+                    unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
+        theMaterial.Properties := To_AI_Property_List (C_Material, theProperties_Ptr, Num_Property);
+
+        theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
+        return theMaterial;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Material.To_AI_Material.");
+            raise;
+    end To_AI_Material;
+
+    --  ------------------------------------------------------------------------
+
+    function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
+                                  C_Material_Array : API_Material_Array)
+                                 return AI_Material_Map is
+        use Interfaces.C;
+        Material_Map : AI_Material_Map;
+        aMaterial    : AI_Material;
+    begin
+        Put_Line ("Material.To_AI_Materials_Map Num_Materials: " &
+                    Interfaces.C.unsigned'Image (Num_Materials));
+        for mat in 1 .. Num_Materials loop
+            aMaterial := To_AI_Material (C_Material_Array (mat));
+            Material_Map.Insert (UInt (mat), aMaterial);
+        end loop;
+        return Material_Map;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Material.To_AI_Materials_Map.");
+            raise;
+    end To_AI_Materials_Map;
+
+    --  ------------------------------------------------------------------------
 
     function To_AI_Property (anAPI_Material : API_Material;
                              API_Property : API_Material_Property) return AI_Material_Property is
@@ -140,7 +188,7 @@ package body Material is
     --  ----------------------------------------------------------------------
 
     function To_AI_Property_List (anAPI_Material : API_Material;
-                                  theProperties_Ptr : in out API_Property_Array_Ptr;
+                                  theProperties_Ptr : API_Property_Array_Ptr;
                                   Num_Property      : Interfaces.C.unsigned)
                                  return AI_Material_Property_List is
         use Interfaces.C;
@@ -170,57 +218,5 @@ package body Material is
     end To_AI_Property_List;
 
     --  ----------------------------------------------------------------------
-
-    function To_AI_Material (C_Material : in out API_Material) return AI_Material is
-        use Interfaces.C;
-        use Property_Array_Pointers_Package;
-        Property_Array_Access : access API_Property_Array_Ptr;
-        theProperties_Ptr     : API_Property_Array_Ptr;
-        Num_Property          : unsigned;
-        Property_List         : AI_Material_Property_List;
-        theMaterial           : AI_Material;
-    begin
-        Num_Property := C_Material.Num_Properties;
-        Put_Line ("Material.To_AI_Material Num_Properties: " &
-                    unsigned'Image (Num_Property));
-        Property_Array_Access := C_Material.Properties;
-        theProperties_Ptr := Property_Array_Access.all;
-        Put_Line ("Material.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
-                    unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
-        theMaterial.Properties := To_AI_Property_List (C_Material, theProperties_Ptr, Num_Property);
-
-        theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
-        return theMaterial;
-
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Material.To_AI_Material.");
-            raise;
-    end To_AI_Material;
-
-    --  ------------------------------------------------------------------------
-
-    function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
-                                  C_Material_Array : in out API_Material_Array)
-                                 return AI_Material_Map is
-        use Interfaces.C;
-        Material_Map : AI_Material_Map;
-        aMaterial    : AI_Material;
-    begin
-        Put_Line ("Material.To_AI_Materials_Map Num_Materials: " &
-                    Interfaces.C.unsigned'Image (Num_Materials));
-        for mat in 1 .. Num_Materials loop
-            aMaterial := To_AI_Material (C_Material_Array (mat));
-            Material_Map.Insert (UInt (mat), aMaterial);
-        end loop;
-        return Material_Map;
-
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Material.To_AI_Materials_Map.");
-            raise;
-    end To_AI_Materials_Map;
-
-    --  ------------------------------------------------------------------------
 
 end Material;
