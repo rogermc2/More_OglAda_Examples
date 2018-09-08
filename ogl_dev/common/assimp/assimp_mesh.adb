@@ -173,7 +173,7 @@ package body Assimp_Mesh is
                 API_Textures_Coords  : API_Vector_3D_Array (1 .. unsigned (Texture_Array_Length)) :=
                                          Vector_3D_Array_Pointers.Value  (C_Mesh.Texture_Coords);
             begin
-                for index in 1 .. AI_Max_Texture_Coords loop
+                for index in 1 .. API_Max_Texture_Coords loop
                     theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X) :=
                       Single (API_Textures_Coords (unsigned (index)).X);
                     theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y) :=
@@ -206,11 +206,10 @@ package body Assimp_Mesh is
 --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
 
         for index in 1 .. Num_Meshes loop
-            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, UV_Components, Bones, Anim_Meshes, Material_Index");
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
             Put_Line (unsigned'Image (C_Mesh_Array (index).Primitive_Types) &
                         unsigned'Image (C_Mesh_Array (index).Num_Vertices) &
                         unsigned'Image (C_Mesh_Array (index).Num_Faces) &
-                        unsigned'Image (C_Mesh_Array (index).Num_UV_Components) &
                         unsigned'Image (C_Mesh_Array (index).Num_Bones) &
                         unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
                         unsigned'Image (C_Mesh_Array (index).Material_Index));
@@ -241,7 +240,7 @@ package body Assimp_Mesh is
         BT_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bit_Tangents));
         B_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bones));
         F_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Faces));
-        Colours   : API_Vectors_Matrices.API_Colours_4D_Array (1 .. AI_Max_Colour_Sets);
+        Colours   : API_Vectors_Matrices.API_Colours_4D_Array (1 .. API_Max_Colour_Sets);
         V_Array   : aliased  API_Vector_3D_Array (1 .. V_Length);
         N_Array   : aliased  API_Vector_3D_Array (1 .. N_Length);
         T_Array   : aliased  API_Vector_3D_Array (1 .. T_Length);
@@ -253,16 +252,18 @@ package body Assimp_Mesh is
         C_Mesh.Num_Vertices := V_Length;
         C_Mesh.Num_Faces := F_Length;
         C_Mesh.Num_Bones := B_Length;
-        C_Mesh.Num_UV_Components := C.unsigned (anAI_Mesh.Num_UV_Components);
+        for index in Int range 1 .. API_Max_Texture_Coords loop
+            C_Mesh.Num_UV_Components (C.unsigned (index)) := C.unsigned (anAI_Mesh.Num_UV_Components (index));
+        end loop;
         C_Mesh.Material_Index := C.unsigned (anAI_Mesh.Material_Index);
         C_Mesh.Name := Assimp_Util.To_Assimp_API_String (anAI_Mesh.Name);
-        for index in UInt range 1 .. AI_Max_Colour_Sets loop
+        for index in UInt range 1 .. API_Max_Colour_Sets loop
             Colours (C.unsigned (index)).R := C.C_float (anAI_Mesh.Colours (index).R);
             Colours (C.unsigned (index)).G := C.C_float (anAI_Mesh.Colours (index).G);
             Colours (C.unsigned (index)).B := C.C_float (anAI_Mesh.Colours (index).B);
             Colours (C.unsigned (index)).A := C.C_float (anAI_Mesh.Colours (index).A);
         end loop;
-      for index in 1 .. AI_Max_Texture_Coords loop
+      for index in 1 .. API_Max_Texture_Coords loop
          null;
 --              C_Mesh.Texture_Coords (C.unsigned (index)).X :=
 --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
