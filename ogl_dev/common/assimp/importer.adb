@@ -27,9 +27,7 @@ package body Importer is
                     unsigned'Image (C_Scene.Num_Lights) &
                     unsigned'Image (C_Scene.Num_Cameras));
 
-        Put_Line ("Importer.Import_File calling To_AI_Scene.");
         To_AI_Scene (C_Scene, theScene);
-        Put_Line ("Importer.Import_File returned from To_AI_Scene.");
         return theScene;
 
     exception
@@ -44,13 +42,13 @@ package body Importer is
         use Scene;
         C_Scene   : API_Scene;
         theScene  : AI_Scene;
-        C_Mesh_Ptr : access Assimp_Mesh.Mesh_Array_Pointer;
-        C_Mesh    : Assimp_Mesh.API_Mesh;
-        Num_Meshes : Interfaces.C.unsigned;
+--          C_Mesh_Ptr : access Assimp_Mesh.Mesh_Array_Pointer;
+--          C_Mesh    : Assimp_Mesh.API_Mesh;
+--          Num_Meshes : Interfaces.C.unsigned;
     begin
         C_Scene := Assimp.API.Read_File
           (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
-        Num_Meshes := C_Scene.Num_Meshes;
+--          Num_Meshes := C_Scene.Num_Meshes;
 
         Put ("Importer.Read_File, Num_Meshes, Num_Materials, Num_Animations");
         Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
@@ -60,19 +58,19 @@ package body Importer is
                     unsigned'Image (C_Scene.Num_Textures) &
                     unsigned'Image (C_Scene.Num_Lights) &
                     unsigned'Image (C_Scene.Num_Cameras));
-        C_Mesh_Ptr := C_Scene.Meshes;
-        C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value
-             (C_Scene.Meshes.all, ptrdiff_t (Num_Meshes)) (0);
-        Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num Vertices, Faces, UV_Components, Bones, Anim_Meshes");
-        Put_Line (unsigned'Image (C_Mesh.Primitive_Types) &
-                  unsigned'Image (C_Mesh.Num_Vertices) &
-                  unsigned'Image (C_Mesh.Num_Faces) &
-                  unsigned'Image (C_Mesh.Num_UV_Components) &
-                  unsigned'Image (C_Mesh.Num_Bones) &
-                  unsigned'Image (C_Mesh.Num_Anim_Meshes));
-        Put_Line ("Importer.Read_File, Name size: " &  size_t'Image (C_Mesh.Name.Length) &
-                  " Name: " & Interfaces.C.To_Ada (C_Mesh.Name.Data));
-        New_Line;
+--          C_Mesh_Ptr := C_Scene.Meshes;
+--          C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value
+--               (C_Scene.Meshes.all, ptrdiff_t (Num_Meshes)) (0);
+--          Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num Vertices, Faces, UV_Components, Bones, Anim_Meshes");
+--          Put_Line (unsigned'Image (C_Mesh.Primitive_Types) &
+--                    unsigned'Image (C_Mesh.Num_Vertices) &
+--                    unsigned'Image (C_Mesh.Num_Faces) &
+--                    unsigned'Image (C_Mesh.Num_UV_Components) &
+--                    unsigned'Image (C_Mesh.Num_Bones) &
+--                    unsigned'Image (C_Mesh.Num_Anim_Meshes));
+--          Put_Line ("Importer.Read_File, Name size: " &  size_t'Image (C_Mesh.Name.Length) &
+--                    " Name: " & Interfaces.C.To_Ada (C_Mesh.Name.Data));
+--          New_Line;
         To_AI_Scene (C_Scene, theScene);
         return theScene;
     exception

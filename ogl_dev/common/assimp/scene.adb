@@ -47,14 +47,14 @@ package body Scene is
         Num_Lights     : constant unsigned := (C_Scene.Num_Lights);
         Num_Cameras    : constant unsigned := (C_Scene.Num_Cameras);
 
-        C_Mesh_Array  : Assimp_Mesh.API_Mesh_Array (1 .. Num_Meshes)
+        C_Mesh_Array  : constant Assimp_Mesh.API_Mesh_Array (1 .. Num_Meshes)
           := Assimp_Mesh.Mesh_Array_Pointers.Value
           (C_Scene.Meshes.all, ptrdiff_t (Num_Meshes));
 
-        C_Materials_Array : Material.API_Material_Array  (1 .. Num_Materials)
+        C_Materials_Array : constant Material.API_Material_Array  (1 .. Num_Materials)
           := Material.Material_Pointers_Package.Value (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
 
-        C_Root_Node : Scene.API_Node
+        C_Root_Node : constant Scene.API_Node
           := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
    begin
         Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations ");

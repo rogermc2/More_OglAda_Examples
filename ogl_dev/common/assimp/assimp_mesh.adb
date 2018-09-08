@@ -196,7 +196,7 @@ package body Assimp_Mesh is
     --  ------------------------------------------------------------------------
 
     function To_AI_Mesh_Map (Num_Meshes   : Interfaces.C.unsigned := 0;
-                             C_Mesh_Array : in out API_Mesh_Array)
+                             C_Mesh_Array : API_Mesh_Array)
                             return AI_Mesh_Map is
         use Interfaces.C;
         Meshs  : AI_Mesh_Map;
