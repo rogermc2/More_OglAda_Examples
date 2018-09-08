@@ -4,8 +4,8 @@ with Interfaces.C.Pointers;
 
 package API_Vectors_Matrices is
 
-   AI_Max_Colour_Sets    : constant := 8;
-   AI_Max_Texture_Coords : constant := 8;
+   API_Max_Colour_Sets    : constant := 8;
+   API_Max_Texture_Coords : constant := 8;
 
    type API_Colour_3D is record
       R : Interfaces.C.C_float;

@@ -64,11 +64,10 @@ package body Scene is
                   unsigned'Image (Num_Lights) & unsigned'Image (Num_Cameras));
 
       Put_Line ("Scene.To_AI_Scene, C_Mesh_Array (1):");
-      Put ("Primitive_Types, Num_Vertices, Num_Faces, Num_UV_Components: ");
+      Put ("Primitive_Types, Num_Vertices, Num_Faces: ");
         Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
                    unsigned'Image (C_Mesh_Array (1).Num_Vertices) &
-                   unsigned'Image (C_Mesh_Array (1).Num_Faces) &
-                   unsigned'Image (C_Mesh_Array (1).Num_UV_Components));
+                   unsigned'Image (C_Mesh_Array (1).Num_Faces));
          Put ("Num_Animations, Num_Bones, Material_Index: ");
          Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
                    unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
@@ -77,8 +76,6 @@ package body Scene is
 
         theScene.Flags := C_Scene.Flags;
         Scene.To_Node_List (C_Root_Node, theScene.Nodes);
-        Put_Line ("Scene.To_AI_Scene, calling To_AI_Mesh_Map, C_Mesh_Array size: "  &
-                    GL.Types.uint'Image (C_Mesh_Array'Length));
         theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Mesh_Array);
         theScene.Materials :=
           Material.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
