@@ -169,6 +169,14 @@ package body Assimp_Mesh is
        theAI_Mesh.Vertices := To_AI_Vertices_Map (C_Mesh.Vertices, C_Mesh.Num_Vertices);
        theAI_Mesh.Normals := To_AI_Vertices_Map (C_Mesh.Normals, C_Mesh.Num_Vertices);
 
+       if C_Mesh.Tangents /= null then
+            theAI_Mesh.Tangents := To_AI_Vertices_Map (C_Mesh.Tangents, C_Mesh.Num_Vertices);
+       end if;
+
+       if C_Mesh.Bit_Tangents /= null then
+            theAI_Mesh.Bit_Tangents := To_AI_Vertices_Map (C_Mesh.Bit_Tangents, C_Mesh.Num_Vertices);
+       end if;
+
         for index in 1 .. API_Max_Colour_Sets loop
             if C_Mesh.Colours (unsigned (index)) /= null then
                 Colours := C_Mesh.Colours (unsigned (index)).all;
