@@ -62,7 +62,7 @@ package API_Vectors_Matrices is
    package Vector_3D_Array_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Vector_3D, API_Vector_3D_Array,
       API_Vector_3D'(others => <>));
---     subtype Vector_3D_Array_Pointer is Vector_3D_Array_Pointers.Pointer;
+   subtype Vector_3D_Array_Pointer is Vector_3D_Array_Pointers.Pointer;
 
    type API_Vector_3D_Ptr_Array is array (Interfaces.C.unsigned range 1 .. API_Max_Texture_Coords)
       of access API_Vector_3D;

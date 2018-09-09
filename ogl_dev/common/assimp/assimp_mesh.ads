@@ -48,11 +48,43 @@ package Assimp_Mesh is
    type Vertex_Weight_Map is new Vertex_Weight_Package.Map with
      null Record;
 
-    type AI_Bone is record
-        Name         : Ada.Strings.Unbounded.Unbounded_String :=
-                         Ada.Strings.Unbounded.To_Unbounded_String ("");
-        Weights      : Vertex_Weight_Map;
+    type API_Vertex_Weight is record
+        Vertex_ID  : Interfaces.C.unsigned;
+        Weight     : Interfaces.C.C_float;
+    end record;
+    pragma Convention (C_Pass_By_Copy, API_Vertex_Weight);
+
+   type API_Vertex_Weight_Array is array
+     (Interfaces.C.unsigned range <>) of aliased API_Vertex_Weight;
+   pragma Convention (C, API_Vertex_Weight_Array);
+
+   package Vertex_Weight_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Vertex_Weight, API_Vertex_Weight_Array,
+      API_Vertex_Weight'(others => <>));
+   subtype Vertex_Weight_Array_Pointer is Vertex_Weight_Array_Pointers.Pointer;
+
+    type API_Bone is record
+        Name          : Assimp_Types.API_String;
+        Num_Weights   : Interfaces.C.unsigned;
+        Weights       : Vertex_Weight_Array_Pointer;
         Offset_Matrix : API_Vectors_Matrices.API_Matrix_4D;
+    end record;
+   pragma Convention (C_Pass_By_Copy, API_Bone);
+
+   type API_Bones_Array is array
+     (Interfaces.C.unsigned range <>) of aliased API_Bone;
+   pragma Convention (C, API_Bones_Array);
+
+   package Bones_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Bone, API_Bones_Array,
+      API_Bone'(others => <>));
+   subtype Bones_Array_Pointer is Bones_Array_Pointers.Pointer;
+
+    type AI_Bone is record
+        Name          : Ada.Strings.Unbounded.Unbounded_String :=
+                         Ada.Strings.Unbounded.To_Unbounded_String ("");
+        Weights       : Vertex_Weight_Map;
+        Offset_Matrix : GL.Types.Singles.Matrix4;
     end record;
 
    package Bones_Package is new
@@ -129,7 +161,7 @@ package Assimp_Mesh is
         Num_UV_Components : API_Unsigned_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Array_Pointer;
         Num_Bones         : Interfaces.C.unsigned := 0;
-        Bones             : access Vector_3D_Array_Pointers.Pointer := null;
+        Bones             : access Bones_Array_Pointer := null;
         Material_Index    : Interfaces.C.unsigned := 0;
         Name              : Assimp_Types.API_String;
         Num_Anim_Meshes   : Interfaces.C.unsigned := 0;
