@@ -51,9 +51,7 @@ package body Scene is
           := Assimp_Mesh.Mesh_Array_Pointers.Value
           (C_Scene.Meshes.all, ptrdiff_t (Num_Meshes));
 
-        C_Materials_Array : constant Material.API_Material_Array  (1 .. Num_Materials)
-          := Material.Material_Pointers_Package.Value (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
-
+        C_Materials_Array : Material.API_Material_Array (1 .. Num_Materials);
         C_Root_Node : constant Scene.API_Node
           := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
    begin
@@ -81,8 +79,12 @@ package body Scene is
         theScene.Flags := C_Scene.Flags;
         Scene.To_Node_List (C_Root_Node, theScene.Nodes);
         theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Mesh_Array);
-        theScene.Materials :=
-          Material.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
+        if Num_Materials > 0 then
+           C_Materials_Array := Material.Material_Pointers_Package.Value
+             (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
+           theScene.Materials :=
+             Material.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
+         end if;
 
         if Num_Textures > 0 then
             declare
