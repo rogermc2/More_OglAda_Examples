@@ -113,7 +113,6 @@ package body Assimp_Mesh is
 
     function To_AI_Mesh (C_Mesh : API_Mesh) return AI_Mesh is
         use Interfaces.C;
-        --        use Colours_4D_Array_Pointers;
         use Vector_3D_Array_Pointers;
         use API_Vectors_Matrices;
         theAI_Mesh         : AI_Mesh;
@@ -121,36 +120,55 @@ package body Assimp_Mesh is
         --        Num_Faces    : constant unsigned :=C_Mesh.Num_Faces;
         --        Num_UV       : constant unsigned := C_Mesh.Num_UV_Components;
         --        Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
-        --          V_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
-        CVertices_Array_Ptr : Vector_3D_Array_Pointers.Pointer;
+        CVertices_Array_Ptr : constant Vector_3D_Array_Pointers.Pointer := C_Mesh.Vertices;
         CVertices_Array     : API_Vector_3D_Array (1 .. Num_Vertices);
+        CNormals_Array_Ptr  : constant Vector_3D_Array_Pointers.Pointer := C_Mesh.Normals;
+        CNormals_Array      : API_Vector_3D_Array (1 .. Num_Vertices);
+        V_Array             : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
+        N_Array             : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
         Colours             : API_Colour_4D;
         Textures            : API_Vector_3D;
-        --          anAPI_Vertex : API_Vector_3D;
-        --          anAI_Vertex  : Singles.Vector3;
+        anAPI_Vertex        : API_Vector_3D;
+        anAPI_Normal        : API_Vector_3D;
+        anAI_Vertex         : Singles.Vector3;
+        anAI_Normal         : Singles.Vector3;
     begin
-        CVertices_Array_Ptr := C_Mesh.Vertices;
+        theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
+
         if CVertices_Array_Ptr = null then
             Put_Line ("To_AI_Mesh exception: CVertices_Array_Ptr is null.");
             raise Strings.Dereference_Error;
         end if;
 
+        if CNormals_Array_Ptr = null then
+            Put_Line ("To_AI_Mesh exception: CNormals_Array_Ptr is null.");
+            raise Strings.Dereference_Error;
+        end if;
+
         CVertices_Array := Vector_3D_Array_Pointers.Value (CVertices_Array_Ptr, ptrdiff_t (Num_Vertices));
+        CNormals_Array := Vector_3D_Array_Pointers.Value (CNormals_Array_Ptr, ptrdiff_t (Num_Vertices));
         theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
         Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
-        theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
 
         --   Vertices : Vector_3D_Array_Pointer
---          Put_Line ("To_AI_Mesh setting V_Array C_Mesh.Num_Vertices: " & unsigned 'Image (C_Mesh.Num_Vertices));
-        --          V_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value (CV_Array_Ptr, C_Mesh.Num_Vertices);
-        --        Put_Line ("To_AI_Mesh setting Vertices.");
-        --          for index in 1 .. Num_Vertices loop
-        --              anAPI_Vertex := V_Array (index);
-        --              anAI_Vertex (GL.X) := Single (anAPI_Vertex.X);
-        --              anAI_Vertex (GL.Y) := Single (anAPI_Vertex.Y);
-        --              anAI_Vertex (GL.Z) := Single (anAPI_Vertex.Z);
-        --              theAI_Mesh.Vertices.Insert (UInt (index), anAI_Vertex);
-        --          end loop;
+        Put_Line ("To_AI_Mesh setting V_Array C_Mesh.Num_Vertices: " & unsigned 'Image (C_Mesh.Num_Vertices));
+        V_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
+          (CVertices_Array_Ptr, ptrdiff_t (C_Mesh.Num_Vertices));
+        N_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
+          (CNormals_Array_Ptr, ptrdiff_t (C_Mesh.Num_Vertices));
+                for index in 1 .. Num_Vertices loop
+                    anAPI_Vertex := V_Array (index);
+                    anAPI_Normal := N_Array (index);
+                    anAI_Vertex (GL.X) := Single (anAPI_Vertex.X);
+                    anAI_Vertex (GL.Y) := Single (anAPI_Vertex.Y);
+                    anAI_Vertex (GL.Z) := Single (anAPI_Vertex.Z);
+                    theAI_Mesh.Vertices.Insert (UInt (index), anAI_Vertex);
+
+                    anAI_Normal (GL.X) := Single (anAPI_Normal.X);
+                    anAI_Normal (GL.Y) := Single (anAPI_Normal.Y);
+                    anAI_Normal (GL.Z) := Single (anAPI_Normal.Z);
+                    theAI_Mesh.Normals.Insert (UInt (index), anAI_Normal);
+                end loop;
 
         for index in 1 .. API_Max_Colour_Sets loop
             if C_Mesh.Colours (unsigned (index)) /= null then
