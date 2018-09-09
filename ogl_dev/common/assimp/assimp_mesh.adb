@@ -144,7 +144,6 @@ package body Assimp_Mesh is
         theAI_Mesh         : AI_Mesh;
         Num_Vertices       : constant unsigned := C_Mesh.Num_Vertices;
         --        Num_Faces    : constant unsigned :=C_Mesh.Num_Faces;
-        --        Num_UV       : constant unsigned := C_Mesh.Num_UV_Components;
         --        Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
         Colours             : API_Colour_4D;
         Textures            : API_Vector_3D;
@@ -156,18 +155,12 @@ package body Assimp_Mesh is
             raise Strings.Dereference_Error;
         end if;
 
-        if C_Mesh.Normals = null then
-            Put_Line ("To_AI_Mesh exception: C_Mesh.Normals is null.");
-            raise Strings.Dereference_Error;
-        end if;
-
-        theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
-        Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
-
-        --   Vertices : Vector_3D_Array_Pointer
         Put_Line ("To_AI_Mesh setting V_Array C_Mesh.Num_Vertices: " & unsigned 'Image (C_Mesh.Num_Vertices));
        theAI_Mesh.Vertices := To_AI_Vertices_Map (C_Mesh.Vertices, C_Mesh.Num_Vertices);
-       theAI_Mesh.Normals := To_AI_Vertices_Map (C_Mesh.Normals, C_Mesh.Num_Vertices);
+
+       if C_Mesh.Normals /= null then
+            theAI_Mesh.Normals := To_AI_Vertices_Map (C_Mesh.Normals, C_Mesh.Num_Vertices);
+       end if;
 
        if C_Mesh.Tangents /= null then
             theAI_Mesh.Tangents := To_AI_Vertices_Map (C_Mesh.Tangents, C_Mesh.Num_Vertices);
@@ -195,6 +188,13 @@ package body Assimp_Mesh is
                 theAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z) := Single (Textures.Z);
             end if;
         end loop;
+
+        for index in GL.Types.Int range 1 .. API_Max_Texture_Coords loop
+            theAI_Mesh.Num_UV_Components (index) := UInt (C_Mesh.Num_UV_Components (unsigned (index)));
+        end loop;
+
+        theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
+        Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
 
         return theAI_Mesh;
 
