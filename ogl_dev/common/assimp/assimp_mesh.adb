@@ -111,17 +111,51 @@ package body Assimp_Mesh is
 
     --  ------------------------------------------------------------------------
 
+   function To_AI_Face_Indices_Map (Indices_Ptr : Unsigned_Array_Pointer;
+                                    Num_Indices : Interfaces.C.unsigned) return Indices_Map is
+        Index_Array  : API_Unsigned_Array (1 .. Num_Indices);
+        theMap       : Indices_Map;
+    begin
+        Index_Array := Unsigned_Array_Pointers.Value
+          (Indices_Ptr, Interfaces.C.ptrdiff_t (Num_Indices));
+
+        for index in 1 .. Num_Indices loop
+            theMap.Insert (UInt (index), UInt (Index_Array (index)));
+        end loop;
+        return theMap;
+    end To_AI_Face_Indices_Map;
+
+    --  ------------------------------------------------------------------------
+
+   function To_AI_Faces_Map (F_Array_Ptr : Faces_Array_Pointer;
+                             Num_Faces : Interfaces.C.unsigned) return Faces_Map is
+
+        Face_Array   : API_Faces_Array (1 .. Num_Faces);
+        anAPI_Face   : API_Face;
+        anAI_Face    : AI_Face;
+        theMap       : Faces_Map;
+    begin
+        Face_Array := Faces_Array_Pointers.Value
+          (F_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Faces));
+
+        for index in 1 .. Num_Faces loop
+            anAPI_Face := Face_Array (index);
+            anAI_Face.Indices := To_AI_Face_Indices_Map (anAPI_Face.Indices, anAPI_Face.Num_Indices);
+            theMap.Insert (UInt (index), anAI_Face);
+        end loop;
+        return theMap;
+    end To_AI_Faces_Map;
+
+    --  ------------------------------------------------------------------------
+
     function To_AI_Vertices_Map (C_Array_Ptr : Vector_3D_Array_Pointers.Pointer;
                                  Num_Vertices : Interfaces.C.unsigned) return Vertices_Map is
 
-        C_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
         V_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
         anAPI_Vector : API_Vector_3D;
         anAI_Vector  : Singles.Vector3;
         theMap       : Vertices_Map;
     begin
-        C_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
-          (C_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
         V_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
           (C_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
 
@@ -143,7 +177,7 @@ package body Assimp_Mesh is
         use API_Vectors_Matrices;
         theAI_Mesh         : AI_Mesh;
         Num_Vertices       : constant unsigned := C_Mesh.Num_Vertices;
-        --        Num_Faces    : constant unsigned :=C_Mesh.Num_Faces;
+        Num_Faces          : constant unsigned :=C_Mesh.Num_Faces;
         --        Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
         Colours             : API_Colour_4D;
         Textures            : API_Vector_3D;
@@ -195,6 +229,10 @@ package body Assimp_Mesh is
 
         theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
         Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
+
+        if Num_Faces > 0 then
+            theAI_Mesh.Faces := To_AI_Faces_Map (C_Mesh.Faces, C_Mesh.Num_Faces);
+        end if;
 
         return theAI_Mesh;
 
