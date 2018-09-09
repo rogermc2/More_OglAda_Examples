@@ -31,7 +31,7 @@ package body Mesh_22 is
    end record;
    type Vertex_Array is array (Int range <>) of Vertex;
 
-   procedure Init_Materials (Initial_Mesh : in out Mesh_22;
+   procedure Init_Materials (theMesh : in out Mesh_22;
                              File_Name    : String;
                              theScene     : Scene.AI_Scene);
    procedure Init_Mesh (Index : UInt; aMesh : in out Assimp_Mesh.AI_Mesh;
@@ -99,7 +99,7 @@ package body Mesh_22 is
 
    -------------------------------------------------------------------------
 
-   procedure Init_Materials (Initial_Mesh : in out Mesh_22;
+   procedure Init_Materials (theMesh : in out Mesh_22;
                              File_Name    : String;
                              theScene     : Scene.AI_Scene) is
       use Material.AI_Material_Package;
@@ -119,26 +119,26 @@ package body Mesh_22 is
          aMaterial  : constant AI_Material := Element (Curs);
          aTexture   : Ogldev_Texture.Ogl_Texture;
       begin
-         for index in 1 .. Initial_Mesh.Textures.Length loop
-            Initial_Mesh.Textures.Delete_First;
+         for index in 1 .. theMesh.Textures.Length loop
+            theMesh.Textures.Delete_First;
          end loop;
          Put_Line ("Mesh_22.Init_Materials.Load_Textures Textures.Length: " &
-                     Ada.Containers.Count_Type'Image (Initial_Mesh.Textures.Length));
-         for index in 1 .. Initial_Mesh.Textures.Length loop
+                     Ada.Containers.Count_Type'Image (theMesh.Textures.Length));
+         for index in 1 .. theMesh.Textures.Length loop
             if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
                Get_Texture (aMaterial, AI_Texture_Diffuse, UInt (index), Path, Result);
                if Result = Assimp_Types.API_Return_Success then
                   Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name);
-                  Initial_Mesh.Textures.Insert (UInt (index), aTexture);
+                  theMesh.Textures.Insert (UInt (index), aTexture);
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from " & File_Name);
                else
                   Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, "../../Content/white.png");
-                  Initial_Mesh.Textures.Insert (UInt (index), aTexture);
+                  theMesh.Textures.Insert (UInt (index), aTexture);
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded default texture from Content/white.png");
                end if;
-                  Ogldev_Texture.Load (aTexture);
+               Ogldev_Texture.Load (aTexture);
             end if;
          end loop;
       end Load_Textures;
@@ -245,6 +245,7 @@ package body Mesh_22 is
          GL.Objects.Buffers.Draw_Elements
            (Triangles, Num_Indices, UInt_Type, 0);
       end Draw;
+
    begin
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
