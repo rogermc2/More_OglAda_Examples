@@ -5,6 +5,7 @@ with Interfaces.C.Strings;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Ogldev_Math;
 with Ogldev_Util;
 
 with Assimp_Util;
@@ -18,6 +19,8 @@ package body Assimp_Mesh is
     procedure Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
                               File_Name : String);
     procedure Init_Mesh (theMesh : in out Mesh; Mesh_Index : UInt; anAI_Mesh : AI_Mesh);
+    function To_AI_Vertex_Weight_Map (Weights_Ptr : Vertex_Weight_Array_Pointer;
+                                      Num_Weights : Interfaces.C.unsigned) return Vertex_Weight_Map;
     procedure Vertices_To_API (Vertices : Vertices_Map; V_Array : in out API_Vector_3D_Array);
 
     ------------------------------------------------------------------------
@@ -111,6 +114,28 @@ package body Assimp_Mesh is
 
     --  ------------------------------------------------------------------------
 
+    function To_AI_Bones_Map (B_Array_Access : access Bones_Array_Pointer;
+                             Num_Bones : Interfaces.C.unsigned) return Bones_Map is
+
+        Bones_Array_Ptr : constant Bones_Array_Pointer := B_Array_Access.all;
+        B_Array         : constant API_Bones_Array := Bones_Array_Pointers.Value
+          (Bones_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Bones));
+        anAPI_Bone      : API_Bone;
+        anAI_Bone       : AI_Bone;
+        theMap          : Bones_Map;
+    begin
+        for index in 1 .. Num_Bones loop
+            anAPI_Bone := B_Array (index);
+            anAI_Bone.Name := Assimp_Util.To_Unbounded_String (anAPI_Bone.Name);
+            anAI_Bone.Weights := To_AI_Vertex_Weight_Map (anAPI_Bone.Weights, anAPI_Bone.Num_Weights);
+            anAI_Bone.Offset_Matrix := Ogldev_Math.To_GL_Matrix4 (anAPI_Bone.Offset_Matrix);
+            theMap.Insert (UInt (index), anAI_Bone);
+        end loop;
+        return theMap;
+    end To_AI_Bones_Map;
+
+    --  ------------------------------------------------------------------------
+
    function To_AI_Face_Indices_Map (Indices_Ptr : Unsigned_Array_Pointer;
                                     Num_Indices : Interfaces.C.unsigned) return Indices_Map is
         Index_Array  : API_Unsigned_Array (1 .. Num_Indices);
@@ -175,12 +200,12 @@ package body Assimp_Mesh is
         use Interfaces.C;
         use Vector_3D_Array_Pointers;
         use API_Vectors_Matrices;
-        theAI_Mesh         : AI_Mesh;
-        Num_Vertices       : constant unsigned := C_Mesh.Num_Vertices;
-        Num_Faces          : constant unsigned :=C_Mesh.Num_Faces;
-        --        Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
-        Colours             : API_Colour_4D;
-        Textures            : API_Vector_3D;
+        theAI_Mesh   : AI_Mesh;
+        Num_Vertices : constant unsigned := C_Mesh.Num_Vertices;
+        Num_Faces    : constant unsigned :=C_Mesh.Num_Faces;
+        Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
+        Colours      : API_Colour_4D;
+        Textures     : API_Vector_3D;
     begin
         theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
 
@@ -232,6 +257,10 @@ package body Assimp_Mesh is
 
         if Num_Faces > 0 then
             theAI_Mesh.Faces := To_AI_Faces_Map (C_Mesh.Faces, C_Mesh.Num_Faces);
+        end if;
+
+        if Num_Bones > 0 then
+            theAI_Mesh.Bones := To_AI_Bones_Map (C_Mesh.Bones, C_Mesh.Num_Bones);
         end if;
 
         return theAI_Mesh;
@@ -359,6 +388,25 @@ package body Assimp_Mesh is
             Put_Line ("An exception occurred in Assimp_Mesh.To_API_Mesh.");
             raise;
     end To_API_Mesh;
+
+    --  ------------------------------------------------------------------------
+
+   function To_AI_Vertex_Weight_Map (Weights_Ptr : Vertex_Weight_Array_Pointer;
+                                     Num_Weights : Interfaces.C.unsigned) return Vertex_Weight_Map is
+        Weight_Array : API_Vertex_Weight_Array (1 .. Num_Weights);
+        anAI_Weight  : AI_Vertex_Weight;
+        theMap       : Vertex_Weight_Map;
+    begin
+        Weight_Array := Vertex_Weight_Array_Pointers.Value
+          (Weights_Ptr, Interfaces.C.ptrdiff_t (Num_Weights));
+
+        for index in 1 .. Num_Weights loop
+            anAI_Weight.Vertex_ID := UInt (Weight_Array (index).Vertex_ID);
+            anAI_Weight.Weight := Single (Weight_Array (index).Weight);
+            theMap.Insert (UInt (index), anAI_Weight);
+        end loop;
+        return theMap;
+    end To_AI_Vertex_Weight_Map;
 
     --  ------------------------------------------------------------------------
 
