@@ -205,13 +205,6 @@ package body Mesh_22 is
    begin
       theScene :=
         Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
-      theMesh.Basic_Entry.VAO.Initialize_Id;
-      theMesh.Basic_Entry.VAO.Bind;
-      theMesh.Basic_Entry.VBO.Initialize_Id;
-      GL.Objects.Buffers.Array_Buffer.Bind (theMesh.Basic_Entry.VBO);
-      theMesh.Basic_Entry.IBO.Initialize_Id;
-      GL.Objects.Buffers.Array_Buffer.Bind (theMesh.Basic_Entry.IBO);
-
       Init_From_Scene (theMesh, File_Name, theScene);
 
    exception
@@ -253,7 +246,6 @@ package body Mesh_22 is
            (Triangles, Num_Indices, UInt_Type, 0);
       end Draw;
    begin
-      theMesh.Basic_Entry.VAO.Bind;
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
