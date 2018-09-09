@@ -170,7 +170,6 @@ package body Mesh_22 is
    begin
       anEntry := aMesh_22.Entries.Element (Index);
       anEntry.Material_Index := Material_Type'Val (aMesh.Material_Index);
-      aMesh_22.Entries.Replace (Index, anEntry);
 
       for Index in 1 .. Num_Vertices loop
          Position := aMesh.Vertices.Element (UInt (Index));
@@ -191,6 +190,7 @@ package body Mesh_22 is
 
       --  m_Entries[Index].Init(Vertices, Indices);
       Init_Buffers (anEntry, Vertices, Indices);
+      aMesh_22.Entries.Replace (Index, anEntry);
 
    exception
       when others =>
