@@ -116,7 +116,7 @@ package body Material is
     begin
         Put_Line ("Material.To_AI_Materials_Map Num_Materials: " &
                     Interfaces.C.unsigned'Image (Num_Materials));
-        for mat in 1 .. Num_Materials loop
+        for mat in 0 .. Num_Materials - 1 loop
             aMaterial := To_AI_Material (C_Material_Array (mat));
             Material_Map.Insert (UInt (mat), aMaterial);
         end loop;
@@ -207,7 +207,8 @@ package body Material is
             Put_Line ("Material.To_AI_Property_List appending Property_Index " &
                         unsigned'Image (Property_Index));
             Put_Line ("Material.To_AI_Property_List Key.Length: " &
-                  size_t'Image (Property_Array (Property_Index).Key.Length));
+                  size_t'Image (Property_Array (Property_Index).Key.Length) &
+                  "  " & To_Ada (Property_Array (Property_Index).Key.Data));
             Put_Line ("Material.To_AI_Property_List Data_Length: " &
                   unsigned'Image (Property_Array (Property_Index).Data_Length));
             Put_Line ("Material.To_AI_Property_List Data_Type: " &
