@@ -45,7 +45,6 @@ private
      null Record;
 
    type Mesh_22 is record
-      Basic_Entry : Mesh_Entry;
       Entries     : Mesh_Entry_Package.Map;
       Textures    : Ogldev_Texture.Mesh_Texture_Package.Map;
    end record;
