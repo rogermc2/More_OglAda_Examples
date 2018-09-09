@@ -64,6 +64,10 @@ package API_Vectors_Matrices is
       API_Vector_3D'(others => <>));
 --     subtype Vector_3D_Array_Pointer is Vector_3D_Array_Pointers.Pointer;
 
+   type API_Vector_3D_Ptr_Array is array (Interfaces.C.unsigned range 1 .. API_Max_Texture_Coords)
+      of access API_Vector_3D;
+   pragma Convention (C, API_Vector_3D_Ptr_Array);
+
    type API_Colours_3D_Array is array
      (Interfaces.C.unsigned range <>) of aliased API_Colour_3D;
    pragma Convention (C, API_Colours_3D_Array);
