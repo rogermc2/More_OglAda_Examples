@@ -34,8 +34,8 @@ package body Mesh_22 is
    procedure Init_Materials (Initial_Mesh : in out Mesh_22;
                              File_Name    : String;
                              theScene     : Scene.AI_Scene);
-   procedure Init_Mesh (aMesh   : in out Assimp_Mesh.AI_Mesh;
-                        anEntry : in out Mesh_Entry);
+   procedure Init_Mesh (Index : UInt; aMesh : in out Assimp_Mesh.AI_Mesh;
+                        aMesh_22 : in out Mesh_22);
 
    --  -------------------------------------------------------------------------
 
@@ -78,6 +78,7 @@ package body Mesh_22 is
       Curs         : Cursor := Initial_Mesh.Entries.First;
       Index        : UInt := 0;
       aMesh        : Assimp_Mesh.AI_Mesh;
+      aMesh_22     : Mesh_22;
       anEntry      : Mesh_Entry;
    begin
       while Has_Element (Curs) loop
@@ -85,7 +86,7 @@ package body Mesh_22 is
          aMesh := theScene.Meshes (Index);
          Put_Line ("Mesh_22.Init_From_Scene, aMesh.Material_Index: " &
                      UInt'Image (aMesh.Material_Index));
-         Init_Mesh (aMesh, anEntry);
+         Init_Mesh (Index, aMesh, aMesh_22);
          Next (Curs);
       end loop;
       Init_Materials (Initial_Mesh, File_Name, theScene);
@@ -154,17 +155,23 @@ package body Mesh_22 is
 
    -------------------------------------------------------------------------
 
-   procedure Init_Mesh (aMesh   : in out Assimp_Mesh.AI_Mesh;
-                        anEntry : in out Mesh_Entry) is
+   procedure Init_Mesh (Index : UInt; aMesh : in out Assimp_Mesh.AI_Mesh; aMesh_22 : in out Mesh_22) is
+   use Mesh_Entry_Package;
       Num_Vertices : constant Int := Int (aMesh.Vertices.Length);
       Vertices     : Vertex_Array (1 .. Num_Vertices);
       Indices      : GL.Types.UInt_Array (1 .. 3 * Num_Vertices);
+      Mat_index    : GL.Types.UInt := aMesh.Material_Index;
+      anEntry      : Mesh_Entry;
       Position     : GL.Types.Singles.Vector3;
       Normal       : GL.Types.Singles.Vector3;
       Tex_Coord    : GL.Types.Singles.Vector3;
       Face         : Assimp_Mesh.AI_Face;
       Index_Index  : Int := 0;
    begin
+      anEntry := aMesh_22.Entries.Element (Index);
+      anEntry.Material_Index := Material_Type'Val (aMesh.Material_Index);
+      aMesh_22.Entries.Replace (Index, anEntry);
+
       for Index in 1 .. Num_Vertices loop
          Position := aMesh.Vertices.Element (UInt (Index));
          Normal := aMesh.Normals.Element (UInt (Index));
@@ -181,6 +188,8 @@ package body Mesh_22 is
          Index_Index := Index_Index + 1;
          Indices (Int (Index)) := Face.Indices (3);
       end loop;
+
+      --  m_Entries[Index].Init(Vertices, Indices);
       Init_Buffers (anEntry, Vertices, Indices);
 
    exception
