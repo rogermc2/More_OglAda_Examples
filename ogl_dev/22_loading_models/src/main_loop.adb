@@ -44,7 +44,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Init (Window : in out Glfw.Windows.Window;
-                    theMesh : out Mesh_22.Mesh; Result : out Boolean) is
+                    theMesh : out Mesh_22.Mesh_22; Result : out Boolean) is
 
         Window_Width        : Glfw.Size;
         Window_Height       : Glfw.Size;
@@ -85,7 +85,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Render_Scene (Window : in out Glfw.Windows.Window;
-                            theMesh : Mesh_22.Mesh) is
+                            theMesh : Mesh_22.Mesh_22) is
         use Maths.Single_Math_Functions;
         use Ogldev_Basic_Lighting;
         use Ogldev_Camera;
@@ -155,7 +155,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     use Glfw.Input;
-    theMesh : Mesh_22.Mesh;
+    theMesh : Mesh_22.Mesh_22;
     Running : Boolean;
 begin
     Init (Main_Window, theMesh, Running);

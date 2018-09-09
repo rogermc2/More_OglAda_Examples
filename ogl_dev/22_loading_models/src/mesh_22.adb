@@ -31,7 +31,7 @@ package body Mesh_22 is
    end record;
    type Vertex_Array is array (Int range <>) of Vertex;
 
-   procedure Init_Materials (Initial_Mesh : in out Mesh;
+   procedure Init_Materials (Initial_Mesh : in out Mesh_22;
                              File_Name    : String;
                              theScene     : Scene.AI_Scene);
    procedure Init_Mesh (aMesh   : in out Assimp_Mesh.AI_Mesh;
@@ -71,7 +71,7 @@ package body Mesh_22 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_From_Scene (Initial_Mesh : in out Mesh;
+   procedure Init_From_Scene (Initial_Mesh : in out Mesh_22;
                               File_Name    : String;
                               theScene     : Scene.AI_Scene) is
       use Mesh_Entry_Package;
@@ -98,7 +98,7 @@ package body Mesh_22 is
 
    -------------------------------------------------------------------------
 
-   procedure Init_Materials (Initial_Mesh : in out Mesh;
+   procedure Init_Materials (Initial_Mesh : in out Mesh_22;
                              File_Name    : String;
                              theScene     : Scene.AI_Scene) is
       use Material.AI_Material_Package;
@@ -191,7 +191,7 @@ package body Mesh_22 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Load_Mesh (theMesh : in out Mesh; File_Name : String) is
+   procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String) is
       theScene : Scene.AI_Scene;
    begin
       theScene :=
@@ -213,7 +213,7 @@ package body Mesh_22 is
 
    -------------------------------------------------------------------------
 
-   procedure Render_Mesh (theMesh : Mesh) is
+   procedure Render_Mesh (theMesh : Mesh_22) is
       use Ada.Containers;
       use Mesh_Entry_Package;
       procedure Draw (Entry_Cursor :  Mesh_Entry_Package.Cursor) is
