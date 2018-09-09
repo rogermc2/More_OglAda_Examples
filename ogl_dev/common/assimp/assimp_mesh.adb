@@ -111,6 +111,32 @@ package body Assimp_Mesh is
 
     --  ------------------------------------------------------------------------
 
+    function To_AI_Vertices_Map (C_Array_Ptr : Vector_3D_Array_Pointers.Pointer;
+                                 Num_Vertices : Interfaces.C.unsigned) return Vertices_Map is
+
+        C_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
+        V_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
+        anAPI_Vector : API_Vector_3D;
+        anAI_Vector  : Singles.Vector3;
+        theMap       : Vertices_Map;
+    begin
+        C_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
+          (C_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
+        V_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
+          (C_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
+
+        for index in 1 .. Num_Vertices loop
+            anAPI_Vector := V_Array (index);
+            anAI_Vector (GL.X) := Single (anAPI_Vector.X);
+            anAI_Vector (GL.Y) := Single (anAPI_Vector.Y);
+            anAI_Vector (GL.Z) := Single (anAPI_Vector.Z);
+            theMap.Insert (UInt (index), anAI_Vector);
+        end loop;
+        return theMap;
+    end To_AI_Vertices_Map;
+
+    --  ------------------------------------------------------------------------
+
     function To_AI_Mesh (C_Mesh : API_Mesh) return AI_Mesh is
         use Interfaces.C;
         use Vector_3D_Array_Pointers;
@@ -120,55 +146,28 @@ package body Assimp_Mesh is
         --        Num_Faces    : constant unsigned :=C_Mesh.Num_Faces;
         --        Num_UV       : constant unsigned := C_Mesh.Num_UV_Components;
         --        Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
-        CVertices_Array_Ptr : constant Vector_3D_Array_Pointers.Pointer := C_Mesh.Vertices;
-        CVertices_Array     : API_Vector_3D_Array (1 .. Num_Vertices);
-        CNormals_Array_Ptr  : constant Vector_3D_Array_Pointers.Pointer := C_Mesh.Normals;
-        CNormals_Array      : API_Vector_3D_Array (1 .. Num_Vertices);
-        V_Array             : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
-        N_Array             : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
         Colours             : API_Colour_4D;
         Textures            : API_Vector_3D;
-        anAPI_Vertex        : API_Vector_3D;
-        anAPI_Normal        : API_Vector_3D;
-        anAI_Vertex         : Singles.Vector3;
-        anAI_Normal         : Singles.Vector3;
     begin
         theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
 
-        if CVertices_Array_Ptr = null then
-            Put_Line ("To_AI_Mesh exception: CVertices_Array_Ptr is null.");
+        if C_Mesh.Vertices = null then
+            Put_Line ("To_AI_Mesh exception: C_Mesh.Vertices is null.");
             raise Strings.Dereference_Error;
         end if;
 
-        if CNormals_Array_Ptr = null then
-            Put_Line ("To_AI_Mesh exception: CNormals_Array_Ptr is null.");
+        if C_Mesh.Normals = null then
+            Put_Line ("To_AI_Mesh exception: C_Mesh.Normals is null.");
             raise Strings.Dereference_Error;
         end if;
 
-        CVertices_Array := Vector_3D_Array_Pointers.Value (CVertices_Array_Ptr, ptrdiff_t (Num_Vertices));
-        CNormals_Array := Vector_3D_Array_Pointers.Value (CNormals_Array_Ptr, ptrdiff_t (Num_Vertices));
         theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
         Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
 
         --   Vertices : Vector_3D_Array_Pointer
         Put_Line ("To_AI_Mesh setting V_Array C_Mesh.Num_Vertices: " & unsigned 'Image (C_Mesh.Num_Vertices));
-        V_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
-          (CVertices_Array_Ptr, ptrdiff_t (C_Mesh.Num_Vertices));
-        N_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
-          (CNormals_Array_Ptr, ptrdiff_t (C_Mesh.Num_Vertices));
-                for index in 1 .. Num_Vertices loop
-                    anAPI_Vertex := V_Array (index);
-                    anAPI_Normal := N_Array (index);
-                    anAI_Vertex (GL.X) := Single (anAPI_Vertex.X);
-                    anAI_Vertex (GL.Y) := Single (anAPI_Vertex.Y);
-                    anAI_Vertex (GL.Z) := Single (anAPI_Vertex.Z);
-                    theAI_Mesh.Vertices.Insert (UInt (index), anAI_Vertex);
-
-                    anAI_Normal (GL.X) := Single (anAPI_Normal.X);
-                    anAI_Normal (GL.Y) := Single (anAPI_Normal.Y);
-                    anAI_Normal (GL.Z) := Single (anAPI_Normal.Z);
-                    theAI_Mesh.Normals.Insert (UInt (index), anAI_Normal);
-                end loop;
+       theAI_Mesh.Vertices := To_AI_Vertices_Map (C_Mesh.Vertices, C_Mesh.Num_Vertices);
+       theAI_Mesh.Normals := To_AI_Vertices_Map (C_Mesh.Normals, C_Mesh.Num_Vertices);
 
         for index in 1 .. API_Max_Colour_Sets loop
             if C_Mesh.Colours (unsigned (index)) /= null then
@@ -189,153 +188,153 @@ package body Assimp_Mesh is
             end if;
         end loop;
 
-    return theAI_Mesh;
+        return theAI_Mesh;
 
-exception
-    when others =>
-        Put_Line ("An exception occurred in Assimp_Mesh.To_AI_Mesh.");
-        raise;
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Assimp_Mesh.To_AI_Mesh.");
+            raise;
 
-end To_AI_Mesh;
+    end To_AI_Mesh;
 
---  ------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
-function To_AI_Mesh_Map (Num_Meshes   : Interfaces.C.unsigned := 0;
-                         C_Mesh_Array : API_Mesh_Array)
-                             return AI_Mesh_Map is
-    use Interfaces.C;
-    Meshs  : AI_Mesh_Map;
-    aMesh  : AI_Mesh;
-begin
-    --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
-    --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
+    function To_AI_Mesh_Map (Num_Meshes   : Interfaces.C.unsigned := 0;
+                             C_Mesh_Array : API_Mesh_Array)
+                         return AI_Mesh_Map is
+        use Interfaces.C;
+        Meshs  : AI_Mesh_Map;
+        aMesh  : AI_Mesh;
+    begin
+        --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
+        --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
 
-    for index in 1 .. Num_Meshes loop
-        Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
-        Put_Line (unsigned'Image (C_Mesh_Array (index).Primitive_Types) &
-                    unsigned'Image (C_Mesh_Array (index).Num_Vertices) &
-                    unsigned'Image (C_Mesh_Array (index).Num_Faces) &
-                    unsigned'Image (C_Mesh_Array (index).Num_Bones) &
-                    unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
-                    unsigned'Image (C_Mesh_Array (index).Material_Index));
-        Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name length: " &  size_t'Image (C_Mesh_Array (index).Name.Length) );
-        Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name: '" &  Interfaces.C.To_Ada (C_Mesh_Array (index).Name.Data) & "'");
-        New_Line;
-        aMesh := To_AI_Mesh (C_Mesh_Array (index));
-        Meshs.Insert (UInt (index), aMesh);
-    end loop;
+        for index in 1 .. Num_Meshes loop
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
+            Put_Line (unsigned'Image (C_Mesh_Array (index).Primitive_Types) &
+                        unsigned'Image (C_Mesh_Array (index).Num_Vertices) &
+                        unsigned'Image (C_Mesh_Array (index).Num_Faces) &
+                        unsigned'Image (C_Mesh_Array (index).Num_Bones) &
+                        unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
+                        unsigned'Image (C_Mesh_Array (index).Material_Index));
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name length: " &  size_t'Image (C_Mesh_Array (index).Name.Length) );
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name: '" &  Interfaces.C.To_Ada (C_Mesh_Array (index).Name.Data) & "'");
+            New_Line;
+            aMesh := To_AI_Mesh (C_Mesh_Array (index));
+            Meshs.Insert (UInt (index), aMesh);
+        end loop;
 
-    return Meshs;
+        return Meshs;
 
-exception
-    when others =>
-        Put_Line ("An exception occurred in Assimp_Mesh.To_AI_Mesh_Map.");
-        raise;
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Assimp_Mesh.To_AI_Mesh_Map.");
+            raise;
 
-end To_AI_Mesh_Map;
+    end To_AI_Mesh_Map;
 
---  ------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
-procedure To_API_Mesh (anAI_Mesh : AI_Mesh; C_Mesh : in out API_Mesh) is
-    use Interfaces;
-    use Faces_Package;
-    V_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Vertices));
-    N_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Normals));
-    T_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Tangents));
-    BT_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bit_Tangents));
-    B_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bones));
-    F_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Faces));
-    --          Colour_Ptrs   : API_Vectors_Matrices.API_Colour_4D_Ptr_Array;
-    V_Array   : aliased  API_Vector_3D_Array (1 .. V_Length);
-    N_Array   : aliased  API_Vector_3D_Array (1 .. N_Length);
-    T_Array   : aliased  API_Vector_3D_Array (1 .. T_Length);
-    BT_Array  : aliased  API_Vector_3D_Array (1 .. BT_Length);
-    --        B_Array   : aliased  API_Vector_3D_Array (1 .. B_Length);
-    F_Array   : aliased  API_Faces_Array (1 .. F_Length);
-    F_Curs    : Faces_Package.Cursor := anAI_Mesh.Faces.First;
-begin
-    C_Mesh.Num_Vertices := V_Length;
-    C_Mesh.Num_Faces := F_Length;
-    C_Mesh.Num_Bones := B_Length;
-    for index in GL.Types.Int range 1 .. API_Max_Texture_Coords loop
-        C_Mesh.Num_UV_Components (C.unsigned (index)) := C.unsigned (anAI_Mesh.Num_UV_Components (index));
-    end loop;
-    C_Mesh.Material_Index := C.unsigned (anAI_Mesh.Material_Index);
-    C_Mesh.Name := Assimp_Util.To_Assimp_API_String (anAI_Mesh.Name);
-    for index in UInt range 1 .. API_Max_Colour_Sets loop
-        null;
-        --              Colour_Ptrs (Integer (index)).R := C.C_float (anAI_Mesh.Colours (index).R);
-        --              Colour_Ptrs (Integer (index)).G := C.C_float (anAI_Mesh.Colours (index).G);
-        --              Colour_Ptrs (Integer (index)).B := C.C_float (anAI_Mesh.Colours (index).B);
-        --              Colour_Ptrs (Integer (index)).A := C.C_float (anAI_Mesh.Colours (index).A);
-    end loop;
-    for index in 1 .. API_Max_Texture_Coords loop
-        null;
-        --              C_Mesh.Texture_Coords (C.unsigned (index)).X :=
-        --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
-        --              C_Mesh.Texture_Coords (C.unsigned (index)).Y :=
-        --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y));
-        --              C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
-        --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
-    end loop;
-    Vertices_To_API (anAI_Mesh.Vertices, V_Array);
-    Vertices_To_API (anAI_Mesh.Normals, N_Array);
-    Vertices_To_API (anAI_Mesh.Tangents, T_Array);
-    Vertices_To_API (anAI_Mesh.Bit_Tangents, BT_Array);
+    procedure To_API_Mesh (anAI_Mesh : AI_Mesh; C_Mesh : in out API_Mesh) is
+        use Interfaces;
+        use Faces_Package;
+        V_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Vertices));
+        N_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Normals));
+        T_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Tangents));
+        BT_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bit_Tangents));
+        B_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bones));
+        F_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Faces));
+        --          Colour_Ptrs   : API_Vectors_Matrices.API_Colour_4D_Ptr_Array;
+        V_Array   : aliased  API_Vector_3D_Array (1 .. V_Length);
+        N_Array   : aliased  API_Vector_3D_Array (1 .. N_Length);
+        T_Array   : aliased  API_Vector_3D_Array (1 .. T_Length);
+        BT_Array  : aliased  API_Vector_3D_Array (1 .. BT_Length);
+        --        B_Array   : aliased  API_Vector_3D_Array (1 .. B_Length);
+        F_Array   : aliased  API_Faces_Array (1 .. F_Length);
+        F_Curs    : Faces_Package.Cursor := anAI_Mesh.Faces.First;
+    begin
+        C_Mesh.Num_Vertices := V_Length;
+        C_Mesh.Num_Faces := F_Length;
+        C_Mesh.Num_Bones := B_Length;
+        for index in GL.Types.Int range 1 .. API_Max_Texture_Coords loop
+            C_Mesh.Num_UV_Components (C.unsigned (index)) := C.unsigned (anAI_Mesh.Num_UV_Components (index));
+        end loop;
+        C_Mesh.Material_Index := C.unsigned (anAI_Mesh.Material_Index);
+        C_Mesh.Name := Assimp_Util.To_Assimp_API_String (anAI_Mesh.Name);
+        for index in UInt range 1 .. API_Max_Colour_Sets loop
+            null;
+            --              Colour_Ptrs (Integer (index)).R := C.C_float (anAI_Mesh.Colours (index).R);
+            --              Colour_Ptrs (Integer (index)).G := C.C_float (anAI_Mesh.Colours (index).G);
+            --              Colour_Ptrs (Integer (index)).B := C.C_float (anAI_Mesh.Colours (index).B);
+            --              Colour_Ptrs (Integer (index)).A := C.C_float (anAI_Mesh.Colours (index).A);
+        end loop;
+        for index in 1 .. API_Max_Texture_Coords loop
+            null;
+            --              C_Mesh.Texture_Coords (C.unsigned (index)).X :=
+            --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
+            --              C_Mesh.Texture_Coords (C.unsigned (index)).Y :=
+            --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y));
+            --              C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
+            --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
+        end loop;
+        Vertices_To_API (anAI_Mesh.Vertices, V_Array);
+        Vertices_To_API (anAI_Mesh.Normals, N_Array);
+        Vertices_To_API (anAI_Mesh.Tangents, T_Array);
+        Vertices_To_API (anAI_Mesh.Bit_Tangents, BT_Array);
 
-    while Has_Element (F_Curs) loop
-        declare
-            use Ada.Containers;
-            use Indices_Package;
-            aFace     : constant AI_Face := Element (F_Curs);
-            Index_Map : constant Indices_Map := aFace.Indices;
-            F_Indices : array (1 .. Index_Map.Length) of aliased Interfaces.C.unsigned;
-            Index     : Count_Type;
-        begin
-            for I_Cursor in Index_Map.Iterate loop
-                Index := Count_Type (Key (I_Cursor));
-                F_Indices (Index) := Interfaces.C.unsigned (Element (I_Cursor));
-            end loop;
-            F_Array (C.unsigned (Key (F_Curs))).Indices := F_Indices (1)'Unchecked_Access;
-        end;
-        Next (F_Curs);
-    end loop;
+        while Has_Element (F_Curs) loop
+            declare
+                use Ada.Containers;
+                use Indices_Package;
+                aFace     : constant AI_Face := Element (F_Curs);
+                Index_Map : constant Indices_Map := aFace.Indices;
+                F_Indices : array (1 .. Index_Map.Length) of aliased Interfaces.C.unsigned;
+                Index     : Count_Type;
+            begin
+                for I_Cursor in Index_Map.Iterate loop
+                    Index := Count_Type (Key (I_Cursor));
+                    F_Indices (Index) := Interfaces.C.unsigned (Element (I_Cursor));
+                end loop;
+                F_Array (C.unsigned (Key (F_Curs))).Indices := F_Indices (1)'Unchecked_Access;
+            end;
+            Next (F_Curs);
+        end loop;
 
-    --        C_Mesh.Colours := Colours (0)'access;
-    C_Mesh.Vertices := V_Array (V_Array'First)'Unchecked_Access;
-    C_Mesh.Normals := N_Array (N_Array'First)'Unchecked_Access;
-    C_Mesh.Tangents := T_Array (T_Array'First)'Unchecked_Access;
-    C_Mesh.Bit_Tangents := BT_Array (BT_Array'First)'Unchecked_Access;
-    --        C_Mesh.Bones := B_Array (B_Array'First)'Unchecked_Access;
-    C_Mesh.Faces := F_Array (F_Array'First)'Unchecked_Access;
+        --        C_Mesh.Colours := Colours (0)'access;
+        C_Mesh.Vertices := V_Array (V_Array'First)'Unchecked_Access;
+        C_Mesh.Normals := N_Array (N_Array'First)'Unchecked_Access;
+        C_Mesh.Tangents := T_Array (T_Array'First)'Unchecked_Access;
+        C_Mesh.Bit_Tangents := BT_Array (BT_Array'First)'Unchecked_Access;
+        --        C_Mesh.Bones := B_Array (B_Array'First)'Unchecked_Access;
+        C_Mesh.Faces := F_Array (F_Array'First)'Unchecked_Access;
 
-exception
-    when others =>
-        Put_Line ("An exception occurred in Assimp_Mesh.To_API_Mesh.");
-        raise;
-end To_API_Mesh;
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Assimp_Mesh.To_API_Mesh.");
+            raise;
+    end To_API_Mesh;
 
---  ------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
-procedure Vertices_To_API (Vertices : Vertices_Map; V_Array  : in out API_Vector_3D_Array) is
-    use Interfaces;
-    use Vertices_Package;
+    procedure Vertices_To_API (Vertices : Vertices_Map; V_Array  : in out API_Vector_3D_Array) is
+        use Interfaces;
+        use Vertices_Package;
 
-    V_Curs   : Vertices_Package.Cursor := Vertices.First;
-begin
-    while Has_Element (V_Curs) loop
-        V_Array (C.unsigned (Key (V_Curs))).X := C.C_float (Element (V_Curs) (GL.X));
-        V_Array (C.unsigned (Key (V_Curs))).Y := C.C_float (Element (V_Curs) (GL.Y));
-        V_Array (C.unsigned (Key (V_Curs))).Z := C.C_float (Element (V_Curs) (GL.Z));
-        Next (V_Curs);
-    end loop;
+        V_Curs   : Vertices_Package.Cursor := Vertices.First;
+    begin
+        while Has_Element (V_Curs) loop
+            V_Array (C.unsigned (Key (V_Curs))).X := C.C_float (Element (V_Curs) (GL.X));
+            V_Array (C.unsigned (Key (V_Curs))).Y := C.C_float (Element (V_Curs) (GL.Y));
+            V_Array (C.unsigned (Key (V_Curs))).Z := C.C_float (Element (V_Curs) (GL.Z));
+            Next (V_Curs);
+        end loop;
 
-exception
-    when others =>
-        Put_Line ("An exception occurred in Assimp_Mesh.Vertices_To_API.");
-        raise;
-end Vertices_To_API;
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Assimp_Mesh.Vertices_To_API.");
+            raise;
+    end Vertices_To_API;
 
---  ------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
 end Assimp_Mesh;
