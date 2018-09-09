@@ -112,8 +112,8 @@ package body Assimp_Mesh is
     --  ------------------------------------------------------------------------
 
     function To_AI_Mesh (C_Mesh : API_Mesh) return AI_Mesh is
-      use Interfaces.C;
-      use Colours_4D_Array_Pointers;
+        use Interfaces.C;
+        --        use Colours_4D_Array_Pointers;
         use Vector_3D_Array_Pointers;
         use API_Vectors_Matrices;
         theAI_Mesh   : AI_Mesh;
@@ -122,9 +122,9 @@ package body Assimp_Mesh is
         --        Num_UV       : constant unsigned := C_Mesh.Num_UV_Components;
         --        Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
         --          V_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
-        CV_Array_Ptr : Vector_3D_Array_Pointers.Pointer;
-        CV_Array     : API_Vector_3D_Array (1 .. Num_Vertices);
-        Colour_Array_Length : ptrdiff_t;
+        CV_Array_Ptr     : Vector_3D_Array_Pointers.Pointer;
+        CV_Array         : API_Vector_3D_Array (1 .. Num_Vertices);
+        Colours          : API_Colour_4D;
         Texture_Array_Length : ptrdiff_t;
         --          anAPI_Vertex : API_Vector_3D;
         --          anAI_Vertex  : Singles.Vector3;
@@ -139,21 +139,16 @@ package body Assimp_Mesh is
         theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
         Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
         theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
-        --          Put_Line ("To_AI_Mesh  CV_Array_Ptr X." & C.C_Float'Image (CV_Array_Ptr.X));
-        if C_Mesh.Colours /= Null then
-            Colour_Array_Length := Colours_4D_Array_Pointers.Virtual_Length (C_Mesh.Colours);
-            declare
-                API_Colours  : API_Colours_4D_Array (1 .. unsigned (Colour_Array_Length)) :=
-                                 Colours_4D_Array_Pointers.Value (C_Mesh.Colours);
-            begin
-                for index in API_Colours'First .. API_Colours'Last loop
-                    theAI_Mesh.Colours (UInt (index)).R := Single (API_Colours (unsigned (index)).R);
-                    theAI_Mesh.Colours (UInt (index)).G := Single (API_Colours (unsigned (index)).G);
-                    theAI_Mesh.Colours (UInt (index)).B := Single (API_Colours (unsigned (index)).B);
-                    theAI_Mesh.Colours (UInt (index)).A := Single (API_Colours (unsigned (index)).A);
-                end loop;
-            end;
-        end if;
+
+        for index in 1 .. API_Max_Colour_Sets loop
+            if C_Mesh.Colours (unsigned (index)) /= null then
+                Colours := C_Mesh.Colours (unsigned (index)).all;
+                theAI_Mesh.Colours (UInt (index)).R := Single (Colours.R);
+                theAI_Mesh.Colours (UInt (index)).G := Single (Colours.G);
+                theAI_Mesh.Colours (UInt (index)).B := Single (Colours.B);
+                theAI_Mesh.Colours (UInt (index)).A := Single (Colours.A);
+            end if;
+        end loop;
 
         --   Vertices : Vector_3D_Array_Pointer
         Put_Line ("To_AI_Mesh setting V_Array C_Mesh.Num_Vertices: " & unsigned 'Image (C_Mesh.Num_Vertices));
@@ -167,8 +162,8 @@ package body Assimp_Mesh is
         --              theAI_Mesh.Vertices.Insert (UInt (index), anAI_Vertex);
         --          end loop;
 
-      if C_Mesh.Texture_Coords /= null then
-          Texture_Array_Length := Vector_3D_Array_Pointers.Virtual_Length (C_Mesh.Texture_Coords);
+        if C_Mesh.Texture_Coords /= null then
+            Texture_Array_Length := Vector_3D_Array_Pointers.Virtual_Length (C_Mesh.Texture_Coords);
             declare
                 API_Textures_Coords  : API_Vector_3D_Array (1 .. unsigned (Texture_Array_Length)) :=
                                          Vector_3D_Array_Pointers.Value  (C_Mesh.Texture_Coords);
@@ -197,13 +192,13 @@ package body Assimp_Mesh is
 
     function To_AI_Mesh_Map (Num_Meshes   : Interfaces.C.unsigned := 0;
                              C_Mesh_Array : API_Mesh_Array)
-                            return AI_Mesh_Map is
+                             return AI_Mesh_Map is
         use Interfaces.C;
         Meshs  : AI_Mesh_Map;
         aMesh  : AI_Mesh;
     begin
---          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
---          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
+        --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
+        --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
 
         for index in 1 .. Num_Meshes loop
             Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
@@ -240,7 +235,7 @@ package body Assimp_Mesh is
         BT_Length : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bit_Tangents));
         B_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Bones));
         F_Length  : constant C.unsigned := C.unsigned (Length (anAI_Mesh.Faces));
-        Colours   : API_Vectors_Matrices.API_Colours_4D_Array (1 .. API_Max_Colour_Sets);
+        --          Colour_Ptrs   : API_Vectors_Matrices.API_Colour_4D_Ptr_Array;
         V_Array   : aliased  API_Vector_3D_Array (1 .. V_Length);
         N_Array   : aliased  API_Vector_3D_Array (1 .. N_Length);
         T_Array   : aliased  API_Vector_3D_Array (1 .. T_Length);
@@ -252,25 +247,26 @@ package body Assimp_Mesh is
         C_Mesh.Num_Vertices := V_Length;
         C_Mesh.Num_Faces := F_Length;
         C_Mesh.Num_Bones := B_Length;
-        for index in Int range 1 .. API_Max_Texture_Coords loop
+        for index in GL.Types.Int range 1 .. API_Max_Texture_Coords loop
             C_Mesh.Num_UV_Components (C.unsigned (index)) := C.unsigned (anAI_Mesh.Num_UV_Components (index));
         end loop;
         C_Mesh.Material_Index := C.unsigned (anAI_Mesh.Material_Index);
         C_Mesh.Name := Assimp_Util.To_Assimp_API_String (anAI_Mesh.Name);
         for index in UInt range 1 .. API_Max_Colour_Sets loop
-            Colours (C.unsigned (index)).R := C.C_float (anAI_Mesh.Colours (index).R);
-            Colours (C.unsigned (index)).G := C.C_float (anAI_Mesh.Colours (index).G);
-            Colours (C.unsigned (index)).B := C.C_float (anAI_Mesh.Colours (index).B);
-            Colours (C.unsigned (index)).A := C.C_float (anAI_Mesh.Colours (index).A);
+            null;
+            --              Colour_Ptrs (Integer (index)).R := C.C_float (anAI_Mesh.Colours (index).R);
+            --              Colour_Ptrs (Integer (index)).G := C.C_float (anAI_Mesh.Colours (index).G);
+            --              Colour_Ptrs (Integer (index)).B := C.C_float (anAI_Mesh.Colours (index).B);
+            --              Colour_Ptrs (Integer (index)).A := C.C_float (anAI_Mesh.Colours (index).A);
         end loop;
-      for index in 1 .. API_Max_Texture_Coords loop
-         null;
---              C_Mesh.Texture_Coords (C.unsigned (index)).X :=
---                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
---              C_Mesh.Texture_Coords (C.unsigned (index)).Y :=
---                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y));
---              C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
---                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
+        for index in 1 .. API_Max_Texture_Coords loop
+            null;
+            --              C_Mesh.Texture_Coords (C.unsigned (index)).X :=
+            --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.X));
+            --              C_Mesh.Texture_Coords (C.unsigned (index)).Y :=
+            --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Y));
+            --              C_Mesh.Texture_Coords (C.unsigned (index)).Z :=
+            --                C.C_float (anAI_Mesh.Texture_Coords (GL.Types.Int (index)) (GL.Z));
         end loop;
         Vertices_To_API (anAI_Mesh.Vertices, V_Array);
         Vertices_To_API (anAI_Mesh.Normals, N_Array);
