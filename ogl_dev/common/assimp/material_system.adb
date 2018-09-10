@@ -34,23 +34,19 @@ package body Material_System is
                 use Interfaces.C.Strings;
                 Property_Ptr_Array : API_Property_Ptr_Array := Value (aMaterial.Properties);
             begin
-                while Prop_Index < Num_Props and not Found loop
-                    Prop_Index := Prop_Index + 1;
-                    Put_Line ("Material_System.Get_Material_Property Prop_Index: " & unsigned'Image (Prop_Index));
+            while Prop_Index < Num_Props and not Found loop
+
                     aProperty := Property_Ptr_Array (Prop_Index).all;
-                    Put_Line ("Material_System.Get_Material_Property, Key.Length, Property_Type, Property_Index: " &
-                                size_t'Image (aProperty.Key.Length) & unsigned'Image (aProperty.Data_Type'Enum_Rep) &
-                                unsigned'Image (aProperty.Index));
                     Found := aProperty.Key.Data = Key.Data and aProperty.Data_Type = Property_Type and
-                      aProperty.Index = Property_Index;
+                    aProperty.Index = Property_Index;
                     if Found then
                         theProperty := aProperty;
                         Result :=  Assimp_Types.API_Return_Success;
                     end if;
+                    Prop_Index := Prop_Index + 1;
                 end loop;
                 if not Found then
                     Put_Line ("Material_System.Get_Material_Property; Requested property not found.");
-
                 end if;
             end;
         else

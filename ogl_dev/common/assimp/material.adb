@@ -126,9 +126,6 @@ package body Material is
       Put_Line ("Material.To_AI_Materials_Map Num_Materials: " &
                   Interfaces.C.unsigned'Image (Num_Materials));
       for mat in 1 .. Num_Materials loop
-         Put_Line ("Material.To_AI_Materials_Map mat: " & unsigned'Image (mat));
-         Put_Line ("Material.To_AI_Materials_Map C_Material.Num_Properties: " &
-                     unsigned'Image (C_Material_Array (mat).Num_Properties));
          aMaterial := To_AI_Material (C_Material_Array (mat));
          Material_Map.Insert (UInt (mat), aMaterial);
       end loop;
@@ -156,8 +153,6 @@ package body Material is
       Result       : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
       Put_Line ("Material.To_AI_Property Key_Length: " & size_t'Image (Key_Length));
-      Put_Line ("Material.To_AI_Property Data_Type: " &
-                  AI_Property_Type_Info'Image (API_Property.Data_Type));
       if Key_Length > 0 then
          declare
             Key_Data  : constant String (1 .. Integer (Key_Length)) := To_Ada (API_Prop.Key.Data);
@@ -168,7 +163,6 @@ package body Material is
       end if;
 
       AI_Property.Semantic := UInt (API_Prop.Semantic);
-      Put_Line ("Material.To_AI_Property aProperty.Semantic: " & UInt'Image (AI_Property.Semantic));
       AI_Property.Index := UInt (API_Prop.Index);
       AI_Property.Data_Type := API_Prop.Data_Type;
       Put_Line ("Material.To_AI_Property Semantic, Index: " &
@@ -209,20 +203,18 @@ package body Material is
       AI_Properties  : AI_Material_Property_List;
       aProperty      : API_Material_Property;
    begin
-      Put_Line ("Material.To_AI_Property_List Property_Array'Length " &
-                     unsigned'Image (Property_Ptr_Array'Length));
       for Property_Index in unsigned range 1 .. Property_Ptr_Array'Length loop
          New_Line;
          aProperty := Property_Ptr_Array (Property_Index).all;
          Put_Line ("Material.To_AI_Property_List appending Property_Index " &
                      unsigned'Image (Property_Index));
-         Put_Line ("Material.To_AI_Property_List Key.Length: " &
-                     size_t'Image (aProperty.Key.Length) &
-                     "  " & To_Ada (aProperty.Key.Data));
-         Put_Line ("Material.To_AI_Property_List Data_Length: " &
-                     unsigned'Image (aProperty.Data_Length));
-         Put_Line ("Material.To_AI_Property_List Data_Type: " &
-                     AI_Property_Type_Info'Image (aProperty.Data_Type));
+--           Put_Line ("Material.To_AI_Property_List Key.Length: " &
+--                       size_t'Image (aProperty.Key.Length) &
+--                       "  " & To_Ada (aProperty.Key.Data));
+--           Put_Line ("Material.To_AI_Property_List Data_Length: " &
+--                       unsigned'Image (aProperty.Data_Length));
+--           Put_Line ("Material.To_AI_Property_List Data_Type: " &
+--                       AI_Property_Type_Info'Image (aProperty.Data_Type));
          AI_Properties.Append (To_AI_Property (anAPI_Material, aProperty));
          New_Line;
       end loop;
