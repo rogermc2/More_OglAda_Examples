@@ -14,33 +14,30 @@ package body Material_System is
                                  return Assimp_Types.API_Return is
       use Interfaces.C;
       use Material;
-      use Material.Property_Array_Pointers_Package;
-      Property_Array_Ptr  :  constant Property_Array_Pointers_Package.Pointer := aMaterial.Properties.all;
+      use Material.Property_Ptr_Array_Package;
       Num_Props  : constant Interfaces.C.unsigned := aMaterial.Num_Properties;
       Result     :  Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
       aProperty  :  Material.API_Material_Property;
       Found      : Boolean := False;
       Prop_Index : unsigned := 0;
    begin
---        Put_Line ("Material_System.Get_Material_Property, Num_Props: " & unsigned'Image (Num_Props));
       Put_Line ("Material_System.Get_Material_Property, requested Key.Length, Property_Type, Property_Index: ");
       Put_Line (size_t'Image (Key.Length) & " " &
                   Material.AI_Property_Type_Info'Image (Property_Type) &
                   unsigned'Image (Property_Index));
-      if Property_Array_Ptr = null then
+      if aMaterial.Properties = null then
             raise Interfaces.C.Strings.Dereference_Error with
-              "Material_System.Get_Material_Property, Property_Array_Ptr is null";
+              "Material_System.Get_Material_Property, aMaterial.Properties is null";
 
       elsif Num_Props > 0 then
             declare
                 use Interfaces.C.Strings;
-                Property_Array  : Material.API_Property_Array (1 .. Num_Props);
+                Property_Ptr_Array : API_Property_Ptr_Array := Value (aMaterial.Properties);
             begin
-                Property_Array := Value (Property_Array_Ptr, ptrdiff_t (Num_Props));
                 while Prop_Index < Num_Props and not Found loop
                     Prop_Index := Prop_Index + 1;
                     Put_Line ("Material_System.Get_Material_Property Prop_Index: " & unsigned'Image (Prop_Index));
-                    aProperty := Property_Array (Prop_Index);
+                    aProperty := Property_Ptr_Array (Prop_Index).all;
                     Put_Line ("Material_System.Get_Material_Property, Key.Length, Property_Type, Property_Index: " &
                                 size_t'Image (aProperty.Key.Length) & unsigned'Image (aProperty.Data_Type'Enum_Rep) &
                                 unsigned'Image (aProperty.Index));
