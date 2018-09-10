@@ -15,7 +15,7 @@ package body Material_System is
       use Interfaces.C;
       use Material;
       use Material.Property_Array_Pointers_Package;
-      Property_Array_Ptr  :  constant Material.API_Property_Array_Ptr := aMaterial.Properties.all;
+      Property_Array_Ptr  :  constant Property_Array_Pointers_Package.Pointer := aMaterial.Properties.all;
       Num_Props  : constant Interfaces.C.unsigned := aMaterial.Num_Properties;
       Result     :  Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
       aProperty  :  Material.API_Material_Property;

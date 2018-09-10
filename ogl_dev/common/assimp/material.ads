@@ -45,12 +45,12 @@ package Material is
                             AI_Texture_Unknown);
    pragma Convention (C, AI_Texture_Type);
 
-   for AI_Property_Type_Info use (PTI_Float      => 1,
-                                  PTI_Double     => 2,
-                                  PTI_String     => 3,
-                                  PTI_Integer    => 4,
-                                  PTI_Buffer     => 5,
-                                  PTI_Force32Bit => Integer'Last);
+   for AI_Property_Type_Info use (PTI_Float      => 16#1#,
+                                  PTI_Double     => 16#2#,
+                                  PTI_String     => 16#3#,
+                                  PTI_Integer    => 16#4#,
+                                  PTI_Buffer     => 16#5#,
+                                  PTI_Force32Bit => 16#9fffffff#);
 
    type AI_Material_Property is record
       Key         : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
@@ -81,12 +81,16 @@ package Material is
       Key         : Assimp_Types.API_String;  --  One of the AI_MATKEY_XXX constants
                                               --  http://assimp.sourceforge.net/lib_html/material_8h.html
       Semantic    : Interfaces.C.unsigned := 0;
-      Index       : Interfaces.C.unsigned := 0;
-      Data_Length : Interfaces.C.unsigned := 0;
+      Index       : Interfaces.C.unsigned := 0;  --  Texture index
+      Data_Length : Interfaces.C.unsigned := 0;  --  Actual must not be 0
+      --  Data_Type provides information for the property.
+      --  It defines the data layout inside the data buffer.
+      --  This is used by the library internally to perform debug checks and to
+      --  utilize proper type conversions.
       Data_Type   : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
-      Data        : Assimp_Types.Data_Pointer;
---        Data        : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
+      Data        : access UByte := null;
+--        Data        : Assimp_Types.Data_Pointer := null;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material_Property);
 
@@ -94,13 +98,15 @@ package Material is
      of aliased API_Material_Property;
    pragma Convention (C, API_Property_Array);
 
+   --  type Pointer is access all API_Material_Property
+   --  It is C-compatible and corresponds to one use of C's API_Material_Property *
    package Property_Array_Pointers_Package is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Material_Property, API_Property_Array,
       API_Material_Property'(others => <>));
    subtype API_Property_Array_Ptr is Property_Array_Pointers_Package.Pointer;
 
    type API_Material is record
-      Properties     : access API_Property_Array_Ptr := null;
+      Properties     : access Property_Array_Pointers_Package.Pointer := null;
       Num_Properties : Interfaces.C.unsigned := 0;
       Num_Allocated  : Interfaces.C.unsigned := 0;
    end record;
