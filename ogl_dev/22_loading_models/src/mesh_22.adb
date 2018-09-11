@@ -117,15 +117,10 @@ package body Mesh_22 is
          use Ogldev_Texture.Mesh_Texture_Package;
          aMaterial  : constant AI_Material := Element (Curs);
          aTexture   : Ogldev_Texture.Ogl_Texture;
+         Index      : GL.Types.UInt := Key (Curs);
       begin
-         for index in 1 .. theMesh.Textures.Length loop
-            theMesh.Textures.Delete_First;
-         end loop;
-         Put_Line ("Mesh_22.Init_Materials.Load_Textures Textures.Length: " &
-                     Ada.Containers.Count_Type'Image (theMesh.Textures.Length));
-         for index in 1 .. theMesh.Textures.Length loop
             if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
-               Get_Texture (aMaterial, AI_Texture_Diffuse, UInt (index), Path, Result);
+               Get_Texture (aMaterial, AI_Texture_Diffuse, 0, Path, Result);
                if Result = Assimp_Types.API_Return_Success then
                   Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name);
@@ -139,7 +134,6 @@ package body Mesh_22 is
                end if;
                Ogldev_Texture.Load (aTexture);
             end if;
-         end loop;
       end Load_Textures;
 
    begin
