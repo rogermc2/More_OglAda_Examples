@@ -9,23 +9,27 @@ with Material_System;
 
 package body Material is
 
-   --      procedure To_API_Material (aMaterial : AI_Material; theAPI_Material : in out API_Material);
    function To_AI_Property_List (anAPI_Material : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
-                                  return AI_Material_Property_List;
+                                 return AI_Material_Property_List;
+   procedure To_API_Property (aProperty       : AI_Material_Property;
+                              Raw_Data   : in out Assimp_Types.Raw_Byte_Data;
+                              theAPI_Property : in out API_Material_Property);
+   procedure To_API_Material (aMaterial       : AI_Material;
+                              theAPI_Material : in out API_Material);
 
    --  -------------------------------------------------------------------------
 
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
                           Path      : out Ada.Strings.Unbounded.Unbounded_String;
-                          Result    : out Assimp_Types.ApI_Return) is
+                          Result    : out Assimp_Types.API_Return) is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
       Material : API_Material;
       C_Path   : aliased Assimp_Types.API_String;
    begin
-      --        To_API_Material (aMaterial, Material);
+      To_API_Material (aMaterial, Material);
       Result :=
         Assimp.API.Get_Material_Texture1
           (Material, Tex_Type, unsigned (Tex_Index), C_Path'Access);
@@ -33,7 +37,7 @@ package body Material is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.Get_Texture.");
+         Put_Line ("An exception occurred in Material.Get_Texture 1.");
          raise;
    end Get_Texture;
 
@@ -55,6 +59,7 @@ package body Material is
       UV         : aliased unsigned;
       C_Blend    : aliased C_float;
    begin
+      To_API_Material (aMaterial, C_Material);
       Result := Assimp.API.Get_Material_Texture
         (C_Material, Tex_Type, unsigned (Tex_Index), C_Path'Access,
          Mapping, UV'Access, C_Blend'Access, Op, Map_Mode);
@@ -65,7 +70,7 @@ package body Material is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.Get_Texture.");
+         Put_Line ("An exception occurred in Material.Get_Texture 2.");
          raise;
    end Get_Texture;
 
@@ -247,6 +252,77 @@ package body Material is
          raise;
 
    end To_AI_Property_List;
+
+   --  ----------------------------------------------------------------------
+
+   procedure To_API_Material (aMaterial       : AI_Material;
+                              theAPI_Material : in out API_Material) is
+      use Interfaces.C;
+      use AI_Material_Property_Package;
+      Curs      : Cursor := aMaterial.Properties.First;
+      Ptr_Array : API_Property_Ptr_Array
+        (1 .. unsigned (Length (aMaterial.Properties)));
+      Index     : unsigned := 0;
+      aProperty      : AI_Material_Property;
+      anAPI_Property : API_Material_Property;
+   begin
+      --        Properties     : Property_Ptr_Array_Package.Pointer := null;
+      while Has_Element (Curs) loop
+         Index := Index + 1;
+         aProperty := Element (curs);
+         declare
+            Raw_Data  : Assimp_Types.Raw_Byte_Data
+              (1 .. UInt (aProperty.Data_Buffer.Length));
+            Raw_Ptr   : Assimp_Types.Data_Pointer := Raw_Data (1)'Access;
+         begin
+         To_API_Property (aProperty, Raw_Data, anAPI_Property);
+            Ptr_Array (index) := null;
+         end;
+         Next (curs);
+      end loop;
+      theAPI_Material.Num_Properties := unsigned (Length (aMaterial.Properties));
+      theAPI_Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_API_Material.");
+         raise;
+
+   end To_API_Material;
+
+   --  ----------------------------------------------------------------------
+
+   procedure To_API_Property (aProperty : AI_Material_Property;
+                              Raw_Data  : in out Assimp_Types.Raw_Byte_Data;
+                              theAPI_Property : in out API_Material_Property) is
+      use Interfaces.C;
+      use Assimp_Types;
+      use Assimp_Types.Byte_Data_Package;
+      Name       : String := Ada.Strings.Unbounded.To_String (aProperty.Key);
+      Data       : Byte_Data_List := aProperty.Data_Buffer;
+      Curs       : Cursor := Data.First;
+      Raw_Length : unsigned := unsigned (aProperty.Data_Buffer.Length);
+--        Raw_Data   : Raw_Byte_Data (1 .. UInt (Raw_Length));
+      Index      : UInt := 0;
+   begin
+      theAPI_Property.Key.Length := Name'Length;
+      theAPI_Property.Key.Data := To_C (Name);
+      theAPI_Property.Semantic := unsigned (aProperty.Semantic);
+      theAPI_Property.Texture_Index := unsigned (aProperty.Texture_Index);
+      theAPI_Property.Data_Length := Raw_Length;
+      theAPI_Property.Data_Type := aProperty.Data_Type;
+      --  Data holds the property's value. Its size is always Data_Length
+      while Has_Element (Curs) loop
+         Index := Index + 1;
+         Raw_Data (Index) := Element (Curs);
+         Next (Curs);
+      end loop;
+      theAPI_Property.Data := Raw_Data (1)'Access;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.To_API_Propert.");
+         raise;
+
+   end To_API_Property;
 
    --  ----------------------------------------------------------------------
 

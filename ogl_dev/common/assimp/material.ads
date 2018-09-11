@@ -52,12 +52,26 @@ package Material is
                                   PTI_Buffer     => 16#5#,
                                   PTI_Force32Bit => 16#9fffffff#);
 
+--     type AI_Material_Property (Data_Type : AI_Property_Type_Info) is record
    type AI_Material_Property is record
       Key            : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
       Semantic       : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
       Texture_Index  : GL.Types.UInt := 0;  --  Index for textures
       Data_Type      : AI_Property_Type_Info := PTI_Float;
-      Data_Buffer    : Assimp_Types.Byte_Data_List;
+--        case Data_Type is
+--           when PTI_Float =>
+--              Data_Single    : Single;
+--           when PTI_Double =>
+--              Data_Double    : Double;
+--           when PTI_String =>
+--              Data_String    : Ada.Strings.Unbounded.Unbounded_String;
+--           when PTI_Integer =>
+--              Data_Integer    : GL.Types.Int;
+--           when PTI_Buffer =>
+--              Data_Buffer    : Assimp_Types.Byte_Data_List;
+--           when PTI_Force32Bit  =>
+--              Data_Force32Bit    : GL.Types.Int;
+--        end case;
 --        Data_Buffer : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
    end record;
 
