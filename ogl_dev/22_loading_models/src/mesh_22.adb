@@ -99,9 +99,8 @@ package body Mesh_22 is
 
    -------------------------------------------------------------------------
 
-   procedure Init_Materials (theMesh : in out Mesh_22;
-                             File_Name    : String;
-                             theScene     : Scene.AI_Scene) is
+   procedure Init_Materials (theMesh : in out Mesh_22; File_Name : String;
+                             theScene : Scene.AI_Scene) is
       use Material.AI_Material_Package;
       use Assimp_Types;
       use Material;
