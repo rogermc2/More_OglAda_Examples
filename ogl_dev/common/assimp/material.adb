@@ -26,8 +26,13 @@ package body Material is
                            Result    : out Assimp_Types.API_Return) is
         use Interfaces.C;
         use Ada.Strings.Unbounded;
-        Material : API_Material;
+        Material : aliased API_Material;
         C_Path   : aliased Assimp_Types.API_String;
+        Properties_Length   : unsigned := unsigned (Length (aMaterial.Properties));
+        API_Property_Array  : array (1 .. Properties_Length) of
+              aliased API_Material_Property;
+        API_Property_Ptr_Array  : array
+              (1 .. Properties_Length) of access API_Material_Property;
     begin
         Material.Num_Properties := unsigned (aMaterial.Properties.Length);
         Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
@@ -39,9 +44,6 @@ package body Material is
             aProperty           : AI_Material_Property;
             Data_Length         : unsigned :=
                                     unsigned (aProperty.Data_Buffer.Length);
-            API_Property_Array  : array
-              (1 .. unsigned (Length (aMaterial.Properties))) of
-              API_Material_Property;
             Data                : Assimp_Types.Raw_Byte_Data (1 .. UInt (Data_Length));
             Index               : unsigned := 0;
         begin
@@ -69,18 +71,21 @@ package body Material is
                     end loop;
                 end;
 --                  API_Property_Array (index).Data := Data (1)'Access;
+                for index in 1 .. Properties_Length loop
+                    API_Property_Ptr_Array (index) := API_Property_Array (index)'Access;
+                end loop;
                 Next (Property_Cursor);
             end loop;
         end;
-        --        To_API_Material (aMaterial, Material);
+        Material.Properties := API_Property_Ptr_Array (1)'Access;
         Result :=
           Assimp.API.Get_Material_Texture
-            (Material, Tex_Type, unsigned (Tex_Index), C_Path'Access);
+            (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
         Path := To_Unbounded_String (To_Ada (C_Path.Data));
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Material.Get_Texture 1.");
+            Put_Line ("An exception occurred in Material.Get_Texture.");
             raise;
     end Get_Texture;
 

@@ -20,7 +20,7 @@ package Assimp.API is
 --                                    return Assimp_Types.API_Return;
 --     pragma Import (C, Get_Material_Texture1, "aiGetMaterialTexture");
 
-   function Get_Material_Texture (aMaterial : Material.API_Material;
+   function Get_Material_Texture (aMaterial : access Material.API_Material;
                                   Tex_Type : Material.AI_Texture_Type;
                                   Index : Interfaces.C.unsigned;
                                   Path : access Assimp_Types.API_String := null;
