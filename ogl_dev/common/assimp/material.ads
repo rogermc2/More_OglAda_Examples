@@ -72,6 +72,7 @@ package Material is
 --           when PTI_Force32Bit  =>
 --              Data_Force32Bit    : GL.Types.Int;
 --        end case;
+       Data_Buffer    : Assimp_Types.Byte_Data_List;
 --        Data_Buffer : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
    end record;
 
