@@ -210,11 +210,9 @@ package body Assimp_Mesh is
         theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
 
         if C_Mesh.Vertices = null then
-            Put_Line ("To_AI_Mesh exception: C_Mesh.Vertices is null.");
-            raise Strings.Dereference_Error;
+         raise Strings.Dereference_Error with
+           "To_AI_Mesh exception: C_Mesh.Vertices is null.";
         end if;
-
-        Put_Line ("To_AI_Mesh setting V_Array C_Mesh.Num_Vertices: " & unsigned 'Image (C_Mesh.Num_Vertices));
        theAI_Mesh.Vertices := To_AI_Vertices_Map (C_Mesh.Vertices, C_Mesh.Num_Vertices);
 
        if C_Mesh.Normals /= null then
@@ -253,8 +251,6 @@ package body Assimp_Mesh is
         end loop;
 
         theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
-        Put_Line ("To_AI_Mesh theAI_Mesh.Material_Index: " & UInt'Image (theAI_Mesh.Material_Index));
-
         if Num_Faces > 0 then
             theAI_Mesh.Faces := To_AI_Faces_Map (C_Mesh.Faces, C_Mesh.Num_Faces);
         end if;
@@ -292,8 +288,8 @@ package body Assimp_Mesh is
                         unsigned'Image (C_Mesh_Array (index).Num_Bones) &
                         unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
                         unsigned'Image (C_Mesh_Array (index).Material_Index));
-            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name length: " &  size_t'Image (C_Mesh_Array (index).Name.Length) );
-            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name: '" &  Interfaces.C.To_Ada (C_Mesh_Array (index).Name.Data) & "'");
+--              Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name length: " &  size_t'Image (C_Mesh_Array (index).Name.Length) );
+--              Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name: '" &  Interfaces.C.To_Ada (C_Mesh_Array (index).Name.Data) & "'");
             New_Line;
             aMesh := To_AI_Mesh (C_Mesh_Array (index));
             Meshs.Insert (UInt (index), aMesh);
