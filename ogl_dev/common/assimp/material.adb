@@ -259,27 +259,30 @@ package body Material is
                               theAPI_Material : in out API_Material) is
       use Interfaces.C;
       use AI_Material_Property_Package;
-      Curs      : Cursor := aMaterial.Properties.First;
-      Ptr_Array : API_Property_Ptr_Array
+      Property_Curs  : Cursor := aMaterial.Properties.First;
+      Ptr_Array      : API_Property_Ptr_Array
         (1 .. unsigned (Length (aMaterial.Properties)));
-      Index     : unsigned := 0;
-      aProperty      : AI_Material_Property;
-      anAPI_Property : API_Material_Property;
+      Index               : unsigned := 0;
+      aProperty           : AI_Material_Property;
+      API_Property_Record : API_Material_Property;
    begin
       --        Properties     : Property_Ptr_Array_Package.Pointer := null;
-      while Has_Element (Curs) loop
+      while Has_Element (Property_Curs) loop
          Index := Index + 1;
-         aProperty := Element (curs);
+         aProperty := Element (Property_Curs);
          declare
+            --  Raw_Data holds the property's value.
             Raw_Data  : Assimp_Types.Raw_Byte_Data
               (1 .. UInt (aProperty.Data_Buffer.Length));
             Raw_Ptr   : Assimp_Types.Data_Pointer := Raw_Data (1)'Access;
          begin
-         To_API_Property (aProperty, Raw_Data, anAPI_Property);
+         To_API_Property (aProperty, Raw_Data, API_Property_Record);
             Ptr_Array (index) := null;
+         theAPI_Material.Properties := API_Property_Record;
          end;
-         Next (curs);
+         Next (Property_Curs);
       end loop;
+
       theAPI_Material.Num_Properties := unsigned (Length (aMaterial.Properties));
       theAPI_Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
    exception
@@ -301,7 +304,6 @@ package body Material is
       Data       : Byte_Data_List := aProperty.Data_Buffer;
       Curs       : Cursor := Data.First;
       Raw_Length : unsigned := unsigned (aProperty.Data_Buffer.Length);
---        Raw_Data   : Raw_Byte_Data (1 .. UInt (Raw_Length));
       Index      : UInt := 0;
    begin
       theAPI_Property.Key.Length := Name'Length;
@@ -310,18 +312,17 @@ package body Material is
       theAPI_Property.Texture_Index := unsigned (aProperty.Texture_Index);
       theAPI_Property.Data_Length := Raw_Length;
       theAPI_Property.Data_Type := aProperty.Data_Type;
-      --  Data holds the property's value. Its size is always Data_Length
+      --  Raw_Data holds the property's value. Its size is always Data_Length
       while Has_Element (Curs) loop
          Index := Index + 1;
          Raw_Data (Index) := Element (Curs);
          Next (Curs);
       end loop;
-      theAPI_Property.Data := Raw_Data (1)'Access;
+
    exception
       when others =>
          Put_Line ("An exception occurred in Material.To_API_Propert.");
          raise;
-
    end To_API_Property;
 
    --  ----------------------------------------------------------------------
