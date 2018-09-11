@@ -29,7 +29,6 @@ package body Material is
       Material : API_Material;
       C_Path   : aliased Assimp_Types.API_String;
    begin
---        Properties     : Property_Ptr_Array_Package.Pointer := null;
       Material.Num_Properties := unsigned (aMaterial.Properties.Length);
       Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
       declare
@@ -38,7 +37,7 @@ package body Material is
          aProperty           : AI_Material_Property;
          API_Property_Array  : array
            (1 .. unsigned (Length (aMaterial.Properties))) of
-            API_Material_Property;
+           API_Material_Property;
          Index               : unsigned := 0;
       begin
          while Has_Element (Property_Curs) loop
@@ -54,6 +53,12 @@ package body Material is
             API_Property_Array (index).Data_Length :=
               unsigned (aProperty.Data_Buffer.Length);
             API_Property_Array (index).Data_Type := aProperty.Data_Type;
+            declare
+               Data_Array : Assimp_Types.Raw_Byte_Data
+                 (1 .. UInt (API_Property_Array (index).Data_Length));
+            begin
+               null;
+            end;
             Next (Property_Curs);
          end loop;
       end;
