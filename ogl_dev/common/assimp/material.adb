@@ -73,8 +73,20 @@ package body Material is
 
    function Get_Texture_Count (aMaterial : AI_Material;
                                Tex_Type  : AI_Texture_Type) return GL.Types.UInt is
+      use AI_Material_Property_Package;
+      Props     : constant AI_Material_Property_List := aMaterial.Properties;
+      aProperty : AI_Material_Property;
+      Curs      : Cursor := Props.First;
+      Count     : GL.Types.UInt := 0;
    begin
-      return 0;
+      for index in 1 .. Props.Length loop
+         aProperty := Element (Curs);
+         if AI_Texture_Type'Enum_Val (aProperty.Texture_Index) = Tex_Type then
+            Count := Count + 1;
+         end if;
+         Next (Curs);
+      end loop;
+      return Count;
    end Get_Texture_Count;
 
    --  -------------------------------------------------------------------------
@@ -161,10 +173,10 @@ package body Material is
       end if;
 
       AI_Property.Semantic := UInt (API_Prop.Semantic);
-      AI_Property.Index := UInt (API_Prop.Index);
+      AI_Property.Texture_Index := UInt (API_Prop.Index);
       AI_Property.Data_Type := API_Prop.Data_Type;
-      Put_Line ("Material.To_AI_Property Semantic, Index: " &
-                  UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Index));
+      Put_Line ("Material.To_AI_Property Semantic, Texture Index: " &
+                  UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
 
       if Data_Length > 0  then
          Put_Line ("Material.To_AI_Property Data_Type: " &

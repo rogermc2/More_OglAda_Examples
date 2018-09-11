@@ -53,11 +53,11 @@ package Material is
                                   PTI_Force32Bit => 16#9fffffff#);
 
    type AI_Material_Property is record
-      Key         : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
-      Semantic    : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
-      Index       : GL.Types.UInt := 0;  --  Index for textures
-      Data_Type   : AI_Property_Type_Info := PTI_Float;
-      Data_Buffer : Assimp_Types.Byte_Data_List;
+      Key            : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
+      Semantic       : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
+      Texture_Index  : GL.Types.UInt := 0;  --  Index for textures
+      Data_Type      : AI_Property_Type_Info := PTI_Float;
+      Data_Buffer    : Assimp_Types.Byte_Data_List;
 --        Data_Buffer : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
    end record;
 
@@ -140,7 +140,8 @@ package Material is
                           Map_Mode : AI_Texture_Map_Mode;
                           Result : out Assimp_Types.API_Return);
    function Get_Texture_Count (aMaterial : AI_Material;
-                               Tex_Type : AI_Texture_Type) return GL.Types.UInt;
+                               Tex_Type  : AI_Texture_Type)
+                               return GL.Types.UInt;
    function To_AI_Materials_Map (Num_Materials : Interfaces.C.unsigned := 0;
                                  C_Material_Array : API_Material_Array)
                                  return AI_Material_Map;
