@@ -29,7 +29,35 @@ package body Material is
       Material : API_Material;
       C_Path   : aliased Assimp_Types.API_String;
    begin
-      To_API_Material (aMaterial, Material);
+--        Properties     : Property_Ptr_Array_Package.Pointer := null;
+      Material.Num_Properties := unsigned (aMaterial.Properties.Length);
+      Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
+      declare
+         use AI_Material_Property_Package;
+         Property_Curs       : Cursor := aMaterial.Properties.First;
+         aProperty           : AI_Material_Property;
+         API_Property_Array  : array
+           (1 .. unsigned (Length (aMaterial.Properties))) of
+            API_Material_Property;
+         Index               : unsigned := 0;
+      begin
+         while Has_Element (Property_Curs) loop
+            Index := Index + 1;
+            aProperty := Element (Property_Curs);
+            API_Property_Array (index).Key.Length :=
+              Ada.Strings.Unbounded.To_String (aProperty.Key)'Length;
+            API_Property_Array (index).Key.Data :=
+              To_C (Ada.Strings.Unbounded.To_String (aProperty.Key));
+            API_Property_Array (index).Semantic := unsigned (aProperty.Semantic);
+            API_Property_Array (index).Texture_Index :=
+              unsigned (aProperty.Texture_Index);
+            API_Property_Array (index).Data_Length :=
+              unsigned (aProperty.Data_Buffer.Length);
+            API_Property_Array (index).Data_Type := aProperty.Data_Type;
+            Next (Property_Curs);
+         end loop;
+      end;
+--        To_API_Material (aMaterial, Material);
       Result :=
         Assimp.API.Get_Material_Texture1
           (Material, Tex_Type, unsigned (Tex_Index), C_Path'Access);
@@ -274,11 +302,11 @@ package body Material is
             --  Raw_Data holds the property's value.
             Raw_Data  : Assimp_Types.Raw_Byte_Data
               (1 .. UInt (aProperty.Data_Buffer.Length));
-            Raw_Ptr   : Assimp_Types.Data_Pointer := Raw_Data (1)'Access;
+--              Raw_Ptr   : Assimp_Types.Data_Pointer := Raw_Data (1)'Access;
          begin
          To_API_Property (aProperty, Raw_Data, API_Property_Record);
             Ptr_Array (index) := null;
-         theAPI_Material.Properties := API_Property_Record;
+--           theAPI_Material.Properties := API_Property_Record;
          end;
          Next (Property_Curs);
       end loop;
