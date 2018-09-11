@@ -81,6 +81,8 @@ package body Material is
    begin
       for index in 1 .. Props.Length loop
          aProperty := Element (Curs);
+         Put_Line ("Material.Get_Texture_Count aProperty.Data_Type: " &
+                     AI_Property_Type_Info'Image (aProperty.Data_Type));
          Put_Line ("Material.Get_Texture_Count aProperty.Texture_Index: " &
                  UInt'Image (aProperty.Texture_Index));
          if AI_Texture_Type'Enum_Val (aProperty.Texture_Index) = Tex_Type then
