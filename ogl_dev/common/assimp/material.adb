@@ -81,8 +81,6 @@ package body Material is
 
    function To_AI_Material (C_Material : API_Material) return AI_Material is
       use Interfaces.C;
---        use Property_Array_Pointers_Package;
---        theProperties_Ptr     : API_Property_Array_Ptr;
       Num_Property  : constant unsigned := C_Material.Num_Properties;
       theMaterial   : AI_Material;
    begin
