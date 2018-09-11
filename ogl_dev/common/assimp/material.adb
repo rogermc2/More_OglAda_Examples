@@ -79,13 +79,9 @@ package body Material is
       Curs      : Cursor := Props.First;
       Count     : GL.Types.UInt := 0;
    begin
-      for index in 1 .. Props.Length loop
+      while Has_Element (Curs) loop
          aProperty := Element (Curs);
-         Put_Line ("Material.Get_Texture_Count aProperty.Data_Type: " &
-                     AI_Property_Type_Info'Image (aProperty.Data_Type));
-         Put_Line ("Material.Get_Texture_Count aProperty.Texture_Index: " &
-                 UInt'Image (aProperty.Texture_Index));
-         if AI_Texture_Type'Enum_Val (aProperty.Texture_Index) = Tex_Type then
+         if Ada.Strings.Unbounded.To_String (aProperty.Key) = "$tex.file" then
             Count := Count + 1;
          end if;
          Next (Curs);
@@ -163,11 +159,11 @@ package body Material is
       use Assimp_Types;
       API_Prop     : API_Material_Property := API_Property;
       Key_Length   : constant size_t := API_Prop.Key.Length;
-      AI_Property  : AI_Material_Property;
       Data_Length  : constant size_t := size_t (API_Prop.Data_Length);
       Data_String  : Assimp_Types.API_String;
       Raw_Data     : AI_Material_Property_List;
       Result       : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
+      AI_Property  : AI_Material_Property;
    begin
 --        Put_Line ("Material.To_AI_Property Key_Length: " & size_t'Image (Key_Length));
       if Key_Length > 0 then
@@ -203,7 +199,8 @@ package body Material is
          Put_Line ("Material.To_AI_Property detected illegal Data_Length.");
       end if;
       Put_Line ("Material.To_AI_Property exit Semantic, Texture Index: " &
-                  UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
+                  UInt'Image (AI_Property.Semantic) &
+                  UInt'Image (AI_Property.Texture_Index));
       return AI_Property;
 
    exception
@@ -219,8 +216,9 @@ package body Material is
                                  Property_Ptr_Array : API_Property_Ptr_Array)
                                   return AI_Material_Property_List is
       use Interfaces.C;
-      AI_Properties  : AI_Material_Property_List;
       aProperty      : API_Material_Property;
+      AI_Properties  : AI_Material_Property_List;
+      AI_Property    : AI_Material_Property;
    begin
       for Property_Index in unsigned range 1 .. Property_Ptr_Array'Length loop
 --           New_Line;
@@ -234,8 +232,12 @@ package body Material is
 --                       unsigned'Image (aProperty.Data_Length));
 --           Put_Line ("Material.To_AI_Property_List Data_Type: " &
 --                       AI_Property_Type_Info'Image (aProperty.Data_Type));
-         AI_Properties.Append (To_AI_Property (anAPI_Material, aProperty));
---           New_Line;
+--           Put_Line ("Material.To_AI_Property_List Texture_Index: " &
+--                       unsigned'Image (Property_Index) & ": " &
+--                       unsigned'Image (aProperty.Texture_Index));
+         AI_Property := To_AI_Property (anAPI_Material, aProperty);
+         AI_Properties.Append (AI_Property);
+         New_Line;
       end loop;
       return AI_Properties;
 
