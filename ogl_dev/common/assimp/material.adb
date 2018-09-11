@@ -68,13 +68,13 @@ package body Material is
                         Next (Data_Cursor);
                     end loop;
                 end;
-                API_Property_Array (index).Data := Data (1)'Access;
+--                  API_Property_Array (index).Data := Data (1)'Access;
                 Next (Property_Cursor);
             end loop;
         end;
         --        To_API_Material (aMaterial, Material);
         Result :=
-          Assimp.API.Get_Material_Texture1
+          Assimp.API.Get_Material_Texture
             (Material, Tex_Type, unsigned (Tex_Index), C_Path'Access);
         Path := To_Unbounded_String (To_Ada (C_Path.Data));
 
@@ -86,36 +86,36 @@ package body Material is
 
     --  -------------------------------------------------------------------------
 
-    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
-                           Tex_Index : UInt := 0;
-                           Path      : out Ada.Strings.Unbounded.Unbounded_String;
-                           Mapping   : AI_Texture_Mapping;
-                           UV_Index  : out UInt;
-                           Blend     : out Single;
-                           Op        : AI_Texture_Op;
-                           Map_Mode  : AI_Texture_Map_Mode;
-                           Result    : out Assimp_Types.API_Return) is
-        use Interfaces.C;
-        use Ada.Strings.Unbounded;
-        C_Material : API_Material;
-        C_Path     : aliased Assimp_Types.API_String;
-        UV         : aliased unsigned;
-        C_Blend    : aliased C_float;
-    begin
-        To_API_Material (aMaterial, C_Material);
-        Result := Assimp.API.Get_Material_Texture
-          (C_Material, Tex_Type, unsigned (Tex_Index), C_Path'Access,
-           Mapping, UV'Access, C_Blend'Access, Op, Map_Mode);
-
-        UV_Index := UInt (UV);
-        Blend := Single (C_Blend);
-        Path := To_Unbounded_String (To_Ada (C_Path.Data));
-
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Material.Get_Texture 2.");
-            raise;
-    end Get_Texture;
+--      procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
+--                             Tex_Index : UInt := 0;
+--                             Path      : out Ada.Strings.Unbounded.Unbounded_String;
+--                             Mapping   : AI_Texture_Mapping;
+--                             UV_Index  : out UInt;
+--                             Blend     : out Single;
+--                             Op        : AI_Texture_Op;
+--                             Map_Mode  : AI_Texture_Map_Mode;
+--                             Result    : out Assimp_Types.API_Return) is
+--          use Interfaces.C;
+--          use Ada.Strings.Unbounded;
+--          C_Material : API_Material;
+--          C_Path     : aliased Assimp_Types.API_String;
+--          UV         : aliased unsigned;
+--          C_Blend    : aliased C_float;
+--      begin
+--          To_API_Material (aMaterial, C_Material);
+--          Result := Assimp.API.Get_Material_Texture
+--            (C_Material, Tex_Type, unsigned (Tex_Index), C_Path'Access,
+--             Mapping'Access, UV'Access, C_Blend'Access, Op'Access, Map_Mode'Access);
+--
+--          UV_Index := UInt (UV);
+--          Blend := Single (C_Blend);
+--          Path := To_Unbounded_String (To_Ada (C_Path.Data));
+--
+--      exception
+--          when others =>
+--              Put_Line ("An exception occurred in Material.Get_Texture 2.");
+--              raise;
+--      end Get_Texture;
 
     --  -------------------------------------------------------------------------
 
