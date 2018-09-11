@@ -13,22 +13,22 @@ package Assimp.API is
    --  GetTexture (aiTextureType type, unsigned int index, aiString *path,
    --  aiTextureMapping *mapping=NULL, unsigned int *uvindex=NULL,
    --  float *blend=NULL, aiTextureOp *op=NULL, aiTextureMapMode *mapmode=NULL) const
-   function Get_Material_Texture1 (aMaterial : Material.API_Material;
-                                  Tex_Type : Material.AI_Texture_Type;
-                                  Index : Interfaces.C.unsigned;
-                                  Path : access Assimp_Types.API_String)
-                                  return Assimp_Types.API_Return;
-   pragma Import (C, Get_Material_Texture1, "aiGetMaterialTexture");
+--     function Get_Material_Texture1 (aMaterial : Material.API_Material;
+--                                    Tex_Type : Material.AI_Texture_Type;
+--                                    Index : Interfaces.C.unsigned;
+--                                    Path : access Assimp_Types.API_String)
+--                                    return Assimp_Types.API_Return;
+--     pragma Import (C, Get_Material_Texture1, "aiGetMaterialTexture");
 
    function Get_Material_Texture (aMaterial : Material.API_Material;
                                   Tex_Type : Material.AI_Texture_Type;
                                   Index : Interfaces.C.unsigned;
-                                  Path : access Assimp_Types.API_String;
-                                  Mapping : Material.AI_Texture_Mapping;
-                                  UV_Index : access Interfaces.C.unsigned;
-                                  Blend : access Interfaces.C.C_float;
-                                  Op : Material.AI_Texture_Op;
-                                  Map_Mode : Material.AI_Texture_Map_Mode)
+                                  Path : access Assimp_Types.API_String := null;
+                                  Mapping : access Material.AI_Texture_Mapping := null;
+                                  UV_Index : access Interfaces.C.unsigned := null;
+                                  Blend : access Interfaces.C.C_float := null;
+                                  Op : access Material.AI_Texture_Op := null;
+                                  Map_Mode : access Material.AI_Texture_Map_Mode := null)
                                   return Assimp_Types.API_Return;
    pragma Import (C, Get_Material_Texture, "aiGetMaterialTexture");
 
