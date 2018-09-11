@@ -81,6 +81,8 @@ package body Material is
    begin
       for index in 1 .. Props.Length loop
          aProperty := Element (Curs);
+         Put_Line ("Material.Get_Texture_Count aProperty.Texture_Index: " &
+                 UInt'Image (aProperty.Texture_Index));
          if AI_Texture_Type'Enum_Val (aProperty.Texture_Index) = Tex_Type then
             Count := Count + 1;
          end if;
@@ -111,6 +113,8 @@ package body Material is
 --                       unsigned'Image (theProperties_Ptr_Array (2).Data_Length));
 --           Put_Line ("Material.To_AI_Material Data_Type: " &
 --                       AI_Property_Type_Info'Image (theProperties_Ptr_Array (2).Data_Type));
+         Put_Line ("Material.To_AI_Material Index: " &
+                    unsigned'Image (theProperties_Ptr_Array (5).Texture_Index));
          theMaterial.Properties := To_AI_Property_List
                                  (C_Material, theProperties_Ptr_Array);
          theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
@@ -150,7 +154,8 @@ package body Material is
    --  ------------------------------------------------------------------------
 
    function To_AI_Property (anAPI_Material : API_Material;
-                            API_Property   : API_Material_Property) return AI_Material_Property is
+                            API_Property   : API_Material_Property)
+                            return AI_Material_Property is
       use Interfaces.C;
       use Interfaces.C.Strings;
       use Assimp_Types;
@@ -173,17 +178,17 @@ package body Material is
       end if;
 
       AI_Property.Semantic := UInt (API_Prop.Semantic);
-      AI_Property.Texture_Index := UInt (API_Prop.Index);
+      AI_Property.Texture_Index := UInt (API_Prop.Texture_Index);
       AI_Property.Data_Type := API_Prop.Data_Type;
---        Put_Line ("Material.To_AI_Property Semantic, Texture Index: " &
---                    UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
+      Put_Line ("Material.To_AI_Property Semantic, Texture Index: " &
+                  UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
 
       if Data_Length > 0  then
 --           Put_Line ("Material.To_AI_Property Data_Type: " &
 --                       AI_Property_Type_Info'Image (API_Property.Data_Type));
          Result := Material_System.Get_Material_String (anAPI_Material, API_Property.Key,
                                                         API_Property.Data_Type,
-                                                        API_Property.Index, Data_String);
+                                                        API_Property.Texture_Index, Data_String);
 --           Put_Line ("Material.To_AI_Property Result: " & API_Return'Image (Result));
          if Result = API_RETURN_SUCCESS then
 --              Put_Line ("Material.To_AI_Property Data_Length: " & size_t'Image (Data_Length));
@@ -195,6 +200,8 @@ package body Material is
       else
          Put_Line ("Material.To_AI_Property detected illegal Data_Length.");
       end if;
+      Put_Line ("Material.To_AI_Property exit Semantic, Texture Index: " &
+                  UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
       return AI_Property;
 
    exception

@@ -37,7 +37,7 @@ package body Material_System is
 
                     aProperty := Property_Ptr_Array (Prop_Index).all;
                     Found := aProperty.Key.Data = Key.Data and aProperty.Data_Type = Property_Type and
-                    aProperty.Index = Property_Index;
+                    aProperty.Texture_Index = Property_Index;
                     if Found then
                         theProperty := aProperty;
                         Result :=  Assimp_Types.API_Return_Success;

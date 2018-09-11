@@ -119,6 +119,8 @@ package body Mesh_22 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : GL.Types.UInt := Key (Curs);
       begin
+            Put_Line ("Mesh_22.Init_Materials.Load_Textures Get_Texture_Count: "
+                      & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
             if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
                Get_Texture (aMaterial, AI_Texture_Diffuse, 0, Path, Result);
                if Result = Assimp_Types.API_Return_Success then

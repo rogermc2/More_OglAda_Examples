@@ -78,18 +78,18 @@ package Material is
     --  A single key-value pair is called a 'material property'.
 
    type API_Material_Property is record
-      Key         : Assimp_Types.API_String;  --  One of the AI_MATKEY_XXX constants
+      Key           : Assimp_Types.API_String;  --  One of the AI_MATKEY_XXX constants
                                               --  http://assimp.sourceforge.net/lib_html/material_8h.html
-      Semantic    : Interfaces.C.unsigned := 0;
-      Index       : Interfaces.C.unsigned := 0;  --  Texture index
-      Data_Length : Interfaces.C.unsigned := 0;  --  Actual must not be 0
+      Semantic      : Interfaces.C.unsigned := 0;
+      Texture_Index : Interfaces.C.unsigned := 0;  --  Texture index
+      Data_Length   : Interfaces.C.unsigned := 0;  --  Actual must not be 0
       --  Data_Type provides information for the property.
       --  It defines the data layout inside the data buffer.
       --  This is used by the library internally to perform debug checks and to
       --  utilize proper type conversions.
-      Data_Type   : AI_Property_Type_Info := PTI_Float;
+      Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
-      Data        : Assimp_Types.Data_Pointer := null;
+      Data          : Assimp_Types.Data_Pointer := null;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material_Property);
 
