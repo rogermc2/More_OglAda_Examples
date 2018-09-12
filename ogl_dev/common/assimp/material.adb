@@ -8,6 +8,7 @@ with Assimp_Util;
 with Material_System;
 
 package body Material is
+   type API_Material_Property_Access is access all API_Material_Property;
 
    function To_AI_Property_List (anAPI_Material     : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
@@ -26,13 +27,23 @@ package body Material is
                           Result    : out Assimp_Types.API_Return) is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
+
+      type Property_Ptr_Array is array (Interfaces.C.unsigned range <>) of
+        aliased API_Material_Property_Access;
+      pragma Convention (C, Property_Ptr_Array);
+      package Property_Access_Array_Package is new Interfaces.C.Pointers
+        (Interfaces.C.unsigned, API_Material_Property_Access, Property_Ptr_Array,
+         null);
+      subtype Property_Access_Array_Pointer is Property_Access_Array_Package.Pointer;
+
       Material                : aliased API_Material;
       C_Path                  : aliased Assimp_Types.API_String;
       Properties_Length       : unsigned := unsigned (Length (aMaterial.Properties));
       API_Property_Array      : array (1 .. Properties_Length) of
         aliased API_Material_Property;
-      API_Property_Ptr_Array  : array
-        (1 .. Properties_Length) of access API_Material_Property;
+      API_Property_Ptr_Array  : aliased Property_Ptr_Array (1 .. Properties_Length);
+      Property_Ptr_Array_Ptr  : Property_Access_Array_Pointer :=
+                                  API_Property_Ptr_Array (1)'Access;
    begin
       Material.Num_Properties := unsigned (aMaterial.Properties.Length);
       Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
