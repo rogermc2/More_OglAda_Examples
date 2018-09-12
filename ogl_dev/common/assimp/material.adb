@@ -29,11 +29,12 @@ package body Material is
       use AI_Material_Property_Package;
 
       type API_Material_Property_Access is access all API_Material_Property;
-      type Property_Ptr_Array is array (Interfaces.C.unsigned range <>) of
+      type Property_Access_Ptr_Array is array (Interfaces.C.unsigned range <>) of
         aliased API_Material_Property_Access;
-      pragma Convention (C, Property_Ptr_Array);
+      pragma Convention (C, Property_Access_Ptr_Array);
+
       package Property_Access_Array_Package is new Interfaces.C.Pointers
-        (Interfaces.C.unsigned, API_Material_Property_Access, Property_Ptr_Array,
+        (Interfaces.C.unsigned, API_Material_Property_Access, Property_Access_Ptr_Array,
          null);
       subtype Property_Access_Array_Pointer is Property_Access_Array_Package.Pointer;
 
@@ -44,7 +45,7 @@ package body Material is
       API_Property_Array      : array (1 .. Properties_Length) of
         aliased API_Material_Property;
       Property_Access         : access API_Material_Property_Access;
-      API_Prop_Ptr_Array      : aliased Property_Ptr_Array (1 .. Properties_Length);
+      API_Prop_Ptr_Array      : aliased Property_Access_Ptr_Array (1 .. Properties_Length);
       Prop_Ptr_Array_Ptr      : Property_Access_Array_Pointer :=
                                   API_Prop_Ptr_Array (1)'Access;
    begin
