@@ -121,7 +121,7 @@ package Material is
    subtype Property_Ptr_Array_Pointer is Property_Ptr_Array_Package.Pointer;
 
    type API_Material is record
-      Properties     : Property_Ptr_Array_Package.Pointer := null;
+      Properties     : Property_Ptr_Array_Pointer := null;
       Num_Properties : Interfaces.C.unsigned := 0;
       Num_Allocated  : Interfaces.C.unsigned := 0;
    end record;
