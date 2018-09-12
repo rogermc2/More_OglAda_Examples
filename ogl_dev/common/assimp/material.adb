@@ -29,7 +29,11 @@ package body Material is
         use AI_Material_Property_Package;
         use Assimp_Types.Byte_Data_Package;
 
+        type Material_Property_Array is array (unsigned range <>) of
+          aliased API_Material_Property;
+
         type API_Material_Property_Access is access all API_Material_Property;
+        pragma Convention (C, API_Material_Property_Access);
         type Property_Access_Ptr_Array is array (Interfaces.C.unsigned range <>) of
           aliased API_Material_Property_Access;
         pragma Convention (C, Property_Access_Ptr_Array);
@@ -48,8 +52,7 @@ package body Material is
         C_Path                  : aliased Assimp_Types.API_String;
         aProperty               : AI_Material_Property;
         Properties_Length       : unsigned := unsigned (Length (aMaterial.Properties));
-        API_Property_Array      : array (1 .. Properties_Length) of
-          aliased API_Material_Property;
+        API_Property_Array      : Material_Property_Array (1 .. Properties_Length);
         Property_Access         : access API_Material_Property_Access;
         API_Prop_Ptr_Array      : aliased Property_Access_Ptr_Array (1 .. Properties_Length);
         Prop_Ptr_Array_Ptr      : Property_Access_Array_Pointer :=
