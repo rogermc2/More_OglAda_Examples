@@ -118,6 +118,7 @@ package Material is
    package Property_Ptr_Array_Package is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Property_Array_Ptr, API_Property_Ptr_Array,
       null);
+   subtype Property_Ptr_Array_Pointer is Property_Ptr_Array_Package.Pointer;
 
    type API_Material is record
       Properties     : Property_Ptr_Array_Package.Pointer := null;
