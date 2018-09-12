@@ -9,6 +9,26 @@ with Material_System;
 
 package body Material is
 
+   type Byte_Data_Array is array (UInt range <>) of aliased UByte;
+
+    type Material_Property is record
+      Key           : Assimp_Types.API_String;
+      Semantic      : Interfaces.C.unsigned := 0;
+      Texture_Index : Interfaces.C.unsigned := 0;
+      Data_Length   : Interfaces.C.unsigned := 0;  --  Actual must not be 0
+      --  Data_Type provides information for the property.
+      --  It defines the data layout inside the data buffer.
+      --  This is used by the library internally to perform debug checks and to
+      --  utilize proper type conversions.
+      Data_Type     : AI_Property_Type_Info := PTI_Float;
+      --  Data holds the property's value. Its size is always Data_Length
+      Data          : access Byte_Data_Array := null;
+   end record;
+   pragma Convention (C_Pass_By_Copy, Material_Property);
+
+   type Material_Property_Array is array (Interfaces.C.unsigned range <>) of
+          aliased Material_Property;
+
     function To_AI_Property_List (anAPI_Material     : API_Material;
                                   Property_Ptr_Array : API_Property_Ptr_Array)
                                   return AI_Material_Property_List;
@@ -18,6 +38,9 @@ package body Material is
     procedure To_API_Material (aMaterial       : AI_Material;
                                theAPI_Material : in out API_Material);
 
+    procedure To_Material_Property_Array (Properties     : AI_Material_Property_List;
+                                          Property_Array : in out Material_Property_Array);
+
     --  -------------------------------------------------------------------------
 
     procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
@@ -26,11 +49,6 @@ package body Material is
                            Result    : out Assimp_Types.API_Return) is
         use Interfaces.C;
         use Ada.Strings.Unbounded;
-        use AI_Material_Property_Package;
-        use Assimp_Types.Byte_Data_Package;
-
-        type Material_Property_Array is array (unsigned range <>) of
-          aliased API_Material_Property;
 
         type API_Material_Property_Access is access all API_Material_Property;
         pragma Convention (C, API_Material_Property_Access);
@@ -44,58 +62,27 @@ package body Material is
         subtype Property_Access_Array_Pointer is Property_Access_Array_Package.Pointer;
 
         Material                : aliased API_Material;
-        Property_Cursor         : AI_Material_Property_Package.Cursor :=
-                                    aMaterial.Properties.First;
-        Data_Cursor             : Assimp_Types.Byte_Data_Package.Cursor;
-        Data_Length             : unsigned;
-        Data                    : Assimp_Types.Raw_Byte_Data (1 .. UInt (Data_Length));
         C_Path                  : aliased Assimp_Types.API_String;
-        aProperty               : AI_Material_Property;
         Properties_Length       : unsigned := unsigned (Length (aMaterial.Properties));
         API_Property_Array      : Material_Property_Array (1 .. Properties_Length);
         Property_Access         : access API_Material_Property_Access;
         API_Prop_Ptr_Array      : aliased Property_Access_Ptr_Array (1 .. Properties_Length);
         Prop_Ptr_Array_Ptr      : Property_Access_Array_Pointer :=
                                     API_Prop_Ptr_Array (1)'Access;
-        Index                   : unsigned := 0;
-        Data_Index              : UInt := 0;
     begin
         Material.Num_Properties := unsigned (aMaterial.Properties.Length);
         Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
-
-        while Has_Element (Property_Cursor) loop
-            Index := Index + 1;
-            aProperty := Element (Property_Cursor);
-            Data_Cursor := aProperty.Data_Buffer.First;
-            API_Property_Array (index).Key.Length :=
-              Ada.Strings.Unbounded.To_String (aProperty.Key)'Length;
-            API_Property_Array (index).Key.Data :=
-              To_C (Ada.Strings.Unbounded.To_String (aProperty.Key));
-            API_Property_Array (index).Semantic := unsigned (aProperty.Semantic);
-            API_Property_Array (index).Texture_Index :=
-              unsigned (aProperty.Texture_Index);
-            Data_Length := unsigned (aProperty.Data_Buffer.Length);
-            API_Property_Array (index).Data_Length := Data_Length;
-            API_Property_Array (index).Data_Type := aProperty.Data_Type;
-
-            Data_Index := 0;
-            while Has_Element (Data_Cursor) loop
-                Data_Index := Data_Index + 1;
-                Data (Data_Index) := Element (Data_Cursor);
-                Next (Data_Cursor);
-            end loop;
-            API_Property_Array (index).Data := Data (1)'Access;
-            Next (Property_Cursor);
-        end loop;
+        To_Material_Property_Array (aMaterial.Properties, API_Property_Array);
 
         for index in 1 .. Properties_Length loop
-            API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
+        null;
+--              API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
         end loop;
         --  access access all API_Material_Property;
         Property_Access := API_Prop_Ptr_Array (1)'Access;
         Prop_Ptr_Array_Ptr := Property_Access;
         --  Property_Ptr_Array_Pointer, points to API_Property_Ptr_Array
-        Material.Properties := Prop_Ptr_Array_Ptr;
+--          Material.Properties := Prop_Ptr_Array_Ptr;
         Result :=
           Assimp.API.Get_Material_Texture
             (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
@@ -387,9 +374,56 @@ package body Material is
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Material.To_API_Propert.");
+            Put_Line ("An exception occurred in Material.To_API_Property.");
             raise;
     end To_API_Property;
+
+    --  ----------------------------------------------------------------------
+
+    procedure To_Material_Property_Array (Properties     : AI_Material_Property_List;
+                                          Property_Array : in out Material_Property_Array) is
+        use Interfaces.C;
+        use AI_Material_Property_Package;
+        use Assimp_Types.Byte_Data_Package;
+        Property_Cursor         : AI_Material_Property_Package.Cursor :=
+                                    Properties.First;
+        Data_Cursor             : Assimp_Types.Byte_Data_Package.Cursor;
+        Data_Length             : unsigned;
+        aProperty               : AI_Material_Property;
+        Data                    : Assimp_Types.Raw_Byte_Data (1 .. UInt (Data_Length));
+        Index                   : unsigned := 0;
+        Data_Index              : UInt := 0;
+    begin
+     while Has_Element (Property_Cursor) loop
+            Index := Index + 1;
+            aProperty := Element (Property_Cursor);
+            Data_Cursor := aProperty.Data_Buffer.First;
+            Property_Array (index).Key.Length :=
+              Ada.Strings.Unbounded.To_String (aProperty.Key)'Length;
+            Property_Array (index).Key.Data :=
+              To_C (Ada.Strings.Unbounded.To_String (aProperty.Key));
+            Property_Array (index).Semantic := unsigned (aProperty.Semantic);
+            Property_Array (index).Texture_Index :=
+              unsigned (aProperty.Texture_Index);
+            Data_Length := unsigned (aProperty.Data_Buffer.Length);
+            Property_Array (index).Data_Length := Data_Length;
+            Property_Array (index).Data_Type := aProperty.Data_Type;
+
+            Data_Index := 0;
+            while Has_Element (Data_Cursor) loop
+                Data_Index := Data_Index + 1;
+                Data (Data_Index) := Element (Data_Cursor);
+                Next (Data_Cursor);
+            end loop;
+            Property_Array (index).Data := Data (1)'Access;
+            Next (Property_Cursor);
+        end loop;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Material.To_Material_Property_Array.");
+            raise;
+    end To_Material_Property_Array;
 
     --  ----------------------------------------------------------------------
 
