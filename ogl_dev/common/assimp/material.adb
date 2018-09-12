@@ -8,11 +8,10 @@ with Assimp_Util;
 with Material_System;
 
 package body Material is
-   type API_Material_Property_Access is access all API_Material_Property;
 
    function To_AI_Property_List (anAPI_Material     : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
-                                  return AI_Material_Property_List;
+                                 return AI_Material_Property_List;
    procedure To_API_Property (aProperty       : AI_Material_Property;
                               Raw_Data        : in out Assimp_Types.Raw_Byte_Data;
                               theAPI_Property : in out API_Material_Property);
@@ -27,7 +26,9 @@ package body Material is
                           Result    : out Assimp_Types.API_Return) is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
+      use AI_Material_Property_Package;
 
+      type API_Material_Property_Access is access all API_Material_Property;
       type Property_Ptr_Array is array (Interfaces.C.unsigned range <>) of
         aliased API_Material_Property_Access;
       pragma Convention (C, Property_Ptr_Array);
@@ -38,21 +39,21 @@ package body Material is
 
       Material                : aliased API_Material;
       C_Path                  : aliased Assimp_Types.API_String;
+      aProperty               : AI_Material_Property;
       Properties_Length       : unsigned := unsigned (Length (aMaterial.Properties));
       API_Property_Array      : array (1 .. Properties_Length) of
         aliased API_Material_Property;
-      API_Property_Ptr_Array  : aliased Property_Ptr_Array (1 .. Properties_Length);
-      Property_Ptr_Array_Ptr  : Property_Access_Array_Pointer :=
-                                  API_Property_Ptr_Array (1)'Access;
+      Property_Access         : access API_Material_Property_Access;
+      API_Prop_Ptr_Array      : aliased Property_Ptr_Array (1 .. Properties_Length);
+      Prop_Ptr_Array_Ptr      : Property_Access_Array_Pointer :=
+                                  API_Prop_Ptr_Array (1)'Access;
    begin
       Material.Num_Properties := unsigned (aMaterial.Properties.Length);
       Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
       declare
-         use AI_Material_Property_Package;
          use Assimp_Types.Byte_Data_Package;
          Property_Cursor     : AI_Material_Property_Package.Cursor :=
                                  aMaterial.Properties.First;
-         aProperty           : AI_Material_Property;
          Data_Cursor         : Assimp_Types.Byte_Data_Package.Cursor;
          Data_Length         : unsigned :=
                                  unsigned (aProperty.Data_Buffer.Length);
@@ -81,13 +82,17 @@ package body Material is
                Next (Data_Cursor);
             end loop;
             --                  API_Property_Array (index).Data := Data (1)'Access;
-            for index in 1 .. Properties_Length loop
-               API_Property_Ptr_Array (index) := API_Property_Array (index)'Access;
-            end loop;
             Next (Property_Cursor);
          end loop;
       end;
-      Material.Properties := API_Property_Ptr_Array (1)'Access;
+      for index in 1 .. Properties_Length loop
+         API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
+      end loop;
+      --  access access all API_Material_Property;
+      Property_Access := API_Prop_Ptr_Array (1)'Access;
+      Prop_Ptr_Array_Ptr := Property_Access;
+      --  Property_Ptr_Array_Pointer, points to API_Property_Ptr_Array
+      Material.Properties := Prop_Ptr_Array_Ptr;
       Result :=
         Assimp.API.Get_Material_Texture
           (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
@@ -193,7 +198,7 @@ package body Material is
 
    function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
                                  C_Material_Array : API_Material_Array)
-                                  return AI_Material_Map is
+                                 return AI_Material_Map is
       use Interfaces.C;
       Material_Map : AI_Material_Map;
       aMaterial    : AI_Material;
@@ -216,7 +221,7 @@ package body Material is
 
    function To_AI_Property (anAPI_Material : API_Material;
                             API_Property   : API_Material_Property)
-                             return AI_Material_Property is
+                            return AI_Material_Property is
       use Interfaces.C;
       use Interfaces.C.Strings;
       use Assimp_Types;
@@ -277,7 +282,7 @@ package body Material is
 
    function To_AI_Property_List (anAPI_Material     : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
-                                  return AI_Material_Property_List is
+                                 return AI_Material_Property_List is
       use Interfaces.C;
       aProperty      : API_Material_Property;
       AI_Properties  : AI_Material_Property_List;
