@@ -59,8 +59,9 @@ package body Material is
         use Interfaces.C;
         use Ada.Strings.Unbounded;
 
-        type API_Material_Property_Access is access all API_Material_Property;
+        type API_Material_Property_Access is access all Material_Property;
         pragma Convention (C, API_Material_Property_Access);
+
         type Property_Access_Ptr_Array is array (Interfaces.C.unsigned range <>) of
           aliased API_Material_Property_Access;
         pragma Convention (C, Property_Access_Ptr_Array);
@@ -75,7 +76,6 @@ package body Material is
         Properties_Length  : unsigned := unsigned (Length (aMaterial.Properties));
         API_Property_Array : Material_Property_Array (1 .. Properties_Length);
         Property_Data      : Property_Data_Array (1 .. Uint (aMaterial.Properties.Length));
-        Property_Access    : access API_Material_Property_Access;
         API_Prop_Ptr_Array : aliased Property_Access_Ptr_Array (1 .. Properties_Length);
         Prop_Ptr_Array_Ptr : Property_Access_Array_Pointer :=
                                     API_Prop_Ptr_Array (1)'Access;
@@ -87,13 +87,11 @@ package body Material is
 
         for index in 1 .. Properties_Length loop
         null;
---              API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
+            API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
         end loop;
         --  access access all API_Material_Property;
-        Property_Access := API_Prop_Ptr_Array (1)'Access;
-        Prop_Ptr_Array_Ptr := Property_Access;
-        --  Property_Ptr_Array_Pointer, points to API_Property_Ptr_Array
---          Material.Properties := Prop_Ptr_Array_Ptr;
+        Prop_Ptr_Array_Ptr := API_Prop_Ptr_Array (1)'Access;
+        Material.Properties := Prop_Ptr_Array_Ptr;
         Result :=
           Assimp.API.Get_Material_Texture
             (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
