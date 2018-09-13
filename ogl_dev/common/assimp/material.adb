@@ -59,6 +59,7 @@ package body Material is
         use Interfaces.C;
         use Ada.Strings.Unbounded;
 
+        --  API_Material_Property_Access must be declared here to prevent non-local error messages
         type API_Material_Property_Access is access all Material_Property;
         pragma Convention (C, API_Material_Property_Access);
 
@@ -77,8 +78,7 @@ package body Material is
         API_Property_Array : Material_Property_Array (1 .. Properties_Length);
         Property_Data      : Property_Data_Array (1 .. Uint (aMaterial.Properties.Length));
         API_Prop_Ptr_Array : aliased Property_Access_Ptr_Array (1 .. Properties_Length);
-        Prop_Ptr_Array_Ptr : Property_Access_Array_Pointer :=
-                                    API_Prop_Ptr_Array (1)'Access;
+        Prop_Ptr_Array_Ptr : Property_Access_Array_Pointer;
     begin
         Material.Num_Properties := unsigned (aMaterial.Properties.Length);
         Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
