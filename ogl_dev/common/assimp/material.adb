@@ -9,7 +9,15 @@ with Material_System;
 
 package body Material is
 
-   type Byte_Data_Array is array (UInt range <>) of aliased UByte;
+   subtype Data_Size is UInt range 0 .. 1024;  --  To avoid possible storage error
+   type Byte_Data_Array is array (Data_Size range <>) of UByte;
+   pragma Convention (C, Byte_Data_Array);
+
+   type Data_Record (length : Data_Size := 1) is record
+      Data : Byte_Data_Array (1 .. length);
+   end record;
+
+   type Property_Data_Array is array (UInt range <>) of Data_Record;
 
     type Material_Property is record
       Key           : Assimp_Types.API_String;
@@ -22,7 +30,7 @@ package body Material is
       --  utilize proper type conversions.
       Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
-      Data          : access Byte_Data_Array := null;
+      Data          : access Byte_Data_Array;
    end record;
    pragma Convention (C_Pass_By_Copy, Material_Property);
 
@@ -39,6 +47,7 @@ package body Material is
                                theAPI_Material : in out API_Material);
 
     procedure To_Material_Property_Array (Properties     : AI_Material_Property_List;
+                                          Property_Data  : in out Property_Data_Array;
                                           Property_Array : in out Material_Property_Array);
 
     --  -------------------------------------------------------------------------
@@ -61,18 +70,20 @@ package body Material is
            null);
         subtype Property_Access_Array_Pointer is Property_Access_Array_Package.Pointer;
 
-        Material                : aliased API_Material;
-        C_Path                  : aliased Assimp_Types.API_String;
-        Properties_Length       : unsigned := unsigned (Length (aMaterial.Properties));
-        API_Property_Array      : Material_Property_Array (1 .. Properties_Length);
-        Property_Access         : access API_Material_Property_Access;
-        API_Prop_Ptr_Array      : aliased Property_Access_Ptr_Array (1 .. Properties_Length);
-        Prop_Ptr_Array_Ptr      : Property_Access_Array_Pointer :=
+        Material           : aliased API_Material;
+        C_Path             : aliased Assimp_Types.API_String;
+        Properties_Length  : unsigned := unsigned (Length (aMaterial.Properties));
+        API_Property_Array : Material_Property_Array (1 .. Properties_Length);
+        Property_Data      : Property_Data_Array (1 .. Uint (aMaterial.Properties.Length));
+        Property_Access    : access API_Material_Property_Access;
+        API_Prop_Ptr_Array : aliased Property_Access_Ptr_Array (1 .. Properties_Length);
+        Prop_Ptr_Array_Ptr : Property_Access_Array_Pointer :=
                                     API_Prop_Ptr_Array (1)'Access;
     begin
         Material.Num_Properties := unsigned (aMaterial.Properties.Length);
         Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
-        To_Material_Property_Array (aMaterial.Properties, API_Property_Array);
+        To_Material_Property_Array (aMaterial.Properties, Property_Data,
+                                    API_Property_Array);
 
         for index in 1 .. Properties_Length loop
         null;
@@ -381,18 +392,19 @@ package body Material is
     --  ----------------------------------------------------------------------
 
     procedure To_Material_Property_Array (Properties     : AI_Material_Property_List;
+                                          Property_Data  : in out Property_Data_Array;
                                           Property_Array : in out Material_Property_Array) is
         use Interfaces.C;
         use AI_Material_Property_Package;
         use Assimp_Types.Byte_Data_Package;
-        Property_Cursor         : AI_Material_Property_Package.Cursor :=
+        Property_Cursor      : AI_Material_Property_Package.Cursor :=
                                     Properties.First;
-        Data_Cursor             : Assimp_Types.Byte_Data_Package.Cursor;
-        Data_Length             : unsigned;
-        aProperty               : AI_Material_Property;
-        Data                    : Assimp_Types.Raw_Byte_Data (1 .. UInt (Data_Length));
-        Index                   : unsigned := 0;
-        Data_Index              : UInt := 0;
+        Data_Cursor          : Assimp_Types.Byte_Data_Package.Cursor;
+        Data_Length          : unsigned := 0;
+        aProperty            : AI_Material_Property;
+        Data                 : Byte_Data_Array (1 .. UInt (Data_Length));
+        Index                : unsigned := 0;
+        Data_Index           : UInt := 0;
     begin
      while Has_Element (Property_Cursor) loop
             Index := Index + 1;
@@ -415,7 +427,7 @@ package body Material is
                 Data (Data_Index) := Element (Data_Cursor);
                 Next (Data_Cursor);
             end loop;
-            Property_Array (index).Data := Data (1)'Access;
+            Property_Data (UInt (index)).Data := Data;
             Next (Property_Cursor);
         end loop;
 
