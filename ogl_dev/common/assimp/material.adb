@@ -15,10 +15,12 @@ package body Material is
    pragma Convention (C, Byte_Data_Array);
 
    type Data_Record (length : Data_Size := 1) is record
-      Bytes : Byte_Data_Array (1 .. length);
+      Bytes : aliased Byte_Data_Array (1 .. length);
    end record;
 
-   type Property_Data_Array is array (UInt range <>) of Data_Record;
+   type Data_Record_Access is access all Data_Record;
+
+   type Property_Data_Array is array (UInt range <>) of aliased Data_Record;
 
    type Material_Property is record
       Key           : Assimp_Types.API_String;
@@ -31,7 +33,8 @@ package body Material is
       --  utilize proper type conversions.
       Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
-      Data          : access Byte_Data_Array;
+      Data          : Data_Record_Access;
+--        Data          : access Byte_Data_Array;
    end record;
    pragma Convention (C_Pass_By_Copy, Material_Property);
 
@@ -106,7 +109,7 @@ package body Material is
                                   API_Property_Array);
 
       for index in 1 .. Properties_Length loop
-         null;
+         API_Property_Array (index).Data := Property_Data (UInt (index))'unchecked_Access;
          API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
       end loop;
       --  access access all API_Material_Property;
