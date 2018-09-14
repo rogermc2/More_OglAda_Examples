@@ -62,6 +62,7 @@ package body Material is
                           Result    : out Assimp_Types.API_Return) is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
+      use Assimp_Types;
 
       --  API_Material_Property_Access must be declared here to prevent non-local error messages
       type API_Material_Property_Access is access all Material_Property;
@@ -83,7 +84,7 @@ package body Material is
       end record;
       pragma Convention (C_Pass_By_Copy, API_Material_Tex);
 
-      function Get_Material_Texture (aMaterial : access API_Material_Tex;
+      function API_Get_Material_Texture (aMaterial : access API_Material_Tex;
                                      Tex_Type  : AI_Texture_Type;
                                      Index     : Interfaces.C.unsigned;
                                      Path      : access Assimp_Types.API_String := null;
@@ -93,7 +94,7 @@ package body Material is
                                      Op        : access AI_Texture_Op := null;
                                      Map_Mode  : access AI_Texture_Map_Mode := null)
                                        return Assimp_Types.API_Return;
-      pragma Import (C, Get_Material_Texture, "aiGetMaterialTexture");
+      pragma Import (C, API_Get_Material_Texture, "aiGetMaterialTexture");
 
       Material           : aliased API_Material_Tex;
       C_Path             : aliased Assimp_Types.API_String;
@@ -116,9 +117,13 @@ package body Material is
       Prop_Ptr_Array_Ptr := API_Prop_Ptr_Array (1)'Access;
       Material.Properties := Prop_Ptr_Array_Ptr;
       Result :=
-        Get_Material_Texture
+        API_Get_Material_Texture
           (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
-      Path := To_Unbounded_String (To_Ada (C_Path.Data));
+      if Result = API_Return_Success then
+        Path := To_Unbounded_String (To_Ada (C_Path.Data));
+      else
+         Put_Line ("Material.Get_Texture, aiGetMaterialTexture failed.");
+      end if;
 
    exception
       when others =>
