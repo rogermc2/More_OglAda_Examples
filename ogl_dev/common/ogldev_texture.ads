@@ -30,9 +30,10 @@ Package Ogldev_Texture is
 
    procedure Bind (theTexture : Ogl_Texture;
                    Texture_Unit : Ogldev_Engine_Common.Texture_Unit_Index);
-   procedure Init_Texture (theTexture : in out Ogl_Texture;
-                           Target_Type : GL.Low_Level.Enums.Texture_Kind;
-                           File_Name  :  String);
+   function Init_Texture
+     (theTexture : in out Ogl_Texture;
+      Target_Type : GL.Low_Level.Enums.Texture_Kind;
+      File_Name  :  String) return Boolean ;
    procedure Load (theTexture : in out Ogl_Texture);
 
 end Ogldev_Texture;
