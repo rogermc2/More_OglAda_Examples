@@ -117,14 +117,23 @@ package body Material is
       --  access access all API_Material_Property;
       Prop_Ptr_Array_Ptr := API_Prop_Ptr_Array (1)'Access;
       Material.Properties := Prop_Ptr_Array_Ptr;
+      --  Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1)
+      Put_Line ("Material.Get_Texture, API_Property_Array (1).Data_Length" &
+                  unsigned'Image (API_Property_Array (1).Data_Length));
+      Put_Line ("Material.Get_Texture, Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Length" &
+                  unsigned'Image (Prop_Ptr_Array_Ptr.all.Data_Length));
+      Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Length" &
+                  unsigned'Image (Material.Properties.all.Data_Length));
 
       Result :=
         API_Get_Material_Texture
-          (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
+          (Material'Access, AI_Texture_Diffuse, 0, C_Path'Access);
+--          API_Get_Material_Texture
+--            (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
       if Result = API_Return_Success then
         Path := To_Unbounded_String (To_Ada (C_Path.Data));
       else
-         Put_Line ("Material.Get_Texture, aiGetMaterialTexture");
+         Put_Line ("Material.Get_Texture, aiGetMaterialTexture failed.");
       end if;
 
    exception
@@ -208,8 +217,8 @@ package body Material is
             --                       unsigned'Image (theProperties_Ptr_Array (2).Data_Length));
             --           Put_Line ("Material.To_AI_Material Data_Type: " &
             --                       AI_Property_Type_Info'Image (theProperties_Ptr_Array (2).Data_Type));
-            Put_Line ("Material.To_AI_Material Index: " &
-                        unsigned'Image (theProperties_Ptr_Array (5).Texture_Index));
+--              Put_Line ("Material.To_AI_Material Index: " &
+--                          unsigned'Image (theProperties_Ptr_Array (5).Texture_Index));
             theMaterial.Properties := To_AI_Property_List
               (C_Material, theProperties_Ptr_Array);
             theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
@@ -275,8 +284,8 @@ package body Material is
       AI_Property.Semantic := UInt (API_Prop.Semantic);
       AI_Property.Texture_Index := UInt (API_Prop.Texture_Index);
       AI_Property.Data_Type := API_Prop.Data_Type;
-      Put_Line ("Material.To_AI_Property Semantic, Texture Index: " &
-                  UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
+--        Put_Line ("Material.To_AI_Property Semantic, Texture Index: " &
+--                    UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
 
       if Data_Length > 0  then
          --           Put_Line ("Material.To_AI_Property Data_Type: " &
@@ -295,9 +304,9 @@ package body Material is
       else
          Put_Line ("Material.To_AI_Property detected illegal Data_Length.");
       end if;
-      Put_Line ("Material.To_AI_Property exit Semantic, Texture Index: " &
-                  UInt'Image (AI_Property.Semantic) &
-                  UInt'Image (AI_Property.Texture_Index));
+--        Put_Line ("Material.To_AI_Property exit Semantic, Texture Index: " &
+--                    UInt'Image (AI_Property.Semantic) &
+--                    UInt'Image (AI_Property.Texture_Index));
       return AI_Property;
 
    exception
@@ -334,7 +343,7 @@ package body Material is
          --                       unsigned'Image (aProperty.Texture_Index));
          AI_Property := To_AI_Property (anAPI_Material, aProperty);
          AI_Properties.Append (AI_Property);
-         New_Line;
+--           New_Line;
       end loop;
       return AI_Properties;
 
