@@ -1,4 +1,5 @@
 
+with Ada.Directories;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures.Targets;
@@ -26,14 +27,22 @@ package body Ogldev_Texture is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Texture
+   function Init_Texture
      (theTexture : in out Ogl_Texture;
       Target_Type : GL.Low_Level.Enums.Texture_Kind;
-      File_Name  :  String) is
+      File_Name  :  String) return Boolean is
       use Ada.Strings.Unbounded;
+      Result : Boolean;
    begin
+      Result := Ada.Directories.Exists (File_Name);
+      if Result then
       theTexture.File_Name := To_Unbounded_String (File_Name);
-      theTexture.Texture_Target := Target_Type;
+         theTexture.Texture_Target := Target_Type;
+      else
+         Put_Line ("Ogldev_Texture.Init_Texture file" & File_Name &
+                   " not found");
+      end if;
+      return Result;
    exception
       when others =>
          Put_Line ("An exception occurred in Ogldev_Texture.Init_Texture.");
