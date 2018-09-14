@@ -1,6 +1,7 @@
 
 with System;
 
+with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp.API;
@@ -9,33 +10,33 @@ with Material_System;
 
 package body Material is
 
-   subtype Data_Size is UInt range 0 .. 1024;  --  To avoid possible storage error
-   type Byte_Data_Array is array (Data_Size range <>) of UByte;
-   pragma Convention (C, Byte_Data_Array);
+    subtype Data_Size is UInt range 0 .. 1024;  --  To avoid possible storage error
+    type Byte_Data_Array is array (Data_Size range <>) of UByte;
+    pragma Convention (C, Byte_Data_Array);
 
-   type Data_Record (length : Data_Size := 1) is record
-      Data : Byte_Data_Array (1 .. length);
-   end record;
+    type Data_Record (length : Data_Size := 1) is record
+        Data : Byte_Data_Array (1 .. length);
+    end record;
 
-   type Property_Data_Array is array (UInt range <>) of Data_Record;
+    type Property_Data_Array is array (UInt range <>) of Data_Record;
 
     type Material_Property is record
-      Key           : Assimp_Types.API_String;
-      Semantic      : Interfaces.C.unsigned := 0;
-      Texture_Index : Interfaces.C.unsigned := 0;
-      Data_Length   : Interfaces.C.unsigned := 0;  --  Actual must not be 0
-      --  Data_Type provides information for the property.
-      --  It defines the data layout inside the data buffer.
-      --  This is used by the library internally to perform debug checks and to
-      --  utilize proper type conversions.
-      Data_Type     : AI_Property_Type_Info := PTI_Float;
-      --  Data holds the property's value. Its size is always Data_Length
-      Data          : access Byte_Data_Array;
-   end record;
-   pragma Convention (C_Pass_By_Copy, Material_Property);
+        Key           : Assimp_Types.API_String;
+        Semantic      : Interfaces.C.unsigned := 0;
+        Texture_Index : Interfaces.C.unsigned := 0;
+        Data_Length   : Interfaces.C.unsigned := 0;  --  Actual must not be 0
+        --  Data_Type provides information for the property.
+        --  It defines the data layout inside the data buffer.
+        --  This is used by the library internally to perform debug checks and to
+        --  utilize proper type conversions.
+        Data_Type     : AI_Property_Type_Info := PTI_Float;
+        --  Data holds the property's value. Its size is always Data_Length
+        Data          : access Byte_Data_Array;
+    end record;
+    pragma Convention (C_Pass_By_Copy, Material_Property);
 
-   type Material_Property_Array is array (Interfaces.C.unsigned range <>) of
-          aliased Material_Property;
+    type Material_Property_Array is array (Interfaces.C.unsigned range <>) of
+      aliased Material_Property;
 
     function To_AI_Property_List (anAPI_Material     : API_Material;
                                   Property_Ptr_Array : API_Property_Ptr_Array)
@@ -72,7 +73,26 @@ package body Material is
            null);
         subtype Property_Access_Array_Pointer is Property_Access_Array_Package.Pointer;
 
-        Material           : aliased API_Material;
+        type API_Material_Tex is record
+            Properties     : Property_Access_Array_Pointer := null;
+            Num_Properties : Interfaces.C.unsigned := 0;
+            Num_Allocated  : Interfaces.C.unsigned := 0;
+        end record;
+        pragma Convention (C_Pass_By_Copy, API_Material_Tex);
+
+        function Get_Material_Texture (aMaterial : access API_Material_Tex;
+                                       Tex_Type : AI_Texture_Type;
+                                       Index : Interfaces.C.unsigned;
+                                       Path : access Assimp_Types.API_String := null;
+                                       Mapping : access AI_Texture_Mapping := null;
+                                       UV_Index : access Interfaces.C.unsigned := null;
+                                       Blend : access Interfaces.C.C_float := null;
+                                       Op : access AI_Texture_Op := null;
+                                       Map_Mode : access AI_Texture_Map_Mode := null)
+                                  return Assimp_Types.API_Return;
+        pragma Import (C, Get_Material_Texture, "aiGetMaterialTexture");
+
+        Material           : aliased API_Material_Tex;
         C_Path             : aliased Assimp_Types.API_String;
         Properties_Length  : unsigned := unsigned (Length (aMaterial.Properties));
         API_Property_Array : Material_Property_Array (1 .. Properties_Length);
@@ -86,14 +106,14 @@ package body Material is
                                     API_Property_Array);
 
         for index in 1 .. Properties_Length loop
-        null;
+            null;
             API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
         end loop;
         --  access access all API_Material_Property;
         Prop_Ptr_Array_Ptr := API_Prop_Ptr_Array (1)'Access;
         Material.Properties := Prop_Ptr_Array_Ptr;
         Result :=
-          Assimp.API.Get_Material_Texture
+          Get_Material_Texture
             (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
         Path := To_Unbounded_String (To_Ada (C_Path.Data));
 
@@ -396,7 +416,7 @@ package body Material is
         use AI_Material_Property_Package;
         use Assimp_Types.Byte_Data_Package;
         Property_Cursor      : AI_Material_Property_Package.Cursor :=
-                                    Properties.First;
+                                 Properties.First;
         Data_Cursor          : Assimp_Types.Byte_Data_Package.Cursor;
         Data_Length          : unsigned := 0;
         aProperty            : AI_Material_Property;
@@ -404,14 +424,11 @@ package body Material is
         Index                : unsigned := 0;
         Data_Index           : UInt := 0;
     begin
-     while Has_Element (Property_Cursor) loop
+        while Has_Element (Property_Cursor) loop
             Index := Index + 1;
             aProperty := Element (Property_Cursor);
             Data_Cursor := aProperty.Data_Buffer.First;
-            Property_Array (index).Key.Length :=
-              Ada.Strings.Unbounded.To_String (aProperty.Key)'Length;
-            Property_Array (index).Key.Data :=
-              To_C (Ada.Strings.Unbounded.To_String (aProperty.Key));
+            Property_Array (index).Key := Assimp_Util.To_Assimp_API_String (aProperty.Key);
             Property_Array (index).Semantic := unsigned (aProperty.Semantic);
             Property_Array (index).Texture_Index :=
               unsigned (aProperty.Texture_Index);

@@ -20,17 +20,17 @@ package Assimp.API is
 --                                    return Assimp_Types.API_Return;
 --     pragma Import (C, Get_Material_Texture1, "aiGetMaterialTexture");
 
-   function Get_Material_Texture (aMaterial : access Material.API_Material;
-                                  Tex_Type : Material.AI_Texture_Type;
-                                  Index : Interfaces.C.unsigned;
-                                  Path : access Assimp_Types.API_String := null;
-                                  Mapping : access Material.AI_Texture_Mapping := null;
-                                  UV_Index : access Interfaces.C.unsigned := null;
-                                  Blend : access Interfaces.C.C_float := null;
-                                  Op : access Material.AI_Texture_Op := null;
-                                  Map_Mode : access Material.AI_Texture_Map_Mode := null)
-                                  return Assimp_Types.API_Return;
-   pragma Import (C, Get_Material_Texture, "aiGetMaterialTexture");
+--     function Get_Material_Texture (aMaterial : access Material.API_Material;
+--                                    Tex_Type : Material.AI_Texture_Type;
+--                                    Index : Interfaces.C.unsigned;
+--                                    Path : access Assimp_Types.API_String := null;
+--                                    Mapping : access Material.AI_Texture_Mapping := null;
+--                                    UV_Index : access Interfaces.C.unsigned := null;
+--                                    Blend : access Interfaces.C.C_float := null;
+--                                    Op : access Material.AI_Texture_Op := null;
+--                                    Map_Mode : access Material.AI_Texture_Map_Mode := null)
+--                                    return Assimp_Types.API_Return;
+--     pragma Import (C, Get_Material_Texture, "aiGetMaterialTexture");
 
    function Get_Material_Texture_Count (aMaterial : Material.API_Material;
                                         Tex_Type : Material.AI_Texture_Type)
