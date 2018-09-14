@@ -97,6 +97,7 @@ package body Material is
       pragma Import (C, API_Get_Material_Texture, "aiGetMaterialTexture");
 
       Material           : aliased API_Material_Tex;
+      --  Path returned by aiGetMaterialTexture to texture file
       C_Path             : aliased Assimp_Types.API_String;
       Properties_Length  : unsigned := unsigned (Length (aMaterial.Properties));
       API_Property_Array : Material_Property_Array (1 .. Properties_Length);
@@ -116,13 +117,14 @@ package body Material is
       --  access access all API_Material_Property;
       Prop_Ptr_Array_Ptr := API_Prop_Ptr_Array (1)'Access;
       Material.Properties := Prop_Ptr_Array_Ptr;
+
       Result :=
         API_Get_Material_Texture
           (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
       if Result = API_Return_Success then
         Path := To_Unbounded_String (To_Ada (C_Path.Data));
       else
-         Put_Line ("Material.Get_Texture, aiGetMaterialTexture failed.");
+         Put_Line ("Material.Get_Texture, aiGetMaterialTexture");
       end if;
 
    exception
