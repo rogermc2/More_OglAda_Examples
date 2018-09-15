@@ -10,7 +10,7 @@ with Material_System;
 
 package body Material is
 
-   subtype Data_Size is UInt range 0 .. 1024;  --  To avoid possible storage error
+   subtype Data_Size is Interfaces.c.unsigned range 0 .. 1024;  --  To avoid possible storage error
    type Byte_Data_Array is array (Data_Size range <>) of UByte;
    pragma Convention (C, Byte_Data_Array);
 
@@ -120,10 +120,27 @@ package body Material is
       --  Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1)
       Put_Line ("Material.Get_Texture, API_Property_Array (1).Data_Length" &
                   unsigned'Image (API_Property_Array (1).Data_Length));
+      Put_Line ("Material.Get_Texture, API_Property_Array (2).Data_Length" &
+                  unsigned'Image (API_Property_Array (2).Data_Length));
+      Put_Line ("Material.Get_Texture, API_Property_Array (5).Data_Length" &
+                  unsigned'Image (API_Property_Array (5).Data_Length));
       Put_Line ("Material.Get_Texture, Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Length" &
                   unsigned'Image (Prop_Ptr_Array_Ptr.all.Data_Length));
       Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Length" &
                   unsigned'Image (Material.Properties.all.Data_Length));
+      declare
+          theData   : Byte_Data_Array (1 .. Material.Properties.all.Data_Length) :=
+                          Material.Properties.all.Data.Bytes;
+          theString : String (1 .. Integer (Material.Properties.all.Data_Length));
+      begin
+          for index in 1 .. Material.Properties.all.Data_Length loop
+             Put (UByte'Image (theData (index)) & " ");
+             theString (Integer (index)) := character'Val (theData (index));
+          end loop;
+             New_Line;
+            Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data: "
+                      & theString);
+      end;
 
       Result :=
         API_Get_Material_Texture
@@ -132,6 +149,8 @@ package body Material is
 --            (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
       if Result = API_Return_Success then
         Path := To_Unbounded_String (To_Ada (C_Path.Data));
+      elsif Result = API_Return_Out_Of_Memory then
+         Put_Line ("Material.Get_Texture, aiGetMaterialTexture returned out of memory error.");
       else
          Put_Line ("Material.Get_Texture, aiGetMaterialTexture failed.");
       end if;
@@ -437,7 +456,7 @@ package body Material is
       Property_Cursor      : AI_Material_Property_Package.Cursor :=
                                Properties.First;
       Data_Cursor          : Assimp_Types.Byte_Data_Package.Cursor;
-      Data_Length          : UInt := 0;
+      Data_Length          : unsigned := 0;
       aProperty            : AI_Material_Property;
       Index                : unsigned := 0;
    begin
@@ -449,13 +468,13 @@ package body Material is
          Property_Array (index).Semantic := unsigned (aProperty.Semantic);
          Property_Array (index).Texture_Index :=
            unsigned (aProperty.Texture_Index);
-         Data_Length := UInt (aProperty.Data_Buffer.Length);
-         Property_Array (index).Data_Length := unsigned (Data_Length);
+         Data_Length := unsigned (aProperty.Data_Buffer.Length);
+         Property_Array (index).Data_Length := Data_Length;
          Property_Array (index).Data_Type := aProperty.Data_Type;
          declare
             Data       : Byte_Data_Array (1 .. Data_Length);
             Data_Rec   : Data_Record (Data_Length);
-            Data_Index : UInt := 0;
+            Data_Index : unsigned := 0;
          begin
             while Has_Element (Data_Cursor) loop
                Data_Index := Data_Index + 1;
