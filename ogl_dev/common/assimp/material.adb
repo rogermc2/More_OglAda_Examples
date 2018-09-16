@@ -40,6 +40,7 @@ package body Material is
 
    type Material_Property_Array is array (Interfaces.C.unsigned range <>) of
      aliased Material_Property;
+   pragma Convention (C, Material_Property_Array);
 
    function To_AI_Property_List (anAPI_Material     : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
@@ -77,6 +78,10 @@ package body Material is
          null);
       subtype Property_Access_Array_Pointer is Property_Access_Array_Package.Pointer;
 
+      --  Pointer to a list (array) of all material properties loaded:
+      --  C_STRUCT aiMaterialProperty** mProperties;
+      --  unsigned int mNumProperties; Number of properties in the data base
+      --  unsigned int mNumAllocated;  Storage allocated
       type API_Material_Tex is record
          Properties     : Property_Access_Array_Pointer := null;
          Num_Properties : Interfaces.C.unsigned := 0;
@@ -84,6 +89,7 @@ package body Material is
       end record;
       pragma Convention (C_Pass_By_Copy, API_Material_Tex);
 
+      --  aiGetMaterialTexture(this,type,index,path,mapping,uvindex,blend,op,mapmode
       function API_Get_Material_Texture (aMaterial : access API_Material_Tex;
                                      Tex_Type  : AI_Texture_Type;
                                      Index     : Interfaces.C.unsigned;
