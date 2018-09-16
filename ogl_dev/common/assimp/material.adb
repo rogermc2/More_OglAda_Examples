@@ -66,6 +66,7 @@ package body Material is
       use Ada.Strings.Unbounded;
       use Assimp_Types;
 
+      --  Material_Property_Array_Pointer must be declared here to prevent non-local error messages
       Material_Property_Default : Material_Property :=
                                     ((0, (others => Interfaces.C.char'Val (0))),
                                      0, 0, 0, PTI_Float, null);
@@ -74,29 +75,31 @@ package body Material is
          Material_Property_Default);
       subtype Material_Property_Array_Pointer is Material_Property_Array_Package.Pointer;
 
-      --  API_Material_Property_Access must be declared here to prevent non-local error messages
-      type API_Material_Property_Access is access all Material_Property;
-      pragma Convention (C, API_Material_Property_Access);
-
-      type Property_Access_Ptr_Array is array (Interfaces.C.unsigned range <>) of
-        aliased API_Material_Property_Access;
-      pragma Convention (C, Property_Access_Ptr_Array);
-
-      package Property_Access_Array_Package is new Interfaces.C.Pointers
-        (Interfaces.C.unsigned, API_Material_Property_Access, Property_Access_Ptr_Array,
-         null);
-      subtype Property_Access_Array_Pointer is Property_Access_Array_Package.Pointer;
+      type Property_Ptr_Array is array (Interfaces.C.unsigned range <>) of
+        aliased Material_Property_Array_Pointer;
+      pragma Convention (C, Property_Ptr_Array);
 
       --  Pointer to a list (array) of all material properties loaded:
       --  C_STRUCT aiMaterialProperty** mProperties;
       --  unsigned int mNumProperties; Number of properties in the data base
       --  unsigned int mNumAllocated;  Storage allocated
       type API_Material_Tex is record
-         Properties     : Property_Access_Array_Pointer := null;
+         Properties     : access Material_Property_Array_Pointer := null;
          Num_Properties : Interfaces.C.unsigned := 0;
          Num_Allocated  : Interfaces.C.unsigned := 0;
       end record;
       pragma Convention (C_Pass_By_Copy, API_Material_Tex);
+
+      function Get_Material_String (aMaterial : access API_Material_Tex;
+                                    Tex_Type  : unsigned;
+                                    Index : unsigned)
+                                           return Assimp_Types.API_String;
+      pragma Import (C, Get_Material_String, "aiGetMaterialString");
+
+      function Get_Material_Texture_Count (aMaterial : access API_Material_Tex;
+                                           Tex_Type  : unsigned)
+                                           return unsigned;
+      pragma Import (C, Get_Material_Texture_Count, "aiGetMaterialTextureCount");
 
       --  aiGetMaterialTexture(this,type,index,path,mapping,uvindex,blend,op,mapmode
       function API_Get_Material_Texture (aMaterial : access API_Material_Tex;
@@ -113,15 +116,19 @@ package body Material is
 
       Material           : aliased API_Material_Tex;
       --  Path returned by aiGetMaterialTexture to texture file
-      C_Path             : aliased Assimp_Types.API_String;
+      Assimp_Path        : aliased Assimp_Types.API_String;
       Properties_Length  : unsigned := unsigned (Length (aMaterial.Properties));
       API_Property_Array : Material_Property_Array (1 .. Properties_Length);
       Property_Data      : Property_Data_Array (1 .. Uint (aMaterial.Properties.Length));
-      API_Prop_Ptr_Array : aliased Property_Access_Ptr_Array (1 .. Properties_Length);
-      Prop_Ptr_Array_Ptr : Property_Access_Array_Pointer;
+      API_Prop_Ptr_Array : aliased Property_Ptr_Array (1 .. Properties_Length);
+      Prop_Ptr_Array_Ptr : access Material_Property_Array_Pointer;
+      Texture_Count      : unsigned := 0;
+      Material_String    : Assimp_Types.API_String;
    begin
       Material.Num_Properties := unsigned (aMaterial.Properties.Length);
       Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
+      --  Generate an array of Material_Property records for
+      --  the elements of Property_Ptr_Array to point to
       To_Material_Property_Array (aMaterial.Properties, Property_Data,
                                   API_Property_Array);
 
@@ -129,20 +136,20 @@ package body Material is
          API_Property_Array (index).Data := Property_Data (UInt (index))'unchecked_Access;
          API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
       end loop;
-      --  access access all API_Material_Property;
+
       Prop_Ptr_Array_Ptr := API_Prop_Ptr_Array (1)'Access;
       Material.Properties := Prop_Ptr_Array_Ptr;
       --  Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1)
-      Put_Line ("Material.Get_Texture, API_Property_Array (1).Data_Length" &
-                  unsigned'Image (API_Property_Array (1).Data_Length));
-      Put_Line ("Material.Get_Texture, API_Property_Array (2).Data_Length" &
-                  unsigned'Image (API_Property_Array (2).Data_Length));
-      Put_Line ("Material.Get_Texture, API_Property_Array (5).Data_Length" &
-                  unsigned'Image (API_Property_Array (5).Data_Length));
-      Put_Line ("Material.Get_Texture, Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Length" &
-                  unsigned'Image (Prop_Ptr_Array_Ptr.all.Data_Length));
-      Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Length" &
-                  unsigned'Image (Material.Properties.all.Data_Length));
+      Put_Line ("Material.Get_Texture, API_Property_Array (1).Data_Type: " &
+                  AI_Property_Type_Info'Image (API_Property_Array (1).Data_Type));
+      Put_Line ("Material.Get_Texture, API_Property_Array (2).Data_Type: " &
+                  AI_Property_Type_Info'Image (API_Property_Array (2).Data_Type));
+      Put_Line ("Material.Get_Texture, API_Property_Array (5).Data_Type: " &
+                  AI_Property_Type_Info'Image (API_Property_Array (5).Data_Type));
+      Put_Line ("Material.Get_Texture, Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Type: " &
+                  AI_Property_Type_Info'Image (Prop_Ptr_Array_Ptr.all.Data_Type));
+      Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Type: "
+                & AI_Property_Type_Info'Image (Material.Properties.all.Data_Type));
       declare
          theData   : Byte_Data_Array (1 .. Material.Properties.all.Data_Length) :=
                        Material.Properties.all.Data.Bytes;
@@ -157,13 +164,24 @@ package body Material is
                    & theString);
       end;
 
+      for index in 1 .. 16#c# loop
+         Texture_Count := Get_Material_Texture_Count
+           (Material'Access, Interfaces.C.unsigned (index));
+         if Texture_Count > 0 then
+            Material_String := Get_Material_String
+              (Material'Access, Interfaces.C.unsigned (index), 1);
+         end if;
+         Put_Line ("Material.Get_Texture, Texture_Count" & Integer'Image (index)
+                   & unsigned'Image (Texture_Count));
+      end loop;
+
       Result :=
         API_Get_Material_Texture
-          (Material'Access, AI_Texture_Diffuse, 0, C_Path'Access);
+          (Material'Access, AI_Texture_Diffuse, 0, Assimp_Path'Access);
       --          API_Get_Material_Texture
-      --            (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
+      --            (Material'Access, Tex_Type, unsigned (Tex_Index), Assimp_Path'Access);
       if Result = API_Return_Success then
-         Path := To_Unbounded_String (To_Ada (C_Path.Data));
+         Path := To_Unbounded_String (To_Ada (Assimp_Path.Data));
       elsif Result = API_Return_Out_Of_Memory then
          Put_Line ("Material.Get_Texture, aiGetMaterialTexture returned out of memory error.");
       else
@@ -175,39 +193,6 @@ package body Material is
          Put_Line ("An exception occurred in Material.Get_Texture.");
          raise;
    end Get_Texture;
-
-   --  -------------------------------------------------------------------------
-
-   --      procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
-   --                             Tex_Index : UInt := 0;
-   --                             Path      : out Ada.Strings.Unbounded.Unbounded_String;
-   --                             Mapping   : AI_Texture_Mapping;
-   --                             UV_Index  : out UInt;
-   --                             Blend     : out Single;
-   --                             Op        : AI_Texture_Op;
-   --                             Map_Mode  : AI_Texture_Map_Mode;
-   --                             Result    : out Assimp_Types.API_Return) is
-   --          use Interfaces.C;
-   --          use Ada.Strings.Unbounded;
-   --          C_Material : API_Material;
-   --          C_Path     : aliased Assimp_Types.API_String;
-   --          UV         : aliased unsigned;
-   --          C_Blend    : aliased C_float;
-   --      begin
-   --          To_API_Material (aMaterial, C_Material);
-   --          Result := Assimp.API.Get_Material_Texture
-   --            (C_Material, Tex_Type, unsigned (Tex_Index), C_Path'Access,
-   --             Mapping'Access, UV'Access, C_Blend'Access, Op'Access, Map_Mode'Access);
-   --
-   --          UV_Index := UInt (UV);
-   --          Blend := Single (C_Blend);
-   --          Path := To_Unbounded_String (To_Ada (C_Path.Data));
-   --
-   --      exception
-   --          when others =>
-   --              Put_Line ("An exception occurred in Material.Get_Texture 2.");
-   --              raise;
-   --      end Get_Texture;
 
    --  -------------------------------------------------------------------------
 
