@@ -34,7 +34,7 @@ package body Material is
       Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
       Data          : Data_Record_Access;
---        Data          : access Byte_Data_Array;
+      --        Data          : access Byte_Data_Array;
    end record;
    pragma Convention (C_Pass_By_Copy, Material_Property);
 
@@ -42,18 +42,10 @@ package body Material is
      aliased Material_Property;
    pragma Convention (C, Material_Property_Array);
 
-   Material_Property_Default : Material_Property :=
-                                 ((0, (others => Interfaces.C.char'Val (0))),
-                                   0, 0, 0, PTI_Float, null);
-   package Material_Property_Array_Package is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, Material_Property, Material_Property_Array,
-      Material_Property_Default);
-      subtype Property_Access_Array_Pointer is Material_Property_Array_Package.Pointer;
-
 
    function To_AI_Property_List (anAPI_Material     : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
-                                  return AI_Material_Property_List;
+                                 return AI_Material_Property_List;
    procedure To_API_Property (aProperty       : AI_Material_Property;
                               Raw_Data        : in out Assimp_Types.Raw_Byte_Data;
                               theAPI_Property : in out API_Material_Property);
@@ -73,6 +65,14 @@ package body Material is
       use Interfaces.C;
       use Ada.Strings.Unbounded;
       use Assimp_Types;
+
+      Material_Property_Default : Material_Property :=
+                                    ((0, (others => Interfaces.C.char'Val (0))),
+                                     0, 0, 0, PTI_Float, null);
+      package Material_Property_Array_Package is new Interfaces.C.Pointers
+        (Interfaces.C.unsigned, Material_Property, Material_Property_Array,
+         Material_Property_Default);
+      subtype Material_Property_Array_Pointer is Material_Property_Array_Package.Pointer;
 
       --  API_Material_Property_Access must be declared here to prevent non-local error messages
       type API_Material_Property_Access is access all Material_Property;
@@ -100,15 +100,15 @@ package body Material is
 
       --  aiGetMaterialTexture(this,type,index,path,mapping,uvindex,blend,op,mapmode
       function API_Get_Material_Texture (aMaterial : access API_Material_Tex;
-                                     Tex_Type  : AI_Texture_Type;
-                                     Index     : Interfaces.C.unsigned;
-                                     Path      : access Assimp_Types.API_String := null;
-                                     Mapping   : access AI_Texture_Mapping := null;
-                                     UV_Index  : access Interfaces.C.unsigned := null;
-                                     Blend     : access Interfaces.C.C_float := null;
-                                     Op        : access AI_Texture_Op := null;
-                                     Map_Mode  : access AI_Texture_Map_Mode := null)
-                                       return Assimp_Types.API_Return;
+                                         Tex_Type  : AI_Texture_Type;
+                                         Index     : Interfaces.C.unsigned;
+                                         Path      : access Assimp_Types.API_String := null;
+                                         Mapping   : access AI_Texture_Mapping := null;
+                                         UV_Index  : access Interfaces.C.unsigned := null;
+                                         Blend     : access Interfaces.C.C_float := null;
+                                         Op        : access AI_Texture_Op := null;
+                                         Map_Mode  : access AI_Texture_Map_Mode := null)
+                                         return Assimp_Types.API_Return;
       pragma Import (C, API_Get_Material_Texture, "aiGetMaterialTexture");
 
       Material           : aliased API_Material_Tex;
@@ -144,26 +144,26 @@ package body Material is
       Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data_Length" &
                   unsigned'Image (Material.Properties.all.Data_Length));
       declare
-          theData   : Byte_Data_Array (1 .. Material.Properties.all.Data_Length) :=
-                          Material.Properties.all.Data.Bytes;
-          theString : String (1 .. Integer (Material.Properties.all.Data_Length));
+         theData   : Byte_Data_Array (1 .. Material.Properties.all.Data_Length) :=
+                       Material.Properties.all.Data.Bytes;
+         theString : String (1 .. Integer (Material.Properties.all.Data_Length));
       begin
-          for index in 1 .. Material.Properties.all.Data_Length loop
-             Put (UByte'Image (theData (index)) & " ");
-             theString (Integer (index)) := character'Val (theData (index));
-          end loop;
-             New_Line;
-            Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data: "
-                      & theString);
+         for index in 1 .. Material.Properties.all.Data_Length loop
+            Put (UByte'Image (theData (index)) & " ");
+            theString (Integer (index)) := character'Val (theData (index));
+         end loop;
+         New_Line;
+         Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data: "
+                   & theString);
       end;
 
       Result :=
         API_Get_Material_Texture
           (Material'Access, AI_Texture_Diffuse, 0, C_Path'Access);
---          API_Get_Material_Texture
---            (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
+      --          API_Get_Material_Texture
+      --            (Material'Access, Tex_Type, unsigned (Tex_Index), C_Path'Access);
       if Result = API_Return_Success then
-        Path := To_Unbounded_String (To_Ada (C_Path.Data));
+         Path := To_Unbounded_String (To_Ada (C_Path.Data));
       elsif Result = API_Return_Out_Of_Memory then
          Put_Line ("Material.Get_Texture, aiGetMaterialTexture returned out of memory error.");
       else
@@ -251,8 +251,8 @@ package body Material is
             --                       unsigned'Image (theProperties_Ptr_Array (2).Data_Length));
             --           Put_Line ("Material.To_AI_Material Data_Type: " &
             --                       AI_Property_Type_Info'Image (theProperties_Ptr_Array (2).Data_Type));
---              Put_Line ("Material.To_AI_Material Index: " &
---                          unsigned'Image (theProperties_Ptr_Array (5).Texture_Index));
+            --              Put_Line ("Material.To_AI_Material Index: " &
+            --                          unsigned'Image (theProperties_Ptr_Array (5).Texture_Index));
             theMaterial.Properties := To_AI_Property_List
               (C_Material, theProperties_Ptr_Array);
             theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
@@ -270,7 +270,7 @@ package body Material is
 
    function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
                                  C_Material_Array : API_Material_Array)
-                                  return AI_Material_Map is
+                                 return AI_Material_Map is
       use Interfaces.C;
       Material_Map : AI_Material_Map;
       aMaterial    : AI_Material;
@@ -293,7 +293,7 @@ package body Material is
 
    function To_AI_Property (anAPI_Material : API_Material;
                             API_Property   : API_Material_Property)
-                             return AI_Material_Property is
+                            return AI_Material_Property is
       use Interfaces.C;
       use Interfaces.C.Strings;
       use Assimp_Types;
@@ -318,8 +318,8 @@ package body Material is
       AI_Property.Semantic := UInt (API_Prop.Semantic);
       AI_Property.Texture_Index := UInt (API_Prop.Texture_Index);
       AI_Property.Data_Type := API_Prop.Data_Type;
---        Put_Line ("Material.To_AI_Property Semantic, Texture Index: " &
---                    UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
+      --        Put_Line ("Material.To_AI_Property Semantic, Texture Index: " &
+      --                    UInt'Image (AI_Property.Semantic) & UInt'Image (AI_Property.Texture_Index));
 
       if Data_Length > 0  then
          --           Put_Line ("Material.To_AI_Property Data_Type: " &
@@ -338,9 +338,9 @@ package body Material is
       else
          Put_Line ("Material.To_AI_Property detected illegal Data_Length.");
       end if;
---        Put_Line ("Material.To_AI_Property exit Semantic, Texture Index: " &
---                    UInt'Image (AI_Property.Semantic) &
---                    UInt'Image (AI_Property.Texture_Index));
+      --        Put_Line ("Material.To_AI_Property exit Semantic, Texture Index: " &
+      --                    UInt'Image (AI_Property.Semantic) &
+      --                    UInt'Image (AI_Property.Texture_Index));
       return AI_Property;
 
    exception
@@ -354,7 +354,7 @@ package body Material is
 
    function To_AI_Property_List (anAPI_Material     : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
-                                  return AI_Material_Property_List is
+                                 return AI_Material_Property_List is
       use Interfaces.C;
       aProperty      : API_Material_Property;
       AI_Properties  : AI_Material_Property_List;
@@ -377,7 +377,7 @@ package body Material is
          --                       unsigned'Image (aProperty.Texture_Index));
          AI_Property := To_AI_Property (anAPI_Material, aProperty);
          AI_Properties.Append (AI_Property);
---           New_Line;
+         --           New_Line;
       end loop;
       return AI_Properties;
 
