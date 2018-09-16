@@ -42,6 +42,15 @@ package body Material is
      aliased Material_Property;
    pragma Convention (C, Material_Property_Array);
 
+   Material_Property_Default : Material_Property :=
+                                 ((0, (others => Interfaces.C.char'Val (0))),
+                                   0, 0, 0, PTI_Float, null);
+   package Material_Property_Array_Package is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, Material_Property, Material_Property_Array,
+      Material_Property_Default);
+      subtype Property_Access_Array_Pointer is Material_Property_Array_Package.Pointer;
+
+
    function To_AI_Property_List (anAPI_Material     : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
                                   return AI_Material_Property_List;
