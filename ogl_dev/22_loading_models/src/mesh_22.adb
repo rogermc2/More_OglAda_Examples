@@ -124,6 +124,8 @@ package body Mesh_22 is
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Get_Texture (aMaterial, AI_Texture_Diffuse, 0, Path, Result);
             if Result = Assimp_Types.API_Return_Success then
+               Put_Line ("Mesh_22.Init_Materials.Load_Textures Path: " &
+                           Ada.Strings.Unbounded.To_String (Path));
                if Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name) then
                   theMesh.Textures.Insert (UInt (index), aTexture);
