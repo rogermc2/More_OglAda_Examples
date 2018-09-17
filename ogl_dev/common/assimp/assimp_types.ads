@@ -15,7 +15,7 @@ package Assimp_Types is
                        API_Return_Success, API_Enforce_Enum_Size);
 
    Max_Length : constant Interfaces.C.size_t := 1024;
-   subtype API_String_Data_Array is char_array (0 .. Max_Length - 1);
+   subtype API_String_Data_Array is char_array (1 .. Max_Length);
 
    type Colors_Array is array (1 .. 8) of access API_Vectors_Matrices.API_Colour_4D;
    pragma Convention (C, Colors_Array);
