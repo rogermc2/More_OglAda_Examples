@@ -123,7 +123,8 @@ package body Material is
       API_Prop_Ptr_Array : aliased Property_Ptr_Array (1 .. Properties_Length);
       Prop_Ptr_Array_Ptr : access Material_Property_Array_Pointer;
       Texture_Count      : unsigned := 0;
-      Material_String    : Assimp_Types.API_String;
+--        Material_String    : Assimp_Types.API_String;
+      Returned_Path      : access Assimp_Types.API_String := null;
    begin
       Material.Num_Properties := unsigned (aMaterial.Properties.Length);
       Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
@@ -141,45 +142,37 @@ package body Material is
       Material.Properties := Prop_Ptr_Array_Ptr;
       --  Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1)
 
---        declare
---           theData   : Byte_Data_Array (1 .. Material.Properties.all.Data_Length) :=
---                         Material.Properties.all.Data.Bytes;
---           theString : String (1 .. Integer (Material.Properties.all.Data_Length));
---        begin
---           Put ("Material.Get_Texture Data string: ");
---           for index in 1 .. Material.Properties.all.Data_Length loop
---              Put (UByte'Image (theData (index)));
---              theString (Integer (index)) := character'Val (theData (index));
---           end loop;
---           New_Line;
---           Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data string: "
---                     & "'" & theString & "'");
---        end;
---        New_Line;
+      declare
+         theData   : Byte_Data_Array (1 .. Material.Properties.all.Data_Length) :=
+                       Material.Properties.all.Data.Bytes;
+         theString : String (1 .. Integer (Material.Properties.all.Data_Length));
+      begin
+         Put ("Material.Get_Texture Data string: ");
+         for index in 1 .. Material.Properties.all.Data_Length loop
+            Put (UByte'Image (theData (index)));
+            theString (Integer (index)) := character'Val (theData (index));
+         end loop;
+         New_Line;
+         Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data string: "
+                   & "'" & theString & "'");
+      end;
+      New_Line;
 
---        for index in 1 .. Material.Num_Properties loop
---           Put_Line ("Material.Get_Texture, Key & Data Type" & unsigned'Image (index) & "  " &
---                     Assimp_Util.To_String (API_Property_Array (unsigned (index)).Key) &
---                     "  " & AI_Property_Type_Info'Image (API_Property_Array (unsigned (index)).Data_Type));
---        end loop;
-
---        for index in 1 .. 16#c# loop
---           Texture_Count := Get_Material_Texture_Count
---             (Material'Access, Interfaces.C.unsigned (index));
---           Put_Line ("Material.Get_Texture, Material_Texture_Count" & Integer'Image (index)
---                     & unsigned'Image (Texture_Count));
---        end loop;
-
-      Result :=
---          API_Get_Material_Texture
---            (Material'Access, AI_Texture_Diffuse, 0, Assimp_Path'Access);
-              API_Get_Material_Texture
+      Result := API_Get_Material_Texture
                 (Material'Access, Tex_Type, unsigned (Tex_Index), Assimp_Path'Access);
       if Result = API_Return_Success then
+            Put ("Assimp_Path characters: ");
+         for index in 1 .. Assimp_Path.Length loop
+                Assimp_Path.Data (index) := Assimp_Path.Data (index);
+--                  Assimp_Path.Data (index) := Assimp_Path.Data (index + 3);
+                Put (To_Ada (Assimp_Path.Data (index)));
+         end loop;
+         New_Line;
+--           Assimp_Path.Length := Assimp_Path.Length - 3 - 1;
          Path := Ada.Strings.Unbounded.To_Unbounded_String
            (Assimp_Util.To_String (Assimp_Path));
-         Put_Line ("Material.Get_Texture Assimp_Path: " &
-                     Assimp_Util.To_String (Assimp_Path));
+         Put_Line ("Material.Get_Texture Assimp_Path: " & size_t'Image (Assimp_Path.Length) &
+                   "  " &  Assimp_Util.To_String (Assimp_Path));
       elsif Result = API_Return_Out_Of_Memory then
          Put_Line ("Material.Get_Texture, aiGetMaterialTexture returned out of memory error.");
       else
