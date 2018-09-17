@@ -1,6 +1,5 @@
 
 with Interfaces.C;
-with Interfaces.C.Strings;
 
 with Assimp_Types;
 
@@ -37,11 +36,12 @@ package Assimp.API is
                                         return Interfaces.C.unsigned;
    pragma Import (C, Get_Material_Texture_Count, "aiGetMaterialTextureCount");
 
-   function Import_File (File_Name : Interfaces.C.Strings.chars_ptr;
+   function Import_File (File_Name : Interfaces.C.char_array;
                          Flags : Interfaces.C.unsigned) return access Scene.API_Scene;
    pragma Import (C, Import_File, "aiImportFile");
 
-   function Read_File (File_Name : Interfaces.C.Strings.chars_ptr;
+--     function Read_File (File_Name : Interfaces.C.Strings.chars_ptr;
+   function Read_File (File_Name : Interfaces.C.char_array;
                        Flags : Interfaces.C.unsigned) return access Scene.API_Scene;
    pragma Import (C, Read_File, "aiReadFile");
 
