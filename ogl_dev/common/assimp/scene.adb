@@ -87,6 +87,7 @@ package body Scene is
          C_Root_Node := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
          Scene.To_Node_List (C_Root_Node, theScene.Nodes);
       end if;
+
       theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Mesh_Array);
       if Num_Materials > 0 then
          C_Materials_Array := Material.Material_Pointers_Package.Value

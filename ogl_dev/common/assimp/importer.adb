@@ -16,7 +16,7 @@ package body Importer is
         theScene : AI_Scene;
     begin
         C_Scene := Assimp.API.Import_File
-          (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
+          (Interfaces.C.To_C (File_Name), unsigned (Flags)).all;
 
         Put ("Importer.Import_File, Num_Meshes, Num_Materials, Num_Animations");
         Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
@@ -45,7 +45,8 @@ package body Importer is
         theScene  : AI_Scene;
     begin
         C_Scene := Assimp.API.Read_File
-          (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
+          (Interfaces.C.To_C (File_Name), unsigned (Flags)).all;
+--            (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
 
         Put ("Importer.Read_File, Num_Meshes, Num_Materials, Num_Animations");
         Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
