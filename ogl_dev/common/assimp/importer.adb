@@ -6,79 +6,54 @@ with Assimp_Mesh;
 
 package body Importer is
 
-    -------------------------------------------------------------------------
+   -------------------------------------------------------------------------
 
-    --  Read a file  into a scene with the Assimp aiImportFile function
-    function Import_File (File_Name : String; Flags : GL.Types.UInt)
+   --  Read a file  into a scene with the Assimp aiImportFile function
+   function Import_File (File_Name : String; Flags : GL.Types.UInt)
                           return Scene.AI_Scene is
-        use Scene;
-        C_Scene  : API_Scene;
-        theScene : AI_Scene;
-    begin
-        C_Scene := Assimp.API.Import_File
-          (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
+      use Scene;
+      C_Scene  : API_Scene;
+      theScene : AI_Scene;
+   begin
+      C_Scene := Assimp.API.Import_File
+        (Interfaces.C.To_C (File_Name), unsigned (Flags)).all;
+      To_AI_Scene (C_Scene, theScene);
+      return theScene;
 
-        Put ("Importer.Import_File, Num_Meshes, Num_Materials, Num_Animations");
-        Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
-        Put_Line (unsigned'Image (C_Scene.Num_Meshes) &
-                    unsigned'Image (C_Scene.Num_Materials) &
-                    unsigned'Image (C_Scene.Num_Animations) &
-                    unsigned'Image (C_Scene.Num_Textures) &
-                    unsigned'Image (C_Scene.Num_Lights) &
-                    unsigned'Image (C_Scene.Num_Cameras));
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Importer.Import_File.");
+         raise;
+   end Import_File;
 
-        To_AI_Scene (C_Scene, theScene);
-        return theScene;
+   ------------------------------------------------------------------------
 
-    exception
-        when  others =>
-            Put_Line ("An exception occurred in Importer.Import_File.");
-            raise;
-    end Import_File;
+   function Read_File (File_Name : String; Flags : GL.Types.UInt)
+                       return Scene.AI_Scene is
+      use Scene;
+      C_Scene   : API_Scene;
+      theScene  : AI_Scene;
+      C_Name    : Interfaces.C.char_array := Interfaces.C.To_C (File_Name);
+   begin
+      Put_Line ("Importer.Read_File, C_Name: " & Interfaces.C.To_Ada (C_Name));
+      C_Scene := Assimp.API.Read_File (C_Name, unsigned (Flags)).all;
 
-    ------------------------------------------------------------------------
+      Put ("Importer.Read_File, Num_Meshes, Num_Materials, Num_Animations");
+      Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
+      Put_Line (unsigned'Image (C_Scene.Num_Meshes) &
+                  unsigned'Image (C_Scene.Num_Materials) &
+                  unsigned'Image (C_Scene.Num_Animations) &
+                  unsigned'Image (C_Scene.Num_Textures) &
+                  unsigned'Image (C_Scene.Num_Lights) &
+                  unsigned'Image (C_Scene.Num_Cameras));
+      To_AI_Scene (C_Scene, theScene);
+      return theScene;
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Importer.Read_File.");
+         raise;
+   end Read_File;
 
-    function Read_File (File_Name : String; Flags : GL.Types.UInt) return Scene.AI_Scene is
-        use Scene;
-        C_Scene   : API_Scene;
-        theScene  : AI_Scene;
---          C_Mesh_Ptr : access Assimp_Mesh.Mesh_Array_Pointer;
---          C_Mesh    : Assimp_Mesh.API_Mesh;
---          Num_Meshes : Interfaces.C.unsigned;
-    begin
-        C_Scene := Assimp.API.Read_File
-          (Interfaces.C.Strings.New_String (File_Name), unsigned (Flags)).all;
---          Num_Meshes := C_Scene.Num_Meshes;
-
-        Put ("Importer.Read_File, Num_Meshes, Num_Materials, Num_Animations");
-        Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
-        Put_Line (unsigned'Image (C_Scene.Num_Meshes) &
-                    unsigned'Image (C_Scene.Num_Materials) &
-                    unsigned'Image (C_Scene.Num_Animations) &
-                    unsigned'Image (C_Scene.Num_Textures) &
-                    unsigned'Image (C_Scene.Num_Lights) &
-                    unsigned'Image (C_Scene.Num_Cameras));
---          C_Mesh_Ptr := C_Scene.Meshes;
---          C_Mesh := Assimp_Mesh.Mesh_Array_Pointers.Value
---               (C_Scene.Meshes.all, ptrdiff_t (Num_Meshes)) (0);
---          Put_Line ("Importer.Read_File, C_Scene Primitive_Types, Num Vertices, Faces, UV_Components, Bones, Anim_Meshes");
---          Put_Line (unsigned'Image (C_Mesh.Primitive_Types) &
---                    unsigned'Image (C_Mesh.Num_Vertices) &
---                    unsigned'Image (C_Mesh.Num_Faces) &
---                    unsigned'Image (C_Mesh.Num_UV_Components) &
---                    unsigned'Image (C_Mesh.Num_Bones) &
---                    unsigned'Image (C_Mesh.Num_Anim_Meshes));
---          Put_Line ("Importer.Read_File, Name size: " &  size_t'Image (C_Mesh.Name.Length) &
---                    " Name: " & Interfaces.C.To_Ada (C_Mesh.Name.Data));
---          New_Line;
-        To_AI_Scene (C_Scene, theScene);
-        return theScene;
-    exception
-        when  others =>
-            Put_Line ("An exception occurred in Importer.Read_File.");
-            raise;
-    end Read_File;
-
-    ------------------------------------------------------------------------
+   ------------------------------------------------------------------------
 
 end Importer;

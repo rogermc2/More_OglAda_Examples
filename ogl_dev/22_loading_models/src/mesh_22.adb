@@ -119,8 +119,6 @@ package body Mesh_22 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : GL.Types.UInt := Key (Curs);
       begin
-         Put_Line ("Mesh_22.Init_Materials.Load_Textures Get_Texture_Count: "
-                   & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Get_Texture (aMaterial, AI_Texture_Diffuse, 0, Path, Result);
             if Result = Assimp_Types.API_Return_Success then
@@ -157,7 +155,8 @@ package body Mesh_22 is
 
       -------------------------------------------------------------------------
 
-      procedure Init_Mesh (Index : UInt; aMesh : in out Assimp_Mesh.AI_Mesh; aMesh_22 : in out Mesh_22) is
+   procedure Init_Mesh (Index    : UInt; aMesh : in out Assimp_Mesh.AI_Mesh;
+                        aMesh_22 : in out Mesh_22) is
          use Mesh_Entry_Package;
          Num_Vertices : constant Int := Int (aMesh.Vertices.Length);
          Vertices     : Vertex_Array (1 .. Num_Vertices);
