@@ -11,16 +11,21 @@ with Material_System;
 package body Material is
 
    subtype Data_Size is Interfaces.c.unsigned range 0 .. 1024;  --  To avoid possible storage error
-   type Byte_Data_Array is array (Data_Size range <>) of UByte;
+   type Byte_Data_Array is array (Data_Size range <>) of aliased UByte;
    pragma Convention (C, Byte_Data_Array);
 
-   type Data_Record (length : Data_Size := 1) is record
-      Bytes : aliased Byte_Data_Array (1 .. length);
-   end record;
+      package Byte_Array_Package is new Interfaces.C.Pointers
+        (Data_Size, UByte, Byte_Data_Array,
+         UByte'Last);
+   subtype Byte_Array_Pointer is Byte_Array_Package.Pointer;
 
-   type Data_Record_Access is access all Data_Record;
+--     type Data_Record (length : Data_Size := 1) is record
+--        Bytes : aliased Byte_Data_Array (1 .. length);
+--     end record;
+--
+--     type Data_Record_Access is access all Data_Record;
 
-   type Property_Data_Array is array (UInt range <>) of aliased Data_Record;
+--     type Property_Data_Array is array (UInt range <>) of aliased Data_Record;
 
    type Material_Property is record
       Key           : Assimp_Types.API_String;
@@ -33,15 +38,14 @@ package body Material is
       --  utilize proper type conversions.
       Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
-      Data          : Data_Record_Access;
-      --        Data          : access Byte_Data_Array;
+      Data_Ptr      : Byte_Array_Pointer := null;
+--        Data          : Data_Record_Access;
    end record;
    pragma Convention (C_Pass_By_Copy, Material_Property);
 
    type Material_Property_Array is array (Interfaces.C.unsigned range <>) of
      aliased Material_Property;
    pragma Convention (C, Material_Property_Array);
-
 
    function To_AI_Property_List (anAPI_Material     : API_Material;
                                  Property_Ptr_Array : API_Property_Ptr_Array)
@@ -53,7 +57,7 @@ package body Material is
                               theAPI_Material : in out API_Material);
 
    procedure To_Material_Property_Array (Properties     : AI_Material_Property_List;
-                                         Property_Data  : in out Property_Data_Array;
+--                                           Property_Data  : in out Property_Data_Array;
                                          Property_Array : in out Material_Property_Array);
 
    --  -------------------------------------------------------------------------
@@ -115,41 +119,41 @@ package body Material is
                                          return Assimp_Types.API_Return;
       pragma Import (C, API_Get_Material_Texture, "aiGetMaterialTexture");
 
-      Material           : aliased API_Material_Tex;
+      Material_Tex       : aliased API_Material_Tex;
       --  Path returned by aiGetMaterialTexture to texture file
       Assimp_Path        : aliased Assimp_Types.API_String;
       Properties_Length  : unsigned := unsigned (Length (aMaterial.Properties));
       API_Property_Array : Material_Property_Array (1 .. Properties_Length);
-      Property_Data      : Property_Data_Array (1 .. Uint (aMaterial.Properties.Length));
+--        Property_Data      : Property_Data_Array (1 .. Uint (Properties_Length));
       API_Prop_Ptr_Array : aliased Property_Ptr_Array (1 .. Properties_Length);
       Prop_Ptr_Array_Ptr : access Material_Property_Array_Pointer;
       Texture_Count      : unsigned := 0;
---        Material_String    : Assimp_Types.API_String;
       Returned_Path      : access Assimp_Types.API_String := null;
    begin
-      Material.Num_Properties := unsigned (aMaterial.Properties.Length);
-      Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
+      Material_Tex.Num_Properties := unsigned (aMaterial.Properties.Length);
+      Material_Tex.Num_Allocated := unsigned (aMaterial.Num_Allocated);
       --  Generate an array of Material_Property records for
       --  the elements of Property_Ptr_Array to point to
-      To_Material_Property_Array (aMaterial.Properties, Property_Data,
-                                  API_Property_Array);
+      To_Material_Property_Array (aMaterial.Properties, API_Property_Array);
+--        To_Material_Property_Array (aMaterial.Properties, Property_Data,
+--                                    API_Property_Array);
 
       for index in 1 .. Properties_Length loop
-         API_Property_Array (index).Data := Property_Data (UInt (index))'unchecked_Access;
+--           API_Property_Array (index).Data_Ptr := Property_Data (UInt (index))'unchecked_Access;
          API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
       end loop;
 
       Prop_Ptr_Array_Ptr := API_Prop_Ptr_Array (1)'Access;
-      Material.Properties := Prop_Ptr_Array_Ptr;
+      Material_Tex.Properties := Prop_Ptr_Array_Ptr;
       --  Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1)
 
       declare
-         theData   : Byte_Data_Array (1 .. Material.Properties.all.Data_Length) :=
-                       Material.Properties.all.Data.Bytes;
-         theString : String (1 .. Integer (Material.Properties.all.Data_Length));
+         theData   : Byte_Data_Array (1 .. Material_Tex.Properties.all.Data_Length) :=
+                       Material_Tex.Properties.all.Data_Ptr;
+         theString : String (1 .. Integer (Material_Tex.Properties.all.Data_Length));
       begin
          Put ("Material.Get_Texture Data string: ");
-         for index in 1 .. Material.Properties.all.Data_Length loop
+         for index in 1 .. Material_Tex.Properties.all.Data_Length loop
             Put (UByte'Image (theData (index)));
             theString (Integer (index)) := character'Val (theData (index));
          end loop;
@@ -160,7 +164,7 @@ package body Material is
       New_Line;
 
       Result := API_Get_Material_Texture
-                (Material'Access, Tex_Type, unsigned (Tex_Index), Assimp_Path'Access);
+                (Material_Tex'Access, Tex_Type, unsigned (Tex_Index), Assimp_Path'Access);
       if Result = API_Return_Success then
             Put ("Assimp_Path characters: ");
          for index in 1 .. Assimp_Path.Length loop
@@ -406,7 +410,7 @@ package body Material is
    --  ----------------------------------------------------------------------
 
    procedure To_Material_Property_Array (Properties     : AI_Material_Property_List;
-                                         Property_Data  : in out Property_Data_Array;
+--                                           Property_Data  : in out Property_Data_Array;
                                          Property_Array : in out Material_Property_Array) is
       use Interfaces.C;
       use AI_Material_Property_Package;
@@ -431,7 +435,7 @@ package body Material is
          Property_Array (index).Data_Type := aProperty.Data_Type;
          declare
             Data       : Byte_Data_Array (1 .. Data_Length);
-            Data_Rec   : Data_Record (Data_Length);
+--              Data_Rec   : Data_Record (Data_Length);
             Data_Index : unsigned := 0;
          begin
             while Has_Element (Data_Cursor) loop
@@ -439,8 +443,10 @@ package body Material is
                Data (Data_Index) := Element (Data_Cursor);
                Next (Data_Cursor);
             end loop;
-            Data_Rec.Bytes := Data;
-            Property_Data (UInt (index)) := Data_Rec;
+--              Data_Rec.Bytes := Data;
+--              Property_Data (UInt (index)) := Data;
+--              Property_Data (UInt (index)) := Data_Rec;
+            Property_Array (index).Data_Ptr := Data (1)'access;
          end;
          Next (Property_Cursor);
       end loop;
