@@ -14,9 +14,8 @@ package body Material is
    type Byte_Data_Array is array (Data_Size range <>) of aliased UByte;
    pragma Convention (C, Byte_Data_Array);
 
-      package Byte_Array_Package is new Interfaces.C.Pointers
-        (Data_Size, UByte, Byte_Data_Array,
-         UByte'Last);
+   package Byte_Array_Package is new Interfaces.C.Pointers
+        (Data_Size, UByte, Byte_Data_Array, UByte'Last);
    subtype Byte_Array_Pointer is Byte_Array_Package.Pointer;
 
 --     type Data_Record (length : Data_Size := 1) is record
@@ -149,7 +148,7 @@ package body Material is
 
       declare
          theData   : Byte_Data_Array (1 .. Material_Tex.Properties.all.Data_Length) :=
-                       Material_Tex.Properties.all.Data_Ptr;
+                       Byte_Array_Package.Value (Material_Tex.Properties.all.Data_Ptr);
          theString : String (1 .. Integer (Material_Tex.Properties.all.Data_Length));
       begin
          Put ("Material.Get_Texture Data string: ");
