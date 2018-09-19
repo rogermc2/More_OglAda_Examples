@@ -69,6 +69,13 @@ package body Material is
       use Ada.Strings.Unbounded;
       use Assimp_Types;
 
+      --  What counts for accessibility is the place where the type of an object
+      --  is declared not where the object itself is declared.
+
+      --  A char_array_access may be unneeded as  char_array is meant to be
+      --  used where C expects char * .
+      --  Just pass To_C ("from") right to C.
+
       --  Material_Property_Array_Pointer must be declared here to prevent non-local error messages
       Material_Property_Default : Material_Property :=
                                     ((0, (others => Interfaces.C.char'Val (0))),
