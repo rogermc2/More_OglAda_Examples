@@ -110,7 +110,8 @@ package body Material is
                                          UV_Index  : access Interfaces.C.unsigned := null;
                                          Blend     : access Interfaces.C.C_float := null;
                                          Op        : access AI_Texture_Op := null;
-                                         Map_Mode  : access AI_Texture_Map_Mode := null)
+                                         Map_Mode  : access AI_Texture_Map_Mode := null;
+                                         Flags     : access Interfaces.C.unsigned := null)
                                          return Assimp_Types.API_Return;
       pragma Import (C, API_Get_Material_Texture, "aiGetMaterialTexture");
 
