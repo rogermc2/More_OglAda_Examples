@@ -21,6 +21,8 @@ package body Assimp_Mesh is
     procedure Init_Mesh (theMesh : in out Mesh; Mesh_Index : UInt; anAI_Mesh : AI_Mesh);
     function To_AI_Vertex_Weight_Map (Weights_Ptr : Vertex_Weight_Array_Pointer;
                                       Num_Weights : Interfaces.C.unsigned) return Vertex_Weight_Map;
+    function To_AI_Vertices_Map (C_Array_Ptr : Vector_3D_Array_Pointers.Pointer;
+                                 Num_Vertices : Interfaces.C.unsigned) return Vertices_Map;
     procedure Vertices_To_API (Vertices : Vertices_Map; V_Array : in out API_Vector_3D_Array);
 
     ------------------------------------------------------------------------
@@ -173,29 +175,6 @@ package body Assimp_Mesh is
 
     --  ------------------------------------------------------------------------
 
-    function To_AI_Vertices_Map (C_Array_Ptr : Vector_3D_Array_Pointers.Pointer;
-                                 Num_Vertices : Interfaces.C.unsigned) return Vertices_Map is
-
-        V_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
-        anAPI_Vector : API_Vector_3D;
-        anAI_Vector  : Singles.Vector3;
-        theMap       : Vertices_Map;
-    begin
-        V_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
-          (C_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
-
-        for index in 1 .. Num_Vertices loop
-            anAPI_Vector := V_Array (index);
-            anAI_Vector (GL.X) := Single (anAPI_Vector.X);
-            anAI_Vector (GL.Y) := Single (anAPI_Vector.Y);
-            anAI_Vector (GL.Z) := Single (anAPI_Vector.Z);
-            theMap.Insert (UInt (index), anAI_Vector);
-        end loop;
-        return theMap;
-    end To_AI_Vertices_Map;
-
-    --  ------------------------------------------------------------------------
-
     function To_AI_Mesh (C_Mesh : API_Mesh) return AI_Mesh is
         use Interfaces.C;
         use Vector_3D_Array_Pointers;
@@ -303,6 +282,29 @@ package body Assimp_Mesh is
             raise;
 
     end To_AI_Mesh_Map;
+
+    --  ------------------------------------------------------------------------
+
+   function To_AI_Vertices_Map (C_Array_Ptr : Vector_3D_Array_Pointers.Pointer;
+                                 Num_Vertices : Interfaces.C.unsigned) return Vertices_Map is
+
+        V_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
+        anAPI_Vector : API_Vector_3D;
+        anAI_Vector  : Singles.Vector3;
+        theMap       : Vertices_Map;
+    begin
+        V_Array := API_Vectors_Matrices.Vector_3D_Array_Pointers.Value
+          (C_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
+
+        for index in 1 .. Num_Vertices loop
+            anAPI_Vector := V_Array (index);
+            anAI_Vector (GL.X) := Single (anAPI_Vector.X);
+            anAI_Vector (GL.Y) := Single (anAPI_Vector.Y);
+            anAI_Vector (GL.Z) := Single (anAPI_Vector.Z);
+            theMap.Insert (UInt (index), anAI_Vector);
+        end loop;
+        return theMap;
+    end To_AI_Vertices_Map;
 
     --  ------------------------------------------------------------------------
 
