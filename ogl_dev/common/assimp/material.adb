@@ -15,7 +15,7 @@ package body Material is
    pragma Convention (C, Byte_Data_Array);
 
    package Byte_Array_Package is new Interfaces.C.Pointers
-        (Data_Size, UByte, Byte_Data_Array, UByte'Last);
+     (Data_Size, UByte, Byte_Data_Array, UByte'Last);
    subtype Byte_Array_Pointer is Byte_Array_Package.Pointer;
 
    type Material_Property is record
@@ -29,7 +29,7 @@ package body Material is
       --  utilize proper type conversions.
       Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
---        Data_Ptr      : Byte_Array_Pointer := null;
+      --        Data_Ptr      : Byte_Array_Pointer := null;
       Data_Ptr      : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
    end record;
    pragma Convention (C_Pass_By_Copy, Material_Property);
@@ -48,7 +48,7 @@ package body Material is
                               theAPI_Material : in out API_Material);
 
    procedure To_Material_Property_Array (Properties     : AI_Material_Property_List;
---                                           Property_Data  : in out Property_Data_Array;
+                                         --                                           Property_Data  : in out Property_Data_Array;
                                          Property_Array : in out Material_Property_Array);
 
    --  -------------------------------------------------------------------------
@@ -92,16 +92,16 @@ package body Material is
       end record;
       pragma Convention (C_Pass_By_Copy, API_Material_Tex);
 
---        function Get_Material_String (aMaterial : access API_Material_Tex;
---                                      Tex_Type  : unsigned;
---                                      Index : unsigned)
---                                             return Assimp_Types.API_String;
---        pragma Import (C, Get_Material_String, "aiGetMaterialString");
---
---        function Get_Material_Texture_Count (aMaterial : access API_Material_Tex;
---                                             Tex_Type  : unsigned)
---                                             return unsigned;
---        pragma Import (C, Get_Material_Texture_Count, "aiGetMaterialTextureCount");
+      --        function Get_Material_String (aMaterial : access API_Material_Tex;
+      --                                      Tex_Type  : unsigned;
+      --                                      Index : unsigned)
+      --                                             return Assimp_Types.API_String;
+      --        pragma Import (C, Get_Material_String, "aiGetMaterialString");
+      --
+      --        function Get_Material_Texture_Count (aMaterial : access API_Material_Tex;
+      --                                             Tex_Type  : unsigned)
+      --                                             return unsigned;
+      --        pragma Import (C, Get_Material_Texture_Count, "aiGetMaterialTextureCount");
 
       --  aiGetMaterialTexture(this,type,index,path,mapping,uvindex,blend,op,mapmode
       function API_Get_Material_Texture (aMaterial : access API_Material_Tex;
@@ -122,7 +122,7 @@ package body Material is
       Assimp_Path        : aliased Assimp_Types.API_String;
       Properties_Length  : unsigned := unsigned (Length (aMaterial.Properties));
       API_Property_Array : Material_Property_Array (1 .. Properties_Length);
---        Property_Data      : Property_Data_Array (1 .. Uint (Properties_Length));
+      --        Property_Data      : Property_Data_Array (1 .. Uint (Properties_Length));
       API_Prop_Ptr_Array : aliased Property_Ptr_Array (1 .. Properties_Length);
       Prop_Ptr_Array_Ptr : access Material_Property_Array_Pointer;
       Texture_Count      : unsigned := 0;
@@ -133,11 +133,11 @@ package body Material is
       --  Generate an array of Material_Property records for
       --  the elements of Property_Ptr_Array to point to
       To_Material_Property_Array (aMaterial.Properties, API_Property_Array);
---        To_Material_Property_Array (aMaterial.Properties, Property_Data,
---                                    API_Property_Array);
+      --        To_Material_Property_Array (aMaterial.Properties, Property_Data,
+      --                                    API_Property_Array);
 
       for index in 1 .. Properties_Length loop
---           API_Property_Array (index).Data_Ptr := Property_Data (UInt (index))'unchecked_Access;
+         --           API_Property_Array (index).Data_Ptr := Property_Data (UInt (index))'unchecked_Access;
          API_Prop_Ptr_Array (index) := API_Property_Array (index)'Access;
       end loop;
 
@@ -145,42 +145,42 @@ package body Material is
       Material_Tex.Properties := Prop_Ptr_Array_Ptr;
       --  Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1)
 
---        declare
---           use Interfaces.C.Strings;
---           Data_Length : constant unsigned := Material_Tex.Properties.all.Data_Length;
---           theData   : Byte_Data_Array (1 .. Data_Length);
---  --                         Byte_Array_Package.Value (Material_Tex.Properties.all.Data_Ptr);
---           C_Data_Ptr   : char_array :=
---                            Interfaces.C.Strings.Value (Material_Tex.Properties.all.Data_Ptr, size_t (Data_Length));
---           theString : String (1 .. Integer (Material_Tex.Properties.all.Data_Length));
---        begin
---           Put ("Material.Get_Texture Data string: ");
---           for index in 1 .. Data_Length loop
---              Put (C_Byte'Image (theData (index)));
---              theString (Integer (index)) := To_Ada (theData (index));
---  --              theString (Integer (index)) := character'Val (theData (index));
---           end loop;
---           New_Line;
---           Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data string: "
---                     & "'" & theString & "'");
---        end;
+      --        declare
+      --           use Interfaces.C.Strings;
+      --           Data_Length : constant unsigned := Material_Tex.Properties.all.Data_Length;
+      --           theData   : Byte_Data_Array (1 .. Data_Length);
+      --  --                         Byte_Array_Package.Value (Material_Tex.Properties.all.Data_Ptr);
+      --           C_Data_Ptr   : char_array :=
+      --                            Interfaces.C.Strings.Value (Material_Tex.Properties.all.Data_Ptr, size_t (Data_Length));
+      --           theString : String (1 .. Integer (Material_Tex.Properties.all.Data_Length));
+      --        begin
+      --           Put ("Material.Get_Texture Data string: ");
+      --           for index in 1 .. Data_Length loop
+      --              Put (C_Byte'Image (theData (index)));
+      --              theString (Integer (index)) := To_Ada (theData (index));
+      --  --              theString (Integer (index)) := character'Val (theData (index));
+      --           end loop;
+      --           New_Line;
+      --           Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data string: "
+      --                     & "'" & theString & "'");
+      --        end;
       New_Line;
 
       Result := API_Get_Material_Texture
-                (Material_Tex'Access, Tex_Type, unsigned (Tex_Index), Assimp_Path'Access);
+        (Material_Tex'Access, Tex_Type, unsigned (Tex_Index), Assimp_Path'Access);
       if Result = API_Return_Success then
-            Put ("Assimp_Path characters: ");
+         Put ("Material.Get_Texture, Assimp_Path characters: ");
          for index in 1 .. Assimp_Path.Length loop
-                Assimp_Path.Data (index) := Assimp_Path.Data (index);
---                  Assimp_Path.Data (index) := Assimp_Path.Data (index + 3);
-                Put (To_Ada (Assimp_Path.Data (index)));
+            Assimp_Path.Data (index) := Assimp_Path.Data (index);
+            --                  Assimp_Path.Data (index) := Assimp_Path.Data (index + 3);
+            Put (To_Ada (Assimp_Path.Data (index)));
          end loop;
          New_Line;
---           Assimp_Path.Length := Assimp_Path.Length - 3 - 1;
+         --           Assimp_Path.Length := Assimp_Path.Length - 3 - 1;
          Path := Ada.Strings.Unbounded.To_Unbounded_String
            (Assimp_Util.To_String (Assimp_Path));
          Put_Line ("Material.Get_Texture Assimp_Path: " & size_t'Image (Assimp_Path.Length) &
-                   "  " &  Assimp_Util.To_String (Assimp_Path));
+                     "  " &  Assimp_Util.To_String (Assimp_Path));
       elsif Result = API_Return_Out_Of_Memory then
          Put_Line ("Material.Get_Texture, aiGetMaterialTexture returned out of memory error.");
       else
@@ -413,7 +413,7 @@ package body Material is
    --  ----------------------------------------------------------------------
 
    procedure To_Material_Property_Array (Properties     : AI_Material_Property_List;
---                                           Property_Data  : in out Property_Data_Array;
+                                         --                                           Property_Data  : in out Property_Data_Array;
                                          Property_Array : in out Material_Property_Array) is
       use Interfaces.C;
       use AI_Material_Property_Package;
@@ -437,10 +437,10 @@ package body Material is
          Property_Array (index).Data_Length := Data_Length;
          Property_Array (index).Data_Type := aProperty.Data_Type;
          declare
---              Data       : Byte_Data_Array (1 .. Data_Length);
+            --              Data       : Byte_Data_Array (1 .. Data_Length);
             Data       : char_array (1 .. size_t (Data_Length));
             Data_Index : size_t := 0;
---              Data_Index : unsigned := 0;
+            --              Data_Index : unsigned := 0;
             aChar      : Character;
          begin
             while Has_Element (Data_Cursor) loop
@@ -449,7 +449,7 @@ package body Material is
                Data (Data_Index) := To_C (aChar);
                Next (Data_Cursor);
             end loop;
---              Property_Data (UInt (index)) := Data;
+            --              Property_Data (UInt (index)) := Data;
             Property_Array (index).Data_Ptr := Strings.New_Char_Array (Data);
          end;
          Next (Property_Cursor);

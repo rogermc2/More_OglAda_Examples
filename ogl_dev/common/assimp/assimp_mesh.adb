@@ -193,6 +193,7 @@ package body Assimp_Mesh is
            "To_AI_Mesh exception: C_Mesh.Vertices is null.";
         end if;
        theAI_Mesh.Vertices := To_AI_Vertices_Map (C_Mesh.Vertices, C_Mesh.Num_Vertices);
+       Put_Line ("Assimp_Mesh.To_AI_Mesh, Vertices set");
 
        if C_Mesh.Normals /= null then
             theAI_Mesh.Normals := To_AI_Vertices_Map (C_Mesh.Normals, C_Mesh.Num_Vertices);
@@ -228,6 +229,7 @@ package body Assimp_Mesh is
         for index in GL.Types.Int range 1 .. API_Max_Texture_Coords loop
             theAI_Mesh.Num_UV_Components (index) := UInt (C_Mesh.Num_UV_Components (unsigned (index)));
         end loop;
+       Put_Line ("Assimp_Mesh.To_AI_Mesh, Num_UV_Components set");
 
         theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
         if Num_Faces > 0 then
@@ -256,10 +258,11 @@ package body Assimp_Mesh is
         Meshs  : AI_Mesh_Map;
         aMesh  : AI_Mesh;
     begin
-        --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
+        Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
         --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
 
         for index in 1 .. Num_Meshes loop
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, index: " &  unsigned'Image (index));
             Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
             Put_Line (unsigned'Image (C_Mesh_Array (index).Primitive_Types) &
                         unsigned'Image (C_Mesh_Array (index).Num_Vertices) &
@@ -267,8 +270,8 @@ package body Assimp_Mesh is
                         unsigned'Image (C_Mesh_Array (index).Num_Bones) &
                         unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
                         unsigned'Image (C_Mesh_Array (index).Material_Index));
---              Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name length: " &  size_t'Image (C_Mesh_Array (index).Name.Length) );
---              Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name: '" &  Interfaces.C.To_Ada (C_Mesh_Array (index).Name.Data) & "'");
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name length: " &  size_t'Image (C_Mesh_Array (index).Name.Length) );
+            Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Name: '" &  Interfaces.C.To_Ada (C_Mesh_Array (index).Name.Data) & "'");
             New_Line;
             aMesh := To_AI_Mesh (C_Mesh_Array (index));
             Meshs.Insert (UInt (index), aMesh);

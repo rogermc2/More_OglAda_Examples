@@ -90,10 +90,12 @@ package body Scene is
 
       theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Mesh_Array);
       if Num_Materials > 0 then
+         Put_Line ("Scene.To_AI_Scene setting C_Materials_Array.");
          C_Materials_Array := Material.Material_Pointers_Package.Value
            (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
          theScene.Materials :=
            Material.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
+         Put_Line ("Scene.To_AI_Scene theScene.Materials set");
       end if;
 
       if Num_Textures > 0 then
