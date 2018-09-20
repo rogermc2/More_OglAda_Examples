@@ -107,8 +107,6 @@ package body Load_VB_Object is
 
       Print_VBM_Object_Data ("VBM_Object", VBM_Object);
       declare
---           use Interfaces.C;
---           use Image_Data_Pointers;
          Raw_Data    : Image_Data (1 .. Total_Data_Size);
          --  Image_Data is an array of bytes
       begin
@@ -209,7 +207,6 @@ package body Load_VB_Object is
    procedure Load_Textures (Data_Stream : Ada.Streams.Stream_IO.Stream_Access;
                             Header : VBM_Header;
                             Object : in out VB_Object) is
---        use GL.Objects.Buffers;
       Texture_Record     : Material_Texture;
       Record_Count       : UInt := 0;
       Textures_Data_Size : UInt;
@@ -240,7 +237,6 @@ package body Load_VB_Object is
    procedure Load_VBM_Header (Header_Stream : Ada.Streams.Stream_IO.Stream_Access;
                               Header        : out VBM_Header;
                               Byte_Count    : in out UInt) is
---        use Ada.Streams.Stream_IO;
       Magic         : UInt;
       Index_Type    : UInt := 0;
    begin
@@ -421,33 +417,6 @@ package body Load_VB_Object is
          Put_Line ("An exception occurred in Load_VB_Object.Set_Attribute_Pointers.");
          raise;
    end Set_Attribute_Pointers;
-
-   --  ------------------------------------------------------------------------
-
---     function To_Vector4_Array (Raw_Data : Image_Data; Num_Vertices : UInt)
---                                return GL.Types.Singles.Vector4_Array is
---        use GL;
---        Vertices    : GL.Types.Singles.Vector4_Array (1 .. Int (Num_Vertices));
---        aVertex     : GL.Types.Singles.Vector4;
---        Raw_Index   : UInt := 1;
---     begin
---        for index in Vertices'Range loop
---           for v_index in GL.X .. GL.W loop
---              aVertex (v_index) := 0.0;
---              for i in 1 .. Single_Size loop
---                 aVertex (v_index) := aVertex (v_index) +
---                   Single (Raw_Data (Raw_Index) * 8 ** Natural (i - 1));
---                 Raw_Index := Raw_Index + 1;
---              end loop;
---              if v_index = GL.W then
---                 aVertex (v_index) := 1.0;
---              end if;
---           end loop;
---           Vertices (index) := aVertex;
---        end loop;
---        return Vertices;
---
---     end To_Vector4_Array;
 
    --  ------------------------------------------------------------------------
 
