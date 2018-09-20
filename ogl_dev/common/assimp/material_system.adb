@@ -12,7 +12,8 @@ package body Material_System is
 
    type String_4 is new String (1 .. 4);
 
-   function Get_Material_Property (aMaterial      : Material.API_Material; Key : Assimp_Types.API_String;
+   function Get_Material_Property (aMaterial      : Material.API_Material;
+                                   Key            : Assimp_Types.API_String;
                                    Property_Type  : Material.AI_Property_Type_Info;
                                    Property_Index : Interfaces.C.unsigned;
                                    theProperty    : out Material.API_Material_Property)
@@ -91,11 +92,18 @@ package body Material_System is
             Put_Line ("Material_System.Get_Material_String PTI_String.");
             if aProperty.Data_Length >= 5 then
                for index in 1 .. 4 loop
-                  Size_String (index) := To_Ada (aProperty.Data_Ptr.all);
-                  Raw_Data_Pointers.Increment (aProperty.Data_Ptr);  --  Data is access Assimp_Types.Raw_Byte_Data;
+                  Size_String (index) := Character (aProperty.Data_Ptr.all);
+                  Raw_Data_Pointers.Increment (aProperty.Data_Ptr);
                end loop;
                Put_Line ("Material_System.Get_Material_String : Size_String: " &
                          (String (Size_String)));
+               Data_String.Length := size_t'Value (String (Size_String));
+               Put_Line ("Material_System.Get_Material_String : Size: " &
+                         size_t'Image (Data_String.Length));
+               for index in 5 .. aProperty.Data_Length loop
+                  Data_String.Data (size_t (index - 4)) := char (aProperty.Data_Ptr.all);
+                  Raw_Data_Pointers.Increment (aProperty.Data_Ptr);
+               end loop;
             end if;
          end if;
       end if;

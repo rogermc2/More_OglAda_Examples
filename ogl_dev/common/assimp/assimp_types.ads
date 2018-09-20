@@ -32,7 +32,7 @@ package Assimp_Types is
     --  This declaration has been checked OK for Key data. DON'T CHANGE
    type API_String is record
       Length  : Interfaces.C.size_t := 0;
-      Data    : char_array (0 .. Max_Length - 1):= (others => Interfaces.C.char'Val (0));
+      Data    : char_array (0 .. Max_Length - 1) := (others => Interfaces.C.char'Val (0));
    end record;
    pragma Convention (C_Pass_By_Copy, API_String);
 
