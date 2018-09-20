@@ -17,14 +17,6 @@ package body Material is
         (Data_Size, UByte, Byte_Data_Array, UByte'Last);
    subtype Byte_Array_Pointer is Byte_Array_Package.Pointer;
 
---     type Data_Record (length : Data_Size := 1) is record
---        Bytes : aliased Byte_Data_Array (1 .. length);
---     end record;
---
---     type Data_Record_Access is access all Data_Record;
-
---     type Property_Data_Array is array (UInt range <>) of aliased Data_Record;
-
    type Material_Property is record
       Key           : Assimp_Types.API_String;
       Semantic      : Interfaces.C.unsigned := 0;
@@ -37,7 +29,6 @@ package body Material is
       Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
       Data_Ptr      : Byte_Array_Pointer := null;
---        Data          : Data_Record_Access;
    end record;
    pragma Convention (C_Pass_By_Copy, Material_Property);
 
@@ -440,7 +431,6 @@ package body Material is
          Property_Array (index).Data_Type := aProperty.Data_Type;
          declare
             Data       : Byte_Data_Array (1 .. Data_Length);
---              Data_Rec   : Data_Record (Data_Length);
             Data_Index : unsigned := 0;
          begin
             while Has_Element (Data_Cursor) loop
