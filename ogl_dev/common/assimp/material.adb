@@ -9,8 +9,9 @@ with Material_System;
 
 package body Material is
 
-   subtype Data_Size is Interfaces.c.unsigned range 0 .. 1024;  --  To avoid possible storage error
-   type Byte_Data_Array is array (Data_Size range <>) of aliased UByte;
+   type C_Byte  is new Interfaces.C.char;
+   subtype Data_Size is Interfaces.C.unsigned range 0 .. 1024;  --  To avoid possible storage error
+   type Byte_Data_Array is array (Data_Size range <>) of aliased C_Byte;
    pragma Convention (C, Byte_Data_Array);
 
    package Byte_Array_Package is new Interfaces.C.Pointers
@@ -28,7 +29,8 @@ package body Material is
       --  utilize proper type conversions.
       Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
-      Data_Ptr      : Byte_Array_Pointer := null;
+--        Data_Ptr      : Byte_Array_Pointer := null;
+      Data_Ptr      : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
    end record;
    pragma Convention (C_Pass_By_Copy, Material_Property);
 
@@ -69,7 +71,7 @@ package body Material is
       --  Material_Property_Array_Pointer must be declared here to prevent non-local error messages
       Material_Property_Default : Material_Property :=
                                     ((0, (others => Interfaces.C.char'Val (0))),
-                                     0, 0, 0, PTI_Float, null);
+                                     0, 0, 0, PTI_Float, Interfaces.C.Strings.Null_Ptr);
       package Material_Property_Array_Package is new Interfaces.C.Pointers
         (Interfaces.C.unsigned, Material_Property, Material_Property_Array,
          Material_Property_Default);
@@ -143,20 +145,25 @@ package body Material is
       Material_Tex.Properties := Prop_Ptr_Array_Ptr;
       --  Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1)
 
-      declare
-         theData   : Byte_Data_Array (1 .. Material_Tex.Properties.all.Data_Length) :=
-                       Byte_Array_Package.Value (Material_Tex.Properties.all.Data_Ptr);
-         theString : String (1 .. Integer (Material_Tex.Properties.all.Data_Length));
-      begin
-         Put ("Material.Get_Texture Data string: ");
-         for index in 1 .. Material_Tex.Properties.all.Data_Length loop
-            Put (UByte'Image (theData (index)));
-            theString (Integer (index)) := character'Val (theData (index));
-         end loop;
-         New_Line;
-         Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data string: "
-                   & "'" & theString & "'");
-      end;
+--        declare
+--           use Interfaces.C.Strings;
+--           Data_Length : constant unsigned := Material_Tex.Properties.all.Data_Length;
+--           theData   : Byte_Data_Array (1 .. Data_Length);
+--  --                         Byte_Array_Package.Value (Material_Tex.Properties.all.Data_Ptr);
+--           C_Data_Ptr   : char_array :=
+--                            Interfaces.C.Strings.Value (Material_Tex.Properties.all.Data_Ptr, size_t (Data_Length));
+--           theString : String (1 .. Integer (Material_Tex.Properties.all.Data_Length));
+--        begin
+--           Put ("Material.Get_Texture Data string: ");
+--           for index in 1 .. Data_Length loop
+--              Put (C_Byte'Image (theData (index)));
+--              theString (Integer (index)) := To_Ada (theData (index));
+--  --              theString (Integer (index)) := character'Val (theData (index));
+--           end loop;
+--           New_Line;
+--           Put_Line ("Material.Get_Texture, Material.Properties -> Prop_Ptr_Array_Ptr -> API_Property_Array (1).Data string: "
+--                     & "'" & theString & "'");
+--        end;
       New_Line;
 
       Result := API_Get_Material_Texture
@@ -430,18 +437,20 @@ package body Material is
          Property_Array (index).Data_Length := Data_Length;
          Property_Array (index).Data_Type := aProperty.Data_Type;
          declare
-            Data       : Byte_Data_Array (1 .. Data_Length);
-            Data_Index : unsigned := 0;
+--              Data       : Byte_Data_Array (1 .. Data_Length);
+            Data       : char_array (1 .. size_t (Data_Length));
+            Data_Index : size_t := 0;
+--              Data_Index : unsigned := 0;
+            aChar      : Character;
          begin
             while Has_Element (Data_Cursor) loop
                Data_Index := Data_Index + 1;
-               Data (Data_Index) := Element (Data_Cursor);
+               aChar := To_Ada (char (Element (Data_Cursor)));
+               Data (Data_Index) := To_C (aChar);
                Next (Data_Cursor);
             end loop;
---              Data_Rec.Bytes := Data;
 --              Property_Data (UInt (index)) := Data;
---              Property_Data (UInt (index)) := Data_Rec;
-            Property_Array (index).Data_Ptr := Data (1)'access;
+            Property_Array (index).Data_Ptr := Strings.New_Char_Array (Data);
          end;
          Next (Property_Cursor);
       end loop;

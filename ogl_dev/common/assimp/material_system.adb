@@ -92,7 +92,8 @@ package body Material_System is
 --              Put_Line ("Material_System.Get_Material_String PTI_String.");
                 if aProperty.Data_Length >= 5 then
                     for index in 1 .. 4 loop
-                        Size_String (index) :=  Character'Val (aProperty.Data.all);
+                        Size_String (index) :=  To_Ada (aProperty.Data.all);
+--                          Size_String (index) :=  Character'Val (aProperty.Data.all);
                         Raw_Data_Pointers.Increment (aProperty.Data);  --  Data is access Assimp_Types.Raw_Byte_Data;
                     end loop;
 --                      Put_Line ("Material_System.Get_Material_String : Size_String: " & Size_String);
