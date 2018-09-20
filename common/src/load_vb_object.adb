@@ -177,7 +177,6 @@ package body Load_VB_Object is
    procedure Load_Materials (Data_Stream : Ada.Streams.Stream_IO.Stream_Access;
                              Header : VBM_Header;
                              Object : in out VB_Object) is
---        use GL.Objects.Buffers;
       Material_Record     : VBM_Material;
       Record_Count        : UInt := 0;
       Materials_Data_Size : UInt;
