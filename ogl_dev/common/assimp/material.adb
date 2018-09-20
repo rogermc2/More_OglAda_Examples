@@ -271,6 +271,7 @@ package body Material is
                             return AI_Material_Property is
       use Interfaces.C;
       use Interfaces.C.Strings;
+      use Ada.Strings.Unbounded;
       use Assimp_Types;
       API_Prop     : API_Material_Property := API_Property;
       Key_Length   : constant size_t := API_Prop.Key.Length;
@@ -291,16 +292,25 @@ package body Material is
       AI_Property.Semantic := UInt (API_Prop.Semantic);
       AI_Property.Texture_Index := UInt (API_Prop.Texture_Index);
       AI_Property.Data_Type := API_Prop.Data_Type;
+      New_Line;
+      Put_Line ("Material.To_AI_Property AI_Property.Key, Data type: " &
+                  To_String (AI_Property.Key) & "  " &
+                  AI_Property_Type_Info'Image (AI_Property.Data_Type));
 
       if Data_Length > 0  then
          Result := Material_System.Get_Material_String (anAPI_Material, API_Property.Key,
                                                         API_Property.Data_Type,
                                                         API_Property.Texture_Index, Data_String);
          if Result = API_RETURN_SUCCESS then
+            Put_Line ("Material.To_AI_Property Data_Length and Data_String: " &
+                     size_t'Image (Data_Length) &
+                     Assimp_Util.To_String (Data_String));
             for index in 1 .. Data_Length loop
-               AI_Property.Data_Buffer.Append (API_Prop.Data.all);
-               Raw_Data_Pointers.Increment (API_Prop.Data);  --  Data is access Assimp_Types.Raw_Byte_Data;
+               AI_Property.Data_Buffer.Append (API_Prop.Data_Ptr.all);
+               Raw_Data_Pointers.Increment (API_Prop.Data_Ptr);  --  Data is access Assimp_Types.Raw_Byte_Data;
             end loop;
+         else
+            Put_Line ("Material.To_AI_Property Get_Material_String failed.");
          end if;
       else
          Put_Line ("Material.To_AI_Property detected illegal Data_Length.");

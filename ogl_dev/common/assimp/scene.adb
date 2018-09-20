@@ -95,7 +95,9 @@ package body Scene is
            (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
          theScene.Materials :=
            Material.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
-         Put_Line ("Scene.To_AI_Scene theScene.Materials set");
+         New_Line;
+         Put_Line ("Scene.To_AI_Scene theScene.Materials set, Num_Textures: " &
+                  unsigned'Image (Num_Textures));
       end if;
 
       if Num_Textures > 0 then
@@ -105,6 +107,7 @@ package body Scene is
          begin
             theScene.Textures :=
               Assimp_Texture.To_AI_Texture_Map (Num_Textures, C_Texture_Array);
+            Put_Line ("Scene.To_AI_Scene theScene.Textures set");
          end;
       end if;
 

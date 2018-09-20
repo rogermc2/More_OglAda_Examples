@@ -52,7 +52,6 @@ package Material is
                                   PTI_Buffer     => 16#5#,
                                   PTI_Force32Bit => 16#9fffffff#);
 
---     type AI_Material_Property (Data_Type : AI_Property_Type_Info) is record
    type AI_Material_Property is record
       Key            : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
       Semantic       : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
@@ -73,7 +72,6 @@ package Material is
 --              Data_Force32Bit    : GL.Types.Int;
 --        end case;
        Data_Buffer    : Assimp_Types.Byte_Data_List;
---        Data_Buffer : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
    end record;
 
    package AI_Material_Property_Package is new
@@ -104,7 +102,7 @@ package Material is
       --  utilize proper type conversions.
       Data_Type     : AI_Property_Type_Info := PTI_Float;
       --  Data holds the property's value. Its size is always Data_Length
-      Data          : Assimp_Types.Data_Pointer := null;
+      Data_Ptr      : Assimp_Types.Data_Pointer := null;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material_Property);
 

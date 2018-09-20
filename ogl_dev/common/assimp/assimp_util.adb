@@ -2,6 +2,8 @@
 with Interfaces.C;
 with Interfaces.C.Strings;
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 package body Assimp_Util is
 
    function To_Assimp_API_String
