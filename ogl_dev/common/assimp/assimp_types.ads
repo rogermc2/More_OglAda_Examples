@@ -36,12 +36,16 @@ package Assimp_Types is
    end record;
    pragma Convention (C_Pass_By_Copy, API_String);
 
-   type Raw_Byte_Data is array (UInt range <>) of aliased UByte;
+   type C_Byte is new Interfaces.C.char;
+   type Raw_Byte_Data is array (UInt range <>) of aliased C_Byte;
+--     type Raw_Byte_Data is array (UInt range <>) of aliased UByte;
    package Raw_Data_Pointers is new
-     Interfaces.C.Pointers (UInt, UByte, Raw_Byte_Data, UByte'Last);
+     Interfaces.C.Pointers (UInt, C_Byte, Raw_Byte_Data, C_Byte'Last);
+--       Interfaces.C.Pointers (UInt, UByte, Raw_Byte_Data, UByte'Last);
    subtype Data_Pointer is Raw_Data_Pointers.Pointer;
 
-   package Byte_Data_Package is new Ada.Containers.Doubly_Linked_Lists (Ubyte);
+--     package Byte_Data_Package is new Ada.Containers.Doubly_Linked_Lists (Ubyte);
+   package Byte_Data_Package is new Ada.Containers.Doubly_Linked_Lists (C_Byte);
    type Byte_Data_List is new Byte_Data_Package.List with null record;
 
 private
