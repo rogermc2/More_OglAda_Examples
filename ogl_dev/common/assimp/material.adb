@@ -274,10 +274,6 @@ package body Material is
       use Ada.Strings.Unbounded;
       use Assimp_Types;
 
-      type API_Material_Property_Ptr is access all API_Material_Property;
-      type String_Data_Array is new char_array (1 .. size_t (API_Property.Key.Length));
-
-      pragma Convention (C, API_Material_Property_Ptr);
       L_API_Material : aliased API_Material := anAPI_Material;
       API_Prop       : API_Material_Property := API_Property;
       Key_Length     : size_t := API_Prop.Key.Length;
@@ -285,16 +281,17 @@ package body Material is
       Integer_Data   : aliased Interfaces.C.int := 0;
       Float_Data     : aliased C_float := 0.0;
       String_Data    : aliased Assimp_Types.API_String;
-      Raw_Data       : AI_Material_Property_List;
-      Result         : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
       AI_Property    : AI_Material_Property;
       Test_Property  : aliased API_Material_Property;
       Test_Property_Ptr : aliased access API_Material_Property;
       Key_String     : constant String (1 .. Integer (Key_Length)) :=
                          To_Ada (API_Property.Key.Data);
       Key_Data_Ptr   : constant chars_ptr := New_String (Key_String);
+      Result         : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
       New_Line;
+      Put_Line ("Material.To_AI_Property Get_Material_Property Texture_Index: "
+      & unsigned'Image (API_Property.Texture_Index));
       Result := Material_System.Get_Material_Property
         (L_API_Material'Access, Key_Data_Ptr, PTI_Integer,
          API_Property.Texture_Index, Test_Property_Ptr'Access);
