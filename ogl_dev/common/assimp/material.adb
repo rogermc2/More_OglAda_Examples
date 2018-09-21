@@ -273,10 +273,12 @@ package body Material is
       use Interfaces.C.Strings;
       use Ada.Strings.Unbounded;
       use Assimp_Types;
+      L_API_Material : aliased API_Material := anAPI_Material;
+      L_Key          : aliased Assimp_Types.API_String :=  API_Property.Key;
       API_Prop     : API_Material_Property := API_Property;
       Key_Length   : constant size_t := API_Prop.Key.Length;
       Data_Length  : constant size_t := size_t (API_Prop.Data_Length);
-      Data_String  : Assimp_Types.API_String;
+      Data_String  : aliased Assimp_Types.API_String;
       Raw_Data     : AI_Material_Property_List;
       Result       : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
       AI_Property  : AI_Material_Property;
@@ -298,9 +300,12 @@ package body Material is
                   AI_Property_Type_Info'Image (AI_Property.Data_Type));
 
       if Data_Length > 0  then
-         Result := Material_System.Get_Material_String (anAPI_Material, API_Property.Key,
-                                                        API_Property.Data_Type,
-                                                        API_Property.Texture_Index, Data_String);
+         Put_Line ("Material.To_AI_Property Calling Get_Material_String.");
+         Result := Material_System.Get_Material_String
+           (L_API_Material'Access, L_Key'Access,
+            API_Property.Data_Type,
+            API_Property.Texture_Index, Data_String'Access);
+         Put_Line ("Material.To_AI_Property Get_Material_String returned.");
          if Result = API_RETURN_SUCCESS then
             Put_Line ("Material.To_AI_Property Data_Length and Data_String: " &
                      size_t'Image (Data_Length) &
