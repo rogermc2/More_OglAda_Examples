@@ -12,17 +12,19 @@ package Material_System is
                                 Key       : access Assimp_Types.API_String;
                                 Property_Type  : Material.AI_Property_Type_Info;
                                 Property_Index : Interfaces.C.unsigned;
-                                theFloat      : access Interfaces.C.C_float)
+                                theFloat       : access Interfaces.C.C_float;
+                                pMax           : access Interfaces.C.unsigned := null)
                                 return Assimp_Types.API_Return;
-   pragma Import (C, Get_Material_Float, "aiGetMaterialFloat");
+   pragma Import (C, Get_Material_Float, "aiGetMaterialFloatArray");
 
    function Get_Material_Integer (aMaterial : access Material.API_Material;
                                   Key       : access Assimp_Types.API_String;
                                   Property_Type  : Material.AI_Property_Type_Info;
                                   Property_Index : Interfaces.C.unsigned;
-                                  theInteger     : access Interfaces.C.int)
+                                  theInteger     : access Interfaces.C.int;
+                                  pMax           : access Interfaces.C.unsigned := null)
                                  return Assimp_Types.API_Return;
-   pragma Import (C, Get_Material_Integer, "aiGetMaterialInteger");
+   pragma Import (C, Get_Material_Integer, "aiGetMaterialIntegerArray");
 
 
    function Get_Material_String (aMaterial : access Material.API_Material;
