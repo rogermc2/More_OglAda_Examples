@@ -273,12 +273,14 @@ package body Material is
       use Interfaces.C.Strings;
       use Ada.Strings.Unbounded;
       use Assimp_Types;
+
       type API_Material_Property_Ptr is access all API_Material_Property;
+      type String_Data_Array is new char_array (1 .. size_t (API_Property.Key.Length));
+
       pragma Convention (C, API_Material_Property_Ptr);
       L_API_Material : aliased API_Material := anAPI_Material;
-      L_Key          : aliased Assimp_Types.API_String :=  API_Property.Key;
       API_Prop       : API_Material_Property := API_Property;
-      Key_Length     : constant size_t := API_Prop.Key.Length;
+      Key_Length     : size_t := API_Prop.Key.Length;
       Data_Length    : constant size_t := size_t (API_Prop.Data_Length);
       Integer_Data   : aliased Interfaces.C.int := 0;
       Float_Data     : aliased C_float := 0.0;
@@ -287,18 +289,20 @@ package body Material is
       Result         : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
       AI_Property    : AI_Material_Property;
       Test_Property  : aliased API_Material_Property;
-      Test_Property_Ptr  : aliased access API_Material_Property;
+      Test_Property_Ptr : aliased access API_Material_Property;
+      Key_String     : constant String (1 .. Integer (Key_Length)) :=
+                         To_Ada (API_Property.Key.Data);
+      Key_Data_Ptr   : constant chars_ptr := New_String (Key_String);
    begin
-      Test_Property_Ptr := Test_Property'Access;
       New_Line;
-       Result := Material_System.Get_Material_Property
-                 (L_API_Material'Access, L_Key'Access, PTI_Float,
-                  API_Property.Texture_Index, Test_Property_Ptr'Access);
-               if Result = API_RETURN_SUCCESS then
+      Result := Material_System.Get_Material_Property
+        (L_API_Material'Access, Key_Data_Ptr, PTI_Integer,
+         API_Property.Texture_Index, Test_Property_Ptr'Access);
+      if Result = API_RETURN_SUCCESS then
          Put_Line ("Material.To_AI_Property Get_Material_Property succeeded:");
-         else
+      else
          Put_Line ("Material.To_AI_Property Get_Material_Property failed:");
-         end if;
+      end if;
 
       if Key_Length > 0 then
          declare
@@ -320,7 +324,7 @@ package body Material is
          case AI_Property.Data_Type is
             when PTI_String =>
                Result := Material_System.Get_Material_String
-                 (L_API_Material'Access, L_Key'Access, PTI_String,
+                 (L_API_Material'Access, Key_Data_Ptr, PTI_String,
                   API_Property.Texture_Index, String_Data'Access);
                if Result = API_RETURN_SUCCESS then
                   Put_Line ("Material.To_AI_Property Data_Length and Data_String: " &
@@ -338,7 +342,7 @@ package body Material is
             when PTI_Double =>  Put_Line ("Material.To_AI_Property PTI_Double.");
             when PTI_Float =>
                Result := Material_System.Get_Material_Float
-                 (L_API_Material'Access, L_Key'Access, PTI_Float,
+                 (L_API_Material'Access, Key_Data_Ptr, PTI_Float,
                   API_Property.Texture_Index, Float_Data'Access);
                if Result = API_RETURN_SUCCESS then
                   Put_Line ("Material.To_AI_Property Float_Data: " &
@@ -348,7 +352,7 @@ package body Material is
                end if;
             when PTI_Integer =>
                Result := Material_System.Get_Material_Integer
-                 (L_API_Material'Access, L_Key'Access, PTI_Integer,
+                 (L_API_Material'Access, Key_Data_Ptr, PTI_Integer,
                   API_Property.Texture_Index, Integer_Data'Access);
                if Result = API_RETURN_SUCCESS then
                   Put_Line ("Material.To_AI_Property Integer_Data: " &
