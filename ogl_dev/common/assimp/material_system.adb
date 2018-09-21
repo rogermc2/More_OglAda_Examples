@@ -67,7 +67,7 @@ package body Material_System is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Material_String (aMaterial      : Material.API_Material;
+   function Get_Material_String1 (aMaterial      : Material.API_Material;
                                  Key            : Assimp_Types.API_String;
                                  Property_Type  : Material.AI_Property_Type_Info;
                                  Property_Index : Interfaces.C.unsigned;
@@ -113,7 +113,7 @@ package body Material_System is
       when others =>
          Put_Line ("An exception occurred in Material_System.Get_Material_String.");
          raise;
-   end Get_Material_String;
+   end Get_Material_String1;
 
    --  -------------------------------------------------------------------------
 
