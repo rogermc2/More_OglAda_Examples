@@ -8,6 +8,23 @@ with Assimp_Types;
 
 package Material_System is
 
+   function Get_Material_Float (aMaterial : access Material.API_Material;
+                                Key       : access Assimp_Types.API_String;
+                                Property_Type  : Material.AI_Property_Type_Info;
+                                Property_Index : Interfaces.C.unsigned;
+                                theFloat      : access Interfaces.C.C_float)
+                                return Assimp_Types.API_Return;
+   pragma Import (C, Get_Material_Float, "aiGetMaterialFloat");
+
+   function Get_Material_Integer (aMaterial : access Material.API_Material;
+                                  Key       : access Assimp_Types.API_String;
+                                  Property_Type  : Material.AI_Property_Type_Info;
+                                  Property_Index : Interfaces.C.unsigned;
+                                  theInteger     : access Interfaces.C.int)
+                                 return Assimp_Types.API_Return;
+   pragma Import (C, Get_Material_Integer, "aiGetMaterialInteger");
+
+
    function Get_Material_String (aMaterial : access Material.API_Material;
                                  Key       : access Assimp_Types.API_String;
                                   Property_Type  : Material.AI_Property_Type_Info;
