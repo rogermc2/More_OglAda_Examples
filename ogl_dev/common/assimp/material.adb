@@ -283,7 +283,8 @@ package body Material is
       String_Data    : aliased Assimp_Types.API_String;
       AI_Property    : AI_Material_Property;
       Test_Property  : aliased API_Material_Property;
-      Test_Property_Ptr : aliased access API_Material_Property;
+      Test_Property_Ptr : aliased access API_Material_Property :=
+                            Test_Property'Access;
       Key_String     : constant String (1 .. Integer (Key_Length)) :=
                          To_Ada (API_Property.Key.Data);
       Key_Data_Ptr   : constant chars_ptr := New_String (Key_String);
