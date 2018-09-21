@@ -275,13 +275,15 @@ package body Material is
       use Assimp_Types;
       L_API_Material : aliased API_Material := anAPI_Material;
       L_Key          : aliased Assimp_Types.API_String :=  API_Property.Key;
-      API_Prop     : API_Material_Property := API_Property;
-      Key_Length   : constant size_t := API_Prop.Key.Length;
-      Data_Length  : constant size_t := size_t (API_Prop.Data_Length);
-      Data_String  : aliased Assimp_Types.API_String;
-      Raw_Data     : AI_Material_Property_List;
-      Result       : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
-      AI_Property  : AI_Material_Property;
+      API_Prop       : API_Material_Property := API_Property;
+      Key_Length     : constant size_t := API_Prop.Key.Length;
+      Data_Length    : constant size_t := size_t (API_Prop.Data_Length);
+      Integer_Data   : aliased Interfaces.C.int := 0;
+      Float_Data     : aliased C_float := 0.0;
+      String_Data    : aliased Assimp_Types.API_String;
+      Raw_Data       : AI_Material_Property_List;
+      Result         : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
+      AI_Property    : AI_Material_Property;
    begin
       if Key_Length > 0 then
          declare
@@ -300,23 +302,50 @@ package body Material is
                   AI_Property_Type_Info'Image (AI_Property.Data_Type));
 
       if Data_Length > 0  then
-         Put_Line ("Material.To_AI_Property Calling Get_Material_String.");
-         Result := Material_System.Get_Material_String
-           (L_API_Material'Access, L_Key'Access,
-            API_Property.Data_Type,
-            API_Property.Texture_Index, Data_String'Access);
-         Put_Line ("Material.To_AI_Property Get_Material_String returned.");
-         if Result = API_RETURN_SUCCESS then
-            Put_Line ("Material.To_AI_Property Data_Length and Data_String: " &
-                     size_t'Image (Data_Length) &
-                     Assimp_Util.To_String (Data_String));
-            for index in 1 .. Data_Length loop
-               AI_Property.Data_Buffer.Append (API_Prop.Data_Ptr.all);
-               Raw_Data_Pointers.Increment (API_Prop.Data_Ptr);  --  Data is access Assimp_Types.Raw_Byte_Data;
-            end loop;
-         else
-            Put_Line ("Material.To_AI_Property Get_Material_String failed.");
-         end if;
+         case AI_Property.Data_Type is
+            when PTI_String =>
+               Result := Material_System.Get_Material_String
+                 (L_API_Material'Access, L_Key'Access,
+                  API_Property.Data_Type,
+                  API_Property.Texture_Index, String_Data'Access);
+               if Result = API_RETURN_SUCCESS then
+                  Put_Line ("Material.To_AI_Property Data_Length and Data_String: " &
+                              size_t'Image (Data_Length) &
+                              Assimp_Util.To_String (String_Data));
+                  for index in 1 .. Data_Length loop
+                     AI_Property.Data_Buffer.Append (API_Prop.Data_Ptr.all);
+                     Raw_Data_Pointers.Increment (API_Prop.Data_Ptr);  --  Data is access Assimp_Types.Raw_Byte_Data;
+                  end loop;
+               else
+                  Put_Line ("Material.To_AI_Property Get_Material_String failed.");
+               end if;
+
+            when PTI_Buffer =>  Put_Line ("Material.To_AI_Property PTI_Buffer.");
+            when PTI_Double =>  Put_Line ("Material.To_AI_Property PTI_Double.");
+            when PTI_Float =>  Put_Line ("Material.To_AI_Property PTI_Float.");
+               Result := Material_System.Get_Material_Float
+                 (L_API_Material'Access, L_Key'Access,
+                  API_Property.Data_Type,
+                  API_Property.Texture_Index, Float_Data'Access);
+               if Result = API_RETURN_SUCCESS then
+                  Put_Line ("Material.To_AI_Property Float_Data: " &
+                              C_float'Image (Float_Data));
+               else
+                  Put_Line ("Material.To_AI_Property Get_Material_Float failed.");
+               end if;
+            when PTI_Integer =>  Put_Line ("Material.To_AI_Property PTI_Integer.");
+               Result := Material_System.Get_Material_Integer
+                 (L_API_Material'Access, L_Key'Access,
+                  API_Property.Data_Type,
+                  API_Property.Texture_Index, Integer_Data'Access);
+               if Result = API_RETURN_SUCCESS then
+                  Put_Line ("Material.To_AI_Property Integer_Data: " &
+                              Interfaces.C.int'Image (Integer_Data));
+               else
+                  Put_Line ("Material.To_AI_Property Get_Material_Integer failed.");
+               end if;
+            when PTI_Force32Bit => Put_Line ("Material.To_AI_Property PTI_Force32Bit.");
+         end case;
       else
          Put_Line ("Material.To_AI_Property detected illegal Data_Length.");
       end if;
