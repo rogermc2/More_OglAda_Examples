@@ -26,6 +26,13 @@ package Material_System is
                                  return Assimp_Types.API_Return;
    pragma Import (C, Get_Material_Integer, "aiGetMaterialIntegerArray");
 
+function Get_Material_Property (aMaterial : access Material.API_Material;
+                                Key       : access Assimp_Types.API_String;
+                                Property_Type  : Material.AI_Property_Type_Info;
+                                Property_Index : Interfaces.C.unsigned;
+                                theProperty    : access Material.API_Material_Property_Ptr)
+                                return Assimp_Types.API_Return;
+   pragma Import (C, Get_Material_Property, "aiGetMaterialProperty");
 
    function Get_Material_String (aMaterial : access Material.API_Material;
                                  Key       : access Assimp_Types.API_String;

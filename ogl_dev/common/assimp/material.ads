@@ -106,6 +106,9 @@ package Material is
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material_Property);
 
+   type API_Material_Property_Ptr is access all API_Material_Property;
+   pragma Convention (C, API_Material_Property_Ptr);
+
    type API_Property_Array_Ptr is access API_Material_Property;
    pragma Convention (C, API_Property_Array_Ptr);
 

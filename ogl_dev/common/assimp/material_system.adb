@@ -27,9 +27,6 @@ package body Material_System is
       Found      : Boolean := False;
       Prop_Index : unsigned := 0;
    begin
-      --         Put_Line (size_t'Image (Key.Length) & " " &
-      --                    Material.AI_Property_Type_Info'Image (Property_Type) &
-      --                    unsigned'Image (Property_Index));
       if aMaterial.Properties = null then
          raise Interfaces.C.Strings.Dereference_Error with
            "Material_System.Get_Material_Property, aMaterial.Properties is null";
