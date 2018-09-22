@@ -195,6 +195,56 @@ package body Material is
 
    --  -------------------------------------------------------------------------
 
+   procedure Load_API_Property_Array (Properties     : AI_Material_Property_List;
+                                      Property_Array : in out Material_Property_Array) is
+      use Interfaces.C;
+      use AI_Material_Property_Package;
+      use Assimp_Types.Byte_Data_Package;
+      Property_Cursor      : AI_Material_Property_Package.Cursor :=
+                               Properties.First;
+      Data_Cursor          : Assimp_Types.Byte_Data_Package.Cursor;
+      Data_Length          : unsigned := 0;
+      aProperty            : AI_Material_Property;
+      Index                : unsigned := 0;
+   begin
+      while Has_Element (Property_Cursor) loop
+         Index := Index + 1;
+         aProperty := Element (Property_Cursor);
+         Data_Cursor := aProperty.Data_Buffer.First;
+         Property_Array (index).Key := Assimp_Util.To_Assimp_API_String (aProperty.Key);
+         Property_Array (index).Semantic := unsigned (aProperty.Semantic);
+         Property_Array (index).Texture_Index :=
+           unsigned (aProperty.Texture_Index);
+         Data_Length := unsigned (aProperty.Data_Buffer.Length);
+         Put_Line ("Material.Load_API_Property_Array, Data Buffer Length: " &
+                  ada.Containers.Count_Type'Image (aProperty.Data_Buffer.Length));
+         Property_Array (index).Data_Length := Data_Length;
+         Property_Array (index).Data_Type := aProperty.Data_Type;
+         declare
+            Data       : char_array (1 .. size_t (Data_Length));
+            Data_Index : size_t := 0;
+            aChar      : Character;
+         begin
+            while Has_Element (Data_Cursor) loop
+               Data_Index := Data_Index + 1;
+               aChar := To_Ada (char (Element (Data_Cursor)));
+               Data (Data_Index) := To_C (aChar);
+               Next (Data_Cursor);
+            end loop;
+
+            Property_Array (index).Data_Ptr := Strings.New_Char_Array (Data);
+         end;
+         Next (Property_Cursor);
+      end loop;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material.Load_API_Property_Array.");
+         raise;
+   end Load_API_Property_Array;
+
+   --  ----------------------------------------------------------------------
+
    function To_AI_Material (C_Material : API_Material) return AI_Material is
       use Interfaces.C;
       Num_Property  : constant unsigned := C_Material.Num_Properties;
@@ -271,8 +321,10 @@ package body Material is
       Result         : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
       New_Line;
-      Put_Line ("Material.To_AI_Property Get_Material_Property Texture_Index: "
+      Put_Line ("Material.To_AI_Property Get_Material_Property Texture_Index, Key: "
       & unsigned'Image (API_Property.Texture_Index) & "  " & Key_String);
+      Put_Line ("Material.To_AI_Property Get_Material_Property Data_Length: "
+      & size_t'Image (Data_Length));
       Result := Material_System.Get_Material_Property
         (L_API_Material'Access, Key_Data_Ptr, PTI_Integer,
          API_Property.Texture_Index, Test_Property_Ptr'Access);
@@ -316,8 +368,8 @@ package body Material is
                   Put_Line ("Material.To_AI_Property Get_Material_String failed.");
                end if;
 
-            when PTI_Buffer =>  Put_Line ("Material.To_AI_Property PTI_Buffer.");
-            when PTI_Double =>  Put_Line ("Material.To_AI_Property PTI_Double.");
+            when PTI_Buffer => Put_Line ("Material.To_AI_Property PTI_Buffer.");
+            when PTI_Double => Put_Line ("Material.To_AI_Property PTI_Double.");
             when PTI_Float =>
                Result := Material_System.Get_Material_Float
                  (L_API_Material'Access, Key_Data_Ptr, PTI_Float,
@@ -447,56 +499,6 @@ package body Material is
          Put_Line ("An exception occurred in Material.To_API_Property.");
          raise;
    end To_API_Property;
-
-   --  ----------------------------------------------------------------------
-
-   procedure Load_API_Property_Array (Properties     : AI_Material_Property_List;
-                                      Property_Array : in out Material_Property_Array) is
-      use Interfaces.C;
-      use AI_Material_Property_Package;
-      use Assimp_Types.Byte_Data_Package;
-      Property_Cursor      : AI_Material_Property_Package.Cursor :=
-                               Properties.First;
-      Data_Cursor          : Assimp_Types.Byte_Data_Package.Cursor;
-      Data_Length          : unsigned := 0;
-      aProperty            : AI_Material_Property;
-      Index                : unsigned := 0;
-   begin
-      while Has_Element (Property_Cursor) loop
-         Index := Index + 1;
-         aProperty := Element (Property_Cursor);
-         Data_Cursor := aProperty.Data_Buffer.First;
-         Property_Array (index).Key := Assimp_Util.To_Assimp_API_String (aProperty.Key);
-         Property_Array (index).Semantic := unsigned (aProperty.Semantic);
-         Property_Array (index).Texture_Index :=
-           unsigned (aProperty.Texture_Index);
-         Data_Length := unsigned (aProperty.Data_Buffer.Length);
-         Put_Line ("Material.Load_API_Property_Array, Data Buffer Length: " &
-                  ada.Containers.Count_Type'Image (aProperty.Data_Buffer.Length));
-         Property_Array (index).Data_Length := Data_Length;
-         Property_Array (index).Data_Type := aProperty.Data_Type;
-         declare
-            Data       : char_array (1 .. size_t (Data_Length));
-            Data_Index : size_t := 0;
-            aChar      : Character;
-         begin
-            while Has_Element (Data_Cursor) loop
-               Data_Index := Data_Index + 1;
-               aChar := To_Ada (char (Element (Data_Cursor)));
-               Data (Data_Index) := To_C (aChar);
-               Next (Data_Cursor);
-            end loop;
-
-            Property_Array (index).Data_Ptr := Strings.New_Char_Array (Data);
-         end;
-         Next (Property_Cursor);
-      end loop;
-
-   exception
-      when others =>
-         Put_Line ("An exception occurred in Material.Load_API_Property_Array.");
-         raise;
-   end Load_API_Property_Array;
 
    --  ----------------------------------------------------------------------
 
