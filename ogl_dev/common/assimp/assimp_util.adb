@@ -23,6 +23,22 @@ package body Assimp_Util is
 
    --  -------------------------------------------------------------------------
 
+   procedure Print_API_Property_Data (Title     : String;
+                                     aProperty : Material.API_Material_Property) is
+      use Interfaces.C;
+   begin
+      New_Line;
+      Put_Line (Title & " Property_Data:");
+      Put_Line (" Key: " & To_String (aProperty.Key));
+      Put_Line (" Semantic, Texture_Index: " & unsigned'Image (aProperty.Semantic)
+                & unsigned'Image (aProperty.Texture_Index));
+      Put_Line (" Semantic, Data_Type, Buffer size: " &
+                  Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
+                  unsigned'Image (aProperty.Data_Length));
+   end Print_API_Property_Data;
+
+   --  -------------------------------------------------------------------------
+
    function To_Assimp_API_String
      (UB_String :  Ada.Strings.Unbounded.Unbounded_String)
       return Assimp_Types.API_String is
