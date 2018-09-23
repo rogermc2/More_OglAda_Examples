@@ -14,6 +14,7 @@ with Utilities;
 
 with Assimp_Mesh;
 with Assimp_Types;
+with Assimp_Util;
 
 with Importer;
 with Material;
@@ -119,7 +120,12 @@ package body Mesh_22 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : GL.Types.UInt := Key (Curs);
       begin
+         Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
+                    UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
+            Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
+                                                aMaterial.Properties.First_Element);
+            New_Line;
             Get_Texture (aMaterial, AI_Texture_Diffuse, 0, Path, Result);
             if Result = Assimp_Types.API_Return_Success then
                Put_Line ("Mesh_22.Init_Materials.Load_Textures Path: " &
