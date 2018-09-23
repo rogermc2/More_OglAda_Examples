@@ -332,10 +332,13 @@ package body Material is
                 & unsigned'Image (API_Property.Texture_Index) & "  " & Key_String);
       Put_Line ("Material.To_AI_Property Get_Material_Property Data_Length: "
                 & size_t'Image (Data_Length));
+      Put_Line ("Material.To_AI_Property Get_Material_Property Key_Data: "
+                & Value (Key_Data_Ptr));
 
       Result := Material_System.Get_Material_Property
-        (L_API_Material'Access, Key_Data_Ptr, PTI_Integer,
+        (L_API_Material'Access, Key_Data_Ptr, API_Property.Data_Type,
          API_Property.Texture_Index, Test_Property_Ptr'Access);
+
       if Result /= API_RETURN_SUCCESS then
          Put_Line ("Material.To_AI_Property Get_Material_Property failed:");
       else
