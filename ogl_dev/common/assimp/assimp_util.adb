@@ -48,11 +48,9 @@ package body Assimp_Util is
                                       anArray : Material.API_Property_Array) is
       use Interfaces.C;
    begin
-            Put_Line ("Entered Print_API_Property_Array.");
       for index in anArray'First .. anArray'Last loop
             Print_API_Property_Data (Title & unsigned'Image (index), anArray (index));
       end loop;
-            Put_Line ("Leaving Print_API_Property_Array.");
 
     exception
         when others =>
