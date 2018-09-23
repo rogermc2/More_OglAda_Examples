@@ -54,7 +54,7 @@ package body Material is
 
    --  -------------------------------------------------------------------------
 
-   procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
+   procedure Get_Texture_Via_C (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
                           Path      : out Ada.Strings.Unbounded.Unbounded_String;
                           Result    : out Assimp_Types.API_Return) is
@@ -174,9 +174,9 @@ package body Material is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.Get_Texture.");
+         Put_Line ("An exception occurred in Material.Get_Texture_Via_C.");
          raise;
-   end Get_Texture;
+   end Get_Texture_Via_C;
 
    --  -------------------------------------------------------------------------
 

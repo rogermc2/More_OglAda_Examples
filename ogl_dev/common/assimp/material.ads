@@ -145,8 +145,7 @@ package Material is
 
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
-                          Path      : out Ada.Strings.Unbounded.Unbounded_String;
-                          Result    : out Assimp_Types.API_Return);
+                          Path      : out Ada.Strings.Unbounded.Unbounded_String);
    --     procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
    --                            Tex_Index : UInt := 0;
    --                            Path : out Ada.Strings.Unbounded.Unbounded_String;
