@@ -4,11 +4,13 @@ with Ada.Strings.Unbounded;
 with GL.Types; use GL.Types;
 
 with Assimp_Types;
+with Material;
 
 with API_Vectors_Matrices;
 
 package Assimp_Util is
 
+   procedure Print_AI_Property_Data (Title : String; aProperty : Material.AI_Material_Property);
    function To_Assimp_API_String
      (UB_String : Ada.Strings.Unbounded.Unbounded_String)
       return Assimp_Types.API_String;
