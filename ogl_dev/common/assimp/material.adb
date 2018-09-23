@@ -127,8 +127,8 @@ package body Material is
       API_Test_Prop_Ptr    : Material_Property_Array_Pointer;
    begin
 
-      --        Assimp_Util.Print_AI_Property_Data ("Material.Get_Texture Property 1",
-      --                                            aMaterial.Properties.First_Element);
+     Assimp_Util.Print_AI_Property_Data ("Material.Get_Texture Property 1",
+                                          aMaterial.Properties.First_Element);
       Material_Tex.Num_Properties := unsigned (aMaterial.Properties.Length);
       Material_Tex.Num_Allocated := unsigned (aMaterial.Num_Allocated);
       --  Generate an array of Material_Property records for
@@ -316,8 +316,13 @@ package body Material is
       use Interfaces.C.Strings;
       use Ada.Strings.Unbounded;
       use Assimp_Types;
+      use API_Property_Array_Package;
 
+      Num_Properties    : constant unsigned := anAPI_Material.Num_Properties;
       L_API_Material    : aliased API_Material := anAPI_Material;
+      Prop_Access       : access API_Material_Property_Ptr;
+      Prop_Ptr          : API_Material_Property_Ptr;
+      API_Prop_Array    : API_Property_Array (1 .. anAPI_Material.Num_Properties);
       API_Prop          : API_Material_Property := API_Property;
       Key_Length        : size_t := API_Prop.Key.Length;
       Data_Length       : constant size_t := size_t (API_Prop.Data_Length);
@@ -333,12 +338,20 @@ package body Material is
       Result            : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
       New_Line;
-      Put_Line ("Material.To_AI_Property Get_Material_Property Texture_Index, Key: "
-                & unsigned'Image (API_Property.Texture_Index) & "  " & Key_String);
-      Put_Line ("Material.To_AI_Property Get_Material_Property Data_Length: "
-                & size_t'Image (Data_Length));
-      Put_Line ("Material.To_AI_Property Get_Material_Property Key_Data: "
-                & Value (Key_Data_Ptr));
+      Assimp_Util.Print_API_Property_Data ("Material.To_AI_Property API", API_Property);
+      if anAPI_Material.Properties = null then
+            Put_Line ("Material.To_AI_Property anAPI_Material.Properties is null");
+      else
+            Prop_Access := anAPI_Material.Properties;
+            Prop_Ptr := Prop_Access.all;
+            if Prop_Ptr = Null then
+                Put_Line ("Material.To_AI_Property Prop_Ptr is null");
+            else
+                API_Prop_Array := API_Property_Array_Package.Value (Prop_Ptr, ptrdiff_t (Num_Properties));
+                Assimp_Util.Print_API_Property_Array ("Material.To_AI_Property API_Prop_Array",
+                                                      API_Prop_Array);
+            end if;
+       end if;
 
       Result := Material_System.Get_Material_Property
         (L_API_Material'Access, Key_Data_Ptr, API_Property.Data_Type,
