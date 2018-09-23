@@ -211,13 +211,12 @@ package body Material is
          Index := Index + 1;
          aProperty := Element (Property_Cursor);
          Data_Cursor := aProperty.Data_Buffer.First;
+         Assimp_Util.Print_AI_Property_Data ("Material.Load_API_Property_Array", aProperty);
          Property_Array (index).Key := Assimp_Util.To_Assimp_API_String (aProperty.Key);
          Property_Array (index).Semantic := unsigned (aProperty.Semantic);
          Property_Array (index).Texture_Index :=
            unsigned (aProperty.Texture_Index);
          Data_Length := unsigned (aProperty.Data_Buffer.Length);
-         Put_Line ("Material.Load_API_Property_Array, Data Buffer Length: " &
-                  ada.Containers.Count_Type'Image (aProperty.Data_Buffer.Length));
          Property_Array (index).Data_Length := Data_Length;
          Property_Array (index).Data_Type := aProperty.Data_Type;
          declare
