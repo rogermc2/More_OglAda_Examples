@@ -24,22 +24,21 @@ package body Assimp_Util is
    --  -------------------------------------------------------------------------
 
    procedure Print_API_Property_Data (Title     : String;
-                                     aProperty : Material.API_Material_Property) is
+                                      aProperty : Material.API_Material_Property) is
       use Interfaces.C;
    begin
       New_Line;
       Put_Line (Title & " Property_Data:");
       Put_Line (" Key length, Key: " & size_t'Image (aProperty.Key.Length) &
-                ", " & To_String (aProperty.Key));
-      if aProperty.Key.Length > 0 then
-         Put_Line (" Semantic, Texture_Index: " & unsigned'Image (aProperty.Semantic)
-                   & unsigned'Image (aProperty.Texture_Index));
-         Put_Line (" Semantic, Data_Type, Buffer size: " &
-                     Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
-                     unsigned'Image (aProperty.Data_Length));
-      else
+                  ", " & To_String (aProperty.Key));
+      if aProperty.Key.Length = 0 then
          Put_Line ("Invalid key!");
       end if;
+      Put_Line (" Semantic, Texture_Index: " & unsigned'Image (aProperty.Semantic)
+                & unsigned'Image (aProperty.Texture_Index));
+      Put_Line (" Semantic, Data_Type, Buffer size: " &
+                  Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
+                  unsigned'Image (aProperty.Data_Length));
    end Print_API_Property_Data;
 
    --  -------------------------------------------------------------------------
