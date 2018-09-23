@@ -57,21 +57,21 @@ package Material is
       Semantic       : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
       Texture_Index  : GL.Types.UInt := 0;  --  Index for textures
       Data_Type      : AI_Property_Type_Info := PTI_Float;
---        case Data_Type is
---           when PTI_Float =>
---              Data_Single    : Single;
---           when PTI_Double =>
---              Data_Double    : Double;
---           when PTI_String =>
---              Data_String    : Ada.Strings.Unbounded.Unbounded_String;
---           when PTI_Integer =>
---              Data_Integer    : GL.Types.Int;
---           when PTI_Buffer =>
---              Data_Buffer    : Assimp_Types.Byte_Data_List;
---           when PTI_Force32Bit  =>
---              Data_Force32Bit    : GL.Types.Int;
---        end case;
-       Data_Buffer    : Assimp_Types.Byte_Data_List;
+      --        case Data_Type is
+      --           when PTI_Float =>
+      --              Data_Single    : Single;
+      --           when PTI_Double =>
+      --              Data_Double    : Double;
+      --           when PTI_String =>
+      --              Data_String    : Ada.Strings.Unbounded.Unbounded_String;
+      --           when PTI_Integer =>
+      --              Data_Integer    : GL.Types.Int;
+      --           when PTI_Buffer =>
+      --              Data_Buffer    : Assimp_Types.Byte_Data_List;
+      --           when PTI_Force32Bit  =>
+      --              Data_Force32Bit    : GL.Types.Int;
+      --        end case;
+      Data_Buffer    : Assimp_Types.Byte_Data_List;
    end record;
 
    package AI_Material_Property_Package is new
@@ -87,12 +87,12 @@ package Material is
      Ada.Containers.Indefinite_Ordered_Maps (GL.Types.UInt, AI_Material);
    type AI_Material_Map is new AI_Material_Package.Map with null Record;
 
-    --  Material data is stored using a key-value structure.
-    --  A single key-value pair is called a 'material property'.
+   --  Material data is stored using a key-value structure.
+   --  A single key-value pair is called a 'material property'.
 
    type API_Material_Property is record
       Key           : Assimp_Types.API_String;  --  One of the AI_MATKEY_XXX constants
-                                              --  http://assimp.sourceforge.net/lib_html/material_8h.html
+      --  http://assimp.sourceforge.net/lib_html/material_8h.html
       Semantic      : Interfaces.C.unsigned := 0;
       Texture_Index : Interfaces.C.unsigned := 0;  --  Texture index
       Data_Length   : Interfaces.C.unsigned := 0;  --  Actual must not be 0
@@ -106,23 +106,21 @@ package Material is
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material_Property);
 
-   type API_Material_Property_Ptr is access all API_Material_Property;
-   pragma Convention (C, API_Material_Property_Ptr);
+   type API_Property_Array is array (Interfaces.C.unsigned range <>)
+     of aliased API_Material_Property;
+   pragma Convention (C, API_Property_Array);
 
-   type API_Property_Array_Ptr is access API_Material_Property;
-   pragma Convention (C, API_Property_Array_Ptr);
+   Material_Property_Default : API_Material_Property :=
+                                 ((0, (others => Interfaces.C.char'Val (0))),
+                                  0, 0, 0, PTI_Float, Null);
 
-   type API_Property_Ptr_Array is array (Interfaces.C.unsigned range <>)
-     of aliased API_Property_Array_Ptr;
-   pragma Convention (C, API_Property_Ptr_Array);
-
-   package Property_Ptr_Array_Package is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, API_Property_Array_Ptr, API_Property_Ptr_Array,
-      null);
-   subtype Property_Ptr_Array_Pointer is Property_Ptr_Array_Package.Pointer;
+   package API_Property_Array_Package is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Material_Property, API_Property_Array,
+      Material_Property_Default);
+   subtype API_Material_Property_Ptr is API_Property_Array_Package.Pointer;
 
    type API_Material is record
-      Properties     : Property_Ptr_Array_Pointer := null;
+      Properties     : access API_Material_Property_Ptr := null;
       Num_Properties : Interfaces.C.unsigned := 0;
       Num_Allocated  : Interfaces.C.unsigned := 0;
    end record;
@@ -137,8 +135,8 @@ package Material is
    subtype Material_Array_Pointer is Material_Pointers_Package.Pointer;
 
    type API_UV_Transform is record
-      Translation  : API_Vectors_Matrices.API_Vector_2D;
-      Scaling      : API_Vectors_Matrices.API_Vector_2D;
+      Translation   : API_Vectors_Matrices.API_Vector_2D;
+      Scaling       : API_Vectors_Matrices.API_Vector_2D;
       Rotation      : Interfaces.C.C_float := 0.0;
    end record;
    pragma Convention (C_Pass_By_Copy, API_UV_Transform);
@@ -147,22 +145,22 @@ package Material is
 
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
-                          Path : out Ada.Strings.Unbounded.Unbounded_String;
-                          Result : out Assimp_Types.API_Return);
---     procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
---                            Tex_Index : UInt := 0;
---                            Path : out Ada.Strings.Unbounded.Unbounded_String;
---                            Mapping : AI_Texture_Mapping;
---                            UV_Index : out UInt;
---                            Blend : out GL.Types.Single;
---                            Op : AI_Texture_Op;
---                            Map_Mode : AI_Texture_Map_Mode;
---                            Result : out Assimp_Types.API_Return);
+                          Path      : out Ada.Strings.Unbounded.Unbounded_String;
+                          Result    : out Assimp_Types.API_Return);
+   --     procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
+   --                            Tex_Index : UInt := 0;
+   --                            Path : out Ada.Strings.Unbounded.Unbounded_String;
+   --                            Mapping : AI_Texture_Mapping;
+   --                            UV_Index : out UInt;
+   --                            Blend : out GL.Types.Single;
+   --                            Op : AI_Texture_Op;
+   --                            Map_Mode : AI_Texture_Map_Mode;
+   --                            Result : out Assimp_Types.API_Return);
    function Get_Texture_Count (aMaterial : AI_Material;
                                Tex_Type  : AI_Texture_Type)
                                return GL.Types.UInt;
-   function To_AI_Materials_Map (Num_Materials : Interfaces.C.unsigned := 0;
-                                 C_Material_Array : API_Material_Array)
+   function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
+                                 C_Material_Array : in out API_Material_Array)
                                  return AI_Material_Map;
 private
 
