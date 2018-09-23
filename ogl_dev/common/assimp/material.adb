@@ -39,8 +39,8 @@ package body Material is
      aliased Material_Property;
    pragma Convention (C, Material_Property_Array);
 
-   function To_AI_Property_List (anAPI_Material     : API_Material;
-                                 Property_Ptr_Array : API_Property_Ptr_Array;
+   function To_AI_Property_List (anAPI_Material : in out API_Material;
+                                 Property_Array : API_Property_Array;
                                  AI_Properties  : out AI_Material_Property_List)
                                  return Assimp_Types.API_Return;
    procedure To_API_Property (aProperty       : AI_Material_Property;
@@ -73,6 +73,7 @@ package body Material is
       Material_Property_Default : Material_Property :=
                                     ((0, (others => Interfaces.C.char'Val (0))),
                                      0, 0, 0, PTI_Float, Interfaces.C.Strings.Null_Ptr);
+
       package Material_Property_Array_Package is new Interfaces.C.Pointers
         (Interfaces.C.unsigned, Material_Property, Material_Property_Array,
          Material_Property_Default);
@@ -249,7 +250,7 @@ package body Material is
 
    --  ----------------------------------------------------------------------
 
-   function To_AI_Material (C_Material : API_Material) return AI_Material is
+   function To_AI_Material (C_Material : in out API_Material) return AI_Material is
       use Interfaces.C;
       Num_Property  : constant unsigned := C_Material.Num_Properties;
       theMaterial   : AI_Material;
@@ -259,12 +260,16 @@ package body Material is
                   unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
       if Num_Property > 0 then
          declare
-            use Property_Ptr_Array_Package;
-            theProperties_Ptr_Array : API_Property_Ptr_Array (1 .. Num_Property);
+            --              use Property_Ptr_Array_Package;
+            use API_Property_Array_Package;
+            Property_Array_Ptr  : API_Material_Property_Ptr := C_Material.Properties.all;
+            theProperties_Array : API_Property_Array (1 .. Num_Property);
+            anAPI_Property      : API_Material_Property;
          begin
-            theProperties_Ptr_Array := Value (C_Material.Properties, ptrdiff_t (Num_Property));
+            theProperties_Array := API_Property_Array_Package.Value (Property_Array_Ptr, ptrdiff_t (Num_Property));
+            anAPI_Property := theProperties_Array (1);
             Result := To_AI_Property_List
-              (C_Material, theProperties_Ptr_Array, theMaterial.Properties);
+              (C_Material, theProperties_Array, theMaterial.Properties);
             theMaterial.Num_Allocated := UInt (C_Material.Num_Allocated);
             Assimp_Util.Print_AI_Property_Data ("Material.To_AI_Material Property 1",
                                                 theMaterial.Properties.First_Element);
@@ -281,7 +286,7 @@ package body Material is
    --  ------------------------------------------------------------------------
 
    function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
-                                 C_Material_Array : API_Material_Array)
+                                 C_Material_Array : in out API_Material_Array)
                                  return AI_Material_Map is
       use Interfaces.C;
       Material_Map : AI_Material_Map;
@@ -303,7 +308,7 @@ package body Material is
 
    --  ------------------------------------------------------------------------
 
-   function To_AI_Property (anAPI_Material : API_Material;
+   function To_AI_Property (anAPI_Material : in out API_Material;
                             API_Property   : API_Material_Property;
                             theAI_Property : out AI_Material_Property)
                             return Assimp_Types.API_Return is
@@ -416,8 +421,8 @@ package body Material is
 
    --  ----------------------------------------------------------------------
 
-   function To_AI_Property_List (anAPI_Material     : API_Material;
-                                 Property_Ptr_Array : API_Property_Ptr_Array;
+   function To_AI_Property_List (anAPI_Material : in out API_Material;
+                                 Property_Array : API_Property_Array;
                                  AI_Properties  : out AI_Material_Property_List)
                                  return Assimp_Types.API_Return is
       use Interfaces.C;
@@ -426,8 +431,8 @@ package body Material is
       AI_Property    : AI_Material_Property;
       Result         : API_Return := API_Return_Failure;
    begin
-      for Property_Index in unsigned range 1 .. Property_Ptr_Array'Length loop
-         aProperty := Property_Ptr_Array (Property_Index).all;
+      for Property_Index in unsigned range 1 .. Property_Array'Length loop
+         aProperty := Property_Array (Property_Index);
          Result := To_AI_Property (anAPI_Material, aProperty, AI_Property);
          if Result = API_Return_Success then
             Assimp_Util.Print_AI_Property_Data ("Material.To_AI_Property_List",
@@ -456,13 +461,12 @@ package body Material is
       use Interfaces.C;
       use AI_Material_Property_Package;
       Property_Curs       : Cursor := aMaterial.Properties.First;
-      Ptr_Array           : API_Property_Ptr_Array
+      Property_Array           : API_Property_Array
         (1 .. unsigned (Length (aMaterial.Properties)));
       Index               : unsigned := 0;
       aProperty           : AI_Material_Property;
       API_Property_Record : API_Material_Property;
    begin
-      --        Properties     : Property_Ptr_Array_Package.Pointer := null;
       while Has_Element (Property_Curs) loop
          Index := Index + 1;
          aProperty := Element (Property_Curs);
@@ -473,7 +477,6 @@ package body Material is
             --              Raw_Ptr   : Assimp_Types.Data_Pointer := Raw_Data (1)'Access;
          begin
             To_API_Property (aProperty, Raw_Data, API_Property_Record);
-            Ptr_Array (index) := null;
             --           theAPI_Material.Properties := API_Property_Record;
          end;
          Next (Property_Curs);

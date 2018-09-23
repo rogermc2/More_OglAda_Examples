@@ -20,8 +20,11 @@ package body Material_System is
                                   return Assimp_Types.API_Return is
       use Interfaces.C;
       use Material;
-      use Material.Property_Ptr_Array_Package;
+      use API_Property_Array_Package;
+
       Num_Props  : constant Interfaces.C.unsigned := aMaterial.Num_Properties;
+      Prop_Ptr   : constant Material.API_Material_Property_Ptr :=
+                     aMaterial.Properties.all;
       Result     :  Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
       aProperty  :  Material.API_Material_Property;
       Found      : Boolean := False;
@@ -34,12 +37,13 @@ package body Material_System is
       elsif Num_Props > 0 then
          declare
             use Interfaces.C.Strings;
-            Property_Ptr_Array : API_Property_Ptr_Array := Value (aMaterial.Properties);
+            Property_Array : API_Property_Array := Value (Prop_Ptr);
          begin
             while Prop_Index < Num_Props and not Found loop
 
-               aProperty := Property_Ptr_Array (Prop_Index).all;
-               Found := aProperty.Key.Data = Key.Data and aProperty.Data_Type = Property_Type and
+               aProperty := Property_Array (Prop_Index);
+               Found := aProperty.Key.Data = Key.Data and
+                 aProperty.Data_Type = Property_Type and
                  aProperty.Texture_Index = Property_Index;
                if Found then
                   theProperty := aProperty;
@@ -48,7 +52,8 @@ package body Material_System is
                Prop_Index := Prop_Index + 1;
             end loop;
             if not Found then
-               Put_Line ("Material_System.Get_Material_Property; Requested property not found.");
+               Put ("Material_System.Get_Material_Property; ");
+               Put_Line ("Requested property not found.");
             end if;
          end;
       else
