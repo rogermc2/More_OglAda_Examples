@@ -318,6 +318,7 @@ package body Material is
       use Assimp_Types;
       use API_Property_Array_Package;
 
+      Num_Properties    : constant unsigned := anAPI_Material.Num_Properties;
       L_API_Material    : aliased API_Material := anAPI_Material;
       Prop_Access       : access API_Material_Property_Ptr;
       Prop_Ptr          : API_Material_Property_Ptr;
@@ -346,11 +347,9 @@ package body Material is
             if Prop_Ptr = Null then
                 Put_Line ("Material.To_AI_Property Prop_Ptr is null");
             else
-                Put_Line ("Setting API_Prop_Array.");
-                API_Prop_Array := API_Property_Array_Package.Value (Prop_Ptr);
-                Put_Line ("Calling Print_API_Property_Array.");
-                Assimp_Util.Print_API_Property_Array ("Material.To_AI_Property L_API_Material",
-                                                      API_Property_Array_Package.Value (Prop_Ptr));
+                API_Prop_Array := API_Property_Array_Package.Value (Prop_Ptr, ptrdiff_t (Num_Properties));
+                Assimp_Util.Print_API_Property_Array ("Material.To_AI_Property API_Prop_Array",
+                                                      API_Prop_Array);
             end if;
        end if;
 
