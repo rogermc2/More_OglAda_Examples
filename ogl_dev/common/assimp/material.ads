@@ -143,6 +143,8 @@ package Material is
    end record;
    pragma Convention (C_Pass_By_Copy, API_UV_Transform);
 
+   Material_Exception : Exception;
+
    procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
                           Tex_Index : UInt := 0;
                           Path : out Ada.Strings.Unbounded.Unbounded_String;
