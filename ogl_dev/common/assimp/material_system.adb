@@ -9,16 +9,28 @@ with Utilities;
 with Material_Keys;
 
 package body Material_System is
+    use Material;
 
-   function Get_Material_Integer (aMaterial : Material.AI_Material;
+    function Get_Material_Property (aMaterial   : AI_Material;
+                                 Key            : String;
+                                 Property_Type  : GL.Types.UInt;
+                                 Index          : GL.Types.UInt;
+                                 theProperty    : out AI_Material_Property)
+                                 return Assimp_Types.API_Return;
+
+  --  -------------------------------------------------------------------------------------
+
+   function Get_Material_Integer (aMaterial : AI_Material;
                                  Key        : String;
-                                 Property_Type  : Material.AI_Texture_Type;
-                                 Property_Index : GL.Types.UInt;
+                                 Property_Type : GL.Types.UInt;
+                                 Index         : GL.Types.UInt;
                                  theInteger : out GL.Types.Int)
                                   return Assimp_Types.API_Return is
-      Result     :  Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
+      Result      : Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
+      theProperty : Material.AI_Material_Property;
    begin
       theInteger := 0;
+      Result := Get_Material_Property (aMaterial, Key, Property_Type, Index, theProperty);
       return Result;
 
    exception
@@ -31,9 +43,9 @@ package body Material_System is
 
    function Get_Material_Property (aMaterial    : Material.AI_Material;
                                  Key            : String;
-                                 Property_Type  : Material.AI_Property_Type_Info;
-                                 Property_Index : GL.Types.UInt;
-                                 theProperty    : out Material.AI_Material_Property)
+                                 Property_Type  : GL.Types.UInt;
+                                 Index : GL.Types.UInt;
+                                 theProperty    : out AI_Material_Property)
                                  return Assimp_Types.API_Return is
       use GL.Types;
       use Material;
@@ -54,8 +66,8 @@ package body Material_System is
          while Has_Element (Curs) and not Found loop
             aProperty := Element (Curs);
             Found := Ada.Strings.Unbounded.To_String (aProperty.Key) = Key and
-              aProperty.Data_Type = Property_Type and
-              aProperty.Texture_Index = Property_Index;
+              aProperty.Data_Type = AI_Property_Type_Info'Enum_Val (Property_Type) and
+              aProperty.Texture_Index = Index;
             if Found then
                theProperty := aProperty;
                Result :=  Assimp_Types.API_Return_Success;
@@ -79,7 +91,7 @@ package body Material_System is
 
    function Get_Material_String (aMaterial : Material.AI_Material;
                                  Key       : String;
-                                 Property_Type  : Material.AI_Texture_Type;
+                                 Property_Type  : GL.Types.UInt;
                                  Property_Index : GL.Types.UInt;
                                  Data_String    : out Ada.Strings.Unbounded.Unbounded_String)
                                  return Assimp_Types.API_Return is
@@ -126,8 +138,8 @@ package body Material_System is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Texture (aMaterial : Material.AI_Material;
-                         Tex_Type  : Material.AI_Texture_Type;
+   function Get_Texture (aMaterial : AI_Material;
+                         Tex_Type  : AI_Texture_Type;
                          Tex_Index : GL.Types.UInt := 0;
                          Path      : out Ada.Strings.Unbounded.Unbounded_String)
                          return Assimp_Types.API_Return is
@@ -140,11 +152,11 @@ package body Material_System is
       Result             : Assimp_Types.API_Return :=
                              Get_Material_String (aMaterial,
                                                   AI_Material_Key (AI_Mat_Key_Texture_Base),
-                                                  Tex_Type, Tex_Index, Path);
+                                                  AI_Texture_Type'Enum_Rep (Tex_Type), Tex_Index, Path);
    begin
       if Result = API_Return_Success then
          Result := Get_Material_Integer (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),
-                                         Tex_Type, Tex_Index, UV_Integer);
+                                         AI_Texture_Type'Enum_Rep (Tex_Type), Tex_Index, UV_Integer);
          Mapping := Texture_Mapping'Enum_Val (UV_Integer);
       else
          Put_Line ("Material.Get_Texture, Get_Material_String failed.");
