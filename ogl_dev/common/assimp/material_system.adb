@@ -1,4 +1,6 @@
 
+with Interfaces;
+
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -10,6 +12,9 @@ with Material_Keys;
 
 package body Material_System is
     use Material;
+
+   type Byte_Array4 is array (1 .. 4) of GL.Types.UByte;
+   type Byte_Array8 is array (1 .. 8) of GL.Types.UByte;
 
     function Get_Material_Property (aMaterial   : AI_Material;
                                  Key            : String;
@@ -168,6 +173,25 @@ package body Material_System is
          Put_Line ("An exception occurred in Material_System.Get_Texture.");
          raise;
    end Get_Texture;
+
+   --  -------------------------------------------------------------------------
+
+   function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int is
+      use Interfaces;
+      Int32  : Unsigned_32 := 0;
+      Int8   : Unsigned_8;
+   begin
+      for index in 0 .. 3  loop
+         Int8 := Unsigned_8 (Bytes_In (4 - index));
+         Int8 := Rotate_Left (Int8, 4);
+         Int32 := Int32 + Unsigned_32 (Int8);
+         if index /= 3 then
+            Int32 := Shift_Left (Int32, 8);
+         end if;
+      end loop;
+      return GL.Types.Int (Int32);
+
+   end To_Integer;
 
    --  -------------------------------------------------------------------------
 
