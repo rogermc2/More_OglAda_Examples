@@ -202,7 +202,6 @@ package body AI_Conversion is
         New_Line;
       Assimp_Util.Print_AI_Property_Data ("Material.To_AI_Property AI_Property",
                                           theAI_Property);
-
       return Result;
 
    exception

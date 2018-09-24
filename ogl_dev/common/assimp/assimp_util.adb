@@ -9,7 +9,9 @@ package body Assimp_Util is
 
    procedure Print_AI_Property_Data (Title     : String;
                                      aProperty : Material.AI_Material_Property) is
-
+      use Ada.Containers;
+      use Assimp_Types.Byte_Data_Package;
+      curs : Cursor := aProperty.Data_Buffer.First;
    begin
       New_Line;
       Put_Line (Title & " Property_Data:");
@@ -19,6 +21,13 @@ package body Assimp_Util is
       Put_Line (" Semantic, Data_Type, Buffer size: " &
                   Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
                   Ada.Containers.Count_Type'Image (aProperty.Data_Buffer.Length));
+      if aProperty.Data_Buffer.Length > 0 then
+         while Has_Element (curs) loop
+            Put (Assimp_Types.C_Byte'Image (Element (curs)));
+            Next (curs);
+         end loop;
+         New_Line;
+      end if;
    end Print_AI_Property_Data;
 
    --  -------------------------------------------------------------------------
