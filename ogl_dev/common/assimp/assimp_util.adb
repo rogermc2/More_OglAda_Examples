@@ -43,19 +43,19 @@ package body Assimp_Util is
 
    --  -------------------------------------------------------------------------
 
-   procedure Print_API_Property_Array (Title  : String;
-                                      anArray : Material.API_Property_Array) is
-      use Interfaces.C;
-   begin
-      for index in anArray'First .. anArray'Last loop
-            Print_API_Property_Data (Title & unsigned'Image (index), anArray (index));
-      end loop;
-
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Print_API_Property_Array.");
-            raise;
-   end Print_API_Property_Array;
+--     procedure Print_API_Property_Array (Title  : String;
+--                                        anArray : Material.API_Property_Array) is
+--        use Interfaces.C;
+--     begin
+--        for index in anArray'First .. anArray'Last loop
+--              Print_API_Property_Data (Title & unsigned'Image (index), anArray (index));
+--        end loop;
+--
+--      exception
+--          when others =>
+--              Put_Line ("An exception occurred in Print_API_Property_Array.");
+--              raise;
+--     end Print_API_Property_Array;
 
    --  -------------------------------------------------------------------------
 
