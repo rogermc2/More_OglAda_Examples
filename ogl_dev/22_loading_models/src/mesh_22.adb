@@ -18,6 +18,7 @@ with Assimp_Util;
 
 with Importer;
 with Material;
+with Material_System;
 
 with Ogldev_Engine_Common;
 with Ogldev_Util;
@@ -126,7 +127,7 @@ package body Mesh_22 is
             Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
                                                 aMaterial.Properties.First_Element);
             New_Line;
-            Get_Material_Texture (aMaterial, AI_Texture_Diffuse, 0, Path, Result);
+            Result := Material_System.Get_Texture (aMaterial, AI_Texture_Diffuse, 0, Path);
             if Result = Assimp_Types.API_Return_Success then
                Put_Line ("Mesh_22.Init_Materials.Load_Textures Path: " &
                            Ada.Strings.Unbounded.To_String (Path));

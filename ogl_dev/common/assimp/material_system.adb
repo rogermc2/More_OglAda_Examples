@@ -1,8 +1,4 @@
 
-with System;
-
-with Interfaces;
-
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -14,11 +10,11 @@ with Material_Keys;
 
 package body Material_System is
 
-   function Get_Material_Integer (aMaterial : Material.API_Material;
-                                 Key       : Assimp_Types.API_String;
-                                 Property_Type  : Material.AI_Property_Type_Info;
-                                 Property_Index : Interfaces.C.unsigned;
-                                 theInteger : out Interfaces.C.int)
+   function Get_Material_Integer (aMaterial : Material.AI_Material;
+                                 Key        : String;
+                                 Property_Type  : Material.AI_Texture_Type;
+                                 Property_Index : GL.Types.UInt;
+                                 theInteger : out GL.Types.Int)
                                   return Assimp_Types.API_Return is
       Result     :  Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
    begin
@@ -33,13 +29,13 @@ package body Material_System is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Material_Property (aMaterial : Material.API_Material;
-                                   Key       : Assimp_Types.API_String;
-                                  Property_Type  : Material.AI_Property_Type_Info;
-                                  Property_Index : Interfaces.C.unsigned;
-                                 theProperty : out Material.API_Material_Property)
+   function Get_Material_Property (aMaterial    : Material.AI_Material;
+                                 Key            : String;
+                                 Property_Type  : Material.AI_Property_Type_Info;
+                                 Property_Index : GL.Types.UInt;
+                                 theProperty    : out Material.AI_Material_Property)
                                  return Assimp_Types.API_Return is
-      use Interfaces.C;
+      use GL.Types;
       use Material;
       use AI_Material_Property_Package;
 
@@ -49,7 +45,7 @@ package body Material_System is
       aProperty  : AI_Material_Property;
       Found      : Boolean := False;
       Prop_Index : UInt := 0;
-      Result     : Boolean :=  False;
+      Result     : Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
    begin
       if aMaterial.Properties.Is_Empty then
          raise Material_System_Exception with
@@ -57,12 +53,12 @@ package body Material_System is
       else
          while Has_Element (Curs) and not Found loop
             aProperty := Element (Curs);
-            Found := aProperty.Key = Key and
+            Found := Ada.Strings.Unbounded.To_String (aProperty.Key) = Key and
               aProperty.Data_Type = Property_Type and
               aProperty.Texture_Index = Property_Index;
             if Found then
                theProperty := aProperty;
-               Result :=  True;
+               Result :=  Assimp_Types.API_Return_Success;
             end if;
             Next (Curs);
          end loop;
@@ -81,24 +77,24 @@ package body Material_System is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Material_String (aMaterial : Material.API_Material;
-                                 Key       : Assimp_Types.API_String;
-                                 Property_Type  : Material.AI_Property_Type_Info;
+   function Get_Material_String (aMaterial : Material.AI_Material;
+                                 Key       : String;
+                                 Property_Type  : Material.AI_Texture_Type;
                                  Property_Index : GL.Types.UInt;
                                  Data_String    : out Ada.Strings.Unbounded.Unbounded_String)
-                                 return Boolean is
-      use Ada.Strings.Unbounded;
+                                 return Assimp_Types.API_Return is
       use Material;
+      use Assimp_Types;
       aProperty     : AI_Material_Property;
 --        Size_String   : String_4;
-      Result        : Boolean := False;
+      Result        : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
-      Data_String := To_Unbounded_String ("");
-      Put_Line ("Material_System.Get_Material_String requested Data_Type: " &
-                  AI_Property_Type_Info'Image (Property_Type));
-      Result := Get_Material_Property  (aMaterial, Key, Property_Type,
-                                        Property_Index, aProperty);
-      if Result then
+      Data_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
+--        Put_Line ("Material_System.Get_Material_String requested Data_Type: " &
+--                    AI_Property_Type_Info'Image (Property_Type));
+--        Result := Get_Material_Property  (aMaterial, Key, Property_Type,
+--                                          Property_Index, aProperty);
+      if Result = API_Return_Success  then
          Put_Line ("Material_System.Get_Material_String property found Data_Type: " &
                      AI_Property_Type_Info'Image (aProperty.Data_Type));
          if aProperty.Data_Type = Material.PTI_String then
@@ -130,7 +126,7 @@ package body Material_System is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Texture (aMaterial : Material.API_Material;
+   function Get_Texture (aMaterial : Material.AI_Material;
                          Tex_Type  : Material.AI_Texture_Type;
                          Tex_Index : GL.Types.UInt := 0;
                          Path      : out Ada.Strings.Unbounded.Unbounded_String)
@@ -144,7 +140,7 @@ package body Material_System is
       Result             : Assimp_Types.API_Return :=
                              Get_Material_String (aMaterial,
                                                   AI_Material_Key (AI_Mat_Key_Texture_Base),
-                             Tex_Type, Tex_Index, Path);
+                                                  Tex_Type, Tex_Index, Path);
    begin
       if Result = API_Return_Success then
          Result := Get_Material_Integer (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),

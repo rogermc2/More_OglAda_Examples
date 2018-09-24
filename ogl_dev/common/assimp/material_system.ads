@@ -1,10 +1,5 @@
 
-with Interfaces.C;
-with Interfaces.C.Pointers;
-with Interfaces.C.Strings;
-
 with Ada.Strings.Unbounded;
-
 with GL.Types;
 
 with Material;
@@ -17,14 +12,14 @@ package Material_System is
 
    Material_System_Exception : Exception;
 
-   function Get_Material_String (aMaterial      : Material.API_Material;
-                                 Key            : Assimp_Types.API_String;
-                                 Property_Type  : Material.AI_Property_Type_Info;
-                                 Property_Index : Interfaces.C.unsigned;
-                                 Data_String    : out Assimp_Types.API_String)
+   function Get_Material_String (aMaterial      : Material.AI_Material;
+                                 Key            : String;
+                                 Property_Type  : Material.AI_Texture_Type;
+                                 Property_Index : GL.Types.UInt;
+                                 Data_String    : out Ada.Strings.Unbounded.Unbounded_String)
                                  return Assimp_Types.API_Return;
 
-   function Get_Texture (aMaterial : Material.API_Material;
+   function Get_Texture (aMaterial : Material.AI_Material;
                          Tex_Type  : Material.AI_Texture_Type;
                          Tex_Index : GL.Types.UInt := 0;
                          Path      : out Ada.Strings.Unbounded.Unbounded_String)
