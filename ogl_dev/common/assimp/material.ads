@@ -87,6 +87,27 @@ package Material is
      Ada.Containers.Indefinite_Ordered_Maps (GL.Types.UInt, AI_Material);
    type AI_Material_Map is new AI_Material_Package.Map with null Record;
 
+   type Material_Property is record
+      Key           : Assimp_Types.API_String;
+      Semantic      : Interfaces.C.unsigned := 0;
+      Texture_Index : Interfaces.C.unsigned := 0;
+      Data_Length   : Interfaces.C.unsigned := 0;  --  Actual must not be 0
+      --  Data_Type provides information for the property.
+      --  It defines the data layout inside the data buffer.
+      --  This is used by the library internally to perform debug checks and to
+      --  utilize proper type conversions.
+      Data_Type     : AI_Property_Type_Info := PTI_Float;
+      --  Data holds the property's value. Its size is always Data_Length
+      --        Data_Ptr      : Byte_Array_Pointer := null;
+      Data_Ptr      : Interfaces.C.Strings.chars_ptr :=
+                        Interfaces.C.Strings.Null_Ptr;
+   end record;
+   pragma Convention (C_Pass_By_Copy, Material_Property);
+
+   type Material_Property_Array is array (Interfaces.C.unsigned range <>) of
+     aliased Material_Property;
+   pragma Convention (C, Material_Property_Array);
+
    --  Material data is stored using a key-value structure.
    --  A single key-value pair is called a 'material property'.
 
@@ -158,9 +179,6 @@ package Material is
    function Get_Texture_Count (aMaterial : AI_Material;
                                Tex_Type  : AI_Texture_Type)
                                return GL.Types.UInt;
-   function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
-                                 C_Material_Array : in out API_Material_Array)
-                                 return AI_Material_Map;
 private
 
    for AI_Texture_Map_Mode use (AI_Texture_Map_Mode_Wrap       => 0,
