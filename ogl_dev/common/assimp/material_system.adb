@@ -22,6 +22,7 @@ package body Material_System is
                                  Index          : GL.Types.UInt;
                                  theProperty    : out AI_Material_Property)
                                  return Assimp_Types.API_Return;
+   function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int;
 
   --  -------------------------------------------------------------------------------------
 
@@ -31,11 +32,20 @@ package body Material_System is
                                  Index         : GL.Types.UInt;
                                  theInteger : out GL.Types.Int)
                                   return Assimp_Types.API_Return is
+      use Assimp_Types.Byte_Data_Package;
       Result      : Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
       theProperty : Material.AI_Material_Property;
+      curs        : Cursor := theProperty.Data_Buffer.First;
+      theData     : Byte_Array4;
+      aChar       : Character;
    begin
-      theInteger := 0;
       Result := Get_Material_Property (aMaterial, Key, Property_Type, Index, theProperty);
+      for index in 1 ..4 loop
+         aChar := Character (Element (curs));
+         theData (index) := GL.Types.UByte (Character'Pos (aChar));
+         Next (curs);
+      end loop;
+      theInteger := To_Integer (theData);
       return Result;
 
    exception
