@@ -4,6 +4,7 @@ with Interfaces.C.Strings;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with AI_Conversion;
 with Assimp_Util;
 
 with Ogldev_Math;
@@ -94,7 +95,7 @@ package body Scene is
          C_Materials_Array := Material.Material_Pointers_Package.Value
            (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
          theScene.Materials :=
-           Material.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
+           AI_Conversion.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
          New_Line;
          Put_Line ("Scene.To_AI_Scene theScene.Materials set, Num_Textures: " &
                   unsigned'Image (Num_Textures));
