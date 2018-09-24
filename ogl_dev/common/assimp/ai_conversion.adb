@@ -15,15 +15,15 @@ with Material_Keys;
 
 package body AI_Conversion is
 
- function To_AI_Property_List (anAPI_Material : in out Material.API_Material;
+   function To_AI_Property_List (anAPI_Material : in out Material.API_Material;
                                  Property_Array : Material.API_Property_Array;
                                  AI_Properties  : out Material.AI_Material_Property_List)
-                                 return Assimp_Types.API_Return;
+                               return Assimp_Types.API_Return;
    procedure To_API_Property (aProperty       : Material.AI_Material_Property;
                               Raw_Data        : in out Assimp_Types.Raw_Byte_Data;
                               theAPI_Property : in out Material.API_Material_Property);
---     procedure To_API_Material (aMaterial       : AI_Material;
---                                theAPI_Material : in out API_Material);
+   --     procedure To_API_Material (aMaterial       : AI_Material;
+   --                                theAPI_Material : in out API_Material);
 
    procedure Load_API_Property_Array (Properties     : Material.AI_Material_Property_List;
                                       Property_Array : in out Material.Material_Property_Array);
@@ -149,63 +149,60 @@ package body AI_Conversion is
       use GL.Types;
       use Assimp_Types;
       use Material.API_Property_Array_Package;
+      use Raw_Data_Pointers;
 
       Num_Properties    : constant unsigned := anAPI_Material.Num_Properties;
-      L_API_Material    : aliased Material.API_Material := anAPI_Material;
-      Prop_Access       : access Material.API_Material_Property_Ptr;
-      Prop_Ptr          : Material.API_Material_Property_Ptr;
-      API_Prop_Array    : Material.API_Property_Array (1 .. anAPI_Material.Num_Properties);
-      API_Prop          : Material.API_Material_Property := API_Property;
-      Key_Length        : size_t := API_Prop.Key.Length;
-      Data_Length       : constant size_t := size_t (API_Prop.Data_Length);
-      Integer_Data      : aliased Interfaces.C.int := 0;
-      Float_Data        : aliased C_float := 0.0;
-      String_Data       : aliased Assimp_Types.API_String;
-      Test_Property     : aliased Material.API_Material_Property;
-      Test_Property_Ptr : aliased access Material.API_Material_Property :=
-                            Test_Property'Access;
+      Key_Length        : size_t := API_Property.Key.Length;
+      Data_Length       : constant size_t := size_t (API_Property.Data_Length);
+      Data_Array        : Raw_Byte_Data (1 .. UInt (Data_Length));
+--        Integer_Data      : aliased Interfaces.C.int := 0;
+--        Float_Data        : aliased C_float := 0.0;
+--        String_Data       : aliased Assimp_Types.API_String;
       Key_String        : constant String (1 .. Integer (Key_Length)) :=
                             To_Ada (API_Property.Key.Data);
-      Key_Data_Ptr      : constant chars_ptr := New_String (Key_String);
+--        Key_Data_Ptr      : constant chars_ptr := New_String (Key_String);
+
       Result            : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
       New_Line;
       Assimp_Util.Print_API_Property_Data ("Material.To_AI_Property API", API_Property);
-      if anAPI_Material.Properties = null then
-            Put_Line ("Material.To_AI_Property anAPI_Material.Properties is null");
-      else
-            Prop_Access := anAPI_Material.Properties;
-            Prop_Ptr := Prop_Access.all;
-            if Prop_Ptr = Null then
-                Put_Line ("Material.To_AI_Property Prop_Ptr is null");
-            else
-                API_Prop_Array := Material.API_Property_Array_Package.Value (Prop_Ptr, ptrdiff_t (Num_Properties));
-            end if;
-       end if;
 
---        Result := Material_System.Get_Material_Property
---          (L_API_Material'Access, Key_Data_Ptr, API_Property.Data_Type,
---           API_Property.Texture_Index, Test_Property_Ptr'Access);
---
---        if Result /= API_RETURN_SUCCESS then
---           Put_Line ("Material.To_AI_Property Get_Material_Property failed:");
---        else
---           Put_Line ("Material.To_AI_Property Get_Material_Property succeeded:");
+      --        Result := Material_System.Get_Material_Property
+      --          (L_API_Material'Access, Key_Data_Ptr, API_Property.Data_Type,
+      --           API_Property.Texture_Index, Test_Property_Ptr'Access);
+      --
+      --        if Result /= API_RETURN_SUCCESS then
+      --           Put_Line ("Material.To_AI_Property Get_Material_Property failed:");
+      --        else
+      --           Put_Line ("Material.To_AI_Property Get_Material_Property succeeded:");
 
-         if Key_Length > 0 then
-            declare
-               Key_Data  : constant String (1 .. Integer (Key_Length)) := To_Ada (API_Prop.Key.Data);
-            begin
-               theAI_Property.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
-            end;
+      if Key_Length > 0 then
+         declare
+            Key_Data  : constant String (1 .. Integer (Key_Length)) :=
+                          To_Ada (API_Property.Key.Data);
+         begin
+            theAI_Property.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
+         end;
+      end if;
+
+      theAI_Property.Semantic := UInt (API_Property.Semantic);
+      theAI_Property.Texture_Index := UInt (API_Property.Texture_Index);
+      theAI_Property.Data_Type := API_Property.Data_Type;
+      if Data_Length > 0 then
+         if API_Property.Data_Ptr /= null then
+            Data_Array := Raw_Data_Pointers.Value (API_Property.Data_Ptr, ptrdiff_t (Data_Length));
+            for index in 1 .. Data_Length loop
+               theAI_Property.Data_Buffer.Append (Data_Array (UInt (index)));
+            end loop;
+         else
+            raise Conversion_Exception with
+              "Material.To_AI_Property AI_Property Data pointer is null.";
          end if;
+      end if;
+        New_Line;
+      Assimp_Util.Print_AI_Property_Data ("Material.To_AI_Property AI_Property",
+                                          theAI_Property);
 
-         theAI_Property.Semantic := UInt (API_Prop.Semantic);
-         theAI_Property.Texture_Index := UInt (API_Prop.Texture_Index);
-         theAI_Property.Data_Type := API_Prop.Data_Type;
-         New_Line;
-         Assimp_Util.Print_AI_Property_Data ("Material.To_AI_Property AI_Property",
-                                             theAI_Property);
       return Result;
 
    exception
@@ -238,7 +235,7 @@ package body AI_Conversion is
          else
             raise Material_Exception with
               "Material.To_AI_Property_List failed for property: "
-               & unsigned'Image (Property_Index);
+              & unsigned'Image (Property_Index);
          end if;
       end loop;
 
@@ -253,40 +250,40 @@ package body AI_Conversion is
 
    --  ----------------------------------------------------------------------
 
---     procedure To_API_Material (aMaterial       : AI_Material;
---                                theAPI_Material : in out API_Material) is
---        use Interfaces.C;
---        use AI_Material_Property_Package;
---        Property_Curs       : Cursor := aMaterial.Properties.First;
---        Property_Array           : API_Property_Array
---          (1 .. unsigned (Length (aMaterial.Properties)));
---        Index               : unsigned := 0;
---        aProperty           : AI_Material_Property;
---        API_Property_Record : API_Material_Property;
---     begin
---        while Has_Element (Property_Curs) loop
---           Index := Index + 1;
---           aProperty := Element (Property_Curs);
---           declare
---              --  Raw_Data holds the property's value.
---              Raw_Data  : Assimp_Types.Raw_Byte_Data
---                (1 .. UInt (aProperty.Data_Buffer.Length));
---              --              Raw_Ptr   : Assimp_Types.Data_Pointer := Raw_Data (1)'Access;
---           begin
---              To_API_Property (aProperty, Raw_Data, API_Property_Record);
---              --           theAPI_Material.Properties := API_Property_Record;
---           end;
---           Next (Property_Curs);
---        end loop;
---
---        theAPI_Material.Num_Properties := unsigned (Length (aMaterial.Properties));
---        theAPI_Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
---     exception
---        when others =>
---           Put_Line ("An exception occurred in Material.To_API_Material.");
---           raise;
---
---     end To_API_Material;
+   --     procedure To_API_Material (aMaterial       : AI_Material;
+   --                                theAPI_Material : in out API_Material) is
+   --        use Interfaces.C;
+   --        use AI_Material_Property_Package;
+   --        Property_Curs       : Cursor := aMaterial.Properties.First;
+   --        Property_Array           : API_Property_Array
+   --          (1 .. unsigned (Length (aMaterial.Properties)));
+   --        Index               : unsigned := 0;
+   --        aProperty           : AI_Material_Property;
+   --        API_Property_Record : API_Material_Property;
+   --     begin
+   --        while Has_Element (Property_Curs) loop
+   --           Index := Index + 1;
+   --           aProperty := Element (Property_Curs);
+   --           declare
+   --              --  Raw_Data holds the property's value.
+   --              Raw_Data  : Assimp_Types.Raw_Byte_Data
+   --                (1 .. UInt (aProperty.Data_Buffer.Length));
+   --              --              Raw_Ptr   : Assimp_Types.Data_Pointer := Raw_Data (1)'Access;
+   --           begin
+   --              To_API_Property (aProperty, Raw_Data, API_Property_Record);
+   --              --           theAPI_Material.Properties := API_Property_Record;
+   --           end;
+   --           Next (Property_Curs);
+   --        end loop;
+   --
+   --        theAPI_Material.Num_Properties := unsigned (Length (aMaterial.Properties));
+   --        theAPI_Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
+   --     exception
+   --        when others =>
+   --           Put_Line ("An exception occurred in Material.To_API_Material.");
+   --           raise;
+   --
+   --     end To_API_Material;
 
    --  ----------------------------------------------------------------------
 
