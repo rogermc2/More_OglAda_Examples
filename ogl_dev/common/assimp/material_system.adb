@@ -3,11 +3,33 @@ with Interfaces;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Assimp_Util;
+with Material_Keys;
 with Utilities;
 
 package body Material_System is
 
-  function Get_Material_Property (aMaterial : Material.API_Material; Key : Assimp_Types.API_String;
+   function Get_Material_Integer (aMaterial : Material.API_Material;
+                                 Key       : Assimp_Types.API_String;
+                                 Property_Type  : Material.AI_Property_Type_Info;
+                                 Property_Index : Interfaces.C.unsigned;
+                                 theInteger : out Interfaces.C.int)
+                                  return Assimp_Types.API_Return is
+      Result     :  Assimp_Types.API_Return :=  Assimp_Types.API_Return_Failure;
+   begin
+      theInteger := 0;
+      return Result;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material_System.Get_Material_Property.");
+         raise;
+   end Get_Material_Integer;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Material_Property (aMaterial : Material.API_Material;
+                                   Key       : Assimp_Types.API_String;
                                   Property_Type  : Material.AI_Property_Type_Info;
                                   Property_Index : Interfaces.C.unsigned;
                                  theProperty : out Material.API_Material_Property)
@@ -61,7 +83,8 @@ package body Material_System is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Material_String (aMaterial : Material.API_Material; Key : Assimp_Types.API_String;
+   function Get_Material_String (aMaterial : Material.API_Material;
+                                 Key       : Assimp_Types.API_String;
                                  Property_Type  : Material.AI_Property_Type_Info;
                                  Property_Index : Interfaces.C.unsigned;
                                  Data_String : out Assimp_Types.API_String)
@@ -106,6 +129,39 @@ package body Material_System is
          Put_Line ("An exception occurred in Material_System.Get_Material_String.");
          raise;
    end Get_Material_String;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Texture (aMaterial : Material.API_Material;
+                         Tex_Type  : Material.AI_Texture_Type;
+                         Tex_Index : GL.Types.UInt := 0;
+                         Path      : out Ada.Strings.Unbounded.Unbounded_String)
+                         return Assimp_Types.API_Return is
+      use Ada.Strings.Unbounded;
+      use GL.Types;
+      use Assimp_Types;
+      use Material_Keys;
+      Mapping            : Texture_Mapping := Texture_Mapping_UV;
+      UV_Integer         : GL.Types.Int;
+      Result             : Assimp_Types.API_Return :=
+                             Get_Material_String (aMaterial,
+                                                  AI_Material_Key (AI_Mat_Key_Texture_Base),
+                             Tex_Type, Tex_Index, Path);
+   begin
+      if Result = API_Return_Success then
+         Result := Get_Material_Integer (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),
+                                         Tex_Type, Tex_Index, UV_Integer);
+         Mapping := Texture_Mapping'Enum_Val (UV_Integer);
+      else
+         Put_Line ("Material.Get_Texture, Get_Material_String failed.");
+      end if;
+      return Result;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Material_System.Get_Texture.");
+         raise;
+   end Get_Texture;
 
    --  -------------------------------------------------------------------------
 
