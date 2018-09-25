@@ -89,14 +89,14 @@ package body AI_Conversion is
                   unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
       if Num_Property > 0 then
          declare
-            --              use Property_Ptr_Array_Package;
             use Material.API_Property_Array_Package;
             Property_Array_Ptr  : Material.API_Material_Property_Ptr := C_Material.Properties.all;
             theProperties_Array : Material.API_Property_Array (1 .. Num_Property);
-            anAPI_Property      : Material.API_Material_Property;
+--              anAPI_Property      : Material.API_Material_Property;
          begin
-            theProperties_Array := Material.API_Property_Array_Package.Value (Property_Array_Ptr, ptrdiff_t (Num_Property));
-            anAPI_Property := theProperties_Array (1);
+            theProperties_Array := Material.API_Property_Array_Package.Value
+              (Property_Array_Ptr, ptrdiff_t (Num_Property));
+--              anAPI_Property := theProperties_Array (1);
             To_AI_Property_List
               (C_Material, theProperties_Array, theMaterial.Properties);
             theMaterial.Num_Allocated := GL.Types.UInt (C_Material.Num_Allocated);
@@ -148,7 +148,6 @@ package body AI_Conversion is
       use Material.API_Property_Array_Package;
       use Raw_Data_Pointers;
 
-      Num_Properties    : constant unsigned := anAPI_Material.Num_Properties;
       Key_Length        : size_t := API_Property.Key.Length;
       Data_Length       : constant size_t := size_t (API_Property.Data_Length);
       Data_Array        : Raw_Byte_Data (1 .. UInt (Data_Length));
@@ -215,15 +214,24 @@ package body AI_Conversion is
       use Interfaces.C;
       use Assimp_Types;
       use Material;
+      Num_Properties : constant unsigned := anAPI_Material.Num_Properties;
       aProperty      : API_Material_Property;
       AI_Property    : AI_Material_Property;
    begin
-      for Property_Index in unsigned range 1 .. Property_Array'Length loop
+      New_Line;
+      Put_Line ("AI_Conversion.To_AI_Property_List, Property_Array'Length, Num_Properties:"
+               & unsigned'Image (Property_Array'Length) & "  "
+               & unsigned'Image (Num_Properties));
+      for Property_Index in unsigned range 1 .. Num_Properties loop
+         Put_Line ("AI_Conversion.To_AI_Property_List, Property_Index:"
+               & unsigned'Image (Property_Index));
          aProperty := Property_Array (Property_Index);
+         Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property_List aProperty",
+                                                aProperty);
          To_AI_Property (anAPI_Material, aProperty, AI_Property);
-            Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property_List",
-                                                AI_Property);
-            AI_Properties.Append (AI_Property);
+--              Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property_List",
+--                                                  AI_Property);
+          AI_Properties.Append (AI_Property);
       end loop;
 
    exception
