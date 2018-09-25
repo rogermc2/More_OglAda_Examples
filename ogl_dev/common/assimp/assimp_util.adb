@@ -42,12 +42,13 @@ package body Assimp_Util is
                   ", " & To_String (aProperty.Key));
       if aProperty.Key.Length = 0 then
          Put_Line ("Invalid key!");
+      else
+         Put_Line (" Semantic, Texture_Index: " & unsigned'Image (aProperty.Semantic)
+                   & unsigned'Image (aProperty.Texture_Index));
+         Put_Line (" Semantic, Data_Type, Buffer size: " &
+                     Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
+                     unsigned'Image (aProperty.Data_Length));
       end if;
-      Put_Line (" Semantic, Texture_Index: " & unsigned'Image (aProperty.Semantic)
-                & unsigned'Image (aProperty.Texture_Index));
-      Put_Line (" Semantic, Data_Type, Buffer size: " &
-                  Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
-                  unsigned'Image (aProperty.Data_Length));
    end Print_API_Property_Data;
 
    --  -------------------------------------------------------------------------
