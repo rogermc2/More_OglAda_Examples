@@ -211,8 +211,8 @@ package body AI_Conversion is
                Put_Line ("AI_Conversion.To_AI_Property_List, Property_Index:"
                          & unsigned'Image (Property_Index));
                aProperty := Property_Array (Property_Index);
---                 Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property_List aProperty",
---                                                      aProperty);
+               Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property_List aProperty",
+                                                    aProperty);
                To_AI_Property (anAPI_Material, aProperty, AI_Property);
                --              Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property_List",
                --                                                  AI_Property);
