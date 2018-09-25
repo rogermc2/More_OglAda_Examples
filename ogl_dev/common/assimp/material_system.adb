@@ -43,18 +43,24 @@ package body Material_System is
       Result := Get_Material_Property (aMaterial, Key, Property_Type,
                                        Index, theProperty);
       if Result = API_Return_Success then
-      for index in 1 ..4 loop
-         aChar := Character (Element (curs));
-         theData (index) := GL.Types.UByte (Character'Pos (aChar));
-         Next (curs);
-      end loop;
-      theInteger := To_Integer (theData);
+         if theProperty.Data_Type = PTI_Integer or
+           theProperty.Data_Type = PTI_Buffer then
+            for index in 1 ..4 loop
+               aChar := Character (Element (curs));
+               theData (index) := GL.Types.UByte (Character'Pos (aChar));
+               Next (curs);
+            end loop;
+            theInteger := To_Integer (theData);
+         else
+            Put ("Material_System.Get_Material_Integer, ");
+            Put_Line ("property type is neither integer nor buffer.");
+         end if;
    end if;
    return Result;
 
 exception
    when others =>
-      Put_Line ("An exception occurred in Material_System.Get_Material_Property.");
+      Put_Line ("An exception occurred in Material_System.Get_Material_Integer.");
       raise;
 end Get_Material_Integer;
 
