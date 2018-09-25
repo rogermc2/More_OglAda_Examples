@@ -16,7 +16,7 @@ with Material_Keys;
 package body AI_Conversion is
 
    procedure To_AI_Property_List (anAPI_Material : Material.API_Material;
-                                  --                                   Property_Array : Material.API_Property_Array;
+   --                                   Property_Array : Material.API_Property_Array;
                                   AI_Properties  : out Material.AI_Material_Property_List);
    procedure To_API_Property (aProperty       : Material.AI_Material_Property;
                               Raw_Data        : in out Assimp_Types.Raw_Byte_Data;
@@ -24,65 +24,64 @@ package body AI_Conversion is
    --     procedure To_API_Material (aMaterial       : AI_Material;
    --                                theAPI_Material : in out API_Material);
 
-   procedure Load_API_Property_Array (Properties     : Material.AI_Material_Property_List;
-                                      Property_Array : in out Material.Material_Property_Array);
+--     procedure Load_API_Property_Array (Properties     : Material.AI_Material_Property_List;
+--                                        Property_Array : in out Material.Material_Property_Array);
 
    --  -------------------------------------------------------------------------
 
-   procedure Load_API_Property_Array (Properties     : Material.AI_Material_Property_List;
-                                      Property_Array : in out Material.Material_Property_Array) is
-      use Interfaces.C;
-      use  Material.AI_Material_Property_Package;
-      use Assimp_Types.Byte_Data_Package;
-      Property_Cursor      :  Material.AI_Material_Property_Package.Cursor :=
-                               Properties.First;
-      Data_Cursor          : Assimp_Types.Byte_Data_Package.Cursor;
-      Data_Length          : unsigned := 0;
-      aProperty            :  Material.AI_Material_Property;
-      Index                : unsigned := 0;
-   begin
-      while Has_Element (Property_Cursor) loop
-         Index := Index + 1;
-         aProperty := Element (Property_Cursor);
-         Data_Cursor := aProperty.Data_Buffer.First;
-         --           Assimp_Util.Print_AI_Property_Data ("AI_Conversion.Load_API_Property_Array", aProperty);
-         --           New_Line;
-         Property_Array (index).Key := Assimp_Util.To_Assimp_API_String (aProperty.Key);
-         Property_Array (index).Semantic := unsigned (aProperty.Semantic);
-         Property_Array (index).Texture_Index :=
-           unsigned (aProperty.Texture_Index);
-         Data_Length := unsigned (aProperty.Data_Buffer.Length);
-         Property_Array (index).Data_Length := Data_Length;
-         Property_Array (index).Data_Type := aProperty.Data_Type;
-         declare
-            Data       : char_array (1 .. size_t (Data_Length));
-            Data_Index : size_t := 0;
-            aChar      : Character;
-         begin
-            while Has_Element (Data_Cursor) loop
-               Data_Index := Data_Index + 1;
-               aChar := To_Ada (char (Element (Data_Cursor)));
-               Data (Data_Index) := To_C (aChar);
-               Next (Data_Cursor);
-            end loop;
-
-            Property_Array (index).Data_Ptr := Strings.New_Char_Array (Data);
-         end;
-         Next (Property_Cursor);
-      end loop;
-
-   exception
-      when others =>
-         Put_Line ("An exception occurred in AI_Conversion.Load_API_Property_Array.");
-         raise;
-   end Load_API_Property_Array;
+--     procedure Load_API_Property_Array (Properties     : Material.AI_Material_Property_List;
+--                                        Property_Array : in out Material.Material_Property_Array) is
+--        use Interfaces.C;
+--        use  Material.AI_Material_Property_Package;
+--        use Assimp_Types.Byte_Data_Package;
+--        Property_Cursor      :  Material.AI_Material_Property_Package.Cursor :=
+--                                 Properties.First;
+--        Data_Cursor          : Assimp_Types.Byte_Data_Package.Cursor;
+--        Data_Length          : unsigned := 0;
+--        aProperty            :  Material.AI_Material_Property;
+--        Index                : unsigned := 0;
+--     begin
+--        while Has_Element (Property_Cursor) loop
+--           Index := Index + 1;
+--           aProperty := Element (Property_Cursor);
+--           Data_Cursor := aProperty.Data_Buffer.First;
+--           --           Assimp_Util.Print_AI_Property_Data ("AI_Conversion.Load_API_Property_Array", aProperty);
+--           --           New_Line;
+--           Property_Array (index).Key := Assimp_Util.To_Assimp_API_String (aProperty.Key);
+--           Property_Array (index).Semantic := unsigned (aProperty.Semantic);
+--           Property_Array (index).Texture_Index :=
+--             unsigned (aProperty.Texture_Index);
+--           Data_Length := unsigned (aProperty.Data_Buffer.Length);
+--           Property_Array (index).Data_Length := Data_Length;
+--           Property_Array (index).Data_Type := aProperty.Data_Type;
+--           declare
+--              Data       : char_array (1 .. size_t (Data_Length));
+--              Data_Index : size_t := 0;
+--              aChar      : Character;
+--           begin
+--              while Has_Element (Data_Cursor) loop
+--                 Data_Index := Data_Index + 1;
+--                 aChar := To_Ada (char (Element (Data_Cursor)));
+--                 Data (Data_Index) := To_C (aChar);
+--                 Next (Data_Cursor);
+--              end loop;
+--
+--              Property_Array (index).Data_Ptr := Strings.New_Char_Array (Data);
+--           end;
+--           Next (Property_Cursor);
+--        end loop;
+--
+--     exception
+--        when others =>
+--           Put_Line ("An exception occurred in AI_Conversion.Load_API_Property_Array.");
+--           raise;
+--     end Load_API_Property_Array;
 
    --  ----------------------------------------------------------------------
 
    function To_AI_Material (C_Material : Material.API_Material)
                             return Material.AI_Material is
       use Interfaces.C;
-      --        Num_Property  : constant unsigned := C_Material.Num_Properties;
       theMaterial   : Material.AI_Material;
    begin
       Put_Line ("AI_Conversion.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
