@@ -46,7 +46,7 @@ package body AI_Conversion is
          Index := Index + 1;
          aProperty := Element (Property_Cursor);
          Data_Cursor := aProperty.Data_Buffer.First;
-         --           Assimp_Util.Print_AI_Property_Data ("Material.Load_API_Property_Array", aProperty);
+         --           Assimp_Util.Print_AI_Property_Data ("AI_Conversion.Load_API_Property_Array", aProperty);
          --           New_Line;
          Property_Array (index).Key := Assimp_Util.To_Assimp_API_String (aProperty.Key);
          Property_Array (index).Semantic := unsigned (aProperty.Semantic);
@@ -74,7 +74,7 @@ package body AI_Conversion is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.Load_API_Property_Array.");
+         Put_Line ("An exception occurred in AI_Conversion.Load_API_Property_Array.");
          raise;
    end Load_API_Property_Array;
 
@@ -87,7 +87,7 @@ package body AI_Conversion is
       theMaterial   : Material.AI_Material;
       Result        : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
-      Put_Line ("Material.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
+      Put_Line ("AI_Conversion.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
                   unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
       if Num_Property > 0 then
          declare
@@ -102,7 +102,7 @@ package body AI_Conversion is
             Result := To_AI_Property_List
               (C_Material, theProperties_Array, theMaterial.Properties);
             theMaterial.Num_Allocated := GL.Types.UInt (C_Material.Num_Allocated);
-            Assimp_Util.Print_AI_Property_Data ("Material.To_AI_Material Property 1",
+            Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Material Property 1",
                                                 theMaterial.Properties.First_Element);
          end;
       end if;
@@ -110,7 +110,7 @@ package body AI_Conversion is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.To_AI_Material.");
+         Put_Line ("An exception occurred in AI_Conversion.To_AI_Material.");
          raise;
    end To_AI_Material;
 
@@ -123,7 +123,7 @@ package body AI_Conversion is
       Material_Map : Material.AI_Material_Map;
       aMaterial    : Material.AI_Material;
    begin
-      Put_Line ("Material.To_AI_Materials_Map Num_Materials: " &
+      Put_Line ("AI_Conversion.To_AI_Materials_Map Num_Materials: " &
                   Interfaces.C.unsigned'Image (Num_Materials));
       for mat in 1 .. Num_Materials loop
          aMaterial := To_AI_Material (C_Material_Array (mat));
@@ -133,7 +133,7 @@ package body AI_Conversion is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.To_AI_Materials_Map.");
+         Put_Line ("An exception occurred in AI_Conversion.To_AI_Materials_Map.");
          raise;
    end To_AI_Materials_Map;
 
@@ -165,16 +165,17 @@ package body AI_Conversion is
       Result            : Assimp_Types.API_Return := Assimp_Types.API_Return_Failure;
    begin
       New_Line;
-      Assimp_Util.Print_API_Property_Data ("Material.To_AI_Property API", API_Property);
+      Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property API",
+                                           API_Property);
 
       --        Result := Material_System.Get_Material_Property
       --          (L_API_Material'Access, Key_Data_Ptr, API_Property.Data_Type,
       --           API_Property.Texture_Index, Test_Property_Ptr'Access);
       --
       --        if Result /= API_RETURN_SUCCESS then
-      --           Put_Line ("Material.To_AI_Property Get_Material_Property failed:");
+      --           Put_Line ("AI_Conversion.To_AI_Property Get_Material_Property failed:");
       --        else
-      --           Put_Line ("Material.To_AI_Property Get_Material_Property succeeded:");
+      --           Put_Line ("AI_Conversion.To_AI_Property Get_Material_Property succeeded:");
 
       if Key_Length > 0 then
          declare
@@ -196,17 +197,17 @@ package body AI_Conversion is
             end loop;
          else
             raise Conversion_Exception with
-              "Material.To_AI_Property AI_Property Data pointer is null.";
+              "AI_Conversion.To_AI_Property AI_Property Data pointer is null.";
          end if;
       end if;
         New_Line;
-      Assimp_Util.Print_AI_Property_Data ("Material.To_AI_Property AI_Property",
+      Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property AI_Property",
                                           theAI_Property);
       return Result;
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.To_AI_Property.");
+         Put_Line ("An exception occurred in AI_Conversion.To_AI_Property.");
          raise;
 
    end To_AI_Property;
@@ -228,12 +229,12 @@ package body AI_Conversion is
          aProperty := Property_Array (Property_Index);
          Result := To_AI_Property (anAPI_Material, aProperty, AI_Property);
          if Result = API_Return_Success then
-            Assimp_Util.Print_AI_Property_Data ("Material.To_AI_Property_List",
+            Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property_List",
                                                 AI_Property);
             AI_Properties.Append (AI_Property);
          else
             raise Material_Exception with
-              "Material.To_AI_Property_List failed for property: "
+              "AI_Conversion.To_AI_Property_List failed for property: "
               & unsigned'Image (Property_Index);
          end if;
       end loop;
@@ -242,7 +243,7 @@ package body AI_Conversion is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.To_AI_Property_List.");
+         Put_Line ("An exception occurred in AI_Conversion.To_AI_Property_List.");
          raise;
 
    end To_AI_Property_List;
@@ -279,7 +280,7 @@ package body AI_Conversion is
    --        theAPI_Material.Num_Allocated := unsigned (aMaterial.Num_Allocated);
    --     exception
    --        when others =>
-   --           Put_Line ("An exception occurred in Material.To_API_Material.");
+   --           Put_Line ("An exception occurred in AI_Conversion.To_API_Material.");
    --           raise;
    --
    --     end To_API_Material;
@@ -314,7 +315,7 @@ package body AI_Conversion is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.To_API_Property.");
+         Put_Line ("An exception occurred in AI_Conversion.To_API_Property.");
          raise;
    end To_API_Property;
 
