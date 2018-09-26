@@ -18,7 +18,7 @@ with Material_Keys;
 package body AI_Conversion is
 
    type String_4 is new String (1 .. 4);
-   type Byte_Array4 is array (1 .. 4) of Assimp_Types.C_Byte;
+   type Byte_Array4 is array (1 .. 4) of GL.Types.UByte;
    type Byte_Array12 is array (1 .. 12) of GL.Types.UByte;
 
     procedure To_AI_Property_List (anAPI_Material : Material.API_Material;
