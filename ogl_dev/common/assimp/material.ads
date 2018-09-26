@@ -52,31 +52,30 @@ package Material is
                                   PTI_Buffer     => 16#5#,
                                   PTI_Force32Bit => 16#9fffffff#);
 
-   type AI_Material_Property is record
+   type Data (Data_Type  : AI_Property_Type_Info := PTI_Float) is record
+      case Data_Type is
+         when PTI_Float      => Float_Data      : GL.Types.Single := 0.0;
+         when PTI_Double     => Double_Data     : GL.Types.Double := 0.0;
+         when PTI_String     => String_Data     : Ada.Strings.Unbounded.Unbounded_String;
+         when PTI_Integer    => Integer_Data    : GL.Types.Int := 0;
+         when PTI_Buffer     => Buffer_Data     : GL.Types.Int := 0;
+         when PTI_Force32Bit => Force32Bit_Data : GL.Types.int := 0;
+      end case;
+   end record;
+
+   type AI_Material_Property (Data_Type : AI_Property_Type_Info := PTI_Float) is record
       Key            : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
       Semantic       : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
       Texture_Index  : GL.Types.UInt := 0;  --  Index for textures
-      Data_Type      : AI_Property_Type_Info := PTI_Float;
-      --        case Data_Type is
-      --           when PTI_Float =>
-      --              Data_Single    : Single;
-      --           when PTI_Double =>
-      --              Data_Double    : Double;
-      --           when PTI_String =>
-      --              Data_String    : Ada.Strings.Unbounded.Unbounded_String;
-      --           when PTI_Integer =>
-      --              Data_Integer    : GL.Types.Int;
-      --           when PTI_Buffer =>
-      --              Data_Buffer    : Assimp_Types.Byte_Data_List;
-      --           when PTI_Force32Bit  =>
-      --              Data_Force32Bit    : GL.Types.Int;
-      --        end case;
-      Data_Buffer    : Assimp_Types.Byte_Data_List;
+--        Data_Type      : AI_Property_Type_Info := PTI_Float;
+      Data_Buffer    : Data (Data_Type);
+--        Data_Buffer    : Assimp_Types.Byte_Data_List;
    end record;
 
    package AI_Material_Property_Package is new
      Ada.Containers.Doubly_Linked_Lists (AI_Material_Property);
-   type AI_Material_Property_List is new AI_Material_Property_Package.List with null Record;
+   type AI_Material_Property_List is new AI_Material_Property_Package.List
+   with null Record;
 
    type AI_Material is record
       Properties     : AI_Material_Property_List;

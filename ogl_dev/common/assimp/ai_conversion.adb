@@ -17,9 +17,14 @@ with Material_Keys;
 
 package body AI_Conversion is
 
+   type String_4 is new String (1 .. 4);
+   type Byte_Array4 is array (1 .. 4) of Assimp_Types.C_Byte;
+   type Byte_Array12 is array (1 .. 12) of GL.Types.UByte;
+
     procedure To_AI_Property_List (anAPI_Material : Material.API_Material;
                                    Property_Ptr_Array : Material.API_Property_Ptr_Array;
-                                   AI_Properties  : out Material.AI_Material_Property_List);
+                                   AI_Properties      : out Material.AI_Material_Property_List);
+   function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int;
 
     --     procedure To_API_Property (aProperty       : Material.AI_Material_Property;
     --                                Raw_Data        : in out Assimp_Types.Raw_Byte_Data;
@@ -171,48 +176,64 @@ package body AI_Conversion is
         --  Data_Length number of bytes
         Data_Length       : constant size_t := size_t (API_Property.Data_Length);
         Data_Array        : Raw_Byte_Data (1 .. UInt (Data_Length));
+        Data4             : Byte_Array4;
         Key_String        : constant String (1 .. Integer (Key_Length)) :=
                               To_Ada (API_Property.Key.Data);
+        AI_Property       : Material.AI_Material_Property (API_Property.Data_Type);
     begin
         if Key_Length > 0 then
             declare
                 Key_Data  : constant String (1 .. Integer (Key_Length)) :=
                               To_Ada (API_Property.Key.Data);
             begin
-                theAI_Property.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
+                AI_Property.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
             end;
-        end if;
 
-        theAI_Property.Semantic := UInt (API_Property.Semantic);
-        theAI_Property.Texture_Index := UInt (API_Property.Texture_Index);
-        theAI_Property.Data_Type := API_Property.Data_Type;
-        theAI_Property.Data_Buffer.Clear;
+        AI_Property.Semantic := UInt (API_Property.Semantic);
+        AI_Property.Texture_Index := UInt (API_Property.Texture_Index);
+--          theAI_Property.Data_Type := API_Property.Data_Type;
+--          theAI_Property.Data_Buffer.Clear;
         Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property API", API_Property);
-        if Data_Length > 0 then
-            if API_Property.Data_Ptr /= null then
-                Data_Array := Raw_Data_Pointers.Value (API_Property.Data_Ptr, ptrdiff_t (Data_Length));
-                if Data_Array'Length /= Data_Length then
-                    Put_Line ("AI_Conversion.To_AI_Property, Data_Array size " & size_t'Image (Data_Array'Length) &
-                                " is not equal to Data_Length" & size_t'Image (Data_Length));
-                end if;
-
-                for index in 1 .. Data_Length loop
-                    theAI_Property.Data_Buffer.Append (Data_Array (UInt (index)));
-                end loop;
-            else
-                raise Conversion_Exception with
-                  "AI_Conversion.To_AI_Property AI_Property Data pointer is null.";
-            end if;
-            if size_t (theAI_Property.Data_Buffer.Length) /= Data_Length then
-                Put_Line ("AI_Conversion.To_AI_Property, AI Data_Array size " &
-                Ada.Containers.Count_Type'Image (theAI_Property.Data_Buffer.Length) &
-                            " is not equal to Data_Length" & size_t'Image (Data_Length));
-            end if;
+      if Data_Length > 0 and API_Property.Data_Ptr /= null then
+            Data_Array := Raw_Data_Pointers.Value (API_Property.Data_Ptr, ptrdiff_t (Data_Length));
+            case API_Property.Data_Type is
+               when Material.PTI_Float => AI_Property.Data_Buffer.Float_Data := 0.0;
+               when Material.PTI_Double => AI_Property.Data_Buffer.Double_Data := 0.0;
+               when Material.PTI_String => AI_Property.Data_Buffer.String_Data
+                    := Ada.Strings.Unbounded.To_Unbounded_String ("");
+               when Material.PTI_Integer =>
+                  for index in 1 .. 4 loop
+                     Data4 (index) := Data_Array (UInt (index));
+                  end loop;
+                  AI_Property.Data_Buffer.Integer_Data := To_Integer (Data4);
+               when Material.PTI_Buffer => AI_Property.Data_Buffer.Buffer_Data := 0;
+               when others => null;
+            end case;
+--                  if Data_Array'Length /= Data_Length then
+--                      Put_Line ("AI_Conversion.To_AI_Property, Data_Array size " & size_t'Image (Data_Array'Length) &
+--                                  " is not equal to Data_Length" & size_t'Image (Data_Length));
+--                  end if;
+--
+--                  for index in 1 .. Data_Length loop
+--                      theAI_Property.Data_Buffer.Append (Data_Array (UInt (index)));
+--                  end loop;
+--              else
+--                  raise Conversion_Exception with
+--                    "AI_Conversion.To_AI_Property AI_Property Data pointer is null.";
+--              end if;
+--              if size_t (theAI_Property.Data_Buffer.Length) /= Data_Length then
+--                  Put_Line ("AI_Conversion.To_AI_Property, AI Data_Array size " &
+--                  Ada.Containers.Count_Type'Image (theAI_Property.Data_Buffer.Length) &
+--                              " is not equal to Data_Length" & size_t'Image (Data_Length));
+--              end if;
 
         end if;
         Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property AI",
                                             theAI_Property);
-
+        else
+            Put_Line ("AI_Conversion.To_AI_Property, invalid key detected.");
+        end if;
+      theAI_Property := AI_Property;
     exception
         when others =>
             Put_Line ("An exception occurred in AI_Conversion.To_AI_Property.");
@@ -372,5 +393,24 @@ package body AI_Conversion is
     --     end To_API_Property;
 
     --  ----------------------------------------------------------------------
+
+   function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int is
+      use Interfaces;
+      Int32  : Unsigned_32 := 0;
+      Int8   : Unsigned_8;
+   begin
+      for index in 0 .. 3  loop
+         Int8 := Unsigned_8 (Bytes_In (4 - index));
+         Int8 := Rotate_Left (Int8, 4);
+         Int32 := Int32 + Unsigned_32 (Int8);
+         if index /= 3 then
+            Int32 := Shift_Left (Int32, 8);
+         end if;
+      end loop;
+      return GL.Types.Int (Int32);
+
+   end To_Integer;
+
+   --  -------------------------------------------------------------------------
 
 end AI_Conversion;
