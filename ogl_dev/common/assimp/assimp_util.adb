@@ -18,7 +18,7 @@ package body Assimp_Util is
       Put_Line (" Key: " & Ada.Strings.Unbounded.To_String (aProperty.Key));
       Put_Line (" Semantic, Texture_Index: " & UInt'Image (aProperty.Semantic)
                 & UInt'Image (aProperty.Texture_Index));
-      Put_Line (" Semantic, Data_Type, Buffer size: " &
+      Put_Line (" Data_Type, Buffer size (bytes): " &
                   Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
                   Ada.Containers.Count_Type'Image (aProperty.Data_Buffer.Length));
       if aProperty.Data_Buffer.Length > 0 then
@@ -45,7 +45,7 @@ package body Assimp_Util is
       else
          Put_Line (" Semantic, Texture_Index: " & unsigned'Image (aProperty.Semantic)
                    & unsigned'Image (aProperty.Texture_Index));
-         Put_Line (" Semantic, Data_Type, Buffer size: " &
+         Put_Line (" Data_Type, Buffer size (bytes): " &
                      Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
                      unsigned'Image (aProperty.Data_Length));
       end if;
