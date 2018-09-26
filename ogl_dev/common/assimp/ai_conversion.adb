@@ -165,14 +165,12 @@ package body AI_Conversion is
       use Raw_Data_Pointers;
 
       Key_Length        : size_t := API_Property.Key.Length;
+      --  Data_Length number of bytes
       Data_Length       : constant size_t := size_t (API_Property.Data_Length);
       Data_Array        : Raw_Byte_Data (1 .. UInt (Data_Length));
       Key_String        : constant String (1 .. Integer (Key_Length)) :=
                             To_Ada (API_Property.Key.Data);
    begin
-      New_Line;
---        Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property API",
---                                             API_Property);
       if Key_Length > 0 then
          declare
             Key_Data  : constant String (1 .. Integer (Key_Length)) :=
@@ -185,9 +183,8 @@ package body AI_Conversion is
       theAI_Property.Semantic := UInt (API_Property.Semantic);
       theAI_Property.Texture_Index := UInt (API_Property.Texture_Index);
       theAI_Property.Data_Type := API_Property.Data_Type;
+      theAI_Property.Data_Buffer.Clear;
       Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property API", API_Property);
-      Put_Line ("AI_Conversion.To_AI_Property, Data_Length: " &
-                      size_t'Image (Data_Length));
       if Data_Length > 0 then
          if API_Property.Data_Ptr /= null then
             Data_Array := Raw_Data_Pointers.Value (API_Property.Data_Ptr, ptrdiff_t (Data_Length));
@@ -198,8 +195,8 @@ package body AI_Conversion is
             raise Conversion_Exception with
               "AI_Conversion.To_AI_Property AI_Property Data pointer is null.";
          end if;
+
       end if;
-      New_Line;
       Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property AI",
                                           theAI_Property);
 
@@ -224,11 +221,19 @@ package body AI_Conversion is
         aProperty      : API_Material_Property;
         AI_Property    : AI_Material_Property;
     begin
+       Put_Line ("Material.To_AI_Property_List, Property_Ptr_Array'Length" &
+                        unsigned'Image (Property_Ptr_Array'Length));
         for Property_Index in unsigned range 1 .. Property_Ptr_Array'Length loop
             aProperty := Property_Ptr_Array (Property_Index).all;
+            New_Line;
+            Put_Line ("Material.To_AI_Property_List, setting AI Property" &
+                        unsigned'Image (Property_Index));
             To_AI_Property (anAPI_Material, aProperty, AI_Property);
---              AI_Property := To_AI_Property (anAPI_Material, aProperty);
+            Put_Line ("Material.To_AI_Property_List, appending AI Property" &
+                        unsigned'Image (Property_Index));
             AI_Properties.Append (AI_Property);
+            Put_Line ("Material.To_AI_Property_List, appended AI Property" &
+                        unsigned'Image (Property_Index));
         end loop;
 
     exception

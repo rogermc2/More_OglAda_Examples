@@ -116,7 +116,7 @@ package Material is
       --  http://assimp.sourceforge.net/lib_html/material_8h.html
       Semantic      : Interfaces.C.unsigned := 0;
       Texture_Index : Interfaces.C.unsigned := 0;  --  Texture index
-      Data_Length   : Interfaces.C.unsigned := 0;  --  Actual must not be 0
+      Data_Length   : Interfaces.C.unsigned := 0;  --  Bytes; actual must not be 0
       --  Data_Type provides information for the property.
       --  It defines the data layout inside the data buffer.
       --  This is used by the library internally to perform debug checks and to
