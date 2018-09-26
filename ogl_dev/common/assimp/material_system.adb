@@ -38,26 +38,27 @@ package body Material_System is
       use Assimp_Types.Byte_Data_Package;
       Result      : API_Return :=  Assimp_Types.API_Return_Failure;
       theProperty : AI_Material_Property;
-      curs        : Cursor := theProperty.Data_Buffer.First;
-      theData     : Byte_Array4;
-      aChar       : Character;
+--        curs        : Cursor := theProperty.Data_Buffer.First;
+--        theData     : Byte_Array4;
+--        aChar       : Character;
    begin
+      theInteger := 0;
       Result := Get_Material_Property (aMaterial, Key, Property_Type,
                                        Index, theProperty);
-      if Result = API_Return_Success then
-         if theProperty.Data_Type = PTI_Integer or
-           theProperty.Data_Type = PTI_Buffer then
-            for index in 1 ..4 loop
-               aChar := Character (Element (curs));
-               theData (index) := GL.Types.UByte (Character'Pos (aChar));
-               Next (curs);
-            end loop;
-            theInteger := To_Integer (theData);
-         else
-            Put ("Material_System.Get_Material_Integer, ");
-            Put_Line ("property type is neither integer nor buffer.");
-         end if;
-      end if;
+--        if Result = API_Return_Success then
+--           if theProperty.Data_Type = PTI_Integer or
+--             theProperty.Data_Type = PTI_Buffer then
+--              for index in 1 ..4 loop
+--                 aChar := Character (Element (curs));
+--                 theData (index) := GL.Types.UByte (Character'Pos (aChar));
+--                 Next (curs);
+--              end loop;
+--              theInteger := To_Integer (theData);
+--           else
+--              Put ("Material_System.Get_Material_Integer, ");
+--              Put_Line ("property type is neither integer nor buffer.");
+--           end if;
+--        end if;
       return Result;
 
    exception
@@ -128,11 +129,11 @@ package body Material_System is
       use Material;
       use Byte_Data_Package;
       aProperty     : AI_Material_Property;
-      Buffer        : Byte_Data_List := aProperty.Data_Buffer;
-      Curs          : Byte_Data_Package.Cursor := Buffer.First;
-      Size_String   : String_4;
-      aChar         : Character;
-      Data_Length   : UInt;
+--        Buffer        : Byte_Data_List := aProperty.Data_Buffer;
+--        Curs          : Byte_Data_Package.Cursor := Buffer.First;
+--        Size_String   : String_4;
+--        aChar         : Character;
+--        Data_Length   : UInt;
       Result        : API_Return := API_Return_Failure;
    begin
       Data_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
@@ -143,21 +144,21 @@ package body Material_System is
       if Result = API_Return_Success  then
          Put_Line ("Material_System.Get_Material_String property found Data_Type: " &
                      AI_Property_Type_Info'Image (aProperty.Data_Type));
-         Data_Length := GL.Types.UInt (Buffer.Length - 4);
+--           Data_Length := GL.Types.UInt (Buffer.Length - 4);
          if aProperty.Data_Type = Material.PTI_String then
             Put_Line ("Material_System.Get_Material_String PTI_String.");
-            if aProperty.Data_Buffer.Length >= 5 then
-               for index in 1 .. 4 loop
-                  aChar := Character (Element (curs));
-                  Size_String (index) := aChar;
-                  Next (Curs);
-               end loop;
-               while Has_Element (Curs) loop
-                  aChar := Character (Element (curs));
-                  Ada.Strings.Unbounded.Append (Data_String, aChar);
-                  Next (Curs);
-               end loop;
-            end if;
+--              if aProperty.Data_Buffer.Length >= 5 then
+--                 for index in 1 .. 4 loop
+--                    aChar := Character (Element (curs));
+--                    Size_String (index) := aChar;
+--                    Next (Curs);
+--                 end loop;
+--                 while Has_Element (Curs) loop
+--                    aChar := Character (Element (curs));
+--                    Ada.Strings.Unbounded.Append (Data_String, aChar);
+--                    Next (Curs);
+--                 end loop;
+--              end if;
          end if;
       end if;
       Put_Line ("Material_System.Get_Material_String Data_String: " &

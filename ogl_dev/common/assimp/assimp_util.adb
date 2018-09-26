@@ -10,24 +10,24 @@ package body Assimp_Util is
    procedure Print_AI_Property_Data (Title     : String;
                                      aProperty : Material.AI_Material_Property) is
       use Ada.Containers;
-      use Assimp_Types.Byte_Data_Package;
-      curs : Cursor := aProperty.Data_Buffer.First;
+--        use Assimp_Types.Byte_Data_Package;
+--        curs : Cursor := aProperty.Data_Buffer.First;
    begin
       New_Line;
       Put_Line (Title & " Property_Data:");
       Put_Line (" Key: " & Ada.Strings.Unbounded.To_String (aProperty.Key));
       Put_Line (" Semantic, Texture_Index: " & UInt'Image (aProperty.Semantic)
                 & UInt'Image (aProperty.Texture_Index));
-      Put_Line (" Data_Type, Buffer size (bytes): " &
-                  Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
-                  Ada.Containers.Count_Type'Image (aProperty.Data_Buffer.Length));
-      if aProperty.Data_Buffer.Length > 0 then
-         while Has_Element (curs) loop
-            Put (Assimp_Types.C_Byte'Image (Element (curs)));
-            Next (curs);
-         end loop;
+--        Put_Line (" Data_Type, Buffer size (bytes): " &
+--                    Material.AI_Property_Type_Info'Image (aProperty.Data_Type) &
+--                    Ada.Containers.Count_Type'Image (aProperty.Data_Buffer.Length));
+--        if aProperty.Data_Buffer.Length > 0 then
+--           while Has_Element (curs) loop
+--              Put (Assimp_Types.C_Byte'Image (Element (curs)));
+--              Next (curs);
+--           end loop;
          New_Line;
-      end if;
+--        end if;
    end Print_AI_Property_Data;
 
    --  -------------------------------------------------------------------------
