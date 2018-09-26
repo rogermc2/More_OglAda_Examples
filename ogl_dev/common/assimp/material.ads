@@ -140,8 +140,21 @@ package Material is
       Material_Property_Default);
    subtype API_Material_Property_Ptr is API_Property_Array_Package.Pointer;
 
+    type API_Property_Array_Ptr is access API_Material_Property;
+   pragma Convention (C, API_Property_Array_Ptr);
+
+   type API_Property_Ptr_Array is array (Interfaces.C.unsigned range <>)
+     of aliased API_Property_Array_Ptr;
+   pragma Convention (C, API_Property_Ptr_Array);
+
+   package Property_Ptr_Array_Package is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Property_Array_Ptr, API_Property_Ptr_Array,
+      null);
+   subtype Property_Ptr_Array_Pointer is Property_Ptr_Array_Package.Pointer;
+
    type API_Material is record
-      Properties     : access API_Material_Property_Ptr := null;
+      Properties     : Property_Ptr_Array_Pointer := null;
+--        Properties     : access API_Material_Property_Ptr := null;
       Num_Properties : Interfaces.C.unsigned := 0;
       Num_Allocated  : Interfaces.C.unsigned := 0;
    end record;
