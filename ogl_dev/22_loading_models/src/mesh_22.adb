@@ -151,6 +151,7 @@ package body Mesh_22 is
       end Load_Textures;
 
       begin
+        New_Line;
          Put_Line ("Mesh_22.Init_Materials Dir: " & Dir);
          Materials_Map.Iterate (Load_Textures'Access);
 
