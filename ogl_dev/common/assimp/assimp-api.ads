@@ -31,22 +31,21 @@ package Assimp.API is
 --                                    return Assimp_Types.API_Return;
 --     pragma Import (C, Get_Material_Texture, "aiGetMaterialTexture");
 
-   function Get_Material_Texture_Count (aMaterial : Material.API_Material;
-                                        Tex_Type : Material.AI_Texture_Type)
-                                        return Interfaces.C.unsigned;
-   pragma Import (C, Get_Material_Texture_Count, "aiGetMaterialTextureCount");
+--     function Get_Material_Texture_Count (aMaterial : Material.API_Material;
+--                                          Tex_Type : Material.AI_Texture_Type)
+--                                          return Interfaces.C.unsigned;
+--     pragma Import (C, Get_Material_Texture_Count, "aiGetMaterialTextureCount");
 
    function Import_File (File_Name : Interfaces.C.char_array;
                          Flags : Interfaces.C.unsigned) return access Scene.API_Scene;
    pragma Import (C, Import_File, "aiImportFile");
 
---     function Read_File (File_Name : Interfaces.C.Strings.chars_ptr;
    function Read_File (File_Name : Interfaces.C.char_array;
                        Flags : Interfaces.C.unsigned) return access Scene.API_Scene;
    pragma Import (C, Read_File, "aiReadFile");
 
-   procedure Init_Mesh (theMesh : in out Assimp_Mesh.Mesh_Array_Pointer;
-                        Mesh_Index : Interfaces.C.unsigned);
-   pragma Import (C, Init_Mesh, "aiInitMesh");
+--     procedure Init_Mesh (theMesh : in out Assimp_Mesh.Mesh_Array_Pointer;
+--                          Mesh_Index : Interfaces.C.unsigned);
+--     pragma Import (C, Init_Mesh, "aiInitMesh");
 
 end Assimp.API;
