@@ -15,12 +15,10 @@ with Material_Keys;
 
 package body AI_Conversion is
 
-    function To_AI_Property_List (anAPI_Material     : Material.API_Material;
-                                  Property_Ptr_Array : Material.API_Property_Ptr_Array)
-                                 return Material.AI_Material_Property_List;
---     procedure To_AI_Property_List (anAPI_Material : Material.API_Material;
---     --                                   Property_Array : Material.API_Property_Array;
---                                    AI_Properties  : out Material.AI_Material_Property_List);
+     procedure To_AI_Property_List (anAPI_Material : Material.API_Material;
+                                    Property_Ptr_Array : Material.API_Property_Ptr_Array;
+                                    AI_Properties  : out Material.AI_Material_Property_List);
+
 --     procedure To_API_Property (aProperty       : Material.AI_Material_Property;
 --                                Raw_Data        : in out Assimp_Types.Raw_Byte_Data;
 --                                theAPI_Property : in out Material.API_Material_Property);
@@ -97,8 +95,8 @@ package body AI_Conversion is
             begin
                 theProperties_Ptr_Array := Property_Ptr_Array_Package.Value
                   (C_Material.Properties, ptrdiff_t (Num_Property));
-                theMaterial.Properties := To_AI_Property_List
-                  (C_Material, theProperties_Ptr_Array);
+                 To_AI_Property_List
+                  (C_Material, theProperties_Ptr_Array, theMaterial.Properties);
                 theMaterial.Num_Allocated := GL.Types.UInt (C_Material.Num_Allocated);
             end;
         end if;
@@ -214,13 +212,16 @@ package body AI_Conversion is
 
    --  ----------------------------------------------------------------------
 
-    function To_AI_Property_List (anAPI_Material     : Material.API_Material;
-                                  Property_Ptr_Array : Material.API_Property_Ptr_Array)
-                                 return Material.AI_Material_Property_List is
+--      function To_AI_Property_List (anAPI_Material     : Material.API_Material;
+--                                    Property_Ptr_Array : Material.API_Property_Ptr_Array)
+--                                   return Material.AI_Material_Property_List is
+
+     procedure To_AI_Property_List (anAPI_Material : Material.API_Material;
+                                    Property_Ptr_Array : Material.API_Property_Ptr_Array;
+                                    AI_Properties  : out Material.AI_Material_Property_List) is
         use Interfaces.C;
         use Material;
         aProperty      : API_Material_Property;
-        AI_Properties  : AI_Material_Property_List;
         AI_Property    : AI_Material_Property;
     begin
         for Property_Index in unsigned range 1 .. Property_Ptr_Array'Length loop
@@ -229,7 +230,6 @@ package body AI_Conversion is
 --              AI_Property := To_AI_Property (anAPI_Material, aProperty);
             AI_Properties.Append (AI_Property);
         end loop;
-        return AI_Properties;
 
     exception
         when others =>
