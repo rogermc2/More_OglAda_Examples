@@ -17,73 +17,14 @@ with Material_Keys;
 
 package body AI_Conversion is
 
-   type String_4 is new String (1 .. 4);
-   type Byte_Array4 is array (1 .. 4) of GL.Types.UByte;
-   type Byte_Array12 is array (1 .. 12) of GL.Types.UByte;
+    type String_4 is new String (1 .. 4);
+    type Byte_Array4 is array (1 .. 4) of GL.Types.UByte;
+    type Byte_Array12 is array (1 .. 12) of GL.Types.UByte;
 
     procedure To_AI_Property_List (anAPI_Material : Material.API_Material;
                                    Property_Ptr_Array : Material.API_Property_Ptr_Array;
                                    AI_Properties      : out Material.AI_Material_Property_List);
-   function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int;
-
-    --     procedure To_API_Property (aProperty       : Material.AI_Material_Property;
-    --                                Raw_Data        : in out Assimp_Types.Raw_Byte_Data;
-    --                                theAPI_Property : in out Material.API_Material_Property);
-    --     procedure To_API_Material (aMaterial       : AI_Material;
-    --                                theAPI_Material : in out API_Material);
-
-    --     procedure Load_API_Property_Array (Properties     : Material.AI_Material_Property_List;
-    --                                        Property_Array : in out Material.Material_Property_Array);
-
-    --  -------------------------------------------------------------------------
-
-    --     procedure Load_API_Property_Array (Properties     : Material.AI_Material_Property_List;
-    --                                        Property_Array : in out Material.Material_Property_Array) is
-    --        use Interfaces.C;
-    --        use  Material.AI_Material_Property_Package;
-    --        use Assimp_Types.Byte_Data_Package;
-    --        Property_Cursor      :  Material.AI_Material_Property_Package.Cursor :=
-    --                                 Properties.First;
-    --        Data_Cursor          : Assimp_Types.Byte_Data_Package.Cursor;
-    --        Data_Length          : unsigned := 0;
-    --        aProperty            :  Material.AI_Material_Property;
-    --        Index                : unsigned := 0;
-    --     begin
-    --        while Has_Element (Property_Cursor) loop
-    --           Index := Index + 1;
-    --           aProperty := Element (Property_Cursor);
-    --           Data_Cursor := aProperty.Data_Buffer.First;
-    --           --           Assimp_Util.Print_AI_Property_Data ("AI_Conversion.Load_API_Property_Array", aProperty);
-    --           --           New_Line;
-    --           Property_Array (index).Key := Assimp_Util.To_Assimp_API_String (aProperty.Key);
-    --           Property_Array (index).Semantic := unsigned (aProperty.Semantic);
-    --           Property_Array (index).Texture_Index :=
-    --             unsigned (aProperty.Texture_Index);
-    --           Data_Length := unsigned (aProperty.Data_Buffer.Length);
-    --           Property_Array (index).Data_Length := Data_Length;
-    --           Property_Array (index).Data_Type := aProperty.Data_Type;
-    --           declare
-    --              Data       : char_array (1 .. size_t (Data_Length));
-    --              Data_Index : size_t := 0;
-    --              aChar      : Character;
-    --           begin
-    --              while Has_Element (Data_Cursor) loop
-    --                 Data_Index := Data_Index + 1;
-    --                 aChar := To_Ada (char (Element (Data_Cursor)));
-    --                 Data (Data_Index) := To_C (aChar);
-    --                 Next (Data_Cursor);
-    --              end loop;
-    --
-    --              Property_Array (index).Data_Ptr := Strings.New_Char_Array (Data);
-    --           end;
-    --           Next (Property_Cursor);
-    --        end loop;
-    --
-    --     exception
-    --        when others =>
-    --           Put_Line ("An exception occurred in AI_Conversion.Load_API_Property_Array.");
-    --           raise;
-    --     end Load_API_Property_Array;
+    function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int;
 
     --  ----------------------------------------------------------------------
 
@@ -115,31 +56,11 @@ package body AI_Conversion is
             raise;
     end To_AI_Material;
 
-    --     function To_AI_Material (C_Material : Material.API_Material)
-    --                              return Material.AI_Material is
-    --        use Interfaces.C;
-    --        theMaterial   : Material.AI_Material;
-    --     begin
-    --        Put_Line ("AI_Conversion.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
-    --                    unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
-    --        To_AI_Property_List
-    --          (C_Material, theMaterial.Properties);
-    --        theMaterial.Num_Allocated := GL.Types.UInt (C_Material.Num_Allocated);
-    --        Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Material Property 1",
-    --                                            theMaterial.Properties.First_Element);
-    --        return theMaterial;
-    --
-    --     exception
-    --        when others =>
-    --           Put_Line ("An exception occurred in AI_Conversion.To_AI_Material.");
-    --           raise;
-    --     end To_AI_Material;
-
     --  ------------------------------------------------------------------------
 
     function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
                                   C_Material_Array : in out Material.API_Material_Array)
-                                 return Material.AI_Material_Map is
+                                  return Material.AI_Material_Map is
         use Interfaces.C;
         Material_Map : Material.AI_Material_Map;
         aMaterial    : Material.AI_Material;
@@ -189,51 +110,33 @@ package body AI_Conversion is
                 AI_Property.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
             end;
 
-        AI_Property.Semantic := UInt (API_Property.Semantic);
-        AI_Property.Texture_Index := UInt (API_Property.Texture_Index);
---          theAI_Property.Data_Type := API_Property.Data_Type;
---          theAI_Property.Data_Buffer.Clear;
-        Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property API", API_Property);
-      if Data_Length > 0 and API_Property.Data_Ptr /= null then
-            Data_Array := Raw_Data_Pointers.Value (API_Property.Data_Ptr, ptrdiff_t (Data_Length));
-            case API_Property.Data_Type is
-               when Material.PTI_Float => AI_Property.Data_Buffer.Float_Data := 0.0;
-               when Material.PTI_Double => AI_Property.Data_Buffer.Double_Data := 0.0;
-               when Material.PTI_String => AI_Property.Data_Buffer.String_Data
-                    := Ada.Strings.Unbounded.To_Unbounded_String ("");
-               when Material.PTI_Integer =>
-                  for index in 1 .. 4 loop
-                     Data4 (index) := Data_Array (UInt (index));
-                  end loop;
-                  AI_Property.Data_Buffer.Integer_Data := To_Integer (Data4);
-               when Material.PTI_Buffer => AI_Property.Data_Buffer.Buffer_Data := 0;
-               when others => null;
-            end case;
---                  if Data_Array'Length /= Data_Length then
---                      Put_Line ("AI_Conversion.To_AI_Property, Data_Array size " & size_t'Image (Data_Array'Length) &
---                                  " is not equal to Data_Length" & size_t'Image (Data_Length));
---                  end if;
---
---                  for index in 1 .. Data_Length loop
---                      theAI_Property.Data_Buffer.Append (Data_Array (UInt (index)));
---                  end loop;
---              else
---                  raise Conversion_Exception with
---                    "AI_Conversion.To_AI_Property AI_Property Data pointer is null.";
---              end if;
---              if size_t (theAI_Property.Data_Buffer.Length) /= Data_Length then
---                  Put_Line ("AI_Conversion.To_AI_Property, AI Data_Array size " &
---                  Ada.Containers.Count_Type'Image (theAI_Property.Data_Buffer.Length) &
---                              " is not equal to Data_Length" & size_t'Image (Data_Length));
---              end if;
-
-        end if;
-        Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property AI",
-                                            theAI_Property);
+            AI_Property.Semantic := UInt (API_Property.Semantic);
+            AI_Property.Texture_Index := UInt (API_Property.Texture_Index);
+            --          theAI_Property.Data_Type := API_Property.Data_Type;
+            --          theAI_Property.Data_Buffer.Clear;
+            Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property API", API_Property);
+            if Data_Length > 0 and API_Property.Data_Ptr /= null then
+                Data_Array := Raw_Data_Pointers.Value (API_Property.Data_Ptr, ptrdiff_t (Data_Length));
+                case API_Property.Data_Type is
+                when Material.PTI_Float => AI_Property.Data_Buffer.Float_Data := 0.0;
+                when Material.PTI_Double => AI_Property.Data_Buffer.Double_Data := 0.0;
+                when Material.PTI_String => AI_Property.Data_Buffer.String_Data
+                      := Ada.Strings.Unbounded.To_Unbounded_String ("");
+                when Material.PTI_Integer =>
+                    for index in 1 .. 4 loop
+                        Data4 (index) := Data_Array (UInt (index));
+                    end loop;
+                    AI_Property.Data_Buffer.Integer_Data := To_Integer (Data4);
+                when Material.PTI_Buffer => AI_Property.Data_Buffer.Buffer_Data := 0;
+                when others => null;
+                end case;
+            end if;
+            Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property AI",
+                                                theAI_Property);
         else
             Put_Line ("AI_Conversion.To_AI_Property, invalid key detected.");
         end if;
-      theAI_Property := AI_Property;
+        theAI_Property := AI_Property;
     exception
         when others =>
             Put_Line ("An exception occurred in AI_Conversion.To_AI_Property.");
@@ -394,23 +297,23 @@ package body AI_Conversion is
 
     --  ----------------------------------------------------------------------
 
-   function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int is
-      use Interfaces;
-      Int32  : Unsigned_32 := 0;
-      Int8   : Unsigned_8;
-   begin
-      for index in 0 .. 3  loop
-         Int8 := Unsigned_8 (Bytes_In (4 - index));
-         Int8 := Rotate_Left (Int8, 4);
-         Int32 := Int32 + Unsigned_32 (Int8);
-         if index /= 3 then
-            Int32 := Shift_Left (Int32, 8);
-         end if;
-      end loop;
-      return GL.Types.Int (Int32);
+    function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int is
+        use Interfaces;
+        Int32  : Unsigned_32 := 0;
+        Int8   : Unsigned_8;
+    begin
+        for index in 0 .. 3  loop
+            Int8 := Unsigned_8 (Bytes_In (4 - index));
+            Int8 := Rotate_Left (Int8, 4);
+            Int32 := Int32 + Unsigned_32 (Int8);
+            if index /= 3 then
+                Int32 := Shift_Left (Int32, 8);
+            end if;
+        end loop;
+        return GL.Types.Int (Int32);
 
-   end To_Integer;
+    end To_Integer;
 
-   --  -------------------------------------------------------------------------
+    --  -------------------------------------------------------------------------
 
 end AI_Conversion;
