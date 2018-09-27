@@ -14,7 +14,7 @@ package Material_System is
 
    function Get_Material_String (aMaterial      : Material.AI_Material;
                                  Key            : String;
-                                 Property_Type  : GL.Types.UInt;
+                                 Property_Type  : Material.AI_Property_Type_Info;
                                  Property_Index : GL.Types.UInt;
                                  Data_String    : out Ada.Strings.Unbounded.Unbounded_String)
                                  return Assimp_Types.API_Return;
