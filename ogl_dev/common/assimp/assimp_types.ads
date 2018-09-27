@@ -37,8 +37,8 @@ package Assimp_Types is
    pragma Convention (C_Pass_By_Copy, API_String);
 
    type C_Byte is new Interfaces.C.char;
-   type Raw_Byte_Data is array (UInt range <>) of aliased C_Byte;
---     type Raw_Byte_Data is array (UInt range <>) of aliased UByte;
+--     type Raw_Byte_Data is array (UInt range <>) of aliased C_Byte;
+   type Raw_Byte_Data is array (UInt range <>) of aliased UByte;
    package Raw_Data_Pointers is new
      Interfaces.C.Pointers (UInt, C_Byte, Raw_Byte_Data, C_Byte'Last);
 --       Interfaces.C.Pointers (UInt, UByte, Raw_Byte_Data, UByte'Last);
