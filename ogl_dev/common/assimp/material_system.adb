@@ -21,7 +21,7 @@ package body Material_System is
 
     function Get_Material_Property (aMaterial      : AI_Material;
                                     Key            : String;
-                                    Property_Type  : GL.Types.UInt;
+                                    Property_Type  : AI_Property_Type_Info;
                                     Index          : GL.Types.UInt;
                                     theProperty    : out AI_Material_Property)
                                    return API_Return;
@@ -31,7 +31,7 @@ package body Material_System is
 
     function Get_Material_Integer (aMaterial     : AI_Material;
                                    Key           : String;
-                                   Property_Type : GL.Types.UInt;
+                                   Property_Type : AI_Property_Type_Info;
                                    Index         : GL.Types.UInt;
                                    theInteger    : out GL.Types.Int)
                                   return API_Return is
@@ -71,7 +71,7 @@ package body Material_System is
 
     function Get_Material_Property (aMaterial      : AI_Material;
                                     Key            : String;
-                                    Property_Type  : GL.Types.UInt;
+                                    Property_Type  : AI_Property_Type_Info;
                                     Index          : GL.Types.UInt;
                                     theProperty    : out AI_Material_Property)
                                    return API_Return is
@@ -94,9 +94,9 @@ package body Material_System is
             while Has_Element (Curs) and not Found loop
                 aProperty := Element (Curs);
                 Put ("Material_System.Get_Material_Property aProperty's type: " &
-                       AI_Property_Type_Info'Image (AI_Property_Type_Info'Enum_Val (Property_Type)));
+                       AI_Property_Type_Info'Image (Property_Type));
                 Found := Ada.Strings.Unbounded.To_String (aProperty.Key) = Key and
-                  aProperty.Data_Type = AI_Property_Type_Info'Enum_Val (Property_Type) and
+                  aProperty.Data_Type = Property_Type and
                   aProperty.Texture_Index = Index;
                 if Found then
                     theProperty := aProperty;
@@ -121,7 +121,7 @@ package body Material_System is
 
     function Get_Material_String (aMaterial      : AI_Material;
                                   Key            : String;
-                                  Property_Type  : GL.Types.UInt;
+                                  Property_Type  : AI_Property_Type_Info;
                                   Property_Index : GL.Types.UInt;
                                   Data_String    : out
                                     Ada.Strings.Unbounded.Unbounded_String)
@@ -131,7 +131,7 @@ package body Material_System is
         use Material;
         use Byte_Data_Package;
         aProperty     : AI_Material_Property;
-        Prop_Type     : AI_Property_Type_Info := AI_Property_Type_Info'Enum_Val (Property_Type);
+--          Prop_Type     : AI_Property_Type_Info := AI_Property_Type_Info'Enum_Val (Property_Type);
         Buffer        : Data := aProperty.Data_Buffer;
         String_Data   : Ada.Strings.Unbounded.Unbounded_String;
         Size_String   : String_4;
@@ -140,7 +140,7 @@ package body Material_System is
     begin
         Data_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
         Put_Line ("Material_System.Get_Material_String requested Data_Type: " &
-                    AI_Property_Type_Info'Image (Prop_Type));
+                    AI_Property_Type_Info'Image (Property_Type));
         Result := Get_Material_Property  (aMaterial, Key, Property_Type,
                                           Property_Index, aProperty);
         if Result = API_Return_Success  then
@@ -187,16 +187,19 @@ package body Material_System is
         use GL.Types;
         use Assimp_Types;
         use Material_Keys;
+        Property_Type      : AI_Property_Type_Info;
         Mapping            : Texture_Mapping := Texture_Mapping_UV;
         UV_Integer         : GL.Types.Int;
-        Result             : API_Return :=
-                               Get_Material_String (aMaterial,
-                                                    AI_Material_Key (AI_Mat_Key_Texture_Base),
-                                                    AI_Texture_Type'Enum_Rep (Tex_Type), Tex_Index, Path);
+        Result             : API_Return;
     begin
+      Property_Type  :=
+            AI_Property_Type_Info'Enum_Val (AI_Texture_Type'Enum_Rep (Tex_Type));
+        Result := Get_Material_String (aMaterial,
+                     AI_Material_Key (AI_Mat_Key_Texture_Base),
+                    Property_Type, Tex_Index, Path);
         if Result = API_Return_Success then
             Result := Get_Material_Integer (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),
-                                            AI_Texture_Type'Enum_Rep (Tex_Type), Tex_Index, UV_Integer);
+                                            Property_Type, Tex_Index, UV_Integer);
             Mapping := Texture_Mapping'Enum_Val (UV_Integer);
         else
             Put_Line ("Material.Get_Texture, Get_Material_String failed.");
