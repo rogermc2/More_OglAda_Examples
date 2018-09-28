@@ -34,7 +34,6 @@ package body Material_System is
                                   Index         : GL.Types.UInt;
                                   theInteger    : out GL.Types.Int)
                                   return API_Return is
-      use Assimp_Types.Byte_Data_Package;
       Result      : API_Return :=  Assimp_Types.API_Return_Failure;
       theProperty : AI_Material_Property;
    begin
@@ -118,14 +117,7 @@ package body Material_System is
                                  Data_String    : out
                                    Ada.Strings.Unbounded.Unbounded_String)
                                  return API_Return is
-      use Ada.Containers;
-      use GL.Types;
-      use Material;
-      use Byte_Data_Package;
       aProperty     : AI_Material_Property;
-      --          Prop_Type     : AI_Property_Type_Info := AI_Property_Type_Info'Enum_Val (Property_Type);
-      Buffer        : Data := aProperty.Data_Buffer;
-      String_Data   : Ada.Strings.Unbounded.Unbounded_String;
       Result        : API_Return := API_Return_Failure;
    begin
       Data_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
@@ -136,7 +128,6 @@ package body Material_System is
       if Result = API_Return_Success  then
          Put_Line ("Material_System.Get_Material_String property found Data_Type: " &
                      AI_Property_Type_Info'Image (aProperty.Data_Type));
-         --           Data_Length := GL.Types.UInt (Buffer.Length - 4);
          if aProperty.Data_Type = Material.PTI_String then
             Put_Line ("Material_System.Get_Material_String PTI_String.");
             Data_String := aProperty.Data_Buffer.String_Data;
@@ -174,9 +165,9 @@ package body Material_System is
                                      AI_Material_Key (AI_Mat_Key_Texture_Base),
                                      Property_Type, Tex_Index, Path);
       if Result = API_Return_Success then
-         Result := Get_Material_Integer (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),
-                                         Property_Type
-                                         , Tex_Index, UV_Integer);
+         Result := Get_Material_Integer
+           (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),
+                                        Property_Type, Tex_Index, UV_Integer);
          Mapping := Texture_Mapping'Enum_Val (UV_Integer);
       else
          Put_Line ("Material.Get_Texture, Get_Material_String failed.");
