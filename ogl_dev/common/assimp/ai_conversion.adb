@@ -34,40 +34,31 @@ package body AI_Conversion is
       use Interfaces;
       use GL.Types;
 
-      pragma Warnings (Off);
-      function To_Unsigned8 is new Ada.Unchecked_Conversion (Unsigned_16, Unsigned_8);
-      pragma Warnings (On);
+--        pragma Warnings (Off);
+--        function To_Unsigned8 is new Ada.Unchecked_Conversion (Unsigned_16, Unsigned_8);
+--        pragma Warnings (On);
 
-      Data4       : constant Byte_Array4 := Byte_Array4 (String_Data (1 .. 4));
+--        Data4       : constant Byte_Array4 := Byte_Array4 (String_Data (1 .. 4));
       Data_Length : UInt := String_Data'Length;
       Data_String : Ada.Strings.Unbounded.Unbounded_String :=
                       Ada.Strings.Unbounded.To_Unbounded_String ("");
-      Int_Data    : UInt :=  UInt (To_Integer (Data4));
-      -- One byte contains two characters
-      Str_Data    : String (1 .. 2 * Integer (Data_Length - 4));
+--        Int_Data    : UInt :=  UInt (To_Integer (Data4));
+      Str_Data    : String (1 .. Integer (Data_Length - 4));
       aByte       : UByte;
-      U16         : Unsigned_16;
-      U8_First    : Unsigned_8;
-      U8_Scnd     : Unsigned_8;
-      Str_Index   : Integer := 1;
    begin
-      Put_Line ("Material_System.Data_To_UB_String Data_Length: " & UInt'Image (Data_Length));
+      Put_Line ("Material_System.Data_To_UB_String Data_Length: " &
+                  UInt'Image (Data_Length));
       if Data_Length >= 5 then
-         Put_Line ("Material_System.Data_To_UB_String Int_Data: " & UInt'Image (Int_Data));
          for index in 5 .. Data_Length loop
-            Put_Line ("Material_System.Data_To_UB_String index: " & UInt'Image (index));
             aByte := String_Data (index);
-            U16 := Unsigned_16 (aByte);
-            U8_First := To_Unsigned8 (Shift_Right (U16, 8));
-            U8_Scnd := To_Unsigned8 (U16);
-            Str_Data (Str_Index) := Character'Val (U8_First);
-            Str_Data (Str_Index + 1) := Character'Val (U8_Scnd);
-            Str_Index := Str_Index + 2;
+            Str_Data (Integer (index - 4)) := Character'Val (Unsigned_16 (aByte));
          end loop;
          Data_String := Ada.Strings.Unbounded.To_Unbounded_String (Str_Data);
       end if;
-      Put_Line ("Material_System.Data_To_UB_String Data_String: " & Ada.Strings.Unbounded.To_String (Data_String));
+      Put_Line ("Material_System.Data_To_UB_String Data_String: " &
+                  Ada.Strings.Unbounded.To_String (Data_String));
       return Data_String;
+
 
    exception
       when others =>
