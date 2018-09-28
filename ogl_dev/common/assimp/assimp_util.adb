@@ -18,13 +18,13 @@ package body Assimp_Util is
         Put_Line (" Data_Type: " & Material.AI_Property_Type_Info'Image (aProperty.Data_Buffer.Data_Type));
         case aProperty.Data_Type is
             when Material.PTI_Float =>
-                Put_Line ("Value: :" & Single'Image (aProperty.Data_Buffer.Float_Data));
+                Put_Line ("Value: " & Single'Image (aProperty.Data_Buffer.Float_Data));
             when Material.PTI_Double =>
-                Put_Line ("Value: :" & Double'Image (aProperty.Data_Buffer.Double_Data));
+                Put_Line ("Value: " & Double'Image (aProperty.Data_Buffer.Double_Data));
             when Material.PTI_String =>
-                Put_Line ("Value: :" & Ada.Strings.Unbounded.To_String (aProperty.Data_Buffer.String_Data));
+                Put_Line ("Value: " & Ada.Strings.Unbounded.To_String (aProperty.Data_Buffer.String_Data));
             when Material.PTI_Integer =>
-                Put_Line ("Value: :" & Int'Image (aProperty.Data_Buffer.Integer_Data));
+                Put_Line ("Value: " & Int'Image (aProperty.Data_Buffer.Integer_Data));
             when Material.PTI_Buffer =>
                 Put_Line ("Value: :" & Int'Image (aProperty.Data_Buffer.Buffer_Data));
             when others => null;
