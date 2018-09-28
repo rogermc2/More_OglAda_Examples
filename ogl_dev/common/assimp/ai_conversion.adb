@@ -51,11 +51,11 @@ package body AI_Conversion is
       U8_Scnd     : Unsigned_8;
       Str_Index   : Integer := 1;
    begin
-      Put_Line ("Material_System.Get_Texture Data_Length: " & UInt'Image (Data_Length));
+      Put_Line ("Material_System.Data_To_UB_String Data_Length: " & UInt'Image (Data_Length));
       if Data_Length >= 5 then
-         Put_Line ("Material_System.Get_Texture Int_Data: " & UInt'Image (Int_Data));
+         Put_Line ("Material_System.Data_To_UB_String Int_Data: " & UInt'Image (Int_Data));
          for index in 5 .. Data_Length loop
-            Put_Line ("Material_System.Get_Texture index: " & UInt'Image (index));
+            Put_Line ("Material_System.Data_To_UB_String index: " & UInt'Image (index));
             aByte := String_Data (index);
             U16 := Unsigned_16 (aByte);
             U8_First := To_Unsigned8 (Shift_Right (U16, 8));
@@ -66,12 +66,12 @@ package body AI_Conversion is
          end loop;
          Data_String := Ada.Strings.Unbounded.To_Unbounded_String (Str_Data);
       end if;
-      Put_Line ("Material_System.Get_Texture Data_String: " & Ada.Strings.Unbounded.To_String (Data_String));
+      Put_Line ("Material_System.Data_To_UB_String Data_String: " & Ada.Strings.Unbounded.To_String (Data_String));
       return Data_String;
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material_System.Get_Texture.");
+         Put_Line ("An exception occurred in Material_System.Data_To_UB_String.");
          raise;
    end Data_To_UB_String;
 
@@ -356,11 +356,7 @@ package body AI_Conversion is
    begin
       for index in 0 .. 3  loop
          Int8 := Unsigned_8 (Bytes_In (4 - index));
-         Int8 := Rotate_Left (Int8, 4);
          Int32 := Int32 + Unsigned_32 (Int8);
-         if index /= 3 then
-            Int32 := Shift_Left (Int32, 8);
-         end if;
       end loop;
       return GL.Types.Int (Int32);
 
