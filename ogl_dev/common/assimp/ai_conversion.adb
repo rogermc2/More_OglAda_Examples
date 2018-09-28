@@ -182,12 +182,13 @@ package body AI_Conversion is
                when others => null;
             end case;
          end if;
-         Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property AI",
-                                             theAI_Property);
       else
          Put_Line ("AI_Conversion.To_AI_Property, invalid key detected.");
       end if;
       theAI_Property := AI_Property;
+         Assimp_Util.Print_AI_Property_Data ("AI_Conversion.To_AI_Property AI",
+                                             theAI_Property);
+
    exception
       when others =>
          Put_Line ("An exception occurred in AI_Conversion.To_AI_Property.");
