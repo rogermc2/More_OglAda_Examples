@@ -72,7 +72,6 @@ package body Material_System is
       use Material;
       use AI_Material_Property_Package;
 
-      Num_Props  : constant UInt := UInt (aMaterial.Properties.Length);
       Properties : constant AI_Material_Property_List := aMaterial.Properties;
       Curs       : Cursor := Properties.First;
       aProperty  : AI_Material_Property;
@@ -85,15 +84,25 @@ package body Material_System is
            "Material_System.Get_Material_Property, aMaterial.Properties is empty";
       else
          Put_Line ("Material_System.Get_Material_Property requested key: " & Key);
+         Put_Line ("Material_System.Get_Material_Property requested type : " &
+                     UInt'Image (Property_Type));
          while Has_Element (Curs) and not Found loop
             aProperty := Element (Curs);
             Put_Line ("Material_System.Get_Material_Property aProperty's type: " &
                    UInt'Image (Property_Type));
-            Put_Line ("Material_System.Get_Material_Property requested key: " &
+            Put_Line ("Material_System.Get_Material_Property current key: " &
                    Ada.Strings.Unbounded.To_String (aProperty.Key));
-            Found := Ada.Strings.Unbounded.To_String (aProperty.Key) = Key and
-              aProperty.Data_Type = AI_Property_Type_Info'Enum_Val(Property_Type) and
-              aProperty.Texture_Index = Index;
+            if Ada.Strings.Unbounded.To_String (aProperty.Key) /= Key then
+                Put_Line ("key test failed.");
+            elsif aProperty.Semantic
+              /= Property_Type then
+               Put_Line ("Data_Type test failed." &
+                           UInt'Image (aProperty.Semantic));
+            elsif aProperty.Texture_Index /= Index then
+               Put_Line ("Texture_Index test failed.");
+            else
+               Found := True;
+            end if;
             if Found then
                theProperty := aProperty;
                Result := Assimp_Types.API_Return_Success;
@@ -105,6 +114,7 @@ package body Material_System is
             Put_Line ("Requested property not found.");
          end if;
       end if;
+      New_Line;
       return Result;
 
    exception
