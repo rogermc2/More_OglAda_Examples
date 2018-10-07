@@ -94,8 +94,7 @@ package body Material_System is
                    Ada.Strings.Unbounded.To_String (aProperty.Key));
             if Ada.Strings.Unbounded.To_String (aProperty.Key) /= Key then
                 Put_Line ("key test failed.");
-            elsif aProperty.Semantic
-              /= Property_Type then
+            elsif aProperty.Semantic /= Property_Type then
                Put_Line ("Data_Type test failed." &
                            UInt'Image (aProperty.Semantic));
             elsif aProperty.Texture_Index /= Index then
@@ -161,8 +160,8 @@ package body Material_System is
    --  -------------------------------------------------------------------------
 
    --  Based on aiReturn aiGetMaterialTexture
-   --    (const C_STRUCT aiMaterial* mat, aiTextureType type,  unsigned int  index,
-   --     C_STRUCT aiString* path)
+   --   (const C_STRUCT aiMaterial* mat, aiTextureType type, unsigned int index,
+   --    C_STRUCT aiString* path)
    function Get_Texture (aMaterial : AI_Material;
                          Tex_Type  : AI_Texture_Type;
                          Tex_Index : GL.Types.UInt := 0;
@@ -172,8 +171,8 @@ package body Material_System is
       use GL.Types;
       use Assimp_Types;
       use Material_Keys;
-      Mapping     : Texture_Mapping := Texture_Mapping_UV;
-      UV_Integer  : GL.Types.Int;
+--        Mapping     : Texture_Mapping := Texture_Mapping_UV;
+--        UV_Integer  : GL.Types.Int;
       Type_UInt   : constant UInt :=
                       AI_Texture_Type'Enum_Rep (Tex_Type);
       Result      : API_Return;
@@ -187,10 +186,12 @@ package body Material_System is
                                      AI_Material_Key (AI_Mat_Key_Texture_Base),
                                      Type_UInt, Tex_Index, Path);
       if Result = API_Return_Success then
-         Result := Get_Material_Integer
-           (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),
-            Type_UInt, Tex_Index, UV_Integer);
-         Mapping := Texture_Mapping'Enum_Val (UV_Integer);
+         --  only required for aiTextureMapping* _mapping input parameter not null
+         null;
+--           Result := Get_Material_Integer
+--             (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),
+--              Type_UInt, Tex_Index, UV_Integer);
+--           Mapping := Texture_Mapping'Enum_Val (UV_Integer);
       else
          Put_Line ("Material.Get_Texture, Get_Material_String failed.");
       end if;
