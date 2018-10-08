@@ -43,10 +43,9 @@ package Magick_Image.API is
       --  with each subprogram because it is assumed that all the calls to
       --  these primitives will be dispatching calls.
       --  The CPP wrappers are inimag-io.h
-   procedure Read (theImage : out System.Address;
---                     theImage : in out MPP_Image;
-                      File_Name : Interfaces.C.Strings.chars_ptr);  -- ../Magick++/lib/Magick++/ImagePP.h:1236
-      pragma Import (Cpp, Read, "readFile");
+   procedure Read (theImage : in out MPP_Image;
+                   File_Name : Interfaces.C.Strings.chars_ptr);  -- ../Magick++/lib/Magick++/ImagePP.h:1236
+      pragma Import (Cpp, Read, "read");
 --        pragma Import (Cpp, Read, "_ZN6Magick5Image4readERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE");
 
       procedure Write (anImage : in out MPP_Image;
