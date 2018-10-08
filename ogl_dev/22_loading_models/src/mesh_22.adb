@@ -127,13 +127,16 @@ package body Mesh_22 is
             Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
                                                 aMaterial.Properties.First_Element);
             New_Line;
-            Result := Material_System.Get_Texture (aMaterial, AI_Texture_Diffuse, 0, Path);
+            Result := Material_System.Get_Texture (aMaterial,
+                                                   AI_Texture_Diffuse, 0, Path);
+            New_Line;
             if Result = Assimp_Types.API_Return_Success then
                Put_Line ("Mesh_22.Init_Materials.Load_Textures Path: " &
                            Ada.Strings.Unbounded.To_String (Path));
                if Ogldev_Texture.Init_Texture
                     (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name) then
                   theMesh.Textures.Insert (UInt (index), aTexture);
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures inserted texture from " & File_Name);
                   Ogldev_Texture.Load (aTexture);
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from " & File_Name);
                elsif Ogldev_Texture.Init_Texture

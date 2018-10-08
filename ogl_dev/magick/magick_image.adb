@@ -80,4 +80,20 @@ package body Magick_Image is
 
     --  -------------------------------------------------------------------------
 
+   procedure Read_Image (theImage : out MPP_Image; File_Name : String) is
+      use System;
+        use Interfaces.C;
+        use Interfaces.C.Strings;
+--          Result : constant Boolean := Magick_Image.API.Read (theImage.Ref, New_String (File_Name));
+    begin
+        Magick_Image.API.Read (theImage.Ref, New_String (File_Name));
+        if theImage.Ref = Null_Address then
+            raise Image_Exception with
+              "Magick_Image.Read_Image failed to read: " & File_Name;
+        end if;
+    end Read_Image;
+
+    --  -------------------------------------------------------------------------
+
+
 end Magick_Image;

@@ -55,9 +55,14 @@ package body Ogldev_Texture is
     procedure Load (theTexture : in out Ogl_Texture) is
         use Ada.Strings.Unbounded;
         use GL.Low_Level;
-        use GL.Objects.Textures.Targets;
-    begin
+      use GL.Objects.Textures.Targets;
+      Image_Ref : Magick_Image.MPP_Image;
+   begin
+      Magick_Image.Read_Image (Image_Ref, To_String (theTexture.File_Name));
+      theTexture.Image.Image_Data := GL.Objects.Textures.Image_Source (Image_Ref.Ref);
+        Put_Line ("Ogldev_Texture.Load loading blob: " & To_String (theTexture.File_Name));
         Magick_Image.Load_Blob (To_String (theTexture.File_Name), "RGBA");
+        Put_Line ("Ogldev_Texture.Load blob loaded.");
         theTexture.Blob_Data := Magick_Image.Get_Blob_Data;  --  Blob_Package.List
 
         theTexture.Image := Magick_Image.Get_Image;
