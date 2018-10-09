@@ -57,11 +57,12 @@ package body Ogldev_Texture is
         use GL.Low_Level;
       use GL.Objects.Textures.Targets;
       Image_Ref : Magick_Image.MPP_Image;
+      theImage  : Core_Image.Image;
    begin
       Put_Line ("Ogldev_Texture.Load reading: " & To_String (theTexture.File_Name));
-      Magick_Image.Read_Image (Image_Ref, To_String (theTexture.File_Name));
+      Magick_Image.Read_Image (theImage, To_String (theTexture.File_Name));
         Put_Line ("Ogldev_Texture.Load image read: " & To_String (theTexture.File_Name));
-      theTexture.Image := Image_Ref.Ref.all;
+      theTexture.Image := theImage;
         Put_Line ("Ogldev_Texture.Load loading blob: " & To_String (theTexture.File_Name));
         Magick_Image.Load_Blob (To_String (theTexture.File_Name), "RGBA");
         Put_Line ("Ogldev_Texture.Load blob loaded.");

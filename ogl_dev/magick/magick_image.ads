@@ -15,7 +15,8 @@ package Magick_Image is
    function Get_Blob_Data return Magick_Blob.Blob_Data;
    function Get_Image return Core_Image.Image;
    procedure Load_Blob (File_Name, Data_Type : String);
-   procedure Read_Image (Image_Record_Ptr  : out MPP_Image;
+   procedure Read_Image (theImage : in out Core_Image.Image;
+--                           Image_Record_Ptr  : out MPP_Image;
                          File_Name : String);
 
 end Magick_Image;
