@@ -12,7 +12,8 @@ package Magick_Image.API is
 
 --        type MPP_Image is tagged limited record
       type MPP_Image is record
-         Ref : System.Address;
+         Ref : access Core_Image.Image;
+--           Ref : System.Address;
 --           Ref : access Image_Reference.Class_Image_Ref.Image_Ref;
       end record;
     pragma Convention (C_Pass_By_Copy, MPP_Image);

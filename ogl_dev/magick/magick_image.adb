@@ -80,17 +80,17 @@ package body Magick_Image is
 
    --  -------------------------------------------------------------------------
 
-   procedure Read_Image (theImage : out MPP_Image; File_Name : String) is
+   procedure Read_Image (Image_Record_Ptr : out Magick_Image.MPP_Image; File_Name : String) is
       use System;
       use Interfaces.C;
       use Interfaces.C.Strings;
+      use Core_Image;
       Image_Ref : Magick_Image.API.MPP_Image;
-      --          Result : constant Boolean := Magick_Image.API.Read (theImage.Ref, New_String (File_Name));
-   begin
+    begin
       Magick_Image.API.Read (Image_Ref, New_String (File_Name));
-      if Image_Ref.Ref /= Null_Address then
+      if Image_Ref.Ref /= Null then
          Put_Line ("\Magick_Image.Read_Image image read.");
-         theImage.Ref := Image_Ref.Ref;
+         Image_Record_Ptr.Ref := Image_Ref.Ref;
       else
          raise Image_Exception with
            "Magick_Image.Read_Image failed to read: " & File_Name;
