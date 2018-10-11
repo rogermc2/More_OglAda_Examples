@@ -245,7 +245,7 @@ package body Core_Image is
 
    --  -------------------------------------------------------------------------
 
-   function To_Image (C_Image : AI_Image) return Image is
+   function To_Image (C_Image : API_Image) return Image is
       use Ada.Strings.Unbounded;
       use GL.Types;
       use Magick_Pixel;
