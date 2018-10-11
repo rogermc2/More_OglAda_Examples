@@ -8,7 +8,7 @@ limited with Core_Image;
 package Stream is
 
    type Stream_Handler is
-     access function (anImage : access Core_Image.AI_Image; arg2 : System.Address;
+     access function (anImage : access Core_Image.API_Image; arg2 : System.Address;
                       arg3 : size_t) return size_t;
    pragma Convention (C, Stream_Handler);
 

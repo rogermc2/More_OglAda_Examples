@@ -8,6 +8,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Types;
 
+with Magick_Exception;
 with Magick_Image.API;
 
 package body Magick_Image is
@@ -46,7 +47,7 @@ package body Magick_Image is
       use Interfaces.C;
       use Interfaces.C.Strings;
       Data_Address : constant System.Address := Magick_Image.API.Get_Image_Data;
-      C_Image      : Core_Image.AI_Image
+      C_Image      : Core_Image.API_Image
         with Import, Convention => C, Address => Data_Address;
    begin
       return Core_Image.To_Image (C_Image);
@@ -80,19 +81,25 @@ package body Magick_Image is
 
    --  -------------------------------------------------------------------------
 
-   procedure Read_Image (theImage : in out Core_Image.Image;
---                           Image_Record_Ptr : out Magick_Image.MPP_Image;
+   --  Based on Image.cpp void Magick::Image::read(const std::string &imageSpec_)
+   procedure Read_Image (New_Image : in out Core_Image.Image;
+--                           Image_Record_Ptr  : out MPP_Image;
                          File_Name : String) is
       use System;
       use Interfaces.C;
       use Interfaces.C.Strings;
       use Core_Image;
-      Image_Ref : Magick_Image.API.MPP_Image;
+      --        Image_Ref : Magick_Image.API.MPP_Image;
+      Image_Ptr : access Core_Image.Image;
+      Info      : aliased Core_Image.Image_Info;
+      Excep     : aliased Magick_Exception.Exception_Info;
     begin
-      Magick_Image.API.Read (Image_Ref, New_String (File_Name));
-      if Image_Ref.Ref /= Null then
-         Put_Line ("\Magick_Image.Read_Image image read.");
-         theImage := Image_Ref.Ref.all;
+--        Magick_Image.API.Read (Image_Ref, New_String (File_Name));
+      Image_Ptr := Magick_Image.API.Read_Image (Info'Access, Excep'Access);
+      if Image_Ptr /= Null then
+         Put_Line ("Magick_Image.Read_Image image read.");
+         New_Image := Image_Ptr.all;
+--           theImage := Image_Ref.Ref.all;
 --           Image_Record_Ptr.Ref := Image_Ref.Ref;
       else
          raise Image_Exception with
@@ -106,7 +113,6 @@ package body Magick_Image is
          raise;
    end Read_Image;
 
-   --  -------------------------------------------------------------------------
-
+--     --  -------------------------------------------------------------------------
 
 end Magick_Image;

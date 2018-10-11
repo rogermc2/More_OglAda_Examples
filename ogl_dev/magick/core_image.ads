@@ -150,7 +150,7 @@ package Core_Image is
     --  held, unless overridden for that specific image.  See Sync_Image_Settings
     --  which maps any global setting that always overrides specific image settings.
     type Stream_Info;
-    type AI_Image_Info is record
+    type API_Image_Info is record
         Compression        : Compress.Compression_Type
           := Compress.Undefined_Compression;
         Orientation        : Orientation_Type := Undefined_Orientation;
@@ -210,12 +210,12 @@ package Core_Image is
                                size_t (Method_Attribute.Magick_Core_Signature);
         Custom_Stream_Info : access Core_Blob.Custom_Stream_Info := Null;
         Matte_Colour       : Magick_Pixel.Pixel_Info;
-    end record;  --  AI_Image_Info
-    pragma Convention (C_Pass_By_Copy, AI_Image_Info);
+    end record;  --  API_Image_Info
+    pragma Convention (C_Pass_By_Copy, API_Image_Info);
 
-   type Info_Ptr is access all AI_Image_Info;
+   type Info_Ptr is access all API_Image_Info;
 
-    type AI_Image is record
+    type API_Image is record
         Storage_Class      : Class_Type := Magick_Type.Direct_Class;
         Colourspace        : Colour_Space.Colourspace_Type :=
                                Colour_Space.RGB_Colourspace;
@@ -314,14 +314,14 @@ package Core_Image is
                                size_t (Method_Attribute.Magick_Core_Signature);
         Matte_Colour       : Magick_Pixel.Pixel_Info;
     end record;  --  AI_Image
-   pragma Convention (C_Pass_By_Copy, AI_Image);
+   pragma Convention (C_Pass_By_Copy, API_Image);
 
-   type AI_Image_Ptr is access all AI_Image;
+   type API_Image_Ptr is access all API_Image;
 
     type Stream_Info is record
-        theImage_Data : AI_Image_Info;
-        theImage      : access AI_Image := Null;
-        Stream        : access AI_Image := Null;
+        theImage_Data : API_Image_Info;
+        theImage      : access API_Image := Null;
+        Stream        : access API_Image := Null;
         Quantum_Data  : Quantum.Quantum_Info;
         Map           : chars_ptr := Null_Ptr;
         Storage_Kind  : Magick_Pixel.Storage_Type;
@@ -495,6 +495,6 @@ package Core_Image is
 --
 --      procedure Image_To_Blob (Info : Image_Info; theImage : in out Image;
 --                               Size : in out GL.Types.UInt);
-   function To_Image (C_Image : AI_Image) return Image;
+   function To_Image (C_Image : API_Image) return Image;
 
 end Core_Image;
