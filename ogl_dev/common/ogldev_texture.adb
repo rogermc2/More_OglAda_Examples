@@ -1,10 +1,13 @@
 
+with Interfaces.C;
+
 with Ada.Directories;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
 
+with Constitute;
 with Magick_Image;
 
 package body Ogldev_Texture is
@@ -56,12 +59,21 @@ package body Ogldev_Texture is
         use Ada.Strings.Unbounded;
         use GL.Low_Level;
       use GL.Objects.Textures.Targets;
-      Image_Ref : Magick_Image.MPP_Image;
+      C_Info    : aliased Core_Image.API_Image_Info;
       theImage  : Core_Image.Image;
+      C_Image   : Core_Image.API_Image;
    begin
+      C_Image.Image_Info := C_Info'Unchecked_Access;
+      C_Info.File_Name (0) := 'B';
+      Put_Line ("Ogldev_Texture.Load C_Image.File_Name: " &
+                  Interfaces.C.To_Ada (C_Image.Image_Info.File_Name));
+      Put_Line ("Ogldev_Texture.Load C_Image.Image_Info.Signature: " &
+                  Interfaces.C.size_t'Image (C_Image.Image_Info.Signature));
       Put_Line ("Ogldev_Texture.Load reading: " & To_String (theTexture.File_Name));
-      Magick_Image.Read_Image (theImage, To_String (theTexture.File_Name));
-        Put_Line ("Ogldev_Texture.Load image read: " & To_String (theTexture.File_Name));
+      Constitute.Read_Image (C_Image, To_String (theTexture.File_Name));
+      theImage := Core_Image.To_Image (C_Image);
+--        Magick_Image.Read_Image (theImage, To_String (theTexture.File_Name));
+       Put_Line ("Ogldev_Texture.Load image read: " & To_String (theTexture.File_Name));
       theTexture.Image := theImage;
         Put_Line ("Ogldev_Texture.Load loading blob: " & To_String (theTexture.File_Name));
         Magick_Image.Load_Blob (To_String (theTexture.File_Name), "RGBA");

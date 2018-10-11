@@ -202,9 +202,12 @@ package Core_Image is
         File_ID            : chars_ptr;
         Blob               : System.Address := System.Null_Address;
         Length             : size_t := 0;
-        Magick             : Image_Info_Magick_Array;    --  image file format
-        Unique             : Image_Info_Unique_Array;    --  unique tempory filename - delegates
-        File_Name          : Image_Info_Filename_Array;  --  filename when reading/writing image
+        Magick             : Image_Info_Magick_Array :=
+                             (others => char (Character'Val (0)));    --  image file format
+        Unique             : Image_Info_Unique_Array :=
+                             (others => char (Character'Val (0)));    --  unique tempory filename - delegates
+      File_Name          : Image_Info_Filename_Array :=
+                             ('H', 'e','l','l','o', others => char (Character'Val (0)));  --  filename when reading/writing image
         Debug              : Magick_Boolean_Type := Magic_False;
         Signature          : size_t :=
                                size_t (Method_Attribute.Magick_Core_Signature);
@@ -304,16 +307,16 @@ package Core_Image is
         Semaphore_Data     : Semaphore.Sem_Ptr := Semaphore.Acquire_Semaphore_Info;
         Image_Info         : Info_Ptr := Null;
         --  Image processing list
-        --        List               : access AI_Image := Null;
-        --        Previous           : access AI_Image := Null;
-        --        Next               : access AI_Image := Null;
+        --        List               : access API_Image := Null;
+        --        Previous           : access API_Image := Null;
+        --        Next               : access API_Image := Null;
         List               : System.Address := System.Null_Address;
         Previous           : System.Address := System.Null_Address;
         Next               : System.Address := System.Null_Address;
         Signature          : size_t :=
                                size_t (Method_Attribute.Magick_Core_Signature);
         Matte_Colour       : Magick_Pixel.Pixel_Info;
-    end record;  --  AI_Image
+    end record;  --  API_Image
    pragma Convention (C_Pass_By_Copy, API_Image);
 
    type API_Image_Ptr is access all API_Image;
