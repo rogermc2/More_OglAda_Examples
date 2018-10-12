@@ -35,7 +35,8 @@ bool loadBlob (char* fileName, char* magickType)
   }
   catch (Magick::Error& Error)
   {
-    printf ("image_io.loadBlob Error loading texture %s: %s/n", fileName, Error.what());
+    printf ("image_io.loadBlob Error loading texture %s: ", fileName);
+    printf ("\nError: %s", Error.what());
     result = false;
   }
   return result;
