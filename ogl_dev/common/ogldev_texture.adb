@@ -56,6 +56,7 @@ package body Ogldev_Texture is
       use GL.Low_Level;
       use GL.Objects.Textures.Targets;
    begin
+      --  The following tested with project 19_specular_lighting
       Magick_Image.Load_Blob (To_String (theTexture.File_Name), "RGBA");
       theTexture.Blob_Data := Magick_Image.Get_Blob_Data;  --  Blob_Package.List
 

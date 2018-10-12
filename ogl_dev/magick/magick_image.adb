@@ -66,6 +66,7 @@ package body Magick_Image is
 
     --  -------------------------------------------------------------------------
 
+    --  Load_Blob tested with project 19_specular_lighting
     procedure Load_Blob (File_Name, Data_Type : String) is
         use Interfaces.C;
         use Interfaces.C.Strings;
