@@ -78,15 +78,19 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Objects.Programs.Use_Program (Shader_Program);
 
          Lighting_Technique.Set_Texture_Unit (0);
-         Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
+         Result := Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                       "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png");
-         Ogldev_Texture.Load (theTexture);
+         if Result then
+            Ogldev_Texture.Load (theTexture);
 
-         Perspective_Proj_Info.FOV := 60.0;
-         Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
-         Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-         Perspective_Proj_Info.Z_Near := 1.0;
-         Perspective_Proj_Info.Z_Far := 100.0;
+            Perspective_Proj_Info.FOV := 60.0;
+            Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
+            Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
+            Perspective_Proj_Info.Z_Near := 1.0;
+            Perspective_Proj_Info.Z_Far := 100.0;
+         else
+            Put_Line ("Main_Loop.Init. Init_Texture failed");
+         end if;
 
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
