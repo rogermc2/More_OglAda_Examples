@@ -57,6 +57,10 @@ package body Ogldev_Texture is
       use GL.Objects.Textures.Targets;
    begin
       --  The following tested with project 19_specular_lighting
+      --  Load_Blob is implemented by image_io.loadBlob
+      --  which implements
+      --  theImage.read(fileName);                m_image.read(m_fileName);
+      --  theImage.write(&theBlob, cppString);    m_image.write(&m_blob, "RGBA");
       Magick_Image.Load_Blob (To_String (theTexture.File_Name), "RGBA");
       theTexture.Blob_Data := Magick_Image.Get_Blob_Data;  --  Blob_Package.List
 
