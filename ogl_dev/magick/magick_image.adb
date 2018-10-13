@@ -75,8 +75,9 @@ package body Magick_Image is
    procedure Load_Blob (File_Name, Data_Type : String) is
       use Interfaces.C;
       use Interfaces.C.Strings;
-      Result : constant Boolean := Magick_Image.API.Load_Blob (New_String (File_Name),
-                                                               New_String (Data_Type)) = 1;
+      Result : constant Boolean :=
+                 Magick_Image.API.Load_Blob (New_String (File_Name),
+                                             New_String (Data_Type)) = 1;
    begin
       if not Result then
          raise Image_Exception with

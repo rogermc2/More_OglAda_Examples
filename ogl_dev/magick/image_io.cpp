@@ -6,7 +6,6 @@
 static Magick::Blob theBlob;
 static Magick::Image theImage;
 
-
 // Obtain pointer to data.
 const void* blobData()
 {
@@ -29,13 +28,15 @@ bool loadBlob (char* fileName, char* magickType)
   bool        result;
   try
   {
+    printf ("image_io.loadBlob reading texture %s ", fileName);
     theImage.read(fileName);
+    printf ("image_io.loadBlob texture read %s ", fileName);
     theImage.write(&theBlob, cppString);
     result = true;
   }
   catch (Magick::Error& Error)
   {
-    printf ("image_io.loadBlob Error loading texture %s: ", fileName);
+    printf ("\nimage_io.loadBlob Error loading texture %s: ", fileName);
     printf ("\nError: %s", Error.what());
     result = false;
   }
