@@ -34,7 +34,7 @@ package Magick_Image.API is
     --  Load_Blob tested with project 19_specular_lighting
    function Load_Blob (File_Name : Interfaces.C.Strings.chars_ptr;
                        Data_Type : Interfaces.C.Strings.chars_ptr) return int;
-   pragma Import (Cpp, Load_Blob, "loadBlob");  --  image_io.writeBlob
+   pragma Import (Cpp, Load_Blob, "loadBlob");  --  image_io.loadBlob
 
 --        function New_Image return MPP_Image;
 --        pragma Cpp_Constructor (New_Image, "_ZN6Magick5ImageC1Ev");
