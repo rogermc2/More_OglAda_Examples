@@ -143,12 +143,13 @@ package body Material_System is
          Put_Line ("Material_System.Get_Material_String property found Data_Type: " &
                      AI_Property_Type_Info'Image (aProperty.Data_Type));
          if aProperty.Data_Type = Material.PTI_String then
-            Put_Line ("Material_System.Get_Material_String PTI_String.");
             Data_String := aProperty.Data_Buffer.String_Data;
+--              Data_String := Ada.Strings.Unbounded.Trim
+--                (Data_String, Ada.Strings.Both);
          end if;
       end if;
-      Put_Line ("Material_System.Get_Material_String Data_String: " &
-                  Ada.Strings.Unbounded.To_String (Data_String));
+      Put_Line ("Material_System.Get_Material_String Data_String: " & "*" &
+                  Ada.Strings.Unbounded.To_String (Data_String) & "*");
       return Result;
 
    exception

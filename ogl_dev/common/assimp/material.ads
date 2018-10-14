@@ -67,7 +67,8 @@ package Material is
       Key            : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
       Semantic       : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
       Texture_Index  : GL.Types.UInt := 0;  --  Index for textures
---        Data_Type      : AI_Property_Type_Info := PTI_Float;
+                                            --  Data_Type : AI_Property_Type_Info := PTI_Float;
+      Data_Length    : GL.Types.UInt := 0;  --  Number of bytes
       Data_Buffer    : Data (Data_Type);
 --        Data_Buffer    : Assimp_Types.Byte_Data_List;
    end record;

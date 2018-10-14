@@ -133,10 +133,10 @@ package body Mesh_22 is
             New_Line;
             if Result = Assimp_Types.API_Return_Success then
                Put_Line ("Mesh_22.Init_Materials.Load_Textures Full_Path: " &
-                           To_String (Dir & Path));
+                           Dir & To_String (Path));
                if Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D,
-                  To_String (Dir & Path)) then
+                  Dir & To_String (Path)) then
                   theMesh.Textures.Insert (UInt (index), aTexture);
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures inserted texture from " & File_Name);
                   Ogldev_Texture.Load (aTexture);
@@ -149,7 +149,7 @@ package body Mesh_22 is
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded default texture from "
                             & Dir & "white.png");
                else
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures default texture"
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures default texture "
                     & Dir & "white.png not found.");
                end if;
             else
