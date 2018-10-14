@@ -28,14 +28,23 @@ bool loadBlob (char* fileName, char* magickType)
   bool        result;
   try
   {
-    printf ("image_io.loadBlob reading texture %s ", fileName);
+    printf ("image_io.loadBlob reading texture %s \n", fileName);
     theImage.read(fileName);
-    printf ("image_io.loadBlob texture read %s ", fileName);
+    printf ("image_io.loadBlob texture read %s \n", fileName);
     theImage.write(&theBlob, cppString);
     result = true;
   }
   catch (Magick::Error& Error)
   {
+    printf ("\nColumns: %zd", theImage.columns());
+    printf ("\nFileName: %s", theImage.fileName().c_str());
+    printf ("\nFile size: %llu", theImage.fileSize());
+    printf ("\nScene number: %zd", theImage.scene());
+    if (theImage.isValid() == true)
+      printf ("\nFormat: %s", theImage.format().c_str());
+    else
+      printf ("\nInvalid image");
+
     printf ("\nimage_io.loadBlob Error loading texture %s: ", fileName);
     printf ("\nError: %s", Error.what());
     result = false;

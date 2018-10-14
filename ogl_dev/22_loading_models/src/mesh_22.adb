@@ -3,6 +3,7 @@ with Interfaces.C;
 
 with GNAT.Directory_Operations;
 
+with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -106,46 +107,50 @@ package body Mesh_22 is
       use Material.AI_Material_Package;
       use Assimp_Types;
       use Material;
-      --        Current_Dir : constant GNAT.Directory_Operations.Dir_Name_Str
-      --          := GNAT.Directory_Operations.Get_Current_Dir;
+
+      --  Extract the directory part from the file name
       Dir           : constant GNAT.Directory_Operations.Dir_Name_Str
         := GNAT.Directory_Operations.Dir_Name (File_Name);
       Path          : Ada.Strings.Unbounded.Unbounded_String;
-      --        Full_Path   : constant String := Current_Dir & Dir;
       Result        : Assimp_Types.API_Return;
       Materials_Map : constant AI_Material_Map := theScene.Materials;
 
       procedure Load_Textures (Curs : AI_Material_Package.Cursor) is
+         use Ada.Strings.Unbounded;
          use Ogldev_Texture.Mesh_Texture_Package;
          aMaterial  : constant AI_Material := Element (Curs);
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : GL.Types.UInt := Key (Curs);
       begin
          Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
-                    UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
+                     UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
                                                 aMaterial.Properties.First_Element);
             New_Line;
-            Result := Material_System.Get_Texture (aMaterial,
-                                                   AI_Texture_Diffuse, 0, Path);
+            Result := Material_System.Get_Texture
+              (aMaterial, AI_Texture_Diffuse, 0, Path);
             New_Line;
             if Result = Assimp_Types.API_Return_Success then
-               Put_Line ("Mesh_22.Init_Materials.Load_Textures Path: " &
-                           Ada.Strings.Unbounded.To_String (Path));
+               Put_Line ("Mesh_22.Init_Materials.Load_Textures Full_Path: " &
+                           To_String (Dir & Path));
                if Ogldev_Texture.Init_Texture
-                    (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name) then
+                 (aTexture, GL.Low_Level.Enums.Texture_2D,
+                  To_String (Dir & Path)) then
                   theMesh.Textures.Insert (UInt (index), aTexture);
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures inserted texture from " & File_Name);
                   Ogldev_Texture.Load (aTexture);
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from " & File_Name);
                elsif Ogldev_Texture.Init_Texture
-                    (aTexture, GL.Low_Level.Enums.Texture_2D, "../../Content/white.png") then
+                 (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
                   theMesh.Textures.Insert (UInt (index), aTexture);
                   Ogldev_Texture.Load (aTexture);
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded default texture from Content/white.png");
+                  New_Line;
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded default texture from "
+                            & Dir & "white.png");
                else
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures default texture, Content/white.png not found.");
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures default texture"
+                    & Dir & "white.png not found.");
                end if;
             else
                Put_Line ("Mesh_22.Init_Materials.Load_Textures Get_Texture failed");
@@ -153,128 +158,128 @@ package body Mesh_22 is
          end if;
       end Load_Textures;
 
-      begin
-        New_Line;
-         Put_Line ("Mesh_22.Init_Materials Dir: " & Dir);
-         Materials_Map.Iterate (Load_Textures'Access);
+   begin
+      New_Line;
+      Put_Line ("Mesh_22.Init_Materials Dir: " & Dir);
+      Materials_Map.Iterate (Load_Textures'Access);
 
-      exception
-         when others =>
-            Put_Line ("An exception occurred in Mesh_22.Init_Materials.");
-            raise;
-      end Init_Materials;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Mesh_22.Init_Materials.");
+         raise;
+   end Init_Materials;
 
-      -------------------------------------------------------------------------
+   -------------------------------------------------------------------------
 
    procedure Init_Mesh (Index    : UInt; aMesh : in out Assimp_Mesh.AI_Mesh;
                         aMesh_22 : in out Mesh_22) is
-         use Mesh_Entry_Package;
-         Num_Vertices : constant Int := Int (aMesh.Vertices.Length);
-         Vertices     : Vertex_Array (1 .. Num_Vertices);
-         Indices      : GL.Types.UInt_Array (1 .. 3 * Num_Vertices);
-         Mat_index    : GL.Types.UInt := aMesh.Material_Index;
-         anEntry      : Mesh_Entry;
-         Position     : GL.Types.Singles.Vector3;
-         Normal       : GL.Types.Singles.Vector3;
-         Tex_Coord    : GL.Types.Singles.Vector3;
-         Face         : Assimp_Mesh.AI_Face;
-         Index_Index  : Int := 0;
+      use Mesh_Entry_Package;
+      Num_Vertices : constant Int := Int (aMesh.Vertices.Length);
+      Vertices     : Vertex_Array (1 .. Num_Vertices);
+      Indices      : GL.Types.UInt_Array (1 .. 3 * Num_Vertices);
+      Mat_index    : GL.Types.UInt := aMesh.Material_Index;
+      anEntry      : Mesh_Entry;
+      Position     : GL.Types.Singles.Vector3;
+      Normal       : GL.Types.Singles.Vector3;
+      Tex_Coord    : GL.Types.Singles.Vector3;
+      Face         : Assimp_Mesh.AI_Face;
+      Index_Index  : Int := 0;
+   begin
+      anEntry := aMesh_22.Entries.Element (Index);
+      anEntry.Material_Index := Material_Type'Val (aMesh.Material_Index);
+
+      for Index in 1 .. Num_Vertices loop
+         Position := aMesh.Vertices.Element (UInt (Index));
+         Normal := aMesh.Normals.Element (UInt (Index));
+         Tex_Coord := aMesh.Texture_Coords (Index);
+         Vertices (Index) := (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
+      end loop;
+
+      for Index in 1 .. aMesh.Faces.Length loop
+         Face := aMesh.Faces.Element (UInt (Index));
+         Index_Index := Index_Index + 1;
+         Indices (Int (Index)) := Face.Indices (1);
+         Index_Index := Index_Index + 1;
+         Indices (Int (Index)) := Face.Indices (2);
+         Index_Index := Index_Index + 1;
+         Indices (Int (Index)) := Face.Indices (3);
+      end loop;
+
+      --  m_Entries[Index].Init(Vertices, Indices);
+      Init_Buffers (anEntry, Vertices, Indices);
+      aMesh_22.Entries.Replace (Index, anEntry);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Mesh_22.Init_Mesh.");
+         raise;
+   end Init_Mesh;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String) is
+      theScene : Scene.AI_Scene;
+   begin
+      theScene :=
+        Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
+      Init_From_Scene (theMesh, File_Name, theScene);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Mesh_22.Load_Mesh.");
+         raise;
+   end Load_Mesh;
+
+   -------------------------------------------------------------------------
+
+   procedure Render_Mesh (theMesh : Mesh_22) is
+      use Ada.Containers;
+      use Mesh_Entry_Package;
+      procedure Draw (Entry_Cursor :  Mesh_Entry_Package.Cursor) is
+         use Ogldev_Texture.Mesh_Texture_Package;
+         --              Material_Kind  : constant Material_Type
+         --                := Element (Entry_Cursor).Material_Index;
+         Material_Index :  Material_Type;
+         Tex_Curs       : Ogldev_Texture.Mesh_Texture_Package.Cursor;
+         Num_Indices    : constant Int := Int (Element (Entry_Cursor).Num_Indices);
       begin
-         anEntry := aMesh_22.Entries.Element (Index);
-         anEntry.Material_Index := Material_Type'Val (aMesh.Material_Index);
+         GL.Objects.Buffers.Array_Buffer.Bind (Element (Entry_Cursor).VBO);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
 
-         for Index in 1 .. Num_Vertices loop
-            Position := aMesh.Vertices.Element (UInt (Index));
-            Normal := aMesh.Normals.Element (UInt (Index));
-            Tex_Coord := aMesh.Texture_Coords (Index);
-            Vertices (Index) := (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
-         end loop;
-
-         for Index in 1 .. aMesh.Faces.Length loop
-            Face := aMesh.Faces.Element (UInt (Index));
-            Index_Index := Index_Index + 1;
-            Indices (Int (Index)) := Face.Indices (1);
-            Index_Index := Index_Index + 1;
-            Indices (Int (Index)) := Face.Indices (2);
-            Index_Index := Index_Index + 1;
-            Indices (Int (Index)) := Face.Indices (3);
-         end loop;
-
-         --  m_Entries[Index].Init(Vertices, Indices);
-         Init_Buffers (anEntry, Vertices, Indices);
-         aMesh_22.Entries.Replace (Index, anEntry);
-
-      exception
-         when others =>
-            Put_Line ("An exception occurred in Mesh_22.Init_Mesh.");
-            raise;
-      end Init_Mesh;
-
-      --  -------------------------------------------------------------------------
-
-      procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String) is
-         theScene : Scene.AI_Scene;
-      begin
-         theScene :=
-           Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
-         Init_From_Scene (theMesh, File_Name, theScene);
-
-      exception
-         when others =>
-            Put_Line ("An exception occurred in Mesh_22.Load_Mesh.");
-            raise;
-      end Load_Mesh;
-
-      -------------------------------------------------------------------------
-
-      procedure Render_Mesh (theMesh : Mesh_22) is
-         use Ada.Containers;
-         use Mesh_Entry_Package;
-         procedure Draw (Entry_Cursor :  Mesh_Entry_Package.Cursor) is
-            use Ogldev_Texture.Mesh_Texture_Package;
-            --              Material_Kind  : constant Material_Type
-            --                := Element (Entry_Cursor).Material_Index;
-            Material_Index :  Material_Type;
-            Tex_Curs       : Ogldev_Texture.Mesh_Texture_Package.Cursor;
-            Num_Indices    : constant Int := Int (Element (Entry_Cursor).Num_Indices);
-         begin
-            GL.Objects.Buffers.Array_Buffer.Bind (Element (Entry_Cursor).VBO);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
-
-            GL.Objects.Buffers.Element_Array_Buffer.Bind (Element (Entry_Cursor).IBO);
-            Material_Index := Element (Entry_Cursor).Material_Index;
-            Put_Line ("Mesh_22.Render_Mesh, Material_Index: " & Material_Type'Image (Material_Index));
-            if Material_Index'Enum_Rep < theMesh.Textures.Length then
-               if not theMesh.Textures.Is_Empty then
-                  Ogldev_Texture.Bind (Element (Tex_Curs),
-                                       Ogldev_Engine_Common.Colour_Texture_Unit_Index);
-               end if;
-            else
-               Put_Line ("Mesh_22.Render_Mesh, Invalid Material_Index.");
+         GL.Objects.Buffers.Element_Array_Buffer.Bind (Element (Entry_Cursor).IBO);
+         Material_Index := Element (Entry_Cursor).Material_Index;
+         Put_Line ("Mesh_22.Render_Mesh, Material_Index: " & Material_Type'Image (Material_Index));
+         if Material_Index'Enum_Rep < theMesh.Textures.Length then
+            if not theMesh.Textures.Is_Empty then
+               Ogldev_Texture.Bind (Element (Tex_Curs),
+                                    Ogldev_Engine_Common.Colour_Texture_Unit_Index);
             end if;
-            GL.Objects.Buffers.Draw_Elements
-              (Triangles, Num_Indices, UInt_Type, 0);
-         end Draw;
+         else
+            Put_Line ("Mesh_22.Render_Mesh, Invalid Material_Index.");
+         end if;
+         GL.Objects.Buffers.Draw_Elements
+           (Triangles, Num_Indices, UInt_Type, 0);
+      end Draw;
 
-      begin
-         GL.Attributes.Enable_Vertex_Attrib_Array (0);
-         GL.Attributes.Enable_Vertex_Attrib_Array (1);
-         GL.Attributes.Enable_Vertex_Attrib_Array (2);
+   begin
+      GL.Attributes.Enable_Vertex_Attrib_Array (0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (1);
+      GL.Attributes.Enable_Vertex_Attrib_Array (2);
 
-         Iterate (theMesh.Entries, Draw'Access);
+      Iterate (theMesh.Entries, Draw'Access);
 
-         GL.Attributes.Disable_Vertex_Attrib_Array (0);
-         GL.Attributes.Disable_Vertex_Attrib_Array (1);
-         GL.Attributes.Disable_Vertex_Attrib_Array (2);
+      GL.Attributes.Disable_Vertex_Attrib_Array (0);
+      GL.Attributes.Disable_Vertex_Attrib_Array (1);
+      GL.Attributes.Disable_Vertex_Attrib_Array (2);
 
-      exception
-         when others =>
-            Put_Line ("An exception occurred in Mesh_22.Render_Mesh .");
-            raise;
-      end Render_Mesh;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Mesh_22.Render_Mesh .");
+         raise;
+   end Render_Mesh;
 
-      --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
-   end Mesh_22;
+end Mesh_22;
