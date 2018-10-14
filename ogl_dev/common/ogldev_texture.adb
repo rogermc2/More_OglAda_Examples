@@ -34,13 +34,17 @@ package body Ogldev_Texture is
       use Ada.Strings.Unbounded;
       Result : Boolean;
    begin
+     Put_Line ("Ogldev_Texture.Init_Texture file " & "*" & File_Name & "*");
+      Put_Line ("Ogldev_Texture.Init_Texture file size " &
+                  Ada.Directories.File_Size'Image (Ada.Directories.Size
+                  ("/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix.pcx")));
       Result := Ada.Directories.Exists (File_Name);
       if Result then
       theTexture.File_Name := To_Unbounded_String (File_Name);
          theTexture.Texture_Target := Target_Type;
       else
-         Put_Line ("Ogldev_Texture.Init_Texture file" & File_Name &
-                   " not found");
+         Put_Line ("Ogldev_Texture.Init_Texture file *" & File_Name &
+                   "* not found");
       end if;
       return Result;
    exception

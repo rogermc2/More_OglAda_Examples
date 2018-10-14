@@ -122,8 +122,8 @@ package body AI_Conversion is
 
       Key_Length    : size_t := API_Property.Key.Length;
       --  Data_Length number of bytes
-      Data_Length   : constant size_t := size_t (API_Property.Data_Length);
-      Data_Array    : Raw_Byte_Data (1 .. UInt (Data_Length));
+      Data_Length   : constant UInt := UInt (API_Property.Data_Length);
+      Data_Array    : Raw_Byte_Data (1 .. Data_Length);
       Data4         : Byte_Array4;
       Key_String    : constant String (1 .. Integer (Key_Length)) :=
                         To_Ada (API_Property.Key.Data);
@@ -139,8 +139,9 @@ package body AI_Conversion is
 
          AI_Property.Semantic := UInt (API_Property.Semantic);
          AI_Property.Texture_Index := UInt (API_Property.Texture_Index);
+         AI_Property.Data_Length := Data_Length;
          Assimp_Util.Print_API_Property_Data ("AI_Conversion.To_AI_Property API", API_Property);
-         if Data_Length > 0 and API_Property.Data_Ptr /= null then
+         if AI_Property.Data_Length > 0 and API_Property.Data_Ptr /= null then
             Data_Array := Raw_Data_Pointers.Value (API_Property.Data_Ptr, ptrdiff_t (Data_Length));
             case API_Property.Data_Type is
                when Material.PTI_Float => AI_Property.Data_Buffer.Float_Data := 0.0;
