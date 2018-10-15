@@ -17,6 +17,7 @@ Package Mesh_22 is
    type Mesh_22 is private;
    type Mesh_Entry is private;
 
+   function Has_Texture_Coords (aMesh : Mesh_22; Index : UInt) return Boolean;
    procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String);
    procedure Render_Mesh (theMesh : Mesh_22);
 

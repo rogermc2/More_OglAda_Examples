@@ -1,7 +1,6 @@
 
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Pointers;
---  with Interfaces.C.Strings;
 
 with Ada.Containers.Indefinite_Ordered_Maps;
 
@@ -43,6 +42,7 @@ package Assimp_Texture is
    package Texture_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Texture, API_Texture_Array, API_Texture'(others => <>));
 
+   function Texture_Map_Size (theMap : AI_Texture_Map) return GL.Types.UInt;
    function To_AI_Texture_Map (Num_Textures : Interfaces.C.unsigned := 0;
                                C_Array : API_Texture_Array)
                                return AI_Texture_Map;

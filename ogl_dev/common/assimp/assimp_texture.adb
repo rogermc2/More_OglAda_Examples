@@ -1,6 +1,14 @@
 
 package body Assimp_Texture is
 
+
+   function Texture_Map_Size (theMap : AI_Texture_Map) return GL.Types.UInt is
+   begin
+      return GL.Types.UInt (theMap.Length);
+   end Texture_Map_Size;
+
+   --  -------------------------------------------------------------------------
+
    function To_AI_Texel_Map (Num_Texels : UInt; Data_Ptr : Texel_Array_Pointers.Pointer)
                              return AI_Texel_Map is
        Texel_Array : constant API_Texel_Array

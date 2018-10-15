@@ -35,5 +35,7 @@ Package Ogldev_Texture is
       Target_Type : GL.Low_Level.Enums.Texture_Kind;
       File_Name  :  String) return Boolean ;
    procedure Load (theTexture : in out Ogl_Texture);
+   function Texture_Map_Size (theMap : Ogldev_Texture.Mesh_Texture_Map)
+                              return GL.Types.UInt;
 
 end Ogldev_Texture;
