@@ -27,6 +27,13 @@ package body Assimp_Mesh is
 
     ------------------------------------------------------------------------
 
+   function Has_Texture_Coords (aMesh : Mesh; Index : UInt) return Boolean is
+   begin
+      return Assimp_Texture.Texture_Map_Size (aMesh.Textures) > 0;
+   end Has_Texture_Coords;
+
+    ------------------------------------------------------------------------
+
     procedure Init_From_Scene (theMesh   : in out Mesh; theScene  : Scene.AI_Scene;
                                File_Name : String) is
         use AI_Mesh_Package;

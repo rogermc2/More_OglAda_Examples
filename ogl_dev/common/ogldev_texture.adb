@@ -119,4 +119,12 @@ package body Ogldev_Texture is
 
    --  -------------------------------------------------------------------------
 
+   function Texture_Map_Size (theMap : Ogldev_Texture.Mesh_Texture_Map)
+                              return GL.Types.UInt is
+   begin
+      return GL.Types.UInt (theMap.Length);
+   end Texture_Map_Size;
+
+   --  -------------------------------------------------------------------------
+
 end Ogldev_Texture;

@@ -19,6 +19,8 @@ package Assimp_Mesh is
     AI_Max_Bone_Weights   : constant Int := 16#7FFFFFFF#;
     AI_Max_Vertices       : constant Int := 16#7FFFFFFF#;
     AI_Max_Faces          : constant Int := 16#7FFFFFFF#;
+    AI_Max_Texture_Coords : constant Int := 8;
+    AI_Max_Colour_Sets    : constant Int := 8;
 
     type Entry_Ptr is private;
 
@@ -139,7 +141,7 @@ package Assimp_Mesh is
         Num_UV_Components : UInt_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Map;
         Bones             : Bones_Map;
-        Material_Index    : UInt;
+        Material_Index    : UInt := 0;
     end record;
 
    package AI_Mesh_Package is new
@@ -183,6 +185,7 @@ package Assimp_Mesh is
         Textures  : Assimp_Texture.AI_Texture_Map;
     end record;
 
+   function Has_Texture_Coords (aMesh : Mesh; Index : UInt) return Boolean;
    procedure Load_Mesh (File_Name : String; theMesh : in out Mesh);
    procedure Render_Mesh (theMesh : Mesh);
    function To_AI_Mesh_Map (Num_Meshes : Interfaces.C.unsigned := 0;
@@ -208,6 +211,6 @@ package Assimp_Mesh is
     type API_Entries_Array is array (Interfaces.C.unsigned range <>) of aliased API_Mesh_Entry;
     pragma Convention (C, API_Entries_Array);
 
-    type Entry_Ptr is access API_Entries_Array;
+   type Entry_Ptr is access API_Entries_Array;
 
 end Assimp_Mesh;
