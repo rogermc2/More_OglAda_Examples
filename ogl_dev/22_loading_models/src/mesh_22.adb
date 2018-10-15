@@ -17,6 +17,7 @@ with Assimp_Mesh;
 with Assimp_Types;
 with Assimp_Util;
 
+with API_Vectors_Matrices;
 with Importer;
 with Material;
 with Material_System;
@@ -42,12 +43,22 @@ package body Mesh_22 is
 
    --  -------------------------------------------------------------------------
 
-   function Has_Texture_Coords (aMesh : Mesh_22; Index : UInt) return Boolean is
+--     function Has_Texture_Coords (aMesh : Mesh_22; Index : UInt) return Boolean is
+--     begin
+--        return Ogldev_Texture.Texture_Map_Size (aMesh.Textures) > 0;
+--     end Has_Texture_Coords;
+
+   ------------------------------------------------------------------------
+
+   function Has_Texture_Coords (aMesh : Assimp_Mesh.AI_Mesh; Index : UInt)
+                                return Boolean is
+      use Ada.Containers;
    begin
-      return Ogldev_Texture.Texture_Map_Size (aMesh.Textures) > 0;
+      return Index < API_Vectors_Matrices.API_Max_Texture_Coords and
+           aMesh.Vertices.Length > 0;
    end Has_Texture_Coords;
 
-    ------------------------------------------------------------------------
+   ------------------------------------------------------------------------
 
    procedure Init_Buffers (theEntry : in out Mesh_Entry;
                            Vertices : Vertex_Array;
@@ -178,9 +189,9 @@ package body Mesh_22 is
    procedure Init_Mesh (Index    : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
                         aMesh_22 : in out Mesh_22) is
       use Mesh_Entry_Package;
-      Num_Vertices : constant Int := Int (Source_Mesh.Vertices.Length);
-      Vertices     : Vertex_Array (1 .. Num_Vertices);
-      Indices      : GL.Types.UInt_Array (1 .. 3 * Num_Vertices);
+      Num_Vertices : constant UInt := UInt (Source_Mesh.Vertices.Length);
+      Vertices     : Vertex_Array (1 .. Int (Num_Vertices));
+      Indices      : GL.Types.UInt_Array (1 .. Int (3 * Num_Vertices));
       Mat_index    : constant GL.Types.UInt := Source_Mesh.Material_Index;
       anEntry      : Mesh_Entry;
       Position     : GL.Types.Singles.Vector3;
@@ -192,10 +203,15 @@ package body Mesh_22 is
       anEntry.Material_Index := Material_Type'Val (Source_Mesh.Material_Index);
 
       for Index in 1 .. Num_Vertices loop
-         Position := Source_Mesh.Vertices.Element (UInt (Index));
-         Normal := Source_Mesh.Normals.Element (UInt (Index));
-         Tex_Coord := Source_Mesh.Texture_Coords (Index);
-         Vertices (Index) := (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
+         Position := Source_Mesh.Vertices.Element (Index);
+         Normal := Source_Mesh.Normals.Element (Index);
+         if Has_Texture_Coords (Source_Mesh, Index) then
+            Tex_Coord := Source_Mesh.Texture_Coords (Int (Index));
+         else
+            Tex_Coord := (0.0, 0.0, 0.0);
+         end if;
+         Vertices (Int (Index)) :=
+           (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
       end loop;
 
       for Index in 1 .. Source_Mesh.Faces.Length loop
