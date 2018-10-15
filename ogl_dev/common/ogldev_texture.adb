@@ -80,11 +80,11 @@ package body Ogldev_Texture is
               "Ogldev_Texture.Load, unhandled texture type.";
       end case;
 
---        Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
---                    UInt'Image (theTexture.Image.Columns) & "  " &
---                    UInt'Image (theTexture.Image.Rows) & "  " &
---                    UInt'Image (theTexture.Image.Depth) & "  " &
---                    UInt'Image (theTexture.Image.Colours));
+      Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
+                  UInt'Image (theTexture.Image.Columns) & "  " &
+                  UInt'Image (theTexture.Image.Rows) & "  " &
+                  UInt'Image (theTexture.Image.Depth) & "  " &
+                  UInt'Image (theTexture.Image.Colours));
       declare
          use Magick_Blob.Blob_Package;
          Data_Blob   : constant Magick_Blob.Blob_Data := theTexture.Blob_Data;
@@ -94,6 +94,8 @@ package body Ogldev_Texture is
          Curs        : Cursor := Data_Blob.First;
          Level       : constant GL.Objects.Textures.Mipmap_Level := 0;
       begin
+         Put_Line ("Ogldev_Texture.Load, Blob_Length: " &
+                  UInt'Image (Blob_Length));
          while Has_Element (Curs) loop
             Index := Index + 1;
             Data (Index) := Element (Curs);
