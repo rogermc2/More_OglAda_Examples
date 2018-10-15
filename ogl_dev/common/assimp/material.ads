@@ -56,7 +56,9 @@ package Material is
       case Data_Type is
          when PTI_Float      => Float_Data      : GL.Types.Single := 0.0;
          when PTI_Double     => Double_Data     : GL.Types.Double := 0.0;
-         when PTI_String     => String_Data     : Ada.Strings.Unbounded.Unbounded_String;
+         when PTI_String     => String_Data     :
+            Ada.Strings.Unbounded.Unbounded_String
+              := Ada.Strings.Unbounded.To_Unbounded_String ("");
          when PTI_Integer    => Integer_Data    : GL.Types.Int := 0;
          when PTI_Buffer     => Buffer_Data     : GL.Types.Int := 0;
          when PTI_Force32Bit => Force32Bit_Data : GL.Types.int := 0;
