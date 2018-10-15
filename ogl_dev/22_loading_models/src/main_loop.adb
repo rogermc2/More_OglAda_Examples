@@ -1,4 +1,5 @@
 
+with Ada.Containers;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Culling;
@@ -69,8 +70,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             Ogldev_Basic_Lighting.Set_Color_Texture_Unit
               (Light_Technique, Ogldev_Engine_Common.Colour_Texture_Unit_Index);
 
-            Mesh_22.Load_Mesh (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
+         Mesh_22.Load_Mesh
+           (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
 
+            Put_Line ("Main_Loop.Init theMesh.Entries Length." &
+                  UInt'Image (Mesh_22.Mesh_Entries_Size (theMesh)));
             Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
             Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
             Glfw.Input.Poll_Events;

@@ -18,6 +18,7 @@ Package Mesh_22 is
    type Mesh_Entry is private;
 
    procedure Load_Mesh (theMesh : in out Mesh_22; File_Name : String);
+   function Mesh_Entries_Size (aMesh : Mesh_22) return UInt;
    procedure Render_Mesh (theMesh : Mesh_22);
 
 private

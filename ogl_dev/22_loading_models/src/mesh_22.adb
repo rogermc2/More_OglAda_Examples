@@ -99,7 +99,6 @@ package body Mesh_22 is
       Curs         : Cursor := theScene.Meshes.First;
       Index        : UInt := 0;
       aMesh        : Assimp_Mesh.AI_Mesh;
-      aMesh_22     : Mesh_22;
       anEntry      : Mesh_Entry;
    begin
       Put_Line ("Mesh_22.Init_From_Scene, number of theScene.Meshes: " &
@@ -107,11 +106,13 @@ package body Mesh_22 is
       while Has_Element (Curs) loop
          Index := Index + 1;
          aMesh := theScene.Meshes (Index);
-         Init_Mesh (Index, aMesh, aMesh_22);
+         Init_Mesh (Index, aMesh, Initial_Mesh);
          Next (Curs);
       end loop;
       Init_Materials (Initial_Mesh, File_Name, theScene);
 
+      Put_Line ("Mesh_22.Init_From_Scene Initial_Mesh.Entries Length." &
+                  UInt'Image (Mesh_Entries_Size (Initial_Mesh)));
    exception
       when others =>
          Put_Line ("An exception occurred in Mesh_22.Init_From_Scene.");
@@ -252,6 +253,12 @@ package body Mesh_22 is
 
    -------------------------------------------------------------------------
 
+   function Mesh_Entries_Size (aMesh : Mesh_22) return UInt is
+   begin
+      return UInt (aMesh.Entries.Length);
+   end Mesh_Entries_Size;
+
+   -------------------------------------------------------------------------
    procedure Render_Mesh (theMesh : Mesh_22) is
       use Ada.Containers;
       use Mesh_Entry_Package;
