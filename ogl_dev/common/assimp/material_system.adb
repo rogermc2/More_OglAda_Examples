@@ -131,21 +131,29 @@ package body Material_System is
                                  Data_String    : out
                                    Ada.Strings.Unbounded.Unbounded_String)
                                  return API_Return is
-      aProperty     : AI_Material_Property;
-      Result        : API_Return := API_Return_Failure;
+      use Ada.Strings.Unbounded;
+      use GL.Types;
+      aProperty  : AI_Material_Property;
+      Data       : Unbounded_String := To_Unbounded_String ("");
+      aChar      : Character;
+      index      : UInt := 1;
+      Result     : API_Return := API_Return_Failure;
    begin
-      Data_String := Ada.Strings.Unbounded.To_Unbounded_String ("");
+      Data_String := To_Unbounded_String ("");
       Put_Line ("Material_System.Get_Material_String requested Data_Type: " &
                   GL.Types.UInt'Image (Material_Type));
       Result := Get_Material_Property (aMaterial, Key, Material_Type,
                                        theIndex, aProperty);
       if Result = API_Return_Success  then
-         Put_Line ("Material_System.Get_Material_String property found Data_Type: " &
-                     AI_Property_Type_Info'Image (aProperty.Data_Type));
          if aProperty.Data_Type = Material.PTI_String then
-            Data_String := aProperty.Data_Buffer.String_Data;
---              Data_String := Ada.Strings.Unbounded.Trim
---                (Data_String, Ada.Strings.Both);
+            Data := aProperty.Data_Buffer.String_Data;
+            aChar := Element (Data, 1);
+            while index < UInt (Length (Data)) and
+              aChar /= Character'Val (0) loop
+               Data_String := Data_String & aChar;
+               index := index + 1;
+               aChar := Element (Data, Integer (index));
+            end loop;
          end if;
       end if;
       Put_Line ("Material_System.Get_Material_String Data_String: " & "*" &
