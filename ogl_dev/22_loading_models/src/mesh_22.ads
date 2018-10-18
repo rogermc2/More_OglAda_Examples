@@ -24,6 +24,8 @@ Package Mesh_22 is
 private
    Num_Buffers : constant UInt := 6;
 
+   Invalid_Material : constant UInt := 16#FFFFFFFF#;
+
 --     for Material_Type use (Index_Buffer     => 0,
 --                            Pos_VB           => 1,
 --                            Normal_VB        => 2,
@@ -37,8 +39,7 @@ private
         VBO            : GL.Objects.Buffers.Buffer;
         IBO            : GL.Objects.Buffers.Buffer;
         Num_Indices    : UInt := 0;
-        Material_Index : UInt := 16#FFFFFFFF#;
---          Material_Index : UInt := Invalid_Material;
+        Material_Index : UInt := Invalid_Material;
    end record;
 
    package Mesh_Entry_Package is new
