@@ -9,10 +9,10 @@ with Ogldev_Texture;
 
 Package Mesh_22 is
 
-   type Material_Type is (Index_Buffer, Pos_VB, Normal_VB,
-                          Tex_Coord_VB, WVP_Matrix_VB,
-                          World_Matrix_VB, Invalid_Material);
-   pragma Convention (C, Material_Type);
+--     type Material_Type is (Index_Buffer, Pos_VB, Normal_VB,
+--                            Tex_Coord_VB, WVP_Matrix_VB,
+--                            World_Matrix_VB, Invalid_Material);
+--     pragma Convention (C, Material_Type);
 
    type Mesh_22 is private;
    type Mesh_Entry is private;
@@ -24,20 +24,21 @@ Package Mesh_22 is
 private
    Num_Buffers : constant UInt := 6;
 
-   for Material_Type use (Index_Buffer     => 0,
-                          Pos_VB           => 1,
-                          Normal_VB        => 2,
-                          Tex_Coord_VB     => 3,
-                          WVP_Matrix_VB    => 4,
-                          World_Matrix_VB  => 5,
-                          Invalid_Material => 16#FFFFFFFF#);
+--     for Material_Type use (Index_Buffer     => 0,
+--                            Pos_VB           => 1,
+--                            Normal_VB        => 2,
+--                            Tex_Coord_VB     => 3,
+--                            WVP_Matrix_VB    => 4,
+--                            World_Matrix_VB  => 5,
+--                            Invalid_Material => 16#FFFFFFFF#);
 
    type Mesh_Entry is record
         VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
         VBO            : GL.Objects.Buffers.Buffer;
         IBO            : GL.Objects.Buffers.Buffer;
         Num_Indices    : UInt := 0;
-        Material_Index : Material_Type := Invalid_Material;
+        Material_Index : UInt := 16#FFFFFFFF#;
+--          Material_Index : UInt := Invalid_Material;
    end record;
 
    package Mesh_Entry_Package is new

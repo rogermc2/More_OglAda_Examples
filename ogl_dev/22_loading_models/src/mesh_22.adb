@@ -200,7 +200,8 @@ package body Mesh_22 is
       Face         : Assimp_Mesh.AI_Face;
       Index_Index  : Int := 0;
    begin
-      anEntry.Material_Index := Material_Type'Val (Source_Mesh.Material_Index);
+      anEntry.Material_Index := Source_Mesh.Material_Index;
+--        anEntry.Material_Index := Material_Type'Val (Source_Mesh.Material_Index);
 
       for Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (Index);
@@ -266,9 +267,10 @@ package body Mesh_22 is
          use Ogldev_Texture.Mesh_Texture_Package;
          --              Material_Kind  : constant Material_Type
          --                := Element (Entry_Cursor).Material_Index;
-         Material_Index : Material_Type;
+         Material       : constant UInt := Element (Entry_Cursor).Material_Index;
          anEntry        : constant Mesh_Entry := Element (Entry_Cursor);
-         Tex_Curs       : Ogldev_Texture.Mesh_Texture_Package.Cursor;
+         Tex_Curs       : Ogldev_Texture.Mesh_Texture_Package.Cursor
+           := theMesh.Textures.First;
          Num_Indices    : constant Int := Int (anEntry.Num_Indices);
       begin
          Put_Line ("Mesh_22.Render_Mesh.Draw entered");
@@ -278,10 +280,11 @@ package body Mesh_22 is
          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.IBO);
-         Material_Index := Element (Entry_Cursor).Material_Index;
+
          Put_Line ("Mesh_22.Render_Mesh, Material_Index: " &
-                     Material_Type'Image (Material_Index));
-         if Material_Index'Enum_Rep < theMesh.Textures.Length then
+                     UInt'Image (Material));
+--           if Material_Index'Enum_Rep < theMesh.Textures.Length then
+         if Material < UInt (theMesh.Textures.Length) then
             if not theMesh.Textures.Is_Empty then
                Ogldev_Texture.Bind (Element (Tex_Curs),
                                     Ogldev_Engine_Common.Colour_Texture_Unit_Index);
