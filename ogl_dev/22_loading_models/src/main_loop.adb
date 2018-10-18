@@ -72,7 +72,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Mesh_22.Load_Mesh
            (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
-
             Put_Line ("Main_Loop.Init theMesh.Entries Length." &
                   UInt'Image (Mesh_22.Mesh_Entries_Size (theMesh)));
             Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);

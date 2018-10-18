@@ -72,7 +72,8 @@ package body Mesh_22 is
       theEntry.Num_Indices := UInt (Indices_Length);
       theEntry.VBO.Initialize_Id;
       Array_Buffer.Bind (theEntry.VBO);
-      Array_Buffer.Bind (theEntry.VBO);
+      theEntry.IBO.Initialize_Id;
+      Array_Buffer.Bind (theEntry.IBO);
 
       for index in 1 ..  Vertices_Length loop
          Vertices_Array (index) :=
@@ -111,8 +112,6 @@ package body Mesh_22 is
       end loop;
       Init_Materials (Initial_Mesh, File_Name, theScene);
 
-      Put_Line ("Mesh_22.Init_From_Scene Initial_Mesh.Entries Length." &
-                  UInt'Image (Mesh_Entries_Size (Initial_Mesh)));
    exception
       when others =>
          Put_Line ("An exception occurred in Mesh_22.Init_From_Scene.");
@@ -259,6 +258,7 @@ package body Mesh_22 is
    end Mesh_Entries_Size;
 
    -------------------------------------------------------------------------
+
    procedure Render_Mesh (theMesh : Mesh_22) is
       use Ada.Containers;
       use Mesh_Entry_Package;
@@ -266,17 +266,18 @@ package body Mesh_22 is
          use Ogldev_Texture.Mesh_Texture_Package;
          --              Material_Kind  : constant Material_Type
          --                := Element (Entry_Cursor).Material_Index;
-         Material_Index :  Material_Type;
+         Material_Index : Material_Type;
+         anEntry        : constant Mesh_Entry := Element (Entry_Cursor);
          Tex_Curs       : Ogldev_Texture.Mesh_Texture_Package.Cursor;
-         Num_Indices    : constant Int := Int (Element (Entry_Cursor).Num_Indices);
+         Num_Indices    : constant Int := Int (anEntry.Num_Indices);
       begin
          Put_Line ("Mesh_22.Render_Mesh.Draw entered");
-         GL.Objects.Buffers.Array_Buffer.Bind (Element (Entry_Cursor).VBO);
+         GL.Objects.Buffers.Array_Buffer.Bind (anEntry.VBO);
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
          GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
 
-         GL.Objects.Buffers.Element_Array_Buffer.Bind (Element (Entry_Cursor).IBO);
+         GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.IBO);
          Material_Index := Element (Entry_Cursor).Material_Index;
          Put_Line ("Mesh_22.Render_Mesh, Material_Index: " &
                      Material_Type'Image (Material_Index));
@@ -284,6 +285,8 @@ package body Mesh_22 is
             if not theMesh.Textures.Is_Empty then
                Ogldev_Texture.Bind (Element (Tex_Curs),
                                     Ogldev_Engine_Common.Colour_Texture_Unit_Index);
+            else
+               Put_Line ("Mesh_22.Render_Mesh, theMesh.Textures Is Empty.");
             end if;
          else
             Put_Line ("Mesh_22.Render_Mesh, Invalid Material_Index.");
