@@ -263,15 +263,16 @@ package body Mesh_22 is
    procedure Render_Mesh (theMesh : Mesh_22) is
       use Ada.Containers;
       use Mesh_Entry_Package;
-      procedure Draw (Entry_Cursor :  Mesh_Entry_Package.Cursor) is
+      Entry_Cursor :  Mesh_Entry_Package.Cursor
+        := theMesh.Entries.First;
+      theEntry      : Mesh_Entry;
+
+      procedure Draw (anEntry : Mesh_Entry) is
          use Ogldev_Texture.Mesh_Texture_Package;
          --              Material_Kind  : constant Material_Type
          --                := Element (Entry_Cursor).Material_Index;
-         Material       : constant UInt := Element (Entry_Cursor).Material_Index;
-         anEntry        : constant Mesh_Entry := Element (Entry_Cursor);
-         Tex_Curs       : Ogldev_Texture.Mesh_Texture_Package.Cursor
-           := theMesh.Textures.First;
-         Num_Indices    : constant Int := Int (anEntry.Num_Indices);
+         Material     : constant UInt := anEntry.Material_Index;
+         Num_Indices  : constant Int := Int (anEntry.Num_Indices);
       begin
          Put_Line ("Mesh_22.Render_Mesh.Draw entered");
          GL.Objects.Buffers.Array_Buffer.Bind (anEntry.VBO);
@@ -283,10 +284,9 @@ package body Mesh_22 is
 
          Put_Line ("Mesh_22.Render_Mesh, Material_Index: " &
                      UInt'Image (Material));
---           if Material_Index'Enum_Rep < theMesh.Textures.Length then
          if Material < UInt (theMesh.Textures.Length) then
-            if not theMesh.Textures.Is_Empty then
-               Ogldev_Texture.Bind (Element (Tex_Curs),
+            if theMesh.Textures.Contains (Material) then
+               Ogldev_Texture.Bind (theMesh.Textures.Element (Material),
                                     Ogldev_Engine_Common.Colour_Texture_Unit_Index);
             else
                Put_Line ("Mesh_22.Render_Mesh, theMesh.Textures Is Empty.");
@@ -305,7 +305,11 @@ package body Mesh_22 is
 
       Put_Line ("Mesh_22.Render_Mesh theMesh.Entries Length." &
                   Ada.Containers.Count_Type'Image (theMesh.Entries.Length));
-      Iterate (theMesh.Entries, Draw'Access);
+      --        Iterate (theMesh.Entries, Draw'Access);
+      while Has_Element (Entry_Cursor) loop
+         theEntry := Element (Entry_Cursor);
+         Next (Entry_Cursor);
+      end loop;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
       GL.Attributes.Disable_Vertex_Attrib_Array (1);
