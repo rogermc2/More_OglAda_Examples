@@ -9,10 +9,10 @@ with Magick_Image;
 
 package body Ogldev_Texture is
 
-   procedure Bind (theTexture : Ogl_Texture;
+   procedure Bind (theTexture   : Ogl_Texture;
                    Texture_Unit : Ogldev_Engine_Common.Texture_Unit_Index) is
-   use GL.Low_Level;
-   use GL.Objects.Textures.Targets;
+      use GL.Low_Level;
+      use GL.Objects.Textures.Targets;
    begin
       GL.Objects.Textures.Set_Active_Unit (Texture_Unit'Enum_Rep);
       case theTexture.Texture_Target is
@@ -28,9 +28,9 @@ package body Ogldev_Texture is
    --  -------------------------------------------------------------------------
 
    function Init_Texture
-     (theTexture : in out Ogl_Texture;
+     (theTexture  : in out Ogl_Texture;
       Target_Type : GL.Low_Level.Enums.Texture_Kind;
-      File_Name  :  String) return Boolean is
+      File_Name   :  String) return Boolean is
       use Ada.Strings.Unbounded;
       Result : Boolean;
    begin
@@ -44,7 +44,7 @@ package body Ogldev_Texture is
          theTexture.Texture_Target := Target_Type;
       else
          Put_Line ("Ogldev_Texture.Init_Texture file *" & File_Name &
-                   "* not found");
+                     "* not found");
       end if;
       return Result;
    exception
@@ -90,26 +90,26 @@ package body Ogldev_Texture is
          Data_Blob   : constant Magick_Blob.Blob_Data := theTexture.Blob_Data;
          Blob_Length : constant UInt := UInt (Data_Blob.Length);
          Data        : array (1 .. Blob_Length) of UByte;
-         Index       : UInt := 0;
+         Byte_Index  : UInt := 0;
          Curs        : Cursor := Data_Blob.First;
          Level       : constant GL.Objects.Textures.Mipmap_Level := 0;
       begin
          Put_Line ("Ogldev_Texture.Load, Blob_Length: " &
-                  UInt'Image (Blob_Length));
+                     UInt'Image (Blob_Length));
          while Has_Element (Curs) loop
-            Index := Index + 1;
-            Data (Index) := Element (Curs);
+            Byte_Index := Byte_Index + 1;
+            Data (Byte_Index) := Element (Curs);
             Next (Curs);
          end loop;
 
-            -- load Texture_2D buffer with data from Data array.
-            Texture_2D.Load_From_Data (Level, GL.Pixels.RGBA,
-                                       Int (theTexture.Image.Columns),
-                                       Int (theTexture.Image.Rows),
-                                       GL.Pixels.RGBA, GL.Pixels.Unsigned_Byte,
-                                       GL.Objects.Textures.Image_Source (Data'Address));
-            Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
-            Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+         -- load Texture_2D buffer with data from Data array.
+         Texture_2D.Load_From_Data (Level, GL.Pixels.RGBA,
+                                    Int (theTexture.Image.Columns),
+                                    Int (theTexture.Image.Rows),
+                                    GL.Pixels.RGBA, GL.Pixels.Unsigned_Byte,
+                                    GL.Objects.Textures.Image_Source (Data'Address));
+         Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
+         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
       end;  --  declare
    exception
       when others =>

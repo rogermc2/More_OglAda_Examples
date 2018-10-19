@@ -179,18 +179,6 @@ package Material is
 
    Material_Exception : Exception;
 
---     procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
---                            Tex_Index : UInt := 0;
---                            Path      : out Ada.Strings.Unbounded.Unbounded_String);
-   --     procedure Get_Texture (aMaterial : AI_Material; Tex_Type : AI_Texture_Type;
-   --                            Tex_Index : UInt := 0;
-   --                            Path : out Ada.Strings.Unbounded.Unbounded_String;
-   --                            Mapping : AI_Texture_Mapping;
-   --                            UV_Index : out UInt;
-   --                            Blend : out GL.Types.Single;
-   --                            Op : AI_Texture_Op;
-   --                            Map_Mode : AI_Texture_Map_Mode;
-   --                            Result : out Assimp_Types.API_Return);
    function Get_Texture_Count (aMaterial : AI_Material;
                                Tex_Type  : AI_Texture_Type)
                                return GL.Types.UInt;
