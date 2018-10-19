@@ -29,7 +29,7 @@ Package Ogldev_Texture is
    Texture_Exception : Exception;
 
    procedure Bind (theTexture : Ogl_Texture;
-                   Texture_Unit : Ogldev_Engine_Common.Texture_Unit_Index);
+                   theTexture_Unit : GL.Objects.Textures.Texture_Unit);
    function Init_Texture
      (theTexture : in out Ogl_Texture;
       Target_Type : GL.Low_Level.Enums.Texture_Kind;

@@ -9,19 +9,26 @@ with Magick_Image;
 
 package body Ogldev_Texture is
 
-   procedure Bind (theTexture   : Ogl_Texture;
-                   Texture_Unit : Ogldev_Engine_Common.Texture_Unit_Index) is
+   procedure Bind (theTexture      : Ogl_Texture;
+                   theTexture_Unit : GL.Objects.Textures.Texture_Unit) is
       use GL.Low_Level;
       use GL.Objects.Textures.Targets;
    begin
-      GL.Objects.Textures.Set_Active_Unit (Texture_Unit'Enum_Rep);
+      GL.Objects.Textures.Set_Active_Unit (theTexture_Unit);
       case theTexture.Texture_Target is
-         when Enums.Texture_1D => Texture_1D.Bind (theTexture.Texture_Object);
-         when Enums.Texture_2D => Texture_2D.Bind (theTexture.Texture_Object);
-         when Enums.Texture_3D => Texture_3D.Bind (theTexture.Texture_Object);
+         when Enums.Texture_1D =>
+            Put_Line ("Ogldev_Texture.Bind, binding Texture_1D.");
+            Texture_1D.Bind (theTexture.Texture_Object);
+         when Enums.Texture_2D =>
+            Put_Line ("Ogldev_Texture.Bind, binding Texture_2D.");
+            Texture_2D.Bind (theTexture.Texture_Object);
+            Put_Line ("Ogldev_Texture.Bind, Texture_2D bound.");
+         when Enums.Texture_3D =>
+            Put_Line ("Ogldev_Texture.Bind, binding Texture_3D.");
+            Texture_3D.Bind (theTexture.Texture_Object);
          when others =>
             raise Texture_Exception with
-              "Ogldev_Texture.Bind, unhandles texture type.";
+              "Ogldev_Texture.Bind, unhandled texture type.";
       end case;
    end Bind;
 

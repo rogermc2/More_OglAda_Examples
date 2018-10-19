@@ -283,9 +283,9 @@ package body Mesh_22 is
                      UInt'Image (Material));
          if Material < UInt (theMesh.Textures.Length) then
             if theMesh.Textures.Contains (Material) then
-         Put_Line ("Mesh_22.Render_Mesh.Draw, binding material.");
-               Ogldev_Texture.Bind (theMesh.Textures.Element (Material),
-                                    Ogldev_Engine_Common.Colour_Texture_Unit_Index);
+               Put_Line ("Mesh_22.Render_Mesh.Draw, binding material.");
+               --  Colour_Texture_Unit_Index =
+               Ogldev_Texture.Bind (theMesh.Textures.Element (Material), 0);
          Put_Line ("Mesh_22.Render_Mesh.Draw, material bound.");
             else
                Put_Line ("Mesh_22.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &
