@@ -272,6 +272,7 @@ package body Mesh_22 is
          Material     : constant UInt := anEntry.Material_Index;
          Num_Indices  : constant Int := Int (anEntry.Num_Indices);
          theTexture   : Ogldev_Texture.Ogl_Texture;
+         OK           : Boolean := False;
       begin
          GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
@@ -282,12 +283,19 @@ package body Mesh_22 is
 
          Put_Line ("Mesh_22.Render_Mesh, Material_Index: " &
                      UInt'Image (Material));
-         if Material < UInt (theMesh.Textures.Length) then
-            if theMesh.Textures.Contains (Material) then
+         OK := Material < UInt (theMesh.Textures.Length);
+         if OK then
+            OK := theMesh.Textures.Contains (Material);
+            if OK then
                theTexture := theMesh.Textures.Element (Material);
-               Put_Line ("Mesh_22.Render_Mesh.Draw, binding material.");
-               Ogldev_Texture.Bind (theTexture, 0);
-         Put_Line ("Mesh_22.Render_Mesh.Draw, material bound.");
+               OK := theTexture.Texture_Object.Initialized;
+               if OK then
+                  Put_Line ("Mesh_22.Render_Mesh.Draw, binding material.");
+                   Ogldev_Texture.Bind (theTexture, 0);
+                  Put_Line ("Mesh_22.Render_Mesh.Draw, material bound.");
+               else
+                  Put_Line ("Mesh_22.Render_Mesh.Draw, Texture_Object is not initialized.");
+               end if;
             else
                Put_Line ("Mesh_22.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &
                         UInt'Image (Material));
@@ -295,10 +303,18 @@ package body Mesh_22 is
          else
             Put_Line ("Mesh_22.Render_Mesh.Draw, Invalid Material_Index.");
          end if;
-         Put_Line ("Mesh_22.Render_Mesh.Draw, drawing elements.");
-         GL.Objects.Buffers.Draw_Elements
-           (Triangles, Num_Indices, UInt_Type, 0);
-         Put_Line ("Mesh_22.Render_Mesh.Draw, elements drawn.");
+
+         if OK then
+            Put_Line ("Mesh_22.Render_Mesh.Draw, drawing elements.");
+            GL.Objects.Buffers.Draw_Elements
+              (Triangles, Num_Indices, UInt_Type, 0);
+            Put_Line ("Mesh_22.Render_Mesh.Draw, elements drawn.");
+         end if;
+
+      exception
+         when others =>
+            Put_Line ("An exception occurred in Mesh_22.Render_Mesh,Draw.");
+            raise;
       end Draw;
 
    begin
