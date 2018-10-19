@@ -235,10 +235,11 @@ package body Assimp_Mesh is
 
         for index in GL.Types.Int range 1 .. API_Max_Texture_Coords loop
             theAI_Mesh.Num_UV_Components (index) := UInt (C_Mesh.Num_UV_Components (unsigned (index)));
-        end loop;
-       Put_Line ("Assimp_Mesh.To_AI_Mesh, Num_UV_Components set");
+      end loop;
 
-        theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
+      theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
+      Put_Line ("Assimp_Mesh.To_AI_Mesh, Material_Index: " &
+               unsigned'Image (C_Mesh.Material_Index));
         if Num_Faces > 0 then
             theAI_Mesh.Faces := To_AI_Faces_Map (C_Mesh.Faces, C_Mesh.Num_Faces);
         end if;
@@ -266,8 +267,6 @@ package body Assimp_Mesh is
         aMesh  : AI_Mesh;
     begin
         Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
-        --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, C_Mesh_Array size: "  & GL.Types.uint'Image (C_Mesh_Array'Length));
-
         for index in 1 .. Num_Meshes loop
             Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, index: " &  unsigned'Image (index));
             Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");

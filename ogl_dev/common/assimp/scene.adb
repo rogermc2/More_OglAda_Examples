@@ -56,7 +56,7 @@ package body Scene is
       C_Materials_Array : Material.API_Material_Array (1 .. Num_Materials);
       C_Root_Node       : Scene.API_Node;
    begin
-      Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations ");
+      Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations, ");
       Put_Line ("Num_Textures, Num_Lights, Num_Cameras:");
       Put_Line (unsigned'Image (Num_Meshes) & unsigned'Image (Num_Materials) &
                   unsigned'Image (Num_Animations) & unsigned'Image (Num_Textures) &
@@ -91,14 +91,13 @@ package body Scene is
 
       theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Mesh_Array);
       if Num_Materials > 0 then
-         Put_Line ("Scene.To_AI_Scene setting C_Materials_Array.");
          C_Materials_Array := Material.Material_Pointers_Package.Value
            (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
          theScene.Materials :=
            AI_Conversion.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
          New_Line;
-         Put_Line ("Scene.To_AI_Scene theScene.Materials set, Num_Textures: " &
-                  unsigned'Image (Num_Textures));
+         Put_Line ("Scene.To_AI_Scene theScene.Materials set, Num_Materials, Num_Textures: " &
+                  unsigned'Image (Num_Materials) & unsigned'Image (Num_Textures));
       end if;
 
       if Num_Textures > 0 then

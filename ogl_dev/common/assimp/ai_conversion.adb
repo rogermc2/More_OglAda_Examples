@@ -100,7 +100,7 @@ package body AI_Conversion is
                   Interfaces.C.unsigned'Image (Num_Materials));
       for mat in 1 .. Num_Materials loop
          aMaterial := To_AI_Material (C_Material_Array (mat));
-         Material_Map.Insert (GL.Types.UInt (mat), aMaterial);
+         Material_Map.Insert (GL.Types.UInt (mat - 1), aMaterial);
       end loop;
       return Material_Map;
 

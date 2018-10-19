@@ -133,12 +133,12 @@ package body Mesh_22 is
       Result        : Assimp_Types.API_Return;
       Materials_Map : constant AI_Material_Map := theScene.Materials;
 
-      procedure Load_Textures (Curs : AI_Material_Package.Cursor) is
+      procedure Load_Textures (Material_Curs : AI_Material_Package.Cursor) is
          use Ada.Strings.Unbounded;
          use Ogldev_Texture.Mesh_Texture_Package;
-         aMaterial  : constant AI_Material := Element (Curs);
+         aMaterial  : constant AI_Material := Element (Material_Curs);
          aTexture   : Ogldev_Texture.Ogl_Texture;
-         Index      : GL.Types.UInt := Key (Curs);
+         Index      : GL.Types.UInt := Key (Material_Curs);
       begin
          Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
                      UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
@@ -265,37 +265,39 @@ package body Mesh_22 is
       use Mesh_Entry_Package;
       Entry_Cursor :  Mesh_Entry_Package.Cursor
         := theMesh.Entries.First;
-      theEntry      : Mesh_Entry;
+      anEntry      : Mesh_Entry;
 
-      procedure Draw (anEntry : Mesh_Entry) is
+      procedure Draw (thisEntry : Mesh_Entry) is
          use Ogldev_Texture.Mesh_Texture_Package;
-         --              Material_Kind  : constant Material_Type
-         --                := Element (Entry_Cursor).Material_Index;
          Material     : constant UInt := anEntry.Material_Index;
          Num_Indices  : constant Int := Int (anEntry.Num_Indices);
       begin
-         Put_Line ("Mesh_22.Render_Mesh.Draw entered");
-         GL.Objects.Buffers.Array_Buffer.Bind (anEntry.VBO);
+         GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
          GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
 
-         GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.IBO);
+         GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
 
          Put_Line ("Mesh_22.Render_Mesh, Material_Index: " &
                      UInt'Image (Material));
          if Material < UInt (theMesh.Textures.Length) then
             if theMesh.Textures.Contains (Material) then
+         Put_Line ("Mesh_22.Render_Mesh.Draw, binding material.");
                Ogldev_Texture.Bind (theMesh.Textures.Element (Material),
                                     Ogldev_Engine_Common.Colour_Texture_Unit_Index);
+         Put_Line ("Mesh_22.Render_Mesh.Draw, material bound.");
             else
-               Put_Line ("Mesh_22.Render_Mesh, theMesh.Textures Is Empty.");
+               Put_Line ("Mesh_22.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &
+                        UInt'Image (Material));
             end if;
          else
-            Put_Line ("Mesh_22.Render_Mesh, Invalid Material_Index.");
+            Put_Line ("Mesh_22.Render_Mesh.Draw, Invalid Material_Index.");
          end if;
+         Put_Line ("Mesh_22.Render_Mesh.Draw, drawing elements.");
          GL.Objects.Buffers.Draw_Elements
            (Triangles, Num_Indices, UInt_Type, 0);
+         Put_Line ("Mesh_22.Render_Mesh.Draw, elements drawn.");
       end Draw;
 
    begin
@@ -303,13 +305,15 @@ package body Mesh_22 is
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
 
-      Put_Line ("Mesh_22.Render_Mesh theMesh.Entries Length." &
-                  Ada.Containers.Count_Type'Image (theMesh.Entries.Length));
-      --        Iterate (theMesh.Entries, Draw'Access);
-      while Has_Element (Entry_Cursor) loop
-         theEntry := Element (Entry_Cursor);
-         Next (Entry_Cursor);
-      end loop;
+      if Is_Empty (theMesh.Entries) then
+         Put_Line ("Mesh_22.Render_Mesh, theMesh.Entries Is Empty.");
+      else
+         while Has_Element (Entry_Cursor) loop
+            anEntry := Element (Entry_Cursor);
+            Draw (anEntry);
+            Next (Entry_Cursor);
+         end loop;
+      end if;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
       GL.Attributes.Disable_Vertex_Attrib_Array (1);
