@@ -271,6 +271,7 @@ package body Mesh_22 is
          use Ogldev_Texture.Mesh_Texture_Package;
          Material     : constant UInt := anEntry.Material_Index;
          Num_Indices  : constant Int := Int (anEntry.Num_Indices);
+         theTexture   : Ogldev_Texture.Ogl_Texture;
       begin
          GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
@@ -283,9 +284,9 @@ package body Mesh_22 is
                      UInt'Image (Material));
          if Material < UInt (theMesh.Textures.Length) then
             if theMesh.Textures.Contains (Material) then
+               theTexture := theMesh.Textures.Element (Material);
                Put_Line ("Mesh_22.Render_Mesh.Draw, binding material.");
-               --  Colour_Texture_Unit_Index =
-               Ogldev_Texture.Bind (theMesh.Textures.Element (Material), 0);
+               Ogldev_Texture.Bind (theTexture, 0);
          Put_Line ("Mesh_22.Render_Mesh.Draw, material bound.");
             else
                Put_Line ("Mesh_22.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &

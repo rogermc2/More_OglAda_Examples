@@ -14,8 +14,9 @@ package body Ogldev_Texture is
       use GL.Low_Level;
       use GL.Objects.Textures.Targets;
    begin
-      GL.Objects.Textures.Set_Active_Unit (theTexture_Unit);
-      case theTexture.Texture_Target is
+      if theTexture.Texture_Object.Initialized then
+         GL.Objects.Textures.Set_Active_Unit (theTexture_Unit);
+         case theTexture.Texture_Target is
          when Enums.Texture_1D =>
             Put_Line ("Ogldev_Texture.Bind, binding Texture_1D.");
             Texture_1D.Bind (theTexture.Texture_Object);
@@ -29,7 +30,11 @@ package body Ogldev_Texture is
          when others =>
             raise Texture_Exception with
               "Ogldev_Texture.Bind, unhandled texture type.";
-      end case;
+         end case;
+      else
+         raise Texture_Exception with
+           "Ogldev_Texture.Bind, the Texture_Object is not initialized.";
+      end if;
    end Bind;
 
    --  -------------------------------------------------------------------------
