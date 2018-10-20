@@ -38,7 +38,7 @@ package body Mesh_22 is
    procedure Init_Materials (theMesh      : in out Mesh_22;
                              File_Name    : String;
                              theScene     : Scene.AI_Scene);
-   procedure Init_Mesh (Index    : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
+   procedure Init_Mesh (Mesh_Index : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
                         aMesh_22 : in out Mesh_22);
 
    --  -------------------------------------------------------------------------
@@ -96,24 +96,26 @@ package body Mesh_22 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_From_Scene (Initial_Mesh : out Mesh_22;
+   procedure Init_From_Scene (Initialized_Mesh : out Mesh_22;
                               File_Name    : String;
                               theScene     : Scene.AI_Scene) is
       use Assimp_Mesh.AI_Mesh_Package;
       Curs         : Cursor := theScene.Meshes.First;
-      Index        : UInt := 0;
+      Mesh_Index   : UInt := 0;
       aMesh        : Assimp_Mesh.AI_Mesh;
       anEntry      : Mesh_Entry;
    begin
+      --  Initialized_Mesh works becsuse there is only one mesh
+      --  Initialized_Mesh contains vertices and textures maps
       Put_Line ("Mesh_22.Init_From_Scene, number of theScene.Meshes: " &
                   Ada.Containers.Count_Type'Image (theScene.Meshes.Length));
       while Has_Element (Curs) loop
-         Index := Index + 1;
-         aMesh := theScene.Meshes (Index);
-         Init_Mesh (Index, aMesh, Initial_Mesh);
+         Mesh_Index := Mesh_Index + 1;
+         aMesh := theScene.Meshes (Mesh_Index);
+         Init_Mesh (Mesh_Index, aMesh, Initialized_Mesh);
+         Init_Materials (Initialized_Mesh, File_Name, theScene);
          Next (Curs);
       end loop;
-      Init_Materials (Initial_Mesh, File_Name, theScene);
 
    exception
       when others =>
@@ -187,7 +189,7 @@ package body Mesh_22 is
 
    -------------------------------------------------------------------------
 
-   procedure Init_Mesh (Index    : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
+   procedure Init_Mesh (Mesh_Index : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
                         aMesh_22 : in out Mesh_22) is
       use Mesh_Entry_Package;
       Num_Vertices : constant UInt := UInt (Source_Mesh.Vertices.Length);
@@ -202,20 +204,20 @@ package body Mesh_22 is
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
 
-      for Index in 1 .. Num_Vertices loop
-         Position := Source_Mesh.Vertices.Element (Index);
-         Normal := Source_Mesh.Normals.Element (Index);
-         if Has_Texture_Coords (Source_Mesh, Index) then
-            Tex_Coord := Source_Mesh.Texture_Coords (Int (Index));
+      for V_Index in 1 .. Num_Vertices loop
+         Position := Source_Mesh.Vertices.Element (V_Index);
+         Normal := Source_Mesh.Normals.Element (V_Index);
+         if Has_Texture_Coords (Source_Mesh, V_Index) then
+            Tex_Coord := Source_Mesh.Texture_Coords (Int (V_Index));
          else
             Tex_Coord := (0.0, 0.0, 0.0);
          end if;
-         Vertices (Int (Index)) :=
+         Vertices (Int (V_Index)) :=
            (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
       end loop;
 
-      for Index in 1 .. Source_Mesh.Faces.Length loop
-         Face := Source_Mesh.Faces.Element (UInt (Index));
+      for Face_Index in 1 .. Source_Mesh.Faces.Length loop
+         Face := Source_Mesh.Faces.Element (UInt (Face_Index));
          Index_Index := Index_Index + 1;
          Indices (Int (Index_Index)) := Face.Indices (1);
          Index_Index := Index_Index + 1;
@@ -226,7 +228,7 @@ package body Mesh_22 is
 
       --  m_Entries[Index].Init(Vertices, Indices);
       Init_Buffers (anEntry, Vertices, Indices);
-      aMesh_22.Entries.Insert (Index, anEntry);
+      aMesh_22.Entries.Insert (Mesh_Index, anEntry);
 
    exception
       when others =>
