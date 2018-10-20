@@ -153,14 +153,14 @@ package body Mesh_22 is
                if Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D,
                   Dir & To_String (Path)) then
-                  theMesh.Textures.Insert (UInt (index), aTexture);
                   Ogldev_Texture.Load (aTexture);
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from "
                             & Dir & To_String (Path));
+                  theMesh.Textures.Insert (UInt (index), aTexture);
                elsif Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
-                  theMesh.Textures.Insert (UInt (index), aTexture);
                   Ogldev_Texture.Load (aTexture);
+                  theMesh.Textures.Insert (UInt (index), aTexture);
                   New_Line;
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded default texture from "
                             & Dir & "white.png");
