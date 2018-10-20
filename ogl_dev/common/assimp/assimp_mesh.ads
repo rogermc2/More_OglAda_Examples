@@ -190,7 +190,6 @@ package Assimp_Mesh is
    procedure Render_Mesh (theMesh : Mesh);
    function To_AI_Mesh_Map (Num_Meshes : Interfaces.C.unsigned := 0;
                             C_Mesh_Array : API_Mesh_Array) return AI_Mesh_Map;
-   procedure To_API_Mesh (anAI_Mesh : AI_Mesh; C_Mesh : in out API_Mesh);
 
     private
          for AI_Primitive_Type use
