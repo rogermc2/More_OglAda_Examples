@@ -43,10 +43,10 @@ package body Mesh_22 is
 
    --  -------------------------------------------------------------------------
 
---     function Has_Texture_Coords (aMesh : Mesh_22; Index : UInt) return Boolean is
---     begin
---        return Ogldev_Texture.Texture_Map_Size (aMesh.Textures) > 0;
---     end Has_Texture_Coords;
+   --     function Has_Texture_Coords (aMesh : Mesh_22; Index : UInt) return Boolean is
+   --     begin
+   --        return Ogldev_Texture.Texture_Map_Size (aMesh.Textures) > 0;
+   --     end Has_Texture_Coords;
 
    ------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ package body Mesh_22 is
       use Ada.Containers;
    begin
       return Index < API_Vectors_Matrices.API_Max_Texture_Coords and
-           aMesh.Vertices.Length > 0;
+        aMesh.Vertices.Length > 0;
    end Has_Texture_Coords;
 
    ------------------------------------------------------------------------
@@ -103,7 +103,7 @@ package body Mesh_22 is
       anEntry      : Mesh_Entry;
    begin
       Put_Line ("Mesh_22.Init_From_Scene, number of theScene.Meshes: " &
-                     Ada.Containers.Count_Type'Image (theScene.Meshes.Length));
+                  Ada.Containers.Count_Type'Image (theScene.Meshes.Length));
       while Has_Element (Curs) loop
          Index := Index + 1;
          aMesh := theScene.Meshes (Index);
@@ -166,7 +166,7 @@ package body Mesh_22 is
                             & Dir & "white.png");
                else
                   Put_Line ("Mesh_22.Init_Materials.Load_Textures default texture "
-                    & Dir & "white.png not found.");
+                            & Dir & "white.png not found.");
                end if;
             else
                Put_Line ("Mesh_22.Init_Materials.Load_Textures Get_Texture failed");
@@ -288,15 +288,14 @@ package body Mesh_22 is
                theTexture := theMesh.Textures.Element (Material);
                OK := theTexture.Texture_Object.Initialized;
                if OK then
-                  Put_Line ("Mesh_22.Render_Mesh.Draw, binding material.");
-                   Ogldev_Texture.Bind (theTexture, 0);
+                  Ogldev_Texture.Bind (theTexture, 0);
                   Put_Line ("Mesh_22.Render_Mesh.Draw, material bound.");
                else
                   Put_Line ("Mesh_22.Render_Mesh.Draw, Texture_Object is not initialized.");
                end if;
             else
                Put_Line ("Mesh_22.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &
-                        UInt'Image (Material));
+                           UInt'Image (Material));
             end if;
          else
             Put_Line ("Mesh_22.Render_Mesh.Draw, Invalid Material_Index.");

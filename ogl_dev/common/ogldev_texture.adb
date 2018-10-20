@@ -18,14 +18,10 @@ package body Ogldev_Texture is
          GL.Objects.Textures.Set_Active_Unit (theTexture_Unit);
          case theTexture.Texture_Target is
          when Enums.Texture_1D =>
-            Put_Line ("Ogldev_Texture.Bind, binding Texture_1D.");
             Texture_1D.Bind (theTexture.Texture_Object);
          when Enums.Texture_2D =>
-            Put_Line ("Ogldev_Texture.Bind, binding Texture_2D.");
             Texture_2D.Bind (theTexture.Texture_Object);
-            Put_Line ("Ogldev_Texture.Bind, Texture_2D bound.");
          when Enums.Texture_3D =>
-            Put_Line ("Ogldev_Texture.Bind, binding Texture_3D.");
             Texture_3D.Bind (theTexture.Texture_Object);
          when others =>
             raise Texture_Exception with
@@ -59,6 +55,7 @@ package body Ogldev_Texture is
                      "* not found");
       end if;
       return Result;
+
    exception
       when others =>
          Put_Line ("An exception occurred in Ogldev_Texture.Init_Texture.");
