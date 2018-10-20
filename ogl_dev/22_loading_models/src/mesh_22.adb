@@ -81,6 +81,7 @@ package body Mesh_22 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
+
       Array_Buffer.Bind (theEntry.VBO);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
       Array_Buffer.Bind (theEntry.IBO);
@@ -142,8 +143,8 @@ package body Mesh_22 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : GL.Types.UInt := Key (Material_Curs);
       begin
-         Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
-                     UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
+--           Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
+--                       UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
                                                 aMaterial.Properties.First_Element);
@@ -156,8 +157,6 @@ package body Mesh_22 is
                  (aTexture, GL.Low_Level.Enums.Texture_2D,
                   Dir & To_String (Path)) then
                   Ogldev_Texture.Load (aTexture);
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from "
-                            & Dir & To_String (Path));
                   theMesh.Textures.Insert (UInt (index), aTexture);
                elsif Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
@@ -227,7 +226,6 @@ package body Mesh_22 is
 
       --  m_Entries[Index].Init(Vertices, Indices);
       Init_Buffers (anEntry, Vertices, Indices);
-      Put_Line ("Mesh_22.Init_Mesh Index: " & UInt'Image (Index));
       aMesh_22.Entries.Insert (Index, anEntry);
 
    exception
@@ -275,18 +273,12 @@ package body Mesh_22 is
          OK           : Boolean := False;
       begin
          GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
-         Put_Line ("Mesh_22.Render_Mesh, Array_Buffer size: " &
-                     Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
          GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
-         Put_Line ("Mesh_22.Render_Mesh, Element_Array_Buffer size: " &
-                     Size'Image (GL.Objects.Buffers.Element_Array_Buffer.Size));
 
-         Put_Line ("Mesh_22.Render_Mesh, Material_Index: " &
-                     UInt'Image (Material));
          OK := Material < UInt (theMesh.Textures.Length);
          if OK then
             OK := theMesh.Textures.Contains (Material);
@@ -295,7 +287,6 @@ package body Mesh_22 is
                OK := theTexture.Texture_Object.Initialized;
                if OK then
                   Ogldev_Texture.Bind (theTexture, 0);
-                  Put_Line ("Mesh_22.Render_Mesh.Draw, material bound.");
                else
                   Put_Line ("Mesh_22.Render_Mesh.Draw, Texture_Object is not initialized.");
                end if;
@@ -308,11 +299,8 @@ package body Mesh_22 is
          end if;
 
          if OK then
-            Put_Line ("Mesh_22.Render_Mesh.Draw, drawing elements, Num_Indices: "
-                     & Int'Image (Num_Indices));
             GL.Objects.Buffers.Draw_Elements
               (Triangles, Num_Indices, UInt_Type, 0);
-            Put_Line ("Mesh_22.Render_Mesh.Draw, elements drawn.");
          end if;
 
       exception
