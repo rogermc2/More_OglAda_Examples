@@ -93,7 +93,7 @@ package body Mesh_22 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_From_Scene (Initial_Mesh : in out Mesh_22;
+   procedure Init_From_Scene (Initial_Mesh : out Mesh_22;
                               File_Name    : String;
                               theScene     : Scene.AI_Scene) is
       use Assimp_Mesh.AI_Mesh_Package;
@@ -192,7 +192,6 @@ package body Mesh_22 is
       Num_Vertices : constant UInt := UInt (Source_Mesh.Vertices.Length);
       Vertices     : Vertex_Array (1 .. Int (Num_Vertices));
       Indices      : GL.Types.UInt_Array (1 .. Int (3 * Num_Vertices));
-      Mat_index    : constant GL.Types.UInt := Source_Mesh.Material_Index;
       anEntry      : Mesh_Entry;
       Position     : GL.Types.Singles.Vector3;
       Normal       : GL.Types.Singles.Vector3;
@@ -201,7 +200,6 @@ package body Mesh_22 is
       Index_Index  : Int := 0;
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
---        anEntry.Material_Index := Material_Type'Val (Source_Mesh.Material_Index);
 
       for Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (Index);
@@ -218,11 +216,11 @@ package body Mesh_22 is
       for Index in 1 .. Source_Mesh.Faces.Length loop
          Face := Source_Mesh.Faces.Element (UInt (Index));
          Index_Index := Index_Index + 1;
-         Indices (Int (Index)) := Face.Indices (1);
+         Indices (Int (Index_Index)) := Face.Indices (1);
          Index_Index := Index_Index + 1;
-         Indices (Int (Index)) := Face.Indices (2);
+         Indices (Int (Index_Index)) := Face.Indices (2);
          Index_Index := Index_Index + 1;
-         Indices (Int (Index)) := Face.Indices (3);
+         Indices (Int (Index_Index)) := Face.Indices (3);
       end loop;
 
       --  m_Entries[Index].Init(Vertices, Indices);
