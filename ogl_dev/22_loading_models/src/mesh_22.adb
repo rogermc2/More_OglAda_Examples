@@ -81,7 +81,9 @@ package body Mesh_22 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
+      Array_Buffer.Bind (theEntry.VBO);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
+      Array_Buffer.Bind (theEntry.IBO);
       Utilities.Load_Element_Buffer (Array_Buffer, Indices, Static_Draw);
 
    exception
@@ -273,11 +275,15 @@ package body Mesh_22 is
          OK           : Boolean := False;
       begin
          GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
+         Put_Line ("Mesh_22.Render_Mesh, Array_Buffer size: " &
+                     Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
          GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
+         Put_Line ("Mesh_22.Render_Mesh, Element_Array_Buffer size: " &
+                     Size'Image (GL.Objects.Buffers.Element_Array_Buffer.Size));
 
          Put_Line ("Mesh_22.Render_Mesh, Material_Index: " &
                      UInt'Image (Material));
@@ -302,7 +308,8 @@ package body Mesh_22 is
          end if;
 
          if OK then
-            Put_Line ("Mesh_22.Render_Mesh.Draw, drawing elements.");
+            Put_Line ("Mesh_22.Render_Mesh.Draw, drawing elements, Num_Indices: "
+                     & Int'Image (Num_Indices));
             GL.Objects.Buffers.Draw_Elements
               (Triangles, Num_Indices, UInt_Type, 0);
             Put_Line ("Mesh_22.Render_Mesh.Draw, elements drawn.");
