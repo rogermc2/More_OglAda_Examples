@@ -68,8 +68,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
          GL.Toggles.Enable (GL.Toggles.Cull_Face);
          GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
-         Ogldev_Basic_Lighting.Set_Color_Texture_Unit
-           (Light_Technique, Ogldev_Engine_Common.Colour_Texture_Unit_Index);
+         Ogldev_Basic_Lighting.Set_Color_Texture_Unit (Light_Technique, 0);
 
          Mesh_22.Load_Mesh
            (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
