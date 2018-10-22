@@ -238,8 +238,7 @@ package body Core_Image is
 --        To_C (To_String (Info.File_Name), C_Info.File_Name, Num_Chars);
 --        C_Info.Debug              := To_Magick_Boolean (Info.Debug);
 --  --        C_Info.Custom_Stream_Info := Info.Custom_Stream;
---        C_Info.Signature          := 0;
---     size_t (Info.Signature);
+--        C_Info.Signature          := size_t (Info.Signature);
 --        C_Info.Matte_Colour       := Info.Matte_Colour;
 --        return C_Info;
 --     end To_AI_Image_Info;
@@ -332,8 +331,7 @@ package body Core_Image is
       theImage.List               := C_Image.List;
       theImage.Previous           := C_Image.Previous;
       theImage.Next               := C_Image.Next;
-      theImage.Signature          := 0;
---          size_t (Method_Attribute.Magick_Core_Signature);
+      theImage.Signature          := C_Image.Signature;
       theImage.Matte_Colour       := C_Image.Matte_Colour;
       return theImage;
 
