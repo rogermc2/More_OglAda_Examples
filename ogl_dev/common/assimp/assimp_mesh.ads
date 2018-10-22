@@ -126,8 +126,18 @@ package Assimp_Mesh is
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    type Vertices_Map is new  Vertices_Package.Map with null Record;
 
-   type Colour_Array is array (UInt range 1 .. API_Max_Colour_Sets) of Assimp_Colour.AI_Colour_4D;
-   type Texture_Coords_Array is new Singles.Vector3_Array (1 .. API_Max_Texture_Coords);
+   type Colour_Array is array (UInt range 1 .. API_Max_Colour_Sets) of
+     Assimp_Colour.AI_Colour_4D;
+   type Texture_Coords_Array is new
+     Singles.Vector3_Array (1 .. API_Max_Texture_Coords);
+
+   package Colours_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Colour_Array);
+   type Colours_Map is new  Colours_Package.Map with null Record;
+
+   package Texture_Coords_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Texture_Coords_Array);
+   type Texture_Coords_Map is new  Texture_Coords_Package.Map with null Record;
 
     type AI_Mesh is record
         Name              : Ada.Strings.Unbounded.Unbounded_String :=
@@ -136,8 +146,8 @@ package Assimp_Mesh is
         Normals           : Vertices_Map;
         Tangents          : Vertices_Map;
         Bit_Tangents      : Vertices_Map;
-        Colours           : Colour_Array := (others => (0.0, 0.0, 0.0, 0.0));
-        Texture_Coords    : Texture_Coords_Array := (others => (0.0, 0.0, 0.0));
+        Colours           : Colours_Map;
+        Texture_Coords    : Texture_Coords_Map;
         Num_UV_Components : UInt_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Map;
         Bones             : Bones_Map;
@@ -158,7 +168,7 @@ package Assimp_Mesh is
         Normals           : Vector_3D_Array_Pointers.Pointer;
         Tangents          : Vector_3D_Array_Pointers.Pointer;
         Bit_Tangents      : Vector_3D_Array_Pointers.Pointer;
-        Colours           : API_Colour_4D_Ptr_Array;
+        Colours           : Colours_4D_Array_Pointer;
         Texture_Coords    : API_Vector_3D_Ptr_Array;
         Num_UV_Components : API_Unsigned_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Array_Pointer;
