@@ -3,7 +3,6 @@ with GL.Objects.Programs;
 with GL.Types; use GL.Types;
 with GL.Uniforms;
 
---  with Ant_Tweak_Bar;
 with Ogldev_Engine_Common;
 with Ogldev_Lights_Common; use Ogldev_Lights_Common;
 
@@ -23,7 +22,7 @@ package Ogldev_Basic_Lighting is
    function Lighting_Program (Technique : Basic_Lighting_Technique) return GL.Objects.Programs.Program;
 
    procedure Set_Color_Texture_Unit (Technique : Basic_Lighting_Technique;
-                   Texture_Unit : Ogldev_Engine_Common.Texture_Unit_Index);
+                   Texture_Unit : GL.Types.UInt);
    procedure Set_Directional_Light (Technique : Basic_Lighting_Technique;
                                     Light : Directional_Light);
    procedure Set_Point_Lights (Technique : Basic_Lighting_Technique;

@@ -69,7 +69,8 @@ package Core_Blob is
       Seeker    : Custom_Stream_Seeker;
       Teller    : Custom_Stream_Teller;
       Data      : System.Address;
-      Signature : size_t := size_t (Method_Attribute.Magick_Core_Signature);
+      Signature : size_t := 0;
+--        size_t (Method_Attribute.Magick_Core_Signature);
    end record;
     pragma Convention (C_Pass_By_Copy, Custom_Stream_Info);
 
@@ -104,8 +105,8 @@ private
       Debug         : Magick_Boolean_Type := Magic_False;
       Sema4         : Semaphore.Sem_Ptr := Null;
       Ref_Count     : Long_Long_Integer := 1;  --  ssize_t
-      Signature     : size_t :=
-        size_t (Method_Attribute.Magick_Core_Signature);
+      Signature     : size_t := 0;
+--          size_t (Method_Attribute.Magick_Core_Signature);
    end record;
     pragma Convention (C_Pass_By_Copy, Blob_Info);
 

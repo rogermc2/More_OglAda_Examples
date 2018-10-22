@@ -1,4 +1,6 @@
 
+with Interfaces.C;
+
 with Ada.Directories;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -38,20 +40,20 @@ package body Ogldev_Texture is
    function Init_Texture
      (theTexture  : in out Ogl_Texture;
       Target_Type : GL.Low_Level.Enums.Texture_Kind;
-      File_Name   :  String) return Boolean is
+      Texture_File :  String) return Boolean is
       use Ada.Strings.Unbounded;
       Result : Boolean;
    begin
-      Put_Line ("Ogldev_Texture.Init_Texture file " & "*" & File_Name & "*");
+      Put_Line ("Ogldev_Texture.Init_Texture file " & "*" & Texture_File & "*");
       Put_Line ("Ogldev_Texture.Init_Texture file size " &
                   Ada.Directories.File_Size'Image (Ada.Directories.Size
                   ("/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix.pcx")));
-      Result := Ada.Directories.Exists (File_Name);
+      Result := Ada.Directories.Exists (Texture_File);
       if Result then
-         theTexture.File_Name := To_Unbounded_String (File_Name);
+         theTexture.File_Name := To_Unbounded_String (Texture_File);
          theTexture.Texture_Target := Target_Type;
       else
-         Put_Line ("Ogldev_Texture.Init_Texture file *" & File_Name &
+         Put_Line ("Ogldev_Texture.Init_Texture file *" & Texture_File &
                      "* not found");
       end if;
       return Result;
@@ -89,6 +91,8 @@ package body Ogldev_Texture is
               "Ogldev_Texture.Load, unhandled texture type.";
       end case;
 
+      Put_Line ("Ogldev_Texture.Load, image signature: " &
+                  Interfaces.C.size_t'Image (theTexture.Image.Signature));
       Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
                   UInt'Image (theTexture.Image.Columns) & "  " &
                   UInt'Image (theTexture.Image.Rows) & "  " &

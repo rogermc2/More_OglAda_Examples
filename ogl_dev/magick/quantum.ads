@@ -80,8 +80,8 @@ package Quantum is
       Endian       : Endian_Type;
       Q_State      : Quantum_State;
       Sema4        : Semaphore.Sem_Ptr := Null;
-      Signature    : size_t :=
-        size_t (Method_Attribute.Magick_Core_Signature);
+      Signature    : size_t := 0;
+--          size_t (Method_Attribute.Magick_Core_Signature);
    end record;
    pragma Convention (C, Quantum_Info);
 

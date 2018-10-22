@@ -204,9 +204,9 @@ package body Ogldev_Basic_Lighting is
    --  -------------------------------------------------------------------------
 
    procedure Set_Color_Texture_Unit (Technique    : Basic_Lighting_Technique;
-                                     Texture_Unit : Ogldev_Engine_Common.Texture_Unit_Index) is
+                                     Texture_Unit : GL.Types.UInt) is
    begin
-      Set_Int (Technique.Colour_Texture_Location, Texture_Unit'Enum_Rep);
+      Set_Int (Technique.Colour_Texture_Location,  GL.Types.Int (Texture_Unit));
    end Set_Color_Texture_Unit;
 
    --  -------------------------------------------------------------------------

@@ -209,8 +209,8 @@ package Core_Image is
       File_Name          : Image_Info_Filename_Array :=
                              ('H', 'e','l','l','o', others => char (Character'Val (0)));  --  filename when reading/writing image
         Debug              : Magick_Boolean_Type := Magic_False;
-        Signature          : size_t :=
-                               size_t (Method_Attribute.Magick_Core_Signature);
+        Signature          : size_t := 0;
+--                                 size_t (Method_Attribute.Magick_Core_Signature);
         Custom_Stream_Info : access Core_Blob.Custom_Stream_Info := Null;
         Matte_Colour       : Magick_Pixel.Pixel_Info;
     end record;  --  API_Image_Info
@@ -313,8 +313,8 @@ package Core_Image is
         List               : System.Address := System.Null_Address;
         Previous           : System.Address := System.Null_Address;
         Next               : System.Address := System.Null_Address;
-        Signature          : size_t :=
-                               size_t (Method_Attribute.Magick_Core_Signature);
+        Signature          : size_t := 0;
+--                                 size_t (Method_Attribute.Magick_Core_Signature);
         Matte_Colour       : Magick_Pixel.Pixel_Info;
     end record;  --  API_Image
    pragma Convention (C_Pass_By_Copy, API_Image);
@@ -333,7 +333,8 @@ package Core_Image is
         Y             : size_t := 0;  --  ssize_t
         Except        : access  Magick_Exception.Exception_Info := Null;
         Client_Data   : System.Address := System.Null_Address;
-        Signature     : size_t := size_t (Method_Attribute.Magick_Core_Signature);
+        Signature     : size_t := 0;
+--        size_t (Method_Attribute.Magick_Core_Signature);
     end record;  --  Stream_Info
 
     type Image is record
@@ -425,8 +426,8 @@ package Core_Image is
         List               : System.Address;
         Previous           : System.Address;
         Next               : System.Address;
-        Signature          : size_t :=
-                               size_t (Method_Attribute.Magick_Core_Signature);
+        Signature          : size_t := 0;
+--                                 size_t (Method_Attribute.Magick_Core_Signature);
         Matte_Colour       : Magick_Pixel.Pixel_Info;
     end record;  --  Image
 
@@ -485,8 +486,8 @@ package Core_Image is
         Unique             : Ada.Strings.Unbounded.Unbounded_String;
         File_Name          : Ada.Strings.Unbounded.Unbounded_String;
         Debug              : Boolean := False;
-        Signature          : GL.Types.UInt :=
-                               GL.Types.UInt (Method_Attribute.Magick_Core_Signature);
+        Signature          : GL.Types.UInt := 0;
+--                                 GL.Types.UInt (Method_Attribute.Magick_Core_Signature);
         Custom_Stream      : Core_Blob.Custom_Stream_Ptr := Null;
         Matte_Colour       : Magick_Pixel.Pixel_Info;
     end record;  --  Image_Info
