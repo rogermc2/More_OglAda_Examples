@@ -60,6 +60,8 @@ package body Utilities is
        new Print_Singles_Vector (GL.Index_Homogeneous, GL.Types.Singles.Vector4);
    procedure Print_Singles_Vector6 is
        new Print_Singles_Vector (Maths.Index_6, Maths.Vector6);
+   procedure Print_Singles_Vector8 is
+       new Print_Singles_Vector (Maths.Index_8, Maths.Vector8);
 
    --  ---------------------------------------------------------------
 
@@ -203,6 +205,17 @@ package body Utilities is
       end loop;
       New_Line;
    end Print_GL_Array4;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Print_GL_Array8 (Name : String; anArray : Maths.Vector8_Array) is
+   begin
+      Put_Line (Name & ": ");
+      for Index in anArray'First .. anArray'Last loop
+         Print_Singles_Vector8 ("", anArray (Index));
+      end loop;
+      New_Line;
+   end Print_GL_Array8;
 
    --  ------------------------------------------------------------------------
 
