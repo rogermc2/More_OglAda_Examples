@@ -275,9 +275,9 @@ package body Mesh_22 is
          OK           : Boolean := False;
       begin
          GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 12);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 20);
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
 
