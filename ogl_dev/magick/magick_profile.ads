@@ -19,8 +19,8 @@ package Magick_Profile is
       Name      : chars_ptr;
       Length    : unsigned;
       Info      : access Profile_Data;
-      Signature : size_t :=
-        size_t (Method_Attribute.Magick_Core_Signature);
+      Signature : size_t := 0;
+--          size_t (Method_Attribute.Magick_Core_Signature);
    end record;
    pragma Convention (C_Pass_By_Copy, Profile_Info);
 

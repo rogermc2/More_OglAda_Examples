@@ -93,8 +93,8 @@ package Magick_Exception is
       Exceptions        : System.Address := System.Null_Address;
       Relinquish        : Magick_Boolean_Type := Magic_False;
       Sema4             : Semaphore.Sem_Ptr;
-      Signature         : size_t :=
-        size_t (Method_Attribute.Magick_Core_Signature);
+      Signature         : size_t := 0;
+--          size_t (Method_Attribute.Magick_Core_Signature);
    end record;
    pragma Convention (C_Pass_By_Copy, AI_Exception_Info);
 
