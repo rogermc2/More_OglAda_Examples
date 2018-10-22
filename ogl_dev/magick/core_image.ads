@@ -486,8 +486,8 @@ package Core_Image is
         Unique             : Ada.Strings.Unbounded.Unbounded_String;
         File_Name          : Ada.Strings.Unbounded.Unbounded_String;
         Debug              : Boolean := False;
-        Signature          : GL.Types.UInt := 0;
---                                 GL.Types.UInt (Method_Attribute.Magick_Core_Signature);
+        Signature          : size_t := 0;
+--        := GL.Types.UInt (Method_Attribute.Magick_Core_Signature);
         Custom_Stream      : Core_Blob.Custom_Stream_Ptr := Null;
         Matte_Colour       : Magick_Pixel.Pixel_Info;
     end record;  --  Image_Info
