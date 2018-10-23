@@ -170,7 +170,7 @@ package Assimp_Mesh is
         Tangents          : Vector_3D_Array_Pointers.Pointer;
         Bit_Tangents      : Vector_3D_Array_Pointers.Pointer;
         Colours           : Colours_4D_Array_Pointer;
-        Texture_Coords    : API_Vector_3D_Ptr_Array;
+        Texture_Coords    : Texture_Coords_3D_Array_Pointer;
         Num_UV_Components : API_Unsigned_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Array_Pointer;
         Num_Bones         : Interfaces.C.unsigned := 0;
