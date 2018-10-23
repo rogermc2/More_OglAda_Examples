@@ -9,6 +9,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Low_Level.Enums;
+with GL.Objects.Textures;
+with GL.Objects.Textures.Targets;
 
 with Maths;
 with Utilities;
@@ -81,6 +83,7 @@ package body Mesh_22 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
+--        Utilities.Print_GL_Array8 ("Mesh_22.Init_Buffers Vertices_Array", Vertices_Array);
 
       Array_Buffer.Bind (theEntry.VBO);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
@@ -105,7 +108,7 @@ package body Mesh_22 is
       aMesh        : Assimp_Mesh.AI_Mesh;
       anEntry      : Mesh_Entry;
    begin
-      --  Initialized_Mesh works becsuse there is only one mesh
+      --  Initialized_Mesh works because there is only one mesh
       --  Initialized_Mesh contains vertices and textures maps
       Put_Line ("Mesh_22.Init_From_Scene, number of theScene.Meshes: " &
                   Ada.Containers.Count_Type'Image (theScene.Meshes.Length));
@@ -208,7 +211,9 @@ package body Mesh_22 is
          Position := Source_Mesh.Vertices.Element (V_Index);
          Normal := Source_Mesh.Normals.Element (V_Index);
          if Has_Texture_Coords (Source_Mesh, V_Index) then
+         Put_Line ("Mesh_22.Init_Mesh V_Index: " & UInt'Image (V_Index));
             Tex_Coord := Source_Mesh.Texture_Coords (Int (V_Index));
+            Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
             Tex_Coord := (0.0, 0.0, 0.0);
          end if;
@@ -276,8 +281,9 @@ package body Mesh_22 is
       begin
          GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 12);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 20);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
+--           GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
 
@@ -288,6 +294,11 @@ package body Mesh_22 is
                theTexture := theMesh.Textures.Element (Material);
                OK := theTexture.Texture_Object.Initialized;
                if OK then
+
+--        GL.Objects.Textures.Set_Active_Unit (0);
+--        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
+--        GL.Objects.Buffers.Draw_Elements (Triangles, 12, UInt_Type, 0);
+
                   Ogldev_Texture.Bind (theTexture, 0);
                else
                   Put_Line ("Mesh_22.Render_Mesh.Draw, Texture_Object is not initialized.");
