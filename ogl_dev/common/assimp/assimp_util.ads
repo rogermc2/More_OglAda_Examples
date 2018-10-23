@@ -14,8 +14,7 @@ package Assimp_Util is
                                      aProperty : Material.AI_Material_Property);
    procedure Print_API_Property_Data (Title     : String;
                                       aProperty : Material.API_Material_Property);
---     procedure Print_API_Property_Array (Title  : String;
---                                        anArray : Material.API_Property_Array);
+   procedure Print_API_Sring (Title : String; theAPI_String : Assimp_Types.API_String);
    function To_Assimp_API_String
      (UB_String : Ada.Strings.Unbounded.Unbounded_String)
       return Assimp_Types.API_String;

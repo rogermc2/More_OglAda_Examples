@@ -55,6 +55,13 @@ package body Assimp_Util is
 
     --  -------------------------------------------------------------------------
 
+   procedure Print_API_Sring (Title : String; theAPI_String : Assimp_Types.API_String) is
+   begin
+      Put_Line (Title & ": " & To_String (theAPI_String));
+   end Print_API_Sring;
+
+   --  -------------------------------------------------------------------------
+
     function To_Assimp_API_String
       (UB_String :  Ada.Strings.Unbounded.Unbounded_String)
       return Assimp_Types.API_String is
@@ -146,7 +153,7 @@ package body Assimp_Util is
                 return theString;
             end;
         else
-            return "";
+            return "Empty String";
         end if;
     end To_String;
 
