@@ -62,6 +62,19 @@ package body Assimp_Util is
 
    --  -------------------------------------------------------------------------
 
+   procedure Print_Unsigned_Array (Name    : String;
+                                   anArray : API_Vectors_Matrices.API_Unsigned_Array) is
+      use Interfaces.C;
+   begin
+      Put_Line (Name & ": ");
+      for Index in anArray'First .. anArray'Last loop
+         Put_Line (unsigned'Image (Index) & ":  " & unsigned'Image (anArray (Index)));
+      end loop;
+      New_Line;
+   end Print_Unsigned_Array;
+
+   --  -------------------------------------------------------------------------
+
     function To_Assimp_API_String
       (UB_String :  Ada.Strings.Unbounded.Unbounded_String)
       return Assimp_Types.API_String is
