@@ -112,10 +112,10 @@ package Assimp_Mesh is
      (Interfaces.C.unsigned range <>) of aliased API_Face;
    pragma Convention (C, API_Faces_Array);
 
-   package Faces_Array_Pointers is new Interfaces.C.Pointers
+   package API_Faces_Array_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Face, API_Faces_Array,
       API_Face'(others => <>));
-   subtype Faces_Array_Pointer is Faces_Array_Pointers.Pointer;
+   subtype Faces_Array_Pointer is API_Faces_Array_Pointers.Pointer;
 
    package Faces_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Face);
@@ -165,14 +165,14 @@ package Assimp_Mesh is
         Primitive_Types   : Interfaces.C.unsigned := 0;
         Num_Vertices      : Interfaces.C.unsigned := 0;
         Num_Faces         : Interfaces.C.unsigned := 0;
-        Vertices          : Vector_3D_Array_Pointers.Pointer;
-        Normals           : Vector_3D_Array_Pointers.Pointer;
-        Tangents          : Vector_3D_Array_Pointers.Pointer;
-        Bit_Tangents      : Vector_3D_Array_Pointers.Pointer;
-        Colours           : Colours_4D_Array_Pointer;
-        Texture_Coords    : Texture_Coords_3D_Array_Pointer;
+        Vertices          : Vector_3D_Array_Pointers.Pointer := null;
+        Normals           : Vector_3D_Array_Pointers.Pointer := null;
+        Tangents          : Vector_3D_Array_Pointers.Pointer := null;
+        Bit_Tangents      : Vector_3D_Array_Pointers.Pointer := null;
+        Colours           : Colours_4D_Array_Pointer := null;
+        Texture_Coords    : Texture_Coords_3D_Array_Pointer := null;
         Num_UV_Components : API_Unsigned_Array (1 .. API_Max_Texture_Coords);
-        Faces             : Faces_Array_Pointer;
+        Faces             : Faces_Array_Pointer := null;
         Num_Bones         : Interfaces.C.unsigned := 0;
         Bones             : access Bones_Array_Pointer := null;
         Material_Index    : Interfaces.C.unsigned := 0;
