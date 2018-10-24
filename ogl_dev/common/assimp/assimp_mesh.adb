@@ -21,10 +21,8 @@ package body Assimp_Mesh is
    procedure Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
                              File_Name : String);
    procedure Init_Mesh (theMesh : in out Mesh; Mesh_Index : UInt; anAI_Mesh : AI_Mesh);
-   function To_AI_Colours_Map (C_Array_Ptr  : Colours_4D_Array_Pointer;
-                               Num_Vertices : Interfaces.C.unsigned) return Colours_Map;
-   function To_AI_Texture_Coords_Map (C_Array_Ptr  : Texture_Coords_3D_Array_Pointer;
-                                      Num_Vertices : Interfaces.C.unsigned) return Texture_Coords_Map;
+   function To_AI_Colours_Array (C_Array  : API_Colours_4D_Array) return Colour_Array_4D;
+   function To_AI_Texture_Coords_Array (C_Array  : API_Texture_Coords_3D_Array) return Texture_Coords_Array;
    function To_AI_Vertices_Map (C_Array_Ptr  : Vector_3D_Array_Pointers.Pointer;
                                 Num_Vertices : Interfaces.C.unsigned) return Vertices_Map;
    function To_AI_Vertex_Weight_Map (Weights_Ptr : Vertex_Weight_Array_Pointer;
@@ -150,31 +148,20 @@ package body Assimp_Mesh is
 
    --  ------------------------------------------------------------------------
 
-   function To_AI_Colours_Map (C_Array_Ptr  : Colours_4D_Array_Pointer;
-                               Num_Vertices : Interfaces.C.unsigned) return Colours_Map is
-      use Colours_Package;
-      V_Array         : API_Vectors_Matrices.API_Colours_4D_Array (1 .. Num_Vertices);
-      C_Array         : API_Vectors_Matrices.API_Colour_Set_4D;
-      Colours         : Colour_Array_4D;
-      API_Colours     : API_Vectors_Matrices.API_Colour_4D;
-      theMap          : Colours_Map;
-   begin
-      V_Array := API_Vectors_Matrices.Colours_4D_Array_Pointers.Value
-        (C_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
-
-      for V_index in V_Array'First .. V_Array'Last loop
-         C_Array := V_Array (V_index);
-         for index in C_Array'First .. C_Array'Last loop
-            API_Colours := C_Array (index);
-            Colours (UInt (index)).R := Single (API_Colours.R);
-            Colours (UInt (index)).G := Single (API_Colours.G);
-            Colours (UInt (index)).B := Single (API_Colours.B);
-            Colours (UInt (index)).A := Single (API_Colours.A);
-         end loop;
-         theMap.Insert (UInt (V_index), Colours);
-      end loop;
-      return theMap;
-   end To_AI_Colours_Map;
+   function To_AI_Colours_Array (C_Array  : API_Colours_4D_Array)
+                                 return Colour_Array_4D is
+   API_Colours     : API_Vectors_Matrices.API_Colour_4D;
+   Colours         : Colour_Array_4D;
+begin
+   for index in C_Array'First .. C_Array'Last loop
+      API_Colours := C_Array (index);
+      Colours (UInt (index)).R := Single (API_Colours.R);
+      Colours (UInt (index)).G := Single (API_Colours.G);
+      Colours (UInt (index)).B := Single (API_Colours.B);
+      Colours (UInt (index)).A := Single (API_Colours.A);
+   end loop;
+   return Colours;
+end To_AI_Colours_Array;
 
    --  ------------------------------------------------------------------------
 
@@ -230,9 +217,7 @@ package body Assimp_Mesh is
       use Interfaces.C;
       use Vector_3D_Array_Pointers;
       use API_Vectors_Matrices;
-      use Colours_4D_Array_Pointers;
       use Unsigned_Array_Pointers;
-      use Texture_Coords_3D_Pointers;
       theAI_Mesh   : AI_Mesh;
       Num_Vertices : constant unsigned := C_Mesh.Num_Vertices;
       Num_Faces    : constant unsigned :=C_Mesh.Num_Faces;
@@ -260,39 +245,36 @@ package body Assimp_Mesh is
          theAI_Mesh.Bit_Tangents := To_AI_Vertices_Map (C_Mesh.Bit_Tangents, C_Mesh.Num_Vertices);
       end if;
 
-      if C_Mesh.Colours /= null then
-         theAI_Mesh.Colours := To_AI_Colours_Map (C_Mesh.Colours, C_Mesh.Num_Vertices);
-      end if;
+      theAI_Mesh.Colours := To_AI_Colours_Array (C_Mesh.Colours);
 
-      if C_Mesh.Texture_Coords /= null then
-         Put_Line ("Assimp_Mesh.To_AI_Mesh calling To_AI_Texture_Coords_Map");
-         theAI_Mesh.Texture_Coords :=
-           To_AI_Texture_Coords_Map (C_Mesh.Texture_Coords, C_Mesh.Num_Vertices);
-      else
-         Put_Line ("Assimp_Mesh.To_AI_Mesh C_Mesh.Texture_Coords is null.");
-      end if;
 
-      for index in GL.Types.Int range 1 .. API_Max_Texture_Coords loop
-         theAI_Mesh.Num_UV_Components (index) :=
-           UInt (C_Mesh.Num_UV_Components (unsigned (index)));
-      end loop;
-      Assimp_Util.Print_Unsigned_Array ("Assimp_Mesh.To_AI_Mesh C_Mesh.Num_UV_Components",
-                                        C_Mesh.Num_UV_Components);
-      Utilities.Print_GL_UInt_Array ("Assimp_Mesh.To_AI_Mesh theAI_Mesh.Num_UV_Components",
-                                     theAI_Mesh.Num_UV_Components);
-
-      Assimp_Util.Print_API_Sring ("C_Mesh.Name", C_Mesh.Name);
-      theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
-      if Num_Faces > 0 then
-         theAI_Mesh.Faces := To_AI_Faces_Map (C_Mesh.Faces, C_Mesh.Num_Faces);
-      end if;
-
-      if Num_Bones > 0 then
-         theAI_Mesh.Bones := To_AI_Bones_Map (C_Mesh.Bones, C_Mesh.Num_Bones);
-      end if;
-
-      return theAI_Mesh;
-
+--  --        if C_Mesh.Texture_Coords /= null then
+--  --           Put_Line ("Assimp_Mesh.To_AI_Mesh calling To_AI_Texture_Coords_Map");
+--  --           theAI_Mesh.Texture_Coords :=
+--  --             To_AI_Texture_Coords_Map (C_Mesh.Texture_Coords, C_Mesh.Num_Vertices);
+--  --        else
+--  --           Put_Line ("Assimp_Mesh.To_AI_Mesh C_Mesh.Texture_Coords is null.");
+--  --        end if;
+--
+--        for index in GL.Types.Int range 1 .. API_Max_Texture_Coords loop
+--           theAI_Mesh.Num_UV_Components (index) :=
+--             UInt (C_Mesh.Num_UV_Components (unsigned (index)));
+--        end loop;
+--        Utilities.Print_GL_UInt_Array ("Assimp_Mesh.To_AI_Mesh theAI_Mesh.Num_UV_Components",
+--                                       theAI_Mesh.Num_UV_Components);
+--
+--        Assimp_Util.Print_API_Sring ("C_Mesh.Name", C_Mesh.Name);
+--        theAI_Mesh.Material_Index := UInt (C_Mesh.Material_Index);
+--        if Num_Faces > 0 then
+--           theAI_Mesh.Faces := To_AI_Faces_Map (C_Mesh.Faces, C_Mesh.Num_Faces);
+--        end if;
+--
+--        if Num_Bones > 0 then
+--           theAI_Mesh.Bones := To_AI_Bones_Map (C_Mesh.Bones, C_Mesh.Num_Bones);
+--        end if;
+--
+--        return theAI_Mesh;
+--
    exception
       when others =>
          Put_Line ("An exception occurred in Assimp_Mesh.To_AI_Mesh.");
@@ -335,40 +317,19 @@ package body Assimp_Mesh is
 
    --  ------------------------------------------------------------------------
 
-   function To_AI_Texture_Coords_Map (C_Array_Ptr  : Texture_Coords_3D_Array_Pointer;
-                                      Num_Vertices : Interfaces.C.unsigned)
-                                      return Texture_Coords_Map is
-      use Texture_Coords_Package;
-      use Texture_Coords_3D_Pointers;
-      V_Array        : API_Vectors_Matrices.API_Texture_Coords_3D_Array (1 .. Num_Vertices);
-      C_Array        : API_Vectors_Matrices.API_Texture_Coords_Set_3D;
-      Texture_Coords : Texture_Coords_Array;
+   function To_AI_Texture_Coords_Array (C_Array  : API_Texture_Coords_3D_Array)
+                                        return Texture_Coords_Array is
       API_Coords     : API_Vectors_Matrices.API_Texture_Coords_3D;
-      Map_Index      : UInt := 0;
-      theMap         : Texture_Coords_Map;
+      Texture_Coords : Vector3_Array;
    begin
-      if C_Array_Ptr = null then
-         Put_Line ("Assimp_Mesh.To_AI_Texture_Coords_Map, C_Array_Ptr is null");
-      else
-         V_Array := API_Vectors_Matrices.Texture_Coords_3D_Pointers.Value
-           (C_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
-
-         for V_index in V_Array'First .. V_Array'Last loop
-            C_Array := V_Array (V_index);
-            for index in C_Array'First .. C_Array'Last loop
-               API_Coords := C_Array (index);
-               Texture_Coords (Int (index)) (GL.X) := Single (API_Coords.U);
-               Texture_Coords (Int (index)) (GL.Y) := Single (API_Coords.V);
-               Texture_Coords (Int (index)) (GL.Z) := Single (API_Coords.w);
-            end loop;
-            Map_Index := Map_Index + 1;
-            Put_Line ("Assimp_Mesh.To_AI_Texture_Coords_Map, Map_Index: " &
-                        UInt'Image (Map_Index));
-            theMap.Insert (Map_Index, Texture_Coords);
-         end loop;
-      end if;
-      return theMap;
-   end To_AI_Texture_Coords_Map;
+      for index in C_Array'First .. C_Array'Last loop
+         API_Coords := C_Array (index);
+         Texture_Coords (Int (index)) (GL.X) := Single (API_Coords.U);
+         Texture_Coords (Int (index)) (GL.Y) := Single (API_Coords.V);
+         Texture_Coords (Int (index)) (GL.Z) := Single (API_Coords.w);
+      end loop;
+      return Texture_Coords;
+   end To_AI_Texture_Coords_Array;
 
    --  ------------------------------------------------------------------------
 

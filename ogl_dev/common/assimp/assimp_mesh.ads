@@ -147,8 +147,8 @@ package Assimp_Mesh is
         Normals           : Vertices_Map;
         Tangents          : Vertices_Map;
         Bit_Tangents      : Vertices_Map;
-        Colours           : Colours_Map;
-        Texture_Coords    : Texture_Coords_Map;
+        Colours           : Colour_Array_4D;
+        Texture_Coords    : Texture_Coords_Array;
         Num_UV_Components : UInt_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Map;
         Bones             : Bones_Map;
@@ -169,8 +169,8 @@ package Assimp_Mesh is
         Normals           : Vector_3D_Array_Pointers.Pointer := null;
         Tangents          : Vector_3D_Array_Pointers.Pointer := null;
         Bit_Tangents      : Vector_3D_Array_Pointers.Pointer := null;
-        Colours           : Colours_4D_Array_Pointer := null;
-        Texture_Coords    : Texture_Coords_3D_Array_Pointer := null;
+        Colours           : API_Colour_4D_Ptr_Array;
+        Texture_Coords    : API_Vector_3D_Ptr_Array;
         Num_UV_Components : API_Unsigned_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Array_Pointer := null;
         Num_Bones         : Interfaces.C.unsigned := 0;
