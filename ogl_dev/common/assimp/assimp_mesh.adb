@@ -151,10 +151,12 @@ package body Assimp_Mesh is
    function To_AI_Colours_Array (C_Array  : API_Colour_4D_Ptr_Array)
                                  return Colour_Array_4D is
    API_Colours     : API_Vectors_Matrices.API_Colour_4D;
+   API_Colours_Ptr : access API_Vectors_Matrices.API_Colour_4D;
    Colours         : Colour_Array_4D;
 begin
    for index in C_Array'First .. C_Array'Last loop
-      API_Colours := C_Array (index).all;
+      API_Colours_Ptr := C_Array (index);
+      API_Colours := API_Colours_Ptr.all;
       Colours (UInt (index)).R := Single (API_Colours.R);
       Colours (UInt (index)).G := Single (API_Colours.G);
       Colours (UInt (index)).B := Single (API_Colours.B);
