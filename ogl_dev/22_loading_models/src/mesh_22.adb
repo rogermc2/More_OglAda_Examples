@@ -57,7 +57,6 @@ package body Mesh_22 is
       use Ada.Containers;
    begin
       return aMesh.Vertices.Length > 0 and then
-        (not aMesh.Texture_Coords.Is_Empty) and then
         Index <= API_Vectors_Matrices.API_Max_Texture_Coords;
    end Has_Texture_Coords;
 
@@ -217,7 +216,7 @@ package body Mesh_22 is
          Normal := Source_Mesh.Normals.Element (V_Index);
 --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
          if Has_Texture_Coords (Source_Mesh, V_Index) then
-            Tex_Coord := Source_Mesh.Texture_Coords.Element (V_Index)(1);
+            Tex_Coord := Source_Mesh.Texture_Coords (Int (V_Index));
             Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
             Tex_Coord := (0.0, 0.0, 0.0);
