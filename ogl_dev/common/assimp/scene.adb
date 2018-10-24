@@ -71,10 +71,10 @@ package body Scene is
       Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
                   unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
                   unsigned'Image (C_Mesh_Array (1).Material_Index));
-      Put_Line ("Num_UV_Components:");
-      for index in 1 .. API_Vectors_Matrices.API_Max_Texture_Coords loop
-         Put (unsigned'Image (C_Mesh_Array (1).Num_UV_Components (unsigned (index))) & "  ");
-      end loop;
+--        Put_Line ("Num_UV_Components:");
+--        for index in 1 .. API_Vectors_Matrices.API_Max_Texture_Coords loop
+--           Put (unsigned'Image (C_Mesh_Array (1).Num_UV_Components (unsigned (index))) & "  ");
+--        end loop;
       New_Line;
       for index in 1 .. C_Mesh_Array'Length loop
          Put_Line ("Name length, string: Mesh" & Integer'Image (index) & ": " &

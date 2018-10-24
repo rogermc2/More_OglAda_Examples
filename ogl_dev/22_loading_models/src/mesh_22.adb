@@ -56,8 +56,9 @@ package body Mesh_22 is
                                 return Boolean is
       use Ada.Containers;
    begin
-      return Index < API_Vectors_Matrices.API_Max_Texture_Coords and
-        aMesh.Vertices.Length > 0;
+      return aMesh.Vertices.Length > 0 and then
+        (not aMesh.Texture_Coords.Is_Empty) and then
+        Index <= API_Vectors_Matrices.API_Max_Texture_Coords;
    end Has_Texture_Coords;
 
    ------------------------------------------------------------------------
@@ -209,10 +210,11 @@ package body Mesh_22 is
 
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
+         Put_Line ("Mesh_22.Init_Mesh V_Index: " & UInt'Image (V_Index));
+         Utilities.Print_Vector ("Mesh_22.Init_Mesh Position", Source_Mesh.Vertices.Element (V_Index));
          Normal := Source_Mesh.Normals.Element (V_Index);
          if Has_Texture_Coords (Source_Mesh, V_Index) then
-         Put_Line ("Mesh_22.Init_Mesh V_Index: " & UInt'Image (V_Index));
-            Tex_Coord := Source_Mesh.Texture_Coords (Int (V_Index));
+            Tex_Coord := Source_Mesh.Texture_Coords.Element (V_Index)(1);
             Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
             Tex_Coord := (0.0, 0.0, 0.0);
@@ -221,15 +223,22 @@ package body Mesh_22 is
            (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
       end loop;
 
-      for Face_Index in 1 .. Source_Mesh.Faces.Length loop
-         Face := Source_Mesh.Faces.Element (UInt (Face_Index));
-         Index_Index := Index_Index + 1;
-         Indices (Int (Index_Index)) := Face.Indices (1);
-         Index_Index := Index_Index + 1;
-         Indices (Int (Index_Index)) := Face.Indices (2);
-         Index_Index := Index_Index + 1;
-         Indices (Int (Index_Index)) := Face.Indices (3);
-      end loop;
+      if Source_Mesh.Faces.Is_Empty then
+         Put_Line ("Mesh_22.Init_Mesh, Source_Mesh.Faces is empty.");
+      else
+         Put_Line ("Mesh_22.Init_Mesh, Source_Mesh.Faces is not empty.");
+         for Face_Index in 1 .. Source_Mesh.Faces.Length loop
+            Put_Line ("Mesh_22.Init_Mesh, Face_Index: " &
+                     Ada.Containers.Count_Type'Image (Face_Index));
+            Face := Source_Mesh.Faces.Element (UInt (Face_Index));
+            Index_Index := Index_Index + 1;
+            Indices (Int (Index_Index)) := Face.Indices (1);
+            Index_Index := Index_Index + 1;
+            Indices (Int (Index_Index)) := Face.Indices (2);
+            Index_Index := Index_Index + 1;
+            Indices (Int (Index_Index)) := Face.Indices (3);
+         end loop;
+      end if;
 
       --  m_Entries[Index].Init(Vertices, Indices);
       Init_Buffers (anEntry, Vertices, Indices);
