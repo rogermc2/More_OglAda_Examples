@@ -164,6 +164,8 @@ package body Mesh_22 is
                   Dir & To_String (Path)) then
                   Ogldev_Texture.Load (aTexture);
                   theMesh.Textures.Insert (UInt (index), aTexture);
+                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from "
+                            & Dir & To_String (Path));
                elsif Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
                   Ogldev_Texture.Load (aTexture);
@@ -210,9 +212,10 @@ package body Mesh_22 is
 
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
-         Put_Line ("Mesh_22.Init_Mesh V_Index: " & UInt'Image (V_Index));
-         Utilities.Print_Vector ("Mesh_22.Init_Mesh Position", Source_Mesh.Vertices.Element (V_Index));
+--           Put_Line ("Mesh_22.Init_Mesh V_Index: " & UInt'Image (V_Index));
+--           Utilities.Print_Vector ("Mesh_22.Init_Mesh Position", Source_Mesh.Vertices.Element (V_Index));
          Normal := Source_Mesh.Normals.Element (V_Index);
+--           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
          if Has_Texture_Coords (Source_Mesh, V_Index) then
             Tex_Coord := Source_Mesh.Texture_Coords.Element (V_Index)(1);
             Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
@@ -228,8 +231,8 @@ package body Mesh_22 is
       else
          Put_Line ("Mesh_22.Init_Mesh, Source_Mesh.Faces is not empty.");
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
-            Put_Line ("Mesh_22.Init_Mesh, Face_Index: " &
-                     Ada.Containers.Count_Type'Image (Face_Index));
+--              Put_Line ("Mesh_22.Init_Mesh, Face_Index: " &
+--                       Ada.Containers.Count_Type'Image (Face_Index));
             Face := Source_Mesh.Faces.Element (UInt (Face_Index));
             Index_Index := Index_Index + 1;
             Indices (Int (Index_Index)) := Face.Indices (1);
