@@ -21,8 +21,8 @@ package body Assimp_Mesh is
    procedure Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
                              File_Name : String);
    procedure Init_Mesh (theMesh : in out Mesh; Mesh_Index : UInt; anAI_Mesh : AI_Mesh);
-   function To_AI_Colours_Array (C_Array : API_Colour_4D_Ptr_Array) return Colour_Array_4D;
-   function To_AI_Texture_Coords_Array (C_Array : API_Texture_Coords_3D_Ptr_Array) return Texture_Coords_Array;
+   function To_AI_Colours_Map (C_Array : API_Colour_4D_Ptr_Array) return Colours_Map;
+   function To_AI_Texture_Coords_Map (C_Array : API_Texture_Coords_3D_Ptr_Array) return Texture_Coords_Map;
    function To_AI_Vertices_Map (C_Array_Ptr  : Vector_3D_Array_Pointers.Pointer;
                                 Num_Vertices : Interfaces.C.unsigned) return Vertices_Map;
    function To_AI_Vertex_Weight_Map (Weights_Ptr : Vertex_Weight_Array_Pointer;
@@ -148,22 +148,26 @@ package body Assimp_Mesh is
 
    --  ------------------------------------------------------------------------
 
-   function To_AI_Colours_Array (C_Array  : API_Colour_4D_Ptr_Array)
-                                 return Colour_Array_4D is
+   function To_AI_Colours_Map (C_Array  : API_Colour_4D_Ptr_Array)
+                                 return Colours_Map is
    API_Colours     : API_Vectors_Matrices.API_Colour_4D;
    API_Colours_Ptr : access API_Vectors_Matrices.API_Colour_4D;
-   Colours         : Colour_Array_4D;
+   Colours         : Singles.Vector4;
+   TheMap          : Colours_Map;
 begin
-   for index in C_Array'First .. C_Array'Last loop
-      API_Colours_Ptr := C_Array (index);
-      API_Colours := API_Colours_Ptr.all;
-      Colours (UInt (index)).R := Single (API_Colours.R);
-      Colours (UInt (index)).G := Single (API_Colours.G);
-      Colours (UInt (index)).B := Single (API_Colours.B);
-      Colours (UInt (index)).A := Single (API_Colours.A);
-   end loop;
-   return Colours;
-end To_AI_Colours_Array;
+      for index in C_Array'First .. C_Array'Last loop
+         API_Colours_Ptr := C_Array (index);
+         if API_Colours_Ptr /= null then
+            API_Colours := API_Colours_Ptr.all;
+            Colours (GL.X) := Single (API_Colours.R);
+            Colours (GL.Y) := Single (API_Colours.G);
+            Colours (GL.Z) := Single (API_Colours.B);
+            Colours (GL.W) := Single (API_Colours.A);
+            TheMap.Insert (UInt (index), Colours);
+         end if;
+      end loop;
+   return TheMap;
+end To_AI_Colours_Map;
 
    --  ------------------------------------------------------------------------
 
@@ -247,7 +251,7 @@ end To_AI_Colours_Array;
          theAI_Mesh.Bit_Tangents := To_AI_Vertices_Map (C_Mesh.Bit_Tangents, C_Mesh.Num_Vertices);
       end if;
 
-      theAI_Mesh.Colours := To_AI_Colours_Array (C_Mesh.Colours);
+      theAI_Mesh.Colours := To_AI_Colours_Map (C_Mesh.Colours);
 
 
 --  --        if C_Mesh.Texture_Coords /= null then
@@ -319,19 +323,23 @@ end To_AI_Colours_Array;
 
    --  ------------------------------------------------------------------------
 
-   function To_AI_Texture_Coords_Array (C_Array  : API_Texture_Coords_3D_Ptr_Array)
-                                        return Texture_Coords_Array is
+   function To_AI_Texture_Coords_Map (C_Array  : API_Texture_Coords_3D_Ptr_Array)
+                                      return Texture_Coords_Map is
       API_Coords     : API_Vectors_Matrices.API_Texture_Coords_3D;
-      Texture_Coords : Texture_Coords_Array;
+      Texture_Coords : Singles.Vector3;
+      theMap         : Texture_Coords_Map;
    begin
       for index in C_Array'First .. C_Array'Last loop
-         API_Coords := C_Array (index).all;
-         Texture_Coords (Int (index)) (GL.X) := Single (API_Coords.U);
-         Texture_Coords (Int (index)) (GL.Y) := Single (API_Coords.V);
-         Texture_Coords (Int (index)) (GL.Z) := Single (API_Coords.w);
+         if C_Array (index) /= null then
+            API_Coords := C_Array (index).all;
+            Texture_Coords (GL.X) := Single (API_Coords.U);
+            Texture_Coords (GL.Y) := Single (API_Coords.V);
+            Texture_Coords (GL.Z) := Single (API_Coords.w);
+         end if;
+         theMap.Insert (UInt (index), Texture_Coords);
       end loop;
-      return Texture_Coords;
-   end To_AI_Texture_Coords_Array;
+      return theMap;
+   end To_AI_Texture_Coords_Map;
 
    --  ------------------------------------------------------------------------
 

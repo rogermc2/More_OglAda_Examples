@@ -216,7 +216,7 @@ package body Mesh_22 is
          Normal := Source_Mesh.Normals.Element (V_Index);
 --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
          if Has_Texture_Coords (Source_Mesh, V_Index) then
-            Tex_Coord := Source_Mesh.Texture_Coords (Int (V_Index));
+            Tex_Coord := Source_Mesh.Texture_Coords (V_Index);
             Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
             Tex_Coord := (0.0, 0.0, 0.0);
