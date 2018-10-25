@@ -75,6 +75,15 @@ package API_Vectors_Matrices is
       API_Vector_3D'(others => <>));
    subtype Vector_3D_Array_Pointer is Vector_3D_Array_Pointers.Pointer;
 
+   type API_Texture_Coords_Array is array
+     (Interfaces.C.unsigned range <>) of aliased API_Texture_Coords_3D;
+   pragma Convention (C, API_Texture_Coords_Array);
+
+   package Texture_Coords_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Texture_Coords_3D, API_Texture_Coords_Array,
+      API_Texture_Coords_3D'(others => <>));
+   subtype Texture_Coords_Array_Pointer is Texture_Coords_Array_Pointers.Pointer;
+
    type API_Colours_3D_Array is array
      (Interfaces.C.unsigned range <>) of aliased API_Colour_3D;
    pragma Convention (C, API_Colours_3D_Array);
@@ -98,7 +107,8 @@ package API_Vectors_Matrices is
 --     subtype Colours_4D_Array_Pointer is Colours_4D_Array_Pointers.Pointer;
 
    type API_Texture_Coords_3D_Ptr_Array is array
-     (Interfaces.C.unsigned range 1 .. API_Max_Texture_Coords) of access API_Texture_Coords_3D;
+     (Interfaces.C.unsigned range 1 .. API_Max_Texture_Coords) of Texture_Coords_Array_Pointer;
+--       (Interfaces.C.unsigned range 1 .. API_Max_Texture_Coords) of access API_Texture_Coords_3D;
    pragma Convention (C, API_Texture_Coords_3D_Ptr_Array);
 
 --     type API_Texture_Coords_3D_Array is array
