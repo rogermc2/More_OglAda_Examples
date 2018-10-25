@@ -108,7 +108,6 @@ package API_Vectors_Matrices is
 
    type API_Texture_Coords_3D_Ptr_Array is array
      (Interfaces.C.unsigned range 1 .. API_Max_Texture_Coords) of Texture_Coords_Array_Pointer;
---       (Interfaces.C.unsigned range 1 .. API_Max_Texture_Coords) of access API_Texture_Coords_3D;
    pragma Convention (C, API_Texture_Coords_3D_Ptr_Array);
 
 --     type API_Texture_Coords_3D_Array is array
