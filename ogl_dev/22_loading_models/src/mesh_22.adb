@@ -41,7 +41,7 @@ package body Mesh_22 is
                              File_Name    : String;
                              theScene     : Scene.AI_Scene);
    procedure Init_Mesh (Mesh_Index : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
-                        aMesh_22 : in out Mesh_22);
+                        aMesh_22   : in out Mesh_22);
 
    --  -------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ package body Mesh_22 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
---        Utilities.Print_GL_Array8 ("Mesh_22.Init_Buffers Vertices_Array", Vertices_Array);
+      --        Utilities.Print_GL_Array8 ("Mesh_22.Init_Buffers Vertices_Array", Vertices_Array);
 
       Array_Buffer.Bind (theEntry.VBO);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
@@ -83,8 +83,8 @@ package body Mesh_22 is
    --  -------------------------------------------------------------------------
 
    procedure Init_From_Scene (Initialized_Mesh : out Mesh_22;
-                              File_Name    : String;
-                              theScene     : Scene.AI_Scene) is
+                              File_Name        : String;
+                              theScene         : Scene.AI_Scene) is
       use Assimp_Mesh.AI_Mesh_Package;
       Curs         : Cursor := theScene.Meshes.First;
       Mesh_Index   : UInt := 0;
@@ -131,8 +131,8 @@ package body Mesh_22 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : GL.Types.UInt := Key (Material_Curs);
       begin
---           Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
---                       UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
+         --           Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
+         --                       UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
                                                 aMaterial.Properties.First_Element);
@@ -178,33 +178,36 @@ package body Mesh_22 is
    -------------------------------------------------------------------------
 
    procedure Init_Mesh (Mesh_Index : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
-                        aMesh_22 : in out Mesh_22) is
+                        aMesh_22   : in out Mesh_22) is
       use Mesh_Entry_Package;
-      Num_Vertices : constant UInt := UInt (Source_Mesh.Vertices.Length);
-      Vertices     : Vertex_Array (1 .. Int (Num_Vertices));
-      Indices      : GL.Types.UInt_Array (1 .. Int (3 * Num_Vertices));
-      anEntry      : Mesh_Entry;
-      Position     : GL.Types.Singles.Vector3;
-      Normal       : GL.Types.Singles.Vector3;
+      Num_Vertices  : constant UInt := UInt (Source_Mesh.Vertices.Length);
+      Vertices      : Vertex_Array (1 .. Int (Num_Vertices));
+      Indices       : GL.Types.UInt_Array (1 .. Int (3 * Num_Vertices));
+      anEntry       : Mesh_Entry;
+      Position      : GL.Types.Singles.Vector3;
+      Normal        : GL.Types.Singles.Vector3;
       Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
-      Tex_Coord    : GL.Types.Singles.Vector3;
-      Face         : Assimp_Mesh.AI_Face;
-      Index_Index  : Int := 0;
+      Tex_Coord     : GL.Types.Singles.Vector3;
+      Face          : Assimp_Mesh.AI_Face;
+      Index_Index   : Int := 0;
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
 
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
---           Put_Line ("Mesh_22.Init_Mesh V_Index: " & UInt'Image (V_Index));
---           Utilities.Print_Vector ("Mesh_22.Init_Mesh Position", Source_Mesh.Vertices.Element (V_Index));
+         --           Put_Line ("Mesh_22.Init_Mesh V_Index: " & UInt'Image (V_Index));
+         --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Position", Source_Mesh.Vertices.Element (V_Index));
          Normal := Source_Mesh.Normals.Element (V_Index);
---           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
+         --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
          if Source_Mesh.Texture_Coords.Contains (1) then
-         Put_Line ("Mesh_22.Init_Mesh Texture_Coords contains index 1.");
             Tex_Coord_Map := Source_Mesh.Texture_Coords.Element (1);
+            if Tex_Coord_Map.Contains (V_Index) then
+               Tex_Coord := Tex_Coord_Map.Element (V_Index);
+            else
+               Tex_Coord := (0.0, 0.0, 0.0);
+            end if;
 --              Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
-            Put_Line ("Mesh_22.Init_Mesh Texture_Coords does not contain index 1.");
             Tex_Coord := (0.0, 0.0, 0.0);
          end if;
          Vertices (Int (V_Index)) :=
@@ -216,8 +219,8 @@ package body Mesh_22 is
       else
          Put_Line ("Mesh_22.Init_Mesh, Source_Mesh.Faces is not empty.");
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
---              Put_Line ("Mesh_22.Init_Mesh, Face_Index: " &
---                       Ada.Containers.Count_Type'Image (Face_Index));
+            --              Put_Line ("Mesh_22.Init_Mesh, Face_Index: " &
+            --                       Ada.Containers.Count_Type'Image (Face_Index));
             Face := Source_Mesh.Faces.Element (UInt (Face_Index));
             Index_Index := Index_Index + 1;
             Indices (Int (Index_Index)) := Face.Indices (1);
@@ -279,7 +282,7 @@ package body Mesh_22 is
          GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
          GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
---           GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
+         --           GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
@@ -292,9 +295,9 @@ package body Mesh_22 is
                OK := theTexture.Texture_Object.Initialized;
                if OK then
 
---        GL.Objects.Textures.Set_Active_Unit (0);
---        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
---        GL.Objects.Buffers.Draw_Elements (Triangles, 12, UInt_Type, 0);
+                  --        GL.Objects.Textures.Set_Active_Unit (0);
+                  --        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
+                  --        GL.Objects.Buffers.Draw_Elements (Triangles, 12, UInt_Type, 0);
 
                   Ogldev_Texture.Bind (theTexture, 0);
                else
