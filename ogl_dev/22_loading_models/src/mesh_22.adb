@@ -45,23 +45,6 @@ package body Mesh_22 is
 
    --  -------------------------------------------------------------------------
 
-   --     function Has_Texture_Coords (aMesh : Mesh_22; Index : UInt) return Boolean is
-   --     begin
-   --        return Ogldev_Texture.Texture_Map_Size (aMesh.Textures) > 0;
-   --     end Has_Texture_Coords;
-
-   ------------------------------------------------------------------------
-
-   function Has_Texture_Coords (aMesh : Assimp_Mesh.AI_Mesh; Index : UInt)
-                                return Boolean is
-      use Ada.Containers;
-   begin
-      return aMesh.Vertices.Length > 0 and then
-        Index <= API_Vectors_Matrices.API_Max_Texture_Coords;
-   end Has_Texture_Coords;
-
-   ------------------------------------------------------------------------
-
    procedure Init_Buffers (theEntry : in out Mesh_Entry;
                            Vertices : Vertex_Array;
                            Indices  : GL.Types.UInt_Array) is
@@ -215,7 +198,7 @@ package body Mesh_22 is
 --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Position", Source_Mesh.Vertices.Element (V_Index));
          Normal := Source_Mesh.Normals.Element (V_Index);
 --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
-         if Has_Texture_Coords (Source_Mesh, V_Index) then
+         if Source_Mesh.Texture_Coords.Contains (V_Index) then
             Tex_Coord := Source_Mesh.Texture_Coords (V_Index);
             Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
