@@ -8,7 +8,6 @@ with Ada.Containers.Indefinite_Ordered_Maps;
 with GL.Objects.Buffers;
 with GL.Types; use GL.Types;
 
-with Assimp_Colour;
 with Assimp_Texture;
 with Assimp_Types;
 with API_Vectors_Matrices; use API_Vectors_Matrices;
@@ -44,6 +43,10 @@ package Assimp_Mesh is
         Vertex_ID  : UInt;
         Weight     : Single;
     end record;
+
+    type AI_Colour_4D is record
+            R, G, B, A : GL.Types.Single;
+   end record;
 
    package Vertex_Weight_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Vertex_Weight);
@@ -126,18 +129,18 @@ package Assimp_Mesh is
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    type Vertices_Map is new  Vertices_Package.Map with null Record;
 
-   type Colour_Array_4D is array (UInt range 1 .. API_Max_Colour_Sets) of
-     Assimp_Colour.AI_Colour_4D;
+--     type Colour_Array_4D is array (UInt range 1 .. API_Max_Colour_Sets) of
+--       Assimp_Colour.AI_Colour_4D;
 
    package Colours_Package is new
-     Ada.Containers.Indefinite_Ordered_Maps (UInt, Colour_Array_4D);
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector4);
    type Colours_Map is new  Colours_Package.Map with null Record;
 
-   type Texture_Coords_Array is new
-     Singles.Vector3_Array (1 .. API_Max_Texture_Coords);
+--     type Texture_Coords_Array is new
+--       Singles.Vector3_Array (1 .. API_Max_Texture_Coords);
 
    package Texture_Coords_Package is new
-     Ada.Containers.Indefinite_Ordered_Maps (UInt, Texture_Coords_Array);
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    type Texture_Coords_Map is new  Texture_Coords_Package.Map with null Record;
 
     type AI_Mesh is record
@@ -147,8 +150,8 @@ package Assimp_Mesh is
         Normals           : Vertices_Map;
         Tangents          : Vertices_Map;
         Bit_Tangents      : Vertices_Map;
-        Colours           : Colour_Array_4D;
-        Texture_Coords    : Texture_Coords_Array;
+        Colours           : Colours_Map;
+        Texture_Coords    : Texture_Coords_Map;
         Num_UV_Components : UInt_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Map;
         Bones             : Bones_Map;
