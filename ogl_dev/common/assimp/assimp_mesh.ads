@@ -129,15 +129,13 @@ package Assimp_Mesh is
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    type Vertices_Map is new  Vertices_Package.Map with null Record;
 
---     type Colour_Array_4D is array (UInt range 1 .. API_Max_Colour_Sets) of
---       Assimp_Colour.AI_Colour_4D;
-
    package Colours_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector4);
    type Colours_Map is new  Colours_Package.Map with null Record;
 
---     type Texture_Coords_Array is new
---       Singles.Vector3_Array (1 .. API_Max_Texture_Coords);
+   package Colour_Coords_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Colours_Map);
+   type Colour_Coords_Map is new  Colour_Coords_Package.Map with null Record;
 
    package Texture_Coords_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Vertices_Map);
@@ -150,7 +148,7 @@ package Assimp_Mesh is
         Normals           : Vertices_Map;
         Tangents          : Vertices_Map;
         Bit_Tangents      : Vertices_Map;
-        Colours           : Colours_Map;
+        Colours           : Colour_Coords_Map;
         Texture_Coords    : Texture_Coords_Map;
         Num_UV_Components : UInt_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Map;

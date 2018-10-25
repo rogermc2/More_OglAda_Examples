@@ -199,10 +199,12 @@ package body Mesh_22 is
 --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Position", Source_Mesh.Vertices.Element (V_Index));
          Normal := Source_Mesh.Normals.Element (V_Index);
 --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
-         if Source_Mesh.Texture_Coords.Contains (V_Index) then
-            Tex_Coord_Map := Source_Mesh.Texture_Coords.Element (V_Index);
+         if Source_Mesh.Texture_Coords.Contains (1) then
+         Put_Line ("Mesh_22.Init_Mesh Texture_Coords contains index 1.");
+            Tex_Coord_Map := Source_Mesh.Texture_Coords.Element (1);
 --              Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
+            Put_Line ("Mesh_22.Init_Mesh Texture_Coords does not contain index 1.");
             Tex_Coord := (0.0, 0.0, 0.0);
          end if;
          Vertices (Int (V_Index)) :=
