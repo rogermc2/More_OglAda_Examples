@@ -186,12 +186,16 @@ package body Mesh_22 is
       anEntry       : Mesh_Entry;
       Position      : GL.Types.Singles.Vector3;
       Normal        : GL.Types.Singles.Vector3;
+      Contains_1    : constant Boolean := Source_Mesh.Texture_Coords.Contains (1);
       Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
       Tex_Coord     : GL.Types.Singles.Vector3;
       Face          : Assimp_Mesh.AI_Face;
       Index_Index   : Int := 0;
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
+      if Contains_1 then
+         Tex_Coord_Map := Source_Mesh.Texture_Coords.Element (1);
+      end if;
 
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
@@ -199,17 +203,16 @@ package body Mesh_22 is
          --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Position", Source_Mesh.Vertices.Element (V_Index));
          Normal := Source_Mesh.Normals.Element (V_Index);
          --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
-         if Source_Mesh.Texture_Coords.Contains (1) then
-            Tex_Coord_Map := Source_Mesh.Texture_Coords.Element (1);
+         if Contains_1 then
             if Tex_Coord_Map.Contains (V_Index) then
                Tex_Coord := Tex_Coord_Map.Element (V_Index);
             else
                Tex_Coord := (0.0, 0.0, 0.0);
             end if;
---              Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
             Tex_Coord := (0.0, 0.0, 0.0);
          end if;
+--           Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          Vertices (Int (V_Index)) :=
            (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
       end loop;
