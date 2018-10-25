@@ -186,6 +186,7 @@ package body Mesh_22 is
       anEntry      : Mesh_Entry;
       Position     : GL.Types.Singles.Vector3;
       Normal       : GL.Types.Singles.Vector3;
+      Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
       Tex_Coord    : GL.Types.Singles.Vector3;
       Face         : Assimp_Mesh.AI_Face;
       Index_Index  : Int := 0;
@@ -199,8 +200,8 @@ package body Mesh_22 is
          Normal := Source_Mesh.Normals.Element (V_Index);
 --           Utilities.Print_Vector ("Mesh_22.Init_Mesh Normal", Normal);
          if Source_Mesh.Texture_Coords.Contains (V_Index) then
-            Tex_Coord := Source_Mesh.Texture_Coords (V_Index);
-            Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
+            Tex_Coord_Map := Source_Mesh.Texture_Coords.Element (V_Index);
+--              Utilities.Print_Vector ("Mesh_22.Init_Mesh Tex_Coord", Tex_Coord);
          else
             Tex_Coord := (0.0, 0.0, 0.0);
          end if;

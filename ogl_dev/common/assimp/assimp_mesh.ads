@@ -140,7 +140,7 @@ package Assimp_Mesh is
 --       Singles.Vector3_Array (1 .. API_Max_Texture_Coords);
 
    package Texture_Coords_Package is new
-     Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Vertices_Map);
    type Texture_Coords_Map is new  Texture_Coords_Package.Map with null Record;
 
     type AI_Mesh is record

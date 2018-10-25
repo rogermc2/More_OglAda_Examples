@@ -21,8 +21,10 @@ package body Assimp_Mesh is
    procedure Init_Materials (theMesh   : in out Mesh; theScene : Scene.AI_Scene;
                              File_Name : String);
    procedure Init_Mesh (theMesh : in out Mesh; Mesh_Index : UInt; anAI_Mesh : AI_Mesh);
-   function To_AI_Colours_Map (C_Array : API_Colour_4D_Ptr_Array) return Colours_Map;
-   function To_AI_Texture_Coords_Map (C_Array : API_Texture_Coords_3D_Ptr_Array) return Texture_Coords_Map;
+   function To_AI_Colours_Map (C_Array : API_Colour_4D_Ptr_Array;
+                                      Num_Vertices : Interfaces.C.unsigned) return Colours_Map;
+   function To_AI_Texture_Coords_Map (C_Array : API_Texture_Coords_3D_Ptr_Array;
+                                      Num_Vertices : Interfaces.C.unsigned) return Texture_Coords_Map;
    function To_AI_Vertices_Map (C_Array_Ptr  : Vector_3D_Array_Pointers.Pointer;
                                 Num_Vertices : Interfaces.C.unsigned) return Vertices_Map;
    function To_AI_Vertex_Weight_Map (Weights_Ptr : Vertex_Weight_Array_Pointer;
@@ -148,7 +150,8 @@ package body Assimp_Mesh is
 
    --  ------------------------------------------------------------------------
 
-   function To_AI_Colours_Map (C_Array  : API_Colour_4D_Ptr_Array)
+   function To_AI_Colours_Map (C_Array  : API_Colour_4D_Ptr_Array;
+                               Num_Vertices : Interfaces.C.unsigned)
                                  return Colours_Map is
    API_Colours     : API_Vectors_Matrices.API_Colour_4D;
    API_Colours_Ptr : access API_Vectors_Matrices.API_Colour_4D;
@@ -251,7 +254,7 @@ end To_AI_Colours_Map;
          theAI_Mesh.Bit_Tangents := To_AI_Vertices_Map (C_Mesh.Bit_Tangents, C_Mesh.Num_Vertices);
       end if;
 
-      theAI_Mesh.Colours := To_AI_Colours_Map (C_Mesh.Colours);
+      theAI_Mesh.Colours := To_AI_Colours_Map (C_Mesh.Colours, C_Mesh.Num_Vertices);
 
 
 --  --        if C_Mesh.Texture_Coords /= null then
@@ -323,20 +326,33 @@ end To_AI_Colours_Map;
 
    --  ------------------------------------------------------------------------
 
-   function To_AI_Texture_Coords_Map (C_Array  : API_Texture_Coords_3D_Ptr_Array)
+   function To_AI_Texture_Coords_Map (C_Array  : API_Texture_Coords_3D_Ptr_Array;
+                                      Num_Vertices : Interfaces.C.unsigned)
                                       return Texture_Coords_Map is
-      API_Coords     : API_Vectors_Matrices.API_Texture_Coords_3D;
-      Texture_Coords : Singles.Vector3;
-      theMap         : Texture_Coords_Map;
+      use Vector_3D_Array_Pointers;
+      use Texture_Coords_Array_Pointers;
+      API_Coords_Ptr   : Texture_Coords_Array_Pointer;
+      API_Coords_Array : API_Texture_Coords_Array (1 .. Num_Vertices);
+      API_Coords       : API_Vectors_Matrices.API_Texture_Coords_3D;
+      Texture_Coords   : Singles.Vector3;
+      Coords_Map       : Vertices_Map;
+      theMap           : Texture_Coords_Map;
    begin
       for index in C_Array'First .. C_Array'Last loop
          if C_Array (index) /= null then
-            API_Coords := C_Array (index).all;
-            Texture_Coords (GL.X) := Single (API_Coords.U);
-            Texture_Coords (GL.Y) := Single (API_Coords.V);
-            Texture_Coords (GL.Z) := Single (API_Coords.w);
+            API_Coords_Ptr := C_Array (index);
+            API_Coords_Array :=
+              Texture_Coords_Array_Pointers.Value
+                (API_Coords_Ptr, Interfaces.C.ptrdiff_t (Num_Vertices));
+            for T_index in API_Coords_Array'First .. API_Coords_Array'Last loop
+               API_Coords := API_Coords_Array (T_index);
+               Texture_Coords (GL.X) := Single (API_Coords.U);
+               Texture_Coords (GL.Y) := Single (API_Coords.V);
+               Texture_Coords (GL.Z) := Single (API_Coords.w);
+               Coords_Map.Insert (UInt (T_index), Texture_Coords);
+            end loop;
+            theMap.Insert (UInt (index), Coords_Map);
          end if;
-         theMap.Insert (UInt (index), Texture_Coords);
       end loop;
       return theMap;
    end To_AI_Texture_Coords_Map;
