@@ -213,10 +213,8 @@ package body Assimp_Mesh is
       if F_Array_Ptr = null then
          Put_Line ("Assimp_Mesh.To_AI_Faces_Map F_Array_Ptr is null.");
       else
-         Put_Line ("Assimp_Mesh.To_AI_Faces_Map setting Face_Array.");
          Face_Array := API_Faces_Array_Pointers.Value
            (F_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Faces));
-         Put_Line ("Assimp_Mesh.To_AI_Faces_Map Face_Array set.");
 
          for index in 1 .. Num_Faces loop
             anAPI_Face := Face_Array (index);
@@ -245,8 +243,8 @@ package body Assimp_Mesh is
       Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
    begin
       theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
-      Put_Line ("Assimp_Mesh.To_AI_Mesh, theAI_Mesh.Name: " &
-                  Ada.Strings.Unbounded.To_String (theAI_Mesh.Name));
+--        Put_Line ("Assimp_Mesh.To_AI_Mesh, theAI_Mesh.Name: " &
+--                    Ada.Strings.Unbounded.To_String (theAI_Mesh.Name));
 
       if C_Mesh.Vertices = null then
          raise Strings.Dereference_Error with

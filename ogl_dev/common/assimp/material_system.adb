@@ -83,22 +83,22 @@ package body Material_System is
          raise Material_System_Exception with
            "Material_System.Get_Material_Property, aMaterial.Properties is empty";
       else
-         Put_Line ("Material_System.Get_Material_Property requested key: " & Key);
-         Put_Line ("Material_System.Get_Material_Property requested type : " &
-                     UInt'Image (Property_Type));
+--           Put_Line ("Material_System.Get_Material_Property requested key: " & Key);
+--           Put_Line ("Material_System.Get_Material_Property requested type : " &
+--                       UInt'Image (Property_Type));
          while Has_Element (Curs) and not Found loop
             aProperty := Element (Curs);
-            Put_Line ("Material_System.Get_Material_Property aProperty's type: " &
-                   UInt'Image (Property_Type));
-            Put_Line ("Material_System.Get_Material_Property current key: " &
-                   Ada.Strings.Unbounded.To_String (aProperty.Key));
+--              Put_Line ("Material_System.Get_Material_Property aProperty's type: " &
+--                     UInt'Image (Property_Type));
+--              Put_Line ("Material_System.Get_Material_Property current key: " &
+--                     Ada.Strings.Unbounded.To_String (aProperty.Key));
             if Ada.Strings.Unbounded.To_String (aProperty.Key) /= Key then
-                Put_Line ("key test failed.");
+                Put_Line ("Material_System.Get_Material_Property, key test failed.");
             elsif aProperty.Semantic /= Property_Type then
-               Put_Line ("Data_Type test failed." &
+               Put_Line ("Material_System.Get_Material_Property, Data_Type test failed." &
                            UInt'Image (aProperty.Semantic));
             elsif aProperty.Texture_Index /= Index then
-               Put_Line ("Texture_Index test failed.");
+               Put_Line ("Material_System.Get_Material_Property, Texture_Index test failed.");
             else
                Found := True;
             end if;
@@ -140,8 +140,8 @@ package body Material_System is
       Result     : API_Return := API_Return_Failure;
    begin
       Data_String := To_Unbounded_String ("");
-      Put_Line ("Material_System.Get_Material_String requested Data_Type: " &
-                  GL.Types.UInt'Image (Material_Type));
+--        Put_Line ("Material_System.Get_Material_String requested Data_Type: " &
+--                    GL.Types.UInt'Image (Material_Type));
       Result := Get_Material_Property (aMaterial, Key, Material_Type,
                                        theIndex, aProperty);
       if Result = API_Return_Success  then
@@ -156,8 +156,8 @@ package body Material_System is
             end loop;
          end if;
       end if;
-      Put_Line ("Material_System.Get_Material_String Data_String: " & "*" &
-                  Ada.Strings.Unbounded.To_String (Data_String) & "*");
+--        Put_Line ("Material_System.Get_Material_String Data_String: " & "*" &
+--                    Ada.Strings.Unbounded.To_String (Data_String) & "*");
       return Result;
 
    exception

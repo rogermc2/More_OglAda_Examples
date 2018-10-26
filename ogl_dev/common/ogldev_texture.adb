@@ -38,16 +38,16 @@ package body Ogldev_Texture is
    --  -------------------------------------------------------------------------
 
    function Init_Texture
-     (theTexture  : in out Ogl_Texture;
-      Target_Type : GL.Low_Level.Enums.Texture_Kind;
+     (theTexture   : in out Ogl_Texture;
+      Target_Type  : GL.Low_Level.Enums.Texture_Kind;
       Texture_File :  String) return Boolean is
       use Ada.Strings.Unbounded;
       Result : Boolean;
    begin
-      Put_Line ("Ogldev_Texture.Init_Texture file " & "*" & Texture_File & "*");
-      Put_Line ("Ogldev_Texture.Init_Texture file size " &
-                  Ada.Directories.File_Size'Image (Ada.Directories.Size
-                  ("/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix.pcx")));
+--        Put_Line ("Ogldev_Texture.Init_Texture file " & "*" & Texture_File & "*");
+--        Put_Line ("Ogldev_Texture.Init_Texture file size " &
+--                    Ada.Directories.File_Size'Image (Ada.Directories.Size
+--                    ("/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix.pcx")));
       Result := Ada.Directories.Exists (Texture_File);
       if Result then
          theTexture.File_Name := To_Unbounded_String (Texture_File);
@@ -91,8 +91,8 @@ package body Ogldev_Texture is
               "Ogldev_Texture.Load, unhandled texture type.";
       end case;
 
-      Put_Line ("Ogldev_Texture.Load, image signature: " &
-                  Interfaces.C.size_t'Image (theTexture.Image.Signature));
+--        Put_Line ("Ogldev_Texture.Load, image signature: " &
+--                    Interfaces.C.size_t'Image (theTexture.Image.Signature));
       Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
                   UInt'Image (theTexture.Image.Columns) & "  " &
                   UInt'Image (theTexture.Image.Rows) & "  " &
@@ -107,8 +107,8 @@ package body Ogldev_Texture is
          Curs        : Cursor := Data_Blob.First;
          Level       : constant GL.Objects.Textures.Mipmap_Level := 0;
       begin
-         Put_Line ("Ogldev_Texture.Load, Blob_Length: " &
-                     UInt'Image (Blob_Length));
+--           Put_Line ("Ogldev_Texture.Load, Blob_Length: " &
+--                       UInt'Image (Blob_Length));
          while Has_Element (Curs) loop
             Byte_Index := Byte_Index + 1;
             Data (Byte_Index) := Element (Curs);
