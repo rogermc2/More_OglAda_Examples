@@ -66,7 +66,7 @@ package body Mesh_22 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
-      --        Utilities.Print_GL_Array8 ("Mesh_22.Init_Buffers Vertices_Array", Vertices_Array);
+--        Utilities.Print_GL_Array8 ("Mesh_22.Init_Buffers Vertices_Array", Vertices_Array);
 
       Array_Buffer.Bind (theEntry.VBO);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
@@ -93,8 +93,8 @@ package body Mesh_22 is
    begin
       --  Initialized_Mesh works because there is only one mesh
       --  Initialized_Mesh contains vertices and textures maps
-      Put_Line ("Mesh_22.Init_From_Scene, number of theScene.Meshes: " &
-                  Ada.Containers.Count_Type'Image (theScene.Meshes.Length));
+--        Put_Line ("Mesh_22.Init_From_Scene, number of theScene.Meshes: " &
+--                    Ada.Containers.Count_Type'Image (theScene.Meshes.Length));
       while Has_Element (Curs) loop
          Mesh_Index := Mesh_Index + 1;
          aMesh := theScene.Meshes (Mesh_Index);
@@ -134,12 +134,12 @@ package body Mesh_22 is
          --           Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
          --                       UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
-            Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
-                                                aMaterial.Properties.First_Element);
-            New_Line;
+--              Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
+--                                                  aMaterial.Properties.First_Element);
+--              New_Line;
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
-            New_Line;
+
             if Result = Assimp_Types.API_Return_Success then
                if Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D,
@@ -220,7 +220,6 @@ package body Mesh_22 is
       if Source_Mesh.Faces.Is_Empty then
          Put_Line ("Mesh_22.Init_Mesh, Source_Mesh.Faces is empty.");
       else
-         Put_Line ("Mesh_22.Init_Mesh, Source_Mesh.Faces is not empty.");
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
             --              Put_Line ("Mesh_22.Init_Mesh, Face_Index: " &
             --                       Ada.Containers.Count_Type'Image (Face_Index));
@@ -285,7 +284,6 @@ package body Mesh_22 is
          GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
          GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
-         --           GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);

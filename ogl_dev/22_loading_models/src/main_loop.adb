@@ -76,6 +76,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
          Glfw.Input.Poll_Events;
+      else
+         Put_Line ("Main_Loop.Init, Ogldev_Basic_Lighting.Init failed.");
       end if;
 
    exception
