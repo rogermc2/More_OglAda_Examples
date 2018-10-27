@@ -71,7 +71,7 @@ package body Ogldev_Basic_Lighting is
          Lighting_Technique.Dir_Light_Location.Ambient_Intensity := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
          Lighting_Technique.Dir_Light_Location.Direction := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gDirectionalLight.Base.Direction");
+           (Lighting_Technique.Lighting_Program, "gDirectionalLight.Direction");
          Lighting_Technique.Dir_Light_Location.Diffuse_Intensity := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
 
