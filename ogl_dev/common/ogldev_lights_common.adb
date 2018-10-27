@@ -44,7 +44,7 @@ package body Ogldev_Lights_Common is
 
    function Ambient_Intensity (Light : Directional_Light) return Single is
    begin
-      return Light.Ambient_Intensity;
+      return Light.Base.Ambient_Intensity;
    end Ambient_Intensity;
 
    --  -------------------------------------------------------------------------
@@ -120,7 +120,7 @@ package body Ogldev_Lights_Common is
 
    function Diffuse_Intensity (Light : Directional_Light) return Single is
    begin
-      return Light.Diffuse_Intensity;
+      return Light.Base.Diffuse_Intensity;
    end Diffuse_Intensity;
 
    --  -------------------------------------------------------------------------
@@ -164,9 +164,9 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
                                     Ambient_Intensity, Diffuse_Intensity : Single;
                                     Colour, Direction : Singles.Vector3) is
    begin
-      Light.Ambient_Intensity := Ambient_Intensity;
-      Light.Diffuse_Intensity := Diffuse_Intensity;
-      Light.Colour := Colour;
+      Light.Base.Ambient_Intensity := Ambient_Intensity;
+      Light.Base.Diffuse_Intensity := Diffuse_Intensity;
+      Light.Base.Colour := Colour;
       Light.Direction := Direction;
    end Init_Directional_Light;
 

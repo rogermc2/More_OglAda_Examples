@@ -133,7 +133,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Perspective_Proj_Info.Z_Near := 1.0;
       Perspective_Proj_Info.Z_Far := 100.0;
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.015);  --  orig 0.04,  Default 1.0
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.01);  --  orig 0.04,  Default 1.0
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);  --  orig z -10
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),  Get_Target (Game_Camera),
