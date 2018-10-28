@@ -197,7 +197,6 @@ package Assimp_Mesh is
         Textures  : Assimp_Texture.AI_Texture_Map;
     end record;
 
-   function Has_Texture_Coords (aMesh : Mesh; Index : UInt) return Boolean;
    procedure Load_Mesh (File_Name : String; theMesh : in out Mesh);
    procedure Render_Mesh (theMesh : Mesh);
    function To_AI_Mesh_Map (Num_Meshes : Interfaces.C.unsigned := 0;

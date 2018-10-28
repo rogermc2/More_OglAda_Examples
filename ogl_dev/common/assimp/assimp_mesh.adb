@@ -350,7 +350,6 @@ package body Assimp_Mesh is
 
    function To_AI_Vertices_Map (C_Array_Ptr  : Vector_3D_Array_Pointers.Pointer;
                                 Num_Vertices : Interfaces.C.unsigned) return Vertices_Map is
-
       V_Array      : API_Vectors_Matrices.API_Vector_3D_Array (1 .. Num_Vertices);
       anAPI_Vector : API_Vector_3D;
       anAI_Vector  : Singles.Vector3;
