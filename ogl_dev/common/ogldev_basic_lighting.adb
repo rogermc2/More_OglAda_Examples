@@ -19,16 +19,16 @@ package body Ogldev_Basic_Lighting is
 
       function Point_Name (Index : Int; Unif : String) return String is
       begin
-         return To_String ("gPointLights" &
-                             Trim (To_Unbounded_String (Int'Image (Index)), Left)
-                           & Unif & ".");
+         return To_String ("gPointLights[" &
+                             Trim (To_Unbounded_String (Int'Image (Index - 1)), Left)
+                           & "]." & Unif);
       end Point_Name;
 
       function Slot_Name (Index : Int; Unif : String) return String is
       begin
-         return To_String ("gSpotLights" &
-                             Trim (To_Unbounded_String (Int'Image (Index)), Left)
-                           & Unif & ".");
+         return To_String ("gSpotLights[" &
+                             Trim (To_Unbounded_String (Int'Image (Index - 1)), Left)
+                           & "]." & Unif);
       end Slot_Name;
 
       OK : Boolean;
@@ -114,12 +114,6 @@ package body Ogldev_Basic_Lighting is
               Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Direction"));
             Lighting_Technique.Spot_Lights_Location (index).Cut_Off  :=
               Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Cutoff"));
-            Lighting_Technique.Spot_Lights_Location (index).Attenuation.Atten_Constant :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Base.Atten.Constant"));
-            Lighting_Technique.Spot_Lights_Location (index).Attenuation.Linear :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Base.Atten.Linear"));
-            Lighting_Technique.Spot_Lights_Location (index).Attenuation.Exp :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Base.Atten.Exp"));
          end loop;
       end if;
       return OK;
@@ -245,7 +239,7 @@ package body Ogldev_Basic_Lighting is
          Set_Single (Location.Attenuation.Atten_Constant,
                      Attenuation_Constant (Lights (index)));
          Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Lights (index)));
-      end loop;
+       end loop;
 
     exception
         when  others =>
@@ -260,17 +254,17 @@ package body Ogldev_Basic_Lighting is
       Num_Lights      : constant Int :=  Spots'Length;
       Location        : Spot_Light_Locations;
       Spot            : Spot_Light;
---        Light_Direction : Singles.Vector3;
+      Light_Direction : Singles.Vector3;
    begin
       GL.Uniforms.Set_Int (Technique.Num_Spot_Lights_Location, Num_Lights);
       for index in Int range 1 .. Num_Lights loop
          Spot := Spots (UInt (index));
---           Light_Direction := Maths.Normalized (Direction (Spot));
+         Light_Direction := Maths.Normalized (Direction (Spot));
          Location := Technique.Spot_Lights_Location (index);
          Set_Single (Location.Colour, Colour (Spot));
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
          Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
-         Set_Single (Location.Direction, Direction (Spot));
+         Set_Single (Location.Direction, Light_Direction);
          Set_Single (Location.Cut_Off, Cut_Off (Spot));
          Set_Single (Location.Attenuation.Atten_Constant,
                      Attenuation_Constant (Spot));
@@ -295,9 +289,6 @@ package body Ogldev_Basic_Lighting is
       Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
       Set_Single (Location.Direction, Direction (Spot));
       Set_Single (Location.Cut_Off, Cut_Off (Spot));
-      Set_Single (Location.Attenuation.Atten_Constant, Attenuation_Constant (Spot));
-      Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Spot));
-      Set_Single (Location.Attenuation.Exp, Exponent (Spot));
    end Set_Spot_Light;
 
    --  -------------------------------------------------------------------------

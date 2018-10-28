@@ -174,8 +174,6 @@ package body Assimp_Mesh is
                Colours (GL.Y) := Single (API_Colours.G);
                Colours (GL.Z) := Single (API_Colours.B);
                Colours (GL.Z) := Single (API_Colours.A);
-               --                 Utilities.Print_Vector ("To_AI_Texture_Coords_Map.Texture_Coords",
-               --                                         Texture_Coords);
                aColours_Map.Insert (UInt (T_index), Colours);
             end loop;
             theMap.Insert (UInt (index), aColours_Map);
@@ -243,8 +241,6 @@ package body Assimp_Mesh is
       Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
    begin
       theAI_Mesh.Name :=  Assimp_Util.To_Unbounded_String (C_Mesh.Name);
---        Put_Line ("Assimp_Mesh.To_AI_Mesh, theAI_Mesh.Name: " &
---                    Ada.Strings.Unbounded.To_String (theAI_Mesh.Name));
 
       if C_Mesh.Vertices = null then
          raise Strings.Dereference_Error with
@@ -296,15 +292,15 @@ package body Assimp_Mesh is
    begin
       --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
       for index in 1 .. Num_Meshes loop
-         Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, index: " &  unsigned'Image (index));
-         Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
-         Put_Line (unsigned'Image (C_Mesh_Array (index).Primitive_Types) &
-                     unsigned'Image (C_Mesh_Array (index).Num_Vertices) &
-                     unsigned'Image (C_Mesh_Array (index).Num_Faces) &
-                     unsigned'Image (C_Mesh_Array (index).Num_Bones) &
-                     unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
-                     unsigned'Image (C_Mesh_Array (index).Material_Index));
-         New_Line;
+--           Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, index: " &  unsigned'Image (index));
+--           Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
+--           Put_Line (unsigned'Image (C_Mesh_Array (index).Primitive_Types) &
+--                       unsigned'Image (C_Mesh_Array (index).Num_Vertices) &
+--                       unsigned'Image (C_Mesh_Array (index).Num_Faces) &
+--                       unsigned'Image (C_Mesh_Array (index).Num_Bones) &
+--                       unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
+--                       unsigned'Image (C_Mesh_Array (index).Material_Index));
+--           New_Line;
          aMesh := To_AI_Mesh (C_Mesh_Array (index));
          Meshs.Insert (UInt (index), aMesh);
       end loop;
@@ -342,8 +338,6 @@ package body Assimp_Mesh is
                Texture_Coords (GL.X) := Single (API_Coords.U);
                Texture_Coords (GL.Y) := Single (API_Coords.V);
                Texture_Coords (GL.Z) := Single (API_Coords.W);
-               --                 Utilities.Print_Vector ("To_AI_Texture_Coords_Map.Texture_Coords",
-               --                                         Texture_Coords);
                Coords_Map.Insert (UInt (T_index), Texture_Coords);
             end loop;
             theMap.Insert (UInt (index), Coords_Map);

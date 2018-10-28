@@ -47,13 +47,11 @@ package body AI_Conversion is
          end loop;
          Data_String := Ada.Strings.Unbounded.To_Unbounded_String (Str_Data);
       end if;
---        Put_Line ("Material_System.Data_To_UB_String Data_String: " &
---                    Ada.Strings.Unbounded.To_String (Data_String));
       return Data_String;
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material_System.Data_To_UB_String.");
+         Put_Line ("An exception occurred in AI_Conversion.Data_To_UB_String.");
          raise;
    end Data_To_UB_String;
 
@@ -65,8 +63,8 @@ package body AI_Conversion is
       Num_Property  : constant unsigned := C_Material.Num_Properties;
       theMaterial   : AI_Material;
    begin
-      Put_Line ("Material.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
-                  unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
+--        Put_Line ("AI_Conversion.To_AI_Material C_Material.Num_Properties, Num_Allocated: " &
+--                    unsigned'Image (C_Material.Num_Properties) & unsigned'Image (C_Material.Num_Allocated));
       if Num_Property > 0 then
          declare
             use Property_Ptr_Array_Package;
@@ -83,7 +81,7 @@ package body AI_Conversion is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.To_AI_Material.");
+         Put_Line ("An exception occurred in AI_Conversion.To_AI_Material.");
          raise;
    end To_AI_Material;
 
@@ -181,12 +179,12 @@ package body AI_Conversion is
       aProperty      : API_Material_Property;
       AI_Property    : AI_Material_Property;
    begin
---        Put_Line ("Material.To_AI_Property_List, Property_Ptr_Array'Length" &
+--        Put_Line ("AI_Conversion.To_AI_Property_List, Property_Ptr_Array'Length" &
 --                    unsigned'Image (Property_Ptr_Array'Length));
       for Property_Index in unsigned range 1 .. Property_Ptr_Array'Length loop
          aProperty := Property_Ptr_Array (Property_Index).all;
 --           New_Line;
---           Put_Line ("Material.To_AI_Property_List, setting AI Property" &
+--           Put_Line ("AI_Conversion.To_AI_Property_List, setting AI Property" &
 --                       unsigned'Image (Property_Index));
          To_AI_Property (anAPI_Material, aProperty, AI_Property);
          AI_Properties.Append (AI_Property);
@@ -194,7 +192,7 @@ package body AI_Conversion is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Material.To_AI_Property_List.");
+         Put_Line ("An exception occurred in AI_Conversion.To_AI_Property_List.");
          raise;
    end To_AI_Property_List;
 
