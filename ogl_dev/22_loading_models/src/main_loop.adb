@@ -32,7 +32,7 @@ with Mesh_22;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.4, 0.4, 0.4, 0.0);
+   Background             : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Game_Camera            : Ogldev_Camera.Camera;
@@ -49,8 +49,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : constant Singles.Vector3 := (3.0, 2.0, 10.0); --  Normalized by Camera.Init
-      Target              : constant Singles.Vector3 := (0.0, 0.0, 0.1);  --  Normalized by Camera.Init
+      Position            : constant Singles.Vector3 := (3.0, 3.0, 10.0); --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, -0.2, 0.1);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
@@ -115,7 +115,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Linear_Attenuation (Point_Lights (1), 0.1);
 
       Set_Diffuse_Intensity (Point_Lights (2), 0.25);
-      Set_Point_Light (Point_Lights (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
+      Set_Point_Light (Point_Lights (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0), (0.0, 0.5, 1.0));
       Set_Linear_Attenuation (Point_Lights (2), 0.1);
 
       Set_Point_Lights (Light_Technique, Point_Lights);

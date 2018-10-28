@@ -93,11 +93,11 @@ package body Ogldev_Texture is
 
 --        Put_Line ("Ogldev_Texture.Load, image signature: " &
 --                    Interfaces.C.size_t'Image (theTexture.Image.Signature));
-      Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
-                  UInt'Image (theTexture.Image.Columns) & "  " &
-                  UInt'Image (theTexture.Image.Rows) & "  " &
-                  UInt'Image (theTexture.Image.Depth) & "  " &
-                  UInt'Image (theTexture.Image.Colours));
+--        Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
+--                    UInt'Image (theTexture.Image.Columns) & "  " &
+--                    UInt'Image (theTexture.Image.Rows) & "  " &
+--                    UInt'Image (theTexture.Image.Depth) & "  " &
+--                    UInt'Image (theTexture.Image.Colours));
       declare
          use Magick_Blob.Blob_Package;
          Data_Blob   : constant Magick_Blob.Blob_Data := theTexture.Blob_Data;

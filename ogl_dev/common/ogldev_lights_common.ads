@@ -74,15 +74,12 @@ private
         Ada.Strings.Unbounded.To_Unbounded_String ("");
       Colour            : Singles.Vector3 := (1.0, 1.0, 1.0);
       Ambient_Intensity : Single := 1.0;
-      Diffuse_Intensity : Single := 0.1;
+      Diffuse_Intensity : Single := 0.01;
    end record;
 
    type Directional_Light is record
       Base       : Base_Light;
---        Ambient_Intensity  : Single := 1.0;
---        Diffuse_Intensity  : Single := 0.1;
---        Colour             : Singles.Vector3 := (1.0, 1.0, 1.0);
-      Direction  : Singles.Vector3 := (1.0, 0.0, 0.0);
+      Direction  : Singles.Vector3 := (1.0, -1.0, 0.0);
    end record;
 
    type Light_Attenuation is record
