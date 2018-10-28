@@ -2,7 +2,6 @@
 with Interfaces.C;
 
 with Magick_Type;
-with Method_Attribute;
 with Thread;
 
 package Semaphore is

@@ -294,9 +294,9 @@ package body Ogldev_Basic_Lighting is
    --  -------------------------------------------------------------------------
 
    procedure Set_Eye_World_Pos (Technique :  Basic_Lighting_Technique;
-                                Position : Singles.Vector3) is
+                                Eye_Position : Singles.Vector3) is
    begin
-      Set_Single (Technique.Eye_World_Pos_Location, Position);
+      Set_Single (Technique.Eye_World_Pos_Location, Eye_Position);
    end Set_Eye_World_Pos;
 
    --  -------------------------------------------------------------------------

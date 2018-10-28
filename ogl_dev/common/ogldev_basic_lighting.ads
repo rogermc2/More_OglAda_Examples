@@ -3,7 +3,6 @@ with GL.Objects.Programs;
 with GL.Types; use GL.Types;
 with GL.Uniforms;
 
-with Ogldev_Engine_Common;
 with Ogldev_Lights_Common; use Ogldev_Lights_Common;
 
 package Ogldev_Basic_Lighting is
@@ -32,7 +31,7 @@ package Ogldev_Basic_Lighting is
    procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
                               Spot : Spot_Light);
    procedure Set_Eye_World_Pos (Technique : Basic_Lighting_Technique;
-                                Position : Singles.Vector3);
+                                Eye_Position : Singles.Vector3);
    procedure Set_Mat_Specular_Intensity (Technique : Basic_Lighting_Technique;
                                          Intensity : Single);
    procedure Set_Mat_Specular_Power (Technique : Basic_Lighting_Technique;

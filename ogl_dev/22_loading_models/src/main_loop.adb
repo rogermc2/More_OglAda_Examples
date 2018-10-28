@@ -1,5 +1,4 @@
 
-with Ada.Containers;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Culling;
@@ -8,7 +7,6 @@ with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types.Colors;
-with GL.Uniforms;
 with GL.Window;
 
 with Glfw;
@@ -22,12 +20,11 @@ with Utilities;
 
 with Ogldev_Basic_Lighting;
 with Ogldev_Camera;
-with Ogldev_Engine_Common;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 
-with Mesh_22;
+with Project_22_Mesh;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
@@ -45,7 +42,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Init (Window  : in out Glfw.Windows.Window;
-                   theMesh : out Mesh_22.Mesh_22; Result : out Boolean) is
+                   theMesh : out Project_22_Mesh.Mesh_22; Result : out Boolean) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
@@ -70,7 +67,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit (Light_Technique, 0);
 
-         Mesh_22.Load_Mesh
+         Project_22_Mesh.Load_Mesh
            (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
          Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
@@ -89,7 +86,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render_Scene (Window  : in out Glfw.Windows.Window;
-                           theMesh : Mesh_22.Mesh_22) is
+                           theMesh : Project_22_Mesh.Mesh_22) is
       use Maths.Single_Math_Functions;
       use Ogldev_Basic_Lighting;
       use Ogldev_Camera;
@@ -148,7 +145,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Mat_Specular_Intensity (Light_Technique, 0.0);
       Set_Mat_Specular_Power (Light_Technique, 0);
 
-      Mesh_22.Render_Mesh (theMesh);
+      Project_22_Mesh.Render_Mesh (theMesh);
 
    exception
       when  others =>
@@ -159,7 +156,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    use Glfw.Input;
-   theMesh : Mesh_22.Mesh_22;
+   theMesh : Project_22_Mesh.Mesh_22;
    Running : Boolean;
 begin
    Init (Main_Window, theMesh, Running);
