@@ -97,6 +97,14 @@ package body Ogldev_Lights_Common is
    end Attenuation_Linear;
 
    --  -------------------------------------------------------------------------
+
+   function Colour (Light : Directional_Light) return Singles.Vector3 is
+   begin
+      return Light.Base.Colour;
+   end Colour;
+
+   --  -------------------------------------------------------------------------
+
    function Colour (Light : Point_Light) return Singles.Vector3 is
    begin
       return Light.Base.Colour;
