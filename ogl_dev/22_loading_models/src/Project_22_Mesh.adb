@@ -1,35 +1,28 @@
 
-with Interfaces.C;
-
 with GNAT.Directory_Operations;
 
-with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Low_Level.Enums;
 with GL.Objects.Textures;
-with GL.Objects.Textures.Targets;
 
 with Maths;
 with Utilities;
 
 with Assimp_Mesh;
 with Assimp_Types;
-with Assimp_Util;
 
-with API_Vectors_Matrices;
 with Importer;
 with Material;
 with Material_System;
 
-with Ogldev_Engine_Common;
 with Ogldev_Util;
 
 with Scene;
 
-package body Mesh_22 is
+package body Project_22_Mesh is
    type Vertex is record
       Pos    : GL.Types.Singles.Vector3;
       Tex    : GL.Types.Singles.Vector2;
@@ -66,7 +59,7 @@ package body Mesh_22 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
---        Utilities.Print_GL_Array8 ("Mesh_22.Init_Buffers Vertices_Array", Vertices_Array);
+--        Utilities.Print_GL_Array8 ("Project_22_Mesh.Init_Buffers Vertices_Array", Vertices_Array);
 
       Array_Buffer.Bind (theEntry.VBO);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
@@ -75,7 +68,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_22.Init_Buffers.");
+         Put_Line ("An exception occurred in Project_22_Mesh.Init_Buffers.");
          raise;
 
    end Init_Buffers;
@@ -89,7 +82,6 @@ package body Mesh_22 is
       Curs         : Cursor := theScene.Meshes.First;
       Mesh_Index   : UInt := 0;
       aMesh        : Assimp_Mesh.AI_Mesh;
-      anEntry      : Mesh_Entry;
    begin
       --  Initialized_Mesh works because there is only one mesh
       --  Initialized_Mesh contains vertices and textures maps
@@ -105,7 +97,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_22.Init_From_Scene.");
+         Put_Line ("An exception occurred in Project_22_Mesh.Init_From_Scene.");
          raise;
    end Init_From_Scene;
 
@@ -129,12 +121,12 @@ package body Mesh_22 is
          use Ogldev_Texture.Mesh_Texture_Package;
          aMaterial  : constant AI_Material := Element (Material_Curs);
          aTexture   : Ogldev_Texture.Ogl_Texture;
-         Index      : GL.Types.UInt := Key (Material_Curs);
+         Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
-         --           Put_Line ("Mesh_22.Init_Materials.Load_Textures Diffuse Texture_Count: " &
+         --           Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures Diffuse Texture_Count: " &
          --                       UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
---              Assimp_Util.Print_AI_Property_Data ("Mesh_22.Load_Textures Property 1",
+--              Assimp_Util.Print_AI_Property_Data ("Project_22_Mesh.Load_Textures Property 1",
 --                                                  aMaterial.Properties.First_Element);
 --              New_Line;
             Result := Material_System.Get_Texture
@@ -145,22 +137,22 @@ package body Mesh_22 is
                  (aTexture, GL.Low_Level.Enums.Texture_2D,
                   Dir & To_String (Path)) then
                   Ogldev_Texture.Load (aTexture);
-                  theMesh.Textures.Insert (UInt (index), aTexture);
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded texture from "
+                  theMesh.Textures.Insert (index, aTexture);
+                  Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures loaded texture from "
                             & Dir & To_String (Path));
                elsif Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
                   Ogldev_Texture.Load (aTexture);
-                  theMesh.Textures.Insert (UInt (index), aTexture);
+                  theMesh.Textures.Insert (index, aTexture);
                   New_Line;
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures loaded default texture from "
+                  Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures loaded default texture from "
                             & Dir & "white.png");
                else
-                  Put_Line ("Mesh_22.Init_Materials.Load_Textures default texture "
+                  Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures default texture "
                             & Dir & "white.png not found.");
                end if;
             else
-               Put_Line ("Mesh_22.Init_Materials.Load_Textures Get_Texture failed");
+               Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures Get_Texture failed");
             end if;
          end if;
       end Load_Textures;
@@ -171,7 +163,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_22.Init_Materials.");
+         Put_Line ("An exception occurred in Project_22_Mesh.Init_Materials.");
          raise;
    end Init_Materials;
 
@@ -214,16 +206,16 @@ package body Mesh_22 is
       end loop;
 
       if Source_Mesh.Faces.Is_Empty then
-         Put_Line ("Mesh_22.Init_Mesh, Source_Mesh.Faces is empty.");
+         Put_Line ("Project_22_Mesh.Init_Mesh, Source_Mesh.Faces is empty.");
       else
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
             Face := Source_Mesh.Faces.Element (UInt (Face_Index));
             Index_Index := Index_Index + 1;
-            Indices (Int (Index_Index)) := Face.Indices (1);
+            Indices (Index_Index) := Face.Indices (1);
             Index_Index := Index_Index + 1;
-            Indices (Int (Index_Index)) := Face.Indices (2);
+            Indices (Index_Index) := Face.Indices (2);
             Index_Index := Index_Index + 1;
-            Indices (Int (Index_Index)) := Face.Indices (3);
+            Indices (Index_Index) := Face.Indices (3);
          end loop;
       end if;
 
@@ -233,7 +225,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_22.Init_Mesh.");
+         Put_Line ("An exception occurred in Project_22_Mesh.Init_Mesh.");
          raise;
    end Init_Mesh;
 
@@ -248,7 +240,7 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_22.Load_Mesh.");
+         Put_Line ("An exception occurred in Project_22_Mesh.Load_Mesh.");
          raise;
    end Load_Mesh;
 
@@ -262,7 +254,6 @@ package body Mesh_22 is
    -------------------------------------------------------------------------
 
    procedure Render_Mesh (theMesh : Mesh_22) is
-      use Ada.Containers;
       use Mesh_Entry_Package;
       Entry_Cursor :  Mesh_Entry_Package.Cursor
         := theMesh.Entries.First;
@@ -270,7 +261,7 @@ package body Mesh_22 is
 
       procedure Draw (thisEntry : Mesh_Entry) is
          use Ogldev_Texture.Mesh_Texture_Package;
-         Material     : constant UInt := anEntry.Material_Index;
+         aMaterial    : constant UInt := anEntry.Material_Index;
          Num_Indices  : constant Int := Int (anEntry.Num_Indices);
          theTexture   : Ogldev_Texture.Ogl_Texture;
          OK           : Boolean := False;
@@ -282,28 +273,23 @@ package body Mesh_22 is
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
 
-         OK := Material < UInt (theMesh.Textures.Length);
+         OK := aMaterial < UInt (theMesh.Textures.Length);
          if OK then
-            OK := theMesh.Textures.Contains (Material);
+            OK := theMesh.Textures.Contains (aMaterial);
             if OK then
-               theTexture := theMesh.Textures.Element (Material);
+               theTexture := theMesh.Textures.Element (aMaterial);
                OK := theTexture.Texture_Object.Initialized;
                if OK then
-
-                  --        GL.Objects.Textures.Set_Active_Unit (0);
-                  --        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
-                  --        GL.Objects.Buffers.Draw_Elements (Triangles, 12, UInt_Type, 0);
-
                   Ogldev_Texture.Bind (theTexture, 0);
                else
-                  Put_Line ("Mesh_22.Render_Mesh.Draw, Texture_Object is not initialized.");
+                  Put_Line ("Project_22_Mesh.Render_Mesh.Draw, Texture_Object is not initialized.");
                end if;
             else
-               Put_Line ("Mesh_22.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &
-                           UInt'Image (Material));
+               Put_Line ("Project_22_Mesh.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &
+                           UInt'Image (aMaterial));
             end if;
          else
-            Put_Line ("Mesh_22.Render_Mesh.Draw, Invalid Material_Index.");
+            Put_Line ("Project_22_Mesh.Render_Mesh.Draw, Invalid Material_Index.");
          end if;
 
          if OK then
@@ -313,7 +299,7 @@ package body Mesh_22 is
 
       exception
          when others =>
-            Put_Line ("An exception occurred in Mesh_22.Render_Mesh,Draw.");
+            Put_Line ("An exception occurred in Project_22_Mesh.Render_Mesh,Draw.");
             raise;
       end Draw;
 
@@ -323,7 +309,7 @@ package body Mesh_22 is
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
 
       if Is_Empty (theMesh.Entries) then
-         Put_Line ("Mesh_22.Render_Mesh, theMesh.Entries Is Empty.");
+         Put_Line ("Project_22_Mesh.Render_Mesh, theMesh.Entries Is Empty.");
       else
          while Has_Element (Entry_Cursor) loop
             anEntry := Element (Entry_Cursor);
@@ -338,10 +324,10 @@ package body Mesh_22 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_22.Render_Mesh.");
+         Put_Line ("An exception occurred in Project_22_Mesh.Render_Mesh.");
          raise;
    end Render_Mesh;
 
    --  -------------------------------------------------------------------------
 
-end Mesh_22;
+end Project_22_Mesh;
