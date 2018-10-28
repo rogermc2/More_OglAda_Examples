@@ -83,17 +83,10 @@ package body Material_System is
          raise Material_System_Exception with
            "Material_System.Get_Material_Property, aMaterial.Properties is empty";
       else
---           Put_Line ("Material_System.Get_Material_Property requested key: " & Key);
---           Put_Line ("Material_System.Get_Material_Property requested type : " &
---                       UInt'Image (Property_Type));
          while Has_Element (Curs) and not Found loop
             aProperty := Element (Curs);
---              Put_Line ("Material_System.Get_Material_Property aProperty's type: " &
---                     UInt'Image (Property_Type));
---              Put_Line ("Material_System.Get_Material_Property current key: " &
---                     Ada.Strings.Unbounded.To_String (aProperty.Key));
             if Ada.Strings.Unbounded.To_String (aProperty.Key) /= Key then
-                Put_Line ("Material_System.Get_Material_Property, key test failed.");
+               null;
             elsif aProperty.Semantic /= Property_Type then
                Put_Line ("Material_System.Get_Material_Property, Data_Type test failed." &
                            UInt'Image (aProperty.Semantic));
@@ -140,8 +133,6 @@ package body Material_System is
       Result     : API_Return := API_Return_Failure;
    begin
       Data_String := To_Unbounded_String ("");
---        Put_Line ("Material_System.Get_Material_String requested Data_Type: " &
---                    GL.Types.UInt'Image (Material_Type));
       Result := Get_Material_Property (aMaterial, Key, Material_Type,
                                        theIndex, aProperty);
       if Result = API_Return_Success  then
@@ -156,8 +147,6 @@ package body Material_System is
             end loop;
          end if;
       end if;
---        Put_Line ("Material_System.Get_Material_String Data_String: " & "*" &
---                    Ada.Strings.Unbounded.To_String (Data_String) & "*");
       return Result;
 
    exception
@@ -180,28 +169,17 @@ package body Material_System is
       use GL.Types;
       use Assimp_Types;
       use Material_Keys;
---        Mapping     : Texture_Mapping := Texture_Mapping_UV;
---        UV_Integer  : GL.Types.Int;
       Type_UInt   : constant UInt :=
                       AI_Texture_Type'Enum_Rep (Tex_Type);
       Result      : API_Return;
    begin
-      Put_Line ("Material.Get_Texture, Tex_Type: " & UInt'Image (Type_UInt) & "  " &
-                  AI_Texture_Type'Image (Tex_Type));
       --  aiGetMaterialString(mat, AI_MATKEY_TEXTURE(type,index),path) )
       --  #define AI_MATKEY_TEXTURE(type, N) _AI_MATKEY_TEXTURE_BASE,type,N
       --  #define _AI_MATKEY_TEXTURE_BASE  "$tex.file"
       Result := Get_Material_String (aMaterial,
                                      AI_Material_Key (AI_Mat_Key_Texture_Base),
                                      Type_UInt, Tex_Index, Path);
-      if Result = API_Return_Success then
-         --  only required for aiTextureMapping* _mapping input parameter not null
-         null;
---           Result := Get_Material_Integer
---             (aMaterial, AI_Material_Key (AI_Mat_Key_Mapping_Base),
---              Type_UInt, Tex_Index, UV_Integer);
---           Mapping := Texture_Mapping'Enum_Val (UV_Integer);
-      else
+      if Result /= API_Return_Success then
          Put_Line ("Material.Get_Texture, Get_Material_String failed.");
       end if;
       return Result;
