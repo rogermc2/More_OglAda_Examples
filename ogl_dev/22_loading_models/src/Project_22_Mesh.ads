@@ -7,12 +7,7 @@ with GL.Types; use GL.Types;
 
 with Ogldev_Texture;
 
-Package Mesh_22 is
-
---     type Material_Type is (Index_Buffer, Pos_VB, Normal_VB,
---                            Tex_Coord_VB, WVP_Matrix_VB,
---                            World_Matrix_VB, Invalid_Material);
---     pragma Convention (C, Material_Type);
+Package Project_22_Mesh is
 
    type Mesh_22 is private;
    type Mesh_Entry is private;
@@ -25,14 +20,6 @@ private
    Num_Buffers : constant UInt := 6;
 
    Invalid_Material : constant UInt := 16#FFFFFFFF#;
-
---     for Material_Type use (Index_Buffer     => 0,
---                            Pos_VB           => 1,
---                            Normal_VB        => 2,
---                            Tex_Coord_VB     => 3,
---                            WVP_Matrix_VB    => 4,
---                            World_Matrix_VB  => 5,
---                            Invalid_Material => 16#FFFFFFFF#);
 
    type Mesh_Entry is record
         VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -52,4 +39,4 @@ private
       Textures    : Ogldev_Texture.Mesh_Texture_Package.Map;
    end record;
 
-end Mesh_22;
+end Project_22_Mesh;
