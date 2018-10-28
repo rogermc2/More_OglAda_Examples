@@ -229,10 +229,10 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Linear_Attenuation (Light : in out Point_Light; Attenuation : Single) is
+   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off : Single) is
    begin
-      Light.Attenuation.Linear := Attenuation;
-   end Set_Linear_Attenuation;
+      Light.Cut_Off := Cut_Off;
+   end Set_Cut_Off;
 
    --  ------------------------------------------------------------------------
 
@@ -250,10 +250,10 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off : Single) is
+   procedure Set_Linear_Attenuation (Light : in out Point_Light; Attenuation : Single) is
    begin
-      Light.Cut_Off := Cut_Off;
-   end Set_Cut_Off;
+      Light.Attenuation.Linear := Attenuation;
+   end Set_Linear_Attenuation;
 
    --  ------------------------------------------------------------------------
 
