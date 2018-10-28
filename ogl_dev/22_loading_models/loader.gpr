@@ -26,12 +26,7 @@ project Loader is
 
    package Linker is
       for Switches ("ada") use ("-L/usr/local/lib", "-lMagick++-7.Q16HDRI", "-lMagickCore-7.Q16HDRI", "-L/usr/local/Cellar/assimp/4.1.0/lib", "-lassimp", "-g");
-      for Switches ("c++") use ("-g");
    end Linker;
-
-   package Binder is
-    for Switches ("ada") use ("-E");
-   end Binder;
 
 end Loader;
 
