@@ -169,13 +169,13 @@ package body Ogldev_Lights_Common is
    --  -------------------------------------------------------------------------
 
 procedure Init_Directional_Light (Light : in out Directional_Light;
-                                    Ambient_Intensity, Diffuse_Intensity : Single;
-                                    Colour, Direction : Singles.Vector3) is
+                                    Amb_Intensity, Diff_Intensity : Single;
+                                    theColour, Dir : Singles.Vector3) is
    begin
-      Light.Base.Ambient_Intensity := Ambient_Intensity;
-      Light.Base.Diffuse_Intensity := Diffuse_Intensity;
-      Light.Base.Colour := Colour;
-      Light.Direction := Direction;
+      Light.Base.Ambient_Intensity := Amb_Intensity;
+      Light.Base.Diffuse_Intensity := Diff_Intensity;
+      Light.Base.Colour := theColour;
+      Light.Direction := Dir;
    end Init_Directional_Light;
 
    --  ------------------------------------------------------------------------
@@ -219,9 +219,9 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Direction (Light : in out Spot_Light; Direction : Singles.Vector3) is
+   procedure Set_Direction (Light : in out Spot_Light; Dir : Singles.Vector3) is
    begin
-      Light.Direction := Direction;
+      Light.Direction := Dir;
    end Set_Direction;
 
    --  ------------------------------------------------------------------------
@@ -258,27 +258,27 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off : Single) is
+   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off_Val : Single) is
    begin
-      Light.Cut_Off := Cut_Off;
+      Light.Cut_Off := Cut_Off_Val;
    end Set_Cut_Off;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Point_Light (Light : in out Point_Light; Position : Singles.Vector3;
-                              Colour : Singles.Vector3) is
+   procedure Set_Point_Light (Light : in out Point_Light; Pos : Singles.Vector3;
+                              theColour : Singles.Vector3) is
    begin
-      Light.Position := Position;
-      Light.Base.Colour := Colour;
+      Light.Position := Pos;
+      Light.Base.Colour := theColour;
    end Set_Point_Light;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Spot_Light (Light : in out Spot_Light; Position : Singles.Vector3;
-                              Colour : Singles.Vector3) is
+   procedure Set_Spot_Light (Light : in out Spot_Light; Pos : Singles.Vector3;
+                             theColour : Singles.Vector3) is
    begin
-      Light.Point.Position := Position;
-      Light.Point.Base.Colour := Colour;
+      Light.Point.Position := Pos;
+      Light.Point.Base.Colour := theColour;
    end Set_Spot_Light;
 
    --  ------------------------------------------------------------------------

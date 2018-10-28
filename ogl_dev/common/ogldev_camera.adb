@@ -1,7 +1,6 @@
 
 with Interfaces.C;
 
-with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input;
@@ -9,13 +8,9 @@ with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 
 package body Ogldev_Camera is
-
-   Initial_View_Angle : constant Maths.Degree := 45.0;
-
    Step_Scale  : constant GL.Types.Single := 0.2;  --  orig: 1.0
    Edge_Step   : constant Maths.Degree := 0.5;
    Margin      : constant Glfw.Input.Mouse.Coordinate := 10.0;
-   Last_Time   : GL.Types.Double := 0.0;
 
    procedure Update (theCamera : in out Camera);
    procedure Update_Render (theCamera : in out Camera);
@@ -209,9 +204,6 @@ package body Ogldev_Camera is
    --  Update_Render implements void Camera::OnRender()
    procedure Update_Render (theCamera : in out Camera) is
       use Maths;
-      use Singles;
-      V_Axis        : constant Vector3 := (0.0, 1.0, 0.0);
-      View          : Vector4 := (1.0, 0.0, 0.0, 1.0);
       Should_Update : Boolean := False;
    begin
       if theCamera.On_Left_Edge then
@@ -250,7 +242,7 @@ package body Ogldev_Camera is
         use GL.Types.Singles;
         use Maths;
         H_Axis : Vector3;
-        V_Axis : Vector3 := (0.0, 1.0, 0.0);
+        V_Axis : constant Vector3 := (0.0, 1.0, 0.0);
         View   : Vector4 := (1.0, 0.0, 0.0, 1.0);
    begin
         --  Rotate the view vector by the horizontal angle around the vertical axis
@@ -265,25 +257,13 @@ package body Ogldev_Camera is
 
    Procedure Update_Camera (theCamera : in out Camera;
                             Window    : in out Glfw.Windows.Window) is
-      use GL.Types.Singles;
       use Glfw.Input;
-      use Glfw.Input.Keys;
       use Glfw.Input.Mouse;
-      use Maths;
-      use Maths.Single_Math_Functions;
-      Current_Time       : constant GL.Types.Double := GL.Types.Double (Glfw.Time);
-      Delta_Time         : constant Single := Single (Current_Time - Last_Time);
+--        Current_Time       : constant GL.Types.Double := GL.Types.Double (Glfw.Time);
       Window_Width       : Glfw.Size;
       Window_Height      : Glfw.Size;
       Half_Window_Width  : Single;
       Half_Window_Height : Single;
-      --  GLFW 3 requires setting up a callback for setting
-      --  View_Angle to Initial_View_Angle - 5.0 * glfwGetMouseWheel();
-      --  But this is a bit too complicated for a beginner's tutorial,
-      --  so it's not implemented in this Tutorial.
-      View_Angle         : constant Maths.Degree := Initial_View_Angle;
---        Direction          : Vector3;  --  the position of the target with respect to camera.
---        Right              : Vector3;
       X_Position         : Coordinate := 0.00001;
       Y_Position         : Coordinate := 0.00002;
    begin
@@ -303,7 +283,6 @@ package body Ogldev_Camera is
       Window'Access.Set_Cursor_Pos (Mouse.Coordinate (Half_Window_Width),
                                     Mouse.Coordinate (Half_Window_Height));
 
-      Last_Time := Current_Time;
    end Update_Camera;
 
    --  ------------------------------------------------------------------------

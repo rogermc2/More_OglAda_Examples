@@ -24,12 +24,12 @@ package body Ogldev_Basic_Lighting is
                            & "]." & Unif);
       end Point_Name;
 
-      function Slot_Name (Index : Int; Unif : String) return String is
+      function Spot_Name (Index : Int; Unif : String) return String is
       begin
          return To_String ("gSpotLights[" &
                              Trim (To_Unbounded_String (Int'Image (Index - 1)), Left)
                            & "]." & Unif);
-      end Slot_Name;
+      end Spot_Name;
 
       OK : Boolean;
 
@@ -103,17 +103,23 @@ package body Ogldev_Basic_Lighting is
 
          for index in Lighting_Technique.Spot_Lights_Location'Range loop
             Lighting_Technique.Spot_Lights_Location (index).Colour :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Base.Base.Color"));
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Base.Base.Color"));
             Lighting_Technique.Spot_Lights_Location (index).Ambient_Intensity :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Base.Base.AmbientIntensity"));
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Base.Base.AmbientIntensity"));
             Lighting_Technique.Spot_Lights_Location (index).Diffuse_Intensity :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Base.Base.DiffuseIntensity"));
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Base.Base.DiffuseIntensity"));
             Lighting_Technique.Spot_Lights_Location (index).Position :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Base.Position"));
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Base.Position"));
             Lighting_Technique.Spot_Lights_Location (index).Direction :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Direction"));
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Direction"));
             Lighting_Technique.Spot_Lights_Location (index).Cut_Off  :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Slot_Name (index, "Cutoff"));
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Cutoff"));
+            Lighting_Technique.Spot_Lights_Location (index).Attenuation.Atten_Constant :=
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Point.Atten.Constant"));
+            Lighting_Technique.Spot_Lights_Location (index).Attenuation.Linear :=
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Point.Atten.Linear"));
+            Lighting_Technique.Spot_Lights_Location (index).Attenuation.Exp :=
+              Uniform_Location (Lighting_Technique.Lighting_Program, Spot_Name (index, "Point.Atten.Exp"));
          end loop;
       end if;
       return OK;
