@@ -50,15 +50,18 @@ package Ogldev_Lights_Common is
    procedure Init_Directional_Light (Light : in out Directional_Light;
                                      Ambient_Intensity, Diffuse_Intensity : Single;
                                      Colour, Direction : Singles.Vector3);
-   procedure Set_Ambient_Intensity (Light : in out Point_Light; Intensity : Single);
-   procedure Set_Attenuation_Constant (Light : in out Point_Light; Attenuation : Single);
-   procedure Set_Attenuation_Constant (Light : in out Spot_Light; Attenuation : Single);
+   procedure Set_Ambient_Intensity (Light : in out Point_Light; Intensity : Single := 1.0);
+   procedure Set_Attenuation_Constant (Light : in out Point_Light; Attenuation : Single := 0.0);
+   procedure Set_Attenuation_Constant (Light : in out Spot_Light; Attenuation : Single := 0.0);
    procedure Set_Direction (Light : in out Spot_Light; Direction : Singles.Vector3);
-   procedure Set_Exp_Attenuation (Light : in out Point_Light; Attenuation : Single);
-   procedure Set_Linear_Attenuation (Light : in out Point_Light; Attenuation : Single);
+   procedure Set_Exp_Attenuation (Light : in out Point_Light; Attenuation : Single := 0.0);
+   procedure Set_Linear_Attenuation (Light       : in out Point_Light;
+                                     Attenuation : Single := 1.0);
    procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off : Single);
-   procedure Set_Diffuse_Intensity (Light : in out Point_Light; Intensity : Single);
-   procedure Set_Diffuse_Intensity (Light : in out Spot_Light; Intensity : Single);
+   procedure Set_Diffuse_Intensity (Light     : in out Point_Light;
+                                    Intensity : Single := 0.1);
+   procedure Set_Diffuse_Intensity (Light     : in out Spot_Light;
+                                    Intensity : Single := 0.1);
 
    procedure Set_Point_Light (Light : in out Point_Light; Position : Singles.Vector3;
                               Colour : Singles.Vector3);

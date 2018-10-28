@@ -187,28 +187,32 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Ambient_Intensity (Light : in out Point_Light; Intensity : Single) is
+   procedure Set_Ambient_Intensity (Light     : in out Point_Light;
+                                    Intensity : Single := 1.0) is
    begin
       Light.Base.Ambient_Intensity := Intensity;
    end Set_Ambient_Intensity;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Ambient_Intensity (Light : in out Spot_Light; Intensity : Single) is
+   procedure Set_Ambient_Intensity (Light     : in out Spot_Light;
+                                    Intensity : Single := 1.0) is
    begin
       Light.Point.Base.Ambient_Intensity := Intensity;
    end Set_Ambient_Intensity;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Attenuation_Constant (Light : in out Point_Light; Attenuation : Single) is
+   procedure Set_Attenuation_Constant (Light       : in out Point_Light;
+                                       Attenuation : Single := 0.0) is
    begin
       Light.Attenuation.Atten_Constant := Attenuation;
    end Set_Attenuation_Constant;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Attenuation_Constant (Light : in out Spot_Light; Attenuation : Single) is
+   procedure Set_Attenuation_Constant (Light       : in out Spot_Light;
+                                       Attenuation : Single := 0.0) is
    begin
       Light.Point.Attenuation.Atten_Constant := Attenuation;
    end Set_Attenuation_Constant;
@@ -222,28 +226,32 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Exp_Attenuation (Light : in out Point_Light; Attenuation : Single) is
+   procedure Set_Exp_Attenuation (Light       : in out Point_Light;
+                                  Attenuation : Single := 0.0) is
    begin
       Light.Attenuation.Exp := Attenuation;
    end Set_Exp_Attenuation;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Linear_Attenuation (Light : in out Point_Light; Attenuation : Single) is
+   procedure Set_Linear_Attenuation (Light       : in out Point_Light;
+                                     Attenuation : Single := 1.0) is
    begin
       Light.Attenuation.Linear := Attenuation;
    end Set_Linear_Attenuation;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Diffuse_Intensity (Light : in out Point_Light; Intensity : Single) is
+   procedure Set_Diffuse_Intensity (Light     : in out Point_Light;
+                                    Intensity : Single := 0.1) is
    begin
       Light.Base.Diffuse_Intensity := Intensity;
    end Set_Diffuse_Intensity;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Diffuse_Intensity (Light : in out Spot_Light; Intensity : Single) is
+   procedure Set_Diffuse_Intensity (Light     : in out Spot_Light;
+                                    Intensity : Single := 0.1) is
    begin
       Light.Point.Base.Diffuse_Intensity := Intensity;
    end Set_Diffuse_Intensity;
