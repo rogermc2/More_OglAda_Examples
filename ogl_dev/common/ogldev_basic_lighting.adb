@@ -60,15 +60,15 @@ package body Ogldev_Basic_Lighting is
 
          Lighting_Technique.WVP_Location := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gWVP");
-         Lighting_Technique.World_Matrix_Location := Uniform_Location
+          Lighting_Technique.World_Matrix_Location := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gWorld");
          Lighting_Technique.Colour_Texture_Location := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gColorMap");
          Lighting_Technique.Eye_World_Pos_Location := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gEyeWorldPos");
-         Lighting_Technique.Dir_Light_Location.Colour := Uniform_Location
+                  Lighting_Technique.Dir_Light_Location.Colour := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gDirectionalLight.Base.Color");
-         Lighting_Technique.Dir_Light_Location.Ambient_Intensity := Uniform_Location
+                  Lighting_Technique.Dir_Light_Location.Ambient_Intensity := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
          Lighting_Technique.Dir_Light_Location.Direction := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gDirectionalLight.Direction");
@@ -217,6 +217,7 @@ package body Ogldev_Basic_Lighting is
    begin
       Light_Direction := Maths.Normalized (Light_Direction);
       Set_Single (Technique.Dir_Light_Location.Direction, Direction (Light));
+      Set_Single (Technique.Dir_Light_Location.Colour, Colour (Light));
       Set_Single (Technique.Dir_Light_Location.Ambient_Intensity,
                   Ambient_Intensity (Light));
       Set_Single (Technique.Dir_Light_Location.Direction, Light_Direction);

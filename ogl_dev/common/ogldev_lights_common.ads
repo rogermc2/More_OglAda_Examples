@@ -35,6 +35,7 @@ package Ogldev_Lights_Common is
    function Attenuation_Exponent (Light : Point_Light) return Single;
    function Attenuation_Linear (Light : Point_Light) return Single;
    function Attenuation_Linear (Light : Spot_Light) return Single;
+   function Colour (Light : Directional_Light) return Singles.Vector3;
    function Colour (Light : Point_Light) return Singles.Vector3;
    function Colour (Light : Spot_Light) return Singles.Vector3;
    function Cut_Off (Light : Spot_Light) return Single;
