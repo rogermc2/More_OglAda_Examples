@@ -6,7 +6,6 @@ with Ogldev_Math;
 
 package Ogldev_Pipeline is
 
-   type Orientation is private;
    type Pipeline is private;
 
    function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4;
@@ -40,12 +39,6 @@ private
       Position : Singles.Vector3 := (0.0, 1.0, 0.0);
       Target   : Singles.Vector3 := (0.0, 0.0, 0.0);
       Up       : Singles.Vector3 := (0.0, 1.0, 0.0);
-   end record;
-
-   type Orientation is record
-      Scale    : Singles.Vector3 := (1.0, 1.0, 1.0);
-      Rotation : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Position : Singles.Vector3 := (0.0, 0.0, 0.0);
    end record;
 
    type Pipeline is record
