@@ -90,20 +90,20 @@ package body Ogldev_Basic_Lighting is
                                Lighting_Technique.Num_Spot_Lights_Location);
 
          for index in Lighting_Technique.Point_Lights_Location'Range loop
-            Lighting_Technique.Point_Lights_Location (index).Colour :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Point_Name (index, "Base.Color"));
-            Lighting_Technique.Point_Lights_Location (index).Ambient_Intensity :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Point_Name (index, "Base.AmbientIntensity"));
-            Lighting_Technique.Point_Lights_Location (index).Diffuse_Intensity :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Point_Name (index, "Base.DiffuseIntensity"));
-            Lighting_Technique.Point_Lights_Location (index).Position :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Point_Name (index, "Position"));
-            Lighting_Technique.Point_Lights_Location (index).Attenuation.Atten_Constant :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Point_Name (index, "Atten.Constant"));
-            Lighting_Technique.Point_Lights_Location (index).Attenuation.Linear :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Point_Name (index, "Atten.Linear"));
-            Lighting_Technique.Point_Lights_Location (index).Attenuation.Exp :=
-              Uniform_Location (Lighting_Technique.Lighting_Program, Point_Name (index, "Atten.Exp"));
+         Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.Color"),
+                               Lighting_Technique.Point_Lights_Location (index).Colour);
+         Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.AmbientIntensity"),
+                               Lighting_Technique.Point_Lights_Location (index).Ambient_Intensity);
+         Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.DiffuseIntensity"),
+                               Lighting_Technique.Point_Lights_Location (index).Diffuse_Intensity);
+         Set_Uniform_Location (Shader_Program, Point_Name (index, "Position"),
+                               Lighting_Technique.Point_Lights_Location (index).Position);
+         Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Constant"),
+                               Lighting_Technique.Point_Lights_Location (index).Attenuation.Atten_Constant);
+         Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Linear"),
+                               Lighting_Technique.Point_Lights_Location (index).Attenuation.Linear);
+         Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Exp"),
+                               Lighting_Technique.Point_Lights_Location (index).Attenuation.Exp);
          end loop;
 
          for index in Lighting_Technique.Spot_Lights_Location'Range loop
