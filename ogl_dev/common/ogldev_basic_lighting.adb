@@ -80,14 +80,14 @@ package body Ogldev_Basic_Lighting is
          Set_Uniform_Location (Shader_Program, "gDirectionalLight.Base.DiffuseIntensity",
                                Lighting_Technique.Dir_Light_Location.Diffuse_Intensity);
 
-         Lighting_Technique.Mat_Specular_Intensity_Location := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gMatSpecularIntensity");
-         Lighting_Technique.Mat_Specular_Power_Location := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gSpecularPower");
-         Lighting_Technique.Num_Point_Lights_Location := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gNumPointLights");
-         Lighting_Technique.Num_Spot_Lights_Location := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gNumSpotLights");
+         Set_Uniform_Location (Shader_Program, "gMatSpecularIntensity",
+                               Lighting_Technique.Mat_Specular_Intensity_Location);
+         Set_Uniform_Location (Shader_Program, "gSpecularPower",
+                               Lighting_Technique.Mat_Specular_Power_Location);
+         Set_Uniform_Location (Shader_Program, "gNumPointLights",
+                               Lighting_Technique.Num_Point_Lights_Location);
+         Set_Uniform_Location (Shader_Program, "gNumSpotLights",
+                               Lighting_Technique.Num_Spot_Lights_Location);
 
          for index in Lighting_Technique.Point_Lights_Location'Range loop
             Lighting_Technique.Point_Lights_Location (index).Colour :=
