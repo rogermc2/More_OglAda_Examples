@@ -7,7 +7,7 @@ with Ogldev_Lights_Common; use Ogldev_Lights_Common;
 
 package Ogldev_Basic_Lighting is
 
-   type Basic_Lighting_Technique; --  is private;
+   type Basic_Lighting_Technique is private;
 
    Max_Point_Lights : constant Int := 2;
    Max_Spot_Lights  : constant Int := 2;
@@ -41,7 +41,7 @@ package Ogldev_Basic_Lighting is
    procedure Set_WVP (Technique : Basic_Lighting_Technique;
                       WVP : Singles.Matrix4);
 
---  private
+private
 
    type Direct_Light is record
       Colour            : GL.Uniforms.Uniform := 0;
@@ -89,7 +89,6 @@ package Ogldev_Basic_Lighting is
       Spot_Lights_Location            : Spot_Light_Location_Array;
    end record;
 
-private
    type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
    type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
 
