@@ -3,17 +3,14 @@ with Ada.Strings;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Objects.Shaders;
+
 with Maths;
 with Program_Loader;
-with GL.Objects.Shaders;
+with Utilities;
 
 package body Ogldev_Basic_Lighting is
    use GL.Uniforms;
-
-   procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
-                                   Location       : String; theUniform : in out Uniform);
-
-   --  -------------------------------------------------------------------------
 
    function Init (Lighting_Technique : in out Basic_Lighting_Technique) return Boolean is
       use Ada.Strings;
@@ -21,6 +18,7 @@ package body Ogldev_Basic_Lighting is
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
       use Program_Loader;
+      use Utilities;
 
       function Point_Name (Index : Int; Unif : String) return String is
       begin
@@ -325,17 +323,6 @@ package body Ogldev_Basic_Lighting is
    begin
       Set_Single (Technique.Mat_Specular_Power_Location, Single (Power));
    end Set_Mat_Specular_Power;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
-                                   Location : String; theUniform : in out Uniform) is
-   begin
-      theUniform := GL.Objects.Programs.Uniform_Location (Shader_Program, Location);
-      if theUniform < 0 then
-         Put_Line ("Set_Uniform_Location, Uniform " & Location & " not found.");
-      end if;
-   end Set_Uniform_Location;
 
    --  -------------------------------------------------------------------------
 
