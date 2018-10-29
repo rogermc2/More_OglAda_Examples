@@ -10,6 +10,11 @@ with GL.Objects.Shaders;
 package body Ogldev_Basic_Lighting is
    use GL.Uniforms;
 
+   procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
+                                   Location       : String; theUniform : in out Uniform);
+
+   --  -------------------------------------------------------------------------
+
    function Init (Lighting_Technique : in out Basic_Lighting_Technique) return Boolean is
       use Ada.Strings;
       use Ada.Strings.Unbounded;
@@ -31,13 +36,13 @@ package body Ogldev_Basic_Lighting is
                            & "]." & Unif);
       end Spot_Name;
 
+      Shader_Program : GL.Objects.Programs.Program;
       OK : Boolean;
 
    begin
       Lighting_Technique.Lighting_Program :=
         Program_From ((Src ("../common/shaders/basic_lighting.vs", Vertex_Shader),
                       Src ("../common/shaders/basic_lighting.fs", Fragment_Shader)));
-
       OK := GL.Objects.Programs.Link_Status (Lighting_Technique.Lighting_Program);
       if not OK then
          Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program link failed");
@@ -56,24 +61,24 @@ package body Ogldev_Basic_Lighting is
 --        end if;
 
       if OK then
-         Use_Program (Lighting_Technique.Lighting_Program);
-
-         Lighting_Technique.WVP_Location := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gWVP");
-          Lighting_Technique.World_Matrix_Location := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gWorld");
-         Lighting_Technique.Colour_Texture_Location := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gColorMap");
-         Lighting_Technique.Eye_World_Pos_Location := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gEyeWorldPos");
-                  Lighting_Technique.Dir_Light_Location.Colour := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gDirectionalLight.Base.Color");
-                  Lighting_Technique.Dir_Light_Location.Ambient_Intensity := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
-         Lighting_Technique.Dir_Light_Location.Direction := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gDirectionalLight.Direction");
-         Lighting_Technique.Dir_Light_Location.Diffuse_Intensity := Uniform_Location
-           (Lighting_Technique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
+         Shader_Program := Lighting_Technique.Lighting_Program;
+         Use_Program (Shader_Program);
+         Set_Uniform_Location (Shader_Program, "gWVP",
+                               Lighting_Technique.WVP_Location);
+         Set_Uniform_Location (Shader_Program, "gWorld",
+                               Lighting_Technique.World_Matrix_Location);
+         Set_Uniform_Location (Shader_Program, "gColorMap",
+                               Lighting_Technique.Colour_Texture_Location);
+         Set_Uniform_Location (Shader_Program, "gEyeWorldPos",
+                               Lighting_Technique.Eye_World_Pos_Location);
+         Set_Uniform_Location (Shader_Program, "gDirectionalLight.Base.Color",
+                               Lighting_Technique.Dir_Light_Location.Colour);
+         Set_Uniform_Location (Shader_Program, "gDirectionalLight.Base.AmbientIntensity",
+                               Lighting_Technique.Dir_Light_Location.Ambient_Intensity);
+         Set_Uniform_Location (Shader_Program, "gDirectionalLight.Direction",
+                               Lighting_Technique.Dir_Light_Location.Direction);
+         Set_Uniform_Location (Shader_Program, "gDirectionalLight.Base.DiffuseIntensity",
+                               Lighting_Technique.Dir_Light_Location.Diffuse_Intensity);
 
          Lighting_Technique.Mat_Specular_Intensity_Location := Uniform_Location
            (Lighting_Technique.Lighting_Program, "gMatSpecularIntensity");
@@ -320,6 +325,17 @@ package body Ogldev_Basic_Lighting is
    begin
       Set_Single (Technique.Mat_Specular_Power_Location, Single (Power));
    end Set_Mat_Specular_Power;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
+                                   Location : String; theUniform : in out Uniform) is
+   begin
+      theUniform := GL.Objects.Programs.Uniform_Location (Shader_Program, Location);
+      if theUniform < 0 then
+         Put_Line ("Set_Uniform_Location, Uniform " & Location & " not found.");
+      end if;
+   end Set_Uniform_Location;
 
    --  -------------------------------------------------------------------------
 
