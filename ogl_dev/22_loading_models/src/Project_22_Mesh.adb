@@ -268,12 +268,9 @@ package body Project_22_Mesh is
          theTexture   : Ogldev_Texture.Ogl_Texture;
          OK           : Boolean := False;
       begin
-         GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
          GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
-
-         GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
 
          OK := aMaterial < UInt (theMesh.Textures.Length);
          if OK then
@@ -295,6 +292,8 @@ package body Project_22_Mesh is
          end if;
 
          if OK then
+            GL.Objects.Buffers.Array_Buffer.Bind (thisEntry.VBO);
+            GL.Objects.Buffers.Element_Array_Buffer.Bind (thisEntry.IBO);
             GL.Objects.Buffers.Draw_Elements
               (Triangles, Num_Indices, UInt_Type, 0);
          end if;
