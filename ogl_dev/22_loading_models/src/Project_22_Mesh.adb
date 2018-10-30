@@ -51,7 +51,7 @@ package body Project_22_Mesh is
       theEntry.VBO.Initialize_Id;
       Array_Buffer.Bind (theEntry.VBO);
       theEntry.IBO.Initialize_Id;
-      Array_Buffer.Bind (theEntry.IBO);
+      Element_Array_Buffer.Bind (theEntry.IBO);
 
       for index in 1 ..  Vertices_Length loop
          Vertices_Array (index) :=
@@ -63,8 +63,9 @@ package body Project_22_Mesh is
 
       Array_Buffer.Bind (theEntry.VBO);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
-      Array_Buffer.Bind (theEntry.IBO);
-      Utilities.Load_Element_Buffer (Array_Buffer, Indices, Static_Draw);
+      Element_Array_Buffer.Bind (theEntry.IBO);
+      Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
+--        Utilities.Print_GL_UInt_Array ("Project_22_Mesh.Init_Buffers Indices", Indices);
 
    exception
       when others =>
@@ -171,10 +172,11 @@ package body Project_22_Mesh is
 
    procedure Init_Mesh (Mesh_Index : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
                         aMesh_22   : in out Mesh_22) is
+      use Ada.Containers;
       use Mesh_Entry_Package;
       Num_Vertices  : constant UInt := UInt (Source_Mesh.Vertices.Length);
       Vertices      : Vertex_Array (1 .. Int (Num_Vertices));
-      Indices       : GL.Types.UInt_Array (1 .. Int (3 * Num_Vertices));
+      Indices       : GL.Types.UInt_Array (1 .. Int (3 * Source_Mesh.Faces.Length));
       anEntry       : Mesh_Entry;
       Position      : GL.Types.Singles.Vector3;
       Normal        : GL.Types.Singles.Vector3;
