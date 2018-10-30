@@ -7,11 +7,11 @@ with GL.Low_Level.Enums;
 
 with Utilities;
 
+with Assimp_Mesh;
 with Assimp_Types;
-
 with Importer;
 with Material;
-with Assimp_Mesh;
+with Material_System;
 
 with Ogldev_Engine_Common;
 with Ogldev_Util;
@@ -92,8 +92,8 @@ package body Ogldev_Basic_Mesh is
       Enable_Vertex_Attrib_Array (Normal_Location);
       Set_Vertex_Attrib_Pointer (Normal_Location, 3, Single_Type, 0, 0);
 
-      Array_Buffer.Bind (Buffers (Index_Buffer'Enum_Rep + 1));
-      Utilities.Load_Element_Buffer (Array_Buffer, Indices, Static_Draw);
+      Element_Array_Buffer.Bind (Buffers (Index_Buffer'Enum_Rep + 1));
+      Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
 
    exception
       when others =>
@@ -107,8 +107,8 @@ package body Ogldev_Basic_Mesh is
                               File_Name : String;
                               theScene : Scene.AI_Scene) is
       use Mesh_Entry_Package;
-      Num_Vertices : constant UInt := 0;
-      Num_Indices  : constant UInt := 0;
+      Num_Vertices : UInt := 0;
+      Num_Indices  : UInt := 0;
       Curs         : Cursor := Initial_Mesh.Entries.First;
       Index        : UInt := 0;
       aMesh        : Assimp_Mesh.AI_Mesh;
@@ -117,10 +117,10 @@ package body Ogldev_Basic_Mesh is
       while Has_Element (Curs) loop
          Index := Index + 1;
          aMesh := theScene.Meshes (Index);
-         Set_Entry (anEntry, Num_Indices, Num_Vertices, 3 * aMesh.Num_Faces,
+         Set_Entry (anEntry, Num_Indices, Num_Vertices, 3 * UInt (aMesh.Faces.Length),
                     Material_Type'Enum_Val (aMesh.Material_Index));
          Mesh_Entry_Package.Replace_Element (Initial_Mesh.Entries, Curs, anEntry);
-         Num_Vertices := Num_Vertices + aMesh.Num_Vertices;
+         Num_Vertices := Num_Vertices + UInt (aMesh.Vertices.Length);
          Num_Indices := Num_Indices + anEntry.Num_Indices;
          Next (Curs);
       end loop;
@@ -166,7 +166,7 @@ package body Ogldev_Basic_Mesh is
 --          := GNAT.Directory_Operations.Dir_Name (File_Name);
       Path          : Ada.Strings.Unbounded.Unbounded_String;
 --        Full_Path   : constant String := Current_Dir & Dir;
-      Result        : Assimp_Types.AI_Return;
+      Result        : Assimp_Types.API_Return;
       Materials_Map : constant AI_Material_Map := theScene.Materials;
 
       procedure Load_Textures (Curs : AI_Material_Package.Cursor) is
@@ -179,10 +179,10 @@ package body Ogldev_Basic_Mesh is
          end loop;
          for index in 1 .. Initial_Mesh.Textures.Length loop
             if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
-               Get_Texture (aMaterial, AI_Texture_Diffuse, UInt (index), Path, Result);
-               if Result = Assimp_Types.AI_Return_Success then
+               Result := Material_System.Get_Texture (aMaterial, AI_Texture_Diffuse, UInt (index), Path);
+               if Result = Assimp_Types.API_Return_Success and then
                   Ogldev_Texture.Init_Texture
-                    (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name);
+                    (aTexture, GL.Low_Level.Enums.Texture_2D, File_Name) then
                   Initial_Mesh.Textures.Insert (UInt (index), aTexture);
                   Ogldev_Texture.Load (aTexture);
                   Put_Line ("Init_Materials loaded texture from " & File_Name);
@@ -207,35 +207,33 @@ package body Ogldev_Basic_Mesh is
                         Tex_Coords : out GL.Types.Singles.Vector2_Array;
                         Indices : out GL.Types.UInt_Array) is
       use Ada.Containers;
-      use Assimp_Mesh.Face_Index_Package;
-      Face_Array   : constant Assimp_Mesh.API_Face_Array := aMesh.Faces;
-      Face_List    : Assimp_Mesh.AI_Faces;
-      Face_Cursor  : Cursor;
+      use Assimp_Mesh.Faces_Package;
+      Face_List   : constant Assimp_Mesh.Faces_Map := aMesh.Faces;
+      Face_Cursor  : Cursor := Face_List.First;
    begin
       --  Populate the vertex attribute vectors
-      for index in UInt range 1 .. UInt (aMesh.Vertices.Length) loop
-         Positions (Int (index)) := aMesh.Vertices (index);
-         Normals (Int (index)) := aMesh.Normals (index);
-         if index <= aMesh.Texture_Coords'Length then
-            Tex_Coords (Int (index)) (GL.X) := aMesh.Texture_Coords (Int (index)) (GL.X);
-         else
-            Tex_Coords (Int (index)) := (0.0, 0.0);
-         end if;
-      end loop;
+--        for index in UInt range 1 .. UInt (aMesh.Vertices.Length) loop
+--           Positions (Int (index)) := aMesh.Vertices (index);
+--           Normals (Int (index)) := aMesh.Normals (index);
+--           if index <= UInt (aMesh.Texture_Coords.Length) then
+--              Tex_Coords (Int (index)) (GL.X) := aMesh.Texture_Coords (index) ();
+--           else
+--              Tex_Coords (Int (index)) := (0.0, 0.0);
+--           end if;
+--        end loop;
       --  Populate the index buffer
-      for index in UInt range Face_Array'Range loop
-         Face_List := aMesh.Faces (index);
-         Face_Cursor := Face_List.First;
-         if Face_List.Length = 3 then
-            Indices (1) := UInt (Element (Face_Cursor));
-            Next (Face_Cursor);
-            Indices (2) := UInt (Element (Face_Cursor));
-            Next (Face_Cursor);
-            Indices (3) := UInt (Element (Face_Cursor));
-         else
-            Put_Line ("Ogldev_Basic_Mesh.Init_Mesh, invalid number of face indices.");
-         end if;
-      end loop;
+--        for index in UInt range 1 .. 3 * UInt (aMesh.Faces.Length) loop
+--           if Face_List.Length = 3 then
+--              Indices (1) := UInt (Element (Face_Cursor));
+--              Next (Face_Cursor);
+--              Indices (2) := UInt (Element (Face_Cursor));
+--              Next (Face_Cursor);
+--              Indices (3) := UInt (Element (Face_Cursor));
+--           else
+--              Put_Line ("Ogldev_Basic_Mesh.Init_Mesh, invalid number of face indices.");
+--           end if;
+--           Next (Face_Cursor);
+--        end loop;
       null;
 
    exception
@@ -282,8 +280,9 @@ package body Ogldev_Basic_Mesh is
       begin
          if Material_Index < Natural (theMesh.Textures.Length) then
             if not theMesh.Textures.Is_Empty then
-               Ogldev_Texture.Bind (Element (Tex_Curs),
-                                    Ogldev_Engine_Common.Colour_Texture_Unit_Index);
+               null;
+--                 Ogldev_Texture.Bind (Element (Tex_Curs),
+--                                      Ogldev_Engine_Common.Colour_Texture_Unit_Index);
             end if;
             GL.Objects.Buffers.Draw_Elements_Base_Vertex
               (Triangles, Num_Indices, UInt_Type,
