@@ -65,7 +65,6 @@ package body Project_22_Mesh is
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
       Element_Array_Buffer.Bind (theEntry.IBO);
       Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
---        Utilities.Print_GL_UInt_Array ("Project_22_Mesh.Init_Buffers Indices", Indices);
 
    exception
       when others =>
@@ -86,8 +85,6 @@ package body Project_22_Mesh is
    begin
       --  Initialized_Mesh works because there is only one mesh
       --  Initialized_Mesh contains vertices and textures maps
---        Put_Line ("Mesh_22.Init_From_Scene, number of theScene.Meshes: " &
---                    Ada.Containers.Count_Type'Image (theScene.Meshes.Length));
       while Has_Element (Curs) loop
          Mesh_Index := Mesh_Index + 1;
          aMesh := theScene.Meshes (Mesh_Index);
@@ -124,12 +121,7 @@ package body Project_22_Mesh is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
-         --           Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures Diffuse Texture_Count: " &
-         --                       UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
---              Assimp_Util.Print_AI_Property_Data ("Project_22_Mesh.Load_Textures Property 1",
---                                                  aMaterial.Properties.First_Element);
---              New_Line;
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
 

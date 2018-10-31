@@ -46,8 +46,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : constant Singles.Vector3 := (3.0, 3.0, 10.0); --  Normalized by Camera.Init
-      Target              : constant Singles.Vector3 := (0.0, -0.2, 0.1);  --  Normalized by Camera.Init
+      Camera_Position     : constant Singles.Vector3 := (3.0, 2.0, 10.0); --  Normalized by Camera.Init
+      Target_Position     : constant Singles.Vector3 := (0.0, -0.2, -1.0);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
@@ -58,7 +58,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                                       (1.0, 1.0, 1.0), (1.0, -1.0, 0.0));
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
-                                    Position, Target, Up);
+                                    Camera_Position, Target_Position, Up);
          Utilities.Clear_Background_Colour_And_Depth (Background);
 
          GL.Culling.Set_Front_Face (Clockwise);
@@ -131,15 +131,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Perspective_Proj_Info.Z_Far := 100.0;
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.005);  --  orig 0.04,  Default 1.0
-      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 50.0 * Scale, 0.0);  -- 1.0 * Scale
+      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);  -- radians
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);  --  orig z -10
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),  Get_Target (Game_Camera),
                                   Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
       Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
 
-      Set_WVP (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (pipe));
       Set_World_Matrix (Light_Technique, Ogldev_Pipeline.Get_World_Transform (pipe));
+      Set_WVP (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (pipe));
       Set_Directional_Light (Light_Technique, Direct_Light);
       Set_Eye_World_Pos (Light_Technique, Get_Position (Game_Camera));
       Set_Mat_Specular_Intensity (Light_Technique, 0.0);

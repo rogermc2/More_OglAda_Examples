@@ -17,7 +17,7 @@ Package Ogldev_Camera is
                           Window_Width, Window_Height : Int);
    procedure Init_Camera (theCamera : in out Camera;
                           Window_Width, Window_Height : Int;
-                          Position, Target, Up : Singles.Vector3);
+                          Camera_Position, Target_Position, Up : Singles.Vector3);
    procedure Update_Camera (theCamera : in out Camera;
                             Window : in out Glfw.Windows.Window);
 
