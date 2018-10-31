@@ -8,15 +8,16 @@ package Ogldev_Pipeline is
 
    type Pipeline is private;
 
-   function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4;
-   function Get_View_Transform (P : in out  Pipeline) return Singles.Matrix4;
-   function Get_VP_Transform (P : in out Pipeline) return Singles.Matrix4;
-   function Get_World_Transform (P : in out Pipeline) return Singles.Matrix4;
-   function Get_WP_Transform (P : in out Pipeline) return Singles.Matrix4;
-   function Get_WV_Transform (P : in out Pipeline) return Singles.Matrix4;
-   function Get_WV_Ortho_P_Transform (P : in out Pipeline) return Singles.Matrix4;
-   function Get_WVP_Transform (P : in out Pipeline) return Singles.Matrix4;
+   function Get_Proj_Transform (P : Pipeline) return Singles.Matrix4;
+   function Get_View_Transform (P : Pipeline) return Singles.Matrix4;
+   function Get_VP_Transform (P : Pipeline) return Singles.Matrix4;
+   function Get_World_Transform (P : Pipeline) return Singles.Matrix4;
+   function Get_WP_Transform (P : Pipeline) return Singles.Matrix4;
+   function Get_WV_Transform (P : Pipeline) return Singles.Matrix4;
+   function Get_WV_Ortho_P_Transform (P : Pipeline) return Singles.Matrix4;
+   function Get_WVP_Transform (P : Pipeline) return Singles.Matrix4;
 
+   procedure Init_Transforms  (P : in out Pipeline);
    procedure Set_Camera (P : in out Pipeline; C : Ogldev_Camera.Camera);
    procedure Set_Camera (P : in out Pipeline;
                          Pos, Target, Up : Singles.Vector3);
