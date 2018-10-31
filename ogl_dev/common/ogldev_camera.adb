@@ -260,10 +260,10 @@ package body Ogldev_Camera is
       use Glfw.Input;
       use Glfw.Input.Mouse;
 --        Current_Time       : constant GL.Types.Double := GL.Types.Double (Glfw.Time);
-      Window_Width       : Glfw.Size;
-      Window_Height      : Glfw.Size;
-      Half_Window_Width  : Single;
-      Half_Window_Height : Single;
+--        Window_Width       : Glfw.Size;
+--        Window_Height      : Glfw.Size;
+--        Half_Window_Width  : Single;
+--        Half_Window_Height : Single;
       X_Position         : Coordinate := 0.00001;
       Y_Position         : Coordinate := 0.00002;
    begin
@@ -271,17 +271,17 @@ package body Ogldev_Camera is
       Process_Keyboard (theCamera, Window);                       --  OnKeyboard
       Update_Render (theCamera);                                  --  OnRender
 
-      Window'Access.Get_Size (Window_Width, Window_Height);
-      theCamera.Window_Width := GL.Types.Int (Window_Width);
-      theCamera.Window_Height := GL.Types.Int (Window_Height);
-      Half_Window_Width := 0.5 * Single (theCamera.Window_Width);
-      Half_Window_Height := 0.5 * Single (theCamera.Window_Height);
-
-      --  Reset the cursor to the center of the screen
-      --  otherwise it will soon go outside the window.
-
-      Window'Access.Set_Cursor_Pos (Mouse.Coordinate (Half_Window_Width),
-                                    Mouse.Coordinate (Half_Window_Height));
+--        Window'Access.Get_Size (Window_Width, Window_Height);
+--        theCamera.Window_Width := GL.Types.Int (Window_Width);
+--        theCamera.Window_Height := GL.Types.Int (Window_Height);
+--        Half_Window_Width := 0.5 * Single (theCamera.Window_Width);
+--        Half_Window_Height := 0.5 * Single (theCamera.Window_Height);
+--
+--        Reset the cursor to the center of the screen
+--        otherwise it will soon go outside the window.
+--
+--        Window'Access.Set_Cursor_Pos (Mouse.Coordinate (Half_Window_Width),
+--                                      Mouse.Coordinate (Half_Window_Height));
 
    end Update_Camera;
 
