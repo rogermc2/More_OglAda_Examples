@@ -7,7 +7,7 @@ package body Ogldev_Pipeline is
       use GL.Types.Singles;
       Scale_Xform       : constant Matrix4 := Maths.Scaling_Matrix (P.Scale);
       Rotate_Xform      : Matrix4;
-      Translation_Xform : constant Matrix4 :=Maths.Translation_Matrix (P.World_Pos);
+      Translation_Xform : constant Matrix4 := Maths.Translation_Matrix (P.World_Pos);
    begin
       Maths.Init_Rotation_Transform (P.Rotation_Info, Rotate_Xform);
       P.W_Transformation := Scale_Xform * Translation_Xform * Rotate_Xform;
@@ -90,15 +90,15 @@ function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4 is
 
    function Get_WV_Ortho_P_Transform (P : in out Pipeline) return Singles.Matrix4 is
       use GL.Types.Singles;
-      VT   : constant Matrix4 := Get_View_Transform (P);
-      WT   : constant Matrix4 := Get_World_Transform (P);
-      Proj : Matrix4;
+      VT         : constant Matrix4 := Get_View_Transform (P);
+      WT         : constant Matrix4 := Get_World_Transform (P);
+      Ortho_Proj : Matrix4;
    begin
       Maths.Init_Orthographic_Transform
                  (P.Orthographic_Proj.Top, P.Orthographic_Proj.Bottom,
                   P.Orthographic_Proj.Left, P.Orthographic_Proj.Right,
-                  P.Orthographic_Proj.Z_Near, P.Orthographic_Proj.Z_Far, Proj);
-      P.WVP_Transformation := Proj * VT * WT;
+                  P.Orthographic_Proj.Z_Near, P.Orthographic_Proj.Z_Far, Ortho_Proj);
+      P.WVP_Transformation := Ortho_Proj * VT * WT;
       return P.WVP_Transformation;
    end Get_WV_Ortho_P_Transform;
 
@@ -161,20 +161,6 @@ function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_World_Position (P : in out Pipeline; X, Y, Z : Single) is
-   begin
-      P.World_Pos := (X, Y, Z);
-   end Set_World_Position;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_World_Position (P : in out Pipeline; S : Singles.Vector3) is
-   begin
-      P.World_Pos := S;
-   end Set_World_Position;
-
-   --  -------------------------------------------------------------------------
-
    procedure Set_Rotation (P : in out Pipeline; X, Y, Z : Single) is
    begin
       P.Rotation_Info := (X, Y, Z);
@@ -188,5 +174,19 @@ function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4 is
    end Set_Rotation;
 
    --  -------------------------------------------------------------------------
+
+   procedure Set_World_Position (P : in out Pipeline; X, Y, Z : Single) is
+   begin
+      P.World_Pos := (X, Y, Z);
+   end Set_World_Position;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_World_Position (P : in out Pipeline; S : Singles.Vector3) is
+   begin
+      P.World_Pos := S;
+   end Set_World_Position;
+
+    --  -------------------------------------------------------------------------
 
 end Ogldev_Pipeline;

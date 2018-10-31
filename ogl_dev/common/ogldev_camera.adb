@@ -108,20 +108,20 @@ package body Ogldev_Camera is
    --  From camera.cpp Camera::Camera
    procedure Init_Camera (theCamera                   : in out Camera;
                           Window_Width, Window_Height : Int;
-                          Position, Target, Up        : Singles.Vector3) is
+                          Camera_Position, Target_Position, Up : Singles.Vector3) is
    begin
       theCamera.Window_Width := Window_Width;
       theCamera.Window_Height := Window_Height;
-      if Maths.Length (Position) /= 0.0 then
-         theCamera.Position := Maths.Normalized (Position);
+      if Maths.Length (Camera_Position) /= 0.0 then
+         theCamera.Position := Maths.Normalized (Camera_Position);
       else
-         theCamera.Position := Position;
+         theCamera.Position := Camera_Position;
       end if;
 
-      if Maths.Length (Target) /= 0.0 then
-         theCamera.Target := Maths.Normalized (Target);
+      if Maths.Length (Target_Position) /= 0.0 then
+         theCamera.Target := Maths.Normalized (Target_Position);
       else
-         theCamera.Target := Target;
+         theCamera.Target := Target_Position;
       end if;
 
       if Maths.Length (Up) /= 0.0 then
