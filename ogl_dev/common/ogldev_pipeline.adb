@@ -3,104 +3,82 @@ with Maths;
 
 package body Ogldev_Pipeline is
 
-   function Get_World_Transform (P : in out Pipeline) return Singles.Matrix4 is
-      use GL.Types.Singles;
-      Scale_Xform       : constant Matrix4 := Maths.Scaling_Matrix (P.Scale);
-      Rotate_Xform      : Matrix4;
-      Translation_Xform : constant Matrix4 := Maths.Translation_Matrix (P.World_Pos);
+   procedure Set_Proj_Transform (P : in out Pipeline);
+   procedure Set_View_Transform (P : in out Pipeline);
+   procedure Set_WP_Transform (P : in out Pipeline);
+   procedure Set_World_Transform (P : in out Pipeline);
+   procedure Set_WV_Ortho_P_Transform (P : in out Pipeline);
+
+   --  -------------------------------------------------------------------------
+
+   function Get_World_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      Maths.Init_Rotation_Transform (P.Rotation_Info, Rotate_Xform);
-      P.W_Transformation := Scale_Xform * Translation_Xform * Rotate_Xform;
       return P.W_Transformation;
    end Get_World_Transform;
 
    --  -------------------------------------------------------------------------
 
-   function Get_WVP_Transform (P : in out Pipeline) return Singles.Matrix4 is
-      use GL.Types.Singles;
-      WT  : constant Matrix4 := Get_World_Transform (P);
-      VPT : constant Matrix4 := Get_VP_Transform (P);
+   function Get_WVP_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      P.WVP_Transformation := VPT * WT;
       return P.WVP_Transformation;
    end Get_WVP_Transform;
 
    --  -------------------------------------------------------------------------
 
-function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4 is
+   function Get_Proj_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      Maths.Init_Perspective_Transform
-        (Maths.Degree (P.Perspective_Proj.FOV), Single (P.Perspective_Proj.Width),
-         Single (P.Perspective_Proj.Height), P.Perspective_Proj.Z_Near,
-         P.Perspective_Proj.Z_Far, P.Proj_Transformation);
-      return P.Proj_Transformation;
+       return P.Proj_Transformation;
    end Get_Proj_Transform;
 
    --  -------------------------------------------------------------------------
 
-   function Get_View_Transform (P : in out Pipeline) return Singles.Matrix4 is
-      use GL.Types.Singles;
-      Camera_Translation_Trans : Matrix4;
-      Camera_Rotate_Trans      : Matrix4;
+   function Get_View_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      Camera_Translation_Trans := Maths.Translation_Matrix (-P.Camera.Position);
-      Camera_Rotate_Trans := Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
-      P.V_Transformation := Camera_Translation_Trans * Camera_Rotate_Trans;
       return P.V_Transformation;
    end Get_View_Transform;
 
    --  ------------------------------------------------------------------
-   -------
-   function Get_VP_Transform (P : in out Pipeline) return Singles.Matrix4 is
-      use GL.Types.Singles;
-      VT : constant Matrix4 := Get_View_Transform (P);
-      PT : constant Matrix4 := Get_Proj_Transform (P);
+
+   function Get_VP_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-       P.VP_Transformation := PT * VT;
       return P.VP_Transformation;
    end Get_VP_Transform;
 
    --  -------------------------------------------------------------------------
 
-    function Get_WP_Transform (P : in out Pipeline) return Singles.Matrix4 is
-      use GL.Types.Singles;
-      WT   : constant Matrix4 := Get_World_Transform (P);
-      Pers_Proj_Trans : Matrix4;
+    function Get_WP_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      Maths.Init_Perspective_Transform
-        (Maths.Degree (P.Perspective_Proj.FOV), Single (P.Perspective_Proj.Width),
-         Single (P.Perspective_Proj.Height), P.Perspective_Proj.Z_Near,
-         P.Perspective_Proj.Z_Far, Pers_Proj_Trans);
-      P.WP_Transformation := Pers_Proj_Trans * WT;
       return P.WP_Transformation;
    end Get_WP_Transform;
 
    --  -------------------------------------------------------------------------
 
-   function Get_WV_Transform (P : in out Pipeline) return Singles.Matrix4 is
-      use GL.Types.Singles;
-      VT   : constant Matrix4 := Get_View_Transform (P);
-      WT   : constant Matrix4 := Get_World_Transform (P);
+   function Get_WV_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      P.WV_Transformation := VT * WT;
       return P.WV_Transformation;
    end Get_WV_Transform;
 
    --  -------------------------------------------------------------------------
 
-   function Get_WV_Ortho_P_Transform (P : in out Pipeline) return Singles.Matrix4 is
-      use GL.Types.Singles;
-      VT         : constant Matrix4 := Get_View_Transform (P);
-      WT         : constant Matrix4 := Get_World_Transform (P);
-      Ortho_Proj : Matrix4;
+   function Get_WV_Ortho_P_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      Maths.Init_Orthographic_Transform
-                 (P.Orthographic_Proj.Top, P.Orthographic_Proj.Bottom,
-                  P.Orthographic_Proj.Left, P.Orthographic_Proj.Right,
-                  P.Orthographic_Proj.Z_Near, P.Orthographic_Proj.Z_Far, Ortho_Proj);
-      P.WVP_Transformation := Ortho_Proj * VT * WT;
       return P.WVP_Transformation;
    end Get_WV_Ortho_P_Transform;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Init_Transforms  (P : in out Pipeline) is
+      use GL.Types.Singles;
+   begin
+      Set_World_Transform (P);
+      Set_View_Transform (P);
+      Set_Proj_Transform (P);
+      P.VP_Transformation := P.V_Transformation * P.Proj_Transformation;
+      Set_WP_Transform (P);
+      P.WV_Transformation := P.V_Transformation * P.W_Transformation;
+      Set_WV_Ortho_P_Transform (P);
+      P.WVP_Transformation := P.VP_Transformation * P.W_Transformation;
+   end Init_Transforms;
 
    --  -------------------------------------------------------------------------
 
@@ -161,6 +139,16 @@ function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4 is
 
    --  -------------------------------------------------------------------------
 
+   procedure Set_Proj_Transform (P : in out Pipeline) is
+   begin
+      Maths.Init_Perspective_Transform
+        (Maths.Degree (P.Perspective_Proj.FOV), Single (P.Perspective_Proj.Width),
+         Single (P.Perspective_Proj.Height), P.Perspective_Proj.Z_Near,
+         P.Perspective_Proj.Z_Far, P.Proj_Transformation);
+   end Set_Proj_Transform;
+
+   --  -------------------------------------------------------------------------
+
    procedure Set_Rotation (P : in out Pipeline; X, Y, Z : Single) is
    begin
       P.Rotation_Info := (X, Y, Z);
@@ -175,6 +163,18 @@ function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4 is
 
    --  -------------------------------------------------------------------------
 
+   procedure Set_View_Transform (P : in out Pipeline) is
+      use GL.Types.Singles;
+      Camera_Translation_Trans : Matrix4;
+      Camera_Rotate_Trans      : Matrix4;
+   begin
+      Camera_Translation_Trans := Maths.Translation_Matrix (-P.Camera.Position);
+      Camera_Rotate_Trans := Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
+      P.V_Transformation := Camera_Translation_Trans * Camera_Rotate_Trans;
+   end Set_View_Transform;
+
+   --  ------------------------------------------------------------------
+
    procedure Set_World_Position (P : in out Pipeline; X, Y, Z : Single) is
    begin
       P.World_Pos := (X, Y, Z);
@@ -188,5 +188,43 @@ function Get_Proj_Transform (P : in out Pipeline) return Singles.Matrix4 is
    end Set_World_Position;
 
     --  -------------------------------------------------------------------------
+
+   procedure Set_World_Transform (P : in out Pipeline) is
+      use GL.Types.Singles;
+      Scale_Xform       : constant Matrix4 := Maths.Scaling_Matrix (P.Scale);
+      Rotate_Xform      : Matrix4;
+   begin
+      Maths.Init_Rotation_Transform (P.Rotation_Info, Rotate_Xform);
+      P.W_Transformation :=
+         Maths.Translation_Matrix (P.World_Pos) * Rotate_Xform * Scale_Xform;
+   end Set_World_Transform;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_WP_Transform (P : in out Pipeline) is
+      use GL.Types.Singles;
+      Pers_Proj_Trans : Matrix4;
+   begin
+      Maths.Init_Perspective_Transform
+        (Maths.Degree (P.Perspective_Proj.FOV), Single (P.Perspective_Proj.Width),
+         Single (P.Perspective_Proj.Height), P.Perspective_Proj.Z_Near,
+         P.Perspective_Proj.Z_Far, Pers_Proj_Trans);
+      P.WP_Transformation := Pers_Proj_Trans * P.W_Transformation;
+   end Set_WP_Transform;
+
+   --  -------------------------------------------------------------------------
+
+    procedure Set_WV_Ortho_P_Transform (P : in out Pipeline) is
+      use GL.Types.Singles;
+      Ortho_Proj : Matrix4;
+   begin
+      Maths.Init_Orthographic_Transform
+                 (P.Orthographic_Proj.Top, P.Orthographic_Proj.Bottom,
+                  P.Orthographic_Proj.Left, P.Orthographic_Proj.Right,
+                  P.Orthographic_Proj.Z_Near, P.Orthographic_Proj.Z_Far, Ortho_Proj);
+      P.WVP_Transformation := Ortho_Proj * P.V_Transformation * P.W_Transformation;
+   end Set_WV_Ortho_P_Transform;
+
+   --  -------------------------------------------------------------------------
 
 end Ogldev_Pipeline;

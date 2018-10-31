@@ -288,15 +288,15 @@ package body Ogldev_Basic_Lighting is
    procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
                               Spot      : Ogldev_Lights_Common.Spot_Light) is
       Location        : Spot_Light_Locations;
---        Light_Direction : Singles.Vector3 := Direction (Spot);
+      Light_Direction : Singles.Vector3 := Direction (Spot);
    begin
---        Light_Direction := Maths.Normalized (Light_Direction);
+      Light_Direction := Maths.Normalized (Light_Direction);
       GL.Uniforms.Set_Int (Technique.Num_Spot_Lights_Location, 1);
       Location := Technique.Spot_Lights_Location (1);
       Set_Single (Location.Colour, Colour (Spot));
       Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
       Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
-      Set_Single (Location.Direction, Direction (Spot));
+      Set_Single (Location.Direction, Light_Direction);
       Set_Single (Location.Cut_Off, Cut_Off (Spot));
    end Set_Spot_Light;
 

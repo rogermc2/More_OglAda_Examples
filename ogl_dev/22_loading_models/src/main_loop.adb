@@ -46,8 +46,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Camera_Position     : constant Singles.Vector3 := (3.0, 2.0, 10.0); --  Normalized by Camera.Init
-      Target_Position     : constant Singles.Vector3 := (0.0, -0.2, -1.0);  --  Normalized by Camera.Init
+      Camera_Position     : constant Singles.Vector3 := (3.0, 7.0, 10.0); --  Normalized by Camera.Init
+      Target_Position     : constant Singles.Vector3 := (0.0, 0.0, -1.0);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
@@ -127,17 +127,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Perspective_Proj_Info.FOV := 60.0;
       Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
       Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-      Perspective_Proj_Info.Z_Near := 0.1;
+      Perspective_Proj_Info.Z_Near := 0.01;
       Perspective_Proj_Info.Z_Far := 100.0;
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.005);  --  orig 0.04,  Default 1.0
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.04);  --  orig 0.04,  Default 1.0
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);  -- radians
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);  --  orig z -10
-      Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),  Get_Target (Game_Camera),
-                                  Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
       Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
 
+      Ogldev_Pipeline.Init_Transforms  (Pipe);
       Set_World_Matrix (Light_Technique, Ogldev_Pipeline.Get_World_Transform (pipe));
       Set_WVP (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (pipe));
       Set_Directional_Light (Light_Technique, Direct_Light);
