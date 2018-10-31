@@ -103,9 +103,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          GL.Uniforms.Set_Int (Sampler_Location, 0);
 
-         Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png");
-         Ogldev_Texture.Load (theTexture);
+         if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
+                                      "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png") then
+                Ogldev_Texture.Load (theTexture);
+         else
+                Put_Line ("Main_Loop.Init test.png failed to load");
+         end if;
 
          Perspective_Proj_Info.FOV := 60.0;
          Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
@@ -145,6 +148,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
+      Ogldev_Pipeline.Init_Transforms (Pipe);
 
       GL.Uniforms.Set_Single (WVP_Location, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
