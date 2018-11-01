@@ -113,6 +113,20 @@ package body Ogldev_Math is
 
    --  -------------------------------------------------------------------------
 
+   procedure Set_Orthograpic_Info (Info      : out Orthographic_Projection_Info;
+                                   Right, Left, Bottom, Top,
+                                   Near, Far : Single) is
+   begin
+      Info.Right := Right;
+      Info.Left := Left;
+      Info.Bottom := Bottom;
+      Info.Top := Top;
+      Info.Z_Near := Near;
+      Info.Z_Far := Far;
+   end Set_Orthograpic_Info;
+
+   --  -------------------------------------------------------------------------
+
    procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
                                    FOV : Single; Width, Height: UInt;
                                    Near, Far : Single) is

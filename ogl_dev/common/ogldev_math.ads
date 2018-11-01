@@ -44,6 +44,9 @@ package Ogldev_Math is
    function Get_Perspective_Near (Info : Perspective_Projection_Info) return Single;
    function Get_Perspective_Width (Info : Perspective_Projection_Info) return UInt;
    function Init_Camera_Transform (Target, Up : Vector3) return Matrix4;
+   procedure Set_Orthograpic_Info (Info      : out Orthographic_Projection_Info;
+                                   Right, Left, Bottom, Top,
+                                   Near, Far : Single);
    procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
                                    FOV       : Single; Width, Height: UInt;
                                    Near, Far : Single);
