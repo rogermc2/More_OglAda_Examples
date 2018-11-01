@@ -140,11 +140,14 @@ package body Ogldev_Pipeline is
    --  -------------------------------------------------------------------------
 
    procedure Set_Proj_Transform (P : in out Pipeline) is
+      use Ogldev_Math;
    begin
       Maths.Init_Perspective_Transform
-        (Maths.Degree (P.Perspective_Proj.FOV), Single (P.Perspective_Proj.Width),
-         Single (P.Perspective_Proj.Height), P.Perspective_Proj.Z_Near,
-         P.Perspective_Proj.Z_Far, P.Proj_Transformation);
+        (Maths.Degree (Get_Perspective_FOV (P.Perspective_Proj)),
+         Single (Get_Perspective_Width (P.Perspective_Proj)),
+         Single (Get_Perspective_Height (P.Perspective_Proj)),
+         Get_Perspective_Near (P.Perspective_Proj),
+         Get_Perspective_Far (P.Perspective_Proj), P.Proj_Transformation);
    end Set_Proj_Transform;
 
    --  -------------------------------------------------------------------------
@@ -203,12 +206,15 @@ package body Ogldev_Pipeline is
 
    procedure Set_WP_Transform (P : in out Pipeline) is
       use GL.Types.Singles;
+      use Ogldev_Math;
       Pers_Proj_Trans : Matrix4;
    begin
       Maths.Init_Perspective_Transform
-        (Maths.Degree (P.Perspective_Proj.FOV), Single (P.Perspective_Proj.Width),
-         Single (P.Perspective_Proj.Height), P.Perspective_Proj.Z_Near,
-         P.Perspective_Proj.Z_Far, Pers_Proj_Trans);
+        (Maths.Degree (Get_Perspective_FOV (P.Perspective_Proj)),
+         Single (Get_Perspective_Width (P.Perspective_Proj)),
+         Single (Get_Perspective_Height (P.Perspective_Proj)),
+         Get_Perspective_Near (P.Perspective_Proj),
+         Get_Perspective_Far (P.Perspective_Proj), Pers_Proj_Trans);
       P.WP_Transformation := Pers_Proj_Trans * P.W_Transformation;
    end Set_WP_Transform;
 

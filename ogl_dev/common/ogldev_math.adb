@@ -3,6 +3,46 @@ with Maths;
 
 package body Ogldev_Math is
 
+   function Get_Perspective_Far (Info : Perspective_Projection_Info)
+                                 return Single is
+   begin
+      return Info.Z_Far;
+   end Get_Perspective_Far;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Perspective_FOV (Info : Perspective_Projection_Info)
+                                 return Single is
+   begin
+      return Info.FOV;
+   end Get_Perspective_FOV;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Perspective_Height (Info : Perspective_Projection_Info)
+                                 return UInt is
+   begin
+      return Info.Height;
+   end Get_Perspective_Height;
+
+   --  -------------------------------------------------------------------------
+
+  function Get_Perspective_Near (Info : Perspective_Projection_Info)
+                                 return Single is
+   begin
+      return Info.Z_Near;
+   end Get_Perspective_Near;
+
+   --  -------------------------------------------------------------------------
+
+ function Get_Perspective_Width (Info : Perspective_Projection_Info)
+                                 return UInt is
+   begin
+      return Info.Width;
+   end Get_Perspective_Width;
+
+   --  -------------------------------------------------------------------------
+
    function Init_Camera_Transform (Target, Up : Vector3) return Matrix4 is
       use GL;
       use Maths;
@@ -24,6 +64,61 @@ package body Ogldev_Math is
    end Init_Camera_Transform;
 
    --  -------------------------------------------------------------------------
+
+   procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
+                                   FOV : Single; Width, Height: UInt;
+                                   Near, Far : Single) is
+   begin
+      Info.FOV := FOV;
+      Info.Width := Width;
+      Info.Height := Height;
+      Info.Z_Near := Near;
+      Info.Z_Far := Far;
+   end Set_Perspective_Info;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Perspective_Far (Info : in out Perspective_Projection_Info;
+                                  Far  : Single) is
+   begin
+      Info.Z_Far := Far;
+   end Set_Perspective_Far;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Perspective_FOV (Info : in out Perspective_Projection_Info;
+                                  FOV  : Single) is
+   begin
+      Info.FOV := FOV;
+   end Set_Perspective_FOV;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Perspective_Height (Info   : in out Perspective_Projection_Info;
+                                     Height : UInt) is
+   begin
+      Info.Height := Height;
+   end Set_Perspective_Height;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Perspective_Near (Info : in out Perspective_Projection_Info;
+                                   Near : Single) is
+   begin
+      Info.Z_Near := Near;
+   end Set_Perspective_Near;
+
+   --  -------------------------------------------------------------------------
+
+
+   procedure Set_Perspective_Width (Info  : in out Perspective_Projection_Info;
+                                    Width : UInt) is
+   begin
+      Info.Width := Width;
+   end Set_Perspective_Width;
+
+   --  -------------------------------------------------------------------------
+
 
    function To_AI_Map3D (Num_Vecs : UInt := 0;
                          Vectors : Assimp_Types.Vector3_Array)
