@@ -8,7 +8,7 @@ with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 
 package body Ogldev_Camera is
-   Step_Scale  : constant GL.Types.Single := 0.2;  --  orig: 1.0
+   Step_Scale  : constant GL.Types.Single := 0.01;  --  orig: 1.0
    Edge_Step   : constant Maths.Degree := 0.5;
    Margin      : constant Glfw.Input.Mouse.Coordinate := 10.0;
 
