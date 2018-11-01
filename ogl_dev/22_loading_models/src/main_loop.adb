@@ -138,9 +138,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Ogldev_Pipeline.Init_Transforms  (Pipe);
       Set_World_Matrix (Light_Technique, Ogldev_Pipeline.Get_World_Transform (pipe));
+      Set_Eye_World_Pos (Light_Technique, Get_Position (Game_Camera));
       Set_WVP (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (pipe));
       Set_Directional_Light (Light_Technique, Direct_Light);
-      Set_Eye_World_Pos (Light_Technique, Get_Position (Game_Camera));
       Set_Mat_Specular_Intensity (Light_Technique, 0.0);
       Set_Mat_Specular_Power (Light_Technique, 0);
 
