@@ -104,21 +104,21 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Uniforms.Set_Int (Sampler_Location, 0);
 
          if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png") then
-                Ogldev_Texture.Load (theTexture);
+                                         "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png") then
+            Ogldev_Texture.Load (theTexture);
          else
-                Put_Line ("Main_Loop.Init test.png failed to load");
+            Put_Line ("Main_Loop.Init test.png failed to load");
          end if;
 
-         Perspective_Proj_Info.FOV := 60.0;
-         Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
-         Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-         Perspective_Proj_Info.Z_Near := 1.0;
-         Perspective_Proj_Info.Z_Far := 100.0;
+         Ogldev_Math.Set_Perspective_Info (Info   => Perspective_Proj_Info,
+                                           FOV    => 60.0,
+                                           Width  => GL.Types.UInt (Window_Width),
+                                           Height => GL.Types.UInt (Window_Height),
+                                           Near   => 1.0, Far    => 100.0);
 
-        Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
-        Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
-        Glfw.Input.Poll_Events;
+         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
+         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
+         Glfw.Input.Poll_Events;
       end if;
 
    exception
@@ -139,8 +139,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
-      Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-      Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
+      Ogldev_Math.Set_Perspective_Width
+        (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+      Ogldev_Math.Set_Perspective_Height
+        (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
 
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
 
