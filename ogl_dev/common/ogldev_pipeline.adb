@@ -222,12 +222,16 @@ package body Ogldev_Pipeline is
 
     procedure Set_WV_Ortho_P_Transform (P : in out Pipeline) is
       use GL.Types.Singles;
+      use Ogldev_Math;
       Ortho_Proj : Matrix4;
    begin
       Maths.Init_Orthographic_Transform
-                 (P.Orthographic_Proj.Top, P.Orthographic_Proj.Bottom,
-                  P.Orthographic_Proj.Left, P.Orthographic_Proj.Right,
-                  P.Orthographic_Proj.Z_Near, P.Orthographic_Proj.Z_Far, Ortho_Proj);
+        (Get_Orthograpic_Top (P.Orthographic_Proj),
+         Get_Orthograpic_Bottom (P.Orthographic_Proj),
+         Get_Orthograpic_Left (P.Orthographic_Proj),
+         Get_Orthograpic_Right (P.Orthographic_Proj),
+         Get_Orthograpic_Near (P.Orthographic_Proj),
+         Get_Orthograpic_Far (P.Orthographic_Proj), Ortho_Proj);
       P.WVP_Transformation := Ortho_Proj * P.V_Transformation * P.W_Transformation;
    end Set_WV_Ortho_P_Transform;
 
