@@ -31,11 +31,11 @@ package Ogldev_Math is
    function Get_Orthograpic_Left (Info : Orthographic_Projection_Info)
                                   return Single;
    function Get_Orthograpic_Near (Info : Orthographic_Projection_Info)
-                                 return Single;
+                                  return Single;
 
    function Get_Orthograpic_Right (Info : Orthographic_Projection_Info)
                                    return Single;
- function Get_Orthograpic_Top (Info : Orthographic_Projection_Info)
+   function Get_Orthograpic_Top (Info : Orthographic_Projection_Info)
                                return Single;
 
    function Get_Perspective_Far (Info : Perspective_Projection_Info) return Single;
