@@ -132,7 +132,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.04);  --  orig 0.04,  Default 1.0
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);  -- radians
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);  --  orig z -10
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 10.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
       Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
 
