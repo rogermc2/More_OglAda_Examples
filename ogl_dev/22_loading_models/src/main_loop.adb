@@ -127,7 +127,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
       Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
       Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
-      Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 0.01);
+      Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 0.01);
       Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.04);  --  orig 0.04,  Default 1.0
