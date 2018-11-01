@@ -73,7 +73,7 @@ package body Ogldev_Pipeline is
       Set_World_Transform (P);
       Set_View_Transform (P);
       Set_Proj_Transform (P);
-      P.VP_Transformation := P.V_Transformation * P.Proj_Transformation;
+      P.VP_Transformation := P.Proj_Transformation * P.V_Transformation;
       Set_WP_Transform (P);
       P.WV_Transformation := P.V_Transformation * P.W_Transformation;
       Set_WV_Ortho_P_Transform (P);
