@@ -3,6 +3,54 @@ with Maths;
 
 package body Ogldev_Math is
 
+   function Get_Orthograpic_Far (Info : Orthographic_Projection_Info)
+                                 return Single is
+   begin
+      return Info.Z_Far;
+   end Get_Orthograpic_Far;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Orthograpic_Bottom (Info : Orthographic_Projection_Info)
+                                    return Single is
+   begin
+      return Info.Bottom;
+   end Get_Orthograpic_Bottom;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Orthograpic_Left (Info : Orthographic_Projection_Info)
+                                  return Single is
+   begin
+      return Info.Left;
+   end Get_Orthograpic_Left;
+
+   --  -------------------------------------------------------------------------
+
+  function Get_Orthograpic_Near (Info : Orthographic_Projection_Info)
+                                 return Single is
+   begin
+      return Info.Z_Near;
+   end Get_Orthograpic_Near;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Orthograpic_Right (Info : Orthographic_Projection_Info)
+                                  return Single is
+   begin
+      return Info.Right;
+   end Get_Orthograpic_Right;
+
+   --  -------------------------------------------------------------------------
+
+ function Get_Orthograpic_Top (Info : Orthographic_Projection_Info)
+                               return Single is
+   begin
+      return Info.Top;
+   end Get_Orthograpic_Top;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Perspective_Far (Info : Perspective_Projection_Info)
                                  return Single is
    begin
