@@ -124,11 +124,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Cut_Off (Spot, 10.0);
       Set_Spot_Light (Light_Technique, Spot);
 
-      Perspective_Proj_Info.FOV := 60.0;
-      Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
-      Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-      Perspective_Proj_Info.Z_Near := 0.01;
-      Perspective_Proj_Info.Z_Far := 100.0;
+      Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
+      Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
+      Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+      Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 0.01);
+      Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.04);  --  orig 0.04,  Default 1.0
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);  -- radians
