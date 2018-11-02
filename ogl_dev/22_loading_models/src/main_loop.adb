@@ -47,12 +47,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
       Camera_Position     : constant Singles.Vector3 := (3.0, 7.0, 10.0); --  Normalized by Camera.Init
-      Target_Position     : constant Singles.Vector3 := (0.0, 0.0, -1.0);  --  Normalized by Camera.Init
+      Target_Position     : constant Singles.Vector3 := (0.0, -0.2, -1.0);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
       VAO.Bind;
       Result := Ogldev_Basic_Lighting.Init (Light_Technique);
+--        Utilities.Show_Shader_Program_Data
+--          (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
       if Result then
          Ogldev_Lights_Common.Init_Directional_Light (Direct_Light, 1.0, 0.01,
                                                       (1.0, 1.0, 1.0), (1.0, -1.0, 0.0));
@@ -127,10 +129,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
       Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
       Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
-      Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 0.01);
-      Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
+      Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
+      Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 50.0);
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.04);  --  orig 0.04,  Default 1.0
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.04);
+--        Ogldev_Pipeline.Set_Scale (Pipe, 6.0, 6.0, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);  -- radians
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 10.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
