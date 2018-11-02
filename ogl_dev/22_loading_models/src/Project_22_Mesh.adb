@@ -59,7 +59,6 @@ package body Project_22_Mesh is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
---        Utilities.Print_GL_Array8 ("Project_22_Mesh.Init_Buffers Vertices_Array", Vertices_Array);
 
       Array_Buffer.Bind (theEntry.VBO);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
@@ -249,8 +248,7 @@ package body Project_22_Mesh is
 
    procedure Render_Mesh (theMesh : Mesh_22) is
       use Mesh_Entry_Package;
-      Entry_Cursor :  Mesh_Entry_Package.Cursor
-        := theMesh.Entries.First;
+      Entry_Cursor :  Mesh_Entry_Package.Cursor := theMesh.Entries.First;
       anEntry      : Mesh_Entry;
 
       procedure Draw (thisEntry : Mesh_Entry) is
