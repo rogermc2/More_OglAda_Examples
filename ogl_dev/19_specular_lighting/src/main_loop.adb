@@ -83,11 +83,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          if Result then
             Ogldev_Texture.Load (theTexture);
 
-            Perspective_Proj_Info.FOV := 60.0;
-            Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
-            Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-            Perspective_Proj_Info.Z_Near := 1.0;
-            Perspective_Proj_Info.Z_Far := 100.0;
+            Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
+            Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
+            Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+            Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
+            Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
          else
             Put_Line ("Main_Loop.Init. Init_Texture failed");
          end if;
@@ -135,8 +135,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
-      Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-      Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
+      Ogldev_Math.Set_Perspective_Width
+        (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+      Ogldev_Math.Set_Perspective_Height
+        (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
 
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
