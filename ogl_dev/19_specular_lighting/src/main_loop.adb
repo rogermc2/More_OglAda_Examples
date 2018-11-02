@@ -56,9 +56,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
-      Target              : Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
-      Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
+      Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Result := Lighting_Technique.Init (Shader_Program);
       if Result then
