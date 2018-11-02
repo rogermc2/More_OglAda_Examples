@@ -250,7 +250,7 @@ package body Ogldev_Camera is
         --  Rotate the view vector by the vertical angle around the horizontal axis
         H_Axis := Normalized (Cross_Product (V_Axis, To_Vector3 (View)));
         theCamera.Target := Normalized (To_Vector3 (View));
-        theCamera.Up := Normalized ( Cross_Product(theCamera.Target, H_Axis));
+        theCamera.Up := Normalized (Cross_Product(theCamera.Target, H_Axis));
    end Update;
 
    --  -------------------------------------------------------------------------
