@@ -169,13 +169,14 @@ package body Ogldev_Camera is
    --  -------------------------------------------------------------------------
 
    procedure Process_Mouse (theCamera : in out Camera;
-                            Window    : in out Glfw.Windows.Window;
-                            X_Position, Y_Position : in out Glfw.Input.Mouse.Coordinate) is
+                            Window    : in out Glfw.Windows.Window) is
       use Interfaces.C;
       use Glfw.Input.Mouse;
       use Maths;
-      Delta_X  : Coordinate;
-      Delta_Y  : Coordinate;
+      X_Position : Coordinate;
+      Y_Position : Coordinate;
+      Delta_X    : Coordinate;
+      Delta_Y    : Coordinate;
    begin
       Window'Access.Get_Cursor_Pos (X_Position, Y_Position);
       Delta_X := X_Position - Coordinate (theCamera.Mouse_Position (GL.X));
@@ -264,14 +265,10 @@ package body Ogldev_Camera is
 
    Procedure Update_Camera (theCamera : in out Camera;
                             Window    : in out Glfw.Windows.Window) is
-      use Glfw.Input;
-      use Glfw.Input.Mouse;
-      X_Position         : Coordinate := 0.00001;
-      Y_Position         : Coordinate := 0.00002;
    begin
-      Process_Mouse (theCamera, Window, X_Position, Y_Position);  --  PassiveMouseCB.OnMouse
-      Process_Keyboard (theCamera, Window);                       --  OnKeyboard
-      Update_Render (theCamera);                                  --  OnRender
+      Process_Keyboard (theCamera, Window);  --  OnKeyboard
+      Process_Mouse (theCamera, Window);     --  PassiveMouseCB.OnMouse
+      Update_Render (theCamera);             --  OnRender
 
    end Update_Camera;
 
