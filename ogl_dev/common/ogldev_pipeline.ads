@@ -44,20 +44,20 @@ private
    end record;
 
    type Pipeline is record
-      Scale                : Singles.Vector3 := (1.0, 1.0, 1.0);
-      World_Pos            : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Rotation_Info        : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Perspective_Info     : Ogldev_Math.Perspective_Projection_Info;
-      Orthographic_Info    : Ogldev_Math.Orthographic_Projection_Info;
-      Camera               : Camera_Data;
-      WVP_Transformation   : Singles.Matrix4 := Singles.Identity4;
-      VP_Transformation    : Singles.Matrix4 := Singles.Identity4;
-      WP_Transformation    : Singles.Matrix4 := Singles.Identity4;
-      WV_Transformation    : Singles.Matrix4 := Singles.Identity4;
-      W_Transformation     : Singles.Matrix4 := Singles.Identity4;
-      V_Transformation     : Singles.Matrix4 := Singles.Identity4;
-      Ortho_Transformation : Singles.Matrix4 := Singles.Identity4;
-      Pers_Transformation  : Singles.Matrix4 := Singles.Identity4;
+      Scale              : Singles.Vector3 := (1.0, 1.0, 1.0);
+      World_Pos          : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Rotation_Info      : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Perspective_Info   : Ogldev_Math.Perspective_Projection_Info;
+      Orthographic_Info  : Ogldev_Math.Orthographic_Projection_Info;
+      Camera             : Camera_Data;
+      WVP_Transform      : Singles.Matrix4 := Singles.Identity4;
+      VP_Transform       : Singles.Matrix4 := Singles.Identity4;
+      WP_Transform       : Singles.Matrix4 := Singles.Identity4;
+      WV_Transform       : Singles.Matrix4 := Singles.Identity4;
+      W_Transform        : Singles.Matrix4 := Singles.Identity4;
+      V_Transform        : Singles.Matrix4 := Singles.Identity4;
+      Ortho_Transform    : Singles.Matrix4 := Singles.Identity4;
+      Perspect_Transform : Singles.Matrix4 := Singles.Identity4;
    end record;
 
 end Ogldev_Pipeline;

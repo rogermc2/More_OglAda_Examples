@@ -13,63 +13,63 @@ package body Ogldev_Pipeline is
 
     function Get_World_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.W_Transformation;
+        return P.W_Transform;
     end Get_World_Transform;
 
     --  -------------------------------------------------------------------------
 
     function Get_WVP_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.WVP_Transformation;
+        return P.WVP_Transform;
     end Get_WVP_Transform;
 
     --  -------------------------------------------------------------------------
 
    function Get_Orthographic_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.Ortho_Transformation;
+        return P.Ortho_Transform;
     end Get_Orthographic_Transform;
 
     --  -------------------------------------------------------------------------
 
     function Get_Perspective_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.Pers_Transformation;
+        return P.Perspect_Transform;
     end Get_Perspective_Transform;
 
     --  -------------------------------------------------------------------------
 
     function Get_View_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.V_Transformation;
+        return P.V_Transform;
     end Get_View_Transform;
 
     --  ------------------------------------------------------------------
 
     function Get_VP_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.VP_Transformation;
+        return P.VP_Transform;
     end Get_VP_Transform;
 
     --  -------------------------------------------------------------------------
 
     function Get_WP_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.WP_Transformation;
+        return P.WP_Transform;
     end Get_WP_Transform;
 
     --  -------------------------------------------------------------------------
 
     function Get_WV_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.WV_Transformation;
+        return P.WV_Transform;
     end Get_WV_Transform;
 
     --  -------------------------------------------------------------------------
 
     function Get_WV_Ortho_P_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.WVP_Transformation;
+        return P.WVP_Transform;
     end Get_WV_Ortho_P_Transform;
 
     --  -------------------------------------------------------------------------
@@ -80,11 +80,11 @@ package body Ogldev_Pipeline is
         Set_World_Transform (P);
         Set_View_Transform (P);
         Set_Perspective_Transform (P);
-        P.VP_Transformation := P.Pers_Transformation * P.V_Transformation;
+        P.VP_Transform := P.Perspect_Transform * P.V_Transform;
         Set_WP_Transform (P);
-        P.WV_Transformation := P.V_Transformation * P.W_Transformation;
+        P.WV_Transform := P.V_Transform * P.W_Transform;
         Set_WV_Orthographic_Transform (P);
-        P.WVP_Transformation := P.VP_Transformation * P.W_Transformation;
+        P.WVP_Transform := P.VP_Transform * P.W_Transform;
     end Init_Transforms;
 
     --  -------------------------------------------------------------------------
@@ -155,7 +155,7 @@ package body Ogldev_Pipeline is
            Height     => Single (Get_Perspective_Height (P.Perspective_Info)),
            Z_Near     => Get_Perspective_Near (P.Perspective_Info),
            Z_Far      => Get_Perspective_Far (P.Perspective_Info),
-           Transform  => P.Pers_Transformation);
+           Transform  => P.Perspect_Transform);
     end Set_Perspective_Transform;
 
     --  -------------------------------------------------------------------------
@@ -181,7 +181,7 @@ package body Ogldev_Pipeline is
     begin
         Camera_Translation_Trans := Maths.Translation_Matrix (-P.Camera.Position);
         Camera_Rotate_Trans := Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
-        P.V_Transformation := Camera_Translation_Trans * Camera_Rotate_Trans;
+        P.V_Transform := Camera_Translation_Trans * Camera_Rotate_Trans;
     end Set_View_Transform;
 
     --  ------------------------------------------------------------------
@@ -206,7 +206,7 @@ package body Ogldev_Pipeline is
         Rotate_Xform      : Matrix4;
     begin
         Maths.Init_Rotation_Transform (P.Rotation_Info, Rotate_Xform);
-        P.W_Transformation :=
+        P.W_Transform :=
           Maths.Translation_Matrix (P.World_Pos) * Rotate_Xform * Scale_Xform;
     end Set_World_Transform;
 
@@ -223,7 +223,7 @@ package body Ogldev_Pipeline is
            Single (Get_Perspective_Height (P.Perspective_Info)),
            Get_Perspective_Near (P.Perspective_Info),
            Get_Perspective_Far (P.Perspective_Info), Pers_Proj_Trans);
-        P.WP_Transformation := Pers_Proj_Trans * P.W_Transformation;
+        P.WP_Transform := Pers_Proj_Trans * P.W_Transform;
     end Set_WP_Transform;
 
     --  -------------------------------------------------------------------------
@@ -240,7 +240,7 @@ package body Ogldev_Pipeline is
            Get_Orthograpic_Right (P.Orthographic_Info),
            Get_Orthograpic_Near (P.Orthographic_Info),
            Get_Orthograpic_Far (P.Orthographic_Info), Ortho_Proj);
-        P.WVP_Transformation := Ortho_Proj * P.V_Transformation * P.W_Transformation;
+        P.WVP_Transform := Ortho_Proj * P.V_Transform * P.W_Transform;
     end Set_WV_Orthographic_Transform;
 
     --  -------------------------------------------------------------------------
