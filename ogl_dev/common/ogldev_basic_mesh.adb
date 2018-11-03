@@ -219,8 +219,8 @@ package body Ogldev_Basic_Mesh is
       Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
       Tex_Coord     : GL.Types.Singles.Vector3;
       Vertices      : Vertex_Array (1 .. Int (Num_Vertices));
-      Face_List   : constant Assimp_Mesh.Faces_Map := Source_Mesh.Faces;
-      Face_Cursor  : Cursor := Face_List.First;
+      Face          : Assimp_Mesh.AI_Face;
+      Index_Index   : Int := 0;
    begin
       --  Populate the vertex attribute vectors
       for V_Index in UInt range 1 .. UInt (Source_Mesh.Vertices.Length) loop
@@ -240,19 +240,19 @@ package body Ogldev_Basic_Mesh is
            (Positions (Int (V_Index)), (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normals (Int (V_Index)));
        end loop;
       --  Populate the index buffer
---        for index in UInt range 1 .. 3 * UInt (aMesh.Faces.Length) loop
---           if Face_List.Length = 3 then
---              Indices (1) := UInt (Element (Face_Cursor));
---              Next (Face_Cursor);
---              Indices (2) := UInt (Element (Face_Cursor));
---              Next (Face_Cursor);
---              Indices (3) := UInt (Element (Face_Cursor));
---           else
---              Put_Line ("Ogldev_Basic_Mesh.Init_Mesh, invalid number of face indices.");
---           end if;
---           Next (Face_Cursor);
---        end loop;
-      null;
+      if Source_Mesh.Faces.Is_Empty then
+         Put_Line ("Project_22_Mesh.Init_Mesh, Source_Mesh.Faces is empty.");
+      else
+         for Face_Index in 1 .. Source_Mesh.Faces.Length loop
+            Face := Source_Mesh.Faces.Element (UInt (Face_Index));
+            Index_Index := Index_Index + 1;
+            Indices (Index_Index) := Face.Indices (1);
+            Index_Index := Index_Index + 1;
+            Indices (Index_Index) := Face.Indices (2);
+            Index_Index := Index_Index + 1;
+            Indices (Index_Index) := Face.Indices (3);
+         end loop;
+      end if;
 
    exception
       when others =>
