@@ -1,5 +1,6 @@
 
 with Maths;
+with Utilities;
 
 package body Ogldev_Pipeline is
 
@@ -67,13 +68,6 @@ package body Ogldev_Pipeline is
 
     --  -------------------------------------------------------------------------
 
-    function Get_WV_Ortho_P_Transform (P : Pipeline) return Singles.Matrix4 is
-    begin
-        return P.WVP_Transform;
-    end Get_WV_Ortho_P_Transform;
-
-    --  -------------------------------------------------------------------------
-
     procedure Init_Transforms  (P : in out Pipeline) is
         use GL.Types.Singles;
     begin
@@ -84,7 +78,7 @@ package body Ogldev_Pipeline is
         Set_WP_Transform (P);
         P.WV_Transform := P.V_Transform * P.W_Transform;
         Set_WV_Orthographic_Transform (P);
-        P.WVP_Transform := P.VP_Transform * P.W_Transform;
+        P.WVP_Transform := P.Perspect_Transform * P.WV_Transform;
     end Init_Transforms;
 
     --  -------------------------------------------------------------------------

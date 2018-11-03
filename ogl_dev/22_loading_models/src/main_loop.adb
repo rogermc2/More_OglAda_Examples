@@ -101,8 +101,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Scale := Scale + 0.1;
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Update_Camera (Game_Camera, Window);
-      Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
---        utilities.Print_Vector ("Camera Position", Get_Position (Game_Camera));
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -132,16 +130,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
       Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 50.0);
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.04);
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.06);
 --        Ogldev_Pipeline.Set_Scale (Pipe, 6.0, 6.0, 0.1);
-      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);  -- radians
+      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 10.0);
+      Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
-
       Ogldev_Pipeline.Init_Transforms  (Pipe);
-      Set_World_Matrix (Light_Technique, Ogldev_Pipeline.Get_World_Transform (pipe));
+
+      Set_World_Matrix (Light_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
       Set_Eye_World_Pos (Light_Technique, Get_Position (Game_Camera));
-      Set_WVP (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (pipe));
+      Set_WVP (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Set_Directional_Light (Light_Technique, Direct_Light);
       Set_Mat_Specular_Intensity (Light_Technique, 0.0);
       Set_Mat_Specular_Power (Light_Technique, 0);

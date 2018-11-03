@@ -15,7 +15,7 @@ package Ogldev_Pipeline is
    function Get_World_Transform (P : Pipeline) return Singles.Matrix4;
    function Get_WP_Transform (P : Pipeline) return Singles.Matrix4;
    function Get_WV_Transform (P : Pipeline) return Singles.Matrix4;
-   function Get_WV_Ortho_P_Transform (P : Pipeline) return Singles.Matrix4;
+--     function Get_WV_Ortho_P_Transform (P : Pipeline) return Singles.Matrix4;
    function Get_WVP_Transform (P : Pipeline) return Singles.Matrix4;
 
    procedure Init_Transforms  (P : in out Pipeline);
