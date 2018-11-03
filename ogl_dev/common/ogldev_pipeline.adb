@@ -3,11 +3,11 @@ with Maths;
 
 package body Ogldev_Pipeline is
 
-    procedure Set_Proj_Transform (P : in out Pipeline);
+    procedure Set_Perspective_Transform (P : in out Pipeline);
     procedure Set_View_Transform (P : in out Pipeline);
     procedure Set_WP_Transform (P : in out Pipeline);
     procedure Set_World_Transform (P : in out Pipeline);
-    procedure Set_WV_Ortho_P_Transform (P : in out Pipeline);
+    procedure Set_WV_Orthographic_Transform (P : in out Pipeline);
 
     --  -------------------------------------------------------------------------
 
@@ -25,10 +25,17 @@ package body Ogldev_Pipeline is
 
     --  -------------------------------------------------------------------------
 
-    function Get_Proj_Transform (P : Pipeline) return Singles.Matrix4 is
+   function Get_Orthographic_Transform (P : Pipeline) return Singles.Matrix4 is
     begin
-        return P.Proj_Transformation;
-    end Get_Proj_Transform;
+        return P.Ortho_Transformation;
+    end Get_Orthographic_Transform;
+
+    --  -------------------------------------------------------------------------
+
+    function Get_Perspective_Transform (P : Pipeline) return Singles.Matrix4 is
+    begin
+        return P.Pers_Transformation;
+    end Get_Perspective_Transform;
 
     --  -------------------------------------------------------------------------
 
@@ -72,11 +79,11 @@ package body Ogldev_Pipeline is
     begin
         Set_World_Transform (P);
         Set_View_Transform (P);
-        Set_Proj_Transform (P);
-        P.VP_Transformation := P.Proj_Transformation * P.V_Transformation;
+        Set_Perspective_Transform (P);
+        P.VP_Transformation := P.Pers_Transformation * P.V_Transformation;
         Set_WP_Transform (P);
         P.WV_Transformation := P.V_Transformation * P.W_Transformation;
-        Set_WV_Ortho_P_Transform (P);
+        Set_WV_Orthographic_Transform (P);
         P.WVP_Transformation := P.VP_Transformation * P.W_Transformation;
     end Init_Transforms;
 
@@ -123,33 +130,33 @@ package body Ogldev_Pipeline is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Orthographic_Proj (P : in out Pipeline;
-                                     OP : Ogldev_Math.Orthographic_Projection_Info) is
+    procedure Set_Orthographic_Info (P : in out Pipeline;
+                                     Info : Ogldev_Math.Orthographic_Projection_Info) is
     begin
-        P.Orthographic_Proj := OP;
-    end Set_Orthographic_Proj;
+        P.Orthographic_Info := Info;
+    end Set_Orthographic_Info;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Perspective_Proj (P : in out Pipeline;
-                                    PP : Ogldev_Math.Perspective_Projection_Info) is
+    procedure Set_Perspective_Info (P : in out Pipeline;
+                                    Info : Ogldev_Math.Perspective_Projection_Info) is
     begin
-        P.Perspective_Proj := PP;
-    end Set_Perspective_Proj;
+        P.Perspective_Info := Info;
+    end Set_Perspective_Info;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Proj_Transform (P : in out Pipeline) is
+    procedure Set_Perspective_Transform (P : in out Pipeline) is
         use Ogldev_Math;
     begin
         Maths.Init_Perspective_Transform
-          (View_Angle => Maths.Degree (Get_Perspective_FOV (P.Perspective_Proj)),
-           Width      => Single (Get_Perspective_Width (P.Perspective_Proj)),
-           Height     => Single (Get_Perspective_Height (P.Perspective_Proj)),
-           Z_Near     => Get_Perspective_Near (P.Perspective_Proj),
-           Z_Far      => Get_Perspective_Far (P.Perspective_Proj),
-           Transform  => P.Proj_Transformation);
-    end Set_Proj_Transform;
+          (View_Angle => Maths.Degree (Get_Perspective_FOV (P.Perspective_Info)),
+           Width      => Single (Get_Perspective_Width (P.Perspective_Info)),
+           Height     => Single (Get_Perspective_Height (P.Perspective_Info)),
+           Z_Near     => Get_Perspective_Near (P.Perspective_Info),
+           Z_Far      => Get_Perspective_Far (P.Perspective_Info),
+           Transform  => P.Pers_Transformation);
+    end Set_Perspective_Transform;
 
     --  -------------------------------------------------------------------------
 
@@ -211,30 +218,30 @@ package body Ogldev_Pipeline is
         Pers_Proj_Trans : Matrix4;
     begin
         Maths.Init_Perspective_Transform
-          (Maths.Degree (Get_Perspective_FOV (P.Perspective_Proj)),
-           Single (Get_Perspective_Width (P.Perspective_Proj)),
-           Single (Get_Perspective_Height (P.Perspective_Proj)),
-           Get_Perspective_Near (P.Perspective_Proj),
-           Get_Perspective_Far (P.Perspective_Proj), Pers_Proj_Trans);
+          (Maths.Degree (Get_Perspective_FOV (P.Perspective_Info)),
+           Single (Get_Perspective_Width (P.Perspective_Info)),
+           Single (Get_Perspective_Height (P.Perspective_Info)),
+           Get_Perspective_Near (P.Perspective_Info),
+           Get_Perspective_Far (P.Perspective_Info), Pers_Proj_Trans);
         P.WP_Transformation := Pers_Proj_Trans * P.W_Transformation;
     end Set_WP_Transform;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_WV_Ortho_P_Transform (P : in out Pipeline) is
+    procedure Set_WV_Orthographic_Transform (P : in out Pipeline) is
         use GL.Types.Singles;
         use Ogldev_Math;
         Ortho_Proj : Matrix4;
     begin
         Maths.Init_Orthographic_Transform
-          (Get_Orthograpic_Top (P.Orthographic_Proj),
-           Get_Orthograpic_Bottom (P.Orthographic_Proj),
-           Get_Orthograpic_Left (P.Orthographic_Proj),
-           Get_Orthograpic_Right (P.Orthographic_Proj),
-           Get_Orthograpic_Near (P.Orthographic_Proj),
-           Get_Orthograpic_Far (P.Orthographic_Proj), Ortho_Proj);
+          (Get_Orthograpic_Top (P.Orthographic_Info),
+           Get_Orthograpic_Bottom (P.Orthographic_Info),
+           Get_Orthograpic_Left (P.Orthographic_Info),
+           Get_Orthograpic_Right (P.Orthographic_Info),
+           Get_Orthograpic_Near (P.Orthographic_Info),
+           Get_Orthograpic_Far (P.Orthographic_Info), Ortho_Proj);
         P.WVP_Transformation := Ortho_Proj * P.V_Transformation * P.W_Transformation;
-    end Set_WV_Ortho_P_Transform;
+    end Set_WV_Orthographic_Transform;
 
     --  -------------------------------------------------------------------------
 

@@ -53,8 +53,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       VAO.Initialize_Id;
       VAO.Bind;
       Result := Ogldev_Basic_Lighting.Init (Light_Technique);
---        Utilities.Show_Shader_Program_Data
---          (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
       if Result then
          Ogldev_Lights_Common.Init_Directional_Light (Direct_Light, 1.0, 0.01,
                                                       (1.0, 1.0, 1.0), (1.0, -1.0, 0.0));
@@ -101,8 +99,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
       Scale := Scale + 0.1;
-      Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
+      Update_Camera (Game_Camera, Window);
+      Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
+--        utilities.Print_Vector ("Camera Position", Get_Position (Game_Camera));
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -136,8 +136,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --        Ogldev_Pipeline.Set_Scale (Pipe, 6.0, 6.0, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);  -- radians
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 10.0);
-      Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
-      Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
 
       Ogldev_Pipeline.Init_Transforms  (Pipe);
       Set_World_Matrix (Light_Technique, Ogldev_Pipeline.Get_World_Transform (pipe));
