@@ -20,12 +20,18 @@ with Ogldev_Util;
 with Scene;
 
 package body Ogldev_Basic_Mesh is
+   type Vertex is record
+      Pos    : GL.Types.Singles.Vector3;
+      Tex    : GL.Types.Singles.Vector2;
+      Normal : GL.Types.Singles.Vector3;
+   end record;
+   type Vertex_Array is array (Int range <>) of Vertex;
 
    Position_Location  : constant GL.Attributes.Attribute := 0;
    Tex_Coord_Location : constant GL.Attributes.Attribute := 1;
    Normal_Location    : constant GL.Attributes.Attribute := 2;
 
-   procedure Init_Mesh (aMesh : Assimp_Mesh.AI_Mesh;
+   procedure Init_Mesh (Source_Mesh : Assimp_Mesh.AI_Mesh;
                         Positions, Normals : out GL.Types.Singles.Vector3_Array;
                         Tex_Coords : out GL.Types.Singles.Vector2_Array;
                         Indices : out GL.Types.UInt_Array);
@@ -203,25 +209,36 @@ package body Ogldev_Basic_Mesh is
 
 -----------------------------------------------------------------------
 
-   procedure Init_Mesh (aMesh : Assimp_Mesh.AI_Mesh;
+   procedure Init_Mesh (Source_Mesh : Assimp_Mesh.AI_Mesh;
                         Positions, Normals : out GL.Types.Singles.Vector3_Array;
                         Tex_Coords : out GL.Types.Singles.Vector2_Array;
                         Indices : out GL.Types.UInt_Array) is
       use Ada.Containers;
       use Assimp_Mesh.Faces_Package;
-      Face_List   : constant Assimp_Mesh.Faces_Map := aMesh.Faces;
+      Num_Vertices  : constant UInt := UInt (Source_Mesh.Vertices.Length);
+      Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
+      Tex_Coord     : GL.Types.Singles.Vector3;
+      Vertices      : Vertex_Array (1 .. Int (Num_Vertices));
+      Face_List   : constant Assimp_Mesh.Faces_Map := Source_Mesh.Faces;
       Face_Cursor  : Cursor := Face_List.First;
    begin
       --  Populate the vertex attribute vectors
---        for index in UInt range 1 .. UInt (aMesh.Vertices.Length) loop
---           Positions (Int (index)) := aMesh.Vertices (index);
---           Normals (Int (index)) := aMesh.Normals (index);
---           if index <= UInt (aMesh.Texture_Coords.Length) then
---              Tex_Coords (Int (index)) (GL.X) := aMesh.Texture_Coords (index) ();
---           else
---              Tex_Coords (Int (index)) := (0.0, 0.0);
---           end if;
---        end loop;
+      for V_Index in UInt range 1 .. UInt (Source_Mesh.Vertices.Length) loop
+         Positions (Int (V_Index)) := Source_Mesh.Vertices.Element (V_Index);
+         Normals (Int (V_Index)) := Source_Mesh.Normals.Element (V_Index);
+         if V_Index <= UInt (Source_Mesh.Texture_Coords.Length) then
+            if Tex_Coord_Map.Contains (V_Index) then
+               Tex_Coord := Tex_Coord_Map.Element (V_Index);
+            else
+               Tex_Coord := (0.0, 0.0, 0.0);
+            end if;
+         else
+            Tex_Coord := (0.0, 0.0, 0.0);
+         end if;
+         Tex_Coords (Int (V_Index)) := (Tex_Coord (GL.X), Tex_Coord (GL.Y));
+         Vertices (Int (V_Index)) :=
+           (Positions (Int (V_Index)), (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normals (Int (V_Index)));
+       end loop;
       --  Populate the index buffer
 --        for index in UInt range 1 .. 3 * UInt (aMesh.Faces.Length) loop
 --           if Face_List.Length = 3 then
