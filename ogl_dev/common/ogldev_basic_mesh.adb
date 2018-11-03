@@ -2,6 +2,8 @@
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GNAT.Directory_Operations;
+
 with GL.Attributes;
 with GL.Low_Level.Enums;
 
@@ -160,12 +162,11 @@ package body Ogldev_Basic_Mesh is
       use Material.AI_Material_Package;
       use Assimp_Types;
       use Material;
---        Current_Dir : constant GNAT.Directory_Operations.Dir_Name_Str
---          := GNAT.Directory_Operations.Get_Current_Dir;
---        Dir         : constant GNAT.Directory_Operations.Dir_Name_Str
---          := GNAT.Directory_Operations.Dir_Name (File_Name);
+
+      --  Extract the directory part from the file name
+      Dir           : constant GNAT.Directory_Operations.Dir_Name_Str
+        := GNAT.Directory_Operations.Dir_Name (File_Name);
       Path          : Ada.Strings.Unbounded.Unbounded_String;
---        Full_Path   : constant String := Current_Dir & Dir;
       Result        : Assimp_Types.API_Return;
       Materials_Map : constant AI_Material_Map := theScene.Materials;
 
