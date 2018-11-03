@@ -8,7 +8,7 @@ with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 
 package body Ogldev_Camera is
-   Step_Scale  : constant GL.Types.Single := 0.01;  --  orig: 1.0
+   Step_Scale  : GL.Types.Single := 1.0;
    Edge_Step   : constant Maths.Degree := 0.5;
    Margin      : constant Glfw.Input.Mouse.Coordinate := 10.0;
 
@@ -201,6 +201,13 @@ package body Ogldev_Camera is
 
    --  -------------------------------------------------------------------------
 
+   procedure Set_Step (Step_Size : GL.Types.Single := 1.0) is
+   begin
+        Step_Scale := Step_Size;
+   end ;
+
+   --  -------------------------------------------------------------------------
+
    --  Update_Render implements void Camera::OnRender()
    procedure Update_Render (theCamera : in out Camera) is
       use Maths;
@@ -259,29 +266,12 @@ package body Ogldev_Camera is
                             Window    : in out Glfw.Windows.Window) is
       use Glfw.Input;
       use Glfw.Input.Mouse;
---        Current_Time       : constant GL.Types.Double := GL.Types.Double (Glfw.Time);
---        Window_Width       : Glfw.Size;
---        Window_Height      : Glfw.Size;
---        Half_Window_Width  : Single;
---        Half_Window_Height : Single;
       X_Position         : Coordinate := 0.00001;
       Y_Position         : Coordinate := 0.00002;
    begin
       Process_Mouse (theCamera, Window, X_Position, Y_Position);  --  PassiveMouseCB.OnMouse
       Process_Keyboard (theCamera, Window);                       --  OnKeyboard
       Update_Render (theCamera);                                  --  OnRender
-
---        Window'Access.Get_Size (Window_Width, Window_Height);
---        theCamera.Window_Width := GL.Types.Int (Window_Width);
---        theCamera.Window_Height := GL.Types.Int (Window_Height);
---        Half_Window_Width := 0.5 * Single (theCamera.Window_Width);
---        Half_Window_Height := 0.5 * Single (theCamera.Window_Height);
---
---        Reset the cursor to the center of the screen
---        otherwise it will soon go outside the window.
---
---        Window'Access.Set_Cursor_Pos (Mouse.Coordinate (Half_Window_Width),
---                                      Mouse.Coordinate (Half_Window_Height));
 
    end Update_Camera;
 

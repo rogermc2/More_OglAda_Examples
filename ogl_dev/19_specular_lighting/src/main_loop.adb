@@ -66,8 +66,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+         Ogldev_Camera.Set_Step (0.1);
          Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
-                                   Position, Target, Up);
+                                    Position, Target, Up);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
@@ -105,7 +106,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Keyboard_Lighting (Window : in out Glfw.Windows.Window) is
+   procedure Update_Lighting (Window : in out Glfw.Windows.Window) is
       use Glfw.Input;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
@@ -117,7 +118,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       elsif Window'Access.Key_State (Keys.X) = Pressed then
          Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity - 0.05;
       end if;
-   end Keyboard_Lighting;
+   end Update_Lighting;
 
    --  -------------------------------------------------------------------------
 
@@ -127,7 +128,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       World_Transformation : GL.Types.Singles.Matrix4;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
-      Keyboard_Lighting (Window);
+      Update_Lighting (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Scale := Scale + 0.1;
