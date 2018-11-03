@@ -1,6 +1,7 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Buffers;
 with GL.Culling;
 with GL.Objects;
 with GL.Objects.Programs;
@@ -64,6 +65,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Culling.Set_Front_Face (Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
          GL.Toggles.Enable (GL.Toggles.Cull_Face);
+         GL.Toggles.Enable (GL.Toggles.Depth_Test);
+         GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
          GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit (Light_Technique, 0);
 
