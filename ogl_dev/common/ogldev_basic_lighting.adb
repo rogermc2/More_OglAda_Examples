@@ -142,70 +142,6 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
-   --     function Point_Light_Ambient_ID (Technique : Basic_Lighting_Technique;
-   --                                        Index : Int) return GL.Uniforms.Uniform is
-   --     begin
-   --        return Technique.Point_Lights_Location (Index).Ambient_Intensity;
-   --     end Point_Light_Ambient_ID;
-
-   --  -------------------------------------------------------------------------
-
-   --     function Point_Light_Attenuation_Const_ID (Technique : Basic_Lighting_Technique;
-   --                                     Index : Int) return GL.Uniforms.Uniform is
-   --     begin
-   --        return Technique.Point_Lights_Location (Index).Attenuation.Atten_Constant;
-   --     end Point_Light_Attenuation_Const_ID;
-   --
-   --     --  -------------------------------------------------------------------------
-   --
-   --     function Point_Light_Attenuation_Exp_ID (Technique : Basic_Lighting_Technique;
-   --                                     Index : Int) return GL.Uniforms.Uniform is
-   --     begin
-   --        return Technique.Point_Lights_Location (Index).Attenuation.Exp;
-   --     end Point_Light_Attenuation_Exp_ID;
-   --
-   --     --  -------------------------------------------------------------------------
-   --
-   --     function Point_Light_Attenuation_Linear_ID (Technique : Basic_Lighting_Technique;
-   --                                     Index : Int) return GL.Uniforms.Uniform is
-   --     begin
-   --        return Technique.Point_Lights_Location (Index).Attenuation.Linear;
-   --     end Point_Light_Attenuation_Linear_ID;
-
-   --  -------------------------------------------------------------------------
-
-   --     function Point_Light_Diffuse_ID (Technique : Basic_Lighting_Technique;
-   --                                      Index : Int) return GL.Uniforms.Uniform is
-   --     begin
-   --        return Technique.Point_Lights_Location (Index).Diffuse_Intensity;
-   --     end Point_Light_Diffuse_ID;
-
-   --  -------------------------------------------------------------------------
-
-   --     function Point_Light_Direction_ID (Technique : Basic_Lighting_Technique;
-   --                                        Index : Int) return GL.Uniforms.Uniform is
-   --     begin
-   --        return Technique.Point_Lights_Location (Index).Direction;
-   --     end Point_Light_Direction_ID;
-
-   --  -------------------------------------------------------------------------
-
-   --     function Point_Light_Colour_ID (Technique : Basic_Lighting_Technique;
-   --                                     Index : Int) return GL.Uniforms.Uniform is
-   --     begin
-   --        return Technique.Point_Lights_Location (Index).Colour;
-   --     end Point_Light_Colour_ID;
-
-   --  -------------------------------------------------------------------------
-
-   --     function Spot_Light_Colour_ID (Technique : Basic_Lighting_Technique;
-   --                                     Index : Int) return GL.Uniforms.Uniform is
-   --     begin
-   --        return Technique.Spot_Lights_Location (Index).Colour;
-   --     end Spot_Light_Colour_ID;
-
-   --  -------------------------------------------------------------------------
-
    procedure Set_Color_Texture_Unit (Technique    : Basic_Lighting_Technique;
                                      Texture_Unit : GL.Types.UInt) is
    begin
@@ -235,10 +171,6 @@ package body Ogldev_Basic_Lighting is
       Num_Lights : constant Int :=  Lights'Length;
       Location   : Point_Light_Locations;
    begin
---        GL.Objects.Programs.Use_Program (Technique.Lighting_Program);
---        Put_Line ("Ogldev_Basic_Lighting.Set_Point_Lights Num_Lights: " & Int'Image (Num_Lights));
---        Put_Line ("Ogldev_Basic_Lighting.Set_Point_Lights Num_Point_Lights_Location: " &
---                    Uniform'Image (Technique.Num_Point_Lights_Location));
       GL.Uniforms.Set_Int (Technique.Num_Point_Lights_Location, Num_Lights);
       for index in UInt range 1 .. UInt (Num_Lights) loop
          Location := Technique.Point_Lights_Location (Int (index));
