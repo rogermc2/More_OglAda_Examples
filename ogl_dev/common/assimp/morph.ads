@@ -19,7 +19,7 @@ package Morph is
 
    package Mesh_Morph_Value_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Morph_Value, API_Morph_Values_Array,
-      API_Morph_Value'(others => <>));
+      API_Morph_Value'(0));
 
    type API_Morph_Weights_Array is array
      (Interfaces.C.unsigned range <>) of aliased API_Morph_Weight;
@@ -27,7 +27,7 @@ package Morph is
 
    package Mesh_Morph_Weight_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Morph_Weight, API_Morph_Weights_Array,
-      API_Morph_Weight'(others => <>));
+      API_Morph_Weight'(Interfaces.C.double'Last));
 
    type API_Mesh_Morph_Key is record
       Key_Time               : Interfaces.C.double := 0.0;

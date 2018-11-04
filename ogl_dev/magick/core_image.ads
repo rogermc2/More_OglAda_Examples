@@ -150,7 +150,7 @@ package Core_Image is
     --  held, unless overridden for that specific image.  See Sync_Image_Settings
     --  which maps any global setting that always overrides specific image settings.
     type Stream_Info;
-    type AI_Image_Info is record
+    type API_Image_Info is record
         Compression        : Compress.Compression_Type
           := Compress.Undefined_Compression;
         Orientation        : Orientation_Type := Undefined_Orientation;
@@ -202,20 +202,23 @@ package Core_Image is
         File_ID            : chars_ptr;
         Blob               : System.Address := System.Null_Address;
         Length             : size_t := 0;
-        Magick             : Image_Info_Magick_Array;    --  image file format
-        Unique             : Image_Info_Unique_Array;    --  unique tempory filename - delegates
-        File_Name          : Image_Info_Filename_Array;  --  filename when reading/writing image
+        Magick             : Image_Info_Magick_Array :=
+                             (others => char (Character'Val (0)));    --  image file format
+        Unique             : Image_Info_Unique_Array :=
+                             (others => char (Character'Val (0)));    --  unique tempory filename - delegates
+      File_Name          : Image_Info_Filename_Array :=
+                             ('H', 'e','l','l','o', others => char (Character'Val (0)));  --  filename when reading/writing image
         Debug              : Magick_Boolean_Type := Magic_False;
-        Signature          : size_t :=
-                               size_t (Method_Attribute.Magick_Core_Signature);
+        Signature          : size_t := 0;
+--                                 size_t (Method_Attribute.Magick_Core_Signature);
         Custom_Stream_Info : access Core_Blob.Custom_Stream_Info := Null;
         Matte_Colour       : Magick_Pixel.Pixel_Info;
-    end record;  --  AI_Image_Info
-    pragma Convention (C_Pass_By_Copy, AI_Image_Info);
+    end record;  --  API_Image_Info
+    pragma Convention (C_Pass_By_Copy, API_Image_Info);
 
-   type Info_Ptr is access all AI_Image_Info;
+   type Info_Ptr is access all API_Image_Info;
 
-    type AI_Image is record
+    type API_Image is record
         Storage_Class      : Class_Type := Magick_Type.Direct_Class;
         Colourspace        : Colour_Space.Colourspace_Type :=
                                Colour_Space.RGB_Colourspace;
@@ -304,24 +307,24 @@ package Core_Image is
         Semaphore_Data     : Semaphore.Sem_Ptr := Semaphore.Acquire_Semaphore_Info;
         Image_Info         : Info_Ptr := Null;
         --  Image processing list
-        --        List               : access AI_Image := Null;
-        --        Previous           : access AI_Image := Null;
-        --        Next               : access AI_Image := Null;
+        --        List               : access API_Image := Null;
+        --        Previous           : access API_Image := Null;
+        --        Next               : access API_Image := Null;
         List               : System.Address := System.Null_Address;
         Previous           : System.Address := System.Null_Address;
         Next               : System.Address := System.Null_Address;
-        Signature          : size_t :=
-                               size_t (Method_Attribute.Magick_Core_Signature);
+        Signature          : size_t := 0;
+--                                 size_t (Method_Attribute.Magick_Core_Signature);
         Matte_Colour       : Magick_Pixel.Pixel_Info;
-    end record;  --  AI_Image
-   pragma Convention (C_Pass_By_Copy, AI_Image);
+    end record;  --  API_Image
+   pragma Convention (C_Pass_By_Copy, API_Image);
 
-   type AI_Image_Ptr is access all AI_Image;
+   type API_Image_Ptr is access all API_Image;
 
     type Stream_Info is record
-        theImage_Data : AI_Image_Info;
-        theImage      : access AI_Image := Null;
-        Stream        : access AI_Image := Null;
+        theImage_Data : API_Image_Info;
+        theImage      : access API_Image := Null;
+        Stream        : access API_Image := Null;
         Quantum_Data  : Quantum.Quantum_Info;
         Map           : chars_ptr := Null_Ptr;
         Storage_Kind  : Magick_Pixel.Storage_Type;
@@ -330,7 +333,8 @@ package Core_Image is
         Y             : size_t := 0;  --  ssize_t
         Except        : access  Magick_Exception.Exception_Info := Null;
         Client_Data   : System.Address := System.Null_Address;
-        Signature     : size_t := size_t (Method_Attribute.Magick_Core_Signature);
+        Signature     : size_t := 0;
+--        size_t (Method_Attribute.Magick_Core_Signature);
     end record;  --  Stream_Info
 
     type Image is record
@@ -422,8 +426,8 @@ package Core_Image is
         List               : System.Address;
         Previous           : System.Address;
         Next               : System.Address;
-        Signature          : size_t :=
-                               size_t (Method_Attribute.Magick_Core_Signature);
+        Signature          : size_t := 0;
+--                                 size_t (Method_Attribute.Magick_Core_Signature);
         Matte_Colour       : Magick_Pixel.Pixel_Info;
     end record;  --  Image
 
@@ -482,8 +486,8 @@ package Core_Image is
         Unique             : Ada.Strings.Unbounded.Unbounded_String;
         File_Name          : Ada.Strings.Unbounded.Unbounded_String;
         Debug              : Boolean := False;
-        Signature          : GL.Types.UInt :=
-                               GL.Types.UInt (Method_Attribute.Magick_Core_Signature);
+        Signature          : size_t := 0;
+--        := GL.Types.UInt (Method_Attribute.Magick_Core_Signature);
         Custom_Stream      : Core_Blob.Custom_Stream_Ptr := Null;
         Matte_Colour       : Magick_Pixel.Pixel_Info;
     end record;  --  Image_Info
@@ -495,6 +499,6 @@ package Core_Image is
 --
 --      procedure Image_To_Blob (Info : Image_Info; theImage : in out Image;
 --                               Size : in out GL.Types.UInt);
-   function To_Image (C_Image : AI_Image) return Image;
+   function To_Image (C_Image : API_Image) return Image;
 
 end Core_Image;

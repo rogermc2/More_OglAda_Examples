@@ -4,8 +4,8 @@ with Interfaces.C.Pointers;
 
 package API_Vectors_Matrices is
 
-   AI_Max_Colour_Sets    : constant := 8;
-   AI_Max_Texture_Coords : constant := 8;
+   API_Max_Colour_Sets    : constant := 8;
+   API_Max_Texture_Coords : constant := 8;
 
    type API_Colour_3D is record
       R : Interfaces.C.C_float;
@@ -38,18 +38,30 @@ package API_Vectors_Matrices is
    end record;
    pragma Convention (C_Pass_By_Copy, API_Quaternion);
 
+   type API_Texture_Coords_3D is record
+      U : Interfaces.C.C_float;
+      V : Interfaces.C.C_float;
+      W : Interfaces.C.C_float;
+   end record;
+   pragma Convention (C_Pass_By_Copy, API_Texture_Coords_3D);
+
+  --  It is erroneous to dereference a Pointer that does not designate an aliased Element.
   type API_Vector_2D is record
-      X : Interfaces.C.C_float;
-      Y : Interfaces.C.C_float;
+      X : aliased Interfaces.C.C_float;
+      Y : aliased Interfaces.C.C_float;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Vector_2D);
 
    type API_Vector_3D is record
-      X : Interfaces.C.C_float;
-      Y : Interfaces.C.C_float;
-      Z : Interfaces.C.C_float;
+      X : aliased Interfaces.C.C_float;
+      Y : aliased Interfaces.C.C_float;
+      Z : aliased Interfaces.C.C_float;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Vector_3D);
+
+   type API_Vector_3D_Ptr_Array is array (Interfaces.C.unsigned range
+                                          1 .. API_Max_Texture_Coords) of access API_Vector_3D;
+   pragma Convention (C, API_Vector_3D_Ptr_Array);
 
    type API_Vector_3D_Array is array
      (Interfaces.C.unsigned range <>) of aliased API_Vector_3D;
@@ -60,23 +72,33 @@ package API_Vectors_Matrices is
       API_Vector_3D'(others => <>));
    subtype Vector_3D_Array_Pointer is Vector_3D_Array_Pointers.Pointer;
 
-   type API_Colours_3D_Array is array
-     (Interfaces.C.unsigned range <>) of aliased API_Colour_3D;
-   pragma Convention (C, API_Colours_3D_Array);
-
-   package Colours_3D_Array_Pointers is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, API_Colour_3D, API_Colours_3D_Array,
-      API_Colour_3D'(others => <>));
-   subtype Colours_3D_Array_Pointer is Colours_3D_Array_Pointers.Pointer;
-
    type API_Colours_4D_Array is array
      (Interfaces.C.unsigned range <>) of aliased API_Colour_4D;
    pragma Convention (C, API_Colours_4D_Array);
+
+   type API_Texture_Coords_Array is array
+     (Interfaces.C.unsigned range <>) of aliased API_Texture_Coords_3D;
+   pragma Convention (C, API_Texture_Coords_Array);
 
    package Colours_4D_Array_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Colour_4D, API_Colours_4D_Array,
       API_Colour_4D'(others => <>));
    subtype Colours_4D_Array_Pointer is Colours_4D_Array_Pointers.Pointer;
+
+   package Texture_Coords_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Texture_Coords_3D, API_Texture_Coords_Array,
+      API_Texture_Coords_3D'(others => <>));
+   subtype Texture_Coords_Array_Pointer is Texture_Coords_Array_Pointers.Pointer;
+
+   type API_Colour_4D_Ptr_Array is array
+     (Interfaces.C.unsigned range 1 .. API_Max_Colour_Sets) of
+     Colours_4D_Array_Pointer;
+   pragma Convention (C, API_Colour_4D_Ptr_Array);
+
+   type API_Texture_Coords_3D_Ptr_Array is array
+     (Interfaces.C.unsigned range 1 .. API_Max_Texture_Coords) of
+     Texture_Coords_Array_Pointer;
+   pragma Convention (C, API_Texture_Coords_3D_Ptr_Array);
 
    type API_Unsigned_Array is array
      (Interfaces.C.unsigned range <>) of aliased Interfaces.C.unsigned;

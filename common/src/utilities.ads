@@ -3,6 +3,7 @@ with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Types;
 with GL.Types.Colors;
+with GL.Uniforms;
 
 with Glfw.Windows;
 
@@ -34,6 +35,8 @@ package Utilities is
      (Maths.Vector5_Pointers);
    procedure Load_Vector6_Buffer is new GL.Objects.Buffers.Load_To_Buffer
      (Maths.Vector6_Pointers);
+   procedure Load_Vector8_Buffer is new GL.Objects.Buffers.Load_To_Buffer
+     (Maths.Vector8_Pointers);
    procedure Load_Vertex_Sub_Buffer is new
      GL.Objects.Buffers.Set_Sub_Data (GL.Types.Singles.Vector3_Pointers);
    procedure Load_Vertex_Sub_Buffer is new
@@ -47,6 +50,7 @@ package Utilities is
    procedure Print_GL_Array3 (Name : String; anArray : GL.Types.Ints.Vector3_Array);
    procedure Print_GL_Array3 (Name : String; anArray : GL.Types.Singles.Vector3_Array);
    procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Singles.Vector4_Array);
+   procedure Print_GL_Array8 (Name : String; anArray : Maths.Vector8_Array);
    procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array);
    procedure Print_GL_UInt_Array (Name : String; anArray : GL.Types.UInt_Array);
    procedure Print_Matrix (Name : String; aMatrix : GL.Types.Singles.Matrix3);
@@ -57,6 +61,9 @@ package Utilities is
    procedure Print_Vector (Name : String; aVector : GL.Types.Ints.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector4);
+      procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
+                                   Location       : String;
+                                   theUniform     : in out GL.Uniforms.Uniform);
    procedure Show_Shader_Info_Log (aProgram : GL.Objects.Programs.Program);
    procedure Show_Shader_Program_Data (aProgram : GL.Objects.Programs.Program);
    procedure Show_GL_Data;

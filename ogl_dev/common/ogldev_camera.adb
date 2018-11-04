@@ -1,7 +1,6 @@
 
 with Interfaces.C;
 
-with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input;
@@ -9,19 +8,9 @@ with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 
 package body Ogldev_Camera is
-
-   Half_Pi            : constant Single := 0.5 * Ada.Numerics.Pi;
-   Initial_View_Angle : constant Maths.Degree := 45.0;
-   Last_Time          : Double := Double (Glfw.Time);
-   Mouse_Speed        : constant Single := 0.5;  -- orig: 0.005
-   Speed              : constant Single := 3.0;  -- units per second
-
-   Step_Scale         : constant GL.Types.Single := 0.2;  --  orig: 1.0
-   Edge_Step          : constant Maths.Degree := 0.5;
-   Margin             : constant Glfw.Input.Mouse.Coordinate := 10.0;
-
-   Horizontal_Angle   : Single := Ada.Numerics.Pi;
-   Vertical_Angle     : Single := 0.0;
+   Step_Scale  : GL.Types.Single := 1.0;
+   Edge_Step   : constant Maths.Degree := 0.5;
+   Margin      : constant Glfw.Input.Mouse.Coordinate := 10.0;
 
    procedure Update (theCamera : in out Camera);
    procedure Update_Render (theCamera : in out Camera);
@@ -119,20 +108,20 @@ package body Ogldev_Camera is
    --  From camera.cpp Camera::Camera
    procedure Init_Camera (theCamera                   : in out Camera;
                           Window_Width, Window_Height : Int;
-                          Position, Target, Up        : Singles.Vector3) is
+                          Camera_Position, Target_Position, Up : Singles.Vector3) is
    begin
       theCamera.Window_Width := Window_Width;
       theCamera.Window_Height := Window_Height;
-      if Maths.Length (Position) /= 0.0 then
-         theCamera.Position := Maths.Normalized (Position);
+      if Maths.Length (Camera_Position) /= 0.0 then
+         theCamera.Position := Maths.Normalized (Camera_Position);
       else
-         theCamera.Position := Position;
+         theCamera.Position := Camera_Position;
       end if;
 
-      if Maths.Length (Target) /= 0.0 then
-         theCamera.Target := Maths.Normalized (Target);
+      if Maths.Length (Target_Position) /= 0.0 then
+         theCamera.Target := Maths.Normalized (Target_Position);
       else
-         theCamera.Target := Target;
+         theCamera.Target := Target_Position;
       end if;
 
       if Maths.Length (Up) /= 0.0 then
@@ -180,13 +169,14 @@ package body Ogldev_Camera is
    --  -------------------------------------------------------------------------
 
    procedure Process_Mouse (theCamera : in out Camera;
-                            Window    : in out Glfw.Windows.Window;
-                            X_Position, Y_Position : in out Glfw.Input.Mouse.Coordinate) is
+                            Window    : in out Glfw.Windows.Window) is
       use Interfaces.C;
       use Glfw.Input.Mouse;
       use Maths;
-      Delta_X  : Coordinate;
-      Delta_Y  : Coordinate;
+      X_Position : Coordinate;
+      Y_Position : Coordinate;
+      Delta_X    : Coordinate;
+      Delta_Y    : Coordinate;
    begin
       Window'Access.Get_Cursor_Pos (X_Position, Y_Position);
       Delta_X := X_Position - Coordinate (theCamera.Mouse_Position (GL.X));
@@ -212,12 +202,16 @@ package body Ogldev_Camera is
 
    --  -------------------------------------------------------------------------
 
+   procedure Set_Step (Step_Size : GL.Types.Single := 1.0) is
+   begin
+        Step_Scale := Step_Size;
+   end ;
+
+   --  -------------------------------------------------------------------------
+
    --  Update_Render implements void Camera::OnRender()
    procedure Update_Render (theCamera : in out Camera) is
       use Maths;
-      use Singles;
-      V_Axis        : constant Vector3 := (0.0, 1.0, 0.0);
-      View          : Vector4 := (1.0, 0.0, 0.0, 1.0);
       Should_Update : Boolean := False;
    begin
       if theCamera.On_Left_Edge then
@@ -256,7 +250,7 @@ package body Ogldev_Camera is
         use GL.Types.Singles;
         use Maths;
         H_Axis : Vector3;
-        V_Axis : Vector3 := (0.0, 1.0, 0.0);
+        V_Axis : constant Vector3 := (0.0, 1.0, 0.0);
         View   : Vector4 := (1.0, 0.0, 0.0, 1.0);
    begin
         --  Rotate the view vector by the horizontal angle around the vertical axis
@@ -264,52 +258,18 @@ package body Ogldev_Camera is
         --  Rotate the view vector by the vertical angle around the horizontal axis
         H_Axis := Normalized (Cross_Product (V_Axis, To_Vector3 (View)));
         theCamera.Target := Normalized (To_Vector3 (View));
-        theCamera.Up := Normalized ( Cross_Product(theCamera.Target, H_Axis));
+        theCamera.Up := Normalized (Cross_Product(theCamera.Target, H_Axis));
    end Update;
 
    --  -------------------------------------------------------------------------
 
    Procedure Update_Camera (theCamera : in out Camera;
                             Window    : in out Glfw.Windows.Window) is
-      use GL.Types.Singles;
-      use Glfw.Input;
-      use Glfw.Input.Keys;
-      use Glfw.Input.Mouse;
-      use Maths;
-      use Maths.Single_Math_Functions;
-      Current_Time       : constant GL.Types.Double := GL.Types.Double (Glfw.Time);
-      Delta_Time         : constant Single := Single (Current_Time - Last_Time);
-      Window_Width       : Glfw.Size;
-      Window_Height      : Glfw.Size;
-      Half_Window_Width  : Single;
-      Half_Window_Height : Single;
-      --  GLFW 3 requires setting up a callback for setting
-      --  View_Angle to Initial_View_Angle - 5.0 * glfwGetMouseWheel();
-      --  But this is a bit too complicated for a beginner's tutorial,
-      --  so it's not implemented in this Tutorial.
-      View_Angle         : constant Maths.Degree := Initial_View_Angle;
---        Direction          : Vector3;  --  the position of the target with respect to camera.
---        Right              : Vector3;
-      X_Position         : Coordinate := 0.00001;
-      Y_Position         : Coordinate := 0.00002;
    begin
-      Process_Mouse (theCamera, Window, X_Position, Y_Position);  --  PassiveMouseCB.OnMouse
-      Process_Keyboard (theCamera, Window);                       --  OnKeyboard
-      Update_Render (theCamera);                                  --  OnRender
+      Process_Keyboard (theCamera, Window);  --  OnKeyboard
+      Process_Mouse (theCamera, Window);     --  PassiveMouseCB.OnMouse
+      Update_Render (theCamera);             --  OnRender
 
-      Window'Access.Get_Size (Window_Width, Window_Height);
-      theCamera.Window_Width := GL.Types.Int (Window_Width);
-      theCamera.Window_Height := GL.Types.Int (Window_Height);
-      Half_Window_Width := 0.5 * Single (theCamera.Window_Width);
-      Half_Window_Height := 0.5 * Single (theCamera.Window_Height);
-
-      --  Reset the cursor to the center of the screen
-      --  otherwise it will soon go outside the window.
-
-      Window'Access.Set_Cursor_Pos (Mouse.Coordinate (Half_Window_Width),
-                                    Mouse.Coordinate (Half_Window_Height));
-
-      Last_Time := Current_Time;
    end Update_Camera;
 
    --  ------------------------------------------------------------------------

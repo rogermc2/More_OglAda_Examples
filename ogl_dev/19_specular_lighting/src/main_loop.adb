@@ -56,9 +56,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
-      Target              : Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
-      Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
+      Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Result := Lighting_Technique.Init (Shader_Program);
       if Result then
@@ -66,8 +66,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+         Ogldev_Camera.Set_Step (0.1);
          Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
-                                   Position, Target, Up);
+                                    Position, Target, Up);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
@@ -78,15 +79,19 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Objects.Programs.Use_Program (Shader_Program);
 
          Lighting_Technique.Set_Texture_Unit (0);
-         Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
+         Result := Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                       "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png");
-         Ogldev_Texture.Load (theTexture);
+         if Result then
+            Ogldev_Texture.Load (theTexture);
 
-         Perspective_Proj_Info.FOV := 60.0;
-         Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
-         Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-         Perspective_Proj_Info.Z_Near := 1.0;
-         Perspective_Proj_Info.Z_Far := 100.0;
+            Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
+            Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
+            Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+            Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
+            Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
+         else
+            Put_Line ("Main_Loop.Init. Init_Texture failed");
+         end if;
 
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
@@ -101,7 +106,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Keyboard_Lighting (Window : in out Glfw.Windows.Window) is
+   procedure Update_Lighting (Window : in out Glfw.Windows.Window) is
       use Glfw.Input;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
@@ -113,7 +118,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       elsif Window'Access.Key_State (Keys.X) = Pressed then
          Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity - 0.05;
       end if;
-   end Keyboard_Lighting;
+   end Update_Lighting;
 
    --  -------------------------------------------------------------------------
 
@@ -123,7 +128,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       World_Transformation : GL.Types.Singles.Matrix4;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
-      Keyboard_Lighting (Window);
+      Update_Lighting (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Scale := Scale + 0.1;
@@ -131,13 +136,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
-      Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-      Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
+      Ogldev_Math.Set_Perspective_Width
+        (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+      Ogldev_Math.Set_Perspective_Height
+        (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
 
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
-      Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Init_Transforms (Pipe);
 
       Lighting_Technique.Set_WVP (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);

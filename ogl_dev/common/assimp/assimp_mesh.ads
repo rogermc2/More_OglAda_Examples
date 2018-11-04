@@ -9,7 +9,7 @@ with GL.Objects.Buffers;
 with GL.Types; use GL.Types;
 
 with Assimp_Texture;
-with Colour;
+with Assimp_Types;
 with API_Vectors_Matrices; use API_Vectors_Matrices;
 
 package Assimp_Mesh is
@@ -18,9 +18,21 @@ package Assimp_Mesh is
     AI_Max_Bone_Weights   : constant Int := 16#7FFFFFFF#;
     AI_Max_Vertices       : constant Int := 16#7FFFFFFF#;
     AI_Max_Faces          : constant Int := 16#7FFFFFFF#;
+    AI_Max_Texture_Coords : constant Int := 8;
+    AI_Max_Colour_Sets    : constant Int := 8;
 
-    type  Entries_Map is private;
     type Entry_Ptr is private;
+
+    type Mesh_Entry is record
+        Vertex_Buffer  : GL.Objects.Buffers.Buffer;
+        Index_Buffer   : GL.Objects.Buffers.Buffer;
+        Num_Indices    : UInt;
+        Material_Index : UInt;
+    end record;
+
+   package Entries_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Mesh_Entry);
+   subtype Entries_Map is Entries_Package.Map;
 
     type AI_Primitive_Type is
         (AI_Primitive_Type_Point, AI_Primitive_Type_Line, AI_Primitive_Type_Triangle,
@@ -32,16 +44,52 @@ package Assimp_Mesh is
         Weight     : Single;
     end record;
 
+    type AI_Colour_4D is record
+            R, G, B, A : GL.Types.Single;
+   end record;
+
    package Vertex_Weight_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Vertex_Weight);
    type Vertex_Weight_Map is new Vertex_Weight_Package.Map with
      null Record;
 
-    type AI_Bone is record
-        Name         : Ada.Strings.Unbounded.Unbounded_String :=
-                         Ada.Strings.Unbounded.To_Unbounded_String ("");
-        Weights      : Vertex_Weight_Map;
+    type API_Vertex_Weight is record
+        Vertex_ID  : Interfaces.C.unsigned;
+        Weight     : Interfaces.C.C_float;
+    end record;
+    pragma Convention (C_Pass_By_Copy, API_Vertex_Weight);
+
+   type API_Vertex_Weight_Array is array
+     (Interfaces.C.unsigned range <>) of aliased API_Vertex_Weight;
+   pragma Convention (C, API_Vertex_Weight_Array);
+
+   package Vertex_Weight_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Vertex_Weight, API_Vertex_Weight_Array,
+      API_Vertex_Weight'(others => <>));
+   subtype Vertex_Weight_Array_Pointer is Vertex_Weight_Array_Pointers.Pointer;
+
+    type API_Bone is record
+        Name          : Assimp_Types.API_String;
+        Num_Weights   : Interfaces.C.unsigned;
+        Weights       : Vertex_Weight_Array_Pointer;
         Offset_Matrix : API_Vectors_Matrices.API_Matrix_4D;
+    end record;
+   pragma Convention (C_Pass_By_Copy, API_Bone);
+
+   type API_Bones_Array is array
+     (Interfaces.C.unsigned range <>) of aliased API_Bone;
+   pragma Convention (C, API_Bones_Array);
+
+   package Bones_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Bone, API_Bones_Array,
+      API_Bone'(others => <>));
+   subtype Bones_Array_Pointer is Bones_Array_Pointers.Pointer;
+
+    type AI_Bone is record
+        Name          : Ada.Strings.Unbounded.Unbounded_String :=
+                         Ada.Strings.Unbounded.To_Unbounded_String ("");
+        Weights       : Vertex_Weight_Map;
+        Offset_Matrix : GL.Types.Singles.Matrix4;
     end record;
 
    package Bones_Package is new
@@ -60,52 +108,57 @@ package Assimp_Mesh is
 
     type API_Face is record
         Num_Indices : Interfaces.C.unsigned;
-        Indices     : Unsigned_Int_Array_Pointer;
+        Indices     : Unsigned_Array_Pointer;
     end record;
 
    type API_Faces_Array is array
      (Interfaces.C.unsigned range <>) of aliased API_Face;
    pragma Convention (C, API_Faces_Array);
 
-   package Faces_Array_Pointers is new Interfaces.C.Pointers
+   package API_Faces_Array_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Face, API_Faces_Array,
       API_Face'(others => <>));
-   subtype Faces_Array_Pointer is Faces_Array_Pointers.Pointer;
-
-   type Vertices is record
-        X : UInt;
-        Y : UInt;
-        Z : UInt;
-   end record;
+   subtype Faces_Array_Pointer is API_Faces_Array_Pointers.Pointer;
 
    package Faces_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Face);
-   subtype Faces_Map is Faces_Package.Map;
+   type Faces_Map is new Faces_Package.Map with null Record;
 
+   use Singles;
    package Vertices_Package is new
-     Ada.Containers.Indefinite_Ordered_Maps (UInt, Vertices);
-   type  Vertices_Map is new  Vertices_Package.Map with null Record;
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
+   type Vertices_Map is new  Vertices_Package.Map with null Record;
 
-    type Colour_Array is array (1 .. AI_Max_Colour_Sets) of Colour.AI_Colour_4D;
+   package Colours_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector4);
+   type Colours_Map is new  Colours_Package.Map with null Record;
+
+   package Colour_Coords_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Colours_Map);
+   type Colour_Coords_Map is new  Colour_Coords_Package.Map with null Record;
+
+   package Texture_Coords_Package is new
+     Ada.Containers.Indefinite_Ordered_Maps (UInt, Vertices_Map);
+   type Texture_Coords_Map is new  Texture_Coords_Package.Map with null Record;
+
     type AI_Mesh is record
-        Name         : Ada.Strings.Unbounded.Unbounded_String :=
-                         Ada.Strings.Unbounded.To_Unbounded_String ("");
+        Name              : Ada.Strings.Unbounded.Unbounded_String :=
+                              Ada.Strings.Unbounded.To_Unbounded_String ("");
         Vertices          : Vertices_Map;
         Normals           : Vertices_Map;
         Tangents          : Vertices_Map;
         Bit_Tangents      : Vertices_Map;
-        Colours           : API_Colour_4D;
-        Texture_Coords    : Singles.Vector3_Array (1 .. AI_Max_Texture_Coords);
-        Num_UV_Components : UInt_Array (1 .. AI_Max_Texture_Coords);
+        Colours           : Colour_Coords_Map;
+        Texture_Coords    : Texture_Coords_Map;
+        Num_UV_Components : UInt_Array (1 .. API_Max_Texture_Coords);
         Faces             : Faces_Map;
         Bones             : Bones_Map;
-        Material_Index    : UInt;
+        Material_Index    : UInt := 0;
     end record;
 
    package AI_Mesh_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Mesh);
    subtype  AI_Mesh_Map is AI_Mesh_Package.Map;
-
     --  C arrays are constrained. To pass C arrays around function calls,
     --  either terminate them with a zero element or with a separate length parameter.
 
@@ -113,16 +166,20 @@ package Assimp_Mesh is
         Primitive_Types   : Interfaces.C.unsigned := 0;
         Num_Vertices      : Interfaces.C.unsigned := 0;
         Num_Faces         : Interfaces.C.unsigned := 0;
-        Vertices          : Vector_3D_Array_Pointer;
-        Normals           : Vector_3D_Array_Pointer;
-        Tangents          : Vector_3D_Array_Pointer;
-        Bit_Tangents      : Vector_3D_Array_Pointer;
-        Colours           : Colours_4D_Array_Pointer;
-        Texture_Coords    : Vector_3D_Array_Pointer;
-        Num_UV_Components : Unsigned_Int_Array_Pointer;
-        Faces             : Faces_Map;
-        Bones             : Bones_Map;
-        Material_Index    : UInt;
+        Vertices          : Vector_3D_Array_Pointers.Pointer := null;
+        Normals           : Vector_3D_Array_Pointers.Pointer := null;
+        Tangents          : Vector_3D_Array_Pointers.Pointer := null;
+        Bit_Tangents      : Vector_3D_Array_Pointers.Pointer := null;
+        Colours           : API_Colour_4D_Ptr_Array;
+        Texture_Coords    : API_Texture_Coords_3D_Ptr_Array;
+        Num_UV_Components : API_Unsigned_Array (1 .. API_Max_Texture_Coords);
+        Faces             : Faces_Array_Pointer := null;
+        Num_Bones         : Interfaces.C.unsigned := 0;
+        Bones             : access Bones_Array_Pointer := null;
+        Material_Index    : Interfaces.C.unsigned := 0;
+        Name              : Assimp_Types.API_String;
+        Num_Anim_Meshes   : Interfaces.C.unsigned := 0;
+        Anim_Meshes       : access Vector_3D_Array_Pointers.Pointer := null;
     end record;
     pragma Convention (C_Pass_By_Copy, API_Mesh);
 
@@ -140,14 +197,11 @@ package Assimp_Mesh is
         Textures  : Assimp_Texture.AI_Texture_Map;
     end record;
 
---     type API_Mesh is record
---          Entries   : Entry_Ptr;
---          Textures  : Assimp_Texture.Texture_Pointers.Pointer;
---     end record;
---     pragma Convention (C_Pass_By_Copy, API_Mesh);
+   procedure Load_Mesh (File_Name : String; theMesh : in out Mesh);
+   procedure Render_Mesh (theMesh : Mesh);
+   function To_AI_Mesh_Map (Num_Meshes : Interfaces.C.unsigned := 0;
+                            C_Mesh_Array : API_Mesh_Array) return AI_Mesh_Map;
 
-   procedure Load_Mesh (File_Name : Ada.Strings.Unbounded.Unbounded_String;
-                        theMesh   : in out Mesh);
     private
          for AI_Primitive_Type use
         (AI_Primitive_Type_Point       => 1,
@@ -155,18 +209,6 @@ package Assimp_Mesh is
          AI_Primitive_Type_Triangle    => 4,
          AI_Primitive_Type_Polygon     => 8,
          AI_Primitive_Type_Force32Bit  => Integer'Last);
-
-    type Mesh_Entry is record
-        Vertex_Buffer  : GL.Objects.Buffers.Buffer;
-        Index_Buffer   : GL.Objects.Buffers.Buffer;
-        Num_Indices    : UInt;
-        Material_Index : UInt;
-    end record;
-
-   package Entries_Package is new
-     Ada.Containers.Indefinite_Ordered_Maps (UInt, Mesh_Entry);
-   type  Entries_Map is new  Entries_Package.Map with
-     null Record;
 
     type API_Mesh_Entry is record
         Vertex_Buffer  : GL.Objects.Buffers.Buffer;
@@ -179,6 +221,6 @@ package Assimp_Mesh is
     type API_Entries_Array is array (Interfaces.C.unsigned range <>) of aliased API_Mesh_Entry;
     pragma Convention (C, API_Entries_Array);
 
-    type Entry_Ptr is access API_Entries_Array;
+   type Entry_Ptr is access API_Entries_Array;
 
 end Assimp_Mesh;

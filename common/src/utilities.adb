@@ -60,6 +60,8 @@ package body Utilities is
        new Print_Singles_Vector (GL.Index_Homogeneous, GL.Types.Singles.Vector4);
    procedure Print_Singles_Vector6 is
        new Print_Singles_Vector (Maths.Index_6, Maths.Vector6);
+   procedure Print_Singles_Vector8 is
+       new Print_Singles_Vector (Maths.Index_8, Maths.Vector8);
 
    --  ---------------------------------------------------------------
 
@@ -206,6 +208,17 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
+   procedure Print_GL_Array8 (Name : String; anArray : Maths.Vector8_Array) is
+   begin
+      Put_Line (Name & ": ");
+      for Index in anArray'First .. anArray'Last loop
+         Print_Singles_Vector8 ("", anArray (Index));
+      end loop;
+      New_Line;
+   end Print_GL_Array8;
+
+   --  ------------------------------------------------------------------------
+
    procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array) is
       use GL.Types;
    begin
@@ -311,6 +324,19 @@ package body Utilities is
    end Print_Vector;
 
    --  ------------------------------------------------------------------------
+
+   procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
+                                   Location       : String;
+                                   theUniform     : in out GL.Uniforms.Uniform) is
+   use GL.Uniforms;
+   begin
+      theUniform := GL.Objects.Programs.Uniform_Location (Shader_Program, Location);
+      if theUniform < 0 then
+         Put_Line ("Set_Uniform_Location, Uniform " & Location & " not found.");
+      end if;
+   end Set_Uniform_Location;
+
+   --  -------------------------------------------------------------------------
 
    procedure Show_GL_Data is
       GL_Version                : Unbounded_String;

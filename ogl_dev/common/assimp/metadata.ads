@@ -5,9 +5,9 @@ with Interfaces.C;
 
 with GL.Types;
 
-package Metadata is
+with Assimp_Types;
 
-   type API_Metadata is private;
+package Metadata is
 
    type AI_Metadata_Type is (AI_Bool, AI_Int_32, AI_Int_64, AI_Float,
                              AI_Double, AI_AI_String, AI_AI_Vector_3D);
@@ -19,9 +19,7 @@ package Metadata is
 --        Values         : access AI_Metadata_Entry;
    end record;
 
-private
-
-   type API_Metadata_Entry is record
+ type API_Metadata_Entry is record
       Metadata_Type : AI_Metadata_Type;
       Data          : System.Address;
    end record;
@@ -29,10 +27,12 @@ private
 
     type API_Metadata is record
       Num_Properties : Interfaces.C.unsigned := 0;
---        Keys           : access Assimp_Types.AI_String;
---        Values         : access AI_Metadata_Entry;
+      Keys           : access Assimp_Types.API_String;
+      Values         : access API_Metadata_Entry;
     end record;
    pragma Convention (C_Pass_By_Copy, API_Metadata);
+
+private
 
    for AI_Metadata_Type use (AI_Bool         => 0,
                              AI_Int_32       => 1,
