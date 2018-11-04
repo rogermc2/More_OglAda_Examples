@@ -9,7 +9,7 @@ with Assimp_Types;
 with Ogldev_Basic_Mesh;
 with Ogldev_Texture;
 
-package Mesh_28 is
+package Mesh_Project_28 is
 
    type Mesh_28 is private;
 
@@ -18,13 +18,14 @@ package Mesh_28 is
 
 private
 
+   Invalid_Material : constant GL.Types.UInt := 16#FFFFFFFF#;
+
    type Mesh_Entry is record
       VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Vertex_Buffer  : GL.Objects.Buffers.Buffer;
       Index_Buffer   : GL.Objects.Buffers.Buffer;
       Num_Indices    : GL.Types.UInt := 0;
-      Material_Index : Ogldev_Basic_Mesh.Material_Type :=
-                            Ogldev_Basic_Mesh.Invalid_Material;
+      Material_Index : GL.Types.UInt := Invalid_Material;
    end record;
 
    package Mesh_Entry_Package is new
@@ -37,4 +38,4 @@ private
       Textures   : Ogldev_Texture.Mesh_Texture_Map;
    end record;
 
-end Mesh_28;
+end Mesh_Project_28;
