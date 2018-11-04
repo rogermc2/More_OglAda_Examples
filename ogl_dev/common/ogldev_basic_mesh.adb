@@ -270,6 +270,8 @@ package body Ogldev_Basic_Mesh is
         Importer.Import_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
       theMesh.VAO.Initialize_Id;
       theMesh.VAO.Bind;
+
+      Put_Line (" Ogldev_Basic_Mesh.Load_Mesh, scene imported.");
       --   Create the buffers for the vertices attributes
       for index in 1 .. Num_Buffers loop
          theMesh.Buffers (index).Initialize_Id;
