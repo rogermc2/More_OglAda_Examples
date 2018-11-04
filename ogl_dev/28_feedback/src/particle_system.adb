@@ -84,9 +84,10 @@ package body Particle_System is
         (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit_Index'Enum_Rep);
       Billboard_Technique.Set_Billboard_Size (PS.Billboard_Method, 0.01);
 
-      Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
-                                      "../Content/fireworks_red.jpg");
-      Ogldev_Texture.Load (PS.Texture);
+      if Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
+                                      "../Content/fireworks_red.jpg") then
+            Ogldev_Texture.Load (PS.Texture);
+      end if;
 
    exception
       when  others =>
