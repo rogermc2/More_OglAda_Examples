@@ -56,7 +56,7 @@ package Magick_Image.API is
 
       procedure Write_Blob (Data_Blob : Interfaces.C.char_array;
                             RGBA : Interfaces.C.Strings.chars_ptr;
-                            Data_Length: size_t);
+                            Data_Length : size_t);
       pragma Import (Cpp, Write_Blob, "loadBlob");  --  image_io.writeBlob
 --        pragma Import (Cpp, Write_Blob, "_ZN6Magick5Image5writeEPNS_4BlobERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE");
 

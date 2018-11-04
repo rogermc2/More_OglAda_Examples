@@ -2,8 +2,6 @@
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
-with Method_Attribute;
-
 package Magick_Profile is
 
    type Rendering_Intent is (Undefined_Intent,

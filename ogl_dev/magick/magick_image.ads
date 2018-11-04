@@ -1,6 +1,4 @@
 
-with System;
-
 with Magick_Blob;
 with Core_Image;
 

@@ -15,7 +15,6 @@ package body Magick_Image is
    --  Blob_Data is Blob_Package.List;
    function Get_Blob_Data return Magick_Blob.Blob_Data is
       use Interfaces.C;
-      use Interfaces.C.Strings;
       use Magick_Blob.Blob_Package;
       Data_Address  : constant System.Address := Magick_Image.API.Get_Blob_Data;
       Data_Length   : constant size_t := Magick_Image.API.Blob_Length;
@@ -43,8 +42,6 @@ package body Magick_Image is
    --  -------------------------------------------------------------------------
 
    function Get_Image return Core_Image.Image is
-      use Interfaces.C;
-      use Interfaces.C.Strings;
       Data_Address : constant System.Address := Magick_Image.API.Get_Image_Data;
       C_Image      : Core_Image.API_Image
         with Import, Convention => C, Address => Data_Address;
