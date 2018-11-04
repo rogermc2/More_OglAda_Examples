@@ -8,7 +8,6 @@ with Ada.Strings.Unbounded;
 
 with GL.Types;
 
-with Method_Attribute;
 with Magick_Type; use Magick_Type;
 with Semaphore;
 
