@@ -56,27 +56,27 @@ package body Scene is
       C_Materials_Array : Material.API_Material_Array (1 .. Num_Materials);
       C_Root_Node       : Scene.API_Node;
    begin
---        Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations, ");
---        Put_Line ("Num_Textures, Num_Lights, Num_Cameras:");
---        Put_Line (unsigned'Image (Num_Meshes) & unsigned'Image (Num_Materials) &
---                    unsigned'Image (Num_Animations) & unsigned'Image (Num_Textures) &
---                    unsigned'Image (Num_Lights) & unsigned'Image (Num_Cameras));
---
---        Put ("Primitive_Types, Num_Vertices, Num_Faces: ");
---        Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
---                    unsigned'Image (C_Mesh_Array (1).Num_Vertices) &
---                    unsigned'Image (C_Mesh_Array (1).Num_Faces));
---        Put ("Num_Animations, Num_Bones, Material_Index: ");
---        Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
---                    unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
---                    unsigned'Image (C_Mesh_Array (1).Material_Index));
---        New_Line;
---        for index in 1 .. C_Mesh_Array'Length loop
---           Put_Line ("Name length, string: Mesh" & Integer'Image (index) & ": " &
---                       size_t'Image (C_Mesh_Array (unsigned (index)).Name.Length) & " '" &
---                       Assimp_Util.To_String (C_Mesh_Array (1).Name) & " '");
---        end loop;
---        New_Line;
+      Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations, ");
+      Put_Line ("Num_Textures, Num_Lights, Num_Cameras:");
+      Put_Line (unsigned'Image (Num_Meshes) & unsigned'Image (Num_Materials) &
+                  unsigned'Image (Num_Animations) & unsigned'Image (Num_Textures) &
+                  unsigned'Image (Num_Lights) & unsigned'Image (Num_Cameras));
+
+      Put ("Primitive_Types, Num_Vertices, Num_Faces: ");
+      Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
+                  unsigned'Image (C_Mesh_Array (1).Num_Vertices) &
+                  unsigned'Image (C_Mesh_Array (1).Num_Faces));
+      Put ("Num_Animations, Num_Bones, Material_Index: ");
+      Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
+                  unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
+                  unsigned'Image (C_Mesh_Array (1).Material_Index));
+      New_Line;
+      for index in 1 .. C_Mesh_Array'Length loop
+         Put_Line ("Name length, string: Mesh" & Integer'Image (index) & ": " &
+                     size_t'Image (C_Mesh_Array (unsigned (index)).Name.Length) & " '" &
+                     Assimp_Util.To_String (C_Mesh_Array (1).Name) & " '");
+      end loop;
+      New_Line;
 
       theScene.Flags := C_Scene.Flags;
       if C_Scene.Root_Node /= null then
@@ -88,6 +88,9 @@ package body Scene is
       if Num_Materials > 0 then
          C_Materials_Array := Material.Material_Pointers_Package.Value
            (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
+      Put_Line ("Scene.To_AI_Scene, C_Materials_Array Length: " & unsigned'Image (C_Materials_Array'Length));
+      Put_Line ("Scene.To_AI_Scene, C_Materials_Array (1).Num_Properties): " & unsigned'Image (C_Materials_Array (1).Num_Properties));
+      Put_Line ("Scene.To_AI_Scene, C_Materials_Array (2).Num_Properties): " & unsigned'Image (C_Materials_Array (2).Num_Properties));
          theScene.Materials :=
            AI_Conversion.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
 --           Put_Line ("Scene.To_AI_Scene theScene.Materials set, Num_Materials, Num_Textures: " &
