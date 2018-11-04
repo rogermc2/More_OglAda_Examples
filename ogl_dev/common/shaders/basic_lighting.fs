@@ -2,7 +2,7 @@
                                                                                     
 const int MAX_POINT_LIGHTS = 2;                                                     
 const int MAX_SPOT_LIGHTS = 2;                                                      
-                                                                                    
+
 in vec2 TexCoord0;                                                                  
 in vec3 Normal0;                                                                    
 in vec3 WorldPos0;
@@ -24,9 +24,9 @@ struct DirectionalLight
                                                                                     
 struct Attenuation                                                                  
     {
-    float Constant;                                                                 
-    float Linear;                                                                   
-    float Exp;                                                                      
+    float Constant;
+    float Linear;
+    float Exp;
     };
                                                                                     
 struct PointLight                                                                           
@@ -42,8 +42,8 @@ struct SpotLight
     vec3 Direction;                                                                         
     float Cutoff;                                                                           
     };
-                                                                                            
-uniform int gNumPointLights;                                                                
+                               
+uniform int gNumPointLights;
 uniform int gNumSpotLights;                                                                 
 uniform DirectionalLight gDirectionalLight;                                                 
 uniform PointLight gPointLights[MAX_POINT_LIGHTS];                                          
@@ -72,8 +72,7 @@ vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal)
             SpecularFactor = pow(SpecularFactor, gSpecularPower);
             SpecularColor = vec4(Light.Color * gMatSpecularIntensity * SpecularFactor, 1.0f);                         
             }
-        }
-                                                                                            
+        }                                                                                     
     return (AmbientColor + DiffuseColor + SpecularColor);                                   
 }                                                                                           
                                                                                             
@@ -89,12 +88,12 @@ vec4 CalcPointLight(PointLight thelight, vec3 Normal)
     LightDirection = normalize(LightDirection);                                             
                                                                                             
     vec4 Color = CalcLightInternal(thelight.Base, LightDirection, Normal);
-    float Attenuation =  thelight.Atten.Constant +
+    float Atten =  thelight.Atten.Constant +
                          thelight.Atten.Linear * Distance +
                          thelight.Atten.Exp * Distance * Distance;
                                                                                             
- //       return Color / Attenuation;
-        return Color;
+     Color = Color / Atten;
+     return Color;
     }
  
 vec4 CalcSpotLight(SpotLight l, vec3 Normal)                                                

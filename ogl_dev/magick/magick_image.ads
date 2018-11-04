@@ -1,17 +1,19 @@
 
-with Magick_Blob.API;
-limited with Magick_Image.API;
+with System;
+
+with Magick_Blob;
+with Core_Image;
 
 package Magick_Image is
 
+    type MPP_Image is record
+         Ref : access Core_Image.Image;
+   end record;
+
    Image_Exception : Exception;
 
-   procedure Read_File (theImage : out Magick_Image.API.Class_Image.MPP_Image;
-                        File_Name : String);
-   procedure Write_File (theImage : in out Magick_Image.API.Class_Image.MPP_Image;
-                          File_Name : String);
-   procedure Write_Blob (theImage : in out Magick_Image.API.Class_Image.MPP_Image;
-                         theBlob  : in out Magick_Blob.API.Class_Blob.Blob;
-                         Data_Type : String);
+   function Get_Blob_Data return Magick_Blob.Blob_Data;
+   function Get_Image return Core_Image.Image;
+   procedure Load_Blob (File_Name, Data_Type : String);
 
 end Magick_Image;

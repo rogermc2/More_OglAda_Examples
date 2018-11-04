@@ -12,16 +12,21 @@ package Maths is
 
    type Index_5 is (X, Y, Z, U, V);
    type Index_6 is (X, Y, Z, R, G, B);
+   type Index_8 is (X, Y, Z, U, V, NX, NY, NZ);
 
    type Vector5 is array (Index_5) of aliased Single;
    pragma Convention (C, Vector5);
    type Vector6 is array (Index_6) of aliased Single;
    pragma Convention (C, Vector6);
+   type Vector8 is array (Index_8) of aliased Single;
+   pragma Convention (C, Vector8);
 
    type Vector5_Array is array (Size range <>) of aliased Vector5;
    pragma Convention (C, Vector5_Array);
    type Vector6_Array is array (Size range <>) of aliased Vector6;
    pragma Convention (C, Vector6_Array);
+   type Vector8_Array is array (Size range <>) of aliased Vector8;
+   pragma Convention (C, Vector8_Array);
 
    package Single_Math_Functions is new
      Ada.Numerics.Generic_Elementary_Functions (GL.Types.Single);
@@ -30,6 +35,8 @@ package Maths is
      (Size, Vector5, Vector5_Array, Vector5'(others => <>));
    package Vector6_Pointers is new Interfaces.C.Pointers
      (Size, Vector6, Vector6_Array, Vector6'(others => <>));
+   package Vector8_Pointers is new Interfaces.C.Pointers
+     (Size, Vector8, Vector8_Array, Vector8'(others => <>));
 
    Math_Exception : Exception;
 

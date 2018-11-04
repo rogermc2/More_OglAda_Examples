@@ -1,4 +1,6 @@
 
+with Interfaces.C.Strings;
+
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp_Util;
@@ -21,7 +23,7 @@ package body Animation is
    function To_AI_Vector_Keys (Num_Keys : unsigned;
                                Vector_Keys : Vector_Key_Pointers.Pointer)
                                return AI_Vector_Key_List;
-   function To_Vector4D (C_Quat : API_Vectors.API_Quaternion)
+    function To_Vector4D (C_Quat : API_Vectors_Matrices.API_Quaternion)
                          return Singles.Vector4;
 
    --  ------------------------------------------------------------------------
@@ -136,6 +138,7 @@ package body Animation is
    begin
       for index in 1 .. Num_Channels loop
          Mesh_Anim.Name := To_Unbounded_String (To_Ada (C_Array (index).Name.Data));
+
          declare
             Mesh_Key    : AI_Mesh_Key;
             Mesh_Keys   : AI_Mesh_Key_List;
@@ -276,7 +279,7 @@ package body Animation is
 
    --  ------------------------------------------------------------------------
 
-   function To_Vector4D (C_Quat : API_Vectors.API_Quaternion)
+   function To_Vector4D (C_Quat : API_Vectors_Matrices.API_Quaternion)
                             return Singles.Vector4 is
    begin
       return (Single (C_Quat.X), Single (C_Quat.Y),

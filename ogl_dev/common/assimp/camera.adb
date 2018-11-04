@@ -1,4 +1,6 @@
 
+with Interfaces.C.Strings;
+
 with Assimp_Util;
 
 package body Camera is
