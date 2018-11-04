@@ -9,7 +9,6 @@ with GL.Low_Level.Enums;
 with GL.Objects.Textures;
 
 with Magick_Blob;
-with Ogldev_Engine_Common;
 
 Package Ogldev_Texture is
 
@@ -33,7 +32,7 @@ Package Ogldev_Texture is
    function Init_Texture
      (theTexture : in out Ogl_Texture;
       Target_Type : GL.Low_Level.Enums.Texture_Kind;
-      Texture_File  :  String) return Boolean ;
+      Texture_File  :  String) return Boolean;
    procedure Load (theTexture : in out Ogl_Texture);
    function Texture_Map_Size (theMap : Ogldev_Texture.Mesh_Texture_Map)
                               return GL.Types.UInt;

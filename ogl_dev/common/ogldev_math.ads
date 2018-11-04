@@ -48,7 +48,7 @@ package Ogldev_Math is
                                    Right, Left, Bottom, Top,
                                    Near, Far : Single);
    procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
-                                   FOV       : Single; Width, Height: UInt;
+                                   FOV       : Single; Width, Height : UInt;
                                    Near, Far : Single);
    procedure Set_Perspective_Far (Info  : in out Perspective_Projection_Info;
                                   Far   : Single);

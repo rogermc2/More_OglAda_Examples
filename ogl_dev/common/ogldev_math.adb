@@ -128,7 +128,7 @@ package body Ogldev_Math is
    --  -------------------------------------------------------------------------
 
    procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
-                                   FOV : Single; Width, Height: UInt;
+                                   FOV : Single; Width, Height : UInt;
                                    Near, Far : Single) is
    begin
       Info.FOV := FOV;
