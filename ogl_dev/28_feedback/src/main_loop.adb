@@ -55,15 +55,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       --  Lighting shaders are built by Ogldev_Basic_Lighting.Init
       Buildboard_Program := Program_From
-        ((Src ("/Ada_Source/OpenGLAda/examples/ogl_dev/28_feedback/src/shaders/billboard.vs", Vertex_Shader),
-         Src ("/Ada_Source/OpenGLAda/examples/ogl_dev/28_feedback/src/shaders/billboard.fs", Fragment_Shader),
-         Src ("/Ada_Source/OpenGLAda/examples/ogl_dev/28_feedback/src/shaders/billboard.gs", Geometry_Shader)));
+        ((Src ("src/shaders/billboard.vs", Vertex_Shader),
+         Src ("src/shaders/billboard.fs", Fragment_Shader),
+         Src ("src/shaders/billboard.gs", Geometry_Shader)));
       OK := GL.Objects.Programs.Link_Status (Buildboard_Program);
 
       Update_Program := Program_From
-        ((Src ("/Ada_Source/OpenGLAda/examples/ogl_dev/28_feedback/src/shaders/ps_update.vs", Vertex_Shader),
-         Src ("/Ada_Source/OpenGLAda/examples/ogl_dev/28_feedback/src/shaders/ps_update.fs", Fragment_Shader),
-         Src ("/Ada_Source/OpenGLAda/examples/ogl_dev/28_feedback/src/shaders/ps_update.gs", Geometry_Shader)));
+        ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
+         Src ("src/shaders/ps_update.fs", Fragment_Shader),
+         Src ("src/shaders/ps_update.gs", Geometry_Shader)));
 
       OK := OK and GL.Objects.Programs.Link_Status (Update_Program);
       if not GL.Objects.Programs.Link_Status (Update_Program) then
