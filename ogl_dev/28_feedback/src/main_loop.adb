@@ -17,7 +17,7 @@ with Program_Loader;
 with Utilities;
 
 with Ogldev_Basic_Lighting;
---  with Ogldev_Basic_Mesh;
+with Ogldev_Basic_Mesh;
 with Ogldev_Camera;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
@@ -38,7 +38,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    theLighting_Technique       : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Game_Camera                 : Ogldev_Camera.Camera;
    Dir_Light                   : Ogldev_Lights_Common.Directional_Light;
---     Ground                      : Ogldev_Basic_Mesh.Basic_Mesh;
+   Ground                      : Ogldev_Basic_Mesh.Basic_Mesh;
    theTexture                  : Ogldev_Texture.Ogl_Texture;
    Normal_Map                  : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
@@ -106,8 +106,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Put_Line (" Main_Loop.Init, Color_Texture_Unit set.");
 
          --  Ogldev_Basic_Mesh.Load_Mesh fails due to GNAT bug
---           Ogldev_Basic_Mesh.Load_Mesh (Ground, "src/quad.obj");
---           Put_Line (" Main_Loop.Init, Ground loaded.");
+         Ogldev_Basic_Mesh.Load_Mesh (Ground, "src/quad.obj");
+         Put_Line (" Main_Loop.Init, Ground loaded.");
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                       "../Content/bricks.jpg") then
                 Ogldev_Texture.Load (theTexture);
