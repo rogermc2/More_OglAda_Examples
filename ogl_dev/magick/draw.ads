@@ -61,7 +61,8 @@ package Draw is
       Gradient  : Gradient_Type;
       Previous  : access Element_Reference;
       Next      : access Element_Reference;
-      Signature : size_t := size_t (Method_Attribute.Magick_Core_Signature);
+      Signature : size_t := 0;
+--        size_t (Method_Attribute.Magick_Core_Signature);
    end record;
    pragma Convention (C_Pass_By_Copy, Element_Reference);
 
@@ -83,7 +84,8 @@ package Draw is
       Radii        : Geometry.Point_Info;
       Radius       : double := 0.0;
       Angle        : double := 0.0;
-      Signature    : size_t := size_t (Method_Attribute.Magick_Core_Signature);
+      Signature    : size_t := 0;
+--        size_t (Method_Attribute.Magick_Core_Signature);
    end record;
    pragma Convention (C_Pass_By_Copy, Gradient_Info);
 
@@ -139,8 +141,8 @@ package Draw is
       Direction         : Direction_Type;
       Debug             : Magick_Type.Magick_Boolean_Type :=
         Magick_Type.Magic_False;
-      Signature         : size_t :=
-        size_t (Method_Attribute.Magick_Core_Signature);
+      Signature         : size_t := 0;
+--          size_t (Method_Attribute.Magick_Core_Signature);
       Fill_Alpha        : double := 0.0;
       Stroke_Alpha      : double := 0.0;
       Clip_Path         : Magick_Type.Magick_Boolean_Type :=

@@ -19,7 +19,7 @@ package Timer is
       User      : Timer;
       Elapsed   : Timer;
       State     : Timer_State := Undefined_Timer_State;
-      Signature : size_t;
+      Signature : size_t := 0;
    end record;
    pragma Convention (C_Pass_By_Copy, Timer_Info);
 

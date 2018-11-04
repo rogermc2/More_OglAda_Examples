@@ -1,6 +1,14 @@
 
 package body Assimp_Texture is
 
+
+   function Texture_Map_Size (theMap : AI_Texture_Map) return GL.Types.UInt is
+   begin
+      return GL.Types.UInt (theMap.Length);
+   end Texture_Map_Size;
+
+   --  -------------------------------------------------------------------------
+
    function To_AI_Texel_Map (Num_Texels : UInt; Data_Ptr : Texel_Array_Pointers.Pointer)
                              return AI_Texel_Map is
        Texel_Array : constant API_Texel_Array
@@ -35,7 +43,7 @@ package body Assimp_Texture is
          aTexture.Width := UInt (C_Texture.Width);
          aTexture.Height := UInt (C_Texture.Height);
          aTexture.Format_Hint :=
-           To_Ada (C_Texture.Ach_Format_Hint);
+           Hint_String (To_Ada (C_Texture.Ach_Format_Hint));
          aTexture.PC_Data :=
            To_AI_Texel_Map (aTexture.Width * aTexture.Height, C_Texture.PC_Data_Ptr);
          Tex_Map.Insert (UInt (index), aTexture);

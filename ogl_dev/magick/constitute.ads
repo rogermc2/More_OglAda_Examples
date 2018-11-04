@@ -9,10 +9,11 @@ package Constitute is
 
    Constitute_Exception : Exception;
 
-   procedure Read_Image (theImage : in out Core_Image.AI_Image;
-                         Info : access Core_Image.AI_Image_Info);
-   procedure Read_Image (theImage : in out Core_Image.AI_Image; File_Name : String);
-   procedure Write_Image (theImage : Core_Image.AI_Image;
-                          Info : in out Core_Image.AI_Image_Info);
+   procedure Read_Image (theImage : in out Core_Image.API_Image;
+                         Info : access Core_Image.API_Image_Info);
+   procedure Read_Image (theImage  : in out Core_Image.API_Image;
+                         File_Name : String);
+   procedure Write_Image (theImage : Core_Image.API_Image;
+                          Info : in out Core_Image.API_Image_Info);
 
 end Constitute;

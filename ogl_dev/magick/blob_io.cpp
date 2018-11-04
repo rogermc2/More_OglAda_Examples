@@ -7,11 +7,12 @@
 //  To "convert" a C array char* to a C++ std::string
 //  simply use the latter's constructor or assignment operator.
 
-void readFile (Magick::Image& anImage, char* fileName)
+void readFile (Magick::Image& anImageRef, char* fileName)
   {
   std::string cppString (fileName);
 
-  anImage.read (cppString);
+  //  Read single image frame into current object (ImageRef *_imgRef;)
+  anImageRef.read (cppString);
   }
 
 //  -----------------------------------------------------------------

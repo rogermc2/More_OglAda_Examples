@@ -29,7 +29,7 @@ package Light is
                                  Light_Source_Force32Bit  => Integer'Last);
 
    type API_Light is record
-      Name                  : Assimp_Types.AI_String;
+      Name                  : Assimp_Types.API_String;
       Source_Type           : AI_Light_Source_Type;
       Position              : API_Vectors_Matrices.API_Vector_3D;
       Direction             : API_Vectors_Matrices.API_Vector_3D;

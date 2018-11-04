@@ -68,6 +68,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
                                    Position, Target, Up);
+         Ogldev_Camera.Set_Step (0.1);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
@@ -78,15 +79,18 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Objects.Programs.Use_Program (Shader_Program);
 
          Lighting_Technique.Set_Texture_Unit (0);
-         Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png");
-         Ogldev_Texture.Load (theTexture);
+         if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
+                                      "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png") then
+                Ogldev_Texture.Load (theTexture);
+         else
+                Put_Line ("Main_Loop.Init test.png failed to load");
+         end if;
 
-         Perspective_Proj_Info.FOV := 60.0;
-         Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
-         Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-         Perspective_Proj_Info.Z_Near := 1.0;
-         Perspective_Proj_Info.Z_Far := 100.0;
+         Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
+         Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
+         Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+         Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
+         Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
 
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
@@ -114,13 +118,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
-      Perspective_Proj_Info.Width := GL.Types.UInt (Window_Width);
-      Perspective_Proj_Info.Height := GL.Types.UInt (Window_Height);
+      Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+      Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
 
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
-      Ogldev_Pipeline.Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Init_Transforms (Pipe);
 
       Lighting_Technique.Set_WVP (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);

@@ -18,7 +18,7 @@ package Quantize is
       Col_Space     : Colour_Space.Colourspace_Type;
       Dither        : Dither_Method;
       Measure_Error : Magick_Type.Magick_Boolean_Type;
-      Signature     : size_t :=
+      Signature     : size_t := 0;
                       size_t (Method_Attribute.Magick_Core_Signature);
    end record;
    pragma Convention (C_Pass_By_Copy, Quantize_Info);
