@@ -105,8 +105,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Put_Line (" Main_Loop.Init, Color_Texture_Unit set.");
 
-         --  Ogldev_Basic_Mesh.Load_Mesh fails due to GNAT bug
-         Ogldev_Basic_Mesh.Load_Mesh (Ground, "src/quad.obj");
+         Mesh_28.Load_Mesh (Ground, "src/quad.obj");
          Put_Line (" Main_Loop.Init, Ground loaded.");
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                       "../Content/bricks.jpg") then
