@@ -17,7 +17,6 @@ with Program_Loader;
 with Utilities;
 
 with Ogldev_Basic_Lighting;
-with Ogldev_Basic_Mesh;
 with Ogldev_Camera;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
@@ -170,8 +169,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Ogldev_Basic_Lighting.Set_World_Matrix
         (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
-      Put_Line ("Main_Loop.Render_Scene World_Matrix set.");
-      --        Ogldev_Basic_Mesh.Render (Ground);
+      Meshes_28.Render (Ground);
       Particle_System.Render (theParticle_System, Int (Delta_Millisec),
                               Ogldev_Pipeline.Get_VP_Transform (Pipe),
                               Get_Position (Game_Camera));
