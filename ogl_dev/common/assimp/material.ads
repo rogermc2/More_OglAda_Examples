@@ -162,13 +162,16 @@ package Material is
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material);
 
-   type API_Material_Array is array (Interfaces.C.unsigned range <>)
-     of aliased API_Material;
-   pragma Convention (C, API_Material_Array);
+   type API_Material_Ptr is access API_Material;
+   pragma Convention (C, API_Material_Ptr);
+
+   type API_Material_Ptr_Array is array (Interfaces.C.unsigned range <>)
+     of aliased API_Material_Ptr;
+   pragma Convention (C, API_Material_Ptr_Array);
 
    package Material_Pointers_Package is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, API_Material, API_Material_Array, API_Material'(others => <>));
-   subtype Material_Array_Pointer is Material_Pointers_Package.Pointer;
+     (Interfaces.C.unsigned, API_Material_Ptr, API_Material_Ptr_Array, null);
+   subtype Material_Ptr_Array_Pointer is Material_Pointers_Package.Pointer;
 
    type API_UV_Transform is record
       Translation   : API_Vectors_Matrices.API_Vector_2D;
