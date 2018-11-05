@@ -181,16 +181,18 @@ package Assimp_Mesh is
         Num_Anim_Meshes   : Interfaces.C.unsigned := 0;
         Anim_Meshes       : access Vector_3D_Array_Pointers.Pointer := null;
     end record;
-    pragma Convention (C_Pass_By_Copy, API_Mesh);
+   pragma Convention (C_Pass_By_Copy, API_Mesh);
 
-   type API_Mesh_Array is array
-     (Interfaces.C.unsigned range <>) of aliased API_Mesh;
-   pragma Convention (C, API_Mesh_Array);
+   type API_Mesh_Ptr is access API_Mesh;
+   pragma Convention (C, API_Mesh_Ptr);
+
+   type API_Mesh_Ptr_Array is array
+     (Interfaces.C.unsigned range <>) of aliased API_Mesh_Ptr;
+   pragma Convention (C, API_Mesh_Ptr_Array);
 
    package Mesh_Array_Pointers is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, API_Mesh, API_Mesh_Array,
-      API_Mesh'(others => <>));
-   subtype Mesh_Array_Pointer is Mesh_Array_Pointers.Pointer;
+     (Interfaces.C.unsigned, API_Mesh_Ptr, API_Mesh_Ptr_Array, null);
+   subtype Mesh_Ptr_Array_Pointer is Mesh_Array_Pointers.Pointer;
 
     type Mesh is record
         Entries   : Entries_Map;
@@ -200,7 +202,8 @@ package Assimp_Mesh is
    procedure Load_Mesh (File_Name : String; theMesh : in out Mesh);
    procedure Render_Mesh (theMesh : Mesh);
    function To_AI_Mesh_Map (Num_Meshes : Interfaces.C.unsigned := 0;
-                            C_Mesh_Array : API_Mesh_Array) return AI_Mesh_Map;
+                            C_Mesh_Ptr_Array : Mesh_Ptr_Array_Pointer)
+                            return AI_Mesh_Map;
 
     private
          for AI_Primitive_Type use

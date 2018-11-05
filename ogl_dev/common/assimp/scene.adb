@@ -49,9 +49,9 @@ package body Scene is
       Num_Lights     : constant unsigned := (C_Scene.Num_Lights);
       Num_Cameras    : constant unsigned := (C_Scene.Num_Cameras);
 
-      C_Mesh_Array  : constant Assimp_Mesh.API_Mesh_Array (1 .. Num_Meshes)
-        := Assimp_Mesh.Mesh_Array_Pointers.Value
-          (C_Scene.Meshes.all, ptrdiff_t (Num_Meshes));
+--        C_Mesh_Ptr_Array  : constant Assimp_Mesh.API_Mesh_Ptr_Array (1 .. Num_Meshes)
+--          := Assimp_Mesh.Mesh_Array_Pointers.Value
+--            (C_Scene.Meshes, ptrdiff_t (Num_Meshes));
 
       C_Material_Ptrs_Array : Material.API_Material_Ptr_Array (1 .. Num_Materials);
       C_Root_Node       : Scene.API_Node;
@@ -62,21 +62,21 @@ package body Scene is
                   unsigned'Image (Num_Animations) & unsigned'Image (Num_Textures) &
                   unsigned'Image (Num_Lights) & unsigned'Image (Num_Cameras));
 
-      Put ("Primitive_Types, Num_Vertices, Num_Faces: ");
-      Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
-                  unsigned'Image (C_Mesh_Array (1).Num_Vertices) &
-                  unsigned'Image (C_Mesh_Array (1).Num_Faces));
-      Put ("Num_Animations, Num_Bones, Material_Index: ");
-      Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
-                  unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
-                  unsigned'Image (C_Mesh_Array (1).Material_Index));
-      New_Line;
-      for index in 1 .. C_Mesh_Array'Length loop
-         Put_Line ("Name length, string: Mesh" & Integer'Image (index) & ": " &
-                     size_t'Image (C_Mesh_Array (unsigned (index)).Name.Length) & " '" &
-                     Assimp_Util.To_String (C_Mesh_Array (1).Name) & " '");
-      end loop;
-      New_Line;
+--        Put ("Primitive_Types, Num_Vertices, Num_Faces: ");
+--        Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
+--                    unsigned'Image (C_Mesh_Array (1).Num_Vertices) &
+--                    unsigned'Image (C_Mesh_Array (1).Num_Faces));
+--        Put ("Num_Animations, Num_Bones, Material_Index: ");
+--        Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
+--                    unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
+--                    unsigned'Image (C_Mesh_Array (1).Material_Index));
+--        New_Line;
+--        for index in 1 .. C_Mesh_Array'Length loop
+--           Put_Line ("Name length, string: Mesh" & Integer'Image (index) & ": " &
+--                       size_t'Image (C_Mesh_Array (unsigned (index)).Name.Length) & " '" &
+--                       Assimp_Util.To_String (C_Mesh_Array (1).Name) & " '");
+--        end loop;
+--        New_Line;
 
       theScene.Flags := C_Scene.Flags;
       if C_Scene.Root_Node /= null then
@@ -84,7 +84,7 @@ package body Scene is
          Scene.To_Node_List (C_Root_Node, theScene.Nodes);
       end if;
 
-      theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Mesh_Array);
+      theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Scene.Meshes);
       if Num_Materials > 0 then
          C_Material_Ptrs_Array := Material.Material_Pointers_Package.Value
           (C_Scene.Materials, ptrdiff_t (Num_Materials));
