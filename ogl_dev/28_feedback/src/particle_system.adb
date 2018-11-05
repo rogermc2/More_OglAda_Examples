@@ -146,11 +146,15 @@ package body Particle_System is
                                Delta_Time : GL.Types.Int) is
       use PS_Update_Technique;
    begin
+      Put_Line ("Particle_System.Update_Particles PS.PS_Time: " &
+                  Int'Image (PS.PS_Time));
       Set_Time (PS.Update_Method, PS.PS_Time);
+      Put_Line ("Particle_System.Update_Particles PS.PS_Time set.");
       Set_Delta_Millisec (PS.Update_Method, Delta_Time);
       Random_Texture.Bind (PS.Random_Texture, 3);
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB));
+      Put_Line ("Particle_System.Update_Particles PS.Current_VB bound.");
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
         (PS.Transform_Feedback (PS.Current_TFB));
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -163,7 +167,9 @@ package body Particle_System is
       GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 16);
       GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 0, 28);
 
+      Put_Line ("Particle_System.Update_Particles calling Begin_Transform_Feedback.");
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
+      Put_Line ("Particle_System.Update_Particles Begin_Transform_Feedback returned.");
       if PS.Is_First then
          GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Points, 0, 1);
          PS.Is_First := False;

@@ -7,7 +7,7 @@ Package PS_Update_Technique is
 
    type Update_Technique is private;
 
-   procedure Init (theTechnique : out Update_Technique;
+   procedure Init (theTechnique : in out Update_Technique;
                    Update_Program : GL.Objects.Programs.Program);
    procedure Set_Delta_Millisec (theTechnique : Update_Technique;
                              Delta_Time : GL.Types.Int);
