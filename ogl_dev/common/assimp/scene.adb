@@ -53,7 +53,7 @@ package body Scene is
         := Assimp_Mesh.Mesh_Array_Pointers.Value
           (C_Scene.Meshes.all, ptrdiff_t (Num_Meshes));
 
-      C_Materials_Array : Material.API_Material_Array (1 .. Num_Materials);
+      C_Material_Ptrs_Array : Material.API_Material_Ptr_Array (1 .. Num_Materials);
       C_Root_Node       : Scene.API_Node;
    begin
       Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations, ");
@@ -86,13 +86,10 @@ package body Scene is
 
       theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Mesh_Array);
       if Num_Materials > 0 then
-         C_Materials_Array := Material.Material_Pointers_Package.Value
-           (C_Scene.Materials.all, ptrdiff_t (Num_Materials));
-      Put_Line ("Scene.To_AI_Scene, C_Materials_Array Length: " & unsigned'Image (C_Materials_Array'Length));
-      Put_Line ("Scene.To_AI_Scene, C_Materials_Array (1).Num_Properties): " & unsigned'Image (C_Materials_Array (1).Num_Properties));
-      Put_Line ("Scene.To_AI_Scene, C_Materials_Array (2).Num_Properties): " & unsigned'Image (C_Materials_Array (2).Num_Properties));
+         C_Material_Ptrs_Array := Material.Material_Pointers_Package.Value
+          (C_Scene.Materials, ptrdiff_t (Num_Materials));
          theScene.Materials :=
-           AI_Conversion.To_AI_Materials_Map (Num_Materials, C_Materials_Array);
+           AI_Conversion.To_AI_Materials_Map (Num_Materials, C_Material_Ptrs_Array);
 --           Put_Line ("Scene.To_AI_Scene theScene.Materials set, Num_Materials, Num_Textures: " &
 --                    unsigned'Image (Num_Materials) & unsigned'Image (Num_Textures));
       end if;
