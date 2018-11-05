@@ -30,7 +30,6 @@ package Scene is
    pragma Convention (C, Scene_Flags);
 
     type Cameras_Ptr is access Camera.API_Camera_Array;
-    type Lights_Ptr is access Light.API_Light_Array;
     type Material_Ptrs is access Material.API_Material_Ptr_Array;
 
     type API_Node_Ptr is private;
@@ -94,7 +93,7 @@ package Scene is
             Num_Textures   : Interfaces.C.unsigned := 0;
             Textures       : Assimp_Texture.Texture_Ptr_Array_Pointer := null;
             Num_Lights     : Interfaces.C.unsigned := 0;
-            Lights         : access Light.Light_Pointers.Pointer := null;
+            Lights         : Light.Light_Ptr_Array_Pointer := null;
             Num_Cameras    : Interfaces.C.unsigned := 0;
             Cameras        : access Camera.Camera_Pointers.Pointer := null;
             mPrivate       : Interfaces.C.Strings.chars_ptr :=
