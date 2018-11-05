@@ -18,7 +18,8 @@ package Ogldev_Basic_Lighting is
    function Init (Lighting_Technique : in out Basic_Lighting_Technique)
                     return Boolean;
 
-   function Lighting_Program (Technique : Basic_Lighting_Technique) return GL.Objects.Programs.Program;
+   function Lighting_Program (Technique : Basic_Lighting_Technique)
+                              return GL.Objects.Programs.Program;
 
    procedure Set_Color_Texture_Unit (Technique : Basic_Lighting_Technique;
                    Texture_Unit : GL.Types.UInt);
