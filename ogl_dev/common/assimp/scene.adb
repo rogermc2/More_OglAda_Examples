@@ -49,10 +49,6 @@ package body Scene is
       Num_Lights     : constant unsigned := (C_Scene.Num_Lights);
       Num_Cameras    : constant unsigned := (C_Scene.Num_Cameras);
 
---        C_Mesh_Ptr_Array  : constant Assimp_Mesh.API_Mesh_Ptr_Array (1 .. Num_Meshes)
---          := Assimp_Mesh.Mesh_Array_Pointers.Value
---            (C_Scene.Meshes, ptrdiff_t (Num_Meshes));
-
       C_Material_Ptrs_Array : Material.API_Material_Ptr_Array (1 .. Num_Materials);
       C_Root_Node       : Scene.API_Node;
    begin
@@ -105,13 +101,8 @@ package body Scene is
       end if;
 
       if Num_Animations > 0 then
-         declare
-            C_Animation_Array : constant Animation.API_Animation_Array :=
-                                  Animation.Animation_Pointers.Value (C_Scene.Animations.all, ptrdiff_t (Num_Animations));
-         begin
             theScene.Animations :=
-              Animation.To_AI_Animation_Map (Num_Animations, C_Animation_Array);
-         end;
+              Animation.To_AI_Animation_Map (Num_Animations, C_Scene.Animations);
       end if;
 
       if Num_Lights > 0 then

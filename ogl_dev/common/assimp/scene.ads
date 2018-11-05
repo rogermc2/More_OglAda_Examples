@@ -91,7 +91,7 @@ package Scene is
             Num_Materials  : Interfaces.C.unsigned := 0;
             Materials      : Material.Material_Ptr_Array_Pointer := null;
             Num_Animations : Interfaces.C.unsigned := 0;
-            Animations     : access Animation.Animation_Pointers.Pointer := null;
+            Animations     : Animation.Animation_Ptr_Array_Pointer := null;
             Num_Textures   : Interfaces.C.unsigned := 0;
             Textures       : access Assimp_Texture.Texture_Pointers.Pointer := null;
             Num_Lights     : Interfaces.C.unsigned := 0;
