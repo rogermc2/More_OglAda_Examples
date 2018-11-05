@@ -60,13 +60,20 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Src ("src/shaders/billboard.gs", Geometry_Shader)));
       OK := GL.Objects.Programs.Link_Status (Buildboard_Program);
 
+      if not OK then
+         Put_Line ("Build_Shader_Programs, Buildboard_Program Link failed");
+         Put_Line (GL.Objects.Programs.Info_Log (Update_Program));
+      else
+         Put_Line ("Build_Shader_Programs, Buildboard_Program Link ok");
+      end if;
+
       Update_Program := Program_From
         ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
          Src ("src/shaders/ps_update.fs", Fragment_Shader),
          Src ("src/shaders/ps_update.gs", Geometry_Shader)));
 
       OK := OK and GL.Objects.Programs.Link_Status (Update_Program);
-      if not GL.Objects.Programs.Link_Status (Update_Program) then
+      if not OK then
          Put_Line ("Build_Shader_Programs, Update_Program Link failed");
          Put_Line (GL.Objects.Programs.Info_Log (Update_Program));
       else
