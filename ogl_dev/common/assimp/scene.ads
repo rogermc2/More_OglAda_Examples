@@ -27,10 +27,7 @@ package Scene is
     type Scene_Flags is (AI_Scene_Flags_Incomplete, AI_Scene_Flags_Validated,
                          AI_Scene_Flags_Validation_Warning, AI_Scene_Flags_Non_Verbose_Format,
                          AI_Scene_Flags_Terrain);
-   pragma Convention (C, Scene_Flags);
-
-    type Cameras_Ptr is access Camera.API_Camera_Array;
-    type Material_Ptrs is access Material.API_Material_Ptr_Array;
+    pragma Convention (C, Scene_Flags);
 
     type API_Node_Ptr is private;
 
@@ -95,7 +92,7 @@ package Scene is
             Num_Lights     : Interfaces.C.unsigned := 0;
             Lights         : Light.Light_Ptr_Array_Pointer := null;
             Num_Cameras    : Interfaces.C.unsigned := 0;
-            Cameras        : access Camera.Camera_Pointers.Pointer := null;
+            Cameras        : Camera.Camera_Ptr_Array_Pointer := null;
             mPrivate       : Interfaces.C.Strings.chars_ptr :=
                              Interfaces.C.Strings.Null_Ptr;
          end record;
