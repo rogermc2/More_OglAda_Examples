@@ -45,14 +45,18 @@ package Light is
    end record;
    pragma Convention (C_Pass_By_Copy, API_Light);
 
-   type API_Light_Array is array (Interfaces.C.unsigned range <>) of aliased API_Light;
-   pragma Convention (C, API_Light_Array);
+   type API_Light_Ptr is access API_Light;
+   pragma Convention (C, API_Light_Ptr);
 
-   package Light_Pointers is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, API_Light, API_Light_Array, API_Light'(others => <>));
+   type API_Light_Ptr_Array is array (Interfaces.C.unsigned range <>) of aliased API_Light_Ptr;
+   pragma Convention (C, API_Light_Ptr_Array);
+
+   package Light_Ptr_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Light_Ptr, API_Light_Ptr_Array, null);
+     type Light_Ptr_Array_Pointer is new Light_Ptr_Array_Pointers.Pointer;
 
    function To_AI_Light_Map (Num_Lights : Interfaces.C.unsigned := 0;
-                             C_Array : API_Light_Array)
+                             C_Array_Ptr : Light_Ptr_Array_Pointer)
                              return AI_Light_Map;
 
 private
