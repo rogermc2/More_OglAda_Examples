@@ -102,7 +102,9 @@ package body Particle_System is
 
    begin
       PS.PS_Time := PS.PS_Time + Delta_Time;
+      Put_Line ("Particle_System.Render PS_Time updated.");
       Update_Particles (PS, Delta_Time);
+      Put_Line ("Particle_System.Render Particles updated.");
       Render_Particles (PS, View_Point, Camera_Pos);
       PS.Current_VB := PS.Current_TFB;
       PS.Current_TFB := ((PS.Current_TFB + 1) / 2) * 2;
@@ -146,8 +148,7 @@ package body Particle_System is
    begin
       Set_Time (PS.Update_Method, PS.PS_Time);
       Set_Delta_Millisec (PS.Update_Method, Delta_Time);
-      Random_Texture.Bind (PS.Random_Texture,
-                           Ogldev_Engine_Common.Random_Texture_Unit_Index'Enum_Rep);
+      Random_Texture.Bind (PS.Random_Texture, 3);
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB));
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
