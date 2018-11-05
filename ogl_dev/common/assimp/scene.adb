@@ -96,18 +96,12 @@ package body Scene is
       end if;
 
       if Num_Animations > 0 then
-            theScene.Animations :=
+           theScene.Animations :=
               Animation.To_AI_Animation_Map (Num_Animations, C_Scene.Animations);
       end if;
 
       if Num_Lights > 0 then
-         declare
-            C_Light_Array : constant Light.API_Light_Array
-              := Light.Light_Pointers.Value (C_Scene.Lights.all, ptrdiff_t (Num_Lights));
-         begin
-            theScene.Lights :=
-              Light.To_AI_Light_Map (Num_Lights, C_Light_Array);
-         end;
+           theScene.Lights := Light.To_AI_Light_Map (Num_Lights, C_Scene.Lights);
       end if;
 
       if Num_Cameras > 0 then
