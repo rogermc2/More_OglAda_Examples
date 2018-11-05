@@ -105,14 +105,8 @@ package body Scene is
       end if;
 
       if Num_Cameras > 0 then
-         declare
-            C_Camera_Array : constant Camera.API_Camera_Array
-              := Camera.Camera_Pointers.Value
-                (C_Scene.Cameras.all, ptrdiff_t (Num_Cameras));
-         begin
             theScene.Cameras :=
-              Camera.To_AI_Camera_Map (Num_Cameras, C_Camera_Array);
-         end;
+              Camera.To_AI_Camera_Map (Num_Cameras, C_Scene.Cameras);
       end if;
 
    exception
