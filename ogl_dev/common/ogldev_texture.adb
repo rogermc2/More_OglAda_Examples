@@ -43,9 +43,6 @@ package body Ogldev_Texture is
       Result : Boolean;
    begin
 --        Put_Line ("Ogldev_Texture.Init_Texture file " & "*" & Texture_File & "*");
---        Put_Line ("Ogldev_Texture.Init_Texture file size " &
---                    Ada.Directories.File_Size'Image (Ada.Directories.Size
---                    ("/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix.pcx")));
       Result := Ada.Directories.Exists (Texture_File);
       if Result then
          theTexture.File_Name := To_Unbounded_String (Texture_File);

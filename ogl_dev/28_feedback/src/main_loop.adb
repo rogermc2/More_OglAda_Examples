@@ -104,24 +104,25 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit
            (theLighting_Technique, 0);
 
-         Put_Line (" Main_Loop.Init, Color_Texture_Unit set.");
-
          Meshes_28.Load_Mesh (Ground, "src/quad.obj");
-         Put_Line (" Main_Loop.Init, Ground loaded.");
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "../Content/bricks.jpg") then
-                Ogldev_Texture.Load (theTexture);
-                Ogldev_Texture.Bind (theTexture, 0);
+                                          "../Content/bricks.jpg") then
+            Ogldev_Texture.Load (theTexture);
+            Ogldev_Texture.Bind (theTexture, 0);
 
-                if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
-                                             "../Content/normal_map.jpg") then
-                Ogldev_Texture.Load (Normal_Map);
+            if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
+                                            "../Content/normal_map.jpg") then
+               Ogldev_Texture.Load (Normal_Map);
 
-                Particle_System.Init_Particle_System
-                  (theParticle_System, theUpdate_Technique, Update_Program,
-                   Particle_System_Pos);
-                end if;
+               Particle_System.Init_Particle_System
+                 (theParticle_System, theUpdate_Technique, Update_Program,
+                  Particle_System_Pos);
+            else
+               Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
             end if;
+         else
+            Put_Line ("Main_Loop.Init, bricks.jpg failed to load.");
+         end if;
       end if;
 
    exception
@@ -161,12 +162,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
 
+      GL.Objects.Programs.Use_Program
+        (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
+      Utilities.Print_Matrix ("WVP_Transform", Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Ogldev_Basic_Lighting.Set_WVP (theLighting_Technique,
                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
-      Ogldev_Basic_Lighting.Set_World_Matrix (theLighting_Technique,
-                               Ogldev_Pipeline.Get_World_Transform (Pipe));
---        Ogldev_Basic_Mesh.Render (Ground);
+      Ogldev_Basic_Lighting.Set_World_Matrix
+        (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
+      Put_Line ("Main_Loop.Render_Scene World_Matrix set.");
+      --        Ogldev_Basic_Mesh.Render (Ground);
       Particle_System.Render (theParticle_System, Int (Delta_Millisec),
                               Ogldev_Pipeline.Get_VP_Transform (Pipe),
                               Get_Position (Game_Camera));
