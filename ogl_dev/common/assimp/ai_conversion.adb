@@ -57,12 +57,15 @@ package body AI_Conversion is
 
    --  -------------------------------------------------------------------------
 
-   function To_AI_Material (C_Material : Material.API_Material) return Material.AI_Material is
+   function To_AI_Material (C_Material : Material.API_Material)
+                            return Material.AI_Material is
       use Interfaces.C;
       use Material;
       Num_Property  : constant unsigned := C_Material.Num_Properties;
       theMaterial   : AI_Material;
    begin
+      Put_Line ("AI_Conversion.To_AI_Material, Num_Property" &
+               unsigned'Image (Num_Property));
       if Num_Property > 0 then
          declare
             use Property_Ptr_Array_Package;
@@ -86,14 +89,14 @@ package body AI_Conversion is
    --  ------------------------------------------------------------------------
 
    function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
-                                 C_Material_Array : in out Material.API_Material_Array)
+                                 C_Material_Array : Material.API_Material_Ptr_Array)
                                   return Material.AI_Material_Map is
       use Interfaces.C;
       Material_Map : Material.AI_Material_Map;
       aMaterial    : Material.AI_Material;
    begin
       for mat in 1 .. Num_Materials loop
-         aMaterial := To_AI_Material (C_Material_Array (mat));
+         aMaterial := To_AI_Material (C_Material_Array (mat).all);
          Material_Map.Insert (GL.Types.UInt (mat - 1), aMaterial);
       end loop;
       return Material_Map;

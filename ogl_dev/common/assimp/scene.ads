@@ -31,7 +31,7 @@ package Scene is
 
     type Cameras_Ptr is access Camera.API_Camera_Array;
     type Lights_Ptr is access Light.API_Light_Array;
-    type Materials_Ptr is access Material.API_Material_Array;
+    type Material_Ptrs is access Material.API_Material_Ptr_Array;
     type Textures_Ptr is access Assimp_Texture.API_Texture_Array;
 
     type API_Node_Ptr is private;
@@ -89,7 +89,7 @@ package Scene is
             Num_Meshes     : Interfaces.C.unsigned := 0;
             Meshes         : access Assimp_Mesh.Mesh_Array_Pointer := null;
             Num_Materials  : Interfaces.C.unsigned := 0;
-            Materials      : access Material.Material_Array_Pointer := null;
+            Materials      : Material.Material_Ptr_Array_Pointer := null;
             Num_Animations : Interfaces.C.unsigned := 0;
             Animations     : access Animation.Animation_Pointers.Pointer := null;
             Num_Textures   : Interfaces.C.unsigned := 0;
