@@ -9,7 +9,7 @@ with Assimp_Types;
 with Ogldev_Basic_Mesh;
 with Ogldev_Texture;
 
-package Mesh_Project_28 is
+package Meshes_28 is
 
    type Mesh_28 is private;
 
@@ -38,4 +38,4 @@ private
       Textures   : Ogldev_Texture.Mesh_Texture_Map;
    end record;
 
-end Mesh_Project_28;
+end Meshes_28;
