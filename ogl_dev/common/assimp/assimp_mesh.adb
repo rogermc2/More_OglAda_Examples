@@ -284,13 +284,17 @@ package body Assimp_Mesh is
    --  ------------------------------------------------------------------------
 
    function To_AI_Mesh_Map (Num_Meshes   : Interfaces.C.unsigned := 0;
-                            C_Mesh_Array : API_Mesh_Array)
+                            C_Mesh_Ptr_Array : Mesh_Ptr_Array_Pointer)
                             return AI_Mesh_Map is
       use Interfaces.C;
-      Meshs  : AI_Mesh_Map;
-      aMesh  : AI_Mesh;
+      Meshes   : AI_Mesh_Map;
+      C_Meshes : API_Mesh_Ptr_Array := Mesh_Array_Pointers.Value
+        (C_Mesh_Ptr_Array, ptrdiff_t (Num_Meshes));
+      C_Mesh   : API_Mesh;
+      aMesh    : AI_Mesh;
    begin
-      --          Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
+      Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
+      Put_Line ("Assimp_Mesh.To_AI_Mesh_Map C_Meshes length: " & Count'image (C_Meshes'Length));
       for index in 1 .. Num_Meshes loop
 --           Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, index: " &  unsigned'Image (index));
 --           Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
@@ -301,10 +305,11 @@ package body Assimp_Mesh is
 --                       unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
 --                       unsigned'Image (C_Mesh_Array (index).Material_Index));
 --           New_Line;
-         aMesh := To_AI_Mesh (C_Mesh_Array (index));
-         Meshs.Insert (UInt (index), aMesh);
+         C_Mesh := C_Meshes (index - 1).all;
+         aMesh := To_AI_Mesh (C_Mesh);
+         Meshes.Insert (UInt (index), aMesh);
       end loop;
-      return Meshs;
+      return Meshes;
 
    exception
       when others =>
