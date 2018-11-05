@@ -64,8 +64,6 @@ package body AI_Conversion is
       Num_Property  : constant unsigned := C_Material.Num_Properties;
       theMaterial   : AI_Material;
    begin
-      Put_Line ("AI_Conversion.To_AI_Material, Num_Property" &
-               unsigned'Image (Num_Property));
       if Num_Property > 0 then
          declare
             use Property_Ptr_Array_Package;

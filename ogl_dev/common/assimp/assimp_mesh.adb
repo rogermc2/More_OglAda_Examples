@@ -293,18 +293,7 @@ package body Assimp_Mesh is
       C_Mesh   : API_Mesh;
       aMesh    : AI_Mesh;
    begin
-      Put_Line ("Assimp_Mesh.To_AI_Mesh_Map Num_Meshes: " & Interfaces.C.unsigned'image (Num_Meshes));
-      Put_Line ("Assimp_Mesh.To_AI_Mesh_Map C_Meshes length: " & Count'image (C_Meshes'Length));
-      for index in 1 .. Num_Meshes loop
---           Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, index: " &  unsigned'Image (index));
---           Put_Line ("Assimp_Mesh.To_AI_Mesh_Map, Primitive_Types, Num Vertices, Faces, Bones, Anim_Meshes, Material_Index");
---           Put_Line (unsigned'Image (C_Mesh_Array (index).Primitive_Types) &
---                       unsigned'Image (C_Mesh_Array (index).Num_Vertices) &
---                       unsigned'Image (C_Mesh_Array (index).Num_Faces) &
---                       unsigned'Image (C_Mesh_Array (index).Num_Bones) &
---                       unsigned'Image (C_Mesh_Array (index).Num_Anim_Meshes) &
---                       unsigned'Image (C_Mesh_Array (index).Material_Index));
---           New_Line;
+       for index in 1 .. Num_Meshes loop
          C_Mesh := C_Meshes (index - 1).all;
          aMesh := To_AI_Mesh (C_Mesh);
          Meshes.Insert (UInt (index), aMesh);
