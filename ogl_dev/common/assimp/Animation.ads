@@ -134,17 +134,19 @@ package Animation is
    end record;
    pragma Convention (C_Pass_By_Copy, API_Animation);
 
-   type API_Animation_Array is array (Interfaces.C.unsigned range <>)
-     of aliased API_Animation;
-   pragma Convention (C, API_Animation_Array);
+   type API_Animation_Ptr is access API_Animation;
+   pragma Convention (C, API_Animation_Ptr);
 
-   package Animation_Pointers is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, API_Animation, API_Animation_Array,
-      API_Animation'(others => <>));
-   type API_Animation_Ptr is new Animation_Pointers.Pointer;
+   type API_Animation_Ptr_Array is array (Interfaces.C.unsigned range <>)
+     of aliased API_Animation_Ptr;
+   pragma Convention (C, API_Animation_Ptr_Array);
+
+   package Animation_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Animation_Ptr, API_Animation_Ptr_Array, null);
+   type Animation_Ptr_Array_Pointer is new Animation_Array_Pointers.Pointer;
 
    function To_AI_Animation_Map (Num_Animations : Interfaces.C.unsigned := 0;
-                                 C_Array : API_Animation_Array)
+                                 C_Ptr_Array_Ptr : Animation_Ptr_Array_Pointer)
                                   return AI_Animation_Map;
 private
 
