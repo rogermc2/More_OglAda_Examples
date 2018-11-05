@@ -24,8 +24,8 @@ with Material;
 with Material_System;
 with Scene;
 
-package body Mesh_Project_28 is
-    use GL.Types;
+package body Meshes_28 is
+   use GL.Types;
    type Vertex is record
       Pos    : GL.Types.Singles.Vector3;
       Tex    : GL.Types.Singles.Vector2;
@@ -253,4 +253,4 @@ procedure  Render (theMesh : Mesh_28) is
 
    --  --------------------------------------------------------------------------
 
-end Mesh_Project_28;
+end Meshes_28;

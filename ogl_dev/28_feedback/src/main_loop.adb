@@ -24,7 +24,7 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
-with Mesh_Project_28;
+with Meshes_28;
 with Particle_System;
 with PS_Update_Technique;
 
@@ -39,7 +39,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    theLighting_Technique       : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Game_Camera                 : Ogldev_Camera.Camera;
    Dir_Light                   : Ogldev_Lights_Common.Directional_Light;
-   Ground                      : Mesh_Project_28.Mesh_28;
+   Ground                      : Meshes_28.Mesh_28;
    theTexture                  : Ogldev_Texture.Ogl_Texture;
    Normal_Map                  : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
@@ -106,7 +106,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Put_Line (" Main_Loop.Init, Color_Texture_Unit set.");
 
-         Mesh_Project_28.Load_Mesh (Ground, "src/quad.obj");
+         Meshes_28.Load_Mesh (Ground, "src/quad.obj");
          Put_Line (" Main_Loop.Init, Ground loaded.");
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                       "../Content/bricks.jpg") then
