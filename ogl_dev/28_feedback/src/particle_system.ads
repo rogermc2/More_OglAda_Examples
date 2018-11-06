@@ -15,8 +15,6 @@ package Particle_System is
 
    function Get_Update_Technique (PS : Particle_System) return PS_Update_Technique.Update_Technique;
    procedure Init_Particle_System (PS : in out Particle_System;
---                                     theTechnique : in out
---                                       PS_Update_Technique.Update_Technique;
                                    Update_Program : GL.Objects.Programs.Program;
                                    Pos : Singles.Vector3);
    procedure Render (PS : in out Particle_System; Delta_Time : GL.Types.Int;
@@ -28,8 +26,8 @@ private
    type Transform_Feedback_Array is array (UInt range 1 .. 2) of GL.Objects.Buffers.Buffer;
 
    type Particle_System is record
-     Current_VB          : UInt := 0;
-     Current_TFB         : UInt := 1;
+     Current_VB_Index    : UInt := 0;
+     Current_TFB_Index   : UInt := 0;
      Is_First            : Boolean := True;
      PS_Time             : GL.Types.Int := 0;
      Texture             : Ogldev_Texture.Ogl_Texture;
