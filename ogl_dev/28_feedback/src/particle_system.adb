@@ -47,8 +47,6 @@ package body Particle_System is
    --  -------------------------------------------------------------------------
 
    procedure Init_Particle_System (PS : in out Particle_System;
---                                     theTechnique : in out
---                                       PS_Update_Technique.Update_Technique;
                                    Update_Program : GL.Objects.Programs.Program;
                                    Pos : Singles.Vector3) is
       use GL.Objects.Buffers;
@@ -60,14 +58,17 @@ package body Particle_System is
       Particles (1).Velocity := (0.0, 0.0001, 0.0);
       Particles (1).Lifetime := 0.0;
       for index in UInt range 1 .. 2 loop
-         PS.Transform_Feedback (index).Initialize_Id;
          PS.Particle_Buffer (index).Initialize_Id;
+         Array_Buffer.Bind (PS.Particle_Buffer (index));
+
+         PS.Transform_Feedback (index).Initialize_Id;
          Transform_Feedback_Buffer.Bind (PS.Transform_Feedback (index));
          Transform_Feedback_Buffer.Bind_Buffer_Base
            (0, PS.Transform_Feedback (index));
-         Array_Buffer.Bind (PS.Particle_Buffer (index));
          Load_Particle_Buffer (Array_Buffer, Particles, Dynamic_Draw);
       end loop;
+      PS.Current_VB_Index := 1;
+      PS.Current_TFB_Index := 1;
 
       GL.Objects.Programs.Use_Program (Update_Program);
       PS_Update_Technique.Init (theTechnique, Update_Program);
@@ -97,10 +98,6 @@ package body Particle_System is
             Ogldev_Texture.Load (PS.Texture);
       end if;
       PS.Update_Method := theTechnique;
---        Put_Line ("Particle_System.Init_Particle_System Random_Texture_Location: " &
---                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Random_Texture_Location (PS.Update_Method)));
---        Put_Line ("Particle_System.Init_Particle_System Time_Location: " &
---                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Time_Location (PS.Update_Method)));
 
    exception
       when  others =>
@@ -114,16 +111,12 @@ package body Particle_System is
                      View_Point : Singles.Matrix4; Camera_Pos : Singles.Vector3) is
 
    begin
---        Put_Line ("Particle_System.Render Random_Texture_Location: " &
---                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Random_Texture_Location (PS.Update_Method)));
---        Put_Line ("Particle_System.Render Time_Location: " &
---                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Time_Location (PS.Update_Method)));
       PS.PS_Time := PS.PS_Time + Delta_Time;
       Update_Particles (PS, Delta_Time);
       Put_Line ("Particle_System.Render Particles updated.");
       Render_Particles (PS, View_Point, Camera_Pos);
-      PS.Current_VB := PS.Current_TFB;
-      PS.Current_TFB := ((PS.Current_TFB + 1) / 2) * 2;
+      PS.Current_VB_Index := PS.Current_TFB_Index;
+      PS.Current_TFB_Index := ((PS.Current_TFB_Index + 1) / 2) * 2;
    exception
       when  others =>
          Put_Line ("An exception occurred in Particle_System.Render.");
@@ -141,14 +134,15 @@ package body Particle_System is
       Billboard_Technique.Set_Colour_Texture_Unit
         (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit_Index'Enum_Rep);
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
-      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_TFB));
+      GL.Objects.Buffers.Array_Buffer.Bind
+        (PS.Particle_Buffer (PS.Current_TFB_Index));
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
                                                Stride => Particle'Size,
                                                Offset => 4);
       GL.Objects.Buffers.Draw_Transform_Feedback
-        (Points, PS.Transform_Feedback (PS.Current_TFB));
+        (Points, PS.Transform_Feedback (PS.Current_TFB_Index));
 
    exception
       when  others =>
@@ -166,15 +160,17 @@ package body Particle_System is
       Set_Delta_Millisec (PS.Update_Method, Delta_Time);
       Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit_Index);
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
-      Put_Line ("Particle_System.Update_Particles Rasterizer_Discard disabled.");
-      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB));
-      Put_Line ("Particle_System.Update_Particles PS.Current_VB bound.");
+      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB_Index));
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
-        (PS.Transform_Feedback (PS.Current_TFB));
+        (PS.Transform_Feedback (PS.Current_TFB_Index));
+      Put_Line ("Particle_System.Update_Particles PS.Current_TFB bound.");
+
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
+      Put_Line ("Particle_System.Update_Particles Vertex_Attrib_Array 0 enabled.");
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
       GL.Attributes.Enable_Vertex_Attrib_Array (3);
+      Put_Line ("Particle_System.Update_Particles Vertex_Attrib_Array items enabled.");
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Index  => 0, Count => 1, Kind => Single_Type, Stride => 0, Offset => 0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, 0, 4);
@@ -189,7 +185,7 @@ package body Particle_System is
          PS.Is_First := False;
       else
          GL.Objects.Buffers.Draw_Transform_Feedback
-           (Points, PS.Transform_Feedback (PS.Current_VB));
+           (Points, PS.Transform_Feedback (PS.Current_VB_Index));
       end if;
       GL.Objects.Programs.End_Transform_Feedback;
 
