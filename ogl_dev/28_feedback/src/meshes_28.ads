@@ -21,7 +21,6 @@ private
    Invalid_Material : constant GL.Types.UInt := 16#FFFFFFFF#;
 
    type Mesh_Entry is record
-      VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Vertex_Buffer  : GL.Objects.Buffers.Buffer;
       Index_Buffer   : GL.Objects.Buffers.Buffer;
       Num_Indices    : GL.Types.UInt := 0;
