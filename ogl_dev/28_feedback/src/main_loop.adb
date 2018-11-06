@@ -5,6 +5,7 @@ with GL.Low_Level.Enums;
 with GL.Objects;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
+with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
@@ -34,6 +35,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    Background                  : constant GL.Types.Colors.Color := (0.0, 1.0, 0.0, 0.0);
 
+   VAO                         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Buildboard_Program          : GL.Objects.Programs.Program;
    Update_Program              : GL.Objects.Programs.Program;
 
@@ -101,6 +103,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       Result := Build_Shader_Programs;
       if Result then
+         VAO.Initialize_Id;
+         VAO.Bind;
          Current_Time_MilliSec := Single (Glfw.Time);
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera,
