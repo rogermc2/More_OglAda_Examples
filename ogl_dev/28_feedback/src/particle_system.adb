@@ -7,6 +7,7 @@ with GL.Attributes;
 with GL.Low_Level.Enums;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
+with GL.Uniforms;
 
 with Ogldev_Engine_Common;
 
@@ -36,17 +37,24 @@ package body Particle_System is
    procedure Update_Particles (PS : in out Particle_System;
                                Delta_Time : GL.Types.Int);
 
-     --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
+
+   function Get_Update_Technique (PS : Particle_System) return PS_Update_Technique.Update_Technique is
+   begin
+        return PS.Update_Method;
+   end Get_Update_Technique;
+
+   --  -------------------------------------------------------------------------
 
    procedure Init_Particle_System (PS : in out Particle_System;
-                                   theTechnique : in out
-                                     PS_Update_Technique.Update_Technique;
+--                                     theTechnique : in out
+--                                       PS_Update_Technique.Update_Technique;
                                    Update_Program : GL.Objects.Programs.Program;
                                    Pos : Singles.Vector3) is
       use GL.Objects.Buffers;
       Particles : Particle_Array (1 .. Max_Particles);
+      theTechnique : PS_Update_Technique.Update_Technique;
    begin
-
       Particles (1).Particle_Kind := Type_Launcher;
       Particles (1).Position := Pos;
       Particles (1).Velocity := (0.0, 0.0001, 0.0);
@@ -64,7 +72,7 @@ package body Particle_System is
       GL.Objects.Programs.Use_Program (Update_Program);
       PS_Update_Technique.Init (theTechnique, Update_Program);
       PS_Update_Technique.Set_Random_Texture_Unit
-          (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit_Index'Enum_Rep);
+          (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit_Index);
       PS_Update_Technique.Set_Launcher_Lifetime (theTechnique, 100.0);
       PS_Update_Technique.Set_Shell_Lifetime (theTechnique, 10000.0);
       PS_Update_Technique.Set_Secondary_Shell_Lifetime (theTechnique, 2500.0);
@@ -88,6 +96,11 @@ package body Particle_System is
                                       "../Content/fireworks_red.jpg") then
             Ogldev_Texture.Load (PS.Texture);
       end if;
+      PS.Update_Method := theTechnique;
+--        Put_Line ("Particle_System.Init_Particle_System Random_Texture_Location: " &
+--                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Random_Texture_Location (PS.Update_Method)));
+--        Put_Line ("Particle_System.Init_Particle_System Time_Location: " &
+--                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Time_Location (PS.Update_Method)));
 
    exception
       when  others =>
@@ -101,8 +114,11 @@ package body Particle_System is
                      View_Point : Singles.Matrix4; Camera_Pos : Singles.Vector3) is
 
    begin
+--        Put_Line ("Particle_System.Render Random_Texture_Location: " &
+--                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Random_Texture_Location (PS.Update_Method)));
+--        Put_Line ("Particle_System.Render Time_Location: " &
+--                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Time_Location (PS.Update_Method)));
       PS.PS_Time := PS.PS_Time + Delta_Time;
-      Put_Line ("Particle_System.Render PS_Time updated.");
       Update_Particles (PS, Delta_Time);
       Put_Line ("Particle_System.Render Particles updated.");
       Render_Particles (PS, View_Point, Camera_Pos);
@@ -146,13 +162,11 @@ package body Particle_System is
                                Delta_Time : GL.Types.Int) is
       use PS_Update_Technique;
    begin
-      Put_Line ("Particle_System.Update_Particles PS.PS_Time: " &
-                  Int'Image (PS.PS_Time));
       Set_Time (PS.Update_Method, PS.PS_Time);
-      Put_Line ("Particle_System.Update_Particles PS.PS_Time set.");
       Set_Delta_Millisec (PS.Update_Method, Delta_Time);
-      Random_Texture.Bind (PS.Random_Texture, 3);
+      Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit_Index);
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
+      Put_Line ("Particle_System.Update_Particles Rasterizer_Discard disabled.");
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB));
       Put_Line ("Particle_System.Update_Particles PS.Current_VB bound.");
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
