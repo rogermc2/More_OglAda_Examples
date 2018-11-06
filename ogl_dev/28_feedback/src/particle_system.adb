@@ -156,21 +156,22 @@ package body Particle_System is
                                Delta_Time : GL.Types.Int) is
       use PS_Update_Technique;
    begin
+      GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
       Set_Time (PS.Update_Method, PS.PS_Time);
       Set_Delta_Millisec (PS.Update_Method, Delta_Time);
-      Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit_Index);
-      GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
-      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB_Index));
-      GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
-        (PS.Transform_Feedback (PS.Current_TFB_Index));
-      Put_Line ("Particle_System.Update_Particles PS.Current_TFB bound.");
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      Put_Line ("Particle_System.Update_Particles Vertex_Attrib_Array 0 enabled.");
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
       GL.Attributes.Enable_Vertex_Attrib_Array (3);
-      Put_Line ("Particle_System.Update_Particles Vertex_Attrib_Array items enabled.");
+      Put_Line ("Particle_System.Update_Particles Vertex_Attrib_Array enabled.");
+
+      Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit_Index);
+      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB));
+      Put_Line ("Particle_System.Update_Particles PS.Current_VB bound.");
+      GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
+        (PS.Transform_Feedback (PS.Current_TFB));
+
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Index  => 0, Count => 1, Kind => Single_Type, Stride => 0, Offset => 0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, 0, 4);
