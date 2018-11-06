@@ -19,6 +19,7 @@ with Utilities;
 
 with Ogldev_Basic_Lighting;
 with Ogldev_Camera;
+with Ogldev_Engine_Common;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
@@ -37,7 +38,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Update_Program              : GL.Objects.Programs.Program;
 
    theLighting_Technique       : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
---     theUpdate_Technique         : PS_Update_Technique.Update_Technique;
    Game_Camera                 : Ogldev_Camera.Camera;
    Dir_Light                   : Ogldev_Lights_Common.Directional_Light;
    Ground                      : Meshes_28.Mesh_28;
@@ -109,7 +109,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
          Ogldev_Basic_Lighting.Set_Directional_Light (theLighting_Technique, Dir_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit
-           (theLighting_Technique, 0);
+           (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit_Index));
 
          Meshes_28.Load_Mesh (Ground, "src/quad.obj");
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
@@ -123,8 +123,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
                Particle_System.Init_Particle_System
                  (theParticle_System, Update_Program, Particle_System_Pos);
---                   (theParticle_System, theUpdate_Technique, Update_Program,
---                    Particle_System_Pos);
             else
                Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
             end if;
@@ -178,19 +176,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Ogldev_Basic_Lighting.Set_World_Matrix
         (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
+
       Meshes_28.Render (Ground);
-
---        Put_Line ("Main_Loop.Render_Scene Random_Texture_Location: " &
---                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Random_Texture_Location (theUpdate_Technique)));
---        Put_Line ("Main_Loop.Render_Scene Time_Location: " &
---                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Time_Location (theUpdate_Technique)));
---        Put_Line ("Main_Loop.Render_Scene theParticle_System Random_Texture_Location: " &
---                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Random_Texture_Location
---                   (Particle_System.Get_Update_Technique (theParticle_System))));
---        Put_Line ("Main_Loop.Render_Scene theParticle_System Time_Location: " &
---                   GL.Uniforms.Uniform'Image (PS_Update_Technique.Get_Time_Location
---                   (Particle_System.Get_Update_Technique (theParticle_System))));
-
       Particle_System.Render (theParticle_System, Int (Delta_Millisec),
                               Ogldev_Pipeline.Get_VP_Transform (Pipe),
                               Get_Position (Game_Camera));
