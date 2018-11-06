@@ -167,10 +167,10 @@ package body Particle_System is
       Put_Line ("Particle_System.Update_Particles Vertex_Attrib_Array enabled.");
 
       Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit_Index);
-      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB));
+      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB_Index));
       Put_Line ("Particle_System.Update_Particles PS.Current_VB bound.");
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
-        (PS.Transform_Feedback (PS.Current_TFB));
+        (PS.Transform_Feedback (PS.Current_TFB_Index));
 
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Index  => 0, Count => 1, Kind => Single_Type, Stride => 0, Offset => 0);
