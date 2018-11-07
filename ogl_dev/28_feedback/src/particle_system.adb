@@ -171,8 +171,6 @@ package body Particle_System is
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
 
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB_Index));
-      GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
-        (PS.Transform_Feedback (PS.Current_TFB_Index));
 
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Index  => 0, Count => 1, Kind => Single_Type, Stride => 0, Offset => 0);
@@ -180,7 +178,9 @@ package body Particle_System is
       GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 16);
       GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 0, 28);
 
-      Put_Line ("Particle_System.Update_Particles calling Begin_Transform_Feedback.");
+      GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
+        (PS.Transform_Feedback (PS.Current_TFB_Index));
+      Put_Line ("Particle_System.Update_Particles calling Begin_Transform_Feedback." );
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       Put_Line ("Particle_System.Update_Particles Begin_Transform_Feedback returned.");
       if PS.Is_First then

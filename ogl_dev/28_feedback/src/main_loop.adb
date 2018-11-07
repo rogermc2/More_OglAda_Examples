@@ -36,7 +36,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Background                  : constant GL.Types.Colors.Color := (0.0, 1.0, 0.0, 0.0);
 
    VAO                         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-
    theLighting_Technique       : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Game_Camera                 : Ogldev_Camera.Camera;
    Dir_Light                   : Ogldev_Lights_Common.Directional_Light;
