@@ -41,8 +41,12 @@ package body PS_Update_Technique is
    begin
       theTechnique.Update_Program := Program_From
         ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
-         Src ("src/shaders/ps_update.fs", Fragment_Shader),
-         Src ("src/shaders/ps_update.gs", Geometry_Shader)));
+         Src ("src/shaders/ps_update.gs", Geometry_Shader),
+         Src ("src/shaders/ps_update.fs", Fragment_Shader)));
+
+       If not Finalize (theTechnique.Update_Program) then
+            raise Update_Technique_Exception with "PS_Update_Technique.Init, Finalize failed";
+       end if;
 
       OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
       if not OK then
@@ -54,6 +58,7 @@ package body PS_Update_Technique is
 
       Use_Program (theTechnique.Update_Program);
       Transform_Feedback_Varyings (theTechnique.Update_Program, Varyings, Interleaved_Attribs);
+
       Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gDeltaTimeMillis",
                                       theTechnique.Delta_Millisec_Location);
       Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gRandomTexture",
