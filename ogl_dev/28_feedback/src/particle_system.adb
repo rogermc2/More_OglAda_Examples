@@ -50,7 +50,7 @@ package body Particle_System is
                                    Update_Program : GL.Objects.Programs.Program;
                                    Pos : Singles.Vector3) is
       use GL.Objects.Buffers;
-      Particles : Particle_Array (1 .. Max_Particles);
+      Particles    : Particle_Array (1 .. Max_Particles);
       theTechnique : PS_Update_Technique.Update_Technique;
    begin
       Particles (1).Particle_Kind := Type_Launcher;
@@ -73,24 +73,24 @@ package body Particle_System is
       GL.Objects.Programs.Use_Program (Update_Program);
       PS_Update_Technique.Init (theTechnique, Update_Program);
       PS_Update_Technique.Set_Random_Texture_Unit
-          (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit_Index);
+          (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit);
       PS_Update_Technique.Set_Launcher_Lifetime (theTechnique, 100.0);
       PS_Update_Technique.Set_Shell_Lifetime (theTechnique, 10000.0);
       PS_Update_Technique.Set_Secondary_Shell_Lifetime (theTechnique, 2500.0);
 
       PS_Update_Technique.Set_Random_Texture_Unit
-        (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit_Index'Enum_Rep);
+        (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit);
       PS_Update_Technique.Set_Launcher_Lifetime (theTechnique, 100.0);
       PS_Update_Technique.Set_Shell_Lifetime (theTechnique, 10000.0);
       PS_Update_Technique.Set_Secondary_Shell_Lifetime (theTechnique, 2500.0);
 
       Random_Texture.Init_Random_Texture (PS.Random_Texture, 1000);
       Random_Texture.Bind (PS.Random_Texture,
-                           Ogldev_Engine_Common.Random_Texture_Unit_Index'Enum_Rep);
+                           Ogldev_Engine_Common.Random_Texture_Unit);
 
       Billboard_Technique.Init (PS.Billboard_Method);
       Billboard_Technique.Set_Colour_Texture_Unit
-        (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit_Index'Enum_Rep);
+        (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
       Billboard_Technique.Set_Billboard_Size (PS.Billboard_Method, 0.01);
 
       if Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
@@ -132,8 +132,9 @@ package body Particle_System is
       Billboard_Technique.Set_Camera_Position (PS.Billboard_Method, Camera_Pos);
       Billboard_Technique.Set_View_Point (PS.Billboard_Method, View_Point);
       Billboard_Technique.Set_Colour_Texture_Unit
-        (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit_Index'Enum_Rep);
+        (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
+
       GL.Objects.Buffers.Array_Buffer.Bind
         (PS.Particle_Buffer (PS.Current_TFB_Index));
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -156,7 +157,6 @@ package body Particle_System is
                                Delta_Time : GL.Types.Int) is
       use PS_Update_Technique;
    begin
-      GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
       Set_Time (PS.Update_Method, PS.PS_Time);
       Set_Delta_Millisec (PS.Update_Method, Delta_Time);
 
@@ -164,11 +164,12 @@ package body Particle_System is
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
       GL.Attributes.Enable_Vertex_Attrib_Array (3);
-      Put_Line ("Particle_System.Update_Particles Vertex_Attrib_Array enabled.");
 
-      Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit_Index);
+      Random_Texture.Bind (PS.Random_Texture,
+                           Ogldev_Engine_Common.Random_Texture_Unit);
+      GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
+
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB_Index));
-      Put_Line ("Particle_System.Update_Particles PS.Current_VB bound.");
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
         (PS.Transform_Feedback (PS.Current_TFB_Index));
 
