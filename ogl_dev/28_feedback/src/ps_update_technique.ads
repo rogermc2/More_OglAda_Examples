@@ -19,8 +19,9 @@ Package PS_Update_Technique is
                                          return GL.Uniforms.Uniform;
    function Get_Time_Location (theTechnique : Update_Technique)
                                return GL.Uniforms.Uniform;
-   procedure Init (theTechnique : in out Update_Technique;
-                   Update_Program : GL.Objects.Programs.Program);
+   function Get_Update_Program (theTechnique : Update_Technique)
+                                return GL.Objects.Programs.Program;
+   procedure Init (theTechnique : in out Update_Technique);
    procedure Set_Delta_Millisec (theTechnique : Update_Technique;
                                  Delta_Time : GL.Types.Int);
    procedure Set_Time (theTechnique : Update_Technique;
