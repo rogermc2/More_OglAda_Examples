@@ -36,8 +36,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Background                  : constant GL.Types.Colors.Color := (0.0, 1.0, 0.0, 0.0);
 
    VAO                         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Buildboard_Program          : GL.Objects.Programs.Program;
-   Update_Program              : GL.Objects.Programs.Program;
+   --     Buildboard_Program          : GL.Objects.Programs.Program;
+   --     Update_Program              : GL.Objects.Programs.Program;
 
    theLighting_Technique       : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Game_Camera                 : Ogldev_Camera.Camera;
@@ -51,47 +51,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   function Build_Shader_Programs return Boolean is
-      use GL.Objects.Shaders;
-      use Program_Loader;
-      OK : Boolean := False;
-   begin
-      --  Lighting shaders are built by Ogldev_Basic_Lighting.Init
-      Buildboard_Program := Program_From
-        ((Src ("src/shaders/billboard.vs", Vertex_Shader),
-         Src ("src/shaders/billboard.fs", Fragment_Shader),
-         Src ("src/shaders/billboard.gs", Geometry_Shader)));
-      OK := GL.Objects.Programs.Link_Status (Buildboard_Program);
-
-      if not OK then
-         Put_Line ("Build_Shader_Programs, Buildboard_Program Link failed");
-         Put_Line (GL.Objects.Programs.Info_Log (Update_Program));
-      else
-         Put_Line ("Build_Shader_Programs, Buildboard_Program Link ok");
-      end if;
-
-      Update_Program := Program_From
-        ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
-         Src ("src/shaders/ps_update.fs", Fragment_Shader),
-         Src ("src/shaders/ps_update.gs", Geometry_Shader)));
-
-      OK := OK and GL.Objects.Programs.Link_Status (Update_Program);
-      if not OK then
-         Put_Line ("Build_Shader_Programs, Update_Program Link failed");
-         Put_Line (GL.Objects.Programs.Info_Log (Update_Program));
-      else
-         Put_Line ("Build_Shader_Programs, Update_Program Link ok");
-      end if;
-      return OK;
-
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in Main_Loop.Build_Shader_Programs.");
-         raise;
-   end Build_Shader_Programs;
-
-   --  ------------------------------------------------------------------------
-
    procedure Init (Window : in out Glfw.Windows.Window; Result : out Boolean) is
 
       Window_Width        : Glfw.Size;
@@ -101,38 +60,41 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
       Particle_System_Pos : constant GL.Types.Singles.Vector3 := (0.0, 0.0, -1.0);
    begin
-      Result := Build_Shader_Programs;
+      --        Result := Build_Shader_Programs;
+      --        if Result then
+      VAO.Initialize_Id;
+      VAO.Bind;
+      Current_Time_MilliSec := Single (Glfw.Time);
+      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      Ogldev_Camera.Init_Camera (Game_Camera,
+                                 Int (Window_Width), Int (Window_Height),
+                                 Position, Target, Up);
+      Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
       if Result then
-         VAO.Initialize_Id;
-         VAO.Bind;
-         Current_Time_MilliSec := Single (Glfw.Time);
-         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-         Ogldev_Camera.Init_Camera (Game_Camera,
-                                    Int (Window_Width), Int (Window_Height),
-                                    Position, Target, Up);
-         Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
          Ogldev_Basic_Lighting.Set_Directional_Light (theLighting_Technique, Dir_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit
            (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
 
          Meshes_28.Load_Mesh (Ground, "src/quad.obj");
-         if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                          "../Content/bricks.jpg") then
+         if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
+                                         "../Content/bricks.jpg") then
             Ogldev_Texture.Load (theTexture);
-            Ogldev_Texture.Bind (theTexture, 0);
+            Ogldev_Texture.Bind
+              (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
 
             if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
                                             "../Content/normal_map.jpg") then
                Ogldev_Texture.Load (Normal_Map);
 
                Particle_System.Init_Particle_System
-                 (theParticle_System, Update_Program, Particle_System_Pos);
+                 (theParticle_System, Particle_System_Pos);
             else
                Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
             end if;
          else
             Put_Line ("Main_Loop.Init, bricks.jpg failed to load.");
          end if;
+         Put_Line ("Main_Loop.Init, Ogldev_Basic_Lighting failed to initialize.");
       end if;
 
    exception
@@ -174,7 +136,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Objects.Programs.Use_Program
         (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
---        Utilities.Print_Matrix ("WVP_Transform", Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      --        Utilities.Print_Matrix ("WVP_Transform", Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Ogldev_Basic_Lighting.Set_WVP (theLighting_Technique,
                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 

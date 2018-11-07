@@ -47,12 +47,14 @@ package body Particle_System is
    --  -------------------------------------------------------------------------
 
    procedure Init_Particle_System (PS : in out Particle_System;
-                                   Update_Program : GL.Objects.Programs.Program;
                                    Pos : Singles.Vector3) is
       use GL.Objects.Buffers;
-      Particles    : Particle_Array (1 .. Max_Particles);
-      theTechnique : PS_Update_Technique.Update_Technique;
+      Particles      : Particle_Array (1 .. Max_Particles);
+      theTechnique   : PS_Update_Technique.Update_Technique;
+      Update_Program : GL.Objects.Programs.Program;
    begin
+      PS_Update_Technique.Init (theTechnique);
+      Update_Program := PS_Update_Technique.Get_Update_Program (theTechnique);
       Particles (1).Particle_Kind := Type_Launcher;
       Particles (1).Position := Pos;
       Particles (1).Velocity := (0.0, 0.0001, 0.0);
@@ -71,7 +73,6 @@ package body Particle_System is
       PS.Current_TFB_Index := 1;
 
       GL.Objects.Programs.Use_Program (Update_Program);
-      PS_Update_Technique.Init (theTechnique, Update_Program);
       PS_Update_Technique.Set_Random_Texture_Unit
           (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit);
       PS_Update_Technique.Set_Launcher_Lifetime (theTechnique, 100.0);
