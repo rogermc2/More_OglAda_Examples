@@ -36,8 +36,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Background                  : constant GL.Types.Colors.Color := (0.0, 1.0, 0.0, 0.0);
 
    VAO                         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   --     Buildboard_Program          : GL.Objects.Programs.Program;
-   --     Update_Program              : GL.Objects.Programs.Program;
 
    theLighting_Technique       : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Game_Camera                 : Ogldev_Camera.Camera;
@@ -60,8 +58,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
       Particle_System_Pos : constant GL.Types.Singles.Vector3 := (0.0, 0.0, -1.0);
    begin
-      --        Result := Build_Shader_Programs;
-      --        if Result then
       VAO.Initialize_Id;
       VAO.Bind;
       Current_Time_MilliSec := Single (Glfw.Time);
@@ -94,6 +90,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          else
             Put_Line ("Main_Loop.Init, bricks.jpg failed to load.");
          end if;
+      else
          Put_Line ("Main_Loop.Init, Ogldev_Basic_Lighting failed to initialize.");
       end if;
 
