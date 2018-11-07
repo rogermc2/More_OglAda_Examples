@@ -113,7 +113,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
          Ogldev_Basic_Lighting.Set_Directional_Light (theLighting_Technique, Dir_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit
-           (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit_Index));
+           (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
 
          Meshes_28.Load_Mesh (Ground, "src/quad.obj");
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
