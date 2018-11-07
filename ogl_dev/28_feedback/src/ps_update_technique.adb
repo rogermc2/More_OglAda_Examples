@@ -45,10 +45,12 @@ package body PS_Update_Technique is
         ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
          Src ("src/shaders/ps_update.gs", Geometry_Shader),
          Src ("src/shaders/ps_update.fs", Fragment_Shader)));
+      Put_Line ("PS_Update_Technique.Init, theTechnique.Update_Program initialized.");
 
        If not OglDev_Technique.Finalize (theTechnique.Update_Program) then
             raise Update_Technique_Exception with "PS_Update_Technique.Init, Finalize failed";
        end if;
+      Put_Line ("PS_Update_Technique.Init, theTechnique.Update_Program finalized.");
 
 --        OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
 --        if not OK then
