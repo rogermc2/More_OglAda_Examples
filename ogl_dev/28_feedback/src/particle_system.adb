@@ -54,6 +54,8 @@ package body Particle_System is
       Update_Program : GL.Objects.Programs.Program;
    begin
       PS_Update_Technique.Init (theTechnique);
+      Put_Line ("Particle_System.Init_Particle_System..Init, theTechnique initialized.");
+
       Update_Program := PS_Update_Technique.Get_Update_Program (theTechnique);
       Particles (1).Particle_Kind := Type_Launcher;
       Particles (1).Position := Pos;
