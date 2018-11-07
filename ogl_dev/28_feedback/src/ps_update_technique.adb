@@ -46,10 +46,10 @@ package body PS_Update_Technique is
 
       OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
       if not OK then
-         Put_Line ("Build_Shader_Programs, Update_Program Link failed");
+         Put_Line ("PS_Update_Technique.Init, Update_Program Link failed");
          Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Update_Program));
       else
-         Put_Line ("Build_Shader_Programs, Update_Program Link ok");
+         Put_Line ("PS_Update_Technique.Init, Update_Program Link ok");
       end if;
 
       Use_Program (theTechnique.Update_Program);
