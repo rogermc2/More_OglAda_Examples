@@ -25,7 +25,7 @@ package GL.API.Ext is
    --  void APIENTRY glProgramParameteri (GLuint program, GLenum pname, GLint value)
    procedure Program_Parameter (Program: UInt; Name : Geometry_Type;
                                 Value  : Connection_Mode);
-   pragma Import (C, Program_Parameter, "glProgramParameteriEXT");
+   pragma Import (C, Program_Parameter, "glProgramParameteri");
 
 private
 
