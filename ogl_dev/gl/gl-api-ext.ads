@@ -22,8 +22,9 @@ package GL.API.Ext is
                           Gl_Max_Geometry_Total_Output_Components_Ext);
    pragma Convention (C, Geometry_Type);
 
+   --  void APIENTRY glProgramParameteri (GLuint program, GLenum pname, GLint value)
    procedure Program_Parameter (Program: UInt; Name : Geometry_Type;
-                                Value  : GL.Types.Int);
+                                Value  : Connection_Mode);
    pragma Import (C, Program_Parameter, "glProgramParameteriEXT");
 
 private
