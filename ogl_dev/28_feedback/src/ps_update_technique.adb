@@ -39,26 +39,25 @@ package body PS_Update_Technique is
       use GL.Objects.Shaders;
       use Program_Loader;
       Varyings       : constant String := "Type1, Position1, Velocity1, Age1";
---        OK             : Boolean;
+      OK             : Boolean;
    begin
       theTechnique.Update_Program := Program_From
         ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
          Src ("src/shaders/ps_update.gs", Geometry_Shader),
          Src ("src/shaders/ps_update.fs", Fragment_Shader)));
-      Put_Line ("PS_Update_Technique.Init, theTechnique.Update_Program initialized.");
+      --  Program_From includes linking
 
-       If not OglDev_Technique.Finalize (theTechnique.Update_Program) then
-            raise Update_Technique_Exception with "PS_Update_Technique.Init, Finalize failed";
-       end if;
-      Put_Line ("PS_Update_Technique.Init, theTechnique.Update_Program finalized.");
+--         If not OglDev_Technique.Finalize (theTechnique.Update_Program) then
+--              raise Update_Technique_Exception with "PS_Update_Technique.Init, Finalize failed";
+--         end if;
 
---        OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
---        if not OK then
---           Put_Line ("PS_Update_Technique.Init, Update_Program Link failed");
---           Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Update_Program));
---        else
---           Put_Line ("PS_Update_Technique.Init, Update_Program Link ok");
---        end if;
+      OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
+      if not OK then
+         Put_Line ("PS_Update_Technique.Init, Update_Program Link failed");
+         Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Update_Program));
+      else
+         Put_Line ("PS_Update_Technique.Init, Update_Program Link ok");
+      end if;
 
       Use_Program (theTechnique.Update_Program);
       Transform_Feedback_Varyings (theTechnique.Update_Program, Varyings, Interleaved_Attribs);
@@ -141,7 +140,7 @@ package body PS_Update_Technique is
       use GL.Objects.Programs;
       use GL.Objects.Shaders.Lists;
    begin
-      --          if not GL.Objects.Programs.Validate_Status (theTechnique.Update_Program) then
+              if not GL.Objects.Programs.Validate_Status (theTechnique.Update_Program) then
       --              Put_Line ("PS_Update_Technique.Use_Program Update_Program validation failed.");
       --          else
       --              Put_Line ("PS_Update_Technique.Use_Program Update_Program validated.");
@@ -156,7 +155,7 @@ package body PS_Update_Technique is
             GL.Objects.Programs.Use_Program (theTechnique.Update_Program);
          end if;
       end;  -- declare block
-      --          end if;
+              end if;
 
    exception
       when  others =>
