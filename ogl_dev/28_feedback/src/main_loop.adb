@@ -143,7 +143,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Particle_System.Render (theParticle_System, Int (Delta_Millisec),
                               Ogldev_Pipeline.Get_VP_Transform (Pipe),
                               Get_Position (Game_Camera));
-
    exception
       when  others =>
          Put_Line ("An exception occurred in Main_Loop.Render_Scene.");

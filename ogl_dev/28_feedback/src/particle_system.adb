@@ -54,7 +54,6 @@ package body Particle_System is
       Update_Program : GL.Objects.Programs.Program;
    begin
       PS_Update_Technique.Init (theTechnique);
-      Put_Line ("Particle_System.Init_Particle_System..Init, theTechnique initialized.");
 
       Update_Program := PS_Update_Technique.Get_Update_Program (theTechnique);
       Particles (1).Particle_Kind := Type_Launcher;
@@ -116,7 +115,6 @@ package body Particle_System is
    begin
       PS.PS_Time := PS.PS_Time + Delta_Time;
       Update_Particles (PS, Delta_Time);
-      Put_Line ("Particle_System.Render Particles updated.");
       Render_Particles (PS, View_Point, Camera_Pos);
       PS.Current_VB_Index := PS.Current_TFB_Index;
       PS.Current_TFB_Index := ((PS.Current_TFB_Index + 1) / 2) * 2;
