@@ -26,16 +26,16 @@ private
    type Transform_Feedback_Array is array (UInt range 1 .. 2) of GL.Objects.Buffers.Buffer;
 
    type Particle_System is record
-     Current_VB_Index    : UInt := 0;
-     Current_TFB_Index   : UInt := 0;
-     Is_First            : Boolean := True;
-     PS_Time             : GL.Types.Int := 0;
-     Texture             : Ogldev_Texture.Ogl_Texture;
-     Transform_Feedback  : Transform_Feedback_Array;
-     Particle_Buffer     : Particle_Buffer_Array;
-     Update_Method       : PS_Update_Technique.Update_Technique;
-     Billboard_Method    : Billboard_Technique.Technique;
-     Random_Texture      : GL.Objects.Textures.Texture;
+     Current_VB_Index  : UInt := 0;
+     Current_TFB_Index : UInt := 0;
+     Is_First          : Boolean := True;
+     PS_Time           : GL.Types.Int := 0;
+     Texture           : Ogldev_Texture.Ogl_Texture;
+     Feedback_Buffer   : Transform_Feedback_Array;
+     Particle_Buffer   : Particle_Buffer_Array;
+     Update_Method     : PS_Update_Technique.Update_Technique;
+     Billboard_Method  : Billboard_Technique.Technique;
+     Random_Texture    : GL.Objects.Textures.Texture;
    end record;
 
 end Particle_System;

@@ -62,8 +62,8 @@ package body Particle_System is
       Particles (1).Lifetime := 0.0;
 
       for index in UInt range 1 .. 2 loop
-         PS.Transform_Feedback (index).Initialize_Id;
-         Transform_Feedback_Buffer.Bind (PS.Transform_Feedback (index));
+         PS.Feedback_Buffer (index).Initialize_Id;
+         Transform_Feedback_Buffer.Bind (PS.Feedback_Buffer (index));
 
          PS.Particle_Buffer (index).Initialize_Id;
          Array_Buffer.Bind (PS.Particle_Buffer (index));
@@ -145,7 +145,7 @@ package body Particle_System is
                                                Stride => Particle'Size,
                                                Offset => 4);
       GL.Objects.Buffers.Draw_Transform_Feedback
-        (Points, PS.Transform_Feedback (PS.Current_TFB_Index));
+        (Points, PS.Feedback_Buffer (PS.Current_TFB_Index));
 
    exception
       when  others =>
@@ -180,9 +180,9 @@ package body Particle_System is
       GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 0, 28);
 
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
-        (PS.Transform_Feedback (PS.Current_TFB_Index));
+        (PS.Feedback_Buffer (PS.Current_TFB_Index));
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
-           (0, PS.Transform_Feedback (PS.Current_TFB_Index));
+           (0, PS.Feedback_Buffer (PS.Current_TFB_Index));
       Put_Line ("Particle_System.Update_Particles calling Begin_Transform_Feedback." );
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       Put_Line ("Particle_System.Update_Particles Begin_Transform_Feedback returned.");
@@ -191,7 +191,7 @@ package body Particle_System is
          PS.Is_First := False;
       else
          GL.Objects.Buffers.Draw_Transform_Feedback
-           (Points, PS.Transform_Feedback (PS.Current_VB_Index));
+           (Points, PS.Feedback_Buffer (PS.Current_VB_Index));
       end if;
       GL.Objects.Programs.End_Transform_Feedback;
 
