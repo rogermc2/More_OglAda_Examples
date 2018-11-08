@@ -60,15 +60,16 @@ package body Particle_System is
       Particles (1).Position := Pos;
       Particles (1).Velocity := (0.0, 0.0001, 0.0);
       Particles (1).Lifetime := 0.0;
-      for index in UInt range 1 .. 2 loop
-         PS.Particle_Buffer (index).Initialize_Id;
-         Array_Buffer.Bind (PS.Particle_Buffer (index));
 
+      for index in UInt range 1 .. 2 loop
          PS.Transform_Feedback (index).Initialize_Id;
          Transform_Feedback_Buffer.Bind (PS.Transform_Feedback (index));
-         Transform_Feedback_Buffer.Bind_Buffer_Base
-           (0, PS.Transform_Feedback (index));
+
+         PS.Particle_Buffer (index).Initialize_Id;
+         Array_Buffer.Bind (PS.Particle_Buffer (index));
          Load_Particle_Buffer (Array_Buffer, Particles, Dynamic_Draw);
+         Transform_Feedback_Buffer.Bind_Buffer_Base
+           (0, PS.Particle_Buffer (index));
       end loop;
       PS.Current_VB_Index := 1;
       PS.Current_TFB_Index := 1;
@@ -180,6 +181,8 @@ package body Particle_System is
 
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
         (PS.Transform_Feedback (PS.Current_TFB_Index));
+      GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
+           (0, PS.Transform_Feedback (PS.Current_TFB_Index));
       Put_Line ("Particle_System.Update_Particles calling Begin_Transform_Feedback." );
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       Put_Line ("Particle_System.Update_Particles Begin_Transform_Feedback returned.");
