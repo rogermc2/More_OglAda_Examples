@@ -1,4 +1,6 @@
 #version 410 core
+#extension GL_EXT_gpu_shader4 : enable
+#extension GL_EXT_geometry_shader4: enable
                                                                                     
 layout(points) in;                                                                  
 layout(points) out;                                                                 
