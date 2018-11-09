@@ -38,7 +38,7 @@ package body PS_Update_Technique is
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
       use Program_Loader;
-      Varyings       : constant String := "Type1, Position1, Velocity1, Age1";
+      Varyings       : constant String := "Type1,Position1,Velocity1,Age1";
       OK             : Boolean;
    begin
       theTechnique.Update_Program := Program_From
@@ -46,10 +46,6 @@ package body PS_Update_Technique is
          Src ("src/shaders/ps_update.gs", Geometry_Shader),
          Src ("src/shaders/ps_update.fs", Fragment_Shader)));
       --  Program_From includes linking
-
---         If not OglDev_Technique.Finalize (theTechnique.Update_Program) then
---              raise Update_Technique_Exception with "PS_Update_Technique.Init, Finalize failed";
---         end if;
 
       OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
       if not OK then
@@ -61,6 +57,14 @@ package body PS_Update_Technique is
 
       Use_Program (theTechnique.Update_Program);
       Transform_Feedback_Varyings (theTechnique.Update_Program, Varyings, Interleaved_Attribs);
+       theTechnique.Update_Program.Link;
+      OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
+      if not OK then
+         Put_Line ("PS_Update_Technique.Init, Update_Program Link for Varyings failed");
+         Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Update_Program));
+      else
+         Put_Line ("PS_Update_Technique.Init, Update_Program Link for Varyings ok");
+      end if;
 
       Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gDeltaTimeMillis",
                                       theTechnique.Delta_Millisec_Location);
