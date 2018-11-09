@@ -183,7 +183,6 @@ package body Particle_System is
         (PS.Feedback_Buffer (PS.Current_TFB_Index));
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
            (0, PS.Feedback_Buffer (PS.Current_TFB_Index));
-      Put_Line ("Particle_System.Update_Particles calling Begin_Transform_Feedback." );
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       Put_Line ("Particle_System.Update_Particles Begin_Transform_Feedback returned.");
       if PS.Is_First then
