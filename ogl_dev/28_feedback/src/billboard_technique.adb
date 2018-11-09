@@ -38,6 +38,7 @@ Package body Billboard_Technique is
     procedure Set_Billboard_Size (theTechnique : Technique;
                                  Size : GL.Types.Single) is
    begin
+      GL.Objects.Programs.Use_Program (theTechnique.Program);
       GL.Uniforms.Set_Single (theTechnique.Billboard_Size_Location, Size);
    end Set_Billboard_Size;
 
@@ -46,6 +47,7 @@ Package body Billboard_Technique is
    procedure Set_Camera_Position (theTechnique : Technique;
                                   Position : GL.Types.Singles.Vector3) is
    begin
+      GL.Objects.Programs.Use_Program (theTechnique.Program);
       GL.Uniforms.Set_Single (theTechnique.Camera_Position_Location, Position);
    end Set_Camera_Position;
 
@@ -54,6 +56,7 @@ Package body Billboard_Technique is
    procedure Set_Colour_Texture_Unit (theTechnique : Technique;
                                       Texture_Unit : GL.Types.Int) is
    begin
+      GL.Objects.Programs.Use_Program (theTechnique.Program);
       GL.Uniforms.Set_Int (theTechnique.Colour_Map_Location, Texture_Unit);
    end Set_Colour_Texture_Unit;
 
@@ -62,6 +65,7 @@ Package body Billboard_Technique is
    procedure Set_View_Point (theTechnique : Technique;
                              View_Point : GL.Types.Singles.Matrix4) is
    begin
+      GL.Objects.Programs.Use_Program (theTechnique.Program);
       GL.Uniforms.Set_Single (theTechnique.View_Point_Location, View_Point);
    end Set_View_Point;
 
