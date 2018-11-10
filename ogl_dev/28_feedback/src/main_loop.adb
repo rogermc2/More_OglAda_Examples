@@ -132,10 +132,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Objects.Programs.Use_Program
         (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
-      --        Utilities.Print_Matrix ("WVP_Transform", Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform", Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Ogldev_Basic_Lighting.Set_WVP (theLighting_Technique,
                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
+      Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform", Ogldev_Pipeline.Get_World_Transform (Pipe));
       Ogldev_Basic_Lighting.Set_World_Matrix
         (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
 
