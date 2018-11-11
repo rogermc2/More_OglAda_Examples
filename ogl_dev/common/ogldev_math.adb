@@ -27,7 +27,7 @@ package body Ogldev_Math is
 
    --  -------------------------------------------------------------------------
 
-  function Get_Orthograpic_Near (Info : Orthographic_Projection_Info)
+   function Get_Orthograpic_Near (Info : Orthographic_Projection_Info)
                                  return Single is
    begin
       return Info.Z_Near;
@@ -36,14 +36,14 @@ package body Ogldev_Math is
    --  -------------------------------------------------------------------------
 
    function Get_Orthograpic_Right (Info : Orthographic_Projection_Info)
-                                  return Single is
+                                   return Single is
    begin
       return Info.Right;
    end Get_Orthograpic_Right;
 
    --  -------------------------------------------------------------------------
 
- function Get_Orthograpic_Top (Info : Orthographic_Projection_Info)
+   function Get_Orthograpic_Top (Info : Orthographic_Projection_Info)
                                return Single is
    begin
       return Info.Top;
@@ -68,14 +68,14 @@ package body Ogldev_Math is
    --  -------------------------------------------------------------------------
 
    function Get_Perspective_Height (Info : Perspective_Projection_Info)
-                                 return UInt is
+                                    return UInt is
    begin
       return Info.Height;
    end Get_Perspective_Height;
 
    --  -------------------------------------------------------------------------
 
-  function Get_Perspective_Near (Info : Perspective_Projection_Info)
+   function Get_Perspective_Near (Info : Perspective_Projection_Info)
                                  return Single is
    begin
       return Info.Z_Near;
@@ -83,7 +83,7 @@ package body Ogldev_Math is
 
    --  -------------------------------------------------------------------------
 
- function Get_Perspective_Width (Info : Perspective_Projection_Info)
+   function Get_Perspective_Width (Info : Perspective_Projection_Info)
                                  return UInt is
    begin
       return Info.Width;
@@ -94,20 +94,26 @@ package body Ogldev_Math is
    function Init_Camera_Transform (Target, Up : Vector3) return Matrix4 is
       use GL;
       use Maths;
-      N     : constant Vector3 := Normalized (Target);
-      U     : constant Vector3 := Normalized (Cross_Product (Up, N));
-      V     : constant Vector3 := Cross_Product (N, U);
+      N     :  Vector3;
+      U     :  Vector3;
+      V     :  Vector3;
       Trans : Matrix4 := Identity4;
    begin
-      Trans (X, X) := U (X);
-      Trans (X, Y) := U (Y);
-      Trans (X, Z) := U (Z);
-      Trans (Y, X) := V (X);
-      Trans (Y, Y) := V (Y);
-      Trans (Y, Z) := V (Z);
-      Trans (Z, X) := N (X);
-      Trans (Z, Y) := N (Y);
-      Trans (Z, Z) := N (Z);
+      if Target /= (0.0, 0.0, 0.0) and then Up /= (0.0, 0.0, 0.0) then
+         N := Normalized (Target);
+         U := Normalized (Cross_Product (Up, N));
+         V := Cross_Product (N, U);
+         Trans (X, X) := U (X);
+         Trans (X, Y) := U (Y);
+         Trans (X, Z) := U (Z);
+         Trans (Y, X) := V (X);
+         Trans (Y, Y) := V (Y);
+         Trans (Y, Z) := V (Z);
+         Trans (Z, X) := N (X);
+         Trans (Z, Y) := N (Y);
+         Trans (Z, Z) := N (Z);
+      end if;
+
       return Trans;
    end Init_Camera_Transform;
 
@@ -128,7 +134,7 @@ package body Ogldev_Math is
    --  -------------------------------------------------------------------------
 
    procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
-                                   FOV : Single; Width, Height : UInt;
+                                   FOV       : Single; Width, Height : UInt;
                                    Near, Far : Single) is
    begin
       Info.FOV := FOV;
@@ -183,7 +189,7 @@ package body Ogldev_Math is
 
 
    function To_AI_Map3D (Num_Vecs : UInt := 0;
-                         Vectors : Assimp_Types.Vector3_Array)
+                         Vectors  : Assimp_Types.Vector3_Array)
                          return AI_3D_Map is
       Vec_Map : AI_3D_Map;
       Vec     : Singles.Vector3;
