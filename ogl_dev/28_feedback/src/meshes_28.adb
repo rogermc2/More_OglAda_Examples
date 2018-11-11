@@ -9,6 +9,7 @@ with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Attributes;
 with GL.Low_Level.Enums;
 
 with Maths;
@@ -17,6 +18,7 @@ with Utilities;
 with Assimp_Types; use Assimp_Types;
 with Importer;
 
+with Ogldev_Engine_Common;
 with Ogldev_Util;
 
 with Assimp_Mesh;
@@ -245,10 +247,46 @@ package body Meshes_28 is
 
    --  --------------------------------------------------------------------------
 
-procedure  Render (theMesh : Mesh_28) is
-
+   procedure  Render (theMesh : Mesh_28) is
+      use Mesh_Entry_Package;
+      Entry_Cursor   : Cursor := theMesh.Entries.First;
+      anEntry        : Mesh_Entry;
+      Textures       : Ogldev_Texture.Mesh_Texture_Map;
+      aTexture       : Ogldev_Texture.Ogl_Texture;
+      Material_Index : UInt;
    begin
-        null;
+        GL.Attributes.Enable_Vertex_Attrib_Array (0);
+        GL.Attributes.Enable_Vertex_Attrib_Array (1);
+        GL.Attributes.Enable_Vertex_Attrib_Array (2);
+      GL.Attributes.Enable_Vertex_Attrib_Array (3);
+
+      while Has_Element (Entry_Cursor) loop
+         anEntry := Element (Entry_Cursor);
+         GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
+
+        GL.Attributes.Set_Vertex_Attrib_Pointer
+          (Index  => 0, Count => 3, Kind => Single_Type, Stride => 0, Offset => 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 12);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 20);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, 0, 32);
+
+         GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
+         Material_Index := anEntry.Material_Index;
+         if Textures.Contains (Material_Index) then
+            aTexture := Textures.Element (Material_Index);
+            Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+         end if;
+         GL.Objects.Buffers.Draw_Elements
+           (GL.Types.Points, GL.Types.Int (anEntry.Num_Indices), UInt_Type, 0);
+
+--              Put_Line ("Particle_System.Update_Particles Draw_Arrays returned.");
+        Next (Entry_Cursor);
+      end loop;
+
+        GL.Attributes.Disable_Vertex_Attrib_Array (0);
+        GL.Attributes.Disable_Vertex_Attrib_Array (1);
+        GL.Attributes.Disable_Vertex_Attrib_Array (2);
+        GL.Attributes.Disable_Vertex_Attrib_Array (3);
    end Render;
 
    --  --------------------------------------------------------------------------

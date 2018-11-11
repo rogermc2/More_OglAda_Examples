@@ -129,16 +129,20 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Init_Transforms (Pipe);
 
       GL.Objects.Programs.Use_Program
         (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
-      Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform", Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-      Ogldev_Basic_Lighting.Set_WVP (theLighting_Technique,
-                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
-      Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform", Ogldev_Pipeline.Get_World_Transform (Pipe));
+      Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform",
+                              Ogldev_Pipeline.Get_World_Transform (Pipe));
       Ogldev_Basic_Lighting.Set_World_Matrix
         (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
+
+      Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
+                              Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Ogldev_Basic_Lighting.Set_WVP (theLighting_Technique,
+                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_28.Render (Ground);
       Particle_System.Render (theParticle_System, Int (Delta_Millisec),

@@ -86,6 +86,7 @@ package body Particle_System is
         PS_Update_Technique.Set_Launcher_Lifetime (theTechnique, 100.0);
         PS_Update_Technique.Set_Shell_Lifetime (theTechnique, 10000.0);
         PS_Update_Technique.Set_Secondary_Shell_Lifetime (theTechnique, 2500.0);
+        PS.Update_Method := theTechnique;
 
         Random_Texture.Init_Random_Texture (PS.Random_Texture, 1000);
         Random_Texture.Bind (PS.Random_Texture,
@@ -100,7 +101,6 @@ package body Particle_System is
                                         "../Content/fireworks_red.jpg") then
             Ogldev_Texture.Load (PS.Texture);
         end if;
-        PS.Update_Method := theTechnique;
 
     exception
         when  others =>

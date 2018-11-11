@@ -41,11 +41,11 @@ package body PS_Update_Technique is
       Varyings       : constant String := "Type1,Position1,Velocity1,Age1";
       OK             : Boolean;
    begin
+      --  Program_From includes linking
       theTechnique.Update_Program := Program_From
         ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
          Src ("src/shaders/ps_update.gs", Geometry_Shader),
          Src ("src/shaders/ps_update.fs", Fragment_Shader)));
-      --  Program_From includes linking
 
       OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
       if not OK then
@@ -56,8 +56,9 @@ package body PS_Update_Technique is
       end if;
 
       Use_Program (theTechnique.Update_Program);
-      Transform_Feedback_Varyings (theTechnique.Update_Program, Varyings, Interleaved_Attribs);
-       theTechnique.Update_Program.Link;
+      Transform_Feedback_Varyings (theTechnique.Update_Program, Varyings,
+                                   Interleaved_Attribs);
+      theTechnique.Update_Program.Link;
       OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
       if not OK then
          Put_Line ("PS_Update_Technique.Init, Update_Program Link for Varyings failed");
