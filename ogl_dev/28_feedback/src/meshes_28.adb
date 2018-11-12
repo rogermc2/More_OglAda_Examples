@@ -29,9 +29,10 @@ with Scene;
 package body Meshes_28 is
    use GL.Types;
    type Vertex is record
-      Pos    : GL.Types.Singles.Vector3;
-      Tex    : GL.Types.Singles.Vector2;
-      Normal : GL.Types.Singles.Vector3;
+      Pos     : GL.Types.Singles.Vector3;
+      Tex     : GL.Types.Singles.Vector2;
+      Normal  : GL.Types.Singles.Vector3;
+      Tangent : GL.Types.Singles.Vector3;
    end record;
    type Vertex_Array is array (Int range <>) of Vertex;
 
@@ -188,6 +189,7 @@ package body Meshes_28 is
       anEntry       : Mesh_Entry;
       Position      : GL.Types.Singles.Vector3;
       Normal        : GL.Types.Singles.Vector3;
+      Tangent       : GL.Types.Singles.Vector3;
       Has_Textures  : constant Boolean := not Source_Mesh.Texture_Coords.Is_Empty;
       Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
       Tex_Coord     : GL.Types.Singles.Vector3;
@@ -195,16 +197,15 @@ package body Meshes_28 is
       Index_Index   : Int := 0;
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
-      if Has_Textures then
-         Tex_Coord_Map := Source_Mesh.Texture_Coords.Element (1);
-      end if;
 
       Put_Line ("Mesh_Project_28.Init_Mesh, Num_Vertices: " &
                   UInt'Image (Num_Vertices));
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
          Normal := Source_Mesh.Normals.Element (V_Index);
-         if Has_Textures then
+         if Tex_Coord_Map.Is_Empty then
+            Tex_Coord := (0.0, 0.0, 0.0);
+         else
             if Tex_Coord_Map.Contains (V_Index) then
                Put_Line ("Mesh_Project_28.Init_Mesh, Tex_Coord_Map.Contains Index: " &
                            UInt'Image (V_Index));
@@ -212,11 +213,14 @@ package body Meshes_28 is
             else
                Tex_Coord := (0.0, 0.0, 0.0);
             end if;
+         end if;
+         if Source_Mesh.Tangents.Is_Empty then
+            Tangent := (0.0, 0.0, 0.0);
          else
-            Tex_Coord := (0.0, 0.0, 0.0);
+            Tangent := Source_Mesh.Tangents.Element (V_Index);
          end if;
          Vertices (Int (V_Index)) :=
-           (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
+           (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal, Tangent);
       end loop;
 
       if Source_Mesh.Faces.Is_Empty then
@@ -285,9 +289,9 @@ package body Meshes_28 is
 
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Index  => 0, Count => 3, Kind => Single_Type, Stride => 11, Offset => 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 11, 3);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 11, 5);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, 11, 8);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 11, 3);  --  texture
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 11, 5);  --  normal
+         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, 11, 8);  --  tangent
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
          if Textures.Contains (anEntry.Material_Index) then
@@ -295,9 +299,9 @@ package body Meshes_28 is
             Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
             Put_Line ("Meshes_28.Render aTexture bound.");
          end if;
-         Put_Line ("Meshes_28.Render Num_Indices: " & UInt'Image (anEntry.Num_Indices));
+
          GL.Objects.Buffers.Draw_Elements
-           (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type, 0);
+           (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
          Next (Entry_Cursor);
       end loop;
 
