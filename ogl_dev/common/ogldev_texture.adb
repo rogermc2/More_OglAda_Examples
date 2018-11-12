@@ -88,8 +88,6 @@ package body Ogldev_Texture is
               "Ogldev_Texture.Load, unhandled texture type.";
       end case;
 
---        Put_Line ("Ogldev_Texture.Load, image signature: " &
---                    Interfaces.C.size_t'Image (theTexture.Image.Signature));
       Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
                   UInt'Image (theTexture.Image.Columns) & "  " &
                   UInt'Image (theTexture.Image.Rows) & "  " &
@@ -120,6 +118,7 @@ package body Ogldev_Texture is
                                     GL.Objects.Textures.Image_Source (Data'Address));
          Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
          Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+         Put_Line ("Ogldev_Texture.Load loaded " & To_String (theTexture.File_Name));
       end;  --  declare
    exception
       when others =>
