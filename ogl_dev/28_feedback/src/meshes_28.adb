@@ -297,7 +297,7 @@ package body Meshes_28 is
          end if;
          Put_Line ("Meshes_28.Render Num_Indices: " & UInt'Image (anEntry.Num_Indices));
          GL.Objects.Buffers.Draw_Elements
-           (GL.Types.Points, GL.Types.Int (anEntry.Num_Indices), UInt_Type, 0);
+           (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type, 0);
          Next (Entry_Cursor);
       end loop;
 
