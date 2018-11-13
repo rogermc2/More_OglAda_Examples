@@ -19,6 +19,7 @@ with Assimp_Types; use Assimp_Types;
 with Importer;
 
 with Ogldev_Engine_Common;
+with Ogldev_Math;
 with Ogldev_Util;
 
 with Assimp_Mesh;
@@ -52,7 +53,7 @@ package body Meshes_28 is
       use GL.Objects.Buffers;
       Vertices_Length : constant Int := Vertices'Length;
       Indices_Length  : constant Int := Indices'Length;
-      Vertices_Array  : Maths.Vector8_Array (1 .. Vertices_Length);
+      Vertices_Array  : Ogldev_Math.Vector11_Array (1 .. Vertices_Length);
    begin
       theEntry.Num_Indices := UInt (Indices_Length);
       theEntry.Vertex_Buffer.Initialize_Id;
@@ -60,17 +61,22 @@ package body Meshes_28 is
       theEntry.Index_Buffer.Initialize_Id;
       Element_Array_Buffer.Bind (theEntry.Index_Buffer);
 
+      Put_Line ("Mesh_Project_28.Init_Buffers, Vertices_Length: " &
+               Int'Image (Vertices_Length));
+
       for index in 1 ..  Vertices_Length loop
          Vertices_Array (index) :=
            (Vertices (index).Pos (X), Vertices (index).Pos (Y), Vertices (index).Pos (Z),
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
-            Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
+            Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z),
+            Vertices (index).Tangent (X), Vertices (index).Tangent (Y), Vertices (index).Tangent (Z));
       end loop;
-
+      Ogldev_Util.Print_GL_Array11 ("Mesh_Project_28.Init_Buffers.Vertices_Array", Vertices_Array);
       Array_Buffer.Bind (theEntry.Vertex_Buffer);
-      Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
+      Ogldev_Util.Load_Vector11_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
       Element_Array_Buffer.Bind (theEntry.Index_Buffer);
       Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
+      Utilities.Print_GL_UInt_Array ("Mesh_Project_28.Init_Buffers.Indices", Indices);
 
    exception
       when others =>
@@ -190,11 +196,10 @@ package body Meshes_28 is
       Position      : GL.Types.Singles.Vector3;
       Normal        : GL.Types.Singles.Vector3;
       Tangent       : GL.Types.Singles.Vector3;
-      Has_Textures  : constant Boolean := not Source_Mesh.Texture_Coords.Is_Empty;
       Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
       Tex_Coord     : GL.Types.Singles.Vector3;
       Face          : Assimp_Mesh.AI_Face;
-      Index_Index   : Int := 0;
+      Indices_Index : Int := 0;
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
 
@@ -226,26 +231,21 @@ package body Meshes_28 is
       if Source_Mesh.Faces.Is_Empty then
          Put_Line ("Mesh_Project_28.Init_Mesh, Source_Mesh.Faces is empty.");
       else
-         Put_Line ("Mesh_Project_28.Init_Mesh, Source_Mesh.Faces size: " &
-                     Count_Type'Image (Source_Mesh.Faces.Length));
+--           Put_Line ("Mesh_Project_28.Init_Mesh, Source_Mesh.Faces size: " &
+--                       Count_Type'Image (Source_Mesh.Faces.Length));
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
             Face := Source_Mesh.Faces.Element (UInt (Face_Index));
-            Index_Index := Index_Index + 1;
-            Indices (Index_Index) := Face.Indices (1);
-            Index_Index := Index_Index + 1;
-            Indices (Index_Index) := Face.Indices (2);
-            Index_Index := Index_Index + 1;
-            Indices (Index_Index) := Face.Indices (3);
+            Indices_Index := Indices_Index + 1;
+            Indices (Indices_Index) := Face.Indices (1);
+            Indices_Index := Indices_Index + 1;
+            Indices (Indices_Index) := Face.Indices (2);
+            Indices_Index := Indices_Index + 1;
+            Indices (Indices_Index) := Face.Indices (3);
          end loop;
       end if;
 
       --  m_Entries[Index].Init(Vertices, Indices);
       Init_Buffers (anEntry, Vertices, Indices);
-      for index in 1 .. Num_Vertices loop
-
-         Utilities.Print_Vector ("Pos", Vertices (Int (index)).Pos);
-      end loop;
-      Utilities.Print_GL_UInt_Array ("Mesh_Project_28.Init_Mesh .Indices", Indices);
       aMesh_28.Entries.Insert (Integer (Mesh_Index), anEntry);
 
    exception
@@ -288,10 +288,10 @@ package body Meshes_28 is
          GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
 
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Index  => 0, Count => 3, Kind => Single_Type, Stride => 11, Offset => 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 11, 3);  --  texture
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 11, 5);  --  normal
-         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, 11, 8);  --  tangent
+           (Index  => 0, Count => 3, Kind => Single_Type, Stride => 0, Offset => 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 3);  --  texture
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 5);  --  normal
+         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, 0, 8);  --  tangent
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
          if Textures.Contains (anEntry.Material_Index) then
