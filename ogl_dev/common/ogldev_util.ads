@@ -1,8 +1,13 @@
 
 with Interfaces; use Interfaces;
 with Interfaces.C;
+with Interfaces.C.Pointers;
+
+with GL.Objects.Buffers;
 
 with Post_Process; use Post_Process;
+
+with Ogldev_Math;
 
 package Ogldev_Util is
    use Interfaces.C;
@@ -14,5 +19,10 @@ package Ogldev_Util is
 
    Invalid_Uniform_Location : constant C.unsigned := 16#FFFFFFFF#;
    Invalid_OGL_Value        : constant C.unsigned := 16#FFFFFFFF#;
+
+   procedure Load_Vector11_Buffer is new GL.Objects.Buffers.Load_To_Buffer
+     (Ogldev_Math.Vector11_Pointers);
+
+   procedure Print_GL_Array11 (Name : String; anArray : Ogldev_Math.Vector11_Array);
 
 end Ogldev_Util;
