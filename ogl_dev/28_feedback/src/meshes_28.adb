@@ -288,10 +288,10 @@ package body Meshes_28 is
          GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
 
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Index  => 0, Count => 3, Kind => Single_Type, Stride => 0, Offset => 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 3);  --  texture
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 5);  --  normal
-         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, 0, 8);  --  tangent
+           (Index  => 0, Count => 3, Kind => Single_Type, Stride => 11, Offset => 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 11, 3);  --  texture
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 11, 5);  --  normal
+         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type,11, 8);  --  tangent
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
          if Textures.Contains (anEntry.Material_Index) then
