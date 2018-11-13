@@ -1,4 +1,6 @@
 
+with Interfaces.C.Pointers;
+
 with Ada.Containers.Indefinite_Ordered_Maps;
 
 with GL.Types; use GL.Types;
@@ -12,6 +14,17 @@ package Ogldev_Math is
    package AI_3D_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    subtype AI_3D_Map is AI_3D_Package.Map;
+
+   type Index_11 is (X, Y, Z, U, V, NX, NY, NZ, TX, TY, TZ);
+   type Vector11 is array (Index_11) of aliased Single;
+
+   pragma Convention (C, Vector11);
+
+   type Vector11_Array is array (Size range <>) of aliased Vector11;
+   pragma Convention (C, Vector11_Array);
+
+   package Vector11_Pointers is new Interfaces.C.Pointers
+     (Size, Vector11, Vector11_Array, Vector11'(others => <>));
 
    type Perspective_Projection_Info is private;
    type Orthographic_Projection_Info is private;
