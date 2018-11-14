@@ -40,6 +40,14 @@ package body Particle_System is
 
     --  -------------------------------------------------------------------------
 
+  function Get_Billboard_Technique (PS : Particle_System) return
+      Billboard_Technique.Technique is
+    begin
+        return PS.Billboard_Method;
+    end Get_Billboard_Technique;
+
+    --  -------------------------------------------------------------------------
+
     function Get_Update_Technique (PS : Particle_System) return PS_Update_Technique.Update_Technique is
     begin
         return PS.Update_Method;
@@ -130,16 +138,16 @@ package body Particle_System is
     procedure Render_Particles (PS         : in out Particle_System;
                                 View_Point : Singles.Matrix4;
                                 Camera_Pos : Singles.Vector3) is
-        theTechnique    : constant PS_Update_Technique.Update_Technique :=
-                            PS.Update_Method;
-        Update_Program  : constant GL.Objects.Programs.Program :=
-                            PS_Update_Technique.Get_Update_Program (theTechnique);
-        TFB_Index       : constant UInt := PS.Current_TFB_Index;
-        Buffer_Size     : constant Integer := 100;
-        Name_Length     : GL.Types.Size;
-        Vertices_Length : GL.Types.Size;
-        V_Type          : GL.Objects.Programs.Buffer_Mode;
-        Varyings_Name   : String (1 .. Buffer_Size);
+        theTechnique    : constant Billboard_Technique.Technique :=
+                             PS.Billboard_Method;
+        Billboard_Program : constant GL.Objects.Programs.Program :=
+                            Billboard_Technique.Billboard_Program (theTechnique);
+        TFB_Index        : constant UInt := PS.Current_TFB_Index;
+        Buffer_Size      : constant Integer := 100;
+        Name_Length      : GL.Types.Size;
+        Vertices_Length  : GL.Types.Size;
+        V_Type           : GL.Objects.Programs.Buffer_Mode;
+        Varyings_Name    : String (1 .. Buffer_Size);
     begin
         Billboard_Technique.Set_Camera_Position (PS.Billboard_Method, Camera_Pos);
         Billboard_Technique.Set_View_Point (PS.Billboard_Method, View_Point);
@@ -147,17 +155,17 @@ package body Particle_System is
           (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
         GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
 
+        Billboard_Technique.Use_Program (theTechnique);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                  Kind   => Single_Type,
                                                  Stride => Particle'Size,
                                                  Offset => 4);
-        PS_Update_Technique.Use_Program (theTechnique);
         GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
           (PS.Feedback_Buffer (TFB_Index));
 
         GL.Objects.Programs.Get_Transform_Feedback_Varying
-          (Object   => Update_Program,
+          (Object   => Billboard_Program,
            Index    => 1,
            Length   => Name_Length,
            V_Length => Vertices_Length,

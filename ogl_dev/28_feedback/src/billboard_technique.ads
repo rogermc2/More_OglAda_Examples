@@ -18,6 +18,7 @@ Package Billboard_Technique is
                                       Texture_Unit : GL.Types.Int);
    procedure Set_View_Point (theTechnique : Technique;
                              View_Point : GL.Types.Singles.Matrix4);
+   procedure Use_Program (theTechnique : Technique);
 
 private
 
