@@ -144,23 +144,20 @@ package body PS_Update_Technique is
    procedure Use_Program (theTechnique : Update_Technique) is
       use GL.Objects.Programs;
       use GL.Objects.Shaders.Lists;
+      Shaders_List : GL.Objects.Shaders.Lists.List :=
+                       GL.Objects.Programs.Attached_Shaders (theTechnique.Update_Program);
+      Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
    begin
-              if not GL.Objects.Programs.Validate_Status (theTechnique.Update_Program) then
-      --              Put_Line ("PS_Update_Technique.Use_Program Update_Program validation failed.");
-      --          else
-      --              Put_Line ("PS_Update_Technique.Use_Program Update_Program validated.");
-      declare
-         Shaders_List : GL.Objects.Shaders.Lists.List :=
-                          GL.Objects.Programs.Attached_Shaders (theTechnique.Update_Program);
-         Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
-      begin
-         if Curs = GL.Objects.Shaders.Lists.No_Element then
-            Put_Line ("PS_Update_Technique.Use_Program, Shaders list is empty");
-         else
-            GL.Objects.Programs.Use_Program (theTechnique.Update_Program);
-         end if;
-      end;  -- declare block
-              end if;
+      --        if not GL.Objects.Programs.Validate_Status (theTechnique.Update_Program) then
+      --           Put_Line ("PS_Update_Technique.Use_Program Update_Program validation failed.");
+      --        else
+      --           Put_Line ("PS_Update_Technique.Use_Program Update_Program validated.");
+      if Curs = GL.Objects.Shaders.Lists.No_Element then
+         Put_Line ("PS_Update_Technique.Use_Program, Shaders list is empty");
+      else
+         GL.Objects.Programs.Use_Program (theTechnique.Update_Program);
+      end if;
+      --        end if;
 
    exception
       when  others =>

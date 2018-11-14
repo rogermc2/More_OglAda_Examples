@@ -202,20 +202,20 @@ package body Particle_System is
     procedure Update_Particles (PS         : in out Particle_System;
                                 Delta_Time : GL.Types.Int) is
         use PS_Update_Technique;
-        theTechnique   : constant PS_Update_Technique.Update_Technique :=
+        Update_Technique : constant PS_Update_Technique.Update_Technique :=
                            PS.Update_Method;
-        Update_Program : constant GL.Objects.Programs.Program :=
-                           PS_Update_Technique.Get_Update_Program (theTechnique);
-        TFB_Index      : constant UInt := PS.Current_TFB_Index;
-        VB_Index       : constant UInt := PS.Current_VB_Index;
-        Buffer_Size     : constant Integer := 100;
-        Name_Length     : GL.Types.Size;
-        Vertices_Length : GL.Types.Size;
-        V_Type          : GL.Objects.Programs.Buffer_Mode;
-        Varyings_Name   : String (1 .. Buffer_Size);
+        Update_Program   : constant GL.Objects.Programs.Program :=
+                           PS_Update_Technique.Get_Update_Program (Update_Technique);
+        TFB_Index        : constant UInt := PS.Current_TFB_Index;
+        VB_Index         : constant UInt := PS.Current_VB_Index;
+        Buffer_Size      : constant Integer := 100;
+        Name_Length      : GL.Types.Size;
+        Vertices_Length  : GL.Types.Size;
+        V_Type           : GL.Objects.Programs.Buffer_Mode;
+        Varyings_Name    : String (1 .. Buffer_Size);
     begin
-        Set_Time (theTechnique, PS.PS_Time);
-        Set_Delta_Millisec (theTechnique, Delta_Time);
+        Set_Time (Update_Technique, PS.PS_Time);
+        Set_Delta_Millisec (Update_Technique, Delta_Time);
 
         Random_Texture.Bind (PS.Random_Texture,
                              Ogldev_Engine_Common.Random_Texture_Unit);
@@ -229,10 +229,10 @@ package body Particle_System is
         GL.Attributes.Enable_Vertex_Attrib_Array (3);
 
         GL.Attributes.Set_Vertex_Attrib_Pointer
-          (Index  => 0, Count => 1, Kind => Single_Type, Stride => 0, Offset => 0);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, 0, 4);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 16);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 0, 28);
+          (Index  => 0, Count => 1, Kind => Single_Type, Stride => 8, Offset => 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, 8, 2);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 8, 8);
 
         GL.Objects.Programs.Get_Transform_Feedback_Varying
           (Object   => Update_Program,
