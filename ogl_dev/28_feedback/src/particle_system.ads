@@ -13,6 +13,8 @@ package Particle_System is
 
    type Particle_System is private;
 
+   function Get_Billboard_Technique (PS : Particle_System) return
+     Billboard_Technique.Technique;
    function Get_Update_Technique (PS : Particle_System) return
      PS_Update_Technique.Update_Technique;
    procedure Init_Particle_System (PS : in out Particle_System;
