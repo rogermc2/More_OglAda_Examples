@@ -1,5 +1,9 @@
 
+
+with Ada.Text_IO; use Ada.Text_IO;
+
 with GL.Objects.Shaders;
+with GL.Objects.Shaders.Lists;
 
 with Program_Loader;
 
@@ -68,6 +72,35 @@ Package body Billboard_Technique is
       GL.Objects.Programs.Use_Program (theTechnique.Program);
       GL.Uniforms.Set_Single (theTechnique.View_Point_Location, View_Point);
    end Set_View_Point;
+
+   --  -------------------------------------------------------------------------
+
+    procedure Use_Program (theTechnique : Technique) is
+      use GL.Objects.Programs;
+      use GL.Objects.Shaders.Lists;
+   begin
+              if not GL.Objects.Programs.Validate_Status (theTechnique.Program) then
+      --              Put_Line ("Billboard_Technique.Use_Program Update_Program validation failed.");
+      --          else
+      --              Put_Line ("Billboard_Technique.Use_Program Update_Program validated.");
+      declare
+         Shaders_List : GL.Objects.Shaders.Lists.List :=
+                          GL.Objects.Programs.Attached_Shaders (theTechnique.Program);
+         Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
+      begin
+         if Curs = GL.Objects.Shaders.Lists.No_Element then
+            Put_Line ("Billboard_Technique.Use_Program, Shaders list is empty");
+         else
+            GL.Objects.Programs.Use_Program (theTechnique.Program);
+         end if;
+      end;  -- declare block
+              end if;
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Billboard_Technique.Use_Program.");
+         raise;
+   end Use_Program;
 
    --  -------------------------------------------------------------------------
 

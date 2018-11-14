@@ -41,7 +41,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Game_Camera                 : Ogldev_Camera.Camera;
    Dir_Light                   : Ogldev_Lights_Common.Directional_Light;
    Ground                      : Meshes_28.Mesh_28;
-   theTexture                  : Ogldev_Texture.Ogl_Texture;
+   Bricks                      : Ogldev_Texture.Ogl_Texture;
    Normal_Map                  : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
    theParticle_System          : Particle_System.Particle_System;
@@ -73,16 +73,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                  Position, Target, Up);
       Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
       if Result then
+         GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
          Ogldev_Basic_Lighting.Set_Directional_Light (theLighting_Technique, Dir_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit
            (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
 
          Meshes_28.Load_Mesh (Ground, "src/quad.obj");
-         if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
+         if Ogldev_Texture.Init_Texture (Bricks, GL.Low_Level.Enums.Texture_2D,
                                          "../Content/bricks.jpg") then
-            Ogldev_Texture.Load (theTexture);
+            Ogldev_Texture.Load (Bricks);
             Ogldev_Texture.Bind
-              (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+              (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
 
             if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
                                             "../Content/normal_map.jpg") then
@@ -133,12 +134,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Programs.Use_Program
         (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
 
-      Ogldev_Texture.Bind (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+      Ogldev_Texture.Bind (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
       Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.5, 0.5, 1.0);
 --        Ogldev_Pipeline.Set_Scale (Pipe, 20.0, 20.0, 1.0);
       Ogldev_Pipeline.Set_Rotation (Pipe, 90.0, 0.0, 0.0);
+      Ogldev_Pipeline.Set_Rotation (Pipe, 45.0, 0.0, 0.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
@@ -155,9 +157,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_28.Render (Ground);
---        Particle_System.Render (theParticle_System, Int (Delta_Millisec),
---                                Ogldev_Pipeline.Get_VP_Transform (Pipe),
---                                Get_Position (Game_Camera));
+      Particle_System.Render (theParticle_System, Int (Delta_Millisec),
+                              Ogldev_Pipeline.Get_VP_Transform (Pipe),
+                              Get_Position (Game_Camera));
    exception
       when  others =>
          Put_Line ("An exception occurred in Main_Loop.Render_Scene.");
