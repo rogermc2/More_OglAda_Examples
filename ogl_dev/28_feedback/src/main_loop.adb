@@ -65,6 +65,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       VAO.Bind;
       Current_Time_MilliSec := Single (Glfw.Time);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      Ogldev_Lights_Common.Init_Directional_Light
+        (Dir_Light,0.2, 0.8, (1.0, 1.0, 1.0), (1.0, 0.0, 0.0));
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 100.0);
