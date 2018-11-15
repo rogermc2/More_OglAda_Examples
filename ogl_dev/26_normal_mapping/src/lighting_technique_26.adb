@@ -1,5 +1,7 @@
 
 
+with Ada.Strings;
+with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Shaders;
@@ -9,140 +11,185 @@ with Program_Loader;
 
 Package body Lighting_Technique_26 is
 
-   function Light_Program (theTechnique : Technique)
-                               return GL.Objects.Programs.Program is
-   begin
-      return theTechnique.Lighting_Program;
-   end Light_Program;
+    function Point_Name (Index : GL.Types.Int; Unif : String) return String is
+        use Ada.Strings.Unbounded;
+        use GL.Types;
+    begin
+        return To_String ("gPointLights[" &
+                            Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
+                          & "]." & Unif);
+    end Point_Name;
 
-     --  -------------------------------------------------------------------------
+    --  -------------------------------------------------------------------------
 
-   function Init (theTechnique : out Technique) return Boolean is
-      use Program_Loader;
-      use  GL.Objects.Shaders;
-   begin
-      theTechnique.Lighting_Program := Program_From
-        ((Src ("src/shaders/billboard.vs", Vertex_Shader),
-          Src ("src/shaders/billboard.fs", Fragment_Shader),
-          Src ("src/shaders/billboard.gs", Geometry_Shader)));
+    function Spot_Name (Index : GL.Types.Int; Unif : String) return String is
+        use Ada.Strings.Unbounded;
+        use GL.Types;
+    begin
+        return To_String ("gSpotLights[" &
+                            Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
+                          & "]." & Unif);
+    end Spot_Name;
 
-      GL.Objects.Programs.Use_Program  (theTechnique.Lighting_Program);
-      theTechnique.WVP_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gWVP");
-      theTechnique.Light_WVP_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gLightWVP");
-      theTechnique.World_Matrix_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gWorld");
-      theTechnique.Colour_Map_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gColorMap");
-      theTechnique.Shadow_Map_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gShadowMap");
-      theTechnique.Normal_Map_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gNormalMap");
-      theTechnique.Eye_World_Pos_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gEyeWorldPos");
-      theTechnique.Direct_Light_Location.Color := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
-      theTechnique.Direct_Light_Location.Ambient_Intensity := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
-      theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
-      theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gDirectionalLight.Base.Direction");
-      theTechnique.Mat_Specular_Intensity_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gMatSpecularIntensity");
-      theTechnique.Mat_Specular_Power_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gSpecularPower");
-      theTechnique.Num_Point_Lights_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gNumPointLights");
-      theTechnique.Num_Spot_Lights_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Lighting_Program, "gNumSpotLights");
-      return True;
-   end Init;
+    --  -------------------------------------------------------------------------
 
-   --  -------------------------------------------------------------------------
+    function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
+                                  return GL.Uniforms.Uniform is
+    begin
+        return GL.Objects.Programs.Uniform_Location (Light_Program (theTechnique), Uniform_Name);
+    end Get_Uniform_Location;
 
-   procedure Set_Colour_Texture_Unit (theTechnique : Technique;
-                                      Texture_Unit : GL.Types.Int) is
-   begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-      GL.Uniforms.Set_Int (theTechnique.Colour_Map_Location, Texture_Unit);
-   end Set_Colour_Texture_Unit;
+    --  -------------------------------------------------------------------------
 
-   --  -------------------------------------------------------------------------
+    function Light_Program (theTechnique : Technique)
+                           return GL.Objects.Programs.Program is
+    begin
+        return theTechnique.Lighting_Program;
+    end Light_Program;
 
-   procedure Set_Eye_World_Position (theTechnique : Technique;
-                                     Position : GL.Types.Singles.Vector3) is
-   begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-      GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position);
-   end Set_Eye_World_Position;
+    --  -------------------------------------------------------------------------
 
-   --  -------------------------------------------------------------------------
+    function Init (theTechnique : out Technique) return Boolean is
+        use Program_Loader;
+        use  GL.Objects.Shaders;
+        Name                  : String (1 .. 128);
+    begin
+        theTechnique.Lighting_Program := Program_From
+          ((Src ("src/shaders/lighting.vs", Vertex_Shader),
+           Src ("src/shaders/lighting.fs", Fragment_Shader)));
 
-   procedure Set_Light_WVP_Position (theTechnique : Technique;
-                                     Position : GL.Types.Singles.Vector3) is
-   begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-      GL.Uniforms.Set_Single (theTechnique.WVP_Location, Position);
-   end Set_Light_WVP_Position;
+        GL.Objects.Programs.Use_Program  (theTechnique.Lighting_Program);
+        theTechnique.WVP_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gWVP");
+        theTechnique.Light_WVP_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gLightWVP");
+        theTechnique.World_Matrix_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gWorld");
+        theTechnique.Colour_Map_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gColorMap");
+        theTechnique.Shadow_Map_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gShadowMap");
+        theTechnique.Normal_Map_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gNormalMap");
+        theTechnique.Eye_World_Pos_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gEyeWorldPos");
+        theTechnique.Direct_Light_Location.Color := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
+        theTechnique.Direct_Light_Location.Ambient_Intensity := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
+        theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
+        theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gDirectionalLight.Base.Direction");
+        theTechnique.Mat_Specular_Intensity_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gMatSpecularIntensity");
+        theTechnique.Mat_Specular_Power_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gSpecularPower");
+        theTechnique.Num_Point_Lights_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gNumPointLights");
+        theTechnique.Num_Spot_Lights_Location := GL.Objects.Programs.Uniform_Location
+          (theTechnique.Lighting_Program, "gNumSpotLights");
 
-   --  -------------------------------------------------------------------------
+        for index in GL.Types.Int range 1 .. Point_Lights_Location_Array'Size loop
+            Name := Point_Name (index, ".Base.Color");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)) :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Point_Name (index, ".Base.AmbientIntensity");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)) :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Point_Name (index, ".Base.DiffuseIntensity");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)) :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Point_Name (index, ".Position");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)) :=
+              Get_Uniform_Location (theTechnique, Name);
+        end loop;
+        return True;
+    end Init;
 
-   procedure Set_Normal_Map_Texture_Unit (theTechnique : Technique;
-                                      Texture_Unit : GL.Types.Int) is
-   begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-      GL.Uniforms.Set_Int (theTechnique.Normal_Map_Location, Texture_Unit);
-   end Set_Normal_Map_Texture_Unit;
+    --  -------------------------------------------------------------------------
 
-   --  -------------------------------------------------------------------------
+    procedure Set_Colour_Texture_Unit (theTechnique : Technique;
+                                       Texture_Unit : GL.Types.Int) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Int (theTechnique.Colour_Map_Location, Texture_Unit);
+    end Set_Colour_Texture_Unit;
 
-   procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
-                                          Texture_Unit : GL.Types.Int) is
-   begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-      GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
-   end Set_Shadow_Map_Texture_Unit;
+    --  -------------------------------------------------------------------------
 
-   --  -------------------------------------------------------------------------
+    procedure Set_Eye_World_Position (theTechnique : Technique;
+                                      Position : GL.Types.Singles.Vector3) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position);
+    end Set_Eye_World_Position;
 
-   procedure Set_World_Matrix (theTechnique : Technique;
-                               WVP : GL.Types.Singles.Matrix4) is
-   begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-      GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, WVP);
-   end Set_World_Matrix;
+    --  -------------------------------------------------------------------------
 
-   --  -------------------------------------------------------------------------
+    procedure Set_Light_WVP_Position (theTechnique : Technique;
+                                      Position : GL.Types.Singles.Vector3) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.WVP_Location, Position);
+    end Set_Light_WVP_Position;
 
-     procedure Use_Program (theTechnique : Technique) is
-      use GL.Objects.Programs;
-      use GL.Objects.Shaders.Lists;
-   begin
-              if not GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
-      --              Put_Line ("Billboard_Technique.Use_Program Update_Program validation failed.");
-      --          else
-      --              Put_Line ("Billboard_Technique.Use_Program Update_Program validated.");
-      declare
-         Shaders_List : GL.Objects.Shaders.Lists.List :=
-                          GL.Objects.Programs.Attached_Shaders (theTechnique.Lighting_Program);
-         Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
-      begin
-         if Curs = GL.Objects.Shaders.Lists.No_Element then
-            Put_Line ("Lighting_Technique_26.Use_Program, Shaders list is empty");
-         else
-            GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-         end if;
-      end;  -- declare block
-              end if;
+    --  -------------------------------------------------------------------------
 
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in Lighting_Technique_26.Use_Program.");
-         raise;
-   end Use_Program;
+    procedure Set_Normal_Map_Texture_Unit (theTechnique : Technique;
+                                           Texture_Unit : GL.Types.Int) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Int (theTechnique.Normal_Map_Location, Texture_Unit);
+    end Set_Normal_Map_Texture_Unit;
 
-   --  -------------------------------------------------------------------------
+    --  -------------------------------------------------------------------------
+
+    procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
+                                           Texture_Unit : GL.Types.Int) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
+    end Set_Shadow_Map_Texture_Unit;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Set_World_Matrix (theTechnique : Technique;
+                                WVP : GL.Types.Singles.Matrix4) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, WVP);
+    end Set_World_Matrix;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Use_Program (theTechnique : Technique) is
+        use GL.Objects.Programs;
+        use GL.Objects.Shaders.Lists;
+    begin
+        if not GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
+            --              Put_Line ("Billboard_Technique.Use_Program Update_Program validation failed.");
+            --          else
+            --              Put_Line ("Billboard_Technique.Use_Program Update_Program validated.");
+            declare
+                Shaders_List : GL.Objects.Shaders.Lists.List :=
+                                 GL.Objects.Programs.Attached_Shaders (theTechnique.Lighting_Program);
+                Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
+            begin
+                if Curs = GL.Objects.Shaders.Lists.No_Element then
+                    Put_Line ("Lighting_Technique_26.Use_Program, Shaders list is empty");
+                else
+                    GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+                end if;
+            end;  -- declare block
+        end if;
+
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in Lighting_Technique_26.Use_Program.");
+            raise;
+    end Use_Program;
+
+    --  -------------------------------------------------------------------------
 
 end Lighting_Technique_26;
