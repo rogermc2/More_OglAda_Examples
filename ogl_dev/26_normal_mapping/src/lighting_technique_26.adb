@@ -184,6 +184,24 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
+   procedure Set_Mat_Specular_Intensity (theTechnique : Technique;
+                                        Intensity : GL.Types.Single) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.Mat_Specular_Intensity_Location, Intensity);
+    end Set_Mat_Specular_Intensity;
+
+    --  -------------------------------------------------------------------------
+
+   procedure Set_Mat_Specular_Power (theTechnique : Technique;
+                                     Power : GL.Types.Single) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.Mat_Specular_Power_Location, Power);
+    end Set_Mat_Specular_Power;
+
+    --  -------------------------------------------------------------------------
+
     procedure Set_Normal_Map_Texture_Unit (theTechnique : Technique;
                                            Texture_Unit : GL.Types.Int) is
     begin
@@ -193,12 +211,64 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
+   procedure Set_Point_Lights (theTechnique : Technique;
+                               Lights : Point_Lights_Array) is
+    begin
+      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+      for index in GL.Types.UInt range 1 .. Point_Lights_Array'Size loop
+         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Color,
+                                 Lights (index).Base.Colour);
+         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Ambient_Intensity,
+                                 Lights (index).Base.Ambient_Intensity);
+         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Diffuse_Intensity,
+                                 Lights (index).Base.Diffuse_Intensity);
+         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Position,
+                                 Lights (index).Position);
+         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Constant_Atten,
+                                 Lights (index).Atten.Constant_Atten);
+         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Linear,
+                                 Lights (index).Atten.Linear);
+         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Exp,
+                                 Lights (index).Atten.Exp);
+      end loop;
+    end Set_Point_Lights;
+
+    --  -------------------------------------------------------------------------
+
     procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
                                            Texture_Unit : GL.Types.Int) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
     end Set_Shadow_Map_Texture_Unit;
+
+    --  -------------------------------------------------------------------------
+
+   procedure Set_Spot_Lights (theTechnique : Technique;
+                               Lights : Spot_Lights_Array) is
+    begin
+      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+      for index in GL.Types.UInt range 1 .. Spot_Lights_Array'Size loop
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Color,
+                                 Lights (index).Base.Base.Colour);
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Ambient_Intensity,
+                                 Lights (index).Base.Base.Ambient_Intensity);
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Diffuse_Intensity,
+                                 Lights (index).Base.Base.Diffuse_Intensity);
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Position,
+                                 Lights (index).Base.Position);
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
+                                 Lights (index).Direction);
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
+                                 Lights (index).Cutoff);
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
+                                 Lights (index).Base.Atten.Constant_Atten);
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,
+                                 Lights (index).Base.Atten.Linear);
+         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Exp,
+                                 Lights (index).Base.Atten.Exp);
+      end loop;
+    end Set_Spot_Lights;
 
     --  -------------------------------------------------------------------------
 
