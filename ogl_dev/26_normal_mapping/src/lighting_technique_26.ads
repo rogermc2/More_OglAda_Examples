@@ -60,6 +60,11 @@ private
       Direction         : GL.Uniforms.Uniform := 0;
    end record;
 
+   type Point_Lights_Location_Array is array (1 .. Max_Point_Lights) of
+      GL.Uniforms.Uniform;
+   type Spot_Lights_Location_Array is array (1 .. Max_Spot_Lights) of
+      GL.Uniforms.Uniform;
+
    type Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
       WVP_Location                    : GL.Uniforms.Uniform := 0;
@@ -74,6 +79,8 @@ private
       Mat_Specular_Power_Location     : GL.Uniforms.Uniform := 0;
       Num_Point_Lights_Location       : GL.Uniforms.Uniform := 0;
       Num_Spot_Lights_Location        : GL.Uniforms.Uniform := 0;
+      Point_Lights_Locations          : Point_Lights_Location_Array;
+      Spot_Lights_Locations           : Spot_Lights_Location_Array;
    end record;
 
 end Lighting_Technique_26;
