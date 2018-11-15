@@ -35,7 +35,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Background                  : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
    VAO                         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   theLighting_Technique       : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
+   theLighting_Technique       : Lighting_Technique_26.Technique;
    Game_Camera                 : Ogldev_Camera.Camera;
    Dir_Light                   : Ogldev_Lights_Common.Directional_Light;
    Sphere_Mesh                 : Meshes_26.Mesh_26;
@@ -72,13 +72,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Camera.Init_Camera (Game_Camera,
                                  Int (Window_Width), Int (Window_Height),
                                  Position, Target, Up);
-      Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
+      Result := Lighting_Technique_26.Init (theLighting_Technique);
       if Result then
-         GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
-         Ogldev_Basic_Lighting.Set_Directional_Light (theLighting_Technique, Dir_Light);
-         Ogldev_Basic_Lighting.Set_Color_Texture_Unit
+         GL.Objects.Programs.Use_Program (Lighting_Technique_26.Technique (theLighting_Technique));
+         Lighting_Technique_26.Set_Directional_Light (theLighting_Technique, Dir_Light);
+         Lighting_Technique_26.Set_Color_Texture_Unit
            (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
-         Ogldev_Basic_Lighting.Set_Normal_Map_Texture_Unit
+         Lighting_Technique_26.Set_Normal_Map_Texture_Unit
            (theLighting_Technique, UInt (Ogldev_Engine_Common.Normal_Texture_Unit));
 
          Meshes_26.Load_Mesh (Sphere_Mesh, "src/quad.obj");
