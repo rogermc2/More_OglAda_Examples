@@ -211,6 +211,15 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
+   procedure Set_WVP (theTechnique : Technique;
+                      WVP : GL.Types.Singles.Matrix4) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);
+    end Set_WVP;
+
+    --  -------------------------------------------------------------------------
+
     function Spot_Name (Index : GL.Types.Int; Unif : String) return String is
         use Ada.Strings.Unbounded;
         use GL.Types;

@@ -28,6 +28,8 @@ Package Lighting_Technique_26 is
                                            Texture_Unit : GL.Types.Int);
     procedure Set_World_Matrix (theTechnique : Technique;
                                 WVP : GL.Types.Singles.Matrix4);
+    procedure Set_WVP (theTechnique : Technique;
+                       WVP          : GL.Types.Singles.Matrix4);
     procedure Use_Program (theTechnique : Technique);
 
 private
