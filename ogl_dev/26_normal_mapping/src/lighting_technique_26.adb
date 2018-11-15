@@ -7,6 +7,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Shaders;
 with GL.Objects.Shaders.Lists;
 
+with Maths;
 with Program_Loader;
 
 Package body Lighting_Technique_26 is
@@ -17,7 +18,7 @@ Package body Lighting_Technique_26 is
     --  -------------------------------------------------------------------------
 
     function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
-                                  return GL.Uniforms.Uniform is
+                                   return GL.Uniforms.Uniform is
     begin
         return GL.Objects.Programs.Uniform_Location (Light_Program (theTechnique), Uniform_Name);
     end Get_Uniform_Location;
@@ -25,7 +26,7 @@ Package body Lighting_Technique_26 is
     --  -------------------------------------------------------------------------
 
     function Light_Program (theTechnique : Technique)
-                           return GL.Objects.Programs.Program is
+                            return GL.Objects.Programs.Program is
     begin
         return theTechnique.Lighting_Program;
     end Light_Program;
@@ -142,12 +143,26 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
-     procedure Set_Colour_Texture_Unit (theTechnique : Technique;
+    procedure Set_Colour_Texture_Unit (theTechnique : Technique;
                                        Texture_Unit : GL.Types.Int) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Colour_Map_Location, Texture_Unit);
     end Set_Colour_Texture_Unit;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Set_Directional_Light (theTechnique : Technique; Light : Direct_Light) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour);
+        GL.Uniforms.Set_Single
+          (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
+        GL.Uniforms.Set_Single
+          (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
+        GL.Uniforms.Set_Single
+          (theTechnique.Direct_Light_Location.Direction, Maths.Normalized (Light.Direction));
+    end Set_Directional_Light;
 
     --  -------------------------------------------------------------------------
 
@@ -211,7 +226,7 @@ Package body Lighting_Technique_26 is
         use GL.Objects.Programs;
         use GL.Objects.Shaders.Lists;
     begin
-        if not GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
+        if GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
             --              Put_Line ("Billboard_Technique.Use_Program Update_Program validation failed.");
             --          else
             --              Put_Line ("Billboard_Technique.Use_Program Update_Program validated.");
