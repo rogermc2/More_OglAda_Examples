@@ -11,25 +11,8 @@ with Program_Loader;
 
 Package body Lighting_Technique_26 is
 
-    function Point_Name (Index : GL.Types.Int; Unif : String) return String is
-        use Ada.Strings.Unbounded;
-        use GL.Types;
-    begin
-        return To_String ("gPointLights[" &
-                            Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
-                          & "]." & Unif);
-    end Point_Name;
-
-    --  -------------------------------------------------------------------------
-
-    function Spot_Name (Index : GL.Types.Int; Unif : String) return String is
-        use Ada.Strings.Unbounded;
-        use GL.Types;
-    begin
-        return To_String ("gSpotLights[" &
-                            Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
-                          & "]." & Unif);
-    end Spot_Name;
+    function Point_Name (Index : GL.Types.Int; Unif : String) return String ;
+    function Spot_Name (Index : GL.Types.Int; Unif : String) return String;
 
     --  -------------------------------------------------------------------------
 
@@ -91,17 +74,56 @@ Package body Lighting_Technique_26 is
           (theTechnique.Lighting_Program, "gNumSpotLights");
 
         for index in GL.Types.Int range 1 .. Point_Lights_Location_Array'Size loop
-            Name := Point_Name (index, ".Base.Color");
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)) :=
+            Name := Point_Name (index, "Base.Color");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Color :=
               Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, ".Base.AmbientIntensity");
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)) :=
+            Name := Point_Name (index, "Base.AmbientIntensity");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Ambient_Intensity :=
               Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, ".Base.DiffuseIntensity");
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)) :=
+            Name := Point_Name (index, "Base.DiffuseIntensity");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Diffuse_Intensity :=
               Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, ".Position");
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)) :=
+            Name := Point_Name (index, "Position");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Position :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Point_Name (index, "Atten.Constant");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Constant_Atten :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Point_Name (index, "Atten.Linear");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Linear :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Point_Name (index, "Atten.Exp");
+            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Exp :=
+              Get_Uniform_Location (theTechnique, Name);
+        end loop;
+
+        for index in GL.Types.Int range 1 .. Spot_Lights_Location_Array'Size loop
+            Name := Spot_Name (index, "Base.Base.Color");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Color :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Spot_Name (index, "Base.Base.AmbientIntensity");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Ambient_Intensity :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Spot_Name (index, "Base.Position");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Position :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Spot_Name (index, "Direction");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Direction :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Spot_Name (index, "CutOff");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Cutoff :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Spot_Name (index, "Base.DiffuseIntensity");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Diffuse_Intensity :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Spot_Name (index, "Atten.Constant");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Constant_Atten :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Spot_Name (index, "Atten.Linear");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Linear :=
+              Get_Uniform_Location (theTechnique, Name);
+            Name := Spot_Name (index, "Atten.Exp");
+            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Exp :=
               Get_Uniform_Location (theTechnique, Name);
         end loop;
         return True;
@@ -109,7 +131,18 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Colour_Texture_Unit (theTechnique : Technique;
+    function Point_Name (Index : GL.Types.Int; Unif : String) return String is
+        use Ada.Strings.Unbounded;
+        use GL.Types;
+    begin
+        return To_String ("gPointLights[" &
+                            Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
+                          & "]." & Unif);
+    end Point_Name;
+
+    --  -------------------------------------------------------------------------
+
+     procedure Set_Colour_Texture_Unit (theTechnique : Technique;
                                        Texture_Unit : GL.Types.Int) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
@@ -160,6 +193,17 @@ Package body Lighting_Technique_26 is
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, WVP);
     end Set_World_Matrix;
+
+    --  -------------------------------------------------------------------------
+
+    function Spot_Name (Index : GL.Types.Int; Unif : String) return String is
+        use Ada.Strings.Unbounded;
+        use GL.Types;
+    begin
+        return To_String ("gSpotLights[" &
+                            Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
+                          & "]." & Unif);
+    end Spot_Name;
 
     --  -------------------------------------------------------------------------
 

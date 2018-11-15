@@ -61,9 +61,9 @@ private
    end record;
 
    type Point_Lights_Location_Array is array (1 .. Max_Point_Lights) of
-      GL.Uniforms.Uniform;
+      Point_Light;
    type Spot_Lights_Location_Array is array (1 .. Max_Spot_Lights) of
-      GL.Uniforms.Uniform;
+      Spot_Light;
 
    type Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
