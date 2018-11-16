@@ -124,7 +124,8 @@ Package body Lighting_Technique_26 is
     end Init_Directional_Light;
 
     --  -------------------------------------------------------------------------
-    function Point_Name (Index : GL.Types.Int; Unif : String) return String is
+
+   function Point_Name (Index : GL.Types.Int; Unif : String) return String is
         use Ada.Strings.Unbounded;
         use GL.Types;
     begin
