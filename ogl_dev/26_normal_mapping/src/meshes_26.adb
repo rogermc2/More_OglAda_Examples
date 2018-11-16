@@ -297,7 +297,7 @@ package body Meshes_26 is
          if Textures.Contains (anEntry.Material_Index) then
             aTexture := Textures.Element (anEntry.Material_Index);
             Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-            Put_Line ("Meshes_28.Render aTexture bound.");
+            Put_Line ("Meshes_26.Render aTexture bound.");
          end if;
 
          GL.Objects.Buffers.Draw_Elements
@@ -309,6 +309,11 @@ package body Meshes_26 is
       GL.Attributes.Disable_Vertex_Attrib_Array (1);
       GL.Attributes.Disable_Vertex_Attrib_Array (2);
       GL.Attributes.Disable_Vertex_Attrib_Array (3);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Mesh_Project_28.Render.");
+         raise;
    end Render;
 
    --  --------------------------------------------------------------------------

@@ -62,8 +62,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       VAO.Initialize_Id;
       VAO.Bind;
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-      Lighting_Technique_26.Set_Directional_Light
-        (theLighting_Technique, Dir_Light);
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 100.0);
@@ -158,6 +156,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
       Meshes_26.Render (Sphere_Mesh);
+
    exception
       when  others =>
          Put_Line ("An exception occurred in Main_Loop.Render_Scene.");
