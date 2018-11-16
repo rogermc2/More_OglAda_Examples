@@ -1,15 +1,15 @@
-#version 120
+#version 410 core
                                                                                     
 const int MAX_POINT_LIGHTS = 2;                                                     
 const int MAX_SPOT_LIGHTS = 2;                                                      
                                                                                     
-varying vec4 LightSpacePos;
-varying vec2 TexCoord0;
-varying vec3 Normal0;
-varying vec3 WorldPos0;
-varying vec3 Tangent0;
+in vec4 LightSpacePos;
+in vec2 TexCoord0;
+in vec3 Normal0;
+in vec3 WorldPos0;
+in vec3 Tangent0;
                                                                                     
-varying vec4 FragColor;
+out vec4 FragColor;
                                                                                     
 struct BaseLight                                                                    
     {
@@ -63,7 +63,7 @@ float CalcShadowFactor(vec4 LightSpacePos)
     vec2 UVCoords;                                                                          
     UVCoords.x = 0.5 * ProjCoords.x + 0.5;                                                  
     UVCoords.y = 0.5 * ProjCoords.y + 0.5;                                                  
-    float Depth = texture2D(gShadowMap, UVCoords).x;
+    float Depth = texture(gShadowMap, UVCoords).x;
     if (Depth <= (ProjCoords.z + 0.005))                                                    
         return 0.5;                                                                         
     else                                                                                    
@@ -137,7 +137,7 @@ vec3 CalcBumpedNormal()
     vec3 Tangent = normalize(Tangent0);                                                     
     Tangent = normalize(Tangent - dot(Tangent, Normal) * Normal);                           
     vec3 Bitangent = cross(Tangent, Normal);                                                
-    vec3 BumpMapNormal = texture2D(gNormalMap, TexCoord0).xyz;
+    vec3 BumpMapNormal = texture(gNormalMap, TexCoord0).xyz;
     BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);                              
     vec3 NewNormal;                                                                         
     mat3 TBN = mat3(Tangent, Bitangent, Normal);                                            
@@ -160,6 +160,6 @@ void main()
         TotalLight += CalcSpotLight(gSpotLights[i], Normal, LightSpacePos);                 
         }
         
-    vec4 SampledColor = texture2D(gColorMap, TexCoord0.xy);                                 
-    gl_FragColor = SampledColor * TotalLight;
+    vec4 SampledColor = texture(gColorMap, TexCoord0.xy);
+    FragColor = SampledColor * TotalLight;
 }
