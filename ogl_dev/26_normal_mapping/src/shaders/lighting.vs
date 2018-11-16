@@ -1,19 +1,19 @@
-#version 120
+#version 410 core
                                                                                     
-attribute vec3 Position;
-attribute vec2 TexCoord;
-attribute vec3 Normal;
-attribute vec3 Tangent;
+layout (location = 0) in vec3 Position;
+layout (location = 1) in vec2 TexCoord;
+layout (location = 2) in vec3 Normal;
+layout (location = 3) in vec3 Tangent;
                                                                                     
 uniform mat4 gWVP;                                                                  
 uniform mat4 gLightWVP;                                                             
 uniform mat4 gWorld;                                                                
                                                                                     
-varying vec4 LightSpacePos;
-varying vec2 TexCoord0;
-varying vec3 Normal0;
-varying vec3 WorldPos0;
-varying vec3 Tangent0;                                                                  
+out vec4 LightSpacePos;
+out vec2 TexCoord0;
+out vec3 Normal0;
+out vec3 WorldPos0;
+out vec3 Tangent0;
                                                                                     
 void main()                                                                         
 {                                                                                   
