@@ -42,7 +42,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Normal_Map                  : Ogldev_Texture.Ogl_Texture;
    Trivial_Normal_Map          : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
-   Current_Time_MilliSec       : Single;
    Scale                       : Single := 0.0;
    Bump_Map_Enabled            : Boolean := True;
 
@@ -62,7 +61,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       VAO.Initialize_Id;
       VAO.Bind;
-      Current_Time_MilliSec := Single (Glfw.Time);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Lighting_Technique_26.Set_Directional_Light
         (theLighting_Technique, Dir_Light);
@@ -122,31 +120,21 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
-      Time_Now_Millisec    : Single;
-      Delta_Millisec       : UInt;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
 
-      Time_Now_Millisec := 1000.0 * Single (Glfw.Time);
-      Delta_Millisec := UInt (Time_Now_Millisec - Current_Time_MilliSec);
-      Current_Time_MilliSec := Time_Now_Millisec;
-
-      Ogldev_Camera.Update_Camera (Game_Camera, Window);
+       Ogldev_Camera.Update_Camera (Game_Camera, Window);
 
       Utilities.Clear_Background_Colour_And_Depth (Background);
 --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Lighting_Technique_26.Use_Program (theLighting_Technique);
 
-      Ogldev_Texture.Bind (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-      Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.5, 0.5, 1.0);
---        Ogldev_Pipeline.Set_Scale (Pipe, 20.0, 20.0, 1.0);
-      Ogldev_Pipeline.Set_Rotation (Pipe, 90.0, 0.0, 0.0);
-      Ogldev_Pipeline.Set_Rotation (Pipe, 45.0, 0.0, 0.0);
+      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
@@ -154,18 +142,22 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform",
 --                                Ogldev_Pipeline.Get_World_Transform (Pipe));
+      Ogldev_Texture.Bind (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+      if Bump_Map_Enabled then
+         Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
+      else
+         Ogldev_Texture.Bind (Trivial_Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
+      end if;
+
+      Lighting_Technique_26.Set_WVP (theLighting_Technique,
+                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Lighting_Technique_26.Set_World_Matrix
         (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
---                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-      Lighting_Technique_26.Set_WVP (theLighting_Technique,
-                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+--                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
       Meshes_26.Render (Sphere_Mesh);
---        Particle_System.Render (theParticle_System, Int (Delta_Millisec),
---                                Ogldev_Pipeline.Get_VP_Transform (Pipe),
---                                Get_Position (Game_Camera));
    exception
       when  others =>
          Put_Line ("An exception occurred in Main_Loop.Render_Scene.");
