@@ -21,7 +21,6 @@ with Utilities;
 
 with Ogldev_Camera;
 with Ogldev_Engine_Common;
-with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
