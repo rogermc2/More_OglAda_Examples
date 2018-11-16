@@ -115,6 +115,15 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
+   procedure Init_Directional_Light (Light : out Direct_Light) is
+    begin
+        Light.Base.Colour := (1.0, 1.0, 1.0);
+        Light.Base.Ambient_Intensity := 0.2;
+        Light.Base.Diffuse_Intensity := 0.8;
+        Light.Direction := (1.0, 0.0, 0.0);
+    end Init_Directional_Light;
+
+    --  -------------------------------------------------------------------------
     function Point_Name (Index : GL.Types.Int; Unif : String) return String is
         use Ada.Strings.Unbounded;
         use GL.Types;
@@ -145,6 +154,11 @@ Package body Lighting_Technique_26 is
           (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
         GL.Uniforms.Set_Single
           (theTechnique.Direct_Light_Location.Direction, Maths.Normalized (Light.Direction));
+
+    exception
+      when others =>
+         Put_Line ("An exception occurred in Lighting_Technique_26.Set_Directional_Light.");
+         raise;
     end Set_Directional_Light;
 
     --  -------------------------------------------------------------------------
