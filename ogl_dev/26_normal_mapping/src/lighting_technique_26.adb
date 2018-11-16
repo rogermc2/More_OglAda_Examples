@@ -12,7 +12,7 @@ with Program_Loader;
 
 Package body Lighting_Technique_26 is
 
-    function Point_Name (Index : GL.Types.Int; Unif : String) return String ;
+    function Point_Name (Index : GL.Types.Int; Unif : String) return String;
     function Spot_Name (Index : GL.Types.Int; Unif : String) return String;
 
     --  -------------------------------------------------------------------------
@@ -36,7 +36,6 @@ Package body Lighting_Technique_26 is
     function Init (theTechnique : out Technique) return Boolean is
         use Program_Loader;
         use  GL.Objects.Shaders;
-        Name                  : String (1 .. 128);
     begin
         theTechnique.Lighting_Program := Program_From
           ((Src ("src/shaders/lighting.vs", Vertex_Shader),
@@ -74,58 +73,42 @@ Package body Lighting_Technique_26 is
         theTechnique.Num_Spot_Lights_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gNumSpotLights");
 
-        for index in GL.Types.Int range 1 .. Point_Lights_Location_Array'Size loop
-            Name := Point_Name (index, "Base.Color");
+        for index in GL.Types.Int range 1 .. Point_Lights_Location_Array'Length loop
             theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Color :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, "Base.AmbientIntensity");
+              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.Color"));
             theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Ambient_Intensity :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, "Base.DiffuseIntensity");
+              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.AmbientIntensity"));
             theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Diffuse_Intensity :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, "Position");
+              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.DiffuseIntensity"));
             theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Position :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, "Atten.Constant");
+              Get_Uniform_Location (theTechnique, Point_Name (index, "Position"));
             theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Constant_Atten :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, "Atten.Linear");
+              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Constant"));
             theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Linear :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Point_Name (index, "Atten.Exp");
+              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Linear"));
             theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Exp :=
-              Get_Uniform_Location (theTechnique, Name);
+              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Exp"));
         end loop;
 
-        for index in GL.Types.Int range 1 .. Spot_Lights_Location_Array'Size loop
-            Name := Spot_Name (index, "Base.Base.Color");
+        for index in GL.Types.Int range 1 .. Spot_Lights_Location_Array'Length loop
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Color :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Spot_Name (index, "Base.Base.AmbientIntensity");
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.Color"));
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Ambient_Intensity :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Spot_Name (index, "Base.Position");
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.AmbientIntensity"));
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Position :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Spot_Name (index, "Direction");
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Position"));
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Direction :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Spot_Name (index, "CutOff");
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "Direction"));
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Cutoff :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Spot_Name (index, "Base.DiffuseIntensity");
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "CutOff"));
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Diffuse_Intensity :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Spot_Name (index, "Atten.Constant");
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.DiffuseIntensity"));
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Constant_Atten :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Spot_Name (index, "Atten.Linear");
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Constant"));
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Linear :=
-              Get_Uniform_Location (theTechnique, Name);
-            Name := Spot_Name (index, "Atten.Exp");
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Linear"));
             theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Exp :=
-              Get_Uniform_Location (theTechnique, Name);
+              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Exp"));
         end loop;
         return True;
     end Init;
