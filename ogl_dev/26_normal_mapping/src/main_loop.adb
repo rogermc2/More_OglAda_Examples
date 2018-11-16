@@ -70,8 +70,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                  Position, Target, Up);
       Result := Lighting_Technique_26.Init (theLighting_Technique);
       if Result then
-         GL.Objects.Programs.Use_Program (Lighting_Technique_26.Light_Program (theLighting_Technique));
-         Lighting_Technique_26.Set_Directional_Light (theLighting_Technique, Dir_Light);
+         Lighting_Technique_26.Init_Directional_Light (Dir_Light);
+         GL.Objects.Programs.Use_Program
+           (Lighting_Technique_26.Light_Program (theLighting_Technique));
+         Lighting_Technique_26.Set_Directional_Light
+           (theLighting_Technique, Dir_Light);
          Lighting_Technique_26.Set_Colour_Texture_Unit
            (theLighting_Technique, Ogldev_Engine_Common.Colour_Texture_Unit);
          Lighting_Technique_26.Set_Normal_Map_Texture_Unit
