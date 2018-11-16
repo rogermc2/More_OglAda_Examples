@@ -16,6 +16,8 @@ Package Lighting_Technique_26 is
    function Light_Program (theTechnique : Technique)
                             return GL.Objects.Programs.Program;
    function Init (theTechnique : out Technique) return Boolean;
+
+   procedure Init_Directional_Light (Light : out Direct_Light);
    procedure Set_Colour_Texture_Unit (theTechnique : Technique;
                                       Texture_Unit : GL.Types.Int);
    procedure Set_Directional_Light (theTechnique : Technique;
@@ -58,7 +60,7 @@ private
 
    type Direct_Light is record
       Base      : Base_Light;
-      Direction : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
+      Direction : GL.Types.Singles.Vector3 := (1.0, 0.0, 0.0);
    end record;
 
    type Point_Light is record
