@@ -40,6 +40,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Sphere_Mesh                 : Meshes_26.Mesh_26;
    theTexture                  : Ogldev_Texture.Ogl_Texture;
    Normal_Map                  : Ogldev_Texture.Ogl_Texture;
+   Trivial_Normal_Map          : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
    Current_Time_MilliSec       : Single;
    Scale                       : Single := 0.0;
@@ -80,7 +81,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Lighting_Technique_26.Set_Normal_Map_Texture_Unit
            (theLighting_Technique, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-         Meshes_26.Load_Mesh (Sphere_Mesh, "src/quad.obj");
+         Meshes_26.Load_Mesh (Sphere_Mesh, "src/box.obj");
          if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                          "../Content/bricks.jpg") then
             Ogldev_Texture.Load (theTexture);
@@ -90,7 +91,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
                                             "../Content/normal_map.jpg") then
                Ogldev_Texture.Load (Normal_Map);
+               if Ogldev_Texture.Init_Texture (Trivial_Normal_Map, GL.Low_Level.Enums.Texture_2D,
+                                            "../Content/normal_up.jpg") then
+                   Ogldev_Texture.Load (Trivial_Normal_Map);
 
+                else
+                   Put_Line ("Main_Loop.Init, normal_up.jpg failed to load.");
+                end if;
             else
                Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
             end if;
