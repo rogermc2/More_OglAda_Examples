@@ -80,7 +80,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Lighting_Technique_26.Set_Normal_Map_Texture_Unit
            (theLighting_Technique, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-         Meshes_26.Load_Mesh (Sphere_Mesh, "src/box.obj");
+         Meshes_26.Load_Mesh (Sphere_Mesh, "../Content/box.obj");
          if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                          "../Content/bricks.jpg") then
             Ogldev_Texture.Load (theTexture);
