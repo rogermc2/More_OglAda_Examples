@@ -11,6 +11,8 @@ with Scene;
 
 package Importer is
 
+    Import_Exception : Exception;
+
    function Import_File (File_Name : String; Flags : GL.Types.UInt)
                          return Scene.AI_Scene;
    function Read_File (File_Name : String; Flags : GL.Types.UInt)
