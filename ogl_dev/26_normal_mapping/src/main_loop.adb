@@ -54,8 +54,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --        Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
 --        Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
 
-      Position            : constant Singles.Vector3 := (0.5, 1.025, 0.25);
-      Target              : constant Singles.Vector3 := (0.0, -0.5, -1.0);
+      Camera_Position     : constant Singles.Vector3 := (0.5, 1.025, 0.25);
+      Target              : constant Singles.Vector3 := (0.0, -0.5, 1.0);
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
       Particle_System_Pos : constant GL.Types.Singles.Vector3 := (0.0, 0.0, -1.0);
    begin
@@ -67,7 +67,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          1.0, 100.0);
       Ogldev_Camera.Init_Camera (Game_Camera,
                                  Int (Window_Width), Int (Window_Height),
-                                 Position, Target, Up);
+                                 Camera_Position, Target, Up);
       Result := Lighting_Technique_26.Init (theLighting_Technique);
       if Result then
          Lighting_Technique_26.Init_Directional_Light (Dir_Light);
@@ -126,7 +126,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
 
-       Ogldev_Camera.Update_Camera (Game_Camera, Window);
+      Ogldev_Camera.Update_Camera (Game_Camera, Window);
 
       Utilities.Clear_Background_Colour_And_Depth (Background);
 --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
