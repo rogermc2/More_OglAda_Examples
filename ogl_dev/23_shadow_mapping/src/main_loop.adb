@@ -36,10 +36,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shadow_Technique       : Shadow_Map_Technique.Technique;
    Game_Camera            : Ogldev_Camera.Camera;
-   Dir_Light              : Shadow_Map_Technique.Direct_Light;
    Quad_Mesh              : Meshes_23.Mesh_23;
---     theTexture             : Ogldev_Texture.Ogl_Texture;
---     Normal_Map             : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
 
@@ -68,33 +65,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                  Camera_Position, Target, Up);
       Result := Shadow_Map_Technique.Init (Shadow_Technique);
       if Result then
-         Shadow_Map_Technique.Init_Directional_Light (Dir_Light);
          GL.Objects.Programs.Use_Program
            (Shadow_Map_Technique.Light_Program (Shadow_Technique));
---           Shadow_Map_Technique.Set_Directional_Light
---             (Shadow_Technique, Dir_Light);
---           Shadow_Map_Technique.Set_Colour_Texture_Unit
---             (Shadow_Technique, Ogldev_Engine_Common.Colour_Texture_Unit);
---           Shadow_Map_Technique.Set_Normal_Map_Texture_Unit
---             (Shadow_Technique, Ogldev_Engine_Common.Normal_Texture_Unit);
 
          Meshes_23.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
---           if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
---                                           "../Content/bricks.jpg") then
---              Ogldev_Texture.Load (theTexture);
---              Ogldev_Texture.Bind
---                (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
---
---              if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
---                                              "../Content/normal_map.jpg") then
---                 Ogldev_Texture.Load (Normal_Map);
---
---              else
---                 Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
---              end if;
---           else
---              Put_Line ("Main_Loop.Init, bricks.jpg failed to load.");
---           end if;
       else
          Put_Line ("Main_Loop.Init, Ogldev_Basic_Lighting failed to initialize.");
       end if;
