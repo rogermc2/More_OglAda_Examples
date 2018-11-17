@@ -18,7 +18,7 @@ package Vertex_Data is
     package pIndex_Pointers is new Interfaces.C.Pointers (Point_Index, Point_Index, Index_Array,
                                                    Default_Index_Terminator);
 
-    Vertex_Indices : Index_Array (0 .. 35) :=
+    Vertex_Indices : Index_Array (1 .. 36) :=
                        (0, 1, 2,
                         2, 1, 3,
                         2, 3, 4,
@@ -32,7 +32,7 @@ package Vertex_Data is
                         7, 5, 3,
                         7, 3, 1);
 
-    Vertices_With_Tex : Points_Array (0 .. 36 * 5 - 1) :=
+    Vertices_With_Tex : Points_Array (1 .. 36 * 5) :=
          --  Position                 Texture Coord
            (-0.25, -0.25,  0.25,      0.0, 1.0,
             -0.25, -0.25, -0.25,      0.0, 0.0,
