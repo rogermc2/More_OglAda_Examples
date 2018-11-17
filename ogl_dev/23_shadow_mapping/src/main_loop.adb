@@ -25,25 +25,23 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
-with Lighting_Technique_26;
-with Meshes_26;
+with Shadow_Map_Technique;
+with Meshes_23;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background                  : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
-   VAO                         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   theLighting_Technique       : Lighting_Technique_26.Technique;
-   Game_Camera                 : Ogldev_Camera.Camera;
-   Dir_Light                   : Lighting_Technique_26.Direct_Light;
-   Sphere_Mesh                 : Meshes_26.Mesh_26;
-   theTexture                  : Ogldev_Texture.Ogl_Texture;
-   Normal_Map                  : Ogldev_Texture.Ogl_Texture;
-   Trivial_Normal_Map          : Ogldev_Texture.Ogl_Texture;
-   Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
-   Scale                       : Single := 0.0;
-   Bump_Map_Enabled            : Boolean := True;
+   VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Shadow_Technique       : Shadow_Map_Technique.Technique;
+   Game_Camera            : Ogldev_Camera.Camera;
+   Dir_Light              : Shadow_Map_Technique.Direct_Light;
+   Quad_Mesh              : Meshes_23.Mesh_23;
+--     theTexture             : Ogldev_Texture.Ogl_Texture;
+--     Normal_Map             : Ogldev_Texture.Ogl_Texture;
+   Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
+   Scale                  : Single := 0.0;
 
    --  ------------------------------------------------------------------------
 
@@ -64,45 +62,39 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
-         1.0, 100.0);
+         1.0, 50.0);
       Ogldev_Camera.Init_Camera (Game_Camera,
                                  Int (Window_Width), Int (Window_Height),
                                  Camera_Position, Target, Up);
-      Result := Lighting_Technique_26.Init (theLighting_Technique);
+      Result := Shadow_Map_Technique.Init (Shadow_Technique);
       if Result then
-         Lighting_Technique_26.Init_Directional_Light (Dir_Light);
+         Shadow_Map_Technique.Init_Directional_Light (Dir_Light);
          GL.Objects.Programs.Use_Program
-           (Lighting_Technique_26.Light_Program (theLighting_Technique));
-         Lighting_Technique_26.Set_Directional_Light
-           (theLighting_Technique, Dir_Light);
-         Lighting_Technique_26.Set_Colour_Texture_Unit
-           (theLighting_Technique, Ogldev_Engine_Common.Colour_Texture_Unit);
-         Lighting_Technique_26.Set_Normal_Map_Texture_Unit
-           (theLighting_Technique, Ogldev_Engine_Common.Normal_Texture_Unit);
+           (Shadow_Map_Technique.Light_Program (Shadow_Technique));
+--           Shadow_Map_Technique.Set_Directional_Light
+--             (Shadow_Technique, Dir_Light);
+--           Shadow_Map_Technique.Set_Colour_Texture_Unit
+--             (Shadow_Technique, Ogldev_Engine_Common.Colour_Texture_Unit);
+--           Shadow_Map_Technique.Set_Normal_Map_Texture_Unit
+--             (Shadow_Technique, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-         Meshes_26.Load_Mesh (Sphere_Mesh, "../Content/box.obj");
-         if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                         "../Content/bricks.jpg") then
-            Ogldev_Texture.Load (theTexture);
-            Ogldev_Texture.Bind
-              (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-
-            if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
-                                            "../Content/normal_map.jpg") then
-               Ogldev_Texture.Load (Normal_Map);
-               if Ogldev_Texture.Init_Texture (Trivial_Normal_Map, GL.Low_Level.Enums.Texture_2D,
-                                            "../Content/normal_up.jpg") then
-                   Ogldev_Texture.Load (Trivial_Normal_Map);
-
-                else
-                   Put_Line ("Main_Loop.Init, normal_up.jpg failed to load.");
-                end if;
-            else
-               Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
-            end if;
-         else
-            Put_Line ("Main_Loop.Init, bricks.jpg failed to load.");
-         end if;
+         Meshes_23.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
+--           if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
+--                                           "../Content/bricks.jpg") then
+--              Ogldev_Texture.Load (theTexture);
+--              Ogldev_Texture.Bind
+--                (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+--
+--              if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
+--                                              "../Content/normal_map.jpg") then
+--                 Ogldev_Texture.Load (Normal_Map);
+--
+--              else
+--                 Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
+--              end if;
+--           else
+--              Put_Line ("Main_Loop.Init, bricks.jpg failed to load.");
+--           end if;
       else
          Put_Line ("Main_Loop.Init, Ogldev_Basic_Lighting failed to initialize.");
       end if;
@@ -120,7 +112,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Ogldev_Camera;
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
-      Pipe                 : Ogldev_Pipeline.Pipeline;
+--        Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -131,34 +123,30 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Background);
 --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
-      Lighting_Technique_26.Use_Program (theLighting_Technique);
+      Shadow_Map_Technique.Use_Program (Shadow_Technique);
 
 
-      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
-      Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
-                                  Get_Target (Game_Camera), Get_Up (Game_Camera));
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
-      Ogldev_Pipeline.Init_Transforms (Pipe);
+--        Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
+--        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
+--        Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
+--                                    Get_Target (Game_Camera), Get_Up (Game_Camera));
+--        Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+--        Ogldev_Pipeline.Init_Transforms (Pipe);
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform",
 --                                Ogldev_Pipeline.Get_World_Transform (Pipe));
-      Ogldev_Texture.Bind (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-      if Bump_Map_Enabled then
-         Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
-      else
-         Ogldev_Texture.Bind (Trivial_Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
-      end if;
+--        Ogldev_Texture.Bind (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+--           Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-      Lighting_Technique_26.Set_WVP (theLighting_Technique,
-                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-      Lighting_Technique_26.Set_World_Matrix
-        (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
+--        Shadow_Map_Technique.Set_WVP (Shadow_Technique,
+--                                       Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+--        Shadow_Map_Technique.Set_World_Matrix
+--          (Shadow_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
 --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
-      Meshes_26.Render (Sphere_Mesh);
+      Meshes_23.Render (Quad_Mesh);
 
    exception
       when  others =>

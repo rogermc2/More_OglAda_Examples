@@ -50,8 +50,8 @@ package body Ogldev_Texture is
          theTexture.File_Name := To_Unbounded_String (Texture_File);
          theTexture.Texture_Target := Target_Type;
       else
-         Put_Line ("Ogldev_Texture.Init_Texture file *" & Texture_File &
-                     "* not found");
+         Put_Line ("Ogldev_Texture.Init_Texture file " & Texture_File &
+                     " not found");
       end if;
       return Result;
 
