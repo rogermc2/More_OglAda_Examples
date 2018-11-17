@@ -25,6 +25,6 @@ begin
          Put_Line (Exception_Information (anError));
 
       when anError :  others =>
-         Put_Line ("An exceptiom occurred in Colour_Fragments.");
+         Put_Line ("An exception occurred in Colour_Fragments.");
          Put_Line (Exception_Information (anError));
   end Colour_Fragments;
