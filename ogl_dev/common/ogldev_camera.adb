@@ -212,25 +212,24 @@ package body Ogldev_Camera is
    --  Update_Render implements void Camera::OnRender()
    procedure Update_Render (theCamera : in out Camera) is
       use Maths;
-      Should_Update : Boolean := False;
+      Should_Update : Boolean :=
+        theCamera.On_Left_Edge or theCamera.On_Right_Edge;
    begin
       if theCamera.On_Left_Edge then
          theCamera.Angle_H := theCamera.Angle_H - Edge_Step;
-         Should_Update := True;
       elsif theCamera.On_Right_Edge then
          theCamera.Angle_H := theCamera.Angle_H + Edge_Step;
-         Should_Update := True;
       end if;
 
       if theCamera.On_Upper_Edge then
+         Should_Update := Should_Update or theCamera.Angle_V > -90.0;
          if theCamera.Angle_V > -90.0 then
             theCamera.Angle_V := theCamera.Angle_V - Edge_Step;
-            Should_Update := True;
          end if;
       elsif theCamera.On_Lower_Edge then
+         Should_Update := Should_Update or theCamera.Angle_V < 90.0;
          if theCamera.Angle_V < 90.0 then
             theCamera.Angle_H := theCamera.Angle_H + Edge_Step;
-            Should_Update := True;
          end if;
       end if;
 
