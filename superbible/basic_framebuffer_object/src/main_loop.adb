@@ -39,9 +39,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     Colour_Texture          : GL.Objects.Textures.Texture;
     Draw_Buffer_List        : GL.Buffers.Explicit_Color_Buffer_List (0 .. 0);
 
-    Projection_Matrix       : GL.Types.Singles.Matrix4;
-    Model_View_Matrix       : GL.Types.Singles.Matrix4;
-
     Set_Up_Error            : Exception;
 
     function Render_Frame_Buffer (Window : in out Glfw.Windows.Window) return Boolean;
@@ -56,14 +53,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         use GL.Types.Singles;
         use Maths;
         use Maths.Single_Math_Functions;
-
-
-        Blue              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.3, 1.0);
+        Blue              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 1.0);
         Green             : constant GL.Types.Colors.Color := (0.0, 0.6, 0.0, 1.0);
         Window_Width      : Glfw.Size := 512;
         Window_Height     : Glfw.Size := 512;
         Current_Time      : constant Glfw.Seconds := Glfw.Time;
         Time_Factor       : constant Single := 0.3 * Single (Current_Time);
+        Projection_Matrix       : GL.Types.Singles.Matrix4;
+        Model_View_Matrix       : GL.Types.Singles.Matrix4;
     begin
 
         Window.Get_Size (Window_Width, Window_Height);
@@ -77,11 +74,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                    Rotation_Matrix (Degree (81.0 * Single (Current_Time)), (1.0, 0.0, 0.0));
 
         Read_And_Draw_Target.Bind (Frame_Buffer);     -- Set current buffer
-        GL.Window.Set_Viewport (0, 0, 512, 512);
+        GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 
         Utilities.Clear_Background_Colour_And_Depth (Green);
         GL.Buffers.Clear_Stencil_Buffer (0);
-        GL.Buffers.Set_Stencil_Clear_Value (0);
+        GL.Buffers.Set_Stencil_Clear_Value (1);
 
         GL.Objects.Programs.Use_Program (Rendering_Program1);
 
@@ -89,12 +86,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Uniforms.Set_Single (Model_View_Location1, Model_View_Matrix);
         GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 36);
 
+        --  glBindFramebuffer(GL_FRAMEBUFFER, 0);
         Read_And_Draw_Target.Bind (Default_Framebuffer);
 
         GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width), GL.Types.Int (Window_Height));
 
         Utilities.Clear_Background_Colour_And_Depth (Blue);
-        GL.Buffers.Set_Color_Clear_Value (Blue);
         GL.Buffers.Clear_Depth_Buffer (1.0);
         GL.Buffers.Set_Depth_Clear_Value (1.0);
 
@@ -105,7 +102,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Uniforms.Set_Single (Model_View_Location2, Model_View_Matrix);
         GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 36);
 
-        Read_And_Draw_Target.Bind (Default_Framebuffer);
+        --  glBindTexture (GL_TEXTURE_2D, 0);
+        --  Texture_2D.Bind (Default_Framebuffer);
         return True;
 
     exception
@@ -168,7 +166,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
         use Glfw.Input;
-        Running      : Boolean := True;
+        Running  : Boolean := True;
     begin
         Set_Up;
         while Running loop
