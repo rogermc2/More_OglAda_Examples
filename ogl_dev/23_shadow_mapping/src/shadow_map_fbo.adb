@@ -23,8 +23,10 @@ package body Shadow_Map_FBO is
                                  GL.Pixels.Depth_Component,
                                  GL.Pixels.Float,
                                  GL.Objects.Textures.Image_Source (System.Null_Address));
-         Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
+      Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
       Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+      Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
+      Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
 
       Bind (Read_And_Draw_Target, aShadow_Map.FBO);
       Attach_Texture (Target     => Read_And_Draw_Target,
