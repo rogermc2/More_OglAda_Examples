@@ -1,0 +1,23 @@
+with "../../common/common.gpr";
+with "../../../OpenGLAda/opengl.gpr";
+limited with "../../../OpenGLAda/opengl-glfw.gpr";
+
+project Basic_Framebuffer is
+
+   for Object_Dir use "obj/";
+   for Exec_Dir use ".";
+   for Main use ("basic_framebuffer.adb");
+   for Source_Dirs use ("src");
+
+package Compiler renames OpenGL.Compiler;
+
+package Builder is
+   for Switches ("ada") use ("-g");
+end Builder;
+
+package Linker is
+   for Switches ("ada") use ( "-g");
+end Linker;
+
+end Basic_Framebuffer;
+
