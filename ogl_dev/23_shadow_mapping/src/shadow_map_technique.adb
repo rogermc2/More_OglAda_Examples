@@ -12,12 +12,7 @@ with Program_Loader;
 
 Package body Shadow_Map_Technique is
 
-    function Point_Name (Index : GL.Types.Int; Unif : String) return String;
-    function Spot_Name (Index : GL.Types.Int; Unif : String) return String;
-
-    --  -------------------------------------------------------------------------
-
-    function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
+      function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
                                    return GL.Uniforms.Uniform is
     begin
         return GL.Objects.Programs.Uniform_Location (Light_Program (theTechnique), Uniform_Name);
@@ -38,129 +33,17 @@ Package body Shadow_Map_Technique is
         use  GL.Objects.Shaders;
     begin
         theTechnique.Lighting_Program := Program_From
-          ((Src ("src/shaders/lighting.vs", Vertex_Shader),
-           Src ("src/shaders/lighting.fs", Fragment_Shader)));
+          ((Src ("src/shaders/shadow_map.vs", Vertex_Shader),
+           Src ("src/shaders/shadow_map.fs", Fragment_Shader)));
 
         GL.Objects.Programs.Use_Program  (theTechnique.Lighting_Program);
         theTechnique.WVP_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gWVP");
-        theTechnique.Light_WVP_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gLightWVP");
-        theTechnique.World_Matrix_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gWorld");
-        theTechnique.Colour_Map_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gColorMap");
         theTechnique.Shadow_Map_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gShadowMap");
-        theTechnique.Normal_Map_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gNormalMap");
-        theTechnique.Eye_World_Pos_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gEyeWorldPos");
-        theTechnique.Direct_Light_Location.Color := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
-        theTechnique.Direct_Light_Location.Ambient_Intensity := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
-        theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
-        theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gDirectionalLight.Base.Direction");
-        theTechnique.Mat_Specular_Intensity_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gMatSpecularIntensity");
-        theTechnique.Mat_Specular_Power_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gSpecularPower");
-        theTechnique.Num_Point_Lights_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gNumPointLights");
-        theTechnique.Num_Spot_Lights_Location := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gNumSpotLights");
 
-        for index in GL.Types.Int range 1 .. Point_Lights_Location_Array'Length loop
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Color :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.Color"));
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Ambient_Intensity :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.AmbientIntensity"));
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Diffuse_Intensity :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.DiffuseIntensity"));
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Position :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Position"));
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Constant_Atten :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Constant"));
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Linear :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Linear"));
-            theTechnique.Point_Lights_Locations (GL.Types.UInt (index)).Atten.Exp :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Exp"));
-        end loop;
-
-        for index in GL.Types.Int range 1 .. Spot_Lights_Location_Array'Length loop
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Color :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.Color"));
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Ambient_Intensity :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.AmbientIntensity"));
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Position :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Position"));
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Direction :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Direction"));
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Cutoff :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "CutOff"));
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Diffuse_Intensity :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.DiffuseIntensity"));
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Constant_Atten :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Constant"));
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Linear :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Linear"));
-            theTechnique.Spot_Lights_Locations (GL.Types.UInt (index)).Atten.Exp :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Exp"));
-        end loop;
         return True;
     end Init;
-
-    --  -------------------------------------------------------------------------
-
-   procedure Init_Directional_Light (Light : out Direct_Light) is
-    begin
-        Light.Base.Colour := (1.0, 1.0, 1.0);
-        Light.Base.Ambient_Intensity := 0.2;
-        Light.Base.Diffuse_Intensity := 0.8;
-        Light.Direction := (1.0, 0.0, 0.0);
-    end Init_Directional_Light;
-
-    --  -------------------------------------------------------------------------
-
-   function Point_Name (Index : GL.Types.Int; Unif : String) return String is
-        use Ada.Strings.Unbounded;
-        use GL.Types;
-    begin
-        return To_String ("gPointLights[" &
-                            Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
-                          & "]." & Unif);
-    end Point_Name;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Set_Colour_Texture_Unit (theTechnique : Technique;
-                                       Texture_Unit : GL.Types.Int) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Int (theTechnique.Colour_Map_Location, Texture_Unit);
-    end Set_Colour_Texture_Unit;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Set_Directional_Light (theTechnique : Technique; Light : Direct_Light) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour);
-        GL.Uniforms.Set_Single
-          (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
-        GL.Uniforms.Set_Single
-          (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
-        GL.Uniforms.Set_Single
-          (theTechnique.Direct_Light_Location.Direction, Maths.Normalized (Light.Direction));
-
-    exception
-      when others =>
-         Put_Line ("An exception occurred in Lighting_Technique_26.Set_Directional_Light.");
-         raise;
-    end Set_Directional_Light;
 
     --  -------------------------------------------------------------------------
 
@@ -182,56 +65,6 @@ Package body Shadow_Map_Technique is
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_Mat_Specular_Intensity (theTechnique : Technique;
-                                        Intensity : GL.Types.Single) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Mat_Specular_Intensity_Location, Intensity);
-    end Set_Mat_Specular_Intensity;
-
-    --  -------------------------------------------------------------------------
-
-   procedure Set_Mat_Specular_Power (theTechnique : Technique;
-                                     Power : GL.Types.Single) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Mat_Specular_Power_Location, Power);
-    end Set_Mat_Specular_Power;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Set_Normal_Map_Texture_Unit (theTechnique : Technique;
-                                           Texture_Unit : GL.Types.Int) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Int (theTechnique.Normal_Map_Location, Texture_Unit);
-    end Set_Normal_Map_Texture_Unit;
-
-    --  -------------------------------------------------------------------------
-
-   procedure Set_Point_Lights (theTechnique : Technique;
-                               Lights : Point_Lights_Array) is
-    begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-      for index in GL.Types.UInt range 1 .. Point_Lights_Array'Size loop
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Color,
-                                 Lights (index).Base.Colour);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Ambient_Intensity,
-                                 Lights (index).Base.Ambient_Intensity);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Diffuse_Intensity,
-                                 Lights (index).Base.Diffuse_Intensity);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Position,
-                                 Lights (index).Position);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Constant_Atten,
-                                 Lights (index).Atten.Constant_Atten);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Linear,
-                                 Lights (index).Atten.Linear);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Exp,
-                                 Lights (index).Atten.Exp);
-      end loop;
-    end Set_Point_Lights;
-
-    --  -------------------------------------------------------------------------
 
     procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
                                            Texture_Unit : GL.Types.Int) is
@@ -239,34 +72,6 @@ Package body Shadow_Map_Technique is
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
     end Set_Shadow_Map_Texture_Unit;
-
-    --  -------------------------------------------------------------------------
-
-   procedure Set_Spot_Lights (theTechnique : Technique;
-                               Lights : Spot_Lights_Array) is
-    begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-      for index in GL.Types.UInt range 1 .. Spot_Lights_Array'Size loop
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Color,
-                                 Lights (index).Base.Base.Colour);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Ambient_Intensity,
-                                 Lights (index).Base.Base.Ambient_Intensity);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Diffuse_Intensity,
-                                 Lights (index).Base.Base.Diffuse_Intensity);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Position,
-                                 Lights (index).Base.Position);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
-                                 Lights (index).Direction);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
-                                 Lights (index).Cutoff);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
-                                 Lights (index).Base.Atten.Constant_Atten);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,
-                                 Lights (index).Base.Atten.Linear);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Exp,
-                                 Lights (index).Base.Atten.Exp);
-      end loop;
-    end Set_Spot_Lights;
 
     --  -------------------------------------------------------------------------
 
@@ -288,32 +93,18 @@ Package body Shadow_Map_Technique is
 
     --  -------------------------------------------------------------------------
 
-    function Spot_Name (Index : GL.Types.Int; Unif : String) return String is
-        use Ada.Strings.Unbounded;
-        use GL.Types;
-    begin
-        return To_String ("gSpotLights[" &
-                            Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
-                          & "]." & Unif);
-    end Spot_Name;
-
-    --  -------------------------------------------------------------------------
-
     procedure Use_Program (theTechnique : Technique) is
         use GL.Objects.Programs;
         use GL.Objects.Shaders.Lists;
     begin
         if GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
-            --              Put_Line ("Billboard_Technique.Use_Program Update_Program validation failed.");
-            --          else
-            --              Put_Line ("Billboard_Technique.Use_Program Update_Program validated.");
-            declare
+               declare
                 Shaders_List : GL.Objects.Shaders.Lists.List :=
                                  GL.Objects.Programs.Attached_Shaders (theTechnique.Lighting_Program);
                 Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
             begin
                 if Curs = GL.Objects.Shaders.Lists.No_Element then
-                    Put_Line ("Lighting_Technique_26.Use_Program, Shaders list is empty");
+                    Put_Line ("Shadow_Map_Technique.Use_Program, Shaders list is empty");
                 else
                     GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
                 end if;
