@@ -1,0 +1,23 @@
+
+with GL.Objects.Framebuffers;
+with GL.Objects.Textures;
+with GL.Types;
+
+package Shadow_Map_FBO is
+
+   type Shadow_Map is private;
+
+   Shadow_Map_Exception : Exception;
+
+   function Init (aShadow_Map : in out Shadow_Map;
+                  Window_Width, Window_Height : GL.Types.Int)
+                  return Boolean;
+
+private
+
+   type Shadow_Map is record
+      FBO   : GL.Objects.Framebuffers.Framebuffer;
+      Map   : GL.Objects.Textures.Texture;
+   end record;
+
+end Shadow_Map_FBO;
