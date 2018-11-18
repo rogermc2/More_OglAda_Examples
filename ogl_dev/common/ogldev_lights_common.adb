@@ -249,6 +249,14 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Linear_Attenuation (Light       : in out Spot_Light;
+                                     Attenuation : Single := 1.0) is
+   begin
+      Light.Point.Attenuation.Linear := Attenuation;
+   end Set_Linear_Attenuation;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Diffuse_Intensity (Light     : in out Point_Light;
                                     Intensity : Single := 0.1) is
    begin
