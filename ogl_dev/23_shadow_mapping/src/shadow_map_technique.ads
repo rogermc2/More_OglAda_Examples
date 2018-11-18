@@ -1,5 +1,6 @@
 
 with GL.Objects.Programs;
+with GL.Objects.Textures;
 with GL.Types;
 with GL.Uniforms;
 
@@ -19,6 +20,8 @@ Package Shadow_Map_Technique is
                                      Position     : GL.Types.Singles.Vector3);
    procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
                                           Texture_Unit : GL.Types.Int);
+   procedure Set_Texture_Unit (theTechnique : Technique;
+                               Tex_Unit     : GL.Objects.Textures.Texture_Unit);
    procedure Set_World_Matrix (theTechnique : Technique;
                                WVP          : GL.Types.Singles.Matrix4);
    procedure Set_WVP (theTechnique : Technique;
@@ -29,6 +32,7 @@ private
 
   type Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
+      Texture_Location                : GL.Uniforms.Uniform := 0;
       WVP_Location                    : GL.Uniforms.Uniform := 0;
       Light_WVP_Location              : GL.Uniforms.Uniform := 0;
       World_Matrix_Location           : GL.Uniforms.Uniform := 0;
