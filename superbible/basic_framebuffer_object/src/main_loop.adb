@@ -59,11 +59,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection_Matrix : GL.Types.Singles.Matrix4;
       Model_View_Matrix : GL.Types.Singles.Matrix4;
    begin
-
       Window.Get_Size (Window_Width, Window_Height);
-      Projection_Matrix := Maths.Perspective_Matrix (50.0,
-                                                     Single (Window_Width) / Single (Window_Height), 0.1, 1000.0);
-      Model_View_Matrix := Translation_Matrix ((0.0, 0.0, -4.0)) *
+      Projection_Matrix :=
+        Maths.Perspective_Matrix (50.0, Single (Window_Width) / Single (Window_Height), 0.1, 1000.0);
+      Model_View_Matrix := Translation_Matrix ((0.0, 0.0, -2.0)) *
         Translation_Matrix ((0.5 * Sin (2.1 * Time_Factor),
                             0.5 * Cos (1.7 * Time_Factor), 2.0 * Sin (1.3 * Time_Factor) * Cos (1.5 * Time_Factor))) *
         Rotation_Matrix (Degree (45.0 * Single (Current_Time)), (0.0, 1.0, 0.0)) *
@@ -89,7 +88,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Utilities.Clear_Background_Colour_And_Depth (Blue);
       GL.Buffers.Clear_Depth_Buffer (1.0);
-      GL.Buffers.Set_Depth_Clear_Value (1.0);
 
       Texture_2D.Bind (Colour_Texture);
       GL.Objects.Programs.Use_Program (Rendering_Program2);
@@ -97,9 +95,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Uniforms.Set_Single (Projection_Location2, Projection_Matrix);
       GL.Uniforms.Set_Single (Model_View_Location2, Model_View_Matrix);
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 36);
-
-      --  glBindTexture (GL_TEXTURE_2D, 0);
-      --  Texture_2D.Bind (Default_Framebuffer);
       return True;
 
    exception
