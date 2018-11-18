@@ -1,4 +1,4 @@
-#version 410
+#version 410 core
 
 uniform sampler2D tex;
 out vec4 fragment_colour;
@@ -8,7 +8,6 @@ out vec4 fragment_colour;
     vec4 colour;
     vec2 texcoord;
 } fs_in;
-
 
 void main()
 {
