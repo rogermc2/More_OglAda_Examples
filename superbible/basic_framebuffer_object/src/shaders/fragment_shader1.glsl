@@ -1,4 +1,4 @@
-#version 410
+#version 410 core
 
  in VS_OUT
 {
@@ -11,5 +11,5 @@
 void main()
 {
     //    fragment_colour = 0.5*sin(fs_in.colour * vec4(40.0, 20.0, 30.0, 1.0)) + vec4(0.5);
-    fragment_colour = vec4(0.0, 0.0, 1.0, 1.0);
+    fragment_colour = vec4(1.0, 1.0, 1.0, 1.0);
 }
