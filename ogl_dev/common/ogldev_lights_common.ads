@@ -46,6 +46,7 @@ package Ogldev_Lights_Common is
    function Direction (Light : Spot_Light) return Singles.Vector3;
    function Exponent (Light : Spot_Light) return Single;
    function Position (Light : Point_Light) return Singles.Vector3;
+   function Position (Light : Spot_Light) return Singles.Vector3;
 
    procedure Init_Directional_Light (Light                         : in out Directional_Light;
                                      Amb_Intensity, Diff_Intensity : Single;
