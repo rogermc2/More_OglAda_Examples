@@ -60,6 +60,8 @@ package Ogldev_Lights_Common is
    procedure Set_Exp_Attenuation (Light : in out Point_Light; Attenuation : Single := 0.0);
    procedure Set_Linear_Attenuation (Light       : in out Point_Light;
                                      Attenuation : Single := 1.0);
+   procedure Set_Linear_Attenuation (Light       : in out Spot_Light;
+                                     Attenuation : Single := 1.0);
    procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off_Val : Single);
    procedure Set_Diffuse_Intensity (Light     : in out Point_Light;
                                     Intensity : Single := 0.1);
