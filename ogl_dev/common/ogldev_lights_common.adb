@@ -187,6 +187,13 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
+   function Position (Light : Spot_Light) return Singles.Vector3 is
+   begin
+      return Light.Point.Position;
+   end Position;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Ambient_Intensity (Light     : in out Point_Light;
                                     Intensity : Single := 1.0) is
    begin
