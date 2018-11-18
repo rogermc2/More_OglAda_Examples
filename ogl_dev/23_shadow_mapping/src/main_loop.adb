@@ -25,6 +25,7 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
+with Shadow_Map_FBO;
 with Shadow_Map_Technique;
 with Meshes_23;
 
@@ -35,6 +36,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shadow_Technique       : Shadow_Map_Technique.Technique;
+   theShadow_Map          : Shadow_Map_FBO.Shadow_Map;
    Game_Camera            : Ogldev_Camera.Camera;
    Quad_Mesh              : Meshes_23.Mesh_23;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
@@ -81,12 +83,45 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
+   procedure Render_Pass is
+      use GL.Types.Singles;
+      use Ogldev_Camera;
+      Pipe     : Ogldev_Pipeline.Pipeline;
+   begin
+      Utilities.Clear_Background_Colour_And_Depth (Background);
+--        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+
+      Shadow_Map_Technique.Set_Texture_Unit (Shadow_Technique, 0);
+      Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
+
+      Ogldev_Pipeline.Set_Scale (Pipe, 5.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);
+      Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
+                                  Get_Target (Game_Camera), Get_Up (Game_Camera));
+      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Init_Transforms (Pipe);
+
+      Shadow_Map_Technique.Set_WVP (Shadow_Technique,
+                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+
+--        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
+--                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
+
+      Meshes_23.Render (Quad_Mesh);
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Main_Loop.Render_Pass.");
+         raise;
+   end Render_Pass;
+
+   --  ------------------------------------------------------------------------
+
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Ogldev_Camera;
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
---        Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -98,29 +133,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
-
-
---        Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
---        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
---        Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
---                                    Get_Target (Game_Camera), Get_Up (Game_Camera));
---        Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
---        Ogldev_Pipeline.Init_Transforms (Pipe);
-
---        Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform",
---                                Ogldev_Pipeline.Get_World_Transform (Pipe));
---        Ogldev_Texture.Bind (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
---           Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
-
---        Shadow_Map_Technique.Set_WVP (Shadow_Technique,
---                                       Ogldev_Pipeline.Get_WVP_Transform (Pipe));
---        Shadow_Map_Technique.Set_World_Matrix
---          (Shadow_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
-
---        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
---                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
-
-      Meshes_23.Render (Quad_Mesh);
 
    exception
       when  others =>

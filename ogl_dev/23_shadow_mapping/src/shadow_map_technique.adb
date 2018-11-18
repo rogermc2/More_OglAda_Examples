@@ -75,6 +75,15 @@ Package body Shadow_Map_Technique is
 
     --  -------------------------------------------------------------------------
 
+    procedure Set_Texture_Unit (theTechnique : Technique;
+                                Tex_Unit     : GL.Objects.Textures.Texture_Unit) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Int (theTechnique.Texture_Location, Tex_Unit);
+    end Set_Texture_Unit;
+
+    --  -------------------------------------------------------------------------
+
     procedure Set_World_Matrix (theTechnique : Technique;
                                 WVP : GL.Types.Singles.Matrix4) is
     begin
