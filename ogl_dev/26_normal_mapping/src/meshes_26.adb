@@ -98,8 +98,6 @@ package body Meshes_26 is
       --  Initialized_Mesh contains vertices and textures maps
       while Has_Element (Curs) loop
          Mesh_Index := Mesh_Index + 1;
-         Put_Line ("Meshes_26.Init_From_Scene, initializing mesh " &
-               UInt'Image (Mesh_Index));
          aMesh := theScene.Meshes (Mesh_Index);
          Init_Mesh (Mesh_Index, aMesh, Initialized_Mesh);
          Init_Materials (Initialized_Mesh, File_Name, theScene);
@@ -142,8 +140,6 @@ package body Meshes_26 is
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
-            Put_Line ("Meshes_26.Init_Materials.Load_Textures: Get_Texture result: "
-                       & Assimp_Types.API_Return'Image (Result));
 
             if Result = Assimp_Types.API_Return_Success then
                if Ogldev_Texture.Init_Texture
