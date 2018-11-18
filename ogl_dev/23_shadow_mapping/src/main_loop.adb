@@ -49,7 +49,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Init (Window : in out Glfw.Windows.Window; Result : out Boolean) is
-
+      use Ogldev_Lights_Common;
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
 --        Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
@@ -62,6 +62,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       VAO.Initialize_Id;
       VAO.Bind;
+      Set_Diffuse_Intensity (Spot, 0.9);
+      Set_Spot_Light (Spot, (-20.0, 20.0, -5.0), Colour_White);
+      Set_Direction (Spot, (1.0, -1.0, 0.0));
+      Set_Linear_Attenuation (Spot, 0.01);
+      Set_Cut_Off (Spot, 20.0);
+
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
