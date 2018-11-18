@@ -1,4 +1,4 @@
-#version 410
+#version 410 core
 
  layout (location = 0) in vec4 position;
  layout (location = 1) in vec2 texcoord;
@@ -15,8 +15,6 @@ uniform mat4 projection_matrix;
 void main()
 {
   gl_Position = projection_matrix*mv_matrix*position;
-    //    vs_out.colour = position*2.0 + vec4( 0.5, 0.5, 0.5, 0.0);
-    vs_out.colour = vec4( 1.0, 0.0, 0.0, 1.0);
-
+  vs_out.colour = position*2.0 + vec4( 0.5, 0.5, 0.5, 0.0);
   vs_out.texcoord = texcoord;
 }
