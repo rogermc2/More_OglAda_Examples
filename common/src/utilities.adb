@@ -100,6 +100,12 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
+   procedure Clear_Depth is
+   begin
+      GL.Buffers.Clear ((True, False, False, False));
+   end Clear_Depth;
+
+   --  ------------------------------------------------------------------------
 
    procedure Enable_Mouse_Callbacks (Window : in out Glfw.Windows.Window; Enable : Boolean) is
    begin
