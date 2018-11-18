@@ -39,13 +39,10 @@ package body My_Buffers is
                                                  Stride, 3);
 
         Index_Buffer.Initialize_Id;
-        Element_Array_Buffer.Bind (Index_Buffer);
         Element_Array_Buffer.Bind (Index_Buffer);  -- Set current buffer
         Load_Index_Buffer (Element_Array_Buffer, Vertex_Data.Vertex_Indices, Static_Draw);
 
         GL.Toggles.Enable (GL.Toggles.Cull_Face);
-        GL.Toggles.Enable (GL.Toggles.Depth_Test);
-        GL.Buffers.Set_Depth_Function (GL.Types.GEqual);
 
         Frame_Buffer.Initialize_Id;
         -- Read_And_Draw_Target : constant Framebuffer_Target; = GL_FRAMEBUFFER
