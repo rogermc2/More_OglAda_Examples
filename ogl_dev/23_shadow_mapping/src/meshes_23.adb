@@ -66,18 +66,16 @@ package body Meshes_23 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
---        Ogldev_Util.Print_GL_Array11 ("Meshes_23.Init_Buffers.Vertices_Array", Vertices_Array);
+
       Array_Buffer.Bind (theEntry.Vertex_Buffer);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
       Element_Array_Buffer.Bind (theEntry.Index_Buffer);
       Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
---        Utilities.Print_GL_UInt_Array ("Meshes_26.Init_Buffers.Indices", Indices);
 
    exception
       when others =>
          Put_Line ("An exception occurred in Meshes_23.Init_Buffers.");
          raise;
-
    end Init_Buffers;
 
    --  -------------------------------------------------------------------------
@@ -214,8 +212,6 @@ package body Meshes_23 is
       if Source_Mesh.Faces.Is_Empty then
          Put_Line ("Meshes_23.Init_Mesh, Source_Mesh.Faces is empty.");
       else
---           Put_Line ("Meshes_23.Init_Mesh, Source_Mesh.Faces size: " &
---                       Count_Type'Image (Source_Mesh.Faces.Length));
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
             Face := Source_Mesh.Faces.Element (UInt (Face_Index));
             Indices_Index := Indices_Index + 1;
