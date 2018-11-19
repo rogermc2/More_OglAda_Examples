@@ -1,3 +1,4 @@
+
 with System;
 
 with Interfaces.C;
@@ -268,7 +269,6 @@ package body Meshes_23 is
          while Has_Element (Entry_Cursor) loop
             anEntry := Element (Entry_Cursor);
             GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
-            Put_Line ("Meshes_23.Render Array_Buffer bound.");
 
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
@@ -276,20 +276,15 @@ package body Meshes_23 is
             GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
 
             GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
-            Put_Line ("Meshes_23.Render Material_Index: " &
-                        UInt'Image (anEntry.Material_Index));
-            if anEntry.Material_Index > 0 and then
-              Textures.Contains (anEntry.Material_Index) then
+            if Textures.Contains (anEntry.Material_Index) then
                aTexture := Textures.Element (anEntry.Material_Index);
                Put_Line ("Meshes_23.Render aTexture set.");
                Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
                Put_Line ("Meshes_23.Render aTexture bound.");
             end if;
 
-            Put_Line ("Meshes_23.Render drawing Elements.");
             GL.Objects.Buffers.Draw_Elements
               (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
-            Put_Line ("Meshes_23.Render Elements drawn.");
             Next (Entry_Cursor);
          end loop;
 
@@ -297,7 +292,6 @@ package body Meshes_23 is
          GL.Attributes.Disable_Vertex_Attrib_Array (1);
          GL.Attributes.Disable_Vertex_Attrib_Array (2);
       end if;
-      Put_Line ("leaving Meshes_23.Render.");
 
    exception
       when others =>
