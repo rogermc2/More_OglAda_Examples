@@ -132,11 +132,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Pipe     : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Background_Colour_And_Depth (Background);
+      Put_Line ("Main_Loop.Render_Pass Background set.");
 
-      Shadow_Map_Technique.Set_Texture_Unit (Shadow_Technique, 0);
+      Shadow_Map_Technique.Set_Shadow_Map_Texture_Unit (Shadow_Technique, 0);
+      Put_Line ("Main_Loop.Render_Pass theShadow_Map bound.");
       Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
+      Put_Line ("Main_Loop.Render_Pass binding theShadow_Map.");
 
       Ogldev_Pipeline.Set_Scale (Pipe, 5.0);
+      Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
@@ -149,7 +153,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
 --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
-      Put_Line ("Main_Loop.Render_Passn rendering Quad_Mesh.");
+      Put_Line ("Main_Loop.Render_Pass rendering Quad_Mesh.");
       Meshes_23.Render (Quad_Mesh);
 
    exception
