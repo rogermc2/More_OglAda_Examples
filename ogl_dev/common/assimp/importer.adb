@@ -41,17 +41,8 @@ package body Importer is
       C_Name    : Interfaces.C.char_array := Interfaces.C.To_C (File_Name);
    begin
       if Ada.Directories.Exists (File_Name) then
-      Put_Line ("Importer.Read_File, C_Name: " & Interfaces.C.To_Ada (C_Name));
+--        Put_Line ("Importer.Read_File, C_Name: " & Interfaces.C.To_Ada (C_Name));
       C_Scene := Assimp.API.Read_File (C_Name, unsigned (Flags)).all;
-
---        Put ("Importer.Read_File, Num_Meshes, Num_Materials, Num_Animations");
---        Put_Line (", Num_Textures, Num_Lights, Num_Cameras:");
---        Put_Line (unsigned'Image (C_Scene.Num_Meshes) &
---                    unsigned'Image (C_Scene.Num_Materials) &
---                    unsigned'Image (C_Scene.Num_Animations) &
---                    unsigned'Image (C_Scene.Num_Textures) &
---                    unsigned'Image (C_Scene.Num_Lights) &
---                    unsigned'Image (C_Scene.Num_Cameras));
       To_AI_Scene (C_Scene, theScene);
       else
           raise Import_Exception with "Importer.Read_File can't find " & File_Name;
