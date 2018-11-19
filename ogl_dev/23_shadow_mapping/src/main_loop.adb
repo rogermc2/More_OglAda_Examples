@@ -40,7 +40,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Shadow_Technique       : Shadow_Map_Technique.Technique;
    theShadow_Map          : Shadow_Map_FBO.Shadow_Map;
    Game_Camera            : Ogldev_Camera.Camera;
-   theMesh                : Meshes_23.Mesh_23;
+   Shadow_Mesh            : Meshes_23.Mesh_23;
    Quad_Mesh              : Meshes_23.Mesh_23;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Spot                   : Ogldev_Lights_Common.Spot_Light;
@@ -80,6 +80,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
            (Shadow_Map_Technique.Light_Program (Shadow_Technique));
 
          Meshes_23.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
+         Meshes_23.Load_Mesh (Shadow_Mesh, "../Content/phoenix_ugv.md2");
       else
          Put_Line ("Main_Loop.Init, Ogldev_Basic_Lighting failed to initialize.");
       end if;
@@ -99,7 +100,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Pipe  : Ogldev_Pipeline.Pipeline;
    begin
       Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
-      Put_Line ("Shadow_Map_Pass Shadow_Map_FBO bound.");
+      Put_Line ("Main_Loop.Shadow_Map_Pass Shadow_Map_FBO bound.");
       Utilities.Clear_Depth;
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.1);
@@ -109,14 +110,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                   Direction (Spot), (0.0, 1.0, 0.0));
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
-
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
 --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
-      Meshes_23.Render (theMesh);
+      Meshes_23.Render (Shadow_Mesh);
 
    exception
       when  others =>
@@ -149,6 +149,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
 --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
+      Put_Line ("Main_Loop.Render_Passn rendering Quad_Mesh.");
       Meshes_23.Render (Quad_Mesh);
 
    exception
@@ -176,7 +177,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
       Shadow_Map_Pass;
+      Put_Line ("Main_Loop.Render_Scene Shadow_Mesh rendered.");
       Render_Pass;
+      Put_Line ("Main_Loop.Render_Scene Render_Pass complted.");
 
    exception
       when  others =>
