@@ -24,12 +24,8 @@ private
 
   type Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
-      Texture_Location                : GL.Uniforms.Uniform := 0;
       WVP_Location                    : GL.Uniforms.Uniform := 0;
-      Light_WVP_Location              : GL.Uniforms.Uniform := 0;
-      World_Matrix_Location           : GL.Uniforms.Uniform := 0;
       Shadow_Map_Location             : GL.Uniforms.Uniform := 0;
-      Eye_World_Pos_Location          : GL.Uniforms.Uniform := 0;
    end record;
 
 end Shadow_Map_Technique;

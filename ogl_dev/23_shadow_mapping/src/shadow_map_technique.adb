@@ -47,15 +47,6 @@ Package body Shadow_Map_Technique is
 
     --  -------------------------------------------------------------------------
 
---      procedure Set_Eye_World_Position (theTechnique : Technique;
---                                        Position : GL.Types.Singles.Vector3) is
---      begin
---          GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
---          GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position);
---      end Set_Eye_World_Position;
-
-    --  -------------------------------------------------------------------------
-
     procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
                                            Texture_Unit : GL.Types.Int) is
     begin
