@@ -9,7 +9,6 @@ with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GNAT.Directory_Operations;
 with GL.Attributes;
 with GL.Low_Level.Enums;
 
@@ -112,15 +111,14 @@ package body Meshes_23 is
 
    procedure Init_Materials (theMesh  : in out Mesh_23; File_Name : String;
                              theScene : Scene.AI_Scene) is
+      use Ada.Strings.Unbounded;
       use Material.AI_Material_Package;
       use Assimp_Types;
       use Material;
 
-      --        --  Extract the directory part from the file name
-      Dir           : constant GNAT.Directory_Operations.Dir_Name_Str
-        := GNAT.Directory_Operations.Dir_Name (File_Name);
-      --        Dir           : constant String := Ada.Directories.Containing_Directory (File_Name);
       Path          : Ada.Strings.Unbounded.Unbounded_String;
+      Dir           : constant String :=
+                         Ada.Directories.Containing_Directory (File_Name) & "/";
       Materials_Map : constant AI_Material_Map := theScene.Materials;
       Result        : Assimp_Types.API_Return := Assimp_Types.API_Return_Success;
 
@@ -131,14 +129,14 @@ package body Meshes_23 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
---           Put_Line ("Meshes_23.Init_Materials.Load_Textures: Texture_Count: "
---                     & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
+         Put_Line ("Meshes_23.Init_Materials.Load_Textures: Texture_Count: "
+                   & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Result = Assimp_Types.API_Return_Success and then
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
---              Put_Line ("Meshes_23.Init_Materials.Load_Textures: Get_Texture result: "
---                        & Assimp_Types.API_Return'Image (Result));
+            Put_Line ("Meshes_23.Init_Materials.Load_Textures: Get_Texture result: "
+                      & Assimp_Types.API_Return'Image (Result));
 
             if Result = Assimp_Types.API_Return_Success then
                if Ogldev_Texture.Init_Texture
@@ -160,6 +158,7 @@ package body Meshes_23 is
 
    begin
       New_Line;
+      Put_Line ("Meshes_23.Init_Materials Path:  " & To_String (Path));
       Materials_Map.Iterate (Load_Textures'Access);
 
    exception
