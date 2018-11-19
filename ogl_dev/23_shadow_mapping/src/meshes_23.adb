@@ -95,8 +95,6 @@ package body Meshes_23 is
       --  Initialized_Mesh contains vertices and textures maps
       while Has_Element (Curs) loop
          Mesh_Index := Mesh_Index + 1;
-         Put_Line ("Meshes_23.Init_From_Scene, initializing mesh " &
-                     UInt'Image (Mesh_Index));
          aMesh := theScene.Meshes (Mesh_Index);
          Init_Mesh (Mesh_Index, aMesh, Initialized_Mesh);
          Init_Materials (Initialized_Mesh, File_Name, theScene);
@@ -133,14 +131,14 @@ package body Meshes_23 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
-         Put_Line ("Meshes_23.Init_Materials.Load_Textures: Texture_Count: "
-                   & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
+--           Put_Line ("Meshes_23.Init_Materials.Load_Textures: Texture_Count: "
+--                     & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Result = Assimp_Types.API_Return_Success and then
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
-            Put_Line ("Meshes_23.Init_Materials.Load_Textures: Get_Texture result: "
-                      & Assimp_Types.API_Return'Image (Result));
+--              Put_Line ("Meshes_23.Init_Materials.Load_Textures: Get_Texture result: "
+--                        & Assimp_Types.API_Return'Image (Result));
 
             if Result = Assimp_Types.API_Return_Success then
                if Ogldev_Texture.Init_Texture
@@ -190,8 +188,8 @@ package body Meshes_23 is
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
 
-      Put_Line ("Meshes_23.Init_Mesh, Num_Vertices: " &
-                  UInt'Image (Num_Vertices));
+--        Put_Line ("Meshes_23.Init_Mesh, Num_Vertices: " &
+--                    UInt'Image (Num_Vertices));
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
          Normal := Source_Mesh.Normals.Element (V_Index);
@@ -278,9 +276,7 @@ package body Meshes_23 is
             GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
             if Textures.Contains (anEntry.Material_Index) then
                aTexture := Textures.Element (anEntry.Material_Index);
-               Put_Line ("Meshes_23.Render aTexture set.");
                Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-               Put_Line ("Meshes_23.Render aTexture bound.");
             end if;
 
             GL.Objects.Buffers.Draw_Elements
