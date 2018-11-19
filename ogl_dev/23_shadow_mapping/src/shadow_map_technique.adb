@@ -33,7 +33,6 @@ Package body Shadow_Map_Technique is
           (theTechnique.Lighting_Program, "gWVP");
         theTechnique.Texture_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gShadowMap");
-
     end Init;
 
     --  -------------------------------------------------------------------------
