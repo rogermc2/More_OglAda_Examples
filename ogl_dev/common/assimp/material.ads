@@ -72,7 +72,6 @@ package Material is
                                             --  Data_Type : AI_Property_Type_Info := PTI_Float;
       Data_Length    : GL.Types.UInt := 0;  --  Number of bytes
       Data_Buffer    : Data (Data_Type);
---        Data_Buffer    : Assimp_Types.Byte_Data_List;
    end record;
 
    package AI_Material_Property_Package is new
@@ -156,7 +155,6 @@ package Material is
 
    type API_Material is record
       Properties     : Property_Ptr_Array_Pointer := null;
---        Properties     : access API_Material_Property_Ptr := null;
       Num_Properties : Interfaces.C.unsigned := 0;
       Num_Allocated  : Interfaces.C.unsigned := 0;
    end record;
