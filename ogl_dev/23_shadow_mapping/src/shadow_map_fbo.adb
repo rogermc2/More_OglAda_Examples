@@ -34,7 +34,7 @@ package body Shadow_Map_FBO is
       use GL.Objects.Textures.Targets;
    begin
       aShadow_Map.FBO.Initialize_Id;
-      Bind (Read_And_Draw_Target, aShadow_Map.FBO);
+      Read_And_Draw_Target.Bind (aShadow_Map.FBO);
 
       aShadow_Map.Map.Initialize_Id;
       Texture_2D.Bind (aShadow_Map.Map);
@@ -48,16 +48,15 @@ package body Shadow_Map_FBO is
       Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
       Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
 
-      Bind (Read_And_Draw_Target, aShadow_Map.FBO);
+      Read_And_Draw_Target.Bind (aShadow_Map.FBO);
       Read_And_Draw_Target.Attach_Texture (Depth_Attachment, aShadow_Map.Map, 0);
 
       GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
 
       if not (Status (Read_And_Draw_Target) /= Complete) then
          Put_Line ("Shadow_Map_FBO.Init FBO error");
---           raise Shadow_Map_Exception with "Shadow_Map_FBO FBO error: " &
---           Ada.Exceptions.Exception_Information(Shadow_Map_Exception);
       end if;
+      Read_And_Draw_Target.Bind (Default_Framebuffer);
 
    exception
       when others =>
