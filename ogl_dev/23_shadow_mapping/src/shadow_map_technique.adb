@@ -47,24 +47,14 @@ Package body Shadow_Map_Technique is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Eye_World_Position (theTechnique : Technique;
-                                      Position : GL.Types.Singles.Vector3) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position);
-    end Set_Eye_World_Position;
+--      procedure Set_Eye_World_Position (theTechnique : Technique;
+--                                        Position : GL.Types.Singles.Vector3) is
+--      begin
+--          GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+--          GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position);
+--      end Set_Eye_World_Position;
 
     --  -------------------------------------------------------------------------
-
-    procedure Set_Light_WVP_Position (theTechnique : Technique;
-                                      Position : GL.Types.Singles.Vector3) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.WVP_Location, Position);
-    end Set_Light_WVP_Position;
-
-    --  -------------------------------------------------------------------------
-
 
     procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
                                            Texture_Unit : GL.Types.Int) is
@@ -73,25 +63,7 @@ Package body Shadow_Map_Technique is
         GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
     end Set_Shadow_Map_Texture_Unit;
 
-    --  -------------------------------------------------------------------------
-
-    procedure Set_Texture_Unit (theTechnique : Technique;
-                                Tex_Unit     : GL.Objects.Textures.Texture_Unit) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Int (theTechnique.Texture_Location, Tex_Unit);
-    end Set_Texture_Unit;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Set_World_Matrix (theTechnique : Technique;
-                                WVP : GL.Types.Singles.Matrix4) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, WVP);
-    end Set_World_Matrix;
-
-    --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    procedure Set_WVP (theTechnique : Technique;
                       WVP : GL.Types.Singles.Matrix4) is
