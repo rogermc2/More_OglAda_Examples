@@ -110,7 +110,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use GL.Objects.Framebuffers;
       use GL.Objects.Shaders;
       use Program_Loader;
-      Status : GL.Objects.Framebuffers.Framebuffer_Status;
+      Status : Framebuffer_Status;
    begin
       Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
@@ -131,18 +131,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Status := GL.Objects.Framebuffers.Status (Read_And_Draw_Target);
       if Status /= Complete then
-         Put_Line ("Set_Up; Bind (Frame_Buffer), Status: ");
-         case Status is
-            when Undefined => Put_Line ("Undefined.");
-            when Incomplete_Attachment => Put_Line ("Incomplete attachment.");
-            when Incomplete_Missing_Attachment => Put_Line ("Incomplete; missing attachment.");
-            when Incomplete_Draw_Buffer => Put_Line ("Incomplete draw buffer.");
-            when Incomplete_Read_Buffer => Put_Line ("Incomplete read buffer.");
-            when Unsupported => Put_Line ("Unsupported.");
-            when Incomplete_Multisample => Put_Line ("Incomplete multisample.");
-            when Incomplete_Layer_Targets => Put_Line ("Incomplete layertargets.");
-            when others => null;
-         end case;
+         Put_Line ("Set_Up; Bind (Frame_Buffer), Status: " &
+                   Framebuffer_Status'Image (Status));
          raise Set_Up_Error;
       end if;
 
