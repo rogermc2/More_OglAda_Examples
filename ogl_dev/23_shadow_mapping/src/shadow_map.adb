@@ -13,7 +13,7 @@ with Main_Loop;
 
 procedure Shadow_Map is
     Main_Window  : Glfw.Windows.Window;
-    Window_Title : constant String := "OGLDev Tutorial 23 - Sadow Mapping";
+    Window_Title : constant String := "OGLDev Tutorial 23 - Shadow Mapping";
 begin
     Glfw.Init;
     Initialize (Main_Window, Window_Title);
