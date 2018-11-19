@@ -3,6 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Low_Level.Enums;
 with GL.Objects;
+with GL.Objects.Framebuffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
@@ -95,7 +96,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Pipe  : Ogldev_Pipeline.Pipeline;
     begin
         Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
-        Utilities.Clear_Depth;
+--          Utilities.Clear_Depth;
 
         Ogldev_Pipeline.Set_Scale (Pipe, 0.1);
         Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
@@ -111,6 +112,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
         Meshes_23.Render (Shadow_Mesh);
+        GL.Objects.Framebuffers.Draw_Target.Bind (GL.Objects.Framebuffers.Default_Framebuffer);
 
     exception
         when  others =>
@@ -169,6 +171,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
+        Utilities.Clear_Background_Colour_And_Depth (Background);
         Shadow_Map_Technique.Use_Program (Shadow_Technique);
         Shadow_Map_Pass;
         Render_Pass;
