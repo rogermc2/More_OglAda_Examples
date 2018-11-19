@@ -14,16 +14,8 @@ Package Shadow_Map_Technique is
    function Light_Program (theTechnique : Technique)
                             return GL.Objects.Programs.Program;
    function Init (theTechnique : out Technique) return Boolean;
-   procedure Set_Eye_World_Position (theTechnique : Technique;
-                                     Position     : GL.Types.Singles.Vector3);
-   procedure Set_Light_WVP_Position (theTechnique : Technique;
-                                     Position     : GL.Types.Singles.Vector3);
    procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
                                           Texture_Unit : GL.Types.Int);
-   procedure Set_Texture_Unit (theTechnique : Technique;
-                               Tex_Unit     : GL.Objects.Textures.Texture_Unit);
-   procedure Set_World_Matrix (theTechnique : Technique;
-                               WVP          : GL.Types.Singles.Matrix4);
    procedure Set_WVP (theTechnique : Technique;
                       WVP          : GL.Types.Singles.Matrix4);
    procedure Use_Program (theTechnique : Technique);
