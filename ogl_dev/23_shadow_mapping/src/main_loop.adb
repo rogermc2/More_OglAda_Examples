@@ -99,7 +99,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.01);
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -5.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Position (Spot),
@@ -123,6 +123,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
+   --  only the default framebuffer can be used to display something on the screen.
+   --  The framebuffers created by the application can only be used for "offscreen rendering".
    procedure Render_Pass is
       use GL.Types.Singles;
       use Ogldev_Camera;

@@ -52,11 +52,13 @@ package body Shadow_Map_FBO is
       Read_And_Draw_Target.Attach_Texture (Depth_Attachment, aShadow_Map.Map, 0);
 
       GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
+      --  None is not available for Set_Read_Buffer
+      --  GL.Framebuffer.Set_Read_Buffer (GL.Buffers.None);
 
-      if not (Status (Read_And_Draw_Target) /= Complete) then
+      if Status (Read_And_Draw_Target) /= GL.Objects.Framebuffers.Complete then
          Put_Line ("Shadow_Map_FBO.Init FBO error");
+         Put_line (Framebuffer_Status'Image (Status (Read_And_Draw_Target)));
       end if;
-      Read_And_Draw_Target.Bind (Default_Framebuffer);
 
    exception
       when others =>
