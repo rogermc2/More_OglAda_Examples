@@ -20,15 +20,7 @@ Package body Shadow_Map_Technique is
 
     --  -------------------------------------------------------------------------
 
-    function Light_Program (theTechnique : Technique)
-                            return GL.Objects.Programs.Program is
-    begin
-        return theTechnique.Lighting_Program;
-    end Light_Program;
-
-    --  -------------------------------------------------------------------------
-
-    function Init (theTechnique : out Technique) return Boolean is
+    procedure Init (theTechnique : out Technique) is
         use Program_Loader;
         use  GL.Objects.Shaders;
     begin
@@ -39,11 +31,18 @@ Package body Shadow_Map_Technique is
         GL.Objects.Programs.Use_Program  (theTechnique.Lighting_Program);
         theTechnique.WVP_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gWVP");
-        theTechnique.Shadow_Map_Location := GL.Objects.Programs.Uniform_Location
+        theTechnique.Texture_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gShadowMap");
 
-        return True;
     end Init;
+
+    --  -------------------------------------------------------------------------
+
+    function Light_Program (theTechnique : Technique)
+                            return GL.Objects.Programs.Program is
+    begin
+        return theTechnique.Lighting_Program;
+    end Light_Program;
 
     --  -------------------------------------------------------------------------
 
@@ -51,7 +50,7 @@ Package body Shadow_Map_Technique is
                                            Texture_Unit : GL.Types.Int) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
+        GL.Uniforms.Set_Int (theTechnique.Texture_Location, Texture_Unit);
     end Set_Shadow_Map_Texture_Unit;
 
    --  -------------------------------------------------------------------------
