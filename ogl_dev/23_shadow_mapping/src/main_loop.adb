@@ -52,8 +52,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Ogldev_Lights_Common;
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
---        Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
---        Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
 
       Camera_Position     : constant Singles.Vector3 := (0.5, 1.025, 0.25);
       Target              : constant Singles.Vector3 := (0.0, -0.5, 1.0);
@@ -69,6 +67,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Cut_Off (Spot, 20.0);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      Shadow_Map_FBO.Init (theShadow_Map, Int (Window_Width), Int (Window_Height));
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 50.0);
@@ -97,9 +96,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Ogldev_Camera;
       use Ogldev_Lights_Common;
-      Pipe     : Ogldev_Pipeline.Pipeline;
+      Pipe  : Ogldev_Pipeline.Pipeline;
    begin
       Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
+      Put_Line ("Shadow_Map_Pass Shadow_Map_FBO bound.");
       Utilities.Clear_Depth;
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.1);
