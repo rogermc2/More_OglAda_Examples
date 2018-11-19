@@ -16,18 +16,14 @@ package body Shadow_Map_FBO is
        use GL.Objects.Textures.Targets;
    begin
         GL.Objects.Textures.Set_Active_Unit (Tex_Unit);
-      Put_Line ("Shadow_Map_FBO.Bind_For_Reading Active_Unit set.");
         Texture_2D.Bind (aShadow_Map.Map);
-      Put_Line ("Shadow_Map_FBO.Bind_For_Reading Shadow_Map bound.");
    end Bind_For_Reading;
 
    --  ------------------------------------------------------------------------------
 
    procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map) is
    begin
-      Put_Line ("Shadow_Map_FBO.Bind_For_Writing binding Shadow_Map.");
         GL.Objects.Framebuffers.Draw_Target.Bind (aShadow_Map.FBO);
-      Put_Line ("Shadow_Map_FBO.Bind_For_Writing Shadow_Map bound.");
    end Bind_For_Writing;
 
    --  ------------------------------------------------------------------------------
