@@ -1,6 +1,7 @@
 
 with System;
 
+with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Buffers;
@@ -15,16 +16,18 @@ package body Shadow_Map_FBO is
        use GL.Objects.Textures.Targets;
    begin
         GL.Objects.Textures.Set_Active_Unit (Tex_Unit);
+      Put_Line ("Shadow_Map_FBO.Bind_For_Reading Active_Unit set.");
         Texture_2D.Bind (aShadow_Map.Map);
+      Put_Line ("Shadow_Map_FBO.Bind_For_Reading Shadow_Map bound.");
    end Bind_For_Reading;
 
    --  ------------------------------------------------------------------------------
 
    procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map) is
    begin
-      Put_Line ("Bind_For_Writing Binding Shadow_Map.");
+      Put_Line ("Shadow_Map_FBO.Bind_For_Writing binding Shadow_Map.");
         GL.Objects.Framebuffers.Draw_Target.Bind (aShadow_Map.FBO);
-      Put_Line ("Bind_For_Writing Shadow_Map bound.");
+      Put_Line ("Shadow_Map_FBO.Bind_For_Writing Shadow_Map bound.");
    end Bind_For_Writing;
 
    --  ------------------------------------------------------------------------------
@@ -50,14 +53,14 @@ package body Shadow_Map_FBO is
       Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
 
       Bind (Read_And_Draw_Target, aShadow_Map.FBO);
-      Attach_Texture (Target     => Read_And_Draw_Target,
-                      Attachment => Depth_Attachment,
-                      Object     =>  aShadow_Map.Map,
-                      Level      => 0);
+      Read_And_Draw_Target.Attach_Texture (Depth_Attachment, aShadow_Map.Map, 0);
+
       GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
 
       if not (Status (Read_And_Draw_Target) /= Complete) then
-         raise Shadow_Map_Exception with "Shadow_Map_FBO FBO error";
+         Put_Line ("Shadow_Map_FBO.Init FBO error");
+--           raise Shadow_Map_Exception with "Shadow_Map_FBO FBO error: " &
+--           Ada.Exceptions.Exception_Information(Shadow_Map_Exception);
       end if;
 
    exception

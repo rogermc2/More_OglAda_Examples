@@ -13,6 +13,8 @@ package Meshes_23 is
 
    type Mesh_23 is private;
 
+   Mesh_23_Error : Exception;
+
    procedure Load_Mesh (theMesh : in out Mesh_23; File_Name : String);
    procedure Render (theMesh : Mesh_23);
 

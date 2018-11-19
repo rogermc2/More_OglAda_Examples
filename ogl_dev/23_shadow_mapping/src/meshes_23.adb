@@ -89,13 +89,13 @@ package body Meshes_23 is
       aMesh        : Assimp_Mesh.AI_Mesh;
    begin
       Put_Line ("Meshes_23.Init_From_Scene, initializing " &
-               File_Name);
+                  File_Name);
       --  Initialized_Mesh works because there is only one mesh
       --  Initialized_Mesh contains vertices and textures maps
       while Has_Element (Curs) loop
          Mesh_Index := Mesh_Index + 1;
          Put_Line ("Meshes_23.Init_From_Scene, initializing mesh " &
-               UInt'Image (Mesh_Index));
+                     UInt'Image (Mesh_Index));
          aMesh := theScene.Meshes (Mesh_Index);
          Init_Mesh (Mesh_Index, aMesh, Initialized_Mesh);
          Init_Materials (Initialized_Mesh, File_Name, theScene);
@@ -117,10 +117,10 @@ package body Meshes_23 is
       use Assimp_Types;
       use Material;
 
---        --  Extract the directory part from the file name
+      --        --  Extract the directory part from the file name
       Dir           : constant GNAT.Directory_Operations.Dir_Name_Str
         := GNAT.Directory_Operations.Dir_Name (File_Name);
---        Dir           : constant String := Ada.Directories.Containing_Directory (File_Name);
+      --        Dir           : constant String := Ada.Directories.Containing_Directory (File_Name);
       Path          : Ada.Strings.Unbounded.Unbounded_String;
       Materials_Map : constant AI_Material_Map := theScene.Materials;
       Result        : Assimp_Types.API_Return := Assimp_Types.API_Return_Success;
@@ -133,13 +133,13 @@ package body Meshes_23 is
          Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
          Put_Line ("Meshes_23.Init_Materials.Load_Textures: Texture_Count: "
-                     & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
+                   & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Result = Assimp_Types.API_Return_Success and then
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
             Put_Line ("Meshes_23.Init_Materials.Load_Textures: Get_Texture result: "
-                       & Assimp_Types.API_Return'Image (Result));
+                      & Assimp_Types.API_Return'Image (Result));
 
             if Result = Assimp_Types.API_Return_Success then
                if Ogldev_Texture.Init_Texture
@@ -149,7 +149,7 @@ package body Meshes_23 is
                   theMesh.Textures.Insert (index, aTexture);
                   Put_Line ("Meshes_23.Init_Materials.Load_Textures loaded texture from "
                             & Dir & To_String (Path));
-                else
+               else
                   Put_Line ("Meshes_23.Init_Materials.Load_Textures texture "
                             & Dir & To_String (Path) & " not found.");
                end if;
@@ -207,7 +207,7 @@ package body Meshes_23 is
          end if;
          Vertices (Int (V_Index)) :=
            (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
-       end loop;
+      end loop;
 
       if Source_Mesh.Faces.Is_Empty then
          Put_Line ("Meshes_23.Init_Mesh, Source_Mesh.Faces is empty.");
@@ -252,39 +252,52 @@ package body Meshes_23 is
 
    procedure  Render (theMesh : Mesh_23) is
       use Mesh_Entry_Package;
-      Entry_Cursor   : Cursor := theMesh.Entries.First;
+      Entry_Cursor   : Cursor;
       anEntry        : Mesh_Entry;
       Textures       : Ogldev_Texture.Mesh_Texture_Map;
       aTexture       : Ogldev_Texture.Ogl_Texture;
    begin
-      GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (1);
-      GL.Attributes.Enable_Vertex_Attrib_Array (2);
+      if theMesh.Entries.Is_Empty then
+         raise Mesh_23_Error with "Meshes_23.Render theMesh.Entries is empty.";
+      else
+         Entry_Cursor := theMesh.Entries.First;
+         GL.Attributes.Enable_Vertex_Attrib_Array (0);
+         GL.Attributes.Enable_Vertex_Attrib_Array (1);
+         GL.Attributes.Enable_Vertex_Attrib_Array (2);
 
-      while Has_Element (Entry_Cursor) loop
-         anEntry := Element (Entry_Cursor);
-         GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
+         while Has_Element (Entry_Cursor) loop
+            anEntry := Element (Entry_Cursor);
+            GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
+            Put_Line ("Meshes_23.Render Array_Buffer bound.");
 
-         GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
+            GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
+            GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
 
-         GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
-         if Textures.Contains (anEntry.Material_Index) then
-            aTexture := Textures.Element (anEntry.Material_Index);
-            Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-            Put_Line ("Meshes_23.Render aTexture bound.");
-         end if;
+            GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
+            Put_Line ("Meshes_23.Render Material_Index: " &
+                        UInt'Image (anEntry.Material_Index));
+            if anEntry.Material_Index > 0 and then
+              Textures.Contains (anEntry.Material_Index) then
+               aTexture := Textures.Element (anEntry.Material_Index);
+               Put_Line ("Meshes_23.Render aTexture set.");
+               Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+               Put_Line ("Meshes_23.Render aTexture bound.");
+            end if;
 
-         GL.Objects.Buffers.Draw_Elements
-           (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
-         Next (Entry_Cursor);
-      end loop;
+            Put_Line ("Meshes_23.Render drawing Elements.");
+            GL.Objects.Buffers.Draw_Elements
+              (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
+            Put_Line ("Meshes_23.Render Elements drawn.");
+            Next (Entry_Cursor);
+         end loop;
 
-      GL.Attributes.Disable_Vertex_Attrib_Array (0);
-      GL.Attributes.Disable_Vertex_Attrib_Array (1);
-      GL.Attributes.Disable_Vertex_Attrib_Array (2);
+         GL.Attributes.Disable_Vertex_Attrib_Array (0);
+         GL.Attributes.Disable_Vertex_Attrib_Array (1);
+         GL.Attributes.Disable_Vertex_Attrib_Array (2);
+      end if;
+      Put_Line ("leaving Meshes_23.Render.");
 
    exception
       when others =>
