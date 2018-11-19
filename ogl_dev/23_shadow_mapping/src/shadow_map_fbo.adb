@@ -1,6 +1,8 @@
 
 with System;
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with GL.Buffers;
 with GL.Framebuffer;
 with GL.Objects.Textures.Targets;
@@ -20,19 +22,21 @@ package body Shadow_Map_FBO is
 
    procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map) is
    begin
+      Put_Line ("Bind_For_Writing Binding Shadow_Map.");
         GL.Objects.Framebuffers.Draw_Target.Bind (aShadow_Map.FBO);
+      Put_Line ("Bind_For_Writing Shadow_Map bound.");
    end Bind_For_Writing;
 
    --  ------------------------------------------------------------------------------
 
-   function Init (aShadow_Map : in out Shadow_Map;
-                  Window_Width, Window_Height : GL.Types.Int) return Boolean is
+   procedure Init (aShadow_Map : in out Shadow_Map;
+                  Window_Width, Window_Height : GL.Types.Int) is
       use GL.Objects.Framebuffers;
       use GL.Objects.Textures.Targets;
-      Result : Boolean := False;
    begin
       aShadow_Map.FBO.Initialize_Id;
       Bind (Read_And_Draw_Target, aShadow_Map.FBO);
+
       aShadow_Map.Map.Initialize_Id;
       Texture_2D.Bind (aShadow_Map.Map);
       Texture_2D.Load_From_Data (0, GL.Pixels.Depth_Component,
@@ -51,11 +55,15 @@ package body Shadow_Map_FBO is
                       Object     =>  aShadow_Map.Map,
                       Level      => 0);
       GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
-      Result := Status (Read_And_Draw_Target) /= Complete;
-      if not Result then
+
+      if not (Status (Read_And_Draw_Target) /= Complete) then
          raise Shadow_Map_Exception with "Shadow_Map_FBO FBO error";
       end if;
-      return Result;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Main_Loop.Init.");
+         raise;
    end Init;
 
 end Shadow_Map_FBO;
