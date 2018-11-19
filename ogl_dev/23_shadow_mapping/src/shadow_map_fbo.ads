@@ -12,9 +12,8 @@ package Shadow_Map_FBO is
    procedure Bind_For_Reading (aShadow_Map : in out Shadow_Map;
                                Tex_Unit : GL.Objects.Textures.Texture_Unit);
    procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map);
-   function Init (aShadow_Map : in out Shadow_Map;
-                  Window_Width, Window_Height : GL.Types.Int)
-                  return Boolean;
+   procedure Init (aShadow_Map : in out Shadow_Map;
+                  Window_Width, Window_Height : GL.Types.Int);
 
 private
 
