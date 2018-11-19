@@ -31,7 +31,7 @@ with Shadow_Map_FBO;
 with Shadow_Map_Technique;
 with Meshes_23;
 
-procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
+procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
    Background             : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
@@ -60,6 +60,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       VAO.Initialize_Id;
       VAO.Bind;
+
+      Utilities.Clear_Background_Colour_And_Depth (Background);
       Set_Diffuse_Intensity (Spot, 0.9);
       Set_Spot_Light (Spot, (-20.0, 20.0, -5.0), Colour_White);
       Set_Direction (Spot, (1.0, -1.0, 0.0));
@@ -170,8 +172,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                               GL.Types.Int (Window_Height));
 
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
-
       Utilities.Clear_Background_Colour_And_Depth (Background);
+
 --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
@@ -189,9 +191,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use Glfw.Input;
    Running : Boolean;
 begin
-   Init (Main_Window, Running);
+    Init (Main_Window, Running);
    while Running loop
---        delay (0.2);
       Render_Scene (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
