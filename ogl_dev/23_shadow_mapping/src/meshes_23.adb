@@ -133,10 +133,9 @@ package body Meshes_23 is
                    & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Result = Assimp_Types.API_Return_Success and then
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
+            --  Get_Texture returns the path to the texture
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
-            Put_Line ("Meshes_23.Init_Materials.Load_Textures: Get_Texture result: "
-                      & Assimp_Types.API_Return'Image (Result));
 
             if Result = Assimp_Types.API_Return_Success then
                if Ogldev_Texture.Init_Texture
@@ -151,14 +150,14 @@ package body Meshes_23 is
                             & Dir & To_String (Path) & " not found.");
                end if;
             else
-               Put_Line ("Meshes_23.Init_Materials.Load_Textures Get_Texture failed");
+               Put_Line ("Meshes_23.Init_Materials.Load_Textures Get_Texture result: " &
+                          Assimp_Types.API_Return'Image (Result));
             end if;
          end if;
       end Load_Textures;
 
    begin
       New_Line;
-      Put_Line ("Meshes_23.Init_Materials Path:  " & To_String (Path));
       Materials_Map.Iterate (Load_Textures'Access);
 
    exception
@@ -187,8 +186,6 @@ package body Meshes_23 is
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
 
---        Put_Line ("Meshes_23.Init_Mesh, Num_Vertices: " &
---                    UInt'Image (Num_Vertices));
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
          Normal := Source_Mesh.Normals.Element (V_Index);
