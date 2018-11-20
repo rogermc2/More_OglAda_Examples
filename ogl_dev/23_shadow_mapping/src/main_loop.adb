@@ -35,7 +35,7 @@ with Meshes_23;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shadow_Technique       : Shadow_Map_Technique.Technique;
@@ -46,6 +46,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Spot                   : Ogldev_Lights_Common.Spot_Light;
    Scale                  : Single := 0.0;
+
+   procedure Shadow_Map_Pass;
 
    --  ------------------------------------------------------------------------
 
@@ -90,51 +92,18 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Shadow_Map_Pass is
-      use GL.Types.Singles;
-      use Ogldev_Camera;
-      use Ogldev_Lights_Common;
-      Pipe  : Ogldev_Pipeline.Pipeline;
-   begin
-      Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
-      Utilities.Clear_Depth;
-
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.1);
-      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -5.0);
-      Ogldev_Pipeline.Set_Camera (Pipe, Position (Spot),
-                                  Direction (Spot), (0.0, 1.0, 0.0));
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
-      Ogldev_Pipeline.Init_Transforms (Pipe);
-      Shadow_Map_Technique.Set_WVP (Shadow_Technique,
-                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-
-      --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
-      --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
-
-      Meshes_23.Render (Shadow_Mesh);
-      GL.Objects.Framebuffers.Draw_Target.Bind (GL.Objects.Framebuffers.Default_Framebuffer);
-
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in Main_Loop.Shadow_Map_Pass.");
-         raise;
-   end Shadow_Map_Pass;
-
-   --  ------------------------------------------------------------------------
-
    --  only the default framebuffer can be used to display something on the screen.
    --  The framebuffers created by the application can only be used for "offscreen rendering".
    procedure Render_Pass is
       use GL.Types.Singles;
       use Ogldev_Camera;
-      Pipe     : Ogldev_Pipeline.Pipeline;
+      Pipe : Ogldev_Pipeline.Pipeline;
    begin
+      Utilities.Clear_Background_Colour_And_Depth (Background);
       Shadow_Map_Technique.Set_Shadow_Map_Texture_Unit (Shadow_Technique, 0);
       Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 5.0);
-      Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
@@ -181,6 +150,42 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Put_Line ("An exception occurred in Main_Loop.Render_Scene.");
          raise;
    end Render_Scene;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Shadow_Map_Pass is
+      use GL.Types.Singles;
+      use Ogldev_Camera;
+      use Ogldev_Lights_Common;
+      Pipe  : Ogldev_Pipeline.Pipeline;
+   begin
+      Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
+      Utilities.Clear_Depth;
+
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.1);
+      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -5.0);
+      Ogldev_Pipeline.Set_Camera (Pipe, Position (Spot),
+                                  Direction (Spot), (0.0, 1.0, 0.0));
+      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Init_Transforms (Pipe);
+      Shadow_Map_Technique.Set_WVP (Shadow_Technique,
+                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+
+      --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
+      --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
+
+      GL.Objects.Framebuffers.Draw_Target.Bind
+        (GL.Objects.Framebuffers.Default_Framebuffer);
+      Meshes_23.Render (Shadow_Mesh);
+      GL.Objects.Framebuffers.Draw_Target.Bind
+        (GL.Objects.Framebuffers.Default_Framebuffer);
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Main_Loop.Shadow_Map_Pass.");
+         raise;
+   end Shadow_Map_Pass;
 
    --  ------------------------------------------------------------------------
 
