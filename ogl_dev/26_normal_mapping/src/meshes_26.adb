@@ -8,7 +8,6 @@ with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GNAT.Directory_Operations;
 with GL.Attributes;
 with GL.Low_Level.Enums;
 
@@ -119,10 +118,8 @@ package body Meshes_26 is
       use Assimp_Types;
       use Material;
 
---        --  Extract the directory part from the file name
-      Dir           : constant GNAT.Directory_Operations.Dir_Name_Str
-        := GNAT.Directory_Operations.Dir_Name (File_Name);
---        Dir           : constant String := Ada.Directories.Containing_Directory (File_Name);
+      Dir           : constant String
+        := Ada.Directories.Containing_Directory (File_Name) & "/";
       Path          : Ada.Strings.Unbounded.Unbounded_String;
       Materials_Map : constant AI_Material_Map := theScene.Materials;
       Result        : Assimp_Types.API_Return := Assimp_Types.API_Return_Success;

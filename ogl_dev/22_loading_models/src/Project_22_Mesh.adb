@@ -1,6 +1,5 @@
 
-with GNAT.Directory_Operations;
-
+with Ada.Directories;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -105,10 +104,8 @@ package body Project_22_Mesh is
       use Material.AI_Material_Package;
       use Assimp_Types;
       use Material;
-
-      --  Extract the directory part from the file name
-      Dir           : constant GNAT.Directory_Operations.Dir_Name_Str
-        := GNAT.Directory_Operations.Dir_Name (File_Name);
+      Dir           : constant String
+        := Ada.Directories.Containing_Directory (File_Name) & "/";
       Path          : Ada.Strings.Unbounded.Unbounded_String;
       Result        : Assimp_Types.API_Return;
       Materials_Map : constant AI_Material_Map := theScene.Materials;
