@@ -92,7 +92,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   --  only the default framebuffer can be used to display something on the screen.
+   --  To get texture mapping working:
+   --  1. load a texture into OpenGL,
+   --  2. supply texture coordinates with the vertices (to map the texture to them),
+   --  3. perform a sampling operation from the texture using the texture coordinates
+   --     to get the pixel color.
+   --  Texturing involes manipulating the connections between four concepts:
+   --  1. the texture object which contains the data of the texture image (the texels),
+   --     the texture object contains the texture data and the
+   --     parameters that configure the sampling operation.
+   --  2. a texture unit to which the texture object is bound,
+   --  3. the sampler object (in the fragment shader),
+   --  4. and the sampler uniform in the shader.
+
+   --  Only the default framebuffer can be used to display something on the screen.
    --  The framebuffers created by the application can only be used for "offscreen rendering".
    procedure Render_Pass is
       use GL.Types.Singles;
