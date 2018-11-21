@@ -8,10 +8,10 @@ package body Buffers is
     use GL.Objects.Buffers;
     use GL.Types;
         Vertices : constant Maths.Vector5_Array :=
-         ((-1.0, -1.0, 0.5773, 0.0, 0.0),
-          (0.0, -1.0, -1.15475, 0.5, 0.0),
-          (1.0, -1.0, 0.5773, 1.0, 0.0),
-          (0.0, 1.0, 0.0, 0.5, 1.0));
+         ((-1.0, -1.0, 0.5773,   0.0, 0.0),
+           (0.0, -1.0, -1.15475, 0.5, 0.0),
+           (1.0, -1.0, 0.5773,   1.0, 0.0),
+           (0.0,  1.0, 0.0,      0.5, 1.0));
     begin
         VBO.Initialize_Id;
         Array_Buffer.Bind (VBO);
