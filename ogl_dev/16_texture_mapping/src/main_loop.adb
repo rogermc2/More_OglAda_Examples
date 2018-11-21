@@ -102,8 +102,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Vertex_Buffer (VBO);
          Buffers.Create_Index_Buffer (IBO);
 
+         -- tell the fragment shader which texture unit to use.
          GL.Uniforms.Set_Int (Sampler_Location, 0);
-
          if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                          "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png") then
             Ogldev_Texture.Load (theTexture);
@@ -129,6 +129,19 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    end Init;
 
    --  ------------------------------------------------------------------------
+
+   --  To get texture mapping working:
+   --  1. load a texture into OpenGL,
+   --  2. supply texture coordinates with the vertices (to map the texture to them),
+   --  3. perform a sampling operation from the texture using the texture coordinates
+   --     to get the pixel color.
+   --  Texturing involes manipulating the connections between four concepts:
+   --  1. the texture object which contains the data of the texture image (the texels),
+   --     the texture object contains the texture data and the
+   --     parameters that configure the sampling operation.
+   --  2. a texture unit to which the texture object is bound,
+   --  3. the sampler object (in the fragment shader),
+   --  4. and the sampler uniform in the shader.
 
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
       Window_Width         : Glfw.Size;
