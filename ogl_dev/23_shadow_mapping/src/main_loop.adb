@@ -169,6 +169,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                   Direction (Spot), (0.0, 1.0, 0.0));
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
+
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
@@ -178,6 +179,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);
       Meshes_23.Render (Shadow_Mesh);
+
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);
 
