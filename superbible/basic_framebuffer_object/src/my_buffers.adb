@@ -79,7 +79,7 @@ package body My_Buffers is
       Read_And_Draw_Target.Attach_Texture (Color_Attachment_0, Colour_Texture, 0);
       Read_And_Draw_Target.Attach_Texture (Depth_Attachment, Depth_Texture, 0);
 
-      Draw_Buffer_List (0) := GL.Buffers.Color_Attachment0;
+      Draw_Buffer_List (1) := GL.Buffers.Color_Attachment0;
       GL.Buffers.Set_Active_Buffers (Draw_Buffer_List);
 
       --  Reset Read_And_Draw_Target to screen framebffer

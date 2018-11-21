@@ -37,7 +37,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Projection_Location2    : GL.Uniforms.Uniform;
    Model_View_Location2    : GL.Uniforms.Uniform;
    Colour_Texture          : GL.Objects.Textures.Texture;
-   Draw_Buffer_List        : GL.Buffers.Explicit_Color_Buffer_List (0 .. 0);
+   Draw_Buffer_List        : GL.Buffers.Explicit_Color_Buffer_List (1 .. 1);
 
    Set_Up_Error            : Exception;
 
