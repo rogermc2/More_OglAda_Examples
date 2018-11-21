@@ -129,8 +129,8 @@ package body Meshes_23 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
-         Put_Line ("Meshes_23.Init_Materials.Load_Textures: Texture_Count: "
-                   & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
+--           Put_Line ("Meshes_23.Init_Materials.Load_Textures: Texture_Count: "
+--                     & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Result = Assimp_Types.API_Return_Success and then
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             --  Get_Texture returns the path to the texture
@@ -271,10 +271,12 @@ package body Meshes_23 is
 
             GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
             if Textures.Contains (anEntry.Material_Index) then
+               Put_Line ("Meshes_23.Render: ." & UInt'Image (anEntry.Material_Index));
                aTexture := Textures.Element (anEntry.Material_Index);
                Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
             end if;
 
+            Put_Line ("Meshes_23.Render, Drawing Elements.");
             GL.Objects.Buffers.Draw_Elements
               (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
             Next (Entry_Cursor);
