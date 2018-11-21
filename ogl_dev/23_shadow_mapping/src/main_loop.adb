@@ -189,8 +189,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
       --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
-      GL.Objects.Framebuffers.Draw_Target.Bind
-        (GL.Objects.Framebuffers.Default_Framebuffer);
       Meshes_23.Render (Shadow_Mesh);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
