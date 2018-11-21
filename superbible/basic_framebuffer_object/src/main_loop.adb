@@ -68,7 +68,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Rotation_Matrix (Degree (45.0 * Single (Current_Time)), (0.0, 1.0, 0.0)) *
         Rotation_Matrix (Degree (81.0 * Single (Current_Time)), (1.0, 0.0, 0.0));
 
-      Read_And_Draw_Target.Bind (Frame_Buffer);     -- Set current buffer
+      Read_And_Draw_Target.Bind (Frame_Buffer);
       GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 
       Utilities.Clear_Background_Colour_And_Depth (Green);
@@ -79,15 +79,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Uniforms.Set_Single (Projection_Location1, Projection_Matrix);
       GL.Uniforms.Set_Single (Model_View_Location1, Model_View_Matrix);
+      --  Render to offscreen framebuffer
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 36);
 
       --  glBindFramebuffer(GL_FRAMEBUFFER, 0);
       Read_And_Draw_Target.Bind (Default_Framebuffer);
 
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width), GL.Types.Int (Window_Height));
-
       Utilities.Clear_Background_Colour_And_Depth (Blue);
-      GL.Buffers.Clear_Depth_Buffer (1.0);
 
       Texture_2D.Bind (Colour_Texture);
       GL.Objects.Programs.Use_Program (Rendering_Program2);
