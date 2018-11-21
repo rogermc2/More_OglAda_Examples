@@ -76,16 +76,16 @@ private
       Width     : UInt := 800;
       Height    : UInt := 600;
       Z_Near    : Single := -1.0;
-      Z_Far     : Single := 50.0;
+      Z_Far     : Single := 1000.0;
    end record;
 
    type Orthographic_Projection_Info is record
-      Right  : Single;
-      Left   : Single;
-      Bottom : Single;
-      Top    : Single;
-      Z_Near : Single;
-      Z_Far  : Single;
+      Right  : Single := 1.0;
+      Left   : Single := -1.0;
+      Bottom : Single := -1.0;
+      Top    : Single := 1.0;
+      Z_Near : Single := -1.0;
+      Z_Far  : Single := 1000.0;
    end record;
 
 end Ogldev_Math;

@@ -38,7 +38,7 @@ package Ogldev_Pipeline is
 private
 
    type Camera_Data is record
-      Position : Singles.Vector3 := (0.0, 1.0, 0.0);
+      Position : Singles.Vector3 := (0.0, 0.0, 0.0);
       Target   : Singles.Vector3 := (0.0, 0.0, 0.0);
       Up       : Singles.Vector3 := (0.0, 1.0, 0.0);
    end record;

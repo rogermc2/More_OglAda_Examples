@@ -73,7 +73,7 @@ package body Ogldev_Pipeline is
       use GL.Types.Singles;
    begin
       Set_World_Transform (P);
-      Set_View_Transform (P);
+      Set_View_Transform (P);   --  Depends on P.Camera
       Set_Perspective_Transform (P);
       P.VP_Transform := P.Perspect_Transform * P.V_Transform;
       Set_WP_Transform (P);
