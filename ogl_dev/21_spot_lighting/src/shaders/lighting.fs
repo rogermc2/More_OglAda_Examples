@@ -2,12 +2,10 @@
                                                                                     
 const int MAX_POINT_LIGHTS = 2;                                                     
 const int MAX_SPOT_LIGHTS = 2;                                                      
-                                                                                    
-in vec4 LightSpacePos;
+                       
 in vec2 TexCoord0;
 in vec3 Normal0;
 in vec3 WorldPos0;
-in vec3 Tangent0;
                                                                                     
 out vec4 FragColor;
                                                                                     
@@ -50,9 +48,7 @@ uniform int gNumSpotLights;
 uniform DirectionalLight gDirectionalLight;                                                 
 uniform PointLight gPointLights[MAX_POINT_LIGHTS];                                          
 uniform SpotLight gSpotLights[MAX_SPOT_LIGHTS];                                             
-uniform sampler2D gColorMap;                                                                
-uniform sampler2D gShadowMap;                                                               
-uniform sampler2D gNormalMap;                                                               
+uniform sampler2D gSampler;                                                                
 uniform vec3 gEyeWorldPos;                                                                  
 uniform float gMatSpecularIntensity;                                                        
 uniform float gSpecularPower;                                                               
@@ -130,5 +126,5 @@ void main()
         TotalLight += CalcSpotLight(gSpotLights[i], Normal);                 
         }
         
-    FragColor = texture2D (gSampler, TexCoord0.xy) * TotalLight;
+    FragColor = texture (gSampler, TexCoord0.xy) * TotalLight;
 }
