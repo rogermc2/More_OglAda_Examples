@@ -77,7 +77,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
             Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 50.0);
 
-
             Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
                                        Position, Target, Up);
             Buffers.Create_Vertex_Buffer (Vertex_Buffer);
@@ -93,8 +92,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                 Put_Line ("Main_Loop.Init. Init_Texture failed");
             end if;
 
-            --          Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
-            --          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
             Glfw.Input.Poll_Events;
         end if;
 
@@ -108,17 +105,21 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
     procedure Update_Lighting (Window : in out Glfw.Windows.Window) is
         use Glfw.Input;
+        use Lighting_Technique_21;
     begin
-        null;
-        --        if Window'Access.Key_State (Keys.A) = Pressed then
-        --           Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.05;
-        --        elsif Window'Access.Key_State (Keys.S) = Pressed then
-        --           Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.05;
-        --        elsif Window'Access.Key_State (Keys.Z) = Pressed then
-        --           Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.05;
-        --        elsif Window'Access.Key_State (Keys.X) = Pressed then
-        --           Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity - 0.05;
-        --        end if;
+              if Window'Access.Key_State (Keys.A) = Pressed then
+                 Set_Directional_Ambient (Direct_Light,
+                                          Get_Directional_Ambient (Direct_Light) + 0.05);
+              elsif Window'Access.Key_State (Keys.S) = Pressed then
+                 Set_Directional_Ambient (Direct_Light,
+                                          Get_Directional_Ambient (Direct_Light) - 0.05);
+              elsif Window'Access.Key_State (Keys.Z) = Pressed then
+                 Set_Directional_Diffuse (Direct_Light,
+                                          Get_Directional_Diffuse (Direct_Light) + 0.05);
+              elsif Window'Access.Key_State (Keys.X) = Pressed then
+                 Set_Directional_Diffuse (Direct_Light,
+                                          Get_Directional_Diffuse (Direct_Light) - 0.05);
+              end if;
     end Update_Lighting;
 
     --  -------------------------------------------------------------------------

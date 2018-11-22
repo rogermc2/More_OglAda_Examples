@@ -30,7 +30,22 @@ package body Lighting_Technique_21 is
     --      Num_Point_Lights_Location       : GL.Uniforms.Uniform;
     --      Num_Spot_Lights_Location        : GL.Uniforms.Uniform;
 
---      function Init (Shader_Program : in out GL.Objects.Programs.Program) return Boolean is
+    --  -------------------------------------------------------------------------
+    
+    function Get_Directional_Ambient (Light : Directional_Light) return Single is
+    begin
+        return Light.Base.Ambient_Intensity;
+    end Get_Directional_Ambient;
+
+    --  -------------------------------------------------------------------------
+    
+    function Get_Directional_Diffuse (Light : Directional_Light) return Single is
+    begin
+        return Light.Base.Diffuse_Intensity;
+    end Get_Directional_Diffuse;
+
+    --  -------------------------------------------------------------------------
+    
     function Init (theTechnique  : out Technique) return Boolean is
         use GL.Objects.Shaders;
         use Program_Loader;
@@ -91,9 +106,24 @@ package body Lighting_Technique_21 is
 
     --  -------------------------------------------------------------------------
    
+   procedure Set_Directional_Ambient (Light : in out Directional_Light;
+                                    Ambient : Single) is
+    begin
+        Light.Base.Ambient_Intensity := Ambient;
+    end Set_Directional_Ambient;
+
+    --  -------------------------------------------------------------------------
+    
+   procedure Set_Directional_Diffuse (Light : in out Directional_Light;
+                                    Diffuse : Single) is
+    begin
+        Light.Base.Diffuse_Intensity := Diffuse;
+    end Set_Directional_Diffuse;
+
+    --  -------------------------------------------------------------------------
+    
     procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single; 
-                               Colour : Singles.Vector3;
-                               Pos : Singles.Vector3; Atten : Attenuation) is
+                               Colour, Pos : Singles.Vector3; Atten : Attenuation) is
     begin
         Light.Base.Colour := Colour;
         Light.Base.Diffuse_Intensity := Diffuse;
