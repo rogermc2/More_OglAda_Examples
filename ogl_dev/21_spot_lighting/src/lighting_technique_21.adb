@@ -102,7 +102,22 @@ package body Lighting_Technique_21 is
     end Set_Point_Light;
 
     --  -------------------------------------------------------------------------
+      
+    procedure Set_Spot_Light (Light : in out Spot_Light; Diffuse : Single; 
+                              Colour, Pos, Direction : Singles.Vector3; 
+                              Atten : Attenuation; Cut_Off : Single) is
+    begin
+        Light.Point.Base.Colour := Colour;
+        Light.Point.Base.Diffuse_Intensity := Diffuse;
+        Light.Point.Position := Pos;
+        Light.Direction := Direction;
+        Light.Point.Atten := Atten;
+        Light.Cutoff := Cut_Off;
+    end Set_Spot_Light;
+
+    --  -------------------------------------------------------------------------
    
+
    procedure Set_WVP (theTechnique : Technique; WVP : Singles.Matrix4) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
@@ -176,7 +191,7 @@ package body Lighting_Technique_21 is
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        for index in GL.Types.Int range 1 .. Point_Lights_Array'Size loop
+        for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Color,
                                     Lights (index).Base.Colour);
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Ambient_Intensity,
@@ -199,7 +214,7 @@ package body Lighting_Technique_21 is
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        for index in GL.Types.Int range 1 .. Spot_Lights_Array'Size loop
+        for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Color,
                                     Lights (index).Point.Base.Colour);
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Ambient_Intensity,

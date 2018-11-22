@@ -2,16 +2,13 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
-with GL.Culling;
 with GL.Low_Level.Enums;
 with GL.Objects;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Textures;
-with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
-with GL.Toggles;
 with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
@@ -47,17 +44,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     Field_Depth            : constant := 20.0;
     Field_Width            : constant := 10.0;
 
-    --     Shader_Program         : GL.Objects.Programs.Program;
     Shader_Technique       : Lighting_Technique_21.Technique;
 
     VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Indices_Buffer         : GL.Objects.Buffers.Buffer;
     Vertex_Buffer          : GL.Objects.Buffers.Buffer;
-    Texture_Buffer         : GL.Objects.Buffers.Buffer;
-    Normals_Buffer         : GL.Objects.Buffers.Buffer;
     Game_Camera            : Ogldev_Camera.Camera;
     theTexture             : Ogldev_Texture.Ogl_Texture;
-    Direct_Light        : Lighting_Technique_21.Directional_Light;
+    Direct_Light           : Lighting_Technique_21.Directional_Light;
     Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
     Scale                  : Single := 0.0;
 
@@ -137,6 +130,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         World_Transformation : GL.Types.Singles.Matrix4;
         Pipe                 : Ogldev_Pipeline.Pipeline;
         Point_Lights         : Lighting_Technique_21.Point_Lights_Array (1 .. 2);
+        Spot_Lights          : Lighting_Technique_21.Spot_Lights_Array (1 .. 2);
     begin
         Scale := Scale + 0.0057;
 --          Update_Lighting (Window);
@@ -148,32 +142,44 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                                Colour  => (1.0, 0.5, 0.0),
                                                Pos     => (3.0, 1.0, 0.5 * Field_Depth * (1.0 + Cos (Scale))),
                                                Atten   => (0.1, 0.0, 0.0));
-        Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (2),
-                                               Diffuse =>  0.25,
-                                               Colour  => (0.0, 0.5, 10.0),
-                                               Pos     => (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))),
-                                               Atten   => (0.1, 0.0, 0.0));
-        Lighting_Technique_21.Set_Point_Light_locations (Shader_Technique, Point_Lights);
+        Lighting_Technique_21.Set_Point_Light (Point_Lights (2), 0.25, (0.0, 0.5, 1.0),
+                                               (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))),
+                                               (0.1, 0.0, 0.0));
+        Lighting_Technique_21.Set_Point_Light_Locations (Shader_Technique, Point_Lights);
+
+        Lighting_Technique_21.Set_Spot_Light (Light     => Spot_Lights (1),
+                                              Diffuse   => 0.9,
+                                              Colour    => (0.0, 1.0, 1.0),
+                                              Pos       => Ogldev_Camera.Get_Position (Game_Camera),
+                                              Direction => Ogldev_Camera.Get_Target (Game_Camera),
+                                              Atten     => (0.1, 0.0, 0.0),
+                                              Cut_Off   => 10.0);
+        Lighting_Technique_21.Set_Spot_Light (Spot_Lights (2), 0.9, (1.0, 1.0, 1.0), (5.0, 3.0, 10.0),
+                                              (0.0, -1.0, 0.0), (0.1, 0.0, 0.0), 20.0);
+        Lighting_Technique_21.Set_Spot_Light_Locations (Shader_Technique, Spot_Lights);
 
         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
         GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                                 GL.Types.Int (Window_Height));
-        Ogldev_Math.Set_Perspective_Width
-          (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
-        Ogldev_Math.Set_Perspective_Height
-          (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
+
+        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 1.0);
+        Ogldev_Pipeline.Set_Camera (Pipe, Ogldev_Camera.Get_Position (Game_Camera),
+                                    Ogldev_Camera.Get_Target (Game_Camera),
+                                    Ogldev_Camera.Get_Up (Game_Camera));
+        Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+
+        Lighting_Technique_21.Set_WVP (Shader_Technique,
+                                       Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+        World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
 
         Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
-        Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
         Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
         Ogldev_Pipeline.Init_Transforms (Pipe);
 
-        Lighting_Technique_21.Set_WVP (Shader_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-        World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
         Lighting_Technique_21.Set_World_Matrix (Shader_Technique, World_Transformation);
         Lighting_Technique_21.Set_Directional_Light (Shader_Technique, Direct_Light);
-        Lighting_Technique_21.Set_Eye_World_Pos (Shader_Technique, Ogldev_Camera.Get_Position (Game_Camera));
+        Lighting_Technique_21.Set_Eye_World_Pos (Shader_Technique,
+                                                 Ogldev_Camera.Get_Position (Game_Camera));
         Lighting_Technique_21.Set_Mat_Specular_Intensity (Shader_Technique, 1.0);
         Lighting_Technique_21.Set_Mat_Specular_Power (Shader_Technique, 32.0);
 
@@ -181,28 +187,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
         GL.Attributes.Enable_Vertex_Attrib_Array (2);
 
-        GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-        GL.Objects.Buffers.Array_Buffer.Bind (Texture_Buffer);
-        GL.Objects.Buffers.Array_Buffer.Bind (Normals_Buffer);
-
         --  First attribute buffer : Vertices
-        GL.Attributes.Enable_Vertex_Attrib_Array (0);
         GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
         --  Second attribute buffer : Textures
-        GL.Attributes.Enable_Vertex_Attrib_Array (1);
-        GL.Objects.Buffers.Array_Buffer.Bind (Texture_Buffer);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
         --  Third attribute buffer : Normals
-        GL.Attributes.Enable_Vertex_Attrib_Array (2);
-        GL.Objects.Buffers.Array_Buffer.Bind (Normals_Buffer);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 0);
-
-        GL.Objects.Buffers.Element_Array_Buffer.Bind (Indices_Buffer);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
         GL.Objects.Textures.Set_Active_Unit (0);
-        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
-        GL.Objects.Buffers.Draw_Elements (Triangles, 12, UInt_Type, 0);
+        GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
 
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
         GL.Attributes.Disable_Vertex_Attrib_Array (1);
