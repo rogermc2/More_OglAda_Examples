@@ -134,9 +134,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Spot_Lights          : Lighting_Technique_21.Spot_Lights_Array (1 .. 2);
     begin
         Scale := Scale + 0.0057;
---          Update_Lighting (Window);
+        Update_Lighting (Window);
         Ogldev_Camera.Update_Camera (Game_Camera, Window);
         Utilities.Clear_Background_Colour (Background);
+        Put_Line ("AMain_Loop.Render_Scene. Background_Colour  set");
 
         Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (1),
                                                Diffuse =>  0.25,
@@ -146,7 +147,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Lighting_Technique_21.Set_Point_Light (Point_Lights (2), 0.25, (0.0, 0.5, 1.0),
                                                (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))),
                                                (0.1, 0.0, 0.0));
+        Put_Line ("AMain_Loop.Render_Scene. Point_Light 2  set");
         Lighting_Technique_21.Set_Point_Light_Locations (Shader_Technique, Point_Lights);
+        Put_Line ("AMain_Loop.Render_Scene. Point_Light_Locations  set");
 
         Lighting_Technique_21.Set_Spot_Light (Light     => Spot_Lights (1),
                                               Diffuse   => 0.9,
@@ -158,6 +161,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Lighting_Technique_21.Set_Spot_Light (Spot_Lights (2), 0.9, (1.0, 1.0, 1.0), (5.0, 3.0, 10.0),
                                               (0.0, -1.0, 0.0), (0.1, 0.0, 0.0), 20.0);
         Lighting_Technique_21.Set_Spot_Light_Locations (Shader_Technique, Spot_Lights);
+        Put_Line ("AMain_Loop.Render_Scene. Spot_Light_Locations set");
 
         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
         GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -172,6 +176,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Lighting_Technique_21.Set_WVP (Shader_Technique,
                                        Ogldev_Pipeline.Get_WVP_Transform (Pipe));
         World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
+        Put_Line ("AMain_Loop.Render_Scene. World_Transformation set");
 
         Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
         Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
