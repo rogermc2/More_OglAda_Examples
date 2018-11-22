@@ -36,8 +36,8 @@ package Lighting_Technique_21 is
     procedure Set_Eye_World_Pos (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single);
     procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
-    procedure Set_Point_Lights (theTechnique : Technique; Lights : Point_Lights_Array);
-    procedure Set_Spot_Lights (theTechnique : Technique; Lights : Spot_Lights_Array);
+    procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array);
+    procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array);
     procedure Use_Program (theTechnique : Technique);
 
  private

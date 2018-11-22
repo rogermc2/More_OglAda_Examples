@@ -173,7 +173,7 @@ package body Lighting_Technique_21 is
     
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_Point_Lights (theTechnique : Technique; Lights : Point_Lights_Array) is
+    procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         for index in GL.Types.Int range 1 .. Point_Lights_Array'Size loop
@@ -192,11 +192,11 @@ package body Lighting_Technique_21 is
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Exp,
                                     Lights (index).Atten.Exp);
         end loop;                        
-    end Set_Point_Lights;
+    end Set_Point_Light_Locations;
 
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_Spot_Lights (theTechnique : Technique; Lights : Spot_Lights_Array) is
+    procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         for index in GL.Types.Int range 1 .. Spot_Lights_Array'Size loop
@@ -219,7 +219,7 @@ package body Lighting_Technique_21 is
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Exp,
                                     Lights (index).Point.Atten.Exp);
         end loop;
-    end Set_Spot_Lights;
+    end Set_Spot_Light_Locations;
 
     --  -------------------------------------------------------------------------
     
