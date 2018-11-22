@@ -16,7 +16,7 @@ package body Shadow_Map_FBO is
        use GL.Objects.Textures.Targets;
    begin
         GL.Objects.Textures.Set_Active_Unit (Tex_Unit);
-        Texture_2D.Bind (aShadow_Map.Map);
+        Texture_2D.Bind (aShadow_Map.Shadow);
    end Bind_For_Reading;
 
    --  ------------------------------------------------------------------------------
@@ -29,15 +29,16 @@ package body Shadow_Map_FBO is
    --  ------------------------------------------------------------------------------
 
    procedure Init (aShadow_Map : in out Shadow_Map;
-                  Window_Width, Window_Height : GL.Types.Int) is
+                   Window_Width, Window_Height : GL.Types.Int) is
       use GL.Objects.Framebuffers;
       use GL.Objects.Textures.Targets;
    begin
       aShadow_Map.FBO.Initialize_Id;
       Read_And_Draw_Target.Bind (aShadow_Map.FBO);
 
-      aShadow_Map.Map.Initialize_Id;
-      Texture_2D.Bind (aShadow_Map.Map);
+      --  Inialize the texture buffer
+      aShadow_Map.Shadow.Initialize_Id;
+      Texture_2D.Bind (aShadow_Map.Shadow);
       Texture_2D.Load_From_Data (0, GL.Pixels.Depth_Component,
                                  Window_Width, Window_Height,
                                  GL.Pixels.Depth_Component,
@@ -49,8 +50,9 @@ package body Shadow_Map_FBO is
       Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
 
       Read_And_Draw_Target.Bind (aShadow_Map.FBO);
-      Read_And_Draw_Target.Attach_Texture (Depth_Attachment, aShadow_Map.Map, 0);
+      Read_And_Draw_Target.Attach_Texture (Depth_Attachment, aShadow_Map.Shadow, 0);
 
+      --  Disable writes to the color buffer
       GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
       --  None is not available for Set_Read_Buffer
       --  GL.Framebuffer.Set_Read_Buffer (GL.Buffers.None);
