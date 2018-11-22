@@ -24,8 +24,14 @@ package Lighting_Technique_21 is
    type Spot_Lights_Array is array (Int range <>) of
      Spot_Light;
 
+    function Get_Directional_Ambient (Light : Directional_Light) return Single;
+    function Get_Directional_Diffuse (Light : Directional_Light) return Single;
     function Init (theTechnique : out Technique) return Boolean;
-   procedure Init_Directional_Light (Light : out Directional_Light);
+    procedure Init_Directional_Light (Light : out Directional_Light);
+    procedure Set_Directional_Ambient (Light : in out Directional_Light;
+                                       Ambient: Single);
+    procedure Set_Directional_Diffuse (Light : in out Directional_Light;
+                                       Diffuse : Single);
     procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single;
                                Colour : Singles.Vector3;
                                Pos : Singles.Vector3; Atten : Attenuation);
