@@ -18,8 +18,8 @@ package Shadow_Map_FBO is
 private
 
    type Shadow_Map is record
-      FBO   : GL.Objects.Framebuffers.Framebuffer;
-      Map   : GL.Objects.Textures.Texture;
+      FBO    : GL.Objects.Framebuffers.Framebuffer;
+      Shadow : GL.Objects.Textures.Texture;
    end record;
 
 end Shadow_Map_FBO;
