@@ -137,18 +137,24 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         World_Transformation : GL.Types.Singles.Matrix4;
         Pipe                 : Ogldev_Pipeline.Pipeline;
         Point_Lights         : Lighting_Technique_21.Point_Lights_Array (1 .. 2);
-        APoint               : Lighting_Technique_21.Point_Light;
     begin
         Scale := Scale + 0.0057;
 --          Update_Lighting (Window);
         Ogldev_Camera.Update_Camera (Game_Camera, Window);
         Utilities.Clear_Background_Colour (Background);
 
-        Lighting_Technique_21.Set_Point_Light (Light   => APoint,
+        Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (1),
                                                Diffuse =>  0.25,
                                                Colour  => (1.0, 0.5, 0.0),
                                                Pos     => (3.0, 1.0, 0.5 * Field_Depth * (1.0 + Cos (Scale))),
                                                Atten   => (0.1, 0.0, 0.0));
+        Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (2),
+                                               Diffuse =>  0.25,
+                                               Colour  => (0.0, 0.5, 10.0),
+                                               Pos     => (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))),
+                                               Atten   => (0.1, 0.0, 0.0));
+        Lighting_Technique_21.Set_Point_Light_locations (Shader_Technique, Point_Lights);
+
         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
         GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                                 GL.Types.Int (Window_Height));
