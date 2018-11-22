@@ -5,8 +5,8 @@ with GL.Uniforms;
 
 package Lighting_Technique_21 is
 
-    MAX_POINT_LIGHTS : GL.Types.Int := 2;
-    MAX_SPOT_LIGHTS  : GL.Types.Int := 2;
+    Max_Point_Lights : GL.Types.Int := 2;
+    Max_Spot_Lights  : GL.Types.Int := 2;
 
     type Directional_Light is private;
     type Point_Light is private;
@@ -82,7 +82,7 @@ package Lighting_Technique_21 is
    end record;
 
    type Point_Light_Locations is record
-      Color             : GL.Uniforms.Uniform := 0;
+      Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
       Diffuse_Intensity : GL.Uniforms.Uniform := 0;
       Position          : GL.Uniforms.Uniform := 0;
@@ -90,7 +90,7 @@ package Lighting_Technique_21 is
    end record;
 
    type Spot_Light_Locations is record
-      Color             : GL.Uniforms.Uniform := 0;
+      Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
       Diffuse_Intensity : GL.Uniforms.Uniform := 0;
       Position          : GL.Uniforms.Uniform := 0;
