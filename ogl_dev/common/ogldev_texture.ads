@@ -25,14 +25,14 @@ Package Ogldev_Texture is
    package Mesh_Texture_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Ogl_Texture);
    subtype Mesh_Texture_Map is Mesh_Texture_Package.Map;
+
    Texture_Exception : Exception;
 
    procedure Bind (theTexture : Ogl_Texture;
                    theTexture_Unit : GL.Objects.Textures.Texture_Unit);
-   function Init_Texture
-     (theTexture : in out Ogl_Texture;
-      Target_Type : GL.Low_Level.Enums.Texture_Kind;
-      Texture_File  :  String) return Boolean;
+   function Init_Texture (theTexture : in out Ogl_Texture;
+                          Target_Type : GL.Low_Level.Enums.Texture_Kind;
+                          Texture_File  :  String) return Boolean;
    procedure Load (theTexture : in out Ogl_Texture);
    function Texture_Map_Size (theMap : Ogldev_Texture.Mesh_Texture_Map)
                               return GL.Types.UInt;

@@ -102,8 +102,6 @@ package body Ogldev_Texture is
          Curs        : Cursor := Data_Blob.First;
          Level       : constant GL.Objects.Textures.Mipmap_Level := 0;
       begin
---           Put_Line ("Ogldev_Texture.Load, Blob_Length: " &
---                       UInt'Image (Blob_Length));
          while Has_Element (Curs) loop
             Byte_Index := Byte_Index + 1;
             Data (Byte_Index) := Element (Curs);
