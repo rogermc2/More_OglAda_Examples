@@ -66,6 +66,9 @@ package body Meshes_23 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
+      Put_Line ("Meshes_23.Init_Buffers, Vertice Indices Lengths" &
+               Int'Image (Vertices_Length) & "  " &
+               Int'Image (Indices_Length));
 
       Array_Buffer.Bind (theEntry.Vertex_Buffer);
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
