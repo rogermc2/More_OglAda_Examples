@@ -29,6 +29,9 @@ package Lighting_Technique_21 is
     procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single;
                                Colour : Singles.Vector3;
                                Pos : Singles.Vector3; Atten : Attenuation);
+    procedure Set_Spot_Light (Light : in out Spot_Light; Diffuse : Single;
+                               Colour, Pos, Direction : Singles.Vector3;
+                               Atten : Attenuation; Cut_Off : Single);
     procedure Set_WVP (theTechnique : Technique; WVP : Singles.Matrix4);
     procedure Set_World_Matrix (theTechnique : Technique; World_Inverse : Singles.Matrix4);
     procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
