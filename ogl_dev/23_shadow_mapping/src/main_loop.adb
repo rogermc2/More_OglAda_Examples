@@ -155,6 +155,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
+      --  First, render the closest depth values into the
+      --  application created depth buffer
       Shadow_Map_Pass;
       Render_Pass;
 
