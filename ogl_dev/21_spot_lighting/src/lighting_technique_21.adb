@@ -221,9 +221,11 @@ package body Lighting_Technique_21 is
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        Put_Line ("Lighting_Technique_21.Set_Point_Light_Locations, program set");
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Color,
                                     Lights (index).Base.Colour);
+            Put_Line ("Lighting_Technique_21.Set_Point_Light_Locations, Colour set");
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Ambient_Intensity,
                                     Lights (index).Base.Ambient_Intensity);
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Diffuse_Intensity,
