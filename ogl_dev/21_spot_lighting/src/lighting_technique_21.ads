@@ -32,21 +32,21 @@ package Lighting_Technique_21 is
                                        Ambient: Single);
     procedure Set_Directional_Diffuse (Light : in out Directional_Light;
                                        Diffuse : Single);
-    procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single;
-                               Colour : Singles.Vector3;
-                               Pos : Singles.Vector3; Atten : Attenuation);
-    procedure Set_Spot_Light (Light : in out Spot_Light; Diffuse : Single;
-                               Colour, Pos, Direction : Singles.Vector3;
-                               Atten : Attenuation; Cut_Off : Single);
-    procedure Set_WVP (theTechnique : Technique; WVP : Singles.Matrix4);
-    procedure Set_World_Matrix (theTechnique : Technique; World_Inverse : Singles.Matrix4);
-    procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
     procedure Set_Directional_Light (theTechnique : Technique; Light : Directional_Light);
     procedure Set_Eye_World_Pos (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single);
     procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
+    procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single;
+                               Colour : Singles.Vector3;
+                               Pos : Singles.Vector3; Atten : Attenuation);
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array);
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array);
+    procedure Set_Spot_Light (Light : in out Spot_Light; Diffuse : Single;
+                               Colour, Pos, Direction : Singles.Vector3;
+                               Atten : Attenuation; Cut_Off : Single);
+    procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
+    procedure Set_World_Matrix (theTechnique : Technique; World_Inverse : Singles.Matrix4);
+    procedure Set_WVP (theTechnique : Technique; WVP : Singles.Matrix4);
     procedure Use_Program (theTechnique : Technique);
 
  private

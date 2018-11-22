@@ -69,14 +69,14 @@ package body Lighting_Technique_21 is
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gSampler");
             theTechnique.Eye_World_Pos_Location :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gEyeWorldPos");
---              theTechnique.Directional_Light_Location.Colour :=
---                GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
---              theTechnique.Directional_Light_Location.Ambient_Intensity :=
---                GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
---              theTechnique.Directional_Light_Location.Direction :=
---                GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gDirectionalLight.Direction");
---              theTechnique.Directional_Light_Location.Diffuse_Intensity  :=
---                GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
+            --              theTechnique.Directional_Light_Location.Colour :=
+            --                GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
+            --              theTechnique.Directional_Light_Location.Ambient_Intensity :=
+            --                GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
+            --              theTechnique.Directional_Light_Location.Direction :=
+            --                GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gDirectionalLight.Direction");
+            --              theTechnique.Directional_Light_Location.Diffuse_Intensity  :=
+            --                GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
             theTechnique.Mat_Specular_Intensity_Location  :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gMatSpecularIntensity");
             theTechnique.Mat_Specular_Power_Location  :=
@@ -96,7 +96,7 @@ package body Lighting_Technique_21 is
    
     --   -------------------------------------------------------------------------------------------------------
 
-   procedure Init_Directional_Light (Light : out Directional_Light) is
+    procedure Init_Directional_Light (Light : out Directional_Light) is
     begin
         Light.Base.Colour := (1.0, 1.0, 1.0);
         Light.Base.Ambient_Intensity := 0.0;
@@ -105,73 +105,31 @@ package body Lighting_Technique_21 is
     end Init_Directional_Light;
 
     --  -------------------------------------------------------------------------
+
+    procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Intensity);
+    end Set_Ambient_Intensity;
    
-   procedure Set_Directional_Ambient (Light : in out Directional_Light;
-                                    Ambient : Single) is
+    --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_Directional_Ambient (Light : in out Directional_Light;
+                                       Ambient : Single) is
     begin
         Light.Base.Ambient_Intensity := Ambient;
     end Set_Directional_Ambient;
 
     --  -------------------------------------------------------------------------
     
-   procedure Set_Directional_Diffuse (Light : in out Directional_Light;
-                                    Diffuse : Single) is
+    procedure Set_Directional_Diffuse (Light : in out Directional_Light;
+                                       Diffuse : Single) is
     begin
         Light.Base.Diffuse_Intensity := Diffuse;
     end Set_Directional_Diffuse;
 
     --  -------------------------------------------------------------------------
     
-    procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single; 
-                               Colour, Pos : Singles.Vector3; Atten : Attenuation) is
-    begin
-        Light.Base.Colour := Colour;
-        Light.Base.Diffuse_Intensity := Diffuse;
-        Light.Position := Pos;
-        Light.Atten := Atten;
-    end Set_Point_Light;
-
-    --  -------------------------------------------------------------------------
-      
-    procedure Set_Spot_Light (Light : in out Spot_Light; Diffuse : Single; 
-                              Colour, Pos, Direction : Singles.Vector3; 
-                              Atten : Attenuation; Cut_Off : Single) is
-    begin
-        Light.Point.Base.Colour := Colour;
-        Light.Point.Base.Diffuse_Intensity := Diffuse;
-        Light.Point.Position := Pos;
-        Light.Direction := Direction;
-        Light.Point.Atten := Atten;
-        Light.Cutoff := Cut_Off;
-    end Set_Spot_Light;
-
-    --  -------------------------------------------------------------------------
-   
-
-   procedure Set_WVP (theTechnique : Technique; WVP : Singles.Matrix4) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);    
-    end Set_WVP;
-   
-    --   -------------------------------------------------------------------------------------------------------
-    
-    procedure Set_World_Matrix (theTechnique : Technique; World_Inverse : Singles.Matrix4) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, World_Inverse);
-    end Set_World_Matrix;
-   
-    --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Int (theTechnique.Sampler_Location, Texture_Unit);
-    end Set_Texture_Unit;
-   
-    --   -------------------------------------------------------------------------------------------------------
-
     procedure Set_Directional_Light (theTechnique : Technique; Light : Directional_Light) is
         Direction : Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
@@ -194,14 +152,6 @@ package body Lighting_Technique_21 is
    
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Intensity);
-    end Set_Ambient_Intensity;
-   
-    --   -------------------------------------------------------------------------------------------------------
-
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
@@ -218,6 +168,17 @@ package body Lighting_Technique_21 is
     
     --   -------------------------------------------------------------------------------------------------------
 
+    procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single; 
+                               Colour, Pos : Singles.Vector3; Atten : Attenuation) is
+    begin
+        Light.Base.Colour := Colour;
+        Light.Base.Diffuse_Intensity := Diffuse;
+        Light.Position := Pos;
+        Light.Atten := Atten;
+    end Set_Point_Light;
+
+    --  -------------------------------------------------------------------------   
+ 
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
@@ -242,6 +203,20 @@ package body Lighting_Technique_21 is
     end Set_Point_Light_Locations;
 
     --   -------------------------------------------------------------------------------------------------------
+    
+    procedure Set_Spot_Light (Light : in out Spot_Light; Diffuse : Single; 
+                              Colour, Pos, Direction : Singles.Vector3; 
+                              Atten : Attenuation; Cut_Off : Single) is
+    begin
+        Light.Point.Base.Colour := Colour;
+        Light.Point.Base.Diffuse_Intensity := Diffuse;
+        Light.Point.Position := Pos;
+        Light.Direction := Direction;
+        Light.Point.Atten := Atten;
+        Light.Cutoff := Cut_Off;
+    end Set_Spot_Light;
+
+    --  -------------------------------------------------------------------------
 
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
     begin
@@ -269,7 +244,31 @@ package body Lighting_Technique_21 is
     end Set_Spot_Light_Locations;
 
     --  -------------------------------------------------------------------------
-    
+  
+    procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Int (theTechnique.Sampler_Location, Texture_Unit);
+    end Set_Texture_Unit;
+   
+    --   -------------------------------------------------------------------------------------------------------
+  
+    procedure Set_World_Matrix (theTechnique : Technique; World_Inverse : Singles.Matrix4) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, World_Inverse);
+    end Set_World_Matrix;
+   
+    --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_WVP (theTechnique : Technique; WVP : Singles.Matrix4) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);    
+    end Set_WVP;
+   
+    --   -------------------------------------------------------------------------------------------------------
+
     procedure Use_Program (theTechnique : Technique) is
         use GL.Objects.Programs;
         use GL.Objects.Shaders.Lists;
@@ -295,6 +294,5 @@ package body Lighting_Technique_21 is
     end Use_Program;
 
     --  -------------------------------------------------------------------------
-
-
+    
 end Lighting_Technique_21;
