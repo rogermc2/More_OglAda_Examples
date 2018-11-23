@@ -4,11 +4,10 @@ with Utilities;
 
 package body Buffers is
 
-    procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer) is
+    procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
+                                   Field_Depth, Field_Width : Gl.Types.Single) is
     use GL.Objects.Buffers;
     use GL.Types;
-    Field_Depth : constant Gl.Types.Single := 20.0;
-    Field_Width : constant Gl.Types.Single := 10.0;
 
         Vertices : constant Maths.Vector8_Array :=
          ((0.0, 0.0, 0.0,                   0.0, 0.0,  0.0, 1.0, 0.0),
