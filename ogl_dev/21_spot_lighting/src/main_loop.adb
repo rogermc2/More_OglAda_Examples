@@ -55,6 +55,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
     Scale                  : Single := 0.0;
 
+
+    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
+
     --  ------------------------------------------------------------------------
 
     procedure Init (Window : in out Glfw.Windows.Window; Result : out Boolean) is
@@ -80,7 +83,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
             Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
                                        Position, Target, Up);
-            Buffers.Create_Vertex_Buffer (Vertex_Buffer);
+            Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
             Lighting_Technique_21.Use_Program (Shader_Technique);
             Lighting_Technique_21.Set_Texture_Unit (Shader_Technique, 0);
@@ -104,27 +107,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Update_Lighting (Window : in out Glfw.Windows.Window) is
-        use Glfw.Input;
-        use Lighting_Technique_21;
-    begin
-              if Window'Access.Key_State (Keys.A) = Pressed then
-                 Set_Directional_Ambient (Direct_Light,
-                                          Get_Directional_Ambient (Direct_Light) + 0.05);
-              elsif Window'Access.Key_State (Keys.S) = Pressed then
-                 Set_Directional_Ambient (Direct_Light,
-                                          Get_Directional_Ambient (Direct_Light) - 0.05);
-              elsif Window'Access.Key_State (Keys.Z) = Pressed then
-                 Set_Directional_Diffuse (Direct_Light,
-                                          Get_Directional_Diffuse (Direct_Light) + 0.05);
-              elsif Window'Access.Key_State (Keys.X) = Pressed then
-                 Set_Directional_Diffuse (Direct_Light,
-                                          Get_Directional_Diffuse (Direct_Light) - 0.05);
-              end if;
-    end Update_Lighting;
-
-    --  -------------------------------------------------------------------------
-
     procedure Render_Scene (Window : in out Glfw.Windows.Window) is
         use Maths.Single_Math_Functions;
         Window_Width         : Glfw.Size;
@@ -135,7 +117,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Spot_Lights          : Lighting_Technique_21.Spot_Lights_Array (1 .. 2);
     begin
         Scale := Scale + 0.0057;
-        Update_Lighting (Window);
+        Update_Lighting_Intensity (Window);
         Ogldev_Camera.Update_Camera (Game_Camera, Window);
         Utilities.Clear_Colour;
 
@@ -193,7 +175,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         --  Third attribute buffer : Normals
         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
-        GL.Objects.Textures.Targets.Texture_2D.Bind ( theTexture.Texture_Object);
+        GL.Objects.Textures.Set_Active_Unit (0);
+        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
         GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
 
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
@@ -207,6 +190,27 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     end Render_Scene;
 
     --  ------------------------------------------------------------------------
+
+    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window) is
+        use Glfw.Input;
+        use Lighting_Technique_21;
+    begin
+              if Window'Access.Key_State (Keys.A) = Pressed then
+                 Set_Directional_Ambient (Direct_Light,
+                                          Get_Directional_Ambient (Direct_Light) + 0.05);
+              elsif Window'Access.Key_State (Keys.S) = Pressed then
+                 Set_Directional_Ambient (Direct_Light,
+                                          Get_Directional_Ambient (Direct_Light) - 0.05);
+              elsif Window'Access.Key_State (Keys.Z) = Pressed then
+                 Set_Directional_Diffuse (Direct_Light,
+                                          Get_Directional_Diffuse (Direct_Light) + 0.05);
+              elsif Window'Access.Key_State (Keys.X) = Pressed then
+                 Set_Directional_Diffuse (Direct_Light,
+                                          Get_Directional_Diffuse (Direct_Light) - 0.05);
+              end if;
+    end Update_Lighting_Intensity;
+
+    --  -------------------------------------------------------------------------
 
     use Glfw.Input;
     Running : Boolean;

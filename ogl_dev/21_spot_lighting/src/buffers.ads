@@ -11,7 +11,8 @@ package Buffers is
 
     type Vertices_Array is array (GL.Types.UInt range <>) of Vertex;
 
-    procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer);
+    procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
+                                   Field_Depth, Field_Width : Gl.Types.Single);
 
     --  ------------------------------------------------------------------------
 
