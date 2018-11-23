@@ -8,6 +8,7 @@ with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Textures;
+with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
 with GL.Uniforms;
@@ -136,7 +137,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Scale := Scale + 0.0057;
         Update_Lighting (Window);
         Ogldev_Camera.Update_Camera (Game_Camera, Window);
-        Utilities.Clear_Background_Colour (Background);
+        Utilities.Clear_Colour;
 
         Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (1),
                                                Diffuse =>  0.25,
@@ -171,18 +172,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         Lighting_Technique_21.Set_WVP (Shader_Technique,
                                        Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+
         World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
-
-        Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-        Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
-        Ogldev_Pipeline.Init_Transforms (Pipe);
-
         Lighting_Technique_21.Set_World_Matrix (Shader_Technique, World_Transformation);
         Lighting_Technique_21.Set_Directional_Light (Shader_Technique, Direct_Light);
         Lighting_Technique_21.Set_Eye_World_Pos (Shader_Technique,
                                                  Ogldev_Camera.Get_Position (Game_Camera));
-        Lighting_Technique_21.Set_Mat_Specular_Intensity (Shader_Technique, 1.0);
-        Lighting_Technique_21.Set_Mat_Specular_Power (Shader_Technique, 32.0);
+        Lighting_Technique_21.Set_Mat_Specular_Intensity (Shader_Technique, 0.0);
+        Lighting_Technique_21.Set_Mat_Specular_Power (Shader_Technique, 0.0);
 
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
@@ -196,7 +193,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         --  Third attribute buffer : Normals
         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
-        GL.Objects.Textures.Set_Active_Unit (0);
+        GL.Objects.Textures.Targets.Texture_2D.Bind ( theTexture.Texture_Object);
         GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
 
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
