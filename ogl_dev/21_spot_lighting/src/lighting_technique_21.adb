@@ -47,8 +47,8 @@ package body Lighting_Technique_21 is
         OK  : Boolean := False;
     begin
         theTechnique.Lighting_Program := Program_From
-          ((Src ("src/shaders/lighting.vs", Vertex_Shader),
-           Src ("src/shaders/lighting.fs", Fragment_Shader)));
+          ((Src ("src/shaders/lighting_21.vs", Vertex_Shader),
+           Src ("src/shaders/lighting_21.fs", Fragment_Shader)));
 
         OK := GL.Objects.Programs.Link_Status (theTechnique.Lighting_Program);
         if not OK then
