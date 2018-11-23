@@ -172,7 +172,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Lighting_Technique_21.Set_WVP (Shader_Technique,
                                        Ogldev_Pipeline.Get_WVP_Transform (Pipe));
         World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
-        Put_Line ("AMain_Loop.Render_Scene. World_Transformation set");
 
         Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
         Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);

@@ -64,6 +64,15 @@ package body Lighting_Technique_21 is
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gSampler");
             theTechnique.Eye_World_Pos_Location :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gEyeWorldPos");
+            theTechnique.Direct_Light_Location.Color := GL.Objects.Programs.Uniform_Location
+              (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
+            theTechnique.Direct_Light_Location.Ambient_Intensity := GL.Objects.Programs.Uniform_Location
+              (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
+            theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
+              (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
+            theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
+              (theTechnique.Lighting_Program, "gDirectionalLight.Base.Direction");
+
             theTechnique.Mat_Specular_Intensity_Location  :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gMatSpecularIntensity");
             theTechnique.Mat_Specular_Power_Location  :=
@@ -73,45 +82,45 @@ package body Lighting_Technique_21 is
             theTechnique.Num_Spot_Lights_Location  :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gNumSpotights");
             
-        for index in GL.Types.Int range
+            for index in GL.Types.Int range
               Point_Lights_Location_Array'First .. Point_Lights_Location_Array'Last loop
-            theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Colour :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.Color"));
-            theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Ambient_Intensity :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.AmbientIntensity"));
-            theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Diffuse_Intensity :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Base.DiffuseIntensity"));
-            theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Position :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Position"));
-            theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Atten.Constant_Atten :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Constant"));
-            theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Atten.Linear :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Linear"));
-            theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Atten.Exp :=
-              Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Exp"));
-        end loop;
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Colour :=
+                  Get_Uniform_Location (theTechnique, Point_Name (index, "Base.Color"));
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Ambient_Intensity :=
+                  Get_Uniform_Location (theTechnique, Point_Name (index, "Base.AmbientIntensity"));
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Diffuse_Intensity :=
+                  Get_Uniform_Location (theTechnique, Point_Name (index, "Base.DiffuseIntensity"));
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Position :=
+                  Get_Uniform_Location (theTechnique, Point_Name (index, "Position"));
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Atten.Constant_Atten :=
+                  Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Constant"));
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Atten.Linear :=
+                  Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Linear"));
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Atten.Exp :=
+                  Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Exp"));
+            end loop;
 
-        for index in GL.Types.Int range 
+            for index in GL.Types.Int range 
               Spot_Lights_Location_Array'First .. Spot_Lights_Location_Array'Last loop
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Colour :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.Color"));
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Ambient_Intensity :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.AmbientIntensity"));
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Position :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Position"));
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Direction :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Direction"));
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Cutoff :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "CutOff"));
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Diffuse_Intensity :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.DiffuseIntensity"));
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Constant_Atten :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Constant"));
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Linear :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Linear"));
-            theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Exp :=
-              Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Exp"));
-        end loop;
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Colour :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.Color"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Ambient_Intensity :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.AmbientIntensity"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Position :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Position"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Direction :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Direction"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Cutoff :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "CutOff"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Diffuse_Intensity :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.DiffuseIntensity"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Constant_Atten :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Constant"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Linear :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Linear"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Exp :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Exp"));
+            end loop;
         end if;
         return OK;
 
@@ -141,7 +150,7 @@ package body Lighting_Technique_21 is
 
     --  -------------------------------------------------------------------------
 
-   function Point_Name (Index : GL.Types.Int; Unif : String) return String is
+    function Point_Name (Index : GL.Types.Int; Unif : String) return String is
         use Ada.Strings.Unbounded;
         use GL.Types;
     begin
@@ -226,7 +235,7 @@ package body Lighting_Technique_21 is
     --  -------------------------------------------------------------------------   
  
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
-       Col : Singles.Vector3 := (1.0, 0.0, 0.0);
+        Col : Singles.Vector3 := (1.0, 0.0, 0.0);
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
