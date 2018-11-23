@@ -93,6 +93,13 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
+   procedure Clear_Colour is
+   begin
+      GL.Buffers.Clear ((True, False, False, False));
+   end Clear_Colour;
+
+   --  ------------------------------------------------------------------------
+
    procedure Clear_Colour_Buffer_And_Depth is
    begin
       GL.Buffers.Clear ((True, False, False, True));
