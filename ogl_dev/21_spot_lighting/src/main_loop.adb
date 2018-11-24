@@ -10,6 +10,7 @@ with GL.Objects.Shaders;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
@@ -35,15 +36,9 @@ with Lighting_Technique_21;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     use GL.Types;
 
-    type vertex is record
-        Pos  : GL.Types.Singles.Vector3;
-        Tex  : GL.Types.Singles.Vector2;
-        Norm : GL.Types.Singles.Vector3;
-    end record;
-
     Background             : constant GL.Types.Colors.Color := (0.4, 0.4, 0.4, 0.0);
-    Field_Depth            : constant := 20.0;
-    Field_Width            : constant := 10.0;
+    Field_Depth            : constant := 0.6;  -- 20.0;
+    Field_Width            : constant := 0.4;  --10.0;
 
     Shader_Technique       : Lighting_Technique_21.Technique;
 
@@ -74,6 +69,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             VAO.Bind;
 
             Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+            Utilities.Clear_Background_Colour_And_Depth (Background);
+            GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
             Lighting_Technique_21.Init_Directional_Light (Direct_Light);
             Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
             Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
@@ -119,7 +116,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Scale := Scale + 0.0057;
         Update_Lighting_Intensity (Window);
         Ogldev_Camera.Update_Camera (Game_Camera, Window);
-        Utilities.Clear_Colour;
+--          Utilities.Clear_Colour;
+      Utilities.Clear_Background_Colour_And_Depth (Background);
 
         Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (1),
                                                Diffuse =>  0.25,
@@ -164,20 +162,21 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Lighting_Technique_21.Set_Mat_Specular_Power (Shader_Technique, 0.0);
 
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
-        GL.Attributes.Enable_Vertex_Attrib_Array (1);
-        GL.Attributes.Enable_Vertex_Attrib_Array (2);
+--          GL.Attributes.Enable_Vertex_Attrib_Array (1);
+--          GL.Attributes.Enable_Vertex_Attrib_Array (2);
 
         --  First attribute buffer : Vertices
         GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
         --  Second attribute buffer : Textures
-        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
-        --  Third attribute buffer : Normals
-        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
+--          GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
+--          --  Third attribute buffer : Normals
+--          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
-        GL.Objects.Textures.Set_Active_Unit (0);
-        GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
-        GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
+--          GL.Objects.Textures.Set_Active_Unit (0);
+--          GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
+--            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+        GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);  --  orig 6
 
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
         GL.Attributes.Disable_Vertex_Attrib_Array (1);
