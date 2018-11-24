@@ -32,8 +32,8 @@ package Lighting_Technique_21 is
                                        Ambient: Single);
     procedure Set_Directional_Diffuse (Light : in out Directional_Light;
                                        Diffuse : Single);
-    procedure Set_Directional_Light (theTechnique : Technique; Light : Directional_Light);
-    procedure Set_Eye_World_Pos (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
+    procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light);
+    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single);
     procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
     procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single;
@@ -45,8 +45,8 @@ package Lighting_Technique_21 is
                                Colour, Pos, Direction : Singles.Vector3;
                                Atten : Attenuation; Cut_Off : Single);
     procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
-    procedure Set_World_Matrix (theTechnique : Technique; World_Inverse : Singles.Matrix4);
-    procedure Set_WVP (theTechnique : Technique; WVP : Singles.Matrix4);
+    procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4);
+    procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4);
     procedure Use_Program (theTechnique : Technique);
 
  private
