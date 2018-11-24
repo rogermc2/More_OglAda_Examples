@@ -185,7 +185,7 @@ package body Lighting_Technique_21 is
 
     --  -------------------------------------------------------------------------
     
-    procedure Set_Directional_Light (theTechnique : Technique; Light : Directional_Light) is
+    procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light) is
         Direction : Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
@@ -194,16 +194,16 @@ package body Lighting_Technique_21 is
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Direction, Direction (GL.X), Direction (GL.Y), Direction (GL.Z));
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
-    end Set_Directional_Light;
+    end Set_Directional_Light_Location;
    
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_Eye_World_Pos (theTechnique : Technique; Eye_World_Pos : Singles.Vector3) is
+    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Eye_World_Pos (GL.X),
                                 Eye_World_Pos (GL.Y), Eye_World_Pos (GL.Z));
-    end Set_Eye_World_Pos;
+    end Set_Eye_World_Pos_Location;
    
     --   -------------------------------------------------------------------------------------------------------
 
@@ -307,19 +307,19 @@ package body Lighting_Technique_21 is
    
     --   -------------------------------------------------------------------------------------------------------
   
-    procedure Set_World_Matrix (theTechnique : Technique; World_Inverse : Singles.Matrix4) is
+    procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, World_Inverse);
-    end Set_World_Matrix;
+    end Set_World_Matrix_Location;
    
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_WVP (theTechnique : Technique; WVP : Singles.Matrix4) is
+    procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);    
-    end Set_WVP;
+    end Set_WVP_Location;
    
     --   -------------------------------------------------------------------------------------------------------
 

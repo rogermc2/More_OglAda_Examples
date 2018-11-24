@@ -11,14 +11,13 @@ package body Buffers is
 
         Vertices : constant Maths.Vector8_Array :=
          ((0.0, 0.0, 0.0,                   0.0, 0.0,  0.0, 1.0, 0.0),
-           (0.0, 0.0, 0.0,          0.0, 1.0,  0.0, 1.0, 0.0),
---             (0.0, 0.0, Field_Depth,          0.0, 1.0,  0.0, 1.0, 0.0),
+           (0.0, 0.0, Field_Depth,          0.0, 1.0,  0.0, 1.0, 0.0),
            (Field_Width, 0.0, 0.0,          1.0, 0.0,  0.0, 1.0, 0.0),
+
            (Field_Width, 0.0, 0.0,          1.0, 0.0,  0.0, 1.0, 0.0),
-           (0.0,  0.0, 0.0,         0.0, 1.0,  0.0, 1.0, 0.0),
-           (Field_Width,  0.0, 0.0, 1.0, 1.0,  0.0, 1.0, 0.0));
---             (0.0,  0.0, Field_Depth,         0.0, 1.0,  0.0, 1.0, 0.0),
---             (Field_Width,  0.0, Field_Depth, 1.0, 1.0,  0.0, 1.0, 0.0));
+           (0.0,  0.0, Field_Depth,         0.0, 1.0,  0.0, 1.0, 0.0),
+           (Field_Width,  0.0, Field_Depth, 1.0, 1.0,  0.0, 1.0, 0.0));
+
     begin
         VBO.Initialize_Id;
         Array_Buffer.Bind (VBO);
