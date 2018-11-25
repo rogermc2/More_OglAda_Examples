@@ -54,8 +54,8 @@ private
       VP_Transform       : Singles.Matrix4 := Singles.Identity4;
       WP_Transform       : Singles.Matrix4 := Singles.Identity4;
       WV_Transform       : Singles.Matrix4 := Singles.Identity4;
-      W_Transform        : Singles.Matrix4 := Singles.Identity4;
-      V_Transform        : Singles.Matrix4 := Singles.Identity4;
+      World_Transform    : Singles.Matrix4 := Singles.Identity4;
+      View_Transform     : Singles.Matrix4 := Singles.Identity4;
       Ortho_Transform    : Singles.Matrix4 := Singles.Identity4;
       Perspect_Transform : Singles.Matrix4 := Singles.Identity4;
    end record;
