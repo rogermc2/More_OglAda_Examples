@@ -4,7 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL;
 with GL.Objects.Shaders;
-with  GL.Objects.Shaders.Lists;
+with GL.Objects.Shaders.Lists;
 with GL.Uniforms;
 
 with Maths;
@@ -136,7 +136,7 @@ package body Lighting_Technique_21 is
     begin
         Light.Base.Colour := (1.0, 1.0, 1.0);
         Light.Base.Ambient_Intensity := 0.0;
-        Light.Base.Diffuse_Intensity := 0.5;  --  0.1;
+        Light.Base.Diffuse_Intensity := 0.4;  --  0.1;
         Light.Direction := (1.0, -1.0, 0.0);
     end Init_Directional_Light;
 
