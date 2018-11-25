@@ -307,7 +307,8 @@ package body Lighting_Technique_21 is
    
     --   -------------------------------------------------------------------------------------------------------
   
-    procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4) is
+   procedure Set_World_Matrix_Location (theTechnique  : Technique;
+                                        World_Inverse : Singles.Matrix4) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, World_Inverse);
