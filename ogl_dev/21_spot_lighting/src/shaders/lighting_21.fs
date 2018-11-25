@@ -128,5 +128,4 @@ void main()
         
     FragColor = texture (gSampler, TexCoord0.xy) * TotalLight;
         FragColor = texture (gSampler, TexCoord0.xy);
-        FragColor = vec4(1.0,0.0,0.0,0.0);
 }
