@@ -203,12 +203,12 @@ package body Maths is
       Matrix     : GL.Types.Singles.Matrix4 := Zero_Matrix4;
    begin
       Matrix (X, X) := 2.0 * Near / dX;
-      Matrix (Z, X) := (Right + Left) / dX;
       Matrix (Y, Y) := 2.0 * Near / dY;
+      Matrix (Z, X) := (Right + Left) / dX;
       Matrix (Z, Y) :=  (Top + Bottom) / dY;
       Matrix (Z, Z) := -(Far + Near) / dZ;
-      Matrix (W, Z) := -2.0 * Far * Near / dZ;
       Matrix (Z, W) := -1.0;
+      Matrix (W, Z) := -2.0 * Far * Near / dZ;
       return Matrix;
    end Perspective_Matrix;
 
