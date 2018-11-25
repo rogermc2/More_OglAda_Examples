@@ -56,11 +56,10 @@ uniform float gSpecularPower;
 vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal)                                                  
     {
     vec4 AmbientColor = vec4(Light.Color * Light.AmbientIntensity, 1.0f);
-    float DiffuseFactor = dot(Normal, -LightDirection);                                     
+    float DiffuseFactor = dot(Normal, -LightDirection);
                                                                                             
     vec4 DiffuseColor  = vec4(0, 0, 0, 0);                                                  
-    vec4 SpecularColor = vec4(0, 0, 0, 0);                                                  
-                                                                                            
+    vec4 SpecularColor = vec4(0, 0, 0, 0);
     if (DiffuseFactor > 0)
         {
         DiffuseColor = vec4(Light.Color * Light.DiffuseIntensity * DiffuseFactor, 1.0f);
@@ -127,5 +126,4 @@ void main()
         }
         
     FragColor = texture (gSampler, TexCoord0.xy) * TotalLight;
-        FragColor = texture (gSampler, TexCoord0.xy);
 }

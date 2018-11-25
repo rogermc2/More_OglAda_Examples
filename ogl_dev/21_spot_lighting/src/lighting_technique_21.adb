@@ -71,7 +71,7 @@ package body Lighting_Technique_21 is
             theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
               (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
             theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
-              (theTechnique.Lighting_Program, "gDirectionalLight.Base.Direction");
+              (theTechnique.Lighting_Program, "gDirectionalLight.Direction");
 
             theTechnique.Mat_Specular_Intensity_Location  :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gMatSpecularIntensity");
@@ -136,7 +136,7 @@ package body Lighting_Technique_21 is
     begin
         Light.Base.Colour := (1.0, 1.0, 1.0);
         Light.Base.Ambient_Intensity := 0.0;
-        Light.Base.Diffuse_Intensity := 0.1;
+        Light.Base.Diffuse_Intensity := 0.5;  --  0.1;
         Light.Direction := (1.0, -1.0, 0.0);
     end Init_Directional_Light;
 
@@ -185,14 +185,15 @@ package body Lighting_Technique_21 is
 
     --  -------------------------------------------------------------------------
     
-    procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light) is
+   procedure Set_Directional_Light_Location (theTechnique : Technique; 
+                                             Light        : Directional_Light) is
         Direction : Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour (GL.X), 
                                 Light.Base.Colour (GL.Y), Light.Base.Colour (GL.Z));
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Direction, Direction (GL.X), Direction (GL.Y), Direction (GL.Z));
+        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Direction, Direction);
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
     end Set_Directional_Light_Location;
    
