@@ -2,6 +2,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Maths;
+with Utilities;
 
 package body Ogldev_Pipeline is
 
@@ -15,7 +16,7 @@ package body Ogldev_Pipeline is
 
    function Get_World_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      return P.W_Transform;
+      return P.World_Transform;
    end Get_World_Transform;
 
    --  -------------------------------------------------------------------------
@@ -43,7 +44,7 @@ package body Ogldev_Pipeline is
 
    function Get_View_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      return P.V_Transform;
+      return P.View_Transform;
    end Get_View_Transform;
 
    --  ------------------------------------------------------------------
@@ -74,10 +75,11 @@ package body Ogldev_Pipeline is
    begin
       Set_World_Transform (P);
       Set_View_Transform (P);   --  Depends on P.Camera
+      Utilities.Print_Matrix ("V_Transform", P.View_Transform);
       Set_Perspective_Transform (P);
-      P.VP_Transform := P.Perspect_Transform * P.V_Transform;
+      P.VP_Transform := P.Perspect_Transform * P.View_Transform;
       Set_WP_Transform (P);
-      P.WV_Transform := P.V_Transform * P.W_Transform;
+      P.WV_Transform := P.View_Transform * P.World_Transform;
       Set_WV_Orthographic_Transform (P);
       P.WVP_Transform := P.Perspect_Transform * P.WV_Transform;
    end Init_Transforms;
@@ -96,9 +98,7 @@ package body Ogldev_Pipeline is
    procedure Set_Camera (P               : in out Pipeline;
                          Pos, Target, Up : Singles.Vector3) is
    begin
-      P.Camera.Position := Pos;
-      P.Camera.Target := Target;
-      P.Camera.Up := Up;
+      P.Camera := (Pos, Target, Up);
    end Set_Camera;
 
    --  -------------------------------------------------------------------------
@@ -176,8 +176,8 @@ package body Ogldev_Pipeline is
    begin
       Camera_Translation_Trans := Maths.Translation_Matrix (-P.Camera.Position);
       Camera_Rotate_Trans := Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
-      P.V_Transform := Camera_Translation_Trans * Camera_Rotate_Trans;
-
+      P.View_Transform := Camera_Translation_Trans * Camera_Rotate_Trans;
+      Utilities.Print_Matrix ("Camera_Rotate_Trans", Camera_Rotate_Trans);
    exception
       when  others =>
          Put_Line ("An exception occurred in Ogldev_Pipeline.Set_View_Transform.");
@@ -206,7 +206,7 @@ package body Ogldev_Pipeline is
       Rotate_Xform      : Matrix4;
    begin
       Maths.Init_Rotation_Transform (P.Rotation_Info, Rotate_Xform);
-      P.W_Transform :=
+      P.World_Transform :=
         Maths.Translation_Matrix (P.World_Pos) * Rotate_Xform * Scale_Xform;
 
    exception
@@ -228,7 +228,7 @@ package body Ogldev_Pipeline is
          Single (Get_Perspective_Height (P.Perspective_Info)),
          Get_Perspective_Near (P.Perspective_Info),
          Get_Perspective_Far (P.Perspective_Info), Pers_Proj_Trans);
-      P.WP_Transform := Pers_Proj_Trans * P.W_Transform;
+      P.WP_Transform := Pers_Proj_Trans * P.World_Transform;
    end Set_WP_Transform;
 
    --  -------------------------------------------------------------------------
@@ -245,7 +245,7 @@ package body Ogldev_Pipeline is
          Get_Orthograpic_Right (P.Orthographic_Info),
          Get_Orthograpic_Near (P.Orthographic_Info),
          Get_Orthograpic_Far (P.Orthographic_Info), Ortho_Proj);
-      P.WVP_Transform := Ortho_Proj * P.V_Transform * P.W_Transform;
+      P.WVP_Transform := Ortho_Proj * P.View_Transform * P.World_Transform;
    end Set_WV_Orthographic_Transform;
 
    --  -------------------------------------------------------------------------
