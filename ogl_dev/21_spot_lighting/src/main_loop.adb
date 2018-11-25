@@ -59,9 +59,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width   : Glfw.Size;
       Window_Height  : Glfw.Size;
-      Position       : constant Singles.Vector3 := (5.0, 1.0, 3.0); --  orig 5,1,-3 Normalized by Camera.Init
-      Target         : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
-      Up             : constant Singles.Vector3 := (0.0, 1.0, 0.0);
+      Camera_Position : constant Singles.Vector3 := (5.0, 1.0, 3.0); --  orig 5,1,-3 Normalized by Camera.Init
+      Target          : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Result := Lighting_Technique_21.Init (Shader_Technique);
       if Result then
@@ -76,11 +76,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
          Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
+         --  The near plane should be between the camera and the target?
+         --  or at the target?
          Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
          Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 50.0);
 
          Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
-                                    Position, Target, Up);
+                                    Camera_Position, Target, Up);
          Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_21.Use_Program (Shader_Technique);
@@ -114,6 +116,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Spot_Lights          : Lighting_Technique_21.Spot_Lights_Array (1 .. 2);
    begin
       Scale := Scale + 0.0057;
+      Scale := Scale + 1.0;
       Update_Lighting_Intensity (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Colour;
@@ -152,11 +155,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Lighting_Technique_21.Set_WVP_Location
         (Shader_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-      Utilities.Print_Matrix ("WVP", Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-
---        Lighting_Technique_21.Set_WVP_Location
---          (Shader_Technique, Ogldev_Pipeline.Get_WV_Transform (Pipe));
---              Utilities.Print_Matrix ("WV", Ogldev_Pipeline.Get_WV_Transform (Pipe));
 
       Lighting_Technique_21.Set_World_Matrix_Location
         (Shader_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));

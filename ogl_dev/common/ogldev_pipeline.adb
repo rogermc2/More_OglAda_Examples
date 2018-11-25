@@ -2,7 +2,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Maths;
-with Utilities;
 
 package body Ogldev_Pipeline is
 
@@ -75,7 +74,6 @@ package body Ogldev_Pipeline is
    begin
       Set_World_Transform (P);
       Set_View_Transform (P);   --  Depends on P.Camera
-      Utilities.Print_Matrix ("V_Transform", P.View_Transform);
       Set_Perspective_Transform (P);
       P.VP_Transform := P.Perspect_Transform * P.View_Transform;
       Set_WP_Transform (P);
@@ -177,7 +175,6 @@ package body Ogldev_Pipeline is
       Camera_Translation_Trans := Maths.Translation_Matrix (-P.Camera.Position);
       Camera_Rotate_Trans := Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
       P.View_Transform := Camera_Translation_Trans * Camera_Rotate_Trans;
-      Utilities.Print_Matrix ("Camera_Rotate_Trans", Camera_Rotate_Trans);
    exception
       when  others =>
          Put_Line ("An exception occurred in Ogldev_Pipeline.Set_View_Transform.");
