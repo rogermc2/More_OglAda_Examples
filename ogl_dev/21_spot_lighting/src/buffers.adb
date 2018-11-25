@@ -10,13 +10,13 @@ package body Buffers is
     use GL.Types;
 
         Vertices : constant Maths.Vector8_Array :=
-         ((0.0, 0.0, 0.0,                   0.0, 0.0,  0.0, 1.0, 0.0),
-           (0.0, 0.1, Field_Depth,          0.0, 1.0,  0.0, 1.0, 0.0),
+         ((0.0, 0.00, 0.0,                   0.0, 0.0,  0.0, 1.0, 0.0),
+           (0.0, 0.0, Field_Depth,          0.0, 1.0,  0.0, 1.0, 0.0),
            (Field_Width, 0.0, 0.0,          1.0, 0.0,  0.0, 1.0, 0.0),
 
-           (Field_Width, -0.1, 0.0,          1.0, 0.0,  0.0, 1.0, 0.0),
+           (Field_Width, 0.0, 0.0,          1.0, 0.0,  0.0, 1.0, 0.0),
            (0.0,  0.0, Field_Depth,         0.0, 1.0,  0.0, 1.0, 0.0),
-           (Field_Width,  0.0, Field_Depth, 1.0, 1.0,  0.0, 1.0, 0.0));
+           (Field_Width, 0.00, Field_Depth, 1.0, 1.0,  0.0, 1.0, 0.0));
 
     begin
         VBO.Initialize_Id;
