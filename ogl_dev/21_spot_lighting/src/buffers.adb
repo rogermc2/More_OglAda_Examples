@@ -14,7 +14,7 @@ package body Buffers is
            (0.0, 0.1, Field_Depth,          0.0, 1.0,  0.0, 1.0, 0.0),
            (Field_Width, 0.0, 0.0,          1.0, 0.0,  0.0, 1.0, 0.0),
 
-           (Field_Width, 0.0, 0.0,          1.0, 0.0,  0.0, 1.0, 0.0),
+           (Field_Width, -0.1, 0.0,          1.0, 0.0,  0.0, 1.0, 0.0),
            (0.0,  0.0, Field_Depth,         0.0, 1.0,  0.0, 1.0, 0.0),
            (Field_Width,  0.0, Field_Depth, 1.0, 1.0,  0.0, 1.0, 0.0));
 
