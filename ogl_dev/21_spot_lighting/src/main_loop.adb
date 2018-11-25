@@ -59,7 +59,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width   : Glfw.Size;
       Window_Height  : Glfw.Size;
-      Position       : constant Singles.Vector3 := (5.0, 1.0, -3.0); --  Normalized by Camera.Init
+      Position       : constant Singles.Vector3 := (5.0, 1.0, 3.0); --  Normalized by Camera.Init
       Target         : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
       Up             : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -109,14 +109,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Maths.Single_Math_Functions;
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
-      World_Transformation : GL.Types.Singles.Matrix4;
       Pipe                 : Ogldev_Pipeline.Pipeline;
       Point_Lights         : Lighting_Technique_21.Point_Lights_Array (1 .. 2);
       Spot_Lights          : Lighting_Technique_21.Spot_Lights_Array (1 .. 2);
    begin
       Scale := Scale + 0.0057;
       Update_Lighting_Intensity (Window);
-      --          Ogldev_Camera.Update_Camera (Game_Camera, Window);
+--        Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Colour;
 
       Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (1),
@@ -144,7 +143,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
 
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 1.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -1.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Ogldev_Camera.Get_Position (Game_Camera),
                                   Ogldev_Camera.Get_Target (Game_Camera),
                                   Ogldev_Camera.Get_Up (Game_Camera));
@@ -154,9 +153,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Lighting_Technique_21.Set_WVP_Location
         (Shader_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Utilities.Print_Matrix ("WVP", Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-      World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
+
+--        Lighting_Technique_21.Set_WVP_Location
+--          (Shader_Technique, Ogldev_Pipeline.Get_WV_Transform (Pipe));
+--              Utilities.Print_Matrix ("WV", Ogldev_Pipeline.Get_WV_Transform (Pipe));
+
       Lighting_Technique_21.Set_World_Matrix_Location
-        (Shader_Technique, World_Transformation);
+        (Shader_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
       Lighting_Technique_21.Set_Directional_Light_Location (Shader_Technique, Direct_Light);
       Lighting_Technique_21.Set_Eye_World_Pos_Location
         (Shader_Technique, Ogldev_Camera.Get_Position (Game_Camera));
