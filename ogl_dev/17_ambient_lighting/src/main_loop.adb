@@ -109,7 +109,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       Update_Lighting_Intensity (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
-      Utilities.Clear_Colour;
+      Utilities.Clear_Colour_Buffer_And_Depth;
       Scale := Scale + 0.1;
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
