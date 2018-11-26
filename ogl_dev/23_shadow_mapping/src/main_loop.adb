@@ -56,8 +56,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
 
-      Camera_Position     : constant Singles.Vector3 := (-1.0, 1.0, 0.25);
-      Target              : constant Singles.Vector3 := (0.0, -0.5, 1.0);
+      Camera_Position     : constant Singles.Vector3 := (0.0, 0.0, 0.0);
+      Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
@@ -65,7 +65,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Set_Diffuse_Intensity (Spot, 0.9);
-      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_White);
+      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_Red);
       Set_Direction (Spot, (1.0, -1.0, 0.0));
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
