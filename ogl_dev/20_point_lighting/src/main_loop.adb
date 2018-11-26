@@ -117,7 +117,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Scale := Scale + 1.0;
       Update_Lighting_Intensity (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
-      Utilities.Clear_Colour;
+      Utilities.Clear_Background_Colour_And_Depth (Background);
 
       Lighting_Technique_20.Set_Point_Light (Light   => Point_Lights (1),
                                              Diffuse =>  0.5,
