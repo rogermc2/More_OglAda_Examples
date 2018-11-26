@@ -21,7 +21,7 @@ with Ogldev_Util;
 
 with Scene;
 
-package body Project_22_Mesh is
+package body Meshes_22 is
    type Vertex is record
       Pos    : GL.Types.Singles.Vector3;
       Tex    : GL.Types.Singles.Vector2;
@@ -66,7 +66,7 @@ package body Project_22_Mesh is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Project_22_Mesh.Init_Buffers.");
+         Put_Line ("An exception occurred in Meshes_22.Init_Buffers.");
          raise;
 
    end Init_Buffers;
@@ -93,7 +93,7 @@ package body Project_22_Mesh is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Project_22_Mesh.Init_From_Scene.");
+         Put_Line ("An exception occurred in Meshes_22.Init_From_Scene.");
          raise;
    end Init_From_Scene;
 
@@ -127,21 +127,21 @@ package body Project_22_Mesh is
                   Dir & To_String (Path)) then
                   Ogldev_Texture.Load (aTexture);
                   theMesh.Textures.Insert (index, aTexture);
-                  Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures loaded texture from "
+                  Put_Line ("Meshes_22.Init_Materials.Load_Textures loaded texture from "
                             & Dir & To_String (Path));
                elsif Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
                   Ogldev_Texture.Load (aTexture);
                   theMesh.Textures.Insert (index, aTexture);
                   New_Line;
-                  Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures loaded default texture from "
+                  Put_Line ("Meshes_22.Init_Materials.Load_Textures loaded default texture from "
                             & Dir & "white.png");
                else
-                  Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures default texture "
+                  Put_Line ("Meshes_22.Init_Materials.Load_Textures default texture "
                             & Dir & "white.png not found.");
                end if;
             else
-               Put_Line ("Project_22_Mesh.Init_Materials.Load_Textures Get_Texture failed");
+               Put_Line ("Meshes_22.Init_Materials.Load_Textures Get_Texture failed");
             end if;
          end if;
       end Load_Textures;
@@ -152,7 +152,7 @@ package body Project_22_Mesh is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Project_22_Mesh.Init_Materials.");
+         Put_Line ("An exception occurred in Meshes_22.Init_Materials.");
          raise;
    end Init_Materials;
 
@@ -196,7 +196,7 @@ package body Project_22_Mesh is
       end loop;
 
       if Source_Mesh.Faces.Is_Empty then
-         Put_Line ("Project_22_Mesh.Init_Mesh, Source_Mesh.Faces is empty.");
+         Put_Line ("Meshes_22.Init_Mesh, Source_Mesh.Faces is empty.");
       else
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
             Face := Source_Mesh.Faces.Element (UInt (Face_Index));
@@ -215,7 +215,7 @@ package body Project_22_Mesh is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Project_22_Mesh.Init_Mesh.");
+         Put_Line ("An exception occurred in Meshes_22.Init_Mesh.");
          raise;
    end Init_Mesh;
 
@@ -230,7 +230,7 @@ package body Project_22_Mesh is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Project_22_Mesh.Load_Mesh.");
+         Put_Line ("An exception occurred in Meshes_22.Load_Mesh.");
          raise;
    end Load_Mesh;
 
@@ -268,14 +268,14 @@ package body Project_22_Mesh is
                if OK then
                   Ogldev_Texture.Bind (theTexture, 0);
                else
-                  Put_Line ("Project_22_Mesh.Render_Mesh.Draw, Texture_Object is not initialized.");
+                  Put_Line ("Meshes_22.Render_Mesh.Draw, Texture_Object is not initialized.");
                end if;
             else
-               Put_Line ("Project_22_Mesh.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &
+               Put_Line ("Meshes_22.Render_Mesh.Draw, theMesh.Textures does not contain Material: " &
                            UInt'Image (aMaterial));
             end if;
          else
-            Put_Line ("Project_22_Mesh.Render_Mesh.Draw, Invalid Material_Index.");
+            Put_Line ("Meshes_22.Render_Mesh.Draw, Invalid Material_Index.");
          end if;
 
          if OK then
@@ -287,7 +287,7 @@ package body Project_22_Mesh is
 
       exception
          when others =>
-            Put_Line ("An exception occurred in Project_22_Mesh.Render_Mesh,Draw.");
+            Put_Line ("An exception occurred in Meshes_22.Render_Mesh,Draw.");
             raise;
       end Draw;
 
@@ -297,7 +297,7 @@ package body Project_22_Mesh is
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
 
       if Is_Empty (theMesh.Entries) then
-         Put_Line ("Project_22_Mesh.Render_Mesh, theMesh.Entries Is Empty.");
+         Put_Line ("Meshes_22.Render_Mesh, theMesh.Entries Is Empty.");
       else
          while Has_Element (Entry_Cursor) loop
             anEntry := Element (Entry_Cursor);
@@ -312,10 +312,10 @@ package body Project_22_Mesh is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Project_22_Mesh.Render_Mesh.");
+         Put_Line ("An exception occurred in Meshes_22.Render_Mesh.");
          raise;
    end Render_Mesh;
 
    --  -------------------------------------------------------------------------
 
-end Project_22_Mesh;
+end Meshes_22;

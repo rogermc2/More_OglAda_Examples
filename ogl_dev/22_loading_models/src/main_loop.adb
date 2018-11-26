@@ -25,7 +25,7 @@ with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 
-with Project_22_Mesh;
+with Meshes_22;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
@@ -43,7 +43,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Init (Window  : in out Glfw.Windows.Window;
-                   theMesh : out Project_22_Mesh.Mesh_22; Result : out Boolean) is
+                   theMesh : out Meshes_22.Mesh_22; Result : out Boolean) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
@@ -70,7 +70,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit (Light_Technique, 0);
 
-         Project_22_Mesh.Load_Mesh
+         Meshes_22.Load_Mesh
            (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
          Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
@@ -89,7 +89,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render_Scene (Window  : in out Glfw.Windows.Window;
-                           theMesh : Project_22_Mesh.Mesh_22) is
+                           theMesh : Meshes_22.Mesh_22) is
       use Maths.Single_Math_Functions;
       use Ogldev_Basic_Lighting;
       use Ogldev_Camera;
@@ -134,7 +134,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 50.0);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.06);
---        Ogldev_Pipeline.Set_Scale (Pipe, 6.0, 6.0, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 10.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
@@ -148,7 +147,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Set_Mat_Specular_Intensity (Light_Technique, 0.0);
       Set_Mat_Specular_Power (Light_Technique, 0);
 
-      Project_22_Mesh.Render_Mesh (theMesh);
+      Meshes_22.Render_Mesh (theMesh);
 
    exception
       when  others =>
@@ -159,7 +158,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    use Glfw.Input;
-   theMesh : Project_22_Mesh.Mesh_22;
+   theMesh : Meshes_22.Mesh_22;
    Running : Boolean;
 begin
    Init (Main_Window, theMesh, Running);
