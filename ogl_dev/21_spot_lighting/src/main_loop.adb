@@ -116,10 +116,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Spot_Lights          : Lighting_Technique_21.Spot_Lights_Array (1 .. 2);
    begin
       Scale := Scale + 0.0057;
-      Scale := Scale + 1.0;
       Update_Lighting_Intensity (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
-      Utilities.Clear_Colour;
+      Utilities.Clear_Background_Colour (Background);
 
       Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (1),
                                              Diffuse =>  0.25,
