@@ -7,7 +7,7 @@ with GL.Types; use GL.Types;
 
 with Ogldev_Texture;
 
-Package Project_22_Mesh is
+Package Meshes_22 is
 
    type Mesh_22 is private;
    type Mesh_Entry is private;
@@ -39,4 +39,4 @@ private
       Textures    : Ogldev_Texture.Mesh_Texture_Package.Map;
    end record;
 
-end Project_22_Mesh;
+end Meshes_22;
