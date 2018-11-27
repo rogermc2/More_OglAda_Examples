@@ -69,6 +69,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Direction (Spot, (1.0, -1.0, 0.0));
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
+      --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Shadow_Map_FBO.Init (theShadow_Map, Int (Window_Width), Int (Window_Height));
@@ -151,8 +152,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
-
-      --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
       --  First, render the closest depth values into the
