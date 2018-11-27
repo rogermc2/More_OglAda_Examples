@@ -66,10 +66,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Set_Diffuse_Intensity (Spot, 0.9);
       Set_Ambient_Intensity (Spot, 0.0);
-      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_White);
+      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_Cyan);
       Set_Direction (Spot, (1.0, -1.0, 0.0));
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
+
       GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
@@ -128,8 +129,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
-      Utilities.Print_Matrix ("Main_Loop.Render_Pass WVP_Transform",
-                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+--        Utilities.Print_Matrix ("Main_Loop.Render_Pass WVP_Transform",
+--                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_23.Render (Quad_Mesh);
 
@@ -192,11 +193,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
-       Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
-                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+--         Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
+--                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_23.Render (Shadow_Mesh);
---        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+--      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);
