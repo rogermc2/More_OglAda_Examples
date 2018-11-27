@@ -115,6 +115,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use Ogldev_Camera;
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
+      Put_Line ("Main_Loop.Render_Pass.");
       Utilities.Clear_Colour_Buffer_And_Depth;
       Shadow_Map_Technique.Set_Shadow_Map_Texture_Unit (Shadow_Technique, 0);
       Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
@@ -133,6 +134,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_23.Render (Quad_Mesh);
+      New_Line;
 
    exception
       when  others =>
@@ -179,6 +181,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use Ogldev_Lights_Common;
       Pipe  : Ogldev_Pipeline.Pipeline;
    begin
+      Put_Line ("Main_Loop.Shadow_Map_Pass.");
       Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
@@ -201,6 +204,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);
+      New_Line;
 
    exception
       when  others =>
