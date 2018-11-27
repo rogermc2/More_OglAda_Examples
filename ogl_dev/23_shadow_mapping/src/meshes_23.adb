@@ -175,6 +175,7 @@ package body Meshes_23 is
    procedure Init_Mesh (Mesh_Index : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
                         aMesh_23   : in out Mesh_23) is
       use Ada.Containers;
+      use GL.Types.Singles;
       use Mesh_Entry_Package;
       Num_Vertices  : constant UInt := UInt (Source_Mesh.Vertices.Length);
       Vertices      : Vertex_Array (1 .. Int (Num_Vertices));
@@ -266,13 +267,13 @@ package body Meshes_23 is
          while Has_Element (Entry_Cursor) loop
             anEntry := Element (Entry_Cursor);
             GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
+            GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
 
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
             GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
             GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
 
-            GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
             if Textures.Contains (anEntry.Material_Index) then
                Put_Line ("Meshes_23.Render: ." & UInt'Image (anEntry.Material_Index));
                aTexture := Textures.Element (anEntry.Material_Index);
