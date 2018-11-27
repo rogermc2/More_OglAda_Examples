@@ -225,6 +225,8 @@ package body Meshes_23 is
       --  m_Entries[Index].Init(Vertices, Indices);
       Init_Buffers (anEntry, Vertices, Indices);
       aMesh_23.Entries.Insert (Integer (Mesh_Index), anEntry);
+      Put_Line ("Meshes_23.Init_Mesh, Material_Index: " &
+                           UInt'Image (anEntry.Material_Index));
 
    exception
       when others =>
@@ -251,10 +253,12 @@ package body Meshes_23 is
 
    procedure  Render (theMesh : Mesh_23) is
       use Mesh_Entry_Package;
-      Entry_Cursor   : Cursor;
-      anEntry        : Mesh_Entry;
-      Textures       : Ogldev_Texture.Mesh_Texture_Map;
-      aTexture       : Ogldev_Texture.Ogl_Texture;
+      Entry_Cursor : Cursor;
+      anEntry      : Mesh_Entry;
+      aMaterial    : UInt;
+      Textures     : Ogldev_Texture.Mesh_Texture_Map;
+      aTexture     : Ogldev_Texture.Ogl_Texture;
+      OK           : Boolean := False;
    begin
       if theMesh.Entries.Is_Empty then
          raise Mesh_23_Error with "Meshes_23.Render theMesh.Entries is empty.";
@@ -266,6 +270,7 @@ package body Meshes_23 is
 
          while Has_Element (Entry_Cursor) loop
             anEntry := Element (Entry_Cursor);
+            aMaterial := anEntry.Material_Index;
             GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
             GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
 
@@ -274,13 +279,29 @@ package body Meshes_23 is
             GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
             GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
 
-            if Textures.Contains (anEntry.Material_Index) then
-               Put_Line ("Meshes_23.Render: ." & UInt'Image (anEntry.Material_Index));
-               aTexture := Textures.Element (anEntry.Material_Index);
-               Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+--              if Textures.Contains (anEntry.Material_Index) then
+--                 Put_Line ("Meshes_23.Render: ." & UInt'Image (anEntry.Material_Index));
+--                 aTexture := Textures.Element (anEntry.Material_Index);
+--                 Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
+--              end if;
+            OK := not theMesh.Textures.Is_Empty;
+            if OK then
+               OK := theMesh.Textures.Contains (aMaterial);
+               if OK then
+                  aTexture := theMesh.Textures.Element (aMaterial);
+                  OK := aTexture.Texture_Object.Initialized;
+                  if OK then
+                     Ogldev_Texture.Bind (aTexture, 0);
+                  else
+                     Put_Line ("Meshes_23.Render_Mesh, Texture_Object is not initialized.");
+                  end if;
+               else
+                  Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures does not contain Material: " &
+                              UInt'Image (aMaterial));
+               end if;
+            else
+               Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures is empty.");
             end if;
-
-            Put_Line ("Meshes_23.Render, Drawing Elements.");
             GL.Objects.Buffers.Draw_Elements
               (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
             Next (Entry_Cursor);
