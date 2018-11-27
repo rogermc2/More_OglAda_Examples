@@ -25,8 +25,8 @@ Package body Shadow_Map_Technique is
         use  GL.Objects.Shaders;
     begin
         theTechnique.Lighting_Program := Program_From
-          ((Src ("src/shaders/shadow_map.vs", Vertex_Shader),
-           Src ("src/shaders/shadow_map.fs", Fragment_Shader)));
+          ((Src ("src/shaders/shadow_map_23.vs", Vertex_Shader),
+           Src ("src/shaders/shadow_map_23.fs", Fragment_Shader)));
 
         GL.Objects.Programs.Use_Program  (theTechnique.Lighting_Program);
         theTechnique.WVP_Location := GL.Objects.Programs.Uniform_Location
