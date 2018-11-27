@@ -16,6 +16,7 @@ with Assimp_Types;
 with Camera;
 with Light;
 with Material;
+with Mesh_Conversion;
 with API_Vectors_Matrices;
 with Assimp_Mesh;
 with Metadata;
@@ -67,7 +68,7 @@ package Scene is
         Num_Children   : Interfaces.C.unsigned := 0;
         Children       : System.Address := System.Null_Address;
         Num_Meshes     : Interfaces.C.unsigned := 0;
-        Meshes         : Assimp_Mesh.Mesh_Ptr_Array_Pointer := Null;
+        Meshes         : Mesh_Conversion.Mesh_Ptr_Array_Pointer := Null;
         Meta_Data      : access Metadata.API_Metadata := Null;
     end record;
     pragma Convention (C_Pass_By_Copy, API_Node);
@@ -82,7 +83,7 @@ package Scene is
             Flags          : Interfaces.C.unsigned := 0;
             Root_Node      : Scene.Node_Pointers.Pointer := null;
             Num_Meshes     : Interfaces.C.unsigned := 0;
-            Meshes         : Assimp_Mesh.Mesh_Ptr_Array_Pointer := null;
+            Meshes         : Mesh_Conversion.Mesh_Ptr_Array_Pointer := null;
             Num_Materials  : Interfaces.C.unsigned := 0;
             Materials      : Material.Material_Ptr_Array_Pointer := null;
             Num_Animations : Interfaces.C.unsigned := 0;
