@@ -7,7 +7,7 @@ with GL.Objects.Framebuffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
---  with GL.Toggles;
+with GL.Toggles;
 with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
@@ -57,7 +57,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Height       : Glfw.Size;
 
       Camera_Position     : constant Singles.Vector3 := (0.0, 0.0, 0.0);
-      Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);
+      Target              : constant Singles.Vector3 := (0.0, 0.0, -1.0);
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
@@ -65,11 +65,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Set_Diffuse_Intensity (Spot, 0.9);
-      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_Red);
+      Set_Ambient_Intensity (Spot, 0.0);
+      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_White);
       Set_Direction (Spot, (1.0, -1.0, 0.0));
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
-      --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Shadow_Map_FBO.Init (theShadow_Map, Int (Window_Width), Int (Window_Height));
@@ -113,12 +114,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use Ogldev_Camera;
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
-      Utilities.Clear_Background_Colour_And_Depth (Background);
+      Utilities.Clear_Colour_Buffer_And_Depth;
       Shadow_Map_Technique.Set_Shadow_Map_Texture_Unit (Shadow_Technique, 0);
       Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 5.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -10.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 10.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
@@ -127,8 +128,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
-      --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
-      --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
+      Utilities.Print_Matrix ("Main_Loop.Render_Pass WVP_Transform",
+                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_23.Render (Quad_Mesh);
 
@@ -139,7 +140,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    end Render_Pass;
 
    --  ------------------------------------------------------------------------
-
+   --  A light point of view WVP matrix is used in the first pass
+   --  A camera point of view WVP matrix is used in the second pass.
+   --  In the first pass the Z buffer will be populated by the closest
+   --  Z values from the light point of view and on the second pass
+   --  from the camera point of view.
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Ogldev_Camera;
@@ -178,7 +183,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -5.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 5.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Position (Spot),
                                   Direction (Spot), (0.0, 1.0, 0.0));
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
@@ -187,10 +192,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
-      --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
-      --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
+       Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
+                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_23.Render (Shadow_Mesh);
+--        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);

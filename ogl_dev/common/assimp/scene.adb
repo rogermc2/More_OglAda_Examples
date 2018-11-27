@@ -50,7 +50,7 @@ package body Scene is
       Num_Cameras    : constant unsigned := (C_Scene.Num_Cameras);
 
       C_Material_Ptrs_Array : Material.API_Material_Ptr_Array (1 .. Num_Materials);
-      C_Root_Node       : Scene.API_Node;
+      C_Root_Node           : Scene.API_Node;
    begin
       Put ("Scene.To_AI_Scene, Num_Meshes, Num_Materials, Num_Animations, ");
       Put_Line ("Num_Textures, Num_Lights, Num_Cameras:");
@@ -80,7 +80,7 @@ package body Scene is
          Scene.To_Node_List (C_Root_Node, theScene.Nodes);
       end if;
 
-      theScene.Meshes := Assimp_Mesh.To_AI_Mesh_Map (Num_Meshes, C_Scene.Meshes);
+      theScene.Meshes := Mesh_Conversion.To_AI_Mesh_Map (Num_Meshes, C_Scene.Meshes);
       if Num_Materials > 0 then
          C_Material_Ptrs_Array := Material.Material_Pointers_Package.Value
           (C_Scene.Materials, ptrdiff_t (Num_Materials));
