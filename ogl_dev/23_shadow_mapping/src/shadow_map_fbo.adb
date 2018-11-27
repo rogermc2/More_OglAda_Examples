@@ -11,7 +11,7 @@ with GL.Pixels;
 
 package body Shadow_Map_FBO is
 
-   procedure Bind_For_Reading (aShadow_Map : in out Shadow_Map;
+   procedure Bind_For_Reading (aShadow_Map : Shadow_Map;
                                Tex_Unit : GL.Objects.Textures.Texture_Unit) is
        use GL.Objects.Textures.Targets;
    begin
@@ -21,7 +21,7 @@ package body Shadow_Map_FBO is
 
    --  ------------------------------------------------------------------------------
 
-   procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map) is
+   procedure Bind_For_Writing (aShadow_Map : Shadow_Map) is
    begin
         GL.Objects.Framebuffers.Draw_Target.Bind (aShadow_Map.FBO);
    end Bind_For_Writing;
