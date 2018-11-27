@@ -31,7 +31,7 @@ Package body Shadow_Map_Technique is
         GL.Objects.Programs.Use_Program  (theTechnique.Lighting_Program);
         theTechnique.WVP_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gWVP");
-        theTechnique.Texture_Location := GL.Objects.Programs.Uniform_Location
+        theTechnique.Texture_Unit_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gShadowMap");
     end Init;
 
@@ -49,7 +49,7 @@ Package body Shadow_Map_Technique is
                                            Texture_Unit : GL.Types.Int) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Int (theTechnique.Texture_Location, Texture_Unit);
+        GL.Uniforms.Set_Int (theTechnique.Texture_Unit_Location, Texture_Unit);
     end Set_Shadow_Map_Texture_Unit;
 
    --  -------------------------------------------------------------------------
