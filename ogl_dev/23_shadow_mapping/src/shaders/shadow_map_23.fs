@@ -3,7 +3,7 @@
 in vec2 TexCoordOut;                                                                
 uniform sampler2D gShadowMap;                                                       
                                                                                     
-out vec4 FragColor;                                                                 
+out vec4 fragment_colour;
                                                                                     
 void main()                                                                         
 {                                                                                   
@@ -11,5 +11,5 @@ void main()
     Depth = 1.0 - (1.0 - Depth) * 25.0;
     //  One floating-point number in the constructor sets all components to the same value.
     // This should result in grey
-    FragColor = vec4(Depth);
+    fragment_colour = 0.8 * vec4(Depth);
 }
