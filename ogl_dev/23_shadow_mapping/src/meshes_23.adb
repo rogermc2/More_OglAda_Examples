@@ -302,6 +302,7 @@ package body Meshes_23 is
               (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
             Next (Entry_Cursor);
          end loop;
+         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
 
          GL.Attributes.Disable_Vertex_Attrib_Array (0);
          GL.Attributes.Disable_Vertex_Attrib_Array (1);
