@@ -13,13 +13,13 @@ package Shadow_Map_FBO is
                                Tex_Unit : GL.Objects.Textures.Texture_Unit);
    procedure Bind_For_Writing (aShadow_Map : Shadow_Map);
    procedure Init (aShadow_Map : in out Shadow_Map;
-                  Window_Width, Window_Height : GL.Types.Int);
+                   Window_Width, Window_Height : GL.Types.Int);
 
 private
 
    type Shadow_Map is record
-      FBO    : GL.Objects.Framebuffers.Framebuffer;
-      Shadow : GL.Objects.Textures.Texture;
+      FBO     : GL.Objects.Framebuffers.Framebuffer;
+      Texture : GL.Objects.Textures.Texture;
    end record;
 
 end Shadow_Map_FBO;
