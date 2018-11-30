@@ -16,7 +16,9 @@ package Utilities is
 
    procedure Clear_All (Colour : GL.Types.Colors.Color);
    procedure Clear_Background_Colour (Colour : GL.Types.Colors.Color);
+   procedure Clear_Background_Colour (Colour : GL.Types.Colors.Basic_Color);
    procedure Clear_Background_Colour_And_Depth (Colour : GL.Types.Colors.Color);
+   procedure Clear_Background_Colour_And_Depth (Colour : GL.Types.Colors.Basic_Color);
    procedure Clear_Colour;
    procedure Clear_Colour_Buffer_And_Depth;
    procedure Clear_Depth;
