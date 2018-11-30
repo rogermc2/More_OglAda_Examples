@@ -98,21 +98,21 @@ package body Ogldev_Lights_Common is
 
    --  -------------------------------------------------------------------------
 
-   function Colour (Light : Directional_Light) return Singles.Vector3 is
+   function Colour (Light : Directional_Light) return Colors.Basic_Color is
    begin
       return Light.Base.Colour;
    end Colour;
 
    --  -------------------------------------------------------------------------
 
-   function Colour (Light : Point_Light) return Singles.Vector3 is
+   function Colour (Light : Point_Light) return Colors.Basic_Color is
    begin
       return Light.Base.Colour;
    end Colour;
 
    --  -------------------------------------------------------------------------
 
-   function Colour (Light : Spot_Light) return Singles.Vector3 is
+   function Colour (Light : Spot_Light) return Colors.Basic_Color is
    begin
       return Light.Point.Base.Colour;
    end Colour;
@@ -169,8 +169,9 @@ package body Ogldev_Lights_Common is
    --  -------------------------------------------------------------------------
 
 procedure Init_Directional_Light (Light : in out Directional_Light;
-                                    Amb_Intensity, Diff_Intensity : Single;
-                                    theColour, Dir : Singles.Vector3) is
+                                  Amb_Intensity, Diff_Intensity : Single;
+                                  theColour : Colors.Basic_Color;
+                                  Dir : Singles.Vector3) is
    begin
       Light.Base.Ambient_Intensity := Amb_Intensity;
       Light.Base.Diffuse_Intensity := Diff_Intensity;
@@ -281,7 +282,7 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
    --  ------------------------------------------------------------------------
 
    procedure Set_Point_Light (Light : in out Point_Light; Pos : Singles.Vector3;
-                              theColour : Singles.Vector3) is
+                              theColour : Colors.Basic_Color) is
    begin
       Light.Position := Pos;
       Light.Base.Colour := theColour;
@@ -290,7 +291,7 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
    --  ------------------------------------------------------------------------
 
    procedure Set_Spot_Light (Light : in out Spot_Light; Pos : Singles.Vector3;
-                             theColour : Singles.Vector3) is
+                             theColour : Colors.Basic_Color) is
    begin
       Light.Point.Position := Pos;
       Light.Point.Base.Colour := theColour;
