@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Shaders;
+with Gl.Types.Colors;
 
 with Maths;
 with Program_Loader;
@@ -11,6 +12,14 @@ with Utilities;
 
 package body Ogldev_Basic_Lighting is
    use GL.Uniforms;
+
+   function Colour_To_Vec3 (theColour : Colors.Basic_Color) return Singles.Vector3 is
+      Col         : constant Colors.Basic_Color := theColour;
+      Vec3_Colour : constant Singles.Vector3 :=
+                          (Col (Colors.R), Col (Colors.G), Col (Colors.B));
+   begin
+      return Vec3_Colour;
+   end Colour_To_Vec3;
 
    function Init (Lighting_Technique : in out Basic_Lighting_Technique) return Boolean is
       use Ada.Strings;
@@ -135,7 +144,8 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
-   function Lighting_Program (Technique : Basic_Lighting_Technique) return GL.Objects.Programs.Program is
+   function Lighting_Program (Technique : Basic_Lighting_Technique)
+                              return GL.Objects.Programs.Program is
    begin
       return Technique.Lighting_Program;
    end Lighting_Program;
@@ -156,7 +166,8 @@ package body Ogldev_Basic_Lighting is
    begin
       Light_Direction := Maths.Normalized (Light_Direction);
       Set_Single (Technique.Dir_Light_Location.Direction, Direction (Light));
-      Set_Single (Technique.Dir_Light_Location.Colour, Colour (Light));
+      Set_Single (Technique.Dir_Light_Location.Colour,
+                  Colour_To_Vec3 (Colour (Light)));
       Set_Single (Technique.Dir_Light_Location.Ambient_Intensity,
                   Ambient_Intensity (Light));
       Set_Single (Technique.Dir_Light_Location.Direction, Light_Direction);
@@ -174,7 +185,8 @@ package body Ogldev_Basic_Lighting is
       GL.Uniforms.Set_Int (Technique.Num_Point_Lights_Location, Num_Lights);
       for index in UInt range 1 .. UInt (Num_Lights) loop
          Location := Technique.Point_Lights_Location (Int (index));
-         Set_Single (Location.Colour, Colour (Lights (index)));
+         Set_Single (Location.Colour,
+                     Colour_To_Vec3 (Colour (Lights (index))));
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Lights (index)));
          Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Lights (index)));
          Set_Single (Location.Attenuation.Atten_Constant,
@@ -202,7 +214,7 @@ package body Ogldev_Basic_Lighting is
          Spot := Spots (UInt (index));
          Light_Direction := Maths.Normalized (Direction (Spot));
          Location := Technique.Spot_Lights_Location (index);
-         Set_Single (Location.Colour, Colour (Spot));
+         Set_Single (Location.Colour, Colour_To_Vec3 (Colour (Spot)));
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
          Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
          Set_Single (Location.Direction, Light_Direction);
@@ -218,14 +230,14 @@ package body Ogldev_Basic_Lighting is
    --  -------------------------------------------------------------------------
 
    procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
-                              Spot      : Ogldev_Lights_Common.Spot_Light) is
+                              Spot     : Ogldev_Lights_Common.Spot_Light) is
       Location        : Spot_Light_Locations;
       Light_Direction : Singles.Vector3 := Direction (Spot);
    begin
       Light_Direction := Maths.Normalized (Light_Direction);
       GL.Uniforms.Set_Int (Technique.Num_Spot_Lights_Location, 1);
       Location := Technique.Spot_Lights_Location (1);
-      Set_Single (Location.Colour, Colour (Spot));
+      Set_Single (Location.Colour, Colour_To_Vec3 (Colour (Spot)));
       Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
       Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
       Set_Single (Location.Direction, Light_Direction);
