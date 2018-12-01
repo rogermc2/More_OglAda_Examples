@@ -267,6 +267,8 @@ package body Meshes_22 is
                OK := theTexture.Texture_Object.Initialized;
                if OK then
                   Ogldev_Texture.Bind (theTexture, 0);
+                  Put_Line ("Meshes_23.Render_Mesh, Material " &
+                              UInt'Image (aMaterial) & " bound.");
                else
                   Put_Line ("Meshes_22.Render_Mesh.Draw, Texture_Object is not initialized.");
                end if;
