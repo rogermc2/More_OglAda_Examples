@@ -55,8 +55,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       VAO.Bind;
       Result := Ogldev_Basic_Lighting.Init (Light_Technique);
       if Result then
-         Ogldev_Lights_Common.Init_Directional_Light (Direct_Light, 1.0, 0.01,
-                                                      (1.0, 1.0, 1.0), (1.0, -1.0, 0.0));
+         Ogldev_Lights_Common.Init_Directional_Light
+           (Direct_Light, 1.0, 0.01, Ogldev_Lights_Common.Colour_White, (1.0, -1.0, 0.0));
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
                                     Camera_Position, Target_Position, Up);
