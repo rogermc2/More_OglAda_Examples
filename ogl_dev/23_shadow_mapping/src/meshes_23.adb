@@ -11,6 +11,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Low_Level.Enums;
+with GL.Objects.Textures.Targets;
+with GL.Pixels;
 
 with Maths;
 with Utilities;
@@ -287,6 +289,9 @@ package body Meshes_23 is
                      Ogldev_Texture.Bind (aTexture, 0);
                      Put_Line ("Meshes_23.Render_Mesh, Material " &
                               UInt'Image (aMaterial) & " bound.");
+--                       GL.Objects.Textures.Targets.Texture_2D.Load_From_Data
+--                         (0, GL.Pixels.RGBA8, 512, 512, GL.Pixels.RGBA,
+--                          GL.Pixels.Int, aTexture.Image.Image_Data);
                   else
                      Put_Line ("Meshes_23.Render_Mesh, Texture_Object is not initialized.");
                   end if;
@@ -298,11 +303,14 @@ package body Meshes_23 is
                Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures is empty.");
             end if;
 
+            Put ("Meshes_23.Render, Width, Height: ");
+            Put_Line (Int'Image (GL.Objects.Textures.Targets.Texture_2D.Width (0)) & "  " &
+                        Int'Image (GL.Objects.Textures.Targets.Texture_2D.Height (0)));
             GL.Objects.Buffers.Draw_Elements
               (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
+--              GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
             Next (Entry_Cursor);
          end loop;
-         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
 
          GL.Attributes.Disable_Vertex_Attrib_Array (0);
          GL.Attributes.Disable_Vertex_Attrib_Array (1);
