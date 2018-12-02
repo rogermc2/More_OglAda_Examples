@@ -14,8 +14,8 @@ package Shadow_Map_FBO is
                                Tex_Unit : GL.Objects.Textures.Texture_Unit);
    procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map);
    procedure Init (aShadow_Map : in out Shadow_Map;
-                   Window_Width, Window_Height : GL.Types.Int;
-                   Draw_Buffer_List : in out GL.Buffers.Explicit_Color_Buffer_List);
+                   Window_Width, Window_Height : GL.Types.Int);
+--                     Draw_Buffer_List : in out GL.Buffers.Explicit_Color_Buffer_List);
 
 private
 

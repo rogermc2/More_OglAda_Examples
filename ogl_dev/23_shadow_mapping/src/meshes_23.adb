@@ -10,6 +10,7 @@ with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
+with GL.Buffers;
 with GL.Low_Level.Enums;
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
@@ -287,9 +288,9 @@ package body Meshes_23 is
                   aTexture := theMesh.Textures.Element (aMaterial);
                   if aTexture.Texture_Object.Initialized then
                      Ogldev_Texture.Bind (aTexture, 0);
+                     GL.Buffers.Set_Active_Buffer (GL.Buffers.Color_Attachment0);
                      Put_Line ("Meshes_23.Render_Mesh, Material " &
-                              UInt'Image (aMaterial) & " bound.");
---                       GL.Objects.Textures.Targets.Texture_2D.Load_From_Data
+                              UInt'Image (aMaterial) & " bound.");--                       GL.Objects.Textures.Targets.Texture_2D.Load_From_Data
 --                         (0, GL.Pixels.RGBA8, 512, 512, GL.Pixels.RGBA,
 --                          GL.Pixels.Int, aTexture.Image.Image_Data);
                   else

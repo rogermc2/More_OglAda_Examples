@@ -42,7 +42,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shadow_Technique       : Shadow_Map_Technique.Technique;
    theShadow_Map          : Shadow_Map_FBO.Shadow_Map;
-   Draw_Buffer_List       : GL.Buffers.Explicit_Color_Buffer_List (1 .. 1);
+--     Draw_Buffer_List       : GL.Buffers.Explicit_Color_Buffer_List (1 .. 1);
    Game_Camera            : Ogldev_Camera.Camera;
    Shadow_Mesh            : Meshes_23.Mesh_23;
    Quad_Mesh              : Meshes_23.Mesh_23;
@@ -82,7 +82,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 --        GL.Window.Set_Viewport (10, 10, GL.Types.Int (Window_Width) - 10,
 --                                GL.Types.Int (Window_Height) - 10);
       Shadow_Map_FBO.Init
-        (theShadow_Map, Int (Window_Width), Int (Window_Height), Draw_Buffer_List);
+        (theShadow_Map, Int (Window_Width), Int (Window_Height));
+--          (theShadow_Map, Int (Window_Width), Int (Window_Height), Draw_Buffer_List);
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          0.1, 1000.0);  --  1.0, 50.0);
@@ -215,7 +216,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Put ("Main_Loop.Shadow_Map_Pass, Width, Height: ");
       Put_Line (Int'Image (GL.Objects.Textures.Targets.Texture_2D.Width (0)) & "  " &
                 Int'Image (GL.Objects.Textures.Targets.Texture_2D.Height (0)));
-      GL.Buffers.Set_Active_Buffers (Draw_Buffer_List);
+
 --        GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 --        Utilities.Clear_Depth;
 --        Utilities.Clear_Colour_Buffer_And_Depth;
