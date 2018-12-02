@@ -90,9 +90,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Camera.Init_Camera (Game_Camera,
                                  Int (Window_Width), Int (Window_Height),
                                  Camera_Position, Target, Up);
-      Shadow_Map_Technique.Use_Program (Shadow_Technique);
+      Shadow_Map_Technique.Use_Display_Program (Shadow_Technique);
 
       Meshes_23.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
+      Shadow_Map_Technique.Use_Shadow_Program (Shadow_Technique);
       Meshes_23.Load_Mesh (Shadow_Mesh, "../Content/phoenix_ugv.md2");
 
    exception
@@ -174,8 +175,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
-      Shadow_Map_Technique.Set_WVP (Shadow_Technique,
-                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Shadow_Map_Technique.Set_Display_WVP (Shadow_Technique,
+                                            Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
@@ -225,9 +226,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Buffers.Clear_Stencil_Buffer (0);
       GL.Buffers.Set_Stencil_Clear_Value (1);
 
-      Shadow_Map_Technique.Use_Program (Shadow_Technique);
-      Shadow_Map_Technique.Set_WVP (Shadow_Technique,
-                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Shadow_Map_Technique.Use_Shadow_Program (Shadow_Technique);
+      Shadow_Map_Technique.Set_Shadow_WVP
+        (Shadow_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 --         Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
