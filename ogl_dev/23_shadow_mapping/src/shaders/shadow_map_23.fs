@@ -12,7 +12,7 @@ void main()
     //  One floating-point number in the constructor sets all components to the same value.
     // This should result in grey
 //  fragment_colour = 0.8 * vec4(Depth);
-  fragment_colour = texture(gShadowMap, TexCoordOut);
+ // fragment_colour = texture(gShadowMap, TexCoordOut);
   //  fragment_colour = texture(gShadowMap, vec2(0.0,1.0));
-  // fragment_colour = vec4(1.0,1.0,0.0,1.0);
+   fragment_colour = vec4(1.0,1.0,0.0,1.0);
 }
