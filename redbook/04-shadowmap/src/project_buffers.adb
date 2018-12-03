@@ -37,14 +37,14 @@ package body Project_Buffers is
                             theTexture  : in out GL.Objects.Textures.Texture) is
         use GL.Objects.Textures;
         use GL.Objects.Textures.Targets;
-        use GL.Pixels;
     begin
         theTexture.Initialize_Id;
         Texture_2D.Bind (theTexture);
         Texture_2D.Load_Empty_Texture (Level           => 0,
-                                       Internal_Format => Depth_Component32,
+                                       Internal_Format => GL.Pixels.Depth_Component,
                                        Width           => Depth_Texture_Size,
                                        Height          => Depth_Texture_Size);
+
         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Toggle_Compare_X_To_Texture  (True);
@@ -75,7 +75,7 @@ package body Project_Buffers is
         --        Utilities.Load_Vertex_Buffer (Array_Buffer, Vertex_Data.Ground_Vertices, Static_Draw);
         Utilities.Load_Vertex_Sub_Buffer (Array_Buffer, 0, Vertex_Data.Ground_Vertices);
         Utilities.Load_Vertex_Sub_Buffer
-          (Array_Buffer, Int (Vertex_Data_Bytes + 1), Vertex_Data.Ground_Normals);
+          (Array_Buffer, Int (Vertex_Data_Bytes), Vertex_Data.Ground_Normals);
 
         GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 4,
                                                  Kind   => GL.Types.Single_Type,
@@ -88,7 +88,7 @@ package body Project_Buffers is
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Project_Buffers.Setup_Buffers.");
+            Put_Line ("An exception occurred in Project_Buffers.Init_Ground_Buffer.");
             raise;
     end Init_Ground_Buffer;
 

@@ -184,7 +184,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Uniforms.Set_Int (Scene_Uniforms.Depth_Texture, 0);
 
       Project_Buffers.Init_Ground_Buffer (Ground_Buffer);
+      Put_Line ("Main_Loop.Setup; Ground_Buffer initialized.");
       Project_Buffers.Init_Texture (Depth_Frame_Buffer, Depth_Texure);
+      Put_Line ("Main_Loop.Setup; Texture initialized.");
 
       Load_VB_Object.Load_From_VBM ("../media/armadillo_low.vbm", VBM_Object,
                                     Vertex_Attribute_ID, Normal_Attribute_ID,
