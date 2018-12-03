@@ -161,7 +161,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window.Get_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 --        Utilities.Clear_Colour_Buffer_And_Depth;
-
+      Shadow_Map_Technique.Use_Display_Program (Shadow_Technique);
       Utilities.Clear_Background_Colour_And_Depth (Ogldev_Lights_Common.Colour_White);
       Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
       Put ("Main_Loop.Render_Pass, Width, Height: ");
@@ -203,6 +203,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe          : Ogldev_Pipeline.Pipeline;
    begin
       Window.Get_Size (Window_Width, Window_Height);
+      Shadow_Map_Technique.Use_Shadow_Program (Shadow_Technique);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.001);  --  0.1
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
@@ -221,19 +222,18 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 --        GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 --        Utilities.Clear_Depth;
 --        Utilities.Clear_Colour_Buffer_And_Depth;
-      Utilities.Clear_Background_Colour_And_Depth (Colour_Blue);
+--        Utilities.Clear_Background_Colour_And_Depth (Colour_Blue);
+--
+--        GL.Buffers.Clear_Stencil_Buffer (0);
+--        GL.Buffers.Set_Stencil_Clear_Value (1);
 
-      GL.Buffers.Clear_Stencil_Buffer (0);
-      GL.Buffers.Set_Stencil_Clear_Value (1);
-
-      Shadow_Map_Technique.Use_Shadow_Program (Shadow_Technique);
       Shadow_Map_Technique.Set_Shadow_WVP
         (Shadow_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 --         Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_23.Render (Shadow_Mesh);
---        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);
