@@ -351,23 +351,30 @@ package body Load_VB_Object is
          VBM_Object.Vertex_Array.Bind;
          Frame := VBM_Object.Frame_Headers.Element (Natural (Frame_Index));
          GL.Attributes.Enable_Vertex_Attrib_Array (0);
+         Put_Line ("Load_VB_Object.Render, Vertex_Attrib_Array (0) enabled.");
          if Instances > 0 then
+                Put_Line ("Load_VB_Object.Render, Instances > 0 .");
             if VBM_Object.Header.Num_Indices > 0 then
+               Put_Line ("Load_VB_Object.Render, Num_Indices > 0 .");
                Draw_Elements_Instanced (Triangles, Frame.Num_Vertices,
                                         GL.Types.UInt_Type, Frame.First,
                                         Instances);
             else
+               Put_Line ("Load_VB_Object.Render, Drawing Arrays_Instanced.");
                Vertex_Arrays.Draw_Arrays_Instanced
                  (Triangles, Int (Frame.First), Int (Frame.Num_Vertices),
                   Int (Instances));
             end if;
          else
+            Put_Line ("Load_VB_Object.Render, Instances = 0 .");
             if VBM_Object.Header.Num_Indices > 0 then
                Draw_Elements (Triangles, Int (Frame.Num_Vertices),
                               GL.Types.UInt_Type, Integer (Frame.First));
             else
+               Put_Line ("Load_VB_Object.Render, Num_Indices = 0.");
                Vertex_Arrays.Draw_Arrays (Triangles, Int (Frame.First),
                                           Int (Frame.Num_Vertices));
+               Put_Line ("Load_VB_Object.Render, Arrays drawn.");
             end if;
          end if;
          Vertex_Arrays.Null_Array_Object.Bind;

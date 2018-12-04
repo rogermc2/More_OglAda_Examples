@@ -102,14 +102,19 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Read_And_Draw_Target.Bind (Depth_Frame_Buffer);
       GL.Window.Set_Viewport (0, 0, Depth_Texure_Size, Depth_Texure_Size);
       GL.Buffers.Set_Depth_Clear_Value (1.0);
-      Utilities.Clear_Depth;
+--        Utilities.Clear_Depth;
+--        Put_Line ("Main_Loop.Display, Depth cleared.");
       --   Enable polygon offset to resolve depth-fighting issues
       GL.Toggles.Enable (GL.Toggles.Polygon_Offset_Fill);
       GL.Rasterization.Set_Polygon_Offset (2.0, 4.0);
+      Put_Line ("Main_Loop.Display, Polygon_Offset set.");
       Draw_Scene (True);
+      Put_Line ("Main_Loop.Display, Scene drawn.");
       GL.Toggles.Disable (GL.Toggles.Polygon_Offset_Fill);
+      Put_Line ("Main_Loop.Display, Polygon_Offset_Fill disabled.");
 
       Read_And_Draw_Target.Bind (Default_Framebuffer);
+      Put_Line ("Main_Loop.Display, Default_Framebuffer bound.");
       GL.Window.Set_Viewport (0, 0, Current_Width, Current_Height);
       --  Render from the viewer's position
       GL.Objects.Programs.Use_Program (Render_Scene_Program);
@@ -148,8 +153,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             GL.Uniforms.Set_Single (Scene_Uniforms.Specular_Matrix_ID, Object_Spectral);
             GL.Uniforms.Set_Single (Scene_Uniforms.Specular_Power_ID, 25.0);
         end if;
+         Put_Line ("Main_Loop.Draw_Scene, uniforms set.");
 
         Load_VB_Object.Render (VBM_Object);
+         Put_Line ("Main_Loop.Draw_Scene, VBM_Object rendered.");
 
         if not Depth_Only then
             GL.Uniforms.Set_Single (Scene_Uniforms.Ambient_Matrix_ID, Ground_Ambient);
@@ -184,9 +191,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Uniforms.Set_Int (Scene_Uniforms.Depth_Texture, 0);
 
       Project_Buffers.Init_Ground_Buffer (Ground_Buffer);
-      Put_Line ("Main_Loop.Setup; Ground_Buffer initialized.");
       Project_Buffers.Init_Texture (Depth_Frame_Buffer, Depth_Texure);
-      Put_Line ("Main_Loop.Setup; Texture initialized.");
 
       Load_VB_Object.Load_From_VBM ("../media/armadillo_low.vbm", VBM_Object,
                                     Vertex_Attribute_ID, Normal_Attribute_ID,

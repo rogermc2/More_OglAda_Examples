@@ -27,7 +27,7 @@ package body Project_Buffers is
         Read_And_Draw_Target.Bind (Default_Framebuffer);
     exception
         when others =>
-            Put_Line ("An exceptiom occurred in Project_Buffers.Init_Depth_Buffer.");
+            Put_Line ("An exception occurred in Project_Buffers.Init_Depth_Buffer.");
             raise;
     end Init_Depth_Buffer;
 
@@ -56,7 +56,7 @@ package body Project_Buffers is
 
     exception
         when others =>
-            Put_Line ("An exceptiom occurred in Project_Buffers.Init_Texture.");
+            Put_Line ("An exception occurred in Project_Buffers.Init_Texture.");
             raise;
     end Init_Texture;
 
