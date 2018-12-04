@@ -99,6 +99,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Uniforms.Set_Single (Light_Uniforms.MVP_Matrix_ID,
                               Light_Projection_Matrix * Light_View_Matrix * Scene_Model_Matrix);
+
       Read_And_Draw_Target.Bind (Depth_Frame_Buffer);
       GL.Window.Set_Viewport (0, 0, Depth_Texure_Size, Depth_Texure_Size);
       GL.Buffers.Set_Depth_Clear_Value (1.0);
