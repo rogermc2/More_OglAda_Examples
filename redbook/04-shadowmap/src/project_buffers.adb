@@ -17,8 +17,8 @@ package body Project_Buffers is
 
     --  ------------------------------------------------------------------------
 
-    procedure Init_Depth_Buffer (Depth_Frame_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
-                                 Depth_Texture  : GL.Objects.Textures.Texture) is
+    procedure Init_Depth_Frame_Buffer (Depth_Frame_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
+                                       Depth_Texture  : GL.Objects.Textures.Texture) is
         use GL.Objects.Framebuffers;
     begin
         Depth_Frame_Buffer.Initialize_Id;
@@ -30,38 +30,9 @@ package body Project_Buffers is
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Project_Buffers.Init_Depth_Buffer.");
+            Put_Line ("An exception occurred in Project_Buffers.Init_Depth_Frame_Buffer.");
             raise;
-    end Init_Depth_Buffer;
-
-    --  ------------------------------------------------------------------------
-
-    procedure Init_Texture (Depth_Frame_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
-                            theTexture  : in out GL.Objects.Textures.Texture) is
-        use GL.Objects.Textures;
-        use GL.Objects.Textures.Targets;
-    begin
-        theTexture.Initialize_Id;
-        Texture_2D.Bind (theTexture);
-        Texture_2D.Load_Empty_Texture (Level           => 0,
-                                       Internal_Format => GL.Pixels.Depth_Component,
-                                       Width           => Depth_Texture_Size,
-                                       Height          => Depth_Texture_Size);
-
-        Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
-        Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
-        Texture_2D.Toggle_Compare_X_To_Texture  (True);
-        Texture_2D.Set_Compare_Function (GL.Types.LEqual);
-        Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
-        Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
-
-        Init_Depth_Buffer (Depth_Frame_Buffer, theTexture);
-
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Project_Buffers.Init_Texture.");
-            raise;
-    end Init_Texture;
+    end Init_Depth_Frame_Buffer;
 
     --  ------------------------------------------------------------------------
 
@@ -94,6 +65,32 @@ package body Project_Buffers is
             Put_Line ("An exception occurred in Project_Buffers.Init_Ground_Buffer.");
             raise;
     end Init_Ground_Buffer;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Init_Depth_Texture (Depth_Texture : in out GL.Objects.Textures.Texture) is
+        use GL.Objects.Textures;
+        use GL.Objects.Textures.Targets;
+    begin
+        Depth_Texture.Initialize_Id;
+        Texture_2D.Bind (Depth_Texture);
+        Texture_2D.Load_Empty_Texture (Level           => 0,
+                                       Internal_Format => GL.Pixels.Depth_Component,
+                                       Width           => Depth_Texture_Size,
+                                       Height          => Depth_Texture_Size);
+
+        Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+        Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
+        Texture_2D.Toggle_Compare_X_To_Texture  (True);
+        Texture_2D.Set_Compare_Function (GL.Types.LEqual);
+        Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
+        Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Project_Buffers.Init_Depth_Texture.");
+            raise;
+    end Init_Depth_Texture;
 
     --  ------------------------------------------------------------------------
 
