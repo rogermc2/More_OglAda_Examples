@@ -2,6 +2,7 @@
 with Ada.Text_IO; use  Ada.Text_IO;
 
 with GL.Attributes;
+with GL.Buffers;
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
 with GL.Types; use  GL.Types;
@@ -16,15 +17,17 @@ package body Project_Buffers is
 
     --  ------------------------------------------------------------------------
 
-    procedure Init_Depth_Buffer (Depth_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
+    procedure Init_Depth_Buffer (Depth_Frame_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
                                  Depth_Texture  : GL.Objects.Textures.Texture) is
         use GL.Objects.Framebuffers;
     begin
-        Depth_Buffer.Initialize_Id;
-        Read_And_Draw_Target.Bind (Depth_Buffer);
+        Depth_Frame_Buffer.Initialize_Id;
+        Read_And_Draw_Target.Bind (Depth_Frame_Buffer);
         Read_And_Draw_Target.Attach_Texture (Depth_Stencil_Attachment, Depth_Texture, 0);
+        GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
 
         Read_And_Draw_Target.Bind (Default_Framebuffer);
+
     exception
         when others =>
             Put_Line ("An exception occurred in Project_Buffers.Init_Depth_Buffer.");
@@ -33,7 +36,7 @@ package body Project_Buffers is
 
     --  ------------------------------------------------------------------------
 
-    procedure Init_Texture (Depth_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
+    procedure Init_Texture (Depth_Frame_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
                             theTexture  : in out GL.Objects.Textures.Texture) is
         use GL.Objects.Textures;
         use GL.Objects.Textures.Targets;
@@ -52,7 +55,7 @@ package body Project_Buffers is
         Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
         Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
 
-        Init_Depth_Buffer (Depth_Buffer, theTexture);
+        Init_Depth_Buffer (Depth_Frame_Buffer, theTexture);
 
     exception
         when others =>
