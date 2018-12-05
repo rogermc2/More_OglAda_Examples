@@ -1,6 +1,4 @@
 
-with System;
-
 with Ada.Text_IO; use  Ada.Text_IO;
 
 with GL.Attributes;
@@ -15,7 +13,6 @@ with Vertex_Data;
 package body Project_Buffers is
 
     Depth_Texture_Size : constant GL.Types.Int := 2048;
-    --     Image_Error        : exception;
 
     --  ------------------------------------------------------------------------
 
@@ -82,17 +79,10 @@ package body Project_Buffers is
     begin
         Depth_Texture.Initialize_Id;
         Texture_2D.Bind (Depth_Texture);
---          Texture_2D.Load_Empty_Texture (Level           => 0,
---                                         Internal_Format => GL.Pixels.Depth_Component32,
---                                         Width           => Depth_Texture_Size,
---                                         Height          => Depth_Texture_Size);
-        Texture_2D.Load_From_Data (Level  => 0,
-                                   Internal_Format => GL.Pixels.Depth_Component32,
-                                   Width           => Depth_Texture_Size,
-                                   Height          => Depth_Texture_Size,
-                                   Source_Format   => GL.Pixels.Depth_Component,
-                                   Source_Type     => GL.Pixels.Float,
-                                   Source          => Image_Source (System.Null_Address));
+        Texture_2D.Load_Empty_Texture (Level           => 0,
+                                       Internal_Format => GL.Pixels.Depth_Component32,
+                                       Width           => Depth_Texture_Size,
+                                       Height          => Depth_Texture_Size);
 
         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
