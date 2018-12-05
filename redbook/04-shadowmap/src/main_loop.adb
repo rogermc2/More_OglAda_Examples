@@ -12,7 +12,7 @@ with GL.Objects.Vertex_Arrays;
 with GL.Rasterization;
 with GL.Toggles;
 with GL.Types;
---  with GL.Types.Colors;
+with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
 
@@ -45,6 +45,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Current_Height       : GL.Types.Int := 512;
    Frustum_Depth        : constant Single := 800.0;
    Depth_Texure_Size    : constant GL.Types.Int := 2048;
+   Background           : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 1.0);
 
    procedure Draw_Scene (Depth_Only : Boolean);
    procedure Render_Depth
@@ -58,10 +59,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Maths.Single_Math_Functions;
       Window_Width            : Glfw.Size;
       Window_Height           : Glfw.Size;
-      --        X_Axis            : constant Singles.Vector3 := (1.0, 0.0, 0.0);
       Y_Axis                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
-      --        Z_Axis            : constant Singles.Vector3 := (0.0, 0.0, 1.0);
-      --        Background        : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 1.0);
       Current_Time            : constant Single := Single (Glfw.Time);
       Aspect                  : Single;
       Light_Position          : constant Vector3 := (300.0 * Sin (6.0 * Pi * Current_Time), 200.0,
@@ -136,10 +134,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Uniforms.Set_Single (Scene_Uniforms.Specular_Matrix_ID, Object_Spectral);
          GL.Uniforms.Set_Single (Scene_Uniforms.Specular_Power_ID, 25.0);
       end if;
-      Put_Line ("Main_Loop.Draw_Scene, uniforms set.");
 
       Load_VB_Object.Render (VBM_Object);
-      Put_Line ("Main_Loop.Draw_Scene, VBM_Object rendered.");
 
       if not Depth_Only then
          GL.Uniforms.Set_Single (Scene_Uniforms.Ambient_Matrix_ID, Ground_Ambient);
@@ -173,23 +169,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Read_And_Draw_Target.Bind (Depth_Frame_Buffer);
       GL.Window.Set_Viewport (0, 0, Depth_Texure_Size, Depth_Texure_Size);
       GL.Buffers.Set_Depth_Clear_Value (1.0);
-      if Status (Read_And_Draw_Target) /= Complete then
-         Put_Line ("Main_Loop.Render_Depth, Depth_Frame_Buffer status: " &
-                     Framebuffer_Status'Image (Status (Read_And_Draw_Target)));
-      end if;
       Utilities.Clear_Depth;
-      Put_Line ("Main_Loop.Render_Depth, Depth cleared.");
       --   Enable polygon offset to resolve depth-fighting issues
       GL.Toggles.Enable (GL.Toggles.Polygon_Offset_Fill);
       GL.Rasterization.Set_Polygon_Offset (2.0, 4.0);
-      Put_Line ("Main_Loop.Render_Depth, Polygon_Offset set.");
       Draw_Scene (True);
-      Put_Line ("Main_Loop.Render_Depth, Scene drawn.");
       GL.Toggles.Disable (GL.Toggles.Polygon_Offset_Fill);
-      Put_Line ("Main_Loop.Render_Depth, Polygon_Offset_Fill disabled.");
 
       Read_And_Draw_Target.Bind (Default_Framebuffer);
-      Put_Line ("Main_Loop.Render_Depth, Default_Framebuffer bound.");
 
    exception
       when  others =>
@@ -208,6 +195,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ground_Vertex_Array.Initialize_Id;
       Ground_Vertex_Array.Bind;
 
+      Utilities.Clear_Background_Colour_And_Depth (Background);
       Shader.Init (Render_Light_Program, Render_Scene_Program,
                    Light_Uniforms, Scene_Uniforms);
       GL.Objects.Programs.Use_Program (Render_Scene_Program);
