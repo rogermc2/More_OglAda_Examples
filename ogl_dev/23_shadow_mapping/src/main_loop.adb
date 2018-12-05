@@ -40,9 +40,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Background             : constant GL.Types.Colors.Color := (0.0, 0.6, 0.0, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Shadow_Technique       : Shadow_Map_Technique.Technique;
+   theTechnique           : Shadow_Map_Technique.Technique;
    theShadow_Map          : Shadow_Map_FBO.Shadow_Map;
---     Draw_Buffer_List       : GL.Buffers.Explicit_Color_Buffer_List (1 .. 1);
    Game_Camera            : Ogldev_Camera.Camera;
    Shadow_Mesh            : Meshes_23.Mesh_23;
    Quad_Mesh              : Meshes_23.Mesh_23;
@@ -50,8 +49,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Spot                   : Ogldev_Lights_Common.Spot_Light;
    Scale                  : Single := 0.0;
 
-   procedure Render_Pass(Window : in out Glfw.Windows.Window);
-   procedure Shadow_Map_Pass(Window : in out Glfw.Windows.Window);
+   procedure Render_Pass (Window : in out Glfw.Windows.Window);
+   procedure Shadow_Map_Pass (Window : in out Glfw.Windows.Window);
 
    --  ------------------------------------------------------------------------
 
@@ -75,7 +74,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
 
-      Shadow_Map_Technique.Init (Shadow_Technique);
+      Shadow_Map_Technique.Init (theTechnique);
       GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
@@ -90,10 +89,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Camera.Init_Camera (Game_Camera,
                                  Int (Window_Width), Int (Window_Height),
                                  Camera_Position, Target, Up);
-      Shadow_Map_Technique.Use_Display_Program (Shadow_Technique);
 
       Meshes_23.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
-      Shadow_Map_Technique.Use_Shadow_Program (Shadow_Technique);
       Meshes_23.Load_Mesh (Shadow_Mesh, "../Content/phoenix_ugv.md2");
 
    exception
@@ -161,7 +158,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window.Get_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 --        Utilities.Clear_Colour_Buffer_And_Depth;
-      Shadow_Map_Technique.Use_Display_Program (Shadow_Technique);
+      Shadow_Map_Technique.Use_Program (theTechnique);
       Utilities.Clear_Background_Colour_And_Depth (Ogldev_Lights_Common.Colour_White);
       Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
       Put ("Main_Loop.Render_Pass, Width, Height: ");
@@ -175,8 +172,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
-      Shadow_Map_Technique.Set_Display_WVP (Shadow_Technique,
-                                            Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Shadow_Map_Technique.Set_WVP (theTechnique,
+                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
@@ -203,7 +200,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe          : Ogldev_Pipeline.Pipeline;
    begin
       Window.Get_Size (Window_Width, Window_Height);
-      Shadow_Map_Technique.Use_Shadow_Program (Shadow_Technique);
+      Utilities.Clear_Background_Colour_And_Depth (Colour_Blue);
+      Shadow_Map_Technique.Use_Program (theTechnique);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.001);  --  0.1
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
@@ -219,8 +217,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Put_Line (Int'Image (GL.Objects.Textures.Targets.Texture_2D.Width (0)) & "  " &
                 Int'Image (GL.Objects.Textures.Targets.Texture_2D.Height (0)));
 
-      Shadow_Map_Technique.Set_Shadow_WVP
-        (Shadow_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Shadow_Map_Technique.Set_WVP
+        (theTechnique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 --         Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
