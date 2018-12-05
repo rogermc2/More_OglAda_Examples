@@ -1,6 +1,8 @@
 
 with GL.Types; use GL.Types;
 
+with Maths;
+
 with Ogldev_Camera;
 with Ogldev_Math;
 
@@ -19,6 +21,8 @@ package Ogldev_Pipeline is
    function Get_WVP_Transform (P : Pipeline) return Singles.Matrix4;
 
    procedure Init_Transforms  (P : in out Pipeline);
+   procedure Init_Transforms  (P : in out Pipeline; View_Angle : Maths.Degree;
+                                Width, Height, Near, Far : Single);
    procedure Set_Camera (P : in out Pipeline; C : Ogldev_Camera.Camera);
    procedure Set_Camera (P : in out Pipeline;
                          Pos, Target, Up : Singles.Vector3);
@@ -26,7 +30,6 @@ package Ogldev_Pipeline is
                           Info : Ogldev_Math.Orthographic_Projection_Info);
    procedure Set_Perspective_Info (P : in out Pipeline;
                           Info : Ogldev_Math.Perspective_Projection_Info);
-
    procedure Set_Scale (P : in out Pipeline; S : Single);
    procedure Set_Scale (P : in out Pipeline; X, Y, Z : Single);
    procedure Set_Scale (P : in out Pipeline; S : Singles.Vector3);

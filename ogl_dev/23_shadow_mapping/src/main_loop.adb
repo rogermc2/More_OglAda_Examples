@@ -150,6 +150,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Render_Pass (Window : in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Ogldev_Camera;
+      use Ogldev_Pipeline;
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
       Pipe          : Ogldev_Pipeline.Pipeline;
@@ -162,22 +163,21 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
 --        Shadow_Map_Technique.Use_Program (theTechnique);
 --        Utilities.Clear_Background_Colour_And_Depth (Ogldev_Lights_Common.Colour_White);
-      Put ("Main_Loop.Render_Pass, Width, Height: ");
---        Put_Line (Int'Image (GL.Objects.Textures.Targets.Texture_2D.Width (0)) & "  " &
---                  Int'Image (GL.Objects.Textures.Targets.Texture_2D.Height (0)));
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 5.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0,10.0);
-      Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
+      Set_Scale (Pipe, 5.0);
+      Set_World_Position (Pipe, 0.0, 0.0,10.0);
+      Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
-      Ogldev_Pipeline.Init_Transforms (Pipe);
+
+      Init_Transforms (Pipe, 30.0, Single (Window_Width) - 10.0,
+                       Single (Window_Height) - 10.0, 1.0, 50.0);
 
       Shadow_Map_Technique.Set_WVP (theTechnique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+        Put_Line ("Main_Loop.Render_Pass calling Meshes_23.Render (Quad_Mesh)");
       Meshes_23.Render (Quad_Mesh);
 --        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       New_Line;
@@ -194,6 +194,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Ogldev_Camera;
       use Ogldev_Lights_Common;
+      use  Ogldev_Pipeline;
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
       Pipe          : Ogldev_Pipeline.Pipeline;
@@ -205,23 +206,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.1);  --  0.1
-      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 5.0);
-      Ogldev_Pipeline.Set_Camera (Pipe, Position (Spot),
+      Set_Scale (Pipe, 0.1);  --  0.1
+      Set_Rotation (Pipe, 0.0, Scale, 0.0);
+      Set_World_Position (Pipe, 0.0, 0.0, 5.0);
+      Set_Camera (Pipe, Position (Spot),
                                   Direction (Spot), (0.0, 1.0, 0.0));
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
-      Ogldev_Pipeline.Init_Transforms (Pipe);
+      Init_Transforms (Pipe, 20.0, Single (Window_Width) - 10.0,
+                       Single (Window_Height) - 10.0, 1.0, 50.0);
 
-      Put ("Main_Loop.Shadow_Map_Pass, Width, Height: ");
-      Put_Line (Int'Image (GL.Objects.Textures.Targets.Texture_2D.Width (0)) & "  " &
-                Int'Image (GL.Objects.Textures.Targets.Texture_2D.Height (0)));
-
-      Shadow_Map_Technique.Set_WVP
-        (theTechnique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Shadow_Map_Technique.Set_WVP (theTechnique, Get_WVP_Transform (Pipe));
 --         Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
+Put_Line ("Main_Loop.Shadow_Map_Pass calling Meshes_23.Render (Shadow_Mesh)");
       Meshes_23.Render (Shadow_Mesh);
 --        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
 
