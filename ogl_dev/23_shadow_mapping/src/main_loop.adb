@@ -219,21 +219,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Put_Line (Int'Image (GL.Objects.Textures.Targets.Texture_2D.Width (0)) & "  " &
                 Int'Image (GL.Objects.Textures.Targets.Texture_2D.Height (0)));
 
---        GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
---        Utilities.Clear_Depth;
---        Utilities.Clear_Colour_Buffer_And_Depth;
---        Utilities.Clear_Background_Colour_And_Depth (Colour_Blue);
---
---        GL.Buffers.Clear_Stencil_Buffer (0);
---        GL.Buffers.Set_Stencil_Clear_Value (1);
-
       Shadow_Map_Technique.Set_Shadow_WVP
         (Shadow_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 --         Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_23.Render (Shadow_Mesh);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+--        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);
