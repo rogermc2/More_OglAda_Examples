@@ -1,4 +1,6 @@
 
+with System;
+
 with Ada.Text_IO; use  Ada.Text_IO;
 
 with GL.Attributes;
@@ -18,12 +20,18 @@ package body Project_Buffers is
     --  ------------------------------------------------------------------------
 
     procedure Init_Depth_Frame_Buffer (Depth_Frame_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
-                                       Depth_Texture  : GL.Objects.Textures.Texture) is
+                                       Depth_Texture : GL.Objects.Textures.Texture) is
         use GL.Objects.Framebuffers;
     begin
         Depth_Frame_Buffer.Initialize_Id;
         Read_And_Draw_Target.Bind (Depth_Frame_Buffer);
-        Read_And_Draw_Target.Attach_Texture (Depth_Stencil_Attachment, Depth_Texture, 0);
+        Read_And_Draw_Target.Attach_Texture (Attachment => Depth_Attachment,
+                                             Object     => Depth_Texture,
+                                             Level      => 0);
+        if Read_And_Draw_Target.Status /= Complete then
+            Put_Line ("Buffers.Init_Depth_Frame_Buffer, Attachment incomplete: " &
+                        Framebuffer_Status'Image (Read_And_Draw_Target.Status));
+        end if;
         GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
 
         Read_And_Draw_Target.Bind (Default_Framebuffer);
@@ -74,10 +82,17 @@ package body Project_Buffers is
     begin
         Depth_Texture.Initialize_Id;
         Texture_2D.Bind (Depth_Texture);
-        Texture_2D.Load_Empty_Texture (Level           => 0,
-                                       Internal_Format => GL.Pixels.Depth_Component,
-                                       Width           => Depth_Texture_Size,
-                                       Height          => Depth_Texture_Size);
+--          Texture_2D.Load_Empty_Texture (Level           => 0,
+--                                         Internal_Format => GL.Pixels.Depth_Component32,
+--                                         Width           => Depth_Texture_Size,
+--                                         Height          => Depth_Texture_Size);
+        Texture_2D.Load_From_Data (Level  => 0,
+                                   Internal_Format => GL.Pixels.Depth_Component32,
+                                   Width           => Depth_Texture_Size,
+                                   Height          => Depth_Texture_Size,
+                                   Source_Format   => GL.Pixels.Depth_Component,
+                                   Source_Type     => GL.Pixels.Float,
+                                   Source          => Image_Source (System.Null_Address));
 
         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
