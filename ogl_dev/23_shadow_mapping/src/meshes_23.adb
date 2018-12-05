@@ -48,9 +48,9 @@ package body Meshes_23 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Buffers (theEntry : in out Mesh_Entry;
-                           Vertices : Vertex_Array;
-                           Indices  : GL.Types.UInt_Array) is
+   procedure Init_Mesh_Entry (theEntry : in out Mesh_Entry;
+                              Vertices : Vertex_Array;
+                              Indices  : GL.Types.UInt_Array) is
       use GL;
       use GL.Objects.Buffers;
       Vertices_Length : constant Int := Vertices'Length;
@@ -82,7 +82,7 @@ package body Meshes_23 is
       when others =>
          Put_Line ("An exception occurred in Meshes_23.Init_Buffers.");
          raise;
-   end Init_Buffers;
+   end Init_Mesh_Entry;
 
    --  -------------------------------------------------------------------------
 
@@ -228,7 +228,7 @@ package body Meshes_23 is
       end if;
 
       --  m_Entries[Index].Init(Vertices, Indices);
-      Init_Buffers (anEntry, Vertices, Indices);
+      Init_Mesh_Entry (anEntry, Vertices, Indices);
       aMesh_23.Entries.Insert (Integer (Mesh_Index), anEntry);
       Put_Line ("Meshes_23.Init_Mesh, Material_Index: " &
                            UInt'Image (anEntry.Material_Index));
@@ -290,9 +290,7 @@ package body Meshes_23 is
                      Ogldev_Texture.Bind (aTexture, 0);
                      GL.Buffers.Set_Active_Buffer (GL.Buffers.Color_Attachment0);
                      Put_Line ("Meshes_23.Render_Mesh, Material " &
-                              UInt'Image (aMaterial) & " bound.");--                       GL.Objects.Textures.Targets.Texture_2D.Load_From_Data
---                         (0, GL.Pixels.RGBA8, 512, 512, GL.Pixels.RGBA,
---                          GL.Pixels.Int, aTexture.Image.Image_Data);
+                              UInt'Image (aMaterial) & " bound.");
                   else
                      Put_Line ("Meshes_23.Render_Mesh, Texture_Object is not initialized.");
                   end if;
