@@ -152,7 +152,6 @@ package body Meshes_23 is
       Num_Vertices  : constant UInt := UInt (Source_Mesh.Vertices.Length);
       Vertices      : Vertex_Array (1 .. Int (Num_Vertices));
       Indices       : GL.Types.UInt_Array (1 .. Int (3 * Source_Mesh.Faces.Length));
-      anEntry       : Mesh_Entry;
       Position      : GL.Types.Singles.Vector3;
       Normal        : GL.Types.Singles.Vector3;
       Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
@@ -160,7 +159,7 @@ package body Meshes_23 is
       Face          : Assimp_Mesh.AI_Face;
       Indices_Index : Int := 0;
    begin
-      anEntry.Material_Index := Source_Mesh.Material_Index;
+      aMesh.Material_Index := Source_Mesh.Material_Index;
 
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
@@ -195,9 +194,8 @@ package body Meshes_23 is
       end if;
 
       --  m_Entries[Index].Init(Vertices, Indices);
-      Init_Mesh_Entry (anEntry, Vertices, Indices);
-      Put_Line ("Meshes_23.Init_Mesh, Material_Index: " &
-                           UInt'Image (anEntry.Material_Index));
+      Init_Mesh_Entry (aMesh, Vertices, Indices);
+
    exception
       when others =>
          Put_Line ("An exception occurred in Meshes_23.Init_Mesh.");
@@ -277,18 +275,14 @@ package body Meshes_23 is
          while Has_Element (Entry_Cursor) loop
             anEntry := Element (Entry_Cursor);
             aMaterial_Index := anEntry.Material_Index;
-            Put_Line ("Meshes_23.Render_Mesh, Material_Index set.");
             GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
-            Put_Line ("Meshes_23.Render_Mesh, Vertex_Buffer bound.");
             GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
-            Put_Line ("Meshes_23.Render_Mesh, Index_Buffer bound.");
 
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
             GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
             GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
 
-            Put_Line ("Meshes_23.Render_Mesh, check for texture.");
             if not theMesh.Textures.Is_Empty then
                if theMesh.Textures.Contains (aMaterial_Index) then
                   aTexture := theMesh.Textures.Element (aMaterial_Index);
