@@ -41,70 +41,38 @@ package body Meshes_23 is
 
    Mesh_23_Exception : Exception;
 
-   procedure Init_Materials (theMesh  : in out Mesh_23; File_Name : String;
-                             theScene : Scene.AI_Scene);
-   procedure Init_Mesh (Mesh_Index : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
-                        aMesh_23   : in out Mesh_23);
-
-   --  -------------------------------------------------------------------------
-
+    procedure Init_Materials (theMeshes : in out Mesh_23; File_Name : String;
+                              theScene : Scene.AI_Scene);
+   procedure Init_Mesh (aMesh : in out Mesh_Entry; Mesh_Index : UInt;
+                        Source_Mesh : Assimp_Mesh.AI_Mesh);
    procedure Init_Mesh_Entry (theEntry : in out Mesh_Entry;
                               Vertices : Vertex_Array;
-                              Indices  : GL.Types.UInt_Array) is
-      use GL;
-      use GL.Objects.Buffers;
-      Vertices_Length : constant Int := Vertices'Length;
-      Indices_Length  : constant Int := Indices'Length;
-      Vertices_Array  : Maths.Vector8_Array (1 .. Vertices_Length);
-   begin
-      theEntry.Num_Indices := UInt (Indices_Length);
-      theEntry.Vertex_Buffer.Initialize_Id;
-      Array_Buffer.Bind (theEntry.Vertex_Buffer);
-      theEntry.Index_Buffer.Initialize_Id;
-      Element_Array_Buffer.Bind (theEntry.Index_Buffer);
-
-      for index in 1 ..  Vertices_Length loop
-         Vertices_Array (index) :=
-           (Vertices (index).Pos (X), Vertices (index).Pos (Y), Vertices (index).Pos (Z),
-            Vertices (index).Tex (X), Vertices (index).Tex (Y),
-            Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
-      end loop;
-      Put_Line ("Meshes_23.Init_Buffers, Vertice Indices Lengths" &
-               Int'Image (Vertices_Length) & "  " &
-               Int'Image (Indices_Length));
-
-      Array_Buffer.Bind (theEntry.Vertex_Buffer);
-      Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
-      Element_Array_Buffer.Bind (theEntry.Index_Buffer);
-      Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
-
-   exception
-      when others =>
-         Put_Line ("An exception occurred in Meshes_23.Init_Buffers.");
-         raise;
-   end Init_Mesh_Entry;
+                              Indices  : GL.Types.UInt_Array);
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_From_Scene (Initialized_Mesh : in out Mesh_23;
-                              File_Name        : String;
-                              theScene         : Scene.AI_Scene) is
+   procedure Init_From_Scene (Initialized_Meshes : in out Mesh_23;
+                              File_Name          : String;
+                              theScene           : Scene.AI_Scene) is
       use Assimp_Mesh.AI_Mesh_Package;
-      Curs         : Cursor := theScene.Meshes.First;
-      Mesh_Index   : UInt := 0;
-      aMesh        : Assimp_Mesh.AI_Mesh;
+      Curs           : Cursor := theScene.Meshes.First;
+      Mesh_Index     : UInt := 0;
+      an_AI_Mesh     : Assimp_Mesh.AI_Mesh;
+      an_AI_Material : Material.AI_Material;
+      aMesh          : Mesh_Entry;
    begin
+      -- A scene contains an AI_Mesh_Map and an AI_Mesh_Map
       Put_Line ("Meshes_23.Init_From_Scene, initializing " &
                   File_Name);
-      --  Initialized_Mesh works because there is only one mesh
-      --  Initialized_Mesh contains vertices and textures maps
+      --  Initialize the meshes in the scene one by one
       while Has_Element (Curs) loop
          Mesh_Index := Mesh_Index + 1;
-         aMesh := theScene.Meshes (Mesh_Index);
-         Init_Mesh (Mesh_Index, aMesh, Initialized_Mesh);
-         Init_Materials (Initialized_Mesh, File_Name, theScene);
+         an_AI_Mesh := theScene.Meshes (Mesh_Index);
+         Init_Mesh (aMesh, Mesh_Index, an_AI_Mesh);
+         Initialized_Meshes.Entries.Append (aMesh);
          Next (Curs);
       end loop;
+         Init_Materials (Initialized_Meshes, File_Name, theScene);
 
    exception
       when others =>
@@ -115,8 +83,8 @@ package body Meshes_23 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Materials (theMesh  : in out Mesh_23; File_Name : String;
-                             theScene : Scene.AI_Scene) is
+    procedure Init_Materials (theMeshes : in out Mesh_23; File_Name : String;
+                              theScene : Scene.AI_Scene) is
       use Ada.Strings.Unbounded;
       use Material.AI_Material_Package;
       use Assimp_Types;
@@ -149,16 +117,16 @@ package body Meshes_23 is
                  (aTexture, GL.Low_Level.Enums.Texture_2D,
                   Dir & To_String (Path)) then
                   Ogldev_Texture.Load (aTexture);
-                  theMesh.Textures.Insert (index, aTexture);
+                  theMeshes.Textures.Insert (index, aTexture);
                   Put_Line ("Meshes_23.Init_Materials.Load_Textures loaded texture " &
                               GL.Types.UInt'Image (index) & " from "
-                            & Dir & To_String (Path));
+                             & Dir & To_String (Path));
                else
-                  Put_Line ("Meshes_23.Init_Materials.Load_Textures texture "
+                  Put_Line ("Meshes_23.Init_Material.Load_Textures texture "
                             & Dir & To_String (Path) & " not found.");
                end if;
             else
-               Put_Line ("Meshes_23.Init_Materials.Load_Textures Get_Texture result: " &
+               Put_Line ("Meshes_23.Init_Material.Load_Textures Get_Texture result: " &
                           Assimp_Types.API_Return'Image (Result));
             end if;
          end if;
@@ -170,15 +138,14 @@ package body Meshes_23 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Meshes_23.Init_Materials.API_Return_Success.");
+         Put_Line ("An exception occurred in Meshes_23.Init_Material.API_Return_Success.");
          raise;
-
    end Init_Materials;
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Mesh (Mesh_Index : UInt; Source_Mesh : Assimp_Mesh.AI_Mesh;
-                        aMesh_23   : in out Mesh_23) is
+   procedure Init_Mesh (aMesh : in out Mesh_Entry; Mesh_Index : UInt;
+                        Source_Mesh : Assimp_Mesh.AI_Mesh) is
       use Ada.Containers;
       use GL.Types.Singles;
       use Mesh_Entry_Package;
@@ -229,15 +196,50 @@ package body Meshes_23 is
 
       --  m_Entries[Index].Init(Vertices, Indices);
       Init_Mesh_Entry (anEntry, Vertices, Indices);
-      aMesh_23.Entries.Insert (Integer (Mesh_Index), anEntry);
       Put_Line ("Meshes_23.Init_Mesh, Material_Index: " &
                            UInt'Image (anEntry.Material_Index));
-
    exception
       when others =>
          Put_Line ("An exception occurred in Meshes_23.Init_Mesh.");
          raise;
    end Init_Mesh;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Init_Mesh_Entry (theEntry : in out Mesh_Entry;
+                              Vertices : Vertex_Array;
+                              Indices  : GL.Types.UInt_Array) is
+      use GL;
+      use GL.Objects.Buffers;
+      Vertices_Length : constant Int := Vertices'Length;
+      Indices_Length  : constant Int := Indices'Length;
+      Vertices_Array  : Maths.Vector8_Array (1 .. Vertices_Length);
+   begin
+      theEntry.Num_Indices := UInt (Indices_Length);
+
+       for index in 1 ..  Vertices_Length loop
+         Vertices_Array (index) :=
+           (Vertices (index).Pos (X), Vertices (index).Pos (Y), Vertices (index).Pos (Z),
+            Vertices (index).Tex (X), Vertices (index).Tex (Y),
+            Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
+      end loop;
+      Put_Line ("Meshes_23.Init_Buffers, Vertice Indices Lengths" &
+               Int'Image (Vertices_Length) & "  " &
+               Int'Image (Indices_Length));
+
+      theEntry.Vertex_Buffer.Initialize_Id;
+      Array_Buffer.Bind (theEntry.Vertex_Buffer);
+      Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
+
+      theEntry.Index_Buffer.Initialize_Id;
+      Element_Array_Buffer.Bind (theEntry.Index_Buffer);
+      Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Meshes_23.Init_Buffers.");
+         raise;
+   end Init_Mesh_Entry;
 
    --  -------------------------------------------------------------------------
 
@@ -258,11 +260,11 @@ package body Meshes_23 is
 
    procedure  Render (theMesh : Mesh_23) is
       use Mesh_Entry_Package;
-      Entry_Cursor : Cursor;
-      anEntry      : Mesh_Entry;
-      aMaterial    : UInt;
-      Textures     : Ogldev_Texture.Mesh_Texture_Map;
-      aTexture     : Ogldev_Texture.Ogl_Texture;
+      Entry_Cursor    : Cursor;
+      anEntry         : Mesh_Entry;
+      aMaterial_Index : UInt;
+      Textures        : Ogldev_Texture.Mesh_Texture_Map;
+      aTexture        : Ogldev_Texture.Ogl_Texture;
    begin
       if theMesh.Entries.Is_Empty then
          raise Mesh_23_Error with "Meshes_23.Render theMesh.Entries is empty.";
@@ -274,7 +276,7 @@ package body Meshes_23 is
 
          while Has_Element (Entry_Cursor) loop
             anEntry := Element (Entry_Cursor);
-            aMaterial := anEntry.Material_Index;
+            aMaterial_Index := anEntry.Material_Index;
             GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
             GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
 
@@ -284,27 +286,24 @@ package body Meshes_23 is
             GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
 
             if not theMesh.Textures.Is_Empty then
-               if theMesh.Textures.Contains (aMaterial) then
-                  aTexture := theMesh.Textures.Element (aMaterial);
+               if theMesh.Textures.Contains (aMaterial_Index) then
+                  aTexture := theMesh.Textures.Element (aMaterial_Index);
                   if aTexture.Texture_Object.Initialized then
                      Ogldev_Texture.Bind (aTexture, 0);
                      GL.Buffers.Set_Active_Buffer (GL.Buffers.Color_Attachment0);
-                     Put_Line ("Meshes_23.Render_Mesh, Material " &
-                              UInt'Image (aMaterial) & " bound.");
+                     Put_Line ("Meshes_23.Render_Mesh, aMaterial_Index " &
+                              UInt'Image (aMaterial_Index) & " bound.");
                   else
                      Put_Line ("Meshes_23.Render_Mesh, Texture_Object is not initialized.");
                   end if;
                else
                   Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures does not contain Material: " &
-                              UInt'Image (aMaterial));
+                              UInt'Image (aMaterial_Index));
                end if;
             else
                Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures is empty.");
             end if;
 
-            Put ("Meshes_23.Render, Width, Height: ");
-            Put_Line (Int'Image (GL.Objects.Textures.Targets.Texture_2D.Width (0)) & "  " &
-                        Int'Image (GL.Objects.Textures.Targets.Texture_2D.Height (0)));
             GL.Objects.Buffers.Draw_Elements
               (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
 --              GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);

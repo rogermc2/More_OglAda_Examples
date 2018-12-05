@@ -1,4 +1,5 @@
 
+with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Indefinite_Ordered_Maps;
 
 with GL.Objects.Buffers;
@@ -30,12 +31,12 @@ private
    end record;
 
    package Mesh_Entry_Package is new
-    Ada.Containers.Indefinite_Ordered_Maps (Natural, Mesh_Entry);
-   type Mesh_Entry_Map is new Mesh_Entry_Package.Map with
+    Ada.Containers.Doubly_Linked_Lists (Mesh_Entry);
+   type Mesh_Entry_List is new Mesh_Entry_Package.List with
      null Record;
 
    type Mesh_23 is record
-      Entries    : Mesh_Entry_Package.Map;
+      Entries    : Mesh_Entry_List;
       Textures   : Ogldev_Texture.Mesh_Texture_Map;
    end record;
 
