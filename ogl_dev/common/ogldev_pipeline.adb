@@ -3,12 +3,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body Ogldev_Pipeline is
 
-   procedure Set_Perspective_Transform (P : in out Pipeline);
-   procedure Set_Perspective_Transform (P : in out Pipeline;
-                                        View_Angle : Maths.Degree;
-                                        Width, Height, Near, Far : Single);
+   procedure Set_Projection_Transform (P : in out Pipeline);
    procedure Set_View_Transform (P : in out Pipeline);
-   procedure Set_WP_Transform (P : in out Pipeline);
    procedure Set_World_Transform (P : in out Pipeline);
    procedure Set_WV_Orthographic_Transform (P : in out Pipeline);
 
@@ -28,17 +24,10 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Orthographic_Transform (P : Pipeline) return Singles.Matrix4 is
+   function Get_Projection_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
-      return P.Ortho_Transform;
-   end Get_Orthographic_Transform;
-
-   --  -------------------------------------------------------------------------
-
-   function Get_Perspective_Transform (P : Pipeline) return Singles.Matrix4 is
-   begin
-      return P.Perspect_Transform;
-   end Get_Perspective_Transform;
+      return P.Projection_Transform;
+   end Get_Projection_Transform;
 
    --  -------------------------------------------------------------------------
 
@@ -75,12 +64,12 @@ package body Ogldev_Pipeline is
    begin
       Set_World_Transform (P);
       Set_View_Transform (P);   --  Depends on P.Camera
-      Set_Perspective_Transform (P);
-      P.VP_Transform := P.Perspect_Transform * P.View_Transform;
-      Set_WP_Transform (P);
+      Set_Projection_Transform (P);
+      P.VP_Transform := P.Projection_Transform * P.View_Transform;
+      P.WP_Transform := P.Projection_Transform * P.World_Transform;
       P.WV_Transform := P.View_Transform * P.World_Transform;
       Set_WV_Orthographic_Transform (P);
-      P.WVP_Transform := P.Perspect_Transform * P.WV_Transform;
+      P.WVP_Transform := P.Projection_Transform * P.WV_Transform;
    end Init_Transforms;
 
    --  -------------------------------------------------------------------------
@@ -124,23 +113,23 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Orthographic_Proj (P    : in out Pipeline;
+   procedure Set_Orthographic_Projection (P : in out Pipeline;
                                     Info : Ogldev_Math.Orthographic_Projection_Info) is
    begin
       P.Orthographic_Info := Info;
-   end Set_Orthographic_Proj;
+   end Set_Orthographic_Projection;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Perspective_Proj (P    : in out Pipeline;
+   procedure Set_Perspective_Projection (P : in out Pipeline;
                                    Info : Ogldev_Math.Perspective_Projection_Info) is
    begin
       P.Perspective_Info := Info;
-   end Set_Perspective_Proj;
+   end Set_Perspective_Projection;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Perspective_Transform (P : in out Pipeline) is
+   procedure Set_Projection_Transform (P : in out Pipeline) is
       use Ogldev_Math;
    begin
       Maths.Init_Perspective_Transform
@@ -149,20 +138,8 @@ package body Ogldev_Pipeline is
          Height     => Single (Get_Perspective_Height (P.Perspective_Info)),
          Z_Near     => Get_Perspective_Near (P.Perspective_Info),
          Z_Far      => Get_Perspective_Far (P.Perspective_Info),
-         Transform  => P.Perspect_Transform);
-   end Set_Perspective_Transform;
-
-   --  -------------------------------------------------------------------------
-
-    procedure Set_Perspective_Transform (P : in out Pipeline;
-                                         View_Angle : Maths.Degree;
-                                         Width, Height : Single;
-                                         Near, Far : Single) is
-      use Ogldev_Math;
-   begin
-      Maths.Init_Perspective_Transform (View_Angle, Width , Height,
-                                        Near, Far, P.Perspect_Transform);
-   end Set_Perspective_Transform;
+         Transform  => P.Projection_Transform);
+   end Set_Projection_Transform;
 
    --  -------------------------------------------------------------------------
 
@@ -224,22 +201,6 @@ package body Ogldev_Pipeline is
          Put_Line ("An exception occurred in Ogldev_Pipeline.Set_World_Transform.");
          raise;
    end Set_World_Transform;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_WP_Transform (P : in out Pipeline) is
-      use GL.Types.Singles;
-      use Ogldev_Math;
-      Pers_Proj_Trans : Matrix4;
-   begin
-      Maths.Init_Perspective_Transform
-        (Maths.Degree (Get_Perspective_FOV (P.Perspective_Info)),
-         Single (Get_Perspective_Width (P.Perspective_Info)),
-         Single (Get_Perspective_Height (P.Perspective_Info)),
-         Get_Perspective_Near (P.Perspective_Info),
-         Get_Perspective_Far (P.Perspective_Info), Pers_Proj_Trans);
-      P.WP_Transform := Pers_Proj_Trans * P.World_Transform;
-   end Set_WP_Transform;
 
    --  -------------------------------------------------------------------------
 
