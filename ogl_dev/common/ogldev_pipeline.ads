@@ -18,7 +18,7 @@ package Ogldev_Pipeline is
    function Get_WV_Transform (P : Pipeline) return Singles.Matrix4;
    function Get_WVP_Transform (P : Pipeline) return Singles.Matrix4;
 
-   procedure Init_Transforms  (P : in out Pipeline);
+   procedure Init_Transforms (P : in out Pipeline);
    procedure Set_Camera (P : in out Pipeline; C : Ogldev_Camera.Camera);
    procedure Set_Camera (P : in out Pipeline;
                          Pos, Target, Up : Singles.Vector3);
