@@ -113,19 +113,19 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Orthographic_Projection (P : in out Pipeline;
+   procedure Set_Orthographic_Info (P : in out Pipeline;
                                     Info : Ogldev_Math.Orthographic_Projection_Info) is
    begin
       P.Orthographic_Info := Info;
-   end Set_Orthographic_Projection;
+   end Set_Orthographic_Info;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Perspective_Projection (P : in out Pipeline;
+   procedure Set_Perspective_Info (P : in out Pipeline;
                                    Info : Ogldev_Math.Perspective_Projection_Info) is
    begin
       P.Perspective_Info := Info;
-   end Set_Perspective_Projection;
+   end Set_Perspective_Info;
 
    --  -------------------------------------------------------------------------
 
