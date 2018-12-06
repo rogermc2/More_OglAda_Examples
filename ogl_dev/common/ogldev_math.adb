@@ -119,7 +119,7 @@ package body Ogldev_Math is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Orthograpic_Info (Info      : out Orthographic_Projection_Info;
+   procedure Set_Orthograpic_Info (Info : out Orthographic_Projection_Info;
                                    Right, Left, Bottom, Top,
                                    Near, Far : Single) is
    begin

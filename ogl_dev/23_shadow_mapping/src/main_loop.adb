@@ -37,7 +37,7 @@ with Meshes_23;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.0, 0.6, 0.0, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.0, 0.7, 0.0, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    theTechnique           : Shadow_Map_Technique.Technique;
@@ -84,7 +84,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         (theShadow_Map, Int (Window_Width), Int (Window_Height));
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
-         1.0, 50.0);  --  1.0, 50.0);
+         1.0, 50.0);
       Ogldev_Camera.Init_Camera (Game_Camera,
                                  Int (Window_Width), Int (Window_Height),
                                  Camera_Position, Target, Up);
@@ -121,7 +121,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 --        Shadow_Map_Technique.Use_Program (Shadow_Technique);
       --  First, render the closest depth values into the
       --  application created depth buffer
+      Utilities.Clear_Background_Colour_And_Depth (Ogldev_Lights_Common.Colour_Red);
       Shadow_Map_Pass (Window);
+      Utilities.Clear_Background_Colour_And_Depth (Background);
       Render_Pass (Window);
 
    exception
@@ -156,21 +158,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe          : Ogldev_Pipeline.Pipeline;
    begin
       Window.Get_Size (Window_Width, Window_Height);
---        GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
       Shadow_Map_Technique.Set_Texture_Unit (theTechnique, 0);
       Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
 
---        Shadow_Map_Technique.Use_Program (theTechnique);
---        Utilities.Clear_Background_Colour_And_Depth (Ogldev_Lights_Common.Colour_White);
-
       Set_Scale (Pipe, 5.0);
       Set_World_Position (Pipe, 0.0, 0.0,10.0);
+      Ogldev_Math.Set_Perspective_Info (Perspective_Proj_Info, 30.0, UInt (Window_Width),
+                                        UInt (Window_Height), 1.0, 50.0);
+      Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
 
-      Init_Transforms (Pipe, 30.0, Single (Window_Width) - 10.0,
-                       Single (Window_Height) - 10.0, 1.0, 50.0);
+      Init_Transforms (Pipe);
 
       Shadow_Map_Technique.Set_WVP (theTechnique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
@@ -200,8 +200,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe          : Ogldev_Pipeline.Pipeline;
    begin
       Window.Get_Size (Window_Width, Window_Height);
---        Utilities.Clear_Background_Colour_And_Depth (Colour_Blue);
---        Shadow_Map_Technique.Use_Program (theTechnique);
+--        GL.Window.Set_Viewport (50, -200, GL.Types.Int (Window_Width) - 100, GL.Types.Int (Window_Height));
       --  Bind the Shadow_Map frame buffer (FBO) to the Draw_Target
       Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
@@ -210,21 +209,23 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, 0.0, 0.0, 5.0);
       Set_Camera (Pipe, Position (Spot),
-                                  Direction (Spot), (0.0, 1.0, 0.0));
-      Init_Transforms (Pipe, 20.0, Single (Window_Width) - 10.0,
-                       Single (Window_Height) - 10.0, 1.0, 50.0);
+                  Direction (Spot), (0.0, 1.0, 0.0));
+      Ogldev_Math.Set_Perspective_Info (Perspective_Proj_Info, 20.0, UInt (Window_Width),
+                                        UInt (Window_Height), 1.0, 50.0);
+      Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
+      Init_Transforms (Pipe);
 
       Shadow_Map_Technique.Set_WVP (theTechnique, Get_WVP_Transform (Pipe));
 --         Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
 --                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
-Put_Line ("Main_Loop.Shadow_Map_Pass calling Meshes_23.Render (Shadow_Mesh)");
+      Utilities.Clear_Background_Colour_And_Depth (Ogldev_Lights_Common.Colour_Red);
+      Put_Line ("Main_Loop.Shadow_Map_Pass calling Meshes_23.Render (Shadow_Mesh)");
       Meshes_23.Render (Shadow_Mesh);
 --        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);
-      New_Line;
 
    exception
       when  others =>
