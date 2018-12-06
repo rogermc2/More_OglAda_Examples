@@ -274,23 +274,22 @@ package body Meshes_23 is
 
          while Has_Element (Entry_Cursor) loop
             anEntry := Element (Entry_Cursor);
-            aMaterial_Index := anEntry.Material_Index;
             GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
-            GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
 
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
             GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
-            GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
+            GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
+
+            GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
+            aMaterial_Index := anEntry.Material_Index;  --  normal
 
             if not theMesh.Textures.Is_Empty then
                if theMesh.Textures.Contains (aMaterial_Index) then
                   aTexture := theMesh.Textures.Element (aMaterial_Index);
                   if aTexture.Texture_Object.Initialized then
                      Ogldev_Texture.Bind (aTexture, 0);
-                     GL.Buffers.Set_Active_Buffer (GL.Buffers.Color_Attachment0);
-                     Put_Line ("Meshes_23.Render_Mesh, aMaterial_Index " &
-                              UInt'Image (aMaterial_Index) & " bound.");
+                     Put_Line ("Meshes_23.Render_Mesh, aTexture bound.");
                   else
                      Put_Line ("Meshes_23.Render_Mesh, Texture_Object is not initialized.");
                   end if;
