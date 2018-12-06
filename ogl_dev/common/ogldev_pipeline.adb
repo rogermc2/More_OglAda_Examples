@@ -85,22 +85,6 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Transforms  (P : in out Pipeline; View_Angle : Maths.Degree;
-                                Width, Height, Near, Far : Single) is
-      use GL.Types.Singles;
-   begin
-      Set_World_Transform (P);
-      Set_View_Transform (P);   --  Depends on P.Camera
-      Set_Perspective_Transform (P, View_Angle, Width, Height, Near, Far);
-      P.VP_Transform := P.Perspect_Transform * P.View_Transform;
-      Set_WP_Transform (P);
-      P.WV_Transform := P.View_Transform * P.World_Transform;
-      Set_WV_Orthographic_Transform (P);
-      P.WVP_Transform := P.Perspect_Transform * P.WV_Transform;
-   end Init_Transforms;
-
-   --  -------------------------------------------------------------------------
-
    procedure Set_Camera (P : in out Pipeline; C : Ogldev_Camera.Camera) is
    begin
       P.Camera.Position := Ogldev_Camera.Get_Position (C);
@@ -140,19 +124,19 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Orthographic_Info (P    : in out Pipeline;
+   procedure Set_Orthographic_Proj (P    : in out Pipeline;
                                     Info : Ogldev_Math.Orthographic_Projection_Info) is
    begin
       P.Orthographic_Info := Info;
-   end Set_Orthographic_Info;
+   end Set_Orthographic_Proj;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Perspective_Info (P    : in out Pipeline;
+   procedure Set_Perspective_Proj (P    : in out Pipeline;
                                    Info : Ogldev_Math.Perspective_Projection_Info) is
    begin
       P.Perspective_Info := Info;
-   end Set_Perspective_Info;
+   end Set_Perspective_Proj;
 
    --  -------------------------------------------------------------------------
 
