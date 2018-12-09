@@ -45,7 +45,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Current_Height       : GL.Types.Int := 512;
    Frustum_Depth        : constant Single := 800.0;
    Depth_Texure_Size    : constant GL.Types.Int := 2048;
-   Background           : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
+   Background           : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 0.0);
 
    procedure Draw_Scene (Depth_Only : Boolean);
    procedure Render_Depth
