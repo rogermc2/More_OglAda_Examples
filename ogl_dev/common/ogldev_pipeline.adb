@@ -121,11 +121,11 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Perspective_Info (P : in out Pipeline;
+   procedure Set_Perspective_Proj (P : in out Pipeline;
                                    Info : Ogldev_Math.Perspective_Projection_Info) is
    begin
       P.Perspective_Info := Info;
-   end Set_Perspective_Info;
+   end Set_Perspective_Proj;
 
    --  -------------------------------------------------------------------------
 
