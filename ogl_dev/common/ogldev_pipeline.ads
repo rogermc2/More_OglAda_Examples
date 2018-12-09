@@ -24,7 +24,7 @@ package Ogldev_Pipeline is
                          Pos, Target, Up : Singles.Vector3);
    procedure Set_Orthographic_Info (P : in out Pipeline;
                           Info : Ogldev_Math.Orthographic_Projection_Info);
-   procedure Set_Perspective_Info (P : in out Pipeline;
+   procedure Set_Perspective_Proj (P : in out Pipeline;
                                    Info : Ogldev_Math.Perspective_Projection_Info);
    procedure Set_Scale (P : in out Pipeline; S : Single);
    procedure Set_Scale (P : in out Pipeline; X, Y, Z : Single);
