@@ -8,8 +8,6 @@ Package Shadow_Map_Technique is
 
    type Technique is private;
 
-   function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
-                                  return GL.Uniforms.Uniform;
    procedure Init (theTechnique : out Technique);
    procedure Set_Texture_Unit (theTechnique : Technique;
                                Texture_Unit : GL.Types.Int);
