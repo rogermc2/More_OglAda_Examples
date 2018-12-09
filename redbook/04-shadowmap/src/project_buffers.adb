@@ -51,7 +51,6 @@ package body Project_Buffers is
         Array_Buffer.Bind (Ground_Buffer);
 
         Array_Buffer.Allocate (Buffer_Size, Static_Draw);
-        --        Utilities.Load_Vertex_Buffer (Array_Buffer, Vertex_Data.Ground_Vertices, Static_Draw);
         Utilities.Load_Vertex_Sub_Buffer (Array_Buffer, 0, Vertex_Data.Ground_Vertices);
         Utilities.Load_Vertex_Sub_Buffer
           (Array_Buffer, Int (Vertex_Data_Bytes), Vertex_Data.Ground_Normals);
