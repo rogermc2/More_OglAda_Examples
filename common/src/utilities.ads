@@ -12,6 +12,8 @@ with Maths;
 package Utilities is
 
    type Byte_Array is array (GL.Types.Int range <>) of aliased GL.Types.UByte;
+   type Ints_Vector4_Array4 is array (GL.Types.Int range <>) of
+      GL.Types.Ints.Vector4_Array (1 .. 4);
    type Singles_Array is array (GL.Types.Int range <>) of aliased GL.Types.Single;
 
    procedure Clear_All (Colour : GL.Types.Colors.Color);
@@ -23,6 +25,7 @@ package Utilities is
    procedure Clear_Colour_Buffer_And_Depth;
    procedure Clear_Depth;
    procedure Enable_Mouse_Callbacks (Window : in out Glfw.Windows.Window; Enable : Boolean);
+   function Flatten (anArray : Ints_Vector4_Array4) return GL.Types.Int_Array;
    procedure Load_Element_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (GL.Types.Int_Pointers);
    procedure Load_Element_Buffer is new
