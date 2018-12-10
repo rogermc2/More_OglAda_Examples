@@ -151,7 +151,7 @@ package body Utilities is
 
    function Flatten (anArray : Ints_Vector4_Array4) return GL.Types.Int_Array is
         use GL.Types;
-        Out_Size        : constant Int := 4 * 4 * anArray'Size;
+        Out_Size        : constant Int := 16 * anArray'Length;
         Flattened_Array : Int_Array (1 .. Out_Size);
         Vec4_Array      : Ints.Vector4_Array  (1 .. 4);
         Vec4            : Ints.Vector4;
