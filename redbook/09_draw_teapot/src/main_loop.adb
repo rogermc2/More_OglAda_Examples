@@ -7,7 +7,7 @@ with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
-with GL.Tessellation;
+--  with GL.Tessellation;
 with GL.Types;
 with GL.Types.Colors;
 with GL.Uniforms;
@@ -25,15 +25,17 @@ with Vertex_Data;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
+   use GL.Uniforms;
 
    Shader_Program        : GL.Objects.Programs.Program;
    Vertex_Array          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer         : GL.Objects.Buffers.Buffer;
    Element_Buffer        : GL.Objects.Buffers.Buffer;
    Position_Attribute_ID : GL.Attributes.Attribute;
-   Projection_Matrix_ID  : GL.Uniforms.Uniform;
-   Inner_Location_ID     : GL.Uniforms.Uniform;
-   Outer_Location_ID     : GL.Uniforms.Uniform;
+   MV_Matrix_ID          : Uniform := -1;
+   Projection_Matrix_ID  : Uniform := -1;
+   Inner_Location_ID     : Uniform := -1;
+   Outer_Location_ID     : Uniform := -1;
    Model_View_Matrix     : GL.Types.Singles.Matrix4;
 
     Inner                : constant Single := 10.0;
@@ -42,7 +44,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-    procedure Initialize is
+    procedure Setup is
       use GL.Objects.Buffers;
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
@@ -51,6 +53,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
+
+      Utilities.Clear_Background_Colour_And_Depth (Background);
+
+      Shader_Program := Program_From
+        ((Src ("../media/shaders/teapot/teapot.vert", Vertex_Shader),
+          Src ("../media/shaders/teapot/teapot.cont", Tess_Control_Shader),
+          Src ("../media/shaders/teapot/teapot.eval", Tess_Evaluation_Shader),
+          Src ("../media/shaders/teapot/teapot.frag", Fragment_Shader)));
+       GL.Objects.Programs.Use_Program (Shader_Program);
 
       Vertex_Buffer.Initialize_Id;
       Array_Buffer.Bind (Vertex_Buffer);
@@ -63,19 +74,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                      Utilities.Flatten (Vertex_Data.Teapot_Indices),
                                      Static_Draw);
 
-      Shader_Program := Program_From
-        ((Src ("../media/shaders/teapot/teapot.vert", Vertex_Shader),
-          Src ("../media/shaders/teapot/teapot.cont", Tess_Control_Shader),
-          Src ("../media/shaders/teapot/teapot.eval", Tess_Evaluation_Shader),
-          Src ("../media/shaders/teapot/teapot.frag", Fragment_Shader)));
-       GL.Objects.Programs.Use_Program (Shader_Program);
-
       Position_Attribute_ID := GL.Objects.Programs.Attrib_Location
         (Shader_Program, "vPosition");
       GL.Attributes.Enable_Vertex_Attrib_Array (Position_Attribute_ID);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Position_Attribute_ID, 3, Single_Type, 0, 0);
 
-      Projection_Matrix_ID := Uniform_Location (Shader_Program, "p");
+      MV_Matrix_ID := Uniform_Location (Shader_Program, "MV");
+      Projection_Matrix_ID := Uniform_Location (Shader_Program, "Proj");
       Inner_Location_ID := Uniform_Location (Shader_Program, "Inner");
       Outer_Location_ID := Uniform_Location (Shader_Program, "Outer");
 
@@ -84,44 +89,47 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         Model_View_Matrix := Maths.Translation_Matrix ((-0.2625, -1.575, -1.0));
         Model_View_Matrix := Maths.Translation_Matrix ((0.0, 0.0, -7.5)) * Model_View_Matrix;
-      GL.Uniforms.Set_Single (Uniform_Location (Shader_Program, "MV"), Model_View_Matrix);
-        GL.Tessellation.Set_Patch_Vertices (Vertex_Data.Num_Teapot_Vertices_Per_Patch);
 
-      Utilities.Clear_Background_Colour_And_Depth (Background);
+
+      GL.Uniforms.Set_Single (MV_Matrix_ID, Model_View_Matrix);
+
+--          GL.Tessellation.Set_Patch_Vertices (Vertex_Data.Num_Teapot_Vertices_Per_Patch);
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Main_Loop.Initialize.");
+         Put_Line ("An exception occurred in Main_Loop.Setup.");
          raise;
-   end Initialize;
+   end Setup;
 
    --  ------------------------------------------------------------------------
 
-   procedure Render (Window :  in out Glfw.Windows.Window) is
+   procedure Render (Main_Window : in out Glfw.Windows.Window) is
       use GL.Objects.Buffers;
-      use GL.Objects.Vertex_Arrays;
       use GL.Types.Singles;
       Window_Width      : Glfw.Size;
       Window_Height     : Glfw.Size;
       Projection_Matrix : Matrix4;
    begin
-      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-      GL.Window.Set_Viewport (10, 10, GL.Types.Int (Window_Width) - 20,
-                              GL.Types.Int (Window_Height) - 20);
+      Main_Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+        Put_Line ("Main_Loop.Render Window sized.");
+      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
+                              GL.Types.Int (Window_Height));
+        Put_Line ("Main_Loop.Render Viewport set.");
       Utilities.Clear_Colour_Buffer_And_Depth;
-
-      GL.Objects.Programs.Use_Program (Shader_Program);
+        Put_Line ("Main_Loop.Render Colour_Buffer_And_Depth cleared.");
 
       --  Set up the projection matrix
-      --  Top, Bottom, Left, Right, Near, Far
-      Maths.Init_Perspective_Transform (Maths.Degree (60), Single (Window_Width), Single (Window_Height), 5.0, 10.0, Projection_Matrix);
-      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
+      Maths.Init_Perspective_Transform (Maths.Degree (60), Single (Window_Width),
+                                        Single (Window_Height), 5.0, 10.0, Projection_Matrix);
 
-      --  Set up for the Draw_Elements call
-      Vertex_Array.Bind;
-      Element_Array_Buffer.Bind (Element_Buffer);
+      Put_Line ("Main_Loop.Render MV_Matrix_ID, Projection_Matrix_ID: " &
+        GL.Uniforms.Uniform'Image (MV_Matrix_ID) & "  " &
+        GL.Uniforms.Uniform'Image (Projection_Matrix_ID));
+      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
+        Put_Line ("Main_Loop.Render Projection_Matrix set.");
 
       Draw_Elements (Patches, Vertex_Data.Num_Teapot_Vertices, UInt_Type);
+      Put_Line ("Main_Loop.Render Elements drawn.");
 
    exception
       when  others =>
@@ -131,11 +139,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-
-   use Glfw.Input;
-   Running : Boolean := True;
+   use Glfw.Input;   Running : Boolean := True;
 begin
-   Initialize;
+   Setup;
    while Running loop
       Render (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
@@ -146,6 +152,6 @@ begin
    end loop;
 exception
    when others =>
-      Put_Line ("An exceptiom occurred in Main_Loop.");
+      Put_Line ("An exception occurred in Main_Loop.");
       raise;
 end Main_Loop;
