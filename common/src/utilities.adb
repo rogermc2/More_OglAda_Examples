@@ -145,7 +145,30 @@ package body Utilities is
          Window.Disable_Callback (Glfw.Windows.Callbacks.Mouse_Button);
          Window.Disable_Callback (Glfw.Windows.Callbacks.Mouse_Scroll);
       end if;
-   end;
+   end Enable_Mouse_Callbacks;
+
+   --  ------------------------------------------------------------------------
+
+   function Flatten (anArray : Ints_Vector4_Array4) return GL.Types.Int_Array is
+        use GL.Types;
+        Out_Size        : constant Int := 4 * 4 * anArray'Size;
+        Flattened_Array : Int_Array (1 .. Out_Size);
+        Vec4_Array      : Ints.Vector4_Array  (1 .. 4);
+        Vec4            : Ints.Vector4;
+        Out_Index       : Int := 0;
+   begin
+        for Index in anArray'First .. anArray'Last loop
+            Vec4_Array := anArray (Index);
+            for Inner_Index in Int range 1 .. 4 loop
+                Vec4 := Vec4_Array (Inner_Index);
+                for Inner2_Index in GL.Index_Homogeneous'First .. GL.Index_Homogeneous'Last loop
+                    Out_Index := Out_Index + 1;
+                    Flattened_Array (Out_Index) := Vec4 (Inner2_Index);
+                end loop;
+            end loop;
+        end loop;
+        return Flattened_Array;
+   end Flatten;
 
    --  ------------------------------------------------------------------------
 
