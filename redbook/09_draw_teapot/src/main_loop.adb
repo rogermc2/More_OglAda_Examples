@@ -9,6 +9,7 @@ with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
 with GL.Rasterization;
 with GL.Tessellation;
+with GL.Tessellation;
 with GL.Types;
 with GL.Types.Colors;
 with GL.Uniforms;
