@@ -7,6 +7,7 @@ with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
+with GL.Rasterization;
 with GL.Tessellation;
 with GL.Types;
 with GL.Types.Colors;
@@ -38,11 +39,59 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Outer_Location_ID     : Uniform := -1;
    Model_View_Matrix     : GL.Types.Singles.Matrix4;
 
-   Inner                : constant Single := 10.0;
-   Outer                : constant Single := 10.0;
+   Inner                : Single := 10.0;
+   Outer                : Single := 10.0;
+   Mode                 : GL.Rasterization.Polygon_Mode_Type :=
+                            GL.Rasterization.Line;
    Background           : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
 
    --  ------------------------------------------------------------------------
+
+   procedure Process_Keyboard (Window : in out Glfw.Windows.Window) is
+      use Glfw.Input;
+      use GL.Rasterization;
+   begin
+      if Window'Access.Key_State (Keys.K) = Pressed then
+         Inner := Inner - 1.0;
+         if Inner < 1.0 then
+            Inner := 1.0;
+         end if;
+         Set_Single (Inner_Location_ID, Inner);
+      elsif Window'Access.Key_State (Keys.I) = Pressed then
+         Inner := Inner + 1.0;
+         if Inner > 64.0 then
+            Inner := 64.0;
+         end if;
+         Set_Single (Inner_Location_ID, Inner);
+      elsif Window'Access.Key_State (Keys.L) = Pressed then
+         Outer := Outer - 1.0;
+         if Outer < 1.0 then
+            Outer := 1.0;
+         end if;
+         Set_Single (Outer_Location_ID, Outer);
+      elsif Window'Access.Key_State (Keys.O) = Pressed then
+         Outer := Outer + 1.0;
+         if Outer > 64.0 then
+            Outer := 64.0;
+         end if;
+         Set_Single (Outer_Location_ID, Outer);
+      elsif Window'Access.Key_State (Keys.R) = Pressed then
+         Inner := 10.0;
+         Outer := 10.0;
+         Set_Single (Inner_Location_ID, Inner);
+         Set_Single (Outer_Location_ID, Outer);
+      elsif Window'Access.Key_State (Keys.M) = Pressed then
+         if Mode = Fill then
+            Mode := Line;
+         else
+            Mode := Fill;
+         end if;
+         GL.Rasterization.Set_Polygon_Mode (Mode);
+      end if;
+
+   end Process_Keyboard;
+
+   --  -------------------------------------------------------------------------
 
    procedure Setup is
       use GL.Objects.Buffers;
@@ -110,17 +159,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection_Matrix : Matrix4;
    begin
       Main_Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      Process_Keyboard (Main_Window);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
 
       --  Set up the projection matrix
       Maths.Init_Perspective_Transform (Maths.Degree (60), Single (Window_Width),
-                                        Single (Window_Height), 5.0, 10.0, Projection_Matrix);
-
---        Put_Line ("Main_Loop.Render MV_Matrix_ID, Projection_Matrix_ID: " &
---                    GL.Uniforms.Uniform'Image (MV_Matrix_ID) & "  " &
---                    GL.Uniforms.Uniform'Image (Projection_Matrix_ID));
+                                        Single (Window_Height), 1.0, 10.0, Projection_Matrix);
       GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
 
       Draw_Elements (Patches, Vertex_Data.Num_Teapot_Vertices, UInt_Type);
