@@ -8,7 +8,7 @@ with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
 with GL.Rasterization;
-with GL.Tessellation;
+--  with GL.Tessellation;
 with GL.Types;
 with GL.Types.Colors;
 with GL.Uniforms;
@@ -141,7 +141,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Model_View_Matrix := Maths.Translation_Matrix ((0.0, 0.0, -7.5)) * Model_View_Matrix;
 
       GL.Uniforms.Set_Single (MV_Matrix_ID, Model_View_Matrix);
-      GL.Tessellation.Set_Patch_Vertices (Vertex_Data.Num_Teapot_Vertices_Per_Patch);
+--        GL.Tessellation.Set_Patch_Vertices (Vertex_Data.Num_Teapot_Vertices_Per_Patch);
 
    exception
       when others =>

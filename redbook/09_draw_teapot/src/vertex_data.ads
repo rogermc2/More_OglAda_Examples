@@ -4,12 +4,12 @@ with GL.Types;
 with Utilities;
 
 package Vertex_Data is
-    use  GL.Types;
+    use GL.Types;
 
-    Num_Teapot_Vertices : constant Int := 306;
-    Num_Teapot_Patches : constant Int := 32;
-    Num_Teapot_Vertices_Per_Patch : constant Int := 16;  --  4x4 Bezier patches
-    Num_Teapot_Indices : constant Int := Num_Teapot_Vertices_Per_Patch * Num_Teapot_Patches;
+    Num_Teapot_Vertices : constant GL.Types.Int := 306;
+    Num_Teapot_Patches : constant GL.Types.Int := 32;
+    Num_Teapot_Vertices_Per_Patch : constant GL.Types.Int := 16;  --  4x4 Bezier patches
+    Num_Teapot_Indices : constant GL.Types.Int := Num_Teapot_Vertices_Per_Patch * Num_Teapot_Patches;
 
     Teapot_Vertices : constant Singles.Vector3_Array (1 .. Num_Teapot_Vertices)
       := ((1.4, 2.4, 0.0),
