@@ -13,7 +13,9 @@ package body MT_Teapot is
       array (GL.Types.Int range <>, GL.Types.Int range <>, GL.Types.Int range <>) of Int;
 
     function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
-                              return GL.Types.Singles.Vector3;
+                               return GL.Types.Singles.Vector3;
+    procedure Build_Vertices (Vertices : out GL.Types.Singles.Vector3_Array;
+                              Colours : out Teapot_Colours);
 
     --  --------------------------------------------------------------------------------
 
@@ -29,10 +31,10 @@ package body MT_Teapot is
             end loop;
         end loop;
 
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_Control_Points.");
-         raise;
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in MT_Teapot.Build_Control_Points.");
+            raise;
     end Build_Control_Points;
 
     --  --------------------------------------------------------------------------------
@@ -63,15 +65,15 @@ package body MT_Teapot is
             end loop;
         end loop;
 
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_Elements.");
-         raise;
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in MT_Teapot.Build_Elements.");
+            raise;
     end Build_Elements;
 
     --  --------------------------------------------------------------------------------
 
-  procedure Build_CP_Elements (CP_Elements : out Teapot_CP_Elements) is
+    procedure Build_CP_Elements (CP_Elements : out Teapot_CP_Elements) is
         Patch : Teapot_Data.Bezier_Patch;
     begin
         for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
@@ -83,16 +85,30 @@ package body MT_Teapot is
             end loop;
         end loop;
 
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_CP_Elements.");
-         raise;
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in MT_Teapot.Build_CP_Elements.");
+            raise;
     end Build_CP_Elements;
 
     --  --------------------------------------------------------------------------------
 
-   procedure Build_Vertices (Vertices : out GL.Types.Singles.Vector3_Array;
-                             Colours : out Teapot_Colours) is
+    procedure Build_Teapot (Vertices : out GL.Types.Singles.Vector3_Array;
+                            Colours : out Teapot_Colours;
+                            Elements : out GL.Types.Int_Array) is
+    begin
+        Build_Vertices (Vertices, Colours);
+        Build_Elements (Elements);
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in MT_Teapot.Build_Teapot.");
+            raise;
+    end Build_Teapot;
+
+    --  --------------------------------------------------------------------------------
+
+    procedure Build_Vertices (Vertices : out GL.Types.Singles.Vector3_Array;
+                              Colours : out Teapot_Colours) is
         use GL.Types;
         Control_Points : Control_Point_Array
           (1 .. Teapot_Data.Order, 1 .. Teapot_Data.Order);
@@ -111,25 +127,25 @@ package body MT_Teapot is
                     Vertices (Patch_Num * Res_UV + Ru * Res_V * rv) :=
                       Compute_Position (Control_Points, U, V);
                     Colours (3 * Patch_Num * Res_UV + 3 * Ru * Res_V + 3 *
-                             rv) := Single (Patch_Num) / Single (Teapot_Data.Num_Patchs);
+                               rv) := Single (Patch_Num) / Single (Teapot_Data.Num_Patchs);
                     Colours (3 * Patch_Num * Res_UV + 3 * Ru * Res_V + 3 *
-                             rv + 1) := Single (Patch_Num) / Single (Teapot_Data.Num_Patchs);
+                               rv + 1) := Single (Patch_Num) / Single (Teapot_Data.Num_Patchs);
                     Colours (3 * Patch_Num * Res_UV + 3 * Ru * Res_V + 3 *
-                             rv + 2) := 0.8;
+                               rv + 2) := 0.8;
                 end loop;
             end loop;
         end loop;
 
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_Vertices.");
-         raise;
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in MT_Teapot.Build_Vertices.");
+            raise;
     end Build_Vertices;
 
     --  --------------------------------------------------------------------------------
 
     function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
-                              return Singles.Vector3 is
+                               return Singles.Vector3 is
         Position : Singles.Vector3 := (0.0, 0.0, 0.0);
         Pol_I    : Single;
         Pol_J    : Single;
@@ -142,10 +158,10 @@ package body MT_Teapot is
         end loop;
         return Position;
 
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Compute_Position.");
-         raise;
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in MT_Teapot.Compute_Position.");
+            raise;
     end Compute_Position;
 
     --  --------------------------------------------------------------------------------
