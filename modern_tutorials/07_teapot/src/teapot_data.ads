@@ -4,11 +4,11 @@ with GL.Types; use GL.Types;
 package Teapot_Data is
 
    Num_Patchs   : constant Int := 28;
-
-   type Bezier_Patch is array (1 .. 4, 1 .. 4) of UInt;
-   type Patch_Data is array (1.. Num_Patchs) of Bezier_Patch;
-
+   Order        : constant GL.Types.Int := 3;
    Num_Vertices : constant Int := 269;
+
+   type Bezier_Patch is array (Int Range 1 .. 4, Int Range 1 .. 4) of Int;
+   type Patch_Data is array (1.. Num_Patchs) of Bezier_Patch;
 
    Patchs : constant Patch_Data
      := -- rim
