@@ -45,7 +45,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     Colours_Buffer     : GL.Objects.Buffers.Buffer;
     CP_Colours_Buffer  : GL.Objects.Buffers.Buffer;
 
-    Colours            : MT_Teapot.Teapot_Colours;
+    Colours            : MT_Teapot.Colours_Array;
     Vertices           : MT_Teapot.Vertices_Array;
     Elements           : MT_Teapot.Element_Array;
     --     CP_Colours         : Teapot_CP_Colours;  --  For debugging

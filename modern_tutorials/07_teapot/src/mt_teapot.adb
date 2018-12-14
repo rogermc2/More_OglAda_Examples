@@ -14,7 +14,7 @@ package body MT_Teapot is
    function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
                                return GL.Types.Singles.Vector3;
    procedure Build_Vertices (Vertices : out Vertices_Array;
-                             Colours  : out Teapot_Colours);
+                             Colours  : out Colours_Array);
 
    --  --------------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@ package body MT_Teapot is
    --  --------------------------------------------------------------------------------
 
    procedure Build_Teapot (Vertices : out Vertices_Array;
-                           Colours  : out Teapot_Colours;
+                           Colours  : out Colours_Array;
                            Elements : out Element_Array) is
    begin
       Build_Vertices (Vertices, Colours);
@@ -113,7 +113,7 @@ package body MT_Teapot is
    --  --------------------------------------------------------------------------------
 
    procedure Build_Vertices (Vertices : out Vertices_Array;
-                             Colours  : out Teapot_Colours) is
+                             Colours  : out Colours_Array) is
       use GL.Types;
       Control_Points : Control_Point_Array
         (1 .. Teapot_Data.Order, 1 .. Teapot_Data.Order);

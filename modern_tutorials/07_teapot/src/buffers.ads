@@ -13,7 +13,7 @@ package Buffers is
      (1 .. Teapot_Data.Num_Patchs, 1 .. Teapot_Data.Order, 1 .. Teapot_Data.Order);
 
     procedure Create_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                    Colours : MT_Teapot.Teapot_Colours);
+                                    Colours : MT_Teapot.Colours_Array);
     procedure Create_CP_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
                                        Colours : GL.Types.Singles.Vector3_Array);
     procedure Create_CP_Elements_Buffer (IBO : in out GL.Objects.Buffers.Buffer;
