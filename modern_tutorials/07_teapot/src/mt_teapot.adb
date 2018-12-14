@@ -45,6 +45,7 @@ package body MT_Teapot is
     procedure Build_Elements (Elements : out GL.Types.Int_Array) is
         use GL.Types;
         N : Int := 0;
+      Res_UV : constant Int := Res_U * Res_V;
     begin
         --  1 square ABCD = 2 triangles ABC + CDA
         for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
@@ -115,6 +116,7 @@ package body MT_Teapot is
         use GL.Types;
         Control_Points : Control_Point_Array
           (1 .. Teapot_Data.Order, 1 .. Teapot_Data.Order);
+      Res_UV         : constant Int := Res_U * Res_V;
         U : Single;
         V : Single;
     begin
