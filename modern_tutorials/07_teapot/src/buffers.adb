@@ -23,8 +23,39 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-    procedure Create_CP_Index_Buffer (IBO : in out GL.Objects.Buffers.Buffer;
-                                      Indices : CP_Element_Array) is
+   procedure Create_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
+                                   Colours : GL.Types.Singles.Vector3_Array) is
+      use GL.Objects.Buffers;
+   begin
+      Colour_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Colour_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Colours, Static_Draw);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Create_Colour_Buffer.");
+         raise;
+   end Create_Colour_Buffer;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Create_CP_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
+                                      Colours : GL.Types.Singles.Vector3_Array) is
+      use GL.Objects.Buffers;
+   begin
+      Colour_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Colour_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Colours, Static_Draw);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Create_CP_Colour_Buffer.");
+         raise;
+   end Create_CP_Colour_Buffer;
+
+   --  ------------------------------------------------------------------------
+    procedure Create_CP_Elements_Buffer (IBO : in out GL.Objects.Buffers.Buffer;
+                                         Indices : CP_Element_Array) is
       use GL.Objects.Buffers;
       use GL.Types;
       Flat_Array : FLat_CP_Element_Array_Type
@@ -36,9 +67,25 @@ package body Buffers is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Create_Index_Buffer.");
+         Put_Line ("An exception occurred in Create_CP_Elements_Buffer.");
          raise;
-   end Create_CP_Index_Buffer;
+   end Create_CP_Elements_Buffer;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Create_CP_Vertex_Buffer (Vertex_Buffer : in out GL.Objects.Buffers.Buffer;
+                                      Vertices : GL.Types.Singles.Vector3_Array) is
+      use GL.Objects.Buffers;
+   begin
+      Vertex_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Vertex_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices, Static_Draw);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Create_CP_Vertex_Buffer.");
+         raise;
+   end Create_CP_Vertex_Buffer;
 
    --  ------------------------------------------------------------------------
 
@@ -58,7 +105,7 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Index_Buffer (IBO     : in out GL.Objects.Buffers.Buffer;
+   procedure Create_Elements_Buffer (IBO     : in out GL.Objects.Buffers.Buffer;
                                   Indices : GL.Types.Int_Array) is
       use GL.Objects.Buffers;
       use GL.Types;
@@ -68,9 +115,9 @@ package body Buffers is
       Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
    exception
       when others =>
-         Put_Line ("An exception occurred in Create_Index_Buffer.");
+         Put_Line ("An exception occurred in Create_Elements_Buffer.");
          raise;
-   end Create_Index_Buffer;
+   end Create_Elements_Buffer;
 
    --  ------------------------------------------------------------------------
 

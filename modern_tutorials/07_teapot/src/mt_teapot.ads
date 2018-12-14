@@ -12,6 +12,7 @@ package MT_Teapot is
 
     type Teapot_Colours is new GL.Types.Single_Array (1 .. 3 * Teapot_Data.Num_Patchs * Res_UV);
 
-    procedure Build_Vertices (Vertices : out GL.Types.Singles.Vector3_Array;
-                              Colours : out Teapot_Colours);
+    procedure Build_Teapot (Vertices : out GL.Types.Singles.Vector3_Array;
+                            Colours : out Teapot_Colours;
+                            Elements : out GL.Types.Int_Array);
 end MT_Teapot;
