@@ -12,7 +12,7 @@ package body Buffers is
    type FLat_CP_Element_Array_Type is array (GL.Types.Int range <>) of
      aliased GL.Types.Int;
    type Flattend_Array is new FLat_CP_Element_Array_Type
-      (1 .. CP_Element_Array'Length * Order * Order);
+      (1 .. CP_Element_Array'Length * Teapot_Data.Order * Teapot_Data.Order);
 
    package CP_Element_Pointers is new Interfaces.C.Pointers
      (GL.Types.Int, GL.Types.Int, FLat_CP_Element_Array_Type, GL.Types.Int'Last);
@@ -28,7 +28,7 @@ package body Buffers is
       use GL.Objects.Buffers;
       use GL.Types;
       Flat_Array : FLat_CP_Element_Array_Type
-      (1 .. CP_Element_Array'Size * Order * Order) := Flatten (Indices);
+      (1 .. CP_Element_Array'Size * Teapot_Data.Order * Teapot_Data.Order) := Flatten (Indices);
    begin
       IBO.Initialize_Id;
       Element_Array_Buffer.Bind (IBO);
@@ -80,10 +80,10 @@ package body Buffers is
       F_Index : Int := 0;
    begin
       for I1 in Int range 1 .. CP_Element_Array'Size loop
-         F_Index := Order ** 2 * (I1 - 1) + 1;
-         for I2 in Int range 1 .. Order loop
-            F_Index := F_Index + Order * (I2 - 1);
-            for I3 in Int range 1 .. Order loop
+         F_Index := Teapot_Data.Order ** 2 * (I1 - 1) + 1;
+         for I2 in Int range 1 .. Teapot_Data.Order loop
+            F_Index := F_Index + Teapot_Data.Order * (I2 - 1);
+            for I3 in Int range 1 .. Teapot_Data.Order loop
                F_Index := F_Index + (I3 - 1);
                Flat (F_Index) := anArray (I1, I2, I3);
             end loop;
