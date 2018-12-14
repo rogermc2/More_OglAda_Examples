@@ -2,6 +2,7 @@
 with GL.Objects.Buffers;
 with GL.Types;
 
+with MT_Teapot;
 with Teapot_Data;
 
 package Buffers is
@@ -12,7 +13,7 @@ package Buffers is
      (1 .. Teapot_Data.Num_Patchs, 1 .. Teapot_Data.Order, 1 .. Teapot_Data.Order);
 
     procedure Create_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                    Colours : GL.Types.Singles.Vector3_Array);
+                                    Colours : MT_Teapot.Teapot_Colours);
     procedure Create_CP_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
                                        Colours : GL.Types.Singles.Vector3_Array);
     procedure Create_CP_Elements_Buffer (IBO : in out GL.Objects.Buffers.Buffer;
@@ -22,5 +23,5 @@ package Buffers is
     procedure Create_Elements_Buffer (IBO : in out GL.Objects.Buffers.Buffer;
                                       Indices : GL.Types.Int_Array);
     procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
-                                    Vertices : GL.Types.Singles.Vector3_Array);
+                                    Vertices : Teapot_Data.Vertex_Data);
  end Buffers;
