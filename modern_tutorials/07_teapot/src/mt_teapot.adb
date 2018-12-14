@@ -25,12 +25,12 @@ package body MT_Teapot is
    begin
       for Index_I in Int range 1 .. Teapot_Data.Order loop
          for Index_J in Int range 1 .. Teapot_Data.Order loop
-            Put_Line ("MT_Teapot.Build_Control_Points thePatch (Index_I, Index_J)" &
-                        Int'Image (thePatch (Index_I, Index_J)));
+--              Put_Line ("MT_Teapot.Build_Control_Points thePatch (Index_I, Index_J)" &
+--                          Int'Image (thePatch (Index_I, Index_J)));
             Control_Points (Index_I, Index_J) :=
               Teapot_Data.CP_Vertices (thePatch (Index_I, Index_J));
-            Utilities.Print_Vector ("MT_Teapot.Build_Control_Points CP_Vertices",
-                                    Control_Points (Index_I, Index_J));
+--              Utilities.Print_Vector ("MT_Teapot.Build_Control_Points CP_Vertices",
+--                                      Control_Points (Index_I, Index_J));
          end loop;
       end loop;
 
@@ -42,15 +42,15 @@ package body MT_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_Elements (Elements : out GL.Types.Int_Array) is
+   procedure Build_Elements (Elements : out Element_Array) is
       use GL.Types;
       N      : Int := 0;
       Res_UV : constant Int := Res_U * Res_V;
    begin
       --  1 square ABCD = 2 triangles ABC + CDA
-      for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
-         for Ru in 1 .. Res_U loop
-            for Rv in 1 .. Res_V loop
+      for Patch_Num in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
+         for Ru in 0 .. Res_U - 1 loop
+            for Rv in 0 .. Res_V - 1 loop
                --  ABC
                N := N + 1;
                Elements (N) := Patch_Num * Res_UV + Ru * Res_V + rv;
@@ -68,6 +68,7 @@ package body MT_Teapot is
             end loop;
          end loop;
       end loop;
+      Put_Line ("MT_Teapot.Build_Elements, last N" & Int'Image (N));
 
    exception
       when  others =>
@@ -99,7 +100,7 @@ package body MT_Teapot is
 
    procedure Build_Teapot (Vertices : out Vertices_Array;
                            Colours  : out Teapot_Colours;
-                           Elements : out GL.Types.Int_Array) is
+                           Elements : out Element_Array) is
    begin
       Build_Vertices (Vertices, Colours);
       Build_Elements (Elements);
@@ -137,7 +138,7 @@ package body MT_Teapot is
             Colour_PU_Part := Colour_P_Part + 3 * Ru * Res_V;
             for Rv in 0 .. Res_V - 1 loop
                V := Single (Rv) / Single (Res_V - 1);
-         Put_Line ("MT_Teapot.Build_Vertices, PU_Part + Rv " & Int'Image (PU_Part + Rv));
+--           Put_Line ("MT_Teapot.Build_Vertices, PU_Part + Rv " & Int'Image (PU_Part + Rv));
                Vertices (PU_Part + Rv) :=
                  Compute_Position (Control_Points, U, V);
                Colours (Colour_PU_Part + 3 * rv) :=

@@ -32,8 +32,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     type Teapot_CP_Colours is new GL.Types.Single_Array (1 .. 3 * Teapot_Data.Num_Vertices);
 
     Vertex_Array_Size  : GL.Types.Int := Teapot_Data.Num_Patchs * MT_Teapot.Res_U * MT_Teapot.Res_V;
-    Element_Array_Size : GL.Types.Int
-      := 2 * 3 * Teapot_Data.Num_Patchs * (MT_Teapot.Res_U - 1) * (MT_Teapot.Res_V - 1);
 
     VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Shader_Program     : GL.Objects.Programs.Program;
@@ -49,7 +47,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
     Colours            : MT_Teapot.Teapot_Colours;
     Vertices           : MT_Teapot.Vertices_Array;
-    Elements           : GL.Types.Int_Array (1 .. Element_Array_Size);
+    Elements           : MT_Teapot.Element_Array;
     --     CP_Colours         : Teapot_CP_Colours;  --  For debugging
     --     CP_Elements        : Buffers.CP_Element_Array;  --  For debugging
 
