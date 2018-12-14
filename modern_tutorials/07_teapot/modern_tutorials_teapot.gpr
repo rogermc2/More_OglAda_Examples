@@ -9,7 +9,7 @@ for Source_Dirs use ("src", "../../common/**");
    for Main use ("teapot");
 
    package Linker is
-      for Switches ("ada") use ("-Wl", "-framework", "OpenGL", "-framework", "-g");
+      for Switches ("ada") use ("-Wl", "-framework", "OpenGL", "-g");
    end Linker;
 
 end Modern_Tutorials_Teapot;

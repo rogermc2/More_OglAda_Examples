@@ -8,13 +8,10 @@ package body MT_Teapot is
 
     subtype Vertex is GL.Types.Singles.Vector3;
     type Control_Point_Array is array (GL.Types.Int range <>, GL.Types.Int range <>) of Vertex;
-    type Teapot_CP_Colours is new GL.Types.Single_Array (1 .. 3 * Teapot_Data.Num_Vertices);
-    type Teapot_CP_Elements is
-      array (GL.Types.Int range <>, GL.Types.Int range <>, GL.Types.Int range <>) of Int;
 
     function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
                                return GL.Types.Singles.Vector3;
-    procedure Build_Vertices (Vertices : out GL.Types.Singles.Vector3_Array;
+    procedure Build_Vertices (Vertices : out Teapot_Data.Vertex_Data;
                               Colours : out Teapot_Colours);
 
     --  --------------------------------------------------------------------------------
@@ -93,7 +90,7 @@ package body MT_Teapot is
 
     --  --------------------------------------------------------------------------------
 
-    procedure Build_Teapot (Vertices : out GL.Types.Singles.Vector3_Array;
+    procedure Build_Teapot (Vertices : out Teapot_Data.Vertex_Data;
                             Colours : out Teapot_Colours;
                             Elements : out GL.Types.Int_Array) is
     begin
@@ -107,7 +104,7 @@ package body MT_Teapot is
 
     --  --------------------------------------------------------------------------------
 
-    procedure Build_Vertices (Vertices : out GL.Types.Singles.Vector3_Array;
+    procedure Build_Vertices (Vertices : out Teapot_Data.Vertex_Data;
                               Colours : out Teapot_Colours) is
         use GL.Types;
         Control_Points : Control_Point_Array

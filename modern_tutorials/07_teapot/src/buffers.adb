@@ -6,8 +6,13 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Maths;
 with Utilities;
 
+with Teacup_Maths;
+
 package body Buffers is
    use GL.Types;
+
+   procedure Load_Singles_Buffer is new
+     GL.Objects.Buffers.Load_To_Buffer (Teacup_Maths.Vector1_Pointers);
 
    type FLat_CP_Element_Array_Type is array (GL.Types.Int range <>) of
      aliased GL.Types.Int;
@@ -24,12 +29,12 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                   Colours : GL.Types.Singles.Vector3_Array) is
+                                   Colours : MT_Teapot.Teapot_Colours) is
       use GL.Objects.Buffers;
    begin
       Colour_Buffer.Initialize_Id;
       Array_Buffer.Bind (Colour_Buffer);
-      Utilities.Load_Vertex_Buffer (Array_Buffer, Colours, Static_Draw);
+      Load_Singles_Buffer (Array_Buffer, Teacup_Maths.Vector1 (Colours), Static_Draw);
 
    exception
       when others =>
@@ -90,12 +95,13 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_Vertex_Buffer (VBO      : in out GL.Objects.Buffers.Buffer;
-                                   Vertices : GL.Types.Singles.Vector3_Array) is
+                                   Vertices : Teapot_Data.Vertex_Data) is
       use GL.Objects.Buffers;
    begin
       VBO.Initialize_Id;
       Array_Buffer.Bind (VBO);
-      Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices, Static_Draw);
+      Utilities.Load_Vertex_Buffer
+          (Array_Buffer, GL.Types.Singles.Vector3_Array (Vertices), Static_Draw);
 
    exception
       when others =>
