@@ -4,7 +4,8 @@ layout (location = 0) in vec3 coord3d;
 layout (location = 1) in vec3 v_color;
 
 uniform mat4 mvp;
-uniform vec3 f_color;
+
+out vec3 f_color;
 
 void main(void)
   {
