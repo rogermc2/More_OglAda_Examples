@@ -23,5 +23,5 @@ package Buffers is
     procedure Create_Elements_Buffer (IBO : in out GL.Objects.Buffers.Buffer;
                                       Indices : GL.Types.Int_Array);
     procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
-                                    Vertices : Teapot_Data.Vertex_Data);
+                                    Vertices : MT_Teapot.Vertices_Array);
  end Buffers;

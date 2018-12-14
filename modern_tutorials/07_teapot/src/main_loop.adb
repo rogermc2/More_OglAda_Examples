@@ -48,7 +48,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     CP_Colours_Buffer  : GL.Objects.Buffers.Buffer;
 
     Colours            : MT_Teapot.Teapot_Colours;
-    Vertices           : Teapot_Data.Vertex_Data;
+    Vertices           : MT_Teapot.Vertices_Array;
     Elements           : GL.Types.Int_Array (1 .. Element_Array_Size);
     --     CP_Colours         : Teapot_CP_Colours;  --  For debugging
     --     CP_Elements        : Buffers.CP_Element_Array;  --  For debugging
@@ -183,7 +183,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             Buffers.Create_Vertex_Buffer (Vertices_Buffer, Vertices);
             Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
             Buffers.Create_Elements_Buffer (Indices_Buffer, Elements);
-            Buffers.Create_Vertex_Buffer (CP_Vertices_Buffer, Teapot_Data.CP_Vertices);
+--              Buffers.Create_Vertex_Buffer (CP_Vertices_Buffer, Teapot_Data.CP_Vertices);
             --           Buffers.Create_CP_Elements_Buffer (CP_Indices_Buffer, CP_Elements);  --  For debugging
 
         end if;
