@@ -1,6 +1,8 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Utilities;
+
 with Teacup_Maths; use Teacup_Maths;
 
 package body MT_Teapot is
@@ -23,8 +25,12 @@ package body MT_Teapot is
     begin
         for Index_I in Int range 1 .. Teapot_Data.Order loop
             for Index_J in Int range 1 .. Teapot_Data.Order loop
+                Put_Line ("MT_Teapot.Build_Control_Points thePatch (Index_I, Index_J)" &
+                            Int'Image (thePatch (Index_I, Index_J)));
                 Control_Points (Index_I, Index_J) :=
-                  Teapot_Data.CP_Vertices (thePatch (Index_I, Index_J) - 1);
+                  Teapot_Data.CP_Vertices (thePatch (Index_I, Index_J));
+                Utilities.Print_Vector ("MT_Teapot.Build_Control_Points CP_Vertices",
+                                        Control_Points (Index_I, Index_J));
             end loop;
         end loop;
 
@@ -117,11 +123,11 @@ package body MT_Teapot is
         --  with u and v progressing in 1/10 steps.
         for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
             Build_Control_Points (Patch_Num, Control_Points);
-            for Ru in 1 .. Res_U loop
-                U := Single (Ru) / Single (Res_U);
-                for Rv in 1 .. Res_V loop
-                    V := Single (Rv) / Single (Res_V);
-                    Vertices (Patch_Num * Res_UV + Ru * Res_V * rv) :=
+            for Ru in 0 .. Res_U - 1 loop
+                U := Single (Ru) / Single (Res_U - 1);
+                for Rv in 0 .. Res_V - 1 loop
+                    V := Single (Rv) / Single (Res_V - 1);
+                    Vertices (Patch_Num * Res_UV + Ru * Res_V + rv) :=
                       Compute_Position (Control_Points, U, V);
                     Colours (3 * Patch_Num * Res_UV + 3 * Ru * Res_V + 3 *
                                rv) := Single (Patch_Num) / Single (Teapot_Data.Num_Patchs);
