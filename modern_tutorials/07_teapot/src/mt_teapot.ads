@@ -14,13 +14,13 @@ package MT_Teapot is
 
    type Vertices_Array is new
      GL.Types.Singles.Vector3_Array (1 .. Teapot_Data.Num_Patchs * Res_U * Res_V);
-   type Teapot_Colours is new
+   type Colours_Array is new
      GL.Types.Single_Array (1 .. 3 * Teapot_Data.Num_Patchs * Res_U * Res_V);
     type Teapot_CP_Elements is
       array (GL.Types.Int range <>, GL.Types.Int range <>, GL.Types.Int range <>) of Int;
 
     procedure Build_CP_Elements (CP_Elements : out Teapot_CP_Elements);  --  For debugging
     procedure Build_Teapot (Vertices : out Vertices_Array;
-                            Colours : out Teapot_Colours;
+                            Colours : out Colours_Array;
                             Elements : out Element_Array);
 end MT_Teapot;

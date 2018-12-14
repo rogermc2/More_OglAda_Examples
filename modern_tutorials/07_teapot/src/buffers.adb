@@ -29,7 +29,7 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                   Colours : MT_Teapot.Teapot_Colours) is
+                                   Colours : MT_Teapot.Colours_Array) is
       use GL.Objects.Buffers;
    begin
       Colour_Buffer.Initialize_Id;
