@@ -24,15 +24,14 @@ with Utilities;
 
 with Buffers;
 with Teapot_Data;
+with MT_Teapot;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Res_U              : constant GL.Types.Int := 10;
-   Res_V              : constant GL.Types.Int := 10;
-   Vertex_Array_Size  : GL.Types.Int := Teapot_Data.Num_Patchs * Res_U * Res_V;
+   Vertex_Array_Size  : GL.Types.Int := Teapot_Data.Num_Patchs * MT_Teapot.Res_U * MT_Teapot.Res_V;
    Element_Array_Size : GL.Types.Int
-     := 2 * 3 * Teapot_Data.Num_Patchs * (Res_U - 1) * (Res_V - 1);
+     := 2 * 3 * Teapot_Data.Num_Patchs * (MT_Teapot.Res_U - 1) * (MT_Teapot.Res_V - 1);
 
    Shader_Program   : GL.Objects.Programs.Program;
    MVP_Location     : GL.Uniforms.Uniform;
