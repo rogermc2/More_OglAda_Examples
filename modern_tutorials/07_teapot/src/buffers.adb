@@ -11,9 +11,6 @@ with Teacup_Maths;
 package body Buffers is
    use GL.Types;
 
-   procedure Load_Singles_Buffer is new
-     GL.Objects.Buffers.Load_To_Buffer (Teacup_Maths.Vector1_Pointers);
-
    type FLat_CP_Element_Array_Type is array (GL.Types.Int range <>) of
      aliased GL.Types.Int;
    type Flattend_Array is new FLat_CP_Element_Array_Type
@@ -34,7 +31,7 @@ package body Buffers is
    begin
       Colour_Buffer.Initialize_Id;
       Array_Buffer.Bind (Colour_Buffer);
-      Load_Singles_Buffer (Array_Buffer, Teacup_Maths.Vector1 (Colours), Static_Draw);
+      Utilities.Load_Singles_Buffer (Array_Buffer, GL.Types.Single_Array (Colours), Static_Draw);
 
    exception
       when others =>
