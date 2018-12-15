@@ -18,6 +18,8 @@ package MT_Teapot is
      GL.Types.Single_Array (1 .. 3 * Teapot_Data.Num_Patchs * Res_U * Res_V);
     type Teapot_CP_Elements is
       array (GL.Types.Int range <>, GL.Types.Int range <>, GL.Types.Int range <>) of Int;
+   type Teapot_CP_Colours is array
+     (GL.Types.Int range 1 .. 3 * Teapot_Data.Num_Vertices) of GL.Types.Single;
 
     procedure Build_CP_Elements (CP_Elements : out Teapot_CP_Elements);  --  For debugging
     procedure Build_Teapot (Vertices : out Vertices_Array;
