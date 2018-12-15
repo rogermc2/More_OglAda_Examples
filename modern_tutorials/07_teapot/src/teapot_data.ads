@@ -3,8 +3,8 @@ with GL.Types; use GL.Types;
 
 package Teapot_Data is
 
-Num_Patchs: constant Int := 28;
-Order  : constant GL.Types.Int := 3;
+Num_Patchs   : constant Int := 28;
+Order        : constant GL.Types.Int := 4;
 Num_Vertices : constant Int := 269;
 
 type Bezier_Patch is array (Int Range 1 .. 4, Int Range 1 .. 4) of Int;
