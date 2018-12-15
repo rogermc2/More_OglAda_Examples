@@ -29,7 +29,8 @@ with MT_Teapot;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Vertex_Array_Size  : GL.Types.Int := Teapot_Data.Num_Patchs * MT_Teapot.Res_U * MT_Teapot.Res_V;
+   Vertex_Array_Size  : GL.Types.Int
+     := Teapot_Data.Num_Patchs * MT_Teapot.Res_U * MT_Teapot.Res_V;
 
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program     : GL.Objects.Programs.Program;
@@ -49,7 +50,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    CP_Colours         : MT_Teapot.Teapot_CP_Colours;  --  For debugging
    CP_Elements        : Buffers.CP_Element_Array;     --  For debugging
 
-   Background         : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
+   Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 
@@ -128,7 +129,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
 
-      Utilities.Clear_Background_Colour_And_Depth (Background);
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
@@ -137,7 +137,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
-      GL.Objects.Buffers.Draw_Elements (Triangles, 3, UShort_Type);
+      GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
 
       --  Draw Control points
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
