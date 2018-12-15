@@ -129,7 +129,8 @@ package body MT_Teapot is
       --  with u and v progressing in 1/10 steps.
       for Patch_Count in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
          Build_Control_Points (Patch_Count + 1, Control_Points);
-         Print_Control_Points (Patch_Count + 1, Control_Points);
+         --           Print_Control_Points (Patch_Count + 1, Control_Points);
+
          P_Part := 1 + Patch_Count * Res_UV;
          Colour_P_Part := 1 + 3 * Patch_Count * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
