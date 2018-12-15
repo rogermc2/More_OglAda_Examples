@@ -1,9 +1,5 @@
 
-with Interfaces.C.Pointers;
-
 with GL.Types; use GL.Types;
-
-with Utilities;
 
 package Teacup_Maths is
 
