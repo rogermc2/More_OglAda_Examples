@@ -15,6 +15,7 @@ package body MT_Teapot is
                                return GL.Types.Singles.Vector3;
    procedure Build_Vertices (Vertices : out Vertices_Array;
                              Colours  : out Colours_Array);
+   procedure Print_Control_Points (Patch : Int; Points : Control_Point_Array);
 
    --  --------------------------------------------------------------------------------
 
@@ -25,12 +26,8 @@ package body MT_Teapot is
    begin
       for Index_I in Int range 1 .. Teapot_Data.Order loop
          for Index_J in Int range 1 .. Teapot_Data.Order loop
---              Put_Line ("MT_Teapot.Build_Control_Points thePatch (Index_I, Index_J)" &
---                          Int'Image (thePatch (Index_I, Index_J)));
             Control_Points (Index_I, Index_J) :=
               Teapot_Data.CP_Vertices (thePatch (Index_I, Index_J));
---              Utilities.Print_Vector ("MT_Teapot.Build_Control_Points CP_Vertices",
---                                      Control_Points (Index_I, Index_J));
          end loop;
       end loop;
 
@@ -130,6 +127,7 @@ package body MT_Teapot is
       --  with u and v progressing in 1/10 steps.
       for Patch_Count in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
          Build_Control_Points (Patch_Count + 1, Control_Points);
+         Print_Control_Points (Patch_Count + 1, Control_Points);
          P_Part := 1 + Patch_Count * Res_UV;
          Colour_P_Part := 1 + 3 * Patch_Count * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
@@ -141,6 +139,7 @@ package body MT_Teapot is
 --           Put_Line ("MT_Teapot.Build_Vertices, PU_Part + Rv " & Int'Image (PU_Part + Rv));
                Vertices (PU_Part + Rv) :=
                  Compute_Position (Control_Points, U, V);
+--                   Utilities.Print_Vector ("Position", Vertices (PU_Part + Rv));
                Colours (Colour_PU_Part + 3 * rv) :=
                  Single (Patch_Count) / Single (Teapot_Data.Num_Patchs);
                Colours (Colour_PU_Part+ 3 * rv + 1) :=
@@ -161,13 +160,18 @@ package body MT_Teapot is
    function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
                                return Singles.Vector3 is
       Position : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Pol_I    : Single;
-      Pol_J    : Single;
+      Poly_I    : Single;
+      Poly_J    : Single;
+      Poly_IJ   : Single;
    begin
-      for I in 0 .. Teapot_Data.Order loop
-         Pol_I := Bernstein_Polynomial (I, Teapot_Data.Order, U);
-         for J in 0 .. Teapot_Data.Order loop
-            Pol_J := Bernstein_Polynomial (J, Teapot_Data.Order, V);
+      for I in 1 .. Teapot_Data.Order loop
+         Poly_I := Bernstein_Polynomial (I - 1, Teapot_Data.Order, U);
+         for J in 1 .. Teapot_Data.Order loop
+            Poly_J := Bernstein_Polynomial (J - 1, Teapot_Data.Order, V);
+            Poly_IJ := Poly_I * Poly_J;
+            Position (GL.X) := Position (GL.X) + Poly_IJ * Control_Points (I , J) (GL.X);
+            Position (GL.Y) := Position (GL.Y) + Poly_IJ * Control_Points (I , J) (GL.Y);
+            Position (GL.Z) := Position (GL.Z) + Poly_IJ * Control_Points (I , J) (GL.Z);
          end loop;
       end loop;
       return Position;
@@ -179,5 +183,21 @@ package body MT_Teapot is
    end Compute_Position;
 
    --  --------------------------------------------------------------------------------
+
+ procedure Print_Control_Points (Patch : Int; Points : Control_Point_Array) is
+   begin
+      Put_Line ("Control Points for patch:" & Int'Image (Patch));
+      for Row in Int range 1 .. Points'Length loop
+         for Column in Int range 1 .. Points'Length (2) loop
+                Put ("Row, Column:" & Int'Image (Row) & "  " & Int'Image (Column));
+--              Put (GL.Types.Single'Image (Points (Row, Column)) & "   ");
+            Utilities.Print_Vector ("", Points (Row, Column));
+         end loop;
+         New_Line;
+      end loop;
+      New_Line;
+   end Print_Control_Points;
+
+   --  ------------------------------------------------------------------------
 
 end MT_Teapot;

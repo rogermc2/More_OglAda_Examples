@@ -137,29 +137,23 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
-      Put_Line ("Main_Loop.Display Drawing Elements.");
       GL.Objects.Buffers.Draw_Elements (Triangles, 3, UShort_Type);
-      Put_Line ("Main_Loop.Display Elements drawn.");
 
       --  Draw Control points
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
-      Put_Line ("Main_Loop.Display CP_Vertices bound.");
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
-      Put_Line ("Main_Loop.Display CP Colours bound.");
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
       GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
       for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
          for index in 1 .. Teapot_Data.Order loop
             Offset := Offset + Natural (Teapot_Data.Order);
-            Put_Line ("Main_Loop.Display Drawing Patch " &
-                        GL.Types.Int'Image (Patch_Num) & "  " &
-                     GL.Types.Int'Image (index));
+--              Put_Line ("Main_Loop.Display Drawing Patch " &
+--                          GL.Types.Int'Image (Patch_Num) & "  " &
+--                       GL.Types.Int'Image (index));
             GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order, UShort_Type, Offset);
          end loop;
       end loop;
-
-      Put_Line ("Main_Loop.Display Patchs drawn ");
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
