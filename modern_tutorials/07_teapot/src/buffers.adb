@@ -68,7 +68,7 @@ package body Buffers is
       use GL.Objects.Buffers;
       use GL.Types;
       Flat_Array : FLat_CP_Element_Array_Type
-        (1 .. CP_Element_Array'Size * Teapot_Data.Order * Teapot_Data.Order)
+        (1 .. CP_Element_Array'Length * Teapot_Data.Order * Teapot_Data.Order)
         := Flatten (CP_Indices);
    begin
       CP_IBO.Initialize_Id;
