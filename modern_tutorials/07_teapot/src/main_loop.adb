@@ -116,7 +116,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
-      Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
+--        Utilities.Clear_Colour_Buffer_And_Depth;
+      Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
       Animation := Translation_Matrix ((0.0, 0.0, -1.5)) *
         Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
           Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
