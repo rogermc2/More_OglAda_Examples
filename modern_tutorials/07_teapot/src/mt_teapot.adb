@@ -43,25 +43,27 @@ package body MT_Teapot is
       use GL.Types;
       N      : Int := 0;
       Res_UV : constant Int := Res_U * Res_V;
+      PUV    : Int;
    begin
       --  1 square ABCD = 2 triangles ABC + CDA
       for Patch_Num in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
+         PUV := Patch_Num * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
             for Rv in 0 .. Res_V - 1 loop
                --  ABC
                N := N + 1;
-               Elements (N) := Patch_Num * Res_UV + Ru * Res_V + rv;
+               Elements (N) := PUV + Ru * Res_V + rv;
                N := N + 1;
-               Elements (N) := Patch_Num * Res_UV + Ru * Res_V + rv + 1;
+               Elements (N) := PUV + Ru * Res_V + rv + 1;
                N := N + 1;
-               Elements (N) := Patch_Num * Res_UV + (Ru + 1) * Res_V + rv + 1;
+               Elements (N) := PUV + (Ru + 1) * Res_V + rv + 1;
                --  CDA
                N := N + 1;
-               Elements (N) := Patch_Num * Res_UV + (Ru + 1) * Res_V + rv + 1;
+               Elements (N) := PUV + (Ru + 1) * Res_V + rv + 1;
                N := N + 1;
-               Elements (N) := Patch_Num * Res_UV + (Ru + 1) * Res_V + rv;
+               Elements (N) := PUV + (Ru + 1) * Res_V + rv;
                N := N + 1;
-               Elements (N) := Patch_Num * Res_UV + Ru * Res_V + rv;
+               Elements (N) := PUV + Ru * Res_V + rv;
             end loop;
          end loop;
       end loop;
