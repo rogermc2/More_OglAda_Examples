@@ -152,7 +152,6 @@ package body Buffers is
             end loop;
          end loop;
       end loop;
-      Put_Line ("Buffers.Flatten, finished");
       return Flat;
 
    exception
