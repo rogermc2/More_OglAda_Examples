@@ -187,6 +187,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       if Result then
          VAO.Initialize_Id;
          VAO.Bind;
+
          MT_Teapot.Build_Teapot (Vertices, Colours, Elements);
          MT_Teapot.Build_CP_Colours (CP_Colours);
          MT_Teapot.Build_CP_Elements (CP_Elements);
