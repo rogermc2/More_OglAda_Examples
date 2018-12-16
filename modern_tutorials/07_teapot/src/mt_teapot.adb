@@ -9,7 +9,9 @@ package body MT_Teapot is
    use GL.Types;
 
    subtype Vertex is GL.Types.Singles.Vector3;
-   type Control_Point_Array is array (Int range <>, Int range <>) of Vertex;
+   type Control_Point_Array is array
+     (Int range 1 .. Teapot_Data.Bezier_Patch'Length,
+      Int range 1 .. Teapot_Data.Bezier_Patch'Length (2)) of Vertex;
 
    function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
                                return GL.Types.Singles.Vector3;
@@ -126,9 +128,7 @@ package body MT_Teapot is
    procedure Build_Vertices (Vertices : out Vertices_Array;
                              Colours  : out Colours_Array) is
       use GL.Types;
-      Control_Points : Control_Point_Array
-        (1 .. Teapot_Data.Bezier_Patch'Length,
-         1 .. Teapot_Data.Bezier_Patch'Length (2));
+      Control_Points : Control_Point_Array;
       Res_UV         : constant Int := Res_U * Res_V;
       U              : Single;
       V              : Single;
