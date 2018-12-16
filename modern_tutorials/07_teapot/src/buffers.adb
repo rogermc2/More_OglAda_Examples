@@ -14,7 +14,7 @@ package body Buffers is
    type FLat_CP_Element_Array_Type is array (GL.Types.Int range <>) of
      aliased GL.Types.Int;
    type Flattend_Array is new FLat_CP_Element_Array_Type
-      (1 .. CP_Element_Array'Length * Teapot_Data.Order * Teapot_Data.Order);
+      (1 .. MT_Teapot.CP_Element_Array'Length * Teapot_Data.Order * Teapot_Data.Order);
 
    package CP_Element_Pointers is new Interfaces.C.Pointers
      (Int, Int, FLat_CP_Element_Array_Type, Int'Last);
@@ -26,7 +26,8 @@ package body Buffers is
    procedure Load_CP_Element_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (CP_Vertex_Pointers);
 
-   function Flatten (anArray : CP_Element_Array) return FLat_CP_Element_Array_Type;
+   function Flatten (anArray : MT_Teapot.CP_Element_Array)
+                     return FLat_CP_Element_Array_Type;
 
    --  ------------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_Colour_Buffer (CP_Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                   CP_Colours : MT_Teapot.Teapot_CP_Colours) is
+                                   CP_Colours : MT_Teapot.CP_Colours_Array) is
       use GL.Objects.Buffers;
    begin
       CP_Colour_Buffer.Initialize_Id;
@@ -64,11 +65,12 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
-                                     CP_Indices : CP_Element_Array) is
+                                     CP_Indices : MT_Teapot.CP_Element_Array) is
       use GL.Objects.Buffers;
       use GL.Types;
       Flat_Array : FLat_CP_Element_Array_Type
-        (1 .. CP_Element_Array'Length * Teapot_Data.Order * Teapot_Data.Order)
+        (1 .. MT_Teapot.CP_Element_Array'Length * Teapot_Data.Order *
+           Teapot_Data.Order)
         := Flatten (CP_Indices);
    begin
       CP_IBO.Initialize_Id;
@@ -133,7 +135,8 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   function Flatten (anArray : CP_Element_Array) return FLat_CP_Element_Array_Type is
+   function Flatten (anArray : MT_Teapot.CP_Element_Array)
+                     return FLat_CP_Element_Array_Type is
       use GL.Types;
       Flat_Size  : constant Int := anArray'Length * Teapot_Data.Order ** 2;
       Order      : constant Int := Teapot_Data.Order;
