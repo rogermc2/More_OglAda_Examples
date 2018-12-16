@@ -29,7 +29,8 @@ package body MT_Teapot is
       for Index_I in Int range 1 .. thePatch'Length loop
          for Index_J in Int range 1 .. thePatch'Length (2) loop
             Control_Points (Index_I, Index_J) :=
-              Teapot_Data.CP_Vertices (thePatch (Int (Index_I), Int (Index_J)));
+              Teapot_Data.Control_Point_Vertices
+                (thePatch (Int (Index_I), Int (Index_J)));
          end loop;
       end loop;
 
