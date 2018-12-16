@@ -4,10 +4,10 @@ with GL.Types; use GL.Types;
 package Teapot_Data is
 
 Num_Patchs   : constant Int := 28;
-Order        : constant Int := 4;
+Order        : constant Int := 3;
 Num_Vertices : constant Int := 269;
 
-type Bezier_Patch is array (1 .. Order, 1 .. Order) of Int;
+type Bezier_Patch is array (1 .. Order + 1, 1 .. Order + 1) of Int;
 type Patch_Data is array (1.. Num_Patchs) of Bezier_Patch;
 type Vertex_Data is new Singles.Vector3_Array (1 .. Num_Vertices);
 
