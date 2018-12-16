@@ -132,7 +132,7 @@ package body MT_Teapot is
       Res_UV         : constant Int := Res_U * Res_V;
       U              : Single;
       V              : Single;
-      P_Part         : Int;
+      Patch_Part     : Int;
       PU_Part        : Int;
       Colour_P_Part  : Int;
       Colour_PU_Part : Int;
@@ -142,19 +142,20 @@ package body MT_Teapot is
       --  with u and v progressing in 1/10 steps.
       for Patch_Count in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
          Build_Control_Points (Patch_Count + 1, Control_Points);
-         --           Print_Control_Points (Patch_Count + 1, Control_Points);
+         Print_Control_Points (Patch_Count + 1, Control_Points);
 
-         P_Part := 1 + Patch_Count * Res_UV;
+         Patch_Part := 1 + Patch_Count * Res_UV;
          Colour_P_Part := 1 + 3 * Patch_Count * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
             U := Single (Ru) / Single (Res_U - 1);
-            PU_Part := P_Part + Ru * Res_V;
+            PU_Part := Patch_Part + Ru * Res_V;
             Colour_PU_Part := Colour_P_Part + 3 * Ru * Res_V;
             for Rv in 0 .. Res_V - 1 loop
                V := Single (Rv) / Single (Res_V - 1);
---           Put_Line ("MT_Teapot.Build_Vertices, PU_Part + Rv " & Int'Image (PU_Part + Rv));
+--                 Put ("MT_Teapot.Build_Vertices, PU_Part + Rv " &
+--                        Int'Image (PU_Part + Rv) & "  ");
                Vertices (PU_Part + Rv) :=
-                 Compute_Position (Control_Points, U, V);
+                Compute_Position (Control_Points, U, V);
 --                   Utilities.Print_Vector ("Position", Vertices (PU_Part + Rv));
                Colours (Colour_PU_Part + 3 * rv) :=
                  Single (Patch_Count) / Single (Teapot_Data.Num_Patchs);
@@ -174,20 +175,28 @@ package body MT_Teapot is
    --  --------------------------------------------------------------------------------
 
    function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
-                               return Singles.Vector3 is
-      Position : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Poly_I    : Single;
-      Poly_J    : Single;
-      Poly_IJ   : Single;
+                              return Singles.Vector3 is
+      Order      : constant Int := Teapot_Data.Bezier_Patch'Length - 1;
+      Position   : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Poly_I     : Single;
+      Poly_J     : Single;
+      Poly_IJ    : Single;
+      I_Index    : Int;
+      J_Index    : Int;
    begin
-      for I in 1 .. Teapot_Data.Order loop
-         Poly_I := Bernstein_Polynomial (I - 1, Teapot_Data.Order, U);
-         for J in 1 .. Teapot_Data.Order loop
-            Poly_J := Bernstein_Polynomial (J - 1, Teapot_Data.Order, V);
+      for I in Int range 0 .. Order loop
+         I_Index := I + 1;
+         Poly_I := Bernstein_Polynomial (I, Order, U);
+         for J in Int range 0 .. Order loop
+            J_Index := J + 1;
+            Poly_J := Bernstein_Polynomial (J, Order, V);
             Poly_IJ := Poly_I * Poly_J;
-            Position (GL.X) := Position (GL.X) + Poly_IJ * Control_Points (I , J) (GL.X);
-            Position (GL.Y) := Position (GL.Y) + Poly_IJ * Control_Points (I , J) (GL.Y);
-            Position (GL.Z) := Position (GL.Z) + Poly_IJ * Control_Points (I , J) (GL.Z);
+            Position (GL.X) := Position (GL.X) +
+              Poly_IJ * Control_Points (I_Index, J_Index) (GL.X);
+            Position (GL.Y) := Position (GL.Y) +
+              Poly_IJ * Control_Points (I_Index, J_Index) (GL.Y);
+            Position (GL.Z) := Position (GL.Z) +
+              Poly_IJ * Control_Points (I_Index, J_Index) (GL.Z);
          end loop;
       end loop;
       return Position;
