@@ -99,7 +99,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    procedure Display (Window : in out Glfw.Windows.Window) is
       use GL.Types.Singles;
-      use MAths;
+      use Maths;
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
       Current_Time  : constant Glfw.Seconds := Glfw.Time;
@@ -127,7 +127,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                         Single (Window_Width) / Single (Window_Height),
                                         0.1, 10.0);
       Scale_Matrix := Maths.Scaling_Matrix (1.6);
-      MVP_Matrix := Projection * View *  Model * Animation * Scale_Matrix;
+      MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
@@ -135,6 +135,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
+
       GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
       GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
