@@ -119,14 +119,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
       Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
-      Animation := Translation_Matrix ((0.0, 0.0, -1.5)) *
+      Animation := Translation_Matrix ((-0.5, 0.0, -1.5))  *
         Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
           Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
             Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
       Projection := Perspective_Matrix (Degree (45.0),
                                         Single (Window_Width) / Single (Window_Height),
                                         0.1, 10.0);
-      Scale_Matrix := Maths.Scaling_Matrix (1.6);
+      Scale_Matrix := Maths.Scaling_Matrix (1.0);
       MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
@@ -144,20 +144,20 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
 
       --  Draw Control points
---        GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
---        GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
---        GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
---        for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
---           for index in 1 .. Teapot_Data.Order loop
---              Offset := Offset + Natural (Teapot_Data.Order);
+      GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
+      GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+      GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
+      for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
+         for index in 1 .. Teapot_Data.Order loop
+            Offset := Offset + Natural (Teapot_Data.Order);
 --              Put_Line ("Main_Loop.Display Drawing Patch " &
 --                          GL.Types.Int'Image (Patch_Num) & "  " &
 --                       GL.Types.Int'Image (index));
---              GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order, UShort_Type, Offset);
---           end loop;
---        end loop;
+            GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order, UShort_Type, Offset);
+         end loop;
+      end loop;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
