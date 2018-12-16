@@ -196,7 +196,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
          Buffers.Create_Elements_Buffer (Elements_Buffer, Elements);
 
-         Buffers.Create_Vertex_Buffer (CP_Vertices_Buffer, Teapot_Data.CP_Vertices);
+         Buffers.Create_Vertex_Buffer
+           (CP_Vertices_Buffer, Teapot_Data.Control_Point_Vertices);
          Buffers.Create_Colour_Buffer (CP_Colours_Buffer, CP_Colours);
          Buffers.Create_Elements_Buffer (CP_Elements_Buffer, CP_Elements);  --  For debugging
       end if;
