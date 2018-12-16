@@ -9,7 +9,7 @@ package body MT_Teapot is
    use GL.Types;
 
    subtype Vertex is GL.Types.Singles.Vector3;
-   type Control_Point_Array is array (GL.Types.Int range <>, GL.Types.Int range <>) of Vertex;
+   type Control_Point_Array is array (Int range <>, Int range <>) of Vertex;
 
    function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
                                return GL.Types.Singles.Vector3;
@@ -24,10 +24,10 @@ package body MT_Teapot is
       use GL.Types;
       thePatch : Teapot_Data.Bezier_Patch := Teapot_Data.Patchs (Patch);
    begin
-      for Index_I in Int range 1 .. Teapot_Data.Order loop
-         for Index_J in Int range 1 .. Teapot_Data.Order loop
+      for Index_I in Int range 1 .. thePatch'Length loop
+         for Index_J in Int range 1 .. thePatch'Length (2) loop
             Control_Points (Index_I, Index_J) :=
-              Teapot_Data.CP_Vertices (thePatch (Index_I, Index_J));
+              Teapot_Data.CP_Vertices (thePatch (Int (Index_I), Int (Index_J)));
          end loop;
       end loop;
 
@@ -94,8 +94,8 @@ package body MT_Teapot is
    begin
       for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
          Patch := Teapot_Data.Patchs (Patch_Num);
-         for I in 1 .. Teapot_Data.Order loop
-            for J in 1 .. Teapot_Data.Order loop
+         for I in Int range 1 .. Patch'Length loop
+            for J in Int range 1 .. Patch'Length (2) loop
                CP_Elements (Patch_Num, I, J) :=  Patch (I, J) - 1;
             end loop;
          end loop;
