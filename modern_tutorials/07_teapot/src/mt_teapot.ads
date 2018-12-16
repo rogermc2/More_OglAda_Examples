@@ -17,7 +17,8 @@ package MT_Teapot is
    type CP_Element_Array_Type is array
     (Int range <>, Int range <>, GL.Types.Int range <>) of Int;
    type CP_Element_Array is new CP_Element_Array_Type
-     (1 .. Patch_Size, 1 .. Teapot_Data.Order, 1 .. Teapot_Data.Order);
+     (1 .. Patch_Size, 1 .. Teapot_Data.Bezier_Patch'Length,
+      1 .. Teapot_Data.Bezier_Patch'Length (2));
 
    type Vertices_Array is new
      Singles.Vector3_Array (1 .. Patch_Size * Res_U * Res_V);

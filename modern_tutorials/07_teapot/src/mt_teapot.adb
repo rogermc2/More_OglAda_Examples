@@ -127,7 +127,8 @@ package body MT_Teapot is
                              Colours  : out Colours_Array) is
       use GL.Types;
       Control_Points : Control_Point_Array
-        (1 .. Teapot_Data.Order, 1 .. Teapot_Data.Order);
+        (1 .. Teapot_Data.Bezier_Patch'Length,
+         1 .. Teapot_Data.Bezier_Patch'Length (2));
       Res_UV         : constant Int := Res_U * Res_V;
       U              : Single;
       V              : Single;
