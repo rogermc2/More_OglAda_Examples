@@ -47,8 +47,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Colours            : MT_Teapot.Colours_Array;
    Vertices           : MT_Teapot.Vertices_Array;
    Elements           : MT_Teapot.Element_Array;
-   CP_Colours         : MT_Teapot.Teapot_CP_Colours;  --  For debugging
-   CP_Elements        : Buffers.CP_Element_Array;     --  For debugging
+   CP_Colours         : MT_Teapot.CP_Colours_Array;   --  For debugging
+   CP_Elements        : MT_Teapot.CP_Element_Array;  --  For debugging
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
@@ -107,6 +107,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Animation     : Singles.Matrix4 := Singles.Identity4;
       View          : Singles.Matrix4 := Singles.Identity4;
       Model         : Singles.Matrix4 := Singles.Identity4;
+      Scale_Matrix  : Singles.Matrix4 := Singles.Identity4;
       Projection    : Singles.Matrix4 := Singles.Identity4;
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
@@ -116,7 +117,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
---        Utilities.Clear_Colour_Buffer_And_Depth;
+      Utilities.Clear_Colour_Buffer_And_Depth;
       Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
       Animation := Translation_Matrix ((0.0, 0.0, -1.5)) *
         Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
@@ -125,7 +126,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection := Perspective_Matrix (Degree (45.0),
                                         Single (Window_Width) / Single (Window_Height),
                                         0.1, 10.0);
-      MVP_Matrix := Projection * View * Model * Animation;
+      Scale_Matrix := Maths.Scaling_Matrix (1.6);
+      MVP_Matrix := Projection * View *  Model * Animation * Scale_Matrix;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
@@ -141,20 +143,20 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
 
       --  Draw Control points
-      GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
-      GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-      GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
-      for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
-         for index in 1 .. Teapot_Data.Order loop
-            Offset := Offset + Natural (Teapot_Data.Order);
+--        GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
+--        GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
+--        GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
+--        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+--        GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
+--        for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
+--           for index in 1 .. Teapot_Data.Order loop
+--              Offset := Offset + Natural (Teapot_Data.Order);
 --              Put_Line ("Main_Loop.Display Drawing Patch " &
 --                          GL.Types.Int'Image (Patch_Num) & "  " &
 --                       GL.Types.Int'Image (index));
-            GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order, UShort_Type, Offset);
-         end loop;
-      end loop;
+--              GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order, UShort_Type, Offset);
+--           end loop;
+--        end loop;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
@@ -185,6 +187,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Initialize_Id;
          VAO.Bind;
          MT_Teapot.Build_Teapot (Vertices, Colours, Elements);
+         MT_Teapot.Build_CP_Colours (CP_Colours);
+         MT_Teapot.Build_CP_Elements (CP_Elements);
+
          Buffers.Create_Vertex_Buffer (Vertices_Buffer, Vertices);
          Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
          Buffers.Create_Elements_Buffer (Elements_Buffer, Elements);

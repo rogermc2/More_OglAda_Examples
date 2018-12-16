@@ -75,7 +75,21 @@ package body MT_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_CP_Elements (CP_Elements : out Teapot_CP_Elements) is
+   procedure Build_CP_Colours (CP_Colours : out CP_Colours_Array) is
+   begin
+      for Index in CP_Colours'First .. CP_Colours'Last loop
+               CP_Colours (Index) :=  0.0;
+      end loop;
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in MT_Teapot.Build_CP_Colours.");
+         raise;
+   end Build_CP_Colours;
+
+   --  --------------------------------------------------------------------------------
+
+   procedure Build_CP_Elements (CP_Elements : out CP_Element_Array) is
       Patch : Teapot_Data.Bezier_Patch;
    begin
       for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
