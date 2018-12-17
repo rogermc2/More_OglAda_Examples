@@ -52,9 +52,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
-   procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
-
-   --  ------------------------------------------------------------------------
+  --  ------------------------------------------------------------------------
 
    function Build_Shader_Program return Boolean is
       use GL.Attributes;
@@ -112,8 +110,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
    begin
-      --        Update_Lighting_Intensity (Window);
-      --           Put_Line ("Main_Loop.Init Lighting_Intensity updated.");
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
@@ -150,12 +146,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
       GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
       for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
-         for index in 1 .. Teapot_Data.Order loop
-            Offset := Offset + Natural (Teapot_Data.Order);
+         for index in 1 .. Teapot_Data.Order + 1 loop
+            Offset := Offset + Natural (Teapot_Data.Order + 1);
 --              Put_Line ("Main_Loop.Display Drawing Patch " &
 --                          GL.Types.Int'Image (Patch_Num) & "  " &
 --                       GL.Types.Int'Image (index));
-            GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order, UShort_Type, Offset);
+            GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order + 1, UShort_Type, Offset);
          end loop;
       end loop;
 
@@ -210,23 +206,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    end Init;
 
    --  ------------------------------------------------------------------------
-
-   procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window) is
-      use Glfw.Input;
-   begin
-      null;
-      --        if Window'Access.Key_State (Keys.A) = Pressed then
-      --           Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.05;
-      --        elsif Window'Access.Key_State (Keys.S) = Pressed then
-      --           Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.05;
-      --        elsif Window'Access.Key_State (Keys.Z) = Pressed then
-      --           Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.05;
-      --        elsif Window'Access.Key_State (Keys.X) = Pressed then
-      --           Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity  - 0.05;
-      --        end if;
-   end Update_Lighting_Intensity;
-
-   --  -------------------------------------------------------------------------
 
    use Glfw.Input;
    Running : Boolean;
