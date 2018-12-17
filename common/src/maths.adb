@@ -30,6 +30,19 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+   function Factorial (Num : Natural) return Positive is
+      Result : Natural := Num;
+   begin
+      if Num = 0 then
+         Result := 1;
+      else
+         Result := Num * Factorial (Num - 1);  --  recursion
+      end if;
+      return Positive (Result);
+
+   end Factorial;
+
+   --  ------------------------------------------------------------------------
    --  Transpose of standard frustrum matrix
    function Frustum_Matrix (Left, Right, Bottom, Top, Near, Far : GL.Types.Single)
                             return GL.Types.Singles.Matrix4 is
