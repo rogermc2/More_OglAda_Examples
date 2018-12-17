@@ -12,7 +12,7 @@ package Buffers is
     procedure Create_Colour_Buffer (CP_Colour_Buffer : in out GL.Objects.Buffers.Buffer;
                                     CP_Colours : MT_Teapot.CP_Colours_Array);
     procedure Create_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
-                                      CP_Indices : MT_Teapot.CP_Element_Array);
+                                      CP_Indices : MT_Teapot.Patch_Element_Array);
     procedure Create_Elements_Buffer (IBO : in out GL.Objects.Buffers.Buffer;
                                       Indices : GL.Types.Int_Array);
     procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
