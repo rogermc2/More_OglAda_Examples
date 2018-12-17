@@ -48,7 +48,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Vertices           : MT_Teapot.Vertices_Array;
    Elements           : MT_Teapot.Element_Array;
    CP_Colours         : MT_Teapot.CP_Colours_Array;   --  For debugging
-   CP_Elements        : MT_Teapot.CP_Element_Array;  --  For debugging
+   CP_Elements        : MT_Teapot.Patch_Element_Array;  --  For debugging
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
@@ -142,8 +142,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       --  Draw Control points
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
+
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+
       GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
       for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
          for index in 1 .. Teapot_Data.Order + 1 loop
