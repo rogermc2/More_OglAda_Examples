@@ -49,8 +49,8 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Colour_Buffer (CP_Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                   CP_Colours : MT_Teapot.CP_Colours_Array) is
+   procedure Create_CP_Colour_Buffer (CP_Colour_Buffer : in out GL.Objects.Buffers.Buffer;
+                                      CP_Colours : MT_Teapot.CP_Colours_Array) is
       use GL.Objects.Buffers;
    begin
       CP_Colour_Buffer.Initialize_Id;
@@ -60,13 +60,13 @@ package body Buffers is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in CP Buffers.Create_Colour_Buffer.");
+         Put_Line ("An exception occurred in CP Buffers.Create_CP_Colour_Buffer.");
          raise;
-   end Create_Colour_Buffer;
+   end Create_CP_Colour_Buffer;
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
+   procedure Create_CP_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
                                      CP_Indices : MT_Teapot.Patch_Element_Array) is
       use GL.Objects.Buffers;
       use GL.Types;
@@ -79,14 +79,14 @@ package body Buffers is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in CP Buffers.Create_Elements_Buffer.");
+         Put_Line ("An exception occurred in CP Buffers.Create_CP_Elements_Buffer.");
          raise;
-   end Create_Elements_Buffer;
+   end Create_CP_Elements_Buffer;
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
-                                   CP_Vertices : Teapot_Data.Vertex_Data) is
+   procedure Create_CP_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
+                                      CP_Vertices : Teapot_Data.Vertex_Data) is
       use GL.Objects.Buffers;
    begin
       CP_VBO.Initialize_Id;
@@ -96,9 +96,9 @@ package body Buffers is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in CP Buffers.Create_Vertex_Buffer.");
+         Put_Line ("An exception occurred in CP Buffers.Create_CP_Vertex_Buffer.");
          raise;
-   end Create_Vertex_Buffer;
+   end Create_CP_Vertex_Buffer;
 
    --  ------------------------------------------------------------------------
 
