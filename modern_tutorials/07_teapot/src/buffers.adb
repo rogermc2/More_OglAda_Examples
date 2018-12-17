@@ -11,10 +11,12 @@ with Teacup_Maths;
 package body Buffers is
    use GL.Types;
 
+   Flattend_Array_Length : constant Int
+      := MT_Teapot.Patch_Element_Array'Length * MT_Teapot.CP_Element_Array'Length *
+         Teapot_Data.Bezier_Patch'Length * Teapot_Data.Bezier_Patch'Length (2);
    type FLat_CP_Element_Array_Type is array (GL.Types.Int range <>) of
      aliased GL.Types.Int;
-   type Flattend_Array is new FLat_CP_Element_Array_Type
-      (1 .. MT_Teapot.CP_Element_Array'Length * Teapot_Data.Order * Teapot_Data.Order);
+   type Flattend_Array is new FLat_CP_Element_Array_Type (1 .. Flattend_Array_Length);
 
    package CP_Element_Pointers is new Interfaces.C.Pointers
      (Int, Int, FLat_CP_Element_Array_Type, Int'Last);
@@ -26,7 +28,7 @@ package body Buffers is
    procedure Load_CP_Element_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (CP_Vertex_Pointers);
 
-   function Flatten (anArray : MT_Teapot.CP_Element_Array)
+   function Flatten (anArray : MT_Teapot.Patch_Element_Array)
                      return FLat_CP_Element_Array_Type;
 
    --  ------------------------------------------------------------------------
@@ -65,12 +67,10 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
-                                     CP_Indices : MT_Teapot.CP_Element_Array) is
+                                     CP_Indices : MT_Teapot.Patch_Element_Array) is
       use GL.Objects.Buffers;
       use GL.Types;
-      Flat_Array : FLat_CP_Element_Array_Type
-        (1 .. MT_Teapot.CP_Element_Array'Length * Teapot_Data.Order *
-           Teapot_Data.Order)
+      Flat_Array : FLat_CP_Element_Array_Type (1 .. Flattend_Array_Length)
         := Flatten (CP_Indices);
    begin
       CP_IBO.Initialize_Id;
@@ -135,12 +135,11 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   function Flatten (anArray : MT_Teapot.CP_Element_Array)
+   function Flatten (anArray : MT_Teapot.Patch_Element_Array)
                      return FLat_CP_Element_Array_Type is
       use GL.Types;
-      Flat_Size  : constant Int := anArray'Length * Teapot_Data.Order ** 2;
       Order      : constant Int := Teapot_Data.Order;
-      Flat       : FLat_CP_Element_Array_Type (1 .. Flat_Size);
+      Flat       : FLat_CP_Element_Array_Type (1 .. Flattend_Array_Length);
       Elem_Index : Int;
       Ord1_Index : Int;
    begin
@@ -151,7 +150,7 @@ package body Buffers is
             Ord1_Index := Elem_Index + (Ord1_Count - 1) * Order + 1;
 
             for Ord2_Count in Int range 1 .. Order loop
-               Flat (Ord1_Index + (Ord2_Count - 1)) := anArray (Elem_Count, Ord1_Count, Ord2_Count);
+               Flat (Ord1_Index + (Ord2_Count - 1)) := anArray (Elem_Count) (Ord1_Count, Ord2_Count);
             end loop;
          end loop;
       end loop;
