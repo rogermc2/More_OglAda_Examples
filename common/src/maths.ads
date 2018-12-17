@@ -42,6 +42,7 @@ package Maths is
 
    function Cube_Root (Value : Single) return Single;
    function Degrees (Angle : Radian) return Degree;
+   function Factorial (Num : Natural) return Positive;
    function Frustum_Matrix (Left, Right, Bottom, Top, Near, Far : GL.Types.Single)
                             return GL.Types.Singles.Matrix4;
    procedure Init_Lookat_Transform
