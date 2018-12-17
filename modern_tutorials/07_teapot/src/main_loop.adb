@@ -153,7 +153,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --              Put_Line ("Main_Loop.Display Drawing Patch " &
 --                          GL.Types.Int'Image (Patch_Num) & "  " &
 --                       GL.Types.Int'Image (index));
-            GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order + 1, UShort_Type, Offset);
+--              GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order + 1, UShort_Type, Offset);
          end loop;
       end loop;
 

@@ -169,6 +169,7 @@ package body MT_Teapot is
             end loop;
          end loop;
       end loop;
+      Utilities.Print_GL_Array3 ("MT_Teapot.Build_Vertices Vertices", Singles.Vector3_Array (Vertices));
 
    exception
       when  others =>
