@@ -1,6 +1,8 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Maths;
+
 package body Teacup_Maths is
 
    function Bernstein_Polynomial (I, N : Int; U : Single) return Single is
@@ -21,32 +23,20 @@ package body Teacup_Maths is
    --  --------------------------------------------------------------------------------
 
    function Binomial_Coefficient (I, N : Int) return Single is
+      use Maths;
       Result : Single := 0.0;
+      IInt   : constant Integer := Integer (I);
+      NInt   : constant Integer := Integer (N);
    begin
       if I >= 0 and N >= 0 then
-         Result := Single (Factorial (N)) / Single (Factorial (I) * Factorial (N - I));
+         Result := Single (Factorial (NInt)) /
+           Single (Factorial (IInt) * Factorial (NInt - IInt));
       else
          raise Maths_Error with "MT_Teapot.Binomial_Coefficient, invalid parameters I, N: " &
            Int'Image (I) & "  " &  Int'Image (N);
       end if;
       return Result;
    end Binomial_Coefficient;
-
-   --  --------------------------------------------------------------------------------
-
-   function Factorial (N : Int) return Int is
-      Result : Int := 1;
-   begin
-      if N >= 0 then
-         for I in reverse 1 .. N loop
-            Result := I * Result;
-         end loop;
-      else
-         Put_Line ("MT_Teapot.Binomial_Coefficient, invalid paramters.");
-      end if;
-      return Result;
-
-   end Factorial;
 
    --  --------------------------------------------------------------------------------
 
