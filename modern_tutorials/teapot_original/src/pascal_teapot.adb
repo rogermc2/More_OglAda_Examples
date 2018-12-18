@@ -4,6 +4,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 package body Pascal_Teapot is
    use GL.Types;
 
+   function Patch_Element (Patch : Teapot_Data.Bezier_Patch;
+                                 Index : Int; T : Single)
+                                 return Singles.Vector3;
+
    --  --------------------------------------------------------------------------------
 
    function  Blend_Vector (D0, D1, D2, D3 : Singles.Vector3;
@@ -76,22 +80,10 @@ package body Pascal_Teapot is
    begin
       while T < 1.0 + Step / 2.0 loop
          Index := 4 * Step_Count;
-         Patch_Array (Index + 1) := Blend_Vector (Control_Points (Patch (1, 1)),
-                                                  Control_Points (Patch (1, 2)),
-                                                  Control_Points (Patch (1, 3)),
-                                                  Control_Points (Patch (1, 4)), T);
-         Patch_Array (Index + 2) := Blend_Vector (Control_Points (Patch (2, 1)),
-                                                  Control_Points (Patch (2, 2)),
-                                                  Control_Points (Patch (2, 3)),
-                                                  Control_Points (Patch (2, 4)), T);
-         Patch_Array (Index + 3) := Blend_Vector (Control_Points (Patch (3, 1)),
-                                                  Control_Points (Patch (3, 2)),
-                                                  Control_Points (Patch (3, 3)),
-                                                  Control_Points (Patch (3, 4)), T);
-         Patch_Array (Index + 4) := Blend_Vector (Control_Points (Patch (4, 1)),
-                                                  Control_Points (Patch (4, 2)),
-                                                  Control_Points (Patch (4, 3)),
-                                                  Control_Points (Patch (4, 4)), T);
+         Patch_Array (Index + 1) := Patch_Element (Patch, 1, T);
+         Patch_Array (Index + 2) := Patch_Element (Patch, 2, T);
+         Patch_Array (Index + 3) := Patch_Element (Patch, 3, T);
+         Patch_Array (Index + 4) := Patch_Element (Patch, 4, T);
          T := T + Step;
          Step_Count := Step_Count + 1;
       end loop;
@@ -126,6 +118,19 @@ package body Pascal_Teapot is
          Put_Line ("An exception occurred in Pascal_Teapot.Build_Teapot.");
          raise;
    end Build_Teapot;
+
+   --  --------------------------------------------------------------------------------
+
+   function Patch_Element (Patch : Teapot_Data.Bezier_Patch;
+                                 Index : Int; T : Single)
+                                 return Singles.Vector3 is
+      use Teapot_Data;
+   begin
+      return Blend_Vector (Control_Points (Patch (Index, 1)),
+                           Control_Points (Patch (Index, 2)),
+                           Control_Points (Patch (Index, 3)),
+                           Control_Points (Patch (Index, 4)), T);
+    end Patch_Element;
 
    --  --------------------------------------------------------------------------------
 
