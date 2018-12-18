@@ -55,8 +55,8 @@ package body Buffers is
    begin
       CP_Colour_Buffer.Initialize_Id;
       Array_Buffer.Bind (CP_Colour_Buffer);
-      Utilities.Load_Singles_Buffer
-        (Array_Buffer, GL.Types.Single_Array (CP_Colours), Static_Draw);
+      Utilities.Load_Vertex_Buffer
+        (Array_Buffer, GL.Types.Singles.Vector3_Array(CP_Colours), Static_Draw);
 
    exception
       when others =>
@@ -67,7 +67,7 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_CP_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
-                                     CP_Indices : MT_Teapot.Patch_Element_Array) is
+                                        CP_Indices : MT_Teapot.Patch_Element_Array) is
       use GL.Objects.Buffers;
       use GL.Types;
       Flat_Array : FLat_CP_Element_Array_Type (1 .. Flattend_Array_Length)
@@ -76,10 +76,11 @@ package body Buffers is
       CP_IBO.Initialize_Id;
       Element_Array_Buffer.Bind (CP_IBO);
       Load_CP_Element_Buffer (Element_Array_Buffer, Flat_Array, Static_Draw);
-
+--        Utilities.Print_GL_Int_Array
+--          ("Buffers.Create_CP_Elements_Buffer CP_Element_Array", Int_Array (Flat_Array));
    exception
       when others =>
-         Put_Line ("An exception occurred in CP Buffers.Create_CP_Elements_Buffer.");
+         Put_Line ("An exception occurred in Buffers.Create_CP_Elements_Buffer.");
          raise;
    end Create_CP_Elements_Buffer;
 
