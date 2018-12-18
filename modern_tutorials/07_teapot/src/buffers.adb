@@ -69,7 +69,6 @@ package body Buffers is
    procedure Create_CP_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
                                         CP_Indices : MT_Teapot.Patch_Element_Array) is
       use GL.Objects.Buffers;
-      use GL.Types;
       Flat_Array : FLat_CP_Element_Array_Type (1 .. Flattend_Array_Length)
         := Flatten (CP_Indices);
    begin
@@ -123,7 +122,6 @@ package body Buffers is
    procedure Create_Elements_Buffer (IBO     : in out GL.Objects.Buffers.Buffer;
                                      Indices : GL.Types.Int_Array) is
       use GL.Objects.Buffers;
-      use GL.Types;
    begin
       IBO.Initialize_Id;
       Element_Array_Buffer.Bind (IBO);
@@ -138,7 +136,6 @@ package body Buffers is
 
    function Flatten (anArray : MT_Teapot.Patch_Element_Array)
                      return FLat_CP_Element_Array_Type is
-      use GL.Types;
       Order      : constant Int := Teapot_Data.Order;
       Flat       : FLat_CP_Element_Array_Type (1 .. Flattend_Array_Length);
       Elem_Index : Int;
