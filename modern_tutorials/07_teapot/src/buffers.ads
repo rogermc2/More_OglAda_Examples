@@ -18,5 +18,5 @@ package Buffers is
     procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
                                     Vertices : MT_Teapot.Vertices_Array);
     procedure Create_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
-                                    CP_Vertices : Teapot_Data.Vertex_Data);
+                                    CP_Vertices : Teapot_Data.CP_Data);
  end Buffers;
