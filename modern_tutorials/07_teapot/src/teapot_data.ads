@@ -3,13 +3,13 @@ with GL.Types; use GL.Types;
 
 package Teapot_Data is
 
-Num_Patchs   : constant Int := 28;
-Order        : constant Int := 3;
-Num_Vertices : constant Int := 269;
+Num_Patchs         : constant Int := 28;
+Order              : constant Int := 3;
+Num_Control_Points : constant Int := 269;
 
 type Bezier_Patch is array (1 .. Order + 1, 1 .. Order + 1) of Int;
 type Patch_Data is array (1.. Num_Patchs) of Bezier_Patch;
-type Vertex_Data is new Singles.Vector3_Array (1 .. Num_Vertices);
+type CP_Data is new Singles.Vector3_Array (1 .. Num_Control_Points);
 
 Patchs : constant Patch_Data
   := -- rim
@@ -46,7 +46,7 @@ Patchs : constant Patch_Data
   ((222, 227, 228, 229), (248, 255, 256, 257), (251, 258, 259, 260), (254, 261, 262, 263)),
   ((229, 232, 233, 212), (257, 264, 265, 234), (260, 266, 267, 238), (263, 268, 269, 242)));
 
-Control_Point_Vertices : constant Vertex_Data
+Control_Points : constant CP_Data
   := (--  1
   (1.4, 0.0, 2.4),            (1.4, -0.784, 2.4),
   (0.784, -1.4, 2.4),         (0.0, -1.4, 2.4),
