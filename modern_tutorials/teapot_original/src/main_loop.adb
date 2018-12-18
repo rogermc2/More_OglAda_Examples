@@ -38,17 +38,21 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Colour_Attribute   : GL.Attributes.Attribute;
    MVP_Location       : GL.Uniforms.Uniform;
    Vertices_Buffer    : GL.Objects.Buffers.Buffer;
-   Colours_Buffer     : GL.Objects.Buffers.Buffer;
-   Elements_Buffer    : GL.Objects.Buffers.Buffer;
-   CP_Vertices_Buffer : GL.Objects.Buffers.Buffer;
+--     Colours_Buffer     : GL.Objects.Buffers.Buffer;
+--     Elements_Buffer    : GL.Objects.Buffers.Buffer;
+--     CP_Vertices_Buffer : GL.Objects.Buffers.Buffer;
    CP_Colours_Buffer  : GL.Objects.Buffers.Buffer;
-   CP_Elements_Buffer : GL.Objects.Buffers.Buffer;
+--     CP_Elements_Buffer : GL.Objects.Buffers.Buffer;
 
-   Colours            : Pascal_Teapot.Colours_Array;
-   Vertices           : Pascal_Teapot.Vertices_Array;
-   Elements           : Pascal_Teapot.Element_Array;
+--     Colours            : Pascal_Teapot.Colours_Array;
+--     Vertices           : Pascal_Teapot.Vertices_Array;
+--     Elements           : Pascal_Teapot.Element_Array;
    CP_Colours         : Pascal_Teapot.CP_Colours_Array;   --  For debugging
-   CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
+                                                          --     CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
+   Num_Steps          : constant Int := 10;
+   Teapot_Length      : constant Int
+     := Int (4 * (Num_Steps + 1) * Teapot_Data.Patchs'Length);
+   theTeapot          : Singles.Vector3_Array (1 .. Teapot_Length);
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
@@ -132,30 +136,31 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
 
-      GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
-      GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+--        GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
+--        GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
+--        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
 
-      GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
-      GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
+--        GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
+--        GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
 
       --  Draw Control points
-      GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
+--        GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
+--        GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
 
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 3);
 
-      GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
-      for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
-         for index in 1 .. Teapot_Data.Order + 1 loop
-            Offset := Offset + Natural (Teapot_Data.Order + 1);
+--        GL.Objects.Buffers.Element_Array_Buffer.Bind (CP_Elements_Buffer);
+--        for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
+--           for index in 1 .. Teapot_Data.Order + 1 loop
+--              Offset := Offset + Natural (Teapot_Data.Order + 1);
 --              Put_Line ("Main_Loop.Display Drawing Patch " &
 --                          GL.Types.Int'Image (Patch_Num) & "  " &
 --                       GL.Types.Int'Image (index));
 --              GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order + 1, UShort_Type, Offset);
-         end loop;
-      end loop;
+--           end loop;
+--        end loop;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
@@ -186,18 +191,19 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Initialize_Id;
          VAO.Bind;
 
-         Pascal_Teapot.Build_Teapot (Vertices, Colours, Elements);
+         theTeapot := Pascal_Teapot.Build_Teapot (Teapot_Data.Patchs, Num_Steps);
+--           Pascal_Teapot.Build_Teapot (Vertices, Colours, Elements);
          Pascal_Teapot.Build_CP_Colours (CP_Colours);
-         Pascal_Teapot.Build_CP_Elements (CP_Elements);
+--           Pascal_Teapot.Build_CP_Elements (CP_Elements);
 
-         Buffers.Create_Vertex_Buffer (Vertices_Buffer, Vertices);
-         Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
-         Buffers.Create_Elements_Buffer (Elements_Buffer, Elements);
+         Buffers.Create_Vertex_Buffer (Vertices_Buffer, theTeapot);
+--           Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
+--           Buffers.Create_Elements_Buffer (Elements_Buffer, Elements);
 
-         Buffers.Create_Vertex_Buffer
-           (CP_Vertices_Buffer, Teapot_Data.Control_Points);
-         Buffers.Create_Colour_Buffer (CP_Colours_Buffer, CP_Colours);
-         Buffers.Create_Elements_Buffer (CP_Elements_Buffer, CP_Elements);  --  For debugging
+--           Buffers.Create_Vertex_Buffer
+--             (CP_Vertices_Buffer, Teapot_Data.Control_Points);
+         Buffers.Create_CP_Colour_Buffer (CP_Colours_Buffer, CP_Colours);
+--           Buffers.Create_Elements_Buffer (CP_Elements_Buffer, CP_Elements);  --  For debugging
       end if;
       return Result;
 
