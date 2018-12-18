@@ -3,7 +3,7 @@ with GL.Types;
 
 with Teapot_Data;
 
-package MT_Teapot is
+package Pascal_Teapot is
     use GL.Types;
 
     Res_U  : constant Int := 10;
@@ -11,7 +11,7 @@ package MT_Teapot is
 
     Patch_Size : constant Int := Teapot_Data.Patchs'Length;
     Element_Array_Size : Int
-     := 2 * 3 * Teapot_Data.Patchs'Length * (MT_Teapot.Res_U) * (MT_Teapot.Res_V);
+     := 2 * 3 * Teapot_Data.Patchs'Length * (Pascal_Teapot.Res_U) * (Pascal_Teapot.Res_V);
    subtype Element_Array is GL.Types.Int_Array (1 .. Element_Array_Size);
 
    type CP_Element_Array_Type is array
@@ -35,4 +35,4 @@ package MT_Teapot is
                             Colours : out Colours_Array;
                             Elements : out Element_Array);
 
-end MT_Teapot;
+end Pascal_Teapot;

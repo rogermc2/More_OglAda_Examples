@@ -6,13 +6,13 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Maths;
 with Utilities;
 
-with Teacup_Maths;
+with Teapot_Maths;
 
 package body Buffers is
    use GL.Types;
 
    Flattend_Array_Length : constant Int
-      := MT_Teapot.Patch_Element_Array'Length * MT_Teapot.CP_Element_Array'Length *
+      := Pascal_Teapot.Patch_Element_Array'Length * Pascal_Teapot.CP_Element_Array'Length *
          Teapot_Data.Bezier_Patch'Length * Teapot_Data.Bezier_Patch'Length (2);
    type FLat_CP_Element_Array_Type is array (GL.Types.Int range <>) of
      aliased GL.Types.Int;
@@ -28,13 +28,13 @@ package body Buffers is
    procedure Load_CP_Element_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (CP_Vertex_Pointers);
 
-   function Flatten (anArray : MT_Teapot.Patch_Element_Array)
+   function Flatten (anArray : Pascal_Teapot.Patch_Element_Array)
                      return FLat_CP_Element_Array_Type;
 
    --  ------------------------------------------------------------------------
 
    procedure Create_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                    Colours : MT_Teapot.Colours_Array) is
+                                    Colours : Pascal_Teapot.Colours_Array) is
       use GL.Objects.Buffers;
    begin
       Colour_Buffer.Initialize_Id;
@@ -49,25 +49,25 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_CP_Colour_Buffer (CP_Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                      CP_Colours : MT_Teapot.CP_Colours_Array) is
+   procedure Create_Colour_Buffer (CP_Colour_Buffer : in out GL.Objects.Buffers.Buffer;
+                                   CP_Colours : Pascal_Teapot.CP_Colours_Array) is
       use GL.Objects.Buffers;
    begin
       CP_Colour_Buffer.Initialize_Id;
       Array_Buffer.Bind (CP_Colour_Buffer);
-      Utilities.Load_Vertex_Buffer
-        (Array_Buffer, GL.Types.Singles.Vector3_Array(CP_Colours), Static_Draw);
+      Utilities.Load_Singles_Buffer
+        (Array_Buffer, GL.Types.Single_Array (CP_Colours), Static_Draw);
 
    exception
       when others =>
-         Put_Line ("An exception occurred in CP Buffers.Create_CP_Colour_Buffer.");
+         Put_Line ("An exception occurred in CP Buffers.Create_Colour_Buffer.");
          raise;
-   end Create_CP_Colour_Buffer;
+   end Create_Colour_Buffer;
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_CP_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
-                                        CP_Indices : MT_Teapot.Patch_Element_Array) is
+   procedure Create_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
+                                     CP_Indices : Pascal_Teapot.Patch_Element_Array) is
       use GL.Objects.Buffers;
       use GL.Types;
       Flat_Array : FLat_CP_Element_Array_Type (1 .. Flattend_Array_Length)
@@ -76,13 +76,12 @@ package body Buffers is
       CP_IBO.Initialize_Id;
       Element_Array_Buffer.Bind (CP_IBO);
       Load_CP_Element_Buffer (Element_Array_Buffer, Flat_Array, Static_Draw);
---        Utilities.Print_GL_Int_Array
---          ("Buffers.Create_CP_Elements_Buffer CP_Element_Array", Int_Array (Flat_Array));
+
    exception
       when others =>
-         Put_Line ("An exception occurred in Buffers.Create_CP_Elements_Buffer.");
+         Put_Line ("An exception occurred in CP Buffers.Create_Elements_Buffer.");
          raise;
-   end Create_CP_Elements_Buffer;
+   end Create_Elements_Buffer;
 
    --  ------------------------------------------------------------------------
 
@@ -97,14 +96,14 @@ package body Buffers is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in CP Buffers.Create_CP_Vertex_Buffer.");
+         Put_Line ("An exception occurred in CP Buffers.Create_Vertex_Buffer.");
          raise;
-   end Create_CP_Vertex_Buffer;
+   end Create_Vertex_Buffer;
 
    --  ------------------------------------------------------------------------
 
    procedure Create_Vertex_Buffer (VBO      : in out GL.Objects.Buffers.Buffer;
-                                   Vertices : MT_Teapot.Vertices_Array) is
+                                   Vertices : Pascal_Teapot.Vertices_Array) is
       use GL.Objects.Buffers;
    begin
       VBO.Initialize_Id;
@@ -136,7 +135,7 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   function Flatten (anArray : MT_Teapot.Patch_Element_Array)
+   function Flatten (anArray : Pascal_Teapot.Patch_Element_Array)
                      return FLat_CP_Element_Array_Type is
       use GL.Types;
       Order      : constant Int := Teapot_Data.Order;
