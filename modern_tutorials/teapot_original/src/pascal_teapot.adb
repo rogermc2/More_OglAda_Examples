@@ -35,20 +35,17 @@ package body Pascal_Teapot is
 
   --  --------------------------------------------------------------------------------
 
-   function Build_Curve (D0, D1, D2, D3 : Singles.Vector3;
-                         Num_Steps      : Int)
-                         return Singles.Vector3_Array is
+   procedure Build_Curve (D0, D1, D2, D3 : Singles.Vector3;
+                         Num_Steps: Int;  Curve : out Singles.Vector3_Array) is
       Step : constant Single := 1.0 / Single (Num_Steps);
-      T    : Single := Step;
+      T    : Single := 0.0;
       Temp : Singles.Vector3;
-      Curve : Singles.Vector3_Array (1 .. Num_Steps + 1);
    begin
       Curve (1) := D0;
-      while T < 1.0 + Step / 2.0 loop
-         Temp := Blend_Vector (D0, D1, D2, D3, T);
+      for count in 1 .. Num_Steps loop
          T := T + Step;
+         Temp := Blend_Vector (D0, D1, D2, D3, T);
       end loop;
-      return Curve;
 
    exception
       when  others =>
@@ -77,27 +74,28 @@ package body Pascal_Teapot is
       use Teapot_Data;
       D0, D1, D2, D3 : Singles.Vector3;
       Step        : constant Single := 1.0 / Single (Num_Steps);
-      Step_Count  : Int := 0;
       Index       : Int;
+      Index2      : Int;
       T           : Single := 0.0;
-      Patch_Array : Singles.Vector3_Array (1 .. 4 * (Num_Steps + 1));
+      Curve       : Singles.Vector3_Array (1 .. Num_Steps + 1);
+      Patch_Array : Singles.Vector3_Array (1 .. 2 * (Num_Steps + 1) ** 2);
    begin
-      while T < 1.0 + Step / 2.0 loop
-         Index := 4 * Step_Count;
+      for Step_Count in 1 ..Num_Steps loop
+         Index := (Step_Count - 1) * 2 * (Num_Steps + 1) + 1;
+         Index2 := Index + Num_Steps + 1;
          D0 := U_Element (Patch, 1, T);
          D1 := U_Element (Patch, 2, T);
          D2 := U_Element (Patch, 3, T);
          D3 := U_Element (Patch, 4, T);
-         Patch_Array (1 .. Num_Steps + 1) := Build_Curve (D0, D1, D2, D3, Num_Steps);
+         Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
+         Patch_Array (Index .. Index + Num_Steps) := Curve;
          D0 := V_Element (Patch, 1, T);
          D1 := V_Element (Patch, 2, T);
          D2 := V_Element (Patch, 3, T);
          D3 := V_Element (Patch, 4, T);
-         Patch_Array (Num_Steps + 2 .. Num_Steps + 2 + Num_Steps + 1) :=
-           Build_Curve (D0, D1, D2, D3, Num_Steps) (1 .. Num_Steps + 1);
-
+         Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
+         Patch_Array (Index2 .. Index2 + Num_Steps) := Curve;
          T := T + Step;
-         Step_Count := Step_Count + 1;
       end loop;
       return Patch_Array;
 
