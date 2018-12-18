@@ -6,7 +6,6 @@ with Utilities;
 with Teacup_Maths; use Teacup_Maths;
 
 package body MT_Teapot is
-   use GL.Types;
 
    subtype Vertex is GL.Types.Singles.Vector3;
    type Control_Point_Array is array
@@ -14,7 +13,7 @@ package body MT_Teapot is
       Int range 1 .. Teapot_Data.Bezier_Patch'Length (2)) of Vertex;
 
    function Compute_Position (Control_Points : Control_Point_Array; U, V : Single)
-                               return GL.Types.Singles.Vector3;
+                               return Singles.Vector3;
    procedure Build_Vertices (Vertices : out Vertices_Array;
                              Colours  : out Colours_Array);
    procedure Print_Control_Points (Patch : Int; Points : Control_Point_Array);
@@ -23,7 +22,7 @@ package body MT_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_Control_Points (Patch          : GL.Types.Int;
+   procedure Build_Control_Points (Patch          : Int;
                                    Control_Points : out Control_Point_Array) is
       use GL.Types;
       thePatch : Teapot_Data.Bezier_Patch := Teapot_Data.Patchs (Patch);
@@ -136,7 +135,6 @@ package body MT_Teapot is
 
    procedure Build_Vertices (Vertices : out Vertices_Array;
                              Colours  : out Colours_Array) is
-      use GL.Types;
       Control_Points : Control_Point_Array;
       Res_UV         : constant Int := Res_U * Res_V;
       U              : Single;
