@@ -12,7 +12,7 @@ package body Pascal_Teapot is
                        return Singles.Vector3;
 
    --  --------------------------------------------------------------------------------
-
+   --  Blend_Vector calculates the vector cubic Bezier spline value at the parameter T
    function  Blend_Vector (D0, D1, D2, D3 : Singles.Vector3;
                            T : GL.Types.Single) return Singles.Vector3 is
        use GL;
@@ -34,14 +34,14 @@ package body Pascal_Teapot is
    end Blend_Vector;
 
   --  --------------------------------------------------------------------------------
-
+  --  Build_Curve generates the Num_Steps sehments of a spline
    procedure Build_Curve (D0, D1, D2, D3 : Singles.Vector3;
                          Num_Steps: Int;  Curve : out Singles.Vector3_Array) is
       Step : constant Single := 1.0 / Single (Num_Steps);
       T    : Single := 0.0;
       Temp : Singles.Vector3;
    begin
-      Curve (1) := D0;
+      Curve (1) := D0;                   --  Start of spline
       for count in 1 .. Num_Steps loop
          T := T + Step;
          Temp := Blend_Vector (D0, D1, D2, D3, T);
@@ -69,8 +69,8 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   function Build_Patch (Patch : Teapot_Data.Bezier_Patch; Num_Steps : Int)
-                         return Singles.Vector3_Array is
+   procedure Build_Patch (Patch : Teapot_Data.Bezier_Patch; Num_Steps : Int;
+                          Patch_Array : out Singles.Vector3_Array) is
       use Teapot_Data;
       D0, D1, D2, D3 : Singles.Vector3;
       Step        : constant Single := 1.0 / Single (Num_Steps);
@@ -78,17 +78,18 @@ package body Pascal_Teapot is
       Index2      : Int;
       T           : Single := 0.0;
       Curve       : Singles.Vector3_Array (1 .. Num_Steps + 1);
-      Patch_Array : Singles.Vector3_Array (1 .. 2 * (Num_Steps + 1) ** 2);
    begin
       for Step_Count in 1 ..Num_Steps loop
          Index := (Step_Count - 1) * 2 * (Num_Steps + 1) + 1;
          Index2 := Index + Num_Steps + 1;
+         --  Splines of constant U
          D0 := U_Element (Patch, 1, T);
          D1 := U_Element (Patch, 2, T);
          D2 := U_Element (Patch, 3, T);
          D3 := U_Element (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
+         --  Splines of constant V
          D0 := V_Element (Patch, 1, T);
          D1 := V_Element (Patch, 2, T);
          D2 := V_Element (Patch, 3, T);
@@ -97,7 +98,6 @@ package body Pascal_Teapot is
          Patch_Array (Index2 .. Index2 + Num_Steps) := Curve;
          T := T + Step;
       end loop;
-      return Patch_Array;
 
    exception
       when  others =>
@@ -107,20 +107,18 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   function Build_Teapot (Patchs : Teapot_Data.Patch_Data;  Num_Steps : Int)
-                          return Singles.Vector3_Array is
-      Patch_Array_Length : Int := Int (4 * (Num_Steps + 1));
-      theTeapot : Singles.Vector3_Array (1 .. Patchs'Length * Patch_Array_Length);
+   procedure Build_Teapot (Patchs : Teapot_Data.Patch_Data;  Num_Steps : Int;
+                          theTeapot : out Singles.Vector3_Array) is
+      Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
       aPatch    : Singles.Vector3_Array (1 .. Patch_Array_Length);
    begin
       for Index in Patchs'Range loop
-         aPatch := Build_Patch (Patchs (Index), Num_Steps);
+         Build_Patch (Patchs (Index), Num_Steps, aPatch);
          for Patch_Count in aPatch'Range loop
          theTeapot (Index + Patch_Count - 1) :=
               aPatch (Patch_Count);
          end loop;
       end loop;
-      return theTeapot;
 
    exception
       when  others =>
