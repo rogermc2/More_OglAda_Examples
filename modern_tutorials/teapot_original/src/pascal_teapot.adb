@@ -3,9 +3,9 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Utilities;
 
-with Teacup_Maths; use Teacup_Maths;
+with Teapot_Maths; use Teapot_Maths;
 
-package body MT_Teapot is
+package body Pascal_Teapot is
    use GL.Types;
 
    subtype Vertex is GL.Types.Singles.Vector3;
@@ -18,10 +18,24 @@ package body MT_Teapot is
    procedure Build_Vertices (Vertices : out Vertices_Array;
                              Colours  : out Colours_Array);
    procedure Print_Control_Points (Patch : Int; Points : Control_Point_Array);
-   procedure Print_CP_Elements_Array (Patch_Num   : Int;
-                                      CP_Elements : Patch_Element_Array);
 
    --  --------------------------------------------------------------------------------
+
+   procedure  Blend_Vector (D0, D1, D2, D3 : GL.Types.Singles.Vector3; T : GL.Types.Single;
+                           Result : out GL.Types.Singles.Vector3) is
+       use GL;
+       T1     : Single := 1.0 - T;
+       T_Cub  : Single := T ** 3;
+       T1_Cub : Single := (1.0 - T) ** 3;
+       T1_Sq  : Single := (1.0 - T) ** 2;
+       T3     : Single := 3.0 * T;
+       T3_Sq  : Single := 3.0 * T * T;
+   begin
+        Result (X) := D0 (X) * T1_Cub + D1 (X) * T3 * T1_SQ +
+          D2 (X) * T3_Sq * T1 + D3 (X) * T_Cub;
+   end Blend_Vector;
+
+  --  --------------------------------------------------------------------------------
 
    procedure Build_Control_Points (Patch          : GL.Types.Int;
                                    Control_Points : out Control_Point_Array) is
@@ -38,46 +52,9 @@ package body MT_Teapot is
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_Control_Points.");
+         Put_Line ("An exception occurred in Pascal_Teapot.Build_Control_Points.");
          raise;
    end Build_Control_Points;
-
-   --  --------------------------------------------------------------------------------
-
-   --  For debugging
-   procedure Build_CP_Colours (CP_Colours : out CP_Colours_Array) is
-   begin
-      for Index in CP_Colours'First .. CP_Colours'Last loop
-               CP_Colours (Index) :=  (1.0, 0.0, 0.0);  --  Red
-      end loop;
-
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_CP_Colours.");
-         raise;
-   end Build_CP_Colours;
-
-   --  --------------------------------------------------------------------------------
-
-   --  For debugging
-   procedure Build_CP_Elements (CP_Elements : out Patch_Element_Array) is
-      Patch : Teapot_Data.Bezier_Patch;
-   begin
-      for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
-         Patch := Teapot_Data.Patchs (Patch_Num);
-         for I in Int range 1 .. Patch'Length loop
-            for J in Int range 1 .. Patch'Length (2) loop
-               CP_Elements (Patch_Num) (I, J) :=  Patch (I, J);
-            end loop;
-         end loop;
-         Print_CP_Elements_Array (Patch_Num, CP_Elements);
-      end loop;
-
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_CP_Elements.");
-         raise;
-   end Build_CP_Elements;
 
    --  --------------------------------------------------------------------------------
 
@@ -109,14 +86,48 @@ package body MT_Teapot is
             end loop;
          end loop;
       end loop;
---        Utilities.Print_GL_Int_Array ("MT_Teapot.Build_Elements Elements", Elements);
-      Put_Line ("MT_Teapot.Build_Elements, last N" & Int'Image (N));
+      Put_Line ("Pascal_Teapot.Build_Elements, last N" & Int'Image (N));
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_Elements.");
+         Put_Line ("An exception occurred in Pascal_Teapot.Build_Elements.");
          raise;
    end Build_Elements;
+
+   --  --------------------------------------------------------------------------------
+
+   procedure Build_CP_Colours (CP_Colours : out CP_Colours_Array) is
+   begin
+      for Index in CP_Colours'First .. CP_Colours'Last loop
+               CP_Colours (Index) :=  0.0;
+      end loop;
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Pascal_Teapot.Build_CP_Colours.");
+         raise;
+   end Build_CP_Colours;
+
+   --  --------------------------------------------------------------------------------
+
+   procedure Build_CP_Elements (CP_Elements : out Patch_Element_Array) is
+      Patch : Teapot_Data.Bezier_Patch;
+   begin
+      for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
+         Patch := Teapot_Data.Patchs (Patch_Num);
+         for I in Int range 1 .. Patch'Length loop
+            for J in Int range 1 .. Patch'Length (2) loop
+               CP_Elements (Patch_Num) (I, J) :=  Patch (I, J) - 1;
+            end loop;
+         end loop;
+
+      end loop;
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Pascal_Teapot.Build_CP_Elements.");
+         raise;
+   end Build_CP_Elements;
 
    --  --------------------------------------------------------------------------------
 
@@ -128,7 +139,7 @@ package body MT_Teapot is
       Build_Elements (Elements);
    exception
       when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_Teapot.");
+         Put_Line ("An exception occurred in Pascal_Teapot.Build_Teapot.");
          raise;
    end Build_Teapot;
 
@@ -174,11 +185,11 @@ package body MT_Teapot is
             end loop;
          end loop;
       end loop;
---        Utilities.Print_GL_Array3 ("MT_Teapot.Build_Vertices Vertices", Singles.Vector3_Array (Vertices));
+      Utilities.Print_GL_Array3 ("Pascal_Teapot.Build_Vertices Vertices", Singles.Vector3_Array (Vertices));
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_Vertices.");
+         Put_Line ("An exception occurred in Pascal_Teapot.Build_Vertices.");
          raise;
    end Build_Vertices;
 
@@ -213,7 +224,7 @@ package body MT_Teapot is
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Compute_Position.");
+         Put_Line ("An exception occurred in Pascal_Teapot.Compute_Position.");
          raise;
    end Compute_Position;
 
@@ -234,15 +245,13 @@ package body MT_Teapot is
 
    --  ------------------------------------------------------------------------
 
-   procedure Print_CP_Elements_Array (Patch_Num   : Int;
-                                      CP_Elements : Patch_Element_Array) is
+ procedure Print_CP_Elements_Array (CP_Elements : Patch_Element_Array; Patch_Num : Int) is
    begin
       Put_Line ("Elements for patch:" & Int'Image (Patch_Num));
       for Row in Int range 1 .. CP_Elements (Patch_Num)'Length loop
          for Column in Int range 1 .. CP_Elements (Patch_Num)'Length (2) loop
-            Put_Line ("Row, Column:" & Int'Image (Row) & " " &
-                        Int'Image (Column) & " " &
-                        Int'Image (CP_Elements (Patch_Num) (Row, Column)));
+                Put ("Row, Column:" & Int'Image (Row) & "  " & Int'Image (Column) &
+            Int'Image (CP_Elements (Patch_Num) (Row, Column)));
          end loop;
          New_Line;
       end loop;
@@ -251,4 +260,4 @@ package body MT_Teapot is
 
    --  ------------------------------------------------------------------------
 
-end MT_Teapot;
+end Pascal_Teapot;
