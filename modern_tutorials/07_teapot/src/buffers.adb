@@ -86,7 +86,7 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
-                                   CP_Vertices : Teapot_Data.Vertex_Data) is
+                                   CP_Vertices : Teapot_Data.CP_Data) is
       use GL.Objects.Buffers;
    begin
       CP_VBO.Initialize_Id;
