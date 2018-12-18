@@ -38,7 +38,7 @@ package body Pascal_Teapot is
       Step : constant Single := 1.0 / Single (Num_Steps);
       T    : Single := Step;
       Temp : Singles.Vector3;
-      Curve : Singles.Vector3_Array (1 .. int (Num_Steps + 1));
+      Curve : Singles.Vector3_Array (1 .. Int (Num_Steps + 1));
    begin
       Curve (1) := D0;
       while T < 1.0 + Step / 2.0 loop

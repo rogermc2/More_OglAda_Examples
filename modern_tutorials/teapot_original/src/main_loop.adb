@@ -131,7 +131,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 80);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Line_Strip, 0, Num_Steps + 1);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
