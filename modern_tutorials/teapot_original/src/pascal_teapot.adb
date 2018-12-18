@@ -4,9 +4,12 @@ with Ada.Text_IO; use Ada.Text_IO;
 package body Pascal_Teapot is
    use GL.Types;
 
-   function Patch_Element (Patch : Teapot_Data.Bezier_Patch;
-                                 Index : Int; T : Single)
-                                 return Singles.Vector3;
+   function U_Element (Patch : Teapot_Data.Bezier_Patch;
+                       Index : Int; T : Single)
+                       return Singles.Vector3;
+   function V_Element (Patch : Teapot_Data.Bezier_Patch;
+                       Index : Int; T : Single)
+                       return Singles.Vector3;
 
    --  --------------------------------------------------------------------------------
 
@@ -33,12 +36,12 @@ package body Pascal_Teapot is
   --  --------------------------------------------------------------------------------
 
    function Build_Curve (D0, D1, D2, D3 : Singles.Vector3;
-                         Num_Steps      : Positive)
+                         Num_Steps      : Int)
                          return Singles.Vector3_Array is
       Step : constant Single := 1.0 / Single (Num_Steps);
       T    : Single := Step;
       Temp : Singles.Vector3;
-      Curve : Singles.Vector3_Array (1 .. Int (Num_Steps + 1));
+      Curve : Singles.Vector3_Array (1 .. Num_Steps + 1);
    begin
       Curve (1) := D0;
       while T < 1.0 + Step / 2.0 loop
@@ -72,22 +75,30 @@ package body Pascal_Teapot is
    function Build_Patch (Patch : Teapot_Data.Bezier_Patch; Num_Steps : Int)
                          return Singles.Vector3_Array is
       use Teapot_Data;
+      D0, D1, D2, D3 : Singles.Vector3;
       Step        : constant Single := 1.0 / Single (Num_Steps);
       Step_Count  : Int := 0;
       Index       : Int;
       T           : Single := 0.0;
-      Patch_Array : Singles.Vector3_Array (1 .. 4 * Int (Num_Steps + 1));
+      Patch_Array : Singles.Vector3_Array (1 .. 4 * (Num_Steps + 1));
    begin
       while T < 1.0 + Step / 2.0 loop
          Index := 4 * Step_Count;
-         Patch_Array (Index + 1) := Patch_Element (Patch, 1, T);
-         Patch_Array (Index + 2) := Patch_Element (Patch, 2, T);
-         Patch_Array (Index + 3) := Patch_Element (Patch, 3, T);
-         Patch_Array (Index + 4) := Patch_Element (Patch, 4, T);
+         D0 := U_Element (Patch, 1, T);
+         D1 := U_Element (Patch, 2, T);
+         D2 := U_Element (Patch, 3, T);
+         D3 := U_Element (Patch, 4, T);
+         Patch_Array (1 .. Num_Steps + 1) := Build_Curve (D0, D1, D2, D3, Num_Steps);
+         D0 := V_Element (Patch, 1, T);
+         D1 := V_Element (Patch, 2, T);
+         D2 := V_Element (Patch, 3, T);
+         D3 := V_Element (Patch, 4, T);
+         Patch_Array (Num_Steps + 2 .. Num_Steps + 2 + Num_Steps + 1) :=
+           Build_Curve (D0, D1, D2, D3, Num_Steps) (1 .. Num_Steps + 1);
+
          T := T + Step;
          Step_Count := Step_Count + 1;
       end loop;
-
       return Patch_Array;
 
    exception
@@ -121,7 +132,7 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   function Patch_Element (Patch : Teapot_Data.Bezier_Patch;
+   function U_Element (Patch : Teapot_Data.Bezier_Patch;
                                  Index : Int; T : Single)
                                  return Singles.Vector3 is
       use Teapot_Data;
@@ -130,7 +141,20 @@ package body Pascal_Teapot is
                            Control_Points (Patch (Index, 2)),
                            Control_Points (Patch (Index, 3)),
                            Control_Points (Patch (Index, 4)), T);
-    end Patch_Element;
+    end U_Element;
+
+   --  --------------------------------------------------------------------------------
+
+   function V_Element (Patch : Teapot_Data.Bezier_Patch;
+                                 Index : Int; T : Single)
+                                 return Singles.Vector3 is
+      use Teapot_Data;
+   begin
+      return Blend_Vector (Control_Points (Patch (1, Index)),
+                           Control_Points (Patch (2, Index)),
+                           Control_Points (Patch (3, Index)),
+                           Control_Points (Patch (4, Index)), T);
+    end V_Element;
 
    --  --------------------------------------------------------------------------------
 
