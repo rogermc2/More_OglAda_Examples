@@ -24,13 +24,13 @@ with Utilities;
 
 with Buffers;
 with Teapot_Data;
-with MT_Teapot;
+with Pascal_Teapot;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
    Vertex_Array_Size  : GL.Types.Int
-     := Teapot_Data.Num_Patchs * MT_Teapot.Res_U * MT_Teapot.Res_V;
+     := Teapot_Data.Num_Patchs * Pascal_Teapot.Res_U * Pascal_Teapot.Res_V;
 
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program     : GL.Objects.Programs.Program;
@@ -44,11 +44,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    CP_Colours_Buffer  : GL.Objects.Buffers.Buffer;
    CP_Elements_Buffer : GL.Objects.Buffers.Buffer;
 
-   Colours            : MT_Teapot.Colours_Array;
-   Vertices           : MT_Teapot.Vertices_Array;
-   Elements           : MT_Teapot.Element_Array;
-   CP_Colours         : MT_Teapot.CP_Colours_Array;   --  For debugging
-   CP_Elements        : MT_Teapot.Patch_Element_Array;  --  For debugging
+   Colours            : Pascal_Teapot.Colours_Array;
+   Vertices           : Pascal_Teapot.Vertices_Array;
+   Elements           : Pascal_Teapot.Element_Array;
+   CP_Colours         : Pascal_Teapot.CP_Colours_Array;   --  For debugging
+   CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
@@ -129,21 +129,20 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
---        GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
---
---        GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
---        GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
---
---        GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
---        GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
+      GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
+
+      GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
+      GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+
+      GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
+      GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
 
       --  Draw Control points
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
 
-      GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
 
@@ -154,7 +153,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --              Put_Line ("Main_Loop.Display Drawing Patch " &
 --                          GL.Types.Int'Image (Patch_Num) & "  " &
 --                       GL.Types.Int'Image (index));
-            GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order + 1, UShort_Type, Offset);
+--              GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order + 1, UShort_Type, Offset);
          end loop;
       end loop;
 
@@ -187,9 +186,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Initialize_Id;
          VAO.Bind;
 
-         MT_Teapot.Build_Teapot (Vertices, Colours, Elements);
-         MT_Teapot.Build_CP_Colours (CP_Colours);
-         MT_Teapot.Build_CP_Elements (CP_Elements);
+         Pascal_Teapot.Build_Teapot (Vertices, Colours, Elements);
+         Pascal_Teapot.Build_CP_Colours (CP_Colours);
+         Pascal_Teapot.Build_CP_Elements (CP_Elements);
 
          Buffers.Create_Vertex_Buffer (Vertices_Buffer, Vertices);
          Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
