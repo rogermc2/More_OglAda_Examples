@@ -34,7 +34,7 @@ package body Buffers is
    --  ------------------------------------------------------------------------
 
    procedure Create_Colour_Buffer (Colour_Buffer : in out GL.Objects.Buffers.Buffer;
-                                    Colours : Pascal_Teapot.Colours_Array) is
+                                   Colours : Pascal_Teapot.Colours_Array) is
       use GL.Objects.Buffers;
    begin
       Colour_Buffer.Initialize_Id;
@@ -49,7 +49,7 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Colour_Buffer (CP_Colour_Buffer : in out GL.Objects.Buffers.Buffer;
+   procedure Create_CP_Colour_Buffer (CP_Colour_Buffer : in out GL.Objects.Buffers.Buffer;
                                    CP_Colours : Pascal_Teapot.CP_Colours_Array) is
       use GL.Objects.Buffers;
    begin
@@ -62,12 +62,12 @@ package body Buffers is
       when others =>
          Put_Line ("An exception occurred in CP Buffers.Create_Colour_Buffer.");
          raise;
-   end Create_Colour_Buffer;
+   end Create_CP_Colour_Buffer;
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
-                                     CP_Indices : Pascal_Teapot.Patch_Element_Array) is
+   procedure Create_CP_Elements_Buffer (CP_IBO : in out GL.Objects.Buffers.Buffer;
+                                        CP_Indices : Pascal_Teapot.Patch_Element_Array) is
       use GL.Objects.Buffers;
       use GL.Types;
       Flat_Array : FLat_CP_Element_Array_Type (1 .. Flattend_Array_Length)
@@ -79,14 +79,14 @@ package body Buffers is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in CP Buffers.Create_Elements_Buffer.");
+         Put_Line ("An exception occurred in Buffers.CP_Create_Elements_Buffer.");
          raise;
-   end Create_Elements_Buffer;
+   end Create_CP_Elements_Buffer;
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
-                                   CP_Vertices : Teapot_Data.CP_Data) is
+   procedure Create_CP_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
+                                      CP_Vertices : Teapot_Data.CP_Data) is
       use GL.Objects.Buffers;
    begin
       CP_VBO.Initialize_Id;
@@ -98,12 +98,12 @@ package body Buffers is
       when others =>
          Put_Line ("An exception occurred in CP Buffers.Create_Vertex_Buffer.");
          raise;
-   end Create_Vertex_Buffer;
+   end Create_CP_Vertex_Buffer;
 
    --  ------------------------------------------------------------------------
 
    procedure Create_Vertex_Buffer (VBO      : in out GL.Objects.Buffers.Buffer;
-                                   Vertices : Pascal_Teapot.Vertices_Array) is
+                                   Vertices : GL.Types.Singles.Vector3_Array) is
       use GL.Objects.Buffers;
    begin
       VBO.Initialize_Id;
