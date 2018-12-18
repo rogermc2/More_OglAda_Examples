@@ -129,20 +129,21 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
-      GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
-
-      GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
-      GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-
-      GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
-      GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
+--        GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
+--        GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
+--
+--        GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
+--        GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
+--        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+--
+--        GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
+--        GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
 
       --  Draw Control points
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
 
+      GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
 
