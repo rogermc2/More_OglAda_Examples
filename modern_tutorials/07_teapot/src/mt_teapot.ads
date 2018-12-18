@@ -1,10 +1,9 @@
 
-with GL.Types;
+with GL.Types; use GL.Types;
 
 with Teapot_Data;
 
 package MT_Teapot is
-    use GL.Types;
 
     Res_U  : constant Int := 10;
     Res_V  : constant Int := 10;
@@ -20,7 +19,8 @@ package MT_Teapot is
      (1 .. Teapot_Data.Bezier_Patch'Length,
       1 .. Teapot_Data.Bezier_Patch'Length (2));
 
-   type Patch_Element_Array is array (Int range 1 .. Teapot_Data.Num_Patchs) of CP_Element_Array;
+   type Patch_Element_Array is array (Int range 1 .. Teapot_Data.Num_Patchs)
+     of CP_Element_Array;
 
    type Vertices_Array is new
      Singles.Vector3_Array (1 .. Patch_Size * Res_U * Res_V);
