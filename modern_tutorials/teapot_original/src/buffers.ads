@@ -11,6 +11,4 @@ package Buffers is
                                        CP_Colours : Pascal_Teapot.CP_Colours_Array);
     procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
                                     Vertices : GL.Types.Singles.Vector3_Array);
-    procedure Create_CP_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
-                                       CP_Vertices : Teapot_Data.CP_Data);
  end Buffers;
