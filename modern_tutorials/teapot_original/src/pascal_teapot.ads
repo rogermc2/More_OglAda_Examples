@@ -31,9 +31,6 @@ package Pascal_Teapot is
 
     procedure Build_CP_Colours (CP_Colours : out CP_Colours_Array);
     procedure Build_CP_Elements (CP_Elements : out Patch_Element_Array);  --  For debugging
---      procedure Build_Teapot (Vertices : out Vertices_Array;
---                              Colours : out Colours_Array;
---                              Elements : out Element_Array);
    function Build_Teapot (Patchs : Teapot_Data.Patch_Data; Num_Steps : Int)
                           return Singles.Vector3_Array;
 end Pascal_Teapot;
