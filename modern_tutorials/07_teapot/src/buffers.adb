@@ -86,7 +86,7 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
+   procedure Create_CP_Vertex_Buffer (CP_VBO : in out GL.Objects.Buffers.Buffer;
                                    CP_Vertices : Teapot_Data.CP_Data) is
       use GL.Objects.Buffers;
    begin
@@ -97,7 +97,7 @@ package body Buffers is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in CP Buffers.Create_CP_Vertex_Buffer.");
+         Put_Line ("An exception occurred in Buffers.Create_CP_Vertex_Buffer.");
          raise;
    end Create_CP_Vertex_Buffer;
 
