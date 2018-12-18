@@ -1,17 +1,8 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Utilities;
-
 package body Pascal_Teapot is
    use GL.Types;
-
-   subtype Vertex is GL.Types.Singles.Vector3;
-   type Control_Point_Array is array
-     (Int range 1 .. Teapot_Data.Bezier_Patch'Length,
-      Int range 1 .. Teapot_Data.Bezier_Patch'Length (2)) of Vertex;
-
-    procedure Print_Control_Points (Patch : Int; Points : Control_Point_Array);
 
    --  --------------------------------------------------------------------------------
 
@@ -36,7 +27,6 @@ package body Pascal_Teapot is
    end Blend_Vector;
 
   --  --------------------------------------------------------------------------------
-
 
    function Build_Curve (D0, D1, D2, D3 : Singles.Vector3;
                          Num_Steps      : Positive)
@@ -72,27 +62,6 @@ package body Pascal_Teapot is
          Put_Line ("An exception occurred in Pascal_Teapot.Build_CP_Colours.");
          raise;
    end Build_CP_Colours;
-
-   --  --------------------------------------------------------------------------------
-
-   procedure Build_CP_Elements (CP_Elements : out Patch_Element_Array) is
-      Patch : Teapot_Data.Bezier_Patch;
-   begin
-      for Patch_Num in Teapot_Data.Patchs'First .. Teapot_Data.Patchs'Last loop
-         Patch := Teapot_Data.Patchs (Patch_Num);
-         for I in Int range 1 .. Patch'Length loop
-            for J in Int range 1 .. Patch'Length (2) loop
-               CP_Elements (Patch_Num) (I, J) :=  Patch (I, J) - 1;
-            end loop;
-         end loop;
-
-      end loop;
-
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in Pascal_Teapot.Build_CP_Elements.");
-         raise;
-   end Build_CP_Elements;
 
    --  --------------------------------------------------------------------------------
 
@@ -159,35 +128,5 @@ package body Pascal_Teapot is
    end Build_Teapot;
 
    --  --------------------------------------------------------------------------------
-
- procedure Print_Control_Points (Patch : Int; Points : Control_Point_Array) is
-   begin
-      Put_Line ("Control Points for patch:" & Int'Image (Patch));
-      for Row in Int range 1 .. Points'Length loop
-         for Column in Int range 1 .. Points'Length (2) loop
-                Put ("Row, Column:" & Int'Image (Row) & "  " & Int'Image (Column));
-            Utilities.Print_Vector ("", Points (Row, Column));
-         end loop;
-         New_Line;
-      end loop;
-      New_Line;
-   end Print_Control_Points;
-
-   --  ------------------------------------------------------------------------
-
- procedure Print_CP_Elements_Array (CP_Elements : Patch_Element_Array; Patch_Num : Int) is
-   begin
-      Put_Line ("Elements for patch:" & Int'Image (Patch_Num));
-      for Row in Int range 1 .. CP_Elements (Patch_Num)'Length loop
-         for Column in Int range 1 .. CP_Elements (Patch_Num)'Length (2) loop
-                Put ("Row, Column:" & Int'Image (Row) & "  " & Int'Image (Column) &
-            Int'Image (CP_Elements (Patch_Num) (Row, Column)));
-         end loop;
-         New_Line;
-      end loop;
-      New_Line;
-   end Print_CP_Elements_Array;
-
-   --  ------------------------------------------------------------------------
 
 end Pascal_Teapot;

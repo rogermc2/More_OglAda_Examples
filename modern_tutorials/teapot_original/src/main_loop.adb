@@ -29,9 +29,6 @@ with Pascal_Teapot;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Vertex_Array_Size  : GL.Types.Int
-     := Teapot_Data.Num_Patchs * Pascal_Teapot.Res_U * Pascal_Teapot.Res_V;
-
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program     : GL.Objects.Programs.Program;
    Coord_Attribute    : GL.Attributes.Attribute;
@@ -107,17 +104,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection    : Singles.Matrix4 := Singles.Identity4;
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
-      Scale         : Single := 1000.0;
+      Scale         : Single := 1.0;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
       Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
-      Animation := Translation_Matrix ((-0.5, 0.0, -1.5))  *
-        Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
-          Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
-            Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
+      Animation := Translation_Matrix ((-0.5, 0.0, -1.5)); --   *
+--          Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
+--            Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
+--              Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
       Projection := Perspective_Matrix (Degree (45.0),
                                         Single (Window_Width) / Single (Window_Height),
                                         0.1, 10.0);
@@ -129,11 +126,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer
+        (Coord_Attribute, 2, Single_Type, 0, 0);
 
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 80);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 80);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
