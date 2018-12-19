@@ -35,11 +35,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Colour_Attribute   : GL.Attributes.Attribute;
    MVP_Location       : GL.Uniforms.Uniform;
    Vertices_Buffer    : GL.Objects.Buffers.Buffer;
+   CP_Vertices_Buffer : GL.Objects.Buffers.Buffer;
 --     Colours_Buffer     : GL.Objects.Buffers.Buffer;
    CP_Colours_Buffer  : GL.Objects.Buffers.Buffer;
 --     Colours            : Pascal_Teapot.Colours_Array;
    CP_Colours         : Pascal_Teapot.CP_Colours_Array;   --  For debugging
-                                                          --     CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
+--     CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
    Num_Steps          : constant Int := 10;
    Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
    Teapot_Length      : constant Int
@@ -105,22 +106,23 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection    : Singles.Matrix4 := Singles.Identity4;
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
-      Scale         : Single := 1.0;
+      Scale         : Single := 0.3;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
-      Animation := Translation_Matrix ((-0.5, 0.0, -1.5)); --   *
+--        Maths.Init_Lookat_Transform ((0.0, 0.0, -8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
+--        Animation := Translation_Matrix ((-0.5, 0.0, -1.5)); --   *
 --          Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
 --            Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
 --              Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
       Projection := Perspective_Matrix (Degree (45.0),
                                         Single (Window_Width) / Single (Window_Height),
-                                        0.1, 10.0);
+                                        -0.1, 100.0);
       Scale_Matrix := Maths.Scaling_Matrix (Scale);
-      MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
+--        MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
+        MVP_Matrix := Scale_Matrix;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
@@ -128,11 +130,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
-        (Coord_Attribute, 2, Single_Type, 0, 0);
+        (Coord_Attribute, 3, Single_Type, 0, 0);
 
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Line_Strip, 0, Num_Steps ** 2);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 269);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
@@ -146,28 +148,26 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    function  Init (Window : in out Glfw.Windows.Window) return Boolean is
-      Ambient          : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
-      Diffuse          : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 1.0);
-      Specular         : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 1.0);
-      Position         : constant GL.Types.Singles.Vector4 := (-6.0, -3.0, 3.0, 0.0);
-      Local_View       : constant GL.Types.Single := 0.0;
-      Local_Ambient    : constant GL.Types.Colors.Color := (0.2, 0.2, 0.2, 1.0);
       Window_Width     : Glfw.Size;
       Window_Height    : Glfw.Size;
       Result           : Boolean;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour (Background);
+      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       Result := Build_Shader_Program;
       if Result then
          VAO.Initialize_Id;
          VAO.Bind;
 
-         Pascal_Teapot.Build_Teapot (Teapot_Data.Patchs, Num_Steps, theTeapot);
-         Pascal_Teapot.Build_CP_Colours (CP_Colours);
+      Pascal_Teapot.Build_Teapot (Teapot_Data.Patchs, Num_Steps, theTeapot);
+      Pascal_Teapot.Build_CP_Colours (CP_Colours);
 
-         Buffers.Create_Vertex_Buffer (Vertices_Buffer, theTeapot);
+--           Buffers.Create_Vertex_Buffer (Vertices_Buffer, theTeapot);
 --           Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
+
+         Buffers.Create_Vertex_Buffer
+              (Vertices_Buffer, Teapot_Data.Control_Points);
 
          Buffers.Create_CP_Colour_Buffer (CP_Colours_Buffer, CP_Colours);
       end if;
