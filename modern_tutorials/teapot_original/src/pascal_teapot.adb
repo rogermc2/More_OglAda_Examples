@@ -18,8 +18,8 @@ package body Pascal_Teapot is
    function  Blend_Vector (D0, D1, D2, D3 : Singles.Vector3;
                            T : GL.Types.Single) return Singles.Vector3 is
        use GL;
-       T1     : Single := 1.0 - T;
        T_Cub  : Single := T ** 3;
+       T1     : Single := 1.0 - T;
        T1_Cub : Single := (1.0 - T) ** 3;
        T1_Sq  : Single := (1.0 - T) ** 2;
        T3     : Single := 3.0 * T;
@@ -38,15 +38,14 @@ package body Pascal_Teapot is
   --  --------------------------------------------------------------------------------
   --  Build_Curve generates the Num_Steps sehments of a spline
    procedure Build_Curve (D0, D1, D2, D3 : Singles.Vector3;
-                         Num_Steps: Int;  Curve : out Singles.Vector3_Array) is
+                          Num_Steps: Int;  Curve : out Singles.Vector3_Array) is
       Step : constant Single := 1.0 / Single (Num_Steps);
       T    : Single := 0.0;
-      Temp : Singles.Vector3;
    begin
       Curve (1) := D0;                   --  Start of spline
-      for count in 1 .. Num_Steps loop
+      for count in 1 .. Num_Steps loop   --  Build spline
          T := T + Step;
-         Temp := Blend_Vector (D0, D1, D2, D3, T);
+         Curve (count + 1) := Blend_Vector (D0, D1, D2, D3, T);
       end loop;
 
    exception
@@ -116,8 +115,8 @@ package body Pascal_Teapot is
    begin
 --        for Index in Patchs'Range loop
       for Index in Int range 1 .. 1 loop
-         Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
-                     Int'Image (Patch_Array_Length));
+--           Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
+--                       Int'Image (Patch_Array_Length));
          Build_Patch (Patchs (Index), Num_Steps, aPatch);
          Utilities.Print_GL_Array3 ("aPatch", aPatch);
          New_Line;
@@ -125,12 +124,10 @@ package body Pascal_Teapot is
                 theTeapot (Index + Patch_Count - 1) :=
                   aPatch (Patch_Count);
          end loop;
-         Utilities.Print_Vector ("aPatch (1)", aPatch (1));
-         Utilities.Print_Vector ("aPatch (2)", aPatch (2));
-         Utilities.Print_Vector ("aPatch (3)", aPatch (3));
-         Utilities.Print_Vector ("aPatch (4)", aPatch (4));
-         Utilities.Print_Vector ("aPatch (7)", aPatch (7));
-         Utilities.Print_Vector ("aPatch (7)", aPatch (8));
+--           Utilities.Print_Vector ("aPatch (1)", aPatch (1));
+--           Utilities.Print_Vector ("aPatch (2)", aPatch (2));
+--           Utilities.Print_Vector ("aPatch (3)", aPatch (3));
+--           Utilities.Print_Vector ("aPatch (4)", aPatch (4));
       end loop;
 
    exception
@@ -141,9 +138,8 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   function U_Element (Patch : Teapot_Data.Bezier_Patch;
-                                 Index : Int; T : Single)
-                                 return Singles.Vector3 is
+   function U_Element (Patch : Teapot_Data.Bezier_Patch; Index : Int; T : Single)
+                       return Singles.Vector3 is
       use Teapot_Data;
    begin
       return Blend_Vector (Control_Points (Patch (Index, 1)),
@@ -154,9 +150,8 @@ package body Pascal_Teapot is
 
    --------------------------------------------------------------------------------
 
-   function V_Element (Patch : Teapot_Data.Bezier_Patch;
-                                 Index : Int; T : Single)
-                                 return Singles.Vector3 is
+   function V_Element (Patch : Teapot_Data.Bezier_Patch; Index : Int; T : Single)
+                      return Singles.Vector3 is
       use Teapot_Data;
    begin
       return Blend_Vector (Control_Points (Patch (1, Index)),
