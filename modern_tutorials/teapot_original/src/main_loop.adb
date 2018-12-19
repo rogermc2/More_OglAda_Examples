@@ -112,17 +112,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                                 GL.Types.Int (Window_Height));
         Utilities.Clear_Colour_Buffer_And_Depth;
-        --        Maths.Init_Lookat_Transform ((0.0, 0.0, -8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
+        Maths.Init_Lookat_Transform ((0.0, 0.0, -8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
 --                Animation := Translation_Matrix ((-0.5, 0.0, -1.5))  *
 --                  Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
 --                    Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
 --                      Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
         Projection := Perspective_Matrix (Degree (45.0),
                                           Single (Window_Width) / Single (Window_Height),
-                                          -0.1, 100.0);
+                                          0.1, 100.0);
         Scale_Matrix := Maths.Scaling_Matrix (Scale);
-        --        MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
-        MVP_Matrix :=  Scale_Matrix;
+        MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
+--          MVP_Matrix :=  Scale_Matrix;
 
         GL.Objects.Programs.Use_Program (Shader_Program);
         GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
@@ -135,7 +135,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
 --          GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
 --          GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 4);
+        GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 30);
 
         GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
         GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
