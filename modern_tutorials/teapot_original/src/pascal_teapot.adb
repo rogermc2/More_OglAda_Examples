@@ -72,7 +72,7 @@ package body Pascal_Teapot is
    procedure Build_Patch (Patch : Teapot_Data.Bezier_Patch; Num_Steps : Int;
                           Patch_Array : out Singles.Vector3_Array) is
       use Teapot_Data;
-      D0, D1, D2, D3 : Singles.Vector3;
+      D0, D1, D2, D3 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Step        : constant Single := 1.0 / Single (Num_Steps);
       Index       : Int;
       Index2      : Int;
@@ -83,18 +83,18 @@ package body Pascal_Teapot is
          Index := (Step_Count - 1) * 2 * (Num_Steps + 1) + 1;
          Index2 := Index + Num_Steps + 1;
          --  Splines of constant U
-         D0 := U_Element (Patch, 1, T);
-         D1 := U_Element (Patch, 2, T);
-         D2 := U_Element (Patch, 3, T);
-         D3 := U_Element (Patch, 4, T);
+--           D0 := U_Element (Patch, 1, T);
+--           D1 := U_Element (Patch, 2, T);
+--           D2 := U_Element (Patch, 3, T);
+--           D3 := U_Element (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          --  Splines of constant V
-         D0 := V_Element (Patch, 1, T);
-         D1 := V_Element (Patch, 2, T);
-         D2 := V_Element (Patch, 3, T);
-         D3 := V_Element (Patch, 4, T);
-         Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
+--           D0 := V_Element (Patch, 1, T);
+--           D1 := V_Element (Patch, 2, T);
+--           D2 := V_Element (Patch, 3, T);
+--           D3 := V_Element (Patch, 4, T);
+--           Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
          Patch_Array (Index2 .. Index2 + Num_Steps) := Curve;
          T := T + Step;
       end loop;
@@ -139,7 +139,7 @@ package body Pascal_Teapot is
                            Control_Points (Patch (Index, 4)), T);
     end U_Element;
 
-   --  --------------------------------------------------------------------------------
+   --------------------------------------------------------------------------------
 
    function V_Element (Patch : Teapot_Data.Bezier_Patch;
                                  Index : Int; T : Single)

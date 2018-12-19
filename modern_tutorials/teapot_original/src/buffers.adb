@@ -33,7 +33,7 @@ package body Buffers is
       VBO.Initialize_Id;
       Array_Buffer.Bind (VBO);
       Utilities.Load_Vertex_Buffer
-          (Array_Buffer, Singles.Vector3_Array (Vertices), Static_Draw);
+          (Array_Buffer, Vertices, Static_Draw);
 
    exception
       when others =>

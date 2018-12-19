@@ -9,6 +9,7 @@ out vec3 f_color;
 
 void main(void)
   {
+  gl_PointSize = 10.0;
   gl_Position = mvp * vec4(coord3d, 1.0);
   f_color = v_color;
   }
