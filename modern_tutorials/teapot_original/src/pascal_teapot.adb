@@ -1,6 +1,8 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Utilities;
+
 package body Pascal_Teapot is
    use GL.Types;
 
@@ -83,18 +85,18 @@ package body Pascal_Teapot is
          Index := (Step_Count - 1) * 2 * (Num_Steps + 1) + 1;
          Index2 := Index + Num_Steps + 1;
          --  Splines of constant U
---           D0 := U_Element (Patch, 1, T);
---           D1 := U_Element (Patch, 2, T);
---           D2 := U_Element (Patch, 3, T);
---           D3 := U_Element (Patch, 4, T);
+         D0 := U_Element (Patch, 1, T);
+         D1 := U_Element (Patch, 2, T);
+         D2 := U_Element (Patch, 3, T);
+         D3 := U_Element (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          --  Splines of constant V
---           D0 := V_Element (Patch, 1, T);
---           D1 := V_Element (Patch, 2, T);
---           D2 := V_Element (Patch, 3, T);
---           D3 := V_Element (Patch, 4, T);
---           Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
+         D0 := V_Element (Patch, 1, T);
+         D1 := V_Element (Patch, 2, T);
+         D2 := V_Element (Patch, 3, T);
+         D3 := V_Element (Patch, 4, T);
+         Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
          Patch_Array (Index2 .. Index2 + Num_Steps) := Curve;
          T := T + Step;
       end loop;
@@ -112,12 +114,23 @@ package body Pascal_Teapot is
       Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
       aPatch    : Singles.Vector3_Array (1 .. Patch_Array_Length);
    begin
-      for Index in Patchs'Range loop
+--        for Index in Patchs'Range loop
+      for Index in Int range 1 .. 1 loop
+         Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
+                     Int'Image (Patch_Array_Length));
          Build_Patch (Patchs (Index), Num_Steps, aPatch);
+         Utilities.Print_GL_Array3 ("aPatch", aPatch);
+         New_Line;
          for Patch_Count in aPatch'Range loop
-         theTeapot (Index + Patch_Count - 1) :=
-              aPatch (Patch_Count);
+                theTeapot (Index + Patch_Count - 1) :=
+                  aPatch (Patch_Count);
          end loop;
+         Utilities.Print_Vector ("aPatch (1)", aPatch (1));
+         Utilities.Print_Vector ("aPatch (2)", aPatch (2));
+         Utilities.Print_Vector ("aPatch (3)", aPatch (3));
+         Utilities.Print_Vector ("aPatch (4)", aPatch (4));
+         Utilities.Print_Vector ("aPatch (7)", aPatch (7));
+         Utilities.Print_Vector ("aPatch (7)", aPatch (8));
       end loop;
 
    exception
