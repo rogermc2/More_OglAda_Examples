@@ -29,6 +29,9 @@ with Pascal_Teapot;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
+   type Mode is (Teapot, CP);
+   Teapot_Mode : Mode := Teapot;
+
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program     : GL.Objects.Programs.Program;
    Coord_Attribute    : GL.Attributes.Attribute;
@@ -45,7 +48,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
    Teapot_Length      : constant Int
      := Int (Teapot_Data.Patchs'Length * Patch_Array_Length);
---     theTeapot          : Singles.Vector3_Array (1 .. Teapot_Length);
+   theTeapot          : Singles.Vector3_Array (1 .. Teapot_Length);
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
@@ -133,9 +136,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Coord_Attribute, 3, Single_Type, 0, 0);
 
+        if Teapot_Mode = Teapot then
 --        GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 269);
+--  --        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 269);
+      else
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 269);
+      end if;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
 --        GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
@@ -161,10 +168,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Initialize_Id;
          VAO.Bind;
 
---        Pascal_Teapot.Build_Teapot (Teapot_Data.Patchs, Num_Steps, theTeapot);
+        if Teapot_Mode = Teapot then
+             Pascal_Teapot.Build_Teapot (Teapot_Data.Patchs, Num_Steps, theTeapot);
 --           Pascal_Teapot.Build_CP_Colours (CP_Colours);
 
---           Buffers.Create_Vertex_Buffer (Vertices_Buffer, theTeapot);
+             Buffers.Create_Vertex_Buffer (Vertices_Buffer, theTeapot);
 --           Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
 
 --        CP_Vertices_Buffer.Initialize_Id;
@@ -172,10 +180,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --        Utilities.Load_Singles_Buffer
 --            (GL.Objects.Buffers.Array_Buffer, Teapot_Data.Control_Points2,
 --             GL.Objects.Buffers.Static_Draw);
-
-         Buffers.Create_Vertex_Buffer
-              (Vertices_Buffer, Teapot_Data.Control_Points);
-
+         else
+                Buffers.Create_Vertex_Buffer
+                  (Vertices_Buffer, Teapot_Data.Control_Points);
+         end if;
 --           Buffers.Create_CP_Colour_Buffer (CP_Colours_Buffer, CP_Colours);
       end if;
       return Result;
