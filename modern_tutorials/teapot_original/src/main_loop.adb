@@ -162,13 +162,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour (Background);
-      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       Result := Build_Shader_Program;
       if Result then
          VAO.Initialize_Id;
          VAO.Bind;
 
         if Teapot_Mode = Teapot then
+             GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
              Pascal_Teapot.Build_Teapot (Teapot_Data.Patchs, Num_Steps, theTeapot);
 --           Pascal_Teapot.Build_CP_Colours (CP_Colours);
 
@@ -181,7 +181,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --            (GL.Objects.Buffers.Array_Buffer, Teapot_Data.Control_Points2,
 --             GL.Objects.Buffers.Static_Draw);
          else
-                Buffers.Create_Vertex_Buffer
+            GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+            Buffers.Create_Vertex_Buffer
                   (Vertices_Buffer, Teapot_Data.Control_Points);
          end if;
 --           Buffers.Create_CP_Colour_Buffer (CP_Colours_Buffer, CP_Colours);
