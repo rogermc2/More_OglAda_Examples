@@ -111,18 +111,21 @@ package body Pascal_Teapot is
    procedure Build_Teapot (Patchs : Teapot_Data.Patch_Data;  Num_Steps : Int;
                           theTeapot : out Singles.Vector3_Array) is
       Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
-      aPatch    : Singles.Vector3_Array (1 .. Patch_Array_Length);
+      aPatch             : Singles.Vector3_Array (1 .. Patch_Array_Length);
+      Offset             : Int;
    begin
 --        for Index in Patchs'Range loop
-      for Index in Int range 1 .. 1 loop
+      for Index in Int range 1 .. 4 loop
+         Offset := 1 + (Index - 1) * Num_Steps * Num_Steps;
 --           Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
 --                       Int'Image (Patch_Array_Length));
          Build_Patch (Patchs (Index), Num_Steps, aPatch);
-         Utilities.Print_GL_Array3 ("aPatch", aPatch);
+         Put ("Pascal_Teapot.Build_Teapot, Patch " & Int'Image (Index));
+         Utilities.Print_GL_Array3 ("", aPatch);
          New_Line;
-         for Patch_Count in aPatch'Range loop
-                theTeapot (Index + Patch_Count - 1) :=
-                  aPatch (Patch_Count);
+         for Patch_Index in aPatch'Range loop
+                theTeapot (Offset + Patch_Index) :=
+                  aPatch (Patch_Index);
          end loop;
 --           Utilities.Print_Vector ("aPatch (1)", aPatch (1));
 --           Utilities.Print_Vector ("aPatch (2)", aPatch (2));

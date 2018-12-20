@@ -139,7 +139,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         if Teapot_Mode = Teapot then
 --        GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
 --  --        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 269);
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Line_Strip, 0, 269);
       else
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 269);
       end if;
