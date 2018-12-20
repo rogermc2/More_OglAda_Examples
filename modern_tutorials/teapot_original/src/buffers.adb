@@ -1,9 +1,6 @@
 
-with Interfaces.C.Pointers;
-
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Maths;
 with Utilities;
 
 package body Buffers is
