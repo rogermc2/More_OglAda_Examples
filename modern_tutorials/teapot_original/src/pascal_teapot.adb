@@ -76,27 +76,32 @@ package body Pascal_Teapot is
       D0, D1, D2, D3 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Step        : constant Single := 1.0 / Single (Num_Steps);
       Index       : Int;
-      Index2      : Int;
       T           : Single := 0.0;
       Curve       : Singles.Vector3_Array (1 .. Num_Steps + 1);
    begin
       for Step_Count in 1 ..Num_Steps loop
-         Index := (Step_Count - 1) * 2 * (Num_Steps + 1) + 1;
-         Index2 := Index + Num_Steps + 1;
+         Index := 1 + (Step_Count - 1) * 2 * Num_Steps;
          --  Splines of constant U
          D0 := U_Element (Patch, 1, T);
          D1 := U_Element (Patch, 2, T);
          D2 := U_Element (Patch, 3, T);
          D3 := U_Element (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
+         Put_Line ("Build_Patch, Index 1: " & Int'Image (Index));
+         Utilities.Print_GL_Array3 ("Curve", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
+         Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          --  Splines of constant V
          D0 := V_Element (Patch, 1, T);
          D1 := V_Element (Patch, 2, T);
          D2 := V_Element (Patch, 3, T);
          D3 := V_Element (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
-         Patch_Array (Index2 .. Index2 + Num_Steps) := Curve;
+         Index := Index + Num_Steps + 1;
+         Put_Line ("Build_Patch, Index 2: " & Int'Image (Index));
+         Utilities.Print_GL_Array3 ("Curve", Curve);
+         Patch_Array (Index .. Index + Num_Steps) := Curve;
+         Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          T := T + Step;
       end loop;
 
@@ -110,20 +115,22 @@ package body Pascal_Teapot is
 
    procedure Build_Teapot (Patchs : Teapot_Data.Patch_Data;  Num_Steps : Int;
                           theTeapot : out Singles.Vector3_Array) is
-      Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
+      Patch_Array_Length : constant Int := 2 * (Num_Steps ** 2 + 1);
       aPatch             : Singles.Vector3_Array (1 .. Patch_Array_Length);
       Offset             : Int;
    begin
 --        for Index in Patchs'Range loop
-      for Index in Int range 1 .. 4 loop
-         Offset := 1 + (Index - 1) * Num_Steps * Num_Steps;
+      for Index in Int range 1 .. 1 loop
+         Offset := (Index - 1) * Num_Steps * Num_Steps;
 --           Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
 --                       Int'Image (Patch_Array_Length));
          Build_Patch (Patchs (Index), Num_Steps, aPatch);
+         Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length" &
+               Int'Image (Patch_Array_Length));
          Put ("Pascal_Teapot.Build_Teapot, Patch " & Int'Image (Index));
          Utilities.Print_GL_Array3 ("", aPatch);
          New_Line;
-         for Patch_Index in aPatch'Range loop
+         for Patch_Index in 1 .. Patch_Array_Length loop
                 theTeapot (Offset + Patch_Index) :=
                   aPatch (Patch_Index);
          end loop;
