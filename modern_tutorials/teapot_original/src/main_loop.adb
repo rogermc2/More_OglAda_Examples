@@ -44,11 +44,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --     Colours            : Pascal_Teapot.Colours_Array;
 --     CP_Colours         : Pascal_Teapot.CP_Colours_Array;   --  For debugging
                                                           --     CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
-   Num_Steps          : constant Int := 10;
-   Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
+   Num_Steps          : constant Int := 1; --  10;
+   Patch_Array_Length : Int := 2 * (Num_Steps ** 2 + 1);
    Teapot_Length      : constant Int
      := Int (Teapot_Data.Patchs'Length * Patch_Array_Length);
-   theTeapot          : Singles.Vector3_Array (1 .. Teapot_Length);
+   theTeapot          : Singles.Vector3_Array (1 .. Teapot_Length) :=
+                          (others => (0.0, 0.0, 0.0));
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
@@ -110,7 +111,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection    : Singles.Matrix4 := Singles.Identity4;
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
-      Scale         : Single := 0.3;
+      Scale         : Single := 0.1;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -172,6 +173,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
              Pascal_Teapot.Build_Teapot (Teapot_Data.Patchs, Num_Steps, theTeapot);
 --           Pascal_Teapot.Build_CP_Colours (CP_Colours);
 
+            Put_Line ("Init Patch_Array_Length" &
+               Int'Image (Patch_Array_Length));
              Buffers.Create_Vertex_Buffer (Vertices_Buffer, theTeapot);
 --           Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
 
