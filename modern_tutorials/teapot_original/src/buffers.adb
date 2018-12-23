@@ -31,7 +31,7 @@ package body Buffers is
       Array_Buffer.Bind (VBO);
       Utilities.Load_Vertex_Buffer
           (Array_Buffer, Vertices, Static_Draw);
-      Utilities.Print_GL_Array3 ("Create_Vertex_Buffer, Vertices", Vertices);
+--        Utilities.Print_GL_Array3 ("Create_Vertex_Buffer, Vertices", Vertices);
 
    exception
       when others =>
