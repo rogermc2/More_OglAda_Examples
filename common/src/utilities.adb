@@ -298,6 +298,22 @@ package body Utilities is
    --  ------------------------------------------------------------------------
 
    procedure Print_Matrix (Name    : String;
+                           aMatrix : GL.Types.Ints.Matrix4) is
+   use GL.Types;
+   begin
+      Put_Line (Name & ":");
+      for Row in  aMatrix'Range loop
+         for Column in aMatrix'Range (2) loop
+            Put (Int'Image (aMatrix (Row, Column)) & "   ");
+         end loop;
+         New_Line;
+      end loop;
+      New_Line;
+   end Print_Matrix;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Print_Matrix (Name    : String;
                            aMatrix : GL.Types.Singles.Matrix3) is
    begin
       Put_Line (Name & ":");

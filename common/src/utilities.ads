@@ -62,6 +62,8 @@ package Utilities is
    procedure Print_GL_Array8 (Name : String; anArray : Maths.Vector8_Array);
    procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array);
    procedure Print_GL_UInt_Array (Name : String; anArray : GL.Types.UInt_Array);
+   procedure Print_Matrix (Name    : String;
+                           aMatrix : GL.Types.Ints.Matrix4);
    procedure Print_Matrix (Name : String; aMatrix : GL.Types.Singles.Matrix3);
    procedure Print_Matrix (Name : String; aMatrix : GL.Types.Singles.Matrix4);
    procedure Print_Singles_Array (Name : String; anArray : Singles_Array;
