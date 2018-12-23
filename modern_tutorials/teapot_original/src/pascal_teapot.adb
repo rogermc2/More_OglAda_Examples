@@ -75,10 +75,10 @@ package body Pascal_Teapot is
       CP0, CP1, CP2, CP3 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Step        : constant Single := 1.0 / Single (Num_Steps);
       Index       : Int;
-      T           : Single := Step;
+      T           : Single := 0.0;
       Curve       : Singles.Vector3_Array (1 .. Num_Steps + 1);
    begin
-      for Step_Count in 1 ..Num_Steps loop
+      for Step_Count in 1 .. Num_Steps loop
          Index := 1 + (Step_Count - 1) * 2 * Num_Steps;
          --  Splines of constant U
          CP0 := U_Coord (Patch, 1, T);
@@ -86,13 +86,13 @@ package body Pascal_Teapot is
          CP2 := U_Coord (Patch, 3, T);
          CP3 := U_Coord (Patch, 4, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
-         Utilities.Print_Vector ("D0", CP0);
-         Utilities.Print_Vector ("D1", CP1);
-         Utilities.Print_Vector ("D2", CP2);
-         Utilities.Print_Vector ("D3", CP3);
+         Utilities.Print_Vector ("CP0", CP0);
+         Utilities.Print_Vector ("CP1", CP1);
+         Utilities.Print_Vector ("CP2", CP2);
+         Utilities.Print_Vector ("CP3", CP3);
          Put_Line ("Build_Patch, Index 1: " & Int'Image (Index) & " T: " &
                      Single'Image (T));
-         Utilities.Print_GL_Array3 ("Curve", Curve);
+         Utilities.Print_GL_Array3 ("Curve segment", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          --  Splines of constant V
@@ -101,14 +101,14 @@ package body Pascal_Teapot is
          CP2 := V_Cord (Patch, 3, T);
          CP3 := V_Cord (Patch, 4, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
-         Utilities.Print_Vector ("D0", CP0);
-         Utilities.Print_Vector ("D1", CP1);
-         Utilities.Print_Vector ("D2", CP2);
-         Utilities.Print_Vector ("D3", CP3);
+         Utilities.Print_Vector ("CP0", CP0);
+         Utilities.Print_Vector ("CP1", CP1);
+         Utilities.Print_Vector ("CP2", CP2);
+         Utilities.Print_Vector ("CP3", CP3);
          Index := Index + Num_Steps + 1;
          Put_Line ("Build_Patch, Index 2: " & Int'Image (Index) & " T: " &
                      Single'Image (T));
-         Utilities.Print_GL_Array3 ("Curve", Curve);
+         Utilities.Print_GL_Array3 ("Curve Segment", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          T := T + Step;
@@ -122,10 +122,12 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_Teapot (Patchs : Teapot_Data.Patch_Data;  Num_Steps : Int;
-                          theTeapot : out Singles.Vector3_Array) is
+   procedure Build_Teapot (Num_Steps : Int;
+                           theTeapot : out Singles.Vector3_Array) is
+      Patches            : constant Teapot_Data.Patch_Data := Teapot_Data.Patchs;
       Patch_Array_Length : constant Int := 2 * (Num_Steps ** 2 + 1);
-      aPatch             : Singles.Vector3_Array (1 .. Patch_Array_Length);
+      aPatch             : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
+                             (others => (0.0, 0.0, 0.0));
       Offset             : Int;
    begin
 --        for Index in Patchs'Range loop
@@ -133,7 +135,7 @@ package body Pascal_Teapot is
          Offset := (Index - 1) * Num_Steps * Num_Steps;
 --           Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
 --                       Int'Image (Patch_Array_Length));
-         Build_Patch (Patchs (Index), Num_Steps, aPatch);
+         Build_Patch (Patches (Index), Num_Steps, aPatch);
          Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length" &
                Int'Image (Patch_Array_Length));
          Put ("Pascal_Teapot.Build_Teapot, Patch " & Int'Image (Index));
