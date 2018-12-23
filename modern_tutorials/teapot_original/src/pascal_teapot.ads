@@ -12,6 +12,6 @@ package Pascal_Teapot is
      (Int range 1 .. 3 * Teapot_Data.Num_Control_Points) of GL.Types.Single;
 
    procedure Build_CP_Colours (CP_Colours : out CP_Colours_Array);
-   procedure Build_Teapot (Patchs : Teapot_Data.Patch_Data;  Num_Steps : Int;
-                          theTeapot : out Singles.Vector3_Array);
+   procedure Build_Teapot (Num_Steps : Int;
+                           theTeapot : out Singles.Vector3_Array);
 end Pascal_Teapot;
