@@ -4,10 +4,10 @@ with GL.Types; use GL.Types;
 package Teapot_Data is
 
 Num_Patchs         : constant Int := 28;
-Order              : constant Int := 3;
+Spline_Degree      : constant Int := 3;
 Num_Control_Points : constant Int := 269;
 
-type Bezier_Patch is array (1 .. Order + 1, 1 .. Order + 1) of Int;
+type Bezier_Patch is array (1 .. Spline_Degree + 1, 1 .. Spline_Degree + 1) of Int;
 type Patch_Data is array (1.. Num_Patchs) of Bezier_Patch;
 
 Patchs : constant Patch_Data

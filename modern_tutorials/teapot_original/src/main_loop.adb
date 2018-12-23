@@ -43,8 +43,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --     CP_Colours_Buffer  : GL.Objects.Buffers.Buffer;
 --     Colours            : Pascal_Teapot.Colours_Array;
 --     CP_Colours         : Pascal_Teapot.CP_Colours_Array;   --  For debugging
-                                                          --     CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
-   Num_Steps          : constant Int := 1; --  10;
+ --     CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
+
+   CP_Count           : constant Int := Teapot_Data.Control_Points'Length;
+   Patch_Count        : constant Int := Teapot_Data.Patchs'Length;
+   Num_Steps          : constant Int := 10;
+
    Patch_Array_Length : Int := 2 * (Num_Steps ** 2 + 1);
    Teapot_Length      : constant Int
      := Int (Teapot_Data.Patchs'Length * Patch_Array_Length);
@@ -111,7 +115,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection    : Singles.Matrix4 := Singles.Identity4;
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
-      Scale         : Single := 0.1;
+      Scale         : Single := 0.4;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -140,8 +144,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         if Teapot_Mode = Teapot then
 --        GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
 --  --        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 4);
-            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 5, 8);
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 269);
+--              GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 5, 8);
       else
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 269);
       end if;
@@ -171,7 +175,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         if Teapot_Mode = Teapot then
              GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
-             Pascal_Teapot.Build_Teapot (Teapot_Data.Patchs, Num_Steps, theTeapot);
+             Pascal_Teapot.Build_Teapot (Num_Steps, theTeapot);
 --           Pascal_Teapot.Build_CP_Colours (CP_Colours);
 
             Put_Line ("Init Patch_Array_Length" &
