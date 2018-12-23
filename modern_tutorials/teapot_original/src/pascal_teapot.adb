@@ -76,7 +76,7 @@ package body Pascal_Teapot is
       D0, D1, D2, D3 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Step        : constant Single := 1.0 / Single (Num_Steps);
       Index       : Int;
-      T           : Single := 0.0;
+      T           : Single := Step;
       Curve       : Singles.Vector3_Array (1 .. Num_Steps + 1);
    begin
       for Step_Count in 1 ..Num_Steps loop
@@ -87,7 +87,12 @@ package body Pascal_Teapot is
          D2 := U_Element (Patch, 3, T);
          D3 := U_Element (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
-         Put_Line ("Build_Patch, Index 1: " & Int'Image (Index));
+         Utilities.Print_Vector ("D0", D0);
+         Utilities.Print_Vector ("D1", D1);
+         Utilities.Print_Vector ("D2", D2);
+         Utilities.Print_Vector ("D3", D3);
+         Put_Line ("Build_Patch, Index 1: " & Int'Image (Index) & " T: " &
+                     Single'Image (T));
          Utilities.Print_GL_Array3 ("Curve", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
@@ -97,8 +102,13 @@ package body Pascal_Teapot is
          D2 := V_Element (Patch, 3, T);
          D3 := V_Element (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
+         Utilities.Print_Vector ("D0", D0);
+         Utilities.Print_Vector ("D1", D1);
+         Utilities.Print_Vector ("D2", D2);
+         Utilities.Print_Vector ("D3", D3);
          Index := Index + Num_Steps + 1;
-         Put_Line ("Build_Patch, Index 2: " & Int'Image (Index));
+         Put_Line ("Build_Patch, Index 2: " & Int'Image (Index) & " T: " &
+                     Single'Image (T));
          Utilities.Print_GL_Array3 ("Curve", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
