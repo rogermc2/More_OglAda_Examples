@@ -6,16 +6,14 @@ with Utilities;
 package body Pascal_Teapot is
    use GL.Types;
 
-   function U_Element (Patch : Teapot_Data.Bezier_Patch;
-                       Index : Int; T : Single)
-                       return Singles.Vector3;
-   function V_Element (Patch : Teapot_Data.Bezier_Patch;
-                       Index : Int; T : Single)
-                       return Singles.Vector3;
+   function U_Coord (Patch : Teapot_Data.Bezier_Patch;
+                     Index : Int; T : Single) return Singles.Vector3;
+   function V_Cord (Patch : Teapot_Data.Bezier_Patch;
+                    Index : Int; T : Single) return Singles.Vector3;
 
    --  --------------------------------------------------------------------------------
-   --  Blend_Vector calculates the vector cubic Bezier spline value at the parameter T
-   function  Blend_Vector (D0, D1, D2, D3 : Singles.Vector3;
+   --  Blend_Vectors calculates the vector cubic Bezier spline value at the parameter T
+   function  Blend_Vectors (CP1, CP2, CP3, CP4 : Singles.Vector3;
                            T : GL.Types.Single) return Singles.Vector3 is
        use GL;
        T_Cub  : Single := T ** 3;
@@ -26,14 +24,14 @@ package body Pascal_Teapot is
       T3_Sq   : Single := 3.0 * T * T;
       Result  : Singles.Vector3;
    begin
-        Result (X) :=  T1_Cub * D0 (X) + T3 * T1_SQ * D1 (X) +
-          T3_Sq * T1 * D2 (X) + T_Cub * D3 (X);
-        Result (Y) :=  T1_Cub * D0 (Y) + T3 * T1_SQ * D1 (Y) +
-          T3_Sq * T1 * D2 (Y) + T_Cub * D3 (Y);
-        Result (Z) :=  T1_Cub * D0 (Z) + T3 * T1_SQ * D1 (Z) +
-        T3_Sq * T1 * D2 (Z) + T_Cub * D3 (Z);
+        Result (X) :=  T1_Cub * CP1 (X) + T3 * T1_SQ * CP2 (X) +
+          T3_Sq * T1 * CP3 (X) + T_Cub * CP4 (X);
+        Result (Y) :=  T1_Cub * CP1 (Y) + T3 * T1_SQ * CP2 (Y) +
+          T3_Sq * T1 * CP3 (Y) + T_Cub * CP4 (Y);
+        Result (Z) :=  T1_Cub * CP1 (Z) + T3 * T1_SQ * CP2 (Z) +
+        T3_Sq * T1 * CP3 (Z) + T_Cub * CP4 (Z);
       return Result;
-   end Blend_Vector;
+   end Blend_Vectors;
 
   --  --------------------------------------------------------------------------------
   --  Build_Curve generates the Num_Steps sehments of a spline
@@ -45,7 +43,7 @@ package body Pascal_Teapot is
       Curve (1) := D0;                   --  Start of spline
       for count in 1 .. Num_Steps loop   --  Build spline
          T := T + Step;
-         Curve (count + 1) := Blend_Vector (D0, D1, D2, D3, T);
+         Curve (count + 1) := Blend_Vectors (D0, D1, D2, D3, T);
       end loop;
 
    exception
@@ -82,10 +80,10 @@ package body Pascal_Teapot is
       for Step_Count in 1 ..Num_Steps loop
          Index := 1 + (Step_Count - 1) * 2 * Num_Steps;
          --  Splines of constant U
-         D0 := U_Element (Patch, 1, T);
-         D1 := U_Element (Patch, 2, T);
-         D2 := U_Element (Patch, 3, T);
-         D3 := U_Element (Patch, 4, T);
+         D0 := U_Coord (Patch, 1, T);
+         D1 := U_Coord (Patch, 2, T);
+         D2 := U_Coord (Patch, 3, T);
+         D3 := U_Coord (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
          Utilities.Print_Vector ("D0", D0);
          Utilities.Print_Vector ("D1", D1);
@@ -97,10 +95,10 @@ package body Pascal_Teapot is
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          --  Splines of constant V
-         D0 := V_Element (Patch, 1, T);
-         D1 := V_Element (Patch, 2, T);
-         D2 := V_Element (Patch, 3, T);
-         D3 := V_Element (Patch, 4, T);
+         D0 := V_Cord (Patch, 1, T);
+         D1 := V_Cord (Patch, 2, T);
+         D2 := V_Cord (Patch, 3, T);
+         D3 := V_Cord (Patch, 4, T);
          Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
          Utilities.Print_Vector ("D0", D0);
          Utilities.Print_Vector ("D1", D1);
@@ -158,27 +156,27 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   function U_Element (Patch : Teapot_Data.Bezier_Patch; Index : Int; T : Single)
+   function U_Coord (Patch : Teapot_Data.Bezier_Patch; Index : Int; T : Single)
                        return Singles.Vector3 is
       use Teapot_Data;
    begin
-      return Blend_Vector (Control_Points (Patch (Index, 1)),
-                           Control_Points (Patch (Index, 2)),
-                           Control_Points (Patch (Index, 3)),
-                           Control_Points (Patch (Index, 4)), T);
-    end U_Element;
+      return Blend_Vectors (Control_Points (Patch (Index, 1)),
+                            Control_Points (Patch (Index, 2)),
+                            Control_Points (Patch (Index, 3)),
+                            Control_Points (Patch (Index, 4)), T);
+    end U_Coord;
 
    --------------------------------------------------------------------------------
 
-   function V_Element (Patch : Teapot_Data.Bezier_Patch; Index : Int; T : Single)
-                      return Singles.Vector3 is
+   function V_Cord (Patch : Teapot_Data.Bezier_Patch; Index : Int; T : Single)
+                    return Singles.Vector3 is
       use Teapot_Data;
    begin
-      return Blend_Vector (Control_Points (Patch (1, Index)),
-                           Control_Points (Patch (2, Index)),
-                           Control_Points (Patch (3, Index)),
-                           Control_Points (Patch (4, Index)), T);
-    end V_Element;
+      return Blend_Vectors (Control_Points (Patch (1, Index)),
+                            Control_Points (Patch (2, Index)),
+                            Control_Points (Patch (3, Index)),
+                            Control_Points (Patch (4, Index)), T);
+    end V_Cord;
 
    --  --------------------------------------------------------------------------------
 
