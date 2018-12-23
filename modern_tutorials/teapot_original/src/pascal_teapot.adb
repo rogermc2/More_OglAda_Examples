@@ -13,7 +13,7 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
    --  Blend_Vectors calculates the vector cubic Bezier spline value at the parameter T
-   function  Blend_Vectors (CP1, CP2, CP3, CP4 : Singles.Vector3;
+   function  Blend_Vectors (CP0, CP1, CP2, CP3 : Singles.Vector3;
                            T : GL.Types.Single) return Singles.Vector3 is
        use GL;
        T_Cub  : Single := T ** 3;
@@ -24,26 +24,27 @@ package body Pascal_Teapot is
       T3_Sq   : Single := 3.0 * T * T;
       Result  : Singles.Vector3;
    begin
-        Result (X) :=  T1_Cub * CP1 (X) + T3 * T1_SQ * CP2 (X) +
-          T3_Sq * T1 * CP3 (X) + T_Cub * CP4 (X);
-        Result (Y) :=  T1_Cub * CP1 (Y) + T3 * T1_SQ * CP2 (Y) +
-          T3_Sq * T1 * CP3 (Y) + T_Cub * CP4 (Y);
-        Result (Z) :=  T1_Cub * CP1 (Z) + T3 * T1_SQ * CP2 (Z) +
-        T3_Sq * T1 * CP3 (Z) + T_Cub * CP4 (Z);
+        Result (X) :=  T1_Cub * CP0 (X) + T3 * T1_SQ * CP1 (X) +
+          T3_Sq * T1 * CP2 (X) + T_Cub * CP3 (X);
+        Result (Y) :=  T1_Cub * CP0 (Y) + T3 * T1_SQ * CP1 (Y) +
+          T3_Sq * T1 * CP2 (Y) + T_Cub * CP3 (Y);
+        Result (Z) :=  T1_Cub * CP0 (Z) + T3 * T1_SQ * CP1 (Z) +
+        T3_Sq * T1 * CP2 (Z) + T_Cub * CP3 (Z);
       return Result;
    end Blend_Vectors;
 
   --  --------------------------------------------------------------------------------
-  --  Build_Curve generates the Num_Steps sehments of a spline
-   procedure Build_Curve (D0, D1, D2, D3 : Singles.Vector3;
-                          Num_Steps: Int;  Curve : out Singles.Vector3_Array) is
+  --  Build_Curve generates the Num_Steps segments of a spline
+   procedure Build_Curve (CP0, CP1, CP2, CP3 : Singles.Vector3;
+                          Num_Steps          : Int;
+                          Curve_Coords       : out Singles.Vector3_Array) is
       Step : constant Single := 1.0 / Single (Num_Steps);
       T    : Single := 0.0;
    begin
-      Curve (1) := D0;                   --  Start of spline
-      for count in 1 .. Num_Steps loop   --  Build spline
+      Curve_Coords (1) := CP0;                   --  Start of spline
+      for Coord_Index in 1 .. Num_Steps loop   --  Build spline
          T := T + Step;
-         Curve (count + 1) := Blend_Vectors (D0, D1, D2, D3, T);
+         Curve_Coords (Coord_Index + 1) := Blend_Vectors (CP0, CP1, CP2, CP3, T);
       end loop;
 
    exception
@@ -71,7 +72,7 @@ package body Pascal_Teapot is
    procedure Build_Patch (Patch : Teapot_Data.Bezier_Patch; Num_Steps : Int;
                           Patch_Array : out Singles.Vector3_Array) is
       use Teapot_Data;
-      D0, D1, D2, D3 : Singles.Vector3 := (0.0, 0.0, 0.0);
+      CP0, CP1, CP2, CP3 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Step        : constant Single := 1.0 / Single (Num_Steps);
       Index       : Int;
       T           : Single := Step;
@@ -80,30 +81,30 @@ package body Pascal_Teapot is
       for Step_Count in 1 ..Num_Steps loop
          Index := 1 + (Step_Count - 1) * 2 * Num_Steps;
          --  Splines of constant U
-         D0 := U_Coord (Patch, 1, T);
-         D1 := U_Coord (Patch, 2, T);
-         D2 := U_Coord (Patch, 3, T);
-         D3 := U_Coord (Patch, 4, T);
-         Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
-         Utilities.Print_Vector ("D0", D0);
-         Utilities.Print_Vector ("D1", D1);
-         Utilities.Print_Vector ("D2", D2);
-         Utilities.Print_Vector ("D3", D3);
+         CP0 := U_Coord (Patch, 1, T);
+         CP1 := U_Coord (Patch, 2, T);
+         CP2 := U_Coord (Patch, 3, T);
+         CP3 := U_Coord (Patch, 4, T);
+         Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
+         Utilities.Print_Vector ("D0", CP0);
+         Utilities.Print_Vector ("D1", CP1);
+         Utilities.Print_Vector ("D2", CP2);
+         Utilities.Print_Vector ("D3", CP3);
          Put_Line ("Build_Patch, Index 1: " & Int'Image (Index) & " T: " &
                      Single'Image (T));
          Utilities.Print_GL_Array3 ("Curve", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          --  Splines of constant V
-         D0 := V_Cord (Patch, 1, T);
-         D1 := V_Cord (Patch, 2, T);
-         D2 := V_Cord (Patch, 3, T);
-         D3 := V_Cord (Patch, 4, T);
-         Build_Curve (D0, D1, D2, D3, Num_Steps, Curve);
-         Utilities.Print_Vector ("D0", D0);
-         Utilities.Print_Vector ("D1", D1);
-         Utilities.Print_Vector ("D2", D2);
-         Utilities.Print_Vector ("D3", D3);
+         CP0 := V_Cord (Patch, 1, T);
+         CP1 := V_Cord (Patch, 2, T);
+         CP2 := V_Cord (Patch, 3, T);
+         CP3 := V_Cord (Patch, 4, T);
+         Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
+         Utilities.Print_Vector ("D0", CP0);
+         Utilities.Print_Vector ("D1", CP1);
+         Utilities.Print_Vector ("D2", CP2);
+         Utilities.Print_Vector ("D3", CP3);
          Index := Index + Num_Steps + 1;
          Put_Line ("Build_Patch, Index 2: " & Int'Image (Index) & " T: " &
                      Single'Image (T));
