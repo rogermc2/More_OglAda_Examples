@@ -6,9 +6,11 @@ with Utilities;
 package body Pascal_Teapot is
    use GL.Types;
 
-   function U_Coord (Patch : Teapot_Data.Bezier_Patch;
+   procedure Print_Patch (Name     : String;
+                          thePatch : Teapot_Data.Patch_Type);
+   function U_Coord (Patch : Teapot_Data.Patch_Type;
                      Index : Int; T : Single) return Singles.Vector3;
-   function V_Cord (Patch : Teapot_Data.Bezier_Patch;
+   function V_Cord (Patch : Teapot_Data.Patch_Type;
                     Index : Int; T : Single) return Singles.Vector3;
 
    --  --------------------------------------------------------------------------------
@@ -38,13 +40,16 @@ package body Pascal_Teapot is
    procedure Build_Curve (CP0, CP1, CP2, CP3 : Singles.Vector3;
                           Num_Steps          : Int;
                           Curve_Coords       : out Singles.Vector3_Array) is
-      Step : constant Single := 1.0 / Single (Num_Steps);
-      T    : Single := 0.0;
+      Step        : constant Single := 1.0 / Single (Num_Steps);
+      T           : Single := Step;
+      Coord_Index : Int := 1;
    begin
-      Curve_Coords (1) := CP0;                   --  Start of spline
-      for Coord_Index in 1 .. Num_Steps loop   --  Build spline
+      Curve_Coords (Coord_Index) := CP0;                   --  Start of spline
+--        for Coord_Index in 1 .. Num_Steps loop   --  Build spline
+      while T < 1.0 + 0.5 * Step loop
+         Coord_Index := Coord_Index + 1;
+         Curve_Coords (Coord_Index) := Blend_Vectors (CP0, CP1, CP2, CP3, T);
          T := T + Step;
-         Curve_Coords (Coord_Index + 1) := Blend_Vectors (CP0, CP1, CP2, CP3, T);
       end loop;
 
    exception
@@ -69,7 +74,7 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_Patch (Patch : Teapot_Data.Bezier_Patch; Num_Steps : Int;
+   procedure Build_Patch (Patch : Teapot_Data.Patch_Type; Num_Steps : Int;
                           Patch_Array : out Singles.Vector3_Array) is
       use Teapot_Data;
       CP0, CP1, CP2, CP3 : Singles.Vector3 := (0.0, 0.0, 0.0);
@@ -86,10 +91,10 @@ package body Pascal_Teapot is
          CP2 := U_Coord (Patch, 3, T);
          CP3 := U_Coord (Patch, 4, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
-         Utilities.Print_Vector ("CP0", CP0);
-         Utilities.Print_Vector ("CP1", CP1);
-         Utilities.Print_Vector ("CP2", CP2);
-         Utilities.Print_Vector ("CP3", CP3);
+         Utilities.Print_Vector ("Build_Patch U CP0", CP0);
+         Utilities.Print_Vector ("Build_Patch U CP1", CP1);
+         Utilities.Print_Vector ("Build_Patch U CP2", CP2);
+         Utilities.Print_Vector ("Build_Patch U CP3", CP3);
          Put_Line ("Build_Patch, Index 1: " & Int'Image (Index) & " T: " &
                      Single'Image (T));
          Utilities.Print_GL_Array3 ("Curve segment", Curve);
@@ -101,10 +106,10 @@ package body Pascal_Teapot is
          CP2 := V_Cord (Patch, 3, T);
          CP3 := V_Cord (Patch, 4, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
-         Utilities.Print_Vector ("CP0", CP0);
-         Utilities.Print_Vector ("CP1", CP1);
-         Utilities.Print_Vector ("CP2", CP2);
-         Utilities.Print_Vector ("CP3", CP3);
+         Utilities.Print_Vector ("Build_Patch V CP0", CP0);
+         Utilities.Print_Vector ("Build_Patch V CP1", CP1);
+         Utilities.Print_Vector ("Build_Patch V CP2", CP2);
+         Utilities.Print_Vector ("Build_Patch V CP3", CP3);
          Index := Index + Num_Steps + 1;
          Put_Line ("Build_Patch, Index 2: " & Int'Image (Index) & " T: " &
                      Single'Image (T));
@@ -124,21 +129,22 @@ package body Pascal_Teapot is
 
    procedure Build_Teapot (Num_Steps : Int;
                            theTeapot : out Singles.Vector3_Array) is
-      Patches            : constant Teapot_Data.Patch_Data := Teapot_Data.Patchs;
+      Patches            : constant Teapot_Data.Patch_Array := Teapot_Data.Patchs;
       Patch_Array_Length : constant Int := 2 * (Num_Steps ** 2 + 1);
       aPatch             : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
                              (others => (0.0, 0.0, 0.0));
       Offset             : Int;
    begin
---        for Index in Patchs'Range loop
-      for Index in Int range 1 .. 1 loop
-         Offset := (Index - 1) * Num_Steps * Num_Steps;
---           Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
---                       Int'Image (Patch_Array_Length));
-         Build_Patch (Patches (Index), Num_Steps, aPatch);
+--        for Patch_Index in Patchs'Range loop
+      for Patch_Index in Int range 1 .. 1 loop
+         Offset := (Patch_Index - 1) * Num_Steps * Num_Steps;
          Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length" &
                Int'Image (Patch_Array_Length));
-         Put ("Pascal_Teapot.Build_Teapot, Patch " & Int'Image (Index));
+         Put ("Pascal_Teapot.Build_Teapot, Patch " & Int'Image (Patch_Index));
+         Print_Patch ("", Patches (Patch_Index));
+--           Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
+--                       Int'Image (Patch_Array_Length));
+         Build_Patch (Patches (Patch_Index), Num_Steps, aPatch);
          Utilities.Print_GL_Array3 ("", aPatch);
          New_Line;
          for Patch_Index in 1 .. Patch_Array_Length loop
@@ -159,7 +165,23 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   function U_Coord (Patch : Teapot_Data.Bezier_Patch; Index : Int; T : Single)
+   procedure Print_Patch (Name     : String;
+                          thePatch : Teapot_Data.Patch_Type) is
+   use GL.Types;
+   begin
+      Put_Line (Name & ":");
+      for Row in thePatch'Range loop
+         for Column in thePatch'Range (2) loop
+            Put (Int'Image (thePatch (Row, Column)) & "   ");
+         end loop;
+         New_Line;
+      end loop;
+      New_Line;
+   end Print_Patch;
+
+   --  ------------------------------------------------------------------------
+
+   function U_Coord (Patch : Teapot_Data.Patch_Type; Index : Int; T : Single)
                        return Singles.Vector3 is
       use Teapot_Data;
    begin
@@ -171,7 +193,7 @@ package body Pascal_Teapot is
 
    --------------------------------------------------------------------------------
 
-   function V_Cord (Patch : Teapot_Data.Bezier_Patch; Index : Int; T : Single)
+   function V_Cord (Patch : Teapot_Data.Patch_Type; Index : Int; T : Single)
                     return Singles.Vector3 is
       use Teapot_Data;
    begin

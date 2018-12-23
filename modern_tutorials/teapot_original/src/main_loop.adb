@@ -47,7 +47,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    CP_Count           : constant Int := Teapot_Data.Control_Points'Length;
    Patch_Count        : constant Int := Teapot_Data.Patchs'Length;
-   Num_Steps          : constant Int := 10;
+   Num_Steps          : constant Int := 10; -- 10;
 
    Patch_Array_Length : Int := 2 * (Num_Steps ** 2 + 1);
    Teapot_Length      : constant Int
