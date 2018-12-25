@@ -107,6 +107,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
       Scale         : Single := 0.4;
+      Line_Index    : Int := 0;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -132,8 +133,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Coord_Attribute, 3, Single_Type, 0, 0);
 
-        if Patch_Mode = Patch then
-            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 15);
+      if Patch_Mode = Patch then
+         while Line_Index < 15 loop
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, Line_Index, Line_Index + 1);
+            Line_Index := Line_Index + 2;
+         end loop;
       else
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 15);
       end if;
