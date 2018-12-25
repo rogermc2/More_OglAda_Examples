@@ -72,10 +72,10 @@ package body Surface_Patch is
       for Step_Count in 1 .. Num_Steps loop
          Index := 1 + (Step_Count - 1) * 2 * Num_Steps;
          --  Splines of constant U
-         CP0 := U_Coord (Patch, 1, T);
-         CP1 := U_Coord (Patch, 2, T);
-         CP2 := U_Coord (Patch, 3, T);
-         CP3 := U_Coord (Patch, 4, T);
+         CP0 := U_Coord (Patch, 0, T);
+         CP1 := U_Coord (Patch, 1, T);
+         CP2 := U_Coord (Patch, 2, T);
+         CP3 := U_Coord (Patch, 3, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
          Utilities.Print_Vector ("Build_Patch U CP0", CP0);
          Utilities.Print_Vector ("Build_Patch U CP1", CP1);
@@ -87,10 +87,10 @@ package body Surface_Patch is
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          --  Splines of constant V
-         CP0 := V_Cord (Patch, 1, T);
-         CP1 := V_Cord (Patch, 2, T);
-         CP2 := V_Cord (Patch, 3, T);
-         CP3 := V_Cord (Patch, 4, T);
+         CP0 := V_Cord (Patch, 0, T);
+         CP1 := V_Cord (Patch, 1, T);
+         CP2 := V_Cord (Patch, 2, T);
+         CP3 := V_Cord (Patch, 3, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
          Utilities.Print_Vector ("Build_Patch V CP0", CP0);
          Utilities.Print_Vector ("Build_Patch V CP1", CP1);
@@ -133,10 +133,10 @@ package body Surface_Patch is
                        return Singles.Vector3 is
       use Patch_Data;
    begin
-      return Blend_Vectors (Control_Points (Patch (Index, 1)),
+      return Blend_Vectors (Control_Points (Patch (Index, 0)),
+                            Control_Points (Patch (Index, 1)),
                             Control_Points (Patch (Index, 2)),
-                            Control_Points (Patch (Index, 3)),
-                            Control_Points (Patch (Index, 4)), T);
+                            Control_Points (Patch (Index, 3)), T);
     end U_Coord;
 
    --------------------------------------------------------------------------------
@@ -145,10 +145,10 @@ package body Surface_Patch is
                     return Singles.Vector3 is
       use Patch_Data;
    begin
-      return Blend_Vectors (Control_Points (Patch (1, Index)),
+      return Blend_Vectors (Control_Points (Patch (0, Index)),
+                            Control_Points (Patch (1, Index)),
                             Control_Points (Patch (2, Index)),
-                            Control_Points (Patch (3, Index)),
-                            Control_Points (Patch (4, Index)), T);
+                            Control_Points (Patch (3, Index)), T);
     end V_Cord;
 
    --  --------------------------------------------------------------------------------
