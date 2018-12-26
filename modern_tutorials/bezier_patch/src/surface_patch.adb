@@ -18,20 +18,22 @@ package body Surface_Patch is
    function  Blend_Vectors (CP0, CP1, CP2, CP3 : Singles.Vector3;
                            T : GL.Types.Single) return Singles.Vector3 is
        use GL;
-       T_Cub  : Single := T ** 3;
-       T1     : Single := 1.0 - T;
-       T1_Cub : Single := (1.0 - T) ** 3;
-       T1_Sq  : Single := (1.0 - T) ** 2;
-       T3     : Single := 3.0 * T;
-      T3_Sq   : Single := 3.0 * T * T;
-      Result  : Singles.Vector3;
+       T_Cub    : constant Single := T ** 3;
+       T1       : constant Single := 1.0 - T;
+       T1_Cub   : constant Single := (1.0 - T) ** 3;
+       T1_Sq    : constant Single := (1.0 - T) ** 2;
+       T3       : constant Single := 3.0 * T;
+       T3_Sq    : constant Single := 3.0 * T * T;
+       T3_T1_SQ : constant Single := T3 * T1_SQ;
+       T3_Sq_T1 : constant Single := T3_Sq * T1;
+       Result   : Singles.Vector3;
    begin
-        Result (X) :=  T1_Cub * CP0 (X) + T3 * T1_SQ * CP1 (X) +
-          T3_Sq * T1 * CP2 (X) + T_Cub * CP3 (X);
-        Result (Y) :=  T1_Cub * CP0 (Y) + T3 * T1_SQ * CP1 (Y) +
-          T3_Sq * T1 * CP2 (Y) + T_Cub * CP3 (Y);
-        Result (Z) :=  T1_Cub * CP0 (Z) + T3 * T1_SQ * CP1 (Z) +
-        T3_Sq * T1 * CP2 (Z) + T_Cub * CP3 (Z);
+      Result (X) :=  T1_Cub * CP0 (X) + T3_T1_SQ * CP1 (X) +
+        T3_Sq_T1 * CP2 (X) + T_Cub * CP3 (X);
+      Result (Y) :=  T1_Cub * CP0 (Y) + T3_T1_SQ * CP1 (Y) +
+        T3_Sq_T1 * CP2 (Y) + T_Cub * CP3 (Y);
+      Result (Z) :=  T1_Cub * CP0 (Z) + T3_T1_SQ * CP1 (Z) +
+        T3_Sq_T1 * CP2 (Z) + T_Cub * CP3 (Z);
       return Result;
    end Blend_Vectors;
 
@@ -45,8 +47,7 @@ package body Surface_Patch is
       Coord_Index : Int := 1;
    begin
       Curve_Coords (Coord_Index) := CP0;                   --  Start of spline
---        for Coord_Index in 1 .. Num_Steps loop   --  Build spline
-      while T < 1.0 + 0.5 * Step loop
+      while T < 1.0 + 0.5 * Step loop   --  Build spline
          Coord_Index := Coord_Index + 1;
          Curve_Coords (Coord_Index) := Blend_Vectors (CP0, CP1, CP2, CP3, T);
          T := T + Step;
