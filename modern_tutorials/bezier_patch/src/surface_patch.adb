@@ -60,9 +60,8 @@ package body Surface_Patch is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_Patch (Num_Steps : Int;
+   procedure Build_Patch (thePatch : Patch_Data.Patch_Type; Num_Steps : Int;
                           Patch_Array : out Singles.Vector3_Array) is
-      use Patch_Data;
       CP0, CP1, CP2, CP3 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Step        : constant Single := 1.0 / Single (Num_Steps);
       Index       : Int;
@@ -72,10 +71,10 @@ package body Surface_Patch is
       for Step_Count in 1 .. Num_Steps loop
          Index := 1 + (Step_Count - 1) * 2 * Num_Steps;
          --  Splines of constant U
-         CP0 := U_Coord (Patch, 0, T);
-         CP1 := U_Coord (Patch, 1, T);
-         CP2 := U_Coord (Patch, 2, T);
-         CP3 := U_Coord (Patch, 3, T);
+         CP0 := U_Coord (thePatch, 0, T);
+         CP1 := U_Coord (thePatch, 1, T);
+         CP2 := U_Coord (thePatch, 2, T);
+         CP3 := U_Coord (thePatch, 3, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
          Utilities.Print_Vector ("Build_Patch U CP0", CP0);
          Utilities.Print_Vector ("Build_Patch U CP1", CP1);
@@ -87,10 +86,10 @@ package body Surface_Patch is
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          --  Splines of constant V
-         CP0 := V_Cord (Patch, 0, T);
-         CP1 := V_Cord (Patch, 1, T);
-         CP2 := V_Cord (Patch, 2, T);
-         CP3 := V_Cord (Patch, 3, T);
+         CP0 := V_Cord (thePatch, 0, T);
+         CP1 := V_Cord (thePatch, 1, T);
+         CP2 := V_Cord (thePatch, 2, T);
+         CP3 := V_Cord (thePatch, 3, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
          Utilities.Print_Vector ("Build_Patch V CP0", CP0);
          Utilities.Print_Vector ("Build_Patch V CP1", CP1);
