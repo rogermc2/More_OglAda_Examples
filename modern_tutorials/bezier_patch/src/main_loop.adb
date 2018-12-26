@@ -40,7 +40,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    CP_Vertices_Buffer : GL.Objects.Buffers.Buffer;
 
    CP_Count           : constant Int := Patch_Data.Control_Points'Length;
-   Num_Steps          : constant Int := 10; -- 10;
+   Num_Steps          : constant Int := 4; -- 10;
 
    Patch_Array_Length : Int := 2 * (Num_Steps ** 2 + 1);
    Patch_Array        : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
@@ -108,6 +108,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Offset        : Natural := 0;
       Scale         : Single := 0.4;
       Line_Index    : Int := 0;
+      Index_Count   : Int;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -133,11 +134,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Coord_Attribute, 3, Single_Type, 0, 0);
 
+       --  Index_Coun: number of indices to be rendered.
+       --  Line_Index: starting index in the enabled arrays.
+       Line_Index := 0;
+      Index_Count := 34;
       if Patch_Mode = Patch then
-         while Line_Index < 15 loop
-            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, Line_Index, Line_Index + 1);
-            Line_Index := Line_Index + 2;
-         end loop;
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 20);
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 20, 2);
+--             while Line_Index < Index_Count loop
+--                  GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, Line_Index, 2);
+--                  Line_Index := Line_Index + 3;
+--             end loop;
       else
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 15);
       end if;
@@ -166,7 +173,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         if Patch_Mode = Patch then
             GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
-            Surface_Patch.Build_Patch (Num_Steps, Patch_Array);
+            Surface_Patch.Build_Patch (Patch_Data.Patch, Num_Steps, Patch_Array);
             Put_Line ("Init Patch_Array_Length" &
                Int'Image (Patch_Array_Length));
              Buffers.Create_Vertex_Buffer (Vertices_Buffer, Patch_Array);
