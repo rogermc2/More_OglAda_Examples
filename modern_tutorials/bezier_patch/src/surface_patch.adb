@@ -18,18 +18,18 @@ package body Surface_Patch is
    function  Blend_Vectors (CP0, CP1, CP2, CP3 : Singles.Vector3;
                            T : GL.Types.Single) return Singles.Vector3 is
        use GL;
-       T1_Cub   : constant Single := (1.0 - T) ** 3;
-       T3_T1_SQ : constant Single := 3.0 * T * (1.0 - T) ** 2;
-       T3_Sq_T1 : constant Single := 3.0 * T * T * (1.0 - T);
-       T_Cub    : constant Single := T ** 3;
+       CP0_Weight   : constant Single := (1.0 - T) ** 3;
+       CP1_Weight : constant Single := 3.0 * T * (1.0 - T) ** 2;
+       CP2_Weight : constant Single := 3.0 * T * T * (1.0 - T);
+       CP3_Weight    : constant Single := T ** 3;
        Result   : Singles.Vector3;
    begin
-      Result (X) :=  T1_Cub * CP0 (X) + T3_T1_SQ * CP1 (X) +
-        T3_Sq_T1 * CP2 (X) + T_Cub * CP3 (X);
-      Result (Y) :=  T1_Cub * CP0 (Y) + T3_T1_SQ * CP1 (Y) +
-        T3_Sq_T1 * CP2 (Y) + T_Cub * CP3 (Y);
-      Result (Z) :=  T1_Cub * CP0 (Z) + T3_T1_SQ * CP1 (Z) +
-        T3_Sq_T1 * CP2 (Z) + T_Cub * CP3 (Z);
+      Result (X) :=  CP0_Weight * CP0 (X) + CP1_Weight * CP1 (X) +
+        CP2_Weight * CP2 (X) + CP3_Weight * CP3 (X);
+      Result (Y) :=  CP0_Weight * CP0 (Y) + CP1_Weight * CP1 (Y) +
+        CP2_Weight * CP2 (Y) + CP3_Weight * CP3 (Y);
+      Result (Z) :=  CP0_Weight * CP0 (Z) + CP1_Weight * CP1 (Z) +
+        CP2_Weight * CP2 (Z) + CP3_Weight * CP3 (Z);
       return Result;
    end Blend_Vectors;
 
