@@ -18,14 +18,10 @@ package body Surface_Patch is
    function  Blend_Vectors (CP0, CP1, CP2, CP3 : Singles.Vector3;
                            T : GL.Types.Single) return Singles.Vector3 is
        use GL;
-       T_Cub    : constant Single := T ** 3;
-       T1       : constant Single := 1.0 - T;
        T1_Cub   : constant Single := (1.0 - T) ** 3;
-       T1_Sq    : constant Single := (1.0 - T) ** 2;
-       T3       : constant Single := 3.0 * T;
-       T3_Sq    : constant Single := 3.0 * T * T;
-       T3_T1_SQ : constant Single := T3 * T1_SQ;
-       T3_Sq_T1 : constant Single := T3_Sq * T1;
+       T3_T1_SQ : constant Single := 3.0 * T * (1.0 - T) ** 2;
+       T3_Sq_T1 : constant Single := 3.0 * T * T * (1.0 - T);
+       T_Cub    : constant Single := T ** 3;
        Result   : Singles.Vector3;
    begin
       Result (X) :=  T1_Cub * CP0 (X) + T3_T1_SQ * CP1 (X) +
