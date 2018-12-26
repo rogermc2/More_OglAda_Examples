@@ -43,11 +43,13 @@ package body Surface_Patch is
       Coord_Index : Int := 1;
    begin
       Curve_Coords (Coord_Index) := CP0;                   --  Start of spline
-      while T < 1.0 + 0.5 * Step loop   --  Build spline
+--        while T < 1.0 + 0.5 * Step loop   --  Build spline
+      for count in 1 .. Num_Steps - 1 loop   --  Build spline
          Coord_Index := Coord_Index + 1;
          Curve_Coords (Coord_Index) := Blend_Vectors (CP0, CP1, CP2, CP3, T);
          T := T + Step;
       end loop;
+      Curve_Coords (Num_Steps + 1) := CP3;
 
    exception
       when  others =>
