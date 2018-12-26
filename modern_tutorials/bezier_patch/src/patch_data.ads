@@ -1,4 +1,7 @@
 
+--  See http://www.holmes3d.net/graphics/teapot/
+--  Control point data from:
+--  http://www.holmes3d.net/graphics/teapot/teapotCGA.bpt
 with GL.Types; use GL.Types;
 
 package Patch_Data is
