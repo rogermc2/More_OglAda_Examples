@@ -30,7 +30,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
    type Mode is (Patch, CP);
-   Patch_Mode : Mode := Patch;
+   Patch_Mode         : Mode := Patch;
 
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program     : GL.Objects.Programs.Program;
@@ -95,20 +95,20 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    procedure Display (Window : in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Maths;
-      Window_Width  : Glfw.Size;
-      Window_Height : Glfw.Size;
-      Current_Time  : constant Glfw.Seconds := Glfw.Time;
-      Angle         : Radian := 0.26 * Radian (Current_Time);  --  approx 15 degree per second
-      Animation     : Singles.Matrix4 := Singles.Identity4;
-      View          : Singles.Matrix4 := Singles.Identity4;
-      Model         : Singles.Matrix4 := Singles.Identity4;
-      Scale_Matrix  : Singles.Matrix4 := Singles.Identity4;
-      Projection    : Singles.Matrix4 := Singles.Identity4;
-      MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
-      Offset        : Natural := 0;
-      Scale         : Single := 0.4;
-      Line_Index    : Int := 0;
-      Index_Count   : Int;
+      Window_Width    : Glfw.Size;
+      Window_Height   : Glfw.Size;
+      Current_Time    : constant Glfw.Seconds := Glfw.Time;
+      Angle           : Radian := 0.26 * Radian (Current_Time);  --  approx 15 degree per second
+      Animation       : Singles.Matrix4 := Singles.Identity4;
+      View            : Singles.Matrix4 := Singles.Identity4;
+      Model           : Singles.Matrix4 := Singles.Identity4;
+      Scale_Matrix    : Singles.Matrix4 := Singles.Identity4;
+      Projection      : Singles.Matrix4 := Singles.Identity4;
+      MVP_Matrix      : Singles.Matrix4 := Singles.Identity4;
+      Offset          : Natural := 0;
+      Scale           : Single := 0.4;
+      Line_Index      : Int := 0;
+      Points_Per_Line : Int;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -137,14 +137,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
        --  Index_Coun: number of indices to be rendered.
        --  Line_Index: starting index in the enabled arrays.
        Line_Index := 0;
-      Index_Count := 34;
+      Points_Per_Line := Num_Steps + 1;
       if Patch_Mode = Patch then
-            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 20);
-            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 20, 2);
---             while Line_Index < Index_Count loop
---                  GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, Line_Index, 2);
---                  Line_Index := Line_Index + 3;
---             end loop;
+         while Line_Index < 2 * Points_Per_Line loop
+            GL.Objects.Vertex_Arrays.Draw_Arrays
+              (Line_Strip, Line_Index, Points_Per_Line);
+            Line_Index := Line_Index + Num_Steps + 1;
+         end loop;
+         GL.Objects.Vertex_Arrays.Draw_Arrays (Line_Strip, Line_Index, 3);
       else
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 15);
       end if;
