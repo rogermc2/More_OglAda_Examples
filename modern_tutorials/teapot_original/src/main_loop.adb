@@ -49,7 +49,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Patch_Count        : constant Int := Teapot_Data.Patchs'Length;
    Num_Steps          : constant Int := 10; -- 10;
 
-   Patch_Array_Length : Int := 2 * (Num_Steps ** 2 + 1);
+   Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
+   Patch_Array        : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
+                          (others => (0.0, 0.0, 0.0));
+
    Teapot_Length      : constant Int
      := Int (Teapot_Data.Patchs'Length * Patch_Array_Length);
    theTeapot          : Singles.Vector3_Array (1 .. Teapot_Length) :=
@@ -116,6 +119,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
       Scale         : Single := 0.4;
+      Line_Index      : Int := 0;
+      Points_Per_Line : constant Int := Num_Steps + 1;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -144,8 +149,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         if Teapot_Mode = Teapot then
 --        GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
 --  --        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
-            GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 269);
---              GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 5, 8);
+         while Line_Index < Patch_Array_Length loop
+            GL.Objects.Vertex_Arrays.Draw_Arrays
+              (Line_Strip, Line_Index, Points_Per_Line);
+            Line_Index := Line_Index + Points_Per_Line;
+         end loop;
       else
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 269);
       end if;
