@@ -142,9 +142,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          while Line_Index < 2 * Points_Per_Line loop
             GL.Objects.Vertex_Arrays.Draw_Arrays
               (Line_Strip, Line_Index, Points_Per_Line);
-            Line_Index := Line_Index + Num_Steps + 1;
+            Line_Index := Line_Index + Points_Per_Line;
          end loop;
-         GL.Objects.Vertex_Arrays.Draw_Arrays (Line_Strip, Line_Index, 3);
+--           GL.Objects.Vertex_Arrays.Draw_Arrays (Line_Strip, Line_Index, 3);
       else
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 15);
       end if;

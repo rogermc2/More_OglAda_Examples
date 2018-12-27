@@ -18,11 +18,11 @@ package body Surface_Patch is
    function  Blend_Vectors (CP0, CP1, CP2, CP3 : Singles.Vector3;
                            T : GL.Types.Single) return Singles.Vector3 is
        use GL;
-       CP0_Weight   : constant Single := (1.0 - T) ** 3;
+       CP0_Weight : constant Single := (1.0 - T) ** 3;
        CP1_Weight : constant Single := 3.0 * T * (1.0 - T) ** 2;
        CP2_Weight : constant Single := 3.0 * T * T * (1.0 - T);
-       CP3_Weight    : constant Single := T ** 3;
-       Result   : Singles.Vector3;
+       CP3_Weight : constant Single := T ** 3;
+       Result     : Singles.Vector3;
    begin
       Result (X) :=  CP0_Weight * CP0 (X) + CP1_Weight * CP1 (X) +
         CP2_Weight * CP2 (X) + CP3_Weight * CP3 (X);
@@ -42,9 +42,8 @@ package body Surface_Patch is
       T           : Single := Step;
       Coord_Index : Int := 1;
    begin
-      Curve_Coords (Coord_Index) := CP0;                   --  Start of spline
---        while T < 1.0 + 0.5 * Step loop   --  Build spline
-      for count in 1 .. Num_Steps - 1 loop   --  Build spline
+      Curve_Coords (Coord_Index) := CP0;    --  Start of spline
+      while Coord_Index <= Num_Steps loop   --  Build spline
          Coord_Index := Coord_Index + 1;
          Curve_Coords (Coord_Index) := Blend_Vectors (CP0, CP1, CP2, CP3, T);
          T := T + Step;
@@ -83,7 +82,7 @@ package body Surface_Patch is
                      Single'Image (T));
          Utilities.Print_GL_Array3 ("Curve segment", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
-         Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
+--           Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          --  Splines of constant V
          CP0 := V_Cord (thePatch, 0, T);
          CP1 := V_Cord (thePatch, 1, T);
@@ -99,7 +98,7 @@ package body Surface_Patch is
                      Single'Image (T));
          Utilities.Print_GL_Array3 ("Curve Segment", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
-         Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
+--           Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          T := T + Step;
       end loop;
 
