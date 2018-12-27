@@ -40,9 +40,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    CP_Vertices_Buffer : GL.Objects.Buffers.Buffer;
 
    CP_Count           : constant Int := Patch_Data.Control_Points'Length;
-   Num_Steps          : constant Int := 4; -- 10;
+   Num_Steps          : constant Int := 10;
 
-   Patch_Array_Length : Int := 2 * (Num_Steps ** 2 + 1);
+   Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
    Patch_Array        : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
                           (others => (0.0, 0.0, 0.0));
 
@@ -68,8 +68,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       else
          GL.Objects.Programs.Use_Program (Shader_Program);
          Coord_Attribute := GL.Objects.Programs.Attrib_Location (Shader_Program, "coord3d");
---           Colour_Attribute := GL.Objects.Programs.Attrib_Location (Shader_Program, "v_color");
---           OK := Coord_Attribute >= 0 and Colour_Attribute >= 0;
          OK := Coord_Attribute >= 0;
          if OK then
             MVP_Location :=
@@ -108,7 +106,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Offset          : Natural := 0;
       Scale           : Single := 0.4;
       Line_Index      : Int := 0;
-      Points_Per_Line : Int;
+      Points_Per_Line : constant Int := Num_Steps + 1;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -134,17 +132,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Coord_Attribute, 3, Single_Type, 0, 0);
 
-       --  Index_Coun: number of indices to be rendered.
-       --  Line_Index: starting index in the enabled arrays.
-       Line_Index := 0;
-      Points_Per_Line := Num_Steps + 1;
+      --  Line_Index: starting index in the enabled arrays.
+      Line_Index := 0;
       if Patch_Mode = Patch then
-         while Line_Index < 2 * Points_Per_Line loop
+         while Line_Index < Patch_Array_Length loop
             GL.Objects.Vertex_Arrays.Draw_Arrays
               (Line_Strip, Line_Index, Points_Per_Line);
             Line_Index := Line_Index + Points_Per_Line;
          end loop;
---           GL.Objects.Vertex_Arrays.Draw_Arrays (Line_Strip, Line_Index, 3);
       else
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 15);
       end if;
