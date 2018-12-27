@@ -113,15 +113,16 @@ package body Pascal_Teapot is
 
    procedure Build_Teapot (Num_Steps : Int;
                            theTeapot : out Singles.Vector3_Array) is
-      Patches            : constant Teapot_Data.Patch_Array := Teapot_Data.Patchs;
-      Patch_Array_Length : constant Int := 2 * (Num_Steps + 1) ** 2;
-      aPatch             : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
+      Patches              : constant Teapot_Data.Patch_Array := Teapot_Data.Patchs;
+      Num_Points_Per_Patch : constant Int :=  (Num_Steps + 1);
+      Patch_Array_Length   : constant Int := 2 * Num_Points_Per_Patch ** 2;
+      aPatch               : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
                              (others => (0.0, 0.0, 0.0));
-      Offset             : Int;
+      Offset               : Int;
    begin
 --        for Patch_Index in Patchs'Range loop
-      for Patch_Index in Int range 1 .. 1 loop
-         Offset := (Patch_Index - 1) * Num_Steps * Num_Steps;
+      for Patch_Index in Int range 1 .. 2 loop
+         Offset := (Patch_Index - 1) * Num_Points_Per_Patch * Num_Points_Per_Patch;
          Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length" &
                Int'Image (Patch_Array_Length));
          Put ("Pascal_Teapot.Build_Teapot, Patch " & Int'Image (Patch_Index));
