@@ -62,43 +62,27 @@ package body Surface_Patch is
                           Patch_Array : out Singles.Vector3_Array) is
       CP0, CP1, CP2, CP3 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Step        : constant Single := 1.0 / Single (Num_Steps);
-      Index       : Int;
+      Index       : Int := 1;
       T           : Single := 0.0;
       Curve       : Singles.Vector3_Array (1 .. Num_Steps + 1);
    begin
-      for Step_Count in 1 .. Num_Steps loop
-         Index := 1 + (Step_Count - 1) * 2 * Num_Steps;
+      for Step_Count in 1 .. Num_Steps + 1 loop
          --  Splines of constant U
          CP0 := U_Coord (thePatch, 0, T);
          CP1 := U_Coord (thePatch, 1, T);
          CP2 := U_Coord (thePatch, 2, T);
          CP3 := U_Coord (thePatch, 3, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
-         Utilities.Print_Vector ("Build_Patch U CP0", CP0);
-         Utilities.Print_Vector ("Build_Patch U CP1", CP1);
-         Utilities.Print_Vector ("Build_Patch U CP2", CP2);
-         Utilities.Print_Vector ("Build_Patch U CP3", CP3);
-         Put_Line ("Build_Patch, Index 1: " & Int'Image (Index) & " T: " &
-                     Single'Image (T));
-         Utilities.Print_GL_Array3 ("Curve segment", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
---           Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
          --  Splines of constant V
+         Index := Index + Num_Steps + 1;
          CP0 := V_Cord (thePatch, 0, T);
          CP1 := V_Cord (thePatch, 1, T);
          CP2 := V_Cord (thePatch, 2, T);
          CP3 := V_Cord (thePatch, 3, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
-         Utilities.Print_Vector ("Build_Patch V CP0", CP0);
-         Utilities.Print_Vector ("Build_Patch V CP1", CP1);
-         Utilities.Print_Vector ("Build_Patch V CP2", CP2);
-         Utilities.Print_Vector ("Build_Patch V CP3", CP3);
-         Index := Index + Num_Steps + 1;
-         Put_Line ("Build_Patch, Index 2: " & Int'Image (Index) & " T: " &
-                     Single'Image (T));
-         Utilities.Print_GL_Array3 ("Curve Segment", Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
---           Utilities.Print_GL_Array3 ("Patch_Array", Patch_Array);
+         Index := Index + Num_Steps + 1;
          T := T + Step;
       end loop;
 
