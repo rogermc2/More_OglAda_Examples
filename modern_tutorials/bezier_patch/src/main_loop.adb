@@ -2,7 +2,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
-with GL.Culling;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
@@ -15,7 +14,6 @@ with GL.Window;
 with Glfw;
 with Glfw.Input;
 with Glfw.Input.Keys;
-with Glfw.Input.Mouse;
 with Glfw.Windows.Context;
 
 with Maths;
@@ -95,15 +93,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Maths;
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
-      Current_Time    : constant Glfw.Seconds := Glfw.Time;
-      Angle           : Radian := 0.26 * Radian (Current_Time);  --  approx 15 degree per second
-      Animation       : Singles.Matrix4 := Singles.Identity4;
-      View            : Singles.Matrix4 := Singles.Identity4;
-      Model           : Singles.Matrix4 := Singles.Identity4;
-      Scale_Matrix    : Singles.Matrix4 := Singles.Identity4;
-      Projection      : Singles.Matrix4 := Singles.Identity4;
       MVP_Matrix      : Singles.Matrix4 := Singles.Identity4;
-      Offset          : Natural := 0;
       Scale           : Single := 0.4;
       Line_Index      : Int := 0;
       Points_Per_Line : constant Int := Num_Steps + 1;
@@ -112,17 +102,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
---        Maths.Init_Lookat_Transform ((0.0, 0.0, -8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
---        Animation := Translation_Matrix ((-0.5, 0.0, -1.5)); --   *
---          Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
---            Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
---              Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
-      Projection := Perspective_Matrix (Degree (45.0),
-                                        Single (Window_Width) / Single (Window_Height),
-                                        -0.1, 100.0);
-      Scale_Matrix := Maths.Scaling_Matrix (Scale);
---        MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
-        MVP_Matrix := Scale_Matrix;
+      MVP_Matrix := Maths.Scaling_Matrix (Scale);
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);

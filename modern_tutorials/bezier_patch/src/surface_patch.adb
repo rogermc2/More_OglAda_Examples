@@ -1,8 +1,6 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Utilities;
-
 package body Surface_Patch is
    use GL.Types;
 
