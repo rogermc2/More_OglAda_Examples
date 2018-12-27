@@ -3,14 +3,14 @@ with GL.Types; use GL.Types;
 
 package Teapot_Data is
 
-   Num_Patchs         : constant Int := 28;
+   Num_Patches        : constant Int := 28;
    Spline_Degree      : constant Int := 3;
    Num_Control_Points : constant Int := 269;
 
    subtype CP_Index is Int range 1 .. Num_Control_Points;
    type Patch_Type is array
      (Int range 0 .. Spline_Degree, Int range 0 .. Spline_Degree) of CP_Index;
-   type Patch_Array is array (1.. Num_Patchs) of Patch_Type;
+   type Patch_Array is array (1.. Num_Patches) of Patch_Type;
 
    Patchs : constant Patch_Array
      := -- rim

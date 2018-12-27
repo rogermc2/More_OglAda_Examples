@@ -7,7 +7,7 @@ package Pascal_Teapot is
     use GL.Types;
 
    type Colours_Array is new
-     Single_Array (1 .. 3 * Teapot_Data.Num_Patchs);
+     Single_Array (1 .. 3 * Teapot_Data.Num_Patches);
    type CP_Colours_Array is array
      (Int range 1 .. 3 * Teapot_Data.Num_Control_Points) of GL.Types.Single;
 
