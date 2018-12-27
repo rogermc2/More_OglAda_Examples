@@ -9,7 +9,7 @@ package Teapot_Data is
 
    subtype CP_Index is Int range 1 .. Num_Control_Points;
    type Patch_Type is array
-     (1 .. Spline_Degree + 1, 1 .. Spline_Degree + 1) of CP_Index;
+     (Int range 0 .. Spline_Degree, Int range 0 .. Spline_Degree) of CP_Index;
    type Patch_Array is array (1.. Num_Patchs) of Patch_Type;
 
    Patchs : constant Patch_Array
