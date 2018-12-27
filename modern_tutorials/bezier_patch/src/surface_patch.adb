@@ -37,6 +37,7 @@ package body Surface_Patch is
                           Num_Steps          : Int;
                           Curve_Coords       : out Singles.Vector3_Array) is
       Step        : constant Single := 1.0 / Single (Num_Steps);
+      Num_Points  : constant Int := Num_Steps + 1;
       T           : Single := Step;
       Coord_Index : Int := 1;
    begin
@@ -46,7 +47,7 @@ package body Surface_Patch is
          Curve_Coords (Coord_Index) := Blend_Vectors (CP0, CP1, CP2, CP3, T);
          T := T + Step;
       end loop;
-      Curve_Coords (Num_Steps + 1) := CP3;
+      Curve_Coords (Num_Points) := CP3;
 
    exception
       when  others =>
@@ -60,11 +61,12 @@ package body Surface_Patch is
                           Patch_Array : out Singles.Vector3_Array) is
       CP0, CP1, CP2, CP3 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Step        : constant Single := 1.0 / Single (Num_Steps);
+      Num_Points  : constant Int := Num_Steps + 1;
       Index       : Int := 1;
       T           : Single := 0.0;
-      Curve       : Singles.Vector3_Array (1 .. Num_Steps + 1);
+      Curve       : Singles.Vector3_Array (1 .. Num_Points);
    begin
-      for Step_Count in 1 .. Num_Steps + 1 loop
+      for Step_Count in 1 .. Num_Points loop
          --  Splines of constant U
          CP0 := U_Coord (thePatch, 0, T);
          CP1 := U_Coord (thePatch, 1, T);
@@ -73,14 +75,14 @@ package body Surface_Patch is
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
          --  Splines of constant V
-         Index := Index + Num_Steps + 1;
+         Index := Index + Num_Points;
          CP0 := V_Cord (thePatch, 0, T);
          CP1 := V_Cord (thePatch, 1, T);
          CP2 := V_Cord (thePatch, 2, T);
          CP3 := V_Cord (thePatch, 3, T);
          Build_Curve (CP0, CP1, CP2, CP3, Num_Steps, Curve);
          Patch_Array (Index .. Index + Num_Steps) := Curve;
-         Index := Index + Num_Steps + 1;
+         Index := Index + Num_Points;
          T := T + Step;
       end loop;
 
