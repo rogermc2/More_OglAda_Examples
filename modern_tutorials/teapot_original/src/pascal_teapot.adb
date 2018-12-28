@@ -122,11 +122,8 @@ package body Pascal_Teapot is
    begin
       for Patch_Index in Patches'Range loop
          Build_Patch (Patches (Patch_Index), Num_Steps, aPatch);
-         Utilities.Print_GL_Array3 ("", aPatch);
-         New_Line;
          for Patch_Index in 1 .. Patch_Array_Length loop
-                theTeapot (Offset + Patch_Index) :=
-                  aPatch (Patch_Index);
+            theTeapot (Offset + Patch_Index) := aPatch (Patch_Index);
          end loop;
          Offset := Offset + Patch_Array_Length;
       end loop;

@@ -186,8 +186,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
              Pascal_Teapot.Build_Teapot (Num_Steps, theTeapot);
 --           Pascal_Teapot.Build_CP_Colours (CP_Colours);
 
-            Put_Line ("Init Patch_Array_Length" &
-               Int'Image (Patch_Array_Length));
              Buffers.Create_Vertex_Buffer (Vertices_Buffer, theTeapot);
 --           Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
 
