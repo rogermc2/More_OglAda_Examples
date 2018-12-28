@@ -100,7 +100,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Maths;
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
-      Angle           : constant Radian := 0.26 * Radian (Glfw.Time);  --  approx 15 degree per second
+      Angle           : constant Radian := 0.1 * Radian (Glfw.Time);  --  approx 15 degree per second
       Animation       : Singles.Matrix4 := Singles.Identity4;
       View            : Singles.Matrix4 := Singles.Identity4;
       Model           : Singles.Matrix4 := Singles.Identity4;
@@ -116,17 +116,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Maths.Init_Lookat_Transform ((0.0, 0.0, -8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
---        Animation := Translation_Matrix ((-0.5, 0.0, -1.5)); --   *
---          Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
---            Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
---              Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
+      Maths.Init_Lookat_Transform ((0.0, 0.0, -10.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
+      Animation := Translation_Matrix ((-0.5, 0.0, -1.5))  *
+        Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
+          Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
+            Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
       Projection := Perspective_Matrix (Degree (45.0),
                                         Single (Window_Width) / Single (Window_Height),
                                         0.1, 100.0);
       Scale_Matrix := Maths.Scaling_Matrix (Scale);
       MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
-      MVP_Matrix := Projection * View * Scale_Matrix;
+--        MVP_Matrix := Projection * View * Scale_Matrix;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
