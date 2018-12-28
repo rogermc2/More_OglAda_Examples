@@ -108,7 +108,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection      : Singles.Matrix4 := Singles.Identity4;
       MVP_Matrix      : Singles.Matrix4 := Singles.Identity4;
       Offset          : Natural := 0;
-      Scale           : Single := 0.25;
+      Scale           : Single := 1.0;
       Line_Index      : Int := 0;
       Points_Per_Line : constant Int := Num_Steps + 1;
    begin
@@ -123,10 +123,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --              Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
       Projection := Perspective_Matrix (Degree (45.0),
                                         Single (Window_Width) / Single (Window_Height),
-                                        -0.1, 100.0);
+                                        0.1, 100.0);
       Scale_Matrix := Maths.Scaling_Matrix (Scale);
       MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
-      MVP_Matrix := Scale_Matrix;
+      MVP_Matrix := Projection * View * Scale_Matrix;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
