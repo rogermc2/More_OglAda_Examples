@@ -2,7 +2,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
-with GL.Culling;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
@@ -35,19 +34,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program     : GL.Objects.Programs.Program;
    Coord_Attribute    : GL.Attributes.Attribute;
---     Colour_Attribute   : GL.Attributes.Attribute;
    MVP_Location       : GL.Uniforms.Uniform;
    Vertices_Buffer    : GL.Objects.Buffers.Buffer;
    CP_Vertices_Buffer : GL.Objects.Buffers.Buffer;
---     Colours_Buffer     : GL.Objects.Buffers.Buffer;
---     CP_Colours_Buffer  : GL.Objects.Buffers.Buffer;
---     Colours            : Pascal_Teapot.Colours_Array;
---     CP_Colours         : Pascal_Teapot.CP_Colours_Array;   --  For debugging
- --     CP_Elements        : Pascal_Teapot.Patch_Element_Array;  --  For debugging
 
    CP_Count           : constant Int := Teapot_Data.Control_Points'Length;
    Patch_Count        : constant Int := Teapot_Data.Patchs'Length;
-   Num_Steps          : constant Int := 10; -- 10;
+   Num_Steps          : constant Int := 10;
 
    Patch_Array_Length : Int := 2 * (Num_Steps + 1) ** 2;
    Patch_Array        : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
@@ -80,8 +73,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       else
          GL.Objects.Programs.Use_Program (Shader_Program);
          Coord_Attribute := GL.Objects.Programs.Attrib_Location (Shader_Program, "coord3d");
---           Colour_Attribute := GL.Objects.Programs.Attrib_Location (Shader_Program, "v_color");
---           OK := Coord_Attribute >= 0 and Colour_Attribute >= 0;
          OK := Coord_Attribute >= 0;
          if OK then
             MVP_Location :=
@@ -134,8 +125,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                         Single (Window_Width) / Single (Window_Height),
                                         -0.1, 100.0);
       Scale_Matrix := Maths.Scaling_Matrix (Scale);
---    MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
-        MVP_Matrix := Scale_Matrix;
+      MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
+      MVP_Matrix := Scale_Matrix;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
@@ -146,8 +137,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         (Coord_Attribute, 3, Single_Type, 0, 0);
 
         if Teapot_Mode = Teapot then
---        GL.Objects.Buffers.Array_Buffer.Bind (CP_Colours_Buffer);
---  --        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
          while Line_Index < Teapot_Length loop
             GL.Objects.Vertex_Arrays.Draw_Arrays
               (Line_Strip, Line_Index, Points_Per_Line);
@@ -158,7 +147,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       end if;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
---        GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
 
    exception
       when others =>
@@ -183,22 +171,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         if Teapot_Mode = Teapot then
              GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
              Pascal_Teapot.Build_Teapot (Num_Steps, theTeapot);
---           Pascal_Teapot.Build_CP_Colours (CP_Colours);
-
              Buffers.Create_Vertex_Buffer (Vertices_Buffer, theTeapot);
---           Buffers.Create_Colour_Buffer (Colours_Buffer, Colours);
-
---        CP_Vertices_Buffer.Initialize_Id;
---        GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
---        Utilities.Load_Singles_Buffer
---            (GL.Objects.Buffers.Array_Buffer, Teapot_Data.Control_Points2,
---             GL.Objects.Buffers.Static_Draw);
          else
             GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
             Buffers.Create_Vertex_Buffer
                   (Vertices_Buffer, Teapot_Data.Control_Points);
          end if;
---           Buffers.Create_CP_Colour_Buffer (CP_Colours_Buffer, CP_Colours);
       end if;
       return Result;
 
