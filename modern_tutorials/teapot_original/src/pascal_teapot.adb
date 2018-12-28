@@ -59,20 +59,6 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_CP_Colours (CP_Colours : out CP_Colours_Array) is
-   begin
-      for Index in CP_Colours'First .. CP_Colours'Last loop
-               CP_Colours (Index) :=  0.0;
-      end loop;
-
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in Pascal_Teapot.Build_CP_Colours.");
-         raise;
-   end Build_CP_Colours;
-
-   --  --------------------------------------------------------------------------------
-
    procedure Build_Patch (thePatch : Teapot_Data.Patch_Type; Num_Steps : Int;
                           Patch_Array : out Singles.Vector3_Array) is
       use Teapot_Data;
@@ -111,8 +97,8 @@ package body Pascal_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_Teapot (Num_Steps : Int;
-                           theTeapot : out Singles.Vector3_Array) is
+   procedure Build_Teapot (Num_Steps : GL.Types.Int;
+                           theTeapot : out GL.Types.Singles.Vector3_Array) is
       Patches              : constant Teapot_Data.Patch_Array := Teapot_Data.Patchs;
       Num_Points_Per_Patch : constant Int :=  (Num_Steps + 1);
       Patch_Array_Length   : constant Int := 2 * Num_Points_Per_Patch ** 2;
