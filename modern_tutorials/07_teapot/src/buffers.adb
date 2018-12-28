@@ -143,10 +143,8 @@ package body Buffers is
    begin
       for Elem_Count in Int range 1 .. anArray'Length loop
          Elem_Index := (Elem_Count - 1) * Order * Order;
-
          for Ord1_Count in Int range 1 .. Order loop
             Ord1_Index := Elem_Index + (Ord1_Count - 1) * Order + 1;
-
             for Ord2_Count in Int range 1 .. Order loop
                Flat (Ord1_Index + (Ord2_Count - 1)) := anArray (Elem_Count) (Ord1_Count, Ord2_Count);
             end loop;
