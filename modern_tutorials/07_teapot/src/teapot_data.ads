@@ -11,7 +11,7 @@ type Bezier_Patch is array (1 .. Order + 1, 1 .. Order + 1) of Int;
 type Patch_Data is array (1.. Num_Patches) of Bezier_Patch;
 type CP_Data is new Singles.Vector3_Array (1 .. Num_Control_Points);
 
-Patchs : constant Patch_Data
+Patches : constant Patch_Data
   := -- rim
  (((1, 2, 3, 4), (5, 6, 7 , 8), (9, 10, 11, 12), (13, 14, 15, 16)),
   ((4, 17, 18, 19), (8, 20, 21, 22), (12, 23, 24, 25), (16, 26, 27, 28)),
