@@ -22,7 +22,7 @@ package body MT_Teapot is
 
    --  --------------------------------------------------------------------------------
 
-   procedure Build_Control_Points (Patch          : Int;
+   procedure Get_Control_Points (Patch          : Int;
                                    Control_Points : out Control_Point_Array) is
       use GL.Types;
       thePatch : Teapot_Data.Bezier_Patch := Teapot_Data.Patchs (Patch);
@@ -30,16 +30,15 @@ package body MT_Teapot is
       for Index_I in Int range 1 .. thePatch'Length loop
          for Index_J in Int range 1 .. thePatch'Length (2) loop
             Control_Points (Index_I, Index_J) :=
-              Teapot_Data.Control_Points
-                (thePatch (Int (Index_I), Int (Index_J)));
+              Teapot_Data.Control_Points (thePatch (Int (Index_I), Int (Index_J)));
          end loop;
       end loop;
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_Control_Points.");
+         Put_Line ("An exception occurred in MT_Teapot.Get_Control_Points.");
          raise;
-   end Build_Control_Points;
+   end Get_Control_Points;
 
    --  --------------------------------------------------------------------------------
 
@@ -147,13 +146,13 @@ package body MT_Teapot is
       --  Evaluate the Bézier surface, with a resolution of 10x10.
       --  For each 4x4 patch, compute each point in the 10x10 grid
       --  with u and v progressing in 1/10 steps.
---        for Patch_Count in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
-      for Patch_Count in Int range 1 .. 1 loop
-         Build_Control_Points (Patch_Count, Control_Points);
-         Print_Control_Points (Patch_Count, Control_Points);
+--        for Patch_Num in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
+      for Patch_Num in Int range 1 .. 1 loop
+         Get_Control_Points (Patch_Num, Control_Points);
+--           Print_Control_Points (Patch_Num, Control_Points);
 
-         Patch_Part := Patch_Count * Res_UV;
-         Colour_P_Part := 3 * Patch_Count * Res_UV;
+         Patch_Part := Patch_Num * Res_UV;
+         Colour_P_Part := 3 * Patch_Num * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
             U := Single (Ru) / Single (Res_U - 1);
             PU_Part := Patch_Part + Ru * Res_V;
@@ -162,13 +161,12 @@ package body MT_Teapot is
                V := Single (Rv) / Single (Res_V - 1);
 --                 Put ("MT_Teapot.Build_Vertices, PU_Part + Rv " &
 --                        Int'Image (PU_Part + Rv) & "  ");
-               Vertices (PU_Part + Rv) :=
-                Compute_Position (Control_Points, U, V);
+               Vertices (PU_Part + Rv) := Compute_Position (Control_Points, U, V);
 --                   Utilities.Print_Vector ("Position", Vertices (PU_Part + Rv));
                Colours (Colour_PU_Part + 3 * rv) :=
-                 Single (Patch_Count) / Single (Teapot_Data.Num_Patchs);
+                 Single (Patch_Num) / Single (Teapot_Data.Num_Patches);
                Colours (Colour_PU_Part+ 3 * rv + 1) :=
-                 Single (Patch_Count) / Single (Teapot_Data.Num_Patchs);
+                 Single (Patch_Num) / Single (Teapot_Data.Num_Patches);
                Colours (Colour_PU_Part + 3 * rv + 2) := 0.8;
             end loop;
          end loop;
