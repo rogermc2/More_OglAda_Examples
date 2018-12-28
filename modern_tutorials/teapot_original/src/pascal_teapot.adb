@@ -118,17 +118,9 @@ package body Pascal_Teapot is
       Patch_Array_Length   : constant Int := 2 * Num_Points_Per_Patch ** 2;
       aPatch               : Singles.Vector3_Array (1 .. Patch_Array_Length) :=
                              (others => (0.0, 0.0, 0.0));
-      Offset               : Int;
+      Offset               : Int := 0;
    begin
---        for Patch_Index in Patchs'Range loop
-      for Patch_Index in Int range 1 .. 2 loop
-         Offset := (Patch_Index - 1) * Num_Points_Per_Patch * Num_Points_Per_Patch;
-         Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length" &
-               Int'Image (Patch_Array_Length));
-         Put ("Pascal_Teapot.Build_Teapot, Patch " & Int'Image (Patch_Index));
-         Print_Patch ("", Patches (Patch_Index));
---           Put_Line ("Pascal_Teapot.Build_Teapot Patch_Array_Length: " &
---                       Int'Image (Patch_Array_Length));
+      for Patch_Index in Patches'Range loop
          Build_Patch (Patches (Patch_Index), Num_Steps, aPatch);
          Utilities.Print_GL_Array3 ("", aPatch);
          New_Line;
@@ -136,10 +128,7 @@ package body Pascal_Teapot is
                 theTeapot (Offset + Patch_Index) :=
                   aPatch (Patch_Index);
          end loop;
---           Utilities.Print_Vector ("aPatch (1)", aPatch (1));
---           Utilities.Print_Vector ("aPatch (2)", aPatch (2));
---           Utilities.Print_Vector ("aPatch (3)", aPatch (3));
---           Utilities.Print_Vector ("aPatch (4)", aPatch (4));
+         Offset := Offset + Patch_Array_Length;
       end loop;
 
    exception
