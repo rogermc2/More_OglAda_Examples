@@ -19,13 +19,13 @@ package MT_Teapot is
      (1 .. Teapot_Data.Bezier_Patch'Length,
       1 .. Teapot_Data.Bezier_Patch'Length (2));
 
-   type Patch_Element_Array is array (Int range 1 .. Teapot_Data.Num_Patchs)
+   type Patch_Element_Array is array (Int range 1 .. Teapot_Data.Num_Patches)
      of CP_Element_Array;
 
    type Vertices_Array is new
      Singles.Vector3_Array (1 .. Patch_Size * Res_U * Res_V);
    type Colours_Array is new
-     Single_Array (1 .. 3 * Teapot_Data.Num_Patchs * Res_U * Res_V);
+     Single_Array (1 .. 3 * Teapot_Data.Num_Patches * Res_U * Res_V);
    type CP_Colours_Array is new Singles.Vector3_Array
      (Int range 1 .. Teapot_Data.Num_Control_Points);
 
