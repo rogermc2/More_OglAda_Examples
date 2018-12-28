@@ -147,12 +147,13 @@ package body MT_Teapot is
       --  Evaluate the Bézier surface, with a resolution of 10x10.
       --  For each 4x4 patch, compute each point in the 10x10 grid
       --  with u and v progressing in 1/10 steps.
-      for Patch_Count in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
-         Build_Control_Points (Patch_Count + 1, Control_Points);
-         Print_Control_Points (Patch_Count + 1, Control_Points);
+--        for Patch_Count in 0 .. Int (Teapot_Data.Patchs'Length - 1) loop
+      for Patch_Count in Int range 1 .. 1 loop
+         Build_Control_Points (Patch_Count, Control_Points);
+         Print_Control_Points (Patch_Count, Control_Points);
 
-         Patch_Part := 1 + Patch_Count * Res_UV;
-         Colour_P_Part := 1 + 3 * Patch_Count * Res_UV;
+         Patch_Part := Patch_Count * Res_UV;
+         Colour_P_Part := 3 * Patch_Count * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
             U := Single (Ru) / Single (Res_U - 1);
             PU_Part := Patch_Part + Ru * Res_V;
