@@ -29,8 +29,11 @@ with MT_Teapot;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
+   type Mode is (Teapot, Control_Points);
+   Teapot_Mode        : constant Mode := Teapot;
+
    Vertex_Array_Size  : GL.Types.Int
-     := Teapot_Data.Num_Patchs * MT_Teapot.Res_U * MT_Teapot.Res_V;
+     := Teapot_Data.Num_Patches * MT_Teapot.Res_U * MT_Teapot.Res_V;
 
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program     : GL.Objects.Programs.Program;
@@ -51,6 +54,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    CP_Elements        : MT_Teapot.Patch_Element_Array;  --  For debugging
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
+
+   procedure Draw_Control_Points;
 
   --  ------------------------------------------------------------------------
 
@@ -109,37 +114,55 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Projection    : Singles.Matrix4 := Singles.Identity4;
       MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
       Offset        : Natural := 0;
+      Scale         : Single := 0.5;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
-      Animation := Translation_Matrix ((-0.5, 0.0, -1.5))  *
-        Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
-          Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
-            Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
-      Projection := Perspective_Matrix (Degree (45.0),
-                                        Single (Window_Width) / Single (Window_Height),
-                                        0.1, 10.0);
-      Scale_Matrix := Maths.Scaling_Matrix (1.0);
+--        Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
+      Animation := Translation_Matrix ((-0.5, 0.0, -1.5));  --  *
+--          Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
+--            Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
+--              Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
+--        Projection := Perspective_Matrix (Degree (45.0),
+--                                          Single (Window_Width) / Single (Window_Height),
+--                                          0.1, 10.0);
+      Scale_Matrix := Maths.Scaling_Matrix (Scale);
       MVP_Matrix := Projection * View * Model * Animation * Scale_Matrix;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
---        GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
---
---        GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
---        GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
---
---        GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
---        GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
+      if Teapot_Mode = Teapot then
+            GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
+            GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
 
-      --  Draw Control points
+            GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Attribute);
+            GL.Objects.Buffers.Array_Buffer.Bind (Colours_Buffer);
+            GL.Attributes.Set_Vertex_Attrib_Pointer (Colour_Attribute, 3, Single_Type, 0, 0);
+
+            GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
+            GL.Objects.Buffers.Draw_Elements (Triangles, 3, UInt_Type);
+      else
+            Draw_Control_Points;
+      end if;
+
+      GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
+      GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Main_Loop.Display.");
+         raise;
+   end Display;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Draw_Control_Points is
+      Offset        : Natural := 0;
+   begin
       GL.Objects.Buffers.Array_Buffer.Bind (CP_Vertices_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3, Single_Type, 0, 0);
 
@@ -156,16 +179,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --                       GL.Types.Int'Image (index));
             GL.Objects.Buffers.Draw_Elements (Line_Loop, Teapot_Data.Order + 1, UShort_Type, Offset);
          end loop;
-      end loop;
-
-      GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
-      GL.Attributes.Disable_Vertex_Attrib_Array (Colour_Attribute);
-
-   exception
-      when others =>
-         Put_Line ("An exception occurred in Main_Loop.Display.");
-         raise;
-   end Display;
+       end loop;
+   end Draw_Control_Points;
 
    --  ------------------------------------------------------------------------
 
