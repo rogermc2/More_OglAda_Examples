@@ -8,9 +8,9 @@ package MT_Teapot is
     Res_U  : constant Int := 10;
     Res_V  : constant Int := 10;
 
-    Patch_Size : constant Int := Teapot_Data.Patchs'Length;
+    Patch_Size : constant Int := Teapot_Data.Patches'Length;
     Element_Array_Size : Int
-     := 2 * 3 * Teapot_Data.Patchs'Length * (MT_Teapot.Res_U) * (MT_Teapot.Res_V);
+     := 2 * 3 * Teapot_Data.Patches'Length * (MT_Teapot.Res_U) * (MT_Teapot.Res_V);
    subtype Element_Array is GL.Types.Int_Array (1 .. Element_Array_Size);
 
    type CP_Element_Array_Type is array
@@ -23,9 +23,9 @@ package MT_Teapot is
      of CP_Element_Array;
 
    type Vertices_Array is new
-     Singles.Vector3_Array (1 .. Patch_Size * Res_U * Res_V);
+     Singles.Vector3_Array (1 .. Patch_Size * (Res_U + 1) * (Res_V + 1));
    type Colours_Array is new
-     Single_Array (1 .. 3 * Teapot_Data.Num_Patches * Res_U * Res_V);
+     Single_Array (1 .. 3 * Teapot_Data.Num_Patches * (Res_U + 1) * (Res_V + 1));
    type CP_Colours_Array is new Singles.Vector3_Array
      (Int range 1 .. Teapot_Data.Num_Control_Points);
 
