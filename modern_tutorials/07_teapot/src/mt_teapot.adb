@@ -77,10 +77,13 @@ package body MT_Teapot is
                              Colours  : out Colours_Array) is
       Control_Points  : Control_Point_Matrix;
       Res_UV          : constant Int := Res_U * Res_V;
+      Res_Um1         : constant Single := Single (Res_U - 1);
+      Res_Vm1         : constant Single := Single (Res_V - 1);
+      Num_Patches     : constant Single := Single (Teapot_Data.Num_Patches);
       U               : Single;
       V               : Single;
       Patch_Index     : Int := 1;
-      PU_Index        : Int;
+      PU_Index         : Int;
       Colour_P_Index  : Int := 1;
       Colour_PU_Index : Int := 1;
       Colour_Index    : Int;
@@ -90,17 +93,17 @@ package body MT_Teapot is
       --  with u and v progressing in 1/10 steps.
       for Patch_Num in 1 .. Int (Teapot_Data.Num_Patches) loop
          Get_Control_Points (Patch_Num, Control_Points);
-         for Ru in 0 .. Res_U + 1  loop
-            U := Single (Ru) / Single (Res_U - 1);
+         for Ru in 0 .. Res_U loop
+            U := Single (Ru) / Res_Um1;
             PU_Index := Patch_Index + Ru * Res_V;
             Colour_Index := Colour_PU_Index;
-            for Rv in 0 .. Res_V + 1 loop
-               V := Single (Rv) / Single (Res_V - 1);
+            for Rv in 0 .. Res_V loop
+               V := Single (Rv) / Res_Vm1;
                Vertices (PU_Index + Rv) := Compute_Position (Control_Points, U, V);
                Colours (Colour_Index) :=
-                 Single (Patch_Num) / Single (Teapot_Data.Num_Patches);
+                 Single (Patch_Num) / Num_Patches;
                Colours (Colour_Index + 1) :=
-                 Single (Patch_Num) / Single (Teapot_Data.Num_Patches);
+                 Single (Patch_Num) / Num_Patches;
                Colours (Colour_Index + 2) := 0.8;
                Colour_Index := Colour_Index + 3;
             end loop;
