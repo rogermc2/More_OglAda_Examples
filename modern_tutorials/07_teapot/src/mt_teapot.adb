@@ -82,7 +82,7 @@ package body MT_Teapot is
       Patch_Index     : Int := 1;
       PU_Index        : Int;
       Colour_P_Index  : Int := 1;
-      Colour_PU_Index : Int;
+      Colour_PU_Index : Int := 1;
       Colour_Index    : Int;
    begin
       --  Evaluate the Bézier surface, with a resolution of 10x10.
@@ -93,17 +93,18 @@ package body MT_Teapot is
          for Ru in 0 .. Res_U + 1  loop
             U := Single (Ru) / Single (Res_U - 1);
             PU_Index := Patch_Index + Ru * Res_V;
-            Colour_PU_Index := Colour_P_Index + 3 * Ru * Res_V;
+            Colour_Index := Colour_PU_Index;
             for Rv in 0 .. Res_V + 1 loop
                V := Single (Rv) / Single (Res_V - 1);
-               Colour_Index := Colour_PU_Index + 3 * Rv;
                Vertices (PU_Index + Rv) := Compute_Position (Control_Points, U, V);
                Colours (Colour_Index) :=
                  Single (Patch_Num) / Single (Teapot_Data.Num_Patches);
                Colours (Colour_Index + 1) :=
                  Single (Patch_Num) / Single (Teapot_Data.Num_Patches);
                Colours (Colour_Index + 2) := 0.8;
+               Colour_Index := Colour_Index + 3;
             end loop;
+            Colour_PU_Index := Colour_PU_Index + 3 * Res_V;
          end loop;
          Patch_Index := Patch_Index + Res_UV;
          Colour_P_Index := Colour_P_Index + 3 * Res_UV;
