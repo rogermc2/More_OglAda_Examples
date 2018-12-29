@@ -29,7 +29,7 @@ package body MT_Teapot is
       PUV    : Int;
    begin
       --  1 square ABCD = 2 triangles ABC + CDA
-      for Patch_Num in 0 .. Int (Teapot_Data.Patches'Length - 1) loop
+      for Patch_Num in 0 .. Int (Teapot_Data.Patch_Data'Length - 1) loop
          PUV := Patch_Num * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
             for Rv in 0 .. Res_V - 1 loop
@@ -50,8 +50,6 @@ package body MT_Teapot is
             end loop;
          end loop;
       end loop;
---        Utilities.Print_GL_Int_Array ("MT_Teapot.Build_Elements Elements", Elements);
-      Put_Line ("MT_Teapot.Build_Elements, last N" & Int'Image (N));
 
    exception
       when  others =>
@@ -100,7 +98,7 @@ package body MT_Teapot is
             Colour_PU_Index := Colour_P_Index + 3 * Ru * Res_V;
             for Rv in 0 .. Res_V - 1 loop
                V := Single (Rv) / Single (Res_V - 1);
-               Colour_Index := Colour_PU_Index + 3 * rv;
+               Colour_Index := Colour_PU_Index + 3 * Rv;
                Vertices (PU_Index + Rv) := Compute_Position (Control_Points, U, V);
                Colours (Colour_Index) :=
                  Single (Patch_Num) / Single (Teapot_Data.Num_Patches);
@@ -157,11 +155,11 @@ package body MT_Teapot is
    procedure Get_Control_Points (Patch          : Int;
                                  Control_Points : out Control_Point_Matrix) is
       use GL.Types;
-      thePatch : Teapot_Data.Bezier_Patch := Teapot_Data.Patches (Patch);
+      thePatch : Teapot_Data.Bezier_Patch := Teapot_Data.Patch_Data (Patch);
    begin
-      for Index_I in Int range 1 .. thePatch'Length loop
-         for Index_J in Int range 1 .. thePatch'Length (2) loop
-            Control_Points (Index_I, Index_J) :=
+      for Index_I in thePatch'Range loop
+         for Index_J in Int range thePatch'Range (2) loop
+            Control_Points (Index_I + 1, Index_J + 1) :=
               Teapot_Data.Control_Points (thePatch (Int (Index_I), Int (Index_J)));
          end loop;
       end loop;
