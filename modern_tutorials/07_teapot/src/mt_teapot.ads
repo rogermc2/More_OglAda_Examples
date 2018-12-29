@@ -8,9 +8,9 @@ package MT_Teapot is
     Res_U  : constant Int := 10;
     Res_V  : constant Int := 10;
 
-    Patch_Size : constant Int := Teapot_Data.Patches'Length;
+    Patch_Size : constant Int := Teapot_Data.Patch_Data'Length;
     Element_Array_Size : Int
-     := 2 * 3 * Teapot_Data.Patches'Length * (MT_Teapot.Res_U) * (MT_Teapot.Res_V);
+     := 2 * 3 * Teapot_Data.Patch_Data'Length * (MT_Teapot.Res_U) * (MT_Teapot.Res_V);
    subtype Element_Array is GL.Types.Int_Array (1 .. Element_Array_Size);
 
    type Vertices_Array is new
