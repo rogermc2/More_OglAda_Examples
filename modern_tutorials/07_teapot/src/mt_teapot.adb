@@ -19,46 +19,6 @@ package body MT_Teapot is
    procedure Get_Control_Points (Patch          : Int;
                                  Control_Points : out Control_Point_Matrix);
    procedure Print_Control_Points (Patch : Int; Points : Control_Point_Matrix);
-   procedure Print_CP_Elements_Array (Patch_Num   : Int;
-                                      CP_Elements : Patch_Element_Array);
-
-   --  --------------------------------------------------------------------------------
-
-
-   --  For debugging
-   procedure Build_CP_Colours (CP_Colours : out CP_Colours_Array) is
-   begin
-      for Index in CP_Colours'First .. CP_Colours'Last loop
-               CP_Colours (Index) :=  (1.0, 0.0, 0.0);  --  Red
-      end loop;
-
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_CP_Colours.");
-         raise;
-   end Build_CP_Colours;
-
-   --  --------------------------------------------------------------------------------
-
-   --  For debugging
-   procedure Build_CP_Elements (CP_Elements : out Patch_Element_Array) is
-      Patch : Teapot_Data.Bezier_Patch;
-   begin
-      for Patch_Num in Teapot_Data.Patches'First .. Teapot_Data.Patches'Last loop
-         Patch := Teapot_Data.Patches (Patch_Num);
-         for I in Int range 1 .. Patch'Length loop
-            for J in Int range 1 .. Patch'Length (2) loop
-               CP_Elements (Patch_Num) (I, J) :=  Patch (I, J);
-            end loop;
-         end loop;
---           Print_CP_Elements_Array (Patch_Num, CP_Elements);
-      end loop;
-
-   exception
-      when  others =>
-         Put_Line ("An exception occurred in MT_Teapot.Build_CP_Elements.");
-         raise;
-   end Build_CP_Elements;
 
    --  --------------------------------------------------------------------------------
 
@@ -132,8 +92,6 @@ package body MT_Teapot is
       --  with u and v progressing in 1/10 steps.
       for Patch_Num in 1 .. Int (Teapot_Data.Num_Patches) loop
          Get_Control_Points (Patch_Num, Control_Points);
---           Print_Control_Points (Patch_Num, Control_Points);
-
          Patch_Index := Patch_Num * Res_UV;
          Colour_P_Index := 3 * Patch_Num * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
@@ -143,10 +101,7 @@ package body MT_Teapot is
             for Rv in 0 .. Res_V - 1 loop
                V := Single (Rv) / Single (Res_V - 1);
                Colour_Index := Colour_PU_Index + 3 * rv;
---                 Put ("MT_Teapot.Build_Vertices, PU_Part + Rv " &
---                        Int'Image (PU_Part + Rv) & "  ");
                Vertices (PU_Index + Rv) := Compute_Position (Control_Points, U, V);
---                   Utilities.Print_Vector ("Position", Vertices (PU_Part + Rv));
                Colours (Colour_Index) :=
                  Single (Patch_Num) / Single (Teapot_Data.Num_Patches);
                Colours (Colour_Index + 1) :=
@@ -155,7 +110,6 @@ package body MT_Teapot is
             end loop;
          end loop;
       end loop;
---        Utilities.Print_GL_Array3 ("MT_Teapot.Build_Vertices Vertices", Singles.Vector3_Array (Vertices));
 
    exception
       when  others =>
@@ -232,23 +186,6 @@ package body MT_Teapot is
       end loop;
       New_Line;
    end Print_Control_Points;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Print_CP_Elements_Array (Patch_Num   : Int;
-                                      CP_Elements : Patch_Element_Array) is
-   begin
-      Put_Line ("Elements for patch:" & Int'Image (Patch_Num));
-      for Row in Int range 1 .. CP_Elements (Patch_Num)'Length loop
-         for Column in Int range 1 .. CP_Elements (Patch_Num)'Length (2) loop
-            Put_Line ("Row, Column:" & Int'Image (Row) & " " &
-                        Int'Image (Column) & " " &
-                        Int'Image (CP_Elements (Patch_Num) (Row, Column)));
-         end loop;
-         New_Line;
-      end loop;
-      New_Line;
-   end Print_CP_Elements_Array;
 
    --  ------------------------------------------------------------------------
 
