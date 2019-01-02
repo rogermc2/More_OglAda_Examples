@@ -29,7 +29,8 @@ package body MT_Teapot is
       PUV    : Int;
    begin
       --  1 square ABCD = 2 triangles ABC + CDA
-      for Patch_Num in 0 .. Int (Teapot_Data.Patch_Data'Length - 1) loop
+--        for Patch_Num in 0 .. Int (Teapot_Data.Patch_Data'Length - 1) loop
+      for Patch_Num in Int range 0 .. Num_Patches - 1 loop
          PUV := Patch_Num * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
             for Rv in 0 .. Res_V - 1 loop
@@ -79,11 +80,10 @@ package body MT_Teapot is
       Res_UV          : constant Int := Res_U * Res_V;
       Res_Um1         : constant Single := Single (Res_U - 1);
       Res_Vm1         : constant Single := Single (Res_V - 1);
-      Num_Patches     : constant Single := Single (Teapot_Data.Num_Patches);
       U               : Single;
       V               : Single;
       Patch_Index     : Int := 1;
-      PU_Index         : Int;
+      PU_Index        : Int;
       Colour_P_Index  : Int := 1;
       Colour_PU_Index : Int := 1;
       Colour_Index    : Int;
@@ -91,7 +91,8 @@ package body MT_Teapot is
       --  Evaluate the Bézier surface, with a resolution of 10x10.
       --  For each 4x4 patch, compute each point in the 10x10 grid
       --  with u and v progressing in 1/10 steps.
-      for Patch_Num in 1 .. Int (Teapot_Data.Num_Patches) loop
+--        for Patch_Num in 1 .. Int (Num_Patches) loop
+      for Patch_Num in Int range 1 .. Num_Patches loop
          Get_Control_Points (Patch_Num, Control_Points);
          for Ru in 0 .. Res_U loop
             U := Single (Ru) / Res_Um1;
@@ -101,9 +102,9 @@ package body MT_Teapot is
                V := Single (Rv) / Res_Vm1;
                Vertices (PU_Index + Rv) := Compute_Position (Control_Points, U, V);
                Colours (Colour_Index) :=
-                 Single (Patch_Num) / Num_Patches;
+                 Single (Patch_Num) / Single (Num_Patches);
                Colours (Colour_Index + 1) :=
-                 Single (Patch_Num) / Num_Patches;
+                 Single (Patch_Num) / Single (Num_Patches);
                Colours (Colour_Index + 2) := 0.8;
                Colour_Index := Colour_Index + 3;
             end loop;
