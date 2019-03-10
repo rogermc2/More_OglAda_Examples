@@ -29,7 +29,6 @@ package body MT_Teapot is
       PUV    : Int;
    begin
       --  1 square ABCD = 2 triangles ABC + CDA
---        for Patch_Num in 0 .. Int (Teapot_Data.Patch_Data'Length - 1) loop
       for Patch_Num in Int range 0 .. Num_Patches - 1 loop
          PUV := Patch_Num * Res_UV;
          for Ru in 0 .. Res_U - 1 loop
@@ -94,6 +93,9 @@ package body MT_Teapot is
 --        for Patch_Num in 1 .. Int (Num_Patches) loop
       for Patch_Num in Int range 1 .. Num_Patches loop
          Get_Control_Points (Patch_Num, Control_Points);
+         if Patch_Num >= Spout_Offset then
+            Print_Control_Points (Patch_Num, Control_Points);
+         end if;
          for Ru in 0 .. Res_U loop
             U := Single (Ru) / Res_Um1;
             PU_Index := Patch_Index + Ru * Res_V;
