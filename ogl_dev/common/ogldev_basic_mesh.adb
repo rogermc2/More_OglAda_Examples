@@ -304,10 +304,11 @@ package body Ogldev_Basic_Mesh is
 --                 Ogldev_Texture.Bind (Element (Tex_Curs),
 --                                      Ogldev_Engine_Common.Colour_Texture_Unit_Index);
             end if;
-            GL.Objects.Buffers.Draw_Elements_Base_Vertex
-              (Triangles, Num_Indices, UInt_Type,
-               Element (Entry_Cursor).Base_Index,
-               Element (Entry_Cursor).Base_Vertex);
+            null;
+--              GL.Objects.Buffers.Draw_Elements_Base_Vertex
+--                (Triangles, Num_Indices, UInt_Type,
+--                 Element (Entry_Cursor).Base_Index,
+--                 Element (Entry_Cursor).Base_Vertex);
          else
             Put_Line ("Ogldev_Basic_Mesh.Render, Invalid Material_Index.");
          end if;
