@@ -141,7 +141,15 @@ package body PS_Update_Technique is
 
    --  -------------------------------------------------------------------------
 
-   procedure Use_Program (theTechnique : Update_Technique) is
+   function Update_Program  (theTechnique : Update_Technique)
+                             return GL.Objects.Programs.Program is
+   begin
+      return theTechnique.Update_Program;
+   end Update_Program;
+
+   --  -------------------------------------------------------------------------
+
+  procedure Use_Program (theTechnique : Update_Technique) is
       use GL.Objects.Programs;
       use GL.Objects.Shaders.Lists;
       Shaders_List : GL.Objects.Shaders.Lists.List :=
