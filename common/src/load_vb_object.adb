@@ -399,7 +399,7 @@ package body Load_VB_Object is
             Put_Line ("Load_VB_Object.Set_Attributes, invalid attribute index.");
          end case;
 
-         GL.Attributes.Set_Vertex_Attrib_Pointer
+         GL.Attributes.Set_Vertex_Integer_Attrib_Pointer
            (Index  => Attribute_Index,
             Count  => Int (Attribute_Data.Components),
             Kind   => Attribute_Data.Attribute_Type,
