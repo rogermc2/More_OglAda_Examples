@@ -79,10 +79,10 @@ Package body Billboard_Technique is
         use GL.Objects.Programs;
         use GL.Objects.Shaders.Lists;
     begin
-        if not GL.Objects.Programs.Validate_Status (theTechnique.Program) then
-            Put_Line ("Billboard_Technique.Use_Program Update_Program validation failed.");
-        else
-            Put_Line ("Billboard_Technique.Use_Program Update_Program validated.");
+--          if not GL.Objects.Programs.Validate_Status (theTechnique.Program) then
+--              Put_Line ("Billboard_Technique.Use_Program Update_Program validation failed.");
+--          else
+--              Put_Line ("Billboard_Technique.Use_Program Update_Program validated.");
             declare
                 Shaders_List : GL.Objects.Shaders.Lists.List :=
                                  GL.Objects.Programs.Attached_Shaders (theTechnique.Program);
@@ -94,7 +94,7 @@ Package body Billboard_Technique is
                     GL.Objects.Programs.Use_Program (theTechnique.Program);
                 end if;
             end;  -- declare block
-        end if;
+--          end if;
 
     exception
         when  others =>
