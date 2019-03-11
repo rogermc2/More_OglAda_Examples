@@ -109,6 +109,7 @@ package body Particle_System is
       if Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
                                       "../Content/fireworks_red.jpg") then
          Ogldev_Texture.Load (PS.Texture);
+         Put_Line ("Particle_System.Init_Particle_System PS.Texture loaded.");
       end if;
 
    exception
@@ -125,6 +126,7 @@ package body Particle_System is
    begin
       PS.PS_Time := PS.PS_Time + Delta_Time;
       Update_Particles (PS, Delta_Time);
+      Put_Line ("Particle_System.Render calling Render_Particles.");
       Render_Particles (PS, View_Point, Camera_Pos);
       PS.Current_VB_Index := PS.Current_TFB_Index;
       PS.Current_TFB_Index := ((PS.Current_TFB_Index + 1) / 2) * 2;
@@ -143,6 +145,8 @@ package body Particle_System is
                             PS.Billboard_Method;
       Billboard_Program : constant GL.Objects.Programs.Program :=
                             Billboard_Technique.Billboard_Program (theTechnique);
+      Update_Program    : constant GL.Objects.Programs.Program :=
+                            PS_Update_Technique.Update_Program (PS.Update_Method);
       TFB_Index         : constant UInt := PS.Current_TFB_Index;
       Buffer_Size       : constant Integer := 100;
       Name_Length       : GL.Types.Size;
@@ -166,18 +170,29 @@ package body Particle_System is
         (PS.Feedback_Buffer (TFB_Index));
 
       GL.Objects.Programs.Get_Transform_Feedback_Varying
-        (Object   => Billboard_Program,
-         Index    => 1,
+        (Object   => Update_Program,
+         Index    => 0,
          Length   => Name_Length,
          V_Length => Vertices_Length,
          V_Type   => V_Type,
          Name     => Varyings_Name);
-      Put_Line ("Varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
+      Put_Line ("Update varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
+      GL.Objects.Programs.Get_Transform_Feedback_Varying
+        (PS_Update_Technique.Get_Update_Program (PS.Update_Method),
+         1, Name_Length, Vertices_Length, V_Type, Varyings_Name);
+      Put_Line ("Update varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
       GL.Objects.Programs.Get_Transform_Feedback_Varying
         (PS_Update_Technique.Get_Update_Program (PS.Update_Method),
          2, Name_Length, Vertices_Length, V_Type, Varyings_Name);
-      Put_Line ("Varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
+      Put_Line ("Update varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
+      GL.Objects.Programs.Get_Transform_Feedback_Varying
+        (PS_Update_Technique.Get_Update_Program (PS.Update_Method),
+         3, Name_Length, Vertices_Length, V_Type, Varyings_Name);
+      Put_Line ("Update varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
+
+      Put_Line ("Particle_System.Render_Particles calling Begin_Transform_Feedback.");
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
+      Put_Line ("Particle_System.Render_Particles calling Draw_Arrays.");
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Mode  => Points, First => 0,
          Count => GL.Types.Size (Vertices_Length));

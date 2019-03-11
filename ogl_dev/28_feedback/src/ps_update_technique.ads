@@ -34,7 +34,9 @@ Package PS_Update_Technique is
     procedure Set_Shell_Lifetime (theTechnique : Update_Technique;
                                   Lifetime : GL.Types.Single);
     procedure Set_Secondary_Shell_Lifetime (theTechnique : Update_Technique;
-                                            Lifetime : GL.Types.Single);
+                                            Lifetime     : GL.Types.Single);
+   function Update_Program  (theTechnique : Update_Technique)
+                             return GL.Objects.Programs.Program;
     procedure Use_Program (theTechnique : Update_Technique);
 
 private
