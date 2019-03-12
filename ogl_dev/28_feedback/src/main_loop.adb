@@ -93,7 +93,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
                Particle_System.Init_Particle_System
                  (theParticle_System, Particle_System_Pos);
-               Put_Line ("Main_Loop.Init, Particle_System initialised.");
             else
                Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
             end if;
@@ -160,11 +159,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_28.Render (Ground);
-      Put_Line ("Main_Loop.Render_Scene calling Particle_System.Render.");
       Particle_System.Render (theParticle_System, Int (Delta_Millisec),
                               Ogldev_Pipeline.Get_VP_Transform (Pipe),
                               Get_Position (Game_Camera));
-      Put_Line ("Main_Loop.Render_Scene returned from Particle_System.Render.");
    exception
       when  others =>
          Put_Line ("An exception occurred in Main_Loop.Render_Scene.");
