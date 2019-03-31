@@ -159,7 +159,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_World_Position (Pipe, 0.0, 0.0,10.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
-      Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
+      Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Init_Transforms (Pipe);
 
       Shadow_Map_Technique.Set_WVP (theTechnique,
@@ -198,7 +198,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                   Direction (Spot), (0.0, 1.0, 0.0));
       Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
-      Set_Perspective_Proj (Pipe, Perspective_Proj_Info);
+      Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Init_Transforms (Pipe);
 
       Shadow_Map_Technique.Set_WVP (theTechnique, Get_WVP_Transform (Pipe));

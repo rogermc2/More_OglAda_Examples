@@ -137,7 +137,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Camera (Pipe, Ogldev_Camera.Get_Position (Game_Camera),
                                   Ogldev_Camera.Get_Target (Game_Camera),
                                   Ogldev_Camera.Get_Up (Game_Camera));
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
       Lighting_Technique_20.Set_WVP_Location
