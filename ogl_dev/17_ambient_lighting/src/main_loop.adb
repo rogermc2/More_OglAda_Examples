@@ -121,7 +121,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
       Lighting_Technique_17.Set_WVP (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
