@@ -82,7 +82,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Lighting_Technique_18.Set_Texture_Unit (0);
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png") then
+                                      "/Ada_Source/OglAda_Examples/ogl_dev/content/test.png") then
                 Ogldev_Texture.Load (theTexture);
          else
                 Put_Line ("Main_Loop.Init test.png failed to load");
@@ -127,7 +127,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
       Lighting_Technique_18.Set_WVP_Location (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
