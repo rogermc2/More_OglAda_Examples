@@ -289,7 +289,8 @@ package body Meshes_23 is
                         aTexture := theMesh.Textures.Element (aMaterial_Index);
                         if aTexture.Texture_Object.Initialized then
                             Ogldev_Texture.Bind (aTexture, 0);
-                            if GL.Objects.Textures.Is_Texture (aTexture.Texture_Object) then
+                     if GL.Objects.Textures.Is_Texture
+                       (GL.Objects.Raw_Id (GL.Objects.GL_Object (aTexture.Texture_Object))) then
                                 Put_Line ("Meshes_23.Render_Mesh, aTexture is valid.");
                             else
                                 Put_Line ("Meshes_23.Render_Mesh, aTexture is invalid.");
