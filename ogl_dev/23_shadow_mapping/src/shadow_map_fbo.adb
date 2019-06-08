@@ -40,10 +40,13 @@ package body Shadow_Map_FBO is
         --  Inialize the texture buffer
         aShadow_Map.Texture.Initialize_Id;
         Texture_2D.Bind (aShadow_Map.Texture);
+        Put_Line ("Shadow_Map_FBO.Init. Texture bound");
+
         Texture_2D.Load_Empty_Texture (Level           => 0,
                                        Internal_Format => GL.Pixels.Depth_Component,
                                        Width           => Window_Width,
                                        Height          => Window_Height);
+        Put_Line ("Shadow_Map_FBO.Init. empty Texture loaded");
         Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
@@ -66,7 +69,7 @@ package body Shadow_Map_FBO is
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Main_Loop.Init.");
+            Put_Line ("An exception occurred in Shadow_Map_FBO.Init.");
             raise;
     end Init;
 
