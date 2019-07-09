@@ -60,9 +60,6 @@ package body Meshes_28 is
       theEntry.Index_Buffer.Initialize_Id;
       Element_Array_Buffer.Bind (theEntry.Index_Buffer);
 
-      Put_Line ("Mesh_Project_28.Init_Buffers, Vertices_Length: " &
-               Int'Image (Vertices_Length));
-
       for index in 1 ..  Vertices_Length loop
          Vertices_Array (index) :=
            (Vertices (index).Pos (X), Vertices (index).Pos (Y), Vertices (index).Pos (Z),
@@ -70,16 +67,16 @@ package body Meshes_28 is
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z),
             Vertices (index).Tangent (X), Vertices (index).Tangent (Y), Vertices (index).Tangent (Z));
       end loop;
-      Ogldev_Util.Print_GL_Array11 ("Mesh_Project_28.Init_Buffers.Vertices_Array", Vertices_Array);
+--        Ogldev_Util.Print_GL_Array11 ("Meshes_28.Init_Buffers.Vertices_Array", Vertices_Array);
       Array_Buffer.Bind (theEntry.Vertex_Buffer);
       Ogldev_Util.Load_Vector11_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
       Element_Array_Buffer.Bind (theEntry.Index_Buffer);
       Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
-      Utilities.Print_GL_UInt_Array ("Mesh_Project_28.Init_Buffers.Indices", Indices);
+--        Utilities.Print_GL_UInt_Array ("Meshes_28.Init_Buffers.Indices", Indices);
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_Project_28.Init_Buffers.");
+         Put_Line ("An exception occurred in Meshes_28.Init_Buffers.");
          raise;
 
    end Init_Buffers;
@@ -94,14 +91,12 @@ package body Meshes_28 is
       Mesh_Index   : UInt := 0;
       aMesh        : Assimp_Mesh.AI_Mesh;
    begin
-      Put_Line ("Project_22_Mesh.Init_From_Scene, initializing " &
+      Put_Line ("Meshes_28.Init_From_Scene, initializing " &
                File_Name);
       --  Initialized_Mesh works because there is only one mesh
       --  Initialized_Mesh contains vertices and textures maps
       while Has_Element (Curs) loop
          Mesh_Index := Mesh_Index + 1;
-         Put_Line ("Project_22_Mesh.Init_From_Scene, initializing mesh " &
-               UInt'Image (Mesh_Index));
          aMesh := theScene.Meshes (Mesh_Index);
          Init_Mesh (Mesh_Index, aMesh, Initialized_Mesh);
          Init_Materials (Initialized_Mesh, File_Name, theScene);
@@ -110,7 +105,7 @@ package body Meshes_28 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Project_22_Mesh.Init_From_Scene.");
+         Put_Line ("An exception occurred in Meshes_28.Init_From_Scene.");
          raise;
 
    end Init_From_Scene;
@@ -135,13 +130,13 @@ package body Meshes_28 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
-         --           Put_Line ("Mesh_Project_28.Init_Materials.Load_Textures: Texture_Count: "
+         --           Put_Line ("Meshes_28.Init_Materials.Load_Textures: Texture_Count: "
          --                    & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Result = Assimp_Types.API_Return_Success and then
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
-            --              Put_Line ("Mesh_Project_28.Init_Materials.Load_Textures: Get_Texture result: "
+            --              Put_Line ("Meshes_28.Init_Materials.Load_Textures: Get_Texture result: "
             --                    & Assimp_Types.API_Return'Image (Result));
 
             if Result = Assimp_Types.API_Return_Success then
@@ -150,21 +145,21 @@ package body Meshes_28 is
                   Dir & To_String (Path)) then
                   Ogldev_Texture.Load (aTexture);
                   theMesh.Textures.Insert (index, aTexture);
-                  Put_Line ("Mesh_Project_28.Init_Materials.Load_Textures loaded texture from "
+                  Put_Line ("Meshes_28.Init_Materials.Load_Textures loaded texture from "
                             & Dir & To_String (Path));
                elsif Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
                   Ogldev_Texture.Load (aTexture);
                   theMesh.Textures.Insert (index, aTexture);
                   New_Line;
-                  Put_Line ("Mesh_Project_28.Init_Materials.Load_Textures loaded default texture from "
+                  Put_Line ("Meshes_28.Init_Materials.Load_Textures loaded default texture from "
                             & Dir & "white.png");
                else
-                  Put_Line ("Mesh_Project_28.Init_Materials.Load_Textures default texture "
+                  Put_Line ("Meshes_28.Init_Materials.Load_Textures default texture "
                             & Dir & "white.png not found.");
                end if;
             else
-               Put_Line ("Mesh_Project_28.Init_Materials.Load_Textures Get_Texture failed");
+               Put_Line ("Meshes_28.Init_Materials.Load_Textures Get_Texture failed");
             end if;
          end if;
       end Load_Textures;
@@ -175,7 +170,7 @@ package body Meshes_28 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_Project_28.Assimp_Types.API_Return_Success.");
+         Put_Line ("An exception occurred in Meshes_28.Assimp_Types.API_Return_Success.");
          raise;
 
    end Init_Materials;
@@ -200,8 +195,6 @@ package body Meshes_28 is
    begin
       anEntry.Material_Index := Source_Mesh.Material_Index;
 
-      Put_Line ("Mesh_Project_28.Init_Mesh, Num_Vertices: " &
-                  UInt'Image (Num_Vertices));
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
          Normal := Source_Mesh.Normals.Element (V_Index);
@@ -209,8 +202,8 @@ package body Meshes_28 is
             Tex_Coord := (0.0, 0.0, 0.0);
          else
             if Tex_Coord_Map.Contains (V_Index) then
-               Put_Line ("Mesh_Project_28.Init_Mesh, Tex_Coord_Map.Contains Index: " &
-                           UInt'Image (V_Index));
+--                 Put_Line ("Meshes_28.Init_Mesh, Tex_Coord_Map.Contains Index: " &
+--                             UInt'Image (V_Index));
                Tex_Coord := Tex_Coord_Map.Element (V_Index);
             else
                Tex_Coord := (0.0, 0.0, 0.0);
@@ -226,9 +219,9 @@ package body Meshes_28 is
       end loop;
 
       if Source_Mesh.Faces.Is_Empty then
-         Put_Line ("Mesh_Project_28.Init_Mesh, Source_Mesh.Faces is empty.");
+         Put_Line ("Meshes_28.Init_Mesh, Source_Mesh.Faces is empty.");
       else
---           Put_Line ("Mesh_Project_28.Init_Mesh, Source_Mesh.Faces size: " &
+--           Put_Line ("Meshes_28.Init_Mesh, Source_Mesh.Faces size: " &
 --                       Count_Type'Image (Source_Mesh.Faces.Length));
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
             Face := Source_Mesh.Faces.Element (UInt (Face_Index));
@@ -247,7 +240,7 @@ package body Meshes_28 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_Project_28.Init_Mesh.");
+         Put_Line ("An exception occurred in Meshes_28.Init_Mesh.");
          raise;
    end Init_Mesh;
 
@@ -262,7 +255,7 @@ package body Meshes_28 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Mesh_Project_28.Load_Mesh.");
+         Put_Line ("An exception occurred in Meshes_28.Load_Mesh.");
          raise;
    end Load_Mesh;
 
