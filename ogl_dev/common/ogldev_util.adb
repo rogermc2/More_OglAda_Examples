@@ -22,6 +22,11 @@ package body Ogldev_Util is
 
    procedure Print_GL_Array11 (Name : String; anArray : Ogldev_Math.Vector11_Array) is
    begin
+      if Name = "" then
+         Put ("  ");
+      else
+         Put (Name & ":  ");
+      end if;
       for Index in anArray'First .. anArray'Last loop
          Print_Singles_Vector11 ("", anArray (Index));
       end loop;
