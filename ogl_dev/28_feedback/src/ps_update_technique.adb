@@ -51,8 +51,6 @@ package body PS_Update_Technique is
       if not OK then
          Put_Line ("PS_Update_Technique.Init, Update_Program Link failed");
          Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Update_Program));
-      else
-         Put_Line ("PS_Update_Technique.Init, Update_Program Link ok");
       end if;
 
       Use_Program (theTechnique.Update_Program);
@@ -63,8 +61,6 @@ package body PS_Update_Technique is
       if not OK then
          Put_Line ("PS_Update_Technique.Init, Update_Program Link for Varyings failed");
          Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Update_Program));
-      else
-         Put_Line ("PS_Update_Technique.Init, Update_Program Link for Varyings ok");
       end if;
 
       Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gDeltaTimeMillis",
