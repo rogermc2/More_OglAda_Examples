@@ -9,7 +9,7 @@
 
 void readFile (Magick::Image& anImageRef, char* fileName)
   {
-  std::string cppString (fileName);
+  const std::string cppString (fileName);
 
   //  Read single image frame into current object (ImageRef *_imgRef;)
   anImageRef.read (cppString);
@@ -19,7 +19,7 @@ void readFile (Magick::Image& anImageRef, char* fileName)
 
 void writeFile (Magick::Image& anImage, char* fileName)
   {
-  std::string cppString (fileName);
+  const std::string cppString (fileName);
 
   anImage.write (cppString);
 }
@@ -29,6 +29,6 @@ void writeFile (Magick::Image& anImage, char* fileName)
 void writeBlob (Magick::Image& anImage, Magick::Blob* theBlob,
 		char* fileName)
 {
-  std::string cppString (fileName);
+  const std::string cppString (fileName);
   anImage.write (theBlob, cppString);
  }
