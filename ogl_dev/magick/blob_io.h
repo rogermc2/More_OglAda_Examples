@@ -4,8 +4,8 @@
 #ifndef BLOB_IO_H
 #define BLOB_IO_H
 
-#include "Magick++.h"
-#include "Image.h"
+#include "Magick++.h"       /* Needed for proper termination */
+#include "Magick++/Image.h"
 
 // using namespace Magick;
 
