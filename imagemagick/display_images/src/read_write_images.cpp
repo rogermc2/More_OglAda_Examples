@@ -18,8 +18,11 @@ using namespace Magick;
 
 int main (int,char ** argv)
 {
-  int    failures=0;
-  string srcdir("../images/");
+  int         failures=0;
+  string      srcdir("../images/");
+  list<Image> first;
+  list<Image> second;
+  Image       fourth;
 
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
@@ -30,80 +33,76 @@ int main (int,char ** argv)
     if (getenv("SRCDIR") != 0)
       srcdir=getenv("SRCDIR");
 
-    //
     // Test readImages and writeImages
-    //
-    list<Image> first;
     cout << "reading first Image " << endl;
     readImages(&first,srcdir + "test_image_anim.miff");
 
     if (first.size() != 6)
       {
-        ++failures;
-        cout << "Line: " << __LINE__
-          << "  Read images failed, number of frames is "
-          << first.size()
-          << " rather than 6 as expected." << endl;
+	++failures;
+	cout << "Line: " << __LINE__
+	<< "  Read images failed, number of frames is "
+	<< first.size()
+	<< " rather than 6 as expected." << endl;
       }
 
     cout << "Writing first Image " << endl;
     writeImages(first.begin(),first.end(),"testmagick_anim_out.miff");
     cout << "first Image written" << endl;
 
-    list<Image> second;
     readImages(&second,"testmagick_anim_out.miff");
 
     list<Image>::iterator firstIter = first.begin();
     list<Image>::iterator secondIter = second.begin();
     while (firstIter != first.end() && secondIter != second.end())
-    {
-      if (firstIter->scene() != secondIter->scene())
-        {
-          ++failures;
-          cout << "Line: " << __LINE__
-            << "  Image scene: " << secondIter->scene()
-            << " is not equal to original "
-            << firstIter->scene()
-            << endl;
-        }
+      {
+	if (firstIter->scene() != secondIter->scene())
+	  {
+	    ++failures;
+	    cout << "Line: " << __LINE__
+	    << "  Image scene: " << secondIter->scene()
+	    << " is not equal to original "
+	    << firstIter->scene()
+	    << endl;
+	  }
 
-      if (firstIter->rows() != secondIter->rows())
-        {
-          ++failures;
-          cout << "Line: " << __LINE__
-            << "  Image rows " << secondIter->rows()
-            << " are not equal to original "
-            << firstIter->rows()
-            << endl;
-        }
+	if (firstIter->rows() != secondIter->rows())
+	  {
+	    ++failures;
+	    cout << "Line: " << __LINE__
+	    << "  Image rows " << secondIter->rows()
+	    << " are not equal to original "
+	    << firstIter->rows()
+	    << endl;
+	  }
 
-      if (firstIter->columns() != secondIter->columns())
-        {
-          ++failures;
-          cout << "Line: " << __LINE__
-            << "  Image columns " << secondIter->columns()
-            << " are not equal to original "
-            << firstIter->rows()
-            << endl;
-        }
+	if (firstIter->columns() != secondIter->columns())
+	  {
+	    ++failures;
+	    cout << "Line: " << __LINE__
+	    << "  Image columns " << secondIter->columns()
+	    << " are not equal to original "
+	    << firstIter->rows()
+	    << endl;
+	  }
 
-      firstIter++;
-      secondIter++;
-    }
+	firstIter++;
+	secondIter++;
+      }
 
     Image third(*first.begin());
     third.write("testmagick_anim_out");
+    cout << "third Image written" << endl;
 
-    Image fourth;
     fourth.read("testmagick_anim_out");
 
     if (fourth.magick() != "MIFF")
       {
-        ++failures;
-        cout << "Line: " << __LINE__
-          << "  Image magick: " << fourth.magick()
-          << " is not equal to MIFF"
-          << endl;
+	++failures;
+	cout << "Line: " << __LINE__
+	<< "  Image magick: " << fourth.magick()
+	<< " is not equal to MIFF"
+	<< endl;
       }
 
     third.write("testmagick_anim_out.ico");
@@ -111,11 +110,11 @@ int main (int,char ** argv)
 
     if (fourth.magick() != "ICO")
       {
-        ++failures;
-        cout << "Line: " << __LINE__
-          << "  Image magick: " << fourth.magick()
-          << " is not equal to ICO"
-          << endl;
+	++failures;
+	cout << "Line: " << __LINE__
+	<< "  Image magick: " << fourth.magick()
+	<< " is not equal to ICO"
+	<< endl;
       }
 
     third.magick("BMP");
@@ -124,11 +123,11 @@ int main (int,char ** argv)
 
     if (fourth.magick() != "BMP")
       {
-        ++failures;
-        cout << "Line: " << __LINE__
-          << "  Image magick: " << fourth.magick()
-          << " is not equal to BMP"
-          << endl;
+	++failures;
+	cout << "Line: " << __LINE__
+	<< "  Image magick: " << fourth.magick()
+	<< " is not equal to BMP"
+	<< endl;
       }
 
     third.write("PDB:testmagick_anim_out.ico");
@@ -136,11 +135,11 @@ int main (int,char ** argv)
 
     if (fourth.magick() != "PDB")
       {
-        ++failures;
-        cout << "Line: " << __LINE__
-          << "  Image magick: " << fourth.magick()
-          << " is not equal to PDB"
-          << endl;
+	++failures;
+	cout << "Line: " << __LINE__
+	<< "  Image magick: " << fourth.magick()
+	<< " is not equal to PDB"
+	<< endl;
       }
 
     third.magick("");
@@ -149,23 +148,23 @@ int main (int,char ** argv)
 
     if (fourth.magick() != "ICO")
       {
-        ++failures;
-        cout << "Line: " << __LINE__
-          << "  Image magick: " << fourth.magick()
-          << " is not equal to ICO"
-          << endl;
+	++failures;
+	cout << "Line: " << __LINE__
+	<< "  Image magick: " << fourth.magick()
+	<< " is not equal to ICO"
+	<< endl;
       }
   }
   catch(Exception &error_)
-    {
-      cout << "Caught exception: " << error_.what() << endl;
-      return 1;
-    }
+  {
+    cout << "Caught exception: " << error_.what() << endl;
+    return 1;
+  }
   catch(exception &error_)
-    {
-      cout << "Caught exception: " << error_.what() << endl;
-      return 1;
-    }
+  {
+    cout << "Caught exception: " << error_.what() << endl;
+    return 1;
+  }
 
   if (failures)
     {
@@ -173,6 +172,7 @@ int main (int,char ** argv)
       return 1;
     }
 
+  cout << "End, no failures" << endl;
   return 0;
 }
 
