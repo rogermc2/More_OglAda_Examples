@@ -3,7 +3,7 @@
 
 #include <string>
 #include "importer_io.h"
-#include "assimp/importer.hpp"
+#include "assimp/Importer.hpp"
 
 //  std::string has a member c_str() which returns a C-style array.
 //  To "convert" a C array char* to a C++ std::string
