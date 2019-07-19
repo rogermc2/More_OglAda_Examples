@@ -38,7 +38,7 @@ package body Ogldev_Camera is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Camera (theCamera : in out Camera) is
+   procedure Initialize_Camera (theCamera : in out Camera) is
       use Maths;
       use Maths.Single_Math_Functions;
       function To_Degree (Angle : Single) return Degree is
@@ -73,15 +73,14 @@ package body Ogldev_Camera is
       theCamera.On_Left_Edge := False;
       theCamera.On_Right_Edge := False;
 
-      theCamera.Mouse_Position (GL.X) := theCamera.Window_Width / 2;
-      theCamera.Mouse_Position (GL.Y) := theCamera.Window_Height / 2;
+      theCamera.Mouse_X := Glfw.Input.Mouse.Coordinate (theCamera.Window_Width / 2);
+      theCamera.Mouse_Y := Glfw.Input.Mouse.Coordinate (theCamera.Window_Height / 2);
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in Ogldev_Camera.Init_Camera 1.");
+         Put_Line ("An exception occurred in Ogldev_Camera.Initialize_Camera.");
          raise;
-
-   end Init_Camera;
+   end Initialize_Camera;
 
    --  -------------------------------------------------------------------------
 
@@ -95,11 +94,11 @@ package body Ogldev_Camera is
       theCamera.Target := (0.0, 0.0, 1.0);
       theCamera.Target := Maths.Normalized (theCamera.Target);
       theCamera.Up := (0.0, 1.0, 0.0);
-      Init_Camera (theCamera);
+      Initialize_Camera (theCamera);
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in Ogldev_Camera.Init_Camera 2.");
+         Put_Line ("An exception occurred in Ogldev_Camera.Init_Camera 1.");
          raise;
    end Init_Camera;
 
@@ -131,10 +130,10 @@ package body Ogldev_Camera is
          Put_Line ("Settin Up vector to (0.0, 1.0, 0.0).");
          theCamera.Up := (0.0, 1.0, 0.0);
       end if;
-      Init_Camera (theCamera);
+      Initialize_Camera (theCamera);
    exception
       when  others =>
-         Put_Line ("An exception occurred in Ogldev_Camera.Init_Camera 3.");
+         Put_Line ("An exception occurred in Ogldev_Camera.Init_Camera 2.");
          raise;
    end Init_Camera;
 
@@ -173,28 +172,29 @@ package body Ogldev_Camera is
       use Interfaces.C;
       use Glfw.Input.Mouse;
       use Maths;
-      X_Position : Coordinate;
-      Y_Position : Coordinate;
+      Cursor_X   : Coordinate;
+      Cursor_Y   : Coordinate;
       Delta_X    : Coordinate;
       Delta_Y    : Coordinate;
    begin
-      Window'Access.Get_Cursor_Pos (X_Position, Y_Position);
-      Delta_X := X_Position - Coordinate (theCamera.Mouse_Position (GL.X));
-      Delta_Y := Y_Position - Coordinate (theCamera.Mouse_Position (GL.Y));
+      Window'Access.Get_Cursor_Pos (Cursor_X, Cursor_Y);
+      Delta_X := Cursor_X - theCamera.Mouse_X;
+      Delta_Y := Cursor_Y - theCamera.Mouse_Y;
 
-      theCamera.Mouse_Position := (GL.Types.Int (X_Position), GL.Types.Int (Y_Position));
+      theCamera.Mouse_X := Cursor_X;
+      theCamera.Mouse_Y := Cursor_Y;
       theCamera.Angle_H := theCamera.Angle_H + Degree (Delta_X) / 20.0;
       theCamera.Angle_V := theCamera.Angle_V + Degree (Delta_Y) / 20.0;
 
       if Delta_X = 0.0 then
-         theCamera.On_Left_Edge := (X_Position <= Margin);
+         theCamera.On_Left_Edge := (Cursor_X <= Margin);
          theCamera.On_Right_Edge :=
-           (X_Position >= (Coordinate (theCamera.Window_Width) - Margin));
+           (Cursor_X >= (Coordinate (theCamera.Window_Width) - Margin));
       end if;
       if Delta_Y = 0.0 then
-         theCamera.On_Upper_Edge := (Y_Position <= Margin);
+         theCamera.On_Upper_Edge := (Cursor_Y <= Margin);
          theCamera.On_Lower_Edge :=
-           (Y_Position >= (Coordinate (theCamera.Window_Height) - Margin));
+           (Cursor_Y >= (Coordinate (theCamera.Window_Height) - Margin));
       end if;
 
       Update (theCamera);
