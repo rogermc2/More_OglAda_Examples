@@ -7,10 +7,19 @@ with Glfw.Input;
 with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 
+with Utilities;
+
 package body Ogldev_Camera is
-   Step_Scale  : GL.Types.Single := 1.0;
-   Edge_Step   : constant Maths.Degree := 0.5;
-   Margin      : constant Glfw.Input.Mouse.Coordinate := 10.0;
+   Step_Scale       : GL.Types.Single := 0.0;
+   Edge_Step        : constant Maths.Degree := 0.5;
+   Margin           : constant Glfw.Input.Mouse.Coordinate := 10.0;
+
+   Up_Pressed       : Boolean := False;
+   Down_Pressed     : Boolean := False;
+   Left_Pressed     : Boolean := False;
+   Right_Pressed    : Boolean := False;
+   PageUp_Pressed   : Boolean := False;
+   PageDown_Pressed : Boolean := False;
 
    procedure Update (theCamera : in out Camera);
    procedure Update_Render (theCamera : in out Camera);
@@ -144,21 +153,27 @@ package body Ogldev_Camera is
       use Glfw.Input;
       use GL.Types.Singles;  --  Needed to support arithmetic operations.
       use Maths;
-      Vec : Vector3;
+      Vec : Vector3 := (0.0, 0.0, 0.0);
    begin
-      if Window'Access.Key_State (Keys.Up) = Pressed then
+      Up_Pressed := Window'Access.Key_State (Keys.Left) = Pressed;
+      Down_Pressed := Window'Access.Key_State (Keys.Right) = Pressed;
+      Left_Pressed := Window'Access.Key_State (Keys.Left) = Pressed;
+      Right_Pressed := Window'Access.Key_State (Keys.Right) = Pressed;
+      PageUp_Pressed := Window'Access.Key_State (Keys.Page_Down) = Pressed;
+      PageDown_Pressed := Window'Access.Key_State (Keys.Page_Down) = Pressed;
+      if Up_Pressed then
          theCamera.Position := theCamera.Position + theCamera.Target * Step_Scale;
-      elsif Window'Access.Key_State (Keys.Down) = Pressed then
+      elsif Down_Pressed then
          theCamera.Position := theCamera.Position - theCamera.Target * Step_Scale;
-      elsif Window'Access.Key_State (Keys.Left) = Pressed then
+      elsif Left_Pressed then
          Vec := Normalized (Cross_Product (theCamera.Target, theCamera.Up)) * Step_Scale;
          theCamera.Position := theCamera.Position + Vec;
-      elsif Window'Access.Key_State (Keys.Right) = Pressed then
+      elsif Right_Pressed then
          Vec := Normalized (Cross_Product (theCamera.Up, theCamera.Target)) * Step_Scale;
          theCamera.Position := theCamera.Position + Vec;
-      elsif Window'Access.Key_State (Keys.Page_Up) = Pressed then
+      elsif PageUp_Pressed then
          theCamera.Position := theCamera.Position + (0.0, 0.5 * Step_Scale, 0.0);
-      elsif Window'Access.Key_State (Keys.Page_Down) = Pressed then
+      elsif PageDown_Pressed then
          theCamera.Position := theCamera.Position - (0.0, 0.5 * Step_Scale, 0.0);
       end if;
 
@@ -239,7 +254,7 @@ package body Ogldev_Camera is
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in Ogldev_Camera.Update.");
+         Put_Line ("An exception occurred in Ogldev_Camera.Update_Render.");
          raise;
    end Update_Render;
 
