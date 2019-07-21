@@ -68,7 +68,11 @@ package Maths is
    procedure Rotate (Vec : in out GL.Types.Singles.Vector3;
                      Angle : Degree; Axis : GL.Types.Singles.Vector3);
    function Rotation_Matrix (Angle : Degree; Axis : Singles.Vector3)
+                             return Singles.Matrix3;
+   function Rotation_Matrix (Angle : Degree; Axis : Singles.Vector3)
                              return Singles.Matrix4;
+   function Rotation_Matrix (Angle : Radian; Axis : Singles.Vector3)
+                             return Singles.Matrix3;
    function Rotation_Matrix (Angle : Radian; Axis : Singles.Vector3)
                              return Singles.Matrix4;
    function Scaling_Matrix (Scale_Factor : Single) return Singles.Matrix4;
