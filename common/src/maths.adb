@@ -279,6 +279,36 @@ package body Maths is
    --  en.m.wikipedia.org, with the matrix transposed
 
    function Rotation_Matrix (Angle : Radian; Axis : GL.Types.Singles.Vector3)
+                             return GL.Types.Singles.Matrix3 is
+      use GL;
+      use Single_Quaternion;
+
+      aQuaternion : Single_Quaternion.Quaternion;
+      theMatrix   : GL.Types.Singles.Matrix3 := GL.Types.Singles.Identity3;
+      NQ          : Single_Quaternion.Quaternion;
+   begin
+      aQuaternion := New_Quaternion (Angle, Axis);
+      NQ := Normalized (aQuaternion);
+
+      theMatrix (X, X) := 1.0 - 2.0 * (NQ.C * NQ.C + NQ.D * NQ.D);
+      theMatrix (Y, X) := 2.0 * (NQ.B * NQ.C - NQ.A * NQ.D);
+      theMatrix (Z, X) := 2.0 * (NQ.B * NQ.D + NQ.A * NQ.C);
+
+      theMatrix (X, Y) := 2.0 * (NQ.B * NQ.C + NQ.A * NQ.D);
+      theMatrix (Y, Y) := 1.0 - 2.0 * (NQ.B * NQ.B + NQ.D * NQ.D);
+      theMatrix (Z, Y) := 2.0 * (NQ.C * NQ.D - NQ.A * NQ.B);
+
+      theMatrix (X, Z) := 2.0 * (NQ.B * NQ.D - NQ.A * NQ.C);
+      theMatrix (Y, Z) := 2.0 * (NQ.C * NQ.D + NQ.A * NQ.B);
+      theMatrix (Z, Z) := 1.0 - 2.0 * (NQ.B * NQ.B + NQ.C * NQ.C);
+      return theMatrix;
+   end Rotation_Matrix;
+
+   --  ------------------------------------------------------------------------
+   --  Rotation_Matrix is based on "Quaternians and spatial rotation" by
+   --  en.m.wikipedia.org, with the matrix transposed
+
+   function Rotation_Matrix (Angle : Radian; Axis : GL.Types.Singles.Vector3)
                              return GL.Types.Singles.Matrix4 is
       use GL;
       use Single_Quaternion;
@@ -308,6 +338,14 @@ package body Maths is
 
    function Rotation_Matrix (Angle : Degree; Axis : GL.Types.Singles.Vector3)
                              return GL.Types.Singles.Matrix4 is
+   begin
+      return Rotation_Matrix (Radians (Angle), Axis);
+   end Rotation_Matrix;
+
+   --  ------------------------------------------------------------------------
+
+   function Rotation_Matrix (Angle : Degree; Axis : GL.Types.Singles.Vector3)
+                             return GL.Types.Singles.Matrix3 is
    begin
       return Rotation_Matrix (Radians (Angle), Axis);
    end Rotation_Matrix;
