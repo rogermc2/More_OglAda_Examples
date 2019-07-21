@@ -8,7 +8,7 @@ project Rw_Images is
    for Exec_Dir use ".";
 
    package Compiler is
-      for Switches ("c++") use ("-I/usr/local/include/assimp", "-I/usr/local/include/ImageMagick-7/Magick++", "-I/usr/local/include/ImageMagick-7", "-DMAGICKCORE_QUANTUM_DEPTH=16", "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
+      for Switches ("c++") use ("-I/usr/local/include/ImageMagick-7", "-I/usr/local/include/ImageMagick-7/Magick++", "-DMAGICKCORE_QUANTUM_DEPTH=16", "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
    end Compiler;
 
    package Linker is
