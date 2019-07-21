@@ -155,25 +155,19 @@ package body Ogldev_Camera is
       use Maths;
       Vec : Vector3 := (0.0, 0.0, 0.0);
    begin
-      Up_Pressed := Window'Access.Key_State (Keys.Left) = Pressed;
-      Down_Pressed := Window'Access.Key_State (Keys.Right) = Pressed;
-      Left_Pressed := Window'Access.Key_State (Keys.Left) = Pressed;
-      Right_Pressed := Window'Access.Key_State (Keys.Right) = Pressed;
-      PageUp_Pressed := Window'Access.Key_State (Keys.Page_Down) = Pressed;
-      PageDown_Pressed := Window'Access.Key_State (Keys.Page_Down) = Pressed;
-      if Up_Pressed then
+      if Window'Access.Key_State (Keys.Up) = Pressed then
          theCamera.Position := theCamera.Position + theCamera.Target * Step_Scale;
-      elsif Down_Pressed then
+      elsif Window'Access.Key_State (Keys.Down) = Pressed then
          theCamera.Position := theCamera.Position - theCamera.Target * Step_Scale;
-      elsif Left_Pressed then
+      elsif Window'Access.Key_State (Keys.Left) = Pressed then
          Vec := Normalized (Cross_Product (theCamera.Target, theCamera.Up)) * Step_Scale;
          theCamera.Position := theCamera.Position + Vec;
-      elsif Right_Pressed then
+      elsif Window'Access.Key_State (Keys.Right) = Pressed then
          Vec := Normalized (Cross_Product (theCamera.Up, theCamera.Target)) * Step_Scale;
          theCamera.Position := theCamera.Position + Vec;
-      elsif PageUp_Pressed then
+      elsif Window'Access.Key_State (Keys.Page_Up) = Pressed then
          theCamera.Position := theCamera.Position + (0.0, 0.5 * Step_Scale, 0.0);
-      elsif PageDown_Pressed then
+      elsif Window'Access.Key_State (Keys.Page_Down) = Pressed then
          theCamera.Position := theCamera.Position - (0.0, 0.5 * Step_Scale, 0.0);
       end if;
 
@@ -217,7 +211,7 @@ package body Ogldev_Camera is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Step (Step_Size : GL.Types.Single := 1.0) is
+   procedure Set_Step (Step_Size : GL.Types.Single) is
    begin
         Step_Scale := Step_Size;
    end Set_Step;
