@@ -187,8 +187,8 @@ package body Ogldev_Camera is
       Delta_Y    : Coordinate;
    begin
       Window'Access.Get_Cursor_Pos (Cursor_X, Cursor_Y);
-      Delta_X := Cursor_X - theCamera.Mouse_X;
-      Delta_Y := Cursor_Y - theCamera.Mouse_Y;
+      Delta_X := theCamera.Mouse_X - Cursor_X;
+      Delta_Y := theCamera.Mouse_Y - Cursor_Y;
 
       theCamera.Mouse_X := Cursor_X;
       theCamera.Mouse_Y := Cursor_Y;
@@ -199,11 +199,18 @@ package body Ogldev_Camera is
          theCamera.On_Left_Edge := (Cursor_X <= Margin);
          theCamera.On_Right_Edge :=
            (Cursor_X >= (Coordinate (theCamera.Window_Width) - Margin));
+      else
+         theCamera.On_Left_Edge := False;
+         theCamera.On_Right_Edge := False;
       end if;
+
       if Delta_Y = 0.0 then
          theCamera.On_Upper_Edge := (Cursor_Y <= Margin);
          theCamera.On_Lower_Edge :=
            (Cursor_Y >= (Coordinate (theCamera.Window_Height) - Margin));
+      else
+         theCamera.On_Upper_Edge := False;
+         theCamera.On_Lower_Edge := False;
       end if;
 
       Update (theCamera);
