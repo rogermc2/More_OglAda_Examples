@@ -192,19 +192,19 @@ package body Ogldev_Camera is
 
       theCamera.Mouse_X := Cursor_X;
       theCamera.Mouse_Y := Cursor_Y;
-      theCamera.Angle_H := theCamera.Angle_H + Degree (Delta_X) / 20.0;
-      theCamera.Angle_V := theCamera.Angle_V + Degree (Delta_Y) / 20.0;
 
       if Delta_X = 0.0 then
          theCamera.On_Left_Edge := (Cursor_X <= Margin);
          theCamera.On_Right_Edge :=
            (Cursor_X >= (Coordinate (theCamera.Window_Width) - Margin));
       else
+         theCamera.Angle_H := theCamera.Angle_H + Degree (Delta_X) / 20.0;
          theCamera.On_Left_Edge := False;
          theCamera.On_Right_Edge := False;
       end if;
 
       if Delta_Y = 0.0 then
+         theCamera.Angle_V := theCamera.Angle_V + Degree (Delta_Y) / 20.0;
          theCamera.On_Upper_Edge := (Cursor_Y <= Margin);
          theCamera.On_Lower_Edge :=
            (Cursor_Y >= (Coordinate (theCamera.Window_Height) - Margin));
