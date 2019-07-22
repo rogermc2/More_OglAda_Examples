@@ -39,7 +39,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    IBO                    : GL.Objects.Buffers.Buffer;
    VBO                    : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
-   Pipe                   : Ogldev_Pipeline.Pipeline;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
 
@@ -115,12 +114,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
-      Camera_Position      : constant GL.Types.Singles.Vector3 := (1.0, 1.0, -3.0);
-      Camera_Target        : constant GL.Types.Singles.Vector3 := (0.45, 0.0, 1.0);
+      Pipe                 : Ogldev_Pipeline.Pipeline;
+      Camera_Position      : constant GL.Types.Singles.Vector3 := (1.0, 1.0, 3.0);
+      Camera_Target        : constant GL.Types.Singles.Vector3 := (0.0, 0.0, 2.0);
       Camera_Up            : constant GL.Types.Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Utilities.Clear_Background_Colour_And_Depth (Background);
-      Scale := Scale + 0.1;
+      Scale := Scale + 0.2;
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -133,7 +133,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
-      Ogldev_Pipeline.Set_Camera (Pipe, Camera_Position,Camera_Target,Camera_Up);
+      Ogldev_Pipeline.Set_Camera (Pipe, Camera_Position, Camera_Target, Camera_Up);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
       GL.Uniforms.Set_Single (WVP_Location, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
