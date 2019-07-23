@@ -202,8 +202,11 @@ package body Ogldev_Camera is
 
       theCamera.Mouse_X := Cursor_X;
       theCamera.Mouse_Y := Cursor_Y;
+
       theCamera.On_Left_Edge := False;
       theCamera.On_Right_Edge := False;
+      theCamera.On_Upper_Edge := False;
+      theCamera.On_Lower_Edge := False;
 
       if Delta_X = 0.0 then
          theCamera.On_Left_Edge := (Cursor_X <= Margin);
@@ -219,8 +222,6 @@ package body Ogldev_Camera is
          end if;
       else
          theCamera.Angle_H := theCamera.Angle_H + Degree (Delta_X) / 20.0;
-         theCamera.On_Left_Edge := False;
-         theCamera.On_Right_Edge := False;
       end if;
 
       if Delta_Y = 0.0 then
@@ -231,8 +232,6 @@ package body Ogldev_Camera is
          end if;
       else
          theCamera.Angle_V := theCamera.Angle_V + Degree (Delta_Y) / 20.0;
-         theCamera.On_Upper_Edge := False;
-         theCamera.On_Lower_Edge := False;
       end if;
 
       Update (theCamera);
@@ -265,11 +264,11 @@ package body Ogldev_Camera is
       if theCamera.On_Left_Edge then
          Put_Line ("Ogldev_Camera.Update_Render On_Left_Edge");
          theCamera.Angle_H := theCamera.Angle_H - Edge_Step;
-         theCamera.On_Left_Edge := False;
+--           theCamera.On_Left_Edge := False;
       elsif theCamera.On_Right_Edge then
          Put_Line ("Ogldev_Camera.Update_Render On_Right_Edge");
          theCamera.Angle_H := theCamera.Angle_H + Edge_Step;
-         theCamera.On_Right_Edge := False;
+--           theCamera.On_Right_Edge := False;
       end if;
 
       if theCamera.On_Upper_Edge then
@@ -277,18 +276,17 @@ package body Ogldev_Camera is
          if theCamera.Angle_V > -90.0 then
             theCamera.Angle_V := theCamera.Angle_V - Edge_Step;
          end if;
-         theCamera.On_Upper_Edge := False;
+--           theCamera.On_Upper_Edge := False;
       elsif theCamera.On_Lower_Edge then
          Should_Update := Should_Update or theCamera.Angle_V < 90.0;
          if theCamera.Angle_V < 90.0 then
             theCamera.Angle_H := theCamera.Angle_H + Edge_Step;
          end if;
-         theCamera.On_Lower_Edge := False;
+--           theCamera.On_Lower_Edge := False;
       end if;
 
       if Should_Update then
          Update (theCamera);
-         Should_Update := False;
       end if;
 
    exception
@@ -310,6 +308,8 @@ package body Ogldev_Camera is
         View := Normalized (Maths.Rotation_Matrix (theCamera.Angle_H, V_Axis) * View);
         --  Rotate the view vector by the vertical angle around the horizontal axis
         H_Axis := Normalized (Cross_Product (V_Axis, To_Vector3 (View)));
+        View := Normalized (Maths.Rotation_Matrix (theCamera.Angle_V, H_Axis) * View);
+
         theCamera.Target := Normalized (To_Vector3 (View));
         theCamera.Up := Normalized (Cross_Product (theCamera.Target, H_Axis));
         Utilities.Print_Vector ("Ogldev_Camera.Update Target: ", theCamera.Target);
