@@ -312,7 +312,7 @@ package body Ogldev_Camera is
    begin
       theCamera.On_Left_Edge := False;
       theCamera.On_Right_Edge := False;
---        Process_Keyboard (theCamera, Window);  --  OnKeyboard
+      Process_Keyboard (theCamera, Window);  --  OnKeyboard
       Process_Mouse (theCamera, Window);     --  PassiveMouseCB.OnMouse
       Update_Render (theCamera);             --  OnRender
       theCamera.On_Left_Edge := False;
