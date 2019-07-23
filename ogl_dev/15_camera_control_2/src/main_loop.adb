@@ -124,6 +124,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
+      Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Ogldev_Math.Set_Perspective_Width
         (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
       Ogldev_Math.Set_Perspective_Height
