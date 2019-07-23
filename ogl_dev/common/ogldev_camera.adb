@@ -209,18 +209,12 @@ package body Ogldev_Camera is
         theCamera.On_Right_Edge := False;
         theCamera.On_Upper_Edge := False;
         theCamera.On_Lower_Edge := False;
-
+        --  The camera should continuously move until the mouse moves away from the edge.
         if Delta_X = 0.0 then
             theCamera.On_Left_Edge := (Cursor_X <= Margin);
-            --           Put_Line ("Ogldev_Camera.Process_Mouse Cursor_X: " &
-            --                       Coordinate'Image (Cursor_X));
-            --           Put_Line ("Ogldev_Camera.Process_Mouse Delta_X = 0.0 On_Left_Edge: " &
-            --                       Boolean'Image (theCamera.On_Left_Edge));
             if not theCamera.On_Left_Edge then
                 theCamera.On_Right_Edge :=
                   (Cursor_X >= (Coordinate (theCamera.Window_Width) - Margin));
-                --                  Put_Line ("Ogldev_Camera.Process_Mouse Delta_X = 0.0 On_Right_Edge: " &
-                --                       Boolean'Image (theCamera.On_Right_Edge));
             end if;
         else
             theCamera.Angle_H := theCamera.Angle_H + Degree (Delta_X) / 20.0;
@@ -237,12 +231,6 @@ package body Ogldev_Camera is
         end if;
 
         Update (theCamera);
-
-        if theCamera.On_Left_Edge then
-            Put_Line ("Ogldev_Camera.Process_Mouse exit On_Left_Edge");
-        elsif theCamera.On_Right_Edge then
-            Put_Line ("Ogldev_Camera.Process_Mouse exit On_Right_Edge");
-        end if;
     end Process_Mouse;
 
     --  -------------------------------------------------------------------------
@@ -261,24 +249,23 @@ package body Ogldev_Camera is
                           theCamera.On_Left_Edge or theCamera.On_Right_Edge;
     begin
         if Should_Update then
+            --  The camera should continuously move until the mouse moves away from the edge.
             if theCamera.On_Left_Edge then
                 theCamera.Angle_H := theCamera.Angle_H - Edge_Step;
             elsif theCamera.On_Right_Edge then
                 theCamera.Angle_H := theCamera.Angle_H + Edge_Step;
             end if;
+        end if;
 
-            if theCamera.On_Upper_Edge then
-                Should_Update := Should_Update or theCamera.Angle_V > -90.0;
-                if theCamera.Angle_V > -90.0 then
-                    theCamera.Angle_V := theCamera.Angle_V - Edge_Step;
-                end if;
-            elsif theCamera.On_Lower_Edge then
-                Should_Update := Should_Update or theCamera.Angle_V < 90.0;
-                if theCamera.Angle_V < 90.0 then
-                    theCamera.Angle_H := theCamera.Angle_H + Edge_Step;
-                end if;
-            end if;
+        if theCamera.On_Upper_Edge then
+            Should_Update := theCamera.Angle_V > -90.0;
+            theCamera.Angle_V := theCamera.Angle_V - Edge_Step;
+        elsif theCamera.On_Lower_Edge then
+            Should_Update := theCamera.Angle_V < 90.0;
+            theCamera.Angle_H := theCamera.Angle_H + Edge_Step;
+        end if;
 
+        if Should_Update then
             Update (theCamera);
         end if;
 
