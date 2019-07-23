@@ -65,8 +65,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 100.0);
-      Ogldev_Camera.Init_Camera (Game_Camera,
-                                 Int (Window_Width), Int (Window_Height),
+      Ogldev_Camera.Init_Camera (Game_Camera, Window,
                                  Camera_Position, Target, Up);
       Result := Lighting_Technique_26.Init (theLighting_Technique);
       if Result then

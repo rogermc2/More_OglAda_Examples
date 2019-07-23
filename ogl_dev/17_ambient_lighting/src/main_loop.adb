@@ -67,8 +67,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-         Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
-                                   Position, Target, Up);
+         Ogldev_Camera.Init_Camera (Game_Camera, Window, Position, Target, Up);
          Utilities.Clear_Background_Colour (Background);
 
          Buffers.Create_Buffers (Vertex_Buffer, Indices_Buffer);

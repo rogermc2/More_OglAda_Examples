@@ -80,8 +80,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
          Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 50.0);
 
-         Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
-                                    Camera_Position, Target, Up);
+         Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
          Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_20.Use_Program (Shader_Technique);

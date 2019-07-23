@@ -89,9 +89,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 50.0);
-      Ogldev_Camera.Init_Camera (Game_Camera,
-                                 Int (Window_Width), Int (Window_Height),
-                                 Camera_Position, Target, Up);
+      Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
       Put_Line ("Main_Loop.Init, Camera initialized.");
 
       Meshes_23.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
