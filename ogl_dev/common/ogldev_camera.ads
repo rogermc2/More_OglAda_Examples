@@ -19,6 +19,8 @@ Package Ogldev_Camera is
    procedure Init_Camera (theCamera : in out Camera;
                           Window    : in out Glfw.Windows.Window;
                           Camera_Position, Target_Position, Up : Singles.Vector3);
+   procedure Process_Mouse (theCamera : in out Camera;
+                             Window    : in out Glfw.Windows.Window);
    procedure Set_Step (Step_Size : GL.Types.Single);
    procedure Update_Camera (theCamera : in out Camera;
                             Window : in out Glfw.Windows.Window);
