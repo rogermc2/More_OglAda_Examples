@@ -15,9 +15,9 @@ Package Ogldev_Camera is
    function Get_Up (theCamera : Camera) return Singles.Vector3;
 
    procedure Init_Camera (theCamera : in out Camera;
-                          Window_Width, Window_Height : Int);
+                          Window    : in out Glfw.Windows.Window);
    procedure Init_Camera (theCamera : in out Camera;
-                          Window_Width, Window_Height : Int;
+                          Window    : in out Glfw.Windows.Window;
                           Camera_Position, Target_Position, Up : Singles.Vector3);
    procedure Set_Step (Step_Size : GL.Types.Single);
    procedure Update_Camera (theCamera : in out Camera;
