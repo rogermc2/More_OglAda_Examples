@@ -36,7 +36,6 @@ private
       On_Lower_Edge  : Boolean := False;
       On_Left_Edge   : Boolean := False;
       On_Right_Edge  : Boolean := False;
---        Mouse_Position : Ints.Vector2 := (0, 0);
       Mouse_X        : Glfw.Input.Mouse.Coordinate := 0.0;
       Mouse_Y        : Glfw.Input.Mouse.Coordinate := 0.0;
    end record;
