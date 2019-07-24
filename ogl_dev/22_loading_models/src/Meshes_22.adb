@@ -127,8 +127,8 @@ package body Meshes_22 is
                   Dir & To_String (Path)) then
                   Ogldev_Texture.Load (aTexture);
                   theMesh.Textures.Insert (index, aTexture);
-                  Put_Line ("Meshes_22.Init_Materials.Load_Textures loaded texture from "
-                            & Dir & To_String (Path));
+--                    Put_Line ("Meshes_22.Init_Materials.Load_Textures loaded texture from "
+--                              & Dir & To_String (Path));
                elsif Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
                   Ogldev_Texture.Load (aTexture);

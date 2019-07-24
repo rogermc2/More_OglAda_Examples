@@ -30,14 +30,13 @@ with Meshes_22;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.8, 0.8, 0.8, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Game_Camera            : Ogldev_Camera.Camera;
    Light_Technique        : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Direct_Light           : Ogldev_Lights_Common.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
-
    Scale                  : Single := 0.0;
 
    --  ------------------------------------------------------------------------
@@ -72,6 +71,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Meshes_22.Load_Mesh
            (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
+         Ogldev_Camera.Set_Step (2.0);
          Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
@@ -111,11 +111,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
 
       Set_Diffuse_Intensity (Point_Lights (1), 0.25);
-      Set_Point_Light (Point_Lights (1), (3.0, 1.0, Field_Depth * (Cos (Scale) + 1.0) / 2.0), (1.0, 0.5, 0.0));
+      Set_Point_Light (Point_Lights (1), (3.0, 1.0, Field_Depth * (Cos (Scale) + 1.0) / 2.0),
+                       (1.0, 0.5, 0.0));
       Set_Linear_Attenuation (Point_Lights (1), 0.1);
 
       Set_Diffuse_Intensity (Point_Lights (2), 0.25);
-      Set_Point_Light (Point_Lights (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0), (0.0, 0.5, 1.0));
+      Set_Point_Light (Point_Lights (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0),
+                       (0.0, 0.5, 1.0));
       Set_Linear_Attenuation (Point_Lights (2), 0.1);
 
       Set_Point_Lights (Light_Technique, Point_Lights);
@@ -133,7 +135,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
       Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 50.0);
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 0.06);
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 10.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
