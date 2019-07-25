@@ -4,7 +4,7 @@ with GL.Objects.Framebuffers;
 with GL.Objects.Textures;
 with GL.Types;
 
-package Shadow_Map_FBO is
+package Shadow_Map_Frame_Buffer is
 
    type Shadow_Map is private;
 
@@ -24,4 +24,4 @@ private
       Texture : GL.Objects.Textures.Texture;
    end record;
 
-end Shadow_Map_FBO;
+end Shadow_Map_Frame_Buffer;
