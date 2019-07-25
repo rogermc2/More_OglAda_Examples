@@ -40,13 +40,11 @@ package body Shadow_Map_Frame_Buffer is
         --  Inialize the texture buffer
         aShadow_Map.Texture.Initialize_Id;
         Texture_2D.Bind (aShadow_Map.Texture);
-        Put_Line ("Shadow_Map_Frame_Buffer.Init. Texture bound");
 
         Texture_2D.Load_Empty_Texture (Level           => 0,
                                        Internal_Format => GL.Pixels.Depth_Component,
                                        Width           => Window_Width,
                                        Height          => Window_Height);
-        Put_Line ("Shadow_Map_Frame_Buffer.Init. empty Texture loaded");
         Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
@@ -61,6 +59,7 @@ package body Shadow_Map_Frame_Buffer is
 
         --  Disable writes to the color buffer
         GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
+        GL.Framebuffer.Set_Read_Buffer (GL.Buffers.None);
 
         if Status (Read_And_Draw_Target) /= GL.Objects.Framebuffers.Complete then
             raise Shadow_Map_Exception with "Shadow_Map_Frame_Buffer.Init FBO error" &
