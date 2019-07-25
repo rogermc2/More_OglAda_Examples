@@ -10,7 +10,7 @@ with GL.Framebuffer;
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
 
-package body Shadow_Map_FBO is
+package body Shadow_Map_Frame_Buffer is
 
     procedure Bind_For_Reading (aShadow_Map : in out Shadow_Map;
                                 Tex_Unit : GL.Objects.Textures.Texture_Unit) is
@@ -40,13 +40,13 @@ package body Shadow_Map_FBO is
         --  Inialize the texture buffer
         aShadow_Map.Texture.Initialize_Id;
         Texture_2D.Bind (aShadow_Map.Texture);
-        Put_Line ("Shadow_Map_FBO.Init. Texture bound");
+        Put_Line ("Shadow_Map_Frame_Buffer.Init. Texture bound");
 
         Texture_2D.Load_Empty_Texture (Level           => 0,
                                        Internal_Format => GL.Pixels.Depth_Component,
                                        Width           => Window_Width,
                                        Height          => Window_Height);
-        Put_Line ("Shadow_Map_FBO.Init. empty Texture loaded");
+        Put_Line ("Shadow_Map_Frame_Buffer.Init. empty Texture loaded");
         Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
         Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
@@ -55,7 +55,7 @@ package body Shadow_Map_FBO is
         Read_And_Draw_Target.Bind (aShadow_Map.FBO);
         Read_And_Draw_Target.Attach_Texture (Depth_Attachment, aShadow_Map.Texture, 0);
         if Read_And_Draw_Target.Status /= Complete then
-            raise Shadow_Map_Exception with "Shadow_Map_FBO.Init, Attachment incomplete: " &
+            raise Shadow_Map_Exception with "Shadow_Map_Frame_Buffer.Init, Attachment incomplete: " &
                         Framebuffer_Status'Image (Read_And_Draw_Target.Status);
         end if;
 
@@ -63,14 +63,14 @@ package body Shadow_Map_FBO is
         GL.Buffers.Set_Active_Buffer (GL.Buffers.None);
 
         if Status (Read_And_Draw_Target) /= GL.Objects.Framebuffers.Complete then
-            raise Shadow_Map_Exception with "Shadow_Map_FBO.Init FBO error" &
+            raise Shadow_Map_Exception with "Shadow_Map_Frame_Buffer.Init FBO error" &
               Framebuffer_Status'Image (Status (Read_And_Draw_Target));
         end if;
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Shadow_Map_FBO.Init.");
+            Put_Line ("An exception occurred in Shadow_Map_Frame_Buffer.Init.");
             raise;
     end Init;
 
-end Shadow_Map_FBO;
+end Shadow_Map_Frame_Buffer;
