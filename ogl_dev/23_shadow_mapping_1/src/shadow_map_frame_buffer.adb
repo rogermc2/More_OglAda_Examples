@@ -24,7 +24,7 @@ package body Shadow_Map_Frame_Buffer is
 
     procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map) is
     begin
-        GL.Objects.Framebuffers.Read_And_Draw_Target.Bind (aShadow_Map.FBO);
+        GL.Objects.Framebuffers.Draw_Target.Bind (aShadow_Map.FBO);
     end Bind_For_Writing;
 
     --  ------------------------------------------------------------------------------
@@ -36,8 +36,7 @@ package body Shadow_Map_Frame_Buffer is
         use GL.Types;
     begin
         aShadow_Map.FBO.Initialize_Id;
-        Read_And_Draw_Target.Bind (aShadow_Map.FBO);
-        --  Inialize the texture buffer
+        --  Inialize the depth buffer
         aShadow_Map.Texture.Initialize_Id;
         Texture_2D.Bind (aShadow_Map.Texture);
 
