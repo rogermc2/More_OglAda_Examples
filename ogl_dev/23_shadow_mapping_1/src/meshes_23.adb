@@ -154,27 +154,23 @@ package body Meshes_23 is
       Indices       : GL.Types.UInt_Array (1 .. Int (3 * Source_Mesh.Faces.Length));
       Position      : GL.Types.Singles.Vector3;
       Normal        : GL.Types.Singles.Vector3;
-      Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
+      Tex_Coord_Map : constant Assimp_Mesh.Texture_Coords_Map := Source_Mesh.Texture_Coords;
+      Tex_Vertices  : Assimp_Mesh.Vertices_Map;
       Tex_Coord     : GL.Types.Singles.Vector3;
       Face          : Assimp_Mesh.AI_Face;
       Indices_Index : Int := 0;
    begin
       aMesh.Material_Index := Source_Mesh.Material_Index;
+      Tex_Vertices := Tex_Coord_Map.Element (1);
 
       for V_Index in 1 .. Num_Vertices loop
          Position := Source_Mesh.Vertices.Element (V_Index);
          Normal := Source_Mesh.Normals.Element (V_Index);
-         if Tex_Coord_Map.Is_Empty then
-            Tex_Coord := (0.0, 0.0, 0.0);
-         else
-            if Tex_Coord_Map.Contains (V_Index) then
-               Put_Line ("Meshes_23.Init_Mesh, Tex_Coord_Map.Contains Index: " &
-                           UInt'Image (V_Index));
-               Tex_Coord := Tex_Coord_Map.Element (V_Index);
-            else
-               Tex_Coord := (0.0, 0.0, 0.0);
-            end if;
-         end if;
+            --  Tex_Coord_Map, contains Num_UV_Components sets of Texture_Coords.
+            --  Sets of Texture_Coords are also known as UV channels.
+            --  A mesh may contain 0 to AI_MAX_NUMBER_OF_TEXTURECOORDS per * vertex.
+
+         Tex_Coord := Tex_Vertices (V_Index);
          Vertices (Int (V_Index)) :=
            (Position, (Tex_Coord (GL.X), Tex_Coord (GL.Y)), Normal);
       end loop;
