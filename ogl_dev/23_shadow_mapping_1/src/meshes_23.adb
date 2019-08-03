@@ -221,7 +221,7 @@ package body Meshes_23 is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
-      Put_Line ("Meshes_23.Init_Buffers, Vertice Indices Lengths" &
+      Put_Line ("Meshes_23.Init_Mesh_Entry, Vertice Indices Lengths" &
                   Int'Image (Vertices_Length) & "  " &
                   Int'Image (Indices_Length));
 
@@ -235,7 +235,7 @@ package body Meshes_23 is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Meshes_23.Init_Buffers.");
+         Put_Line ("An exception occurred in Meshes_23.Init_Mesh_Entry.");
          raise;
    end Init_Mesh_Entry;
 
