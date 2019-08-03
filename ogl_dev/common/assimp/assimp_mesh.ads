@@ -107,6 +107,14 @@ package Assimp_Mesh is
         Bones             : Bones_Map;
         Material_Index    : UInt := 0;
     end record;
+--  Vertex texture coords, Texture_Coords, are also known as UV channels.
+--  A mesh may contain 0 to AI_MAX_NUMBER_OF_TEXTURECOORDS per * vertex.
+
+--  Num_UV_Components specifies the number of components for a given UV channel.
+--  Up to three channels are supported (UVW, for accessing volume or cube maps).
+--  If the value is 2 for channel n then p.z of Texture_Coords[n, p] is set to 0.0.
+--  If the value is 1 for a channel, p.y is also set to 0.0.
+--  4D coords are not supported.
 
    package AI_Mesh_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, AI_Mesh);
