@@ -60,7 +60,7 @@ package body Ogldev_Math is
    --  -------------------------------------------------------------------------
 
    function Get_Perspective_FOV (Info : Perspective_Projection_Info)
-                                 return Single is
+                                 return Maths.Degree is
    begin
       return Info.FOV;
    end Get_Perspective_FOV;
@@ -134,7 +134,7 @@ package body Ogldev_Math is
    --  -------------------------------------------------------------------------
 
    procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
-                                   FOV       : Single; Width, Height : UInt;
+                                   FOV       : Maths.Degree; Width, Height : UInt;
                                    Near, Far : Single) is
    begin
       Info.FOV := FOV;
@@ -155,7 +155,7 @@ package body Ogldev_Math is
    --  -------------------------------------------------------------------------
 
    procedure Set_Perspective_FOV (Info : in out Perspective_Projection_Info;
-                                  FOV  : Single) is
+                                  FOV  : Maths.Degree) is
    begin
       Info.FOV := FOV;
    end Set_Perspective_FOV;
