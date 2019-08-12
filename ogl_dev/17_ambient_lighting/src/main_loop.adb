@@ -160,10 +160,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
          Set_Directional_Ambient (Light_Direction,
-                                  Get_Directional_Ambient (Light_Direction) + 0.05);
+                                  Get_Directional_Ambient (Light_Direction) + 0.001);
       elsif Window'Access.Key_State (Keys.S) = Pressed then
          Set_Directional_Ambient (Light_Direction,
-                                  Get_Directional_Ambient (Light_Direction) - 0.05);
+                                  Get_Directional_Ambient (Light_Direction) - 0.001);
        end if;
    end Update_Lighting_Intensity;
 
