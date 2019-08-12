@@ -66,7 +66,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-         Ogldev_Camera.Set_Step (0.005);
+         Ogldev_Camera.Set_Step_Size (0.005);
          Ogldev_Camera.Init_Camera (Game_Camera, Window, Position, Target, Up);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Clockwise);
@@ -94,7 +94,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
-        Glfw.Input.Poll_Events;
       end if;
 
    exception
@@ -109,13 +108,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Glfw.Input;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
-         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.05;
+         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.002;
       elsif Window'Access.Key_State (Keys.S) = Pressed then
-         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.05;
+         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.002;
       elsif Window'Access.Key_State (Keys.Z) = Pressed then
-         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.05;
+         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.002;
       elsif Window'Access.Key_State (Keys.X) = Pressed then
-         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity - 0.05;
+         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity - 0.002;
       end if;
    end Update_Lighting;
 
