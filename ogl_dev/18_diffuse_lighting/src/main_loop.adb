@@ -69,7 +69,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera,Window, Position, Target, Up);
-         Ogldev_Camera.Set_Step (0.1);
+         Ogldev_Camera.Set_Step_Size (0.1);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
@@ -179,13 +179,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Lighting_Technique_18;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
-         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.05;
+         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.005;
       elsif Window'Access.Key_State (Keys.S) = Pressed then
-         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.05;
+         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.005;
       elsif Window'Access.Key_State (Keys.Z) = Pressed then
-         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.05;
+         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.005;
       elsif Window'Access.Key_State (Keys.X) = Pressed then
-         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity  - 0.05;
+         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity  - 0.005;
       end if;
    end Update_Lighting_Intensity;
 
