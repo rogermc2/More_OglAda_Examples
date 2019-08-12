@@ -5,6 +5,8 @@ with Ada.Containers.Indefinite_Ordered_Maps;
 
 with GL.Types; use GL.Types;
 
+with Maths;
+
 with API_Vectors_Matrices;
 with Assimp_Types;
 
@@ -44,7 +46,8 @@ package Ogldev_Math is
                                return Single;
 
    function Get_Perspective_Far (Info : Perspective_Projection_Info) return Single;
-   function Get_Perspective_FOV (Info : Perspective_Projection_Info) return Single;
+   function Get_Perspective_FOV (Info : Perspective_Projection_Info)
+                                 return Maths.Degree;
    function Get_Perspective_Height (Info : Perspective_Projection_Info) return UInt;
    function Get_Perspective_Near (Info : Perspective_Projection_Info) return Single;
    function Get_Perspective_Width (Info : Perspective_Projection_Info) return UInt;
@@ -53,12 +56,12 @@ package Ogldev_Math is
                                    Right, Left, Bottom, Top,
                                    Near, Far : Single);
    procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
-                                   FOV       : Single; Width, Height : UInt;
+                                   FOV       : Maths.Degree; Width, Height : UInt;
                                    Near, Far : Single);
    procedure Set_Perspective_Far (Info  : in out Perspective_Projection_Info;
                                   Far   : Single);
    procedure Set_Perspective_FOV (Info   : in out Perspective_Projection_Info;
-                                  FOV    : Single);
+                                  FOV    : Maths.Degree);
    procedure Set_Perspective_Height (Info   : in out Perspective_Projection_Info;
                                      Height : UInt);
    procedure Set_Perspective_Near (Info  : in out Perspective_Projection_Info;
@@ -72,7 +75,7 @@ package Ogldev_Math is
 private
 
    type Perspective_Projection_Info is record
-      FOV       : Single := 60.0;
+      FOV       : Maths.Degree := 60.0;
       Width     : UInt := 800;
       Height    : UInt := 600;
       Z_Near    : Single := -1.0;

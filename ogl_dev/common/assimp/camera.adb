@@ -25,7 +25,7 @@ package body Camera is
            Assimp_Util.To_OGL_Vector3 (anAPI_Camera.Up);
          aCamera.Look_At :=
            Assimp_Util.To_OGL_Vector3 (anAPI_Camera.Look_At);
-         aCamera.Horizontal_FOV := Single (anAPI_Camera.Horizontal_FOV);
+         aCamera.Horizontal_FOV := Maths.Degree (anAPI_Camera.Horizontal_FOV);
          aCamera.Clip_Pane_Near := Single (anAPI_Camera.Clip_Pane_Near);
          aCamera.Clip_Pane_Far := Single (anAPI_Camera.Clip_Pane_Far);
          aCamera.Aspect := Single (anAPI_Camera.Aspect);
