@@ -95,7 +95,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
-        Glfw.Input.Poll_Events;
       end if;
 
    exception
@@ -179,13 +178,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Lighting_Technique_18;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
-         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.005;
+         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.004;
       elsif Window'Access.Key_State (Keys.S) = Pressed then
-         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.005;
+         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.004;
       elsif Window'Access.Key_State (Keys.Z) = Pressed then
-         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.005;
+         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.004;
       elsif Window'Access.Key_State (Keys.X) = Pressed then
-         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity  - 0.005;
+         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity  - 0.004;
       end if;
    end Update_Lighting_Intensity;
 
