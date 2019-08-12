@@ -133,7 +133,7 @@ package body Ogldev_Pipeline is
       use Ogldev_Math;
    begin
       Maths.Init_Perspective_Transform
-        (View_Angle => Maths.Degree (Get_Perspective_FOV (P.Perspective_Info)),
+        (View_Angle => Get_Perspective_FOV (P.Perspective_Info),
          Width      => Single (Get_Perspective_Width (P.Perspective_Info)),
          Height     => Single (Get_Perspective_Height (P.Perspective_Info)),
          Z_Near     => Get_Perspective_Near (P.Perspective_Info),
