@@ -235,10 +235,10 @@ package body Ogldev_Camera is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Step (Step_Size : GL.Types.Single) is
+    procedure Set_Step_Size (Step_Size : GL.Types.Single) is
     begin
         Step_Scale := Step_Size;
-    end Set_Step;
+    end Set_Step_Size;
 
     --  -------------------------------------------------------------------------
 
