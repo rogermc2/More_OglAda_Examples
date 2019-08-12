@@ -6,7 +6,7 @@ package Lighting_Technique_18 is
 
     type Directional_Light is record
         Colour            : Singles.Vector3 := (1.0, 1.0, 1.0);
-        Ambient_Intensity : Single := 0.1;
+        Ambient_Intensity : Single := 0.0;
         Diffuse_Intensity : Single := 0.75;
         Direction         : Singles.Vector3 := (1.0, 0.0, 0.0);
     end record;
