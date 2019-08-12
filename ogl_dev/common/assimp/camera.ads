@@ -5,6 +5,8 @@ with Interfaces.C.Pointers;
 with Ada.Containers.Indefinite_Ordered_Maps;
 with Ada.Strings.Unbounded;
 
+with Maths;
+
 with GL.Types; use GL.Types;
 
 with Assimp_Types;
@@ -47,7 +49,7 @@ private
       Position       : GL.Types.Singles.Vector3;
       Up             : GL.Types.Singles.Vector3;
       Look_At        : GL.Types.Singles.Vector3;
-      Horizontal_FOV : GL.Types.Single := 0.0;
+      Horizontal_FOV : Maths.Degree := 0.0;
       Clip_Pane_Near : GL.Types.Single := 0.0;
       Clip_Pane_Far  : GL.Types.Single := 0.0;
       Aspect         : GL.Types.Single := 0.0;
