@@ -42,8 +42,8 @@ uniform sampler2D gSampler;
 uniform vec3 gEyeWorldPos;                                                                  
 uniform float gMatSpecularIntensity;                                                        
 uniform float gSpecularPower;                                                               
-                                                                                                                                                                                        
-vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal)                                                  
+
+vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal)
     {
     vec4 AmbientColor = vec4(Light.Color * Light.AmbientIntensity, 1.0f);
     float DiffuseFactor = dot(Normal, -LightDirection);
@@ -71,18 +71,18 @@ vec4 CalcDirectionalLight(vec3 Normal)
     return CalcLightInternal(gDirectionalLight.Base, gDirectionalLight.Direction, Normal);  
     }
                                                                                             
-vec4 CalcPointLight(PointLight l, vec3 Normal)                          
+vec4 CalcPointLight(int Index, vec3 Normal)
     {
-    vec3 LightDirection = WorldPos0 - l.Position;                                           
-    float Distance = length(LightDirection);                                                
-    LightDirection = normalize(LightDirection);                                            
-                                                                                            
-    vec4 Color = CalcLightInternal(l.Base, LightDirection, Normal);           
-    float Att =  l.Atten.Constant +
-                         l.Atten.Linear * Distance +                                        
-                         l.Atten.Exp * Distance * Distance;                                 
-    Color = Color / Att;
-    return Color;
+        vec3 LightDirection = WorldPos0 - gPointLights[Index].Position;
+        float Distance = length(LightDirection);
+        vec4 Color = CalcLightInternal(gPointLights[Index].Base, LightDirection, Normal);
+        float Att =  gPointLights[Index].Atten.Constant +
+            gPointLights[Index].Atten.Linear * Distance +
+            gPointLights[Index].Atten.Exp * Distance * Distance;
+        
+        LightDirection = normalize(LightDirection);
+        Color = Color / Att;
+        return Color;
     }
 
 void main()                                                                                 
@@ -92,7 +92,7 @@ void main()
                                                                                             
     for (int i = 0 ; i < gNumPointLights ; i++)
         {
-        TotalLight += CalcPointLight(gPointLights[i], Normal);               
+        TotalLight = TotalLight + CalcPointLight(i, Normal);
         }
          
     FragColor = texture (gSampler, TexCoord0.xy) * TotalLight;
