@@ -49,6 +49,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Direct_Light           : Lighting_Technique_20.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
+
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 
    --  ------------------------------------------------------------------------
@@ -69,11 +70,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Set_Step_Size (0.005);
          Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
+
          Utilities.Clear_Background_Colour_And_Depth (Background);
          Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_20.Init_Directional_Light (Direct_Light);
          Lighting_Technique_20.Set_Directional_Diffuse (Direct_Light, 0.5);
+
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
          Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
