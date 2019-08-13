@@ -57,7 +57,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
       Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
-      Target              : constant Singles.Vector3 := (1.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Result := Lighting_Technique.Init (Shader_Program);
@@ -77,7 +77,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          GL.Objects.Programs.Use_Program (Shader_Program);
 
-         Lighting_Technique.Set_Directional_Light (Direct_Light);
+         Direct_Light.Ambient_Intensity := 0.0;
+         Lighting_Technique.Set_Directional_Light (Direct_Light);  --  Diffuse Intensity 0.9
          Lighting_Technique.Set_Texture_Unit (0);
          Result := Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                       "/Ada_Source/OglAda_Examples/ogl_dev/content/test.png");
@@ -128,7 +129,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       World_Transformation : GL.Types.Singles.Matrix4;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
-      Update_Lighting (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Scale := Scale + 0.1;
@@ -151,9 +151,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
       Lighting_Technique.Set_World_Matrix (World_Transformation);
       Lighting_Technique.Set_Eye_World_Pos (Ogldev_Camera.Get_Position (Game_Camera));
-      Lighting_Technique.Set_Light_Direction ((0.0, -1.0, 0.5));
+      Direct_Light.Direction := (0.0, -1.0, 0.5);
       Lighting_Technique.Set_Mat_Specular_Intensity (1.0);
       Lighting_Technique.Set_Mat_Specular_Power (32.0);
+      Update_Lighting (Window);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
