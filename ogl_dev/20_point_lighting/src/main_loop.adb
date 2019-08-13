@@ -48,6 +48,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Scale                  : Single := 0.0;
    Field_Depth            : constant := 25.0;  --  orig 20.0
    Field_Width            : constant := 10.0;  --  orig 10.0
+   Intensity_Step_Size    : Single := 0.002;
 
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 
@@ -74,7 +75,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_20.Init_Directional_Light (Direct_Light);
-         Lighting_Technique_20.Set_Directional_Diffuse (Direct_Light, 0.5);
+         Lighting_Technique_20.Set_Directional_Diffuse (Direct_Light, 0.1);
 
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
@@ -116,10 +117,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
       Lighting_Technique_20.Set_Point_Light (Light    => Point_Lights (1),
-                                             Diffuse  =>  0.5,
-                                             Colour   => (1.0, 0.5, 0.0),
-                                             Position => (3.0, 1.0,
-                                                          0.5 * Field_Depth * (1.0 + Cos (Scale))),
+                                             Diffuse  =>  1.0,
+--                                               Diffuse  =>  0.5,
+                                             Colour   => (1.0, 0.0, 0.0),
+--                                               Colour   => (1.0, 0.5, 0.0),
+                                             Position => (1.0, 0.0, 0.0),
+--                                                            0.5 * Field_Depth * (1.0 + Cos (Scale))),
                                              Atten    => (0.1, 0.0, 0.0));
       Lighting_Technique_20.Set_Point_Light (Point_Lights (2), 0.5, (0.0, 0.5, 1.0),
                                              (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))),
@@ -183,16 +186,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
          Set_Directional_Ambient (Direct_Light,
-                                  Get_Directional_Ambient (Direct_Light) + 0.05);
+                                  Get_Directional_Ambient (Direct_Light) + Intensity_Step_Size);
       elsif Window'Access.Key_State (Keys.S) = Pressed then
          Set_Directional_Ambient (Direct_Light,
-                                  Get_Directional_Ambient (Direct_Light) - 0.05);
+                                  Get_Directional_Ambient (Direct_Light) - Intensity_Step_Size);
       elsif Window'Access.Key_State (Keys.Z) = Pressed then
          Set_Directional_Diffuse (Direct_Light,
-                                  Get_Directional_Diffuse (Direct_Light) + 0.05);
+                                  Get_Directional_Diffuse (Direct_Light) + Intensity_Step_Size);
       elsif Window'Access.Key_State (Keys.X) = Pressed then
          Set_Directional_Diffuse (Direct_Light,
-                                  Get_Directional_Diffuse (Direct_Light) - 0.05);
+                                  Get_Directional_Diffuse (Direct_Light) - Intensity_Step_Size);
       end if;
    end Update_Lighting_Intensity;
 
