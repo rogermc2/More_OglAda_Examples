@@ -58,7 +58,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width   : Glfw.Size;
       Window_Height  : Glfw.Size;
-      Camera_Position : constant Singles.Vector3 := (5.0, 1.0, 3.0); --  orig 5,1,-3 Normalized by Camera.Init
+      Camera_Position : constant Singles.Vector3 := (5.0, 1.0, 3.0);  --  orig 5,1,-3 Normalized by Camera.Init
       Target          : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -70,7 +70,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Utilities.Clear_Background_Colour_And_Depth (Background);
 
---           GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
          Lighting_Technique_20.Init_Directional_Light (Direct_Light);
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
@@ -118,11 +117,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
-      Lighting_Technique_20.Set_Point_Light (Light   => Point_Lights (1),
-                                             Diffuse =>  0.5,
-                                             Colour  => (1.0, 0.5, 0.0),
-                                             Pos     => (3.0, 1.0, 0.5 * Field_Depth * (1.0 + Cos (Scale))),
-                                             Atten   => (0.1, 0.0, 0.0));
+      Lighting_Technique_20.Set_Point_Light (Light    => Point_Lights (1),
+                                             Diffuse  =>  0.5,
+                                             Colour   => (1.0, 0.5, 0.0),
+                                             Position => (3.0, 1.0,
+                                                          0.5 * Field_Depth * (1.0 + Cos (Scale))),
+                                             Atten    => (0.1, 0.0, 0.0));
       Lighting_Technique_20.Set_Point_Light (Point_Lights (2), 0.5, (0.0, 0.5, 1.0),
                                              (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))),
                                              (0.1, 0.0, 0.0));
@@ -132,7 +132,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
 
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -1.0);  --  orig 0,0,1
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -30.0);  --  orig 0,0,1
       Ogldev_Pipeline.Set_Camera (Pipe, Ogldev_Camera.Get_Position (Game_Camera),
                                   Ogldev_Camera.Get_Target (Game_Camera),
                                   Ogldev_Camera.Get_Up (Game_Camera));
@@ -164,7 +164,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Objects.Textures.Set_Active_Unit (0);
       GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
-      --            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);

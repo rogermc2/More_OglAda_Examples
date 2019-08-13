@@ -87,7 +87,7 @@ package body Lighting_Technique_20 is
                   Get_Uniform_Location (theTechnique, Point_Name (index, "Base.AmbientIntensity"));
                 theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Diffuse_Intensity :=
                   Get_Uniform_Location (theTechnique, Point_Name (index, "Base.DiffuseIntensity"));
-                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Position :=
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Origin :=
                   Get_Uniform_Location (theTechnique, Point_Name (index, "Position"));
                 theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Atten.Constant_Atten :=
                   Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Constant"));
@@ -201,18 +201,17 @@ package body Lighting_Technique_20 is
     --   -------------------------------------------------------------------------------------------------------
 
     procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single; 
-                               Colour, Pos : Singles.Vector3; Atten : Attenuation) is
+                               Colour, Position : Singles.Vector3; Atten : Attenuation) is
     begin
         Light.Base.Colour := Colour;
         Light.Base.Diffuse_Intensity := Diffuse;
-        Light.Position := Pos;
+        Light.Origin := Position;
         Light.Atten := Atten;
     end Set_Point_Light;
 
     --  -------------------------------------------------------------------------   
  
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
-        Col : Singles.Vector3 := (1.0, 0.0, 0.0);
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
@@ -222,8 +221,8 @@ package body Lighting_Technique_20 is
                                     Lights (index).Base.Ambient_Intensity);
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Diffuse_Intensity,
                                     Lights (index).Base.Diffuse_Intensity);
-            GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Position,
-                                    Lights (index).Position);
+            GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Origin,
+                                    Lights (index).Origin);
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Constant_Atten,
                                     Lights (index).Atten.Constant_Atten);
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Linear,
