@@ -49,7 +49,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Direct_Light           : Lighting_Technique_20.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
-
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 
    --  ------------------------------------------------------------------------
@@ -68,9 +67,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+         Ogldev_Camera.Set_Step_Size (0.005);
+         Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
          Utilities.Clear_Background_Colour_And_Depth (Background);
+         Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_20.Init_Directional_Light (Direct_Light);
+         Lighting_Technique_20.Set_Directional_Diffuse (Direct_Light, 0.5);
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
          Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
@@ -78,9 +81,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          --  or at the target?
          Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
          Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 50.0);
-
-         Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
-         Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_20.Use_Program (Shader_Technique);
          Lighting_Technique_20.Set_Texture_Unit (Shader_Technique, 0);
@@ -92,8 +92,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          else
             Put_Line ("Main_Loop.Init. Init_Texture failed");
          end if;
-
-         Glfw.Input.Poll_Events;
       end if;
 
    exception
@@ -111,8 +109,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Pipe                 : Ogldev_Pipeline.Pipeline;
       Point_Lights         : Lighting_Technique_20.Point_Lights_Array (1 .. 2);
    begin
-      Scale := Scale + 0.0057;
-      Scale := Scale + 1.0;
+      Scale := Scale + 1.0;  --  orig 0.0057
       Update_Lighting_Intensity (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
