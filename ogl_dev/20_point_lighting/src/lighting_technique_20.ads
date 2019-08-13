@@ -15,7 +15,7 @@ package Lighting_Technique_20 is
     type Attenuation is record
         Constant_Atten : Single := 1.0;
         Linear         : Single := 0.0;
-        EXP            : Single := 0.0;
+        Exp            : Single := 0.0;
     end record;
 
    type Point_Lights_Array is array (Int range <>) of
@@ -35,7 +35,7 @@ package Lighting_Technique_20 is
     procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
     procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single;
                                Colour : Singles.Vector3;
-                               Pos : Singles.Vector3; Atten : Attenuation);
+                               Position : Singles.Vector3; Atten : Attenuation);
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array);
     procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
     procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4);
@@ -52,9 +52,9 @@ package Lighting_Technique_20 is
     end record;
 
     type Point_Light is record
-        Base     : Base_Light;
-        Position : Singles.Vector3 := (0.0, 0.0, 0.0);
-        Atten    : Attenuation;
+        Base    : Base_Light;
+        Origin  : Singles.Vector3 := (0.0, 0.0, 0.0);
+        Atten   : Attenuation;
     end record;
 
     type Directional_Light is record
@@ -72,7 +72,7 @@ package Lighting_Technique_20 is
       Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
       Diffuse_Intensity : GL.Uniforms.Uniform := 0;
-      Position          : GL.Uniforms.Uniform := 0;
+      Origin            : GL.Uniforms.Uniform := 0;
       Atten             : Atten_Location;
    end record;
 
