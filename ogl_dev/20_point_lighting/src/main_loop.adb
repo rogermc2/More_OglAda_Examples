@@ -37,18 +37,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
    Background             : constant GL.Types.Colors.Color := (0.4, 0.4, 0.4, 0.0);
-   Field_Depth            : constant := 20.0;
-   Field_Width            : constant := 10.0;
-
-   Shader_Technique       : Lighting_Technique_20.Technique;
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Shader_Technique       : Lighting_Technique_20.Technique;
    Vertex_Buffer          : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
    theTexture             : Ogldev_Texture.Ogl_Texture;
    Direct_Light           : Lighting_Technique_20.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
+   Field_Depth            : constant := 25.0;  --  orig 20.0
+   Field_Width            : constant := 10.0;  --  orig 10.0
 
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 
@@ -113,7 +112,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Point_Lights         : Lighting_Technique_20.Point_Lights_Array (1 .. 2);
    begin
       Scale := Scale + 1.0;  --  orig 0.0057
-      Update_Lighting_Intensity (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
@@ -139,6 +137,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
+      Update_Lighting_Intensity (Window);
       Lighting_Technique_20.Set_WVP_Location
         (Shader_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
