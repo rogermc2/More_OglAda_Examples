@@ -71,24 +71,10 @@ package body Lighting_Technique is
    
    --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_WVP (WVP : Singles.Matrix4) is
+    procedure Set_Ambient_Intensity (Intensity : Single) is
     begin
-        GL.Uniforms.Set_Single (WVP_Location, WVP);    
-    end Set_WVP;
-   
-   --   -------------------------------------------------------------------------------------------------------
-    
-    procedure Set_World_Matrix (World_Inverse: Singles.Matrix4) is
-    begin
-        GL.Uniforms.Set_Single (World_Matrix_Location, World_Inverse);
-    end Set_World_Matrix;
-   
-   --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Texture_Unit (Texture_Unit : Int) is
-    begin
-        GL.Uniforms.Set_Int (Sampler_Location, Texture_Unit);
-    end Set_Texture_Unit;
+        GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity, Intensity);
+    end Set_Ambient_Intensity;
    
    --   -------------------------------------------------------------------------------------------------------
 
@@ -110,14 +96,7 @@ package body Lighting_Technique is
    
    --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_Ambient_Intensity (Intensity : Single) is
-    begin
-        GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity, Intensity);
-    end Set_Ambient_Intensity;
-   
-   --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Mat_Specular_Intensity (Intensity : Single) is
+procedure Set_Mat_Specular_Intensity (Intensity : Single) is
     begin
         GL.Uniforms.Set_Single (Mat_Specular_Intensity_Location, Intensity);
     end Set_Mat_Specular_Intensity;
@@ -128,5 +107,28 @@ package body Lighting_Technique is
     begin
         GL.Uniforms.Set_Single (Mat_Specular_Power_Location, Power);
     end Set_Mat_Specular_Power;
+
+    --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_Texture_Unit (Texture_Unit : Int) is
+    begin
+        GL.Uniforms.Set_Int (Sampler_Location, Texture_Unit);
+    end Set_Texture_Unit;
+   
+   --   -------------------------------------------------------------------------------------------------------
+
+      procedure Set_WVP (WVP : Singles.Matrix4) is
+    begin
+        GL.Uniforms.Set_Single (WVP_Location, WVP);    
+    end Set_WVP;
+   
+   --   -------------------------------------------------------------------------------------------------------
+    
+    procedure Set_World_Matrix (World_Inverse: Singles.Matrix4) is
+    begin
+        GL.Uniforms.Set_Single (World_Matrix_Location, World_Inverse);
+    end Set_World_Matrix;
+   
+   --   -------------------------------------------------------------------------------------------------------
 
 end Lighting_Technique;
