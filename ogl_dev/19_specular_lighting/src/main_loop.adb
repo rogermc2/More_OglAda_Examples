@@ -57,7 +57,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
       Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
-      Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (1.0, 0.0, 1.0);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Result := Lighting_Technique.Init (Shader_Program);
@@ -77,6 +77,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          GL.Objects.Programs.Use_Program (Shader_Program);
 
+         Lighting_Technique.Set_Directional_Light (Direct_Light);
          Lighting_Technique.Set_Texture_Unit (0);
          Result := Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                       "/Ada_Source/OglAda_Examples/ogl_dev/content/test.png");
@@ -116,6 +117,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       elsif Window'Access.Key_State (Keys.X) = Pressed then
          Direct_Light.Diffuse_Intensity := Direct_Light.Diffuse_Intensity - 0.002;
       end if;
+      Lighting_Technique.Set_Directional_Light (Direct_Light);
    end Update_Lighting;
 
    --  -------------------------------------------------------------------------
@@ -148,8 +150,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Lighting_Technique.Set_WVP (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
       Lighting_Technique.Set_World_Matrix (World_Transformation);
-      Lighting_Technique.Set_Directional_Light (Direct_Light);
       Lighting_Technique.Set_Eye_World_Pos (Ogldev_Camera.Get_Position (Game_Camera));
+      Lighting_Technique.Set_Light_Direction ((0.0, -1.0, 0.5));
       Lighting_Technique.Set_Mat_Specular_Intensity (1.0);
       Lighting_Technique.Set_Mat_Specular_Power (32.0);
 

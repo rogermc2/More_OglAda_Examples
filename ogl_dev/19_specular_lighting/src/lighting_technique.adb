@@ -96,6 +96,15 @@ package body Lighting_Technique is
    
    --   -------------------------------------------------------------------------------------------------------
 
+    procedure Set_Light_Direction (Direction : Singles.Vector3) is
+        theDirection : Singles.Vector3 := Maths.Normalized (Direction);
+    begin
+        GL.Uniforms.Set_Single (Directional_Light_Location.Direction,
+                                theDirection (GL.X), theDirection (GL.Y), theDirection (GL.Z));
+     end Set_Light_Direction;
+   
+   --   -------------------------------------------------------------------------------------------------------
+
 procedure Set_Mat_Specular_Intensity (Intensity : Single) is
     begin
         GL.Uniforms.Set_Single (Mat_Specular_Intensity_Location, Intensity);
