@@ -46,7 +46,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Normals_Buffer         : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
    theTexture             : Ogldev_Texture.Ogl_Texture;
-   Light_Direction        : Lighting_Technique.Directional_Light;
+   Direct_Light           : Lighting_Technique.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
 
@@ -108,13 +108,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Glfw.Input;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
-         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.002;
+         Direct_Light.Ambient_Intensity := Direct_Light.Ambient_Intensity + 0.002;
       elsif Window'Access.Key_State (Keys.S) = Pressed then
-         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.002;
+         Direct_Light.Ambient_Intensity := Direct_Light.Ambient_Intensity - 0.002;
       elsif Window'Access.Key_State (Keys.Z) = Pressed then
-         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.002;
+         Direct_Light.Diffuse_Intensity := Direct_Light.Diffuse_Intensity + 0.002;
       elsif Window'Access.Key_State (Keys.X) = Pressed then
-         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity - 0.002;
+         Direct_Light.Diffuse_Intensity := Direct_Light.Diffuse_Intensity - 0.002;
       end if;
    end Update_Lighting;
 
@@ -148,7 +148,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Lighting_Technique.Set_WVP (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
       Lighting_Technique.Set_World_Matrix (World_Transformation);
-      Lighting_Technique.Set_Directional_Light (Light_Direction);
+      Lighting_Technique.Set_Directional_Light (Direct_Light);
       Lighting_Technique.Set_Eye_World_Pos (Ogldev_Camera.Get_Position (Game_Camera));
       Lighting_Technique.Set_Mat_Specular_Intensity (1.0);
       Lighting_Technique.Set_Mat_Specular_Power (32.0);
