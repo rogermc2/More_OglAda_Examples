@@ -72,7 +72,7 @@ package Lighting_Technique_20 is
       Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
       Diffuse_Intensity : GL.Uniforms.Uniform := 0;
-      Origin            : GL.Uniforms.Uniform := 0;
+      Position          : GL.Uniforms.Uniform := 0;
       Atten             : Atten_Location;
    end record;
 
