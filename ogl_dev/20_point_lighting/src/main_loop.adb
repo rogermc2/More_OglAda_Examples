@@ -75,7 +75,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_20.Init_Directional_Light (Direct_Light);
-         Lighting_Technique_20.Set_Directional_Diffuse (Direct_Light, 0.1);
+         Lighting_Technique_20.Set_Directional_Diffuse (Direct_Light, 0.3);
 
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
@@ -117,16 +117,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
       Lighting_Technique_20.Set_Point_Light (Light    => Point_Lights (1),
-                                             Diffuse  =>  1.0,
---                                               Diffuse  =>  0.5,
-                                             Colour   => (1.0, 0.0, 0.0),
---                                               Colour   => (1.0, 0.5, 0.0),
-                                             Position => (1.0, 0.0, 0.0),
---                                                            0.5 * Field_Depth * (1.0 + Cos (Scale))),
+                                             Diffuse  =>  0.1,
+                                             Colour   => (1.0, 0.5, 0.0),
+                                             Position => (3.0, 1.0,
+                                                          0.5 * Field_Depth * (1.0 + Cos (Scale))),
                                              Atten    => (0.1, 0.0, 0.0));
       Lighting_Technique_20.Set_Point_Light (Point_Lights (2), 0.5, (0.0, 0.5, 1.0),
                                              (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))),
-                                             (0.1, 0.0, 0.0));
+                                             (0.2, 0.0, 0.0));  --  orig (0.1, 0.0, 0.0)
       Lighting_Technique_20.Set_Point_Light_Locations (Shader_Technique, Point_Lights);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
