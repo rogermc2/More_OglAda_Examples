@@ -87,7 +87,7 @@ package body Lighting_Technique_20 is
                   Get_Uniform_Location (theTechnique, Point_Name (index, "Base.AmbientIntensity"));
                 theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Diffuse_Intensity :=
                   Get_Uniform_Location (theTechnique, Point_Name (index, "Base.DiffuseIntensity"));
-                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Origin :=
+                theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Position :=
                   Get_Uniform_Location (theTechnique, Point_Name (index, "Position"));
                 theTechnique.Point_Lights_Locations (GL.Types.Int (index)).Atten.Constant_Atten :=
                   Get_Uniform_Location (theTechnique, Point_Name (index, "Atten.Constant"));
@@ -222,7 +222,7 @@ package body Lighting_Technique_20 is
                                     Lights (index).Base.Ambient_Intensity);
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Diffuse_Intensity,
                                     Lights (index).Base.Diffuse_Intensity);
-            GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Origin,
+            GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Position,
                                     Lights (index).Origin);
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Constant_Atten,
                                     Lights (index).Atten.Constant_Atten);
