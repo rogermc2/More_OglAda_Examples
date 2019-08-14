@@ -36,60 +36,60 @@ struct PointLight
     };
 
 uniform int gNumPointLights;
-uniform DirectionalLight gDirectionalLight;                                                 
+uniform DirectionalLight gDirectionalLight;
 uniform PointLight gPointLights[MAX_POINT_LIGHTS];
-uniform sampler2D gSampler;                                                                
-uniform vec3 gEyeWorldPos;                                                                  
-uniform float gMatSpecularIntensity;                                                        
-uniform float gSpecularPower;                                                               
+uniform sampler2D gSampler;
+uniform vec3 gEyeWorldPos;
+uniform float gMatSpecularIntensity;
+uniform float gSpecularPower;
 
 vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal)
     {
     vec4 AmbientColor = vec4(Light.Color * Light.AmbientIntensity, 1.0f);
     float DiffuseFactor = dot(Normal, -LightDirection);
-                                                                                            
-    vec4 DiffuseColor  = vec4(0, 0, 0, 0);                                                  
+    vec4 DiffuseColor  = vec4(0, 0, 0, 0);
     vec4 SpecularColor = vec4(0, 0, 0, 0);
+        
     if (DiffuseFactor > 0)
         {
         DiffuseColor = vec4(Light.Color * Light.DiffuseIntensity * DiffuseFactor, 1.0f);
-                                                                                            
-        vec3 VertexToEye = normalize(gEyeWorldPos - WorldPos0);                             
-        vec3 LightReflect = normalize(reflect(LightDirection, Normal));                     
-        float SpecularFactor = dot(VertexToEye, LightReflect);                                      
+        vec3 VertexToEye = normalize(gEyeWorldPos - WorldPos0);
+        vec3 LightReflect = normalize(reflect(LightDirection, Normal));
+        float SpecularFactor = dot(VertexToEye, LightReflect);
+            
         if (SpecularFactor > 0)
             {
-            SpecularFactor = pow(SpecularFactor, gSpecularPower);                               
+            SpecularFactor = pow(SpecularFactor, gSpecularPower);
             SpecularColor = vec4(Light.Color * gMatSpecularIntensity * SpecularFactor, 1.0f);
             }
         }
     return (AmbientColor + DiffuseColor + SpecularColor);                  
-}                                                                                           
-                                                                                            
-vec4 CalcDirectionalLight(vec3 Normal)                                                      
+}
+
+vec4 CalcDirectionalLight(vec3 Normal)
     {
     return CalcLightInternal(gDirectionalLight.Base, gDirectionalLight.Direction, Normal);  
     }
-                                                                                            
+
 vec4 CalcPointLight(int Index, vec3 Normal)
     {
-        vec3 LightDirection = WorldPos0 - gPointLights[Index].Position;
-        float Distance = length(LightDirection);
-        vec4 Color = CalcLightInternal(gPointLights[Index].Base, LightDirection, Normal);
-        float Att =  gPointLights[Index].Atten.Constant +
+    vec3 LightDirection = WorldPos0 - gPointLights[Index].Position;
+    float Distance = length(LightDirection);
+    vec4 Color = CalcLightInternal(gPointLights[Index].Base, LightDirection, Normal);
+    float Att =  gPointLights[Index].Atten.Constant +
             gPointLights[Index].Atten.Linear * Distance +
             gPointLights[Index].Atten.Exp * Distance * Distance;
         
-        LightDirection = normalize(LightDirection);
-        Color = Color / Att;
-        return Color;
+    LightDirection = normalize(LightDirection);
+    Color = Color / Att;
+    return Color;
     }
 
-void main()                                                                                 
+void main()
     {
-    vec3 Normal = normalize(Normal0);                                                       
-    vec4 TotalLight = CalcDirectionalLight(Normal);                                         
-                                                                                            
+    vec3 Normal = normalize(Normal0);
+    vec4 TotalLight = CalcDirectionalLight(Normal);
+        
     for (int i = 0 ; i < gNumPointLights ; i++)
         {
         TotalLight = TotalLight + CalcPointLight(i, Normal);
