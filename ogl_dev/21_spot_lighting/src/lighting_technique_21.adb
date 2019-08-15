@@ -80,7 +80,7 @@ package body Lighting_Technique_21 is
             theTechnique.Num_Point_Lights_Location  :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gNumPointLights");
             theTechnique.Num_Spot_Lights_Location  :=
-              GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gNumSpotights");
+              GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gNumSpotLights");
             
             for index in GL.Types.Int range
               Point_Lights_Location_Array'First .. Point_Lights_Location_Array'Last loop
@@ -277,6 +277,7 @@ package body Lighting_Technique_21 is
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Max_Spot_Lights);
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Colour,
                                     Lights (index).Point.Base.Colour);
