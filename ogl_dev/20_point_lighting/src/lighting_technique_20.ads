@@ -30,7 +30,7 @@ package Lighting_Technique_20 is
     procedure Set_Directional_Diffuse (Light : in out Directional_Light;
                                        Diffuse : Single);
     procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light);
-    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
+    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Position : Singles.Vector3);
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single);
     procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
     procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single;
