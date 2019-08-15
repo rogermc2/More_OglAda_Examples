@@ -175,11 +175,11 @@ package body Lighting_Technique_20 is
    
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3) is
+    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Position : Singles.Vector3) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Eye_World_Pos (GL.X),
-                                Eye_World_Pos (GL.Y), Eye_World_Pos (GL.Z));
+        GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position (GL.X),
+                                Position (GL.Y), Position (GL.Z));
     end Set_Eye_World_Pos_Location;
    
     --   -------------------------------------------------------------------------------------------------------
