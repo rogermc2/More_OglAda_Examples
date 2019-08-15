@@ -36,7 +36,7 @@ with Lighting_Technique_20;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.4, 0.4, 0.4, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Technique       : Lighting_Technique_20.Technique;
@@ -47,7 +47,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
    Field_Depth            : constant := 25.0;  --  orig 20.0
-   Field_Width            : constant := 10.0;  --  orig 10.0
+   Field_Width            : constant := 10.0;
    Intensity_Step_Size    : Single := 0.002;
 
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
@@ -75,7 +75,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_20.Init_Directional_Light (Direct_Light);
-         Lighting_Technique_20.Set_Directional_Diffuse (Direct_Light, 0.3);
 
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
@@ -112,7 +111,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Pipe                 : Ogldev_Pipeline.Pipeline;
       Point_Lights         : Lighting_Technique_20.Point_Lights_Array (1 .. 2);
    begin
-      Scale := Scale + 0.01;  --  orig 0.0057
+      Scale := Scale + 0.003;  --  orig 0.0057
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
@@ -120,11 +119,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                              Diffuse  =>  0.1,
                                              Colour   => (1.0, 0.5, 0.0),
                                              Position => (3.0, 0.1 * Field_Depth * (1.0 + Cos (Scale)),
-                                                          0.5 * Field_Depth),
+                                                          Field_Depth),
                                              Atten    => (0.1, 0.0, 0.0));
       Lighting_Technique_20.Set_Point_Light (Point_Lights (2), 0.1, (0.0, 0.5, 1.0),
                                              (7.0,  0.1 * Field_Depth * (1.0 + Sin (Scale)),
-                                              0.5 * Field_Depth),
+                                              Field_Depth),
                                              (0.1, 0.0, 0.0));  --  orig (0.1, 0.0, 0.0)
       Lighting_Technique_20.Set_Point_Light_Locations (Shader_Technique, Point_Lights);
 
