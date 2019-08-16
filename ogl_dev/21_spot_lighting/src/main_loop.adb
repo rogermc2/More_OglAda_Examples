@@ -40,16 +40,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Field_Depth            : constant := 20.0;
    Field_Width            : constant := 10.0;
 
-   Shader_Technique       : Lighting_Technique_21.Technique;
-
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer          : GL.Objects.Buffers.Buffer;
+   Shader_Technique       : Lighting_Technique_21.Technique;
    Game_Camera            : Ogldev_Camera.Camera;
    theTexture             : Ogldev_Texture.Ogl_Texture;
    Direct_Light           : Lighting_Technique_21.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
-
 
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 
@@ -59,7 +57,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width   : Glfw.Size;
       Window_Height  : Glfw.Size;
-      Camera_Position : constant Singles.Vector3 := (5.0, 1.0, 3.0); --  orig 5,1,-3 Normalized by Camera.Init
+      Camera_Position : constant Singles.Vector3 := (5.0, 1.0, 20.0); --  orig 5,1,-3 Normalized by Camera.Init
       Target          : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -145,7 +143,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
 
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -1.0);  --  orig 0,0,1
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -5.0);  --  orig 0,0,1
       Ogldev_Pipeline.Set_Camera (Pipe, Ogldev_Camera.Get_Position (Game_Camera),
                                   Ogldev_Camera.Get_Target (Game_Camera),
                                   Ogldev_Camera.Get_Up (Game_Camera));
