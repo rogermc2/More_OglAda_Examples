@@ -103,23 +103,23 @@ package body Lighting_Technique_21 is
             for index in GL.Types.Int range 
               Spot_Lights_Location_Array'First .. Spot_Lights_Location_Array'Last loop
                 theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Colour :=
-                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.Color"));
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Point.Base.Color"));
                 theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Ambient_Intensity :=
-                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Base.AmbientIntensity"));
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Point.Base.AmbientIntensity"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Diffuse_Intensity :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Point.Base.DiffuseIntensity"));
                 theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Position :=
-                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.Position"));
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Point.Position"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Constant_Atten :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Point.Atten.Constant"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Linear :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Point.Atten.Linear"));
+                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Exp :=
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Point.Atten.Exp"));
                 theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Direction :=
                   Get_Uniform_Location (theTechnique, Spot_Name (index, "Direction"));
                 theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Cutoff :=
                   Get_Uniform_Location (theTechnique, Spot_Name (index, "CutOff"));
-                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Diffuse_Intensity :=
-                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Base.DiffuseIntensity"));
-                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Constant_Atten :=
-                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Constant"));
-                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Linear :=
-                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Linear"));
-                theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Atten.Exp :=
-                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Atten.Exp"));
             end loop;
         end if;
         return OK;
