@@ -38,7 +38,7 @@ struct PointLight
                                                                                             
 struct SpotLight                                                                            
     {
-    PointLight Base;                                                                        
+    PointLight Point;
     vec3 Direction;                                                                         
     float Cutoff;                                                                           
     };
@@ -96,13 +96,13 @@ vec4 CalcPointLight(PointLight light, vec3 Normal)
                                                                                             
 vec4 CalcSpotLight(SpotLight light, vec3 Normal)
     {
-    vec3 LightToPixel = normalize(WorldPos0 - light.Base.Position);
+    vec3 LightToPixel = normalize(WorldPos0 - light.Point.Position);
     float SpotFactor = dot(LightToPixel, light.Direction);
     vec4 Colour = vec4(0, 0, 0 ,0);
                                                                                             
     if (SpotFactor > light.Cutoff)
         {
-        Colour = CalcPointLight(light.Base, Normal);
+        Colour = CalcPointLight(light.Point, Normal);
         Colour = Colour * (1.0 - (1.0 - SpotFactor) * 1.0/(1.0 - light.Cutoff));
         }
     return Colour;
