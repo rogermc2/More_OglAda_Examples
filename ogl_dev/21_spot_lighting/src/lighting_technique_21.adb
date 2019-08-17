@@ -7,7 +7,6 @@ with GL.Objects.Shaders;
 with GL.Objects.Shaders.Lists;
 with GL.Uniforms;
 
-with Maths;
 with Program_Loader;
 
 package body Lighting_Technique_21 is 
@@ -119,7 +118,7 @@ package body Lighting_Technique_21 is
                 theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Direction :=
                   Get_Uniform_Location (theTechnique, Spot_Name (index, "Direction"));
                 theTechnique.Spot_Lights_Locations (GL.Types.Int (index)).Cutoff :=
-                  Get_Uniform_Location (theTechnique, Spot_Name (index, "CutOff"));
+                  Get_Uniform_Location (theTechnique, Spot_Name (index, "Cutoff"));
             end loop;
         end if;
         return OK;
@@ -224,10 +223,11 @@ package body Lighting_Technique_21 is
     
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single; 
+    procedure Set_Point_Light (Light : in out Point_Light; Ambient, Diffuse : Single; 
                                Colour, Pos : Singles.Vector3; Atten : Attenuation) is
     begin
         Light.Base.Colour := Colour;
+        Light.Base.Ambient_Intensity := Ambient;
         Light.Base.Diffuse_Intensity := Diffuse;
         Light.Position := Pos;
         Light.Atten := Atten;
@@ -260,11 +260,12 @@ package body Lighting_Technique_21 is
 
     --   -------------------------------------------------------------------------------------------------------
     
-    procedure Set_Spot_Light (Light : in out Spot_Light; Diffuse : Single; 
+    procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single; 
                               Colour, Pos, Direction : Singles.Vector3; 
-                              Atten : Attenuation; Cut_Off : Single) is
+                              Atten : Attenuation; Cut_Off : Maths.Degree) is
     begin
         Light.Point.Base.Colour := Colour;
+        Light.Point.Base.Ambient_Intensity := Ambient;
         Light.Point.Base.Diffuse_Intensity := Diffuse;
         Light.Point.Position := Pos;
         Light.Direction := Direction;
@@ -275,6 +276,7 @@ package body Lighting_Technique_21 is
     --  -------------------------------------------------------------------------
 
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
+    use Maths.Single_Math_Functions;
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Max_Spot_Lights);
@@ -290,7 +292,7 @@ package body Lighting_Technique_21 is
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
                                     Lights (index).Direction);
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
-                                    Lights (index).Cutoff);
+                                    Cos (Single (Maths.Radians (Lights (index).Cutoff))));
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
                                     Lights (index).Point.Atten.Constant_Atten);
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,
