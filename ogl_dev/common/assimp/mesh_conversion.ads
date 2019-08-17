@@ -9,7 +9,6 @@ with GL.Objects.Buffers;
 with GL.Types; use GL.Types;
 
 with Assimp_Mesh;
-with Assimp_Texture;
 with Assimp_Types;
 with API_Vectors_Matrices; use API_Vectors_Matrices;
 

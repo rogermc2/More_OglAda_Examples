@@ -5,7 +5,6 @@ with Interfaces.C.Strings;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with AI_Conversion;
-with Assimp_Util;
 
 with Ogldev_Math;
 
@@ -40,7 +39,6 @@ package body Scene is
 
    procedure To_AI_Scene (C_Scene  : API_Scene;
                           theScene : in out Scene.AI_Scene) is
-      use Material.Material_Pointers_Package;
       use Node_Pointers;
       Num_Meshes     : constant unsigned := (C_Scene.Num_Meshes);
       Num_Materials  : constant unsigned := (C_Scene.Num_Materials);
