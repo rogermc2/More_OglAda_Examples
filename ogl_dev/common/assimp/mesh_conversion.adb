@@ -1,17 +1,11 @@
 
-with System;
-
 with Interfaces.C.Strings;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Utilities;
-
 with Ogldev_Math;
-with Ogldev_Util;
 
 with Assimp_Util;
-with Importer;
 
 package body Mesh_Conversion is
 
@@ -56,7 +50,6 @@ package body Mesh_Conversion is
    function To_AI_Colours_Map (C_Array      : API_Colour_4D_Ptr_Array;
                                Num_Vertices : Interfaces.C.unsigned)
                                return Assimp_Mesh.Colour_Coords_Map is
-      use Vector_3D_Array_Pointers;
       use Colours_4D_Array_Pointers;
       API_Colours_Ptr   : Colours_4D_Array_Pointer;
       API_Colours_Array : API_Colours_4D_Array (1 .. Num_Vertices);
@@ -138,10 +131,7 @@ package body Mesh_Conversion is
    function To_AI_Mesh (C_Mesh : API_Mesh) return Assimp_Mesh.AI_Mesh is
       use Interfaces.C;
       use Vector_3D_Array_Pointers;
-      use API_Vectors_Matrices;
-      use Unsigned_Array_Pointers;
       theAI_Mesh   : Assimp_Mesh.AI_Mesh;
-      Num_Vertices : constant unsigned := C_Mesh.Num_Vertices;
       Num_Faces    : constant unsigned :=C_Mesh.Num_Faces;
       Num_Bones    : constant unsigned := C_Mesh.Num_Bones;
    begin
@@ -193,7 +183,7 @@ package body Mesh_Conversion is
                             return Assimp_Mesh.AI_Mesh_Map is
       use Interfaces.C;
       Meshes   : Assimp_Mesh.AI_Mesh_Map;
-      C_Meshes : API_Mesh_Ptr_Array := Mesh_Array_Pointers.Value
+      C_Meshes : constant API_Mesh_Ptr_Array := Mesh_Array_Pointers.Value
         (C_Mesh_Ptr_Array, ptrdiff_t (Num_Meshes));
       C_Mesh   : API_Mesh;
       aMesh    : Assimp_Mesh.AI_Mesh;
@@ -217,7 +207,6 @@ package body Mesh_Conversion is
    function To_AI_Texture_Coords_Map (C_Array      : API_Texture_Coords_3D_Ptr_Array;
                                       Num_Vertices : Interfaces.C.unsigned)
                                       return Assimp_Mesh.Texture_Coords_Map is
-      use Vector_3D_Array_Pointers;
       use Texture_Coords_Array_Pointers;
       API_Coords_Ptr   : Texture_Coords_Array_Pointer;
       API_Coords_Array : API_Texture_Coords_Array (1 .. Num_Vertices);

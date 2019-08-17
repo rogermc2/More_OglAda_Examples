@@ -3,7 +3,6 @@ with Ada.Directories;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp.API;
-with Assimp_Mesh;
 
 package body Importer is
 
@@ -38,7 +37,7 @@ package body Importer is
       use Scene;
       C_Scene   : API_Scene;
       theScene  : AI_Scene;
-      C_Name    : Interfaces.C.char_array := Interfaces.C.To_C (File_Name);
+      C_Name    : constant Interfaces.C.char_array := Interfaces.C.To_C (File_Name);
    begin
       if Ada.Directories.Exists (File_Name) then
             Put_Line ("Importer.Read_File, C_Name: " & Interfaces.C.To_Ada (C_Name));

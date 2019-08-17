@@ -1,18 +1,9 @@
 
-with System;
-
-with Interfaces.C.Strings;
-
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Utilities;
-
-with Ogldev_Math;
 with Ogldev_Util;
 
-with Assimp_Util;
 with Importer;
-with Mesh_Conversion;
 with Scene;
 
 package body Assimp_Mesh is
@@ -25,7 +16,7 @@ package body Assimp_Mesh is
 
    ------------------------------------------------------------------------
 
-   function Has_Texture_Coords (aMesh : Mesh; Index : UInt) return Boolean is
+   function Has_Texture_Coords (aMesh : Mesh) return Boolean is
    begin
       return Assimp_Texture.Texture_Map_Size (aMesh.Textures) > 0;
    end Has_Texture_Coords;

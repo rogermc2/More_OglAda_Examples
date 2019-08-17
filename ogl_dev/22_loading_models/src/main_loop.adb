@@ -71,7 +71,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Meshes_22.Load_Mesh
            (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
-         Ogldev_Camera.Set_Step (2.0);
+         Ogldev_Camera.Set_Step_Size (2.0);
          Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
