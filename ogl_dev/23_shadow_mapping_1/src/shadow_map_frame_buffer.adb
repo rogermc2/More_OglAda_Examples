@@ -1,8 +1,4 @@
 
-with System;
-
-with Ada.Exceptions;
-with Ada.Numerics.Elementary_Functions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Buffers;
