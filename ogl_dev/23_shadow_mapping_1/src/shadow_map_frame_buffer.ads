@@ -1,5 +1,4 @@
 
-with GL.Buffers;
 with GL.Objects.Framebuffers;
 with GL.Objects.Textures;
 with GL.Types;

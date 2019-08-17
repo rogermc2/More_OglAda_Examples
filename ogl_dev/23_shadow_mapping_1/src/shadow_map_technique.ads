@@ -1,6 +1,5 @@
 
 with GL.Objects.Programs;
-with GL.Objects.Textures;
 with GL.Types;
 with GL.Uniforms;
 

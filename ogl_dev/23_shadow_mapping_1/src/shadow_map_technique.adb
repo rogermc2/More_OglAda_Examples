@@ -1,23 +1,20 @@
 
 
-with Ada.Strings;
-with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Shaders;
 with GL.Objects.Shaders.Lists;
 
-with Maths;
 with Program_Loader;
 
 Package body Shadow_Map_Technique is
 
-   function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
-                                  return GL.Uniforms.Uniform is
-   begin
-      return GL.Objects.Programs.Uniform_Location (theTechnique.Shadow_Map_Program,
-                                                   Uniform_Name);
-   end Get_Uniform_Location;
+--     function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
+--                                    return GL.Uniforms.Uniform is
+--     begin
+--        return GL.Objects.Programs.Uniform_Location (theTechnique.Shadow_Map_Program,
+--                                                     Uniform_Name);
+--     end Get_Uniform_Location;
 
    --  -------------------------------------------------------------------------
 
@@ -68,9 +65,9 @@ Package body Shadow_Map_Technique is
    begin
       if Link_Status (theTechnique.Shadow_Map_Program) then
          declare
-            Shaders_List : GL.Objects.Shaders.Lists.List :=
+            Shaders_List : constant GL.Objects.Shaders.Lists.List :=
                              GL.Objects.Programs.Attached_Shaders (theTechnique.Shadow_Map_Program);
-            Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
+            Curs         : constant GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
          begin
             if Curs = GL.Objects.Shaders.Lists.No_Element then
                Put_Line ("Shadow_Map_Technique.Use_Display_Program, Shaders list is empty");
