@@ -2,8 +2,8 @@
 with Ada.Strings.Unbounded;
 with GL.Types;
 
-with Material;
 with Assimp_Types;
+with Material;
 
 package Material_System is
 
@@ -14,7 +14,7 @@ package Material_System is
 
    function Get_Material_String (aMaterial      : Material.AI_Material;
                                  Key            : String;
-                                 Material_Type  : GL.Types.UInt;
+                                 Material_Type  : Material.AI_Texture_Type;
                                  theIndex       : GL.Types.UInt;
                                  Data_String    : out Ada.Strings.Unbounded.Unbounded_String)
                                  return Assimp_Types.API_Return;
