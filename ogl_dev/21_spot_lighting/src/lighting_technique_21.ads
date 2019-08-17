@@ -3,6 +3,8 @@ with GL.Objects.Programs;
 with GL.Types; use GL.Types;
 with GL.Uniforms;
 
+with Maths;
+
 package Lighting_Technique_21 is
 
     Max_Point_Lights : GL.Types.Int := 2;
@@ -36,14 +38,14 @@ package Lighting_Technique_21 is
     procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single);
     procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
-    procedure Set_Point_Light (Light : in out Point_Light; Diffuse : Single;
+    procedure Set_Point_Light (Light : in out Point_Light; Ambient, Diffuse : Single;
                                Colour : Singles.Vector3;
                                Pos : Singles.Vector3; Atten : Attenuation);
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array);
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array);
-    procedure Set_Spot_Light (Light : in out Spot_Light; Diffuse : Single;
+    procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single;
                                Colour, Pos, Direction : Singles.Vector3;
-                               Atten : Attenuation; Cut_Off : Single);
+                               Atten : Attenuation; Cut_Off : Maths.Degree);
     procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
     procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4);
     procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4);
@@ -67,7 +69,7 @@ package Lighting_Technique_21 is
     type Spot_Light is record
         Point     : Point_Light;
         Direction : Singles.Vector3 := (0.0, 0.0, 0.0);
-        Cutoff    : Single := 0.0;
+        Cutoff    : Maths.Degree := 0.0;
     end record;
 
     type Directional_Light is record
