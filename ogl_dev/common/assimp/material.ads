@@ -45,6 +45,20 @@ package Material is
                             AI_Texture_Unknown);
    pragma Convention (C, AI_Texture_Type);
 
+   for AI_Texture_Type use (AI_Texture_Type_None     => 0,
+                            AI_Texture_Diffuse       => 1,
+                            AI_Texture_Specular      => 2,
+                            AI_Texture_Ambient       => 3,
+                            AI_Texture_Emissive      => 4,
+                            AI_Texture_Height        => 5,
+                            AI_Texture_Normals       => 6,
+                            AI_Texture_Shininess     => 7,
+                            AI_Texture_Opacity       => 8,
+                            AI_Texture_Displacement  => 9,
+                            AI_Texture_Light_Map     => 16#A#,
+                            AI_Texture_Reflection    => 16#B#,
+                            AI_Texture_Unknown       => 16#c#);
+
    for AI_Property_Type_Info use (PTI_Float      => 16#1#,
                                   PTI_Double     => 16#2#,
                                   PTI_String     => 16#3#,
@@ -67,7 +81,7 @@ package Material is
 
    type AI_Material_Property (Data_Type : AI_Property_Type_Info := PTI_Float) is record
       Key            : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
-      Semantic       : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
+      Semantic       : AI_Texture_Type := AI_Texture_Type_None;  --  Usage, 0 for non_texture properties
       Texture_Index  : GL.Types.UInt := 0;  --  Index for textures
                                             --  Data_Type : AI_Property_Type_Info := PTI_Float;
       Data_Length    : GL.Types.UInt := 0;  --  Number of bytes
@@ -205,17 +219,4 @@ private
                           AI_Texture_Op_Smooth_Add => 4,
                           AI_Texture_Op_Signed_Add => 5);
 
-   for AI_Texture_Type use (AI_Texture_Type_None     => 0,
-                            AI_Texture_Diffuse       => 1,
-                            AI_Texture_Specular      => 2,
-                            AI_Texture_Ambient       => 3,
-                            AI_Texture_Emissive      => 4,
-                            AI_Texture_Height        => 5,
-                            AI_Texture_Normals       => 6,
-                            AI_Texture_Shininess     => 7,
-                            AI_Texture_Opacity       => 8,
-                            AI_Texture_Displacement  => 9,
-                            AI_Texture_Light_Map     => 16#A#,
-                            AI_Texture_Reflection    => 16#B#,
-                            AI_Texture_Unknown       => 16#c#);
 end Material;
