@@ -5,21 +5,11 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input;
 with Glfw.Input.Keys;
-with Glfw.Input.Mouse;
-
-with Utilities;
 
 package body Ogldev_Camera is
     Step_Scale       : GL.Types.Single := 0.004;
     Edge_Step        : constant Maths.Degree := 0.01;
     Margin           : constant Glfw.Input.Mouse.Coordinate := 10.0;
-
-    Up_Pressed       : Boolean := False;
-    Down_Pressed     : Boolean := False;
-    Left_Pressed     : Boolean := False;
-    Right_Pressed    : Boolean := False;
-    PageUp_Pressed   : Boolean := False;
-    PageDown_Pressed : Boolean := False;
 
     procedure Update (theCamera : in out Camera);
     procedure Update_Render (theCamera : in out Camera);

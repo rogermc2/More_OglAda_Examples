@@ -5,7 +5,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL;
 with GL.Objects.Shaders;
 with GL.Objects.Shaders.Lists;
-with GL.Uniforms;
 
 with Program_Loader;
 
@@ -151,7 +150,6 @@ package body Lighting_Technique_21 is
 
     function Point_Name (Index : GL.Types.Int; Unif : String) return String is
         use Ada.Strings.Unbounded;
-        use GL.Types;
     begin
         return To_String ("gPointLights[" &
                             Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
@@ -186,7 +184,7 @@ package body Lighting_Technique_21 is
     
    procedure Set_Directional_Light_Location (theTechnique : Technique; 
                                              Light        : Directional_Light) is
-        Direction : Singles.Vector3 := Maths.Normalized (Light.Direction);
+        Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour (GL.X), 
@@ -236,7 +234,6 @@ package body Lighting_Technique_21 is
     --  -------------------------------------------------------------------------   
  
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
-        Col : Singles.Vector3 := (1.0, 0.0, 0.0);
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Num_Point_Lights_Location, Max_Point_Lights);
@@ -331,7 +328,6 @@ package body Lighting_Technique_21 is
 
     function Spot_Name (Index : GL.Types.Int; Unif : String) return String is
         use Ada.Strings.Unbounded;
-        use GL.Types;
     begin
         return To_String ("gSpotLights[" &
                             Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
@@ -341,14 +337,13 @@ package body Lighting_Technique_21 is
     --  -------------------------------------------------------------------------
 
     procedure Use_Program (theTechnique : Technique) is
-        use GL.Objects.Programs;
         use GL.Objects.Shaders.Lists;
     begin
         if GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
             declare
-                Shaders_List : GL.Objects.Shaders.Lists.List :=
+                Shaders_List : constant GL.Objects.Shaders.Lists.List :=
                                  GL.Objects.Programs.Attached_Shaders (theTechnique.Lighting_Program);
-                Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
+                Curs         : constant GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
             begin
                 if Curs = GL.Objects.Shaders.Lists.No_Element then
                     Put_Line ("Lighting_Technique_21.Use_Program, Shaders list is empty");

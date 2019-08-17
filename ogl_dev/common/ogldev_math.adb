@@ -1,6 +1,4 @@
 
-with Maths;
-
 package body Ogldev_Math is
 
    function Get_Orthograpic_Far (Info : Orthographic_Projection_Info)
