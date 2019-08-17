@@ -1,6 +1,4 @@
 
-with Interfaces.C.Strings;
-
 with Assimp_Util;
 
 package body Camera is
@@ -8,8 +6,7 @@ package body Camera is
    function To_AI_Camera_Map (Num_Cameras : Interfaces.C.unsigned := 0;
                               C_Ptr_Array_Ptr : Camera_Ptr_Array_Pointer)
                                return AI_Camera_Map is
-      use Camera_Array_Pointers;
-      C_Ptr_Array : API_Camera_Ptr_Array :=
+      C_Ptr_Array  :constant API_Camera_Ptr_Array :=
                         Value (C_Ptr_Array_Ptr, Interfaces.C.ptrdiff_t (Num_Cameras));
       anAPI_Camera : API_Camera;
       aCamera      : AI_Camera;

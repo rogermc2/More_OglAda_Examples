@@ -6,7 +6,6 @@ with Interfaces.C.Strings;
 --
 with GL.Types;
 
-with Assimp_Mesh;
 with Mesh_Conversion;
 with Scene;
 
