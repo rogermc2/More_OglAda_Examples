@@ -57,8 +57,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width   : Glfw.Size;
       Window_Height  : Glfw.Size;
-      Camera_Position : constant Singles.Vector3 := (5.0, 1.0, 20.0); --  orig 5,1,-3 Normalized by Camera.Init
-      Target          : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Camera_Position : constant Singles.Vector3 := (5.0, 1.0, 3.0); --  orig 5,1,-3 Normalized by Camera.Init
+      Target          : constant Singles.Vector3 := (0.0, 0.0, -1.0);  --  orig 0,0,1 Normalized by Camera.Init
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Result := Lighting_Technique_21.Init (Shader_Technique);
@@ -106,6 +106,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
+   use GL.Types.Singles;
       use Maths.Single_Math_Functions;
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
@@ -119,23 +120,25 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour (Background);
 
       Lighting_Technique_21.Set_Point_Light (Light   => Point_Lights (1),
+                                             Ambient => 0.0,
                                              Diffuse =>  0.25,
                                              Colour  => (1.0, 0.5, 0.0),
                                              Pos     => (3.0, 1.0, 0.5 * Field_Depth * (1.0 + Cos (Scale))),
                                              Atten   => (0.1, 0.0, 0.0));
-      Lighting_Technique_21.Set_Point_Light (Point_Lights (2), 0.25, (0.0, 0.5, 1.0),
+      Lighting_Technique_21.Set_Point_Light (Point_Lights (2), 0.0, 0.25, (0.0, 0.5, 1.0),
                                              (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))),
                                              (0.1, 0.0, 0.0));
       Lighting_Technique_21.Set_Point_Light_Locations (Shader_Technique, Point_Lights);
 
       Lighting_Technique_21.Set_Spot_Light (Light     => Spot_Lights (1),
+                                            Ambient   => 0.0,
                                             Diffuse   => 0.9,
                                             Colour    => (0.0, 1.0, 1.0),
                                             Pos       => Ogldev_Camera.Get_Position (Game_Camera),
-                                            Direction => Ogldev_Camera.Get_Target (Game_Camera),
+                                            Direction => -Ogldev_Camera.Get_Target (Game_Camera),
                                             Atten     => (0.1, 0.0, 0.0),
                                             Cut_Off   => 10.0);
-      Lighting_Technique_21.Set_Spot_Light (Spot_Lights (2), 0.9, (1.0, 1.0, 1.0), (5.0, 3.0, 10.0),
+      Lighting_Technique_21.Set_Spot_Light (Spot_Lights (2), 0.0, 1.0, (1.0, 1.0, 1.0), (5.0, 3.0, 10.0),
                                             (0.0, -1.0, 0.0), (0.1, 0.0, 0.0), 20.0);
       Lighting_Technique_21.Set_Spot_Light_Locations (Shader_Technique, Spot_Lights);
 
@@ -143,7 +146,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
 
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -5.0);  --  orig 0,0,1
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -1.0);  --  orig 0,0,1
       Ogldev_Pipeline.Set_Camera (Pipe, Ogldev_Camera.Get_Position (Game_Camera),
                                   Ogldev_Camera.Get_Target (Game_Camera),
                                   Ogldev_Camera.Get_Up (Game_Camera));
