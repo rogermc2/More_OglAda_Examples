@@ -1,7 +1,6 @@
 
 with Interfaces; use Interfaces;
 with Interfaces.C;
-with Interfaces.C.Pointers;
 
 with GL.Objects.Buffers;
 with GL.Types;
