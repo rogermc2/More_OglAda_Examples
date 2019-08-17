@@ -36,7 +36,7 @@ with Lighting_Technique_21;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.4, 0.4, 0.4, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
    Field_Depth            : constant := 20.0;
    Field_Width            : constant := 10.0;
 
@@ -69,7 +69,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Utilities.Clear_Background_Colour_And_Depth (Background);
 
---           GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
          Lighting_Technique_21.Init_Directional_Light (Direct_Light);
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
@@ -178,7 +177,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Objects.Textures.Set_Active_Unit (0);
       GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
-      --            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
