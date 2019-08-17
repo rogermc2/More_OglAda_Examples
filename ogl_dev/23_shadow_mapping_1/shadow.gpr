@@ -11,18 +11,18 @@ project Shadow is
    for Languages use ("Ada", "C++");
 
    package Compiler is
-    for Switches ("c++") use ("-I/usr/local/include", "-I/usr/local/include/assimp", "-I/usr/local/include/ImageMagick-7/Magick++", "-I/usr/local/include/ImageMagick-7", "-DMAGICKCORE_QUANTUM_DEPTH=16", "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
-
-    for Switches ("ada") use ("-gnato", "-fstack-check", "-g", "-gnatf", "-gnata");
+      for Switches ("c++") use ("-I/usr/local/include", "-I/usr/local/include/assimp", "-I/usr/local/include/ImageMagick-7/Magick++", "-I/usr/local/include/ImageMagick-7", "-DMAGICKCORE_QUANTUM_DEPTH=16", 
+         "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
+      for Switches ("ada") use ("-gnato", "-fstack-check", "-g", "-gnatf", "-gnata", "-gnatw.c.ofkmuv");
    end Compiler;
 
    package Builder is
-     for Switches ("ada") use ("-g");
+      for Switches ("ada") use ("-g");
    end Builder;
 
-  package Linker is
-    for Switches ("ada") use ("-L/usr/local/lib", "-lMagick++-7.Q16HDRI", "-lMagickCore-7.Q16HDRI", "-L/usr/local/Cellar/assimp/4.1.0/lib", "-lassimp", "-g");
-  end Linker;
+   package Linker is
+      for Switches ("ada") use ("-L/usr/local/lib", "-lMagick++-7.Q16HDRI", "-lMagickCore-7.Q16HDRI", "-L/usr/local/Cellar/assimp/4.1.0/lib", "-lassimp", "-g");
+   end Linker;
 
 end Shadow;
 
