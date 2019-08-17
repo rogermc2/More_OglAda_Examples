@@ -1,6 +1,4 @@
 
-with Interfaces.C.Strings;
-
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp_Util;
@@ -10,8 +8,7 @@ package body Light is
     function To_AI_Light_Map (Num_Lights : Interfaces.C.unsigned := 0;
                               C_Array_Ptr : Light_Ptr_Array_Pointer) return AI_Light_Map is
         use Interfaces.C;
-        use Light_Ptr_Array_Pointers;
-        C_Ptrs_Array : API_Light_Ptr_Array :=
+        C_Ptrs_Array : constant API_Light_Ptr_Array :=
                          Value (C_Array_Ptr, ptrdiff_t (Num_Lights));
         aLight     : API_Light;
         anAI_Light : AI_Light;

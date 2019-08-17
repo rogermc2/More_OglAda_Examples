@@ -1,10 +1,6 @@
 
 with Interfaces.C;
 
-with Assimp_Types;
-
-with Assimp_Mesh;
-with Material;
 with Scene;
 
 package Assimp.API is
