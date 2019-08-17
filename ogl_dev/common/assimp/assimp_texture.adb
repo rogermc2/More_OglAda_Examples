@@ -34,12 +34,11 @@ package body Assimp_Texture is
    function To_AI_Texture_Map (Num_Textures : Interfaces.C.unsigned := 0;
                                C_Ptrs_Array : Texture_Ptr_Array_Pointer)
                                return AI_Texture_Map is
-      use Texture_Ptr_Array_Pointers;
-      Ptrs_Array : API_Texture_Ptr_Array :=
-          Value (C_Ptrs_Array, ptrdiff_t (Num_Textures));
-      C_Texture : API_Texture;
-      aTexture  : AI_Texture;
-      Tex_Map   : AI_Texture_Map;
+      Ptrs_Array : constant API_Texture_Ptr_Array :=
+                       Value (C_Ptrs_Array, ptrdiff_t (Num_Textures));
+      C_Texture  : API_Texture;
+      aTexture   : AI_Texture;
+      Tex_Map    : AI_Texture_Map;
    begin
       for index in 1 .. Num_Textures loop
          C_Texture := Ptrs_Array (index).all;
