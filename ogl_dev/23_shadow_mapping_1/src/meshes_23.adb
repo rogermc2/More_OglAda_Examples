@@ -1,19 +1,11 @@
 
-with System;
-
-with Interfaces.C;
-with Interfaces.C.Pointers;
-
 with Ada.Directories;
-with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
-with GL.Buffers;
 with GL.Low_Level.Enums;
-with GL.Objects.Textures.Targets;
-with GL.Pixels;
+with GL.Objects.Textures;
 
 with Maths;
 with Utilities;
@@ -21,8 +13,6 @@ with Utilities;
 with Assimp_Types; use Assimp_Types;
 with Importer;
 
-with Ogldev_Engine_Common;
-with Ogldev_Math;
 with Ogldev_Util;
 
 with Assimp_Mesh;
@@ -38,8 +28,6 @@ package body Meshes_23 is
       Normal  : GL.Types.Singles.Vector3;
    end record;
    type Vertex_Array is array (Int range <>) of Vertex;
-
-   Mesh_23_Exception : Exception;
 
    procedure Init_Materials (theMeshes : in out Mesh_23; File_Name : String;
                              theScene  : Scene.AI_Scene);
@@ -58,7 +46,6 @@ package body Meshes_23 is
       Curs           : Cursor := theScene.Meshes.First;
       Mesh_Index     : UInt := 0;
       an_AI_Mesh     : Assimp_Mesh.AI_Mesh;
-      an_AI_Material : Material.AI_Material;
       aMesh          : Mesh_Entry;
    begin
       -- A scene contains an AI_Mesh_Map and an AI_Mesh_Map
@@ -147,8 +134,6 @@ package body Meshes_23 is
    procedure Init_Mesh (aMesh       : in out Mesh_Entry;
                         Source_Mesh : Assimp_Mesh.AI_Mesh) is
       use Ada.Containers;
-      use GL.Types.Singles;
-      use Mesh_Entry_Package;
       Num_Vertices  : constant UInt := UInt (Source_Mesh.Vertices.Length);
       Vertices      : Vertex_Array (1 .. Int (Num_Vertices));
       Indices       : GL.Types.UInt_Array (1 .. Int (3 * Source_Mesh.Faces.Length));
@@ -257,7 +242,6 @@ package body Meshes_23 is
       Entry_Cursor    : Cursor;
       anEntry         : Mesh_Entry;
       aMaterial_Index : UInt;
-      Textures        : Ogldev_Texture.Mesh_Texture_Map;
       aTexture        : Ogldev_Texture.Ogl_Texture;
    begin
       if theMesh.Entries.Is_Empty then

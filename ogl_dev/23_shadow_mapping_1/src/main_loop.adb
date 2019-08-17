@@ -1,34 +1,23 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Buffers;
-with GL.Low_Level.Enums;
 with GL.Objects;
 with GL.Objects.Framebuffers;
-with GL.Objects.Programs;
-with GL.Objects.Shaders;
-WITH GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
-with GL.Toggles;
 with GL.Types.Colors;
-with GL.Uniforms;
-with GL.Window;
 
 with Glfw;
 with Glfw.Input;
 with Glfw.Input.Keys;
 with Glfw.Windows.Context;
 
-with Program_Loader;
 with Utilities;
 
 with Ogldev_Lights_Common;
 with Ogldev_Camera;
-with Ogldev_Engine_Common;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
-with Ogldev_Texture;
 
 with Shadow_Map_Frame_Buffer;
 with Shadow_Map_Technique;
@@ -49,8 +38,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Spot                   : Ogldev_Lights_Common.Spot_Light;
    Scale                  : Single := 0.0;
 
-   procedure Render_Pass (Window : in out Glfw.Windows.Window);
-   procedure Shadow_Map_Pass (Window : in out Glfw.Windows.Window);
+   procedure Render_Pass;
+   procedure Shadow_Map_Pass;
 
    --  ------------------------------------------------------------------------
 
@@ -105,8 +94,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  Z values from the light point of view and on the second pass
    --  from the camera point of view.
    procedure Render (Window : in out Glfw.Windows.Window) is
-      use GL.Types.Singles;
-      use Ogldev_Camera;
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
    begin
@@ -122,11 +109,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 20.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 50.0);
-      Shadow_Map_Pass (Window);
+      Shadow_Map_Pass;
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 30.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 50.0);
-      Render_Pass (Window);
+      Render_Pass;
 
    exception
       when  others =>
@@ -151,11 +138,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  Only the default framebuffer can be used to display something on the screen.
    --  The framebuffers created by the application can only be used for "offscreen rendering".
-   procedure Render_Pass (Window : in out Glfw.Windows.Window) is
+   procedure Render_Pass is
       use GL.Types.Singles;
       use Ogldev_Camera;
       use Ogldev_Pipeline;
-      Pipe          : Ogldev_Pipeline.Pipeline;
+      Pipe : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
       Shadow_Map_Technique.Set_Texture_Unit (Shadow_Technique, 0);
@@ -186,7 +173,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Shadow_Map_Pass (Window : in out Glfw.Windows.Window) is
+   procedure Shadow_Map_Pass is
       use GL.Types.Singles;
       use Ogldev_Camera;
       use Ogldev_Lights_Common;
