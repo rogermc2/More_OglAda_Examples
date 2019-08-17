@@ -1,6 +1,8 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Maths;
+
 package body Ogldev_Pipeline is
 
    procedure Set_Projection_Transform (P : in out Pipeline);

@@ -1,8 +1,6 @@
 
 with GL.Types; use GL.Types;
 
-with Maths;
-
 with Ogldev_Camera;
 with Ogldev_Math;
 
