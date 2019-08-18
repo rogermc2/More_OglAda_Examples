@@ -1,6 +1,5 @@
 
 with GL.Objects.Buffers;
-with GL.Types;
 
 package Buffers is
 

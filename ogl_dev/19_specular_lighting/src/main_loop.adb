@@ -7,13 +7,11 @@ with GL.Low_Level.Enums;
 with GL.Objects;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Shaders;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types.Colors;
-with GL.Uniforms;
 with GL.Window;
 
 with Glfw;
@@ -22,7 +20,6 @@ with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 with Glfw.Windows.Context;
 
-with Program_Loader;
 with Utilities;
 
 with Ogldev_Camera;

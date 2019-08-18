@@ -8,7 +8,6 @@ project Camera_Control_2 is
    for Object_Dir use "obj";
    for Exec_Dir use ".";
    for Main use ("camera_control.adb");
-
    for Languages use ("Ada");
 
    package Builder is
@@ -16,8 +15,12 @@ project Camera_Control_2 is
    end Builder;
 
    package Linker is
-        for Switches ("ada") use ("-L/usr/local/lib", "-g");
+      for Switches ("ada") use ("-L/usr/local/lib", "-g");
    end Linker;
+
+   package Compiler is
+      for Switches ("ada") use ("-gnatwfkmu");
+   end Compiler;
 
 end Camera_Control_2;
 

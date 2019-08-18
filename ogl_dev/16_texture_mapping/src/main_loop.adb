@@ -32,7 +32,7 @@ with Ogldev_Texture;
 
 with Buffers;
 
-procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
+procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
    Background             : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
@@ -93,7 +93,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera, Window);
-         Ogldev_Camera.Set_Step (0.1);
+         Ogldev_Camera.Set_Step_Size (0.1);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Counter_Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
