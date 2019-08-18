@@ -79,7 +79,7 @@ package body Lighting_Technique is
    --   -------------------------------------------------------------------------------------------------------
 
     procedure Set_Directional_Light (Light : Directional_Light) is
-        Direction : Singles.Vector3 := Maths.Normalized (Light.Direction);
+        Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
         GL.Uniforms.Set_Single (Directional_Light_Location.Colour, Light.Colour (GL.X), Light.Colour (GL.Y), Light.Colour (GL.Z));
         GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity, Light.Ambient_Intensity);
@@ -97,7 +97,7 @@ package body Lighting_Technique is
    --   -------------------------------------------------------------------------------------------------------
 
     procedure Set_Light_Direction (Direction : Singles.Vector3) is
-        theDirection : Singles.Vector3 := Maths.Normalized (Direction);
+        theDirection : constant Singles.Vector3 := Maths.Normalized (Direction);
     begin
         GL.Uniforms.Set_Single (Directional_Light_Location.Direction,
                                 theDirection (GL.X), theDirection (GL.Y), theDirection (GL.Z));

@@ -7,13 +7,11 @@ with GL.Low_Level.Enums;
 with GL.Objects;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Shaders;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types.Colors;
-with GL.Uniforms;
 with GL.Window;
 
 with Glfw;
@@ -22,7 +20,6 @@ with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 with Glfw.Windows.Context;
 
-with Program_Loader;
 with Utilities;
 
 with Ogldev_Camera;
@@ -58,9 +55,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
-      Target              : Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
-      Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
+      Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Result := Lighting_Technique_18.Init (Shader_Program);
       if Result then
@@ -175,7 +172,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
     procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window) is
       use Glfw.Input;
-      use Lighting_Technique_18;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
          Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.004;

@@ -56,14 +56,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       VAO.Initialize_Id;
       VAO.Bind;
 
-      Set_Diffuse_Intensity (Spot, 0.9);  --  0.9
       Set_Ambient_Intensity (Spot, 0.0);
-      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_Cyan);
+
+      Set_Diffuse_Intensity (Spot, 0.9);  --  0.9      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_Cyan);
       Set_Direction (Spot, (1.0, -1.0, 0.0));
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
 
-      Shadow_Map_Technique.Init (Shadow_Technique);
 --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
@@ -77,6 +76,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 50.0);
       Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
+      Shadow_Map_Technique.Init (Shadow_Technique);
 
       Meshes_23.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
       Meshes_23.Load_Mesh (Shadow_Mesh, "../Content/phoenix_ugv.md2");
@@ -110,6 +110,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         (Perspective_Proj_Info, 20.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 50.0);
       Shadow_Map_Pass;
+
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 30.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 50.0);

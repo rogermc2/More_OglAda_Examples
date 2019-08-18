@@ -114,9 +114,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
-      Camera_Position      : constant GL.Types.Singles.Vector3 := (1.0, 1.0, 3.0);
-      Camera_Target        : constant GL.Types.Singles.Vector3 := (0.0, 0.0, 2.0);
-      Camera_Up            : constant GL.Types.Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Scale := Scale + 0.1;
