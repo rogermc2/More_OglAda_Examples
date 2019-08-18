@@ -22,7 +22,6 @@ with Glfw.Windows.Context;
 with Program_Loader;
 with Utilities;
 
-with Ogldev_Camera;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 
@@ -38,7 +37,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    IBO                    : GL.Objects.Buffers.Buffer;
    VBO                    : GL.Objects.Buffers.Buffer;
-   Game_Camera            : Ogldev_Camera.Camera;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
 
