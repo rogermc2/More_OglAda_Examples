@@ -158,12 +158,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-
---        Utilities.Print_Matrix ("Main_Loop.Render_Pass WVP_Transform",
---                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-        Put_Line ("Main_Loop.Render_Pass calling Meshes_23.Render (Quad_Mesh)");
       Meshes_23.Render (Quad_Mesh);
---        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       New_Line;
 
    exception
@@ -185,7 +180,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Frame_Buffer.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
-      Set_Scale (Pipe, 0.1);  --  0.1
+      Set_Scale (Pipe, 0.02);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, 0.0, 0.0, -5.0);
       Set_Camera (Pipe, Position (Spot),
@@ -196,10 +191,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Init_Transforms (Pipe);
 
       Shadow_Map_Technique.Set_WVP (Shadow_Technique, Get_WVP_Transform (Pipe));
---         Utilities.Print_Matrix ("Main_Loop.Shadow_Map_Pass WVP_Transform",
---                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-
-      Put_Line ("Main_Loop.Shadow_Map_Pass calling Meshes_23.Render (Shadow_Mesh)");
       Meshes_23.Render (Shadow_Mesh);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
@@ -219,7 +210,6 @@ begin
    Init (Main_Window);
    while Running loop
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
---        Delay (2.0);
       Render (Main_Window);
       Glfw.Input.Poll_Events;
       Running := Running and not
