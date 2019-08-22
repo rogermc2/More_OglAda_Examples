@@ -1,4 +1,8 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
+with Maths;
+
 package body Ogldev_Lights_Common is
 
 --     generic
@@ -229,7 +233,16 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    procedure Set_Direction (Light : in out Spot_Light; Dir : Singles.Vector3) is
    begin
+      if Maths.Length (Light.Direction) = 0.0 then
+         raise Light_Exception with
+           "Ogldev_Lights_Common.Set_Direction zero length Spot_Light direction vector";
+      end if;
       Light.Direction := Dir;
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Ogldev_Lights_Common.Direction Spot_Light.");
+         raise;
    end Set_Direction;
 
    --  ------------------------------------------------------------------------
