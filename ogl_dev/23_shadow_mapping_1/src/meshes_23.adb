@@ -90,8 +90,6 @@ package body Meshes_23 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
-         --           Put_Line ("Meshes_23.Init_Materials.Load_Textures: Texture_Count: "
-         --                     & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Result = Assimp_Types.API_Return_Success and then
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             --  Get_Texture returns the path to the texture
@@ -269,10 +267,10 @@ package body Meshes_23 is
                   aTexture := theMesh.Textures.Element (aMaterial_Index);
                   if aTexture.Texture_Object.Initialized then
                      Ogldev_Texture.Bind (aTexture, 0);
-                     if GL.Objects.Textures.Is_Texture
+                     if not GL.Objects.Textures.Is_Texture
                        (GL.Objects.Raw_Id (GL.Objects.GL_Object (aTexture.Texture_Object))) then
-                        Put_Line ("Meshes_23.Render_Mesh, a valid texture is bound.");
-                     else
+--                          Put_Line ("Meshes_23.Render_Mesh, a valid texture is bound.");
+--                       else
                         Put_Line ("Meshes_23.Render_Mesh, aTexture is invalid.");
                      end if;
                   else
@@ -282,13 +280,12 @@ package body Meshes_23 is
                   Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures does not contain Material: " &
                               UInt'Image (aMaterial_Index));
                end if;
-            else
-               Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures is empty.");
+--              else
+--                 Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures is empty.");
             end if;
 
             GL.Objects.Buffers.Draw_Elements
               (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
-            --              GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
             Next (Entry_Cursor);
          end loop;
 

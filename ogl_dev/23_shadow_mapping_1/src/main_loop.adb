@@ -159,7 +159,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Meshes_23.Render (Quad_Mesh);
-      New_Line;
 
    exception
       when  others =>
