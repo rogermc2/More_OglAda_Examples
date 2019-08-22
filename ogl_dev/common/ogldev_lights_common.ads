@@ -16,6 +16,8 @@ package Ogldev_Lights_Common is
    type Point_Light_Array is array (UInt range <>) of Point_Light;
    type Spot_Light_Array  is array (UInt range <>) of Spot_Light;
 
+   Light_Exception : Exception;
+
    Colour_White : constant GL.Types.Colors.Basic_Color := (1.0, 1.0, 1.0);
    Colour_Red   : constant GL.Types.Colors.Basic_Color := (1.0, 0.0, 0.0);
    Colour_Green : constant GL.Types.Colors.Basic_Color := (0.0, 1.0, 0.0);
