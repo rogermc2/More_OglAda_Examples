@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects;
 with GL.Objects.Framebuffers;
 with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 with GL.Types.Colors;
 
 with Glfw;
@@ -56,9 +57,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       VAO.Initialize_Id;
       VAO.Bind;
 
-      Set_Ambient_Intensity (Spot, 0.0);
+      GL.Toggles.Enable (GL.Toggles.Depth_Test);
 
-      Set_Diffuse_Intensity (Spot, 0.9);  --  0.9      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_Cyan);
+      Set_Ambient_Intensity (Spot, 0.0);
+      Set_Diffuse_Intensity (Spot, 0.9);  --  0.9
+      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_Cyan);
       Set_Direction (Spot, (1.0, -1.0, 0.0));
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
