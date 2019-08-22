@@ -269,8 +269,6 @@ package body Meshes_23 is
                      Ogldev_Texture.Bind (aTexture, 0);
                      if not GL.Objects.Textures.Is_Texture
                        (GL.Objects.Raw_Id (GL.Objects.GL_Object (aTexture.Texture_Object))) then
---                          Put_Line ("Meshes_23.Render_Mesh, a valid texture is bound.");
---                       else
                         Put_Line ("Meshes_23.Render_Mesh, aTexture is invalid.");
                      end if;
                   else
@@ -280,8 +278,6 @@ package body Meshes_23 is
                   Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures does not contain Material: " &
                               UInt'Image (aMaterial_Index));
                end if;
---              else
---                 Put_Line ("Meshes_23.Render_Mesh, theMesh.Textures is empty.");
             end if;
 
             GL.Objects.Buffers.Draw_Elements
