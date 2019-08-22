@@ -36,6 +36,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Shadow_Mesh            : Meshes_23.Mesh_23;
    Quad_Mesh              : Meshes_23.Mesh_23;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
+   Direct_Light           : Ogldev_Lights_Common.Directional_Light;
    Spot                   : Ogldev_Lights_Common.Spot_Light;
    Scale                  : Single := 0.0;
 
@@ -50,14 +51,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
 
-      Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 0.0);
-      Target          : constant Singles.Vector3 := (0.0, 0.0, -1.0);
+      Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 5.0);
+      Target          : constant Singles.Vector3 := (0.0, 0.0, 1.0);
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
       VAO.Bind;
 
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
+      Init_Directional_Light (Direct_Light, 1.0, 0.01,
+                              Ogldev_Lights_Common.Colour_White, (1.0, -1.0, 0.0));
 
       Set_Ambient_Intensity (Spot, 0.0);
       Set_Diffuse_Intensity (Spot, 0.9);  --  0.9
@@ -66,11 +69,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
 
---        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
---        GL.Window.Set_Viewport (10, 10, GL.Types.Int (Window_Width) - 10,
---                                GL.Types.Int (Window_Height) - 10);
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
       Shadow_Map_Frame_Buffer.Init
@@ -103,8 +102,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Scale := Scale + 0.05;
       Window.Get_Size (Window_Width, Window_Height);
---        GL.Window.Set_Viewport (10, 10, GL.Types.Int (Window_Width) / 2,
---                                GL.Types.Int (Window_Height) / 2);
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
       --  First, render the closest depth values into the
@@ -153,7 +150,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 0);
 
       Set_Scale (Pipe, 5.0);
-      Set_World_Position (Pipe, 0.0, 0.0,10.0);
+      Set_World_Position (Pipe, 0.0, 0.0, -10.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
@@ -190,7 +187,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Set_Scale (Pipe, 0.1);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Set_World_Position (Pipe, 0.0, 0.0, 5.0);
+      Set_World_Position (Pipe, 0.0, 0.0, -5.0);
       Set_Camera (Pipe, Position (Spot),
                   Direction (Spot), (0.0, 1.0, 0.0));
       Set_Camera (Pipe, Get_Position (Game_Camera),
