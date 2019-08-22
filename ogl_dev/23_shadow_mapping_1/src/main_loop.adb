@@ -27,7 +27,7 @@ with Meshes_23;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.8, 0.8, 0.8, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.0, 0.0, 0.3, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shadow_Technique       : Shadow_Map_Technique.Technique;
@@ -60,7 +60,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
 
       Set_Ambient_Intensity (Spot, 0.0);
-      Set_Diffuse_Intensity (Spot, 0.9);  --  0.9
+      Set_Diffuse_Intensity (Spot, 0.9);
       Set_Spot_Light (Spot, (-3.0, 3.0, 5.0), Colour_White);
       Set_Direction (Spot, (1.0, -1.0, 1.0));
       Set_Linear_Attenuation (Spot, 0.01);
