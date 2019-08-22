@@ -94,17 +94,13 @@ package body Ogldev_Camera is
 
     --  From camera.cpp Camera::Camera
     procedure Init_Camera (theCamera : in out Camera;
-                           Window     : in out Glfw.Windows.Window) is
+                           Window    : in out Glfw.Windows.Window) is
         Window_Width     : Glfw.Size;
         Window_Height    : Glfw.Size;
     begin
         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
         theCamera.Window_Width := GL.Types.Int (Window_Width);
         theCamera.Window_Height := GL.Types.Int (Window_Height);
-        theCamera.Position := (0.0, 0.0, 0.0);
-        theCamera.Target := (0.0, 0.0, 1.0);
-        theCamera.Target := Maths.Normalized (theCamera.Target);
-        theCamera.Up := (0.0, 1.0, 0.0);
         Initialize_Camera (theCamera, Window);
 
     exception
