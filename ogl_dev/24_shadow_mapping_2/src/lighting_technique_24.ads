@@ -7,76 +7,84 @@ with Maths;
 
 package Lighting_Technique_24 is
 
-    Max_Point_Lights : GL.Types.Int := 2;
-    Max_Spot_Lights  : GL.Types.Int := 2;
+   Max_Point_Lights : GL.Types.Int := 2;
+   Max_Spot_Lights  : GL.Types.Int := 2;
 
-    type Directional_Light is private;
-    type Point_Light is private;
-    type Spot_Light is private;
-    type Technique is private;
+   type Directional_Light is private;
+   type Point_Light is private;
+   type Spot_Light is private;
+   type Technique is private;
 
-    type Attenuation is record
-        Constant_Atten : Single := 1.0;
-        Linear         : Single := 0.0;
-        EXP            : Single := 0.0;
-    end record;
+   type Attenuation is record
+      Constant_Atten : Single := 1.0;
+      Linear         : Single := 0.0;
+      EXP            : Single := 0.0;
+   end record;
 
    type Point_Lights_Array is array (Int range <>) of
      Point_Light;
    type Spot_Lights_Array is array (Int range <>) of
      Spot_Light;
 
-    function Get_Directional_Ambient (Light : Directional_Light) return Single;
-    function Get_Directional_Diffuse (Light : Directional_Light) return Single;
-    procedure Init (theTechnique : out Technique);
-    procedure Init_Directional_Light (Light : out Directional_Light);
-    procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single);
-    procedure Set_Directional_Ambient (Light : in out Directional_Light;
-                                       Ambient: Single);
-    procedure Set_Directional_Diffuse (Light : in out Directional_Light;
-                                       Diffuse : Single);
-    procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light);
-    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
-    procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single);
-    procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
-    procedure Set_Point_Light (Light : in out Point_Light; Ambient, Diffuse : Single;
-                               Colour : Singles.Vector3;
-                               Pos : Singles.Vector3; Atten : Attenuation);
-    procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array);
-    procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array);
-    procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single;
-                              Colour, Pos, Direction : Singles.Vector3;
-                              Atten : Attenuation; Cut_Off : Maths.Degree);
-    procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
-    procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4);
-    procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4);
-    procedure Use_Program (theTechnique : Technique);
+   --      function Get_Directional_Ambient (Light : Directional_Light) return Single;
+   --      function Get_Directional_Diffuse (Light : Directional_Light) return Single;
+   function Get_Direction (Light : Spot_Light) return Singles.Vector3;
+   function Get_Position (Light : Spot_Light) return Singles.Vector3;
+   procedure Init (theTechnique : out Technique);
+   --      procedure Init_Directional_Light (Light : out Directional_Light);
+   --      procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single);
+   --      procedure Set_Directional_Ambient (Light : in out Directional_Light;
+   --                                         Ambient: Single);
+   --      procedure Set_Directional_Diffuse (Light : in out Directional_Light;
+   --                                         Diffuse : Single);
+   --      procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light);
+   procedure Set_Eye_World_Pos_Location (theTechnique  : Technique;
+                                         Eye_World_Pos : Singles.Vector3);
+   procedure Set_Light_WVP_Location (theTechnique : Technique;
+                                     WVP          : Singles.Matrix4);
+   procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single);
+   procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
+   procedure Set_Point_Light (Light  : in out Point_Light; Ambient, Diffuse : Single;
+                              Colour : Singles.Vector3;
+                              Pos    : Singles.Vector3; Atten : Attenuation);
+   procedure Set_Point_Light_Locations (theTechnique : Technique;
+                                        Lights       : Point_Lights_Array);
+   procedure Set_Spot_Light_Locations (theTechnique : Technique;
+                                       Lights       : Spot_Lights_Array);
+   procedure Set_Spot_Light (Light                  : in out Spot_Light; Ambient, Diffuse : Single;
+                             Colour, Pos, Direction : Singles.Vector3;
+                             Atten                  : Attenuation; Cut_Off : Maths.Degree);
+   procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
+   procedure Set_World_Matrix_Location (theTechnique  : Technique;
+                                        World_Inverse : Singles.Matrix4);
+   procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4);
+   procedure Use_Program (theTechnique : Technique);
 
- private
+private
 
-    --  Light records must conform with those of fragment shader
-    type Base_Light is record
-        Colour            : Singles.Vector3 := (0.0, 0.0, 0.0);
-        Ambient_Intensity : Single := 0.0;
-        Diffuse_Intensity : Single := 0.0;
-    end record;
+   --  Light records must conform with those of fragment shader
+   type Base_Light is record
+      Colour            : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Ambient_Intensity : Single := 0.0;
+      Diffuse_Intensity : Single := 0.0;
+   end record;
 
-    type Point_Light is record
-        Base     : Base_Light;
-        Position : Singles.Vector3 := (0.0, 0.0, 0.0);
-        Atten    : Attenuation;
-    end record;
+   type Point_Light is record
+      Base     : Base_Light;
+      Position : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Atten    : Attenuation;
+   end record;
 
-    type Spot_Light is record
-        Point     : Point_Light;
-        Direction : Singles.Vector3 := (0.0, 0.0, 0.0);
-        Cutoff    : Maths.Degree := 0.0;
-    end record;
+   type Spot_Light is record
+      Point     : Point_Light;
+      Direction : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Cutoff    : Maths.Degree := 0.0;
+   end record;
 
-    type Directional_Light is record
-        Base      : Base_Light;
-        Direction : Singles.Vector3 := (0.0, 0.0, 0.0);
-    end record;
+   type Directional_Light is record
+      Base      : Base_Light;
+      Direction : Singles.Vector3 := (0.0, 0.0, 0.0);
+   end record;
 
    type Atten_Location is record
       Constant_Atten : GL.Uniforms.Uniform := 0;
