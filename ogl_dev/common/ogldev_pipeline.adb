@@ -93,7 +93,6 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-
    procedure Set_Scale (P : in out Pipeline; S : Single) is
    begin
       P.Scale := (S, S, S);
