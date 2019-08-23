@@ -15,9 +15,7 @@ with Glfw.Windows.Context;
 
 with Utilities;
 
-with Ogldev_Lights_Common;
 with Ogldev_Camera;
-with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
@@ -145,18 +143,30 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Shadow_Map_Technique.Set_Texture_Unit (Shadow_Technique, 0);
-      Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 0);
+      Lighting_Technique_24.Set_Eye_World_Pos_Location
+        (Lighting_Technique, Get_Position (Game_Camera));
+      Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 1);
 
-      Set_Scale (Pipe, 6.0);
-      Set_World_Position (Pipe, 0.0, 0.0, -10.0);
-      Set_Camera (Pipe, Get_Position (Game_Camera),
-                                  Get_Target (Game_Camera), Get_Up (Game_Camera));
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
+      Set_Scale (Pipe, 10.0);
+      Set_World_Position (Pipe, 0.0, 0.0, -1.0);
+      Set_Rotation (Pipe, 0.5, 0.0, 0.0);
+      Set_Camera (Pipe, Get_Position (Game_Camera),
+                  Get_Target (Game_Camera), Get_Up (Game_Camera));
       Init_Transforms (Pipe);
 
-      Shadow_Map_Technique.Set_WVP (Shadow_Technique,
-                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Lighting_Technique_24.Set_WVP_Location (Lighting_Technique,
+                                              Get_WVP_Transform (Pipe));
+      Lighting_Technique_24.Set_World_Matrix_Location (Lighting_Technique,
+                                                       Get_World_Transform (Pipe));
+
+      Set_Camera (Pipe, Lighting_Technique_24.Get_Position (Spot_Lights (1)),
+                  Lighting_Technique_24.Get_Direction (Spot_Lights (1)),
+                  (0.0, 1.0, 0.0));
+      Lighting_Technique_24.Set_Light_WVP_Location (Lighting_Technique,
+                                                    Get_WVP_Transform (Pipe));
+
+      Ogldev_Texture.Bind (Ground_Texture, 0);
       Meshes_24.Render (Quad_Mesh);
 
    exception
@@ -169,19 +179,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Shadow_Map_Pass is
       use GL.Types.Singles;
-      use Ogldev_Lights_Common;
-      use  Ogldev_Pipeline;
+      use Ogldev_Pipeline;
+      use Lighting_Technique_24;
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
        --  Bind the Shadow_Map frame buffer (FBO) to the Draw_Target
       Shadow_Map_Frame_Buffer.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
-      Set_Scale (Pipe, 0.1);  --  0.1
+      Set_Scale (Pipe, 0.1);
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Set_World_Position (Pipe, 0.0, 0.0, -5.0);
-      Set_Camera (Pipe, Position (Spot),
-                  Direction (Spot), (0.0, 1.0, 0.0));
+      Set_World_Position (Pipe, 0.0, 0.0, -3.0);
+      Set_Camera (Pipe, Get_Position (Spot_Lights (1)),
+                  Get_Direction (Spot_Lights (1)), (0.0, 1.0, 0.0));
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Init_Transforms (Pipe);
 

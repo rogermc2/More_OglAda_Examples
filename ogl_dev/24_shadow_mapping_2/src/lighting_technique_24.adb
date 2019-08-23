@@ -17,21 +17,35 @@ package body Lighting_Technique_24 is
     
     --  -------------------------------------------------------------------------
     
-    function Get_Directional_Ambient (Light : Directional_Light) return Single is
-    begin
-        return Light.Base.Ambient_Intensity;
-    end Get_Directional_Ambient;
+--      function Get_Directional_Ambient (Light : Directional_Light) return Single is
+--      begin
+--          return Light.Base.Ambient_Intensity;
+--      end Get_Directional_Ambient;
 
     --  -------------------------------------------------------------------------
     
-    function Get_Directional_Diffuse (Light : Directional_Light) return Single is
-    begin
-        return Light.Base.Diffuse_Intensity;
-    end Get_Directional_Diffuse;
+--      function Get_Directional_Diffuse (Light : Directional_Light) return Single is
+--      begin
+--          return Light.Base.Diffuse_Intensity;
+--      end Get_Directional_Diffuse;
 
     --  -------------------------------------------------------------------------
     
-    function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
+   function Get_Direction (Light : Spot_Light) return Singles.Vector3 is
+   begin
+        return Light.Direction;
+    end Get_Direction;
+
+    --  -------------------------------------------------------------------------
+
+   function Get_Position (Light : Spot_Light) return Singles.Vector3 is
+   begin
+        return Light.Point.Position;
+    end Get_Position;
+
+    --  -------------------------------------------------------------------------
+    
+   function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
                                    return GL.Uniforms.Uniform is
     begin
         return GL.Objects.Programs.Uniform_Location (Light_Program (theTechnique), Uniform_Name);
@@ -62,14 +76,14 @@ package body Lighting_Technique_24 is
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gSampler");
             theTechnique.Eye_World_Pos_Location :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gEyeWorldPos");
-            theTechnique.Direct_Light_Location.Color := GL.Objects.Programs.Uniform_Location
-              (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
-            theTechnique.Direct_Light_Location.Ambient_Intensity := GL.Objects.Programs.Uniform_Location
-              (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
-            theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
-              (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
-            theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
-              (theTechnique.Lighting_Program, "gDirectionalLight.Direction");
+--              theTechnique.Direct_Light_Location.Color := GL.Objects.Programs.Uniform_Location
+--                (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
+--              theTechnique.Direct_Light_Location.Ambient_Intensity := GL.Objects.Programs.Uniform_Location
+--                (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
+--              theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
+--                (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
+--              theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
+--                (theTechnique.Lighting_Program, "gDirectionalLight.Direction");
 
             theTechnique.Mat_Specular_Intensity_Location  :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gMatSpecularIntensity");
@@ -129,13 +143,13 @@ package body Lighting_Technique_24 is
    
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Init_Directional_Light (Light : out Directional_Light) is
-    begin
-        Light.Base.Colour := (1.0, 1.0, 1.0);
-        Light.Base.Ambient_Intensity := 0.0;
-        Light.Base.Diffuse_Intensity := 0.4;  --  0.1;
-        Light.Direction := (1.0, -1.0, 0.0);
-    end Init_Directional_Light;
+--      procedure Init_Directional_Light (Light : out Directional_Light) is
+--      begin
+--          Light.Base.Colour := (1.0, 1.0, 1.0);
+--          Light.Base.Ambient_Intensity := 0.0;
+--          Light.Base.Diffuse_Intensity := 0.4;  --  0.1;
+--          Light.Direction := (1.0, -1.0, 0.0);
+--      end Init_Directional_Light;
 
     --  -------------------------------------------------------------------------
  
@@ -157,42 +171,42 @@ package body Lighting_Technique_24 is
 
     --  -------------------------------------------------------------------------
     
-    procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single) is
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Intensity);
-    end Set_Ambient_Intensity;
+--      procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single) is
+--      begin
+--          GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+--          GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Intensity);
+--      end Set_Ambient_Intensity;
    
     --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_Directional_Ambient (Light : in out Directional_Light;
-                                       Ambient : Single) is
-    begin
-        Light.Base.Ambient_Intensity := Ambient;
-    end Set_Directional_Ambient;
+--      procedure Set_Directional_Ambient (Light : in out Directional_Light;
+--                                         Ambient : Single) is
+--      begin
+--          Light.Base.Ambient_Intensity := Ambient;
+--      end Set_Directional_Ambient;
 
     --  -------------------------------------------------------------------------
     
-    procedure Set_Directional_Diffuse (Light : in out Directional_Light;
-                                       Diffuse : Single) is
-    begin
-        Light.Base.Diffuse_Intensity := Diffuse;
-    end Set_Directional_Diffuse;
+--      procedure Set_Directional_Diffuse (Light : in out Directional_Light;
+--                                         Diffuse : Single) is
+--      begin
+--          Light.Base.Diffuse_Intensity := Diffuse;
+--      end Set_Directional_Diffuse;
 
     --  -------------------------------------------------------------------------
     
-   procedure Set_Directional_Light_Location (theTechnique : Technique; 
-                                             Light        : Directional_Light) is
-        Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
-    begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour (GL.X), 
-                                Light.Base.Colour (GL.Y), Light.Base.Colour (GL.Z));
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Direction, Direction);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
-    end Set_Directional_Light_Location;
-   
+--     procedure Set_Directional_Light_Location (theTechnique : Technique; 
+--                                               Light        : Directional_Light) is
+--          Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
+--      begin
+--          GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+--          GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour (GL.X), 
+--                                  Light.Base.Colour (GL.Y), Light.Base.Colour (GL.Z));
+--          GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
+--          GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Direction, Direction);
+--          GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
+--      end Set_Directional_Light_Location;
+--     
     --   -------------------------------------------------------------------------------------------------------
 
     procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3) is
@@ -201,6 +215,15 @@ package body Lighting_Technique_24 is
         GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Eye_World_Pos (GL.X),
                                 Eye_World_Pos (GL.Y), Eye_World_Pos (GL.Z));
     end Set_Eye_World_Pos_Location;
+   
+    --   -------------------------------------------------------------------------------------------------------
+
+   procedure Set_Light_WVP_Location (theTechnique : Technique;
+                                     WVP          : Singles.Matrix4) is
+   begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.Light_WVP_Location, WVP);
+    end Set_Light_WVP_Location;
    
     --   -------------------------------------------------------------------------------------------------------
 
