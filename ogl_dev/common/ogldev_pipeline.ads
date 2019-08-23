@@ -24,13 +24,13 @@ package Ogldev_Pipeline is
                                           Info : Ogldev_Math.Orthographic_Projection_Info);
    procedure Set_Perspective_Projection (P : in out Pipeline;
                                          Info : Ogldev_Math.Perspective_Projection_Info);
+   procedure Set_Rotation (P : in out Pipeline; X, Y, Z : Single);
+   procedure Set_Rotation (P : in out Pipeline; S : Singles.Vector3);
    procedure Set_Scale (P : in out Pipeline; S : Single);
    procedure Set_Scale (P : in out Pipeline; X, Y, Z : Single);
    procedure Set_Scale (P : in out Pipeline; S : Singles.Vector3);
    procedure Set_World_Position (P : in out Pipeline; X, Y, Z : Single);
    procedure Set_World_Position (P : in out Pipeline; S : Singles.Vector3);
-   procedure Set_Rotation (P : in out Pipeline; X, Y, Z : Single);
-   procedure Set_Rotation (P : in out Pipeline; S : Singles.Vector3);
 
 private
 
