@@ -61,7 +61,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Set_Ambient_Intensity (Spot, 0.0);
       Set_Diffuse_Intensity (Spot, 0.9);
-      Set_Spot_Light (Spot, (-3.0, 3.0, 5.0), Colour_White);
+      Set_Spot_Light (Spot, (0.0, 10.0, 30.0), Colour_White);
       Set_Direction (Spot, (1.0, -1.0, 1.0));
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
@@ -139,7 +139,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Technique.Set_Texture_Unit (Shadow_Technique, 0);
       Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 0);
 
-      Set_Scale (Pipe, 5.0);
+      Set_Scale (Pipe, 6.0);
       Set_World_Position (Pipe, 0.0, 0.0, -10.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
@@ -168,7 +168,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Frame_Buffer.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
-      Set_Scale (Pipe, 0.05);  --  0.1
+      Set_Scale (Pipe, 0.1);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, 0.0, 0.0, -5.0);
       Set_Camera (Pipe, Position (Spot),
