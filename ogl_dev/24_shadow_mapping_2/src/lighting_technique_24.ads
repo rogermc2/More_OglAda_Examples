@@ -26,18 +26,18 @@ package Lighting_Technique_24 is
    type Spot_Lights_Array is array (Int range <>) of
      Spot_Light;
 
-   --      function Get_Directional_Ambient (Light : Directional_Light) return Single;
-   --      function Get_Directional_Diffuse (Light : Directional_Light) return Single;
+   function Get_Directional_Ambient (Light : Directional_Light) return Single;
+   function Get_Directional_Diffuse (Light : Directional_Light) return Single;
    function Get_Direction (Light : Spot_Light) return Singles.Vector3;
    function Get_Position (Light : Spot_Light) return Singles.Vector3;
    procedure Init (theTechnique : out Technique);
-   --      procedure Init_Directional_Light (Light : out Directional_Light);
-   --      procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single);
-   --      procedure Set_Directional_Ambient (Light : in out Directional_Light;
-   --                                         Ambient: Single);
-   --      procedure Set_Directional_Diffuse (Light : in out Directional_Light;
-   --                                         Diffuse : Single);
-   --      procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light);
+   procedure Init_Directional_Light (Light : out Directional_Light);
+   procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single);
+   procedure Set_Directional_Ambient (Light  : in out Directional_Light;
+                                      Ambient: Single);
+   procedure Set_Directional_Diffuse (Light   : in out Directional_Light;
+                                      Diffuse : Single);
+   procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light);
    procedure Set_Eye_World_Pos_Location (theTechnique  : Technique;
                                          Eye_World_Pos : Singles.Vector3);
    procedure Set_Light_WVP_Location (theTechnique : Technique;
@@ -92,6 +92,13 @@ private
       Exp            : GL.Uniforms.Uniform := 0;
    end record;
 
+   type Direct_Light_Locations is record
+      Color             : GL.Uniforms.Uniform := 0;
+      Ambient_Intensity : GL.Uniforms.Uniform := 0;
+      Diffuse_Intensity : GL.Uniforms.Uniform := 0;
+      Direction         : GL.Uniforms.Uniform := 0;
+   end record;
+
    type Point_Light_Locations is record
       Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
@@ -115,13 +122,6 @@ private
    type Spot_Lights_Location_Array is array (1 .. Max_Spot_Lights) of
      Spot_Light_Locations;
 
-   type Direct_Light_Locations is record
-      Color             : GL.Uniforms.Uniform := 0;
-      Ambient_Intensity : GL.Uniforms.Uniform := 0;
-      Diffuse_Intensity : GL.Uniforms.Uniform := 0;
-      Direction         : GL.Uniforms.Uniform := 0;
-   end record;
-
    type Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
       WVP_Location                    : GL.Uniforms.Uniform := 0;
@@ -132,6 +132,7 @@ private
       Eye_World_Pos_Location          : GL.Uniforms.Uniform := 0;
       Mat_Specular_Intensity_Location : GL.Uniforms.Uniform := 0;
       Mat_Specular_Power_Location     : GL.Uniforms.Uniform := 0;
+      Direct_Light_Location           : Direct_Light_Locations;
       Num_Point_Lights_Location       : GL.Uniforms.Uniform := 0;
       Num_Spot_Lights_Location        : GL.Uniforms.Uniform := 0;
       Point_Lights_Locations          : Point_Lights_Location_Array;
