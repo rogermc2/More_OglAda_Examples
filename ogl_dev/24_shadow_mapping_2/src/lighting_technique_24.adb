@@ -261,7 +261,7 @@ package body Lighting_Technique_24 is
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Int (theTechnique.Num_Point_Lights_Location, Max_Point_Lights);
+        GL.Uniforms.Set_Int (theTechnique.Num_Point_Lights_Location, Lights'Length);
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Colour,
                                     Lights (index).Base.Colour);
@@ -301,7 +301,7 @@ package body Lighting_Technique_24 is
     use Maths.Single_Math_Functions;
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Max_Spot_Lights);
+        GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Lights'Length);
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Colour,
                                     Lights (index).Point.Base.Colour);
