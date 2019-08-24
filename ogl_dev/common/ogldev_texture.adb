@@ -29,7 +29,9 @@ package body Ogldev_Texture is
          end case;
       else
          raise Texture_Exception with
-           "Ogldev_Texture.Bind, the Texture_Object is not initialized.";
+           "Ogldev_Texture.Bind, the Texture_Object " &
+           Ada.Strings.Unbounded.To_String (theTexture.File_Name) &
+           " is not initialized.";
       end if;
    end Bind;
 
