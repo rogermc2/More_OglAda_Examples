@@ -80,12 +80,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shadow_Map_Technique.Init (Shadow_Technique);
 
-      Meshes_24.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
+      Meshes_24.Load_Mesh (Quad_Mesh, "../content/quad.obj");
       if not Ogldev_Texture.Init_Texture (Ground_Texture, GL.Low_Level.Enums.Texture_2D,
-                                   "../Content/test.png") then
-         Put_Line ("Main_Loop.Init Ground_Texture failed to load.");
+            "../content/test.png") then
+         Put_Line ("Main_Loop.Init Ground_Texture failed to initialize.");
       end if;
-      Meshes_24.Load_Mesh (Shadow_Mesh, "../Content/test.png");
+      Meshes_24.Load_Mesh (Shadow_Mesh, "../content/phoenix_ugv.md2");
 
    exception
       when others =>
@@ -143,6 +143,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
+      Lighting_Technique_24.Use_Program (Lighting_Technique);
       Lighting_Technique_24.Set_Eye_World_Pos_Location
         (Lighting_Technique, Get_Position (Game_Camera));
       Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 1);
@@ -187,6 +188,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Frame_Buffer.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
+      Shadow_Map_Technique.Use_Program (Shadow_Technique);
       Set_Scale (Pipe, 0.1);
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, 0.0, 0.0, -3.0);
