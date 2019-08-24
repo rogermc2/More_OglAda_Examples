@@ -30,9 +30,9 @@ bool loadBlob (char* fileName, char* magickType)
   bool              result;
   try
   {
- //   printf ("image_io.loadBlob reading texture %s \n", fileName);
+  //  printf ("image_io.loadBlob reading texture %s \n", fileName);
     theImage.read(nameString);
- //   printf ("image_io.loadBlob texture read %s \n", fileName);
+  //  printf ("image_io.loadBlob texture read %s \n", fileName);
     theImage.write(&theBlob, cppString);
     result = true;
   }
