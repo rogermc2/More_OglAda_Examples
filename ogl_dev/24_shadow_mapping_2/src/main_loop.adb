@@ -52,7 +52,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
       Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 5.0);  -- (3.0, 8.0, 10.0);
-      Target          : constant Singles.Vector3 := (0.0, -0.2, 1.0);  --  (0.0, -0.2, 1.0)
+      Target          : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  (0.0, -0.2, 1.0)
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
@@ -68,7 +68,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                             Pos       => (0.0, 10.0, 30.0),
                                             Direction => (1.0, -1.0, 1.0),
                                             Atten     =>  (0.0, 0.01, 0.0),
-                                            Cut_Off   => 60.0); -- 20
+                                            Cut_Off   => 20.0); -- 20
 
       Glfw.Windows.Get_Framebuffer_Size (Window'Access, Window_Width, Window_Height);
       Ogldev_Math.Set_Perspective_Info
@@ -172,9 +172,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24.Set_World_Matrix_Location (Lighting_Technique,
                                                        Get_World_Transform (Pipe));
 
---        Set_Camera (Pipe, Lighting_Technique_24.Get_Position (Spot_Lights (1)),
---                    Lighting_Technique_24.Get_Direction (Spot_Lights (1)),
---                    (0.0, 1.0, 0.0));
+      Set_Camera (Pipe, Lighting_Technique_24.Get_Position (Spot_Lights (1)),
+                  Lighting_Technique_24.Get_Direction (Spot_Lights (1)),
+                  (0.0, 1.0, 0.0));
       Lighting_Technique_24.Set_Light_WVP_Location (Lighting_Technique,
                                                     Get_WVP_Transform (Pipe));
 
