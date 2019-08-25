@@ -76,6 +76,8 @@ package body Lighting_Technique_24 is
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gWorld");
             theTechnique.Sampler_Location :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gSampler");
+            theTechnique.Shadow_Map_Location :=
+              GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gShadowMap");
             theTechnique.Eye_World_Pos_Location :=
            GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gEyeWorldPos");
          
