@@ -52,7 +52,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
       Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 5.0);  -- (3.0, 8.0, 10.0);
-      Target          : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  (0.0, -0.2, 1.0)
+      Target          : constant Singles.Vector3 := (0.0, 0.0, -1.0);  --  (0.0, -0.2, 1.0)
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
@@ -60,15 +60,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
 
-      Lighting_Technique_24.Init_Directional_Light (Direct_Light); --  Direction (1.0, -1.0, 1.0)
+--        Lighting_Technique_24.Init_Directional_Light (Direct_Light); --  Direction (1.0, -1.0, 1.0)
       Lighting_Technique_24.Set_Spot_Light (Light     => Spot_Lights (1),
-                                            Ambient   => 1.0,  --  0.1
-                                            Diffuse   => 0.9,
+                                            Ambient   => 0.1,  --  0.1
+                                            Diffuse   => 0.1,
                                             Colour    => (1.0, 1.0, 1.0),
-                                            Pos       => (0.0, 10.0, 30.0),
-                                            Direction => (1.0, -1.0, 1.0),
+                                            Pos       => (0.0, 0.0, -5.0),  --  (-20.0, 20.0, -1.0)
+                                            Direction => (0.0, 0.0, 1.0),
                                             Atten     =>  (0.0, 0.01, 0.0),
-                                            Cut_Off   => 20.0); -- 20
+                                            Cut_Off   => 10.0); -- 20
 
       Glfw.Windows.Get_Framebuffer_Size (Window'Access, Window_Width, Window_Height);
       Ogldev_Math.Set_Perspective_Info
@@ -160,9 +160,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 1);
 
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
-      Set_Scale (Pipe, 6.0);
-      Set_World_Position (Pipe, 0.0, 0.0, -10.0);  --  0.0, 0.0, -1.0
---        Set_Rotation (Pipe, 0.5, 0.0, 0.0);
+      Set_Scale (Pipe, 2.0);
+      Set_World_Position (Pipe, 0.0, 0.0, -1.0);  --  0.0, 0.0, -1.0
+      Set_Rotation (Pipe, 0.5, 0.0, 0.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Init_Transforms (Pipe);
