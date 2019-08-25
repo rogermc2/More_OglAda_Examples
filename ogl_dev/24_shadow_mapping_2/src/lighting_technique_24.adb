@@ -81,13 +81,13 @@ package body Lighting_Technique_24 is
             theTechnique.Eye_World_Pos_Location :=
            GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gEyeWorldPos");
          
-            theTechnique.Direct_Light_Location.Color := GL.Objects.Programs.Uniform_Location
+            theTechnique.Direct_Locations.Color := GL.Objects.Programs.Uniform_Location
               (theTechnique.Lighting_Program, "gDirectionalLight.Base.Color");
-            theTechnique.Direct_Light_Location.Ambient_Intensity := GL.Objects.Programs.Uniform_Location
+            theTechnique.Direct_Locations.Ambient_Intensity := GL.Objects.Programs.Uniform_Location
               (theTechnique.Lighting_Program, "gDirectionalLight.Base.AmbientIntensity");
-            theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
+            theTechnique.Direct_Locations.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
               (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
-            theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
+            theTechnique.Direct_Locations.Direction := GL.Objects.Programs.Uniform_Location
               (theTechnique.Lighting_Program, "gDirectionalLight.Direction");
 
             theTechnique.Mat_Specular_Intensity_Location  :=
@@ -139,11 +139,6 @@ package body Lighting_Technique_24 is
                   Get_Uniform_Location (theTechnique, Spot_Name (index, "Cutoff"));
             end loop;
         end if;
-
-    exception
-        when  others =>
-            Put_Line ("An exception occurred in Main_Loop.Init.");
-            raise;
     end Init;
    
     --   -------------------------------------------------------------------------------------------------------
@@ -153,7 +148,7 @@ package body Lighting_Technique_24 is
         Light.Base.Colour := (1.0, 1.0, 1.0);
         Light.Base.Ambient_Intensity := 0.0;
         Light.Base.Diffuse_Intensity := 0.4;  --  0.1;
-        Light.Direction := (1.0, -1.0, 0.0);
+        Light.Direction := (1.0, -1.0, 1.0);
     end Init_Directional_Light;
 
     --  -------------------------------------------------------------------------
@@ -179,7 +174,7 @@ package body Lighting_Technique_24 is
     procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single) is
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Intensity);
+        GL.Uniforms.Set_Single (theTechnique.Direct_Locations.Ambient_Intensity, Intensity);
     end Set_Ambient_Intensity;
    
     --   -------------------------------------------------------------------------------------------------------
@@ -200,17 +195,22 @@ package body Lighting_Technique_24 is
 
     --  -------------------------------------------------------------------------
     
-   procedure Set_Directional_Light_Location (theTechnique : Technique; 
+   procedure Set_Directional_Light_Locations (theTechnique : Technique;
                                              Light        : Directional_Light) is
         Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour (GL.X), 
+        GL.Uniforms.Set_Single (theTechnique.Direct_Locations.Color, Light.Base.Colour (GL.X), 
                                 Light.Base.Colour (GL.Y), Light.Base.Colour (GL.Z));
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Direction, Direction);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
-    end Set_Directional_Light_Location;
+        GL.Uniforms.Set_Single (theTechnique.Direct_Locations.Ambient_Intensity, Light.Base.Ambient_Intensity);
+        GL.Uniforms.Set_Single (theTechnique.Direct_Locations.Direction, Direction);
+        GL.Uniforms.Set_Single (theTechnique.Direct_Locations.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
+
+    exception
+        when  others =>
+            Put_Line ("An exception occurred in Main_Loop.Set_Directional_Light_Locations.");
+            raise;
+end Set_Directional_Light_Locations;
    
     --   -------------------------------------------------------------------------------------------------------
 
