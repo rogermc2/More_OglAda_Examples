@@ -88,10 +88,10 @@ vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal,
         if (SpecularFactor > 0)
             {
             SpecularFactor = pow(SpecularFactor, gSpecularPower);                               
-            SpecularColor = vec4(Light.Color, 1.0f) * gMatSpecularIntensity * SpecularFactor;                         
+            SpecularColor = vec4(Light.Color, 1.0f) * gMatSpecularIntensity * SpecularFactor;
             }
         }                                                                    
-    return (AmbientColor + ShadowFactor * (DiffuseColor + SpecularColor));                  
+    return (AmbientColor + ShadowFactor * (DiffuseColor + SpecularColor));
     }
                                                                                             
 vec4 CalcDirectionalLight(vec3 Normal)                                                      
@@ -104,7 +104,7 @@ vec4 CalcPointLight(PointLight light, vec3 Normal, vec4 LightSpacePos)
     vec3 LightDirection = WorldPos0 - light.Position;
     float Distance = length(LightDirection);                                                
     LightDirection = normalize(LightDirection);                                             
-    float ShadowFactor = CalcShadowFactor(LightSpacePos);                                   
+    float ShadowFactor = CalcShadowFactor(LightSpacePos);
                                                                                             
     vec4 Color = CalcLightInternal(light.Base, LightDirection, Normal, ShadowFactor);
     float Att =  light.Atten.Constant +
@@ -116,17 +116,15 @@ vec4 CalcPointLight(PointLight light, vec3 Normal, vec4 LightSpacePos)
 vec4 CalcSpotLight(SpotLight l, vec3 Normal, vec4 LightSpacePos)                     
     {
     vec3 LightToPixel = normalize(WorldPos0 - l.Base.Position);                             
-    float SpotFactor = dot(LightToPixel, l.Direction);                                      
+    float SpotFactor = dot(LightToPixel, l.Direction);
+    vec4 Color = vec4(0,0,0,0);
                                                                                             
     if (SpotFactor > l.Cutoff)
         {
-        vec4 Color = CalcPointLight(l.Base, Normal, LightSpacePos);                         
-        return Color * (1.0 - (1.0 - SpotFactor) * 1.0/(1.0 - l.Cutoff));                   
+        Color = CalcPointLight(l.Base, Normal, LightSpacePos);
+        Color * (1.0 - (1.0 - SpotFactor) / (1.0 - l.Cutoff));
         }
-    else
-        {
-        return vec4(0,0,0,0);                                                               
-        }
+        return Color;
     }
                                                                                             
 void main()                                                                                 
@@ -136,11 +134,11 @@ void main()
                                                                                             
     for (int i = 0 ; i < gNumPointLights ; i++)
         {
-        TotalLight += CalcPointLight(gPointLights[i], Normal, LightSpacePos);               
+        TotalLight = TotalLight + CalcPointLight(gPointLights[i], Normal, LightSpacePos);
         }
     for (int i = 0 ; i < gNumSpotLights ; i++)
         {
-        TotalLight += CalcSpotLight(gSpotLights[i], Normal, LightSpacePos);                 
+        TotalLight = TotalLight + CalcSpotLight(gSpotLights[i], Normal, LightSpacePos);
         }
                                                                                             
     vec4 SampledColor = texture(gSampler, TexCoord0.xy);                                  
