@@ -37,7 +37,7 @@ package Lighting_Technique_24 is
                                       Ambient: Single);
    procedure Set_Directional_Diffuse (Light   : in out Directional_Light;
                                       Diffuse : Single);
-   procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light);
+   procedure Set_Directional_Light_Locations (theTechnique : Technique; Light : Directional_Light);
    procedure Set_Eye_World_Pos_Location (theTechnique  : Technique;
                                          Eye_World_Pos : Singles.Vector3);
    procedure Set_Light_WVP_Location (theTechnique : Technique;
@@ -77,13 +77,13 @@ private
 
    type Spot_Light is record
       Point     : Point_Light;
-      Direction : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Direction : Singles.Vector3 := (0.0, 0.0, 1.0);
       Cutoff    : Maths.Degree := 0.0;
    end record;
 
    type Directional_Light is record
       Base      : Base_Light;
-      Direction : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Direction : Singles.Vector3 := (0.0, 0.0, 1.0);
    end record;
 
    type Atten_Location is record
@@ -132,7 +132,7 @@ private
       Eye_World_Pos_Location          : GL.Uniforms.Uniform := 0;
       Mat_Specular_Intensity_Location : GL.Uniforms.Uniform := 0;
       Mat_Specular_Power_Location     : GL.Uniforms.Uniform := 0;
-      Direct_Light_Location           : Direct_Light_Locations;
+      Direct_Locations                : Direct_Light_Locations;
       Num_Point_Lights_Location       : GL.Uniforms.Uniform := 0;
       Num_Spot_Lights_Location        : GL.Uniforms.Uniform := 0;
       Point_Lights_Locations          : Point_Lights_Location_Array;
