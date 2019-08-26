@@ -136,7 +136,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Shadow_Map_Technique.Set_Texture_Unit (Shadow_Technique, 0);
       Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 0);
 
       Set_Scale (Pipe, 6.0);
