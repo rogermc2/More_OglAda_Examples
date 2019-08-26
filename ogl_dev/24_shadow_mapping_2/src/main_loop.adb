@@ -1,6 +1,7 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Buffers;
 with GL.Low_Level.Enums;
 with GL.Objects;
 with GL.Objects.Framebuffers;
@@ -28,7 +29,7 @@ with Meshes_24;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.8, 0.8, 0.8, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.1, 0.1, 0.1, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Lighting_Technique     : Lighting_Technique_24.Technique;
@@ -51,7 +52,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Init (Window : in out Glfw.Windows.Window) is
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
-      Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 6.0);  -- (3.0, 8.0, 10.0);
+      Camera_Position : constant Singles.Vector3 := (3.0, 2.0, 10.0);  -- (3.0, 8.0, 10.0);
       Target          : constant Singles.Vector3 := (0.0, -0.2, -1.0);  --  (0.0, -0.2, 1.0)
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -59,6 +60,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       VAO.Bind;
 
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
+      GL.Buffers.Set_Depth_Function (Always);
 
       Lighting_Technique_24.Set_Spot_Light (Light     => Spot_Lights (1),
                                             Ambient   => 0.1,
@@ -160,7 +162,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 1);
 
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
-      Set_Scale (Pipe, 6.0);
+      Set_Scale (Pipe, 10.0);
       Set_World_Position (Pipe, 0.0, 0.0, -1.0);
       Set_Rotation (Pipe, 90.0, 0.0, 0.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
@@ -180,7 +182,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Texture.Bind (Ground_Texture, 0);
       Meshes_24.Render (Quad_Mesh);
 
-      Set_Scale (Pipe, 0.01);  --  0.1
+      Set_Scale (Pipe, 0.05);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
@@ -217,7 +219,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Depth;
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
-      Set_Scale (Pipe, 5.0);  --  0.1
+      Set_Scale (Pipe, 0.1);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, 0.0, 0.0, -3.0);  --   0.0, 0.0, -3.0
       Set_Camera (Pipe, Get_Position (Spot_Lights (1)),
