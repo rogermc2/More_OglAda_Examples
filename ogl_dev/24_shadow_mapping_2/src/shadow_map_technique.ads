@@ -10,10 +10,6 @@ Package Shadow_Map_Technique is
    procedure Init (theTechnique : out Technique);
    procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
                                           Texture_Unit : GL.Types.Int);
-   procedure Set_Texture_Unit (theTechnique : Technique;
-                               Texture_Unit : GL.Types.Int);
-   procedure Set_Light_WVP (theTechnique : Technique;
-                            WVP          : GL.Types.Singles.Matrix4);
    procedure Set_WVP (theTechnique : Technique;
                       WVP          : GL.Types.Singles.Matrix4);
    function Shadow_Map_Program (theTechnique : Technique)
@@ -26,8 +22,6 @@ private
       Shadow_Map_Program          : GL.Objects.Programs.Program;
       WVP_Location                : GL.Uniforms.Uniform := 0;
       Texture_Unit_Location       : GL.Uniforms.Uniform := 0;
-      Light_WVP_Location          : GL.Uniforms.Uniform := 0;
-      Light_Texture_Unit_Location : GL.Uniforms.Uniform := 0;
    end record;
 
 end Shadow_Map_Technique;
