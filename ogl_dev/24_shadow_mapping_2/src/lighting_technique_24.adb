@@ -283,7 +283,15 @@ end Set_Directional_Light_Locations;
     end Set_Point_Light_Locations;
 
     --   -------------------------------------------------------------------------------------------------------
-    
+
+    procedure Set_Shadow_Texture_Unit (theTechnique : Technique; Texture_Unit : Int) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
+    end Set_Shadow_Texture_Unit;
+   
+    --   -------------------------------------------------------------------------------------------------------
+
     procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single; 
                               Colour, Pos, Direction : Singles.Vector3; 
                               Atten : Attenuation; Cut_Off : Maths.Degree) is
