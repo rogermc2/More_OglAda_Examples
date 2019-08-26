@@ -33,28 +33,11 @@ Package body Shadow_Map_Technique is
    --  -------------------------------------------------------------------------
 
   procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
-                               Texture_Unit : GL.Types.Int) is
+                                         Texture_Unit : GL.Types.Int) is
    begin
       GL.Objects.Programs.Use_Program (theTechnique.Shadow_Map_Program);
       GL.Uniforms.Set_Int (theTechnique.Texture_Unit_Location, Texture_Unit);
    end Set_Shadow_Map_Texture_Unit;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_Texture_Unit (theTechnique : Technique;
-                               Texture_Unit : GL.Types.Int) is
-   begin
-      GL.Objects.Programs.Use_Program (theTechnique.Shadow_Map_Program);
-      GL.Uniforms.Set_Int (theTechnique.Texture_Unit_Location, Texture_Unit);
-   end Set_Texture_Unit;
-
-   --  -------------------------------------------------------------------------
-
- procedure Set_Light_WVP (theTechnique : Technique; WVP : GL.Types.Singles.Matrix4) is
-   begin
-      GL.Objects.Programs.Use_Program (theTechnique.Shadow_Map_Program);
-      GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);
-   end Set_Light_WVP;
 
    --  -------------------------------------------------------------------------
 
