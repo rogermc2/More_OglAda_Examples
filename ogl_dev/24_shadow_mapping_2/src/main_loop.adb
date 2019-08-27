@@ -29,7 +29,7 @@ with Meshes_24;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.1, 0.1, 0.1, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Lighting_Technique     : Lighting_Technique_24.Technique;
@@ -63,10 +63,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Buffers.Set_Depth_Function (Always);
 
       Lighting_Technique_24.Set_Spot_Light (Light     => Spot_Lights (1),
-                                            Ambient   => 0.1,
-                                            Diffuse   => 0.9,
+                                            Ambient   => 0.0,
+                                            Diffuse   => 0.3,
                                             Colour    => (1.0, 1.0, 1.0),
-                                            Pos       => (-20.0, 20.0, -1.0),  --  (-20.0, 20.0, -1.0)
+                                            Pos       => (-20.0, 30.0, -1.0),  --  (-20.0, 20.0, -1.0)
                                             Direction => (1.0, -1.0, 0.0),
                                             Atten     =>  (0.0, 0.01, 0.0),
                                             Cut_Off   => 20.0);
@@ -173,6 +173,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Camera (Pipe, Lighting_Technique_24.Get_Position (Spot_Lights (1)),
                   Lighting_Technique_24.Get_Direction (Spot_Lights (1)),
                   (0.0, 1.0, 0.0));
+      Init_Transforms (Pipe);
       Lighting_Technique_24.Set_Light_WVP_Location (Lighting_Technique,
                                                     Get_WVP_Transform (Pipe));
       Ogldev_Texture.Bind (Ground_Texture, 0);
