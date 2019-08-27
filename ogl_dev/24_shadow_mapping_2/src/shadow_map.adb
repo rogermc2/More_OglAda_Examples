@@ -1,6 +1,6 @@
---  OGLDev Tutorial 23, Shadow Mapping Part 1
+--  OGLDev Tutorial 24, Shadow Mapping Part 2
 --  Ada implemented by Roger Mc Murtrie
---  17 November 1918
+--  17 August 1919
 
 with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
@@ -13,7 +13,7 @@ with Main_Loop;
 
 procedure Shadow_Map is
     Main_Window  : Glfw.Windows.Window;
-    Window_Title : constant String := "OGLDev Tutorial 23 - Shadow Mapping Part 1";
+    Window_Title : constant String := "OGLDev Tutorial 24 - Shadow Mapping Part 2";
 begin
     Glfw.Init;
     Initialize (Main_Window, Window_Title);
