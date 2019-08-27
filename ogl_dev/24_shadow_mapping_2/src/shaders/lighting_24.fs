@@ -122,7 +122,7 @@ vec4 CalcSpotLight(SpotLight l, vec3 Normal, vec4 LightSpacePos)
     if (SpotFactor > l.Cutoff)
         {
         Color = CalcPointLight(l.Point, Normal, LightSpacePos);
-        Color * (1.0 - (1.0 - SpotFactor) / (1.0 - l.Cutoff));
+        Color = Color * (1.0 - (1.0 - SpotFactor) / (1.0 - l.Cutoff));
         }
     return Color;
     }
