@@ -17,12 +17,12 @@ with Glfw.Windows.Context;
 with Utilities;
 
 with Ogldev_Camera;
+with Ogldev_Shadow_Map_FBO;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
 with Lighting_Technique_24;
-with Shadow_Map_Frame_Buffer;
 with Shadow_Map_Technique;
 with Meshes_24;
 
@@ -34,7 +34,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Lighting_Technique     : Lighting_Technique_24.Technique;
    Shadow_Technique       : Shadow_Map_Technique.Technique;
-   theShadow_Map          : Shadow_Map_Frame_Buffer.Shadow_Map;
+   theShadow_Map          : Ogldev_Shadow_Map_FBO.Shadow_Map_FBO;
    Game_Camera            : Ogldev_Camera.Camera;
    Shadow_Mesh            : Meshes_24.Mesh_24;
    Quad_Mesh              : Meshes_24.Mesh_24;
@@ -79,7 +79,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
-      Shadow_Map_Frame_Buffer.Init
+      Ogldev_Shadow_Map_FBO.Init
         (theShadow_Map, Int (Window_Width), Int (Window_Height));
 
       Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
@@ -155,7 +155,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24.Use_Program (Lighting_Technique);
       Lighting_Technique_24.Set_Eye_World_Pos_Location
         (Lighting_Technique, Get_Position (Game_Camera));
-      Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 1);
+      Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 1);
 
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Set_Scale (Pipe, 10.0);
@@ -212,7 +212,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
        --  Bind the Shadow_Map frame buffer (FBO) to the Draw_Target
-      Shadow_Map_Frame_Buffer.Bind_For_Writing (theShadow_Map);
+      Ogldev_Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
