@@ -67,14 +67,13 @@ float CalcShadowFactor(vec4 LightSpacePos)
         return 0.5;                                                                         
     else                                                                                    
         return 1.0;                                                                         
-    }                                                                                           
+    }
                                                                                             
 vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal,            
                        float ShadowFactor)                                                  
-    {                                                                                           
+    {
     vec4 AmbientColor = vec4(Light.Color * Light.AmbientIntensity, 1.0f);
-    float DiffuseFactor = dot(Normal, -LightDirection);                                     
-                                                                                            
+    float DiffuseFactor = dot(Normal, -LightDirection);
     vec4 DiffuseColor  = vec4(0, 0, 0, 0);                                                  
     vec4 SpecularColor = vec4(0, 0, 0, 0);
                                                                                             
@@ -113,16 +112,18 @@ vec4 CalcPointLight(PointLight light, vec3 Normal, vec4 LightSpacePos)
     return Color / Att;
     }
                                                                                             
-vec4 CalcSpotLight(SpotLight l, vec3 Normal, vec4 LightSpacePos)                     
+vec4 CalcSpotLight(SpotLight spot, vec3 Normal, vec4 LightSpacePos)
     {
-    vec3 LightToPixel = normalize(WorldPos0 - l.Point.Position);
-    float SpotFactor = dot(LightToPixel, l.Direction);
+    vec3 LightToPixel = normalize(WorldPos0 - spot.Point.Position);
+    //  Calculate the cosine of the angle between the light direction and
+    //  the vector that defines its circle of influence.
+    float Cosine = dot(LightToPixel, spot.Direction);
     vec4 Color = vec4(0,0,0,0);
-                                                                                            
-    if (SpotFactor > l.Cutoff)
+        
+    if (Cosine > spot.Cutoff)
         {
-        Color = CalcPointLight(l.Point, Normal, LightSpacePos);
-        Color = Color * (1.0 - (1.0 - SpotFactor) / (1.0 - l.Cutoff));
+        Color = CalcPointLight(spot.Point, Normal, LightSpacePos);
+        Color = Color * (1.0 - (1.0 - Cosine) / (1.0 - spot.Cutoff));
         }
     return Color;
     }
