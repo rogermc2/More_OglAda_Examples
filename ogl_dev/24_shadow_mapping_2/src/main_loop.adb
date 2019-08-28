@@ -63,10 +63,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Buffers.Set_Depth_Function (Always);
 
       Lighting_Technique_24.Set_Spot_Light (Light     => Spot_Lights (1),
-                                            Ambient   => 0.0,
-                                            Diffuse   => 0.3,
+                                            Ambient   => 0.02,  -- 0.1
+                                            Diffuse   => 0.9,
                                             Colour    => (1.0, 1.0, 1.0),
-                                            Pos       => (-20.0, 30.0, -1.0),  --  (-20.0, 20.0, -1.0)
+                                            Pos       => (-20.0, 20.0, -1.0),  --  (-20.0, 20.0, -1.0)
                                             Direction => (1.0, -1.0, 0.0),
                                             Atten     =>  (0.0, 0.01, 0.0),
                                             Cut_Off   => 20.0);
