@@ -19,8 +19,8 @@ with Ogldev_Camera;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
+with Ogldev_Shadow_Map_FBO;
 
-with Shadow_Map_Frame_Buffer;
 with Shadow_Map_Technique;
 with Meshes_23;
 
@@ -31,7 +31,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shadow_Technique       : Shadow_Map_Technique.Technique;
-   theShadow_Map          : Shadow_Map_Frame_Buffer.Shadow_Map;
+   theShadow_Map          : Ogldev_Shadow_Map_FBO.Shadow_Map_FBO;
    Game_Camera            : Ogldev_Camera.Camera;
    Shadow_Mesh            : Meshes_23.Mesh_23;
    Quad_Mesh              : Meshes_23.Mesh_23;
@@ -69,7 +69,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
-      Shadow_Map_Frame_Buffer.Init
+      Ogldev_Shadow_Map_FBO.Init
         (theShadow_Map, Int (Window_Width), Int (Window_Height));
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
@@ -136,7 +136,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Shadow_Map_Frame_Buffer.Bind_For_Reading (theShadow_Map, 0);
+      Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
 
       Set_Scale (Pipe, 6.0);
       Set_World_Position (Pipe, 0.0, 0.0, -10.0);
@@ -164,7 +164,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
        --  Bind the Shadow_Map frame buffer (FBO) to the Draw_Target
-      Shadow_Map_Frame_Buffer.Bind_For_Writing (theShadow_Map);
+      Ogldev_Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
 
       Set_Scale (Pipe, 0.1);  --  0.1
