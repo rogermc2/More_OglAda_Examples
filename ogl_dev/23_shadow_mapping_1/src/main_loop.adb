@@ -93,12 +93,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  Z values from the light point of view and on the second pass
    --  from the camera point of view.
    procedure Render (Window : in out Glfw.Windows.Window) is
-      Window_Width    : Glfw.Size;
-      Window_Height   : Glfw.Size;
    begin
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Scale := Scale + 0.05;
-      Window.Get_Size (Window_Width, Window_Height);
 
       Shadow_Map_Technique.Use_Program (Shadow_Technique);
       --  First, render the closest depth values into the
