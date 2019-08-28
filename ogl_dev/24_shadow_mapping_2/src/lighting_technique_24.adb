@@ -300,8 +300,8 @@ end Set_Directional_Light_Locations;
         Light.Point.Base.Ambient_Intensity := Ambient;
         Light.Point.Base.Diffuse_Intensity := Diffuse;
         Light.Point.Position := Pos;
-        Light.Direction := Direction;
         Light.Point.Atten := Atten;
+        Light.Direction := Direction;
         Light.Cutoff := Cut_Off;
     end Set_Spot_Light;
 
@@ -323,14 +323,14 @@ end Set_Directional_Light_Locations;
                                     Lights (index).Point.Position);
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
                                     Lights (index).Direction);
-            GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
-                                    Cos (Single (Maths.Radians (Lights (index).Cutoff))));
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
                                     Lights (index).Point.Atten.Constant_Atten);
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,
                                     Lights (index).Point.Atten.Linear);
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Exp,
                                     Lights (index).Point.Atten.Exp);
+            GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
+                                    Cos (Single (Maths.Radians (Lights (index).Cutoff))));
         end loop;
     end Set_Spot_Light_Locations;
 
