@@ -50,23 +50,23 @@ uniform DirectionalLight gDirectionalLight;
 uniform PointLight gPointLights[MAX_POINT_LIGHTS];                                          
 uniform SpotLight gSpotLights[MAX_SPOT_LIGHTS];                                             
 uniform sampler2D gSampler;                                                                 
-uniform sampler2D gShadowMap;                                                               
+uniform sampler2D gShadowMap;
 uniform vec3 gEyeWorldPos;                                                                  
 uniform float gMatSpecularIntensity;                                                        
 uniform float gSpecularPower;                                                               
                                                                                             
 float CalcShadowFactor(vec4 LightSpacePos)                                                  
-    {                                                                                           
-    vec3 ProjCoords = LightSpacePos.xyz / LightSpacePos.w;                                  
-    vec2 UVCoords;                                                                          
-    UVCoords.x = 0.5 * ProjCoords.x + 0.5;                                                  
-    UVCoords.y = 0.5 * ProjCoords.y + 0.5;                                                  
+    {
+    vec3 ProjCoords = LightSpacePos.xyz / LightSpacePos.w;
+    vec2 UVCoords;
+    UVCoords.x = 0.5 * ProjCoords.x + 0.5;
+    UVCoords.y = 0.5 * ProjCoords.y + 0.5;
     float z = 0.5 * ProjCoords.z + 0.5;                                                     
-    float Depth = texture(gShadowMap, UVCoords).x;                                          
-    if (Depth < z + 0.00001)                                                                 
-        return 0.5;                                                                         
+    float Depth = texture(gShadowMap, UVCoords).x;
+    if (Depth < z + 0.00001)
+        return 0.3;
     else                                                                                    
-        return 1.0;                                                                         
+        return 1.0;
     }
                                                                                             
 vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal,            
