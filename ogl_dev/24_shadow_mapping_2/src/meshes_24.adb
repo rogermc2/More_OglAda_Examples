@@ -104,15 +104,15 @@ package body Meshes_24 is
                   Ogldev_Texture.Load (aTexture);
                   theMeshes.Textures.Insert (index, aTexture);
                   Put_Line ("Meshes_24.Init_Materials.Load_Textures loaded texture " &
-                              GL.Types.UInt'Image (index) & " from "
-                            & Dir & To_String (Path));
+                             GL.Types.UInt'Image (index) & " from " &
+                             Dir & To_String (Path));
                else
-                  Put_Line ("Meshes_24.Init_Material.Load_Textures texture "
-                            & Dir & To_String (Path) & " not found.");
+                  Put_Line ("Meshes_24.Init_Material.Load_Textures texture " &
+                             Dir & To_String (Path) & " not found.");
                end if;
             else
                Put_Line ("Meshes_23.Init_Material.Load_Textures Get_Texture result: " &
-                           Assimp_Types.API_Return'Image (Result));
+                          Assimp_Types.API_Return'Image (Result));
             end if;
          end if;
       end Load_Textures;
