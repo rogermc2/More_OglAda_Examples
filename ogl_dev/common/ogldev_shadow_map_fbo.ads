@@ -14,7 +14,6 @@ package Ogldev_Shadow_Map_FBO is
    procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map_FBO);
    procedure Init (aShadow_Map : in out Shadow_Map_FBO;
                    Window_Width, Window_Height : GL.Types.Int);
---                     Draw_Buffer_List : in out GL.Buffers.Explicit_Color_Buffer_List);
 
 private
 
