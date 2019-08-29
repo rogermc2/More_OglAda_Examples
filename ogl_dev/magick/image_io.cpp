@@ -3,8 +3,8 @@
 
 #include "image_io.h"
 
-/* static Magick::Blob theBlob; */
-Magick::Blob theBlob;
+static Magick::Blob theBlob;
+// Magick::Blob theBlob;
 static Magick::Image theImage;
 
 // Obtain pointer to data.
