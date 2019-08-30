@@ -255,7 +255,8 @@ package body Meshes_24 is
             GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
 
             GL.Attributes.Set_Vertex_Attrib_Pointer
-              (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
+              (Index  => 0, Count => 3, Kind => Single_Type,
+               Stride => 8, Offset => 0);
             GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
             GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
