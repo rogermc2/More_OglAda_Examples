@@ -40,7 +40,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Quad_Mesh              : Meshes_24.Mesh_24;
    Ground_Texture         : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
-   Direct_Light           : Lighting_Technique_24.Directional_Light;
    Spot_Lights            : Lighting_Technique_24.Spot_Lights_Array (1 .. 1);
    Scale                  : Single := 0.0;
 
@@ -84,7 +83,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
       Lighting_Technique_24.Init (Lighting_Technique);
-      Lighting_Technique_24.Set_Directional_Light_Locations (Lighting_Technique, Direct_Light);
       Lighting_Technique_24.Set_Spot_Light_Locations (Lighting_Technique, Spot_Lights);
       Lighting_Technique_24.Set_Texture_Unit (Lighting_Technique, 0);
       Lighting_Technique_24.Set_Shadow_Texture_Unit (Lighting_Technique, 1);
@@ -120,6 +118,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       --  First, render the closest depth values into the
       --  application created depth buffer
       Shadow_Map_Pass;
+      GL.Objects.Framebuffers.Draw_Target.Bind
+        (GL.Objects.Framebuffers.Default_Framebuffer);
       Render_Pass;
 
    exception
@@ -226,9 +226,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shadow_Map_Technique.Set_WVP (Shadow_Technique, Get_WVP_Transform (Pipe));
       Meshes_24.Render (Shadow_Mesh);
-
-      GL.Objects.Framebuffers.Draw_Target.Bind
-        (GL.Objects.Framebuffers.Default_Framebuffer);
 
    exception
       when  others =>
