@@ -10,10 +10,9 @@ package body Ogldev_Shadow_Map_FBO is
 
     procedure Bind_For_Reading (aShadow_Map : in out Shadow_Map_FBO;
                                 Tex_Unit : GL.Objects.Textures.Texture_Unit) is
-        use GL.Objects.Textures.Targets;
     begin
         GL.Objects.Textures.Set_Active_Unit (Tex_Unit);
-        Texture_2D.Bind (aShadow_Map.Texture);
+        GL.Objects.Textures.Targets.Texture_2D.Bind (aShadow_Map.Texture);
     end Bind_For_Reading;
 
     --  ------------------------------------------------------------------------------
