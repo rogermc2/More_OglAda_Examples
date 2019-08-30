@@ -24,14 +24,6 @@ Package body Shadow_Map_Technique is
 
    --  -------------------------------------------------------------------------
 
-   function Shadow_Map_Program (theTechnique : Technique)
-                                return GL.Objects.Programs.Program is
-   begin
-      return theTechnique.Shadow_Map_Program;
-   end Shadow_Map_Program;
-
-   --  -------------------------------------------------------------------------
-
   procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
                                          Texture_Unit : GL.Types.Int) is
    begin
