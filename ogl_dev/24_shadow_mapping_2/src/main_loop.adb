@@ -158,6 +158,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24.Set_Eye_World_Pos_Location
         (Lighting_Technique, Get_Position (Game_Camera));
 
+      Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 1);
+
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Set_Scale (Pipe, 6.0);  --  10
       Set_World_Position (Pipe, World_Position);
@@ -178,7 +180,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24.Set_Light_WVP_Location (Lighting_Technique,
                                                     Get_WVP_Transform (Pipe));
       Ogldev_Texture.Bind (Ground_Texture, 0);
-      Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 1);
       Meshes_24.Render (Quad_Mesh);
 
       Set_Scale (Pipe, 0.05);  --  0.1
@@ -195,9 +196,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Camera (Pipe, Lighting_Technique_24.Get_Position (Spot_Lights (1)),
                   Lighting_Technique_24.Get_Direction (Spot_Lights (1)),
                   (0.0, 1.0, 0.0));
+      Init_Transforms (Pipe);
       Lighting_Technique_24.Set_Light_WVP_Location (Lighting_Technique,
                                                     Get_WVP_Transform (Pipe));
---        Meshes_24.Render (Shadow_Mesh);
+      Meshes_24.Render (Shadow_Mesh);
 
    exception
       when  others =>
