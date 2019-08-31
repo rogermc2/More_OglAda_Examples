@@ -63,7 +63,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Buffers.Set_Depth_Function (Always);
 
       Lighting_Technique_24.Set_Spot_Light (Light     => Spot_Lights (1),
-                                            Ambient   => 0.0,  -- 0.1
+                                            Ambient   => 0.02,  -- 0.1
                                             Diffuse   => 0.1,
                                             Colour    => (1.0, 1.0, 1.0),
                                             Pos       => (-20.0, 20.0, 1.0),  --  (-20.0, 20.0, -1.0)
@@ -84,6 +84,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
       Lighting_Technique_24.Init (Lighting_Technique);
+      Lighting_Technique_24.Use_Program (Lighting_Technique);
       Lighting_Technique_24.Set_Spot_Light_Locations (Lighting_Technique, Spot_Lights);
       Lighting_Technique_24.Set_Texture_Unit (Lighting_Technique, 0);
       Lighting_Technique_24.Set_Shadow_Texture_Unit (Lighting_Technique, 1);
@@ -156,7 +157,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24.Use_Program (Lighting_Technique);
       Lighting_Technique_24.Set_Eye_World_Pos_Location
         (Lighting_Technique, Get_Position (Game_Camera));
-      Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 1);
 
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Set_Scale (Pipe, 6.0);  --  10
@@ -178,6 +178,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24.Set_Light_WVP_Location (Lighting_Technique,
                                                     Get_WVP_Transform (Pipe));
       Ogldev_Texture.Bind (Ground_Texture, 0);
+      Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 1);
       Meshes_24.Render (Quad_Mesh);
 
       Set_Scale (Pipe, 0.05);  --  0.1
@@ -209,24 +210,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Shadow_Map_Pass is
       use GL.Types.Singles;
       use Ogldev_Pipeline;
-      use Shadow_Map_Technique;
-      Pipe : Ogldev_Pipeline.Pipeline;
+      Pipe : Pipeline;
    begin
-      Use_Program (Shadow_Technique);
        --  Bind the Shadow_Map frame buffer (FBO) to the Draw_Target
       Ogldev_Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
+      Shadow_Map_Technique.Use_Program (Shadow_Technique);
 
       Set_Scale (Pipe, 1.0);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Set_Rotation (Pipe, 10.0, 0.0, 0.0);
       Set_World_Position (Pipe, World_Position);
       Ogldev_Pipeline.Set_Camera (Pipe,
                   Lighting_Technique_24.Get_Position (Spot_Lights(1)),
                   Lighting_Technique_24.Get_Direction (Spot_Lights(1)),
                   (0.0, 1.0, 0.0));
---        Set_Camera (Pipe, (2.0, 4.0, 10.0),
---                    (0.0, -0.2, -1.0), (0.0, 1.0, 0.0));
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Init_Transforms (Pipe);
 
