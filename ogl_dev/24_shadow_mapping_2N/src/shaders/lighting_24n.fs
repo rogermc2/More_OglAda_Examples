@@ -39,7 +39,7 @@ struct PointLight
                                                                                             
 struct SpotLight                                                                            
     {                                                                                           
-    PointLight Base;                                                                 
+    PointLight Point;
     vec3 Direction;                                                                         
     float Cutoff;                                                                           
     };                                                                                          
@@ -73,15 +73,14 @@ vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal,
                        float ShadowFactor)                                                  
     {
     vec4 AmbientColor = vec4(Light.Color * Light.AmbientIntensity, 1.0f);
-    float DiffuseFactor = dot(Normal, -LightDirection);                                     
+    float DiffuseFactor = dot(Normal, -LightDirection);
                                                                                             
-    vec4 DiffuseColor  = vec4(0, 0, 0, 0);                                                  
-    vec4 SpecularColor = vec4(0, 0, 0, 0);                                                  
-                                                                                            
+    vec4 DiffuseColor  = vec4(0.0, 0, 0, 0);
+    vec4 SpecularColor = vec4(0, 0, 0, 0);
+    
     if (DiffuseFactor > 0)
         {
-        DiffuseColor = vec4(Light.Color * Light.DiffuseIntensity * DiffuseFactor, 1.0f);    
-                                                                                            
+        DiffuseColor = vec4(Light.Color * Light.DiffuseIntensity * DiffuseFactor, 1.0f);
         vec3 VertexToEye = normalize(gEyeWorldPos - WorldPos0);                             
         vec3 LightReflect = normalize(reflect(LightDirection, Normal));                     
         float SpecularFactor = dot(VertexToEye, LightReflect);                                      
@@ -112,15 +111,15 @@ vec4 CalcPointLight(PointLight l, vec3 Normal, vec4 LightSpacePos)
     return Color / Att;
     }
                                                                                             
-vec4 CalcSpotLight(SpotLight l, vec3 Normal, vec4 LightSpacePos)                     
+vec4 CalcSpotLight(SpotLight spot, vec3 Normal, vec4 LightSpacePos)
     {      
-    vec3 LightToPixel = normalize(WorldPos0 - l.Base.Position);                             
-    float SpotFactor = dot(LightToPixel, l.Direction);
-    vec4 Color = vec4(0,0,0,0);
-    if (SpotFactor > l.Cutoff)
+    vec3 LightToPixel = normalize(WorldPos0 - spot.Point.Position);
+    float SpotFactor = dot(LightToPixel, spot.Direction);
+    vec4 Color = vec4(0.0, 0.0, 0.0, 0.0);
+    if (SpotFactor > spot.Cutoff)
         {
-        Color = CalcPointLight(l.Base, Normal, LightSpacePos);
-        Color = Color * (1.0 - (1.0 - SpotFactor) * 1.0/(1.0 - l.Cutoff));
+        Color = CalcPointLight(spot.Point, Normal, LightSpacePos);
+        Color = Color * (1.0 - (1.0 - SpotFactor) / (1.0 - spot.Cutoff));
         }
     return Color;
     }
@@ -134,11 +133,10 @@ void main()
         {
         TotalLight = TotalLight + CalcPointLight(gPointLights[i], Normal, LightSpacePos);
         }
-  //  for (int i = 0 ; i < gNumSpotLights ; i++)
-  //      {
-  //      TotalLight = TotalLight + CalcSpotLight(gSpotLights[i], Normal, LightSpacePos);
-  //      }
-    TotalLight = TotalLight + CalcSpotLight(gSpotLights[0], Normal, LightSpacePos);
+    for (int i = 0 ; i < gNumSpotLights ; i++)
+        {
+        TotalLight = TotalLight + CalcSpotLight(gSpotLights[i], Normal, LightSpacePos);
+        }
 
     vec4 SampledColor = texture(gSampler, TexCoord0.xy);
     FragColor = SampledColor * TotalLight;
