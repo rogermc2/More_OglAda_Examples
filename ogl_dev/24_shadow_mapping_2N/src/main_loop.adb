@@ -21,8 +21,9 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Shadow_Map_FBO;
 
-with Shadow_Map_Technique;
+with Lighting_Technique_24N;
 with Meshes_24N;
+with Shadow_Map_Technique;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
@@ -30,6 +31,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Background             : constant GL.Types.Colors.Color := (0.5, 0.5, 0.5, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Lighting_Technique     : Lighting_Technique_24N.Technique;
    Shadow_Technique       : Shadow_Map_Technique.Technique;
    theShadow_Map          : Ogldev_Shadow_Map_FBO.Shadow_Map_FBO;
    Game_Camera            : Ogldev_Camera.Camera;
@@ -75,7 +77,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 50.0);
       Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
+
       Shadow_Map_Technique.Init (Shadow_Technique);
+      if not Lighting_Technique_24N.Init (Lighting_Technique) then
+            Put_Line ("Main_Loop.Init Lighting_Technique initialization failed.");
+      end if;
 
       Meshes_24N.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
       Meshes_24N.Load_Mesh (Shadow_Mesh, "../Content/phoenix_ugv.md2");
