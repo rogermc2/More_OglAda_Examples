@@ -1,6 +1,7 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Low_Level.Enums;
 with GL.Objects;
 with GL.Objects.Framebuffers;
 with GL.Objects.Vertex_Arrays;
@@ -20,6 +21,7 @@ with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Shadow_Map_FBO;
+with Ogldev_Texture;
 
 with Lighting_Technique_24N;
 with Meshes_24N;
@@ -37,6 +39,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Game_Camera            : Ogldev_Camera.Camera;
    Shadow_Mesh            : Meshes_24N.Mesh_24;
    Quad_Mesh              : Meshes_24N.Mesh_24;
+   Ground_Texture         : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Spot                   : Ogldev_Lights_Common.Spot_Light;
    Scale                  : Single := 0.0;
@@ -85,6 +88,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Meshes_24N.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
       Meshes_24N.Load_Mesh (Shadow_Mesh, "../Content/phoenix_ugv.md2");
+      if Ogldev_Texture.Init_Texture (Ground_Texture, GL.Low_Level.Enums.Texture_2D,
+            "../content/test.png") then
+         Ogldev_Texture.Load (Ground_Texture);
+      else
+         Put_Line ("Main_Loop.Init Ground_Texture failed to initialize.");
+      end if;
 
    exception
       when others =>
@@ -172,6 +181,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
        --  Bind the Shadow_Map frame buffer (FBO) to the Draw_Target
       Ogldev_Shadow_Map_FBO.Bind_For_Writing (theShadow_Map);
       Utilities.Clear_Depth;
+
+      Shadow_Map_Technique.Use_Program (Shadow_Technique);
 
       Set_Scale (Pipe, 0.1);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
