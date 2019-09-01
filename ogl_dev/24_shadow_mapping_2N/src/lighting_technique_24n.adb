@@ -274,6 +274,13 @@ package body Lighting_Technique_24N is
 
     --  -------------------------------------------------------------------------
 
+    procedure Set_Shadow_Texture_Unit (theTechnique : Technique; Texture_Unit : Int) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
+    end Set_Shadow_Texture_Unit;
+   
+    --   -----------------------------------------------------------------------------
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
     use Maths.Single_Math_Functions;
     begin
@@ -309,7 +316,7 @@ package body Lighting_Technique_24N is
         GL.Uniforms.Set_Int (theTechnique.Sampler_Location, Texture_Unit);
     end Set_Texture_Unit;
    
-    --   -------------------------------------------------------------------------------------------------------
+    --   -----------------------------------------------------------------------------
   
    procedure Set_World_Matrix_Location (theTechnique  : Technique;
                                         World_Inverse : Singles.Matrix4) is
