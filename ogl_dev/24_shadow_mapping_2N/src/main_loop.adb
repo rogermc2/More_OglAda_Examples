@@ -64,7 +64,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
 
-      Set_Ambient_Intensity (Spot, 0.0);
+      Set_Ambient_Intensity (Spot, 0.2);
       Set_Diffuse_Intensity (Spot, 0.9);
       Set_Spot_Light (Spot, (0.0, 10.0, 30.0), Colour_White);
       Set_Direction (Spot, (1.0, -1.0, 1.0));
@@ -173,8 +173,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24N.Set_World_Matrix_Location (Lighting_Technique,
                                                         Ogldev_Pipeline.Get_World_Transform (Pipe));
 
+      Lighting_Technique_24N.Set_WVP_Location (Lighting_Technique,
+                                               Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+--        Ogldev_Texture.Bind (Ground_Texture, 0);
       Meshes_24N.Render (Quad_Mesh);
 
    exception
