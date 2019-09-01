@@ -31,6 +31,20 @@ package body Lighting_Technique_24N is
 
     --  -------------------------------------------------------------------------
     
+    function Get_Position (Light : Spot_Light) return Singles.Vector3 is
+    begin
+        return Light.Point.Position;
+    end Get_Position;
+
+    --  -------------------------------------------------------------------------
+    
+    function Get_Direction (Light : Spot_Light) return Singles.Vector3 is
+    begin
+        return Light.Direction;
+    end Get_Direction;
+
+    --  -------------------------------------------------------------------------
+    
     function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
                                    return GL.Uniforms.Uniform is
     begin

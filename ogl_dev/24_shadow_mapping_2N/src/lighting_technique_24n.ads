@@ -10,11 +10,16 @@ package Lighting_Technique_24N is
     Max_Point_Lights : GL.Types.Int := 2;
     Max_Spot_Lights  : GL.Types.Int := 2;
 
-    type Attenuation is private;
     type Directional_Light is private;
     type Point_Light is private;
     type Spot_Light is private;
     type Technique is private;
+
+    type Attenuation is record
+        Constant_Atten : Single := 0.0;
+        Linear         : Single := 0.0;
+        EXP            : Single := 0.0;
+    end record;
 
    type Point_Lights_Array is array (Int range <>) of
      Point_Light;
@@ -23,6 +28,8 @@ package Lighting_Technique_24N is
 
     function Get_Directional_Ambient (Light : Directional_Light) return Single;
     function Get_Directional_Diffuse (Light : Directional_Light) return Single;
+    function Get_Position (Light : Spot_Light) return Singles.Vector3;
+    function Get_Direction (Light : Spot_Light) return Singles.Vector3;
     function Init (theTechnique : out Technique) return Boolean;
     procedure Init_Directional_Light (Light : out Directional_Light);
     procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single);
@@ -44,6 +51,7 @@ package Lighting_Technique_24N is
     procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single;
                                Colour, Pos, Direction : Singles.Vector3;
                                Atten : Attenuation; Cut_Off : Maths.Degree);
+
     procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
     procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4);
     procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4);
@@ -52,12 +60,6 @@ package Lighting_Technique_24N is
  private
 
     --  Light records must conform with those of fragment shader
-    type Attenuation is record
-        Constant_Atten : Single := 1.0;
-        Linear         : Single := 0.0;
-        EXP            : Single := 0.0;
-    end record;
-
     type Base_Light is record
         Colour            : Singles.Vector3 := (0.0, 0.0, 0.0);
         Ambient_Intensity : Single := 0.0;
