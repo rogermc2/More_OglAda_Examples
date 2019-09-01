@@ -82,7 +82,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
 
       Shadow_Map_Technique.Init (Shadow_Technique);
-      if not Lighting_Technique_24N.Init (Lighting_Technique) then
+      if Lighting_Technique_24N.Init (Lighting_Technique) then
             Lighting_Technique_24N.Use_Program  (Lighting_Technique);
             Lighting_Technique_24N.Set_Texture_Unit (Lighting_Technique, 0);
             Lighting_Technique_24N.Set_Shadow_Texture_Unit (Lighting_Technique, 1);
@@ -164,8 +164,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Rotation (Pipe, -90.0, 0.0, 0.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
---        Set_Camera (Pipe, Ogldev_Lights_Common.Position (Spot),
---                                    Ogldev_Lights_Common.Direction (Spot),  (0.0, 1.0, 0.0));
       Init_Transforms (Pipe);
 
       Lighting_Technique_24N.Set_WVP_Location (Lighting_Technique,
