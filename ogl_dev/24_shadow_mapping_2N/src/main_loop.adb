@@ -83,6 +83,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shadow_Map_Technique.Init (Shadow_Technique);
       if not Lighting_Technique_24N.Init (Lighting_Technique) then
+            Lighting_Technique_24N.Use_Program  (Lighting_Technique);
+            Lighting_Technique_24N.Set_Texture_Unit (Lighting_Technique, 0);
+            Lighting_Technique_24N.Set_Shadow_Texture_Unit (Lighting_Technique, 1);
+      else
             Put_Line ("Main_Loop.Init Lighting_Technique initialization failed.");
       end if;
 
@@ -163,6 +167,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 --        Set_Camera (Pipe, Ogldev_Lights_Common.Position (Spot),
 --                                    Ogldev_Lights_Common.Direction (Spot),  (0.0, 1.0, 0.0));
       Init_Transforms (Pipe);
+
+      Lighting_Technique_24N.Set_WVP_Location (Lighting_Technique,
+                                               Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Lighting_Technique_24N.Set_World_Matrix_Location (Lighting_Technique,
+                                                        Ogldev_Pipeline.Get_World_Transform (Pipe));
 
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
