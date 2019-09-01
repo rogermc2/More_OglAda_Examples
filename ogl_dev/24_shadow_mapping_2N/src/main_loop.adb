@@ -15,9 +15,7 @@ with Glfw.Windows.Context;
 
 with Utilities;
 
-with Ogldev_Lights_Common;
 with Ogldev_Camera;
-with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Shadow_Map_FBO;
@@ -41,7 +39,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Quad_Mesh              : Meshes_24N.Mesh_24;
    Ground_Texture         : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
-   Spot                   : Ogldev_Lights_Common.Spot_Light;
+   Spot_Lights            : Lighting_Technique_24N.Spot_Lights_Array (1 .. 1);
    Scale                  : Single := 0.0;
 
    procedure Render_Pass;
@@ -50,7 +48,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Init (Window : in out Glfw.Windows.Window) is
-      use Ogldev_Lights_Common;
+      use Lighting_Technique_24N;
 
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
@@ -64,12 +62,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
 
-      Set_Ambient_Intensity (Spot, 0.2);
-      Set_Diffuse_Intensity (Spot, 0.9);
-      Set_Spot_Light (Spot, (0.0, 10.0, 30.0), Colour_White);
-      Set_Direction (Spot, (1.0, -1.0, 1.0));
-      Set_Linear_Attenuation (Spot, 0.01);
-      Set_Cut_Off (Spot, 20.0);
+        Set_Spot_Light (Light => Spot_Lights (1),
+                        Ambient   => 0.2,
+                        Diffuse   => 0.9,
+                        Colour    => (1.0, 1.0, 1.0),
+                        Pos       => (0.0, 10.0, 30.0),
+                        Direction => (1.0, -1.0, 1.0),
+                        Atten     => (0.0, 0.01, 0.0),
+                        Cut_Off   => 20.0);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour_And_Depth (Background);
@@ -84,6 +84,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_Technique.Init (Shadow_Technique);
       if Lighting_Technique_24N.Init (Lighting_Technique) then
             Lighting_Technique_24N.Use_Program  (Lighting_Technique);
+            Set_Spot_Light_Locations (Lighting_Technique, Spot_Lights);
             Lighting_Technique_24N.Set_Texture_Unit (Lighting_Technique, 0);
             Lighting_Technique_24N.Set_Shadow_Texture_Unit (Lighting_Technique, 1);
       else
@@ -170,8 +171,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Lighting_Technique_24N.Set_World_Matrix_Location (Lighting_Technique,
                                                         Ogldev_Pipeline.Get_World_Transform (Pipe));
-      Set_Camera (Pipe, Ogldev_Lights_Common.Position (Spot),
-                  Ogldev_Lights_Common.Direction (Spot),
+      Set_Camera (Pipe, Lighting_Technique_24N.Get_Position (Spot_Lights (1)),
+                  Lighting_Technique_24N.Get_Direction (Spot_Lights (1)),
                   (0.0, 1.0, 0.0));
       Init_Transforms (Pipe);
 
@@ -193,7 +194,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Shadow_Map_Pass is
       use GL.Types.Singles;
-      use Ogldev_Lights_Common;
       use  Ogldev_Pipeline;
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
@@ -206,8 +206,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Scale (Pipe, 0.1);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, 0.0, 0.0, -3.0);
-      Set_Camera (Pipe, Position (Spot),
-                  Direction (Spot), (0.0, 1.0, 0.0));
+      Set_Camera (Pipe, Lighting_Technique_24N.Get_Position (Spot_Lights (1)),
+                  Lighting_Technique_24N.Get_Direction (Spot_Lights (1)), (0.0, 1.0, 0.0));
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Init_Transforms (Pipe);
 
