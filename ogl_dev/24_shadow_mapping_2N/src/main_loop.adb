@@ -179,6 +179,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24N.Set_Light_WVP_Location (Lighting_Technique,
                                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
+      Shadow_Map_Technique.Use_Program (Shadow_Technique);
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 --        Ogldev_Texture.Bind (Ground_Texture, 0);
