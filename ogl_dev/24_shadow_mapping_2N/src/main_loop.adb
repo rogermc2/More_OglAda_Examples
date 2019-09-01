@@ -148,8 +148,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
+
+      Lighting_Technique_24N.Use_Program (Lighting_Technique);
+      Lighting_Technique_24N.Set_Eye_World_Pos_Location (Lighting_Technique, Get_Position (Game_Camera));
+
       Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
 
+      Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Set_Scale (Pipe, 10.0);
       Set_World_Position (Pipe, 0.0, 0.0, -1.0);
       Set_Rotation (Pipe, -90.0, 0.0, 0.0);
@@ -157,7 +162,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
 --        Set_Camera (Pipe, Ogldev_Lights_Common.Position (Spot),
 --                                    Ogldev_Lights_Common.Direction (Spot),  (0.0, 1.0, 0.0));
-      Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Init_Transforms (Pipe);
 
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
