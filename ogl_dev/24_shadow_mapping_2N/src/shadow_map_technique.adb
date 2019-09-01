@@ -9,15 +9,6 @@ with Program_Loader;
 
 Package body Shadow_Map_Technique is
 
---     function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
---                                    return GL.Uniforms.Uniform is
---     begin
---        return GL.Objects.Programs.Uniform_Location (theTechnique.Shadow_Map_Program,
---                                                     Uniform_Name);
---     end Get_Uniform_Location;
-
-   --  -------------------------------------------------------------------------
-
    procedure Init (theTechnique : out Technique) is
       use Program_Loader;
       use GL.Objects.Shaders;
@@ -26,9 +17,9 @@ Package body Shadow_Map_Technique is
         ((Src ("src/shaders/shadow_map_24N.vs", Vertex_Shader),
           Src ("src/shaders/shadow_map_24N.fs", Fragment_Shader)));
 
-      theTechnique.WVP_Location := GL.Objects.Programs.Uniform_Location
+      theTechnique.Shadow_WVP_Location := GL.Objects.Programs.Uniform_Location
         (theTechnique.Shadow_Map_Program, "gWVP");
-      theTechnique.Texture_Unit_Location := GL.Objects.Programs.Uniform_Location
+      theTechnique.Shadow_Texture_Unit_Location := GL.Objects.Programs.Uniform_Location
         (theTechnique.Shadow_Map_Program, "gShadowMap");
    end Init;
 
@@ -46,7 +37,7 @@ Package body Shadow_Map_Technique is
                                Texture_Unit : GL.Types.Int) is
    begin
       GL.Objects.Programs.Use_Program (theTechnique.Shadow_Map_Program);
-      GL.Uniforms.Set_Int (theTechnique.Texture_Unit_Location, Texture_Unit);
+      GL.Uniforms.Set_Int (theTechnique.Shadow_Texture_Unit_Location, Texture_Unit);
    end Set_Texture_Unit;
 
    --  -------------------------------------------------------------------------
@@ -54,7 +45,7 @@ Package body Shadow_Map_Technique is
    procedure Set_WVP (theTechnique : Technique; WVP : GL.Types.Singles.Matrix4) is
    begin
       GL.Objects.Programs.Use_Program (theTechnique.Shadow_Map_Program);
-      GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);
+      GL.Uniforms.Set_Single (theTechnique.Shadow_WVP_Location, WVP);
    end Set_WVP;
 
    --  -------------------------------------------------------------------------

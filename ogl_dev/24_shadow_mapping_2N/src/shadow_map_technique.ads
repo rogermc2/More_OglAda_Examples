@@ -19,9 +19,9 @@ Package Shadow_Map_Technique is
 private
 
   type Technique is record
-      Shadow_Map_Program    : GL.Objects.Programs.Program;
-      WVP_Location          : GL.Uniforms.Uniform := 0;
-      Texture_Unit_Location : GL.Uniforms.Uniform := 0;
+      Shadow_Map_Program           : GL.Objects.Programs.Program;
+      Shadow_WVP_Location          : GL.Uniforms.Uniform := 0;
+      Shadow_Texture_Unit_Location : GL.Uniforms.Uniform := 0;
    end record;
 
 end Shadow_Map_Technique;
