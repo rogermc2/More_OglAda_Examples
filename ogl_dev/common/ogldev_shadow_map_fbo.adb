@@ -8,7 +8,7 @@ with GL.Pixels;
 
 package body Ogldev_Shadow_Map_FBO is
 
-    procedure Bind_For_Reading (aShadow_Map : in out Shadow_Map_FBO;
+    procedure Bind_For_Reading (aShadow_Map : Shadow_Map_FBO;
                                 Tex_Unit : GL.Objects.Textures.Texture_Unit) is
     begin
         GL.Objects.Textures.Set_Active_Unit (Tex_Unit);
@@ -17,7 +17,7 @@ package body Ogldev_Shadow_Map_FBO is
 
     --  ------------------------------------------------------------------------------
 
-    procedure Bind_For_Writing (aShadow_Map : in out Shadow_Map_FBO) is
+    procedure Bind_For_Writing (aShadow_Map : Shadow_Map_FBO) is
     begin
         GL.Objects.Framebuffers.Draw_Target.Bind (aShadow_Map.FBO);
     end Bind_For_Writing;
