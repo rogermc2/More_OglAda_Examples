@@ -172,9 +172,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Lighting_Technique_24N.Set_World_Matrix_Location (Lighting_Technique,
                                                         Ogldev_Pipeline.Get_World_Transform (Pipe));
+      Set_Camera (Pipe, Ogldev_Lights_Common.Position (Spot),
+                  Ogldev_Lights_Common.Direction (Spot),
+                  (0.0, 1.0, 0.0));
+      Init_Transforms (Pipe);
 
-      Lighting_Technique_24N.Set_WVP_Location (Lighting_Technique,
-                                               Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Lighting_Technique_24N.Set_Light_WVP_Location (Lighting_Technique,
+                                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+
       Shadow_Map_Technique.Set_WVP (Shadow_Technique,
                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 --        Ogldev_Texture.Bind (Ground_Texture, 0);
