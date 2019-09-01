@@ -55,6 +55,8 @@ package body Lighting_Technique_24N is
         else
             GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
             theTechnique.WVP_Location :=
+              GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gLightWVP");
+            theTechnique.Light_WVP_Location :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gWVP");
             theTechnique.World_Matrix_Location :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gWorld");
@@ -206,6 +208,14 @@ package body Lighting_Technique_24N is
     end Set_Eye_World_Pos_Location;
    
     --   -------------------------------------------------------------------------------------------------------
+   
+    procedure Set_Light_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4) is
+    begin
+        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+        GL.Uniforms.Set_Single (theTechnique.Light_WVP_Location, WVP);    
+    end Set_Light_WVP_Location;
+   
+    --   -------------------------------------------------------------------------------------------------------
 
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single) is
     begin
@@ -281,6 +291,7 @@ package body Lighting_Technique_24N is
     end Set_Shadow_Texture_Unit;
    
     --   -----------------------------------------------------------------------------
+
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
     use Maths.Single_Math_Functions;
     begin
