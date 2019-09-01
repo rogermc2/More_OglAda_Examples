@@ -38,6 +38,7 @@ package Lighting_Technique_24N is
                                Colour : Singles.Vector3;
                                Pos : Singles.Vector3; Atten : Attenuation);
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array);
+    procedure Set_Shadow_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array);
     procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single;
                                Colour, Pos, Direction : Singles.Vector3;
