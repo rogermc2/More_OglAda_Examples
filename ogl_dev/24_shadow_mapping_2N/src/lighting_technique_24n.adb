@@ -55,9 +55,9 @@ package body Lighting_Technique_24N is
         else
             GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
             theTechnique.WVP_Location :=
-              GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gLightWVP");
-            theTechnique.Light_WVP_Location :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gWVP");
+            theTechnique.Light_WVP_Location :=
+              GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gLightWVP");
             theTechnique.World_Matrix_Location :=
               GL.Objects.Programs.Uniform_Location (theTechnique.Lighting_Program, "gWorld");
             theTechnique.Sampler_Location :=
