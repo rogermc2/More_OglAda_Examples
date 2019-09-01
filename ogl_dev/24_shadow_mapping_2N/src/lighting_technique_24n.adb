@@ -359,7 +359,7 @@ package body Lighting_Technique_24N is
     procedure Use_Program (theTechnique : Technique) is
         use GL.Objects.Shaders.Lists;
     begin
-        if GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
+        if GL.Objects.Programs.Link_Status (theTechnique.Lighting_Program) then
             declare
                 Shaders_List : constant GL.Objects.Shaders.Lists.List :=
                                  GL.Objects.Programs.Attached_Shaders (theTechnique.Lighting_Program);
@@ -371,6 +371,8 @@ package body Lighting_Technique_24N is
                     GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
                 end if;
             end;  -- declare block
+        else
+            Put_Line ("Lighting_Technique_24N.Use_Program theTechnique Link_Status check failed.");
         end if;
 
     exception
