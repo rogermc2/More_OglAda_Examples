@@ -105,7 +105,7 @@ vec4 CalcPointLight(PointLight l, vec3 Normal, vec4 LightSpacePos)
     float Distance = length(LightDirection);                                                
     LightDirection = normalize(LightDirection);                                             
     float ShadowFactor = CalcShadowFactor(LightSpacePos);
-    vec4 Color = CalcLightInternal(l.Base, LightDirection, Normal, ShadowFactor);           
+    vec4 Color = CalcLightInternal(l.Base, LightDirection, Normal, ShadowFactor);
     float Att =  l.Atten.Constant +
                  l.Atten.Linear * Distance +
                  l.Atten.Exp * Distance * Distance;
@@ -115,32 +115,31 @@ vec4 CalcPointLight(PointLight l, vec3 Normal, vec4 LightSpacePos)
 vec4 CalcSpotLight(SpotLight l, vec3 Normal, vec4 LightSpacePos)                     
     {      
     vec3 LightToPixel = normalize(WorldPos0 - l.Base.Position);                             
-    float SpotFactor = dot(LightToPixel, l.Direction);                                      
-                                                                                            
+    float SpotFactor = dot(LightToPixel, l.Direction);
+    vec4 Color = vec4(0,0,0,0);
     if (SpotFactor > l.Cutoff)
         {
-        vec4 Color = CalcPointLight(l.Base, Normal, LightSpacePos);                         
-        return Color * (1.0 - (1.0 - SpotFactor) * 1.0/(1.0 - l.Cutoff));                   
+        Color = CalcPointLight(l.Base, Normal, LightSpacePos);
+        Color = Color * (1.0 - (1.0 - SpotFactor) * 1.0/(1.0 - l.Cutoff));
         }
-    else
-        {
-        return vec4(0,0,0,0);                                                               
-        }
+    return Color;
     }
                                                                                             
 void main()                                                                                 
     {
-    vec3 Normal = normalize(Normal0);                                                       
-    vec4 TotalLight = CalcDirectionalLight(Normal);                                         
+    vec3 Normal = normalize(Normal0);
+    vec4 TotalLight = CalcDirectionalLight(Normal);
                                                                                             
     for (int i = 0 ; i < gNumPointLights ; i++)
         {
-        TotalLight += CalcPointLight(gPointLights[i], Normal, LightSpacePos);               
+        TotalLight = TotalLight + CalcPointLight(gPointLights[i], Normal, LightSpacePos);
         }
-    for (int i = 0 ; i < gNumSpotLights ; i++)
-        {
-        TotalLight += CalcSpotLight(gSpotLights[i], Normal, LightSpacePos);                 
-        }
+  //  for (int i = 0 ; i < gNumSpotLights ; i++)
+  //      {
+  //      TotalLight = TotalLight + CalcSpotLight(gSpotLights[i], Normal, LightSpacePos);
+  //      }
+    TotalLight = TotalLight + CalcSpotLight(gSpotLights[0], Normal, LightSpacePos);
+
     vec4 SampledColor = texture(gSampler, TexCoord0.xy);
-    FragColor = SampledColor * TotalLight;                                                  
+    FragColor = SampledColor * TotalLight;
     }
