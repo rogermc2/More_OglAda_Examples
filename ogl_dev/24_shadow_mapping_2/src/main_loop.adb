@@ -197,9 +197,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Camera (Pipe, Lighting_Technique_24.Get_Position (Spot_Lights (1)),
                   Lighting_Technique_24.Get_Direction (Spot_Lights (1)),
                   (0.0, 1.0, 0.0));
+      Init_Transforms (Pipe);
       Lighting_Technique_24.Set_Light_WVP_Location (Lighting_Technique,
                                                     Get_WVP_Transform (Pipe));
---        Meshes_24.Render (Shadow_Mesh);
+      Meshes_24.Render (Shadow_Mesh);
 
    exception
       when  others =>
