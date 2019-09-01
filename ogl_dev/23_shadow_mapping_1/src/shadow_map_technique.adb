@@ -9,15 +9,6 @@ with Program_Loader;
 
 Package body Shadow_Map_Technique is
 
---     function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
---                                    return GL.Uniforms.Uniform is
---     begin
---        return GL.Objects.Programs.Uniform_Location (theTechnique.Shadow_Map_Program,
---                                                     Uniform_Name);
---     end Get_Uniform_Location;
-
-   --  -------------------------------------------------------------------------
-
    procedure Init (theTechnique : out Technique) is
       use Program_Loader;
       use GL.Objects.Shaders;
@@ -45,7 +36,6 @@ Package body Shadow_Map_Technique is
    procedure Set_Texture_Unit (theTechnique : Technique;
                                Texture_Unit : GL.Types.Int) is
    begin
-      GL.Objects.Programs.Use_Program (theTechnique.Shadow_Map_Program);
       GL.Uniforms.Set_Int (theTechnique.Texture_Unit_Location, Texture_Unit);
    end Set_Texture_Unit;
 
@@ -53,7 +43,6 @@ Package body Shadow_Map_Technique is
 
    procedure Set_WVP (theTechnique : Technique; WVP : GL.Types.Singles.Matrix4) is
    begin
-      GL.Objects.Programs.Use_Program (theTechnique.Shadow_Map_Program);
       GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);
    end Set_WVP;
 

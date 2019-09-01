@@ -204,7 +204,6 @@ package body Lighting_Technique_24N is
                                              Light        : Directional_Light) is
         Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour (GL.X), 
                                 Light.Base.Colour (GL.Y), Light.Base.Colour (GL.Z));
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
@@ -216,7 +215,6 @@ package body Lighting_Technique_24N is
 
     procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Eye_World_Pos (GL.X),
                                 Eye_World_Pos (GL.Y), Eye_World_Pos (GL.Z));
     end Set_Eye_World_Pos_Location;
@@ -225,7 +223,6 @@ package body Lighting_Technique_24N is
    
     procedure Set_Light_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Light_WVP_Location, WVP);    
     end Set_Light_WVP_Location;
    
@@ -233,7 +230,6 @@ package body Lighting_Technique_24N is
 
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Mat_Specular_Intensity_Location, Intensity);
     end Set_Mat_Specular_Intensity;
 
@@ -241,7 +237,6 @@ package body Lighting_Technique_24N is
 
     procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Mat_Specular_Power_Location, Power);
     end Set_Mat_Specular_Power;
     
@@ -261,7 +256,6 @@ package body Lighting_Technique_24N is
  
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Num_Point_Lights_Location, Max_Point_Lights);
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Colour,
@@ -300,7 +294,6 @@ package body Lighting_Technique_24N is
 
     procedure Set_Shadow_Texture_Unit (theTechnique : Technique; Texture_Unit : Int) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
     end Set_Shadow_Texture_Unit;
    
@@ -309,7 +302,6 @@ package body Lighting_Technique_24N is
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
     use Maths.Single_Math_Functions;
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Max_Spot_Lights);
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Colour,
@@ -337,7 +329,6 @@ package body Lighting_Technique_24N is
   
     procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Sampler_Location, Texture_Unit);
     end Set_Texture_Unit;
    
@@ -346,7 +337,6 @@ package body Lighting_Technique_24N is
    procedure Set_World_Matrix_Location (theTechnique  : Technique;
                                         World_Inverse : Singles.Matrix4) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, World_Inverse);
     end Set_World_Matrix_Location;
    
@@ -354,7 +344,6 @@ package body Lighting_Technique_24N is
 
     procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);    
     end Set_WVP_Location;
    
