@@ -113,7 +113,7 @@ package Lighting_Technique_24N is
      Spot_Light_Locations;
 
    type Direct_Light_Locations is record
-      Color             : GL.Uniforms.Uniform := 0;
+      Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
       Diffuse_Intensity : GL.Uniforms.Uniform := 0;
       Direction         : GL.Uniforms.Uniform := 0;
@@ -132,8 +132,8 @@ package Lighting_Technique_24N is
       Mat_Specular_Power_Location     : GL.Uniforms.Uniform := 0;
       Num_Point_Lights_Location       : GL.Uniforms.Uniform := 0;
       Num_Spot_Lights_Location        : GL.Uniforms.Uniform := 0;
-      Point_Lights_Locations          : Point_Lights_Location_Array;
-      Spot_Lights_Locations           : Spot_Lights_Location_Array;
+      Point_Locations                 : Point_Lights_Location_Array;
+      Spot_Locations                  : Spot_Lights_Location_Array;
    end record;
 
 end Lighting_Technique_24N;
