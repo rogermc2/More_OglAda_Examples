@@ -63,11 +63,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
 
         Set_Spot_Light (Light => Spot_Lights (1),
-                        Ambient   => 0.2,
-                        Diffuse   => 0.9,
+                        Ambient   => 0.1,
+                        Diffuse   => 0.2,
                         Colour    => (1.0, 1.0, 1.0),
                         Pos       => (0.0, 10.0, 30.0),
-                        Direction => (1.0, -1.0, 1.0),
+                        Direction => (1.0, -1.0, -1.0),
                         Atten     => (0.0, 0.01, 0.0),
                         Cut_Off   => 20.0);
 
@@ -164,7 +164,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_World_Position (Pipe, 0.0, 0.0, -1.0);
       Set_Rotation (Pipe, -90.0, 0.0, 0.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
-                                  Get_Target (Game_Camera), Get_Up (Game_Camera));
+                  Get_Target (Game_Camera), Get_Up (Game_Camera));
       Init_Transforms (Pipe);
 
       Lighting_Technique_24N.Set_WVP_Location (Lighting_Technique,
@@ -179,10 +179,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24N.Set_Light_WVP_Location (Lighting_Technique,
                                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
-      Shadow_Map_Technique.Use_Program (Shadow_Technique);
-      Shadow_Map_Technique.Set_WVP (Shadow_Technique,
-                                    Ogldev_Pipeline.Get_WVP_Transform (Pipe));
---        Ogldev_Texture.Bind (Ground_Texture, 0);
+--        Shadow_Map_Technique.Use_Program (Shadow_Technique);
+--        Shadow_Map_Technique.Set_WVP (Shadow_Technique,
+--                                      Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Ogldev_Texture.Bind (Ground_Texture, 0);
       Meshes_24N.Render (Quad_Mesh);
 
    exception
