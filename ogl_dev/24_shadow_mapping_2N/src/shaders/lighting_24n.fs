@@ -12,7 +12,7 @@ out vec4 FragColor;
                                                                                     
 struct BaseLight                                                                    
     {                                                                                   
-    vec3 Color;                                                                     
+    vec3 Color;
     float AmbientIntensity;                                                         
     float DiffuseIntensity;                                                         
     };                                                                                  
@@ -77,7 +77,7 @@ vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal,
                                                                                             
     vec4 DiffuseColor  = vec4(0.0, 0, 0, 0);
     vec4 SpecularColor = vec4(0, 0, 0, 0);
-    
+        
     if (DiffuseFactor > 0)
         {
         DiffuseColor = vec4(Light.Color * Light.DiffuseIntensity * DiffuseFactor, 1.0f);
@@ -108,14 +108,18 @@ vec4 CalcPointLight(PointLight l, vec3 Normal, vec4 LightSpacePos)
     float Att =  l.Atten.Constant +
                  l.Atten.Linear * Distance +
                  l.Atten.Exp * Distance * Distance;
-    return Color / Att;
+    if (Att > 0.0)
+        {
+        Color = Color / Att;
+        }
+    return Color;
     }
                                                                                             
 vec4 CalcSpotLight(SpotLight spot, vec3 Normal, vec4 LightSpacePos)
-    {      
+    {
+    vec4 Color = vec4(0, 0, 0, 0);
     vec3 LightToPixel = normalize(WorldPos0 - spot.Point.Position);
     float SpotFactor = dot(LightToPixel, spot.Direction);
-    vec4 Color = vec4(0.0, 0.0, 0.0, 0.0);
     if (SpotFactor > spot.Cutoff)
         {
         Color = CalcPointLight(spot.Point, Normal, LightSpacePos);
@@ -128,7 +132,8 @@ void main()
     {
     vec3 Normal = normalize(Normal0);
     vec4 TotalLight = CalcDirectionalLight(Normal);
-                                                                                            
+    vec4 SampledColor = texture(gSampler, TexCoord0.xy);
+        
     for (int i = 0 ; i < gNumPointLights ; i++)
         {
         TotalLight = TotalLight + CalcPointLight(gPointLights[i], Normal, LightSpacePos);
@@ -137,7 +142,5 @@ void main()
         {
         TotalLight = TotalLight + CalcSpotLight(gSpotLights[i], Normal, LightSpacePos);
         }
-
-    vec4 SampledColor = texture(gSampler, TexCoord0.xy);
     FragColor = SampledColor * TotalLight;
     }
