@@ -60,7 +60,16 @@ float CalcShadowFactor(vec4 LightSpacePos)
     vec3 ProjCoords = LightSpacePos.xyz / LightSpacePos.w;                                  
     vec2 UVCoords;                                                                          
     UVCoords.x = 0.5 * ProjCoords.x + 0.5;                                                  
-    UVCoords.y = 0.5 * ProjCoords.y + 0.5;                                                  
+    UVCoords.y = 0.5 * ProjCoords.y + 0.5;
+    if (UVCoords.x < 0.0)
+        UVCoords.x = 0.0;
+    else if (UVCoords.x > 1.0)
+        UVCoords.x = 1.0;
+    if (UVCoords.y < 0.0)
+        UVCoords.y = 0.0;
+    else if (UVCoords.y > 1.0)
+        UVCoords.y = 1.0;
+        
     float z = 0.5 * ProjCoords.z + 0.5;                                                     
     float Depth = texture(gShadowMap, UVCoords).x;                                          
     if (Depth < z + 0.00001)                                                                 
