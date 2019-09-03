@@ -3,7 +3,7 @@
 const int MAX_POINT_LIGHTS = 2;                                                     
 const int MAX_SPOT_LIGHTS = 2;                                                      
                                                                                     
-in vec4 LightSpacePos;                                                              
+in vec4 LightSpacePos;
 in vec2 TexCoord0;                                                                  
 in vec3 Normal0;                                                                    
 in vec3 WorldPos0;                                                                  
@@ -55,9 +55,12 @@ uniform vec3 gEyeWorldPos;
 uniform float gMatSpecularIntensity;                                                        
 uniform float gSpecularPower;                                                               
                                                                                             
-float CalcShadowFactor(vec4 LightSpacePos)                                                  
+float CalcShadowFactor(vec4 LightPos)
     {
-    vec3 ProjCoords = LightSpacePos.xyz / LightSpacePos.w;                                  
+    //  After multiplying the vertex position by the projection matrix the coordinates are
+    //  in Clip Space and after performing a perspective divide the coordinates are in
+    //  NDC Space (Normalized Device Coordinates).
+    vec3 ProjCoords = LightPos.xyz / LightPos.w;
     vec2 UVCoords;                                                                          
     UVCoords.x = 0.5 * ProjCoords.x + 0.5;                                                  
     UVCoords.y = 0.5 * ProjCoords.y + 0.5;
@@ -70,12 +73,13 @@ float CalcShadowFactor(vec4 LightSpacePos)
     else if (UVCoords.y > 1.0)
         UVCoords.y = 1.0;
         
-    float z = 0.5 * ProjCoords.z + 0.5;                                                     
-    float Depth = texture(gShadowMap, UVCoords).x;                                          
+    float z = 0.5 * ProjCoords.z + 0.5;
+    float Depth = texture(gShadowMap, UVCoords).x;
+//     Depth = texture(gShadowMap, TexCoord0).x;
     if (Depth < z + 0.00001)                                                                 
-        return 0.5;                                                                         
+        return 0.0;
     else                                                                                    
-        return 1.0;                                                                         
+        return 1.0;
     }
                                                                                             
 vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal,            
@@ -96,10 +100,10 @@ vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal,
         if (SpecularFactor > 0)
             {                                                           
             SpecularFactor = pow(SpecularFactor, gSpecularPower);                               
-            SpecularColor = vec4(Light.Color, 1.0f) * gMatSpecularIntensity * SpecularFactor;                         
+            SpecularColor = vec4(Light.Color, 1.0f) * gMatSpecularIntensity * SpecularFactor;
             }
         }
-    return (AmbientColor + ShadowFactor * (DiffuseColor + SpecularColor));                  
+    return (AmbientColor + ShadowFactor * (DiffuseColor + SpecularColor));
     }
                                                                                             
 vec4 CalcDirectionalLight(vec3 Normal)                                                      
@@ -107,16 +111,16 @@ vec4 CalcDirectionalLight(vec3 Normal)
     return CalcLightInternal(gDirectionalLight.Base, gDirectionalLight.Direction, Normal, 1.0);  
     }
                                                                                             
-vec4 CalcPointLight(PointLight l, vec3 Normal, vec4 LightSpacePos)                   
+vec4 CalcPointLight(PointLight point, vec3 Normal, vec4 LightPos)
     {
-    vec3 LightDirection = WorldPos0 - l.Position;                                           
+    vec3 LightDirection = WorldPos0 - point.Position;
     float Distance = length(LightDirection);                                                
     LightDirection = normalize(LightDirection);                                             
-    float ShadowFactor = CalcShadowFactor(LightSpacePos);
-    vec4 Color = CalcLightInternal(l.Base, LightDirection, Normal, ShadowFactor);
-    float Att =  l.Atten.Constant +
-                 l.Atten.Linear * Distance +
-                 l.Atten.Exp * Distance * Distance;
+    float ShadowFactor = CalcShadowFactor(LightPos);
+    vec4 Color = CalcLightInternal(point.Base, LightDirection, Normal, ShadowFactor);
+    float Att =  point.Atten.Constant +
+                 point.Atten.Linear * Distance +
+                 point.Atten.Exp * Distance * Distance;
     if (Att > 0.0)
         {
         Color = Color / Att;
@@ -124,14 +128,14 @@ vec4 CalcPointLight(PointLight l, vec3 Normal, vec4 LightSpacePos)
     return Color;
     }
                                                                                             
-vec4 CalcSpotLight(SpotLight spot, vec3 Normal, vec4 LightSpacePos)
+vec4 CalcSpotLight(SpotLight spot, vec3 Normal, vec4 LightPos)
     {
     vec4 Color = vec4(0, 0, 0, 0);
     vec3 LightToPixel = normalize(WorldPos0 - spot.Point.Position);
     float SpotFactor = dot(LightToPixel, spot.Direction);
     if (SpotFactor > spot.Cutoff)
         {
-        Color = CalcPointLight(spot.Point, Normal, LightSpacePos);
+        Color = CalcPointLight(spot.Point, Normal, LightPos);
         Color = Color * (1.0 - (1.0 - SpotFactor) / (1.0 - spot.Cutoff));
         }
     return Color;
