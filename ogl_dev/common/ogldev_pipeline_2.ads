@@ -8,7 +8,7 @@ package Ogldev_Pipeline_2 is
 
    type Pipeline is private;
 
-   function Get_Projection_Transform (P : Pipeline) return Singles.Matrix4;
+   function Get_Projection_Transform (P : in out Pipeline) return Singles.Matrix4;
    function Get_View_Transform (P : in out Pipeline) return Singles.Matrix4;
    function Get_VP_Transform (P : in out Pipeline) return Singles.Matrix4;
    function Get_World_Transform (P : in out Pipeline) return Singles.Matrix4;

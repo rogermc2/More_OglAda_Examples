@@ -165,7 +165,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Rotation (Pipe, -90.0, 0.0, 0.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                   Get_Target (Game_Camera), Get_Up (Game_Camera));
-      Init_Transforms (Pipe);
+--        Init_Transforms (Pipe);
 
       Lighting_Technique_24N.Set_WVP_Location
         (Lighting_Technique, Get_WVP_Transform (Pipe));
