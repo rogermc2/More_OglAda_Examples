@@ -12,23 +12,6 @@ package body Ogldev_Pipeline_2 is
 
    --  -------------------------------------------------------------------------
 
-   function Get_World_Transform (P : in out Pipeline) return Singles.Matrix4 is
-   begin
-      Set_World_Transform (P);
-      return P.World_Transform;
-   end Get_World_Transform;
-
-   --  -------------------------------------------------------------------------
-
-   function Get_WVP_Transform (P : in out Pipeline) return Singles.Matrix4 is
-      use GL.Types.Singles;
-   begin
-      P.WVP_Transform := P.VP_Transform * P.World_Transform;
-      return P.WVP_Transform;
-   end Get_WVP_Transform;
-
-   --  -------------------------------------------------------------------------
-
    function Get_Projection_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
       return P.Projection_Transform;
@@ -53,6 +36,14 @@ package body Ogldev_Pipeline_2 is
 
    --  -------------------------------------------------------------------------
 
+   function Get_World_Transform (P : in out Pipeline) return Singles.Matrix4 is
+   begin
+      Set_World_Transform (P);
+      return P.World_Transform;
+   end Get_World_Transform;
+
+   --  -------------------------------------------------------------------------
+
    function Get_WP_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
       return P.WP_Transform;
@@ -66,6 +57,16 @@ package body Ogldev_Pipeline_2 is
    end Get_WV_Transform;
 
    --  -------------------------------------------------------------------------
+
+   function Get_WVP_Transform (P : in out Pipeline) return Singles.Matrix4 is
+      use GL.Types.Singles;
+   begin
+      P.WVP_Transform := Get_VP_Transform (P) * Get_World_Transform (P);
+      return P.WVP_Transform;
+   end Get_WVP_Transform;
+
+   --  -------------------------------------------------------------------------
+
 
    procedure Init_Transforms  (P : in out Pipeline) is
       use GL.Types.Singles;
@@ -166,11 +167,11 @@ package body Ogldev_Pipeline_2 is
 
    procedure Set_View_Transform (P : in out Pipeline) is
       use GL.Types.Singles;
-      Camera_Translation_Trans : Matrix4;
-      Camera_Rotate_Trans      : Matrix4;
+      Camera_Translation_Trans : constant Matrix4 :=
+                                   Maths.Translation_Matrix (-P.Camera.Position);
+      Camera_Rotate_Trans      : constant Matrix4 :=
+        Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
    begin
-      Camera_Translation_Trans := Maths.Translation_Matrix (-P.Camera.Position);
-      Camera_Rotate_Trans := Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
       P.View_Transform := Camera_Translation_Trans * Camera_Rotate_Trans;
    exception
       when  others =>
