@@ -8,12 +8,13 @@ package body Ogldev_Pipeline_2 is
    procedure Set_Projection_Transform (P : in out Pipeline);
    procedure Set_View_Transform (P : in out Pipeline);
    procedure Set_World_Transform (P : in out Pipeline);
-   procedure Set_WV_Orthographic_Transform (P : in out Pipeline);
+--     procedure Set_WV_Orthographic_Transform (P : in out Pipeline);
 
    --  -------------------------------------------------------------------------
 
-   function Get_Projection_Transform (P : Pipeline) return Singles.Matrix4 is
+   function Get_Projection_Transform (P : in out Pipeline) return Singles.Matrix4 is
    begin
+      Set_Projection_Transform (P);
       return P.Projection_Transform;
    end Get_Projection_Transform;
 
@@ -74,11 +75,11 @@ package body Ogldev_Pipeline_2 is
       Set_World_Transform (P);
       Set_View_Transform (P);   --  Depends on P.Camera
       Set_Projection_Transform (P);
-      P.VP_Transform := P.Projection_Transform * P.View_Transform;
-      P.WP_Transform := P.Projection_Transform * P.World_Transform;
-      P.WV_Transform := P.View_Transform * P.World_Transform;
-      Set_WV_Orthographic_Transform (P);
-      P.WVP_Transform := P.Projection_Transform * P.WV_Transform;
+--        P.VP_Transform := P.Projection_Transform * P.View_Transform;
+--        P.WP_Transform := P.Projection_Transform * P.World_Transform;
+--        P.WV_Transform := P.View_Transform * P.World_Transform;
+--        Set_WV_Orthographic_Transform (P);
+--        P.WVP_Transform := P.Projection_Transform * P.WV_Transform;
    end Init_Transforms;
 
    --  -------------------------------------------------------------------------
@@ -212,20 +213,20 @@ package body Ogldev_Pipeline_2 is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_WV_Orthographic_Transform (P : in out Pipeline) is
-      use GL.Types.Singles;
-      use Ogldev_Math;
-      Ortho_Proj : Matrix4;
-   begin
-      Maths.Init_Orthographic_Transform
-        (Get_Orthograpic_Top (P.Orthographic_Info),
-         Get_Orthograpic_Bottom (P.Orthographic_Info),
-         Get_Orthograpic_Left (P.Orthographic_Info),
-         Get_Orthograpic_Right (P.Orthographic_Info),
-         Get_Orthograpic_Near (P.Orthographic_Info),
-         Get_Orthograpic_Far (P.Orthographic_Info), Ortho_Proj);
-      P.WVP_Transform := Ortho_Proj * P.View_Transform * P.World_Transform;
-   end Set_WV_Orthographic_Transform;
+--     procedure Set_WV_Orthographic_Transform (P : in out Pipeline) is
+--        use GL.Types.Singles;
+--        use Ogldev_Math;
+--        Ortho_Proj : Matrix4;
+--     begin
+--        Maths.Init_Orthographic_Transform
+--          (Get_Orthograpic_Top (P.Orthographic_Info),
+--           Get_Orthograpic_Bottom (P.Orthographic_Info),
+--           Get_Orthograpic_Left (P.Orthographic_Info),
+--           Get_Orthograpic_Right (P.Orthographic_Info),
+--           Get_Orthograpic_Near (P.Orthographic_Info),
+--           Get_Orthograpic_Far (P.Orthographic_Info), Ortho_Proj);
+--        P.WVP_Transform := Ortho_Proj * P.View_Transform * P.World_Transform;
+--     end Set_WV_Orthographic_Transform;
 
    --  -------------------------------------------------------------------------
 
