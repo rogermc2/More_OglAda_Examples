@@ -167,14 +167,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Init_Transforms (Pipe);
 
-      Lighting_Technique_24N.Set_World_Matrix_Location
-        (Lighting_Technique, Get_World_Transform (Pipe));
       Lighting_Technique_24N.Set_WVP_Location
         (Lighting_Technique, Get_WVP_Transform (Pipe));
+      Lighting_Technique_24N.Set_World_Matrix_Location
+        (Lighting_Technique, Get_World_Transform (Pipe));
+
       Set_Camera (Pipe, Lighting_Technique_24N.Get_Position (Spot_Lights (1)),
                   Lighting_Technique_24N.Get_Direction (Spot_Lights (1)),
                   (0.0, 1.0, 0.0));
-      Init_Transforms (Pipe);
+--        Init_Transforms (Pipe);
 
       Lighting_Technique_24N.Set_Light_WVP_Location
         (Lighting_Technique, Get_WVP_Transform (Pipe));
@@ -187,7 +188,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                   Get_Target (Game_Camera), Get_Up (Game_Camera));
-      Init_Transforms (Pipe);
+--        Init_Transforms (Pipe);
 
       Lighting_Technique_24N.Set_WVP_Location
         (Lighting_Technique,Get_WVP_Transform (Pipe));
@@ -197,7 +198,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Camera (Pipe, Lighting_Technique_24N.Get_Position (Spot_Lights (1)),
                   Lighting_Technique_24N.Get_Direction (Spot_Lights (1)),
                   (0.0, 1.0, 0.0));
-      Init_Transforms (Pipe);
+--        Init_Transforms (Pipe);
 
       Lighting_Technique_24N.Set_Light_WVP_Location
         (Lighting_Technique, Get_WVP_Transform (Pipe));
@@ -227,11 +228,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Set_Camera (Pipe, Lighting_Technique_24N.Get_Position (Spot_Lights (1)),
-                  Lighting_Technique_24N.Get_Direction (Spot_Lights (1)), (0.0, 1.0, 0.0));
+                  Lighting_Technique_24N.Get_Direction
+                    (Spot_Lights (1)), (0.0, 1.0, 0.0));
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Init_Transforms (Pipe);
 
-      Shadow_Map_Technique.Set_WVP (Shadow_Technique, Get_WVP_Transform (Pipe));
+      Shadow_Map_Technique.Set_WVP
+        (Shadow_Technique, Get_WVP_Transform (Pipe));
       Meshes_24N.Render (Shadow_Mesh);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
