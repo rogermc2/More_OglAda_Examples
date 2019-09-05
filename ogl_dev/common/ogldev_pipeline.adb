@@ -165,7 +165,7 @@ package body Ogldev_Pipeline is
    begin
       Camera_Translation_Trans := Maths.Translation_Matrix (-P.Camera.Position);
       Camera_Rotate_Trans := Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
-      P.View_Transform := Camera_Translation_Trans * Camera_Rotate_Trans;
+      P.View_Transform := Camera_Rotate_Trans * Camera_Translation_Trans;
    exception
       when  others =>
          Put_Line ("An exception occurred in Ogldev_Pipeline.Set_View_Transform.");
