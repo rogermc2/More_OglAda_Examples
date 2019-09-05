@@ -68,9 +68,8 @@ package body Ogldev_Pipeline_2 is
 
    --  -------------------------------------------------------------------------
 
-
    procedure Init_Transforms  (P : in out Pipeline) is
-      use GL.Types.Singles;
+--        use GL.Types.Singles;
    begin
       Set_World_Transform (P);
       Set_View_Transform (P);   --  Depends on P.Camera
@@ -173,7 +172,7 @@ package body Ogldev_Pipeline_2 is
       Camera_Rotate_Trans      : constant Matrix4 :=
         Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
    begin
-      P.View_Transform := Camera_Translation_Trans * Camera_Rotate_Trans;
+      P.View_Transform := Camera_Rotate_Trans * Camera_Translation_Trans;
    exception
       when  others =>
          Put_Line ("An exception occurred in Ogldev_Pipeline.Set_View_Transform.");
