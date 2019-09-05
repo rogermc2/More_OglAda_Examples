@@ -50,7 +50,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
 
-      Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 5.0);
+      Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 0.0);
       Target          : constant Singles.Vector3 := (0.0, 0.0, 1.0);
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -61,7 +61,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Set_Ambient_Intensity (Spot, 0.0);
       Set_Diffuse_Intensity (Spot, 0.9);
-      Set_Spot_Light (Spot, (0.0, 10.0, 30.0), Colour_White);
+      Set_Spot_Light (Spot, (-20.0, 20.0, 5.0), Colour_White);
       Set_Direction (Spot, (1.0, -1.0, 1.0));
       Set_Linear_Attenuation (Spot, 0.01);
       Set_Cut_Off (Spot, 20.0);
@@ -135,7 +135,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Colour_Buffer_And_Depth;
       Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 0);
 
-      Set_Scale (Pipe, 6.0);
+      Set_Scale (Pipe, 5.0);
       Set_World_Position (Pipe, 0.0, 0.0, -10.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
