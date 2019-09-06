@@ -91,7 +91,7 @@ private
    end record;
 
    type Light_Attenuation is record
-      Atten_Constant : Single := 1.0;
+      Atten_Constant : Single := 0.0;
       Linear         : Single := 0.0;
       Exp            : Single := 0.0;
    end record;
