@@ -4,6 +4,8 @@ with Ada.Strings.Unbounded;
 with GL.Types; use GL.Types;
 with GL.Types.Colors;
 
+with Maths;
+
 with Ant_Tweak_Bar;
 
 package Ogldev_Lights_Common is
@@ -41,7 +43,7 @@ package Ogldev_Lights_Common is
    function Colour (Light : Directional_Light) return Colors.Basic_Color;
    function Colour (Light : Point_Light) return Colors.Basic_Color;
    function Colour (Light : Spot_Light) return Colors.Basic_Color;
-   function Cut_Off (Light : Spot_Light) return Single;
+   function Cut_Off (Light : Spot_Light) return Maths.Degree;
    function Diffuse_Intensity (Light : Directional_Light) return Single;
    function Diffuse_Intensity (Light : Point_Light) return Single;
    function Diffuse_Intensity (Light : Spot_Light) return Single;
@@ -65,7 +67,7 @@ package Ogldev_Lights_Common is
                                      Attenuation : Single := 1.0);
    procedure Set_Linear_Attenuation (Light       : in out Spot_Light;
                                      Attenuation : Single := 1.0);
-   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off_Val : Single);
+   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off_Val : Maths.Degree);
    procedure Set_Diffuse_Intensity (Light     : in out Point_Light;
                                     Intensity : Single := 0.1);
    procedure Set_Diffuse_Intensity (Light     : in out Spot_Light;
@@ -105,7 +107,7 @@ private
    type Spot_Light is record
       Point     : Point_Light;
       Direction : Singles.Vector3 := (1.0, 1.0, 1.0);
-      Cut_Off   : Single := 0.0;
+      Cut_Off   : Maths.Degree := 0.0;
    end record;
 
 end Ogldev_Lights_Common;

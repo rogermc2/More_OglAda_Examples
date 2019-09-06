@@ -123,7 +123,7 @@ package body Ogldev_Lights_Common is
 
    --  -------------------------------------------------------------------------
 
-   function Cut_Off (Light : Spot_Light) return Single is
+   function Cut_Off (Light : Spot_Light) return Maths.Degree is
    begin
       return Light.Cut_Off;
    end Cut_Off;
@@ -287,7 +287,7 @@ procedure Init_Directional_Light (Light : in out Directional_Light;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off_Val : Single) is
+   procedure Set_Cut_Off (Light : in out Spot_Light; Cut_Off_Val : Maths.Degree) is
    begin
       Light.Cut_Off := Cut_Off_Val;
    end Set_Cut_Off;
