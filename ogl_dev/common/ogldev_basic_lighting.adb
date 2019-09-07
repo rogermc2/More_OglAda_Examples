@@ -127,11 +127,11 @@ package body Ogldev_Basic_Lighting is
                                Lighting_Technique.Spot_Lights_Locations (index).Direction);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Cutoff"),
                                Lighting_Technique.Spot_Lights_Locations (index).Cut_Off);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Base.Atten.Constant"),
+         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Constant"),
                                Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Atten_Constant);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Base.Atten.Linear"),
+         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Linear"),
                                Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Linear);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Base.Atten.Exp"),
+         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Exp"),
                                Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Exp);
          end loop;
       end if;
