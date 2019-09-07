@@ -97,42 +97,42 @@ package body Ogldev_Basic_Lighting is
          Set_Uniform_Location (Shader_Program, "gNumSpotLights",
                                Lighting_Technique.Num_Spot_Lights_Location);
 
-         for index in Lighting_Technique.Point_Lights_Location'Range loop
+         for index in Lighting_Technique.Point_Lights_Locations'Range loop
          Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.Color"),
-                               Lighting_Technique.Point_Lights_Location (index).Colour);
+                               Lighting_Technique.Point_Lights_Locations (index).Colour);
          Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.AmbientIntensity"),
-                               Lighting_Technique.Point_Lights_Location (index).Ambient_Intensity);
+                               Lighting_Technique.Point_Lights_Locations (index).Ambient_Intensity);
          Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.DiffuseIntensity"),
-                               Lighting_Technique.Point_Lights_Location (index).Diffuse_Intensity);
+                               Lighting_Technique.Point_Lights_Locations (index).Diffuse_Intensity);
          Set_Uniform_Location (Shader_Program, Point_Name (index, "Position"),
-                               Lighting_Technique.Point_Lights_Location (index).Position);
+                               Lighting_Technique.Point_Lights_Locations (index).Position);
          Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Constant"),
-                               Lighting_Technique.Point_Lights_Location (index).Attenuation.Atten_Constant);
+                               Lighting_Technique.Point_Lights_Locations (index).Attenuation.Atten_Constant);
          Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Linear"),
-                               Lighting_Technique.Point_Lights_Location (index).Attenuation.Linear);
+                               Lighting_Technique.Point_Lights_Locations (index).Attenuation.Linear);
          Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Exp"),
-                               Lighting_Technique.Point_Lights_Location (index).Attenuation.Exp);
+                               Lighting_Technique.Point_Lights_Locations (index).Attenuation.Exp);
          end loop;
 
-         for index in Lighting_Technique.Spot_Lights_Location'Range loop
+         for index in Lighting_Technique.Spot_Lights_Locations'Range loop
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.Color"),
-                               Lighting_Technique.Spot_Lights_Location (index).Colour);
+                               Lighting_Technique.Spot_Lights_Locations (index).Colour);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.AmbientIntensity"),
-                               Lighting_Technique.Spot_Lights_Location (index).Ambient_Intensity);
+                               Lighting_Technique.Spot_Lights_Locations (index).Ambient_Intensity);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.DiffuseIntensity"),
-                               Lighting_Technique.Spot_Lights_Location (index).Diffuse_Intensity);
+                               Lighting_Technique.Spot_Lights_Locations (index).Diffuse_Intensity);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Position"),
-                               Lighting_Technique.Spot_Lights_Location (index).Position);
+                               Lighting_Technique.Spot_Lights_Locations (index).Position);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Direction"),
-                               Lighting_Technique.Spot_Lights_Location (index).Direction);
+                               Lighting_Technique.Spot_Lights_Locations (index).Direction);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Cutoff"),
-                               Lighting_Technique.Spot_Lights_Location (index).Cut_Off);
+                               Lighting_Technique.Spot_Lights_Locations (index).Cut_Off);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Base.Atten.Constant"),
-                               Lighting_Technique.Spot_Lights_Location (index).Attenuation.Atten_Constant);
+                               Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Atten_Constant);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Base.Atten.Linear"),
-                               Lighting_Technique.Spot_Lights_Location (index).Attenuation.Linear);
+                               Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Linear);
          Set_Uniform_Location (Shader_Program, Spot_Name (index, "Base.Atten.Exp"),
-                               Lighting_Technique.Spot_Lights_Location (index).Attenuation.Exp);
+                               Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Exp);
          end loop;
       end if;
       return OK;
@@ -178,14 +178,14 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Point_Lights (Technique : Basic_Lighting_Technique;
+   procedure Set_Point_Lights (Technique : in out Basic_Lighting_Technique;
                                Lights    : Point_Light_Array) is
       Num_Lights : constant Int :=  Lights'Length;
       Location   : Point_Light_Locations;
    begin
       GL.Uniforms.Set_Int (Technique.Num_Point_Lights_Location, Num_Lights);
       for index in UInt range Lights'First .. Lights'Last loop
-         Location := Technique.Point_Lights_Location (Int (index));
+         Location := Technique.Point_Lights_Locations (Int (index));
          Set_Single (Location.Colour,
                      Colour_To_Vec3 (Colour (Lights (index))));
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Lights (index)));
@@ -195,6 +195,7 @@ package body Ogldev_Basic_Lighting is
                      Attenuation_Constant (Lights (index)));
          Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Lights (index)));
          Set_Single (Location.Attenuation.Exp, Attenuation_Exponent (Lights (index)));
+         Technique.Point_Lights_Locations (Int (index)) := Location;
        end loop;
 
     exception
@@ -205,19 +206,19 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
+   procedure Set_Spot_Lights (Technique : in out Basic_Lighting_Technique;
                               Spots     : Ogldev_Lights_Common.Spot_Light_Array) is
       use Maths.Single_Math_Functions;
       Num_Lights      : constant Int :=  Spots'Length;
-      Location        : Spot_Light_Locations;
       Spot            : Spot_Light;
       Light_Direction : Singles.Vector3;
+      Location        : Spot_Light_Locations;
    begin
       GL.Uniforms.Set_Int (Technique.Num_Spot_Lights_Location, Num_Lights);
       for index in UInt range Spots'First .. Spots'Last loop
          Spot := Spots (index);
          Light_Direction := Maths.Normalized (Direction (Spot));
-         Location := Technique.Spot_Lights_Location (Int (index));
+         Location := Technique.Spot_Lights_Locations (Int (index));
          Set_Single (Location.Colour, Colour_To_Vec3 (Colour (Spot)));
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
          Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
@@ -228,6 +229,7 @@ package body Ogldev_Basic_Lighting is
                      Attenuation_Constant (Spot));
          Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Spot));
          Set_Single (Location.Attenuation.Exp, Exponent (Spot));
+         Technique.Spot_Lights_Locations (Int (index)) := Location;
       end loop;
 
    end Set_Spot_Lights;
@@ -242,7 +244,7 @@ package body Ogldev_Basic_Lighting is
    begin
       Light_Direction := Maths.Normalized (Light_Direction);
       GL.Uniforms.Set_Int (Technique.Num_Spot_Lights_Location, 1);
-      Location := Technique.Spot_Lights_Location (1);
+      Location := Technique.Spot_Lights_Locations (1);
       Set_Single (Location.Colour, Colour_To_Vec3 (Colour (Spot)));
       Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
       Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
