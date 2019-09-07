@@ -55,7 +55,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Result := Ogldev_Basic_Lighting.Init (Light_Technique);
       if Result then
          Ogldev_Lights_Common.Init_Directional_Light
-           (Direct_Light, 1.0, 0.01, Ogldev_Lights_Common.Colour_White, (1.0, -1.0, 0.0));
+           (Direct_Light, 0.0, 0.01, Ogldev_Lights_Common.Colour_White, (1.0, -1.0, 0.0));
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera, Window,
                                     Camera_Position, Target_Position, Up);
@@ -90,6 +90,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    procedure Render_Scene (Window  : in out Glfw.Windows.Window;
                            theMesh : Meshes_22.Mesh_22) is
+                           use GL.Types.Singles;
       use Maths.Single_Math_Functions;
       use Ogldev_Basic_Lighting;
       use Ogldev_Camera;
@@ -110,23 +111,28 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                               GL.Types.Int (Window_Height));
       GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
 
-      Set_Diffuse_Intensity (Point_Lights (1), 0.25);
-      Set_Point_Light (Point_Lights (1), (3.0, 1.0, Field_Depth * (Cos (Scale) + 1.0) / 2.0),
-                       (1.0, 0.5, 0.0));
-      Set_Linear_Attenuation (Point_Lights (1), 0.1);
+      Set_Diffuse_Intensity (Point_Lights (1), 0.25);  --  0.25
+      Set_Point_Light (Light     => Point_Lights (1),
+                       Pos       => (0.0, 0.0, Field_Depth * (Cos (Scale) + 1.0) / 2.0),
+                       theColour => (1.0, 0.5, 0.0));
+      Set_Linear_Attenuation (Point_Lights (1), 0.0);
 
       Set_Diffuse_Intensity (Point_Lights (2), 0.25);
-      Set_Point_Light (Point_Lights (2), (7.0, 1.0, Field_Depth * (Sin (Scale) + 1.0) / 2.0),
+      Set_Point_Light (Point_Lights (2), (7.0, 1.0,
+                       Field_Depth * (Sin (Scale) + 1.0) / 2.0),
                        (0.0, 0.5, 1.0));
       Set_Linear_Attenuation (Point_Lights (2), 0.1);
 
       Set_Point_Lights (Light_Technique, Point_Lights);
 
-      Set_Diffuse_Intensity (Spot, 0.9);
+      Set_Ambient_Intensity (Spot, 1.0);
+      Set_Diffuse_Intensity (Spot, 1.0);
       Set_Spot_Light (Spot, Get_Position (Game_Camera), (0.0, 1.0, 1.0));
+      Set_Spot_Light (Spot, (0.0, 0.0, 0.0), (0.0, 1.0, 1.0));
       Set_Direction (Spot, Get_Target (Game_Camera));
-      Set_Attenuation_Constant (Spot, 0.1);
-      Set_Cut_Off (Spot, 10.0);
+      Set_Direction (Spot,  (0.0, 0.0, -1.0));
+      Set_Linear_Attenuation (Spot, 0.1);
+      Set_Cut_Off (Spot, 70.0);
       Set_Spot_Light (Light_Technique, Spot);
 
       Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
