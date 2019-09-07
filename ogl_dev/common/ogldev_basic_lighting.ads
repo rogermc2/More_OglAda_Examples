@@ -12,9 +12,6 @@ package Ogldev_Basic_Lighting is
    Max_Point_Lights : constant Int := 2;
    Max_Spot_Lights  : constant Int := 2;
 
-   type Point_Light_Location_Array is private;
-   type Spot_Light_Location_Array  is private;
-
    function Init (Lighting_Technique : in out Basic_Lighting_Technique)
                     return Boolean;
 
@@ -25,9 +22,9 @@ package Ogldev_Basic_Lighting is
                    Texture_Unit : GL.Types.UInt);
    procedure Set_Directional_Light (Technique : Basic_Lighting_Technique;
                                     Light : Directional_Light);
-   procedure Set_Point_Lights (Technique : Basic_Lighting_Technique;
+   procedure Set_Point_Lights (Technique : in out Basic_Lighting_Technique;
                                Lights : Point_Light_Array);
-   procedure Set_Spot_Lights (Technique : Basic_Lighting_Technique;
+   procedure Set_Spot_Lights (Technique : in out Basic_Lighting_Technique;
                               Spots : Spot_Light_Array);
    procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
                               Spot : Spot_Light);
@@ -75,6 +72,9 @@ private
       Attenuation       : Atten;
    end record;
 
+   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
+   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
+
    type Basic_Lighting_Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
       WVP_Location                    : GL.Uniforms.Uniform := 0;
@@ -86,11 +86,8 @@ private
       Num_Point_Lights_Location       : GL.Uniforms.Uniform := 0;
       Num_Spot_Lights_Location        : GL.Uniforms.Uniform := 0;
       Dir_Light_Location              : Direct_Light;
-      Point_Lights_Location           : Point_Light_Location_Array;
-      Spot_Lights_Location            : Spot_Light_Location_Array;
+      Point_Lights_Locations          : Point_Light_Location_Array;
+      Spot_Lights_Locations           : Spot_Light_Location_Array;
    end record;
-
-   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
-   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
 
 end Ogldev_Basic_Lighting;
