@@ -40,6 +40,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Ground_Texture         : Ogldev_Texture.Ogl_Texture;
     Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
     Spot_Lights            : Lighting_Technique_24N.Spot_Lights_Array (1 .. 1);
+    Shadow_World_Position  : constant Singles.Vector3 := (0.0, 0.0, 3.0);
     Scale                  : Single := 0.0;
 
     procedure Render_Pass;
@@ -53,7 +54,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Window_Width    : Glfw.Size;
         Window_Height   : Glfw.Size;
 
-        Camera_Position : constant Singles.Vector3 := (3.0, 5.0, 10.0);
+        Camera_Position : constant Singles.Vector3 := (2.0, 2.0, 10.0);
         Target          : constant Singles.Vector3 := (0.0, -0.2, 1.0);
         Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
     begin
@@ -63,8 +64,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Toggles.Enable (GL.Toggles.Depth_Test);
 
         Set_Spot_Light (Light => Spot_Lights (1),
-                        Ambient   => 0.1,
-                        Diffuse   => 0.9,
+                        Ambient   => 0.03,
+                        Diffuse   => 0.5,
                         Colour    => (1.0, 1.0, 1.0),
                         Pos       => (-20.0, 20.0, 1.0),
                         Direction => (1.0, -1.0, 0.0),
@@ -158,7 +159,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Ogldev_Shadow_Map_FBO.Bind_For_Reading (theShadow_Map, 1);
 
         Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
-        Set_Scale (Pipe, 10.0);
+        Set_Scale (Pipe, 10.0);  --  10.0
         Set_World_Position (Pipe, 0.0, 0.0, 1.0);
         Set_Rotation (Pipe, 90.0, 0.0, 0.0);
         Set_Camera (Pipe, Get_Position (Game_Camera),
@@ -181,9 +182,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Ogldev_Texture.Bind (Ground_Texture, 0);
         Meshes_24N.Render (Quad_Mesh);
 
-        Set_Scale (Pipe, 0.1);
+        --  Display Phoenix
+        Set_Scale (Pipe, 0.05);
         Set_Rotation (Pipe, 0.0, Scale, 0.0);
-        Set_World_Position (Pipe, 0.0, 0.0, 3.0);
+        Set_World_Position (Pipe, Shadow_World_Position);
         Set_Camera (Pipe, Get_Position (Game_Camera),
                     Get_Target (Game_Camera), Get_Up (Game_Camera));
         Init_Transforms (Pipe);
@@ -224,7 +226,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Set_Scale (Pipe, 0.1);  --  0.1
         Set_Rotation (Pipe, 0.0, Scale, 0.0);
-        Set_World_Position (Pipe, 0.0, 0.0, -3.0);
+        Set_World_Position (Pipe, Shadow_World_Position);
         Set_Camera (Pipe, Lighting_Technique_24N.Get_Position (Spot_Lights (1)),
                     Lighting_Technique_24N.Get_Direction
                       (Spot_Lights (1)), (0.0, 1.0, 0.0));
