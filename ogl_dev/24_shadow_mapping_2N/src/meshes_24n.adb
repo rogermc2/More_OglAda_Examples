@@ -200,9 +200,6 @@ package body Meshes_24N is
             Vertices (index).Tex (X), Vertices (index).Tex (Y),
             Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z));
       end loop;
-      Put_Line ("Meshes_24N.Init_Mesh_Entry, Vertice Indices Lengths" &
-                  Int'Image (Vertices_Length) & "  " &
-                  Int'Image (Indices_Length));
 
       theEntry.Vertex_Buffer.Initialize_Id;
       Array_Buffer.Bind (theEntry.Vertex_Buffer);
