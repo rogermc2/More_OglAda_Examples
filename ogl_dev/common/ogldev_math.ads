@@ -13,6 +13,8 @@ with Assimp_Types;
 package Ogldev_Math is
    use GL.Types.Singles;
 
+   Math_Exception : exception;
+
    package AI_3D_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    subtype AI_3D_Map is AI_3D_Package.Map;
