@@ -86,8 +86,9 @@ package body Lighting_Technique_17 is
     
     procedure Set_Directional_Light_Locations (Light : Directional_Light) is
     begin
-        GL.Uniforms.Set_Single (Directional_Light_Location.Colour, Light.Colour (GL.X), Light.Colour (GL.Y), Light.Colour (GL.Z));
-        GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity, Light.Ambient_Intensity);
+      GL.Uniforms.Set_Single (Directional_Light_Location.Colour, Light.Colour);
+      GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity,
+                              Light.Ambient_Intensity);
     end Set_Directional_Light_Locations;
 
     --  -------------------------------------------------------------------------
