@@ -1,4 +1,6 @@
 
+with Maths;
+
 with GL.Objects.Programs;
 with GL.Types;
 with GL.Uniforms;
@@ -72,7 +74,7 @@ private
    type Spot_Light is record
       Base      : Point_Light;
       Direction : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
-      Cutoff    : GL.Types.Single := 0.0;
+      Cutoff    : Maths.Degree := 0.0;
    end record;
 
    type Atten_Location is record

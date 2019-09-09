@@ -73,7 +73,8 @@ package body Lighting_Technique is
 
     procedure Set_Ambient_Intensity (Intensity : Single) is
     begin
-        GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity, Intensity);
+      GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity,
+                              Intensity);
     end Set_Ambient_Intensity;
    
    --   -------------------------------------------------------------------------------------------------------
@@ -81,10 +82,13 @@ package body Lighting_Technique is
     procedure Set_Directional_Light (Light : Directional_Light) is
         Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
-        GL.Uniforms.Set_Single (Directional_Light_Location.Colour, Light.Colour (GL.X), Light.Colour (GL.Y), Light.Colour (GL.Z));
-        GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity, Light.Ambient_Intensity);
-        GL.Uniforms.Set_Single (Directional_Light_Location.Direction, Direction (GL.X), Direction (GL.Y), Direction (GL.Z));
-        GL.Uniforms.Set_Single (Directional_Light_Location.Diffuse_Intensity, Light.Diffuse_Intensity);
+        GL.Uniforms.Set_Single (Directional_Light_Location.Colour, Light.Colour);
+      GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity,
+                              Light.Ambient_Intensity);
+      GL.Uniforms.Set_Single (Directional_Light_Location.Direction,
+                              Maths.Normalized (Direction));
+      GL.Uniforms.Set_Single (Directional_Light_Location.Diffuse_Intensity,
+                              Light.Diffuse_Intensity);
     end Set_Directional_Light;
    
    --   -------------------------------------------------------------------------------------------------------

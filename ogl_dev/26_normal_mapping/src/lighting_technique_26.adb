@@ -7,7 +7,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Shaders;
 with GL.Objects.Shaders.Lists;
 
-with Maths;
 with Program_Loader;
 
 Package body Lighting_Technique_26 is
@@ -145,16 +144,17 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Directional_Light (theTechnique : Technique; Light : Direct_Light) is
+   procedure Set_Directional_Light (theTechnique : Technique; Light : Direct_Light) is
+      use GL.Uniforms;
     begin
         GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour);
-        GL.Uniforms.Set_Single
-          (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
-        GL.Uniforms.Set_Single
-          (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
-        GL.Uniforms.Set_Single
-          (theTechnique.Direct_Light_Location.Direction, Maths.Normalized (Light.Direction));
+        Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour);
+      Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity,
+                  Light.Base.Ambient_Intensity);
+      Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity,
+                  Light.Base.Diffuse_Intensity);
+      Set_Single (theTechnique.Direct_Light_Location.Direction,
+                  Maths.Normalized (Light.Direction));
 
     exception
       when others =>
@@ -243,7 +243,8 @@ Package body Lighting_Technique_26 is
     --  -------------------------------------------------------------------------
 
    procedure Set_Spot_Lights (theTechnique : Technique;
-                               Lights : Spot_Lights_Array) is
+                              Lights       : Spot_Lights_Array) is
+      use Maths.Single_Math_Functions;
     begin
       GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
       for index in GL.Types.UInt range 1 .. Spot_Lights_Array'Size loop
@@ -256,9 +257,9 @@ Package body Lighting_Technique_26 is
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Position,
                                  Lights (index).Base.Position);
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
-                                 Lights (index).Direction);
+                                Maths.Normalized (Lights (index).Direction));
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
-                                 Lights (index).Cutoff);
+                                 Cos (GL.Types.Single (Maths.Radians (Lights (index).Cutoff))));
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
                                  Lights (index).Base.Atten.Constant_Atten);
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,

@@ -163,15 +163,14 @@ package body Ogldev_Basic_Lighting is
 
    procedure Set_Directional_Light (Technique : Basic_Lighting_Technique;
                                     Light     : Directional_Light) is
-      Light_Direction : Singles.Vector3 := Direction (Light);
    begin
-      Light_Direction := Maths.Normalized (Light_Direction);
       Set_Single (Technique.Dir_Light_Location.Direction, Direction (Light));
       Set_Single (Technique.Dir_Light_Location.Colour,
                   Colour_To_Vec3 (Colour (Light)));
       Set_Single (Technique.Dir_Light_Location.Ambient_Intensity,
                   Ambient_Intensity (Light));
-      Set_Single (Technique.Dir_Light_Location.Direction, Light_Direction);
+      Set_Single (Technique.Dir_Light_Location.Direction,
+                  Maths.Normalized (Direction (Light));
       Set_Single (Technique.Dir_Light_Location.Diffuse_Intensity,
                   Diffuse_Intensity (Light));
    end Set_Directional_Light;
@@ -223,7 +222,7 @@ package body Ogldev_Basic_Lighting is
          Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
          Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
          Set_Single (Location.Position, Position (Spot));
-         Set_Single (Location.Direction, Light_Direction);
+         Set_Single (Location.Direction, Maths.Normalized (Light_Direction));
          Set_Single (Location.Cut_Off, Cos (Single (Maths.Radians (Cut_Off (Spot)))));
          Set_Single (Location.Attenuation.Atten_Constant,
                      Attenuation_Constant (Spot));

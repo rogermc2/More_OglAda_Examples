@@ -280,7 +280,7 @@ package body Lighting_Technique_21 is
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Position,
                                  Lights (index).Point.Position);
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
-                                 Lights (index).Direction);
+                                 Maths.Normalized (Lights (index).Direction));
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
                                  Cos (Single (Maths.Radians (Lights (index).Cutoff))));
          GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
@@ -332,7 +332,8 @@ package body Lighting_Technique_21 is
       if GL.Objects.Programs.Link_Status (theTechnique.Lighting_Program) then
          declare
             Shaders_List : constant GL.Objects.Shaders.Lists.List :=
-                             GL.Objects.Programs.Attached_Shaders (theTechnique.Lighting_Program);
+                             GL.Objects.Programs.Attached_Shaders 
+                               (theTechnique.Lighting_Program);
             Curs         : constant GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
          begin
             if Curs = GL.Objects.Shaders.Lists.No_Element then
