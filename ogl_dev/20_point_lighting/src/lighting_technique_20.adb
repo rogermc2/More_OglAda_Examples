@@ -162,21 +162,22 @@ package body Lighting_Technique_20 is
     
    procedure Set_Directional_Light_Location (theTechnique : Technique; 
                                              Light        : Directional_Light) is
-      Direction : Singles.Vector3 := Maths.Normalized (Light.Direction);
    begin
-      GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour (GL.X), 
-                              Light.Base.Colour (GL.Y), Light.Base.Colour (GL.Z));
-      GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Light.Base.Ambient_Intensity);
-      GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Direction, Direction);
-      GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity, Light.Base.Diffuse_Intensity);
+      GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Color,
+                              Light.Base.Colour);
+      GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity,
+                              Light.Base.Ambient_Intensity);
+      GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Direction,
+                               Maths.Normalized (Light.Direction));
+      GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity, 
+                              Light.Base.Diffuse_Intensity);
    end Set_Directional_Light_Location;
    
    --   -------------------------------------------------------------------------------------------------------
 
    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Position : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position (GL.X),
-                              Position (GL.Y), Position (GL.Z));
+      GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position);
    end Set_Eye_World_Pos_Location;
    
    --   -------------------------------------------------------------------------------------------------------
