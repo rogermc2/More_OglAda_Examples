@@ -313,7 +313,7 @@ package body Lighting_Technique_24N is
             GL.Uniforms.Set_Single (theTechnique.Spot_Locations (index).Position,
                                     Lights (index).Point.Position);
             GL.Uniforms.Set_Single (theTechnique.Spot_Locations (index).Direction,
-                                    Lights (index).Direction);
+                                    Maths.Normalized (Lights (index).Direction));
             GL.Uniforms.Set_Single (theTechnique.Spot_Locations (index).Cutoff,
                                     Cos (Single (Maths.Radians (Lights (index).Cutoff))));
             GL.Uniforms.Set_Single (theTechnique.Spot_Locations (index).Atten.Constant_Atten,
