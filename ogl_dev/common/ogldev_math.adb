@@ -99,21 +99,24 @@ package body Ogldev_Math is
    begin
       if Target /= (0.0, 0.0, 0.0) and then Up /= (0.0, 0.0, 0.0) then
          N := Normalized (Target);
-         U := Normalized (Cross_Product (Up, N));
-         V := Cross_Product (N, U);
-         Trans (X, X) := U (X);
-         Trans (X, Y) := U (Y);
-         Trans (X, Z) := U (Z);
-         Trans (Y, X) := V (X);
-         Trans (Y, Y) := V (Y);
-         Trans (Y, Z) := V (Z);
-         Trans (Z, X) := N (X);
-         Trans (Z, Y) := N (Y);
-         Trans (Z, Z) := N (Z);
+         U := Cross_Product (Up, N);
+         if U /= (0.0, 0.0, 0.0) then
+            U := Normalized (U);
+            V := Cross_Product (N, U);
+            Trans (X, X) := U (X);
+            Trans (X, Y) := U (Y);
+            Trans (X, Z) := U (Z);
+            Trans (Y, X) := V (X);
+            Trans (Y, Y) := V (Y);
+            Trans (Y, Z) := V (Z);
+            Trans (Z, X) := N (X);
+            Trans (Z, Y) := N (Y);
+            Trans (Z, Z) := N (Z);
+         end if;
       end if;
 
       return Trans;
-   end Init_Camera_Transform;
+      end Init_Camera_Transform;
 
    --  -------------------------------------------------------------------------
 
