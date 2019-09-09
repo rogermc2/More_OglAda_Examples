@@ -112,7 +112,13 @@ package body Ogldev_Math is
             Trans (Z, X) := N (X);
             Trans (Z, Y) := N (Y);
             Trans (Z, Z) := N (Z);
+          else
+            raise Math_Exception with
+               "Ogldev_Math.Init_Camera_Transform attempted to normalize a zero length vector.";
          end if;
+      else
+         raise Math_Exception with
+              "Ogldev_Math.Init_Camera_Transform attempted to normalize a zero length vector.";
       end if;
 
       return Trans;
@@ -187,7 +193,6 @@ package body Ogldev_Math is
    end Set_Perspective_Width;
 
    --  -------------------------------------------------------------------------
-
 
    function To_AI_Map3D (Num_Vecs : UInt := 0;
                          Vectors  : Assimp_Types.Vector3_Array)
