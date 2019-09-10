@@ -57,7 +57,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Lighting_Technique_17;
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (0.0, 0.0, -1.0); --  Normalized by Camera.Init
+      Position            : Singles.Vector3 := (0.0, 0.0, -3.0); --  Normalized by Camera.Init
       Target              : Singles.Vector3 := (0.0, 0.0, -1.0);  --  Normalized by Camera.Init
       Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -91,9 +91,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
          Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
 
+         GL.Culling.Set_Front_Face (Counter_Clockwise);
+         GL.Culling.Set_Cull_Face (GL.Culling.Back);
+         GL.Toggles.Enable (GL.Toggles.Cull_Face);
          Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
-         Glfw.Input.Poll_Events;
       end if;
 
    exception
@@ -112,7 +114,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Update_Lighting_Intensity (Window);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Scale := Scale + 0.1;
+      Scale := Scale + 0.02;
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
