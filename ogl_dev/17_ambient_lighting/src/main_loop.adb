@@ -45,7 +45,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Texture_Buffer         : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
    theTexture             : Ogldev_Texture.Ogl_Texture;
-   Light_Direction        : Lighting_Technique_17.Directional_Light;
+   Direct_Light           : Lighting_Technique_17.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
 
@@ -54,11 +54,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Init (Window : in out Glfw.Windows.Window; Result : out Boolean) is
-
+      use Lighting_Technique_17;
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
-      Target              : Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Position            : Singles.Vector3 := (0.0, 0.0, -1.0); --  Normalized by Camera.Init
+      Target              : Singles.Vector3 := (0.0, 0.0, -1.0);  --  Normalized by Camera.Init
       Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       Result := Lighting_Technique_17.Init (Shader_Program);
@@ -74,13 +74,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          GL.Objects.Programs.Use_Program (Shader_Program);
 
-         Lighting_Technique_17.Set_Texture_Unit (0);
+         Set_Texture_Unit (0);
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "../content/test.png") then
-                Ogldev_Texture.Load (theTexture);
+                                          "../content/test.png") then
+            Ogldev_Texture.Load (theTexture);
          else
-                Put_Line ("Main_Loop.Init test.png failed to load");
+            Put_Line ("Main_Loop.Init test.png failed to load");
          end if;
+
+         Set_Directional_Colour (Direct_Light, (1.0, 1.0, 1.0));
+         Set_Directional_Ambient (Direct_Light, 0.5);
 
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
@@ -88,9 +91,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
          Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
 
-        Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
-        Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
-        Glfw.Input.Poll_Events;
+         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
+         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
+         Glfw.Input.Poll_Events;
       end if;
 
    exception
@@ -117,14 +120,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
       Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
 
+      Ogldev_Pipeline.Set_Scale (Pipe, 1.0);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
       Lighting_Technique_17.Set_WVP (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-      Lighting_Technique_17.Set_Directional_Light_Locations (Light_Direction);
+      Lighting_Technique_17.Set_Directional_Light_Locations (Direct_Light);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
@@ -159,12 +163,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Lighting_Technique_17;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
-         Set_Directional_Ambient (Light_Direction,
-                                  Get_Directional_Ambient (Light_Direction) + 0.001);
+         Set_Directional_Ambient (Direct_Light,
+                                  Get_Directional_Ambient (Direct_Light) + 0.001);
       elsif Window'Access.Key_State (Keys.S) = Pressed then
-         Set_Directional_Ambient (Light_Direction,
-                                  Get_Directional_Ambient (Light_Direction) - 0.001);
-       end if;
+         Set_Directional_Ambient (Direct_Light,
+                                  Get_Directional_Ambient (Direct_Light) - 0.001);
+      end if;
    end Update_Lighting_Intensity;
 
    --  -------------------------------------------------------------------------
