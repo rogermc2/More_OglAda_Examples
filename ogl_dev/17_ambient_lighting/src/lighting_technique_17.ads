@@ -10,6 +10,8 @@ package Lighting_Technique_17 is
     end record;
 
    function Get_Directional_Ambient (Light : Directional_Light) return Single;
+   procedure Set_Directional_Colour (Light : in out Directional_Light;
+                                      Colour : Singles.Vector3);
    function Init (Shader_Program : in out GL.Objects.Programs.Program)
                   return Boolean;
     procedure Set_Directional_Ambient (Light : in out Directional_Light;
