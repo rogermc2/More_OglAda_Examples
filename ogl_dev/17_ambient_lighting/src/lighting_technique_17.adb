@@ -62,20 +62,6 @@ package body Lighting_Technique_17 is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_WVP (WVP : Singles.Matrix4) is
-    begin
-        GL.Uniforms.Set_Single (WVP_Location, WVP);    
-    end Set_WVP;
- 
-    --  -------------------------------------------------------------------------
-   
-    procedure Set_Texture_Unit (Texture_Unit : Int) is
-    begin
-        GL.Uniforms.Set_Int (Sampler_Location, Texture_Unit);
-    end Set_Texture_Unit;
-
-    --  -------------------------------------------------------------------------
-
     procedure Set_Directional_Ambient (Light : in out Directional_Light;
                                        Ambient : Single) is
     begin
@@ -84,6 +70,13 @@ package body Lighting_Technique_17 is
 
     --  -------------------------------------------------------------------------
     
+    procedure Set_Directional_Colour (Light : in out Directional_Light;
+                                      Colour : Singles.Vector3) is
+    begin
+        Light.Colour := Colour;
+    end Set_Directional_Colour;
+
+    --  -------------------------------------------------------------------------
     procedure Set_Directional_Light_Locations (Light : Directional_Light) is
     begin
       GL.Uniforms.Set_Single (Directional_Light_Location.Colour, Light.Colour);
@@ -92,5 +85,20 @@ package body Lighting_Technique_17 is
     end Set_Directional_Light_Locations;
 
     --  -------------------------------------------------------------------------
+  
+    procedure Set_Texture_Unit (Texture_Unit : Int) is
+    begin
+        GL.Uniforms.Set_Int (Sampler_Location, Texture_Unit);
+    end Set_Texture_Unit;
 
+    --  -------------------------------------------------------------------------
+
+   procedure Set_WVP (WVP : Singles.Matrix4) is
+    begin
+        GL.Uniforms.Set_Single (WVP_Location, WVP);    
+    end Set_WVP;
+ 
+    --  -------------------------------------------------------------------------
+   
+ 
 end Lighting_Technique_17;
