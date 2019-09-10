@@ -29,8 +29,8 @@ Package Ogldev_Camera is
 
 private
    type Camera is record
-      Position       : Singles.Vector3 := (0.0, 0.0, -3.0);
-      Target         : Singles.Vector3 := (0.0, 0.0, -1.0);
+      Position       : Singles.Vector3 := (0.0, 0.0, 3.0);
+      Target         : Singles.Vector3 := (0.0, 0.0, 1.0);
       Up             : Singles.Vector3 := (0.0, 1.0, 0.0);
       Window_Width   : Int := 800;
       Window_Height  : Int := 600;
