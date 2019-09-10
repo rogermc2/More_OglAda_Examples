@@ -126,13 +126,14 @@ package body Ogldev_Camera is
         if Maths.Length (Target_Position) /= 0.0 then
             theCamera.Target := Maths.Normalized (Target_Position);
         else
-            theCamera.Target := Target_Position;
+            raise Camera_Exception with
+              "Ogldev_Camera.Init_Camera, zero length Target vector detected.";
         end if;
 
         if Maths.Length (Up) /= 0.0 then
             theCamera.Up := Maths.Normalized (Up);
         else
-            Put_Line ("Ogldev_Camera.Init_Camera, Invalid Up vector detected.");
+            Put_Line ("Ogldev_Camera.Init_Camera, zero length Up vector detected.");
             Put_Line ("Settin Up vector to (0.0, 1.0, 0.0).");
             theCamera.Up := (0.0, 1.0, 0.0);
         end if;
