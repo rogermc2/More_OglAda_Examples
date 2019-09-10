@@ -10,6 +10,8 @@ Package Ogldev_Camera is
 
    type Camera is private;
 
+   Camera_Exception : Exception;
+
    function Get_Position (theCamera : Camera) return Singles.Vector3;
    function Get_Target (theCamera : Camera) return Singles.Vector3;
    function Get_Up (theCamera : Camera) return Singles.Vector3;
