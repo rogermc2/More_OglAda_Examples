@@ -135,7 +135,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  2. supply texture coordinates with the vertices (to map the texture to them),
    --  3. perform a sampling operation from the texture using the texture coordinates
    --     to get the pixel color.
-   --  Texturing involes manipulating the connections between four concepts:
+   --  Texturing involves manipulating the connections between four concepts:
    --  1. the texture object which contains the data of the texture image (the texels),
    --     the texture object contains the texture data and the
    --     parameters that configure the sampling operation.
