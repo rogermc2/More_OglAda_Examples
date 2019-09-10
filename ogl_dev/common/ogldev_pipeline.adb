@@ -12,20 +12,6 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   function Get_World_Transform (P : Pipeline) return Singles.Matrix4 is
-   begin
-      return P.World_Transform;
-   end Get_World_Transform;
-
-   --  -------------------------------------------------------------------------
-
-   function Get_WVP_Transform (P : Pipeline) return Singles.Matrix4 is
-   begin
-      return P.WVP_Transform;
-   end Get_WVP_Transform;
-
-   --  -------------------------------------------------------------------------
-
    function Get_Projection_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
       return P.Projection_Transform;
@@ -47,6 +33,13 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
+   function Get_World_Transform (P : Pipeline) return Singles.Matrix4 is
+   begin
+      return P.World_Transform;
+   end Get_World_Transform;
+
+   --  -------------------------------------------------------------------------
+
    function Get_WP_Transform (P : Pipeline) return Singles.Matrix4 is
    begin
       return P.WP_Transform;
@@ -58,6 +51,13 @@ package body Ogldev_Pipeline is
    begin
       return P.WV_Transform;
    end Get_WV_Transform;
+
+   --  -------------------------------------------------------------------------
+
+ function Get_WVP_Transform (P : Pipeline) return Singles.Matrix4 is
+   begin
+      return P.WVP_Transform;
+   end Get_WVP_Transform;
 
    --  -------------------------------------------------------------------------
 
