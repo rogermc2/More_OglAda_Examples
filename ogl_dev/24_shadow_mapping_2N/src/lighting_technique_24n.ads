@@ -30,6 +30,8 @@ package Lighting_Technique_24N is
     function Get_Directional_Diffuse (Light : Directional_Light) return Single;
     function Get_Position (Light : Spot_Light) return Singles.Vector3;
     function Get_Direction (Light : Spot_Light) return Singles.Vector3;
+    function Get_Spot_Ambient (Light : Spot_Light) return Single;
+    function Get_Spot_Diffuse (Light : Spot_Light) return Single;
     function Init (theTechnique : out Technique) return Boolean;
     procedure Init_Directional_Light (Light : out Directional_Light);
     procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single);
@@ -47,11 +49,12 @@ package Lighting_Technique_24N is
                                Pos : Singles.Vector3; Atten : Attenuation);
     procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array);
     procedure Set_Shadow_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
+    procedure Set_Spot_Ambient (Light : in out Spot_Light; Ambient : Single);
+    procedure Set_Spot_Diffuse (Light : in out Spot_Light; Diffuse : Single);
     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array);
     procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single;
                                Colour, Pos, Direction : Singles.Vector3;
                                Atten : Attenuation; Cut_Off : Maths.Degree);
-
     procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
     procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4);
     procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4);
