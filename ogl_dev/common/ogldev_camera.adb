@@ -36,9 +36,8 @@ package body Ogldev_Camera is
     end Get_Up;
 
     --  -------------------------------------------------------------------------
-
-    procedure Initialize_Camera (theCamera : in out Camera;
-                                 Window    : in out Glfw.Windows.Window) is
+    procedure Initialize_Camera (theCamera : in out Camera) is
+--                                   Window    : in out Glfw.Windows.Window) is
         use Maths;
         use Maths.Single_Math_Functions;
 
@@ -47,12 +46,12 @@ package body Ogldev_Camera is
             return Degrees (Radian (Angle));
         end To_Degree;
 
-        Window_Width   : Glfw.Size;
-        Window_Height  : Glfw.Size;
+--          Window_Width   : Glfw.Size;
+--          Window_Height  : Glfw.Size;
         H_Target       : Singles.Vector3 :=
                            (theCamera.Target (GL.X), 0.0, theCamera.Target (GL.Z));
     begin
-        Window'Access.Get_Framebuffer_Size (Window_Width, Window_Height);
+--          Window'Access.Get_Framebuffer_Size (Window_Width, Window_Height);
         if Length (H_Target) /= 0.0 then
             H_Target := Normalized (H_Target);
         end if;
@@ -78,11 +77,10 @@ package body Ogldev_Camera is
         theCamera.On_Left_Edge := False;
         theCamera.On_Right_Edge := False;
 
-        theCamera.Window_Width := GL.Types.Int (Window_Width);
-        theCamera.Window_Height := GL.Types.Int (Window_Height);
+--          theCamera.Window_Width := GL.Types.Int (Window_Width);
+--          theCamera.Window_Height := GL.Types.Int (Window_Height);
         theCamera.Mouse_X := Glfw.Input.Mouse.Coordinate (theCamera.Window_Width / 2);
         theCamera.Mouse_Y := Glfw.Input.Mouse.Coordinate (theCamera.Window_Height / 2);
-        Window'Access.Set_Cursor_Pos (theCamera.Mouse_X, theCamera.Mouse_Y);
 
     exception
         when  others =>
@@ -101,7 +99,8 @@ package body Ogldev_Camera is
         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
         theCamera.Window_Width := GL.Types.Int (Window_Width);
         theCamera.Window_Height := GL.Types.Int (Window_Height);
-        Initialize_Camera (theCamera, Window);
+        Initialize_Camera (theCamera);
+        Window'Access.Set_Cursor_Pos (theCamera.Mouse_X, theCamera.Mouse_Y);
 
     exception
         when  others =>
@@ -137,7 +136,8 @@ package body Ogldev_Camera is
             Put_Line ("Settin Up vector to (0.0, 1.0, 0.0).");
             theCamera.Up := (0.0, 1.0, 0.0);
         end if;
-        Initialize_Camera (theCamera, Window);
+        Initialize_Camera (theCamera);
+        Window'Access.Set_Cursor_Pos (theCamera.Mouse_X, theCamera.Mouse_Y);
 
     exception
         when  others =>
