@@ -119,7 +119,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
          Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
-         Glfw.Input.Poll_Events;
       end if;
 
    exception
