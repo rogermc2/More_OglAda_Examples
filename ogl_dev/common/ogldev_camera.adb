@@ -36,8 +36,8 @@ package body Ogldev_Camera is
     end Get_Up;
 
     --  -------------------------------------------------------------------------
+
     procedure Initialize_Camera (theCamera : in out Camera) is
---                                   Window    : in out Glfw.Windows.Window) is
         use Maths;
         use Maths.Single_Math_Functions;
 
@@ -46,12 +46,9 @@ package body Ogldev_Camera is
             return Degrees (Radian (Angle));
         end To_Degree;
 
---          Window_Width   : Glfw.Size;
---          Window_Height  : Glfw.Size;
-        H_Target       : Singles.Vector3 :=
-                           (theCamera.Target (GL.X), 0.0, theCamera.Target (GL.Z));
+        H_Target : Singles.Vector3 :=
+                     (theCamera.Target (GL.X), 0.0, theCamera.Target (GL.Z));
     begin
---          Window'Access.Get_Framebuffer_Size (Window_Width, Window_Height);
         if Length (H_Target) /= 0.0 then
             H_Target := Normalized (H_Target);
         end if;
@@ -77,8 +74,6 @@ package body Ogldev_Camera is
         theCamera.On_Left_Edge := False;
         theCamera.On_Right_Edge := False;
 
---          theCamera.Window_Width := GL.Types.Int (Window_Width);
---          theCamera.Window_Height := GL.Types.Int (Window_Height);
         theCamera.Mouse_X := Glfw.Input.Mouse.Coordinate (theCamera.Window_Width / 2);
         theCamera.Mouse_Y := Glfw.Input.Mouse.Coordinate (theCamera.Window_Height / 2);
 
