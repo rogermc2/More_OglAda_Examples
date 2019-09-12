@@ -73,6 +73,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Ogldev_Camera.Init_Camera (Game_Camera, Window,
                                     Camera_Position, Target, Up);
+         Ogldev_Camera.Set_Step_Size (0.01);
          Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_21.Use_Program (Shader_Technique);
@@ -187,19 +188,20 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window) is
       use Glfw.Input;
       use Lighting_Technique_21;
+      Step_Size : constant GL.Types.Single := 0.005;
    begin
       if Window'Access.Key_State (Keys.A) = Pressed then
          Set_Directional_Ambient (Direct_Light,
-                                  Get_Directional_Ambient (Direct_Light) + 0.05);
+                                  Get_Directional_Ambient (Direct_Light) + Step_Size);
       elsif Window'Access.Key_State (Keys.S) = Pressed then
          Set_Directional_Ambient (Direct_Light,
-                                  Get_Directional_Ambient (Direct_Light) - 0.05);
+                                  Get_Directional_Ambient (Direct_Light) - Step_Size);
       elsif Window'Access.Key_State (Keys.Z) = Pressed then
          Set_Directional_Diffuse (Direct_Light,
-                                  Get_Directional_Diffuse (Direct_Light) + 0.05);
+                                  Get_Directional_Diffuse (Direct_Light) + Step_Size);
       elsif Window'Access.Key_State (Keys.X) = Pressed then
          Set_Directional_Diffuse (Direct_Light,
-                                  Get_Directional_Diffuse (Direct_Light) - 0.05);
+                                  Get_Directional_Diffuse (Direct_Light) - Step_Size);
       end if;
    end Update_Lighting_Intensity;
 

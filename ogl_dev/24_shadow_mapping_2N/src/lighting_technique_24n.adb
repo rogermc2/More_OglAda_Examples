@@ -45,6 +45,19 @@ package body Lighting_Technique_24N is
 
     --  -------------------------------------------------------------------------
     
+    function Get_Spot_Ambient (Light : Spot_Light) return Single is
+    begin
+        return Light.Point.Base.Ambient_Intensity;
+    end Get_Spot_Ambient;
+
+    --  -------------------------------------------------------------------------
+    
+    function Get_Spot_Diffuse (Light : Spot_Light) return Single is
+    begin
+        return Light.Point.Base.Diffuse_Intensity;
+    end Get_Spot_Diffuse;
+
+    --  -------------------------------------------------------------------------
     function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
                                    return GL.Uniforms.Uniform is
     begin
@@ -178,7 +191,6 @@ package body Lighting_Technique_24N is
     
     procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity, Intensity);
     end Set_Ambient_Intensity;
    
@@ -276,7 +288,28 @@ package body Lighting_Technique_24N is
     end Set_Point_Light_Locations;
 
     --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_Shadow_Texture_Unit (theTechnique : Technique; Texture_Unit : Int) is
+    begin
+        GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
+    end Set_Shadow_Texture_Unit;
+   
+    --   -----------------------------------------------------------------------------
     
+    procedure Set_Spot_Ambient (Light : in out Spot_Light; Ambient: Single) is
+    begin
+        Light.Point.Base.Ambient_Intensity := Ambient;
+    end Set_Spot_Ambient;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Set_Spot_Diffuse (Light : in out Spot_Light; Diffuse: Single) is
+    begin
+        Light.Point.Base.Diffuse_Intensity := Diffuse;
+    end Set_Spot_Diffuse;
+
+    --  -------------------------------------------------------------------------
+
     procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single; 
                               Colour, Pos, Direction : Singles.Vector3; 
                               Atten : Attenuation; Cut_Off : Maths.Degree) is
@@ -291,15 +324,8 @@ package body Lighting_Technique_24N is
     end Set_Spot_Light;
 
     --  -------------------------------------------------------------------------
-
-    procedure Set_Shadow_Texture_Unit (theTechnique : Technique; Texture_Unit : Int) is
-    begin
-        GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
-    end Set_Shadow_Texture_Unit;
    
-    --   -----------------------------------------------------------------------------
-
-    procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
+     procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array) is
     use Maths.Single_Math_Functions;
     begin
         GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Max_Spot_Lights);

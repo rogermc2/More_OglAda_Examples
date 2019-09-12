@@ -43,8 +43,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Shadow_World_Position  : constant Singles.Vector3 := (0.0, 0.0, 3.0);
     Scale                  : Single := 0.0;
 
-    procedure Render_Pass;
+    procedure Render_Pass  (Window : in out Glfw.Windows.Window);
     procedure Shadow_Map_Pass;
+    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 
     --  ------------------------------------------------------------------------
 
@@ -120,7 +121,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         --  First, render the closest depth values into the
         --  application created depth buffer
         Shadow_Map_Pass;
-        Render_Pass;
+        Render_Pass (Window);
 
     exception
         when  others =>
@@ -145,7 +146,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  Only the default framebuffer can be used to display something on the screen.
     --  The framebuffers created by the application can only be used for "offscreen rendering".
-    procedure Render_Pass is
+    procedure Render_Pass  (Window : in out Glfw.Windows.Window) is
         use GL.Types.Singles;
         use Ogldev_Camera;
         use Ogldev_Pipeline;
@@ -189,12 +190,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Set_Camera (Pipe, Get_Position (Game_Camera),
                     Get_Target (Game_Camera), Get_Up (Game_Camera));
         Init_Transforms (Pipe);
+        Update_Lighting_Intensity (Window);
 
         Lighting_Technique_24N.Set_WVP_Location
           (Lighting_Technique, Get_WVP_Transform (Pipe));
         Lighting_Technique_24N.Set_World_Matrix_Location
           (Lighting_Technique, Get_World_Transform (Pipe));
 
+        Update_Lighting_Intensity (Window);
+        Lighting_Technique_24N.Set_Spot_Light_Locations (Lighting_Technique, Spot_Lights);
         Set_Camera (Pipe, Lighting_Technique_24N.Get_Position (Spot_Lights (1)),
                     Lighting_Technique_24N.Get_Direction (Spot_Lights (1)),
                     (0.0, 1.0, 0.0));
@@ -247,6 +251,28 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     end Shadow_Map_Pass;
 
     --  ------------------------------------------------------------------------
+
+    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window) is
+      use Glfw.Input;
+      use Lighting_Technique_24N;
+      Intensity_Step_Size : constant Single := 0.5;
+   begin
+      if Window'Access.Key_State (Keys.A) = Pressed then
+         Set_Spot_Ambient (Spot_Lights (1),
+                           Get_Spot_Ambient (Spot_Lights (1)) + Intensity_Step_Size);
+      elsif Window'Access.Key_State (Keys.S) = Pressed then
+         Set_Spot_Ambient (Spot_Lights (1),
+                           Get_Spot_Ambient (Spot_Lights (1)) - Intensity_Step_Size);
+      elsif Window'Access.Key_State (Keys.Z) = Pressed then
+         Set_Spot_Diffuse (Spot_Lights (1),
+                           Get_Spot_Diffuse (Spot_Lights (1)) + Intensity_Step_Size);
+      elsif Window'Access.Key_State (Keys.X) = Pressed then
+         Set_Spot_Diffuse (Spot_Lights (1),
+                           Get_Spot_Diffuse (Spot_Lights (1)) - Intensity_Step_Size);
+      end if;
+   end Update_Lighting_Intensity;
+
+   --  -------------------------------------------------------------------------
 
     use Glfw.Input;
     Running : Boolean := True;

@@ -92,7 +92,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Ogldev_Camera.Init_Camera (Game_Camera, Window);
-         Ogldev_Camera.Set_Step_Size (0.1);
+         Ogldev_Camera.Set_Step_Size (0.05);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Counter_Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
@@ -173,8 +173,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Array_Buffer.Bind (VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
-                                               Stride => 0, Offset => 0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 3);
+                                               Stride => 5, Offset => 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 5, 3);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (IBO);
 
