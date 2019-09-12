@@ -170,7 +170,7 @@ package body Ogldev_Basic_Lighting is
       Set_Single (Technique.Dir_Light_Location.Ambient_Intensity,
                   Ambient_Intensity (Light));
       Set_Single (Technique.Dir_Light_Location.Direction,
-                  Maths.Normalized (Direction (Light));
+                  Maths.Normalized (Direction (Light)));
       Set_Single (Technique.Dir_Light_Location.Diffuse_Intensity,
                   Diffuse_Intensity (Light));
    end Set_Directional_Light;
