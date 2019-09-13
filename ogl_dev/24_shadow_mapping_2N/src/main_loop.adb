@@ -101,6 +101,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         else
             Put_Line ("Main_Loop.Init Ground_Texture failed to initialize.");
         end if;
+        Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
 
     exception
         when others =>
