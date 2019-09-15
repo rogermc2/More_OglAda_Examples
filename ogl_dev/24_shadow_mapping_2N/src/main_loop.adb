@@ -40,7 +40,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Ground_Texture         : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Spot_Lights            : Lighting_Technique_24N.Spot_Lights_Array (1 .. 1);
-   Phoenix_Position       : constant Singles.Vector3 := (0.0, 1.0, 3.0);
+   Phoenix_Position       : constant Singles.Vector3 := (0.0, 0.0, 3.0);
    Scale                  : Single := 0.0;
 
    procedure Render_Pass  (Window : in out Glfw.Windows.Window);
@@ -55,7 +55,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
 
-      Camera_Position : constant Singles.Vector3 := (2.0, 2.0, 10.0);
+      Camera_Position : constant Singles.Vector3 := (3.0, 8.0, 10.0);
       Target          : constant Singles.Vector3 := (0.0, -0.2, 1.0);
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -68,8 +68,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                       Ambient   => 0.1,
                       Diffuse   => 0.9,
                       Colour    => (1.0, 1.0, 1.0),
-                      Pos       => (20.0, 20.0, 0.0),
-                      Direction => (-1.0, -1.0, 0.0),
+                      Pos       => (-20.0, 20.0, -1.0),
+                      Direction => (1.0, -1.0, 0.0),
                       Atten     => (0.0, 0.01, 0.0),
                       Cut_Off   => 20.0);
 
@@ -154,6 +154,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pipe : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
+      Scale := Scale + 1.0;
 
       Lighting_Technique_24N.Use_Program (Lighting_Technique);
       Lighting_Technique_24N.Set_Spot_Light_Uniforms
@@ -181,7 +182,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                   Lighting_Technique_24N.Get_Direction (Spot_Lights (1)),
                   (0.0, 1.0, 0.0));
       Init_Transforms (Pipe);
-
       Lighting_Technique_24N.Set_Light_WVP_Uniform
         (Lighting_Technique, Get_WVP_Transform (Pipe));
 
@@ -189,7 +189,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Meshes_24N.Render (Quad_Mesh);
 
       --  Display Phoenix
-      Set_Scale (Pipe, 0.05);
+      Set_Scale (Pipe, 0.1);
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Set_World_Position (Pipe, Phoenix_Position);
       Set_Camera (Pipe, Get_Position (Game_Camera),
