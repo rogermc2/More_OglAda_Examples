@@ -35,12 +35,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Shadow_Technique       : Shadow_Map_Technique.Technique;
    theShadow_Map          : Ogldev_Shadow_Map_FBO.Shadow_Map_FBO;
    Game_Camera            : Ogldev_Camera.Camera;
-   Shadow_Mesh            : Meshes_24N.Mesh_24;
+   Phoenix                : Meshes_24N.Mesh_24;
    Quad_Mesh              : Meshes_24N.Mesh_24;
    Ground_Texture         : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Spot_Lights            : Lighting_Technique_24N.Spot_Lights_Array (1 .. 1);
-   Shadow_World_Position  : constant Singles.Vector3 := (0.0, 0.0, 3.0);
+   Phoenix_Position       : constant Singles.Vector3 := (0.0, 1.0, 3.0);
    Scale                  : Single := 0.0;
 
    procedure Render_Pass  (Window : in out Glfw.Windows.Window);
@@ -94,7 +94,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       end if;
 
       Meshes_24N.Load_Mesh (Quad_Mesh, "../Content/quad.obj");
-      Meshes_24N.Load_Mesh (Shadow_Mesh, "../Content/phoenix_ugv.md2");
+      Meshes_24N.Load_Mesh (Phoenix, "../Content/phoenix_ugv.md2");
       if Ogldev_Texture.Init_Texture (Ground_Texture, GL.Low_Level.Enums.Texture_2D,
                                       "../content/test.png") then
          Ogldev_Texture.Load (Ground_Texture);
@@ -191,7 +191,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       --  Display Phoenix
       Set_Scale (Pipe, 0.05);
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Set_World_Position (Pipe, Shadow_World_Position);
+      Set_World_Position (Pipe, Phoenix_Position);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Init_Transforms (Pipe);
@@ -209,7 +209,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lighting_Technique_24N.Set_Light_WVP_Uniform
         (Lighting_Technique, Get_WVP_Transform (Pipe));
 
-      Meshes_24N.Render (Shadow_Mesh);
+      Meshes_24N.Render (Phoenix);
 
    exception
       when  others =>
@@ -232,7 +232,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Set_Scale (Pipe, 0.1);  --  0.1
       Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Set_World_Position (Pipe, Shadow_World_Position);
+      Set_World_Position (Pipe, Phoenix_Position);
       Set_Camera (Pipe, Lighting_Technique_24N.Get_Position (Spot_Lights (1)),
                   Lighting_Technique_24N.Get_Direction
                     (Spot_Lights (1)), (0.0, 1.0, 0.0));
@@ -241,7 +241,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shadow_Map_Technique.Set_WVP
         (Shadow_Technique, Get_WVP_Transform (Pipe));
-      Meshes_24N.Render (Shadow_Mesh);
+      Meshes_24N.Render (Phoenix);
 
       GL.Objects.Framebuffers.Draw_Target.Bind
         (GL.Objects.Framebuffers.Default_Framebuffer);
