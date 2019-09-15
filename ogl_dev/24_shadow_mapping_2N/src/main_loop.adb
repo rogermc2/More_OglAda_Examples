@@ -167,7 +167,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Set_Scale (Pipe, 10.0);  --  10.0
       Set_World_Position (Pipe, 0.0, 0.0, 1.0);
-      Set_Rotation (Pipe, 90.0, 0.0, 0.0);
+      Set_Rotation (Pipe, -90.0, 0.0, 0.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Init_Transforms (Pipe);
