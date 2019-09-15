@@ -39,25 +39,25 @@ package Lighting_Technique_24N is
                                        Ambient: Single);
     procedure Set_Directional_Diffuse (Light : in out Directional_Light;
                                        Diffuse : Single);
-    procedure Set_Directional_Light_Location (theTechnique : Technique; Light : Directional_Light);
-    procedure Set_Eye_World_Pos_Location (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
-    procedure Set_Light_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4);
+    procedure Set_Directional_Light_Uniform (theTechnique : Technique; Light : Directional_Light);
+    procedure Set_Eye_World_Pos_Uniform (theTechnique : Technique; Eye_World_Pos : Singles.Vector3);
+    procedure Set_Light_WVP_Uniform (theTechnique : Technique; WVP : Singles.Matrix4);
     procedure Set_Mat_Specular_Intensity (theTechnique : Technique; Intensity : Single);
     procedure Set_Mat_Specular_Power (theTechnique : Technique; Power : Single);
     procedure Set_Point_Light (Light : in out Point_Light; Ambient, Diffuse : Single;
                                Colour : Singles.Vector3;
                                Pos : Singles.Vector3; Atten : Attenuation);
-    procedure Set_Point_Light_Locations (theTechnique : Technique; Lights : Point_Lights_Array);
+    procedure Set_Point_Light_Uniforms (theTechnique : Technique; Lights : Point_Lights_Array);
     procedure Set_Shadow_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
     procedure Set_Spot_Ambient (Light : in out Spot_Light; Ambient : Single);
     procedure Set_Spot_Diffuse (Light : in out Spot_Light; Diffuse : Single);
-    procedure Set_Spot_Light_Locations (theTechnique : Technique; Lights : Spot_Lights_Array);
+    procedure Set_Spot_Light_Uniforms (theTechnique : Technique; Lights : Spot_Lights_Array);
     procedure Set_Spot_Light (Light : in out Spot_Light; Ambient, Diffuse : Single;
                                Colour, Pos, Direction : Singles.Vector3;
                                Atten : Attenuation; Cut_Off : Maths.Degree);
     procedure Set_Texture_Unit (theTechnique : Technique; Texture_Unit : Int);
-    procedure Set_World_Matrix_Location (theTechnique : Technique; World_Inverse : Singles.Matrix4);
-    procedure Set_WVP_Location (theTechnique : Technique; WVP : Singles.Matrix4);
+    procedure Set_World_Matrix_Uniform (theTechnique : Technique; World_Inverse : Singles.Matrix4);
+    procedure Set_WVP_Uniform (theTechnique : Technique; WVP : Singles.Matrix4);
     procedure Use_Program (theTechnique : Technique);
 
  private
@@ -86,36 +86,36 @@ package Lighting_Technique_24N is
         Direction : Singles.Vector3 := (0.0, 0.0, 0.0);
     end record;
 
-   type Atten_Location is record
+   type Atten_Uniform is record
       Constant_Atten : GL.Uniforms.Uniform := 0;
       Linear         : GL.Uniforms.Uniform := 0;
       Exp            : GL.Uniforms.Uniform := 0;
    end record;
 
-   type Point_Light_Locations is record
+   type Point_Light_Uniforms is record
       Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
       Diffuse_Intensity : GL.Uniforms.Uniform := 0;
       Position          : GL.Uniforms.Uniform := 0;
-      Atten             : Atten_Location;
+      Atten             : Atten_Uniform;
    end record;
 
-   type Spot_Light_Locations is record
+   type Spot_Light_Uniforms is record
       Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
       Diffuse_Intensity : GL.Uniforms.Uniform := 0;
       Position          : GL.Uniforms.Uniform := 0;
       Direction         : GL.Uniforms.Uniform := 0;
       Cutoff            : GL.Uniforms.Uniform := 0;
-      Atten             : Atten_Location;
+      Atten             : Atten_Uniform;
    end record;
 
-   type Point_Lights_Location_Array is array (1 .. Max_Point_Lights) of
-     Point_Light_Locations;
-   type Spot_Lights_Location_Array is array (1 .. Max_Spot_Lights) of
-     Spot_Light_Locations;
+   type Point_Lights_Uniform_Array is array (1 .. Max_Point_Lights) of
+     Point_Light_Uniforms;
+   type Spot_Lights_Uniform_Array is array (1 .. Max_Spot_Lights) of
+     Spot_Light_Uniforms;
 
-   type Direct_Light_Locations is record
+   type Direct_Light_Uniforms is record
       Colour            : GL.Uniforms.Uniform := 0;
       Ambient_Intensity : GL.Uniforms.Uniform := 0;
       Diffuse_Intensity : GL.Uniforms.Uniform := 0;
@@ -124,19 +124,19 @@ package Lighting_Technique_24N is
 
    type Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
-      Direct_Light_Location           : Direct_Light_Locations;
-      WVP_Location                    : GL.Uniforms.Uniform := 0;
-      Light_WVP_Location              : GL.Uniforms.Uniform := 0;
-      World_Matrix_Location           : GL.Uniforms.Uniform := 0;
-      Sampler_Location                : GL.Uniforms.Uniform := 0;
-      Shadow_Map_Location             : GL.Uniforms.Uniform := 0;
-      Eye_World_Pos_Location          : GL.Uniforms.Uniform := 0;
-      Mat_Specular_Intensity_Location : GL.Uniforms.Uniform := 0;
-      Mat_Specular_Power_Location     : GL.Uniforms.Uniform := 0;
-      Num_Point_Lights_Location       : GL.Uniforms.Uniform := 0;
-      Num_Spot_Lights_Location        : GL.Uniforms.Uniform := 0;
-      Point_Locations                 : Point_Lights_Location_Array;
-      Spot_Locations                  : Spot_Lights_Location_Array;
+      Direct_Light_Uniform           : Direct_Light_Uniforms;
+      WVP_Uniform                    : GL.Uniforms.Uniform := 0;
+      Light_WVP_Uniform              : GL.Uniforms.Uniform := 0;
+      World_Matrix_Uniform           : GL.Uniforms.Uniform := 0;
+      Sampler_Uniform                : GL.Uniforms.Uniform := 0;
+      Shadow_Map_Uniform             : GL.Uniforms.Uniform := 0;
+      Eye_World_Pos_Uniform          : GL.Uniforms.Uniform := 0;
+      Mat_Specular_Intensity_Uniform : GL.Uniforms.Uniform := 0;
+      Mat_Specular_Power_Uniform     : GL.Uniforms.Uniform := 0;
+      Num_Point_Lights_Uniform       : GL.Uniforms.Uniform := 0;
+      Num_Spot_Lights_Uniform        : GL.Uniforms.Uniform := 0;
+      Point_Uniforms                 : Point_Lights_Uniform_Array;
+      Spot_Uniforms                  : Spot_Lights_Uniform_Array;
    end record;
 
 end Lighting_Technique_24N;
