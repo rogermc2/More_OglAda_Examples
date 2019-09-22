@@ -135,20 +135,18 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Colour_Texture_Unit (theTechnique : Technique;
+    procedure Set_Colour_Texture_Unit (theTechnique : in out Technique;
                                        Texture_Unit : GL.Types.Int) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Colour_Map_Location, Texture_Unit);
     end Set_Colour_Texture_Unit;
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_Directional_Light (theTechnique : Technique; Light : Direct_Light) is
+   procedure Set_Directional_Light (theTechnique : in out Technique; Light : Direct_Light) is
       use GL.Uniforms;
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
-        Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour);
+      Set_Single (theTechnique.Direct_Light_Location.Color, Light.Base.Colour);
       Set_Single (theTechnique.Direct_Light_Location.Ambient_Intensity,
                   Light.Base.Ambient_Intensity);
       Set_Single (theTechnique.Direct_Light_Location.Diffuse_Intensity,
@@ -164,126 +162,120 @@ Package body Lighting_Technique_26 is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Eye_World_Position (theTechnique : Technique;
+    procedure Set_Eye_World_Position (theTechnique : in out Technique;
                                       Position : GL.Types.Singles.Vector3) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Eye_World_Pos_Location, Position);
     end Set_Eye_World_Position;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Light_WVP_Position (theTechnique : Technique;
+    procedure Set_Light_WVP_Position (theTechnique : in out Technique;
                                       Position : GL.Types.Singles.Vector3) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.WVP_Location, Position);
     end Set_Light_WVP_Position;
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_Mat_Specular_Intensity (theTechnique : Technique;
+   procedure Set_Mat_Specular_Intensity (theTechnique : in out Technique;
                                         Intensity : GL.Types.Single) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Mat_Specular_Intensity_Location, Intensity);
     end Set_Mat_Specular_Intensity;
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_Mat_Specular_Power (theTechnique : Technique;
+   procedure Set_Mat_Specular_Power (theTechnique : in out Technique;
                                      Power : GL.Types.Single) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.Mat_Specular_Power_Location, Power);
     end Set_Mat_Specular_Power;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Normal_Map_Texture_Unit (theTechnique : Technique;
+    procedure Set_Normal_Map_Texture_Unit (theTechnique : in out Technique;
                                            Texture_Unit : GL.Types.Int) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Normal_Map_Location, Texture_Unit);
     end Set_Normal_Map_Texture_Unit;
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_Point_Lights (theTechnique : Technique;
+   procedure Set_Point_Lights (theTechnique : in out Technique;
                                Lights : Point_Lights_Array) is
+    use GL.Uniforms;
     begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+      Set_Int (theTechnique.Num_Point_Lights_Location, Point_Lights_Array'Size);
       for index in GL.Types.UInt range 1 .. Point_Lights_Array'Size loop
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Color,
+         Set_Single (theTechnique.Point_Lights_Locations (index).Color,
                                  Lights (index).Base.Colour);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Ambient_Intensity,
+         Set_Single (theTechnique.Point_Lights_Locations (index).Ambient_Intensity,
                                  Lights (index).Base.Ambient_Intensity);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Diffuse_Intensity,
+         Set_Single (theTechnique.Point_Lights_Locations (index).Diffuse_Intensity,
                                  Lights (index).Base.Diffuse_Intensity);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Position,
+         Set_Single (theTechnique.Point_Lights_Locations (index).Position,
                                  Lights (index).Position);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Constant_Atten,
+         Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Constant_Atten,
                                  Lights (index).Atten.Constant_Atten);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Linear,
+         Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Linear,
                                  Lights (index).Atten.Linear);
-         GL.Uniforms.Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Exp,
+         Set_Single (theTechnique.Point_Lights_Locations (index).Atten.Exp,
                                  Lights (index).Atten.Exp);
       end loop;
     end Set_Point_Lights;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
+    procedure Set_Shadow_Map_Texture_Unit (theTechnique : in out Technique;
                                            Texture_Unit : GL.Types.Int) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Int (theTechnique.Shadow_Map_Location, Texture_Unit);
     end Set_Shadow_Map_Texture_Unit;
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_Spot_Lights (theTechnique : Technique;
+   procedure Set_Spot_Lights (theTechnique : in out Technique;
                               Lights       : Spot_Lights_Array) is
+      use GL.Uniforms;
       use Maths.Single_Math_Functions;
     begin
-      GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+      GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Spot_Lights_Array'Size);
       for index in GL.Types.UInt range 1 .. Spot_Lights_Array'Size loop
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Color,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Color,
                                  Lights (index).Base.Base.Colour);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Ambient_Intensity,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Ambient_Intensity,
                                  Lights (index).Base.Base.Ambient_Intensity);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Diffuse_Intensity,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Diffuse_Intensity,
                                  Lights (index).Base.Base.Diffuse_Intensity);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Position,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Position,
                                  Lights (index).Base.Position);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
                                 Maths.Normalized (Lights (index).Direction));
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
                                  Cos (GL.Types.Single (Maths.Radians (Lights (index).Cutoff))));
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
                                  Lights (index).Base.Atten.Constant_Atten);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,
                                  Lights (index).Base.Atten.Linear);
-         GL.Uniforms.Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Exp,
+         Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Exp,
                                  Lights (index).Base.Atten.Exp);
       end loop;
     end Set_Spot_Lights;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_World_Matrix (theTechnique : Technique;
+    procedure Set_World_Matrix (theTechnique : in out Technique;
                                 WVP : GL.Types.Singles.Matrix4) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.World_Matrix_Location, WVP);
     end Set_World_Matrix;
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_WVP (theTechnique : Technique;
+   procedure Set_WVP (theTechnique : in out Technique;
                       WVP : GL.Types.Singles.Matrix4) is
     begin
-        GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
         GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);
     end Set_WVP;
 

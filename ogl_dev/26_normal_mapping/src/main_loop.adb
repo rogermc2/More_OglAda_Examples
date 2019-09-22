@@ -48,14 +48,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Init (Window : in out Glfw.Windows.Window; Result : out Boolean) is
-
+      use Lighting_Technique_26;
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
---        Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
---        Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
 
       Camera_Position     : constant Singles.Vector3 := (0.5, 1.025, 0.25);
-      Target              : constant Singles.Vector3 := (0.0, -0.5, 1.0);
+      Target              : constant Singles.Vector3 := (0.0, -0.5, -1.0);
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
       Particle_System_Pos : constant GL.Types.Singles.Vector3 := (0.0, 0.0, -1.0);
    begin
@@ -67,16 +65,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          1.0, 100.0);
       Ogldev_Camera.Init_Camera (Game_Camera, Window,
                                  Camera_Position, Target, Up);
+
+
       Result := Lighting_Technique_26.Init (theLighting_Technique);
       if Result then
-         Lighting_Technique_26.Init_Directional_Light (Dir_Light);
-         GL.Objects.Programs.Use_Program
-           (Lighting_Technique_26.Light_Program (theLighting_Technique));
-         Lighting_Technique_26.Set_Directional_Light
-           (theLighting_Technique, Dir_Light);
-         Lighting_Technique_26.Set_Colour_Texture_Unit
+         Init_Directional_Light (Dir_Light);
+         GL.Objects.Programs.Use_Program (Light_Program (theLighting_Technique));
+         Set_Directional_Light (theLighting_Technique, Dir_Light);
+         Set_Colour_Texture_Unit
            (theLighting_Technique, Ogldev_Engine_Common.Colour_Texture_Unit);
-         Lighting_Technique_26.Set_Normal_Map_Texture_Unit
+        Set_Normal_Map_Texture_Unit
            (theLighting_Technique, Ogldev_Engine_Common.Normal_Texture_Unit);
 
          Meshes_26.Load_Mesh (Sphere_Mesh, "../Content/box.obj");
@@ -134,7 +132,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
 
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
