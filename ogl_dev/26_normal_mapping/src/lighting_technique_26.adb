@@ -37,8 +37,8 @@ Package body Lighting_Technique_26 is
         use  GL.Objects.Shaders;
     begin
         theTechnique.Lighting_Program := Program_From
-          ((Src ("src/shaders/lighting.vs", Vertex_Shader),
-           Src ("src/shaders/lighting.fs", Fragment_Shader)));
+          ((Src ("src/shaders/lighting_26.vs", Vertex_Shader),
+           Src ("src/shaders/lighting_26.fs", Fragment_Shader)));
 
         GL.Objects.Programs.Use_Program  (theTechnique.Lighting_Program);
         theTechnique.WVP_Location := GL.Objects.Programs.Uniform_Location
@@ -62,7 +62,7 @@ Package body Lighting_Technique_26 is
         theTechnique.Direct_Light_Location.Diffuse_Intensity := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gDirectionalLight.Base.DiffuseIntensity");
         theTechnique.Direct_Light_Location.Direction := GL.Objects.Programs.Uniform_Location
-          (theTechnique.Lighting_Program, "gDirectionalLight.Base.Direction");
+          (theTechnique.Lighting_Program, "gDirectionalLight.Direction");
         theTechnique.Mat_Specular_Intensity_Location := GL.Objects.Programs.Uniform_Location
           (theTechnique.Lighting_Program, "gMatSpecularIntensity");
         theTechnique.Mat_Specular_Power_Location := GL.Objects.Programs.Uniform_Location
@@ -243,23 +243,23 @@ Package body Lighting_Technique_26 is
       GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Spot_Lights_Array'Size);
       for index in GL.Types.UInt range 1 .. Spot_Lights_Array'Size loop
          Set_Single (theTechnique.Spot_Lights_Locations (index).Color,
-                                 Lights (index).Base.Base.Colour);
+                                 Lights (index).Point.Base.Colour);
          Set_Single (theTechnique.Spot_Lights_Locations (index).Ambient_Intensity,
-                                 Lights (index).Base.Base.Ambient_Intensity);
+                                 Lights (index).Point.Base.Ambient_Intensity);
          Set_Single (theTechnique.Spot_Lights_Locations (index).Diffuse_Intensity,
-                                 Lights (index).Base.Base.Diffuse_Intensity);
+                                 Lights (index).Point.Base.Diffuse_Intensity);
          Set_Single (theTechnique.Spot_Lights_Locations (index).Position,
-                                 Lights (index).Base.Position);
+                                 Lights (index).Point.Position);
          Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
                                 Maths.Normalized (Lights (index).Direction));
          Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
                                  Cos (GL.Types.Single (Maths.Radians (Lights (index).Cutoff))));
          Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
-                                 Lights (index).Base.Atten.Constant_Atten);
+                                 Lights (index).Point.Atten.Constant_Atten);
          Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,
-                                 Lights (index).Base.Atten.Linear);
+                                 Lights (index).Point.Atten.Linear);
          Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Exp,
-                                 Lights (index).Base.Atten.Exp);
+                                 Lights (index).Point.Atten.Exp);
       end loop;
     end Set_Spot_Lights;
 
