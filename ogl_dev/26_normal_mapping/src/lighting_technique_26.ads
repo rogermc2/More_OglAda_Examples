@@ -20,36 +20,36 @@ Package Lighting_Technique_26 is
    function Init (theTechnique : out Technique) return Boolean;
 
    procedure Init_Directional_Light (Light : out Direct_Light);
-   procedure Set_Colour_Texture_Unit (theTechnique : Technique;
+   procedure Set_Colour_Texture_Unit (theTechnique : in out Technique;
                                       Texture_Unit : GL.Types.Int);
-   procedure Set_Directional_Light (theTechnique : Technique;
+   procedure Set_Directional_Light (theTechnique : in out Technique;
                                     Light        : Direct_Light);
-   procedure Set_Eye_World_Position (theTechnique : Technique;
+   procedure Set_Eye_World_Position (theTechnique : in out Technique;
                                      Position     : GL.Types.Singles.Vector3);
-   procedure Set_Light_WVP_Position (theTechnique : Technique;
+   procedure Set_Light_WVP_Position (theTechnique : in out Technique;
                                      Position     : GL.Types.Singles.Vector3);
-   procedure Set_Mat_Specular_Intensity (theTechnique : Technique;
+   procedure Set_Mat_Specular_Intensity (theTechnique : in out Technique;
                                          Intensity    : GL.Types.Single);
-   procedure Set_Mat_Specular_Power (theTechnique : Technique;
+   procedure Set_Mat_Specular_Power (theTechnique : in out Technique;
                                      Power        : GL.Types.Single);
-   procedure Set_Normal_Map_Texture_Unit (theTechnique : Technique;
+   procedure Set_Normal_Map_Texture_Unit (theTechnique : in out Technique;
                                           Texture_Unit : GL.Types.Int);
-   procedure Set_Point_Lights (theTechnique : Technique;
+   procedure Set_Point_Lights (theTechnique : in out Technique;
                                Lights       : Point_Lights_Array);
-   procedure Set_Shadow_Map_Texture_Unit (theTechnique : Technique;
+   procedure Set_Shadow_Map_Texture_Unit (theTechnique : in out Technique;
                                           Texture_Unit : GL.Types.Int);
-   procedure Set_Spot_Lights (theTechnique : Technique;
+   procedure Set_Spot_Lights (theTechnique : in out Technique;
                               Lights       : Spot_Lights_Array);
-   procedure Set_World_Matrix (theTechnique : Technique;
+   procedure Set_World_Matrix (theTechnique : in out Technique;
                                WVP          : GL.Types.Singles.Matrix4);
-   procedure Set_WVP (theTechnique : Technique;
+   procedure Set_WVP (theTechnique : in out Technique;
                       WVP          : GL.Types.Singles.Matrix4);
    procedure Use_Program (theTechnique : Technique);
 
 private
 
    type Attenuation is record
-      Constant_Atten : GL.Types.Single := 1.0;
+      Constant_Atten : GL.Types.Single := 0.0;
       Linear         : GL.Types.Single := 0.0;
       Exp            : GL.Types.Single := 0.0;
    end record;
