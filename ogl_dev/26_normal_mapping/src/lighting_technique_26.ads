@@ -72,7 +72,7 @@ private
    end record;
 
    type Spot_Light is record
-      Base      : Point_Light;
+      Point     : Point_Light;
       Direction : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
       Cutoff    : Maths.Degree := 0.0;
    end record;
