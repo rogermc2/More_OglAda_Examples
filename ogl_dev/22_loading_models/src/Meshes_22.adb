@@ -225,7 +225,7 @@ package body Meshes_22 is
       theScene : Scene.AI_Scene;
    begin
       theScene :=
-        Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
+        Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Basic_Load_Flags));
       Init_From_Scene (theMesh, File_Name, theScene);
 
    exception

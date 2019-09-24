@@ -267,7 +267,7 @@ package body Ogldev_Basic_Mesh is
    begin
       Put_Line (" Ogldev_Basic_Mesh.Load_Mesh, import scene.");
       theScene :=
-        Importer.Import_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
+        Importer.Import_File (File_Name, UInt (Ogldev_Util.Assimp_Basic_Load_Flags));
       theMesh.VAO.Initialize_Id;
       theMesh.VAO.Bind;
 
