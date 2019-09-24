@@ -89,7 +89,7 @@ package body Assimp_Mesh is
    procedure Load_Mesh (File_Name : String; theMesh : in out Mesh) is
       theScene : Scene.AI_Scene;
    begin
-      theScene := Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
+      theScene := Importer.Read_File (File_Name, UInt (Ogldev_Util.Assimp_Basic_Load_Flags));
       Init_From_Scene (theMesh, theScene, File_Name);
 
    exception
