@@ -280,7 +280,7 @@ package body Meshes_26 is
         use Mesh_Entry_Package;
         Entry_Cursor   : Cursor := theMesh.Entries.First;
         anEntry        : Mesh_Entry;
-        Textures       : Ogldev_Texture.Mesh_Texture_Map;
+        Textures       : constant Ogldev_Texture.Mesh_Texture_Map := theMesh.Textures;
         aTexture       : Ogldev_Texture.Ogl_Texture;
     begin
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -299,17 +299,13 @@ package body Meshes_26 is
             GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, 11, 8);  --  tangent
 
             GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
-            --           Put_Line ("Meshes_26.Render anEntry.Material_Index: " &
-            --                       UInt'Image (anEntry.Material_Index));
             if Textures.Contains (anEntry.Material_Index) then
                 aTexture := Textures.Element (anEntry.Material_Index);
                 Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-                --              Put_Line ("Meshes_26.Render Textures contains Material_Index: " &
-                --                       UInt'Image (anEntry.Material_Index));
-                Put_Line ("Meshes_26.Render aTexture bound.");
-                --           else
-                --              Put_Line ("Meshes_26.Render Textures does not contain Material_Index: " &
-                --                       UInt'Image (anEntry.Material_Index));
+                Put_Line ("Meshes_26.Render Material_Index: " & UInt'Image (anEntry.Material_Index) & " Texture bound.");
+            else
+                Put_Line ("Meshes_26.Render Textures does not contain Material_Index: " &
+                           UInt'Image (anEntry.Material_Index));
             end if;
 
             GL.Objects.Buffers.Draw_Elements

@@ -137,8 +137,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
         Ogldev_Pipeline.Init_Transforms (Pipe);
 
-        --        Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform",
-        --                                Ogldev_Pipeline.Get_World_Transform (Pipe));
         Ogldev_Texture.Bind (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
         if Bump_Map_Enabled then
             Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
@@ -152,9 +150,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                        Ogldev_Pipeline.Get_WVP_Transform (Pipe));
         Lighting_Technique_26.Set_World_Matrix
           (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
-
-        --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
-        --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));;
 
         Meshes_26.Render (Sphere_Mesh);
 
