@@ -50,9 +50,9 @@ uniform int gNumSpotLights;
 uniform DirectionalLight gDirectionalLight;                                                 
 uniform PointLight gPointLights[MAX_POINT_LIGHTS];                                          
 uniform SpotLight gSpotLights[MAX_SPOT_LIGHTS];                                             
-uniform sampler2D gColorMap;                                                                
-uniform sampler2D gShadowMap;                                                               
-uniform sampler2D gNormalMap;                                                               
+uniform sampler2D gColorMap;    // Colour texture unit
+uniform sampler2D gShadowMap;   // Shadow texture unit
+uniform sampler2D gNormalMap;   // Normal map texture unit
 uniform vec3 gEyeWorldPos;                                                                  
 uniform float gMatSpecularIntensity;                                                        
 uniform float gSpecularPower;                                                               
@@ -141,7 +141,7 @@ vec3 CalcBumpedNormal()
     mat3 TBN = mat3(Tangent, Bitangent, Normal);                                            
     NewNormal = TBN * BumpMapNormal;                                                        
     NewNormal = normalize(NewNormal);                                                       
-    return NewNormal;                                                                       
+    return NewNormal;
     }
                                                                                             
 void main()                                                                                 
