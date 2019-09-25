@@ -43,7 +43,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     Trivial_Normal_Map          : Ogldev_Texture.Ogl_Texture;
     Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
     Scale                       : Single := 0.0;
-    Bump_Map_Enabled            : Boolean := True;
+    Bump_Map_Enabled            : Boolean := False;
 
     --  ------------------------------------------------------------------------
 
@@ -119,19 +119,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Pipe                 : Ogldev_Pipeline.Pipeline;
     begin
         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-        GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
-                                GL.Types.Int (Window_Height));
 
         Ogldev_Camera.Update_Camera (Game_Camera, Window);
-
         Utilities.Clear_Background_Colour_And_Depth (Background);
-        --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-
         Lighting_Technique_26.Use_Program (theLighting_Technique);
 
-
         Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, 3.0);
+        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 1.5, 3.0);
         Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                     Get_Target (Game_Camera), Get_Up (Game_Camera));
         Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
@@ -140,7 +134,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Ogldev_Texture.Bind (theTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
         if Bump_Map_Enabled then
             Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
-            --           Put_Line ("Main_Loop.Render_Scene Normal_Map bound.");
         else
             Ogldev_Texture.Bind (Trivial_Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
             Put_Line ("Main_Loop.Render_Scene Trivial_Normal_Map bound.");

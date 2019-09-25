@@ -302,7 +302,6 @@ package body Meshes_26 is
             if Textures.Contains (anEntry.Material_Index) then
                 aTexture := Textures.Element (anEntry.Material_Index);
                 Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-                Put_Line ("Meshes_26.Render Material_Index: " & UInt'Image (anEntry.Material_Index) & " Texture bound.");
             else
                 Put_Line ("Meshes_26.Render Textures does not contain Material_Index: " &
                            UInt'Image (anEntry.Material_Index));
