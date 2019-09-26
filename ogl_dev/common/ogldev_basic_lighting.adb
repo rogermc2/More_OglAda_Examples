@@ -154,15 +154,15 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Color_Texture_Unit (Technique    : Basic_Lighting_Technique;
+   procedure Set_Color_Texture_Unit_Location (Technique    : Basic_Lighting_Technique;
                                      Texture_Unit : GL.Types.UInt) is
    begin
       Set_Int (Technique.Colour_Texture_Location,  GL.Types.Int (Texture_Unit));
-   end Set_Color_Texture_Unit;
+   end Set_Color_Texture_Unit_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Directional_Light (Technique : Basic_Lighting_Technique;
+   procedure Set_Directional_Light_Location (Technique : Basic_Lighting_Technique;
                                     Light     : Directional_Light) is
    begin
       Set_Single (Technique.Dir_Light_Location.Direction, Direction (Light));
@@ -174,11 +174,11 @@ package body Ogldev_Basic_Lighting is
                   Maths.Normalized (Direction (Light)));
       Set_Single (Technique.Dir_Light_Location.Diffuse_Intensity,
                   Diffuse_Intensity (Light));
-   end Set_Directional_Light;
+   end Set_Directional_Light_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Point_Lights (Technique : in out Basic_Lighting_Technique;
+   procedure Set_Point_Lights_Location (Technique : in out Basic_Lighting_Technique;
                                Lights    : Point_Light_Array) is
       Num_Lights : constant Int :=  Lights'Length;
       Location   : Point_Light_Locations;
@@ -202,11 +202,11 @@ package body Ogldev_Basic_Lighting is
       when  others =>
          Put_Line ("An exception occurred in Ogldev_Basic_Lighting.Set_Point_Lights.");
          raise;
-   end Set_Point_Lights;
+   end Set_Point_Lights_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Point_Light (Technique : Basic_Lighting_Technique;
+   procedure Set_Point_Light_Location (Technique : Basic_Lighting_Technique;
                               Point     : Ogldev_Lights_Common.Point_Light) is
       Location        : Point_Light_Locations;
    begin
@@ -215,12 +215,12 @@ package body Ogldev_Basic_Lighting is
       Set_Single (Location.Colour, Colour_To_Vec3 (Colour (Point)));
       Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Point));
       Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Point));
-   end Set_Point_Light;
+   end Set_Point_Light_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Spot_Lights (Technique : in out Basic_Lighting_Technique;
-                              Spots     : Ogldev_Lights_Common.Spot_Light_Array) is
+   procedure Set_Spot_Lights_Location (Technique : in out Basic_Lighting_Technique;
+                                       Spots     : Ogldev_Lights_Common.Spot_Light_Array) is
       use Maths.Single_Math_Functions;
       Num_Lights      : constant Int :=  Spots'Length;
       Spot            : Spot_Light;
@@ -245,12 +245,12 @@ package body Ogldev_Basic_Lighting is
          Technique.Spot_Lights_Locations (Int (index)) := Location;
       end loop;
 
-   end Set_Spot_Lights;
+   end Set_Spot_Lights_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
-                             Spot      : Ogldev_Lights_Common.Spot_Light) is
+   procedure Set_Spot_Light_Location (Technique : Basic_Lighting_Technique;
+                                      Spot      : Ogldev_Lights_Common.Spot_Light) is
       use Maths.Single_Math_Functions;
       Location        : Spot_Light_Locations;
       Light_Direction : Singles.Vector3 := Direction (Spot);
@@ -263,54 +263,54 @@ package body Ogldev_Basic_Lighting is
       Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
       Set_Single (Location.Direction, Light_Direction);
       Set_Single (Location.Cut_Off, Cos (Single (Maths.Radians (Cut_Off (Spot)))));
-   end Set_Spot_Light;
+   end Set_Spot_Light_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Eye_World_Pos (Technique    :  Basic_Lighting_Technique;
-                                Eye_Position : Singles.Vector3) is
+   procedure Set_Eye_World_Pos_Location (Technique    :  Basic_Lighting_Technique;
+                                         Eye_Position : Singles.Vector3) is
    begin
       Set_Single (Technique.Eye_World_Pos_Location, Eye_Position);
-   end Set_Eye_World_Pos;
+   end Set_Eye_World_Pos_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Mat_Specular_Intensity (Technique : Basic_Lighting_Technique;
-                                         Intensity : Single) is
+   procedure Set_Specular_Intensity_Location (Technique : Basic_Lighting_Technique;
+                                              Intensity : Single) is
    begin
       Set_Single (Technique.Mat_Specular_Intensity_Location, Intensity);
-   end  Set_Mat_Specular_Intensity;
+   end  Set_Specular_Intensity_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Mat_Specular_Power (Technique : Basic_Lighting_Technique;
-                                     Power     : UInt) is
+   procedure Set_Specular_Power_Location (Technique : Basic_Lighting_Technique;
+                                          Power     : UInt) is
    begin
       Set_Single (Technique.Mat_Specular_Power_Location, Single (Power));
-   end Set_Mat_Specular_Power;
+   end Set_Specular_Power_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_World_Matrix (Technique     : Basic_Lighting_Technique;
-                               World_Inverse : Singles.Matrix4) is
+   procedure Set_World_Matrix_Location (Technique     : Basic_Lighting_Technique;
+                                        World_Inverse : Singles.Matrix4) is
    begin
       Set_Single (Technique.World_Matrix_Location, World_Inverse);
-   end Set_World_Matrix;
+   end Set_World_Matrix_Location;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_WVP (Technique : Basic_Lighting_Technique;
-                      WVP       : Singles.Matrix4) is
+   procedure Set_WVP_Location (Technique : Basic_Lighting_Technique;
+                               WVP       : Singles.Matrix4) is
    begin
       Set_Single (Technique.WVP_Location, WVP);
-   end Set_WVP;
+   end Set_WVP_Location;
 
    --  -------------------------------------------------------------------------
 
    procedure Use_Program (theTechnique : Basic_Lighting_Technique) is
       use GL.Objects.Shaders.Lists;
    begin
-      if GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
+      if GL.Objects.Programs.Link_Status (theTechnique.Lighting_Program) then
          Put_Line ("Ogldev_Basic_Lighting.Use_Program Update_Program validation failed.");
       else
          Put_Line ("Ogldev_Basic_Lighting.Use_Program Update_Program validated.");

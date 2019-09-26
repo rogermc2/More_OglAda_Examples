@@ -11,47 +11,6 @@ package Ogldev_Basic_Lighting is
 
    Max_Point_Lights : constant Int := 2;
    Max_Spot_Lights  : constant Int := 2;
-   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
-   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
-
-   function Init (Lighting_Technique : in out Basic_Lighting_Technique)
-                    return Boolean;
-
-   function Lighting_Program (Technique : Basic_Lighting_Technique)
-                              return GL.Objects.Programs.Program;
-
-   procedure Set_Color_Texture_Unit (Technique : Basic_Lighting_Technique;
-                   Texture_Unit : GL.Types.UInt);
-   procedure Set_Directional_Light (Technique : Basic_Lighting_Technique;
-                                    Light : Directional_Light);
-   procedure Set_Point_Lights (Technique : in out Basic_Lighting_Technique;
-                               Lights : Point_Light_Array);
-   procedure Set_Point_Light (Technique : Basic_Lighting_Technique;
-                              Point : Point_Light);
-   procedure Set_Spot_Lights (Technique : in out Basic_Lighting_Technique;
-                              Spots : Spot_Light_Array);
-   procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
-                              Spot : Spot_Light);
-   procedure Set_Eye_World_Pos (Technique : Basic_Lighting_Technique;
-                                Eye_Position : Singles.Vector3);
-   procedure Set_Mat_Specular_Intensity (Technique : Basic_Lighting_Technique;
-                                         Intensity : Single);
-   procedure Set_Mat_Specular_Power (Technique : Basic_Lighting_Technique;
-                                     Power : UInt);
-   procedure Set_World_Matrix (Technique : Basic_Lighting_Technique;
-                               World_Inverse : Singles.Matrix4);
-   procedure Set_WVP (Technique : Basic_Lighting_Technique;
-                      WVP : Singles.Matrix4);
-   procedure Use_Program (theTechnique : Basic_Lighting_Technique);
-
-private
-
-   type Direct_Light is record
-      Colour            : GL.Uniforms.Uniform := 0;
-      Ambient_Intensity : GL.Uniforms.Uniform := 0;
-      Diffuse_Intensity : GL.Uniforms.Uniform := 0;
-      Direction         : GL.Uniforms.Uniform := 0;
-   end record;
 
    type Atten is record
       Atten_Constant    : GL.Uniforms.Uniform := 0;
@@ -75,6 +34,47 @@ private
       Direction         : GL.Uniforms.Uniform := 0;
       Cut_Off           : GL.Uniforms.Uniform := 0;
       Attenuation       : Atten;
+   end record;
+   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
+   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
+
+   function Init (Lighting_Technique : in out Basic_Lighting_Technique)
+                    return Boolean;
+
+   function Lighting_Program (Technique : Basic_Lighting_Technique)
+                              return GL.Objects.Programs.Program;
+
+   procedure Set_Color_Texture_Unit_Location (Technique : Basic_Lighting_Technique;
+                                              Texture_Unit : GL.Types.UInt);
+   procedure Set_Directional_Light_Location (Technique : Basic_Lighting_Technique;
+                                             Light : Directional_Light);
+   procedure Set_Point_Lights_Location (Technique : in out Basic_Lighting_Technique;
+                                        Lights : Point_Light_Array);
+   procedure Set_Point_Light_Location (Technique : Basic_Lighting_Technique;
+                                       Point : Point_Light);
+   procedure Set_Spot_Lights_Location (Technique : in out Basic_Lighting_Technique;
+                                       Spots : Spot_Light_Array);
+   procedure Set_Spot_Light_Location (Technique : Basic_Lighting_Technique;
+                                      Spot : Spot_Light);
+   procedure Set_Eye_World_Pos_Location (Technique : Basic_Lighting_Technique;
+                                         Eye_Position : Singles.Vector3);
+   procedure Set_Specular_Intensity_Location (Technique : Basic_Lighting_Technique;
+                                         Intensity : Single);
+   procedure Set_Specular_Power_Location (Technique : Basic_Lighting_Technique;
+                                          Power : UInt);
+   procedure Set_World_Matrix_Location (Technique : Basic_Lighting_Technique;
+                                        World_Inverse : Singles.Matrix4);
+   procedure Set_WVP_Location (Technique : Basic_Lighting_Technique;
+                               WVP : Singles.Matrix4);
+   procedure Use_Program (theTechnique : Basic_Lighting_Technique);
+
+private
+
+   type Direct_Light is record
+      Colour            : GL.Uniforms.Uniform := 0;
+      Ambient_Intensity : GL.Uniforms.Uniform := 0;
+      Diffuse_Intensity : GL.Uniforms.Uniform := 0;
+      Direction         : GL.Uniforms.Uniform := 0;
    end record;
 
    type Basic_Lighting_Technique is record
