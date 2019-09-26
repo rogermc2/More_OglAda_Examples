@@ -70,7 +70,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             GL.Toggles.Enable (GL.Toggles.Depth_Test);
             GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
             GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (Light_Technique));
-            Ogldev_Basic_Lighting.Set_Color_Texture_Unit (Light_Technique, 0);
+            Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location (Light_Technique, 0);
 
             Meshes_22.Load_Mesh
               (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
@@ -121,7 +121,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                          (0.0, 0.5, 1.0));
         Set_Linear_Attenuation (Point_Lights (2), 0.1);
 
-        Set_Point_Lights (Light_Technique, Point_Lights);
+        Set_Point_Lights_Location (Light_Technique, Point_Lights);
 
         Set_Diffuse_Intensity (Spot_Lights (1), 0.9);
         Set_Spot_Light (Spot_Lights (1), Get_Position (Game_Camera), (0.0, 1.0, 1.0));
@@ -138,12 +138,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
         Ogldev_Pipeline.Init_Transforms  (Pipe);
 
-        Set_World_Matrix (Light_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
-        Set_Eye_World_Pos (Light_Technique, Get_Position (Game_Camera));
-        Set_WVP (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-        Set_Directional_Light (Light_Technique, Direct_Light);
-        Set_Mat_Specular_Intensity (Light_Technique, 0.0);
-        Set_Mat_Specular_Power (Light_Technique, 0);
+        Set_World_Matrix_Location (Light_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
+        Set_Eye_World_Pos_Location (Light_Technique, Get_Position (Game_Camera));
+        Set_WVP_Location (Light_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+        Set_Directional_Light_Location (Light_Technique, Direct_Light);
+        Set_Specular_Intensity_Location (Light_Technique, 0.0);
+        Set_Specular_Power_Location (Light_Technique, 0);
 
         Meshes_22.Render_Mesh (theMesh);
 

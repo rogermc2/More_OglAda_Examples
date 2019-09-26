@@ -73,8 +73,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
       if Result then
          GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
-         Ogldev_Basic_Lighting.Set_Directional_Light (theLighting_Technique, Dir_Light);
-         Ogldev_Basic_Lighting.Set_Color_Texture_Unit
+         Ogldev_Basic_Lighting.Set_Directional_Light_Location (theLighting_Technique, Dir_Light);
+         Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location
            (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
 
          Meshes_28.Load_Mesh (Ground, "src/quad.obj");
@@ -147,13 +147,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform",
 --                                Ogldev_Pipeline.Get_World_Transform (Pipe));
-      Ogldev_Basic_Lighting.Set_World_Matrix
+      Ogldev_Basic_Lighting.Set_World_Matrix_Location
         (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
 
 --        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
 --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-      Ogldev_Basic_Lighting.Set_WVP (theLighting_Technique,
-                                     Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Ogldev_Basic_Lighting.Set_WVP_Location (theLighting_Technique,
+                                              Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_28.Render (Ground);
       Particle_System.Render (theParticle_System, Int (Delta_Millisec),

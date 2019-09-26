@@ -62,7 +62,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Utilities.Clear_Background_Colour_And_Depth (Background);
 
-         Ogldev_Basic_Lighting.Set_Directional_Light (Lighting_Technique, Direct_Light);
+         Ogldev_Basic_Lighting.Set_Directional_Light_Location (Lighting_Technique, Direct_Light);
          Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
          Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
          Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
@@ -77,7 +77,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Vertex_Buffer (Vertex_Buffer);
 
          Ogldev_Basic_Lighting.Use_Program (Lighting_Technique);
-         Ogldev_Basic_Lighting.Set_Color_Texture_Unit (Lighting_Technique, 0);
+         Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location (Lighting_Technique, 0);
 
          Result := Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
                                                 "../content/test.png");
@@ -112,26 +112,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour (Background);
 
-      Ogldev_Basic_Lighting.Set_Point_Light (Light   => Point_Lights (1),
-                                             Ambient => 0.0,
-                                             Diffuse =>  0.25,
-                                             Colour  => (1.0, 0.5, 0.0),
-                                             Pos     => (3.0, 1.0, 0.5 * Field_Depth * (1.0 + Cos (Scale))));
-      Ogldev_Basic_Lighting.Set_Point_Light (Point_Lights (2), 0.0, 0.25, (0.0, 0.5, 1.0),
-                                             (7.0, 1.0, 0.5 * Field_Depth * (1.0 + Sin (Scale))));
-      Ogldev_Basic_Lighting.Set_Point_Light_Locations (Shader_Technique, Point_Lights);
-
-      Ogldev_Basic_Lighting.Set_Spot_Light (Light     => Spot_Lights (1),
-                                            Ambient   => 0.0,
-                                            Diffuse   => 0.9,
-                                            Colour    => (0.0, 1.0, 1.0),
-                                            Pos       => Ogldev_Camera.Get_Position (Game_Camera),
-                                            Direction => -Ogldev_Camera.Get_Target (Game_Camera),
-                                            Atten     => (0.1, 0.0, 0.0),
-                                            Cut_Off   => 10.0);
-      Ogldev_Basic_Lighting.Set_Spot_Light (Spot_Lights (2), 0.0, 1.0, (1.0, 1.0, 1.0), (5.0, 3.0, 10.0),
-                                            (0.0, -1.0, 0.0), (0.1, 0.0, 0.0), 20.0);
-      Ogldev_Basic_Lighting.Set_Spot_Light_Locations (Lighting_Technique, Spot_Lights);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
