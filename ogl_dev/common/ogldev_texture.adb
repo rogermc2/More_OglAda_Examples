@@ -16,6 +16,7 @@ package body Ogldev_Texture is
    begin
       if theTexture.Texture_Object.Initialized then
          GL.Objects.Textures.Set_Active_Unit (theTexture_Unit);
+         --  Set_Active_Unit also sets GL TextureUnit (memory address)
          case theTexture.Texture_Target is
          when Enums.Texture_1D =>
             Texture_1D.Bind (theTexture.Texture_Object);
