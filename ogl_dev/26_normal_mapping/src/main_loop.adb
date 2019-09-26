@@ -6,7 +6,6 @@ with GL.Objects;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
---  with GL.Toggles;
 with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
@@ -43,7 +42,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     Trivial_Normal_Map          : Ogldev_Texture.Ogl_Texture;
     Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
     Scale                       : Single := 0.0;
-    Bump_Map_Enabled            : Boolean := False;
+    Bump_Map_Enabled            : Boolean := True;
 
     --  ------------------------------------------------------------------------
 
