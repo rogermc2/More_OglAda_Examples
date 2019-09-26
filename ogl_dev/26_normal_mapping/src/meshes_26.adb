@@ -70,6 +70,7 @@ package body Meshes_26 is
                Vertices (index).Tex (X), Vertices (index).Tex (Y),
                Vertices (index).Normal (X), Vertices (index).Normal (Y), Vertices (index).Normal (Z),
                Vertices (index).Tangent (X), Vertices (index).Tangent (Y), Vertices (index).Tangent (Z));
+--                 Utilities.Print_Vector ("Meshes_26.Init_Buffers Tex", Vertices (index).Tex);
         end loop;
         Array_Buffer.Bind (theEntry.Vertex_Buffer);
         Ogldev_Util.Load_Vector11_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
@@ -186,17 +187,18 @@ package body Meshes_26 is
         use GL.Types;
         use Ada.Containers;
         use Mesh_Entry_Package;
-        Num_Vertices  : constant UInt := UInt (Source_Mesh.Vertices.Length);
-        Vertices      : Vertex_Array (1 .. Int (Num_Vertices));
-        Indices       : GL.Types.UInt_Array (1 .. Int (3 * Source_Mesh.Faces.Length));
-        anEntry       : Mesh_Entry;
-        Position      : GL.Types.Singles.Vector3;
-        Tex_Coord     : GL.Types.Singles.Vector3;
-        Normal        : GL.Types.Singles.Vector3;
-        Tangent       : GL.Types.Singles.Vector3;
-        Tex_Coord_Map : Assimp_Mesh.Vertices_Map;
-        Face          : Assimp_Mesh.AI_Face;
-        Indices_Index : Int := 0;
+        Num_Vertices     : constant UInt := UInt (Source_Mesh.Vertices.Length);
+        Vertices         : Vertex_Array (1 .. Int (Num_Vertices));
+        Indices          : GL.Types.UInt_Array (1 .. Int (3 * Source_Mesh.Faces.Length));
+        anEntry          : Mesh_Entry;
+        Position         : GL.Types.Singles.Vector3;
+        Tex_Coord        : GL.Types.Singles.Vector3;
+        Normal           : GL.Types.Singles.Vector3;
+        Tangent          : GL.Types.Singles.Vector3;
+        Tex_Coord_Map    : constant Assimp_Mesh.Texture_Coords_Map := Source_Mesh.Texture_Coords;
+        Tex_Vertices_Map : Assimp_Mesh.Vertices_Map;
+        Face             : Assimp_Mesh.AI_Face;
+        Indices_Index    : Int := 0;
     begin
         anEntry.Material_Index := Source_Mesh.Material_Index;
 
@@ -205,17 +207,24 @@ package body Meshes_26 is
         for V_Index in 1 .. Num_Vertices loop
             Position := Source_Mesh.Vertices.Element (V_Index);
             Normal := Source_Mesh.Normals.Element (V_Index);
-            if Tex_Coord_Map.Is_Empty then
+
+            if Source_Mesh.Texture_Coords.Is_Empty then
                 Tex_Coord := (0.0, 0.0, 0.0);
+                Put_Line ("Meshes_26.Init_Mesh, Tex_Coord_Map is empty");
             else
                 if Tex_Coord_Map.Contains (V_Index) then
                     Put_Line ("Meshes_26.Init_Mesh, Tex_Coord_Map.Contains Index: " &
                                 UInt'Image (V_Index));
-                    Tex_Coord := Tex_Coord_Map.Element (V_Index);
+                    Tex_Vertices_Map := Tex_Coord_Map.Element (V_Index);
+                    Put_Line ("Meshes_26.Init_Mesh, Tex_Vertices_Map size: " &
+                               Ada.Containers.Count_Type'Image (Tex_Vertices_Map.Length));
+                    Tex_Coord := Tex_Vertices_Map (V_Index);
                 else
+                    Put_Line ("Meshes_26.Init_Mesh, Tex_Vertices_Map is empty.");
                     Tex_Coord := (0.0, 0.0, 0.0);
                 end if;
             end if;
+
             if Source_Mesh.Tangents.Is_Empty then
                 Tangent := (0.0, 0.0, 0.0);
                 Put_Line ("Meshes_26.Init_Mesh, Source_Mesh.Tangents is empty.");
