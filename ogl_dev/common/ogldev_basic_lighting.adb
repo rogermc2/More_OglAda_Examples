@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Shaders;
+with GL.Objects.Shaders.Lists;
 with Gl.Types.Colors;
 
 with Maths;
@@ -16,7 +17,7 @@ package body Ogldev_Basic_Lighting is
    function Colour_To_Vec3 (theColour : Colors.Basic_Color) return Singles.Vector3 is
       Col         : constant Colors.Basic_Color := theColour;
       Vec3_Colour : constant Singles.Vector3 :=
-                          (Col (Colors.R), Col (Colors.G), Col (Colors.B));
+                      (Col (Colors.R), Col (Colors.G), Col (Colors.B));
    begin
       return Vec3_Colour;
    end Colour_To_Vec3;
@@ -44,7 +45,7 @@ package body Ogldev_Basic_Lighting is
       end Spot_Name;
 
       Shader_Program : GL.Objects.Programs.Program;
-      OK : Boolean;
+      OK             : Boolean;
 
    begin
       Lighting_Technique.Lighting_Program :=
@@ -55,17 +56,17 @@ package body Ogldev_Basic_Lighting is
          Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program link failed");
          Put_Line (GL.Objects.Programs.Info_Log (Lighting_Technique.Lighting_Program));
       end if;
---        else
-         --  Can't get GL.Objects.Programs.Validate_Status to work.
-         --           OK := GL.Objects.Programs.Validate_Status (Lighting_Technique.Lighting_Program);
-         --           if not OK then
-         --              Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program validation failed");
-         --              Put_Line ("Info log:");
-         --              Put_Line (GL.Objects.Programs.Info_Log (Lighting_Technique.Lighting_Program));
-         --           else
-         --              Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program validated");
-         --           end if;
---        end if;
+      --        else
+      --  Can't get GL.Objects.Programs.Validate_Status to work.
+      --           OK := GL.Objects.Programs.Validate_Status (Lighting_Technique.Lighting_Program);
+      --           if not OK then
+      --              Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program validation failed");
+      --              Put_Line ("Info log:");
+      --              Put_Line (GL.Objects.Programs.Info_Log (Lighting_Technique.Lighting_Program));
+      --           else
+      --              Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program validated");
+      --           end if;
+      --        end if;
 
       if OK then
          Shader_Program := Lighting_Technique.Lighting_Program;
@@ -98,41 +99,41 @@ package body Ogldev_Basic_Lighting is
                                Lighting_Technique.Num_Spot_Lights_Location);
 
          for index in Lighting_Technique.Point_Lights_Locations'Range loop
-         Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.Color"),
-                               Lighting_Technique.Point_Lights_Locations (index).Colour);
-         Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.AmbientIntensity"),
-                               Lighting_Technique.Point_Lights_Locations (index).Ambient_Intensity);
-         Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.DiffuseIntensity"),
-                               Lighting_Technique.Point_Lights_Locations (index).Diffuse_Intensity);
-         Set_Uniform_Location (Shader_Program, Point_Name (index, "Position"),
-                               Lighting_Technique.Point_Lights_Locations (index).Position);
-         Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Constant"),
-                               Lighting_Technique.Point_Lights_Locations (index).Attenuation.Atten_Constant);
-         Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Linear"),
-                               Lighting_Technique.Point_Lights_Locations (index).Attenuation.Linear);
-         Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Exp"),
-                               Lighting_Technique.Point_Lights_Locations (index).Attenuation.Exp);
+            Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.Color"),
+                                  Lighting_Technique.Point_Lights_Locations (index).Colour);
+            Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.AmbientIntensity"),
+                                  Lighting_Technique.Point_Lights_Locations (index).Ambient_Intensity);
+            Set_Uniform_Location (Shader_Program, Point_Name (index, "Base.DiffuseIntensity"),
+                                  Lighting_Technique.Point_Lights_Locations (index).Diffuse_Intensity);
+            Set_Uniform_Location (Shader_Program, Point_Name (index, "Position"),
+                                  Lighting_Technique.Point_Lights_Locations (index).Position);
+            Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Constant"),
+                                  Lighting_Technique.Point_Lights_Locations (index).Attenuation.Atten_Constant);
+            Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Linear"),
+                                  Lighting_Technique.Point_Lights_Locations (index).Attenuation.Linear);
+            Set_Uniform_Location (Shader_Program, Point_Name (index, "Atten.Exp"),
+                                  Lighting_Technique.Point_Lights_Locations (index).Attenuation.Exp);
          end loop;
 
          for index in Lighting_Technique.Spot_Lights_Locations'Range loop
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.Color"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Colour);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.AmbientIntensity"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Ambient_Intensity);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.DiffuseIntensity"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Diffuse_Intensity);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Position"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Position);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Direction"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Direction);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Cutoff"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Cut_Off);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Constant"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Atten_Constant);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Linear"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Linear);
-         Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Exp"),
-                               Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Exp);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.Color"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Colour);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.AmbientIntensity"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Ambient_Intensity);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Base.DiffuseIntensity"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Diffuse_Intensity);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Position"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Position);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Direction"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Direction);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Cutoff"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Cut_Off);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Constant"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Atten_Constant);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Linear"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Linear);
+            Set_Uniform_Location (Shader_Program, Spot_Name (index, "Point.Atten.Exp"),
+                                  Lighting_Technique.Spot_Lights_Locations (index).Attenuation.Exp);
          end loop;
       end if;
       return OK;
@@ -195,13 +196,26 @@ package body Ogldev_Basic_Lighting is
          Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Lights (index)));
          Set_Single (Location.Attenuation.Exp, Attenuation_Exponent (Lights (index)));
          Technique.Point_Lights_Locations (Int (index)) := Location;
-       end loop;
+      end loop;
 
-    exception
-        when  others =>
-            Put_Line ("An exception occurred in Ogldev_Basic_Lighting.Set_Point_Lights.");
-            raise;
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Ogldev_Basic_Lighting.Set_Point_Lights.");
+         raise;
    end Set_Point_Lights;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Point_Light (Technique : Basic_Lighting_Technique;
+                              Point     : Ogldev_Lights_Common.Point_Light) is
+      Location        : Point_Light_Locations;
+   begin
+      GL.Uniforms.Set_Int (Technique.Num_Point_Lights_Location, 1);
+      Location := Technique.Point_Lights_Locations (1);
+      Set_Single (Location.Colour, Colour_To_Vec3 (Colour (Point)));
+      Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Point));
+      Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Point));
+   end Set_Point_Light;
 
    --  -------------------------------------------------------------------------
 
@@ -253,7 +267,7 @@ package body Ogldev_Basic_Lighting is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Eye_World_Pos (Technique :  Basic_Lighting_Technique;
+   procedure Set_Eye_World_Pos (Technique    :  Basic_Lighting_Technique;
                                 Eye_Position : Singles.Vector3) is
    begin
       Set_Single (Technique.Eye_World_Pos_Location, Eye_Position);
@@ -290,6 +304,36 @@ package body Ogldev_Basic_Lighting is
    begin
       Set_Single (Technique.WVP_Location, WVP);
    end Set_WVP;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Use_Program (theTechnique : Basic_Lighting_Technique) is
+      use GL.Objects.Shaders.Lists;
+   begin
+      if GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
+         Put_Line ("Ogldev_Basic_Lighting.Use_Program Update_Program validation failed.");
+      else
+         Put_Line ("Ogldev_Basic_Lighting.Use_Program Update_Program validated.");
+         declare
+            Shaders_List : constant GL.Objects.Shaders.Lists.List :=
+                             GL.Objects.Programs.Attached_Shaders
+                               (theTechnique.Lighting_Program);
+            Curs         : GL.Objects.Shaders.Lists.Cursor;
+         begin
+            Curs := Shaders_List.First;
+            if Curs = GL.Objects.Shaders.Lists.No_Element then
+               Put_Line ("Lighting_Technique_26.Use_Program, Shaders list is empty");
+            else
+               GL.Objects.Programs.Use_Program (theTechnique.Lighting_Program);
+            end if;
+         end;  -- declare block
+      end if;
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Lighting_Technique_26.Use_Program.");
+         raise;
+   end Use_Program;
 
    --  -------------------------------------------------------------------------
 

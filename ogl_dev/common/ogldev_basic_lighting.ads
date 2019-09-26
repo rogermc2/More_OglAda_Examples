@@ -11,6 +11,8 @@ package Ogldev_Basic_Lighting is
 
    Max_Point_Lights : constant Int := 2;
    Max_Spot_Lights  : constant Int := 2;
+   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
+   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
 
    function Init (Lighting_Technique : in out Basic_Lighting_Technique)
                     return Boolean;
@@ -24,6 +26,8 @@ package Ogldev_Basic_Lighting is
                                     Light : Directional_Light);
    procedure Set_Point_Lights (Technique : in out Basic_Lighting_Technique;
                                Lights : Point_Light_Array);
+   procedure Set_Point_Light (Technique : Basic_Lighting_Technique;
+                              Point : Point_Light);
    procedure Set_Spot_Lights (Technique : in out Basic_Lighting_Technique;
                               Spots : Spot_Light_Array);
    procedure Set_Spot_Light (Technique : Basic_Lighting_Technique;
@@ -38,6 +42,7 @@ package Ogldev_Basic_Lighting is
                                World_Inverse : Singles.Matrix4);
    procedure Set_WVP (Technique : Basic_Lighting_Technique;
                       WVP : Singles.Matrix4);
+   procedure Use_Program (theTechnique : Basic_Lighting_Technique);
 
 private
 
@@ -71,9 +76,6 @@ private
       Cut_Off           : GL.Uniforms.Uniform := 0;
       Attenuation       : Atten;
    end record;
-
-   type Point_Light_Location_Array is array (1 .. Max_Point_Lights) of Point_Light_Locations;
-   type Spot_Light_Location_Array  is array (1 .. Max_Spot_Lights) of Spot_Light_Locations;
 
    type Basic_Lighting_Technique is record
       Lighting_Program                : GL.Objects.Programs.Program;
