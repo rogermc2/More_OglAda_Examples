@@ -1,8 +1,6 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Maths;
-
 package body Ogldev_Lights_Common is
 
 --     generic
