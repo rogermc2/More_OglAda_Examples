@@ -300,15 +300,13 @@ package body Ogldev_Basic_Mesh is
       begin
          if Material_Index < Natural (theMesh.Textures.Length) then
             if not theMesh.Textures.Is_Empty then
-               null;
---                 Ogldev_Texture.Bind (Element (Tex_Curs),
---                                      Ogldev_Engine_Common.Colour_Texture_Unit_Index);
+               Ogldev_Texture.Bind (Element (Tex_Curs),
+                                    Ogldev_Engine_Common.Colour_Texture_Unit);
             end if;
-            null;
---              GL.Objects.Buffers.Draw_Elements_Base_Vertex
---                (Triangles, Num_Indices, UInt_Type,
---                 Element (Entry_Cursor).Base_Index,
---                 Element (Entry_Cursor).Base_Vertex);
+            GL.Objects.Buffers.Draw_Elements_Base_Vertex
+              (Triangles, Num_Indices, UInt_Type,
+               Element (Entry_Cursor).Base_Index,
+               Int (Element (Entry_Cursor).Base_Vertex));
          else
             Put_Line ("Ogldev_Basic_Mesh.Render, Invalid Material_Index.");
          end if;

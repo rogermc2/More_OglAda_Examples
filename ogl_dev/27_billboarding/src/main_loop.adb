@@ -93,7 +93,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Result := Billboard_List.Init ("../content/monster_hellknight.png");
          if Result then
                 Result := Ogldev_Texture.Init_Texture
-                  (Bricks_Texture, GL.Low_Level.Enums.Texture_2D, "../content/bricks.png");
+                  (Bricks_Texture, GL.Low_Level.Enums.Texture_2D, "../content/bricks.jpg");
                 if Result then
                     Ogldev_Texture.Load (Bricks_Texture);
                     Ogldev_Texture.Bind (Bricks_Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
