@@ -20,12 +20,13 @@ with Utilities;
 
 with Ogldev_Basic_Lighting;
 with Ogldev_Camera;
+with Ogldev_Engine_Common;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
-with Buffers;
+with Billboard_List;
 with Meshes_27;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
@@ -38,7 +39,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Lighting_Technique     : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Game_Camera            : Ogldev_Camera.Camera;
    Ground_Mesh            : Meshes_27.Mesh_27;
-   theTexture             : Ogldev_Texture.Ogl_Texture;
+   Bricks_Texture         : Ogldev_Texture.Ogl_Texture;
    Normal_Map             : Ogldev_Texture.Ogl_Texture;
    Direct_Light           : Ogldev_Lights_Common.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
@@ -70,33 +71,48 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             theColour      => Ogldev_Lights_Common.Colour_White,
             Dir            => (1.0, 0.0, 0.0));
 
-         Ogldev_Math.Set_Perspective_FOV (Perspective_Proj_Info, 60.0);
-         Ogldev_Math.Set_Perspective_Height (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
-         Ogldev_Math.Set_Perspective_Width (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
          --  The near plane should be between the camera and the target?
          --  or at the target?
-         Ogldev_Math.Set_Perspective_Near (Perspective_Proj_Info, 1.0);
-         Ogldev_Math.Set_Perspective_Far (Perspective_Proj_Info, 100.0);
-
+         Ogldev_Math.Set_Perspective_Info (Info   => Perspective_Proj_Info,
+                                           FOV    => 60.0,
+                                           Width  => GL.Types.UInt (Window_Height),
+                                           Height => GL.Types.UInt (Window_Width),
+                                           Near   => 1.0,
+                                           Far    => 100.0);
          Ogldev_Camera.Init_Camera (Game_Camera, Window,
                                     Camera_Position, Target, Up);
+
          Ogldev_Basic_Lighting.Use_Program (Lighting_Technique);
          Ogldev_Basic_Lighting.Set_Directional_Light_Location
-           (Lighting_Technique, Direct_Light);
+              (Lighting_Technique, Direct_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location (Lighting_Technique, 0);
 
-         Buffers.Create_Vertex_Buffer (Vertex_Buffer);
+--           Buffers.Create_Vertex_Buffer (Vertex_Buffer);
 
          Meshes_27.Load_Mesh (Ground_Mesh, "quad.obj");
-         Result := Ogldev_Texture.Init_Texture
-           (theTexture, GL.Low_Level.Enums.Texture_2D, "../content/test.png");
+         Result := Billboard_List.Init ("../content/monster_hellknight.png");
          if Result then
-            Ogldev_Texture.Load (theTexture);
-         else
-            Put_Line ("Main_Loop.Init. Init_Texture failed");
-         end if;
+                Result := Ogldev_Texture.Init_Texture
+                  (Bricks_Texture, GL.Low_Level.Enums.Texture_2D, "../content/bricks.png");
+                if Result then
+                    Ogldev_Texture.Load (Bricks_Texture);
+                    Ogldev_Texture.Bind (Bricks_Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
 
-         Glfw.Input.Poll_Events;
+                    if Result then
+                        Result := Ogldev_Texture.Init_Texture
+                          (Normal_Map, GL.Low_Level.Enums.Texture_2D, "../content/normal_map.jpg");
+                        if Result then
+                            Ogldev_Texture.Load (Normal_Map);
+                        else
+                            Put_Line ("Main_Loop.Init Normal_Map failed");
+                        end if;
+                    else
+                        Put_Line ("Main_Loop.Init Bricks_Texture failed");
+                    end if;
+                else
+                    Put_Line ("Main_Loop.Init Billboard_List.Init failed");
+                end if;
+            end if;
       end if;
 
    exception
@@ -154,7 +170,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
 
       GL.Objects.Textures.Set_Active_Unit (0);
-      GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);
+      GL.Objects.Textures.Targets.Texture_2D.Bind (Bricks_Texture.Texture_Object);
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);

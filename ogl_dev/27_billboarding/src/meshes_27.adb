@@ -1,17 +1,13 @@
-with System;
 
 with Interfaces.C;
-with Interfaces.C.Pointers;
 
 with Ada.Directories;
-with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Low_Level.Enums;
 
-with Maths;
 with Utilities;
 
 with Assimp_Types; use Assimp_Types;
@@ -37,7 +33,7 @@ package body Meshes_27 is
    end record;
    type Vertex_Array is array (GL.Types.Int range <>) of Vertex;
 
-   Mesh_27_Exception : Exception;
+--     Mesh_27_Exception : Exception;
 
    procedure Init_Materials (theMesh   : in out Mesh_27;
                              File_Name : String;
@@ -117,7 +113,6 @@ package body Meshes_27 is
    procedure Init_Materials (theMesh  : in out Mesh_27; File_Name : String;
                              theScene : Scene.AI_Scene) is
       use Material.AI_Material_Package;
-      use Assimp_Types;
       use Material;
 
       Dir           : constant String
@@ -258,8 +253,8 @@ package body Meshes_27 is
                        AI_Process_Flip_UVs'Enum_Rep + AI_Process_Calc_Tangent_Space'Enum_Rep;
       pragma Convention (C, Load_Flags);
    begin
-      theScene :=
-        Importer.Read_File (File_Name, GL.Types.UInt (Load_Flags));
+--        theScene :=
+--          Importer.Read_File (File_Name, GL.Types.UInt (Load_Flags));
       Init_From_Scene (theMesh, File_Name, theScene);
 
    exception
