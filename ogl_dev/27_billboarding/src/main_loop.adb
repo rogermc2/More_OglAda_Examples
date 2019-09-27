@@ -130,15 +130,19 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
-      Scale := Scale + 0.0057;
+      Delay (1.0);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Background_Colour (Background);
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
+      Ogldev_Basic_Lighting.Use_Program (Lighting_Technique);
+      Ogldev_Texture.Bind (Bricks_Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
+      Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -1.0);  --  orig 0,0,1
+      Ogldev_Pipeline.Set_Scale (Pipe, 20.0, 20.0, 1.0);
+      Ogldev_Pipeline.Set_Rotation (Pipe, 90.0, 0.0, 0.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Ogldev_Camera.Get_Position (Game_Camera),
                                   Ogldev_Camera.Get_Target (Game_Camera),
                                   Ogldev_Camera.Get_Up (Game_Camera));
@@ -147,36 +151,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Ogldev_Basic_Lighting.Set_WVP_Location
         (Lighting_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-
       Ogldev_Basic_Lighting.Set_World_Matrix_Location
         (Lighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
-      Ogldev_Basic_Lighting.Set_Directional_Light_Location
-        (Lighting_Technique, Direct_Light);
-      Ogldev_Basic_Lighting.Set_Eye_World_Pos_Location
-        (Lighting_Technique, Ogldev_Camera.Get_Position (Game_Camera));
-      Ogldev_Basic_Lighting.Set_Specular_Intensity_Location (Lighting_Technique, 0.0);
-      Ogldev_Basic_Lighting.Set_Specular_Power_Location (Lighting_Technique, 0);
 
-      GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (1);
-      GL.Attributes.Enable_Vertex_Attrib_Array (2);
-
-      --  First attribute buffer : Vertices
-      GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
-      --  Second attribute buffer : Textures
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
-      --  Third attribute buffer : Normals
-      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
-
-      GL.Objects.Textures.Set_Active_Unit (0);
-      GL.Objects.Textures.Targets.Texture_2D.Bind (Bricks_Texture.Texture_Object);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
-
-      GL.Attributes.Disable_Vertex_Attrib_Array (0);
-      GL.Attributes.Disable_Vertex_Attrib_Array (1);
-      GL.Attributes.Disable_Vertex_Attrib_Array (2);
-
+      Billboard_List.Render (Ogldev_Pipeline.Get_VP_Transform (Pipe),
+                             Ogldev_Camera.Get_Position (Game_Camera));
    exception
       when  others =>
          Put_Line ("An exception occurred in Main_Loop.Render_Scene.");
