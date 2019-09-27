@@ -6,7 +6,6 @@ with GL.Objects.Vertex_Arrays;
 with GL.Types;
 
 with Assimp_Types;
-with Ogldev_Basic_Mesh;
 with Ogldev_Texture;
 
 package Meshes_28 is
