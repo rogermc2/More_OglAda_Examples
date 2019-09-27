@@ -30,7 +30,7 @@ package body Billboard_Technique_27 is
       theTechnique.Lighting_Program := Program_From
         ((Src ("src/shaders/billboard_27.vs", Vertex_Shader),
          Src ("src/shaders/billboard_27.fs", Fragment_Shader),
-         Src ("src/shaders/billboard_27.gs", Fragment_Shader)));
+         Src ("src/shaders/billboard_27.gs", Geometry_Shader)));
 
       OK := GL.Objects.Programs.Link_Status (theTechnique.Lighting_Program);
       if not OK then
