@@ -89,7 +89,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
 --           Buffers.Create_Vertex_Buffer (Vertex_Buffer);
 
-         Meshes_27.Load_Mesh (Ground_Mesh, "quad.obj");
+         Meshes_27.Load_Mesh (Ground_Mesh, "src/quad.obj");
          Result := Billboard_List.Init ("../content/monster_hellknight.png");
          if Result then
                 Result := Ogldev_Texture.Init_Texture

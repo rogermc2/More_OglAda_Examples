@@ -253,8 +253,8 @@ package body Meshes_27 is
                        AI_Process_Flip_UVs'Enum_Rep + AI_Process_Calc_Tangent_Space'Enum_Rep;
       pragma Convention (C, Load_Flags);
    begin
---        theScene :=
---          Importer.Read_File (File_Name, GL.Types.UInt (Load_Flags));
+      theScene :=
+        Importer.Read_File (File_Name, GL.Types.UInt (Load_Flags));
       Init_From_Scene (theMesh, File_Name, theScene);
 
    exception
