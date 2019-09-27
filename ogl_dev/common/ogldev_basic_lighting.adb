@@ -310,10 +310,9 @@ package body Ogldev_Basic_Lighting is
    procedure Use_Program (theTechnique : Basic_Lighting_Technique) is
       use GL.Objects.Shaders.Lists;
    begin
-      if GL.Objects.Programs.Link_Status (theTechnique.Lighting_Program) then
+      if GL.Objects.Programs.Validate_Status (theTechnique.Lighting_Program) then
          Put_Line ("Ogldev_Basic_Lighting.Use_Program Update_Program validation failed.");
       else
-         Put_Line ("Ogldev_Basic_Lighting.Use_Program Update_Program validated.");
          declare
             Shaders_List : constant GL.Objects.Shaders.Lists.List :=
                              GL.Objects.Programs.Attached_Shaders
