@@ -298,7 +298,7 @@ package body Meshes_27 is
          end if;
 
          GL.Objects.Buffers.Draw_Elements
-           (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
+           (Triangles, Int (anEntry.Num_Indices), UInt_Type);
          Next (Entry_Cursor);
       end loop;
 

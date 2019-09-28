@@ -15,7 +15,6 @@ with Glfw.Input;
 with Glfw.Input.Keys;
 with Glfw.Windows.Context;
 
---  with Maths;
 with Utilities;
 
 with Ogldev_Basic_Lighting;
@@ -31,8 +30,6 @@ with Meshes_27;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
-
-   Background             : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer          : GL.Objects.Buffers.Buffer;
@@ -62,7 +59,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-         Utilities.Clear_Background_Colour_And_Depth (Background);
 
          Ogldev_Lights_Common.Init_Directional_Light
            (Light          => Direct_Light,
@@ -124,15 +120,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
---        use GL.Types.Singles;
---        use Maths.Single_Math_Functions;
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
-      Delay (1.0);
+      Delay (0.2);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
-      Utilities.Clear_Background_Colour (Background);
+      Utilities.Clear_Colour_Buffer_And_Depth;
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -154,6 +148,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Basic_Lighting.Set_World_Matrix_Location
         (Lighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
 
+      Meshes_27.Render (Ground_Mesh);
       Billboard_List.Render (Ogldev_Pipeline.Get_VP_Transform (Pipe),
                              Ogldev_Camera.Get_Position (Game_Camera));
    exception
