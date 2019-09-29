@@ -83,8 +83,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
               (Lighting_Technique, Direct_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location (Lighting_Technique, 0);
 
---           Buffers.Create_Vertex_Buffer (Vertex_Buffer);
-
          Meshes_27.Load_Mesh (Ground_Mesh, "src/quad.obj");
          Result := Billboard_List.Init ("../content/monster_hellknight.png");
          if Result then
@@ -124,7 +122,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
-      Delay (0.2);
+      Delay (0.5);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Colour_Buffer_And_Depth;
 
