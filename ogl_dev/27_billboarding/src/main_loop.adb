@@ -122,7 +122,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
-      Delay (0.5);
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Colour_Buffer_And_Depth;
 

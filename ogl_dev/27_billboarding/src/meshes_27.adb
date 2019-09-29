@@ -33,8 +33,6 @@ package body Meshes_27 is
    end record;
    type Vertex_Array is array (GL.Types.Int range <>) of Vertex;
 
---     Mesh_27_Exception : Exception;
-
    procedure Init_Materials (theMesh   : in out Mesh_27;
                              File_Name : String;
                              theScene  : Scene.AI_Scene);
@@ -133,7 +131,6 @@ package body Meshes_27 is
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Result := Material_System.Get_Texture
               (aMaterial, AI_Texture_Diffuse, 0, Path);
-
             if Result = Assimp_Types.API_Return_Success then
                if Ogldev_Texture.Init_Texture
                  (aTexture, GL.Low_Level.Enums.Texture_2D,
@@ -142,16 +139,6 @@ package body Meshes_27 is
                   theMesh.Textures.Insert (index, aTexture);
                   Put_Line ("Meshes_27.Init_Materials.Load_Textures loaded texture from "
                             & Dir & To_String (Path));
-               elsif Ogldev_Texture.Init_Texture
-                 (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
-                  Ogldev_Texture.Load (aTexture);
-                  theMesh.Textures.Insert (index, aTexture);
-                  New_Line;
-                  Put_Line ("Meshes_27.Init_Materials.Load_Textures loaded default texture from "
-                            & Dir & "white.png");
-               else
-                  Put_Line ("Meshes_27.Init_Materials.Load_Textures default texture "
-                            & Dir & "white.png not found.");
                end if;
             else
                Put_Line ("Meshes_27.Init_Materials.Load_Textures Get_Texture failed");
@@ -292,9 +279,6 @@ package body Meshes_27 is
          if Textures.Contains (anEntry.Material_Index) then
             aTexture := Textures.Element (anEntry.Material_Index);
             Ogldev_Texture.Bind (aTexture, Ogldev_Engine_Common.Colour_Texture_Unit);
-         else
-            Put_Line ("Meshes_27.Render Textures does not contain Material_Index: " &
-                        UInt'Image (anEntry.Material_Index));
          end if;
 
          GL.Objects.Buffers.Draw_Elements
