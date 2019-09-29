@@ -31,7 +31,7 @@ Package body Billboard_List is
       (Position_Vector_Pointers);
 
     Billboard_Technique : Billboard_Technique_27.Technique;
-    VBO                 : GL.Objects.Buffers.Buffer;
+    Vertices_Buffer     : GL.Objects.Buffers.Buffer;
     Billboard_Texture   : Ogldev_Texture.Ogl_Texture;
 
     --  ----------------------------------------------------------------------
@@ -47,8 +47,8 @@ Package body Billboard_List is
             end loop;
         end loop;
 
-        VBO.Initialize_Id;
-        Array_Buffer.Bind (VBO);
+        Vertices_Buffer.Initialize_Id;
+        Array_Buffer.Bind (Vertices_Buffer);
         Load_Positions_Buffer (Array_Buffer, Positions, Static_Draw);
     end Create_Position_Buffer;
 
@@ -79,7 +79,6 @@ Package body Billboard_List is
         Ogldev_Texture.Bind (Billboard_Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
 
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
-        GL.Objects.Buffers.Array_Buffer.Bind (VBO);
         GL.Attributes.Set_Vertex_Attrib_Pointer
           (Index  => 0, Count => 3, Kind => Single_Type, Stride => 0, Offset => 0);
 
