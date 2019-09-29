@@ -19,10 +19,9 @@ Package body Billboard_List is
     Num_Rows : constant Int := 10;
     Num_Cols : constant Int := 10;
 
-    type Position_Vector is array (1 .. Num_Cols) of aliased Singles.Vector3;
-    pragma Convention (C, Position_Vector);
+    type Position_Vector is new Singles.Vector3;
 
-    type Positions_Array is array (Size range <>) of aliased Position_Vector;
+    type Positions_Array is array (Size range <>) of aliased Singles.Vector3;
     pragma Convention (C, Positions_Array);
 
     package Position_Vector_Pointers is new Interfaces.C.Pointers
@@ -39,14 +38,13 @@ Package body Billboard_List is
 
     procedure Create_Position_Buffer is
         use GL.Objects.Buffers;
-        Positions : Positions_Array (1 .. Num_Rows);
-        Position  : Position_Vector;
+        Positions : Positions_Array (1 .. Num_Rows * Num_Cols);
     begin
         for Row in 1 .. Num_Rows loop
             for Col in 1 .. Num_Cols loop
-                Position (Col) := (Single (Row), 0.0, Single (Col));
+                Positions ((Row - 1) * Num_Cols + Col) :=
+                  (Single (Col - 1), 0.0, Single (Row - 1 ));
             end loop;
-            Positions (Row) := Position;
         end loop;
 
         VBO.Initialize_Id;
