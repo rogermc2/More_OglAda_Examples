@@ -93,21 +93,23 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Scale (P : in out Pipeline; S : Single) is
+   procedure Set_Scale (P : in out Pipeline; S : Single := 1.0) is
    begin
       P.Scale := (S, S, S);
    end Set_Scale;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Scale (P : in out Pipeline; X, Y, Z : Single) is
+   procedure Set_Scale (P : in out Pipeline;
+                        X : Single := 1.0; Y : Single := 1.0;
+                        Z : Single := 1.0) is
    begin
       P.Scale := (X, Y, Z);
    end Set_Scale;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Scale (P : in out Pipeline; S : Singles.Vector3) is
+   procedure Set_Scale (P : in out Pipeline; S : Singles.Vector3 := (1.0, 1.0, 1.0)) is
    begin
       P.Scale := S;
    end Set_Scale;
@@ -144,14 +146,16 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Rotation (P : in out Pipeline; X, Y, Z : Single) is
+   procedure Set_Rotation (P : in out Pipeline;
+                           X : Single := 0.0; Y : Single := 0.0;
+                           Z : Single := 0.0) is
    begin
       P.Rotation_Info := (X, Y, Z);
    end Set_Rotation;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Rotation (P : in out Pipeline; S : Singles.Vector3) is
+   procedure Set_Rotation (P : in out Pipeline; S : Singles.Vector3 := (0.0, 0.0, 0.0)) is
    begin
       P.Rotation_Info := S;
    end Set_Rotation;
@@ -174,14 +178,17 @@ package body Ogldev_Pipeline is
 
    --  ------------------------------------------------------------------
 
-   procedure Set_World_Position (P : in out Pipeline; X, Y, Z : Single) is
+   procedure Set_World_Position (P : in out Pipeline;
+                                 X : Single := 0.0; Y : Single := 0.0;
+                                 Z : Single := 0.0) is
    begin
       P.World_Pos := (X, Y, Z);
    end Set_World_Position;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_World_Position (P : in out Pipeline; S : Singles.Vector3) is
+   procedure Set_World_Position (P : in out Pipeline;
+                                 S : Singles.Vector3 := (0.0, 0.0, 0.0)) is
    begin
       P.World_Pos := S;
    end Set_World_Position;
