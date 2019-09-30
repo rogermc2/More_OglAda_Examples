@@ -53,18 +53,24 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
 
-      Position            : constant Singles.Vector3 := (0.0, 0.4, 5.0); --  (0.0, 0.0, 1.0); --  Normalized by Camera.Init
-      Target              : constant Singles.Vector3 := (0.0, 0.2, 1.0); --  (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Position            : constant Singles.Vector3 := (0.0, 0.4, 5.0); --  (0.0, 0.0, 1.0)  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, 0.2, 1.0); --  (0.0, 0.0, 1.0)  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
-      Particle_System_Pos : constant GL.Types.Singles.Vector3 := (0.0, 0.0, -1.0);
+      Particle_System_Pos : constant GL.Types.Singles.Vector3 := (0.0, 0.0, 1.0);
    begin
       VAO.Initialize_Id;
       VAO.Bind;
       Current_Time_MilliSec := Single (Glfw.Time);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      Utilities.Clear_Background_Colour_And_Depth (Background);
 
       Ogldev_Lights_Common.Init_Directional_Light
-        (Dir_Light, 0.2, 0.8, (1.0, 1.0, 1.0), (1.0, 0.0, 0.0));
+        (Light          => Dir_Light,
+         Amb_Intensity  => 0.2,
+         Diff_Intensity => 0.8,
+         theColour      => (1.0, 1.0, 1.0),
+         Dir            => (0.0, 1.0, 0.0));
+
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
          1.0, 100.0);
@@ -72,8 +78,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
       if Result then
-         GL.Objects.Programs.Use_Program (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
-         Ogldev_Basic_Lighting.Set_Directional_Light_Location (theLighting_Technique, Dir_Light);
+         GL.Objects.Programs.Use_Program
+           (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
+         Ogldev_Basic_Lighting.Set_Directional_Light_Location
+           (theLighting_Technique, Dir_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location
            (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
 
@@ -127,7 +135,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
 
-      Utilities.Clear_Background_Colour_And_Depth (Background);
+      Utilities.Clear_Colour_Buffer_And_Depth;
 
       GL.Objects.Programs.Use_Program
         (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
@@ -135,8 +143,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Texture.Bind (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
       Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 2.0);  --  orig 20.0, 20.0, 1.0
-      Ogldev_Pipeline.Set_Rotation (Pipe, 90.0, 0.0, 0.0);
+      Ogldev_Pipeline.Set_Scale (Pipe, 2.0, 2.0, 1.0);  --  orig 20.0, 20.0, 1.0
+      Ogldev_Pipeline.Set_Rotation (Pipe, 45.0, 0.0, 0.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
@@ -153,9 +161,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 --                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_28.Render (Ground);
---        Particle_System.Render (theParticle_System, Int (Delta_Millisec),
---                                Ogldev_Pipeline.Get_VP_Transform (Pipe),
---                                Get_Position (Game_Camera));
+      Particle_System.Render (theParticle_System, Int (Delta_Millisec),
+                              Ogldev_Pipeline.Get_VP_Transform (Pipe),
+                              Get_Position (Game_Camera));
    exception
       when  others =>
          Put_Line ("An exception occurred in Main_Loop.Render_Scene.");
