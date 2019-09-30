@@ -6,6 +6,7 @@ with Ogldev_Math;
 
 package Ogldev_Pipeline is
 
+   type Orientation_Data is private;
    type Pipeline is private;
 
    function Get_Projection_Transform (P : Pipeline) return Singles.Matrix4;
@@ -20,6 +21,7 @@ package Ogldev_Pipeline is
    procedure Set_Camera (P : in out Pipeline; C : Ogldev_Camera.Camera);
    procedure Set_Camera (P : in out Pipeline;
                          Pos, Target, Up : Singles.Vector3);
+   procedure Set_Orientation (P : in out Pipeline; Orient : Orientation_Data);
    procedure Set_Orthographic_Projection (P : in out Pipeline;
                                           Info : Ogldev_Math.Orthographic_Projection_Info);
    procedure Set_Perspective_Projection (P : in out Pipeline;
@@ -27,9 +29,8 @@ package Ogldev_Pipeline is
    procedure Set_Rotation (P : in out Pipeline;
                            X : Single := 0.0; Y : Single := 0.0; Z : Single := 0.0);
    procedure Set_Rotation (P : in out Pipeline; S : Singles.Vector3 := (0.0, 0.0, 0.0));
-   procedure Set_Scale (P : in out Pipeline; S : Single := 1.0);
-   procedure Set_Scale (P : in out Pipeline;
-                        X : Single := 1.0; Y : Single := 1.0; Z : Single := 1.0);
+   procedure Set_Scale (P : in out Pipeline; S : Single);
+   procedure Set_Scale (P : in out Pipeline; X, Y, Z : Single);
    procedure Set_Scale (P : in out Pipeline; S : Singles.Vector3 := (1.0, 1.0, 1.0));
    procedure Set_World_Position (P : in out Pipeline;
                                  X : Single := 0.0; Y : Single := 0.0; Z : Single := 0.0);
@@ -41,6 +42,12 @@ private
       Position : Singles.Vector3 := (0.0, 0.0, 0.0);
       Target   : Singles.Vector3 := (0.0, 0.0, 1.0);
       Up       : Singles.Vector3 := (0.0, 1.0, 0.0);
+   end record;
+
+   type Orientation_Data is record
+      Scale    : Singles.Vector3 := (1.0, 1.0, 1.0);
+      Rotation : Singles.Vector3 := (0.0, 0.0, 1.0);
+      Position : Singles.Vector3 := (0.0, 0.0, 0.0);
    end record;
 
    type Pipeline is record
