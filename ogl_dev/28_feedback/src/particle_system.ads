@@ -28,8 +28,8 @@ private
    type Transform_Feedback_Array is array (UInt range 1 .. 2) of GL.Objects.Buffers.Buffer;
 
    type Particle_System is record
-     Current_VB_Index  : UInt := 0;
-     Current_TFB_Index : UInt := 0;
+     Current_VB_Index  : UInt := 1;
+     Current_TFB_Index : UInt := 1;
      Is_First          : Boolean := True;
      PS_Time           : GL.Types.Int := 0;
      Texture           : Ogldev_Texture.Ogl_Texture;

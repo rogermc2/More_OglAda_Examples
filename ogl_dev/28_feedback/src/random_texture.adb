@@ -31,8 +31,8 @@ package body Random_Texture is
          Source_Type     => GL.Pixels.Float,
          Source          => GL.Objects.Textures.Image_Source (Random_Data'Address));
 
-        Texture_1D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
-        Texture_1D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+      Texture_1D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
+      Texture_1D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
       Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Repeat); --  Wrap_S
 
    exception
