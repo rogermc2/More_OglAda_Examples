@@ -14,6 +14,8 @@ with Utilities;
 package body Ogldev_Basic_Lighting is
    use GL.Uniforms;
 
+   --  -------------------------------------------------------------------------
+
    function Colour_To_Vec3 (theColour : Colors.Basic_Color) return Singles.Vector3 is
       Col         : constant Colors.Basic_Color := theColour;
       Vec3_Colour : constant Singles.Vector3 :=
@@ -21,6 +23,8 @@ package body Ogldev_Basic_Lighting is
    begin
       return Vec3_Colour;
    end Colour_To_Vec3;
+
+   --  -------------------------------------------------------------------------
 
    function Init (Lighting_Technique : in out Basic_Lighting_Technique) return Boolean is
       use Ada.Strings;
