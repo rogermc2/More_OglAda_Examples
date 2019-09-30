@@ -17,7 +17,7 @@ with Random_Texture;
 package body Particle_System is
 
    Max_Particles   : constant GL.Types.Int := 1000;
-   type Particle_Type is (Type_Launcher);
+   type Particle_Type is (Type_Launcher, Shell, Secondary_Shell);
 
    type Particle is record
       Particle_Kind : Particle_Type := Type_Launcher;
@@ -31,6 +31,8 @@ package body Particle_System is
      (GL.Types.Int, Particle, Particle_Array, Particle'(others => <>));
    procedure Load_Particle_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (Particle_Pointers);
+
+   Particles : Particle_Array (1 .. Max_Particles);
 
    procedure Render_Particles (PS         : in out Particle_System;
                                View_Point : Singles.Matrix4;
@@ -58,13 +60,7 @@ package body Particle_System is
    procedure Init_Particle_System (PS  : in out Particle_System;
                                    Pos : Singles.Vector3) is
       use GL.Objects.Buffers;
-      Particles      : Particle_Array (1 .. Max_Particles);
-      theTechnique   : PS_Update_Technique.Update_Technique;
-      Update_Program : GL.Objects.Programs.Program;
    begin
-      PS_Update_Technique.Init (theTechnique);
-      Update_Program := PS_Update_Technique.Get_Update_Program (theTechnique);
-
       Particles (1).Particle_Kind := Type_Launcher;
       Particles (1).Position := Pos;
       Particles (1).Velocity := (0.0, 0.0001, 0.0);
@@ -72,36 +68,35 @@ package body Particle_System is
 
       for index in UInt range 1 .. 2 loop
          PS.Feedback_Buffer (index).Initialize_Id;
-         --           Bind_Transform_Feedback (PS.Feedback_Buffer (index));
          Transform_Feedback_Buffer.Bind (PS.Feedback_Buffer (index));
+
          PS.Particle_Buffer (index).Initialize_Id;
          Array_Buffer.Bind (PS.Particle_Buffer (index));
+
          Load_Particle_Buffer (Array_Buffer, Particles, Dynamic_Draw);
          Transform_Feedback_Buffer.Bind_Buffer_Base
            (0, PS.Particle_Buffer (index));
       end loop;
-      PS.Current_VB_Index := 1;
-      PS.Current_TFB_Index := 1;
 
-      GL.Objects.Programs.Use_Program (Update_Program);
+      PS_Update_Technique.Init (PS.Update_Method);
+      PS_Update_Technique.Use_Program (PS.Update_Method);
       PS_Update_Technique.Set_Random_Texture_Unit
-        (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit);
-      PS_Update_Technique.Set_Launcher_Lifetime (theTechnique, 100.0);
-      PS_Update_Technique.Set_Shell_Lifetime (theTechnique, 10000.0);
-      PS_Update_Technique.Set_Secondary_Shell_Lifetime (theTechnique, 2500.0);
+        (PS.Update_Method, Ogldev_Engine_Common.Random_Texture_Unit);
+      PS_Update_Technique.Set_Launcher_Lifetime (PS.Update_Method, 100.0);
+      PS_Update_Technique.Set_Shell_Lifetime (PS.Update_Method, 10000.0);
+      PS_Update_Technique.Set_Secondary_Shell_Lifetime (PS.Update_Method, 2500.0);
 
-      PS_Update_Technique.Set_Random_Texture_Unit
-        (theTechnique, Ogldev_Engine_Common.Random_Texture_Unit);
-      PS_Update_Technique.Set_Launcher_Lifetime (theTechnique, 100.0);
-      PS_Update_Technique.Set_Shell_Lifetime (theTechnique, 10000.0);
-      PS_Update_Technique.Set_Secondary_Shell_Lifetime (theTechnique, 2500.0);
-      PS.Update_Method := theTechnique;
+       Put_Line ("Particle_System.Init_Particle_System PS_Update_Technique set.");
 
       Random_Texture.Init_Random_Texture (PS.Random_Texture, 1000);
+      Put_Line ("Particle_System.Init_Particle_System Random_Texture initialized.");
       Random_Texture.Bind (PS.Random_Texture,
                            Ogldev_Engine_Common.Random_Texture_Unit);
+      Put_Line ("Particle_System.Init_Particle_System Random_Texture bound.");
+
 
       Billboard_Technique.Init (PS.Billboard_Method);
+      Billboard_Technique.Use_Program (PS.Billboard_Method);
       Billboard_Technique.Set_Colour_Texture_Unit
         (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
       Billboard_Technique.Set_Billboard_Size (PS.Billboard_Method, 0.01);
