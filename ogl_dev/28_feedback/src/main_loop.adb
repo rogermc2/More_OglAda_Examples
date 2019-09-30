@@ -69,7 +69,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Amb_Intensity  => 0.2,
          Diff_Intensity => 0.8,
          theColour      => (1.0, 1.0, 1.0),
-         Dir            => (0.0, 1.0, 0.0));
+         Dir            => (1.0, 0.0, 0.0));
 
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
@@ -143,22 +143,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Texture.Bind (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
       Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 2.0, 2.0, 1.0);  --  orig 20.0, 20.0, 1.0
-      Ogldev_Pipeline.Set_Rotation (Pipe, 45.0, 0.0, 0.0);
+      Ogldev_Pipeline.Set_Scale (Pipe, 20.0, 20.0, 1.0);  --  orig 20.0, 20.0, 1.0
+      Ogldev_Pipeline.Set_Rotation (Pipe, 90.0, 0.0, 0.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
---        Utilities.Print_Matrix ("Main_Loop.Render_Scene World_Transform",
---                                Ogldev_Pipeline.Get_World_Transform (Pipe));
       Ogldev_Basic_Lighting.Set_WVP_Location (theLighting_Technique,
                                               Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Ogldev_Basic_Lighting.Set_World_Matrix_Location
         (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
-
---        Utilities.Print_Matrix ("Main_Loop.Render_Scene WVP_Transform",
---                                Ogldev_Pipeline.Get_WVP_Transform (Pipe));
 
       Meshes_28.Render (Ground);
       Particle_System.Render (theParticle_System, Int (Delta_Millisec),
