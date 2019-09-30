@@ -5,6 +5,8 @@ with Maths;
 
 package body Ogldev_Pipeline is
 
+  Default_Orientation : Orientation_Data;
+
    procedure Set_Projection_Transform (P : in out Pipeline);
    procedure Set_View_Transform (P : in out Pipeline);
    procedure Set_World_Transform (P : in out Pipeline);
@@ -93,16 +95,14 @@ package body Ogldev_Pipeline is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Scale (P : in out Pipeline; S : Single := 1.0) is
+   procedure Set_Scale (P : in out Pipeline; S : Single) is
    begin
       P.Scale := (S, S, S);
    end Set_Scale;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Scale (P : in out Pipeline;
-                        X : Single := 1.0; Y : Single := 1.0;
-                        Z : Single := 1.0) is
+   procedure Set_Scale (P : in out Pipeline; X, Y, Z : Single) is
    begin
       P.Scale := (X, Y, Z);
    end Set_Scale;
@@ -113,6 +113,15 @@ package body Ogldev_Pipeline is
    begin
       P.Scale := S;
    end Set_Scale;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Orientation (P : in out Pipeline; Orient : Orientation_Data) is
+   begin
+      P.Scale := Orient.Scale;
+      P.World_Pos := Orient.Position;
+      P.Rotation_Info := Orient.Rotation;
+   end Set_Orientation;
 
    --  -------------------------------------------------------------------------
 
