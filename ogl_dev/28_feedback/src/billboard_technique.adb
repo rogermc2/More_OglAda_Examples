@@ -22,9 +22,9 @@ Package body Billboard_Technique is
         use  GL.Objects.Shaders;
     begin
         theTechnique.Program := Program_From
-          ((Src ("src/shaders/billboard.vs", Vertex_Shader),
-           Src ("src/shaders/billboard.fs", Fragment_Shader),
-           Src ("src/shaders/billboard.gs", Geometry_Shader)));
+          ((Src ("src/shaders/billboard_28.vs", Vertex_Shader),
+           Src ("src/shaders/billboard_28.fs", Fragment_Shader),
+           Src ("src/shaders/billboard_28.gs", Geometry_Shader)));
 
         GL.Objects.Programs.Use_Program  (theTechnique.Program);
         theTechnique.View_Point_Location := GL.Objects.Programs.Uniform_Location
