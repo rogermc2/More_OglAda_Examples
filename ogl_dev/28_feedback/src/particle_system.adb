@@ -86,14 +86,9 @@ package body Particle_System is
       PS_Update_Technique.Set_Shell_Lifetime (PS.Update_Method, 10000.0);
       PS_Update_Technique.Set_Secondary_Shell_Lifetime (PS.Update_Method, 2500.0);
 
-       Put_Line ("Particle_System.Init_Particle_System PS_Update_Technique set.");
-
       Random_Texture.Init_Random_Texture (PS.Random_Texture, 1000);
-      Put_Line ("Particle_System.Init_Particle_System Random_Texture initialized.");
       Random_Texture.Bind (PS.Random_Texture,
                            Ogldev_Engine_Common.Random_Texture_Unit);
-      Put_Line ("Particle_System.Init_Particle_System Random_Texture bound.");
-
 
       Billboard_Technique.Init (PS.Billboard_Method);
       Billboard_Technique.Use_Program (PS.Billboard_Method);
@@ -104,7 +99,6 @@ package body Particle_System is
       if Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
                                       "../Content/fireworks_red.jpg") then
          Ogldev_Texture.Load (PS.Texture);
-         Put_Line ("Particle_System.Init_Particle_System PS.Texture loaded.");
       end if;
 
    exception

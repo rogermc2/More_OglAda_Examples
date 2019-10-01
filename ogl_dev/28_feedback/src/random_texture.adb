@@ -14,7 +14,7 @@ package body Random_Texture is
       use GL.Objects.Textures.Targets;
       use GL.Types;
       Gen           : Generator;
-      Random_Data   : Singles.Vector3_Array (1 .. 3);
+      Random_Data   : Singles.Vector3_Array (1 .. Int (Size));
    begin
       for index in Random_Data'Range loop
          Random_Data (index) := (Single (Random (Gen)), Single (Random (Gen)),
