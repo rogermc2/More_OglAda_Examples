@@ -172,7 +172,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 begin
    Init (Main_Window, Running);
    while Running loop
---        delay (0.2);
       Render_Scene (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
