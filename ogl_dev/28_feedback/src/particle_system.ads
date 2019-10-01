@@ -29,7 +29,7 @@ private
 
    type Particle_System is record
      Current_VB_Index  : UInt := 1;
-     Current_TFB_Index : UInt := 1;
+     Current_TFB_Index : UInt := 2;
      Is_First          : Boolean := True;
      PS_Time           : GL.Types.Int := 0;
      Texture           : Ogldev_Texture.Ogl_Texture;
