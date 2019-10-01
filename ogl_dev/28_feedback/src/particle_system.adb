@@ -161,7 +161,6 @@ package body Particle_System is
                                                Kind   => Single_Type,
                                                Stride => Particle'Size,
                                                Offset => 1);
---                                                 Offset => 4);
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
         (PS.Feedback_Buffer (TFB_Index));
 
@@ -172,19 +171,6 @@ package body Particle_System is
          V_Length => Vertices_Length,
          V_Type   => V_Type,
          Name     => Varyings_Name);
---        Put_Line ("Update varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
---        GL.Objects.Programs.Get_Transform_Feedback_Varying
---          (PS_Update_Technique.Get_Update_Program (PS.Update_Method),
---           1, Name_Length, Vertices_Length, V_Type, Varyings_Name);
---        Put_Line ("Update varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
---        GL.Objects.Programs.Get_Transform_Feedback_Varying
---          (PS_Update_Technique.Get_Update_Program (PS.Update_Method),
---           2, Name_Length, Vertices_Length, V_Type, Varyings_Name);
---        Put_Line ("Update varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
---        GL.Objects.Programs.Get_Transform_Feedback_Varying
---          (PS_Update_Technique.Get_Update_Program (PS.Update_Method),
---           3, Name_Length, Vertices_Length, V_Type, Varyings_Name);
---        Put_Line ("Update varying name: " & Varyings_Name (1 .. Integer (Name_Length)));
 
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Mode  => Points, First => 0,
