@@ -18,7 +18,7 @@ package body Particle_System is
 
    type Particle_Type is new Single range 0.0 .. 2.0;
 
-   Max_Particles   : constant GL.Types.Int := 1000;
+   Max_Particles     : constant GL.Types.Int := 1000;
    Particle_Launcher : constant Particle_Type := 0.0;
    Shell             : constant Particle_Type := 1.0;
    Secondary_Shell   : constant Particle_Type := 2.0;
@@ -143,11 +143,6 @@ package body Particle_System is
       Update_Program    : constant GL.Objects.Programs.Program :=
                             PS_Update_Technique.Update_Program (PS.Update_Method);
       TFB_Index         : constant UInt := PS.Current_TFB_Index;
-      Buffer_Size       : constant Integer := 100;
-      Name_Length       : GL.Types.Size;
-      Vertices_Length   : GL.Types.Size;
-      V_Type            : GL.Objects.Programs.Buffer_Mode;
-      Varyings_Name     : String (1 .. Buffer_Size);
    begin
       Billboard_Technique.Use_Program (PS.Billboard_Method);
       Billboard_Technique.Set_Camera_Position (PS.Billboard_Method, Camera_Pos);
@@ -155,6 +150,7 @@ package body Particle_System is
       Billboard_Technique.Set_Colour_Texture_Unit
         (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
 --        GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
+      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (TFB_Index));
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
@@ -164,27 +160,9 @@ package body Particle_System is
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind
         (PS.Feedback_Buffer (TFB_Index));
 
-      GL.Objects.Programs.Get_Transform_Feedback_Varying
-        (Object   => Update_Program,
-         Index    => 0,
-         Length   => Name_Length,
-         V_Length => Vertices_Length,
-         V_Type   => V_Type,
-         Name     => Varyings_Name);
-
       GL.Objects.Vertex_Arrays.Draw_Arrays
-        (Mode  => Points, First => 0,
-         Count => GL.Types.Size (Vertices_Length));
+        (Mode  => Points, First => 0, Count => Size (Max_Particles));
 
-      --  Draw_Transform_Feedback is equivalent to calling Draw_Arrays
-      --  with mode as specified, first set to zero, and
-      --  count set to the number of vertices captured on vertex stream zero the last time transform feedback was active on the transform feedback object named by id.
-      --  Draw_Transform_Feedback generates GL_INVALID_VALUE if
-      --  the buffer id is not the name of a transform feedback object.
-      --        GL.Objects.Buffers.Draw_Transform_Feedback
-      --            (Points, PS.Feedback_Buffer (TFB_Index));
---        GL.Objects.Programs.End_Transform_Feedback;
-      --          Put_Line ("Particle_System.Render_Particles Draw_Arrays returned.");
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
 
    exception
@@ -204,11 +182,6 @@ package body Particle_System is
                            PS_Update_Technique.Get_Update_Program (Update_Technique);
       TFB_Index        : constant UInt := PS.Current_TFB_Index;
       VB_Index         : constant UInt := PS.Current_VB_Index;
-      Buffer_Size      : constant Integer := 100;
-      Name_Length      : GL.Types.Size;
-      Vertices_Length  : GL.Types.Size;
-      V_Type           : GL.Objects.Programs.Buffer_Mode;
-      Varyings_Name    : String (1 .. Buffer_Size);
    begin
       GL.Objects.Programs.Use_Program (Update_Program);
       Set_Time (Update_Technique, PS.PS_Time);
@@ -234,23 +207,12 @@ package body Particle_System is
       GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 8, 8);
 
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
-      GL.Objects.Programs.Get_Transform_Feedback_Varying
-        (Object   => Update_Program,
-         Index    => 1,
-         Length   => Name_Length,
-         V_Length => Vertices_Length,
-         V_Type   => V_Type,
-         Name     => Varyings_Name);
-
       if PS.Is_First then
-         GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Points, 0, 1);
+         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
          PS.Is_First := False;
       else
          GL.Objects.Vertex_Arrays.Draw_Arrays
-           (Mode  => Points, First => 0, Count => GL.Types.Size (Vertices_Length));
-         --           GL.Objects.Buffers.Draw_Transform_Feedback
-         --             (Points, PS.Feedback_Buffer (VB_Index));
-         --              Put_Line ("Particle_System.Update_Particles Draw_Arrays returned.");
+           (Mode  => Points, First => 0, Count => Size (Max_Particles));
       end if;
       GL.Objects.Programs.End_Transform_Feedback;
 
