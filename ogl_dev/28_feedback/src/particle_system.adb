@@ -75,10 +75,6 @@ package body Particle_System is
 
         for index in UInt range 1 .. 2 loop
             PS.Feedback_Buffer (index).Initialize_Id;
-            if not Initialized (PS.Feedback_Buffer (index)) then
-                Put_Line ("Particle_System.Init_Particle_System Feedback_Buffer ID: " &
-                            UInt'Image (Raw_Id (PS.Feedback_Buffer (index))) & " initialization failed");
-            end if;
             GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (index));
 
             PS.Particle_Buffer (index).Initialize_Id;
