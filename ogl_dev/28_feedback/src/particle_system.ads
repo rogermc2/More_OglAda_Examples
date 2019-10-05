@@ -22,10 +22,9 @@ package Particle_System is
    procedure Render (PS : in out Particle_System; Delta_Time : GL.Types.Int;
                      View_Point : Singles.Matrix4;
                      Camera_Pos : Singles.Vector3);
-
 private
    type Particle_Buffer_Array is array (UInt range 1 .. 2) of GL.Objects.Buffers.Buffer;
-   type Transform_Feedback_Array is array (UInt range 1 .. 2) of GL.Objects.Buffers.Buffer;
+   type Transform_Feedback_Array is array (UInt range 1 .. 2) of GL.Objects.Buffers.Transform_Buffer;
 
    type Particle_System is record
      Current_VB_Index  : UInt := 1;
