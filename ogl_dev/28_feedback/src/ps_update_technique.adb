@@ -86,7 +86,6 @@ package body PS_Update_Technique is
    procedure Set_Delta_Millisec (theTechnique : Update_Technique;
                                  Delta_Time   : GL.Types.Int) is
    begin
-      Use_Program (theTechnique);
       GL.Uniforms.Set_Single (theTechnique.Delta_Millisec_Location,  GL.Types.Single (Delta_Time));
    end Set_Delta_Millisec;
 
@@ -95,7 +94,6 @@ package body PS_Update_Technique is
    procedure Set_Time (theTechnique : Update_Technique;
                        theTime      : GL.Types.Int) is
    begin
-      Use_Program (theTechnique);
       GL.Uniforms.Set_Single (theTechnique.Time_Location, GL.Types.Single (theTime));
    end Set_Time;
 
@@ -104,7 +102,6 @@ package body PS_Update_Technique is
    procedure Set_Random_Texture_Unit (theTechnique : Update_Technique;
                                       Texture_Unit : GL.Types.Int) is
    begin
-      Use_Program (theTechnique);
       GL.Uniforms.Set_Int (theTechnique.Random_Texture_Location, Texture_Unit);
    end Set_Random_Texture_Unit;
 
@@ -113,7 +110,6 @@ package body PS_Update_Technique is
    procedure Set_Launcher_Lifetime (theTechnique : Update_Technique;
                                     Lifetime     : GL.Types.Single) is
    begin
-      Use_Program (theTechnique);
       GL.Uniforms.Set_Single (theTechnique.Launcher_Lifetime_Location, Lifetime);
    end Set_Launcher_Lifetime;
 
@@ -122,7 +118,6 @@ package body PS_Update_Technique is
    procedure Set_Shell_Lifetime (theTechnique : Update_Technique;
                                  Lifetime     : GL.Types.Single) is
    begin
-      Use_Program (theTechnique);
       GL.Uniforms.Set_Single (theTechnique.Shell_Lifetime_Location, Lifetime);
    end Set_Shell_Lifetime;
 
@@ -131,7 +126,6 @@ package body PS_Update_Technique is
    procedure Set_Secondary_Shell_Lifetime (theTechnique : Update_Technique;
                                            Lifetime     : GL.Types.Single) is
    begin
-      Use_Program (theTechnique);
       GL.Uniforms.Set_Single (theTechnique.Secondary_Shell_Lifetime_Location, Lifetime);
    end Set_Secondary_Shell_Lifetime;
 
