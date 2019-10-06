@@ -189,7 +189,7 @@ package body Particle_System is
 
         Random_Texture.Bind (PS.Random_Texture,
                              Ogldev_Engine_Common.Random_Texture_Unit);
-        GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
+--          GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 
         GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (VB_Index));
         GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (TFB_Index));
