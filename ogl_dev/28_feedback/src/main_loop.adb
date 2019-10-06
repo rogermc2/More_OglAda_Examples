@@ -56,7 +56,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Position            : constant Singles.Vector3 := (0.0, 0.4, 5.0); --  (0.0, 0.0, 1.0)  Normalized by Camera.Init
       Target              : constant Singles.Vector3 := (0.0, 0.2, 1.0); --  (0.0, 0.0, 1.0)  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
-      Particle_System_Pos : constant GL.Types.Singles.Vector3 := (0.0, 0.0, 1.0);
+      Particle_System_Pos : constant Singles.Vector3 := (0.0, 0.0, 1.0);
    begin
       VAO.Initialize_Id;
       VAO.Bind;
@@ -143,7 +143,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Texture.Bind (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
       Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 20.0, 20.0, 1.0);  --  orig 20.0, 20.0, 1.0
+      Ogldev_Pipeline.Set_Scale (Pipe, 20.0, 20.0, 1.0);
       Ogldev_Pipeline.Set_Rotation (Pipe, 90.0, 0.0, 0.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
                                   Get_Target (Game_Camera), Get_Up (Game_Camera));
