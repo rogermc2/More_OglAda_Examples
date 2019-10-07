@@ -33,18 +33,18 @@ with PS_Update_Technique;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background                  : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.5, 0.5, 0.5, 0.0);
 
-   VAO                         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   theLighting_Technique       : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
-   Game_Camera                 : Ogldev_Camera.Camera;
-   Dir_Light                   : Ogldev_Lights_Common.Directional_Light;
-   Ground                      : Meshes_28.Mesh_28;
-   Bricks                      : Ogldev_Texture.Ogl_Texture;
-   Normal_Map                  : Ogldev_Texture.Ogl_Texture;
-   Perspective_Proj_Info       : Ogldev_Math.Perspective_Projection_Info;
-   theParticle_System          : Particle_System.Particle_System;
-   Current_Time_MilliSec       : Single;
+   VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Lighting_Technique     : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
+   Game_Camera            : Ogldev_Camera.Camera;
+   Dir_Light              : Ogldev_Lights_Common.Directional_Light;
+   Ground                 : Meshes_28.Mesh_28;
+   Bricks                 : Ogldev_Texture.Ogl_Texture;
+   Normal_Map             : Ogldev_Texture.Ogl_Texture;
+   Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
+   theParticle_System      : Particle_System.Particle_System;
+   Previous_Time_MilliSec : Single;
 
    --  ------------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       VAO.Initialize_Id;
       VAO.Bind;
-      Current_Time_MilliSec := Single (Glfw.Time);
+      Previous_Time_MilliSec := Single (Glfw.Time);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
@@ -76,14 +76,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          1.0, 100.0);
       Ogldev_Camera.Init_Camera (Game_Camera, Window, Position, Target, Up);
 
-      Result := Ogldev_Basic_Lighting.Init (theLighting_Technique);
+      Result := Ogldev_Basic_Lighting.Init (Lighting_Technique);
       if Result then
          GL.Objects.Programs.Use_Program
-           (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
+           (Ogldev_Basic_Lighting.Lighting_Program (Lighting_Technique));
          Ogldev_Basic_Lighting.Set_Directional_Light_Location
-           (theLighting_Technique, Dir_Light);
+           (Lighting_Technique, Dir_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location
-           (theLighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
+           (Lighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
 
          Meshes_28.Load_Mesh (Ground, "src/quad.obj");
          if Ogldev_Texture.Init_Texture (Bricks, GL.Low_Level.Enums.Texture_2D,
@@ -119,26 +119,24 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Ogldev_Camera;
-      Window_Width         : Glfw.Size;
-      Window_Height        : Glfw.Size;
-      Pipe                 : Ogldev_Pipeline.Pipeline;
-      Time_Now_Millisec    : Single;
-      Delta_Millisec       : UInt;
+      Window_Width     : Glfw.Size;
+      Window_Height    : Glfw.Size;
+      Pipe             : Ogldev_Pipeline.Pipeline;
+      Time_Millisec    : constant Single := 1000.0 * Single (Glfw.Time);
+      Delta_Millisec   : UInt;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
 
-      Time_Now_Millisec := 1000.0 * Single (Glfw.Time);
-      Delta_Millisec := UInt (Time_Now_Millisec - Current_Time_MilliSec);
-      Current_Time_MilliSec := Time_Now_Millisec;
+      Delta_Millisec := UInt (Time_Millisec - Previous_Time_MilliSec);
+      Previous_Time_MilliSec := Time_Millisec;
 
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
-
       Utilities.Clear_Colour_Buffer_And_Depth;
 
       GL.Objects.Programs.Use_Program
-        (Ogldev_Basic_Lighting.Lighting_Program (theLighting_Technique));
+        (Ogldev_Basic_Lighting.Lighting_Program (Lighting_Technique));
 
       Ogldev_Texture.Bind (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
       Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
@@ -150,13 +148,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
-      Ogldev_Basic_Lighting.Set_WVP_Location (theLighting_Technique,
+      Ogldev_Basic_Lighting.Set_WVP_Location (Lighting_Technique,
                                               Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Ogldev_Basic_Lighting.Set_World_Matrix_Location
-        (theLighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
+        (Lighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
 
       Meshes_28.Render (Ground);
-      Particle_System.Render (theParticle_System, Int (Delta_Millisec),
+      Particle_System.Render (theParticle_System, Delta_Millisec,
                               Ogldev_Pipeline.Get_VP_Transform (Pipe),
                               Get_Position (Game_Camera));
    exception
