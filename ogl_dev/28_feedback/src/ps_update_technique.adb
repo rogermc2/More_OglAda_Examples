@@ -84,7 +84,7 @@ package body PS_Update_Technique is
    --  -------------------------------------------------------------------------
 
    procedure Set_Delta_Millisec (theTechnique : Update_Technique;
-                                 Delta_Time   : GL.Types.Int) is
+                                 Delta_Time   : GL.Types.UInt) is
    begin
       GL.Uniforms.Set_Single (theTechnique.Delta_Millisec_Location,  GL.Types.Single (Delta_Time));
    end Set_Delta_Millisec;
@@ -92,7 +92,7 @@ package body PS_Update_Technique is
    --  -------------------------------------------------------------------------
 
    procedure Set_Time (theTechnique : Update_Technique;
-                       theTime      : GL.Types.Int) is
+                       theTime      : GL.Types.UInt) is
    begin
       GL.Uniforms.Set_Single (theTechnique.Time_Location, GL.Types.Single (theTime));
    end Set_Time;

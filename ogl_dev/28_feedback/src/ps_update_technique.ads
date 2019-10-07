@@ -24,9 +24,9 @@ Package PS_Update_Technique is
                                 return GL.Objects.Programs.Program;
     procedure Init (theTechnique : in out Update_Technique);
     procedure Set_Delta_Millisec (theTechnique : Update_Technique;
-                                  Delta_Time : GL.Types.Int);
+                                  Delta_Time : GL.Types.UInt);
     procedure Set_Time (theTechnique : Update_Technique;
-                        theTime : GL.Types.Int);
+                        theTime : GL.Types.UInt);
     procedure Set_Random_Texture_Unit (theTechnique : Update_Technique;
                                        Texture_Unit : GL.Types.Int);
     procedure Set_Launcher_Lifetime (theTechnique : Update_Technique;

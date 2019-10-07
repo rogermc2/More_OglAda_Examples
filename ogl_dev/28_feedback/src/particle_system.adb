@@ -43,7 +43,7 @@ package body Particle_System is
                                 View_Point : Singles.Matrix4;
                                 Camera_Pos : Singles.Vector3);
     procedure Update_Particles (PS         : in out Particle_System;
-                                Delta_Time : GL.Types.Int);
+                                Delta_Time : GL.Types.UInt);
 
     --  -------------------------------------------------------------------------
 
@@ -115,10 +115,9 @@ package body Particle_System is
 
     --  -------------------------------------------------------------------------
 
-    procedure Render (PS         : in out Particle_System; Delta_Time : GL.Types.Int;
+    procedure Render (PS         : in out Particle_System; Delta_Time : GL.Types.UInt;
                       View_Point : Singles.Matrix4; Camera_Pos : Singles.Vector3) is
-    begin
-        PS.PS_Time := PS.PS_Time + Delta_Time;
+    begin        PS.PS_Time := PS.PS_Time + Delta_Time;
         Update_Particles (PS, Delta_Time);
         Render_Particles (PS, View_Point, Camera_Pos);
 
@@ -174,7 +173,7 @@ package body Particle_System is
     --  -------------------------------------------------------------------------
 
     procedure Update_Particles (PS         : in out Particle_System;
-                                Delta_Time : GL.Types.Int) is
+                                Delta_Time : GL.Types.UInt) is
         use PS_Update_Technique;
         Update_Technique : constant PS_Update_Technique.Update_Technique :=
                              PS.Update_Method;
@@ -209,6 +208,7 @@ package body Particle_System is
         if PS.Is_First then
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
             PS.Is_First := False;
+            Put_Line ("Particle_System.Update_Particles First.");
         else
             --           GL.Objects.Vertex_Arrays.Draw_Arrays
             --             (Mode  => Points, First => 0, Count => Size (Max_Particles));
