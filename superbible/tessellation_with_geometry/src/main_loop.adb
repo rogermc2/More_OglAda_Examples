@@ -61,8 +61,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Vertex_Array.Bind;
         GL.Rasterization.Set_Polygon_Mode (GL.Rasterization.Line);
         GL.Rasterization.Set_Point_Size (5.0);
-
-        Utilities.Show_Shader_Program_Data (Rendering_Program);
     end Setup_Graphic;
 
     --  ------------------------------------------------------------------------

@@ -32,8 +32,9 @@ package body My_Buffers is
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => GL.Types.Single_Type,
+                                               Normalized => True,
                                                Stride => Stride, Offset => 0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, GL.Types.Single_Type,
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, GL.Types.Single_Type, True,
                                                Stride, 3);
 
       Index_Buffer.Initialize_Id;
