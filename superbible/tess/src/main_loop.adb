@@ -59,8 +59,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Vertex_Array.Bind;
         GL.Rasterization.Set_Polygon_Mode (GL.Rasterization.Line);
 
-        Utilities.Show_Shader_Program_Data (Rendering_Program);
-
     exception
         when others =>
             Put_Line ("An exceptiom occurred in Setup_Graphic.");
