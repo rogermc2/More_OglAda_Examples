@@ -6,6 +6,7 @@ with GL.Objects;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
@@ -63,6 +64,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Previous_Time_MilliSec := Single (Glfw.Time);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour_And_Depth (Background);
+      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Ogldev_Lights_Common.Init_Directional_Light
         (Light          => Dir_Light,
