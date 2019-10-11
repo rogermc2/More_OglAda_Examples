@@ -34,6 +34,8 @@ package body Load_VB_Object is
                               Byte_Count    : in out UInt);
    procedure Set_Attribute_Pointers (VBM_Object : VB_Object;
                                      Vertex_Index, Normal_Index, Tex_Coord0_Index : Int);
+--     function To_Vector4_Array (Raw_Data : Image_Data; Num_Vertices : UInt)
+--                                return GL.Types.Singles.Vector4_Array;
 
    --  ------------------------------------------------------------------------
 
@@ -234,6 +236,7 @@ package body Load_VB_Object is
    procedure Load_VBM_Header (Header_Stream : Ada.Streams.Stream_IO.Stream_Access;
                               Header        : out VBM_Header;
                               Byte_Count    : in out UInt) is
+      use Ada.Streams.Stream_IO;
       Magic         : UInt;
       Index_Type    : UInt := 0;
    begin
@@ -364,8 +367,10 @@ package body Load_VB_Object is
                Draw_Elements (Triangles, Int (Frame.Num_Vertices),
                               GL.Types.UInt_Type, Integer (Frame.First));
             else
-               Vertex_Arrays.Draw_Arrays (Triangles, Int (Frame.First),
-                                          Int (Frame.Num_Vertices));
+              GL.Attributes.Set_Vertex_Attrib_Pointer (0, 4, Single_Type,
+                                                       False, 0, 0);
+              Vertex_Arrays.Draw_Arrays (Triangles, 0, Int (Frame.Num_Vertices));
+              GL.Attributes.Disable_Vertex_Attrib_Array (0);
             end if;
          end if;
          Vertex_Arrays.Null_Array_Object.Bind;
@@ -399,10 +404,11 @@ package body Load_VB_Object is
             Put_Line ("Load_VB_Object.Set_Attributes, invalid attribute index.");
          end case;
 
-         GL.Attributes.Set_Vertex_Integer_Attrib_Pointer
+         GL.Attributes.Set_Vertex_Attrib_Pointer
            (Index  => Attribute_Index,
             Count  => Int (Attribute_Data.Components),
             Kind   => Attribute_Data.Attribute_Type,
+            Normalized => False,
             Stride => 0, Offset => Data_Offset);
          GL.Attributes.Enable_Vertex_Attrib_Array (Attribute_Index);
          Data_Offset := Data_Offset +
@@ -414,6 +420,33 @@ package body Load_VB_Object is
          Put_Line ("An exception occurred in Load_VB_Object.Set_Attribute_Pointers.");
          raise;
    end Set_Attribute_Pointers;
+
+   --  ------------------------------------------------------------------------
+
+--     function To_Vector4_Array (Raw_Data : Image_Data; Num_Vertices : UInt)
+--                                return GL.Types.Singles.Vector4_Array is
+--        use GL;
+--        Vertices    : GL.Types.Singles.Vector4_Array (1 .. Int (Num_Vertices));
+--        aVertex     : GL.Types.Singles.Vector4;
+--        Raw_Index   : UInt := 1;
+--     begin
+--        for index in Vertices'Range loop
+--           for v_index in GL.X .. GL.W loop
+--              aVertex (v_index) := 0.0;
+--              for i in 1 .. Single_Size loop
+--                 aVertex (v_index) := aVertex (v_index) +
+--                   Single (Raw_Data (Raw_Index) * 8 ** Natural (i - 1));
+--                 Raw_Index := Raw_Index + 1;
+--              end loop;
+--              if v_index = GL.W then
+--                 aVertex (v_index) := 1.0;
+--              end if;
+--           end loop;
+--           Vertices (index) := aVertex;
+--        end loop;
+--        return Vertices;
+--
+--     end To_Vector4_Array;
 
    --  ------------------------------------------------------------------------
 
