@@ -127,7 +127,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Position_Attribute_ID := GL.Objects.Programs.Attrib_Location
         (Shader_Program, "vPosition");
       GL.Attributes.Enable_Vertex_Attrib_Array (Position_Attribute_ID);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Position_Attribute_ID, 3, Single_Type, 0, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Position_Attribute_ID, 3,
+                                               Single_Type, True, 0, 0);
 
       MV_Matrix_ID := Uniform_Location (Shader_Program, "MV");
       Projection_Matrix_ID := Uniform_Location (Shader_Program, "Proj");
@@ -163,10 +164,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
+      Delay (0.5);
 
       --  Set up the projection matrix
       Maths.Init_Perspective_Transform (Maths.Degree (60), Single (Window_Width),
-                                        Single (Window_Height), 1.0, 10.0, Projection_Matrix);
+                                        Single (Window_Height), 1.0, 10.0,
+                                        Projection_Matrix);
       GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
 
       Draw_Elements (Patches, Vertex_Data.Num_Teapot_Vertices, UInt_Type);
