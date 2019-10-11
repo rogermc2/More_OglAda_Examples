@@ -62,12 +62,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         --  First attribute buffer : vertices
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         Array_Buffer.Bind (Vertex_Buffer);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
 
         --  Second attribute buffer : UVs
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
         Array_Buffer.Bind (UVs_Buffer);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, True, 0, 0);
 
         GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
                                               First => 0,
@@ -132,7 +132,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
            Vertex_Shader),
            Program_Loader.Src ("src/shaders/Texture_Fragment_Shader.glsl",
              Fragment_Shader)));
-        Utilities.Show_Shader_Program_Data (Render_Program);
 
         Set_MVP_Matrix (Window, Render_Program);
 
