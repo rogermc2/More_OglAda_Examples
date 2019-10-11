@@ -41,13 +41,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
           (Shader_Program, "position");
         GL.Attributes.Enable_Vertex_Attrib_Array (Position_Location);
         GL.Attributes.Set_Vertex_Attrib_Pointer (Position_Location,
-             2, Single_Type, Stride, 0);
+             2, Single_Type, True, Stride, 0);
 
         Colour_Location := GL.Objects.Programs.Attrib_Location
           (Shader_Program, "colour");
         GL.Attributes.Enable_Vertex_Attrib_Array (Colour_Location);
         GL.Attributes.Set_Vertex_Attrib_Pointer
-          (Colour_Location, 3, Single_Type, Stride, Skip);
+          (Colour_Location, 3, Single_Type, True, Stride, Skip);
 
         GL.Objects.Buffers.Draw_Elements (GL.Types.Triangles, 3, UInt_Type);
     exception
@@ -61,7 +61,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     procedure Setup_Graphic is
         use GL.Objects.Buffers;
         use GL.Objects.Shaders;
-        use GL.Types;
         use Program_Loader;
     begin
         Vertex_Array.Initialize_Id;
@@ -85,7 +84,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Put_Line ("Shader_Program.Active_Uniforms:" &
                     GL.Types.Size'Image (Shader_Program.Active_Uniforms));
         New_Line;
-        Utilities.Show_Shader_Program_Data (Shader_Program);
+
     exception
         when others =>
             Put_Line ("An exception occurred in Setup_Graphic.");
