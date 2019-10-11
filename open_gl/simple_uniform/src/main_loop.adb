@@ -66,7 +66,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Position_Location := GL.Objects.Programs.Attrib_Location
           (Rendering_Program, "position");
         GL.Attributes.Set_Vertex_Attrib_Pointer
-          (Position_Location, 2, GL.Types.Single_Type, 0, 0);
+          (Position_Location, 2, GL.Types.Single_Type, True, 0, 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (Position_Location);
         Colour_Location := GL.Objects.Programs.Uniform_Location
           (Rendering_Program, "triangle_colour");
@@ -74,7 +74,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Rendering_Program.Use_Program;  -- Needed to set uniform values
         GL.Uniforms.Set_Single (Colour_Location, 1.0, 0.0, 0.0);
 
-        Utilities.Show_Shader_Program_Data (Rendering_Program);
     exception
         when others =>
             Put_Line ("An exception occurred in Setup_Graphic.");
