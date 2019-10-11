@@ -44,7 +44,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         Array_Buffer.Bind (Vertex_Buffer);
 
-        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
         GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
 
         GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 3);
@@ -107,7 +107,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Array_Buffer.Bind (Vertex_Buffer);
         Load_Vertex_Buffer (Array_Buffer, Vertex_Data.Vertex_Buffer_Data,
                             Static_Draw);
-        Utilities.Show_Shader_Program_Data (Render_Program);
+
     exception
         when others =>
             Put_Line ("An exception occurred in Setup.");

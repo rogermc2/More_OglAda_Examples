@@ -58,7 +58,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Window.Set_Viewport (0, 0, Int (Window_Width),
                                 GL.Types.Int (Window_Height));
         Utilities.Clear_Background_Colour_And_Depth (Black);
-        Glfw.Input.Poll_Events;
         Control_Wave.Check_Input (Window);
 
         Last_Time := Now;
@@ -92,11 +91,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                  Kind   => Single_Type,
+                                                 Normalized => True,
                                                  Stride => Vertex_Data.Stride,
                                                  Offset => Vertex_Data.Vertex_Offset);
 
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type,
+        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True,
                                                  Vertex_Data.Stride,
                                                  Vertex_Data.Colour_Offset);
 
@@ -146,7 +146,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Setup (Window : in out Glfw.Windows.Window) is
-        use GL.Objects.Buffers;
         use GL.Objects.Shaders;
         use GL.Types;
         use Glfw.Input;
