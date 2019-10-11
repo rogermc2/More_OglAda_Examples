@@ -57,11 +57,12 @@ package body Project_Buffers is
 
         GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 4,
                                                  Kind   => GL.Types.Single_Type,
+                                                 Normalized => True,
                                                  Stride => 7, Offset => 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
         GL.Attributes.Set_Vertex_Attrib_Pointer
-          (1, 3, GL.Types.Single_Type, 7, 4);
+          (1, 3, GL.Types.Single_Type, True, 7, 4);
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
 
     exception
