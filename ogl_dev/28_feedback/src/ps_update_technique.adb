@@ -10,6 +10,13 @@ with OglDev_Technique;
 
 package body PS_Update_Technique is
 
+   function Active_Attributes (theTechnique : Update_Technique) return GL.Types.Size is
+   begin
+      return GL.Objects.Programs.Active_Attributes (theTechnique.Update_Program);
+   end Active_Attributes;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Random_Texture_Location (theTechnique : Update_Technique)
                                          return GL.Uniforms.Uniform is
    begin
@@ -139,23 +146,22 @@ package body PS_Update_Technique is
 
    --  -------------------------------------------------------------------------
 
-  procedure Use_Program (theTechnique : Update_Technique) is
+   procedure Use_Program (theTechnique : Update_Technique) is
       use GL.Objects.Programs;
       use GL.Objects.Shaders.Lists;
       Shaders_List : GL.Objects.Shaders.Lists.List :=
                        GL.Objects.Programs.Attached_Shaders (theTechnique.Update_Program);
       Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
    begin
-      --        if not GL.Objects.Programs.Validate_Status (theTechnique.Update_Program) then
-      --           Put_Line ("PS_Update_Technique.Use_Program Update_Program validation failed.");
-      --        else
-      --           Put_Line ("PS_Update_Technique.Use_Program Update_Program validated.");
-      if Curs = GL.Objects.Shaders.Lists.No_Element then
-         Put_Line ("PS_Update_Technique.Use_Program, Shaders list is empty");
+      if GL.Objects.Programs.Link_Status (theTechnique.Update_Program) then
+         if Curs = GL.Objects.Shaders.Lists.No_Element then
+            Put_Line ("PS_Update_Technique.Use_Program, Shaders list is empty");
+         else
+            GL.Objects.Programs.Use_Program (theTechnique.Update_Program);
+         end if;
       else
-         GL.Objects.Programs.Use_Program (theTechnique.Update_Program);
+         Put_Line ("PS_Update_Technique.Use_Program Update_Program link check failed.");
       end if;
-      --        end if;
 
    exception
       when  others =>

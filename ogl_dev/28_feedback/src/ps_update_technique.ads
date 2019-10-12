@@ -16,6 +16,7 @@ Package PS_Update_Technique is
                   Ada.Strings.Unbounded.To_Unbounded_String ("Age1"));
     Update_Technique_Exception : Exception;
 
+    function Active_Attributes (theTechnique : Update_Technique) return GL.Types.Size;
     function Get_Random_Texture_Location (theTechnique : Update_Technique)
                                          return GL.Uniforms.Uniform;
     function Get_Time_Location (theTechnique : Update_Technique)
