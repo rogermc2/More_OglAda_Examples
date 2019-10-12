@@ -6,7 +6,6 @@ with GL.Objects;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
-with GL.Toggles;
 with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
@@ -64,7 +63,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Previous_Time_MilliSec := Single (Glfw.Time);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour_And_Depth (Background);
-      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Ogldev_Lights_Common.Init_Directional_Light
         (Light          => Dir_Light,
@@ -155,7 +153,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Basic_Lighting.Set_World_Matrix_Location
         (Lighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
 
---        Meshes_28.Render (Ground);
+      Meshes_28.Render (Ground);
       Particle_System.Render (theParticle_System, Delta_Millisec,
                               Ogldev_Pipeline.Get_VP_Transform (Pipe),
                               Get_Position (Game_Camera));
@@ -174,7 +172,7 @@ begin
    while Running loop
       Render_Scene (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
-      Delay(0.5);
+--        Delay(1.5);
       Glfw.Input.Poll_Events;
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
