@@ -155,7 +155,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Basic_Lighting.Set_World_Matrix_Location
         (Lighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
 
-      Meshes_28.Render (Ground);
+--        Meshes_28.Render (Ground);
       Particle_System.Render (theParticle_System, Delta_Millisec,
                               Ogldev_Pipeline.Get_VP_Transform (Pipe),
                               Get_Position (Game_Camera));
@@ -174,6 +174,7 @@ begin
    while Running loop
       Render_Scene (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
+      Delay(0.5);
       Glfw.Input.Poll_Events;
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);

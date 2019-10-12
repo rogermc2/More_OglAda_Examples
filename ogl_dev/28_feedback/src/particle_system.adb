@@ -100,7 +100,7 @@ package body Particle_System is
         Billboard_Technique.Use_Program (PS.Billboard_Method);
         Billboard_Technique.Set_Colour_Texture_Unit
           (PS.Billboard_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
-        Billboard_Technique.Set_Billboard_Size (PS.Billboard_Method, 0.01);
+        Billboard_Technique.Set_Billboard_Size (PS.Billboard_Method, 0.2);  --  orig 0.01
 
         if Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
                                         "../Content/fireworks_red.jpg") then
@@ -145,7 +145,7 @@ package body Particle_System is
                               PS_Update_Technique.Update_Program (PS.Update_Method);
         TFB_Index         : constant UInt := PS.Current_TFB_Index;
     begin
-        Billboard_Technique.Use_Program (PS.Billboard_Method);
+      Billboard_Technique.Use_Program (PS.Billboard_Method);
         Billboard_Technique.Set_Camera_Position (PS.Billboard_Method, Camera_Pos);
         Billboard_Technique.Set_View_Point (PS.Billboard_Method, View_Point);
 
@@ -188,7 +188,7 @@ package body Particle_System is
 
         Random_Texture.Bind (PS.Random_Texture,
                              Ogldev_Engine_Common.Random_Texture_Unit);
---          GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
+        GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 
         GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (VB_Index));
         GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (TFB_Index));
@@ -208,10 +208,9 @@ package body Particle_System is
         if PS.Is_First then
             GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
             PS.Is_First := False;
-            Put_Line ("Particle_System.Update_Particles First.");
         else
-            --           GL.Objects.Vertex_Arrays.Draw_Arrays
-            --             (Mode  => Points, First => 0, Count => Size (Max_Particles));
+            GL.Objects.Vertex_Arrays.Draw_Arrays
+           (Mode  => Points, First => 0, Count => Size (Max_Particles));
             GL.Objects.Buffers.Draw_Transform_Feedback
               (Points, PS.Feedback_Buffer (VB_Index));
         end if;
