@@ -7,6 +7,7 @@ Package Billboard_Technique is
 
    type Technique is private;
 
+   function Active_Attributes (theTechnique : Technique) return GL.Types.Size;
    function Billboard_Program (theTechnique : Technique)
                                return GL.Objects.Programs.Program;
    procedure Init (theTechnique : out Technique);
