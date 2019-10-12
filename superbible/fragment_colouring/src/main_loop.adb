@@ -64,7 +64,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Buffers.Set_Depth_Function (GL.Types.Less);
         Vertex_Array.Initialize_Id;
         Vertex_Array.Bind;
---          Utilities.Show_Shader_Program_Data (Rendering_Program);
+
     exception
         when others =>
             Put_Line ("An exception occurred in Startup.");
