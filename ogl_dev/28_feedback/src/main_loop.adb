@@ -43,7 +43,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Bricks                 : Ogldev_Texture.Ogl_Texture;
    Normal_Map             : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
-   theParticle_System      : Particle_System.Particle_System;
+   theParticle_System     : Particle_System.Particle_System;
    Previous_Time_MilliSec : Single;
 
    --  ------------------------------------------------------------------------
@@ -172,7 +172,7 @@ begin
    while Running loop
       Render_Scene (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
---        Delay(1.5);
+      Delay(0.5);
       Glfw.Input.Poll_Events;
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);

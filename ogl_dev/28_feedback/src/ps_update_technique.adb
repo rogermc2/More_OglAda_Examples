@@ -93,7 +93,7 @@ package body PS_Update_Technique is
    procedure Set_Delta_Millisec (theTechnique : Update_Technique;
                                  Delta_Time   : GL.Types.UInt) is
    begin
-      GL.Uniforms.Set_Single (theTechnique.Delta_Millisec_Location,  GL.Types.Single (Delta_Time));
+      GL.Uniforms.Set_Single (theTechnique.Delta_Millisec_Location, GL.Types.Single (Delta_Time));
    end Set_Delta_Millisec;
 
    --  -------------------------------------------------------------------------
