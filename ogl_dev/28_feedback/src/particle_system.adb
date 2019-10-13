@@ -25,7 +25,7 @@ package body Particle_System is
 
    type Particle is record
       Particle_Kind : Particle_Type := Particle_Launcher;
-      Position      : Singles.Vector3;
+      Position      : Singles.Vector3 := (0.0, 0.0, 0.0);
       Velocity      : Singles.Vector3 := (0.0, 0.0001, 0.0);
       Lifetime      : GL.Types.Single := 0.0;
    end record;
@@ -160,7 +160,7 @@ package body Particle_System is
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
-                                               Stride => Particle'Size,
+                                               Stride => Particle'Size / Single'Size,
                                                Offset => 1);
       GL.Objects.Buffers.Draw_Transform_Feedback (Points, PS.Feedback_Buffer (TFB_Index));
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
@@ -186,10 +186,12 @@ package body Particle_System is
       GL.Objects.Programs.Use_Program (Update_Program);
       Set_Time (Update_Technique, PS.PS_Time);
       Set_Delta_Millisec (Update_Technique, Delta_Time);
+      Put_Line ("Particle_System.Update_Particles PS.PS_Time, Delta_Time." &
+                GL.Types.UInt'Image (PS.PS_Time) & GL.Types.UInt'Image (Delta_Time));
 
       Random_Texture.Bind (PS.Random_Texture,
                            Ogldev_Engine_Common.Random_Texture_Unit);
-      GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
+--        GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (VB_Index));
       GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (TFB_Index));
@@ -210,8 +212,8 @@ package body Particle_System is
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
          PS.Is_First := False;
       else
-         GL.Objects.Vertex_Arrays.Draw_Arrays
-           (Mode  => Points, First => 0, Count => Size (Max_Particles));
+--           GL.Objects.Vertex_Arrays.Draw_Arrays
+--             (Mode  => Points, First => 0, Count => Size (Max_Particles));
          GL.Objects.Buffers.Draw_Transform_Feedback
            (Points, PS.Feedback_Buffer (VB_Index));
       end if;
