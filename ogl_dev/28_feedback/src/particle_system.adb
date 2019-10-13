@@ -29,10 +29,9 @@ package body Particle_System is
       Velocity      : Singles.Vector3 := (0.0, 0.0001, 0.0);
       Lifetime      : GL.Types.Single := 0.0;
    end record;
-   pragma Convention (C_Pass_By_Copy, Particle);
+   Particle_Stride  : constant Int := Particle'Size / Single'Size;
 
    type Particle_Array is array (GL.Types.Int range <>) of aliased Particle;
-   pragma Convention (C, Particle_Array);
 
    package Particle_Pointers is new Interfaces.C.Pointers
      (GL.Types.Int, Particle, Particle_Array, Particle'(others => <>));
@@ -142,10 +141,6 @@ package body Particle_System is
    procedure Render_Particles (PS         : in out Particle_System;
                                View_Point : Singles.Matrix4;
                                Camera_Pos : Singles.Vector3) is
-      Billboard_Program : constant GL.Objects.Programs.Program :=
-                            Billboard_Technique.Billboard_Program (PS.Billboard_Method);
-      Update_Program    : constant GL.Objects.Programs.Program :=
-                            PS_Update_Technique.Update_Program (PS.Update_Method);
       TFB_Index         : constant UInt := PS.Current_TFB_Index;
    begin
       Billboard_Technique.Use_Program (PS.Billboard_Method);
@@ -155,12 +150,14 @@ package body Particle_System is
       Ogldev_Texture.Bind (PS.Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
 
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
+      Put_Line ("Particle_System.Render_Particles TFB_Index." &
+      GL.Types.UInt'Image (TFB_Index));
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (TFB_Index));
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
-                                               Stride => Particle'Size / Single'Size,
+                                               Stride => Particle_Stride,
                                                Offset => 1);
       GL.Objects.Buffers.Draw_Transform_Feedback (Points, PS.Feedback_Buffer (TFB_Index));
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
@@ -175,23 +172,21 @@ package body Particle_System is
 
    procedure Update_Particles (PS         : in out Particle_System;
                                Delta_Time : GL.Types.UInt) is
-      use PS_Update_Technique;
-      Update_Technique : constant PS_Update_Technique.Update_Technique :=
-                           PS.Update_Method;
-      Update_Program   : constant GL.Objects.Programs.Program :=
-                           PS_Update_Technique.Get_Update_Program (Update_Technique);
       TFB_Index        : constant UInt := PS.Current_TFB_Index;
       VB_Index         : constant UInt := PS.Current_VB_Index;
    begin
-      GL.Objects.Programs.Use_Program (Update_Program);
-      Set_Time (Update_Technique, PS.PS_Time);
-      Set_Delta_Millisec (Update_Technique, Delta_Time);
+
+      PS_Update_Technique.Use_Program (PS.Update_Method);
+      PS_Update_Technique.Set_Time (PS.Update_Method, PS.PS_Time);
+      PS_Update_Technique.Set_Delta_Millisec (PS.Update_Method, Delta_Time);
       Put_Line ("Particle_System.Update_Particles PS.PS_Time, Delta_Time." &
                 GL.Types.UInt'Image (PS.PS_Time) & GL.Types.UInt'Image (Delta_Time));
+      Put_Line ("Particle_System.Update_Particles VB_Index, TFB_Index." &
+                GL.Types.UInt'Image (VB_Index) & GL.Types.UInt'Image (TFB_Index));
 
       Random_Texture.Bind (PS.Random_Texture,
                            Ogldev_Engine_Common.Random_Texture_Unit);
---        GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
+      GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (VB_Index));
       GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (TFB_Index));
@@ -202,10 +197,11 @@ package body Particle_System is
       GL.Attributes.Enable_Vertex_Attrib_Array (3);
 
       GL.Attributes.Set_Vertex_Attrib_Pointer
-        (Index  => 0, Count => 1, Kind => Single_Type, Stride => 8, Offset => 0); --  Particle Type
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, 8, 2);          --  Position
-      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);          --  Velocity
-      GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 8, 8);          --  Age
+        (Index  => 0, Count => 1, Kind => Single_Type,
+         Stride => Particle_Stride, Offset => 0);                                       --  Particle Type
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, Particle_Stride, 2);  --  Position
+      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Particle_Stride, 5);  --  Velocity
+      GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, Particle_Stride, 8);  --  Age
 
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       if PS.Is_First then

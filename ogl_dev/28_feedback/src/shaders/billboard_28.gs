@@ -17,23 +17,23 @@ void main()
     vec3 up = vec3(0.0, 1.0, 0.0);                                                  
     vec3 right = cross(toCamera, up) * gBillboardSize;                              
                                                                                     
-    Pos -= right;                                                                   
+    Pos = Pos - right;
     gl_Position = gVP * vec4(Pos, 1.0);                                             
     TexCoord = vec2(0.0, 0.0);                                                      
     EmitVertex();                                                                   
                                                                                     
-    Pos.y += gBillboardSize;                                                        
+    Pos.y = Pos.y + gBillboardSize;
     gl_Position = gVP * vec4(Pos, 1.0);                                             
     TexCoord = vec2(0.0, 1.0);                                                      
     EmitVertex();                                                                   
                                                                                     
-    Pos.y -= gBillboardSize;                                                        
-    Pos += right;                                                                   
+    Pos.y = Pos.y - gBillboardSize;
+    Pos = Pos + right;
     gl_Position = gVP * vec4(Pos, 1.0);                                             
     TexCoord = vec2(1.0, 0.0);                                                      
     EmitVertex();                                                                   
                                                                                     
-    Pos.y += gBillboardSize;                                                        
+    Pos.y = Pos.y + gBillboardSize;                                                        
     gl_Position = gVP * vec4(Pos, 1.0);                                             
     TexCoord = vec2(1.0, 1.0);                                                      
     EmitVertex();                                                                   
