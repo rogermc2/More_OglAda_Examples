@@ -35,7 +35,7 @@ private
      Feedback_Buffer   : Transform_Feedback_Array;
      Particle_Buffer   : Particle_Buffer_Array;
      Update_Method     : PS_Update_Technique.Update_Technique;
-     Billboard_Method  : Billboard_Technique.Technique;
+     Display_Method    : Billboard_Technique.Technique;
      Random_Texture    : GL.Objects.Textures.Texture;
    end record;
 
