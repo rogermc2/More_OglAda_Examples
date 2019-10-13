@@ -12,7 +12,6 @@ out float Age0;
                                                                                     
 void main()                                                                         
     {
- //   gl_PointSize = 40.0;
     Type0 = Type;                                                                   
     Position0 = Position;                                                           
     Velocity0 = Velocity;                                                           
