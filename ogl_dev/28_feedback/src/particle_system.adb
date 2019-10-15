@@ -27,7 +27,7 @@ package body Particle_System is
         Particle_Kind : Particle_Type := Particle_Launcher;
         Position      : Singles.Vector3 := (0.0, 0.0, 0.0);
         Velocity      : Singles.Vector3 := (0.0, 0.0001, 0.0);
-        Lifetime      : GL.Types.Single := 0.0;
+        Lifetime_ms   : GL.Types.Single := 0.0;
     end record;
     Particle_Stride  : constant Int := Particle'Size / Single'Size;
 
@@ -54,7 +54,7 @@ package body Particle_System is
         Particles (1).Particle_Kind := Particle_Launcher;
         Particles (1).Position := Pos;
         Particles (1).Velocity := (0.0, 0.0001, 0.0);
-        Particles (1).Lifetime := 0.0;
+        Particles (1).Lifetime_ms := 100.0;  --  0.0
 
         for index in UInt range 1 .. 2 loop
             PS.Feedback_Buffer (index).Initialize_Id;
@@ -103,7 +103,6 @@ package body Particle_System is
     procedure Render (PS         : in out Particle_System; Delta_Time : GL.Types.UInt;
                       View_Point : Singles.Matrix4; Camera_Pos : Singles.Vector3) is
     begin
-        PS.PS_Time := PS.PS_Time + Delta_Time;
         Update_Particles (PS, Delta_Time);
         Render_Particles (PS, View_Point, Camera_Pos);
 
@@ -113,6 +112,7 @@ package body Particle_System is
         else
             PS.Current_TFB_Index := 1;
         end if;
+        PS.PS_Time := PS.PS_Time + Delta_Time;
 
     exception
         when  others =>
