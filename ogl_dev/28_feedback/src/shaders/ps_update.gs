@@ -37,7 +37,7 @@ vec3 GetRandomDir(float TexCoord)
 void main()                                                                         
     {
     vec3 Dir;
-    float Age = Age0[0] + gDeltaTimeMillis;
+    float AgeMillis = Age0[0] + gDeltaTimeMillis;
     float DeltaTimeSecs = gDeltaTimeMillis / 1000.0f;
     float t1;
     float t2;
@@ -46,47 +46,47 @@ void main()
                                                                                     
     if (Type0[0] == PARTICLE_TYPE_LAUNCHER)
         {
-        if (Age >= gLauncherLifetime)
+        if (AgeMillis >= gLauncherLifetime)
             {                                             
             Type1 = PARTICLE_TYPE_SHELL;                                            
-            Position1 = Position0[0]+vec3(1.0,-1.0,1.0);
-            Dir = GetRandomDir(gTime/1000.0);
+            Position1 = Position0[0] + vec3(1.0, -1.0 ,1.0);
+            Dir = GetRandomDir(gTime / 1000.0);
             Dir.y = max(Dir.y, 0.5);
             //    Velocity1 = normalize(Dir) / 20.0;
             Velocity1 = normalize(Dir) / 2.0;
             Age1 = 0.0;                                                             
             EmitVertex();
             EndPrimitive();
-            Age = 0.0;                                                              
+            AgeMillis = 0.0;
             }
                                                                                     
         Type1 = PARTICLE_TYPE_LAUNCHER;
         Position1 = Position0[0];                                                   
         Velocity1 = Velocity0[0];                                                   
-        Age1 = Age;                                                                 
+        Age1 = AgeMillis;                                                                 
         EmitVertex();                                                               
         EndPrimitive();                                                             
         }
     else
         {
-         DeltaTimeSecs = gDeltaTimeMillis / 1000.0f;
-         t1 = Age0[0] / 1000.0;
-         t2 = Age / 1000.0;
+         DeltaTimeSecs = gDeltaTimeMillis * 1000.0f;
+         t1 = Age0[0] * 1000.0;
+         t2 = AgeMillis * 1000.0;
          DeltaP = DeltaTimeSecs * Velocity0[0];
          DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
                                                                                     
         if (Type0[0] == PARTICLE_TYPE_SHELL)
             {
-	        if (Age < gShellLifetime)
+	        if (AgeMillis < gShellLifetime)
                 {
 	            Type1 = PARTICLE_TYPE_SHELL;                                        
 	            Position1 = Position0[0] + DeltaP;                                  
 	            Velocity1 = Velocity0[0] + DeltaV;                                  
-	            Age1 = Age;                                                         
+	            Age1 = AgeMillis;
 	            EmitVertex();
 	            EndPrimitive();
 	            }
-            else  //  Age > gShellLifetime
+            else  //  AgeMillis > gShellLifetime
                 {
                 for (int i = 0 ; i < 10 ; i++)
                     {
@@ -99,15 +99,15 @@ void main()
                      EndPrimitive();
                     }
                 }
-            }  //  end if (Age < gShellLifetime)
+            }  //  end if (AgeMillis < gShellLifetime)
         else  //  Type0[0] NE PARTICLE_TYPE_SHELL
             {
-            if (Age < gSecondaryShellLifetime)
+            if (AgeMillis < gSecondaryShellLifetime)
                 {
                 Type1 = PARTICLE_TYPE_SECONDARY_SHELL;                              
                 Position1 = Position0[0] + DeltaP;                                  
                 Velocity1 = Velocity0[0] + DeltaV;                                  
-                Age1 = Age;                                                         
+                Age1 = AgeMillis;
                 EmitVertex();
                 EndPrimitive();
                 }

@@ -172,7 +172,8 @@ begin
    while Running loop
       Render_Scene (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
-      Delay(0.0005);
+--        Delay(0.09);  --  Desktop
+      Delay(0.1);  --  Laptop
       Glfw.Input.Poll_Events;
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
