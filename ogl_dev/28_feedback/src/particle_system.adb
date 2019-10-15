@@ -192,6 +192,7 @@ package body Particle_System is
               (Points, PS.Feedback_Buffer (VB_Index));
         end if;
         GL.Objects.Programs.End_Transform_Feedback;
+        GL.Flush;
 
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
         GL.Attributes.Disable_Vertex_Attrib_Array (1);
