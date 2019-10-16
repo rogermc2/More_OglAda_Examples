@@ -25,9 +25,9 @@ package body Particle_System is
    None              : constant Particle_Type := 3.0;
 
    type Particle is record
-      Particle_Kind : Particle_Type := Particle_Launcher;
+      Particle_Kind : Particle_Type := None;
       Position      : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Velocity      : Singles.Vector3 := (0.0, 0.0001, 0.0);
+      Velocity      : Singles.Vector3 := (0.0, 0.0, 0.0);
       Lifetime_ms   : GL.Types.Single := 0.0;
    end record;
    Particle_Stride  : constant Int := Particle'Size / Single'Size;
@@ -56,9 +56,6 @@ package body Particle_System is
       Particles (1).Position := Pos;
       Particles (1).Velocity := (0.0, 0.0001, 0.0);
       Particles (1).Lifetime_ms := 0.0;
-      for index in UInt range 2 .. Max_Particles loop
-         Particles (index).Particle_Kind := None;
-      end loop;
 
       for index in UInt range 1 .. 2 loop
          PS.Feedback_Buffer (index).Initialize_Id;
