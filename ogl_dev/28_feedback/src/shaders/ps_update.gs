@@ -37,6 +37,10 @@ vec3 GetRandomDir(float TexCoord)
 void main()
     {
     float Age = Age0[0] + gDeltaTimeMillis;
+    vec3  Dir;
+    float DeltaTimeSecs;
+    vec3  DeltaP;
+    vec3  DeltaV;
     
     if (Type0[0] == PARTICLE_TYPE_LAUNCHER)
         {
@@ -44,11 +48,10 @@ void main()
             {
             Type1 = PARTICLE_TYPE_SHELL;
             Position1 = Position0[0];
-            vec3 Dir = GetRandomDir(gTime / 1000.0);
+            Dir = GetRandomDir(gTime / 1000.0);
             Dir.y = max(Dir.y, 0.5);
             Velocity1 = normalize(Dir) / 20.0;
             Age1 = 0.0;
-            gl_Position = vec4(Position1, 1.0);
             EmitVertex();
             EndPrimitive();
             Age = 0.0;
@@ -58,17 +61,14 @@ void main()
         Position1 = Position0[0];
         Velocity1 = Velocity0[0];
         Age1 = Age;
-        gl_Position = vec4(Position1, 1.0);
         EmitVertex();
         EndPrimitive();
         }
     else
         {
-        float DeltaTimeSecs = gDeltaTimeMillis / 1000.0f;
-        float t1 = Age0[0] / 1000.0;
-        float t2 = Age / 1000.0;
-        vec3 DeltaP = DeltaTimeSecs * Velocity0[0];
-        vec3 DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
+        DeltaTimeSecs = gDeltaTimeMillis / 1000.0f;
+        DeltaP = DeltaTimeSecs * Velocity0[0];
+        DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
         
         if (Type0[0] == PARTICLE_TYPE_SHELL)
             {
@@ -78,7 +78,6 @@ void main()
                 Position1 = Position0[0] + DeltaP;
                 Velocity1 = Velocity0[0] + DeltaV;
                 Age1 = Age;
-                gl_Position = vec4(Position1, 1.0);
                 EmitVertex();
                 EndPrimitive();
                 }
@@ -88,10 +87,9 @@ void main()
                     {
                     Type1 = PARTICLE_TYPE_SECONDARY_SHELL;
                     Position1 = Position0[0];
-                    vec3 Dir = GetRandomDir((gTime + i) / 1000.0);
+                    Dir = GetRandomDir((gTime + i) / 1000.0);
                     Velocity1 = normalize(Dir) / 20.0;
                     Age1 = 0.0f;
-                    gl_Position = vec4(Position1, 1.0);
                     EmitVertex();
                     EndPrimitive();
                     }
@@ -105,7 +103,6 @@ void main()
                 Position1 = Position0[0] + DeltaP;
                 Velocity1 = Velocity0[0] + DeltaV;
                 Age1 = Age;
-                gl_Position = vec4(Position1, 1.0);
                 EmitVertex();
                 EndPrimitive();
                 }
