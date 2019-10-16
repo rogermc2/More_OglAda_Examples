@@ -54,7 +54,7 @@ package body Particle_System is
         Particles (1).Particle_Kind := Particle_Launcher;
         Particles (1).Position := Pos;
         Particles (1).Velocity := (0.0, 0.0001, 0.0);
-        Particles (1).Lifetime_ms := 100.0;  --  0.0
+        Particles (1).Lifetime_ms := 0.0;
 
         for index in UInt range 1 .. 2 loop
             PS.Feedback_Buffer (index).Initialize_Id;
@@ -73,7 +73,7 @@ package body Particle_System is
         PS_Update_Technique.Use_Program (PS.Update_Method);
         PS_Update_Technique.Set_Random_Texture_Unit
           (PS.Update_Method, Ogldev_Engine_Common.Random_Texture_Unit);
-        PS_Update_Technique.Set_Launcher_Lifetime (PS.Update_Method, 100.0);
+        PS_Update_Technique.Set_Launcher_Lifetime (PS.Update_Method, 60.0); --  100.0
         PS_Update_Technique.Set_Shell_Lifetime (PS.Update_Method, 10000.0);
         PS_Update_Technique.Set_Secondary_Shell_Lifetime (PS.Update_Method, 2500.0);
 
