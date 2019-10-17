@@ -26,7 +26,7 @@ package body Random_Texture is
       Texture_1D.Load_From_Data
         (Level           => 0,
          Internal_Format => GL.Pixels.RGB,
-         Width           => GL.Types.Int (Size),
+         Width           => Int (Size),
          Source_Format   => GL.Pixels.RGB,
          Source_Type     => GL.Pixels.Float,
          Source          => GL.Objects.Textures.Image_Source (Random_Data'Address));
