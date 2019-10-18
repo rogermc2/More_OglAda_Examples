@@ -8,5 +8,5 @@ uniform vec4 pass_colour;
 
 void main(void)
     {
-    colour = pass_colour * (0.2 + pow(abs(vs_normal.z), 4.0)) + vec4(1.0, 1.0, 1.0, 0.0) * pow(abs(vs_normal.z), 37.0);
+    colour = pass_colour * (0.2 + pow(abs(vs_fs_normal.z), 4.0)) + vec4(1.0, 1.0, 1.0, 0.0) * pow(abs(vs_fs_normal.z), 37.0);
     }
