@@ -90,9 +90,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Toggles.Enable (Rasterizer_Discard);
       GL.Objects.Buffers.Bind_Transform_Feedback (Transform_BO);
+      Put_Line ("Main_Loop.Display Transform_BO bound.");
 
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
+      Put_Line ("Main_Loop.Display Begin_Transform_Feedback.");
       Load_VB_Object.Render (VBM_Object);
+      Put_Line ("Main_Loop.Display VBM_Object loaded.");
       GL.Objects.Programs.End_Transform_Feedback;
 
 --        GL.Objects.Buffers.Transform_Feedback_Buffer.Bind (0);
@@ -101,8 +104,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Programs.Use_Program (Render_Program);
 
       GL.Uniforms.Set_Single (Pass_Colour_ID, Colours (1));
+      Put_Line ("Main_Loop.Display Pass_Colour_ID set.");
       VAO (1).Bind;
+      Put_Line ("Main_Loop.Display vao bound.");
       GL.Objects.Buffers.Draw_Transform_Feedback_Stream (Triangles, Transform_BO, 0);
+      Put_Line ("Main_Loop.Display Transform_Feedback_Stream drawn.");
 
       GL.Uniforms.Set_Single (Pass_Colour_ID, Colours (2));
       VAO (1).Bind;
@@ -123,7 +129,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Program_Loader;
       VBM_Result     : Boolean := False;
       Varyings       : constant String :=
-                         "rf_position1,rf_normal1,gl_NextBuffer1,lf_position1,lf_normal1";
+                         "rf_position,rf_normal,gl_NextBuffer,lf_position,lf_normal";
       Name           : String (1 .. 30);
       Name_Length    : GL.Types.Size := 99;
       V_Length       : GL.Types.Size := 99;
