@@ -137,15 +137,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       V_Type         : Active_Attribute;
       Mode           : Buffer_Mode;
    begin
+      Transform_BO.Initialize_Id;
+      GL.Objects.Buffers.Bind_Transform_Feedback (Transform_BO);
+
       for index in VAO'Range loop
          VAO (index).Initialize_Id;
          VAO (index).Bind;
          VBO (index).Initialize_Id;
          Transform_Feedback_Buffer.Bind (VBO (index));
       end loop;
-
-      Transform_BO.Initialize_Id;
-      GL.Objects.Buffers.Bind_Transform_Feedback (Transform_BO);
 
       --  Program_From includes linking
       Sort_Program := Program_From
@@ -196,7 +196,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       for index in VBO'Range loop
          Transform_Feedback_Buffer.Bind (VBO (index));
          Transform_Feedback_Buffer.Allocate (Long (1024 * 1024), Dynamic_Copy);
-         Transform_Feedback_Buffer.Bind_Buffer_Base (UInt (index), VBO (index));
+         Transform_Feedback_Buffer.Bind_Buffer_Base (UInt (index - 1), VBO (index));
 
          VAO (index).Bind;
          Array_Buffer.Bind (VBO (index));
