@@ -92,6 +92,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Bind_Transform_Feedback (Transform_BO);
       Put_Line ("Main_Loop.Display Transform_BO bound.");
 
+      Put_Line ("Main_Loop.Display buffer size.: " &
+                  Size'Image (GL.Objects.Buffers.Transform_Feedback_Buffer.Size));
+
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       Put_Line ("Main_Loop.Display Begin_Transform_Feedback.");
       Load_VB_Object.Render (VBM_Object);
@@ -194,12 +197,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         (Sort_Program, "projection_matrix");
 
       for index in VBO'Range loop
+         VAO (index).Bind;
+         Array_Buffer.Bind (VBO (index));
+
          Transform_Feedback_Buffer.Bind (VBO (index));
          Transform_Feedback_Buffer.Allocate (Long (1024 * 1024), Dynamic_Copy);
          Transform_Feedback_Buffer.Bind_Buffer_Base (UInt (index), VBO (index));
-
-         VAO (index).Bind;
-         Array_Buffer.Bind (VBO (index));
 
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (0, 4, Single_Type, True, Int (Buffer_Size), 0);
@@ -240,11 +243,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 begin
    if Setup then
       while Running loop
-         --           delay (0.03);
          Display (Main_Window);
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
          Glfw.Input.Poll_Events;
-         delay (0.03);
          Running := Running and not
            (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
          Running := Running and not Main_Window.Should_Close;
