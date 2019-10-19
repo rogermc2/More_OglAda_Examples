@@ -46,7 +46,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    VBM_Object                  : Load_VB_Object.VB_Object;
    Colours                     : constant array (1 .. 2) of
      GL.Types.Singles.Vector4 := ((0.8, 0.8, 0.9, 0.5),
-                                   (0.3, 1.0, 0.3, 0.8));
+                                  (0.3, 1.0, 0.3, 0.8));
 
 
    --  ------------------------------------------------------------------------
@@ -80,10 +80,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Model_Matrix :=
         Translation_Matrix ((0.0, 0.0, 100.0 *  Single_Math_Functions.Sin (2.0 * Ada.Numerics.Pi * Current_Time) - 230.0)) *
-          Rotation_Matrix (Degree (360.0 * Current_Time), (1.0, 0.0, 0.0)) *
-            Rotation_Matrix (Degree (360.0 * 2.0 * Current_Time), (0.0, 1.0, 0.0)) *
-              Rotation_Matrix (Degree (360.0 * 5.0 * Current_Time), (0.0, 0.0, 0.1)) *
-                Translation_Matrix ((0.0, -80.0, 0.0));
+        Rotation_Matrix (Degree (360.0 * Current_Time), (1.0, 0.0, 0.0)) *
+          Rotation_Matrix (Degree (360.0 * 2.0 * Current_Time), (0.0, 1.0, 0.0)) *
+            Rotation_Matrix (Degree (360.0 * 5.0 * Current_Time), (0.0, 0.0, 0.1)) *
+              Translation_Matrix ((0.0, -80.0, 0.0));
 
       GL.Uniforms.Set_Single (Model_Matrix_ID, Model_Matrix);
       GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
@@ -93,21 +93,20 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base (0, VBO (1));
       GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base (1, VBO (2));
+
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
-      Load_VB_Object.Render (VBM_Object);
+         Load_VB_Object.Render (VBM_Object);
       GL.Objects.Programs.End_Transform_Feedback;
 
       GL.Toggles.Disable (Rasterizer_Discard);
 
       GL.Objects.Programs.Use_Program (Render_Program);
-      GL.Uniforms.Set_Single (Pass_Colour_ID, Colours (1));
-      VAO (1).Bind;
-      GL.Objects.Buffers.Draw_Transform_Feedback_Stream (Triangles, Transform_BO, 0);
-
-      GL.Uniforms.Set_Single (Pass_Colour_ID, Colours (2));
-      VAO (2).Bind;
-      GL.Objects.Buffers.Draw_Transform_Feedback_Stream (Triangles, Transform_BO, 1);
-
+      for index in 1 .. 2 loop
+         GL.Uniforms.Set_Single (Pass_Colour_ID, Colours (index));
+         VAO (index).Bind;
+         GL.Objects.Buffers.Draw_Transform_Feedback_Stream
+           (Triangles, Transform_BO, UInt (index - 1));
+      end loop;
    exception
       when  others =>
          Put_Line ("An exception occurred in Main_Loop.Display.");
