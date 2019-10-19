@@ -31,7 +31,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Vec3_Size                   : constant UInt := GL.Types.Singles.Vector3'Size / 8;
    Vec4_Size                   : constant UInt := GL.Types.Singles.Vector4'Size / 8;
    Buffer_Size                 : constant UInt := Vec4_Size + Vec3_Size;
-   Background                  : constant GL.Types.Colors.Color := (0.0, 1.0, 0.0, 0.0);
+   Background                  : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
 
    VAO                         : array (1 .. 2) of GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    VBO                         : array (1 .. 2) of GL.Objects.Buffers.Buffer;
@@ -90,31 +90,22 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       GL.Toggles.Enable (Rasterizer_Discard);
       GL.Objects.Buffers.Bind_Transform_Feedback (Transform_BO);
-      Put_Line ("Main_Loop.Display Transform_BO bound.");
 
-      Put_Line ("Main_Loop.Display buffer size.: " &
-                  Size'Image (GL.Objects.Buffers.Transform_Feedback_Buffer.Size));
-
+      GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base (0, VBO (1));
+      GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base (1, VBO (2));
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
-      Put_Line ("Main_Loop.Display Begin_Transform_Feedback.");
       Load_VB_Object.Render (VBM_Object);
-      Put_Line ("Main_Loop.Display VBM_Object loaded.");
       GL.Objects.Programs.End_Transform_Feedback;
 
---        GL.Objects.Buffers.Transform_Feedback_Buffer.Bind (0);
       GL.Toggles.Disable (Rasterizer_Discard);
 
       GL.Objects.Programs.Use_Program (Render_Program);
-
       GL.Uniforms.Set_Single (Pass_Colour_ID, Colours (1));
-      Put_Line ("Main_Loop.Display Pass_Colour_ID set.");
       VAO (1).Bind;
-      Put_Line ("Main_Loop.Display vao bound.");
       GL.Objects.Buffers.Draw_Transform_Feedback_Stream (Triangles, Transform_BO, 0);
-      Put_Line ("Main_Loop.Display Transform_Feedback_Stream drawn.");
 
       GL.Uniforms.Set_Single (Pass_Colour_ID, Colours (2));
-      VAO (1).Bind;
+      VAO (2).Bind;
       GL.Objects.Buffers.Draw_Transform_Feedback_Stream (Triangles, Transform_BO, 1);
 
    exception
@@ -133,12 +124,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       VBM_Result     : Boolean := False;
       Varyings       : constant String :=
                          "rf_position,rf_normal,gl_NextBuffer,lf_position,lf_normal";
-      Name           : String (1 .. 30);
-      Name_Length    : GL.Types.Size := 99;
-      V_Length       : GL.Types.Size := 99;
-      Max_Length     : Int;
-      V_Type         : Active_Attribute;
-      Mode           : Buffer_Mode;
    begin
       Transform_BO.Initialize_Id;
       GL.Objects.Buffers.Bind_Transform_Feedback (Transform_BO);
@@ -168,41 +153,18 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       end if;
 
       GL.Objects.Programs.Use_Program  (Sort_Program);
-      Mode := Transform_Feedback_Buffer_Mode (Sort_Program);
-      V_Length := Transform_Feedback_Varyings_Size (Sort_Program);
-      Max_Length := Transform_Feedback_Varying_Max_Length (Sort_Program);
-
-      Get_Transform_Feedback_Varying (Object   => Sort_Program,
-                                      Index    => 0,
-                                      Length   => Name_Length,
-                                      V_Length => V_Length,
-                                      V_Type   => V_Type,
-                                      Name     => Name);
-
-      Put_Line ("Name: " & Name);
-      Put_Line ("Length: " & Int'Image (Name_Length));
-      Put_Line ("V_Length" &  Int'Image (V_Length));
-      Put_Line ("V_Type: " & Active_Attribute'Image (V_Type) & "   V_Length: " &
-                  Int'Image (V_Length) & "   Max Length: " & Int'Image (Max_Length));
-      if Mode = Interleaved_Attribs or Mode = Separate_Attribs then
-         Put_Line ("Mode: "  & Buffer_Mode'Image (Mode));
-      else
-         Put_Line ("Setup, Get_Transform_Feedback_Varying returned an invalid Buffer Mode value: "
-                   & Integer'Image (V_Type'Enum_Rep));
-      end if;
 
       Model_Matrix_ID := GL.Objects.Programs.Uniform_Location
         (Sort_Program, "model_matrix");
       Projection_Matrix_ID := GL.Objects.Programs.Uniform_Location
         (Sort_Program, "projection_matrix");
 
-      for index in VBO'Range loop
+      for index in 1 .. 2 loop
          VAO (index).Bind;
          Array_Buffer.Bind (VBO (index));
 
          Transform_Feedback_Buffer.Bind (VBO (index));
          Transform_Feedback_Buffer.Allocate (Long (1024 * 1024), Dynamic_Copy);
-         Transform_Feedback_Buffer.Bind_Buffer_Base (UInt (index - 1), VBO (index));
 
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (0, 4, Single_Type, True, Int (Buffer_Size), 0);
@@ -216,7 +178,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         ((Src ("src/shaders/render_10_vertex_shader.glsl", Vertex_Shader),
          Src ("src/shaders/render_10_fragment_shader.glsl", Fragment_Shader)));
       Pass_Colour_ID := GL.Objects.Programs.Uniform_Location
-        (Render_Program, "pass_color");
+        (Render_Program, "pass_colour");
 
       Utilities.Clear_Background_Colour_And_Depth (Background);
 
