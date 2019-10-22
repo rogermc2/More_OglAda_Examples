@@ -10,7 +10,8 @@ with Main_Loop;
 
 procedure Particle_Simulator is
     Main_Window  : Glfw.Windows.Window;
-    Window_Title : constant String := "Red Book Tutorial 12 - Particle Simulation";
+   Window_Title : constant String :=
+                    "Red Book Tutorial 12 - Particle Simulation";
 begin
     Glfw.Init;
     Initialize (Main_Window, Window_Title);
