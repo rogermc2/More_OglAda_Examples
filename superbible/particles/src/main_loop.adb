@@ -58,7 +58,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Initialize_Particles is
+    procedure Initialize_Particles (Mapped_Buffer_Ptr : Particle_Buffer_Package.Pointer) is
         use Singles;
         Buffer_Pointer : Particle_Buffer_Package.Pointer := Mapped_Buffer_Ptr;
     begin
@@ -151,7 +151,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Map_Particle_Buffer_Range
           (Array_Buffer, Map_Access, 0, Buffer_Size, Mapped_Buffer_Ptr);
 
-        Initialize_Particles;
+        Initialize_Particles (Mapped_Buffer_Ptr);
         GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                  Kind   => Single_Type,
                                                  Normalized => True,
@@ -192,12 +192,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         end if;
         Dest_Ptr := Particles_Ptr_Array (Dest_Index);
 
-        for count in 1 .. Num_Particles loop
+        for count_1 in 1 .. Num_Particles loop
             Source_1 := Source_1_Ptr.all;
-            Delta_Vel := (0.0, 0.0, 0.0);
             Source_2_Ptr := Particles_Ptr_Array (Source_Index);
+            Delta_Vel := (0.0, 0.0, 0.0);
             for count_2 in 1 .. Num_Particles loop
-                if count_2 /= count then
+                if count_2 /= count_1 then
                     Delta_Pos := Source_2_Ptr.Position - Source_1.Position;
                     if Maths.Length (Delta_Pos) /= 0.0 then
                         Delta_Dir := Maths.Normalized (Delta_Pos);
@@ -211,8 +211,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                     Delta_Vel := Delta_Vel + Delta_Dir / (Distance * Distance);
                 end if;
 
-                Dest_Ptr.Position := Source_1_Ptr.Position + Source_1_Ptr.Velocity;
-                Dest_Ptr.Velocity := Source_1_Ptr.Velocity + 0.01 * Delta_Vel * Delta_Time;
+                Dest_Ptr.Position := Source_1.Position + Source_1_Ptr.Velocity;
+                Dest_Ptr.Velocity := Source_1.Velocity + 0.01 * Delta_Vel * Delta_Time;
                 Particle_Buffer_Package.Increment (Source_2_Ptr);
             end loop;
             Mapped_Buffer_Ptr.Position := Dest_Ptr.Position;
