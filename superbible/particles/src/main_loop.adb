@@ -183,7 +183,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Source_Index   : constant Integer := Integer (Frame_Index) Rem 2 + 1;
         Dest_Index     : constant Integer := Integer (Frame_Index + 1) Rem 2 + 1;
         Delta_Pos      : Vector3;
-        Delta_Vel      : Vector3 := (0.0, 0.0, 0.0);
+        Delta_Vel      : Vector3;
         Delta_Dir      : Vector3;
         Distance       : Single;
     begin
@@ -191,7 +191,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Dest_Ptr := Particles_Ptr_Array (Dest_Index);
         for count in 1 .. Num_Particles loop
             Source_1 := Source_1_Ptr.all;
-            Delta_Vel := Delta_Time * (0.0, 0.0, 0.0);
+            Delta_Vel := (0.0, 0.0, 0.0);
             Source_2_Ptr := Particles_Ptr_Array (Source_Index);
             for count_2 in 1 .. Num_Particles loop
                 if count_2 /= count then
@@ -218,6 +218,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             Particle_Buffer_Package.Increment (Buffer_Pointer);
         end loop;
         Frame_Index := Frame_Index + 1;
+
     exception
         when others =>
             Put_Line ("An exceptiom occurred in Update_Particles.");
