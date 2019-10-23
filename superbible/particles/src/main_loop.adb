@@ -84,8 +84,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     exception
         when others =>
-          Put_Line ("An exceptiom occurred in Initialize_Particles.");
-        raise;
+            Put_Line ("An exceptiom occurred in Initialize_Particles.");
+            raise;
     end Initialize_Particles;
 
     --  ----------------------------------------------------------------------------
@@ -155,20 +155,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
           (Array_Buffer, Map_Access, 0, Buffer_Size, Mapped_Buffer_Ptr);
 
         Initialize_Particles;
-        GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 1,
+        GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                  Kind   => Single_Type,
                                                  Normalized => True,
-                                                 Stride => 2, Offset => 0);
+                                                 Stride => Particle'Size / 8, Offset => 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
         Draw_Program :=
           Program_From ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
-                         Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
+                        Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
 
     exception
         when others =>
-          Put_Line ("An exceptiom occurred in Setup.");
-        raise;
+            Put_Line ("An exceptiom occurred in Setup.");
+            raise;
     end Setup;
 
     --  ----------------------------------------------------------------------------
@@ -189,11 +189,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     begin
         Source_1_Ptr := Particles_Ptr_Array (Source_Index);
         Dest_Ptr := Particles_Ptr_Array (Dest_Index);
-          for count in 1 .. Num_Particles loop
+        for count in 1 .. Num_Particles loop
             Source_1 := Source_1_Ptr.all;
             Delta_Vel := Delta_Time * (0.0, 0.0, 0.0);
             Source_2_Ptr := Particles_Ptr_Array (Source_Index);
---              Put_Line ("Update_Particles count: " & UInt'Image (count));
             for count_2 in 1 .. Num_Particles loop
                 if count_2 /= count then
                     Delta_Pos := Source_2_Ptr.Position - Source_1.Position;
@@ -208,12 +207,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                     end if;
                     Delta_Vel := Delta_Vel + Delta_Dir / (Distance * Distance);
                 end if;
---                  Put_Line ("Update_Particles counts: " & UInt'Image (count) &
---                              "  " & UInt'Image (count_2));
---                  Dest_Ptr.Position := Delta_Time * (0.0, 0.0, 1.0);
+
                 Dest_Ptr.Position := Source_1_Ptr.Position + Source_1_Ptr.Velocity;
                 Dest_Ptr.Velocity := Source_1_Ptr.Velocity + 0.01 * Delta_Vel * Delta_Time;
-                 Particle_Buffer_Package.Increment (Source_2_Ptr);
+                Particle_Buffer_Package.Increment (Source_2_Ptr);
             end loop;
             Mapped_Buffer_Ptr.Position := Dest_Ptr.Position;
             Particle_Buffer_Package.Increment (Source_1_Ptr);
@@ -223,8 +220,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Frame_Index := Frame_Index + 1;
     exception
         when others =>
-          Put_Line ("An exceptiom occurred in Update_Particles.");
-        raise;
+            Put_Line ("An exceptiom occurred in Update_Particles.");
+            raise;
     end Update_Particles;
 
     --  ----------------------------------------------------------------------------
