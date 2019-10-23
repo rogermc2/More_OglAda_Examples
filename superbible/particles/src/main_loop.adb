@@ -94,10 +94,27 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         use Ada.Numerics.Float_Random;
         Gen      : Generator;
     begin
-        return Single (Random (Gen));
+        return 2.0 * Single (Random (Gen)) - 1.0;
     end Random_Float;
 
     --  ------------------------------------------------------------------------
+
+--      function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
+--                              return Singles.Vector3 is
+--        use Ada.Numerics.Float_Random;
+--        use GL.Types.Singles;
+--        Gen      : Generator;
+--        R_Vector : Vector3 := (2.0 * Single (Random (Gen)) - 1.0,
+--                               2.0 * Single (Random (Gen)) - 1.0,
+--                               2.0 * Single (Random (Gen)) - 1.0);
+--     begin
+--        R_Vector := Maths.Normalized (R_Vector);
+--        R_Vector := R_Vector * (Random_Float *
+--                                (Max_Magnitude - Min_Magnitude) + Min_Magnitude);
+--        return R_Vector;
+--     end Random_Vector;
+
+   --  ------------------------------------------------------------------------
 
     procedure Render_Particles (Window : in out Glfw.Windows.Window;
                                 Current_Time : Glfw.Seconds) is
