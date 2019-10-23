@@ -4,7 +4,6 @@ with Interfaces.C.Pointers;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
-with GL.Buffers;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
@@ -100,8 +99,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Delta_Time    : constant Single := Single (Current_Time) - Previous_Time;
     begin
         Previous_Time := Single (Current_Time);
+        Utilities.Clear_Background_Colour (Black);
 
-        Utilities.Clear_Background_Colour_And_Depth (Black);
         Glfw.Windows.Get_Size (Window'Access, Window_Width, Window_Height);
         GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 
@@ -136,9 +135,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     begin
         Vertex_Array.Initialize_Id;
         Vertex_Array.Bind;
-
-        GL.Toggles.Enable (GL.Toggles.Depth_Test);
-        GL.Buffers.Set_Depth_Function (GL.Types.Less);
 
         -- Point size is set in the vertex shader
         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
