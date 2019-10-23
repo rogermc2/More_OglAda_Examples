@@ -1,7 +1,6 @@
 
 with Interfaces.C.Pointers;
 
-with Ada.Numerics.Float_Random;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
@@ -49,10 +48,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     Num_Particles       : constant UInt := 2048;
     Particles           : Particles_Array (1 .. Num_Particles);
-    Buffer_Size         : constant Size := Size (Num_Particles * Particle'Size / 8);
+    Particle_Bytes      : constant Size := Particle'Size / 8;
+    Buffer_Size         : constant Size := Size (Num_Particles) * Particle_Bytes;
     Map_Access          : GL.Objects.Buffers.Map_Bits;
 
-    function Random_Float return Single;
     procedure Update_Particles (Delta_Time : Single);
 
     --  ----------------------------------------------------------------------------
@@ -72,9 +71,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Buffer_Pointer := Mapped_Buffer_Ptr;
         for count in 1 .. Num_Particles loop
-            Particles (count).Position (GL.X) := Random_Float * 6.0 - 3.0;
-            Particles (count).Position (GL.Y) := Random_Float * 6.0 - 3.0;
-            Particles (count).Position (GL.Z) := Random_Float * 6.0 - 3.0;
+            Particles (count).Position := Maths.Random_Vector (-3.0, 3.0);
             Particles (count).Velocity := 0.001 * Particles (count).Position;
 
             Buffer_Pointer.all := Particles (count);
@@ -90,31 +87,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ----------------------------------------------------------------------------
 
-    function Random_Float return Single is
-        use Ada.Numerics.Float_Random;
-        Gen      : Generator;
-    begin
-        return 2.0 * Single (Random (Gen)) - 1.0;
-    end Random_Float;
-
-    --  ------------------------------------------------------------------------
-
---      function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
---                              return Singles.Vector3 is
---        use Ada.Numerics.Float_Random;
---        use GL.Types.Singles;
---        Gen      : Generator;
---        R_Vector : Vector3 := (2.0 * Single (Random (Gen)) - 1.0,
---                               2.0 * Single (Random (Gen)) - 1.0,
---                               2.0 * Single (Random (Gen)) - 1.0);
---     begin
---        R_Vector := Maths.Normalized (R_Vector);
---        R_Vector := R_Vector * (Random_Float *
---                                (Max_Magnitude - Min_Magnitude) + Min_Magnitude);
---        return R_Vector;
---     end Random_Vector;
-
-   --  ------------------------------------------------------------------------
 
     procedure Render_Particles (Window : in out Glfw.Windows.Window;
                                 Current_Time : Glfw.Seconds) is
@@ -175,7 +147,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                  Kind   => Single_Type,
                                                  Normalized => True,
-                                                 Stride => Particle'Size / 8, Offset => 0);
+                                                 Stride => Particle_Bytes, Offset => 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
         Draw_Program :=
