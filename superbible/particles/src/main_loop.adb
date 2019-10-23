@@ -27,6 +27,7 @@ with Utilities;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     use GL.Types;
 
+    subtype Array_Index is integer range 1 .. 2;
     type Particle is record
         Position : Singles.Vector3;
         Velocity : Singles.Vector3;
@@ -42,9 +43,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Vertex_Array        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Particle_Buffer     : GL.Objects.Buffers.Buffer;
     Mapped_Buffer_Ptr   : Particle_Buffer_Package.Pointer;
-    Particles_Ptr_Array : array (1 .. 2) of Particle_Buffer_Package.Pointer;
-    Frame_Index         : UInt := 0;
+    Particles_Ptr_Array : array (Array_Index'Range) of Particle_Buffer_Package.Pointer;
     Previous_Time       : Single := 0.0;
+    Source_Index        : Array_Index := 1;
 
     Num_Particles       : constant UInt := 2048;
     Particles           : Particles_Array (1 .. Num_Particles);
@@ -52,7 +53,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Buffer_Size         : constant Size := Size (Num_Particles) * Particle_Bytes;
     Map_Access          : GL.Objects.Buffers.Map_Bits;
 
-    procedure Update_Particles (Delta_Time : Single);
+    procedure Update_Particles (Source_Index : Array_Index;
+                                Source_Ptr : Particle_Buffer_Package.Pointer;
+                                Delta_Time : Single);
 
     --  ----------------------------------------------------------------------------
 
@@ -90,9 +93,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     procedure Render_Particles (Window : in out Glfw.Windows.Window;
                                 Current_Time : Glfw.Seconds) is
-        Black         : constant GL.Types.Colors.Color := (0.8, 0.8, 0.8, 1.0);
+        Black         : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
         Window_Width  : Glfw.Size;
         Window_Height : Glfw.Size;
+        Source_Ptr    : Particle_Buffer_Package.Pointer;
         Delta_Time    : constant Single := Single (Current_Time) - Previous_Time;
     begin
         Previous_Time := Single (Current_Time);
@@ -101,7 +105,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Glfw.Windows.Get_Size (Window'Access, Window_Width, Window_Height);
         GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 
-        Update_Particles (0.001 * Delta_Time);
+        Source_Ptr := Particles_Ptr_Array (Source_Index);
+        Update_Particles (Source_Index, Source_Ptr, 0.001 * Delta_Time);
+
+        if Source_Index = 1 then
+            Source_Index := 2;
+        else
+            Source_Index := 1;
+        end if;
+        Mapped_Buffer_Ptr := Particles_Ptr_Array (Source_Index);
 
         Vertex_Array.Bind;
         GL.Objects.Buffers.Array_Buffer.Flush_Mapped_Buffer_Range (0, Buffer_Size);
@@ -162,22 +174,28 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Update_Particles (Delta_Time : Single) is
+    procedure Update_Particles (Source_Index : Array_Index;
+                                Source_Ptr : Particle_Buffer_Package.Pointer;
+                                Delta_Time : Single) is
         use Singles;
-        Buffer_Pointer : Particle_Buffer_Package.Pointer := Mapped_Buffer_Ptr;
-        Source_1_Ptr   : Particle_Buffer_Package.Pointer;
-        Source_2_Ptr   : Particle_Buffer_Package.Pointer;
+
         Dest_Ptr       : Particle_Buffer_Package.Pointer;
+        Source_1_Ptr   : Particle_Buffer_Package.Pointer := Source_Ptr;
+        Source_2_Ptr   : Particle_Buffer_Package.Pointer;
         Source_1       : Particle;
-        Source_Index   : constant Integer := Integer (Frame_Index) Rem 2 + 1;
-        Dest_Index     : constant Integer := Integer (Frame_Index + 1) Rem 2 + 1;
+        Dest_Index     : Array_Index;
         Delta_Pos      : Vector3;
         Delta_Vel      : Vector3;
         Delta_Dir      : Vector3;
         Distance       : Single;
     begin
-        Source_1_Ptr := Particles_Ptr_Array (Source_Index);
+        if Source_Index = 1 then
+            Dest_Index := 2;
+        else
+            Dest_Index := 1;
+        end if;
         Dest_Ptr := Particles_Ptr_Array (Dest_Index);
+
         for count in 1 .. Num_Particles loop
             Source_1 := Source_1_Ptr.all;
             Delta_Vel := (0.0, 0.0, 0.0);
@@ -204,9 +222,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             Mapped_Buffer_Ptr.Position := Dest_Ptr.Position;
             Particle_Buffer_Package.Increment (Source_1_Ptr);
             Particle_Buffer_Package.Increment (Dest_Ptr);
-            Particle_Buffer_Package.Increment (Buffer_Pointer);
         end loop;
-        Frame_Index := Frame_Index + 1;
 
     exception
         when others =>
