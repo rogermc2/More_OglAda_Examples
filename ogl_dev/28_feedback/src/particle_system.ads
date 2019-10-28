@@ -19,12 +19,13 @@ package Particle_System is
                      View_Point : Singles.Matrix4;
                      Camera_Pos : Singles.Vector3);
 private
-   type Particle_Buffer_Array is array (UInt range 1 .. 2) of GL.Objects.Buffers.Buffer;
-   type Transform_Feedback_Array is array (UInt range 1 .. 2) of GL.Objects.Buffers.Transform_Buffer;
+   type Buffer_Index is new UInt range 1 .. 2;
+   type Particle_Buffer_Array is array (Buffer_Index'Range) of GL.Objects.Buffers.Buffer;
+   type Transform_Feedback_Array is array (Buffer_Index'Range) of GL.Objects.Buffers.Transform_Buffer;
 
    type Particle_System is record
-     Current_VB_Index  : UInt := 1;
-     Current_TFB_Index : UInt := 2;
+     Current_VB_Index  : Buffer_Index := 1;
+     Current_TFB_Index : Buffer_Index := 2;
      Is_First          : Boolean := True;
      PS_Time           : GL.Types.UInt := 0;
      Texture           : Ogldev_Texture.Ogl_Texture;

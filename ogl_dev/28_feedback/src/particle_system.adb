@@ -18,7 +18,7 @@ package body Particle_System is
 
    type Particle_Type is new Single range 0.0 .. 3.0;
 
-   Max_Particles     : constant GL.Types.UInt := 1000;
+   Max_Particles     : constant GL.Types.UInt := 20;  -- 1000
    Particle_Launcher : constant Particle_Type := 0.0;
    Shell             : constant Particle_Type := 1.0;
    Secondary_Shell   : constant Particle_Type := 2.0;
@@ -57,13 +57,11 @@ package body Particle_System is
       Particles (1).Velocity := (0.0, 0.0001, 0.0);
       Particles (1).Lifetime_ms := 0.0;
 
-      for index in UInt range 1 .. 2 loop
+      for index in Buffer_Index loop
          PS.Feedback_Buffer (index).Initialize_Id;
-         GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (index));
          GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (index));
 
          PS.Particle_Buffer (index).Initialize_Id;
-         Array_Buffer.Bind (PS.Particle_Buffer (index));
          Array_Buffer.Bind (PS.Particle_Buffer (index));
 
          Load_Particle_Buffer (Array_Buffer, Particles, Dynamic_Draw);
@@ -126,7 +124,7 @@ package body Particle_System is
    procedure Render_Particles (PS         : in out Particle_System;
                                View_Point : Singles.Matrix4;
                                Camera_Pos : Singles.Vector3) is
-      TFB_Index         : constant UInt := PS.Current_TFB_Index;
+      TFB_Index         : constant Buffer_Index := PS.Current_TFB_Index;
    begin
       Billboard_Technique.Use_Program (PS.Display_Method);
       Billboard_Technique.Set_Camera_Position (PS.Display_Method, Camera_Pos);
@@ -155,8 +153,8 @@ package body Particle_System is
 
    procedure Update_Particles (PS         : in out Particle_System;
                                Delta_Time : GL.Types.UInt) is
-      TFB_Index        : constant UInt := PS.Current_TFB_Index;
-      VB_Index         : constant UInt := PS.Current_VB_Index;
+      TFB_Index        : constant Buffer_Index := PS.Current_TFB_Index;
+      VB_Index         : constant Buffer_Index := PS.Current_VB_Index;
    begin
 
       PS_Update_Technique.Use_Program (PS.Update_Method);
