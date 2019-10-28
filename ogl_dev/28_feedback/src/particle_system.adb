@@ -18,17 +18,17 @@ package body Particle_System is
 
    type Particle_Type is new Single range 0.0 .. 3.0;
 
-   Max_Particles     : constant GL.Types.UInt := 1000;
+   Max_Particles     : constant GL.Types.UInt := 3;  --  1000;
    Particle_Launcher : constant Particle_Type := 0.0;
    Shell             : constant Particle_Type := 1.0;
    Secondary_Shell   : constant Particle_Type := 2.0;
    None              : constant Particle_Type := 3.0;
 
    type Particle is record
-      Particle_Kind : Particle_Type := None;
-      Position      : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Velocity      : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Lifetime_ms   : GL.Types.Single := 0.0;
+      Particle_Kind : Particle_Type;
+      Position      : Singles.Vector3;
+      Velocity      : Singles.Vector3;
+      Lifetime_ms   : GL.Types.Single;
    end record;
    Particle_Stride  : constant Int := Particle'Size / Single'Size;
 
@@ -60,12 +60,9 @@ package body Particle_System is
       for index in UInt range 1 .. 2 loop
          PS.Feedback_Buffer (index).Initialize_Id;
          GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (index));
-         GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (index));
 
          PS.Particle_Buffer (index).Initialize_Id;
          Array_Buffer.Bind (PS.Particle_Buffer (index));
-         Array_Buffer.Bind (PS.Particle_Buffer (index));
-
          Load_Particle_Buffer (Array_Buffer, Particles, Dynamic_Draw);
          Transform_Feedback_Buffer.Bind_Buffer_Base (0, PS.Particle_Buffer (index));
       end loop;
@@ -162,8 +159,8 @@ package body Particle_System is
       PS_Update_Technique.Use_Program (PS.Update_Method);
       PS_Update_Technique.Set_Time (PS.Update_Method, PS.PS_Time);
       PS_Update_Technique.Set_Delta_Millisec (PS.Update_Method, Delta_Time);
-      Put_Line ("Particle_System.Update_Particles PS.PS_Time, Delta_Time." &
-                  GL.Types.UInt'Image (PS.PS_Time) & GL.Types.UInt'Image (Delta_Time));
+--        Put_Line ("Particle_System.Update_Particles PS.PS_Time, Delta_Time." &
+--                    GL.Types.UInt'Image (PS.PS_Time) & GL.Types.UInt'Image (Delta_Time));
 
       Random_Texture.Bind (PS.Random_Texture,
                            Ogldev_Engine_Common.Random_Texture_Unit);
