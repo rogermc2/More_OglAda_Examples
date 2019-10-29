@@ -1,6 +1,4 @@
 #version 410 core
-//  #extension GL_EXT_gpu_shader4 : enable
-//  #extension GL_EXT_geometry_shader4: enable
                                                                                     
 layout(points) in;                                                                  
 layout(points) out;                                                                 
@@ -38,10 +36,10 @@ void main()
     {
     float Age = Age0[0] + gDeltaTimeMillis;
     vec3  Dir;
-    float DeltaTimeSecs;
-    vec3  DeltaP;
-    vec3  DeltaV;
-    
+    float DeltaTimeSecs = gDeltaTimeMillis / 1000.0f;
+    vec3  DeltaP = DeltaTimeSecs * Velocity0[0];
+    vec3  DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
+
     if (Type0[0] == PARTICLE_TYPE_LAUNCHER)
         {
         if (Age >= gLauncherLifetime)
@@ -50,26 +48,23 @@ void main()
             Position1 = Position0[0];
             Dir = GetRandomDir(gTime / 1000.0);
             Dir.y = max(Dir.y, 0.5);
-            Velocity1 = normalize(Dir) / 20.0;
+            Velocity1 = normalize(Dir) / 40.0;  //  20.0
             Age1 = 0.0;
             EmitVertex();
             EndPrimitive();
             Age = 0.0;
-            }
-        
+            }  //  end if Age >= gLauncherLifetime
+   
         Type1 = PARTICLE_TYPE_LAUNCHER;
         Position1 = Position0[0];
         Velocity1 = Velocity0[0];
         Age1 = Age;
         EmitVertex();
         EndPrimitive();
-        }
-    else
+        }  // end PARTICLE_TYPE_LAUNCHER
+
+    else  //  Not PARTICLE_TYPE_LAUNCHER
         {
-        DeltaTimeSecs = gDeltaTimeMillis / 1000.0f;
-        DeltaP = DeltaTimeSecs * Velocity0[0];
-        DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
-        
         if (Type0[0] == PARTICLE_TYPE_SHELL)
             {
             if (Age < gShellLifetime)
@@ -81,7 +76,8 @@ void main()
                 EmitVertex();
                 EndPrimitive();
                 }
-            else
+ 
+            else  //  Age >= gShellLifetime
                 {
                 for (int i = 0 ; i < 10 ; i++)
                     {
@@ -93,9 +89,10 @@ void main()
                     EmitVertex();
                     EndPrimitive();
                     }
-                }
-            }
-        else
+                }  //  end Age >= gShellLifetime
+            }  //  end if PARTICLE_TYPE_SHELL
+/*
+        else   //  Not PARTICLE_TYPE_SHELL therefore PARTICLE_TYPE_SECONDARY_SHELL
             {
             if (Age < gSecondaryShellLifetime)
                 {
@@ -105,7 +102,8 @@ void main()
                 Age1 = Age;
                 EmitVertex();
                 EndPrimitive();
-                }
-            }
-        }
-    }
+                }  //  end Age < gSecondaryShellLifetime
+            }  //  end PARTICLE_TYPE_SECONDARY_SHELL
+ */
+        }   //  end Not PARTICLE_TYPE_LAUNCHER
+    }   // end main
