@@ -19,7 +19,6 @@ out vec3 tf_velocity;
 uniform float time_step = 0.07;
 uniform float spring_constant = 7.1;
 
-// Gravity
 const vec3 gravity = vec3(0.0, -0.08, 0.0);
 
 // Global damping constant c

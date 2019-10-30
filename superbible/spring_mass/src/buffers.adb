@@ -80,8 +80,8 @@ package body Buffers is
       for index in VBO'Range loop
          VBO (index).Initialize_Id;
       end loop;
-      for index in 1 .. 2 loop
-         Array_Buffer.Bind (VBO (Position_A + 1));
+      for index in 0 .. 1 loop
+         Array_Buffer.Bind (VBO (Position_A + index));
          Utilities.Load_Vertex_Buffer
            (Array_Buffer, Initial_Positions, Dynamic_Copy);
          GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -89,7 +89,7 @@ package body Buffers is
             Normalized => True, Stride => 0, Offset => 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
-         Array_Buffer.Bind (VBO (Velocity_A + 1));
+         Array_Buffer.Bind (VBO (Velocity_A + index));
          Utilities.Load_Vertex_Buffer
            (Array_Buffer, Initial_Velocities, Dynamic_Copy);
          GL.Attributes.Set_Vertex_Attrib_Pointer
