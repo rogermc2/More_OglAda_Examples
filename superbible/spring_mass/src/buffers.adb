@@ -92,40 +92,28 @@ package body Buffers is
       Put_Line ("Buffers.Setup_Index_Buffer Buffer size: "
                 & GL.Types.Size'Image (Element_Array_Buffer.Size)
                & "  " & GL.Types.Size'Image (Buffer_Size));
-      --  GL_INVALID_VALUE is generated if offset or length is negative,
-      --  if offset + length is greater than the value of GL_BUFFER_SIZE
-      --  for the buffer object,
-      --  or if access has any disallowed bits set
       Element_Array_Buffer.Bind (Index_Buffer);
       Map_Element_Buffer_Range (Target      => Element_Array_Buffer,
                                 Access_Type => Map_Access,
                                 Offset      => 0, Size => Buffer_Size,
                                 Pointer     => Mapped_Buffer_Ptr);
-      Put_Line ("Buffers.Setup_Index_Buffer lines mapped ");
+
       for index_Y in 1 .. Points_Y loop
-         Put_Line ("Buffers.Setup_Index_Buffer index_Y: " &
-                     Int'Image (index_Y));
          for index_X in 1 .. Points_X - 1 loop
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             Mapped_Buffer_Ptr.all := Int (index_X - 1 + (index_Y - 1) * Points_X);
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             Mapped_Buffer_Ptr.all := Int (1 + (index_Y - 1) * Points_X);
          end loop;
-         Put_Line ("Buffers.Setup_Index_Buffer index_Y: " &
-                     Int'Image (index_Y));
       end loop;
 
       for index_X in 1 .. Points_X loop
-         Put_Line ("Buffers.Setup_Index_Buffer index_X: " &
-                     Int'Image (index_X));
          for index_Y in 1 .. Points_Y - 1 loop
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             Mapped_Buffer_Ptr.all := Int (index_X - 1 + (index_Y - 1) * Points_X);
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             Mapped_Buffer_Ptr.all := Int (Points_X + (index_X - 1) + (index_Y - 1) * Points_X);
          end loop;
-         Put_Line ("Buffers.Setup_Index_Buffer index_X: " &
-                     Int'Image (index_X));
       end loop;
       Unmap (Element_Array_Buffer);
 
@@ -211,8 +199,8 @@ package body Buffers is
                             Position_Tex_Buffers : in out Buffer_Array) is
    begin
       Setup_Vertex_Buffers (VBO_Array);
-      Setup_Index_Buffer (Index_Buffer);
       Setup_Tex_Buffers (Position_Tex_Buffers, VBO_Array);
+      Setup_Index_Buffer (Index_Buffer);
    end Setup_Buffers;
 
    --  ----------------------------------------------------------------------------------
