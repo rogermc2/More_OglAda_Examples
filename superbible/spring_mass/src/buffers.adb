@@ -13,7 +13,7 @@ package body Buffers is
 
     use GL.Types;
     package Lines_Package is new Interfaces.C.Pointers
-      (GL.Types.Size, UInt, UInt_Array, UInt'Last);
+      (GL.Types.Size, Int, Int_Array, Int'Last);
     procedure Map_Lines is new
       GL.Objects.Buffers.Map_Range (Lines_Package);
 
@@ -79,7 +79,7 @@ package body Buffers is
         use GL.Objects.Buffers;
         Num_Lines  : constant Int := Num_Connections;
         Map_Access : Map_Bits;
-        Map_Ptr    : Lines_Package.Pointer;
+        Map_Ptr    : Lines_Package.Pointer;  -- int * e
     begin
         Index_Buffer.Initialize_Id;
         Element_Array_Buffer.Bind (Index_Buffer);
@@ -87,25 +87,38 @@ package body Buffers is
 
         Map_Access.Write := True;
         Map_Access.Invalidate_Buffer := True;
+        Put_Line ("Buffers.Setup_Index_Buffer Map_Access set");
+        --  GL_INVALID_VALUE is generated if offset or length is negative, if offset+length
+        --  offset + length is greater than the value of GL_BUFFER_SIZE for the buffer object,
+        --  or if access has any disallowed bits set
         Map_Lines (Target  => Element_Array_Buffer, Access_Type => Map_Access,
                    Offset  => 0, Size => Int (2 * Num_Lines * Int'Size / 8),
                    Pointer => Map_Ptr);
+        Put_Line ("Buffers.Setup_Index_Buffer lines mapped ");
         for index_Y in 1 .. Points_Y loop
+            Put_Line ("Buffers.Setup_Index_Buffer index_Y: " &
+                     Int'Image (index_Y));
             for index_X in 1 .. Points_X - 1 loop
                 Lines_Package.Increment (Map_Ptr);
-                Map_Ptr.all := UInt (index_X - 1 + (index_Y - 1) * Points_X);
+                Map_Ptr.all := Int (index_X - 1 + (index_Y - 1) * Points_X);
                 Lines_Package.Increment (Map_Ptr);
-                Map_Ptr.all := UInt (1 + (index_Y - 1) * Points_X);
+                Map_Ptr.all := Int (1 + (index_Y - 1) * Points_X);
             end loop;
+            Put_Line ("Buffers.Setup_Index_Buffer index_Y: " &
+                     Int'Image (index_Y));
         end loop;
 
         for index_X in 1 .. Points_X loop
+            Put_Line ("Buffers.Setup_Index_Buffer index_X: " &
+                     Int'Image (index_X));
             for index_Y in 1 .. Points_Y - 1 loop
                 Lines_Package.Increment (Map_Ptr);
-                Map_Ptr.all := UInt (index_X - 1 + (index_Y - 1) * Points_X);
+                Map_Ptr.all := Int (index_X - 1 + (index_Y - 1) * Points_X);
                 Lines_Package.Increment (Map_Ptr);
-                Map_Ptr.all := UInt (Points_X + (index_X - 1) + (index_Y - 1) * Points_X);
+                Map_Ptr.all := Int (Points_X + (index_X - 1) + (index_Y - 1) * Points_X);
             end loop;
+            Put_Line ("Buffers.Setup_Index_Buffer index_X: " &
+                     Int'Image (index_X));
         end loop;
         Unmap (Element_Array_Buffer);
 
