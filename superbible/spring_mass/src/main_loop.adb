@@ -1,20 +1,20 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Buffers;
-with GL.Toggles;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
+with GL.Rasterization;
+with GL.Toggles;
 with GL.Types;
 with GL.Types.Colors;
+with GL.Window;
 
 with Glfw.Input;
 with Glfw.Input.Keys;
 with Glfw.Windows.Context;
 
-with Maths;
 with Program_Loader;
 with Utilities;
 
@@ -31,9 +31,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Rendering_Program    : GL.Objects.Programs.Program;
    Update_Program       : GL.Objects.Programs.Program;
 
-   Draw_Lines           : Boolean;
-   Draw_Points          : Boolean;
-   Iterations_Per_Frame : UInt;
+   Draw_Lines           : constant Boolean := False;
+   Draw_Points          : constant Boolean := True;
+   Iteration_Index      : Integer := 1;
+   Iterations_Per_Frame : constant UInt := 16;
 
    --  ------------------------------------------------------------------------
 
@@ -80,43 +81,68 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       end loop;
 
       Load_Shaders;
-
       Buffers.Setup_Buffers (VBO, Index_Buffer, Position_Tex_Buffer);
-
-      GL.Toggles.Enable (GL.Toggles.Depth_Test);
-      GL.Buffers.Set_Depth_Function (GL.Types.Less);
-      -- Point size is set in the vertex shader
-      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
    end Initialize;
 
    --  ----------------------------------------------------------------------------
 
-   procedure Render_Dot (Current_Time : Glfw.Seconds) is
-      use Maths.Single_Math_Functions;
-
-      Back_Colour : constant GL.Types.Colors.Color :=
-                      (0.5 * (1.0 + Sin (Single (Current_Time))),
-                       0.5 * (1.0 + Cos (Single (Current_Time))), 0.0, 1.0);
+   procedure Render (Window : in out Glfw.Windows.Window) is
+      use GL.Toggles;
+      Black         : constant Colors.Color := (0.0, 0.0, 0.0, 0.0);
+      Window_Width  : Glfw.Size;
+      Window_Height : Glfw.Size;
+      Buffer_Index  : Integer;
    begin
-      Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
+
+      GL.Objects.Programs.Use_Program (Update_Program);
+      Enable (Rasterizer_Discard);
+      for index in reverse 1 .. Iterations_Per_Frame loop
+         Buffer_Index :=  Iteration_Index Mod 2 + 1;
+         GL.Objects.Vertex_Arrays.Bind (VAO (Buffer_Index));
+         GL.Objects.Buffers.Texture_Buffer.Bind (Position_Tex_Buffer (Buffer_Index));
+         Iteration_Index := Iteration_Index + 1;
+         Buffer_Index :=  Iteration_Index Mod 2 + 1;
+         GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
+           (0, VBO (Buffers.Position_A + Buffer_Index));
+         GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
+           (1, VBO (Buffers.Velocity_A + Buffer_Index));
+         GL.Objects.Programs.Begin_Transform_Feedback (Points);
+           GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+         GL.Objects.Programs.End_Transform_Feedback;
+      end loop;
+      Disable (Rasterizer_Discard);
+
+
+      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width) - 10,
+                              GL.Types.Int (Window_Height) - 10);
+      Utilities.Clear_Background_Colour (Black);
 
       GL.Objects.Programs.Use_Program (Rendering_Program);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
-
+      if Draw_Points then
+         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+         GL.Rasterization.Set_Point_Size (4.0);
+         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
+      end if;
+      if Draw_Lines then
+         GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
+         GL.Objects.Buffers.Element_Array_Buffer.Bind (Index_Buffer);
+         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
+      end if;
    exception
       when others =>
-         Put_Line ("An exceptiom occurred in Render_Dot.");
+         Put_Line ("An exceptiom occurred in Render.");
          raise;
-   end Render_Dot;
+   end Render;
 
    --  ----------------------------------------------------------------------------
 
    use Glfw.Input;
-   Running            : Boolean := True;
+   Running : Boolean := True;
 begin
    Initialize;
    while Running loop
-      Render_Dot (Glfw.Time);
+      Render (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and not
