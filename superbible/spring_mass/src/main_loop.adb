@@ -133,7 +133,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Toggles;
       Buffer_Index  : Integer;
    begin
-      Iteration_Index := 1;
       GL.Objects.Programs.Use_Program (Update_Program);
       Enable (Rasterizer_Discard);
       for index in reverse 1 .. Iterations_Per_Frame loop
