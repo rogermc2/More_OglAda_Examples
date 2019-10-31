@@ -97,19 +97,21 @@ package body Buffers is
 
       for index_Y in 1 .. Points_Y loop
          for index_X in 1 .. Points_X - 1 loop
-            Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             Mapped_Buffer_Ptr.all := Int (index_X - 1 + (index_Y - 1) * Points_X);
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             Mapped_Buffer_Ptr.all := Int (1 + (index_Y - 1) * Points_X);
+            Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
          end loop;
       end loop;
 
       for index_X in 1 .. Points_X loop
          for index_Y in 1 .. Points_Y - 1 loop
+            Mapped_Buffer_Ptr.all :=
+              Int (index_X - 1 + (index_Y - 1) * Points_X);
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
-            Mapped_Buffer_Ptr.all := Int (index_X - 1 + (index_Y - 1) * Points_X);
+            Mapped_Buffer_Ptr.all :=
+              Int (Points_X + (index_X - 1) + (index_Y - 1) * Points_X);
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
-            Mapped_Buffer_Ptr.all := Int (Points_X + (index_X - 1) + (index_Y - 1) * Points_X);
          end loop;
       end loop;
       Unmap (Element_Array_Buffer);
@@ -132,7 +134,7 @@ package body Buffers is
          if index = 1 then
             Texture_Buffer.Allocate (GL.Pixels.RGBA32F, VBO (Position_A));
          else
-            GL.Objects.Buffers.Texture_Buffer.Allocate (GL.Pixels.RGBA32F, VBO (Position_B));
+            Texture_Buffer.Allocate (GL.Pixels.RGBA32F, VBO (Position_B));
          end if;
       end loop;
 
@@ -150,7 +152,7 @@ package body Buffers is
       Initial_Velocities  : constant Singles.Vector3_Array (1 .. Num_Points)
         := (others => (0.0, 0.0, 0.0));
       Initial_Connections : Ints.Vector4_Array (1 .. Num_Points);
-      --        Stride              : constant GL.Types.Size := 5;
+      Stride              : constant GL.Types.Size := 0;  --  11?
    begin
       Initialize_Vertex_Data (Initial_Positions, Initial_Connections);
 
@@ -165,21 +167,21 @@ package body Buffers is
            (Array_Buffer, Initial_Positions, Dynamic_Copy);
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Index      => 0, Count  => 4, Kind  => Single_Type,
-            Normalized => True, Stride => 11, Offset => 0);
+            Normalized => True, Stride => Stride, Offset => 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
          Array_Buffer.Bind (VBO (Velocity_A + index));
          Utilities.Load_Vertex_Buffer
            (Array_Buffer, Initial_Velocities, Dynamic_Copy);
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (1, 3, Single_Type, True, 11, 0);
+           (1, 3, Single_Type, True, Stride, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (1);
 
          Array_Buffer.Bind (VBO (Connection));
          Load_Connections_Buffer
            (Array_Buffer, Initial_Connections, Static_Draw);
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (2, 4, Int_Type, True, 11, 0);
+           (2, 4, Int_Type, True, Stride, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (2);
       end loop;
 
