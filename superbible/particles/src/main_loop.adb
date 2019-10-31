@@ -142,11 +142,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Particle_Buffer.Initialize_Id;
         Array_Buffer.Bind (Particle_Buffer);
 
-        Map_Access.Write := True;
-        Map_Access.Persistent := True;
         Array_Buffer.Allocate (Long (Buffer_Size), Dynamic_Draw);
 
-        Map_Access.Persistent := False;  --  Map_Particle_Buffer_Range fails otherwise
+        Map_Access.Write := True;
         Map_Access.Flush_Explicit := True;
         Map_Particle_Buffer_Range
           (Array_Buffer, Map_Access, 0, Buffer_Size, Mapped_Buffer_Ptr);
