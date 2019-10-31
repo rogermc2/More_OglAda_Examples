@@ -123,7 +123,7 @@ package body Particle_System is
    procedure Render_Particles (PS         : in out Particle_System;
                                View_Point : Singles.Matrix4;
                                Camera_Pos : Singles.Vector3) is
-      TFB_Index         : constant Buffer_Index := PS.Current_TFB_Index;
+      TFB_Index : constant Buffer_Index := PS.Current_TFB_Index;
    begin
       Billboard_Technique.Use_Program (PS.Display_Method);
       Billboard_Technique.Set_Camera_Position (PS.Display_Method, Camera_Pos);
@@ -139,7 +139,8 @@ package body Particle_System is
                                                Kind   => Single_Type,
                                                Stride => Particle_Stride,
                                                Offset => 1);
-      GL.Objects.Buffers.Draw_Transform_Feedback (Points, PS.Feedback_Buffer (TFB_Index));
+      GL.Objects.Buffers.Draw_Transform_Feedback
+        (Points, PS.Feedback_Buffer (TFB_Index));
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
 
    exception
@@ -155,7 +156,6 @@ package body Particle_System is
       TFB_Index        : constant Buffer_Index := PS.Current_TFB_Index;
       VB_Index         : constant Buffer_Index := PS.Current_VB_Index;
    begin
-
       PS_Update_Technique.Use_Program (PS.Update_Method);
       PS_Update_Technique.Set_Time (PS.Update_Method, PS.PS_Time);
       PS_Update_Technique.Set_Delta_Millisec (PS.Update_Method, Delta_Time);
@@ -164,9 +164,13 @@ package body Particle_System is
 
       Random_Texture.Bind (PS.Random_Texture,
                            Ogldev_Engine_Common.Random_Texture_Unit);
+      --  Rasterizer_Discard causes vertices to be recorded into the
+      --  output transform feedback buffers without anything being rasterized.
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (VB_Index));
+      --  Binding a transform feedback object causes the number of vertices
+      --  in the buffer to become zero.
       GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (TFB_Index));
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -181,11 +185,19 @@ package body Particle_System is
       GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Particle_Stride, 5);  --  Velocity
       GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, Particle_Stride, 8);  --  Age
 
+      --  Transform feedback mode captures the values of varying variables
+      --  written by the geometry shader).
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       if PS.Is_First then
+         --  Write the Vertex_Array into the currently bound
+         --  transform feedback buffer
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
          PS.Is_First := False;
       else
+         --  Transform Feedback Varyings were set by PS.Update_Technique.Init
+         --  PS.Feedback_Buffer (VB_Index) is processed by the geometry shader
+         --  and the results (varyings) are written into the
+         --  currently bound transform feedback buffer (TFB_Index):
          GL.Objects.Buffers.Draw_Transform_Feedback
            (Points, PS.Feedback_Buffer (VB_Index));
       end if;

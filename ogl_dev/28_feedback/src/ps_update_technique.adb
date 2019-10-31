@@ -45,8 +45,8 @@ package body PS_Update_Technique is
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
       use Program_Loader;
-      Varyings       : constant String := "Type1,Position1,Velocity1,Age1";
-      OK             : Boolean;
+      Varyings  : constant String := "Type1,Position1,Velocity1,Age1";
+      OK        : Boolean;
    begin
       --  Program_From includes linking
       theTechnique.Update_Program := Program_From
@@ -61,6 +61,8 @@ package body PS_Update_Technique is
       end if;
 
       Use_Program (theTechnique.Update_Program);
+      --  Interleaved_Attribs means that the varyings are recorded
+      --  consecetively into a single buffer.
       Transform_Feedback_Varyings (theTechnique.Update_Program, Varyings,
                                    Interleaved_Attribs);
       theTechnique.Update_Program.Link;
