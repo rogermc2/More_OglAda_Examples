@@ -31,7 +31,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Rendering_Program    : GL.Objects.Programs.Program;
    Update_Program       : GL.Objects.Programs.Program;
 
-   Draw_Lines           : constant Boolean := False;
+   Draw_Lines           : constant Boolean := True;
    Draw_Points          : constant Boolean := True;
    Iteration_Index      : Integer := 1;
    Iterations_Per_Frame : constant UInt := 16;
