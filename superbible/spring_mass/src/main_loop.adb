@@ -137,8 +137,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Enable (Rasterizer_Discard);
       for index in reverse 1 .. Iterations_Per_Frame loop
          Buffer_Index :=  Iteration_Index Mod 2 + 1;      -- BI 1 or 2
-         Put_Line ("Update_Transform_Buffer Buffer_Index 1 (1 or 2): "
-                  & Integer'Image (Buffer_Index));
+--           Put_Line ("Update_Transform_Buffer Buffer_Index 1 (1 or 2): "
+--                    & Integer'Image (Buffer_Index));
          GL.Objects.Vertex_Arrays.Bind (VAO (Buffer_Index));
          GL.Objects.Buffers.Texture_Buffer.Bind
            (Position_Tex_Buffer (Buffer_Index));
@@ -148,8 +148,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             Buffer_Index := 0;
          end if;
 --           Buffer_Index := Iteration_Index Mod 2;           -- BI 0 or 1
-         Put_Line ("Update_Transform_Buffer Buffer_Index 2 (2 or 1): "
-                  & Integer'Image (Buffers.Position_A + Buffer_Index));
+--           Put_Line ("Update_Transform_Buffer Buffer_Index 2 (2 or 1): "
+--                    & Integer'Image (Buffers.Position_A + Buffer_Index));
 
          GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
            (0, VBO (Buffers.Position_A + Buffer_Index));  -- VBO 1 or 2
@@ -157,9 +157,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
            (1, VBO (Buffers.Velocity_A + Buffer_Index));  -- VBO 3 or 4
 
          GL.Objects.Programs.Begin_Transform_Feedback (Points);
-         Put_Line ("Update_Transform_Buffer Begin_Transform_Feedback.");
+--           Put_Line ("Update_Transform_Buffer Begin_Transform_Feedback.");
            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
-         Put_Line ("Update_Transform_Buffer End_Transform_Feedback.");
+--           Put_Line ("Update_Transform_Buffer End_Transform_Feedback.");
          GL.Objects.Programs.End_Transform_Feedback;
       end loop;
       Disable (Rasterizer_Discard);
