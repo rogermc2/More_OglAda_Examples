@@ -85,14 +85,11 @@ package body Buffers is
    begin
       Index_Buffer.Initialize_Id;
       Element_Array_Buffer.Bind (Index_Buffer);
-      Element_Array_Buffer.Allocate (Long (Buffer_Size), Static_Draw);
 
       Map_Access.Write := True;
       Map_Access.Invalidate_Buffer := True;
-      Put_Line ("Buffers.Setup_Index_Buffer Buffer size: "
-                & GL.Types.Size'Image (Element_Array_Buffer.Size)
-               & "  " & GL.Types.Size'Image (Buffer_Size));
-      Element_Array_Buffer.Bind (Index_Buffer);
+
+      Element_Array_Buffer.Allocate (Long (Buffer_Size), Static_Draw);
       Map_Element_Buffer_Range (Target      => Element_Array_Buffer,
                                 Access_Type => Map_Access,
                                 Offset      => 0, Size => Buffer_Size,
