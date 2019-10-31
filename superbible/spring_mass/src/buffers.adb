@@ -165,21 +165,21 @@ package body Buffers is
            (Array_Buffer, Initial_Positions, Dynamic_Copy);
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Index      => 0, Count  => 4, Kind  => Single_Type,
-            Normalized => True, Stride => 0, Offset => 0);
+            Normalized => True, Stride => 11, Offset => 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
          Array_Buffer.Bind (VBO (Velocity_A + index));
          Utilities.Load_Vertex_Buffer
            (Array_Buffer, Initial_Velocities, Dynamic_Copy);
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (1, 3, Single_Type, True, 0, 0);
+           (1, 3, Single_Type, True, 11, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (1);
 
          Array_Buffer.Bind (VBO (Connection));
          Load_Connections_Buffer
            (Array_Buffer, Initial_Connections, Static_Draw);
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (2, 4, Int_Type, True, 0, 0);
+           (2, 4, Int_Type, True, 11, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (2);
       end loop;
 

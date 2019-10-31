@@ -1,6 +1,7 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Attributes;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
@@ -32,7 +33,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Update_Program       : GL.Objects.Programs.Program;
 
    Draw_Lines           : constant Boolean := True;
-   Draw_Points          : constant Boolean := True;
+   Draw_Points          : constant Boolean := False;
    Iteration_Index      : Integer := 1;
    Iterations_Per_Frame : constant UInt := 16;
 
@@ -93,7 +94,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Height : Glfw.Size;
       Buffer_Index  : Integer;
    begin
-
       GL.Objects.Programs.Use_Program (Update_Program);
       Enable (Rasterizer_Discard);
       for index in reverse 1 .. Iterations_Per_Frame loop
@@ -101,17 +101,18 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          GL.Objects.Vertex_Arrays.Bind (VAO (Buffer_Index));
          GL.Objects.Buffers.Texture_Buffer.Bind (Position_Tex_Buffer (Buffer_Index));
          Iteration_Index := Iteration_Index + 1;
+
          Buffer_Index :=  Iteration_Index Mod 2 + 1;
          GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
            (0, VBO (Buffers.Position_A + Buffer_Index));
          GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
            (1, VBO (Buffers.Velocity_A + Buffer_Index));
+
          GL.Objects.Programs.Begin_Transform_Feedback (Points);
            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
          GL.Objects.Programs.End_Transform_Feedback;
       end loop;
       Disable (Rasterizer_Discard);
-
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width) - 10,
@@ -123,12 +124,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
          GL.Rasterization.Set_Point_Size (4.0);
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
+         GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
       end if;
       if Draw_Lines then
-         GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
          GL.Objects.Buffers.Element_Array_Buffer.Bind (Index_Buffer);
-         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
+         GL.Attributes.Set_Vertex_Attrib_Pointer
+           (Index      => 0, Count  => 4, Kind  => Single_Type,
+            Normalized => True, Stride => 11, Offset => 0);
+         GL.Attributes.Enable_Vertex_Attrib_Array (0);
+         Put_Line ("Render Draw_Lines.");
+         GL.Objects.Buffers.Draw_Elements
+              (Lines, 2 * Buffers.Total_Connections, UInt_Type, 0);
+         Put_Line ("Render Lines drawn.");
       end if;
+
    exception
       when others =>
          Put_Line ("An exceptiom occurred in Render.");
