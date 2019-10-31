@@ -37,6 +37,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Iteration_Index      : Integer := 1;
    Iterations_Per_Frame : constant UInt := 16;
 
+   procedure Update_Transform_Buffer;
+
    --  ------------------------------------------------------------------------
 
    procedure Load_Shaders is
@@ -92,6 +94,43 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Black         : constant Colors.Color := (0.0, 0.0, 0.0, 0.0);
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
+   begin
+      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width) - 10,
+                              GL.Types.Int (Window_Height) - 10);
+      Utilities.Clear_Background_Colour (Black);
+
+      Update_Transform_Buffer;
+
+      GL.Objects.Programs.Use_Program (Rendering_Program);
+      if Draw_Points then
+         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+         GL.Rasterization.Set_Point_Size (4.0);
+         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
+         GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
+      end if;
+      if Draw_Lines then
+         GL.Objects.Buffers.Element_Array_Buffer.Bind (Index_Buffer);
+         GL.Attributes.Set_Vertex_Attrib_Pointer
+           (Index      => 0, Count  => 4, Kind  => Single_Type,
+            Normalized => True, Stride => 0, Offset => 0);
+         GL.Attributes.Enable_Vertex_Attrib_Array (0);
+         Put_Line ("Render Draw_Lines.");
+         GL.Objects.Buffers.Draw_Elements
+              (Lines, 2 * Buffers.Total_Connections, UInt_Type, 0);
+         Put_Line ("Render Lines drawn.");
+      end if;
+
+   exception
+      when others =>
+         Put_Line ("An exceptiom occurred in Render.");
+         raise;
+   end Render;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Update_Transform_Buffer is
+      use GL.Toggles;
       Buffer_Index  : Integer;
    begin
       GL.Objects.Programs.Use_Program (Update_Program);
@@ -114,35 +153,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       end loop;
       Disable (Rasterizer_Discard);
 
-      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width) - 10,
-                              GL.Types.Int (Window_Height) - 10);
-      Utilities.Clear_Background_Colour (Black);
-
-      GL.Objects.Programs.Use_Program (Rendering_Program);
-      if Draw_Points then
-         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-         GL.Rasterization.Set_Point_Size (4.0);
-         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
-         GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
-      end if;
-      if Draw_Lines then
-         GL.Objects.Buffers.Element_Array_Buffer.Bind (Index_Buffer);
-         GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Index      => 0, Count  => 4, Kind  => Single_Type,
-            Normalized => True, Stride => 11, Offset => 0);
-         GL.Attributes.Enable_Vertex_Attrib_Array (0);
-         Put_Line ("Render Draw_Lines.");
-         GL.Objects.Buffers.Draw_Elements
-              (Lines, 2 * Buffers.Total_Connections, UInt_Type, 0);
-         Put_Line ("Render Lines drawn.");
-      end if;
-
-   exception
-      when others =>
-         Put_Line ("An exceptiom occurred in Render.");
-         raise;
-   end Render;
+   end Update_Transform_Buffer;
 
    --  ----------------------------------------------------------------------------
 
