@@ -9,11 +9,6 @@ Package PS_Update_Technique is
 
     type Update_Technique is private;
 
-    Varyings : constant array (1 .. 4) of Ada.Strings.Unbounded.Unbounded_String :=
-                 (Ada.Strings.Unbounded.To_Unbounded_String ("Type1"),
-                  Ada.Strings.Unbounded.To_Unbounded_String ("Position1"),
-                  Ada.Strings.Unbounded.To_Unbounded_String ("Velocity1"),
-                  Ada.Strings.Unbounded.To_Unbounded_String ("Age1"));
     Update_Technique_Exception : Exception;
 
     function Active_Attributes (theTechnique : Update_Technique) return GL.Types.Size;

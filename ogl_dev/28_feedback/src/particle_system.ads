@@ -20,8 +20,10 @@ package Particle_System is
                      Camera_Pos : Singles.Vector3);
 private
    type Buffer_Index is new UInt range 1 .. 2;
-   type Particle_Buffer_Array is array (Buffer_Index'Range) of GL.Objects.Buffers.Buffer;
-   type Transform_Feedback_Array is array (Buffer_Index'Range) of GL.Objects.Buffers.Transform_Buffer;
+   type Particle_Buffer_Array is array (Buffer_Index'Range) of
+     GL.Objects.Buffers.Buffer;
+   type Transform_Feedback_Array is array (Buffer_Index'Range) of
+     GL.Objects.Buffers.Transform_Buffer;
 
    type Particle_System is record
      Current_VB_Index  : Buffer_Index := 1;
