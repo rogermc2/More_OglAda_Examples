@@ -43,9 +43,9 @@ package body Buffers is
       end loop;
 
       for index_Y in 1 .. Points_Y loop
-         Y_Value := Single (index_Y) / Single (Points_Y);
+         Y_Value := Single (index_Y - 1) / Single (Points_Y);
          for index_X in 1 .. Points_X loop
-            X_Value := Single (index_X) / Single (Points_X);
+            X_Value := Single (index_X - 1) / Single (Points_X);
             Value (GL.X) := (X_Value - 0.5) * Num_X;
             Value (GL.Y) := (Y_Value - 0.5) * Num_Y;
             Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
@@ -146,7 +146,8 @@ package body Buffers is
 
    --  ----------------------------------------------------------------------------------
 
-   procedure Setup_Vertex_Buffers (VBO : in out Buffer_Array) is
+   procedure Setup_Vertex_Buffers (VAO : in out Vertex_Buffer_Array;
+                                   VBO : in out Buffer_Array) is
       use GL.Objects.Buffers;
       Initial_Positions   : Singles.Vector4_Array (1 .. Num_Points);
       Initial_Velocities  : constant Singles.Vector3_Array (1 .. Num_Points)
@@ -162,6 +163,8 @@ package body Buffers is
       end loop;
 
       for index in 0 .. 1 loop
+         VAO (index + 1).Bind;
+
          Array_Buffer.Bind (VBO (Position_A + index));
          Utilities.Load_Vertex_Buffer
            (Array_Buffer, Initial_Positions, Dynamic_Copy);
@@ -193,11 +196,12 @@ package body Buffers is
 
    --  ----------------------------------------------------------------------------------
 
-   procedure Setup_Buffers (VBO_Array            : in out Buffer_Array;
+   procedure Setup_Buffers (VAO_Array            : in out Vertex_Buffer_Array;
+                            VBO_Array            : in out Buffer_Array;
                             Index_Buffer         : in out GL.Objects.Buffers.Buffer;
                             Position_Tex_Buffers : in out Buffer_Array) is
    begin
-      Setup_Vertex_Buffers (VBO_Array);
+      Setup_Vertex_Buffers (VAO_Array, VBO_Array);
       Setup_Tex_Buffers (Position_Tex_Buffers, VBO_Array);
       Setup_Index_Buffer (Index_Buffer);
    end Setup_Buffers;
