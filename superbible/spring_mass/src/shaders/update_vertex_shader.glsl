@@ -13,7 +13,7 @@ uniform samplerBuffer tex_position;
 out vec4 tf_position_mass;
 out vec3 tf_velocity;
 
-uniform float time_step = 0.001;  //  0.07
+uniform float time_step = 0.00005;  //  0.07
 uniform float spring_constant = 7.1;
 
 const vec3 gravity = vec3(0.0, -0.08, 0.0);
@@ -57,7 +57,7 @@ void main(void)
     final_vel = initial_velocity + acc * time_step;
 
     // Constrain the absolute value of the displacement per step
-    displacement = clamp(displacement, vec3(-25.0), vec3(25.0));
+    displacement = clamp(displacement, vec3(-25.0), vec3(25.0));   //  25.0
 
     tf_position_mass = vec4(vertex_pos + displacement, mass);
     tf_velocity = final_vel;
