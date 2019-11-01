@@ -5,8 +5,6 @@ with Maths;
 
 package body Ogldev_Pipeline is
 
-  Default_Orientation : Orientation_Data;
-
    procedure Set_Projection_Transform (P : in out Pipeline);
    procedure Set_View_Transform (P : in out Pipeline);
    procedure Set_World_Transform (P : in out Pipeline);
