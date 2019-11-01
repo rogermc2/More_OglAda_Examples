@@ -6,7 +6,7 @@ with Ada.Text_IO; use  Ada.Text_IO;
 with GL.Attributes;
 with GL.Pixels;
 
---  with Maths;
+with Maths;
 with Utilities;
 
 package body Buffers is
@@ -20,8 +20,8 @@ package body Buffers is
    procedure Load_Connections_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (Ints.Vector4_Pointers);
 
-   Points_X        : constant Int := 5;  -- 50
-   Points_Y        : constant Int := 5;  --  50
+   Points_X        : constant Int := 50;  -- 50
+   Points_Y        : constant Int := 50;  --  50
    Num_Points      : constant Int :=  Points_X * Points_Y;
    Num_Connections : constant Int
      := (Points_X - 1) * Points_Y + Points_X * (Points_Y - 1);
@@ -30,7 +30,7 @@ package body Buffers is
 
    procedure Initialize_Vertex_Data (Initial_Positions   : in out Singles.Vector4_Array;
                                      Initial_Connections : in out Ints.Vector4_Array) is
---        use Maths.Single_Math_Functions;
+      use Maths.Single_Math_Functions;
       Num_X         : constant Single := 30.0 * Single (Points_X);
       Num_Y         : constant Single := 30.0 * Single (Points_Y);
       X_Value       : Single;
@@ -48,16 +48,15 @@ package body Buffers is
             X_Value := Single (index_X) / Single (Points_X);
             Value (GL.X) := (X_Value - 0.5) * Num_X;
             Value (GL.Y) := (Y_Value - 0.5) * Num_Y;
-            Value (GL.Z) := 0.0;
---              Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
+            Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
             Value (GL.W) := 1.0;
             Initial_Positions (Vector_Index + 1) := Value;
 
             if index_Y /= Points_Y - 1 then
-               if index_X /= 1 then
+               if index_X /= 0 then
                   Initial_Connections (Vector_Index + 1) (GL.X) := Vector_Index - 1;
                end if;
-               if index_Y /= 1 then
+               if index_Y /= 0 then
                   Initial_Connections (Vector_Index + 1) (GL.Y) := Vector_Index - Points_X;
                end if;
                if index_X /= Points_X - 1 then
