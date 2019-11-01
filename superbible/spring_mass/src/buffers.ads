@@ -13,7 +13,7 @@ package Buffers is
    Position_A  : constant Integer := 1;
    Position_B  : constant Integer := 2;
    Velocity_A  : constant Integer := 3;
-   Connection  : constant Integer := 5;
+   Connection  : constant Integer := 4;  -- orig 5
 
    procedure Setup_Buffers (VAO_Array           : in out Vertex_Buffer_Array;
                             VBO_Array           : in out Buffer_Array;

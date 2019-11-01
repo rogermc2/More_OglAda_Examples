@@ -24,7 +24,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
    VAO                  : Buffers.Vertex_Buffer_Array (1 .. 2);
-   VBO                  : Buffers.Buffer_Array (1 .. 5);
+   VBO                  : Buffers.Buffer_Array (1 .. 4);  --  orig 5
    Index_Buffer         : GL.Objects.Buffers.Buffer;
    Position_Tex_Buffer  : Buffers.Buffer_Array (1 .. 2);
 
@@ -32,12 +32,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Update_Program       : GL.Objects.Programs.Program;
    Time_Step_Location   : GL.Uniforms.Uniform;
 
-   Time_Step            : constant Single := 0.00005;  --  orig 0.07
-   Draw_Lines           : Boolean := False;
-   Draw_Points          : Boolean := True;
+   Time_Step            : constant Single := 0.0007;  --  orig 0.07
    Iteration_Index      : Integer := 1;
-   Iterations_Per_Frame : UInt := 16;
-   Max_Iterations       : constant Integer := 100000;
+   Iterations_Per_Frame : UInt := 1;  -- 16
+   Max_Iterations       : constant Integer := 20000;
+   Draw_Lines           : Boolean := True;
+   Draw_Points          : Boolean := False;
 
    procedure Update_Transform_Buffer;
 
@@ -124,6 +124,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width) - 10,
                               GL.Types.Int (Window_Height) - 10);
       Utilities.Clear_Background_Colour (Black);
+
       if Iteration_Index > Max_Iterations then
             Initialize;
             Iteration_Index := 1;
@@ -140,13 +141,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       end if;
       if Draw_Lines then
          GL.Objects.Buffers.Element_Array_Buffer.Bind (Index_Buffer);
+         Put_Line ("Render Draw_Elements.");
          GL.Objects.Buffers.Draw_Elements
            (Lines, 2 * Buffers.Total_Connections, UInt_Type, 0);
+         Put_Line ("Render Elements drawn.");
       end if;
 
    exception
       when others =>
-         Put_Line ("An exceptiom occurred in Render.");
+         Put_Line ("An exceptiom occurred in Main_Loop.Render.");
          raise;
    end Render;
 
@@ -174,6 +177,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
            (0, VBO (Buffers.Position_A + Buffer_Index));  -- VBO 1 or 2
          GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
            (1, VBO (Buffers.Velocity_A + Buffer_Index));  -- VBO 3 or 4
+--           GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
+--             (2, VBO (Buffers.Connection));  -- VBO 5
 
          GL.Objects.Programs.Begin_Transform_Feedback (Points);
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
@@ -200,6 +205,7 @@ begin
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and not Main_Window.Should_Close;
+      delay (2.0);
    end loop;
 exception
    when Program_Loader.Shader_Loading_Error =>
