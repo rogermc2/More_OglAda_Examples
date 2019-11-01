@@ -84,11 +84,11 @@ package body Buffers is
       Map_Access        : Map_Bits;
       Mapped_Buffer_Ptr : Element_Buffer_Package.Pointer;  -- int * e
    begin
-      Index_Buffer.Initialize_Id;
-      Element_Array_Buffer.Bind (Index_Buffer);
-
       Map_Access.Write := True;
       Map_Access.Invalidate_Buffer := True;
+
+      Index_Buffer.Initialize_Id;
+      Element_Array_Buffer.Bind (Index_Buffer);
 
       Element_Array_Buffer.Allocate (Long (Buffer_Size), Static_Draw);
       Map_Element_Buffer_Range (Target      => Element_Array_Buffer,
@@ -96,23 +96,27 @@ package body Buffers is
                                 Offset      => 0, Size => Buffer_Size,
                                 Pointer     => Mapped_Buffer_Ptr);
 
-      for index_Y in 1 .. Points_Y loop
-         for index_X in 1 .. Points_X - 1 loop
-            Mapped_Buffer_Ptr.all := Int (index_X - 1 + (index_Y - 1) * Points_X);
+      for index_Y in 0 .. Points_Y - 1 loop
+         for index_X in 0 .. Points_X - 2 loop
+            Mapped_Buffer_Ptr.all := Int (index_X + index_Y * Points_X);
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
-            Mapped_Buffer_Ptr.all := Int (1 + (index_Y - 1) * Points_X);
-            Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
+            Mapped_Buffer_Ptr.all := Int (1 + index_Y * Points_X);
+            if (index_Y /= Points_Y - 1) and (index_X <  Points_X - 2) then
+               Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
+            end if;
          end loop;
       end loop;
 
-      for index_X in 1 .. Points_X loop
-         for index_Y in 1 .. Points_Y - 1 loop
+      for index_X in 0 .. Points_X - 1 loop
+         for index_Y in 0 .. Points_Y - 2 loop
             Mapped_Buffer_Ptr.all :=
-              Int (index_X - 1 + (index_Y - 1) * Points_X);
+              Int (index_X  + index_Y * Points_X);
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             Mapped_Buffer_Ptr.all :=
-              Int (Points_X + (index_X - 1) + (index_Y - 1) * Points_X);
-            Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
+              Int (Points_X + index_X  + index_Y * Points_X);
+            if (index_X /= Points_X - 1) and (index_Y <  Points_Y - 2) then
+               Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
+            end if;
          end loop;
       end loop;
       Unmap (Element_Array_Buffer);
