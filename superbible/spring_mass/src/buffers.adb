@@ -20,8 +20,8 @@ package body Buffers is
    procedure Load_Connections_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (Ints.Vector4_Pointers);
 
-   Points_X        : constant Int := 50;  -- 50
-   Points_Y        : constant Int := 50;  --  50
+   Points_X        : constant Int := 50;
+   Points_Y        : constant Int := 50;
    Num_Points      : constant Int :=  Points_X * Points_Y;
    Num_Connections : constant Int
      := (Points_X - 1) * Points_Y + Points_X * (Points_Y - 1);
@@ -114,7 +114,7 @@ package body Buffers is
             Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             Mapped_Buffer_Ptr.all :=
               Int (Points_X + index_X  + index_Y * Points_X);
-            if (index_X /= Points_X - 1) and (index_Y <  Points_Y - 2) then
+            if (index_X /= Points_X - 1) and (index_Y < Points_Y - 2) then
                Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
             end if;
          end loop;
