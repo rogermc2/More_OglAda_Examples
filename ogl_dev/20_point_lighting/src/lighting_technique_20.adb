@@ -5,7 +5,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL;
 with GL.Objects.Shaders;
 with GL.Objects.Shaders.Lists;
-with GL.Uniforms;
 
 with Maths;
 with Program_Loader;
@@ -128,7 +127,6 @@ package body Lighting_Technique_20 is
 
    function Point_Name (Index : GL.Types.Int; Unif : String) return String is
       use Ada.Strings.Unbounded;
-      use GL.Types;
    begin
       return To_String ("gPointLights[" &
                           Trim (To_Unbounded_String (Int'Image (Index - 1)), Ada.Strings.Left)
@@ -254,14 +252,13 @@ package body Lighting_Technique_20 is
    --   -------------------------------------------------------------------------------------------------------
 
    procedure Use_Program (theTechnique : Technique) is
-      use GL.Objects.Programs;
       use GL.Objects.Shaders.Lists;
    begin
       if GL.Objects.Programs.Link_Status (theTechnique.Lighting_Program) then
          declare
-            Shaders_List : GL.Objects.Shaders.Lists.List :=
+            Shaders_List : constant GL.Objects.Shaders.Lists.List :=
                              GL.Objects.Programs.Attached_Shaders (theTechnique.Lighting_Program);
-            Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
+            Curs         : constant GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
          begin
             if Curs = GL.Objects.Shaders.Lists.No_Element then
                Put_Line ("Lighting_Technique_20.Use_Program, Shaders list is empty");
