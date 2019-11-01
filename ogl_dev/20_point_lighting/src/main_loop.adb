@@ -4,25 +4,18 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Attributes;
 with GL.Low_Level.Enums;
 with GL.Objects;
-with GL.Objects.Buffers;
-with GL.Objects.Programs;
-with GL.Objects.Shaders;
-with GL.Objects.Textures;
+with GL.Objects.Buffers;with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
-with GL.Toggles;
 with GL.Types.Colors;
-with GL.Uniforms;
 with GL.Window;
 
 with Glfw;
 with Glfw.Input;
 with Glfw.Input.Keys;
-with Glfw.Input.Mouse;
 with Glfw.Windows.Context;
 
 with Maths;
-with Program_Loader;
 with Utilities;
 
 with Ogldev_Camera;
@@ -48,7 +41,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Scale                  : Single := 0.0;
    Field_Depth            : constant := 10.0;  --  orig 20.0
    Field_Width            : constant := 5.0;
-   Intensity_Step_Size    : Single := 0.002;
+   Intensity_Step_Size    : constant Single := 0.002;
 
    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 

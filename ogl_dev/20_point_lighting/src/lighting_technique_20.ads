@@ -25,6 +25,7 @@ package Lighting_Technique_20 is
     function Get_Directional_Diffuse (Light : Directional_Light) return Single;
     function Init (theTechnique : out Technique) return Boolean;
     procedure Init_Directional_Light (Light : out Directional_Light);
+    procedure Set_Ambient_Intensity (theTechnique : Technique; Intensity : Single);
     procedure Set_Directional_Ambient (Light : in out Directional_Light;
                                        Ambient: Single);
     procedure Set_Directional_Diffuse (Light : in out Directional_Light;
