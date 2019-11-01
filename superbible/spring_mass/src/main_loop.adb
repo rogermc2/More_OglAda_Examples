@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
+with GL.Uniforms;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types;
@@ -29,7 +30,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Rendering_Program    : GL.Objects.Programs.Program;
    Update_Program       : GL.Objects.Programs.Program;
+   Time_Step_Location   : GL.Uniforms.Uniform;
 
+   Time_Step            : constant Single := 0.00005;  --  orig 0.07
    Draw_Lines           : Boolean := False;
    Draw_Points          : Boolean := True;
    Iteration_Index      : Integer := 1;
@@ -53,6 +56,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       if not GL.Objects.Programs.Link_Status (Update_Program) then
          Put_Line ("Initialize_Shaders, Update_Program Link failed");
          Put_Line (GL.Objects.Programs.Info_Log (Update_Program));
+      else
+         GL.Objects.Programs.Use_Program (Update_Program);
+         Time_Step_Location :=
+           GL.Objects.Programs.Uniform_Location (Update_Program, "time_step");
       end if;
 
       Transform_Feedback_Varyings
@@ -150,11 +157,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Buffer_Index  : Integer;
    begin
       GL.Objects.Programs.Use_Program (Update_Program);
+      GL.Uniforms.Set_Single (Time_Step_Location, Time_Step);
       Enable (Rasterizer_Discard);
       for index in reverse 1 .. Iterations_Per_Frame loop
          Buffer_Index :=  Iteration_Index Mod 2 + 1;      -- BI 1 or 2
-         --              Put_Line ("Update_Transform_Buffer Buffer_Index 1 (1 or 2): "
-         --                        & Integer'Image (Buffer_Index));
          GL.Objects.Vertex_Arrays.Bind (VAO (Buffer_Index));
          GL.Objects.Buffers.Texture_Buffer.Bind
            (Position_Tex_Buffer (Buffer_Index));
@@ -163,9 +169,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          if Buffer_Index /= 1 then
             Buffer_Index := 0;
          end if;
-         --           Buffer_Index := Iteration_Index Mod 2;           -- BI 0 or 1
-         --           Put_Line ("Update_Transform_Buffer Buffer_Index 2 (2 or 1): "
-         --                    & Integer'Image (Buffers.Position_A + Buffer_Index));
 
          GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
            (0, VBO (Buffers.Position_A + Buffer_Index));  -- VBO 1 or 2

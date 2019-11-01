@@ -13,7 +13,7 @@ uniform samplerBuffer tex_position;
 out vec4 tf_position_mass;
 out vec3 tf_velocity;
 
-uniform float time_step = 0.00005;  //  0.07
+uniform float time_step;  //  0.07
 uniform float spring_constant = 7.1;
 
 const vec3 gravity = vec3(0.0, -0.08, 0.0);
@@ -28,7 +28,7 @@ void main(void)
     vec3 other_vertex_pos;
     vec3 delta_pos;
     vec3 displacement;
-    float separation;  // x
+    float separation;
     vec3 acc;
     vec3 initial_velocity = velocity;
     vec3 final_vel;
