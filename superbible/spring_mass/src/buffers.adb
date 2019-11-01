@@ -6,7 +6,7 @@ with Ada.Text_IO; use  Ada.Text_IO;
 with GL.Attributes;
 with GL.Pixels;
 
-with Maths;
+--  with Maths;
 with Utilities;
 
 package body Buffers is
@@ -30,9 +30,9 @@ package body Buffers is
 
    procedure Initialize_Vertex_Data (Initial_Positions   : in out Singles.Vector4_Array;
                                      Initial_Connections : in out Ints.Vector4_Array) is
-      use Maths.Single_Math_Functions;
-      Num_X         : constant Single := Single (Points_X);
-      Num_Y         : constant Single := Single (Points_Y);
+--        use Maths.Single_Math_Functions;
+      Num_X         : constant Single := 30.0 * Single (Points_X);
+      Num_Y         : constant Single := 30.0 * Single (Points_Y);
       X_Value       : Single;
       Y_Value       : Single;
       Value         : Singles.Vector4;
@@ -48,7 +48,8 @@ package body Buffers is
             X_Value := Single (index_X) / Single (Points_X);
             Value (GL.X) := (X_Value - 0.5) * Num_X;
             Value (GL.Y) := (Y_Value - 0.5) * Num_Y;
-            Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
+            Value (GL.Z) := 0.0;
+--              Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
             Value (GL.W) := 1.0;
             Initial_Positions (Vector_Index + 1) := Value;
 
@@ -129,10 +130,11 @@ package body Buffers is
                                 VBO                 : in out Buffer_Array) is
       use GL.Objects.Buffers;
    begin
+      --  Attach the vertex buffers to a pair of texture buffers
       for index in Position_Tex_Buffer'Range loop
          Position_Tex_Buffer (index).Initialize_Id;
          Texture_Buffer.Bind (Position_Tex_Buffer (index));
-         if index = 1 then
+         if index = Position_Tex_Buffer'First then
             Texture_Buffer.Allocate (GL.Pixels.RGBA32F, VBO (Position_A));
          else
             Texture_Buffer.Allocate (GL.Pixels.RGBA32F, VBO (Position_B));
@@ -157,7 +159,6 @@ package body Buffers is
       Stride              : constant GL.Types.Size := 0;  --  11?
    begin
       Initialize_Vertex_Data (Initial_Positions, Initial_Connections);
-        Utilities.Print_GL_Array4 ("Initial_Positions", Initial_Positions);
       for index in VBO'Range loop
          VBO (index).Initialize_Id;
          Array_Buffer.Bind (VBO (index));
