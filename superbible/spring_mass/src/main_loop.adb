@@ -24,7 +24,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
    VAO                  : Buffers.Vertex_Buffer_Array (1 .. 2);
-   VBO                  : Buffers.Buffer_Array (1 .. 4);  --  orig 5
+   VBO                  : Buffers.Buffer_Array (1 .. 5);
    Index_Buffer         : GL.Objects.Buffers.Buffer;
    Position_Tex_Buffer  : Buffers.Buffer_Array (1 .. 2);
 
@@ -36,14 +36,46 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Iteration_Index      : Integer := 1;
    Iterations_Per_Frame : UInt := 1;  -- 16
    Max_Iterations       : constant Integer := 20000;
-   Draw_Lines           : Boolean := True;
-   Draw_Points          : Boolean := False;
+   Draw_Lines           : Boolean := False;
+   Draw_Points          : Boolean := True;
 
+   procedure Load_Shaders;
    procedure Update_Transform_Buffer;
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Shaders is
+   procedure Handle_Keyboard (Window : in out Glfw.Windows.Window) is
+      use Glfw.Input;
+   begin
+      if Window'Access.Key_State (Keys.R) = Pressed then
+         Load_Shaders;
+      elsif Window'Access.Key_State (Keys.L) = Pressed then
+         Draw_Lines := not Draw_Lines;
+      elsif Window'Access.Key_State (Keys.P) = Pressed then
+         Draw_Points := not Draw_Points;
+      elsif Window'Access.Key_State (Keys.Numpad_Add) = Pressed then
+         Iterations_Per_Frame := Iterations_Per_Frame + 1;
+      elsif Window'Access.Key_State (Keys.Numpad_Substract) = Pressed then
+         Iterations_Per_Frame := Iterations_Per_Frame - 1;
+      end if;
+   end Handle_Keyboard;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Initialize is
+   begin
+      for index in VAO'Range loop
+         VAO (index).Initialize_Id;
+         VAO (index).Bind;
+      end loop;
+
+      Load_Shaders;
+      Buffers.Setup_Buffers (VAO, VBO, Index_Buffer, Position_Tex_Buffer);
+   end Initialize;
+
+   --  ----------------------------------------------------------------------------
+
+    procedure Load_Shaders is
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
       use Program_Loader;
@@ -81,38 +113,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    end Load_Shaders;
 
    --  ------------------------------------------------------------------------
-
-   procedure Initialize is
-
-   begin
-      for index in VAO'Range loop
-         VAO (index).Initialize_Id;
-         VAO (index).Bind;
-      end loop;
-
-      Load_Shaders;
-      Buffers.Setup_Buffers (VAO, VBO, Index_Buffer, Position_Tex_Buffer);
-   end Initialize;
-
-   --  ----------------------------------------------------------------------------
-
-   procedure Handle_Keyboard (Window : in out Glfw.Windows.Window) is
-      use Glfw.Input;
-   begin
-      if Window'Access.Key_State (Keys.R) = Pressed then
-         Load_Shaders;
-      elsif Window'Access.Key_State (Keys.L) = Pressed then
-         Draw_Lines := not Draw_Lines;
-      elsif Window'Access.Key_State (Keys.P) = Pressed then
-         Draw_Points := not Draw_Points;
-      elsif Window'Access.Key_State (Keys.Numpad_Add) = Pressed then
-         Iterations_Per_Frame := Iterations_Per_Frame + 1;
-      elsif Window'Access.Key_State (Keys.Numpad_Substract) = Pressed then
-         Iterations_Per_Frame := Iterations_Per_Frame - 1;
-      end if;
-   end Handle_Keyboard;
-
-   --  -------------------------------------------------------------------------
 
    procedure Render (Window : in out Glfw.Windows.Window) is
       use GL.Toggles;
@@ -177,8 +177,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
            (0, VBO (Buffers.Position_A + Buffer_Index));  -- VBO 1 or 2
          GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
            (1, VBO (Buffers.Velocity_A + Buffer_Index));  -- VBO 3 or 4
---           GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
---             (2, VBO (Buffers.Connection));  -- VBO 5
 
          GL.Objects.Programs.Begin_Transform_Feedback (Points);
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Buffers.Total_Points);
@@ -205,7 +203,7 @@ begin
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and not Main_Window.Should_Close;
-      delay (2.0);
+--        delay (2.0);
    end loop;
 exception
    when Program_Loader.Shader_Loading_Error =>

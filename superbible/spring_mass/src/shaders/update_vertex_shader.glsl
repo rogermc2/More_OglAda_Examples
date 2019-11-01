@@ -25,12 +25,12 @@ void main(void)
     {
     vec3 vertex_pos = position_mass.xyz;
     float mass = position_mass.w;
+    vec3 initial_velocity = velocity;
     vec3 other_vertex_pos;
     vec3 delta_pos;
     vec3 displacement;
     float separation;
     vec3 acc;
-    vec3 initial_velocity = velocity;
     vec3 final_vel;
 
     vec3 force = gravity * mass - damping_constant * initial_velocity;
