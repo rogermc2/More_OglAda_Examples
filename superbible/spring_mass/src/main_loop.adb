@@ -34,6 +34,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Draw_Points          : Boolean := True;
    Iteration_Index      : Integer := 1;
    Iterations_Per_Frame : UInt := 16;
+   Max_Iterations       : constant Integer := 100000;
 
    procedure Update_Transform_Buffer;
 
@@ -116,6 +117,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width) - 10,
                               GL.Types.Int (Window_Height) - 10);
       Utilities.Clear_Background_Colour (Black);
+      if Iteration_Index > Max_Iterations then
+            Initialize;
+            Iteration_Index := 1;
+      end if;
       Handle_Keyboard (Window);
       Update_Transform_Buffer;
 
