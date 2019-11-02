@@ -43,9 +43,9 @@ package body Buffers is
       end loop;
 
       for index_Y in 0 .. Points_Y - 1 loop
-         Y_Value := Single (index_Y) / Single (Points_Y);
+         Y_Value := Single (index_Y) / Num_Y;
          for index_X in 0 .. Points_X - 1 loop
-            X_Value := Single (index_X) / Single (Points_X);
+            X_Value := Single (index_X) / Num_X;
             Value (GL.X) := (X_Value - 0.5) * Num_X;
             Value (GL.Y) := (Y_Value - 0.5) * Num_Y;
             Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
@@ -54,19 +54,26 @@ package body Buffers is
             Vector_Index := Vector_Index + 1;
             Initial_Positions (Vector_Index) := Value;
 
-            if index_Y /= Points_Y - 1 then
-               if index_X /= 0 then
+            if index_Y < Points_Y - 1 then
+               --  not at bottom row;  leave all of bottom row at -1
+               if index_X > 0 then
+                  --  not at bottom row and not at start of row; leave start (X) at -1
+                  --  otherwise, set X to n - 1 (previous item)
                   Initial_Connections (Vector_Index) (GL.X) := Vector_Index - 2;
                end if;
-               if index_Y /= 0 then
+               if index_Y > 0 then
+                  --  not in either first or last row; leave top (Y) at -1
+                  --  otherwise, set Y to n - Points_X (item in previous row)
                   Initial_Connections (Vector_Index) (GL.Y) := Vector_Index - 1 - Points_X;
                end if;
-               if index_X /= Points_X - 1 then
+               if index_X < Points_X - 1 then
+                  --  not at bottom row and not not at end of row; leave end (X) at -1
+                  --  otherwise, set Z to n + 1 (next item)
                   Initial_Connections (Vector_Index) (GL.Z) := Vector_Index;
                end if;
-               if index_X /= Points_X - 1 then
-                  Initial_Connections (Vector_Index) (GL.W) := Vector_Index - 1 + Points_X;
-               end if;
+               --  anywhere except last row
+               --  set W to n + Points_X (item in next row)
+               Initial_Connections (Vector_Index) (GL.W) := Vector_Index - 1 + Points_X;
             end if;
          end loop;
       end loop;
