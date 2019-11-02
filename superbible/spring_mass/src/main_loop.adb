@@ -203,7 +203,7 @@ begin
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and not Main_Window.Should_Close;
-      delay (0.1);
+--        delay (0.1);
    end loop;
 exception
    when Program_Loader.Shader_Loading_Error =>

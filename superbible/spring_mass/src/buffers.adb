@@ -20,38 +20,38 @@ package body Buffers is
    procedure Load_Connections_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (Ints.Vector4_Pointers);
 
-   Points_X        : constant Int := 5;
-   Points_Y        : constant Int := 5;
+   Points_X        : constant Int := 50;
+   Points_Y        : constant Int := 50;
    Num_Points      : constant Int :=  Points_X * Points_Y;
    Num_Connections : constant Int
      := (Points_X - 1) * Points_Y + Points_X * (Points_Y - 1);
 
    --  -----------------------------------------------------------------------------------------------------------------------
 
-   procedure Print_Ints_Vector (Name : String; aVector : GL.Types.Ints.Vector4) is
-   begin
-      if Name = "" then
-         Put ("  ");
-      else
-         Put (Name & ":  ");
-      end if;
-      for Index in aVector'Range loop
-         Put (GL.Types.Int'Image (aVector (Index)) & "   ");
-      end loop;
-      New_Line;
-   end Print_Ints_Vector;
+--     procedure Print_Ints_Vector (Name : String; aVector : GL.Types.Ints.Vector4) is
+--     begin
+--        if Name = "" then
+--           Put ("  ");
+--        else
+--           Put (Name & ":  ");
+--        end if;
+--        for Index in aVector'Range loop
+--           Put (GL.Types.Int'Image (aVector (Index)) & "   ");
+--        end loop;
+--        New_Line;
+--     end Print_Ints_Vector;
 
    --  -------------------------------------------------------------------
 
 
-   procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Ints.Vector4_Array) is
-   begin
-      Put_Line (Name & ": ");
-      for Index in anArray'First .. anArray'Last loop
-         Print_Ints_Vector ("", anArray (Index));
-      end loop;
-      New_Line;
-   end Print_GL_Array4;
+--     procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Ints.Vector4_Array) is
+--     begin
+--        Put_Line (Name & ": ");
+--        for Index in anArray'First .. anArray'Last loop
+--           Print_Ints_Vector ("", anArray (Index));
+--        end loop;
+--        New_Line;
+--     end Print_GL_Array4;
 
    --  ------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ package body Buffers is
             end if;
          end loop;
       end loop;
-      Print_GL_Array4 ("Initial_Connections", Initial_Connections);
+--        Print_GL_Array4 ("Initial_Connections", Initial_Connections);
 
    exception
       when others =>
@@ -174,6 +174,7 @@ package body Buffers is
       for index in Position_Tex_Buffer'Range loop
          Position_Tex_Buffer (index).Initialize_Id;
          Texture_Buffer.Bind (Position_Tex_Buffer (index));
+         --  Attach the data store of a specified VBO to a Position_Tex_Buffer
          if index = Position_Tex_Buffer'First then
             Texture_Buffer.Allocate (GL.Pixels.RGBA32F, VBO (Position_A));
          else
