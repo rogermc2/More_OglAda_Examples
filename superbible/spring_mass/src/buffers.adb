@@ -20,13 +20,40 @@ package body Buffers is
    procedure Load_Connections_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (Ints.Vector4_Pointers);
 
-   Points_X        : constant Int := 50;
-   Points_Y        : constant Int := 50;
+   Points_X        : constant Int := 5;
+   Points_Y        : constant Int := 5;
    Num_Points      : constant Int :=  Points_X * Points_Y;
    Num_Connections : constant Int
      := (Points_X - 1) * Points_Y + Points_X * (Points_Y - 1);
 
    --  -----------------------------------------------------------------------------------------------------------------------
+
+   procedure Print_Ints_Vector (Name : String; aVector : GL.Types.Ints.Vector4) is
+   begin
+      if Name = "" then
+         Put ("  ");
+      else
+         Put (Name & ":  ");
+      end if;
+      for Index in aVector'Range loop
+         Put (GL.Types.Int'Image (aVector (Index)) & "   ");
+      end loop;
+      New_Line;
+   end Print_Ints_Vector;
+
+   --  -------------------------------------------------------------------
+
+
+   procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Ints.Vector4_Array) is
+   begin
+      Put_Line (Name & ": ");
+      for Index in anArray'First .. anArray'Last loop
+         Print_Ints_Vector ("", anArray (Index));
+      end loop;
+      New_Line;
+   end Print_GL_Array4;
+
+   --  ------------------------------------------------------------------------
 
    procedure Initialize_Vertex_Data (Initial_Positions   : in out Singles.Vector4_Array;
                                      Initial_Connections : in out Ints.Vector4_Array) is
@@ -54,29 +81,29 @@ package body Buffers is
             Vector_Index := Vector_Index + 1;
             Initial_Positions (Vector_Index) := Value;
 
+            if index_X > 0 then
+               --  not at bottom row and not at start of row; leave start (X) at -1
+               --  otherwise, set X to n - 1 (previous item)
+               Initial_Connections (Vector_Index) (GL.X) := Vector_Index - 2;
+            end if;
+            if index_Y > 0 then
+               --  not in either first or last row; leave top (Y) at -1
+               --  otherwise, set Y to n - Points_X (item in previous row)
+               Initial_Connections (Vector_Index) (GL.Y) := Vector_Index - 1 - Points_X;
+            end if;
+            if index_X < Points_X - 1 then
+               --  not at bottom row and not not at end of row; leave end (X) at -1
+               --  otherwise, set Z to n + 1 (next item)
+               Initial_Connections (Vector_Index) (GL.Z) := Vector_Index;
+            end if;
             if index_Y < Points_Y - 1 then
-               --  not at bottom row;  leave all of bottom row at -1
-               if index_X > 0 then
-                  --  not at bottom row and not at start of row; leave start (X) at -1
-                  --  otherwise, set X to n - 1 (previous item)
-                  Initial_Connections (Vector_Index) (GL.X) := Vector_Index - 2;
-               end if;
-               if index_Y > 0 then
-                  --  not in either first or last row; leave top (Y) at -1
-                  --  otherwise, set Y to n - Points_X (item in previous row)
-                  Initial_Connections (Vector_Index) (GL.Y) := Vector_Index - 1 - Points_X;
-               end if;
-               if index_X < Points_X - 1 then
-                  --  not at bottom row and not not at end of row; leave end (X) at -1
-                  --  otherwise, set Z to n + 1 (next item)
-                  Initial_Connections (Vector_Index) (GL.Z) := Vector_Index;
-               end if;
                --  anywhere except last row
                --  set W to n + Points_X (item in next row)
                Initial_Connections (Vector_Index) (GL.W) := Vector_Index - 1 + Points_X;
             end if;
          end loop;
       end loop;
+      Print_GL_Array4 ("Initial_Connections", Initial_Connections);
 
    exception
       when others =>
