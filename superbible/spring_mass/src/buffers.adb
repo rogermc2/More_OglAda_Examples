@@ -31,12 +31,12 @@ package body Buffers is
    procedure Initialize_Vertex_Data (Initial_Positions   : in out Singles.Vector4_Array;
                                      Initial_Connections : in out Ints.Vector4_Array) is
       use Maths.Single_Math_Functions;
-      Num_X         : constant Single := 30.0 * Single (Points_X);
-      Num_Y         : constant Single := 30.0 * Single (Points_Y);
+      Num_X         : constant Single := Single (Points_X);
+      Num_Y         : constant Single := Single (Points_Y);
       X_Value       : Single;
       Y_Value       : Single;
       Value         : Singles.Vector4;
-      Vector_Index  : Int := 0;
+      Vector_Index  : Int range 0 .. Initial_Positions'Last := 0;
    begin
       for index in Initial_Connections'Range loop
          Initial_Connections (index) := (-1, -1, -1, -1);
@@ -50,21 +50,24 @@ package body Buffers is
             Value (GL.Y) := (Y_Value - 0.5) * Num_Y;
             Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
             Value (GL.W) := 1.0;
-            Initial_Positions (Vector_Index + 1) := Value;
+
+            Vector_Index := Vector_Index + 1;
+            Initial_Positions (Vector_Index) := Value;
 
             if index_Y /= Points_Y - 1 then
                if index_X /= 0 then
-                  Initial_Connections (Vector_Index + 1) (GL.X) := Vector_Index - 1;
+                  Initial_Connections (Vector_Index) (GL.X) := Vector_Index - 2;
                end if;
                if index_Y /= 0 then
-                  Initial_Connections (Vector_Index + 1) (GL.Y) := Vector_Index - Points_X;
+                  Initial_Connections (Vector_Index) (GL.Y) := Vector_Index - 1 - Points_X;
                end if;
                if index_X /= Points_X - 1 then
-                  Initial_Connections (Vector_Index + 1) (GL.Z) := Vector_Index + 1;
+                  Initial_Connections (Vector_Index) (GL.Z) := Vector_Index;
                end if;
-               Initial_Connections (Vector_Index + 1) (GL.W) := Vector_Index + Points_X;
+               if index_X /= Points_X - 1 then
+                  Initial_Connections (Vector_Index) (GL.W) := Vector_Index - 1 + Points_X;
+               end if;
             end if;
-            Vector_Index := Vector_Index + 1;
          end loop;
       end loop;
 
