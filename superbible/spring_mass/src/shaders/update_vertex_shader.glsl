@@ -30,47 +30,32 @@ void main(void)
     vec3 displacement;
     vec3 acc;
     vec3 final_vel;
-<<<<<<< HEAD
-    vec3 initial_force = gravity * mass - damping_constant * initial_velocity;
-    vec3 force = initial_force;
- //   bool fixed_node = true;        // Becomes false when force is applied
-=======
+
     vec3 force = gravity * mass - damping_constant * initial_velocity;
->>>>>>> 47ac3e24eaa1117dd07d116d046aa32e0f9576a4
+ //   vec3 force = initial_force;
+  //  bool fixed_node = true;        // Becomes false when force is applied
 
     for (int i = 0; i < 4; i++)
         {
         if (connection[i] != -1)
             {
-<<<<<<< HEAD
-            other_vertex_pos = texelFetch(tex_position, connection[i]).xyz;
-            delta_pos = other_vertex_pos - vertex_pos;
-            spring_length = length(delta_pos);
-            force = force + spring_constant * (spring_length - rest_length) * normalize(delta_pos);
-    //        fixed_node = false;
+            delta_pos =  texelFetch(tex_position, connection[i]).xyz - vertex_pos;
+            force = force + spring_constant * (length(delta_pos) - rest_length) * normalize(delta_pos);
+           // fixed_node = false;
             }
         }
-        /*)
+   /*
     if (fixed_node)
         {
-       // force = vec3(0.0);
-        force = initial_force;
+        force = vec3(0.0);
         }
  */
-=======
-            delta_pos = texelFetch(tex_position, connection[i]).xyz - vertex_pos;
-            force = force + spring_constant * (length(delta_pos) - rest_length) * normalize(delta_pos);
-            }
-        }
- 
->>>>>>> 47ac3e24eaa1117dd07d116d046aa32e0f9576a4
     acc = force / mass;
     displacement = initial_velocity * time_step + 0.5 * acc * time_step * time_step;
     final_vel = initial_velocity + acc * time_step;
 
     // Constrain the absolute value of the displacement per step
     displacement = clamp(displacement, vec3(-25.0), vec3(25.0));   //  25.0
-
     tf_position_mass = vec4(vertex_pos + displacement, mass);
     tf_velocity = final_vel;
     }
