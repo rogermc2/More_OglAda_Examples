@@ -1,7 +1,7 @@
 
 with Interfaces.C.Pointers;
 
-with Ada.Text_IO; use  Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Pixels;
@@ -28,35 +28,35 @@ package body Buffers is
 
     --  -----------------------------------------------------------------------------------------------------------------------
 
-    procedure Print_Ints_Vector (Name : String; aVector : GL.Types.Ints.Vector4) is
-    begin
-        if Name = "" then
-            Put ("  ");
-        else
-            Put (Name & ":  ");
-        end if;
-        for Index in aVector'Range loop
-            Put (GL.Types.Int'Image (aVector (Index)) & "   ");
-        end loop;
-        New_Line;
-    end Print_Ints_Vector;
+--      procedure Print_Ints_Vector (Name : String; aVector : GL.Types.Ints.Vector4) is
+--      begin
+--          if Name = "" then
+--              Put ("  ");
+--          else
+--              Put (Name & ":  ");
+--          end if;
+--          for Index in aVector'Range loop
+--              Put (GL.Types.Int'Image (aVector (Index)) & "   ");
+--          end loop;
+--          New_Line;
+--      end Print_Ints_Vector;
 
     --  -------------------------------------------------------------------
 
-    procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Ints.Vector4_Array) is
-    begin
-        Put_Line (Name & ": ");
-        for Index in anArray'First .. anArray'Last loop
-            Print_Ints_Vector ("", anArray (Index));
-        end loop;
-        New_Line;
-    end Print_GL_Array4;
+--      procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Ints.Vector4_Array) is
+--      begin
+--          Put_Line (Name & ": ");
+--          for Index in anArray'First .. anArray'Last loop
+--              Print_Ints_Vector ("", anArray (Index));
+--          end loop;
+--          New_Line;
+--      end Print_GL_Array4;
 
     --  ------------------------------------------------------------------------
 
     procedure Initialize_Vertex_Data (Initial_Positions : out Singles.Vector4_Array;
                                       Connections : out Ints.Vector4_Array) is
-          use Maths.Single_Math_Functions;
+        use Maths.Single_Math_Functions;
         Num_X         : constant Single := Single (Points_X);
         Num_Y         : constant Single := Single (Points_Y);
         X_Value       : Single;
@@ -72,8 +72,8 @@ package body Buffers is
             Y_Value := Single (index_Y) / Num_Y;
             for index_X in 0 .. Points_X - 1 loop
                 X_Value := Single (index_X) / Num_X;
-                Value (GL.X) := 10.0 * (X_Value - 0.5) * Num_X;
-                Value (GL.Y) := 10.0 * (Y_Value - 0.5) * Num_Y;
+                Value (GL.X) := (X_Value - 0.5) * Num_X;
+                Value (GL.Y) := (Y_Value - 0.5) * Num_Y;
                 Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
                 Value (GL.W) := 1.0;
 
@@ -81,19 +81,10 @@ package body Buffers is
                 Initial_Positions (Vector_Index) := Value;
 
                 if index_Y < Points_Y - 1 then
---                      if index_X > 0 then
---                          --  not at bottom row and not at start of row; leave start (X) at -1
---                          --  otherwise, set X to n - 1 (previous item)
---                          Connections (Vector_Index) (GL.X) := Vector_Index - 2;
---                      end if;
-                    --              if index_Y > 0 then
-                    --                 --  not in either first or last row; leave top (Y) at -1
-                    --                 --  otherwise, set Y to n - Points_X (item in previous row)
-                    --                 Connections (Vector_Index) (GL.Y) := Vector_Index - 1 - Points_X;
-                    --              end if;
+                    --  not at bottom row
                     if index_X < Points_X - 1 then
-                        --  not at bottom row and not not at end of row; leave end (X) at -1
-                        --  otherwise, set Z to n + 1 (next item)
+                        --  not at bottom row and not not at end of row,
+                        --  set Z to n + 1 (next item)
                         Connections (Vector_Index) (GL.Z) := Vector_Index;
                     end if;
                     --  anywhere except last row
@@ -102,7 +93,7 @@ package body Buffers is
                 end if;
             end loop;
         end loop;
-        Print_GL_Array4 ("Initial_Connections", Connections);
+--          Print_GL_Array4 ("Initial_Connections", Connections);
 
     exception
         when others =>

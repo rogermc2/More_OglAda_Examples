@@ -7,5 +7,5 @@ void main(void)
 {
     gl_PointSize = 4.0;
     v_position = position;
-    gl_Position = vec4(0.003 * position, 1.0);
+    gl_Position = vec4(0.03 * position, 1.0);
 }
