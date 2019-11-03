@@ -6,7 +6,7 @@ with Ada.Text_IO; use  Ada.Text_IO;
 with GL.Attributes;
 with GL.Pixels;
 
-with Maths;
+--  with Maths;
 with Utilities;
 
 package body Buffers is
@@ -20,44 +20,43 @@ package body Buffers is
    procedure Load_Connections_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (Ints.Vector4_Pointers);
 
-   Points_X        : constant Int := 50;
-   Points_Y        : constant Int := 50;
+   Points_X        : constant Int := 6;
+   Points_Y        : constant Int := 6;
    Num_Points      : constant Int :=  Points_X * Points_Y;
    Num_Connections : constant Int
      := (Points_X - 1) * Points_Y + Points_X * (Points_Y - 1);
 
    --  -----------------------------------------------------------------------------------------------------------------------
 
---     procedure Print_Ints_Vector (Name : String; aVector : GL.Types.Ints.Vector4) is
---     begin
---        if Name = "" then
---           Put ("  ");
---        else
---           Put (Name & ":  ");
---        end if;
---        for Index in aVector'Range loop
---           Put (GL.Types.Int'Image (aVector (Index)) & "   ");
---        end loop;
---        New_Line;
---     end Print_Ints_Vector;
+   procedure Print_Ints_Vector (Name : String; aVector : GL.Types.Ints.Vector4) is
+   begin
+      if Name = "" then
+         Put ("  ");
+      else
+         Put (Name & ":  ");
+      end if;
+      for Index in aVector'Range loop
+         Put (GL.Types.Int'Image (aVector (Index)) & "   ");
+      end loop;
+      New_Line;
+   end Print_Ints_Vector;
 
    --  -------------------------------------------------------------------
 
-
---     procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Ints.Vector4_Array) is
---     begin
---        Put_Line (Name & ": ");
---        for Index in anArray'First .. anArray'Last loop
---           Print_Ints_Vector ("", anArray (Index));
---        end loop;
---        New_Line;
---     end Print_GL_Array4;
+   procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Ints.Vector4_Array) is
+   begin
+      Put_Line (Name & ": ");
+      for Index in anArray'First .. anArray'Last loop
+         Print_Ints_Vector ("", anArray (Index));
+      end loop;
+      New_Line;
+   end Print_GL_Array4;
 
    --  ------------------------------------------------------------------------
 
-   procedure Initialize_Vertex_Data (Initial_Positions   : in out Singles.Vector4_Array;
-                                     Initial_Connections : in out Ints.Vector4_Array) is
-      use Maths.Single_Math_Functions;
+   procedure Initialize_Vertex_Data (Initial_Positions : out Singles.Vector4_Array;
+                                     Connections : out Ints.Vector4_Array) is
+--        use Maths.Single_Math_Functions;
       Num_X         : constant Single := Single (Points_X);
       Num_Y         : constant Single := Single (Points_Y);
       X_Value       : Single;
@@ -65,17 +64,18 @@ package body Buffers is
       Value         : Singles.Vector4;
       Vector_Index  : Int range 0 .. Initial_Positions'Last := 0;
    begin
-      for index in Initial_Connections'Range loop
-         Initial_Connections (index) := (-1, -1, -1, -1);
+      for index in Connections'Range loop
+         Connections (index) := (-1, -1, -1, -1);
       end loop;
 
       for index_Y in 0 .. Points_Y - 1 loop
          Y_Value := Single (index_Y) / Num_Y;
          for index_X in 0 .. Points_X - 1 loop
             X_Value := Single (index_X) / Num_X;
-            Value (GL.X) := (X_Value - 0.5) * Num_X;
-            Value (GL.Y) := (Y_Value - 0.5) * Num_Y;
-            Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
+            Value (GL.X) := 10.0 * (X_Value - 0.5) * Num_X;
+            Value (GL.Y) := 10.0 * (Y_Value - 0.5) * Num_Y;
+            Value (GL.Z) := 0.6;
+--              Value (GL.Z) := 0.6 * Sin (X_Value) * Cos (Y_Value);
             Value (GL.W) := 1.0;
 
             Vector_Index := Vector_Index + 1;
@@ -84,26 +84,26 @@ package body Buffers is
             if index_X > 0 then
                --  not at bottom row and not at start of row; leave start (X) at -1
                --  otherwise, set X to n - 1 (previous item)
-               Initial_Connections (Vector_Index) (GL.X) := Vector_Index - 2;
+               Connections (Vector_Index) (GL.X) := Vector_Index - 2;
             end if;
             if index_Y > 0 then
                --  not in either first or last row; leave top (Y) at -1
                --  otherwise, set Y to n - Points_X (item in previous row)
-               Initial_Connections (Vector_Index) (GL.Y) := Vector_Index - 1 - Points_X;
+               Connections (Vector_Index) (GL.Y) := Vector_Index - 1 - Points_X;
             end if;
             if index_X < Points_X - 1 then
                --  not at bottom row and not not at end of row; leave end (X) at -1
                --  otherwise, set Z to n + 1 (next item)
-               Initial_Connections (Vector_Index) (GL.Z) := Vector_Index;
+               Connections (Vector_Index) (GL.Z) := Vector_Index;
             end if;
             if index_Y < Points_Y - 1 then
                --  anywhere except last row
                --  set W to n + Points_X (item in next row)
-               Initial_Connections (Vector_Index) (GL.W) := Vector_Index - 1 + Points_X;
+               Connections (Vector_Index) (GL.W) := Vector_Index - 1 + Points_X;
             end if;
          end loop;
       end loop;
---        Print_GL_Array4 ("Initial_Connections", Initial_Connections);
+      Print_GL_Array4 ("Initial_Connections", Connections);
 
    exception
       when others =>
@@ -113,7 +113,7 @@ package body Buffers is
 
    --  ----------------------------------------------------------------------------------
 
-   procedure Setup_Index_Buffer (Index_Buffer : in out GL.Objects.Buffers.Buffer) is
+   procedure Setup_Index_Buffer (Index_Buffer : out GL.Objects.Buffers.Buffer) is
       use GL.Objects.Buffers;
       Num_Lines         : constant Int := Num_Connections;
       Buffer_Size       : constant GL.Types.Size :=
@@ -166,8 +166,8 @@ package body Buffers is
 
    --  ----------------------------------------------------------------------------------
 
-   procedure Setup_Tex_Buffers (Position_Tex_Buffer : in out Buffer_Array;
-                                VBO                 : in out Buffer_Array) is
+   procedure Setup_Tex_Buffers (Position_Tex_Buffer : out Buffer_Array;
+                                VBO                 : Buffer_Array) is
       use GL.Objects.Buffers;
    begin
       --  Attach the vertex buffers to a pair of texture buffers
@@ -190,16 +190,16 @@ package body Buffers is
 
    --  ----------------------------------------------------------------------------------
 
-   procedure Setup_Vertex_Buffers (VAO : in out Vertex_Buffer_Array;
-                                   VBO : in out Buffer_Array) is
+   procedure Setup_Vertex_Buffers (VAO : Vertex_Buffer_Array;
+                                   VBO : out Buffer_Array) is
       use GL.Objects.Buffers;
       Initial_Positions   : Singles.Vector4_Array (1 .. Num_Points);
       Initial_Velocities  : constant Singles.Vector3_Array (1 .. Num_Points)
         := (others => (0.0, 0.0, 0.0));
-      Initial_Connections : Ints.Vector4_Array (1 .. Num_Points);
+      Connections         : Ints.Vector4_Array (1 .. Num_Points);
       Stride              : constant GL.Types.Size := 0;  --  11?
    begin
-      Initialize_Vertex_Data (Initial_Positions, Initial_Connections);
+      Initialize_Vertex_Data (Initial_Positions, Connections);
       for index in VBO'Range loop
          VBO (index).Initialize_Id;
          Array_Buffer.Bind (VBO (index));
@@ -213,21 +213,20 @@ package body Buffers is
            (Array_Buffer, Initial_Positions, Dynamic_Copy);
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Index      => 0, Count  => 4, Kind  => Single_Type,
-            Normalized => True, Stride => Stride, Offset => 0);
+            Normalized => False, Stride => Stride, Offset => 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
          Array_Buffer.Bind (VBO (Velocity_A + index));
          Utilities.Load_Vertex_Buffer
            (Array_Buffer, Initial_Velocities, Dynamic_Copy);
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (1, 3, Single_Type, True, Stride, 0);
+           (1, 3, Single_Type, False, Stride, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (1);
 
          Array_Buffer.Bind (VBO (Connection));
-         Load_Connections_Buffer
-           (Array_Buffer, Initial_Connections, Static_Draw);
+         Load_Connections_Buffer (Array_Buffer, Connections, Static_Draw);
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (2, 4, Int_Type, True, Stride, 0);
+           (2, 4, Int_Type, False, Stride, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (2);
       end loop;
 
@@ -239,10 +238,10 @@ package body Buffers is
 
    --  ----------------------------------------------------------------------------------
 
-   procedure Setup_Buffers (VAO_Array            : in out Vertex_Buffer_Array;
-                            VBO_Array            : in out Buffer_Array;
-                            Index_Buffer         : in out GL.Objects.Buffers.Buffer;
-                            Position_Tex_Buffers : in out Buffer_Array) is
+   procedure Setup_Buffers (VAO_Array            : Vertex_Buffer_Array;
+                            VBO_Array            : out Buffer_Array;
+                            Index_Buffer         : out GL.Objects.Buffers.Buffer;
+                            Position_Tex_Buffers : out Buffer_Array) is
    begin
       Setup_Vertex_Buffers (VAO_Array, VBO_Array);
       Setup_Tex_Buffers (Position_Tex_Buffers, VBO_Array);
