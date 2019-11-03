@@ -82,23 +82,21 @@ package body Buffers is
             Initial_Positions (Vector_Index) := Value;
 
             if index_X > 0 then
-               --  not at bottom row and not at start of row; leave start (X) at -1
-               --  otherwise, set X to n - 1 (previous item)
+               --  not at start of row so set X connection to n - 1 (previous item)
                Initial_Connections (Vector_Index) (GL.X) := Vector_Index - 2;
             end if;
             if index_Y > 0 then
-               --  not in either first or last row; leave top (Y) at -1
-               --  otherwise, set Y to n - Points_X (item in previous row)
+               --  not in top row so set Y connection
+               --  to n - Points_X (item in previous row)
                Initial_Connections (Vector_Index) (GL.Y) := Vector_Index - 1 - Points_X;
             end if;
             if index_X < Points_X - 1 then
-               --  not at bottom row and not not at end of row; leave end (X) at -1
-               --  otherwise, set Z to n + 1 (next item)
+               --  not at end of row so set Z connection to n + 1 (next item)
                Initial_Connections (Vector_Index) (GL.Z) := Vector_Index;
             end if;
             if index_Y < Points_Y - 1 then
-               --  anywhere except last row
-               --  set W to n + Points_X (item in next row)
+               --  not in last row so set W connection
+               --  to n + Points_X (item in next row)
                Initial_Connections (Vector_Index) (GL.W) := Vector_Index - 1 + Points_X;
             end if;
          end loop;
