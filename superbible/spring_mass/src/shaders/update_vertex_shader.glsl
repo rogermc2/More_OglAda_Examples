@@ -29,10 +29,9 @@ void main(void)
     vec3 other_vertex_pos;
     vec3 delta_pos;
     vec3 displacement;
-    float separation;
+    float spring_length;
     vec3 acc;
     vec3 final_vel;
-
     vec3 force = gravity * mass - damping_constant * initial_velocity;
     bool fixed_node = true;        // Becomes false when force is applied
 
@@ -42,8 +41,8 @@ void main(void)
             {
             other_vertex_pos = texelFetch(tex_position, connection[i]).xyz;
             delta_pos = other_vertex_pos - vertex_pos;
-            separation = length(delta_pos);
-            force = force - spring_constant * (rest_length - separation) * normalize(delta_pos);
+            spring_length = length(delta_pos);
+            force = force - spring_constant * (rest_length - spring_length) * normalize(delta_pos);
             fixed_node = false;
             }
         }
