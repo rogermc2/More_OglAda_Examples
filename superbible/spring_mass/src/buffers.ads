@@ -16,10 +16,10 @@ package Buffers is
    Velocity_B  : constant Integer := 4;
    Connection  : constant Integer := 5;
 
-   procedure Setup_Buffers (VAO_Array           : in out Vertex_Buffer_Array;
-                            VBO_Array           : in out Buffer_Array;
-                            Index_Buffer        : in out GL.Objects.Buffers.Buffer;
-                            Position_Tex_Buffers : in out Buffer_Array);
+   procedure Setup_Buffers (VAO_Array            : Vertex_Buffer_Array;
+                            VBO_Array            : out Buffer_Array;
+                            Index_Buffer         : out GL.Objects.Buffers.Buffer;
+                            Position_Tex_Buffers : out Buffer_Array);
    function Total_Connections return GL.Types.Int;
    function Total_Points return GL.Types.Int;
 
