@@ -32,9 +32,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Update_Program       : GL.Objects.Programs.Program;
    Time_Step_Location   : GL.Uniforms.Uniform;
 
-   Time_Step            : constant Single := 0.00007; --  orig 0.07
+   Time_Step            : constant Single := 0.000007; --  orig 0.07
    Iteration_Index      : Integer := 1;
-   Iterations_Per_Frame : UInt := 1;  -- 16
+   Iterations_Per_Frame : UInt := 10;  -- orig 16
    Max_Iterations       : constant Integer := 60000;
    Draw_Lines           : Boolean := False;
    Draw_Points          : Boolean := True;
