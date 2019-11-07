@@ -36,8 +36,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Iteration_Index      : Integer := 1;
    Iterations_Per_Frame : UInt := 10;  -- orig 16
    Max_Iterations       : constant Integer := 60000;
-   Draw_Lines           : Boolean := False;
-   Draw_Points          : Boolean := True;
+   Draw_Lines           : Boolean := True;
+   Draw_Points          : Boolean := False;
 
    procedure Load_Shaders;
    procedure Update_Transform_Buffer;
@@ -141,10 +141,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       end if;
       if Draw_Lines then
          GL.Objects.Buffers.Element_Array_Buffer.Bind (Index_Buffer);
-         Put_Line ("Render Draw_Elements.");
          GL.Objects.Buffers.Draw_Elements
            (Lines, 2 * Buffers.Total_Connections, UInt_Type, 0);
-         Put_Line ("Render Elements drawn.");
       end if;
 
    exception
@@ -184,6 +182,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       end loop;
       Disable (Rasterizer_Discard);
 
+      if Buffer_Index = 0 then
+         Buffer_Index := 1;
+      else
+         Buffer_Index := 2;
+      end if;
+      GL.Objects.Vertex_Arrays.Bind (VAO (Buffer_Index));
+
    exception
       when others =>
          Put_Line ("An exceptiom occurred in Main_Loop.Update_Transform_Buffer.");
@@ -203,7 +208,6 @@ begin
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and not Main_Window.Should_Close;
---        delay (0.1);
    end loop;
 exception
    when Program_Loader.Shader_Loading_Error =>
