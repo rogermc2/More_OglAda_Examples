@@ -1,5 +1,5 @@
 
-with Interfaces.C.Pointers;
+--  with Interfaces.C.Pointers;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -11,11 +11,6 @@ with Utilities;
 
 package body Buffers is
     use GL.Types;
-
-    package Element_Buffer_Package is new Interfaces.C.Pointers
-      (GL.Types.Size, Int, Int_Array, Int'Last);
-    procedure Map_Element_Buffer_Range is new
-      GL.Objects.Buffers.Map_Range (Element_Buffer_Package);
 
     procedure Load_Connections_Buffer is new
       GL.Objects.Buffers.Load_To_Buffer (Ints.Vector4_Pointers);
@@ -93,7 +88,6 @@ package body Buffers is
                 end if;
             end loop;
         end loop;
---          Print_GL_Array4 ("Initial_Connections", Connections);
 
     exception
         when others =>
@@ -106,47 +100,32 @@ package body Buffers is
     procedure Setup_Index_Buffer (Index_Buffer : out GL.Objects.Buffers.Buffer) is
         use GL.Objects.Buffers;
         Num_Lines         : constant Int := Num_Connections;
-        Buffer_Size       : constant GL.Types.Size :=
-                              GL.Types.Size (2 * Num_Lines * Int'Size / 8);
-        Map_Access        : Map_Bits;
-        Mapped_Buffer_Ptr : Element_Buffer_Package.Pointer;  -- int * e
+         Vertex_Indices   : Int_Array (1 .. 2 * Num_Lines);
+         Array_Index      : GL.Types.Size := 0;
     begin
-        Map_Access.Write := True;
-        Map_Access.Invalidate_Buffer := True;
-
         Index_Buffer.Initialize_Id;
         Element_Array_Buffer.Bind (Index_Buffer);
 
-        Element_Array_Buffer.Allocate (Long (Buffer_Size), Static_Draw);
-        Map_Element_Buffer_Range (Target      => Element_Array_Buffer,
-                                  Access_Type => Map_Access,
-                                  Offset      => 0, Size => Buffer_Size,
-                                  Pointer     => Mapped_Buffer_Ptr);
-
+        -- Horizontal lines
         for index_Y in 0 .. Points_Y - 1 loop
             for index_X in 0 .. Points_X - 2 loop
-                Mapped_Buffer_Ptr.all := Int (index_X + index_Y * Points_X);
-                Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
-                Mapped_Buffer_Ptr.all := Int (1 + index_Y * Points_X);
-                if (index_Y /= Points_Y - 1) and (index_X <  Points_X - 2) then
-                    Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
-                end if;
+                Array_Index := Array_Index + 1;
+                Vertex_Indices (Array_Index) := Int (index_X + index_Y * Points_X);
+                Array_Index := Array_Index + 1;
+                Vertex_Indices (Array_Index) := Int (index_X + index_Y * Points_X + 1);
             end loop;
         end loop;
 
+        -- Verical lines
         for index_X in 0 .. Points_X - 1 loop
             for index_Y in 0 .. Points_Y - 2 loop
-                Mapped_Buffer_Ptr.all :=
-                  Int (index_X  + index_Y * Points_X);
-                Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
-                Mapped_Buffer_Ptr.all :=
-                  Int (Points_X + index_X  + index_Y * Points_X);
-                if (index_X /= Points_X - 1) and (index_Y < Points_Y - 2) then
-                    Element_Buffer_Package.Increment (Mapped_Buffer_Ptr);
-                end if;
+                Array_Index := Array_Index + 1;
+                Vertex_Indices (Array_Index) := Int (index_X  + index_Y * Points_X);
+                Array_Index := Array_Index + 1;
+                Vertex_Indices (Array_Index) := Int (Points_X + index_X  + index_Y * Points_X);
             end loop;
         end loop;
-        Unmap (Element_Array_Buffer);
+        Utilities.Load_Element_Buffer (Element_Array_Buffer, Vertex_Indices, Static_Draw);
 
     exception
         when others =>
