@@ -21,34 +21,6 @@ package body Buffers is
     Num_Connections : constant Int
       := (Points_X - 1) * Points_Y + Points_X * (Points_Y - 1);
 
-    --  -----------------------------------------------------------------------------------------------------------------------
-
---      procedure Print_Ints_Vector (Name : String; aVector : GL.Types.Ints.Vector4) is
---      begin
---          if Name = "" then
---              Put ("  ");
---          else
---              Put (Name & ":  ");
---          end if;
---          for Index in aVector'Range loop
---              Put (GL.Types.Int'Image (aVector (Index)) & "   ");
---          end loop;
---          New_Line;
---      end Print_Ints_Vector;
-
-    --  -------------------------------------------------------------------
-
---      procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Ints.Vector4_Array) is
---      begin
---          Put_Line (Name & ": ");
---          for Index in anArray'First .. anArray'Last loop
---              Print_Ints_Vector ("", anArray (Index));
---          end loop;
---          New_Line;
---      end Print_GL_Array4;
-
-    --  ------------------------------------------------------------------------
-
     procedure Initialize_Vertex_Data (Initial_Positions : out Singles.Vector4_Array;
                                       Connections : out Ints.Vector4_Array) is
         use Maths.Single_Math_Functions;
