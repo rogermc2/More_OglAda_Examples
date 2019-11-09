@@ -18,17 +18,17 @@ package body Particle_System is
 
    type Particle_Type is new Single range 0.0 .. 3.0;
 
-   Max_Particles     : constant GL.Types.UInt := 3;  --  1000;
+   Max_Particles     : constant GL.Types.UInt := 1000;  --  1000;
    Particle_Launcher : constant Particle_Type := 0.0;
    Shell             : constant Particle_Type := 1.0;
    Secondary_Shell   : constant Particle_Type := 2.0;
    None              : constant Particle_Type := 3.0;
 
    type Particle is record
-      Particle_Kind : Particle_Type;
-      Position      : Singles.Vector3;
-      Velocity      : Singles.Vector3;
-      Lifetime_ms   : GL.Types.Single;
+      Particle_Kind : Particle_Type := Particle_Launcher;
+      Position      : Singles.Vector3 := (1.0, 1.0, 0.0);   --  (0.0, 0.0, 0.0)
+      Velocity      : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Lifetime_ms   : GL.Types.Single := 0.0;
    end record;
    Particle_Stride  : constant Int := Particle'Size / Single'Size;
 
@@ -95,7 +95,7 @@ package body Particle_System is
       Billboard_Technique.Use_Program (PS.Display_Method);
       Billboard_Technique.Set_Colour_Texture_Unit
         (PS.Display_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
-      Billboard_Technique.Set_Billboard_Size (PS.Display_Method, 0.1);  --  orig 0.01
+      Billboard_Technique.Set_Billboard_Size (PS.Display_Method, 0.08);  --  orig 0.01
 
       if Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
                                       "../Content/fireworks_red.jpg") then
@@ -143,7 +143,7 @@ package body Particle_System is
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
-                                               Stride => Particle_Stride,
+                                               Stride => 0,
                                                Offset => 1);
       --  Draw_Transform_Feedback is equivalent to calling
       --  GL.Objects.VertexArrays.Draw_Arrays with mode as specified,
@@ -163,8 +163,8 @@ package body Particle_System is
 
    procedure Update_Particles (PS         : in out Particle_System;
                                Delta_Time : GL.Types.UInt) is
-      VB_Index         : constant Buffer_Index := PS.Current_VB_Index;
-      TFB_Index        : constant Buffer_Index := Get_TFB_Index (PS);
+      VB_Index  : constant Buffer_Index := PS.Current_VB_Index;
+      TFB_Index : constant Buffer_Index := Get_TFB_Index (PS);
    begin
       PS_Update_Technique.Use_Program (PS.Update_Method);
       PS_Update_Technique.Set_Time (PS.Update_Method, PS.PS_Time);
@@ -191,10 +191,10 @@ package body Particle_System is
 
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Index  => 0, Count => 1, Kind => Single_Type,
-         Stride => Particle_Stride, Offset => 0);                                       --  Particle Type
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, Particle_Stride, 2);  --  Position
-      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Particle_Stride, 5);  --  Velocity
-      GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, Particle_Stride, 8);  --  Age
+         Stride => 0, Offset => 0);                                       --  Particle Type
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, 0, 1);  --  Position
+      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 4);  --  Velocity
+      GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 0, 7);  --  Age
 
       --  Transform feedback mode captures the values of varying variables
       --  written by the geometry shader).
