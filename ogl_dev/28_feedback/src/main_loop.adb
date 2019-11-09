@@ -176,6 +176,7 @@ begin
       Running := Running and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and not Main_Window.Should_Close;
+      Delay (1.0);
    end loop;
 
 exception

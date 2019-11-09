@@ -12,14 +12,14 @@ in float Age0[];
 out float Type1;                                                                    
 out vec3  Position1;
 out vec3  Velocity1;
-out float Age1;                                                                     
-                                                                                    
+out float Age1;
+
 uniform float     gDeltaTimeMillis;
 uniform float     gTime;
 uniform sampler1D gRandomTexture;                                                   
 uniform float     gLauncherLifetime;
-uniform float     gShellLifetime;
 uniform float     gSecondaryShellLifetime;
+uniform float     gShellLifetime;
                                                                                     
 #define PARTICLE_TYPE_LAUNCHER        0.0f
 #define PARTICLE_TYPE_SHELL           1.0f
@@ -91,7 +91,7 @@ void main()
                     }
                 }  //  end Age >= gShellLifetime
             }  //  end if PARTICLE_TYPE_SHELL
-/*
+
         else   //  Not PARTICLE_TYPE_SHELL therefore PARTICLE_TYPE_SECONDARY_SHELL
             {
             if (Age < gSecondaryShellLifetime)
@@ -104,6 +104,5 @@ void main()
                 EndPrimitive();
                 }  //  end Age < gSecondaryShellLifetime
             }  //  end PARTICLE_TYPE_SECONDARY_SHELL
- */
         }   //  end Not PARTICLE_TYPE_LAUNCHER
     }   // end main

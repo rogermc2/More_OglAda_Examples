@@ -47,6 +47,17 @@ package body Particle_System is
 
    --  -------------------------------------------------------------------------
 
+   function Get_TFB_Index (PS  : Particle_System) return Buffer_Index is
+      begin
+      if PS.Current_VB_Index = 2 then
+         return 1;
+      else
+         return 2;
+      end if;
+   end  Get_TFB_Index;
+
+   --  -------------------------------------------------------------------------
+
    procedure Init_Particle_System (PS  : in out Particle_System;
                                    Pos : Singles.Vector3) is
       use GL.Objects.Buffers;
@@ -63,6 +74,7 @@ package body Particle_System is
 
          PS.Particle_Buffer (index).Initialize_Id;
          Array_Buffer.Bind (PS.Particle_Buffer (index));
+
          Load_Particle_Buffer (Array_Buffer, Particles, Dynamic_Draw);
          Transform_Feedback_Buffer.Bind_Buffer_Base (0, PS.Particle_Buffer (index));
       end loop;
@@ -103,13 +115,8 @@ package body Particle_System is
    begin
       Update_Particles (PS, Delta_Time);
       Render_Particles (PS, View_Point, Camera_Pos);
-
-      PS.Current_VB_Index := PS.Current_TFB_Index;
-      if PS.Current_TFB_Index = 1 then
-         PS.Current_TFB_Index := 2;
-      else
-         PS.Current_TFB_Index := 1;
-      end if;
+      --  Swap buffers
+      PS.Current_VB_Index := Get_TFB_Index (PS);
       PS.PS_Time := PS.PS_Time + Delta_Time;
 
    exception
@@ -123,7 +130,6 @@ package body Particle_System is
    procedure Render_Particles (PS         : in out Particle_System;
                                View_Point : Singles.Matrix4;
                                Camera_Pos : Singles.Vector3) is
-      TFB_Index : constant Buffer_Index := PS.Current_TFB_Index;
    begin
       Billboard_Technique.Use_Program (PS.Display_Method);
       Billboard_Technique.Set_Camera_Position (PS.Display_Method, Camera_Pos);
@@ -132,15 +138,19 @@ package body Particle_System is
       Ogldev_Texture.Bind (PS.Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
 
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
-      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (TFB_Index));
+      GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (PS.Current_VB_Index));
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
                                                Stride => Particle_Stride,
                                                Offset => 1);
+      --  Draw_Transform_Feedback is equivalent to calling
+      --  GL.Objects.VertexArrays.Draw_Arrays with mode as specified,
+      --  first set to zero and count set to the number of vertices
+      --  captured on vertex stream zero the last time transform feedback was active on the transform feedback object named by id
       GL.Objects.Buffers.Draw_Transform_Feedback
-        (Points, PS.Feedback_Buffer (TFB_Index));
+        (Points, PS.Feedback_Buffer (Get_TFB_Index (PS)));
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
 
    exception
@@ -153,8 +163,8 @@ package body Particle_System is
 
    procedure Update_Particles (PS         : in out Particle_System;
                                Delta_Time : GL.Types.UInt) is
-      TFB_Index        : constant Buffer_Index := PS.Current_TFB_Index;
       VB_Index         : constant Buffer_Index := PS.Current_VB_Index;
+      TFB_Index        : constant Buffer_Index := Get_TFB_Index (PS);
    begin
       PS_Update_Technique.Use_Program (PS.Update_Method);
       PS_Update_Technique.Set_Time (PS.Update_Method, PS.PS_Time);
@@ -168,6 +178,7 @@ package body Particle_System is
       --  output transform feedback buffers without anything being rasterized.
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 
+      --  Bind the current vertex buffer to the Array Buffer
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (VB_Index));
       --  Binding a transform feedback object causes the number of vertices
       --  in the buffer to become zero.
@@ -189,7 +200,7 @@ package body Particle_System is
       --  written by the geometry shader).
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       if PS.Is_First then
-         --  Write the Vertex_Array into the currently bound
+         --  Write the current vertex buffer into the currently bound
          --  transform feedback buffer
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
          PS.Is_First := False;

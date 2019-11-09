@@ -27,7 +27,6 @@ private
 
    type Particle_System is record
      Current_VB_Index  : Buffer_Index := 1;
-     Current_TFB_Index : Buffer_Index := 2;
      Is_First          : Boolean := True;
      PS_Time           : GL.Types.UInt := 0;
      Texture           : Ogldev_Texture.Ogl_Texture;
