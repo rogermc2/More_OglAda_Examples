@@ -83,11 +83,11 @@ package body Particle_System is
       PS_Update_Technique.Use_Program (PS.Update_Method);
       PS_Update_Technique.Set_Random_Texture_Unit
         (PS.Update_Method, Ogldev_Engine_Common.Random_Texture_Unit);
-      PS_Update_Technique.Set_Launcher_Lifetime (PS.Update_Method, 60.0); --  100.0
-      PS_Update_Technique.Set_Shell_Lifetime (PS.Update_Method, 10000.0);
-      PS_Update_Technique.Set_Secondary_Shell_Lifetime (PS.Update_Method, 2500.0);
+      PS_Update_Technique.Set_Launcher_Lifetime (PS.Update_Method, 2000.0); --  100.0
+      PS_Update_Technique.Set_Shell_Lifetime (PS.Update_Method, 10000.0);   --  10000.0)
+      PS_Update_Technique.Set_Secondary_Shell_Lifetime (PS.Update_Method, 2500.0);  --  2500.0
 
-      Random_Texture.Init_Random_Texture (PS.Random_Texture, 1000);
+      Random_Texture.Init_Random_Texture (PS.Random_Texture, Max_Particles);
       Random_Texture.Bind (PS.Random_Texture,
                            Ogldev_Engine_Common.Random_Texture_Unit);
 
