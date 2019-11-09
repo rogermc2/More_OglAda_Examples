@@ -30,6 +30,7 @@ package body Particle_System is
       Velocity      : Singles.Vector3 := (0.0, 0.0, 0.0);
       Lifetime_ms   : GL.Types.Single := 0.0;
    end record;
+   pragma Convention (C, Particle);
    Particle_Stride  : constant Int := Particle'Size / Single'Size;
 
    type Particle_Array is array (GL.Types.UInt range <>) of aliased Particle;
