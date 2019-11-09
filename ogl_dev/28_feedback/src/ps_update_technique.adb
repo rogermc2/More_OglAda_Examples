@@ -51,8 +51,7 @@ package body PS_Update_Technique is
       --  Program_From includes linking
       theTechnique.Update_Program := Program_From
         ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
-         Src ("src/shaders/ps_update.gs", Geometry_Shader),
-         Src ("src/shaders/ps_update.fs", Fragment_Shader)));
+         Src ("src/shaders/ps_update.gs", Geometry_Shader)));
 
       OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
       if not OK then
