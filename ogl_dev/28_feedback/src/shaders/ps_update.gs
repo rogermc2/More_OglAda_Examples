@@ -36,7 +36,7 @@ void main()
     {
     float Age = Age0[0] + gDeltaTimeMillis;
     vec3  Dir;
-    float DeltaTimeSecs = gDeltaTimeMillis / 1000.0f;
+    float DeltaTimeSecs = gDeltaTimeMillis / 100.0f;  //  1000.0f
     vec3  DeltaP = DeltaTimeSecs * Velocity0[0];
     vec3  DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
 
