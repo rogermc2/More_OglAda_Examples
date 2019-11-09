@@ -45,7 +45,7 @@ void main()
         if (Age >= gLauncherLifetime)
             {
             Type1 = PARTICLE_TYPE_SHELL;
-            Position1 = Position0[0];
+            Position1 = Position0[0];     //  Shell starts at launcher
             Dir = GetRandomDir(gTime / 1000.0);
             Dir.y = max(Dir.y, 0.5);
             Velocity1 = normalize(Dir) / 40.0;  //  20.0
@@ -56,7 +56,7 @@ void main()
             }  //  end if Age >= gLauncherLifetime
    
         Type1 = PARTICLE_TYPE_LAUNCHER;
-        Position1 = Position0[0];
+        Position1 = Position0[0];  //  Launcher position shouldn't change
         Velocity1 = Velocity0[0];
         Age1 = Age;
         EmitVertex();
@@ -68,7 +68,7 @@ void main()
         if (Type0[0] == PARTICLE_TYPE_SHELL)
             {
             if (Age < gShellLifetime)
-                {
+                {  //  Update shell position and velocity
                 Type1 = PARTICLE_TYPE_SHELL;
                 Position1 = Position0[0] + DeltaP;
                 Velocity1 = Velocity0[0] + DeltaV;
@@ -79,6 +79,7 @@ void main()
  
             else  //  Age >= gShellLifetime
                 {
+                //  Launch 10 secondary shells from current shell position
                 for (int i = 0 ; i < 10 ; i++)
                     {
                     Type1 = PARTICLE_TYPE_SECONDARY_SHELL;
@@ -95,7 +96,7 @@ void main()
         else   //  Not PARTICLE_TYPE_SHELL therefore PARTICLE_TYPE_SECONDARY_SHELL
             {
             if (Age < gSecondaryShellLifetime)
-                {
+                {  //  Update secondary shell position and velocity
                 Type1 = PARTICLE_TYPE_SECONDARY_SHELL;
                 Position1 = Position0[0] + DeltaP;
                 Velocity1 = Velocity0[0] + DeltaV;
