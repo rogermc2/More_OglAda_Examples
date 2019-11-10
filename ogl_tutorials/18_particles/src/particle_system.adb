@@ -2,8 +2,15 @@
 with Ada.Containers.Generic_Array_Sort;
 with Ada.Text_IO; use Ada.Text_IO;
 
+
+with GL.Objects.Programs;
+
+with GL.Objects.Shaders;
 with GL.Types.Colors;
+with GL.Uniforms;
+
 with Maths;
+with Program_Loader;
 --  with Utilities;
 
 package body Particle_System is
@@ -32,12 +39,19 @@ package body Particle_System is
                                                        Array_Type   => Particle_Array,
                                                        "<"          => "<");
 
+   Single_Bytes       : constant Int := Single'Size / 8;
+
+   Particle_Program   : GL.Objects.Programs.Program;
+    Camera_Right_ID        : GL.Uniforms.Uniform;
+    Camera_Up_ID           : GL.Uniforms.Uniform;
+    View_Point_ID          : GL.Uniforms.Uniform;
+    Texture_ID             : GL.Uniforms.Uniform;
+   Last_Used_Particle : Int := 1;
    Particle_Container : Particle_Array (1 .. Max_Particles);
    Position_Size_Data : Position_Size_Data_Array (1 .. 4 * Max_Particles);
    Colour_Data        : Colour_Data_Array (1 .. 4 * Max_Particles);
 
-   Single_Bytes       : constant Int := Single'Size / 8;
-   Last_Used_Particle : Int := 1;
+   procedure Load_Shaders;
 
    --  -------------------------------------------------------------------------
 
@@ -58,6 +72,8 @@ package body Particle_System is
    procedure Init (Position_Buffer, Colour_Buffer : in out GL.Objects.Buffers.Buffer) is
       use GL.Objects.Buffers;
    begin
+      Load_Shaders;
+
       Position_Buffer.Initialize_Id;
       Array_Buffer.Bind (Position_Buffer);
       GL.Objects.Buffers.Allocate (Array_Buffer, Long (4 * Max_Particles * Single_Bytes), Stream_Draw);
@@ -100,6 +116,33 @@ package body Particle_System is
    end Find_Unused_Particle;
 
    --  -------------------------------------------------------------------------
+
+  procedure Load_Shaders is
+      use GL.Objects.Shaders;
+      begin
+      Particle_Program := Program_Loader.Program_From
+          ((Program_Loader.Src ("src/shaders/particle_vertex_shader.glsl",
+           Vertex_Shader),
+           Program_Loader.Src ("src/shaders/particle_fragment_shader.glsl",
+             Fragment_Shader)));
+
+        Camera_Right_ID := GL.Objects.Programs.Uniform_Location
+          (Particle_Program, "CameraRight_worldspace");
+        Camera_Up_ID := GL.Objects.Programs.Uniform_Location
+          (Particle_Program, "CameraUp_worldspace");
+        View_Point_ID := GL.Objects.Programs.Uniform_Location
+        (Particle_Program, "VP");
+
+        Texture_ID := GL.Objects.Programs.Uniform_Location
+        (Particle_Program, "myTextureSampler");
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Particle_System.Load_Shaders.");
+            raise;
+    end Load_Shaders;
+
+   --  ------------------------------------------------------------------------
 
    procedure Update_Particles (Delta_Time : Single) is
       use GL.Types.Colors;
