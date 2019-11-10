@@ -2,10 +2,8 @@
 with Ada.Containers.Generic_Array_Sort;
 with Ada.Text_IO; use Ada.Text_IO;
 
-
-with GL.Objects.Programs;
-
 with GL.Objects.Shaders;
+with GL.Objects.Shaders.Lists;
 with GL.Types.Colors;
 with GL.Uniforms;
 
@@ -41,15 +39,15 @@ package body Particle_System is
 
    Single_Bytes       : constant Int := Single'Size / 8;
 
-   Particle_Program   : GL.Objects.Programs.Program;
-    Camera_Right_ID        : GL.Uniforms.Uniform;
-    Camera_Up_ID           : GL.Uniforms.Uniform;
-    View_Point_ID          : GL.Uniforms.Uniform;
-    Texture_ID             : GL.Uniforms.Uniform;
-   Last_Used_Particle : Int := 1;
-   Particle_Container : Particle_Array (1 .. Max_Particles);
-   Position_Size_Data : Position_Size_Data_Array (1 .. 4 * Max_Particles);
-   Colour_Data        : Colour_Data_Array (1 .. 4 * Max_Particles);
+   Particle_Program       : GL.Objects.Programs.Program;
+   Camera_Right_ID        : GL.Uniforms.Uniform;
+   Camera_Up_ID           : GL.Uniforms.Uniform;
+   View_Point_ID          : GL.Uniforms.Uniform;
+   Texture_ID             : GL.Uniforms.Uniform;
+   Last_Used_Particle     : Int := 1;
+   Particle_Container     : Particle_Array (1 .. Max_Particles);
+   Position_Size_Data     : Position_Size_Data_Array (1 .. 4 * Max_Particles);
+   Colour_Data            : Colour_Data_Array (1 .. 4 * Max_Particles);
 
    procedure Load_Shaders;
 
@@ -82,10 +80,10 @@ package body Particle_System is
       Array_Buffer.Bind (Colour_Buffer);
       GL.Objects.Buffers.Allocate (Array_Buffer, Long (4 * Max_Particles * Single_Bytes), Stream_Draw);
 
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Particle_System.Init.");
-            raise;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Particle_System.Init.");
+         raise;
    end Init;
 
    --  -------------------------------------------------------------------------
@@ -109,38 +107,58 @@ package body Particle_System is
 
       return Unused;
 
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Particle_System.Find_Unused_Particle.");
-            raise;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Particle_System.Find_Unused_Particle.");
+         raise;
    end Find_Unused_Particle;
 
    --  -------------------------------------------------------------------------
 
-  procedure Load_Shaders is
+   procedure Load_Shaders is
       use GL.Objects.Shaders;
-      begin
+   begin
       Particle_Program := Program_Loader.Program_From
-          ((Program_Loader.Src ("src/shaders/particle_vertex_shader.glsl",
-           Vertex_Shader),
-           Program_Loader.Src ("src/shaders/particle_fragment_shader.glsl",
-             Fragment_Shader)));
+        ((Program_Loader.Src ("src/shaders/particle_vertex_shader.glsl",
+         Vertex_Shader),
+         Program_Loader.Src ("src/shaders/particle_fragment_shader.glsl",
+           Fragment_Shader)));
 
-        Camera_Right_ID := GL.Objects.Programs.Uniform_Location
-          (Particle_Program, "CameraRight_worldspace");
-        Camera_Up_ID := GL.Objects.Programs.Uniform_Location
-          (Particle_Program, "CameraUp_worldspace");
-        View_Point_ID := GL.Objects.Programs.Uniform_Location
+      Camera_Right_ID := GL.Objects.Programs.Uniform_Location
+        (Particle_Program, "CameraRight_worldspace");
+      Camera_Up_ID := GL.Objects.Programs.Uniform_Location
+        (Particle_Program, "CameraUp_worldspace");
+      View_Point_ID := GL.Objects.Programs.Uniform_Location
         (Particle_Program, "VP");
 
-        Texture_ID := GL.Objects.Programs.Uniform_Location
+      Texture_ID := GL.Objects.Programs.Uniform_Location
         (Particle_Program, "myTextureSampler");
 
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Particle_System.Load_Shaders.");
-            raise;
-    end Load_Shaders;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Particle_System.Load_Shaders.");
+         raise;
+   end Load_Shaders;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Texture_ID (Tex : Singles.Vector3) is
+   begin
+      GL.Uniforms.Set_Single (Texture_ID, Tex);
+   end Set_Texture_ID;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_IDs (VP : Singles.Matrix4) is
+      Right  : constant Singles.Vector3 :=
+                 (VP (GL.X, GL.X), VP (GL.Y, GL.X), VP (GL.X, GL.Z));
+      Up     : constant Singles.Vector3 :=
+                 (VP (GL.X, GL.Y), VP (GL.Y, GL.Y), VP (GL.Z, GL.Y));
+   begin
+      GL.Uniforms.Set_Single (View_Point_ID, VP);
+      GL.Uniforms.Set_Single  (Camera_Right_ID, Right);
+      GL.Uniforms.Set_Single (Camera_Up_ID, Up);
+   end Set_IDs;
 
    --  ------------------------------------------------------------------------
 
@@ -208,11 +226,39 @@ package body Particle_System is
 
       Sort_Particles (Particle_Container);
 
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Particle_System.Update_Particles.");
-            raise;
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Particle_System.Update_Particles.");
+         raise;
    end Update_Particles;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Use_Program (theProgram : GL.Objects.Programs.Program) is
+      use GL.Objects.Shaders.Lists;
+   begin
+      if GL.Objects.Programs.Link_Status (theProgram) then
+         declare
+            Shaders_List : constant GL.Objects.Shaders.Lists.List :=
+                             GL.Objects.Programs.Attached_Shaders  (theProgram);
+            Curs         : constant GL.Objects.Shaders.Lists.Cursor :=
+                             Shaders_List.First;
+         begin
+            if Curs = GL.Objects.Shaders.Lists.No_Element then
+               Put_Line ("Particle_System.Use_Program, Shaders list is empty");
+            else
+               GL.Objects.Programs.Use_Program (theProgram);
+            end if;
+         end;  -- declare block
+      else
+         Put_Line ("Particle_System.Use_Program, program link check failed");
+      end if;
+
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Particle_System.Use_Program.");
+         raise;
+   end Use_Program;
 
    --  -------------------------------------------------------------------------
 

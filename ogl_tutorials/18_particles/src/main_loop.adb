@@ -143,6 +143,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       VP_Matrix :=  Projection_Matrix * View_Matrix;
       VM_Inv := Inverse (View_Matrix3);
       Camera_Position := (VM_Inv (GL.Z, GL.X), VM_Inv (GL.Z, GL.Y), VM_Inv (GL.Z, GL.Z));
+      Particle_System.Set_IDs (VP_Matrix);
 
     exception
         when others =>
