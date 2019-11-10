@@ -46,24 +46,22 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Particle_Texture       : GL.Objects.Textures.Texture;
 
     Billboard_Program      : GL.Objects.Programs.Program;
-    Camera_Right_ID        : GL.Uniforms.Uniform;
-    Camera_Up_ID           : GL.Uniforms.Uniform;
-    View_Point_ID          : GL.Uniforms.Uniform;
-    CameraUp_worldspace    : GL.Uniforms.Uniform;
-    Texture_ID             : GL.Uniforms.Uniform;
 
     Last_Time              : GL.Types.Single := GL.Types.Single (Glfw.Time);
     Number_Of_Frames       : Integer := 0;
 
+    function To_Matrix3  (aMatrix4 : GL.Types.Singles.Matrix4)
+                          return GL.Types.Singles.Matrix3;
+
     --  ------------------------------------------------------------------------
 
-   function Convert_To_Real (GL_Matrix : GL.Types.Singles.Matrix4)
+   function Convert_To_Real (GL_Matrix : GL.Types.Singles.Matrix3)
                              return Real_Array_Functions.Real_Matrix is
      use Real_Array_Functions;
-     Result : Real_Matrix (1 .. 4, 1 .. 4);
+     Result : Real_Matrix (1 .. 3, 1 .. 3);
    begin
-      for row in 1 .. 4 loop
-         for col in 1 .. 4 loop
+      for row in 1 .. 3 loop
+         for col in 1 .. 3 loop
             Result (row, col) := GL_Matrix (GL.Index_Homogeneous'Enum_Val (row),
                                             GL.Index_Homogeneous'Enum_Val (col));
          end loop;
@@ -74,11 +72,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     function Convert_To_Single  (R_Matrix : Real_Array_Functions.Real_Matrix)
-                                 return GL.Types.Singles.Matrix4 is
-     Result  : GL.Types.Singles.Matrix4;
+                                 return GL.Types.Singles.Matrix3 is
+     Result  : GL.Types.Singles.Matrix3;
    begin
-      for row in 1 .. 4 loop
-         for col in 1 .. 4 loop
+      for row in 1 .. 3 loop
+         for col in 1 .. 3 loop
             Result (GL.Index_Homogeneous'Enum_Val (row),
                     GL.Index_Homogeneous'Enum_Val (col)) := R_Matrix (row, col);
          end loop;
@@ -88,10 +86,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-   function Inverse (GL_Matrix : GL.Types.Singles.Matrix4)
-                     return GL.Types.Singles.Matrix4 is
+   function Inverse (GL_Matrix : GL.Types.Singles.Matrix3)
+                     return GL.Types.Singles.Matrix3 is
      use Real_Array_Functions;
-     RI_Matrix : Real_Matrix (1 .. 4, 1 .. 4);
+     RI_Matrix : Real_Matrix (1 .. 3, 1 .. 3);
    begin
       RI_Matrix := Real_Array_Functions.Inverse (Convert_To_Real (GL_Matrix));
       return Convert_To_Single (RI_Matrix);
@@ -136,24 +134,18 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     procedure Load_Matrices (Window  : in out Glfw.Windows.Window) is
         use GL.Types;
       use GL.Types.Singles;
-      use Real_Array_Functions;
       View_Matrix       : Matrix4;
-      View_Matrix_Real  : Real_Matrix (1 .. 4, 1 .. 4);
-      View_Matrix_Inv   : Real_Matrix (1 .. 4, 1 .. 4);
-        Projection_Matrix : Matrix4;
-        VP_Matrix         : Matrix4;
-        Camera_Position   : Vector3;
+      View_Matrix3      : Matrix3;
+      VM_Inv            : Matrix3;
+      Projection_Matrix : Matrix4;
+      VP_Matrix         : Matrix4;
+      Camera_Position   : Vector3;
     begin
-        Controls.Compute_Matrices_From_Inputs (Window, Projection_Matrix, View_Matrix);
+      Controls.Compute_Matrices_From_Inputs (Window, Projection_Matrix, View_Matrix);
+      View_Matrix3 := To_Matrix3 (View_Matrix);
       VP_Matrix :=  Projection_Matrix * View_Matrix;
-      View_Matrix_Real := Real_Matrix (View_Matrix);
-      View_Matrix_Inv := Real_Matrix (View_Matrix);
-      Camera_Position := Real_Array_Functions.Inverse (Real_Matrix (View_Matrix ))(3);
-
-        GL.Uniforms.Set_Single (Model_Matrix_ID, Model_Matrix);
-        GL.Uniforms.Set_Single (View_Matrix_ID, View_Matrix);
-        GL.Uniforms.Set_Single (MVP_Matrix_ID, MVP_Matrix);
-        GL.Uniforms.Set_Single (Light_Position_ID, 4.0, 4.0, 4.0);
+      VM_Inv := Inverse (View_Matrix3);
+      Camera_Position := (VM_Inv (GL.Z, GL.X), VM_Inv (GL.Z, GL.Y), VM_Inv (GL.Z, GL.Z));
 
     exception
         when others =>
@@ -163,31 +155,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Shaders is
-      begin
-      Particle_Program := Program_Loader.Program_From
-          ((Program_Loader.Src ("src/shaders/particle_vertex_shader.glsl",
-           Vertex_Shader),
-           Program_Loader.Src ("src/shaders/particle_fragment_shader.glsl",
-             Fragment_Shader)));
-
-        Camera_Right_ID := GL.Objects.Programs.Uniform_Location
-          (Particle_Program, "CameraRight_worldspace");
-        Camera_Up_ID := GL.Objects.Programs.Uniform_Location
-          (Particle_Program, "CameraUp_worldspace");
-        View_Point_ID := GL.Objects.Programs.Uniform_Location
-        (Particle_Program, "VP");
-
-        Texture_ID := GL.Objects.Programs.Uniform_Location
-        (Particle_Program, "myTextureSampler");
-
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Load_Shaders.");
-            raise;
-    end Load_Shaders;
-
-   --  ------------------------------------------------------------------------
 
     procedure Render (Window : in out Glfw.Windows.Window) is
         use Interfaces.C;
@@ -279,6 +246,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
+    function To_Matrix3  (aMatrix4 : GL.Types.Singles.Matrix4)
+                          return GL.Types.Singles.Matrix3 is
+     Result : GL.Types.Singles.Matrix3;
+   begin
+      for row in 1 .. 3 loop
+         for col in 1 .. 3 loop
+            Result (row, col) := aMatrix4 (row, col);
+         end loop;
+      end loop;
+      return Result;
+   end To_Matrix3;
+
+    --  ------------------------------------------------------------------------
     use Glfw.Input;
     Running         : Boolean := True;
 begin
