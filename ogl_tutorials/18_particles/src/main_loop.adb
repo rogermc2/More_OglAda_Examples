@@ -160,9 +160,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Particle_System.Update_Particles (Delta_Time);
       GL.Objects.Buffers.Array_Buffer.Bind (Positions_Buffer);
-      GL.Objects.Buffers.Allocate (Array_Buffer, Buffer_Size, Stream_Draw);
+      GL.Objects.Buffers.Allocate (Array_Buffer, Vertex_Buffer_Size, Stream_Draw);
 
-        GL.Objects.Programs.Use_Program (Render_Program);
+        Particle_System.Use_Program;
         Load_Matrices (Window);
 
         --  First attribute buffer : vertices
