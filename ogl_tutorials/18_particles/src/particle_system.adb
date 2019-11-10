@@ -2,6 +2,7 @@
 with Ada.Containers.Generic_Array_Sort;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Shaders.Lists;
 with GL.Types.Colors;
@@ -234,20 +235,20 @@ package body Particle_System is
 
    --  -------------------------------------------------------------------------
 
-   procedure Use_Program (theProgram : GL.Objects.Programs.Program) is
+   procedure Use_Program is
       use GL.Objects.Shaders.Lists;
    begin
-      if GL.Objects.Programs.Link_Status (theProgram) then
+      if GL.Objects.Programs.Link_Status (Particle_Program) then
          declare
             Shaders_List : constant GL.Objects.Shaders.Lists.List :=
-                             GL.Objects.Programs.Attached_Shaders  (theProgram);
+                             GL.Objects.Programs.Attached_Shaders  (Particle_Program);
             Curs         : constant GL.Objects.Shaders.Lists.Cursor :=
                              Shaders_List.First;
          begin
             if Curs = GL.Objects.Shaders.Lists.No_Element then
                Put_Line ("Particle_System.Use_Program, Shaders list is empty");
             else
-               GL.Objects.Programs.Use_Program (theProgram);
+               GL.Objects.Programs.Use_Program (Particle_Program);
             end if;
          end;  -- declare block
       else
