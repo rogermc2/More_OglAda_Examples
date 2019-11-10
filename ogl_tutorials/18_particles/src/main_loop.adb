@@ -6,7 +6,6 @@ with GL.Attributes;
 with GL.Buffers;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Shaders;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
@@ -35,7 +34,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     White                  : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 1.0);
 
     Vertices_Array_Object  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Element_Buffer         : GL.Objects.Buffers.Buffer;
+   Element_Buffer         : GL.Objects.Buffers.Buffer;
+   Vertex_Buffer_Size      : GL.Types.Long;
 
     Billboard_Buffer       : GL.Objects.Buffers.Buffer;
     Colour_Buffer          : GL.Objects.Buffers.Buffer;
@@ -94,20 +94,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Load_Buffers is
+    procedure Load_Buffers (Buffer_Size : out GL.Types.Long) is
         use GL.Objects.Buffers;
         use GL.Types;
-        Vertex_Count       : Int;
-        Vertices_Size      : Int;
         Vertex_Data        : constant Singles.Vector3_Array (1 .. 4) :=
                                ((-0.5, -0.5, 0.0),
                                 (0.5, -0.5, 0.0),
                                 (-0.5, 0.5, 0.0),
                                 (0.5, 0.5, 0.0));
         Vertex_Data_Bytes  : constant Int := Vertex_Data'Size / 8;
-        Buffer_Size        : constant Long :=
-                             4 * Long (Particle_System.Max_Particles * Vertex_Data_Bytes);
-    begin
+   begin
+      Buffer_Size := 4 * Long (Particle_System.Max_Particles * Vertex_Data_Bytes);
         Billboard_Buffer.Initialize_Id;
         Array_Buffer.Bind (Billboard_Buffer);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Vertex_Data, Static_Draw);
@@ -159,19 +156,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Current_Time : constant Single := Single (Glfw.Time);
         Delta_Time   : constant Single := Last_Time - Current_Time;
     begin
-        Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
-        if Current_Time - Last_Time >= 1.0 then
-            Put_Line (Integer'Image (1000 * Number_Of_Frames) & " ms/frame");
-            Number_Of_Frames := 0;
-            Last_Time := Last_Time + 1.0;
-        end if;
+      Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
+
+      Particle_System.Update_Particles (Delta_Time);
+      GL.Objects.Buffers.Array_Buffer.Bind (Positions_Buffer);
+      GL.Objects.Buffers.Allocate (Array_Buffer, Buffer_Size, Stream_Draw);
 
         GL.Objects.Programs.Use_Program (Render_Program);
         Load_Matrices (Window);
 
         --  First attribute buffer : vertices
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
-        GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
         --  Second attribute buffer : UVs
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
@@ -204,7 +199,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Setup (Window : in out Glfw.Windows.Window) is
-        use GL.Objects.Shaders;
         use GL.Types;
         use Glfw.Input;
         Window_Width    : constant Glfw.Size := 1024;
@@ -227,7 +221,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Load_DDS ("src/textures/particle.DDS", Particle_Texture);
 
-        Load_Buffers;
+        Load_Buffers (Vertex_Buffer_Size);
         Last_Time := Single (Glfw.Time);
     exception
         when others =>
