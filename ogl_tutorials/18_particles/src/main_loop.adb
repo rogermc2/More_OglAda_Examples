@@ -1,6 +1,4 @@
 
-with Interfaces.C;
-
 with Ada.Numerics.Generic_Real_Arrays;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -22,7 +20,6 @@ with Glfw.Windows;
 with Glfw.Windows.Context;
 
 with Controls;
-with Program_Loader;
 with Load_DDS;
 with Utilities;
 --  with VBO_Indexer;
@@ -155,13 +152,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-
     procedure Render (Window : in out Glfw.Windows.Window) is
-        use Interfaces.C;
         use GL.Objects.Buffers;
         use GL.Types;
-        Current_Time : constant Glfw.Seconds := Glfw.Time;
-        Delta_Time   : constant Single := Last_Time - Single (Current_Time);
+        Current_Time : constant Single := Single (Glfw.Time);
+        Delta_Time   : constant Single := Last_Time - Current_Time;
     begin
         Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
         if Current_Time - Last_Time >= 1.0 then
@@ -229,15 +224,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Vertices_Array_Object.Initialize_Id;
       Vertices_Array_Object.Bind;
 
-      Load_Shaders;
-
         Load_DDS ("src/textures/particle.DDS", Particle_Texture);
 
         Load_Buffers;
-
-        Light_Position_ID := GL.Objects.Programs.Uniform_Location
-          (Render_Program, "LightPosition_worldspace");
-        Last_Time := Glfw.Time;
+        Last_Time := Single (Glfw.Time);
     exception
         when others =>
             Put_Line ("An exception occurred in Setup.");
@@ -250,8 +240,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                           return GL.Types.Singles.Matrix3 is
      Result : GL.Types.Singles.Matrix3;
    begin
-      for row in 1 .. 3 loop
-         for col in 1 .. 3 loop
+      for row in GL.X .. GL.Z loop
+         for col in GL.X .. GL.Z loop
             Result (row, col) := aMatrix4 (row, col);
          end loop;
       end loop;
@@ -259,12 +249,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    end To_Matrix3;
 
     --  ------------------------------------------------------------------------
+
     use Glfw.Input;
     Running         : Boolean := True;
 begin
     Setup (Main_Window);
     while Running loop
-        Render (Main_Window, Render_Program, Vertex_Count, UV_Map);
+        Render (Main_Window);
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
         Glfw.Input.Poll_Events;
         Running := Running and then
