@@ -1,6 +1,7 @@
 
 with Interfaces.C;
 
+with Ada.Numerics.Generic_Real_Arrays;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
@@ -30,6 +31,10 @@ with Particle_System;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
+
+   package Real_Array_Functions is new
+     Ada.Numerics.Generic_Real_Arrays (GL.Types.Single);
+
     Dark_Blue              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 0.0);
     White                  : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 1.0);
 
@@ -53,7 +58,22 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    Procedure Load_Buffers is
+   function Convert_To_Real (m : GL.Types.Singles.Matrix4)
+                             return Real_Array_Functions.Real_Matrix is
+     use Real_Array_Functions;
+     Result : Real_Matrix (1 .. 4, 1 .. 4);
+   begin
+
+      for row in 1 .. 4 loop
+         for col in 1 .. 4 loop
+            Result (row, col) := m (row, col);
+         end loop;
+      end loop;
+      return Result;
+   end Convert_To_Real;
+
+    --  ------------------------------------------------------------------------
+    procedure Load_Buffers is
         use GL.Objects.Buffers;
         use GL.Types;
         Vertex_Count       : Int;
@@ -64,7 +84,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                 (-0.5, 0.5, 0.0),
                                 (0.5, 0.5, 0.0));
         Vertex_Data_Bytes  : constant Int := Vertex_Data'Size / 8;
-        Buffer_Size        : constant Long := 4 * Particle_System.Max_Particles * Long (Vertex_Data_Bytes);
+        Buffer_Size        : constant Long :=
+                             4 * Long (Particle_System.Max_Particles * Vertex_Data_Bytes);
     begin
         Billboard_Buffer.Initialize_Id;
         Array_Buffer.Bind (Billboard_Buffer);
@@ -88,14 +109,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     procedure Load_Matrices (Window  : in out Glfw.Windows.Window) is
         use GL.Types;
-        use GL.Types.Singles;
-        View_Matrix       : Matrix4;
+      use GL.Types.Singles;
+      use Real_Array_Functions;
+      View_Matrix       : Matrix4;
+      View_Matrix_Real  : Real_Matrix (1 .. 4, 1 .. 4);
+      View_Matrix_Inv   : Real_Matrix (1 .. 4, 1 .. 4);
         Projection_Matrix : Matrix4;
-        VP_Matrix        : Matrix4;
+        VP_Matrix         : Matrix4;
         Camera_Position   : Vector3;
     begin
         Controls.Compute_Matrices_From_Inputs (Window, Projection_Matrix, View_Matrix);
-        VP_Matrix :=  Projection_Matrix * View_Matrix;
+      VP_Matrix :=  Projection_Matrix * View_Matrix;
+      View_Matrix_Real := Real_Matrix (View_Matrix);
+      View_Matrix_Inv := Real_Matrix (View_Matrix);
+      Camera_Position := Real_Array_Functions.Inverse (Real_Matrix (View_Matrix ))(3);
 
         GL.Uniforms.Set_Single (Model_Matrix_ID, Model_Matrix);
         GL.Uniforms.Set_Single (View_Matrix_ID, View_Matrix);
@@ -108,7 +135,33 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             raise;
     end Load_Matrices;
 
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
+
+   procedure Load_Shaders is
+      begin
+      Particle_Program := Program_Loader.Program_From
+          ((Program_Loader.Src ("src/shaders/particle_vertex_shader.glsl",
+           Vertex_Shader),
+           Program_Loader.Src ("src/shaders/particle_fragment_shader.glsl",
+             Fragment_Shader)));
+
+        Camera_Right_ID := GL.Objects.Programs.Uniform_Location
+          (Particle_Program, "CameraRight_worldspace");
+        Camera_Up_ID := GL.Objects.Programs.Uniform_Location
+          (Particle_Program, "CameraUp_worldspace");
+        View_Point_ID := GL.Objects.Programs.Uniform_Location
+        (Particle_Program, "VP");
+
+        Texture_ID := GL.Objects.Programs.Uniform_Location
+        (Particle_Program, "myTextureSampler");
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Load_Shaders.");
+            raise;
+    end Load_Shaders;
+
+   --  ------------------------------------------------------------------------
 
     procedure Render (Window : in out Glfw.Windows.Window) is
         use Interfaces.C;
@@ -181,22 +234,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Buffers.Set_Depth_Function (GL.Types.Less);
 
         Vertices_Array_Object.Initialize_Id;
-        Vertices_Array_Object.Bind;
+      Vertices_Array_Object.Bind;
 
-        Particle_Program := Program_Loader.Program_From
-          ((Program_Loader.Src ("src/shaders/particle_vertex_shader.glsl",
-           Vertex_Shader),
-           Program_Loader.Src ("src/shaders/particle_fragment_shader.glsl",
-             Fragment_Shader)));
-
-        Camera_Right_ID := GL.Objects.Programs.Uniform_Location
-          (Particle_Program, "CameraRight_worldspace");
-        Camera_Up_ID := GL.Objects.Programs.Uniform_Location
-          (Particle_Program, "CameraUp_worldspace");
-        View_Point_ID := GL.Objects.Programs.Uniform_Location
-          (Particle_Program, "VP");
-        Texture_ID := GL.Objects.Programs.Uniform_Location
-          (Particle_Program, "myTextureSampler");
+      Load_Shaders;
 
         Load_DDS ("src/textures/particle.DDS", Particle_Texture);
 
