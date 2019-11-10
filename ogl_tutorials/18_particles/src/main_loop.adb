@@ -31,7 +31,6 @@ with Particle_System;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-
    package Real_Array_Functions is new
      Ada.Numerics.Generic_Real_Arrays (GL.Types.Single);
 
@@ -58,21 +57,48 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-   function Convert_To_Real (m : GL.Types.Singles.Matrix4)
+   function Convert_To_Real (GL_Matrix : GL.Types.Singles.Matrix4)
                              return Real_Array_Functions.Real_Matrix is
      use Real_Array_Functions;
      Result : Real_Matrix (1 .. 4, 1 .. 4);
    begin
-
       for row in 1 .. 4 loop
          for col in 1 .. 4 loop
-            Result (row, col) := m (row, col);
+            Result (row, col) := GL_Matrix (GL.Index_Homogeneous'Enum_Val (row),
+                                            GL.Index_Homogeneous'Enum_Val (col));
          end loop;
       end loop;
       return Result;
    end Convert_To_Real;
 
     --  ------------------------------------------------------------------------
+
+    function Convert_To_Single  (R_Matrix : Real_Array_Functions.Real_Matrix)
+                                 return GL.Types.Singles.Matrix4 is
+     Result  : GL.Types.Singles.Matrix4;
+   begin
+      for row in 1 .. 4 loop
+         for col in 1 .. 4 loop
+            Result (GL.Index_Homogeneous'Enum_Val (row),
+                    GL.Index_Homogeneous'Enum_Val (col)) := R_Matrix (row, col);
+         end loop;
+      end loop;
+      return Result;
+   end Convert_To_Single;
+
+    --  ------------------------------------------------------------------------
+
+   function Inverse (GL_Matrix : GL.Types.Singles.Matrix4)
+                     return GL.Types.Singles.Matrix4 is
+     use Real_Array_Functions;
+     RI_Matrix : Real_Matrix (1 .. 4, 1 .. 4);
+   begin
+      RI_Matrix := Real_Array_Functions.Inverse (Convert_To_Real (GL_Matrix));
+      return Convert_To_Single (RI_Matrix);
+   end Inverse;
+
+    --  ------------------------------------------------------------------------
+
     procedure Load_Buffers is
         use GL.Objects.Buffers;
         use GL.Types;
