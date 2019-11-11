@@ -70,21 +70,7 @@ package body Particle_System is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Colour_Data return Singles.Vector4_Array is
-   begin
-      return Colour_Data;
-   end Get_Colour_Data;
-
-   --  -------------------------------------------------------------------------
-
-   function Get_Position_Size_Data return Singles.Vector4_Array  is
-   begin
-      return Position_Size_Data;
-   end Get_Position_Size_Data;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Init is
+     procedure Init is
       use GL.Objects.Buffers;
    begin
       Load_Shaders;
@@ -271,13 +257,14 @@ package body Particle_System is
       Random_Direction : Vector3;
    begin
       Last_Time := Current_Time;
+      --  Generate 10 new particule for each millisecond limited to 16 ms
       if New_Particles > 160 then
          New_Particles := 160;
       end if;
 
       for index in 1 .. New_Particles loop
          Particle_Index := Find_Unused_Particle;
-         Random_Direction := (Maths.Random_Float,
+         Random_Direction := (Maths.Random_Float,  --  -1.0 <= Random_Float <= 1.0
                               Maths.Random_Float,
                               Maths.Random_Float);
          Particle_Container (Particle_Index).Life := 5.0;
@@ -285,12 +272,12 @@ package body Particle_System is
          Particle_Container (Particle_Index).Speed :=
            Main_Direction + Spread * Random_Direction;
          Particle_Container (Particle_Index).Colour :=
-           (Abs (Maths.Random_Float) / 3.0,
-            Abs (Maths.Random_Float) / 3.0,
-            Abs (Maths.Random_Float) / 3.0,
+           (Abs (Maths.Random_Float),
+            Abs (Maths.Random_Float),
+            Abs (Maths.Random_Float),
             Abs (Maths.Random_Float) / 3.0);
          Particle_Container (Particle_Index).Diameter :=
-           Maths.Random_Float / 2.0 + 0.1;
+              Abs (Maths.Random_Float) / 2.0 + 0.1;   --  0.1 <= Diameter <= 0.6
       end loop;
 
       Particle_Count := 0;
