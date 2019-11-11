@@ -20,7 +20,7 @@ with Particle_System;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-   Dark_Blue                : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 0.0);
+   Background               : constant GL.Types.Colors.Color := (0.6, 0.6, 1.0, 0.0);
    Billboard_Vertices_Array : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Billboard_Buffer         : GL.Objects.Buffers.Buffer;
 
@@ -29,11 +29,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Load_Billboard_Buffer is
       use GL.Objects.Buffers;
       use GL.Types;
-      Vertex_Data        : constant Singles.Vector3_Array (1 .. 4) :=
-                             ((-0.5, -0.5, 0.0),
-                              (0.5, -0.5, 0.0),
-                              (-0.5, 0.5, 0.0),
-                              (0.5, 0.5, 0.0));
+      Vertex_Data  : constant Singles.Vector3_Array (1 .. 4) :=
+                       ((-0.5, -0.5, 0.0),
+                        (0.5, -0.5, 0.0),
+                        (-0.5, 0.5, 0.0),
+                        (0.5, 0.5, 0.0));
    begin
       Billboard_Buffer.Initialize_Id;
       Array_Buffer.Bind (Billboard_Buffer);
@@ -70,7 +70,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Objects.Buffers;
       use GL.Types;
    begin
-      Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
+      Utilities.Clear_Background_Colour_And_Depth (Background);
 
       Load_Matrices (Window);
       Particle_System.Update_Particles;
@@ -81,8 +81,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Attributes.Vertex_Attrib_Divisor (0, 0);
 
       Particle_System.Render_Particles;
-
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
+
    exception
       when others =>
          Put_Line ("An exception occurred in Main_Loop.Render.");
@@ -104,7 +104,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window'Access.Set_Size (Window_Width, Window_Height);
       Window'Access.Set_Cursor_Pos (Mouse.Coordinate (0.5 * Single (Window_Width)),
                                     Mouse.Coordinate (0.5 * Single (Window_Height)));
-      Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
+      Utilities.Clear_Background_Colour_And_Depth (Background);
 
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
       GL.Buffers.Set_Depth_Function (GL.Types.Less);

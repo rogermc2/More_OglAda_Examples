@@ -27,7 +27,7 @@ package body Particle_System is
    type Particle is record
       Position        : Singles.Vector3;
       Speed           : Singles.Vector3;
-      Diameter        : Single;
+      Width           : Single;
       Angle           : Single;
       Weight          : Single;
       Colour          : GL.Types.Colors.Color;
@@ -48,7 +48,7 @@ package body Particle_System is
                                                        "<"          => "<");
 
    Single_Bytes           : constant Int := Single'Size / 8;
-   Max_Particles          : constant Int := 100000;
+   Max_Particles          : constant Int := 100000;  --  100000
    Particle_Count         : Int;
    Particle_Program       : GL.Objects.Programs.Program;
    Colour_Buffer          : GL.Objects.Buffers.Buffer;
@@ -94,7 +94,7 @@ package body Particle_System is
    --  -------------------------------------------------------------------------
 
    function Find_Unused_Particle return Int is
-      Unused : Int := 0; -- If all particles are taken override the first one
+      Unused : Int := 1; -- If all particles are taken override the first one
    begin
       for index in Last_Used_Particle .. Max_Particles loop
          if Particle_Container (index).Life < 0.0 then
@@ -252,7 +252,7 @@ package body Particle_System is
       New_Particles    : Int := Int (10000.0 * Delta_Time);
       Particle_Index   : Int;
       aParticle        : Particle;
-      Spread           : constant Single := 1.5;
+      Spread           : constant Single := 40.0;  --  1.5
       Main_Direction   : constant Vector3 := (0.0, 10.0, 0.0);
       Random_Direction : Vector3;
    begin
@@ -276,8 +276,9 @@ package body Particle_System is
             Abs (Maths.Random_Float),
             Abs (Maths.Random_Float),
             Abs (Maths.Random_Float) / 3.0);
-         Particle_Container (Particle_Index).Diameter :=
-              Abs (Maths.Random_Float) / 2.0 + 0.1;   --  0.1 <= Diameter <= 0.6
+         Particle_Container (Particle_Index).Width :=
+              Abs (Maths.Random_Float) / 10.0 + 0.05;   --  0.1 <= Width <= 0.6
+--                Abs (Maths.Random_Float) / 2.0 + 0.1;   --  0.1 <= Width <= 0.6
       end loop;
 
       Particle_Count := 0;
@@ -296,7 +297,7 @@ package body Particle_System is
 
                Position_Size_Data (Particle_Count) :=
                  (aParticle.Position (GL.X), aParticle.Position (GL.Y),
-                  aParticle.Position (GL.Z), aParticle.Diameter);
+                  aParticle.Position (GL.Z), aParticle.Width);
 
                Colour_Data (Particle_Count) :=
                  (aParticle.Colour (R), aParticle.Colour (G),
