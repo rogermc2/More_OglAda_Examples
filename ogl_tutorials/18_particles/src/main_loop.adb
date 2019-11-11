@@ -21,14 +21,14 @@ with Particle_System;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-    Dark_Blue              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 0.0);
-    Vertices_Array_Object  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Billboard_Buffer       : GL.Objects.Buffers.Buffer;
-    Last_Time              : GL.Types.Single := GL.Types.Single (Glfw.Time);
+    Dark_Blue                : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 0.0);
+    Billboard_Vertices_Array : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+    Billboard_Buffer         : GL.Objects.Buffers.Buffer;
+    Last_Time                : GL.Types.Single := GL.Types.Single (Glfw.Time);
 
     --  ------------------------------------------------------------------------
 
-    procedure Load_Buffers is
+    procedure Load_Billboard_Buffer is
         use GL.Objects.Buffers;
         use GL.Types;
         Vertex_Data        : constant Singles.Vector3_Array (1 .. 4) :=
@@ -43,9 +43,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Main_Loop.Load_Buffers.");
+            Put_Line ("An exception occurred in Main_Loop.Billboard_Buffer.");
             raise;
-    end Load_Buffers;
+    end Load_Billboard_Buffer;
 
     --  ------------------------------------------------------------------------
 
@@ -75,14 +75,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Delta_Time   : constant Single := Last_Time - Current_Time;
     begin
         Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
+        Last_Time := Current_Time;
 
-        Particle_System.Update_Particles (Delta_Time);
         Load_Matrices (Window);
+        Particle_System.Update_Particles (Delta_Time);
 
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         Array_Buffer.Bind (Billboard_Buffer);
         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 0, 0);
         GL.Attributes.Vertex_Attrib_Divisor (0, 0);
+
         Particle_System.Render_Particles;
 
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
@@ -112,12 +114,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Toggles.Enable (GL.Toggles.Depth_Test);
         GL.Buffers.Set_Depth_Function (GL.Types.Less);
 
-        Vertices_Array_Object.Initialize_Id;
-        Vertices_Array_Object.Bind;
+        Billboard_Vertices_Array.Initialize_Id;
+        Billboard_Vertices_Array.Bind;
 
         Particle_System.Init;
-        Load_Buffers;
+        Load_Billboard_Buffer;
         Last_Time := Single (Glfw.Time);
+
     exception
         when others =>
             Put_Line ("An exception occurred in Main_Loop.Setup.");

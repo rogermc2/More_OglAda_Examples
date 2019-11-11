@@ -87,17 +87,16 @@ package body Particle_System is
         use GL.Objects.Buffers;
     begin
         Load_Shaders;
+        Load_DDS ("src/textures/particle.DDS", Particle_Texture);
 
         Positions_Buffer.Initialize_Id;
         Array_Buffer.Bind (Positions_Buffer);
         Load_Buffers;
-        GL.Objects.Buffers.Allocate (Array_Buffer, Long (4 * Max_Particles * Single_Bytes), Stream_Draw);
+        GL.Objects.Buffers.Allocate (Array_Buffer, Buffer_Size, Stream_Draw);
 
         Colour_Buffer.Initialize_Id;
         Array_Buffer.Bind (Colour_Buffer);
-        GL.Objects.Buffers.Allocate (Array_Buffer, Long (4 * Max_Particles * Single_Bytes), Stream_Draw);
-
-        Load_DDS ("src/textures/particle.DDS", Particle_Texture);
+        GL.Objects.Buffers.Allocate (Array_Buffer, Buffer_Size, Stream_Draw);
 
     exception
         when others =>
@@ -182,9 +181,9 @@ package body Particle_System is
     --  ------------------------------------------------------------------------
 
     procedure Render_Particles is
-    use GL.Blending;
-    use GL.Objects.Buffers;
-    use GL.Objects.Textures;
+        use GL.Blending;
+        use GL.Objects.Buffers;
+        use GL.Objects.Textures;
     begin
         Array_Buffer.Bind (Positions_Buffer);
 
@@ -214,8 +213,8 @@ package body Particle_System is
         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 4, UByte_Type, True, 0, 0);
 
         --  These functions are specific to glDrawArrays*Instanced*.
-	--  The first parameter is the attribute buffer we're talking about.
-	--  The second parameter is the "rate at which generic vertex attributes
+        --  The first parameter is the attribute buffer we're talking about.
+        --  The second parameter is the "rate at which generic vertex attributes
         --  advance when rendering multiple instances"
         GL.Attributes.Vertex_Attrib_Divisor (1, 1);  --  positions : one per quad (its center)
         GL.Attributes.Vertex_Attrib_Divisor (2, 1);  --  colour : one per quad
@@ -272,7 +271,6 @@ package body Particle_System is
             New_Particles := 160;
         end if;
 
-        Particle_Count := 0;
         for index in 1 .. New_Particles loop
             Particle_Index := Find_Unused_Particle;
             Random_Direction := (Maths.Random_Float,
@@ -289,34 +287,35 @@ package body Particle_System is
                Maths.Random_Float / 3.0);
             Particle_Container (Particle_Index).Diameter :=
               Maths.Random_Float / 2.0 + 0.1;
+        end loop;
 
-            for index in 1 .. Max_Particles loop
-                aParticle := Particle_Container (index);
+        Particle_Count := 0;
+        for index in 1 .. Max_Particles loop
+            aParticle := Particle_Container (index);
+            if aParticle.Life > 0.0 then
+                Particle_Count := Particle_Count + 1;
+                aParticle.Life := aParticle.Life - Delta_Time;
                 if aParticle.Life > 0.0 then
-                    Particle_Count := Particle_Count + 1;
-                    aParticle.Life := aParticle.Life - Delta_Time;
-                    if aParticle.Life > 0.0 then
-                        aParticle.Speed :=
-                          aParticle.Speed + 0.5 * Delta_Time * (0.0, -9.81, 0.0);
-                        aParticle.Position :=
-                          aParticle.Position + Delta_Time * aParticle.Speed;
-                        aParticle.Camera_Distance :=
-                          Maths.Length (aParticle.Position) - aParticle.Camera_Distance;
+                    aParticle.Speed :=
+                      aParticle.Speed + 0.5 * Delta_Time * (0.0, -9.81, 0.0);
+                    aParticle.Position :=
+                      aParticle.Position + Delta_Time * aParticle.Speed;
+                    aParticle.Camera_Distance :=
+                      Maths.Length (aParticle.Position) - aParticle.Camera_Distance;
 
-                        Position_Size_Data (Particle_Count) :=
-                          (aParticle.Position (GL.X), aParticle.Position (GL.Y),
-                           aParticle.Position (GL.Z), aParticle.Diameter);
+                    Position_Size_Data (Particle_Count) :=
+                      (aParticle.Position (GL.X), aParticle.Position (GL.Y),
+                       aParticle.Position (GL.Z), aParticle.Diameter);
 
-                        Colour_Data (Particle_Count) :=
-                          (aParticle.Colour (R), aParticle.Colour (G),
-                          aParticle.Colour (B), aParticle.Colour (A));
-                    else
-                        --  Particles that just died will be put
-                        --  at the end of the buffer in Sort_Particles
-                        aParticle.Camera_Distance := -1.0;
-                    end if;
+                    Colour_Data (Particle_Count) :=
+                      (aParticle.Colour (R), aParticle.Colour (G),
+                       aParticle.Colour (B), aParticle.Colour (A));
+                else
+                    --  Particles that just died will be put
+                    --  at the end of the buffer in Sort_Particles
+                    aParticle.Camera_Distance := -1.0;
                 end if;
-            end loop;
+            end if;
         end loop;
 
         Sort_Particles (Particle_Container);
@@ -324,36 +323,37 @@ package body Particle_System is
     exception
         when others =>
             Put_Line ("An exception occurred in Particle_System.Update_Particles.");
+            Put_Line ("An exception occurred in Particle_System.Update_Particles.");
             raise;
     end Update_Particles;
 
     --  -------------------------------------------------------------------------
 
---      procedure Use_Program is
---          use GL.Objects.Shaders.Lists;
---      begin
---          if GL.Objects.Programs.Link_Status (Particle_Program) then
---              declare
---                  Shaders_List : constant GL.Objects.Shaders.Lists.List :=
---                                   GL.Objects.Programs.Attached_Shaders  (Particle_Program);
---                  Curs         : constant GL.Objects.Shaders.Lists.Cursor :=
---                                   Shaders_List.First;
---              begin
---                  if Curs = GL.Objects.Shaders.Lists.No_Element then
---                      Put_Line ("Particle_System.Use_Program, Shaders list is empty");
---                  else
---                      GL.Objects.Programs.Use_Program (Particle_Program);
---                  end if;
---              end;  -- declare block
---          else
---              Put_Line ("Particle_System.Use_Program, program link check failed");
---          end if;
---
---      exception
---          when  others =>
---              Put_Line ("An exception occurred in Particle_System.Use_Program.");
---              raise;
---      end Use_Program;
+    --      procedure Use_Program is
+    --          use GL.Objects.Shaders.Lists;
+    --      begin
+    --          if GL.Objects.Programs.Link_Status (Particle_Program) then
+    --              declare
+    --                  Shaders_List : constant GL.Objects.Shaders.Lists.List :=
+    --                                   GL.Objects.Programs.Attached_Shaders  (Particle_Program);
+    --                  Curs         : constant GL.Objects.Shaders.Lists.Cursor :=
+    --                                   Shaders_List.First;
+    --              begin
+    --                  if Curs = GL.Objects.Shaders.Lists.No_Element then
+    --                      Put_Line ("Particle_System.Use_Program, Shaders list is empty");
+    --                  else
+    --                      GL.Objects.Programs.Use_Program (Particle_Program);
+    --                  end if;
+    --              end;  -- declare block
+    --          else
+    --              Put_Line ("Particle_System.Use_Program, program link check failed");
+    --          end if;
+    --
+    --      exception
+    --          when  others =>
+    --              Put_Line ("An exception occurred in Particle_System.Use_Program.");
+    --              raise;
+    --      end Use_Program;
 
     --  -------------------------------------------------------------------------
 
