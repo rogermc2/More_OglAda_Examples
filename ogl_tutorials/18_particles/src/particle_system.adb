@@ -2,6 +2,8 @@
 with Ada.Containers.Generic_Array_Sort;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Glfw;
+
 with GL.Attributes;
 with GL.Blending;
 with GL.Objects.Buffers;
@@ -10,7 +12,6 @@ with GL.Objects.Shaders;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
---  with GL.Objects.Shaders.Lists;
 with GL.Toggles;
 with GL.Types.Colors;
 with GL.Uniforms;
@@ -47,7 +48,6 @@ package body Particle_System is
                                                         "<"          => "<");
 
     Single_Bytes           : constant Int := Single'Size / 8;
-
     Max_Particles          : constant Int := 100000;
     Particle_Count         : Int;
     Particle_Program       : GL.Objects.Programs.Program;
@@ -63,6 +63,7 @@ package body Particle_System is
     Particle_Container     : Particle_Array (1 .. Max_Particles);
     Position_Size_Data     : Singles.Vector4_Array (1 .. Max_Particles);
     Colour_Data            : Singles.Vector4_Array (1 .. Max_Particles);
+    Last_Time              : Single := Single (Glfw.Time);
 
     procedure Load_Buffers;
     procedure Load_Shaders;
@@ -257,22 +258,31 @@ package body Particle_System is
 
     --  ------------------------------------------------------------------------
 
-    procedure Update_Particles (Delta_Time : Single) is
+    procedure Update_Particles is
         use GL.Types.Colors;
-        use GL.Types.Singles;
-        New_Particles    : Int := 10000 * Int (Delta_Time);
+      use GL.Types.Singles;
+        Current_Time     : constant Single := Single (Glfw.Time);
+        Delta_Time       : constant Single := Current_Time - Last_Time;
+        New_Particles    : Int := Int (10000.0 * Delta_Time);
         Particle_Index   : Int;
         aParticle        : Particle;
         Spread           : constant Single := 1.5;
         Main_Direction   : constant Vector3 := (0.0, 10.0, 0.0);
         Random_Direction : Vector3;
-    begin
+   begin
+      Last_Time := Current_Time;
+      Put_Line ("Particle_System.Update_Particles Delta_Time: " &
+                Single'Image (Delta_Time));
         if New_Particles > 160 then
             New_Particles := 160;
         end if;
+      Put_Line ("Particle_System.Update_Particles New_Particles: " &
+                Int'Image (New_Particles));
 
         for index in 1 .. New_Particles loop
-            Particle_Index := Find_Unused_Particle;
+         Particle_Index := Find_Unused_Particle;
+      Put_Line ("Particle_System.Update_Particles Particle_Index: " &
+                Int'Image (Particle_Index));
             Random_Direction := (Maths.Random_Float,
                                  Maths.Random_Float,
                                  Maths.Random_Float);
@@ -317,43 +327,16 @@ package body Particle_System is
                 end if;
             end if;
         end loop;
+      Put_Line ("Particle_System.Update_Particles Particle_Count: " &
+                Int'Image (Particle_Count));
 
         Sort_Particles (Particle_Container);
 
     exception
         when others =>
             Put_Line ("An exception occurred in Particle_System.Update_Particles.");
-            Put_Line ("An exception occurred in Particle_System.Update_Particles.");
             raise;
     end Update_Particles;
-
-    --  -------------------------------------------------------------------------
-
-    --      procedure Use_Program is
-    --          use GL.Objects.Shaders.Lists;
-    --      begin
-    --          if GL.Objects.Programs.Link_Status (Particle_Program) then
-    --              declare
-    --                  Shaders_List : constant GL.Objects.Shaders.Lists.List :=
-    --                                   GL.Objects.Programs.Attached_Shaders  (Particle_Program);
-    --                  Curs         : constant GL.Objects.Shaders.Lists.Cursor :=
-    --                                   Shaders_List.First;
-    --              begin
-    --                  if Curs = GL.Objects.Shaders.Lists.No_Element then
-    --                      Put_Line ("Particle_System.Use_Program, Shaders list is empty");
-    --                  else
-    --                      GL.Objects.Programs.Use_Program (Particle_Program);
-    --                  end if;
-    --              end;  -- declare block
-    --          else
-    --              Put_Line ("Particle_System.Use_Program, program link check failed");
-    --          end if;
-    --
-    --      exception
-    --          when  others =>
-    --              Put_Line ("An exception occurred in Particle_System.Use_Program.");
-    --              raise;
-    --      end Use_Program;
 
     --  -------------------------------------------------------------------------
 

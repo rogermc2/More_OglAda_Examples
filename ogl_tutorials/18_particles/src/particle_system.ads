@@ -9,6 +9,6 @@ package Particle_System  is
    procedure Render_Particles;
    procedure Set_Texture_ID (Tex : Singles.Vector3);
    procedure Set_IDs (VP : Singles.Matrix4);
-   procedure Update_Particles (Delta_Time : Single);
+   procedure Update_Particles;
 
 end Particle_System;

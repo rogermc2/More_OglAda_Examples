@@ -15,7 +15,6 @@ with Glfw.Windows.Context;
 
 with Controls;
 with Utilities;
---  with VBO_Indexer;
 
 with Particle_System;
 
@@ -24,7 +23,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Dark_Blue                : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 0.0);
     Billboard_Vertices_Array : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Billboard_Buffer         : GL.Objects.Buffers.Buffer;
-    Last_Time                : GL.Types.Single := GL.Types.Single (Glfw.Time);
 
     --  ------------------------------------------------------------------------
 
@@ -71,14 +69,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     procedure Render (Window : in out Glfw.Windows.Window) is
         use GL.Objects.Buffers;
         use GL.Types;
-        Current_Time : constant Single := Single (Glfw.Time);
-        Delta_Time   : constant Single := Last_Time - Current_Time;
     begin
         Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
-        Last_Time := Current_Time;
 
         Load_Matrices (Window);
-        Particle_System.Update_Particles (Delta_Time);
+        Particle_System.Update_Particles;
 
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         Array_Buffer.Bind (Billboard_Buffer);
@@ -119,7 +114,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Particle_System.Init;
         Load_Billboard_Buffer;
-        Last_Time := Single (Glfw.Time);
 
     exception
         when others =>
