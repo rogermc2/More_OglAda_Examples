@@ -39,7 +39,7 @@ package body Particle_System is
 
    function "<" (Left, Right : Particle) return Boolean is
    begin
-      return Maths.Length (Left.Position) < Maths.Length (Right.Position);
+      return Left.Camera_Distance > Right.Camera_Distance;
    end "<";
 
    procedure Sort_Particles is new Generic_Array_Sort (Index_Type   => GL.Types.Int,
@@ -277,8 +277,8 @@ package body Particle_System is
             Abs (Maths.Random_Float),
             Abs (Maths.Random_Float) / 3.0);
          Particle_Container (Particle_Index).Width :=
-              Abs (Maths.Random_Float) / 10.0 + 0.05;   --  0.1 <= Width <= 0.6
---                Abs (Maths.Random_Float) / 2.0 + 0.1;   --  0.1 <= Width <= 0.6
+           Abs (Maths.Random_Float) / 10.0 + 0.05;   --  0.05 <= Width <= 0.15
+                                                     -- orig 0.1 <= Width <= 0.6
       end loop;
 
       Particle_Count := 0;
