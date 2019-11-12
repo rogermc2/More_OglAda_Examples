@@ -20,7 +20,7 @@ with Particle_System;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-   Background               : constant GL.Types.Colors.Color := (0.6, 0.6, 1.0, 0.0);
+   Background               : constant GL.Types.Colors.Color := (0.9, 0.9, 0.9, 0.0);
    Billboard_Vertices_Array : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Billboard_Buffer         : GL.Objects.Buffers.Buffer;
 
@@ -137,7 +137,6 @@ begin
       Running := Running and then
         not (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and then not Main_Window.Should_Close;
-      Delay (0.4);
    end loop;
 
 exception
