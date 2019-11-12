@@ -263,7 +263,7 @@ package body Particle_System is
                               Maths.Random_Float,
                               Maths.Random_Float);
          Particle_Container (Particle_Index).Life := 5.0;
-         Particle_Container (Particle_Index).Position := (0.0, 0.0, -20.0);
+         Particle_Container (Particle_Index).Position := (0.0, -3.0, -20.0);
          Particle_Container (Particle_Index).Speed :=
            Main_Direction + Spread * Random_Direction;
          Particle_Container (Particle_Index).Colour :=
