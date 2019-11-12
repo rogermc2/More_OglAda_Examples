@@ -25,16 +25,15 @@ package body Particle_System is
    use Ada.Containers;
 
    type Particle is record
-      Position        : Singles.Vector3;
-      Speed           : Singles.Vector3;
-      Width           : Single;
-      Angle           : Single;
-      Weight          : Single;
-      Colour          : GL.Types.Colors.Color;
+      Position        : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Speed           : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Width           : Single := 0.05;
+      Angle           : Single := 0.0;
+      Weight          : Single := 0.0;
+      Colour          : GL.Types.Colors.Color := (1.0, 1.0, 1.0, 1.0);
       Life            : Single := -1.0;
       Camera_Distance : Single := -1.0;
    end record;
-
    type Particle_Array is array (Int range <>) of Particle;
 
    function "<" (Left, Right : Particle) return Boolean is
@@ -252,7 +251,7 @@ package body Particle_System is
       New_Particles    : Int := Int (10000.0 * Delta_Time);
       Particle_Index   : Int;
       aParticle        : Particle;
-      Spread           : constant Single := 40.0;  --  1.5
+      Spread           : constant Single := 1.5;  --  1.5
       Main_Direction   : constant Vector3 := (0.0, 10.0, 0.0);
       Random_Direction : Vector3;
    begin

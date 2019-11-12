@@ -54,6 +54,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Projection_Matrix : Matrix4;
       VP_Matrix         : Matrix4;
    begin
+      --  Compute_Matrices_From_Inputs initializes with position at (0.0, 0.0, 5.0)
+      --  and view angle 45 degrees
       Controls.Compute_Matrices_From_Inputs (Window, Projection_Matrix, View_Matrix);
       VP_Matrix :=  Projection_Matrix * View_Matrix;
       Particle_System.Set_IDs (VP_Matrix);
@@ -134,6 +136,7 @@ begin
       Running := Running and then
         not (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and then not Main_Window.Should_Close;
+      Delay (0.4);
    end loop;
 
 exception
