@@ -20,7 +20,7 @@ with Particle_System;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-   Background               : constant GL.Types.Colors.Color := (0.9, 0.9, 0.9, 0.0);
+   Background               : constant GL.Types.Colors.Color := (0.3, 0.3, 0.8, 0.0);
    Billboard_Vertices_Array : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Billboard_Buffer         : GL.Objects.Buffers.Buffer;
 
