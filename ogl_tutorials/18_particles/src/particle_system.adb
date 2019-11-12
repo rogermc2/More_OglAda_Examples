@@ -167,6 +167,19 @@ package body Particle_System is
 
    --  ------------------------------------------------------------------------
 
+   function Random_Colour return Single is
+        Value : Single := Abs (Maths.Random_Float);
+   begin
+        if Value < 0.51 then
+            Value := Value + 0.5;
+        end if;
+        if Value > 1.0 then
+            Value := 1.0;
+        end if;
+        return Value;
+   end Random_Colour;
+
+   --  ------------------------------------------------------------------------
    procedure Render_Particles is
       use GL.Blending;
       use GL.Objects.Buffers;
@@ -267,9 +280,9 @@ package body Particle_System is
          Particle_Container (Particle_Index).Speed :=
            Main_Direction + Spread * Random_Direction;
          Particle_Container (Particle_Index).Colour :=
-           (Abs (Maths.Random_Float),
-            Abs (Maths.Random_Float),
-            Abs (Maths.Random_Float),
+           (Random_Colour,
+            Random_Colour,
+            Random_Colour,
             Abs (Maths.Random_Float) / 3.0);
          Particle_Container (Particle_Index).Width :=
            Abs (Maths.Random_Float) / 20.0 + 0.02;   --  0.05 <= Width <= 0.15
