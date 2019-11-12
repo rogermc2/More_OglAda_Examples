@@ -47,7 +47,7 @@ package body Particle_System is
                                                        "<"          => "<");
 
    Single_Bytes           : constant Int := Single'Size / 8;
-   Max_Particles          : constant Int := 10;  --  100000
+   Max_Particles          : constant Int := 100000;
    Particle_Count         : Int;
    Particle_Program       : GL.Objects.Programs.Program;
    Colour_Buffer          : GL.Objects.Buffers.Buffer;
@@ -247,7 +247,7 @@ package body Particle_System is
       New_Particles    : Int := Int (10000.0 * Delta_Time);
       Particle_Index   : Int;
       aParticle        : Particle;
-      Spread           : constant Single := 1.5;  --  1.5
+      Spread           : constant Single := 1.5;
       Main_Direction   : constant Vector3 := (0.0, 10.0, 0.0);
       Random_Direction : Vector3;
    begin
@@ -272,7 +272,7 @@ package body Particle_System is
             Abs (Maths.Random_Float),
             Abs (Maths.Random_Float) / 3.0);
          Particle_Container (Particle_Index).Width :=
-           Abs (Maths.Random_Float) / 10.0 + 0.05;   --  0.05 <= Width <= 0.15
+           Abs (Maths.Random_Float) / 20.0 + 0.02;   --  0.05 <= Width <= 0.15
                                                      -- orig 0.1 <= Width <= 0.6
       end loop;
 
@@ -307,13 +307,6 @@ package body Particle_System is
       end loop;
 
       Sort_Particles (Particle_Container);
-
-      Put_Line
-        ("Particle_System.Update_Particles Camera_Distance");
-      for index in 1 .. Max_Particles loop
-         Put_Line (Single'Image (Particle_Container (index).Camera_Distance));
-      end loop;
-
    exception
       when others =>
          Put_Line ("An exception occurred in Particle_System.Update_Particles.");
