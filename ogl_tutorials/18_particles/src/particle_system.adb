@@ -25,7 +25,7 @@ package body Particle_System is
    use Ada.Containers;
 
    type Particle is record
-      Position        : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Position        : Singles.Vector3 := (0.0, 0.0, -5.0);
       Speed           : Singles.Vector3 := (0.0, 0.0, 0.0);
       Width           : Single := 0.05;
       Angle           : Single := 0.0;
@@ -47,13 +47,14 @@ package body Particle_System is
                                                        "<"          => "<");
 
    Single_Bytes           : constant Int := Single'Size / 8;
-   Max_Particles          : constant Int := 100000;  --  100000
+   Max_Particles          : constant Int := 10;  --  100000
    Particle_Count         : Int;
    Particle_Program       : GL.Objects.Programs.Program;
    Colour_Buffer          : GL.Objects.Buffers.Buffer;
    Positions_Buffer       : GL.Objects.Buffers.Buffer;
    Particle_Texture       : GL.Objects.Textures.Texture;
    Buffer_Size            : constant Long := 4 * Long (Max_Particles * Single_Bytes);
+   Camera_Position        : Singles.Vector3 := (0.0, 0.0, 5.0);
    Camera_Right_ID        : GL.Uniforms.Uniform;
    Camera_Up_ID           : GL.Uniforms.Uniform;
    View_Point_ID          : GL.Uniforms.Uniform;
@@ -223,6 +224,8 @@ package body Particle_System is
       Up     : constant Singles.Vector3 :=
                  (VP (GL.X, GL.Y), VP (GL.Y, GL.Y), VP (GL.Z, GL.Y));
    begin
+      Camera_Position :=
+                 (-VP (GL.Z, GL.X), -VP (GL.Z, GL.Y), -VP (GL.Z, GL.Z));
       GL.Objects.Programs.Use_Program (Particle_Program);
       GL.Uniforms.Set_Single (View_Point_ID, VP);
       GL.Uniforms.Set_Single  (Camera_Right_ID, Right);
@@ -285,7 +288,7 @@ package body Particle_System is
                aParticle.Position :=
                  aParticle.Position + Delta_Time * aParticle.Speed;
                aParticle.Camera_Distance :=
-                 Maths.Length (aParticle.Position) - aParticle.Camera_Distance;
+                 Maths.Length (aParticle.Position - Camera_Position);
 
                Position_Size_Data (Particle_Count) :=
                  (aParticle.Position (GL.X), aParticle.Position (GL.Y),
@@ -300,9 +303,16 @@ package body Particle_System is
                aParticle.Camera_Distance := -1.0;
             end if;
          end if;
+         Particle_Container (index) := aParticle;
       end loop;
 
       Sort_Particles (Particle_Container);
+
+      Put_Line
+        ("Particle_System.Update_Particles Camera_Distance");
+      for index in 1 .. Max_Particles loop
+         Put_Line (Single'Image (Particle_Container (index).Camera_Distance));
+      end loop;
 
    exception
       when others =>
