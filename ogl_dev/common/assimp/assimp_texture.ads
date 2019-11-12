@@ -35,16 +35,20 @@ package Assimp_Texture is
    end record;
    pragma Convention (C_Pass_By_Copy, API_Texture);
 
-   type API_Texture_Array is array
-     (Interfaces.C.unsigned range <>) of aliased API_Texture;
-   pragma Convention (C, API_Texture_Array);
+   type API_Texture_Ptr is access API_Texture;
+   pragma Convention (C, API_Texture_Ptr);
 
-   package Texture_Pointers is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, API_Texture, API_Texture_Array, API_Texture'(others => <>));
+   type API_Texture_Ptr_Array is array
+     (Interfaces.C.unsigned range <>) of aliased API_Texture_Ptr;
+   pragma Convention (C, API_Texture_Ptr_Array);
+
+   package Texture_Ptr_Array_Pointers is new Interfaces.C.Pointers
+     (Interfaces.C.unsigned, API_Texture_Ptr, API_Texture_Ptr_Array, null);
+   type Texture_Ptr_Array_Pointer is new Texture_Ptr_Array_Pointers.Pointer;
 
    function Texture_Map_Size (theMap : AI_Texture_Map) return GL.Types.UInt;
    function To_AI_Texture_Map (Num_Textures : Interfaces.C.unsigned := 0;
-                               C_Array : API_Texture_Array)
+                               C_Ptrs_Array : Texture_Ptr_Array_Pointer)
                                return AI_Texture_Map;
 private
 

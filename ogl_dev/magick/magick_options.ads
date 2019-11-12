@@ -10,7 +10,7 @@ package Magick_Options is
    --  From Magick++/lib/Magick++/Options.h
    package Class_Options is
       type Options is limited record
-         Info_Image    : access Core_Image.AI_Image_Info;  -- ../Magick++/lib/Magick++2/Options.h:335
+         Info_Image    : access Core_Image.API_Image_Info;  -- ../Magick++/lib/Magick++2/Options.h:335
          Info_Quantize : access Quantize.Quantize_Info;  -- ../Magick++/lib/Magick++2/Options.h:336
          Info_Draw     : access Draw.Draw_Info;  -- ../Magick++/lib/Magick++2/Options.h:337
          Quiet         : aliased Interfaces.C.Extensions.bool;  -- ../Magick++/lib/Magick++2/Options.h:338

@@ -6,10 +6,12 @@ with Interfaces.C.Strings;
 --
 with GL.Types;
 
-with Assimp_Mesh;
+with Mesh_Conversion;
 with Scene;
 
 package Importer is
+
+    Import_Exception : Exception;
 
    function Import_File (File_Name : String; Flags : GL.Types.UInt)
                          return Scene.AI_Scene;
@@ -22,8 +24,7 @@ private
       Flags          : Interfaces.C.unsigned := 0;
       Root_Node      : Scene.API_Node_Ptr;
       Num_Meshes     : Interfaces.C.unsigned := 0;
-      Meshes         : Assimp_Mesh.Mesh_Array_Pointers.Pointer;
---        Meshes         : System.Address;
+      Meshes         : Mesh_Conversion.Mesh_Array_Pointers.Pointer;
       Num_Materials  : Interfaces.C.unsigned := 0;
       Materials      : System.Address;
       Num_Animations : Interfaces.C.unsigned := 0;

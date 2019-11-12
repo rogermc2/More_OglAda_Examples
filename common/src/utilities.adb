@@ -85,11 +85,36 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
+   procedure Clear_Background_Colour (Colour : GL.Types.Colors.Basic_Color) is
+      use GL.Types.Colors;
+   begin
+      GL.Buffers.Set_Color_Clear_Value ((Colour (R), Colour (G), Colour (B), 0.0));
+      GL.Buffers.Clear ((False, False, False, True));
+   end Clear_Background_Colour;
+
+   --  ------------------------------------------------------------------------
+
    procedure Clear_Background_Colour_And_Depth (Colour : GL.Types.Colors.Color) is
    begin
       GL.Buffers.Set_Color_Clear_Value (Colour);
       GL.Buffers.Clear ((True, False, False, True));
    end Clear_Background_Colour_And_Depth;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Clear_Background_Colour_And_Depth (Colour : GL.Types.Colors.Basic_Color) is
+      use GL.Types.Colors;
+   begin
+      GL.Buffers.Set_Color_Clear_Value ((Colour (R), Colour (G), Colour (B), 0.0));
+      GL.Buffers.Clear ((True, False, False, True));
+   end Clear_Background_Colour_And_Depth;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Clear_Colour is
+   begin
+      GL.Buffers.Clear ((True, False, False, False));
+   end Clear_Colour;
 
    --  ------------------------------------------------------------------------
 
@@ -100,6 +125,12 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
+   procedure Clear_Depth is
+   begin
+      GL.Buffers.Clear ((True, False, False, False));
+   end Clear_Depth;
+
+   --  ------------------------------------------------------------------------
 
    procedure Enable_Mouse_Callbacks (Window : in out Glfw.Windows.Window; Enable : Boolean) is
    begin
@@ -114,7 +145,30 @@ package body Utilities is
          Window.Disable_Callback (Glfw.Windows.Callbacks.Mouse_Button);
          Window.Disable_Callback (Glfw.Windows.Callbacks.Mouse_Scroll);
       end if;
-   end;
+   end Enable_Mouse_Callbacks;
+
+   --  ------------------------------------------------------------------------
+
+   function Flatten (anArray : Ints_Vector4_Array4) return GL.Types.Int_Array is
+        use GL.Types;
+        Out_Size        : constant Int := 16 * anArray'Length;
+        Flattened_Array : Int_Array (1 .. Out_Size);
+        Vec4_Array      : Ints.Vector4_Array  (1 .. 4);
+        Vec4            : Ints.Vector4;
+        Out_Index       : Int := 0;
+   begin
+        for Index in anArray'First .. anArray'Last loop
+            Vec4_Array := anArray (Index);
+            for Inner_Index in Int range 1 .. 4 loop
+                Vec4 := Vec4_Array (Inner_Index);
+                for Inner2_Index in GL.Index_Homogeneous'First .. GL.Index_Homogeneous'Last loop
+                    Out_Index := Out_Index + 1;
+                    Flattened_Array (Out_Index) := Vec4 (Inner2_Index);
+                end loop;
+            end loop;
+        end loop;
+        return Flattened_Array;
+   end Flatten;
 
    --  ------------------------------------------------------------------------
 
@@ -240,6 +294,22 @@ package body Utilities is
       end loop;
       New_Line;
    end Print_GL_UInt_Array;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Print_Matrix (Name    : String;
+                           aMatrix : GL.Types.Ints.Matrix4) is
+   use GL.Types;
+   begin
+      Put_Line (Name & ":");
+      for Row in  aMatrix'Range loop
+         for Column in aMatrix'Range (2) loop
+            Put (Int'Image (aMatrix (Row, Column)) & "   ");
+         end loop;
+         New_Line;
+      end loop;
+      New_Line;
+   end Print_Matrix;
 
    --  ------------------------------------------------------------------------
 

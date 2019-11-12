@@ -44,7 +44,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
     exception
         when others =>
-            Put_Line ("An exceptiom occurred in Render_Triangle.");
+            Put_Line ("An exception occurred in Render_Triangle.");
             raise;
     end Render_Triangle;
 
@@ -64,10 +64,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         GL.Buffers.Set_Depth_Function (GL.Types.Less);
         Vertex_Array.Initialize_Id;
         Vertex_Array.Bind;
-        Utilities.Show_Shader_Program_Data (Rendering_Program);
+
     exception
         when others =>
-            Put_Line ("An exceptiom occurred in Startup.");
+            Put_Line ("An exception occurred in Startup.");
             raise;
     end Startup;
 
@@ -88,6 +88,6 @@ begin
 
 exception
         when others =>
-            Put_Line ("An exceptiom occurred in Main_Loop.");
+            Put_Line ("An exception occurred in Main_Loop.");
             raise;
 end Main_Loop;

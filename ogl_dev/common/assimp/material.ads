@@ -45,6 +45,20 @@ package Material is
                             AI_Texture_Unknown);
    pragma Convention (C, AI_Texture_Type);
 
+   for AI_Texture_Type use (AI_Texture_Type_None     => 0,
+                            AI_Texture_Diffuse       => 1,
+                            AI_Texture_Specular      => 2,
+                            AI_Texture_Ambient       => 3,
+                            AI_Texture_Emissive      => 4,
+                            AI_Texture_Height        => 5,
+                            AI_Texture_Normals       => 6,
+                            AI_Texture_Shininess     => 7,
+                            AI_Texture_Opacity       => 8,
+                            AI_Texture_Displacement  => 9,
+                            AI_Texture_Light_Map     => 16#A#,
+                            AI_Texture_Reflection    => 16#B#,
+                            AI_Texture_Unknown       => 16#c#);
+
    for AI_Property_Type_Info use (PTI_Float      => 16#1#,
                                   PTI_Double     => 16#2#,
                                   PTI_String     => 16#3#,
@@ -67,12 +81,11 @@ package Material is
 
    type AI_Material_Property (Data_Type : AI_Property_Type_Info := PTI_Float) is record
       Key            : Ada.Strings.Unbounded.Unbounded_String;  --  Property name
-      Semantic       : GL.Types.UInt := 0;  --  Usage, 0 for non_texture properties
+      Semantic       : AI_Texture_Type := AI_Texture_Type_None;  --  Usage, 0 for non_texture properties
       Texture_Index  : GL.Types.UInt := 0;  --  Index for textures
                                             --  Data_Type : AI_Property_Type_Info := PTI_Float;
       Data_Length    : GL.Types.UInt := 0;  --  Number of bytes
       Data_Buffer    : Data (Data_Type);
---        Data_Buffer    : Assimp_Types.Byte_Data_List;
    end record;
 
    package AI_Material_Property_Package is new
@@ -156,19 +169,21 @@ package Material is
 
    type API_Material is record
       Properties     : Property_Ptr_Array_Pointer := null;
---        Properties     : access API_Material_Property_Ptr := null;
       Num_Properties : Interfaces.C.unsigned := 0;
       Num_Allocated  : Interfaces.C.unsigned := 0;
    end record;
    pragma Convention (C_Pass_By_Copy, API_Material);
 
-   type API_Material_Array is array (Interfaces.C.unsigned range <>)
-     of aliased API_Material;
-   pragma Convention (C, API_Material_Array);
+   type API_Material_Ptr is access API_Material;
+   pragma Convention (C, API_Material_Ptr);
+
+   type API_Material_Ptr_Array is array (Interfaces.C.unsigned range <>)
+     of aliased API_Material_Ptr;
+   pragma Convention (C, API_Material_Ptr_Array);
 
    package Material_Pointers_Package is new Interfaces.C.Pointers
-     (Interfaces.C.unsigned, API_Material, API_Material_Array, API_Material'(others => <>));
-   subtype Material_Array_Pointer is Material_Pointers_Package.Pointer;
+     (Interfaces.C.unsigned, API_Material_Ptr, API_Material_Ptr_Array, null);
+   subtype Material_Ptr_Array_Pointer is Material_Pointers_Package.Pointer;
 
    type API_UV_Transform is record
       Translation   : API_Vectors_Matrices.API_Vector_2D;
@@ -204,17 +219,4 @@ private
                           AI_Texture_Op_Smooth_Add => 4,
                           AI_Texture_Op_Signed_Add => 5);
 
-   for AI_Texture_Type use (AI_Texture_Type_None     => 0,
-                            AI_Texture_Diffuse       => 1,
-                            AI_Texture_Specular      => 2,
-                            AI_Texture_Ambient       => 3,
-                            AI_Texture_Emissive      => 4,
-                            AI_Texture_Height        => 5,
-                            AI_Texture_Normals       => 6,
-                            AI_Texture_Shininess     => 7,
-                            AI_Texture_Opacity       => 8,
-                            AI_Texture_Displacement  => 9,
-                            AI_Texture_Light_Map     => 16#A#,
-                            AI_Texture_Reflection    => 16#B#,
-                            AI_Texture_Unknown       => 16#c#);
 end Material;

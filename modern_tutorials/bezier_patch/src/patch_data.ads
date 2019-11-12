@@ -1,0 +1,34 @@
+
+--  See http://www.holmes3d.net/graphics/teapot/
+--  Control point data from:
+--  http://www.holmes3d.net/graphics/teapot/teapotCGA.bpt
+with GL.Types; use GL.Types;
+
+package Patch_Data is
+
+   Num_Control_Points : constant Int := 16;
+
+   subtype CP_Index is Int range 1 .. Num_Control_Points;
+   type Patch_Type is array
+     (Int range 0 .. 3, Int range 0 .. 3) of CP_Index;
+
+   Patch : constant Patch_Type
+     :=  ((1,  2,   3,  4),
+          (5,  6,   7,  8),
+          (9,  10, 11, 12),
+          (13, 14, 15, 16));
+
+   Control_Points : constant Singles.Vector3_Array (1 .. Num_Control_Points)
+     := ((1.4, 0.0, 2.4),            (1.4, -0.784, 2.4),
+         (0.784, -1.4, 2.4),         (0.0, -1.4, 2.4),
+
+         (1.3375, 0.0, 2.53125),     (1.3375, -0.749, 2.53125),
+         (0.749, -1.3375, 2.53125),  (0.0, -1.3375, 2.53125),
+
+         (1.4375, 0.0, 2.53125),     (1.4375, -0.805, 2.53125),
+         (0.805, -1.4375, 2.53125),  (0.0, -1.4375, 2.53125),
+
+         (1.5, 0.0, 2.4),            (1.5, -0.84, 2.4),
+         (0.84, -1.5, 2.4),          (0.0, -1.5, 2.4));
+
+end Patch_Data;

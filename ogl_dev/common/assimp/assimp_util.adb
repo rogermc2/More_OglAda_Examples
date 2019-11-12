@@ -2,7 +2,6 @@
 with Interfaces.C;
 with Interfaces.C.Strings;
 
-with Ada.Containers;
 with Ada.Text_IO; use Ada.Text_IO;
 
 package body Assimp_Util is
@@ -13,16 +12,19 @@ package body Assimp_Util is
         New_Line;
         Put_Line (Title & " Property_Data:");
         Put_Line (" Key: " & Ada.Strings.Unbounded.To_String (aProperty.Key));
-        Put_Line (" Semantic, Texture_Index: " & UInt'Image (aProperty.Semantic)
-                  & UInt'Image (aProperty.Texture_Index));
-        Put_Line (" Data_Type: " & Material.AI_Property_Type_Info'Image (aProperty.Data_Buffer.Data_Type));
+        Put_Line (" Semantic, Texture_Index: " &
+                    Material.AI_Texture_Type'Image (aProperty.Semantic) &
+                    UInt'Image (aProperty.Texture_Index));
+        Put_Line (" Data_Type: " &
+                    Material.AI_Property_Type_Info'Image (aProperty.Data_Buffer.Data_Type));
         case aProperty.Data_Type is
             when Material.PTI_Float =>
                 Put_Line ("Value: " & Single'Image (aProperty.Data_Buffer.Float_Data));
             when Material.PTI_Double =>
                 Put_Line ("Value: " & Double'Image (aProperty.Data_Buffer.Double_Data));
             when Material.PTI_String =>
-                Put_Line ("Value: " & Ada.Strings.Unbounded.To_String (aProperty.Data_Buffer.String_Data));
+                Put_Line ("Value: " &
+                            Ada.Strings.Unbounded.To_String (aProperty.Data_Buffer.String_Data));
             when Material.PTI_Integer =>
                 Put_Line ("Value: " & Int'Image (aProperty.Data_Buffer.Integer_Data));
             when Material.PTI_Buffer =>

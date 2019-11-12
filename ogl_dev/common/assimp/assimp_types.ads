@@ -1,7 +1,6 @@
 
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Pointers;
-with Interfaces.C.Strings;
 
 with Ada.Containers.Doubly_Linked_Lists;
 

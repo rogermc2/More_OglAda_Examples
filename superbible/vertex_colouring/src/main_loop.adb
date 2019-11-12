@@ -63,8 +63,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Vertex_Array.Initialize_Id;
         Vertex_Array.Bind;
-
-        Utilities.Show_Shader_Program_Data (Rendering_Program);
     end Setup_Graphic;
 
     --  ------------------------------------------------------------------------

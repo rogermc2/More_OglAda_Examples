@@ -1,7 +1,11 @@
 
+with Interfaces.C.Pointers;
+
 with Ada.Containers.Indefinite_Ordered_Maps;
 
 with GL.Types; use GL.Types;
+
+with Maths;
 
 with API_Vectors_Matrices;
 with Assimp_Types;
@@ -9,20 +13,25 @@ with Assimp_Types;
 package Ogldev_Math is
    use GL.Types.Singles;
 
---     package AI_2D_Package is new
---       Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector2);
---     subtype AI_2D_Map is AI_2D_Package.Map;
+   Math_Exception : exception;
 
    package AI_3D_Package is new
      Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
    subtype AI_3D_Map is AI_3D_Package.Map;
 
+   type Index_11 is (X, Y, Z, U, V, NX, NY, NZ, TX, TY, TZ);
+   type Vector11 is array (Index_11) of aliased Single;
+
+   pragma Convention (C, Vector11);
+
+   type Vector11_Array is array (Size range <>) of aliased Vector11;
+   pragma Convention (C, Vector11_Array);
+
+   package Vector11_Pointers is new Interfaces.C.Pointers
+     (Size, Vector11, Vector11_Array, Vector11'(others => <>));
+
    type Perspective_Projection_Info is private;
    type Orthographic_Projection_Info is private;
-
---     package Vector3_Package is new
---       Ada.Containers.Indefinite_Ordered_Maps (UInt, Singles.Vector3);
---     type Vector3D is new Vector3_Package.Map with null Record;
 
    function Get_Orthograpic_Bottom (Info : Orthographic_Projection_Info)
                                     return Single;
@@ -39,7 +48,8 @@ package Ogldev_Math is
                                return Single;
 
    function Get_Perspective_Far (Info : Perspective_Projection_Info) return Single;
-   function Get_Perspective_FOV (Info : Perspective_Projection_Info) return Single;
+   function Get_Perspective_FOV (Info : Perspective_Projection_Info)
+                                 return Maths.Degree;
    function Get_Perspective_Height (Info : Perspective_Projection_Info) return UInt;
    function Get_Perspective_Near (Info : Perspective_Projection_Info) return Single;
    function Get_Perspective_Width (Info : Perspective_Projection_Info) return UInt;
@@ -48,12 +58,12 @@ package Ogldev_Math is
                                    Right, Left, Bottom, Top,
                                    Near, Far : Single);
    procedure Set_Perspective_Info (Info      : out Perspective_Projection_Info;
-                                   FOV       : Single; Width, Height: UInt;
+                                   FOV       : Maths.Degree; Width, Height : UInt;
                                    Near, Far : Single);
    procedure Set_Perspective_Far (Info  : in out Perspective_Projection_Info;
                                   Far   : Single);
    procedure Set_Perspective_FOV (Info   : in out Perspective_Projection_Info;
-                                  FOV    : Single);
+                                  FOV    : Maths.Degree);
    procedure Set_Perspective_Height (Info   : in out Perspective_Projection_Info;
                                      Height : UInt);
    procedure Set_Perspective_Near (Info  : in out Perspective_Projection_Info;
@@ -67,20 +77,20 @@ package Ogldev_Math is
 private
 
    type Perspective_Projection_Info is record
-      FOV       : Single := 60.0;
+      FOV       : Maths.Degree := 60.0;
       Width     : UInt := 800;
       Height    : UInt := 600;
       Z_Near    : Single := -1.0;
-      Z_Far     : Single := 50.0;
+      Z_Far     : Single := 1000.0;
    end record;
 
    type Orthographic_Projection_Info is record
-      Right  : Single;
-      Left   : Single;
-      Bottom : Single;
-      Top    : Single;
-      Z_Near : Single;
-      Z_Far  : Single;
+      Right  : Single := 1.0;
+      Left   : Single := -1.0;
+      Bottom : Single := -1.0;
+      Top    : Single := 1.0;
+      Z_Near : Single := -1.0;
+      Z_Far  : Single := 1000.0;
    end record;
 
 end Ogldev_Math;

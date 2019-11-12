@@ -4,6 +4,7 @@
 #include "image_io.h"
 
 static Magick::Blob theBlob;
+// Magick::Blob theBlob;
 static Magick::Image theImage;
 
 // Obtain pointer to data.
@@ -24,13 +25,14 @@ size_t blobLength()
 
 bool loadBlob (char* fileName, char* magickType)
 {
-  std::string cppString (magickType);
-  bool        result;
+  const std::string nameString (fileName);
+  const std::string cppString (magickType);
+  bool              result;
   try
   {
- //   printf ("image_io.loadBlob reading texture %s \n", fileName);
-    theImage.read(fileName);
- //   printf ("image_io.loadBlob texture read %s \n", fileName);
+  //  printf ("image_io.loadBlob reading texture %s \n", fileName);
+    theImage.read(nameString);
+  //  printf ("image_io.loadBlob texture read %s \n", fileName);
     theImage.write(&theBlob, cppString);
     result = true;
   }
@@ -50,7 +52,7 @@ bool loadBlob (char* fileName, char* magickType)
 
 void readFile (Magick::Image& anImage, char* fileName)
 {
-  std::string cppString (fileName);
+  const std::string cppString (fileName);
 
   anImage.read (cppString);
 }
@@ -59,7 +61,7 @@ void readFile (Magick::Image& anImage, char* fileName)
 
 void writeFile (Magick::Image& anImage, char* fileName)
 {
-  std::string cppString (fileName);
+  const std::string cppString (fileName);
 
   anImage.write (cppString);
 }
@@ -71,7 +73,7 @@ void writeFile (Magick::Image& anImage, char* fileName)
 
 /* void writeBlob (char* Blob_Data, char* magickType, size_t dataLength) */
 /* { */
-/*   std::string cppString (magickType); */
+/*   const std::string cppString (magickType); */
 /*   theBlob.update (Blob_Data, dataLength); */
 /*   theImage.write (theBlob, cppString); */
 /* } */

@@ -7,13 +7,11 @@ with GL.Low_Level.Enums;
 with GL.Objects;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Shaders;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types.Colors;
-with GL.Uniforms;
 with GL.Window;
 
 with Glfw;
@@ -22,7 +20,6 @@ with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
 with Glfw.Windows.Context;
 
-with Program_Loader;
 with Utilities;
 
 with Ogldev_Camera;
@@ -31,7 +28,7 @@ with Ogldev_Pipeline;
 with Ogldev_Texture;
 
 with Buffers;
-with Lighting_Technique;
+with Lighting_Technique_18;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
@@ -46,9 +43,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Normals_Buffer         : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
    theTexture             : Ogldev_Texture.Ogl_Texture;
-   Light_Direction        : Lighting_Technique.Directional_Light;
+   Light_Direction        : Lighting_Technique_18.Directional_Light;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
+
+    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window);
 
    --  ------------------------------------------------------------------------
 
@@ -56,19 +55,18 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
-      Target              : Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
-      Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
+      Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
+      Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
-      Result := Lighting_Technique.Init (Shader_Program);
+      Result := Lighting_Technique_18.Init (Shader_Program);
       if Result then
          VAO.Initialize_Id;
          VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-         Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height),
-                                   Position, Target, Up);
-         Ogldev_Camera.Set_Step (0.1);
+         Ogldev_Camera.Init_Camera (Game_Camera,Window, Position, Target, Up);
+         Ogldev_Camera.Set_Step_Size (0.1);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
@@ -78,9 +76,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          GL.Objects.Programs.Use_Program (Shader_Program);
 
-         Lighting_Technique.Set_Texture_Unit (0);
+         Lighting_Technique_18.Set_Texture_Unit (0);
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png") then
+                                      "/Ada_Source/OglAda_Examples/ogl_dev/content/test.png") then
                 Ogldev_Texture.Load (theTexture);
          else
                 Put_Line ("Main_Loop.Init test.png failed to load");
@@ -94,7 +92,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
-        Glfw.Input.Poll_Events;
       end if;
 
    exception
@@ -111,7 +108,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       World_Transformation : GL.Types.Singles.Matrix4;
       Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
-      Ogldev_Camera.Update_Camera (Game_Camera, Window);
+      Ogldev_Camera.Process_Mouse (Game_Camera, Window);
+      Update_Lighting_Intensity (Window);
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Scale := Scale + 0.1;
 
@@ -124,14 +122,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
       Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
-      Lighting_Technique.Set_WVP (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+      Lighting_Technique_18.Set_WVP_Location (Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       World_Transformation := Ogldev_Pipeline.Get_World_Transform (Pipe);
-      Lighting_Technique.Set_World_Matrix (World_Transformation);
-      Lighting_Technique.Set_Directional_Light (Light_Direction);
-      Lighting_Technique.Set_Eye_World_Pos (Ogldev_Camera.Get_Position (Game_Camera));
+      Lighting_Technique_18.Set_World_Matrix_Location (World_Transformation);
+      Lighting_Technique_18.Set_Directional_Light_Location (Light_Direction);
+      Lighting_Technique_18.Set_Eye_World_Pos (Ogldev_Camera.Get_Position (Game_Camera));
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
@@ -171,6 +169,22 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    end Render_Scene;
 
    --  ------------------------------------------------------------------------
+
+    procedure Update_Lighting_Intensity (Window : in out Glfw.Windows.Window) is
+      use Glfw.Input;
+   begin
+      if Window'Access.Key_State (Keys.A) = Pressed then
+         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity + 0.004;
+      elsif Window'Access.Key_State (Keys.S) = Pressed then
+         Light_Direction.Ambient_Intensity := Light_Direction.Ambient_Intensity - 0.004;
+      elsif Window'Access.Key_State (Keys.Z) = Pressed then
+         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity + 0.004;
+      elsif Window'Access.Key_State (Keys.X) = Pressed then
+         Light_Direction.Diffuse_Intensity := Light_Direction.Diffuse_Intensity  - 0.004;
+      end if;
+   end Update_Lighting_Intensity;
+
+   --  -------------------------------------------------------------------------
 
    use Glfw.Input;
    Running : Boolean;

@@ -49,7 +49,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    PV_Buffer_Size              : constant UInt := Vec4_Size + Vec3_Size;
    Background                  : constant GL.Types.Colors.Color := (0.0, 1.0, 0.0, 0.0);
 
-   --  BEGIN_APP_DECLARATION Member variables
    Update_Program              : GL.Objects.Programs.Program;
    VAO                         : array (1 .. 2) of GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    VBO                         : array (1 .. 2) of GL.Objects.Buffers.Buffer;
@@ -66,14 +65,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Projection_Matrix_ID        : GL.Uniforms.Uniform;
    Triangle_Count_ID           : GL.Uniforms.Uniform;
    Time_Step_ID                : GL.Uniforms.Uniform;
-   --
+
    VBM_Object                  : Load_VB_Object.VB_Object;
-   --  END_APP_DECLARATION
 
    Random_Gen                  : Ada.Numerics.Float_Random.Generator;
    Num_Points                  : constant UInt := 5000;  --  Point_Count
 
-   --  Display static variables
+   --  Display variables
    Frame_Count                 : UInt := 1;
    Last_Time                   : Float := 0.0;  --  q
 
@@ -155,7 +153,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          GL.Uniforms.Set_Single (Time_Step_ID,
                                  2000.0 * Single (Current_Time - Last_Time));
       end if;
-      Last_Time := Current_Time;   --  q = t
+      Last_Time := Current_Time;        --  q = t
 
       if (Frame_Count rem 2) = 0 then   --  (frame_count & 1) != 0
          VAO (2).Bind;
@@ -217,13 +215,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use GL.Objects.Shaders;
       use Program_Loader;
       VBM_Result     : Boolean := False;
-      Varyings       : constant String := "position_out,velocity_out";
---        Varyings_2     : constant String := "world_space_position";
---        Name           : String (1 .. 30);
---        Length         : GL.Types.Size := 99;
+      Varyings       : constant String := "position1,velocity1";
+      Varyings_2     : constant String := "world_space_position1";
+      Name           : String (1 .. 30);
+      Name_Length    : GL.Types.Size := 99;
       V_Length       : GL.Types.Size := 99;
       Max_Length     : Int;
-      V_Type         : Buffer_Mode;
+      V_Type         : Active_Attribute;
+      Mode           : Buffer_Mode;
    begin
       VAO (1).Initialize_Id;
       VAO (1).Bind;
@@ -237,32 +236,48 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Transform_Feedback_Buffer.Bind (VBO (index));
       end loop;
 
+      --  Program_From includes linking
       Update_Program := Program_From
         ((Src ("src/shaders/update_vertex_shader.glsl", Vertex_Shader),
          Src ("src/shaders/update_fragment_shader.glsl", Fragment_Shader)));
 
-      GL.Objects.Programs.Use_Program  (Update_Program);
-      Transform_Feedback_Varyings (Update_Program, Varyings, Interleaved_Attribs);
-      Update_Program.Link;
-      V_Type := Transform_Feedback_Buffer_Mode (Update_Program);
-      V_Length := Int (Transform_Feedback_Varyings (Update_Program));
-      Max_Length := Transform_Feedback_Varying_Max_Length (Update_Program);
-      Put_Line ("V_Type: " & Buffer_Mode'Image (V_Type) & "   V_Length: " &
-                Int'Image (V_Length) & "   Max Length: " & Int'Image (Max_Length));
---        Get_Transform_Feedback_Varying (Update_Program, 1, Length, V_Length,
---                                        V_Type, Name);
---        Put_Line ("Name, Length, V_Length, V_Type" & Name & Int'Image (Length) &
---                 Int'Image (V_Length) & Buffer_Mode'Image (V_Type));
---
       if not GL.Objects.Programs.Link_Status (Update_Program) then
          Put_Line ("Setup, Update_Program Link failed");
          Put_Line (GL.Objects.Programs.Info_Log (Update_Program));
-      else
-         Put_Line ("Setup, Update_Program Link ok");
       end if;
 
       GL.Objects.Programs.Use_Program  (Update_Program);
-      Put_Line ("Setup, using Update_Program");
+      Transform_Feedback_Varyings (Update_Program, Varyings, Interleaved_Attribs);
+      Update_Program.Link;
+
+      if not GL.Objects.Programs.Link_Status (Update_Program) then
+         Put_Line ("Setup, Update_Program Transform_Feedback_Varyings Link failed.");
+         Put_Line (GL.Objects.Programs.Info_Log (Update_Program));
+      end if;
+
+      Mode := Transform_Feedback_Buffer_Mode (Update_Program);
+      V_Length := Transform_Feedback_Varyings_Size (Update_Program);
+      Max_Length := Transform_Feedback_Varying_Max_Length (Update_Program);
+
+      Get_Transform_Feedback_Varying (Object   => Update_Program,
+                                      Index    => 0,
+                                      Length   => Name_Length,
+                                      V_Length => V_Length,
+                                      V_Type   => V_Type,
+                                      Name     => Name);
+
+      Put_Line ("Name: " & Name);
+      Put_Line ("Length: " & Int'Image (Name_Length));
+      Put_Line ("V_Length" &  Int'Image (V_Length));
+      Put_Line ("V_Type: " & Active_Attribute'Image (V_Type) & "   V_Length: " &
+                  Int'Image (V_Length) & "   Max Length: " & Int'Image (Max_Length));
+      if Mode = Interleaved_Attribs or Mode = Separate_Attribs then
+         Put_Line ("Mode: "  & Buffer_Mode'Image (Mode));
+      else
+         Put_Line ("Setup, Get_Transform_Feedback_Varying returned an invalid Buffer Mode value: "
+                  & Integer'Image (V_Type'Enum_Rep));
+      end if;
+
       Model_Matrix_ID := GL.Objects.Programs.Uniform_Location
         (Update_Program, "model_matrix");
       Projection_Matrix_ID := GL.Objects.Programs.Uniform_Location
@@ -277,13 +292,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         ((Src ("src/shaders/render_vertex_shader.glsl", Vertex_Shader),
          Src ("src/shaders/render_fragment_shader.glsl", Fragment_Shader)));
 
---        Transform_Feedback_Varyings (Render_Program, Varyings_2, Interleaved_Attribs);
+      Transform_Feedback_Varyings (Render_Program, Varyings_2, Interleaved_Attribs);
       Render_Program.Link;
       if not GL.Objects.Programs.Link_Status (Render_Program) then
          Put_Line ("Setup, Render_Program Link failed");
          Put_Line (GL.Objects.Programs.Info_Log (Render_Program));
-      else
-         Put_Line ("Setup, Render_Program Link OK");
       end if;
 
       GL.Objects.Programs.Use_Program  (Render_Program);
@@ -303,12 +316,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO (index).Bind;
          Array_Buffer.Bind (VBO (index));
 
-         --  Set_Vertex_Attrib_Pointer (Index  : Attribute;
-         --     Count : Component_Count; Kind : Numeric_Type; Stride, Offset : Size);
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (0, 4, Single_Type, Int (PV_Buffer_Size), 0);
+           (0, 4, Single_Type, True, Int (PV_Buffer_Size), 0);
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (1, 3, Single_Type, Int (PV_Buffer_Size), Int (Vec4_Size));
+           (1, 3, Single_Type, True, Int (PV_Buffer_Size), Int (Vec4_Size));
          GL.Attributes.Enable_Vertex_Attrib_Array (0);
          GL.Attributes.Enable_Vertex_Attrib_Array (1);
       end loop;
@@ -322,7 +333,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Render_VAO.Bind;
       Array_Buffer.Bind (Geometry_VBO);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 4, Single_Type, 0, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 4, Single_Type, True, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
       Utilities.Clear_Background_Colour_And_Depth (Background);
