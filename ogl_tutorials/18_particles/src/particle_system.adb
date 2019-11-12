@@ -283,7 +283,7 @@ package body Particle_System is
            (Random_Colour,
             Random_Colour,
             Random_Colour,
-            Abs (Maths.Random_Float) / 3.0);
+            Random_Colour / 3.0);
          Particle_Container (Particle_Index).Width :=
            Abs (Maths.Random_Float) / 20.0 + 0.02;   --  0.05 <= Width <= 0.15
                                                      -- orig 0.1 <= Width <= 0.6
