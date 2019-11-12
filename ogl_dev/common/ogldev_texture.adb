@@ -104,7 +104,7 @@ package body Ogldev_Texture is
             Next (Curs);
          end loop;
 
-         -- load Texture_2D buffer with data from Data array.
+         --  load Texture_2D buffer with data from Data array.
          Texture_2D.Load_From_Data (Level, GL.Pixels.RGBA,
                                     Int (theTexture.Image.Columns),
                                     Int (theTexture.Image.Rows),
