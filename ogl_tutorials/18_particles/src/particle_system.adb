@@ -217,13 +217,6 @@ package body Particle_System is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Texture_ID (Tex : Singles.Vector3) is
-   begin
-      GL.Uniforms.Set_Single (Texture_ID, Tex);
-   end Set_Texture_ID;
-
-   --  ------------------------------------------------------------------------
-
    procedure Set_IDs (VP : Singles.Matrix4) is
       Right  : constant Singles.Vector3 :=
                  (VP (GL.X, GL.X), VP (GL.Y, GL.X), VP (GL.X, GL.Z));

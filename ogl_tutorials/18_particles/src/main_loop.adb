@@ -102,6 +102,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Window.Set_Input_Toggle (Sticky_Keys, True);
       Window.Set_Cursor_Mode (Mouse.Disabled);
+      Glfw.Input.Poll_Events;
 
       Window'Access.Set_Size (Window_Width, Window_Height);
       Window'Access.Set_Cursor_Pos (Mouse.Coordinate (0.5 * Single (Window_Width)),
