@@ -1,7 +1,7 @@
 with  "../../common/common.gpr";
-with "../../../FreeTypeAda/freetype.gpr";
-with "../../../opengl.gpr";
-limited with "../../../opengl-glfw.gpr";
+with "../../../OpenGLAda/FreeTypeAda/freetype.gpr";
+with "../../../OpenGLAda/opengl.gpr";
+limited with "../../../OpenGLAda/opengl-glfw.gpr";
 
 project Render_A_Character is
 

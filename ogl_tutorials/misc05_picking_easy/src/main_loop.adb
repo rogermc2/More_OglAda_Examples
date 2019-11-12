@@ -161,7 +161,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
          --  First attribute buffer : vertices
          GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
          --  Index Buffer
          GL.Objects.Buffers.Element_Array_Buffer.Bind (Element_Buffer);
          GL.Objects.Buffers.Draw_Elements (Triangles, Vertex_Count, UInt_Type, 0);
@@ -216,7 +216,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             GL.Uniforms.Set_Single (Picking_Colour_ID, R, G, B, 1.0);
 
             GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
+            GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
 
             GL.Objects.Buffers.Element_Array_Buffer.Bind (Element_Buffer);
             GL.Objects.Buffers.Draw_Elements (Mode       => Triangles,
@@ -258,9 +258,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                      Vertex_Count    : GL.Types.Int;
                      UV_Map          : GL.Objects.Textures.Texture) is
       use Interfaces.C;
-      use GL.Objects.Buffers;
-      --        use GL.Objects.Shaders;
-      use GL.Types;
       use Glfw.Input;
       View_Matrix       : GL.Types.Singles.Matrix4;
       Projection_Matrix : GL.Types.Singles.Matrix4;
@@ -295,11 +292,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                     Picking_Program : out GL.Objects.Programs.Program;
                     Indices_Size    : out GL.Types.Int;
                     UV_Map          : out GL.Objects.Textures.Texture) is
-      use GL.Objects.Buffers;
       use GL.Objects.Shaders;
-      use GL.Objects.Textures.Targets;
       use GL.Types;
-      use GL.Types.Singles;
       use Glfw.Input;
       Window_Width  : constant Glfw.Size := 1024;
       Window_Height : constant Glfw.Size := 768;
@@ -337,14 +331,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Vertex_Shader),
          Program_Loader.Src ("src/shaders/standard_fragment_shader.glsl",
            Fragment_Shader)));
-      Utilities.Show_Shader_Program_Data (Render_Program);
 
       Picking_Program := Program_Loader.Program_From
         ((Program_Loader.Src ("src/shaders/picking_vertex_shader.glsl",
          Vertex_Shader),
          Program_Loader.Src ("src/shaders/picking_fragment_shader.glsl",
            Fragment_Shader)));
-      Utilities.Show_Shader_Program_Data (Picking_Program);
 
       MVP_Matrix_ID := GL.Objects.Programs.Uniform_Location
         (Render_Program, "MVP");

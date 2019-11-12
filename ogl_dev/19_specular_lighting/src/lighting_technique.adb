@@ -71,7 +71,66 @@ package body Lighting_Technique is
    
    --   -------------------------------------------------------------------------------------------------------
 
-    procedure Set_WVP (WVP : Singles.Matrix4) is
+    procedure Set_Ambient_Intensity (Intensity : Single) is
+    begin
+      GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity,
+                              Intensity);
+    end Set_Ambient_Intensity;
+   
+   --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_Directional_Light (Light : Directional_Light) is
+        Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
+    begin
+        GL.Uniforms.Set_Single (Directional_Light_Location.Colour, Light.Colour);
+      GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity,
+                              Light.Ambient_Intensity);
+      GL.Uniforms.Set_Single (Directional_Light_Location.Direction,
+                              Maths.Normalized (Direction));
+      GL.Uniforms.Set_Single (Directional_Light_Location.Diffuse_Intensity,
+                              Light.Diffuse_Intensity);
+    end Set_Directional_Light;
+   
+   --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_Eye_World_Pos (Eye_World_Pos : Singles.Vector3) is
+    begin
+        GL.Uniforms.Set_Single (Eye_World_Pos_Location, Eye_World_Pos (GL.X), Eye_World_Pos (GL.Y), Eye_World_Pos (GL.Z));
+    end Set_Eye_World_Pos;
+   
+   --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_Light_Direction (Direction : Singles.Vector3) is
+        theDirection : constant Singles.Vector3 := Maths.Normalized (Direction);
+    begin
+        GL.Uniforms.Set_Single (Directional_Light_Location.Direction,
+                                theDirection (GL.X), theDirection (GL.Y), theDirection (GL.Z));
+     end Set_Light_Direction;
+   
+   --   -------------------------------------------------------------------------------------------------------
+
+procedure Set_Mat_Specular_Intensity (Intensity : Single) is
+    begin
+        GL.Uniforms.Set_Single (Mat_Specular_Intensity_Location, Intensity);
+    end Set_Mat_Specular_Intensity;
+
+    --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_Mat_Specular_Power (Power : Single) is
+    begin
+        GL.Uniforms.Set_Single (Mat_Specular_Power_Location, Power);
+    end Set_Mat_Specular_Power;
+
+    --   -------------------------------------------------------------------------------------------------------
+
+    procedure Set_Texture_Unit (Texture_Unit : Int) is
+    begin
+        GL.Uniforms.Set_Int (Sampler_Location, Texture_Unit);
+    end Set_Texture_Unit;
+   
+   --   -------------------------------------------------------------------------------------------------------
+
+      procedure Set_WVP (WVP : Singles.Matrix4) is
     begin
         GL.Uniforms.Set_Single (WVP_Location, WVP);    
     end Set_WVP;
@@ -84,49 +143,5 @@ package body Lighting_Technique is
     end Set_World_Matrix;
    
    --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Texture_Unit (Texture_Unit : Int) is
-    begin
-        GL.Uniforms.Set_Int (Sampler_Location, Texture_Unit);
-    end Set_Texture_Unit;
-   
-   --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Directional_Light (Light : Directional_Light) is
-        Direction : Singles.Vector3 := Maths.Normalized (Light.Direction);
-    begin
-        GL.Uniforms.Set_Single (Directional_Light_Location.Colour, Light.Colour (GL.X), Light.Colour (GL.Y), Light.Colour (GL.Z));
-        GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity, Light.Ambient_Intensity);
-        GL.Uniforms.Set_Single (Directional_Light_Location.Direction, Direction (GL.X), Direction (GL.Y), Direction (GL.Z));
-        GL.Uniforms.Set_Single (Directional_Light_Location.Diffuse_Intensity, Light.Diffuse_Intensity);
-    end Set_Directional_Light;
-   
-   --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Eye_World_Pos (Eye_World_Pos : Singles.Vector3) is
-    begin
-        GL.Uniforms.Set_Single (Eye_World_Pos_Location, Eye_World_Pos (GL.X), Eye_World_Pos (GL.Y), Eye_World_Pos (GL.Z));
-    end Set_Eye_World_Pos;
-   
-   --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Ambient_Intensity (Intensity : Single) is
-    begin
-        GL.Uniforms.Set_Single (Directional_Light_Location.Ambient_Intensity, Intensity);
-    end Set_Ambient_Intensity;
-   
-   --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Mat_Specular_Intensity (Intensity : Single) is
-    begin
-        GL.Uniforms.Set_Single (Mat_Specular_Intensity_Location, Intensity);
-    end Set_Mat_Specular_Intensity;
-
-    --   -------------------------------------------------------------------------------------------------------
-
-    procedure Set_Mat_Specular_Power (Power : Single) is
-    begin
-        GL.Uniforms.Set_Single (Mat_Specular_Power_Location, Power);
-    end Set_Mat_Specular_Power;
 
 end Lighting_Technique;

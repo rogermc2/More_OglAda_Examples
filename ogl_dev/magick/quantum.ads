@@ -3,7 +3,6 @@ with Interfaces.C; use Interfaces.C;
 
 with Magick_Pixel;
 with Magick_Type;
-with Method_Attribute;
 with Semaphore;
 
 package Quantum is

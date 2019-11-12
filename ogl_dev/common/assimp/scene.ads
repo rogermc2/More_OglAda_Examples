@@ -16,6 +16,7 @@ with Assimp_Types;
 with Camera;
 with Light;
 with Material;
+with Mesh_Conversion;
 with API_Vectors_Matrices;
 with Assimp_Mesh;
 with Metadata;
@@ -27,12 +28,7 @@ package Scene is
     type Scene_Flags is (AI_Scene_Flags_Incomplete, AI_Scene_Flags_Validated,
                          AI_Scene_Flags_Validation_Warning, AI_Scene_Flags_Non_Verbose_Format,
                          AI_Scene_Flags_Terrain);
-   pragma Convention (C, Scene_Flags);
-
-    type Cameras_Ptr is access Camera.API_Camera_Array;
-    type Lights_Ptr is access Light.API_Light_Array;
-    type Materials_Ptr is access Material.API_Material_Array;
-    type Textures_Ptr is access Assimp_Texture.API_Texture_Array;
+    pragma Convention (C, Scene_Flags);
 
     type API_Node_Ptr is private;
 
@@ -72,7 +68,7 @@ package Scene is
         Num_Children   : Interfaces.C.unsigned := 0;
         Children       : System.Address := System.Null_Address;
         Num_Meshes     : Interfaces.C.unsigned := 0;
-        Meshes         : Assimp_Mesh.Mesh_Array_Pointer := Null;
+        Meshes         : Mesh_Conversion.Mesh_Ptr_Array_Pointer := Null;
         Meta_Data      : access Metadata.API_Metadata := Null;
     end record;
     pragma Convention (C_Pass_By_Copy, API_Node);
@@ -87,17 +83,17 @@ package Scene is
             Flags          : Interfaces.C.unsigned := 0;
             Root_Node      : Scene.Node_Pointers.Pointer := null;
             Num_Meshes     : Interfaces.C.unsigned := 0;
-            Meshes         : access Assimp_Mesh.Mesh_Array_Pointer := null;
+            Meshes         : Mesh_Conversion.Mesh_Ptr_Array_Pointer := null;
             Num_Materials  : Interfaces.C.unsigned := 0;
-            Materials      : access Material.Material_Array_Pointer := null;
+            Materials      : Material.Material_Ptr_Array_Pointer := null;
             Num_Animations : Interfaces.C.unsigned := 0;
-            Animations     : access Animation.Animation_Pointers.Pointer := null;
+            Animations     : Animation.Animation_Ptr_Array_Pointer := null;
             Num_Textures   : Interfaces.C.unsigned := 0;
-            Textures       : access Assimp_Texture.Texture_Pointers.Pointer := null;
+            Textures       : Assimp_Texture.Texture_Ptr_Array_Pointer := null;
             Num_Lights     : Interfaces.C.unsigned := 0;
-            Lights         : access Light.Light_Pointers.Pointer := null;
+            Lights         : Light.Light_Ptr_Array_Pointer := null;
             Num_Cameras    : Interfaces.C.unsigned := 0;
-            Cameras        : access Camera.Camera_Pointers.Pointer := null;
+            Cameras        : Camera.Camera_Ptr_Array_Pointer := null;
             mPrivate       : Interfaces.C.Strings.chars_ptr :=
                              Interfaces.C.Strings.Null_Ptr;
          end record;

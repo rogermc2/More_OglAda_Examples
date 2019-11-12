@@ -11,9 +11,9 @@ project Loader is
    for Languages use ("Ada", "C++");
 
    package Compiler is
-      for Switches ("c++") use ("-I/usr/local/include/assimp", "-I/usr/local/include/ImageMagick-7/Magick++", "-I/usr/local/include/ImageMagick-7", "-DMAGICKCORE_QUANTUM_DEPTH=16", "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
-
-      for Switches ("ada") use ("-gnato", "-fstack-check", "-g", "-gnatf", "-gnata");
+      for Switches ("c++") use ("-I/usr/local/include", "-I/usr/local/include/assimp", "-I/usr/local/include/ImageMagick-7/Magick++", "-I/usr/local/include/ImageMagick-7", "-DMAGICKCORE_QUANTUM_DEPTH=16", 
+         "-DMAGICKCORE_HDRI_ENABLE=1", "-g");
+      for Switches ("ada") use ("-gnato", "-fstack-check", "-g", "-gnatf", "-gnata", "-gnatw.okmuv");
    end Compiler;
 
    package Naming is

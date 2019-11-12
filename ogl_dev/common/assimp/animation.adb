@@ -1,6 +1,4 @@
 
-with Interfaces.C.Strings;
-
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Assimp_Util;
@@ -29,10 +27,13 @@ package body Animation is
    --  ------------------------------------------------------------------------
 
    function To_AI_Animation_Map (Num_Animations : Interfaces.C.unsigned := 0;
-                                 C_Array : API_Animation_Array)
+                                 C_Ptr_Array_Ptr : Animation_Ptr_Array_Pointer)
                                  return AI_Animation_Map is
-      anAnim     : AI_Animation;
-      Anim_Map   : AI_Animation_Map;
+      use Interfaces.C;
+      C_Array   : constant API_Animation_Ptr_Array :=
+                  Value (C_Ptr_Array_Ptr, ptrdiff_t (Num_Animations));
+      anAnim    : AI_Animation;
+      Anim_Map  : AI_Animation_Map;
    begin
       for index in 1 .. Num_Animations loop
          anAnim.Name := To_Unbounded_String (To_Ada (C_Array (index).Name.Data));

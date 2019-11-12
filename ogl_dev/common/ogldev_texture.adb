@@ -1,6 +1,4 @@
 
-with Interfaces.C;
-
 with Ada.Directories;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -18,6 +16,7 @@ package body Ogldev_Texture is
    begin
       if theTexture.Texture_Object.Initialized then
          GL.Objects.Textures.Set_Active_Unit (theTexture_Unit);
+         --  Set_Active_Unit also sets GL TextureUnit (memory address)
          case theTexture.Texture_Target is
          when Enums.Texture_1D =>
             Texture_1D.Bind (theTexture.Texture_Object);
@@ -31,7 +30,9 @@ package body Ogldev_Texture is
          end case;
       else
          raise Texture_Exception with
-           "Ogldev_Texture.Bind, the Texture_Object is not initialized.";
+           "Ogldev_Texture.Bind, the Texture_Object " &
+           Ada.Strings.Unbounded.To_String (theTexture.File_Name) &
+           " is not initialized.";
       end if;
    end Bind;
 
@@ -45,16 +46,13 @@ package body Ogldev_Texture is
       Result : Boolean;
    begin
 --        Put_Line ("Ogldev_Texture.Init_Texture file " & "*" & Texture_File & "*");
---        Put_Line ("Ogldev_Texture.Init_Texture file size " &
---                    Ada.Directories.File_Size'Image (Ada.Directories.Size
---                    ("/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix.pcx")));
       Result := Ada.Directories.Exists (Texture_File);
       if Result then
          theTexture.File_Name := To_Unbounded_String (Texture_File);
          theTexture.Texture_Target := Target_Type;
       else
-         Put_Line ("Ogldev_Texture.Init_Texture file *" & Texture_File &
-                     "* not found");
+         Put_Line ("Ogldev_Texture.Init_Texture file " & Texture_File &
+                     " not found");
       end if;
       return Result;
 
@@ -91,13 +89,6 @@ package body Ogldev_Texture is
               "Ogldev_Texture.Load, unhandled texture type.";
       end case;
 
---        Put_Line ("Ogldev_Texture.Load, image signature: " &
---                    Interfaces.C.size_t'Image (theTexture.Image.Signature));
---        Put_Line ("Ogldev_Texture.Load, Columns, Rows, Depth, Colours: " &
---                    UInt'Image (theTexture.Image.Columns) & "  " &
---                    UInt'Image (theTexture.Image.Rows) & "  " &
---                    UInt'Image (theTexture.Image.Depth) & "  " &
---                    UInt'Image (theTexture.Image.Colours));
       declare
          use Magick_Blob.Blob_Package;
          Data_Blob   : constant Magick_Blob.Blob_Data := theTexture.Blob_Data;
@@ -107,8 +98,6 @@ package body Ogldev_Texture is
          Curs        : Cursor := Data_Blob.First;
          Level       : constant GL.Objects.Textures.Mipmap_Level := 0;
       begin
---           Put_Line ("Ogldev_Texture.Load, Blob_Length: " &
---                       UInt'Image (Blob_Length));
          while Has_Element (Curs) loop
             Byte_Index := Byte_Index + 1;
             Data (Byte_Index) := Element (Curs);
@@ -123,6 +112,7 @@ package body Ogldev_Texture is
                                     GL.Objects.Textures.Image_Source (Data'Address));
          Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
          Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+         Put_Line ("Ogldev_Texture.Load loaded " & To_String (theTexture.File_Name));
       end;  --  declare
    exception
       when others =>

@@ -94,7 +94,6 @@ exception
         Rendering_Program :=
           Program_From ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
                          Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
-        Utilities.Show_Shader_Program_Data (Rendering_Program);
 
         --  Get locations of shader programs matrix uniforms
         Model_View_Location :=
@@ -111,6 +110,7 @@ exception
 
         GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                  Kind   => GL.Types.Single_Type,
+                                                 Normalized => True,
                                                  Stride => 0, Offset => 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
 

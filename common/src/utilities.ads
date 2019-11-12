@@ -12,17 +12,26 @@ with Maths;
 package Utilities is
 
    type Byte_Array is array (GL.Types.Int range <>) of aliased GL.Types.UByte;
+   type Ints_Vector4_Array4 is array (GL.Types.Int range <>) of
+      GL.Types.Ints.Vector4_Array (1 .. 4);
    type Singles_Array is array (GL.Types.Int range <>) of aliased GL.Types.Single;
 
    procedure Clear_All (Colour : GL.Types.Colors.Color);
    procedure Clear_Background_Colour (Colour : GL.Types.Colors.Color);
+   procedure Clear_Background_Colour (Colour : GL.Types.Colors.Basic_Color);
    procedure Clear_Background_Colour_And_Depth (Colour : GL.Types.Colors.Color);
+   procedure Clear_Background_Colour_And_Depth (Colour : GL.Types.Colors.Basic_Color);
+   procedure Clear_Colour;
    procedure Clear_Colour_Buffer_And_Depth;
+   procedure Clear_Depth;
    procedure Enable_Mouse_Callbacks (Window : in out Glfw.Windows.Window; Enable : Boolean);
+   function Flatten (anArray : Ints_Vector4_Array4) return GL.Types.Int_Array;
    procedure Load_Element_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (GL.Types.Int_Pointers);
    procedure Load_Element_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (GL.Types.UInt_Pointers);
+   procedure Load_Singles_Buffer is new
+     GL.Objects.Buffers.Load_To_Buffer (GL.Types.Single_Pointers);
    procedure Load_Texture_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (GL.Types.Singles.Matrix4_Pointers);
    procedure Load_Vertex_Buffer is new
@@ -53,6 +62,8 @@ package Utilities is
    procedure Print_GL_Array8 (Name : String; anArray : Maths.Vector8_Array);
    procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array);
    procedure Print_GL_UInt_Array (Name : String; anArray : GL.Types.UInt_Array);
+   procedure Print_Matrix (Name    : String;
+                           aMatrix : GL.Types.Ints.Matrix4);
    procedure Print_Matrix (Name : String; aMatrix : GL.Types.Singles.Matrix3);
    procedure Print_Matrix (Name : String; aMatrix : GL.Types.Singles.Matrix4);
    procedure Print_Singles_Array (Name : String; anArray : Singles_Array;
@@ -61,7 +72,7 @@ package Utilities is
    procedure Print_Vector (Name : String; aVector : GL.Types.Ints.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector4);
-      procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
+   procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
                                    Location       : String;
                                    theUniform     : in out GL.Uniforms.Uniform);
    procedure Show_Shader_Info_Log (aProgram : GL.Objects.Programs.Program);

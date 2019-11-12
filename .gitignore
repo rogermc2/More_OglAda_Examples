@@ -4,8 +4,10 @@ bin
 .DS_Store
 .#*#
 *~
+*.db
 *.exe
 *.ali
 *.cswi
 *.o
+*.ooutline
 * copy.gpr

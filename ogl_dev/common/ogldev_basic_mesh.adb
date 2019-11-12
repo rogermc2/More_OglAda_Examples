@@ -267,9 +267,11 @@ package body Ogldev_Basic_Mesh is
    begin
       Put_Line (" Ogldev_Basic_Mesh.Load_Mesh, import scene.");
       theScene :=
-        Importer.Import_File (File_Name, UInt (Ogldev_Util.Assimp_Load_Flags));
+        Importer.Import_File (File_Name, UInt (Ogldev_Util.Assimp_Basic_Load_Flags));
       theMesh.VAO.Initialize_Id;
       theMesh.VAO.Bind;
+
+      Put_Line (" Ogldev_Basic_Mesh.Load_Mesh, scene imported.");
       --   Create the buffers for the vertices attributes
       for index in 1 .. Num_Buffers loop
          theMesh.Buffers (index).Initialize_Id;
@@ -298,14 +300,13 @@ package body Ogldev_Basic_Mesh is
       begin
          if Material_Index < Natural (theMesh.Textures.Length) then
             if not theMesh.Textures.Is_Empty then
-               null;
---                 Ogldev_Texture.Bind (Element (Tex_Curs),
---                                      Ogldev_Engine_Common.Colour_Texture_Unit_Index);
+               Ogldev_Texture.Bind (Element (Tex_Curs),
+                                    Ogldev_Engine_Common.Colour_Texture_Unit);
             end if;
             GL.Objects.Buffers.Draw_Elements_Base_Vertex
               (Triangles, Num_Indices, UInt_Type,
                Element (Entry_Cursor).Base_Index,
-               Element (Entry_Cursor).Base_Vertex);
+               Int (Element (Entry_Cursor).Base_Vertex));
          else
             Put_Line ("Ogldev_Basic_Mesh.Render, Invalid Material_Index.");
          end if;

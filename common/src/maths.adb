@@ -1,5 +1,6 @@
 
 with Ada.Numerics;
+with Ada.Numerics.Float_Random;
 
 with Quaternions;
 
@@ -12,7 +13,8 @@ package body Maths is
    Degrees_Per_Radian : constant Degree := 180.0 / Ada.Numerics.Pi;
 
    Zero_Matrix4 : constant GL.Types.Singles.Matrix4 :=
-     (others => (others => 0.0));
+                    (others => (others => 0.0));
+   Gen : Ada.Numerics.Float_Random.Generator;
 
    --  ------------------------------------------------------------------------
 
@@ -27,6 +29,42 @@ package body Maths is
    begin
       return Degree (Angle) * Degrees_Per_Radian;
    end Degrees;
+
+   --  ------------------------------------------------------------------------
+
+   function Factorial (Num : Natural) return Positive is
+      Result : Natural := Num;
+   begin
+      if Num = 0 then
+         Result := 1;
+      else
+         Result := Num * Factorial (Num - 1);  --  recursion
+      end if;
+      return Positive (Result);
+
+   end Factorial;
+
+   --  ------------------------------------------------------------------------
+   --  Transpose of standard frustrum matrix
+   function Frustum_Matrix (Left, Right, Bottom, Top, Near, Far : GL.Types.Single)
+                            return GL.Types.Singles.Matrix4 is
+      use GL;
+      Frustrum   : Singles.Matrix4 := Singles.Identity4;
+      zDelta     : constant Single := (Far - Near);
+      Direction  : constant Single := (Right - Left);
+      Height     : constant Single := (Top - Bottom);
+      Twice_Near : constant Single := 2.0 * Near;
+   begin
+      Frustrum (X, X) := 2.0 * Near / Direction;
+      Frustrum (Z, X) := (Right + Left) / Direction;
+
+      Frustrum (Y, Y) := Twice_Near / Height;
+      Frustrum (Z, Y) := (Top + Bottom) / Height;
+      Frustrum (Z, Z) := -(Far + Near) / zDelta;
+      Frustrum (W, Z) := -Twice_Near * Far / zDelta;
+      Frustrum (Z, W) := -1.0;
+      return Frustrum;
+   end Frustum_Matrix;
 
    --  ------------------------------------------------------------------------
    --  Init_Lookat_Transform is derived from
@@ -91,9 +129,9 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Perspective_Transform (View_Angle : Degree;
+   procedure Init_Perspective_Transform (View_Angle                   : Degree;
                                          Width, Height, Z_Near, Z_Far : Single;
-                                         Transform  : out GL.Types.Singles.Matrix4) is
+                                         Transform                    : out GL.Types.Singles.Matrix4) is
    begin
       Transform := Perspective_Matrix (View_Angle, Width / Height,
                                        Z_Near, Z_Far);
@@ -105,7 +143,7 @@ package body Maths is
      (Rotate_X, Rotate_Y, Rotate_Z : Degree; Transform : out Singles.Matrix4) is
       use GL;
       use Single_Math_Functions;
-     use Singles;
+      use Singles;
       Rx   : Matrix4 := Singles.Identity4;
       Ry   : Matrix4 := Singles.Identity4;
       Rz   : Matrix4 := Singles.Identity4;
@@ -170,10 +208,10 @@ package body Maths is
       L : constant Single := Length (V);
    begin
       if L /= 0.0 then
-            return (V (X) / L, V (Y) / L, V (Z) / L);
+         return (V (X) / L, V (Y) / L, V (Z) / L);
       else
-            raise Math_Exception with "Maths error, attempted to normalize a zero length vector";
-            return V;
+         raise Math_Exception with "Maths error, attempted to normalize a zero length vector";
+         return V;
       end if;
    end Normalized;
 
@@ -184,10 +222,10 @@ package body Maths is
       L : constant Single := Length (Types.Singles.To_Vector3 (V));
    begin
       if L /= 0.0 then
-            return (V (X) / L, V (Y) / L, V (Z) / L, V (W));
+         return (V (X) / L, V (Y) / L, V (Z) / L, V (W));
       else
-            raise Math_Exception with "Maths error, attempted to normalize a zero length vector";
-            return V;
+         raise Math_Exception with "Maths error, attempted to normalize a zero length vector";
+         return V;
       end if;
    end Normalized;
 
@@ -195,7 +233,7 @@ package body Maths is
    --  Perspective_Matrix is derived from Computer Graphics Using OpenGL
    --  Chapter 7, transpose of equation 7.13
    function Perspective_Matrix (Top, Bottom, Left, Right, Near, Far : Single)
-                                 return GL.Types.Singles.Matrix4 is
+                                return GL.Types.Singles.Matrix4 is
       use GL;
       dX         : constant Single := Right - Left;
       dY         : constant Single := Top - Bottom;
@@ -203,12 +241,12 @@ package body Maths is
       Matrix     : GL.Types.Singles.Matrix4 := Zero_Matrix4;
    begin
       Matrix (X, X) := 2.0 * Near / dX;
-      Matrix (Z, X) := (Right + Left) / dX;
       Matrix (Y, Y) := 2.0 * Near / dY;
+      Matrix (Z, X) := (Right + Left) / dX;
       Matrix (Z, Y) :=  (Top + Bottom) / dY;
       Matrix (Z, Z) := -(Far + Near) / dZ;
-      Matrix (W, Z) := -2.0 * Far * Near / dZ;
       Matrix (Z, W) := -1.0;
+      Matrix (W, Z) := -2.0 * Far * Near / dZ;
       return Matrix;
    end Perspective_Matrix;
 
@@ -216,7 +254,7 @@ package body Maths is
    --  Perspective_Matrix is derived from Computer Graphics Using OpenGL
    --  Chapter 7, top, bottom, left and right equations following equation 7.13
    function Perspective_Matrix (View_Angle : Degree; Aspect, Near, Far : Single)
-                                 return GL.Types.Singles.Matrix4 is
+                                return GL.Types.Singles.Matrix4 is
       use Single_Math_Functions;
 
       Top    : Single;
@@ -239,11 +277,66 @@ package body Maths is
    end Radians;
 
    --  ------------------------------------------------------------------------
+
+   function Random_Float return Single is
+        use Ada.Numerics.Float_Random;
+    begin
+        return 2.0 * Single (Random (Gen)) - 1.0;
+    end Random_Float;
+
+    --  ------------------------------------------------------------------------
+
+    function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
+                            return Singles.Vector3 is
+      use Ada.Numerics.Float_Random;
+      use GL.Types.Singles;
+      R_Vector : Vector3 := (2.0 * Single (Random (Gen)) - 1.0,
+                             2.0 * Single (Random (Gen)) - 1.0,
+                             2.0 * Single (Random (Gen)) - 1.0);
+   begin
+      R_Vector := Maths.Normalized (R_Vector);
+      R_Vector := R_Vector * (Random_Float *
+                              (Max_Magnitude - Min_Magnitude) + Min_Magnitude);
+      return R_Vector;
+   end Random_Vector;
+
+   --  ------------------------------------------------------------------------
+
    --  Rotation_Matrix is based on "Quaternians and spatial rotation" by
    --  en.m.wikipedia.org, with the matrix transposed
 
    function Rotation_Matrix (Angle : Radian; Axis : GL.Types.Singles.Vector3)
-                              return GL.Types.Singles.Matrix4 is
+                             return GL.Types.Singles.Matrix3 is
+      use GL;
+      use Single_Quaternion;
+
+      aQuaternion : Single_Quaternion.Quaternion;
+      theMatrix   : GL.Types.Singles.Matrix3 := GL.Types.Singles.Identity3;
+      NQ          : Single_Quaternion.Quaternion;
+   begin
+      aQuaternion := New_Quaternion (Angle, Axis);
+      NQ := Normalized (aQuaternion);
+
+      theMatrix (X, X) := 1.0 - 2.0 * (NQ.C * NQ.C + NQ.D * NQ.D);
+      theMatrix (Y, X) := 2.0 * (NQ.B * NQ.C - NQ.A * NQ.D);
+      theMatrix (Z, X) := 2.0 * (NQ.B * NQ.D + NQ.A * NQ.C);
+
+      theMatrix (X, Y) := 2.0 * (NQ.B * NQ.C + NQ.A * NQ.D);
+      theMatrix (Y, Y) := 1.0 - 2.0 * (NQ.B * NQ.B + NQ.D * NQ.D);
+      theMatrix (Z, Y) := 2.0 * (NQ.C * NQ.D - NQ.A * NQ.B);
+
+      theMatrix (X, Z) := 2.0 * (NQ.B * NQ.D - NQ.A * NQ.C);
+      theMatrix (Y, Z) := 2.0 * (NQ.C * NQ.D + NQ.A * NQ.B);
+      theMatrix (Z, Z) := 1.0 - 2.0 * (NQ.B * NQ.B + NQ.C * NQ.C);
+      return theMatrix;
+   end Rotation_Matrix;
+
+   --  ------------------------------------------------------------------------
+   --  Rotation_Matrix is based on "Quaternians and spatial rotation" by
+   --  en.m.wikipedia.org, with the matrix transposed
+
+   function Rotation_Matrix (Angle : Radian; Axis : GL.Types.Singles.Vector3)
+                             return GL.Types.Singles.Matrix4 is
       use GL;
       use Single_Quaternion;
 
@@ -271,21 +364,29 @@ package body Maths is
    --  ------------------------------------------------------------------------
 
    function Rotation_Matrix (Angle : Degree; Axis : GL.Types.Singles.Vector3)
-                              return GL.Types.Singles.Matrix4 is
+                             return GL.Types.Singles.Matrix4 is
    begin
       return Rotation_Matrix (Radians (Angle), Axis);
    end Rotation_Matrix;
 
    --  ------------------------------------------------------------------------
 
-   procedure Rotate (Vec : in out GL.Types.Singles.Vector3;
+   function Rotation_Matrix (Angle : Degree; Axis : GL.Types.Singles.Vector3)
+                             return GL.Types.Singles.Matrix3 is
+   begin
+      return Rotation_Matrix (Radians (Angle), Axis);
+   end Rotation_Matrix;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Rotate (Vec   : in out GL.Types.Singles.Vector3;
                      Angle : Degree; Axis : GL.Types.Singles.Vector3) is
       use Single_Quaternion;
       Rotation_Q  : constant Quaternion := New_Quaternion (Radians (Angle), Axis);
       Conjugate_Q : constant Quaternion := Single_Quaternion.Conj (Rotation_Q);
       W           : constant Quaternion := Rotation_Q * Vec * Conjugate_Q;
       W_Vec       : GL.Types.Singles.Vector4;
-      begin
+   begin
       W_Vec := (W.A, W.B, W.C, W.D);
       Vec := GL.Types.Singles.To_Vector3 (W_Vec);
    end Rotate;
@@ -317,7 +418,7 @@ package body Maths is
    --  Chapter 5, transpose of equation preceding (5.25)
 
    function Translation_Matrix (Change : Singles.Vector3)
-                                 return Singles.Matrix4 is
+                                return Singles.Matrix4 is
       use GL;
       theMatrix  : Singles.Matrix4 := Singles.Identity4;
    begin

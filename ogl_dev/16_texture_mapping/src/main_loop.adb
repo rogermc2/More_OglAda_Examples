@@ -32,10 +32,10 @@ with Ogldev_Texture;
 
 with Buffers;
 
-procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
+procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
+   Background             : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
    Shader_Program         : GL.Objects.Programs.Program;
    Sampler_Location       : GL.Uniforms.Uniform;
    WVP_Location           : GL.Uniforms.Uniform;
@@ -44,7 +44,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    IBO                    : GL.Objects.Buffers.Buffer;
    VBO                    : GL.Objects.Buffers.Buffer;
    Game_Camera            : Ogldev_Camera.Camera;
-   Pipe                   : Ogldev_Pipeline.Pipeline;
    theTexture             : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Scale                  : Single := 0.0;
@@ -92,8 +91,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Bind;
 
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-         Ogldev_Camera.Init_Camera (Game_Camera, Int (Window_Width), Int (Window_Height));
-         Ogldev_Camera.Set_Step (0.1);
+         Ogldev_Camera.Init_Camera (Game_Camera, Window);
+         Ogldev_Camera.Set_Step_Size (0.05);
          Utilities.Clear_Background_Colour (Background);
          GL.Culling.Set_Front_Face (Counter_Clockwise);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
@@ -102,10 +101,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Vertex_Buffer (VBO);
          Buffers.Create_Index_Buffer (IBO);
 
+         -- tell the fragment shader which texture unit to use.
          GL.Uniforms.Set_Int (Sampler_Location, 0);
-
-         if Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                         "/Ada_Source/OpenGLAda/examples/ogl_dev/content/test.png") then
+         if Ogldev_Texture.Init_Texture
+           (theTexture, GL.Low_Level.Enums.Texture_2D,
+            "/Ada_Source/OglAda_Examples/ogl_dev/content/test.png") then
             Ogldev_Texture.Load (theTexture);
          else
             Put_Line ("Main_Loop.Init test.png failed to load");
@@ -119,7 +119,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
          Window.Set_Cursor_Mode (Glfw.Input.Mouse.Disabled);
-         Glfw.Input.Poll_Events;
       end if;
 
    exception
@@ -130,27 +129,41 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
+   --  To get texture mapping working:
+   --  1. load a texture into OpenGL,
+   --  2. supply texture coordinates with the vertices (to map the texture to them),
+   --  3. perform a sampling operation from the texture using the texture coordinates
+   --     to get the pixel color.
+   --  Texturing involves manipulating the connections between four concepts:
+   --  1. the texture object which contains the data of the texture image (the texels),
+   --     the texture object contains the texture data and the
+   --     parameters that configure the sampling operation.
+   --  2. a texture unit to which the texture object is bound,
+   --  3. the sampler object (in the fragment shader),
+   --  4. and the sampler uniform in the shader.
+
    procedure Render_Scene (Window : in out Glfw.Windows.Window) is
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
+      Pipe                 : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Background_Colour_And_Depth (Background);
-      Scale := Scale + 0.1;
+      Scale := Scale + 0.005;
 
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
+      Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Ogldev_Math.Set_Perspective_Width
         (Perspective_Proj_Info, GL.Types.UInt (Window_Width));
       Ogldev_Math.Set_Perspective_Height
         (Perspective_Proj_Info, GL.Types.UInt (Window_Height));
 
-      Ogldev_Camera.Update_Camera (Game_Camera, Window);
-
-      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -3.0);
-      Ogldev_Pipeline.Set_Perspective_Info (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Set_Scale (Pipe, 2.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
+      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 1.0, -1.0, -3.0);
+      Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
       GL.Uniforms.Set_Single (WVP_Location, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
@@ -160,8 +173,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Array_Buffer.Bind (VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
-                                               Stride => 0, Offset => 0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 3);
+                                               Stride => 5, Offset => 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 5, 3);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (IBO);
 

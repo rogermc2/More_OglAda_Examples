@@ -1,6 +1,6 @@
 with "../../common/common.gpr";
-with "../../../opengl.gpr";
-limited with "../../../opengl-glfw.gpr";
+with "../../../OpenGLAda/opengl.gpr";
+limited with "../../../OpenGLAda/opengl-glfw.gpr";
 
 project Tutorial_06 is
 

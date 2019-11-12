@@ -51,15 +51,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     begin
         Rendering_Program := Program_From (
           (Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
-           Src ("src/shaders/fragment_shader.glsl", Fragment_Shader))
-        );
+           Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
+
         GL.Toggles.Enable (GL.Toggles.Depth_Test);
         GL.Buffers.Set_Depth_Function (GL.Types.Less);
         Vertex_Array.Initialize_Id;
         Vertex_Array.Bind;
         -- Point size is set in the vertex shader
         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-        Utilities.Show_Shader_Program_Data (Rendering_Program);
     end Setup_Graphic;
 
 --  ----------------------------------------------------------------------------

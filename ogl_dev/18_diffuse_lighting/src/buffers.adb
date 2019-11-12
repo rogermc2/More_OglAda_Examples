@@ -1,19 +1,14 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Types;
+
 with Maths;
 with Utilities;
 
 package body Buffers is
 
     use GL.Types.Singles;
-    type Vertex is record
-        Position : Vector3;
-        Texture  : Vector2;
-        Normal   : Vector3 := (0.0, 0.0, 0.0);
-    end record;
-
-    type Vertices_Array is array (GL.Types.UInt range <>) of Vertex;
 
     procedure Create_Index_Buffer (IBO : in out GL.Objects.Buffers.Buffer;
                                    Indices : out GL.Types.UInt_Array);

@@ -6,7 +6,6 @@ with Interfaces.C.Strings;
 
 
 with Magick_Type; use Magick_Type;
-with Method_Attribute;
 with Semaphore;
 with Stream;
 

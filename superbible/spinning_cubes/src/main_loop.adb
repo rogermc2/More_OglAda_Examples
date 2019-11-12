@@ -91,9 +91,7 @@ exception
         use GL.Objects.Buffers;
         use GL.Objects.Shaders;
         use GL;
-        use GL.Types;
-        use GL.Types.Singles;
-        use Program_Loader;
+        use GL.Types;        use Program_Loader;
 
     begin
         Window.Set_Size (Window_Width, Window_Height);
@@ -103,7 +101,6 @@ exception
         Rendering_Program :=
           Program_From ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
                          Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
-        Utilities.Show_Shader_Program_Data (Rendering_Program);
 
         --  Get locations of shader programs matrix uniforms
         Model_View_Location :=
@@ -118,9 +115,10 @@ exception
         Array_Buffer.Bind (Position_Buffer);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Vertex_Data.Vertices, Static_Draw);
 
-        GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
-                                                 Kind   => GL.Types.Single_Type,
-                                                 Stride => 0, Offset => 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (Index      => 0, Count  => 3,
+                                                 Kind       => GL.Types.Single_Type,
+                                                 Normalized => True,
+                                                 Stride     => 0, Offset => 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         Maths.Init_Perspective_Transform (Maths.Degree (50.0),
                               Single (Viewport_Width), Single (Viewport_Height),

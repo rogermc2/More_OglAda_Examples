@@ -1,29 +1,18 @@
 
-with Interfaces.C.Strings;
-
-with Ada.Containers;
-with Ada.Unchecked_Conversion;
-
 with GL.Types;
 
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Assimp_Util;
 with Assimp_Types;
-with Material_Keys;
-with Utilities;
-
-with Material_Keys;
 
 package body AI_Conversion is
 
-   type String_4 is new String (1 .. 4);
+--     type String_4 is new String (1 .. 4);
    type Byte_Array4 is array (1 .. 4) of GL.Types.UByte;
-   type Byte_Array12 is array (1 .. 12) of GL.Types.UByte;
+--     type Byte_Array12 is array (1 .. 12) of GL.Types.UByte;
 
-   procedure To_AI_Property_List (anAPI_Material     : Material.API_Material;
-                                  Property_Ptr_Array : Material.API_Property_Ptr_Array;
+   procedure To_AI_Property_List (Property_Ptr_Array : Material.API_Property_Ptr_Array;
                                   AI_Properties      : out Material.AI_Material_Property_List);
    function To_Integer (Bytes_In : Byte_Array4) return GL.Types.Int;
 
@@ -34,7 +23,7 @@ package body AI_Conversion is
       use Interfaces;
       use GL.Types;
 
-      Data_Length : UInt := String_Data'Length;
+      Data_Length : constant UInt := String_Data'Length;
       Data_String : Ada.Strings.Unbounded.Unbounded_String :=
                       Ada.Strings.Unbounded.To_Unbounded_String ("");
       Str_Data    : String (1 .. Integer (Data_Length - 4));
@@ -57,7 +46,8 @@ package body AI_Conversion is
 
    --  -------------------------------------------------------------------------
 
-   function To_AI_Material (C_Material : Material.API_Material) return Material.AI_Material is
+   function To_AI_Material (C_Material : Material.API_Material)
+                            return Material.AI_Material is
       use Interfaces.C;
       use Material;
       Num_Property  : constant unsigned := C_Material.Num_Properties;
@@ -65,13 +55,12 @@ package body AI_Conversion is
    begin
       if Num_Property > 0 then
          declare
-            use Property_Ptr_Array_Package;
             theProperties_Ptr_Array : API_Property_Ptr_Array (1 .. Num_Property);
          begin
             theProperties_Ptr_Array := Property_Ptr_Array_Package.Value
               (C_Material.Properties, ptrdiff_t (Num_Property));
             To_AI_Property_List
-              (C_Material, theProperties_Ptr_Array, theMaterial.Properties);
+              (theProperties_Ptr_Array, theMaterial.Properties);
             theMaterial.Num_Allocated := GL.Types.UInt (C_Material.Num_Allocated);
          end;
       end if;
@@ -86,14 +75,14 @@ package body AI_Conversion is
    --  ------------------------------------------------------------------------
 
    function To_AI_Materials_Map (Num_Materials    : Interfaces.C.unsigned := 0;
-                                 C_Material_Array : in out Material.API_Material_Array)
+                                 C_Material_Array : Material.API_Material_Ptr_Array)
                                   return Material.AI_Material_Map is
       use Interfaces.C;
       Material_Map : Material.AI_Material_Map;
       aMaterial    : Material.AI_Material;
    begin
       for mat in 1 .. Num_Materials loop
-         aMaterial := To_AI_Material (C_Material_Array (mat));
+         aMaterial := To_AI_Material (C_Material_Array (mat).all);
          Material_Map.Insert (GL.Types.UInt (mat - 1), aMaterial);
       end loop;
       return Material_Map;
@@ -106,21 +95,21 @@ package body AI_Conversion is
 
    --  ------------------------------------------------------------------------
 
-   procedure To_AI_Property (anAPI_Material : Material.API_Material;
-                             API_Property   : Material.API_Material_Property;
+--     procedure To_AI_Property (anAPI_Material : Material.API_Material;
+   procedure To_AI_Property (API_Property   : Material.API_Material_Property;
                              theAI_Property : out Material.AI_Material_Property) is
       use Interfaces.C;
       use GL.Types;
       use Assimp_Types;
       use Raw_Data_Pointers;
 
-      Key_Length    : size_t := API_Property.Key.Length;
+      Key_Length    : constant size_t := API_Property.Key.Length;
       --  Data_Length number of bytes
       Data_Length   : constant UInt := UInt (API_Property.Data_Length);
       Data_Array    : Raw_Byte_Data (1 .. Data_Length);
       Data4         : Byte_Array4;
-      Key_String    : constant String (1 .. Integer (Key_Length)) :=
-                        To_Ada (API_Property.Key.Data);
+--        Key_String    : constant String (1 .. Integer (Key_Length)) :=
+--                          To_Ada (API_Property.Key.Data);
       AI_Property   : Material.AI_Material_Property (API_Property.Data_Type);
    begin
       if Key_Length > 0 then
@@ -131,7 +120,7 @@ package body AI_Conversion is
             AI_Property.Key := Ada.Strings.Unbounded.To_Unbounded_String (Key_Data);
          end;
 
-         AI_Property.Semantic := UInt (API_Property.Semantic);
+         AI_Property.Semantic := Material.AI_Texture_Type'Enum_Val (API_Property.Semantic);
          AI_Property.Texture_Index := UInt (API_Property.Texture_Index);
          AI_Property.Data_Length := Data_Length;
 
@@ -165,8 +154,8 @@ package body AI_Conversion is
 
    --  ----------------------------------------------------------------------
 
-   procedure To_AI_Property_List (anAPI_Material     : Material.API_Material;
-                                  Property_Ptr_Array : Material.API_Property_Ptr_Array;
+--     procedure To_AI_Property_List (anAPI_Material     : Material.API_Material;
+   procedure To_AI_Property_List (Property_Ptr_Array : Material.API_Property_Ptr_Array;
                                   AI_Properties      : out Material.AI_Material_Property_List) is
       use Interfaces.C;
       use Material;
@@ -175,7 +164,8 @@ package body AI_Conversion is
    begin
       for Property_Index in unsigned range 1 .. Property_Ptr_Array'Length loop
          aProperty := Property_Ptr_Array (Property_Index).all;
-         To_AI_Property (anAPI_Material, aProperty, AI_Property);
+         To_AI_Property (aProperty, AI_Property);
+--           To_AI_Property (anAPI_Material, aProperty, AI_Property);
          AI_Properties.Append (AI_Property);
       end loop;
 

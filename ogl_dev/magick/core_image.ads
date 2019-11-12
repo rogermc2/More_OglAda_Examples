@@ -23,7 +23,6 @@ with Magick_Pixel;
 with Magick_Type; use Magick_Type;
 with Magick_Profile;
 with Method;
-with Method_Attribute;
 with Monitor;
 with Quantum;
 with Resample;
@@ -207,7 +206,7 @@ package Core_Image is
         Unique             : Image_Info_Unique_Array :=
                              (others => char (Character'Val (0)));    --  unique tempory filename - delegates
       File_Name          : Image_Info_Filename_Array :=
-                             ('H', 'e','l','l','o', others => char (Character'Val (0)));  --  filename when reading/writing image
+                             ('H', 'e', 'l', 'l', 'o', others => char (Character'Val (0)));  --  filename when reading/writing image
         Debug              : Magick_Boolean_Type := Magic_False;
         Signature          : size_t := 0;
 --                                 size_t (Method_Attribute.Magick_Core_Signature);
