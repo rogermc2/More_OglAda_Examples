@@ -1,13 +1,13 @@
 
-with Interfaces.C.Pointers;
+--  with Interfaces.C.Pointers;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
-with GL.Low_Level.Enums;
+--  with GL.Low_Level.Enums;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Queries;
+--  with GL.Objects.Queries;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
@@ -18,14 +18,6 @@ with Utilities;
 
 procedure Display is
 
-    type Feedback_Array is new GL.Types.Single_Array;
-
-    package Feedback_Array_Package is new Interfaces.C.Pointers
-      (GL.Types.Size, GL.Types.Single, Feedback_Array, GL.Types.Single'Last);
-
-    procedure Feedback_Sub_Data is new
-      GL.Objects.Buffers.Get_Sub_Data (Feedback_Array_Package);
-
     Data                     : constant GL.Types.Single_Array (1 .. 5) :=
                                         (1.0, 2.0, 3.0, 4.0, 5.0);
 
@@ -34,7 +26,7 @@ procedure Display is
     Vertex_Buffer             : GL.Objects.Buffers.Buffer;
     Feedback_Buffer           : GL.Objects.Buffers.Buffer;
     Input_Attribute           : GL.Attributes.Attribute;
-    Query                     : GL.Objects.Queries.Query_Object;
+--      Query                     : GL.Objects.Queries.Query_Object;
 
     --  ------------------------------------------------------------------------
 
@@ -44,28 +36,30 @@ procedure Display is
         use GL.Types;
         use GL.Toggles;
         use Program_Loader;
-        Varyings     : constant String := "outValue";
-        Primitives   : Int_Array (1 .. 15);
-        Feedback_Ptr : Feedback_Array_Package.Pointer := Null;
-        Feedback     : Feedback_Array  (1 .. 15);
+        Shader_List  : Shader_Sources (1 .. 1);
+        Out_Varying  : constant String := "geoValue";
+--          Out_Varying  : constant String := "outValue";
+--          Primitives   : UInt_Array (1 .. 15) := (others => 0);
+        Feedback     : GL.Types.Single_Array  (1 .. 15) := (others => 0.0);
         OK           : Boolean;
     begin
         Vertex_Array.Initialize_Id;
         Vertex_Array.Bind;
-
-        Shader_Program := Program_From
-          ((Src ("src/shaders/feedback_vertex_shader.glsl", Vertex_Shader),
-           Src ("src/shaders/feedback_geometry_shader.glsl", Geometry_Shader)));
+        Shader_List (1) := Src ("src/shaders/feedback_vertex_shader.glsl", Vertex_Shader);
+        Shader_Program := Program_From (Shader_List);
+--          Shader_Program := Program_From
+--            ((Src ("src/shaders/feedback_vertex_shader.glsl", Vertex_Shader),
+--             Src ("src/shaders/feedback_geometry_shader.glsl", Geometry_Shader)));
 
         Shader_Program.Use_Program;
         --  Interleaved_Attribs means that the varyings are recorded
         --  consecetively into a single buffer.
-        Transform_Feedback_Varyings (Shader_Program, Varyings,
+        Transform_Feedback_Varyings (Shader_Program, Out_Varying,
                                      Interleaved_Attribs);
         Shader_Program.Link;
         OK := GL.Objects.Programs.Link_Status (Shader_Program);
         if not OK then
-            Put_Line ("Main_Loop.Setup, Shader_Program Link for Varyings failed");
+            Put_Line ("Main_Loop.Setup, Shader_Program Link for Out_Varying failed");
             Put_Line (GL.Objects.Programs.Info_Log (Shader_Program));
         end if;
 
@@ -84,33 +78,40 @@ procedure Display is
         Array_Buffer.Bind (Feedback_Buffer);
         Array_Buffer.Allocate (3 * Data'Size / 8, Static_Read);
 
-        Query.Initialize_Id;
+--          Query.Initialize_Id;
         Enable (Rasterizer_Discard);
         GL.Objects.Buffers.Transform_Feedback_Buffer.Bind_Buffer_Base
            (0, Feedback_Buffer);
-        GL.Objects.Queries.Begin_Query
-          (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written, Query);
 
-         GL.Objects.Programs.Begin_Transform_Feedback (Triangles);
+--          GL.Objects.Queries.Begin_Query
+--            (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written, Query);
+         GL.Objects.Programs.Begin_Transform_Feedback (Points);
+
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 5);
          GL.Objects.Programs.End_Transform_Feedback;
-        GL.Objects.Queries.End_Query
-          (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written);
-        Disable (Rasterizer_Discard);
-
+--          GL.Objects.Queries.End_Query
+--            (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written);
         Flush;
-        GL.Objects.Queries.Get_Query_Object
-          (Query, GL.Low_Level.Enums.Query_Result, Primitives);
-        Put_Line ("Display Feedback_Buffer Query_Object received.");
+        Disable (Rasterizer_Discard);
+        Put_Line ("Display Feedback_Buffer Rasterizer_Discard disabled.");
 
-        Feedback_Sub_Data (Transform_Feedback_Buffer, 0, 15, Feedback_Ptr);
+--          Put_Line ("Display Feedback_Buffer Query ID: " &
+--                      UInt'Image (GL.Objects.Queries.Raw_Id (Query)));
+--          Put_Line ("Display Feedback_Buffer is Query: "  &
+--                      Boolean'Image (GL.Objects.Queries.Is_Query (Query)));
+--
+--          GL.Objects.Queries.Get_Query_Object
+--            (Query, GL.Low_Level.Enums.Query_Result_Available, Primitives);
+--          Put_Line ("Display Feedback_Buffer Query_Object received.");
+
+        Get_Sub_Data (Transform_Feedback_Buffer, 0, Feedback);
         Put_Line ("Display Feedback_Buffer Feedback_Ptr obtained.");
-        for count in Int range 1 .. 15 loop
-            Feedback (count) := Feedback_Ptr.all;
-            Feedback_Array_Package.Increment (Feedback_Ptr);
-        end loop;
+--          for count in Int range 1 .. 15 loop
+--              Feedback (count) := Feedback_Ptr.all;
+--              Feedback_Array_Package.Increment (Feedback_Ptr);
+--          end loop;
 
-        Utilities.Print_GL_Int_Array ("primitives written!", Primitives);
+--          Utilities.Print_GL_UInt_Array ("primitives written!", Primitives);
         Utilities.Print_Singles_Array ("", Utilities.Singles_Array (Feedback), 1, 15);
 
 exception
