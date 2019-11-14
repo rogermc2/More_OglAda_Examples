@@ -9,7 +9,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Glfw.Windows;
 
 with Initialize;
-with Main_Loop;
+with Display;
 
 procedure Transform_Feedback is
     Main_Window  : Glfw.Windows.Window;
@@ -17,7 +17,7 @@ procedure Transform_Feedback is
 begin
     Glfw.Init;
     Initialize (Main_Window, Window_Title);
-    Main_Loop (Main_Window);
+    Display;
     Glfw.Shutdown;
 
 exception
