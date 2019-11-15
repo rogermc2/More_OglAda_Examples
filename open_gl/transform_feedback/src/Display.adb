@@ -90,11 +90,15 @@ begin
    Put_Line (UInt'Image (Primitives) & " primitives written!");
 
    Get_Sub_Data (Transform_Feedback_Buffer, 0, Feedback);
-   Put ("Feedback: ");
+   Put_Line ("Feedback values: ");
    for count in Feedback'Range loop
       Put (Single'Image (Feedback (count)) & "  ");
+      if count mod 3 = 0 then
+         New_Line;
+      end if;
    end loop;
    New_Line;
+
 exception
    when others =>
       Put_Line ("An exception occurred in Display.");
