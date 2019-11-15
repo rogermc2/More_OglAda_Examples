@@ -26,6 +26,7 @@ procedure Display is
 
    Data              : constant GL.Types.Single_Array (1 .. 5) :=
                          (1.0, 2.0, 3.0, 4.0, 5.0);
+   Data_Bytes        : constant GL.Types.Long := Data'Size / 8;
    Shader_Program    : GL.Objects.Programs.Program;
    Vertex_Array      : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer     : GL.Objects.Buffers.Buffer;
@@ -45,9 +46,8 @@ begin
 
    Shader_Program.Use_Program;
    --  Interleaved_Attribs means that the varyings are recorded
-   --  consecetively into a single buffer.
-   Transform_Feedback_Varyings (Shader_Program, Out_Varying,
-                                Interleaved_Attribs);
+   --  consecutively into a single buffer.
+   Transform_Feedback_Varyings (Shader_Program, Out_Varying, Interleaved_Attribs);
    Shader_Program.Link;
    OK := GL.Objects.Programs.Link_Status (Shader_Program);
    if not OK then
@@ -68,7 +68,7 @@ begin
 
    Feedback_Buffer.Initialize_Id;
    Array_Buffer.Bind (Feedback_Buffer);
-   Array_Buffer.Allocate (3 * Data'Length, Static_Read);
+   Array_Buffer.Allocate (3 * Data_Bytes, Static_Read);
 
    Query.Initialize_Id;
    Enable (Rasterizer_Discard);
@@ -78,27 +78,23 @@ begin
    GL.Objects.Queries.Begin_Query
      (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written, Query);
    GL.Objects.Programs.Begin_Transform_Feedback (Triangles);
-
    GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 5);
-
    GL.Objects.Programs.End_Transform_Feedback;
    GL.Objects.Queries.End_Query
      (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written);
-   Flush;
    Disable (Rasterizer_Discard);
+   Flush;
 
    GL.Objects.Queries.Get_Query_Object
      (Query, GL.Low_Level.Enums.Query_Result, Primitives);
+   Put_Line (UInt'Image (Primitives) & " primitives written!");
 
    Get_Sub_Data (Transform_Feedback_Buffer, 0, Feedback);
-
-   Put_Line ("Primitives written! " & UInt'Image (Primitives));
    Put ("Feedback: ");
    for count in Feedback'Range loop
       Put (Single'Image (Feedback (count)) & "  ");
    end loop;
    New_Line;
-
 exception
    when others =>
       Put_Line ("An exception occurred in Display.");
