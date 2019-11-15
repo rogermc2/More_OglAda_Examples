@@ -32,17 +32,13 @@ procedure Display is
    Feedback_Buffer   : GL.Objects.Buffers.Buffer;
    Input_Attribute   : GL.Attributes.Attribute;
    Query             : GL.Objects.Queries.Query_Object;
-   --     Shader_List       : Shader_Sources (1 .. 1);
-   --     Out_Varying               : constant String := "geoValue";
    Out_Varying       : constant String := "outValue";
    Primitives        : UInt;
-   Feedback          : GL.Types.Single_Array  (1 .. 15) := (others => 0.0);
+   Feedback          : GL.Types.Single_Array  (1 .. 15) := (others => 99.0);
    OK                : Boolean;
 begin
    Vertex_Array.Initialize_Id;
    Vertex_Array.Bind;
-   --     Shader_List (1) := Src ("src/shaders/feedback_vertex_shader.glsl", Vertex_Shader);
-   --     Shader_Program := Program_From (Shader_List);
    Shader_Program := Program_From
      ((Src ("src/shaders/feedback_vertex_shader.glsl", Vertex_Shader),
       Src ("src/shaders/feedback_geometry_shader.glsl", Geometry_Shader)));
@@ -72,7 +68,7 @@ begin
 
    Feedback_Buffer.Initialize_Id;
    Array_Buffer.Bind (Feedback_Buffer);
-   Array_Buffer.Allocate (3 * Data'Size / 8, Static_Read);
+   Array_Buffer.Allocate (3 * Data'Length, Static_Read);
 
    Query.Initialize_Id;
    Enable (Rasterizer_Discard);
@@ -98,7 +94,7 @@ begin
 
    Put_Line ("Primitives written! " & UInt'Image (Primitives));
    Put ("Feedback: ");
-   for count in Int range 1 .. 15 loop
+   for count in Feedback'Range loop
       Put (Single'Image (Feedback (count)) & "  ");
    end loop;
    New_Line;
