@@ -1,5 +1,5 @@
 Author: Roger Mc Murtrie
-These examples are based on the tutorials available at https://open.gl using Glfw version 3.
+These examples are based on the tutorials available at https://github.com/progschj/OpenGL-Examples using Glfw version 3.
 The version numbers in the shader programs may need modification depending on your
 platform.
 For Mac users, note that the Glfw provided with OSX is incompatible with OpenGLAda as it does not contain libglfw.a.
