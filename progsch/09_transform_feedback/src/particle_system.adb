@@ -17,7 +17,6 @@ with GL.Window;
 
 with Maths;
 with Program_Loader;
---  with Utilities;
 
 package body Particle_System is
 
@@ -220,7 +219,6 @@ package body Particle_System is
 
       Particle_Program.Use_Program;
       View_Matrix := Rotation_Matrix (Degrees (30.0), (1.0, 0.0, 0.0)) * View_Matrix;
---        View_Matrix := Rotation_Matrix (Degrees (-22.5 * Radian (Current_Time)),
       View_Matrix := Rotation_Matrix (Degrees (-0.3 * Radian (Current_Time)),
                                       (0.0, 1.0, 0.0)) * View_Matrix;
       View_Matrix := Translation_Matrix ((0.0, 0.0, -30.0)) * View_Matrix;
