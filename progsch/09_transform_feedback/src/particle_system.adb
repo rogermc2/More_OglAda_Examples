@@ -36,21 +36,18 @@ package body Particle_System is
    procedure Load_Vertex_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (Vertex_Pointers);
 
-
---     Single_Bytes       : constant Int := Single'Size / 8;
    Num_Particles      : constant Int := 128 * 1024;
    Num_Buffers        : constant Int := 2;
    Num_Spheres        : constant Int := 3;
---     Buffer_Size        : constant Long := 4 * Long (Num_Particles * Single_Bytes);
    Dt                 : constant Single := 1.0 / 60.0;
    Bounce             : constant Single := 1.2;          --  inelastic: 1.0, elastic: 2.0
    G                  : constant Singles.Vector3 := (0.0, -9.81, 0.0);
    Vertex_Data_Array  : Vertex_Array (1 .. Num_Particles);
-   Centre             : constant Singles.Vector3_Array  (1 .. Num_Spheres) :=
+   Sphere_Centres     : constant Singles.Vector3_Array  (1 .. Num_Spheres) :=
                            ((0.0, 12.0, 1.0),
                             (-3.0, 0.0, 0.0),
                             (5.0, -10.0, 0.0));
-   Radius             : constant Single_Array  (1 .. Num_Spheres) := (3.0, 7.0, 12.0);
+   Sphere_Radii       : constant Single_Array  (1 .. Num_Spheres) := (0.5, 1.0, 2.0);  --  (3.0, 7.0, 12.0);
    Vertices_Array     : Vertex_Buffer_Array (1 .. Num_Buffers);
    Vertex_Buffers     : Buffer_Array (1 .. Num_Buffers);
    Particle_Program   : GL.Objects.Programs.Program;
@@ -91,6 +88,7 @@ package body Particle_System is
         Vertex_Data_Array (index).Position := Maths.Random_Vector (-0.5, 0.5);
         Vertex_Data_Array (index).Position :=
               (0.0, 20.0, 0.0) + 5.0 * Vertex_Data_Array (index).Position;
+--                (0.0, 20.0, 0.0) + 5.0 * Vertex_Data_Array (index).Position;
       end loop;
 
      for index in 1 .. Num_Buffers loop
@@ -126,6 +124,9 @@ package body Particle_System is
       Transform_Shader_List : Program_Loader.Shader_Sources (1 .. 1);
       OK                    : Boolean;
    begin
+      --  The vertex shader simply passes through position data to the pipeline.
+      --  The geometry shader creates the billboard quads.
+      --  The fragment shader creates a bell like radial color distribution.
       Particle_Program := Program_Loader.Program_From
         ((Program_Loader.Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
          Program_Loader.Src ("src/shaders/geometry_shader.glsl", Geometry_Shader),
@@ -187,7 +188,10 @@ package body Particle_System is
       Window_Height     : Glfw.Size;
       Projection_Matrix : constant Matrix4 := Perspective_Matrix
           (Degrees (90.0), 4.0 / 3.0, 0.1, 100.0);
-      View_Matrix       : Matrix4 := Translation_Matrix ((0.0, 0.0, -30.0));
+      Scale_Matrix      : constant Matrix4 := Scaling_Matrix (0.1);
+      View_Matrix       : Matrix4 :=
+                              Translation_Matrix ((0.0, -10.0, 30.0));  --  (0.0, 0.0, -30.0)
+
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -195,8 +199,8 @@ package body Particle_System is
 
       Transform_Program.Use_Program;
 
-      GL.Uniforms.Set_Single (Centre_ID, Centre);
-      GL.Uniforms.Set_Single (Radius_ID, Radius);
+      GL.Uniforms.Set_Single (Centre_ID, Sphere_Centres);
+      GL.Uniforms.Set_Single (Radius_ID, Sphere_Radii);
       GL.Uniforms.Set_Single (G_ID, G);
       GL.Uniforms.Set_Single (Dt_ID, Dt);
       GL.Uniforms.Set_Single (Bounce_ID, Bounce);
@@ -222,6 +226,7 @@ package body Particle_System is
       View_Matrix := Rotation_Matrix (Degrees (30.0), (1.0, 0.0, 0.0)) * View_Matrix;
       View_Matrix := Rotation_Matrix (Degrees (-22.5 * Radian (Current_Time)),
                                       (0.0, 1.0, 0.0)) * View_Matrix;
+      View_Matrix := Scale_Matrix * View_Matrix;
 
       GL.Uniforms.Set_Single (View_ID, View_Matrix);
       GL.Uniforms.Set_Single  (Projection_ID, Projection_Matrix);
