@@ -3,10 +3,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Blending;
 with GL.Toggles;
-with GL.Types.Colors;
 
 with Glfw.Input.Keys;
 with Glfw.Input.Mouse;
+with GL.Types;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
@@ -16,13 +16,9 @@ with Particle_System;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-   Background           : constant GL.Types.Colors.Color := (0.3, 0.3, 0.8, 0.0);
-   --  ------------------------------------------------------------------------
-
    procedure Render (Window : in out Glfw.Windows.Window) is
    begin
-      Utilities.Clear_Background_Colour_And_Depth (Background);
-
+      Utilities.Clear_Colour_Buffer_And_Depth;
       Particle_System.Render_Particles (Window);
 
    exception
@@ -50,7 +46,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window'Access.Set_Size (Window_Width, Window_Height);
       Window'Access.Set_Cursor_Pos (Mouse.Coordinate (0.5 * Single (Window_Width)),
                                     Mouse.Coordinate (0.5 * Single (Window_Height)));
-      Utilities.Clear_Background_Colour_And_Depth (Background);
+      Utilities.Clear_Colour_Buffer_And_Depth;
 
       Particle_System.Init;
 
@@ -73,7 +69,6 @@ begin
       Running := Running and then
         not (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and then not Main_Window.Should_Close;
---        Delay (0.2);
    end loop;
 
 exception

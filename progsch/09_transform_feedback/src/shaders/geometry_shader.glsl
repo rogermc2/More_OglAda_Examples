@@ -12,6 +12,7 @@ out vec2 billboardcoord;
 void main()
    {
    vec4 pos = View * gl_in[0].gl_Position;
+       
    billboardcoord = vec2(-1, -1);
    gl_Position = Projection * (pos + 0.2 * vec4(billboardcoord, 0, 0));
    EmitVertex();
