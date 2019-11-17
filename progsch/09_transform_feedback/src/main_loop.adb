@@ -73,6 +73,7 @@ begin
       Running := Running and then
         not (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and then not Main_Window.Should_Close;
+--        Delay (0.2);
    end loop;
 
 exception
