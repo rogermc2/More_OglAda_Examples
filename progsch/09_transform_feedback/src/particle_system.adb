@@ -40,7 +40,7 @@ package body Particle_System is
    Num_Buffers        : constant Int := 2;
    Num_Spheres        : constant Int := 3;
    Dt                 : constant Single := 1.0 / 60.0;
-   Bounce             : constant Single := 1.2;          --  inelastic: 1.0, elastic: 2.0
+   Bounce             : constant Single := 1.2;  --  inelastic: 1.0, elastic: 2.0
    G                  : constant Singles.Vector3 := (0.0, -9.81, 0.0);
    Vertex_Data_Array  : Vertex_Array (1 .. Num_Particles);
    Sphere_Centres     : constant Singles.Vector3_Array  (1 .. Num_Spheres) :=
@@ -85,10 +85,9 @@ package body Particle_System is
       use GL.Types.Singles;
    begin
      for index in 1 .. Num_Particles loop
-        Vertex_Data_Array (index).Position := Maths.Random_Vector (-0.5, 0.5);
+        Vertex_Data_Array (index).Position := Maths.Random_Vector (-2.5, 2.5);
         Vertex_Data_Array (index).Position :=
-              (0.0, 20.0, 0.0) + 5.0 * Vertex_Data_Array (index).Position;
---                (0.0, 20.0, 0.0) + 5.0 * Vertex_Data_Array (index).Position;
+              (0.0, 25.0, 0.0) + Vertex_Data_Array (index).Position;  --  (0.0, 20.0, 0.0)
       end loop;
 
      for index in 1 .. Num_Buffers loop
@@ -104,9 +103,9 @@ package body Particle_System is
               (Array_Buffer, Vertex_Data_Array, Static_Draw);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 6, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False, 6, 3);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False, 0, 3);
       end loop;
 
    exception
@@ -188,10 +187,7 @@ package body Particle_System is
       Window_Height     : Glfw.Size;
       Projection_Matrix : constant Matrix4 := Perspective_Matrix
           (Degrees (90.0), 4.0 / 3.0, 0.1, 100.0);
-      Scale_Matrix      : constant Matrix4 := Scaling_Matrix (0.1);
-      View_Matrix       : Matrix4 :=
-                              Translation_Matrix ((0.0, -10.0, 30.0));  --  (0.0, 0.0, -30.0)
-
+      View_Matrix       : Matrix4 := Scaling_Matrix (1.0);
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -204,7 +200,7 @@ package body Particle_System is
       GL.Uniforms.Set_Single (G_ID, G);
       GL.Uniforms.Set_Single (Dt_ID, Dt);
       GL.Uniforms.Set_Single (Bounce_ID, Bounce);
-      GL.Uniforms.Set_Int (Seed_ID, Int (10000.0 * Abs (Maths.Random_Float)));
+      GL.Uniforms.Set_Int (Seed_ID, Int'Last * Int (Abs (Maths.Random_Float)));
 
       if Buffer_Index = 2 then
         Buffer_Index := 1;
@@ -224,9 +220,10 @@ package body Particle_System is
 
       Particle_Program.Use_Program;
       View_Matrix := Rotation_Matrix (Degrees (30.0), (1.0, 0.0, 0.0)) * View_Matrix;
-      View_Matrix := Rotation_Matrix (Degrees (-22.5 * Radian (Current_Time)),
+--        View_Matrix := Rotation_Matrix (Degrees (-22.5 * Radian (Current_Time)),
+      View_Matrix := Rotation_Matrix (Degrees (-0.3 * Radian (Current_Time)),
                                       (0.0, 1.0, 0.0)) * View_Matrix;
-      View_Matrix := Scale_Matrix * View_Matrix;
+      View_Matrix := Translation_Matrix ((0.0, 0.0, -30.0)) * View_Matrix;
 
       GL.Uniforms.Set_Single (View_ID, View_Matrix);
       GL.Uniforms.Set_Single  (Projection_ID, Projection_Matrix);
