@@ -45,6 +45,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    theParticle_System     : Particle_System.Particle_System;
    Previous_Time_MilliSec : Single;
+   First                  : Boolean := True;
 
    --  ------------------------------------------------------------------------
 
@@ -128,8 +129,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
+      if First then
+          Delta_Millisec := 0;
+          First := False;
+      else
+          Delta_Millisec := UInt (Time_Millisec - Previous_Time_MilliSec);
+      end if;
 
-      Delta_Millisec := UInt (Time_Millisec - Previous_Time_MilliSec);
+      Put_Line ("Main_Loop.Render_Scene Delta_Millisec: " &
+               UInt'Image (Delta_Millisec));
       Previous_Time_MilliSec := Time_Millisec;
 
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
