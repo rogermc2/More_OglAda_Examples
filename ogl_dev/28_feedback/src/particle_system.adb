@@ -27,7 +27,7 @@ package body Particle_System is
 
    type Particle is record
       Particle_Kind : Particle_Type := Particle_Launcher;
-      Position      : Singles.Vector3 := (1.0, 1.0, 0.0);   --  (0.0, 0.0, 0.0)
+      Position      : Singles.Vector3 := (0.0, 0.0, 0.0);   --  (0.0, 0.0, 0.0)
       Velocity      : Singles.Vector3 := (0.0, 0.0, 0.0);
       Lifetime_ms   : GL.Types.Single := 0.0;
    end record;
@@ -67,7 +67,7 @@ package body Particle_System is
    begin
       Particles (1).Particle_Kind := Particle_Launcher;
       Particles (1).Position := Pos;
-      Particles (1).Velocity := (0.0, 0.0001, 0.0);
+      Particles (1).Velocity := (0.0, 0.0, 0.0);  --  (0.0, 0.0001, 0.0);
       Particles (1).Lifetime_ms := 0.0;
 
       for index in Buffer_Index loop
@@ -145,7 +145,7 @@ package body Particle_System is
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
-                                               Stride => 0,
+                                               Stride => Particle_Stride,
                                                Offset => 1);
       --  Draw_Transform_Feedback is equivalent to calling
       --  GL.Objects.VertexArrays.Draw_Arrays with mode as specified,
@@ -201,10 +201,10 @@ package body Particle_System is
 
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Index  => 0, Count => 1, Kind => Single_Type,
-         Stride => 0, Offset => 0);                                       --  Particle Type
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, 0, 1);  --  Position
-      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 4);  --  Velocity
-      GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, 0, 7);  --  Age
+         Stride => Particle_Stride, Offset => 0);                                       --  Particle Type
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, Particle_Stride, 1);  --  Position
+      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Particle_Stride, 4);  --  Velocity
+      GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, Particle_Stride, 7);  --  Age
 
       Query.Initialize_Id;
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
