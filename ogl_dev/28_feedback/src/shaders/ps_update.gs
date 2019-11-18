@@ -1,10 +1,10 @@
 #version 410 core
                                                                                     
-layout(points) in;                                                                  
-layout(points) out;                                                                 
-layout(max_vertices = 30) out;                                                      
-                                                                                    
-in float Type0[];                                                                   
+layout(points) in;
+layout(points) out;
+layout(max_vertices = 30) out;
+
+in float Type0[];
 in vec3  Position0[];
 in vec3  Velocity0[];
 in float Age0[];
@@ -16,7 +16,7 @@ out float Age1;
 
 uniform float     gDeltaTimeMillis;
 uniform float     gTime;
-uniform sampler1D gRandomTexture;                                                   
+uniform sampler1D gRandomTexture;
 uniform float     gLauncherLifetime;
 uniform float     gSecondaryShellLifetime;
 uniform float     gShellLifetime;
