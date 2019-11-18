@@ -135,9 +135,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       else
           Delta_Millisec := UInt (Time_Millisec - Previous_Time_MilliSec);
       end if;
-
-      Put_Line ("Main_Loop.Render_Scene Delta_Millisec: " &
-               UInt'Image (Delta_Millisec));
       Previous_Time_MilliSec := Time_Millisec;
 
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
