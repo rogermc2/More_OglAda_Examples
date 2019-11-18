@@ -8,8 +8,8 @@ in float Type0[];
 in vec3  Position0[];
 in vec3  Velocity0[];
 in float Age0[];
-                                                                                    
-out float Type1;                                                                    
+
+out float Type1;
 out vec3  Position1;
 out vec3  Velocity1;
 out float Age1;
@@ -20,11 +20,11 @@ uniform sampler1D gRandomTexture;
 uniform float     gLauncherLifetime;
 uniform float     gSecondaryShellLifetime;
 uniform float     gShellLifetime;
-                                                                                    
+
 #define PARTICLE_TYPE_LAUNCHER        0.0f
 #define PARTICLE_TYPE_SHELL           1.0f
-#define PARTICLE_TYPE_SECONDARY_SHELL 2.0f                                          
-                                                                                    
+#define PARTICLE_TYPE_SECONDARY_SHELL 2.0f
+
 vec3 GetRandomDir(float TexCoord)
     {
     vec3 Dir = texture(gRandomTexture, TexCoord).xyz;
