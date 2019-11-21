@@ -35,6 +35,7 @@ vec3 GetRandomDir(float TexCoord)
 void main()
     {
     float Age = Age0[0] + gDeltaTimeMillis;
+    float TexCoord1;
     vec3  Dir;
     float DeltaTimeSecs = gDeltaTimeMillis / 100.0f;  //  1000.0f
     vec3  DeltaP = DeltaTimeSecs * Velocity0[0];
@@ -46,8 +47,11 @@ void main()
             {
             Type1 = PARTICLE_TYPE_SHELL;
             Position1 = Position0[0];     //  Shell starts at launcher
-            Dir = GetRandomDir(gTime / 1000.0);
+            // TexCoord1 = gTime / 1000.0;
+            TexCoord1 = fract (gTime);
+            Dir = GetRandomDir(TexCoord1);  // Texture coordinate
             Dir.y = max(Dir.y, 0.5);
+            Dir.x = 0.2;
             Velocity1 = normalize(Dir) / 40.0;  //  20.0
             Age1 = 0.0;
             EmitVertex();
@@ -84,7 +88,9 @@ void main()
                     {
                     Type1 = PARTICLE_TYPE_SECONDARY_SHELL;
                     Position1 = Position0[0];
-                    Dir = GetRandomDir((gTime + i) / 1000.0);
+                    // TexCoord1 = (gTime + i) / 1000.0;
+                    TexCoord1 = fract (gTime + i / 1000.0);
+                    Dir = GetRandomDir(TexCoord1);
                     Velocity1 = normalize(Dir) / 20.0;
                     Age1 = 0.0f;
                     EmitVertex();
