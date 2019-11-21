@@ -37,9 +37,9 @@ void main()
     float Age = Age0[0] + gDeltaTimeMillis;
     float TexCoord1;
     vec3  Dir;
-    float DeltaTimeSecs = gDeltaTimeMillis / 100.0f;  //  1000.0f
-    vec3  DeltaP = DeltaTimeSecs * Velocity0[0];
-    vec3  DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
+    float DeltaTimeSecs = gDeltaTimeMillis / 1000.0;  //  1000.0f
+    vec3  DeltaP;
+    vec3  DeltaV;
 
     if (Type0[0] == PARTICLE_TYPE_LAUNCHER)
         {
@@ -49,10 +49,9 @@ void main()
             Position1 = Position0[0];     //  Shell starts at launcher
             // TexCoord1 = gTime / 1000.0;
             TexCoord1 = fract (gTime);
-            Dir = GetRandomDir(TexCoord1);  // Texture coordinate
+            Dir = GetRandomDir(TexCoord1);
             Dir.y = max(Dir.y, 0.5);
-            Dir.x = 0.2;
-            Velocity1 = normalize(Dir) / 40.0;  //  20.0
+            Velocity1 = normalize(Dir) / 2.0;  //  20.0
             Age1 = 0.0;
             EmitVertex();
             EndPrimitive();
@@ -74,6 +73,8 @@ void main()
             if (Age < gShellLifetime)
                 {  //  Update shell position and velocity
                 Type1 = PARTICLE_TYPE_SHELL;
+                DeltaP = DeltaTimeSecs * Velocity0[0];
+                DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
                 Position1 = Position0[0] + DeltaP;
                 Velocity1 = Velocity0[0] + DeltaV;
                 Age1 = Age;
@@ -89,7 +90,7 @@ void main()
                     Type1 = PARTICLE_TYPE_SECONDARY_SHELL;
                     Position1 = Position0[0];
                     // TexCoord1 = (gTime + i) / 1000.0;
-                    TexCoord1 = fract (gTime + i / 1000.0);
+                    TexCoord1 = fract (gTime + i / 10.0);
                     Dir = GetRandomDir(TexCoord1);
                     Velocity1 = normalize(Dir) / 20.0;
                     Age1 = 0.0f;
@@ -104,6 +105,8 @@ void main()
             if (Age < gSecondaryShellLifetime)
                 {  //  Update secondary shell position and velocity
                 Type1 = PARTICLE_TYPE_SECONDARY_SHELL;
+                DeltaP = DeltaTimeSecs * Velocity0[0];
+                    DeltaV = vec3(DeltaTimeSecs) * (0.0, -9.81, 0.0);
                 Position1 = Position0[0] + DeltaP;
                 Velocity1 = Velocity0[0] + DeltaV;
                 Age1 = Age;

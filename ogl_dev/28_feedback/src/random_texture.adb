@@ -9,12 +9,18 @@ with GL.Pixels;
 package body Random_Texture is
 
    procedure Init_Random_Texture (aTexture : in out GL.Objects.Textures.Texture;
-                                  Size : GL.Types.UInt) is
+                                  Texture_Length : GL.Types.UInt) is
       use Ada.Numerics.Float_Random;
       use GL.Objects.Textures.Targets;
       use GL.Types;
+      type Random_Type is array  (1 .. 3) of Single;
+      pragma Convention (C, Random_Type);
+      type Random_Array_Type is array (UInt range <>) of aliased Random_Type;
+      pragma Convention (C, Random_Array_Type);
+
       Gen           : Generator;
-      Random_Data   : Singles.Vector3_Array (1 .. Int (Size));
+--        Random_Data   : Singles.Vector3_Array (1 .. Int (Texture_Length));
+      Random_Data   : Random_Array_Type (1 .. Texture_Length);
    begin
       for index in Random_Data'Range loop
          Random_Data (index) := (Single (Random (Gen)), Single (Random (Gen)),
@@ -26,7 +32,7 @@ package body Random_Texture is
       Texture_1D.Load_From_Data
         (Level           => 0,
          Internal_Format => GL.Pixels.RGB,
-         Width           => Int (Size),
+         Width           => Int (Texture_Length),
          Source_Format   => GL.Pixels.RGB,
          Source_Type     => GL.Pixels.Float,
          Source          => GL.Objects.Textures.Image_Source (Random_Data'Address));
