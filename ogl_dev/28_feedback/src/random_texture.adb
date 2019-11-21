@@ -13,15 +13,14 @@ package body Random_Texture is
       use Ada.Numerics.Float_Random;
       use GL.Objects.Textures.Targets;
       use GL.Types;
-      type Random_Type is array  (1 .. 3) of Single;
-      pragma Convention (C, Random_Type);
-      type Random_Array_Type is array (UInt range <>) of aliased Random_Type;
-      pragma Convention (C, Random_Array_Type);
-
-      Gen           : Generator;
---        Random_Data   : Singles.Vector3_Array (1 .. Int (Texture_Length));
-      Random_Data   : Random_Array_Type (1 .. Texture_Length);
+      Gen          : Generator;
+      Random_Data  : Singles.Vector3_Array (Int range 1 .. Int (Texture_Length));
    begin
+      --  GL_TEXTURE_1D reads data as a sequence of signed or unsigned bytes,
+      --  shorts, longs or single-precision floating-point values,
+      --  depending on type.
+      --  These values are grouped into sets of one, two, three or four values,
+      --  depending on format, to form elements.
       for index in Random_Data'Range loop
          Random_Data (index) := (Single (Random (Gen)), Single (Random (Gen)),
                                  Single (Random (Gen)));
