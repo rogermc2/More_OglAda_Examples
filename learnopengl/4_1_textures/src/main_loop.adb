@@ -19,6 +19,7 @@ with Glfw.Input.Keys;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
+with Maths;
 with Program_Loader;
 with Utilities;
 
@@ -67,6 +68,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use GL.Objects.Shaders;
       use GL.Types;
       use Program_Loader;
+      Stride : constant Int := Maths.Vector8'Size / 8;
    begin
       Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
@@ -86,13 +88,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Src ("src/shaders/4.1.texture.fs", Fragment_Shader)));
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 8, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, Stride, 0);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, 8, 3);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, Stride, 3);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, 8, 6);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, Stride, 6);
 
       Textures_41.Load_Texture (theTexture,
                                 "../resources/textures/container.jpg");
