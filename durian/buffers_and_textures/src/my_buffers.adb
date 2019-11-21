@@ -75,11 +75,12 @@ package body My_Buffers is
 
         GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                  Kind   => GL.Types.Single_Type,
+                                                 Normalized => False,
                                                  Stride => Stride, Offset => 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, GL.Types.Single_Type,
-                                                 Stride, 3);
+                                                 False, Stride, 3);
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
 
     exception
