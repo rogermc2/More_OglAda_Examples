@@ -51,7 +51,7 @@ void main()
             TexCoord1 = fract (gTime);
             Dir = GetRandomDir(TexCoord1);
             Dir.y = max(Dir.y, 0.5);
-            Velocity1 = normalize(Dir) / 2.0;  //  20.0
+            Velocity1 = normalize(Dir) / 20.0;  //  20.0
             Age1 = 0.0;
             EmitVertex();
             EndPrimitive();
