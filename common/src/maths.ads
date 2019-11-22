@@ -80,6 +80,9 @@ package Maths is
                              return Singles.Matrix4;
    function Scaling_Matrix (Scale_Factor : Single) return Singles.Matrix4;
    function Scaling_Matrix (Scale_Factor : Singles.Vector3) return Singles.Matrix4;
+   function Stride5 return Int;
+   function Stride6 return Int;
+   function Stride8 return Int;
    function Translation_Matrix (Change : Singles.Vector3)
                                 return Singles.Matrix4;
 end Maths;

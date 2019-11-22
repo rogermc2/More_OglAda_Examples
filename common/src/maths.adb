@@ -18,6 +18,36 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+    generic
+      type Index_Type is (<>);
+      type Vector_Type is array (Index_Type) of aliased GL.Types.Single;
+    function Stride return Int;
+
+   function Stride return Int is
+   begin
+      return Vector_Type'Size / GL.Types.Single'Size;
+   end Stride;
+
+   function Stride_5 is new Stride (Index_5, Vector5);
+   function Stride5 return Int is
+   begin
+        return Stride_5;
+   end Stride5;
+
+   function Stride_6 is new Stride (Index_8, Vector8);
+   function Stride6 return Int is
+   begin
+        return Stride_6;
+   end Stride6;
+
+   function Stride_8 is new Stride (Index_8, Vector8);
+   function Stride8 return Int is
+   begin
+        return Stride_8;
+   end Stride8;
+
+--  ------------------------------------------------------------------------
+
    function Cube_Root (Value : Single) return Single is
    begin
       return Maths.Single_Math_Functions.Exp (Maths.Single_Math_Functions.Log (Value) / 3.0);
