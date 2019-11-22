@@ -65,9 +65,9 @@ package body Particle_System is
 
    --  -------------------------------------------------------------------------
 
-   function TFB_Index (PS  : Particle_System) return Buffer_Index is
+   function TFB_Index (VB_Index  : Buffer_Index) return Buffer_Index is
    begin
-      if PS.Current_VB_Index = 2 then
+      if VB_Index = 2 then
          return 1;
       else
          return 2;
@@ -134,7 +134,7 @@ package body Particle_System is
       Update_Particles (PS, Delta_Time);
       Render_Particles (PS, View_Point, Camera_Pos);
 
-      PS.Current_VB_Index := TFB_Index (PS);  --  Swap buffers
+      PS.Current_VB_Index := TFB_Index (PS.Current_VB_Index);  --  Swap buffers
       PS.PS_Time := PS.PS_Time + Delta_Time;
 
    exception
@@ -169,7 +169,7 @@ package body Particle_System is
       --  first set to zero and count set to the number of vertices
       --  captured on vertex stream zero the last time transform feedback was active on the transform feedback object named by id
       GL.Objects.Buffers.Draw_Transform_Feedback
-        (Points, PS.Feedback_Buffer (TFB_Index (PS)));
+        (Points, PS.Feedback_Buffer (TFB_Index (PS.Current_VB_Index)));
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
 
    exception
@@ -190,7 +190,7 @@ package body Particle_System is
       Feedback                         : GL.Types.Single_Array
         (1 .. 11 * Feedback_Record_Size) := (others => 99.0);
       VB_Index                         : constant Buffer_Index := PS.Current_VB_Index;
-      Feedback_Index                   : constant Buffer_Index := TFB_Index (PS);
+      Feedback_Index                   : constant Buffer_Index := TFB_Index (VB_Index);
       count                            : Int := 1;
    begin
       PS_Update_Technique.Use_Program (PS.Update_Method);
@@ -200,8 +200,9 @@ package body Particle_System is
       Utilities.Clear_Colour_Buffer_And_Depth;
       --  PS.Random_Texture is a texture containing random numbers.
       --  It will be mapped on the particles and the current global time variable.
-      Random_Texture.Bind (PS.Random_Texture,
-                           Ogldev_Engine_Common.Random_Texture_Unit);
+      --  GL_TEXTURE3 is the texture unit deciated to binding random textures.
+      Random_Texture.Bind (PS.Random_Texture, 3);
+--                             Ogldev_Engine_Common.Random_Texture_Unit);
       --  Rasterizer_Discard causes vertices to be recorded into the
       --  output transform feedback buffers without anything being rasterized.
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
