@@ -74,17 +74,18 @@ package body Buffers is
                                     Indices : GL.Types.UInt_Array) is
     use GL.Objects.Buffers;
     use GL.Types;
---          Vertices : Vertices_Array (1 .. 4);
         Vertex_Data  : constant Singles.Vector3_Array (1 .. 4) :=
         ((-1.0, -1.0, 0.5773),
          (0.0, -1.0, -1.15475),
          (1.0, -1.0, 0.5773),
          (0.0, 1.0, 0.0));
+
         Texture_Data : constant Singles.Vector2_Array (1 .. 4) :=
         ((0.0, 0.0),
          (0.5, 0.0),
          (1.0, 0.0),
          (0.5, 1.0));
+
         Normal_Data  : Singles.Vector3_Array (1 .. 4);
     begin
         Calculate_Normals (Vertex_Data, Normal_Data, Indices);

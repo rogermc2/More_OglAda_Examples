@@ -13,7 +13,6 @@ package Buffers_20 is
 
     procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
                                    Field_Depth, Field_Width : Gl.Types.Single);
-    function Vertex_Buffer_Stride return GL.Types.Int;
 
     --  ------------------------------------------------------------------------
 

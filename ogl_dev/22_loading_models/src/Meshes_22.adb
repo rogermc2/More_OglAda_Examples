@@ -254,10 +254,11 @@ package body Meshes_22 is
          Num_Indices  : constant Int := Int (anEntry.Num_Indices);
          theTexture   : Ogldev_Texture.Ogl_Texture;
          OK           : Boolean := False;
+         Stride       : constant Int := Maths.Stride8;
       begin
-         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, Stride, 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, Stride, 3);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Stride, 5);
 
          OK := aMaterial < UInt (theMesh.Textures.Length);
          if OK then

@@ -241,6 +241,7 @@ package body Meshes_23 is
       anEntry         : Mesh_Entry;
       aMaterial_Index : UInt;
       aTexture        : Ogldev_Texture.Ogl_Texture;
+      Stride          : constant Int := Maths.Stride8;
    begin
       if theMesh.Entries.Is_Empty then
          raise Mesh_23_Error with "Meshes_23.Render theMesh.Entries is empty.";
@@ -255,9 +256,9 @@ package body Meshes_23 is
             GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
 
             GL.Attributes.Set_Vertex_Attrib_Pointer
-              (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
-            GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
+              (Index  => 0, Count => 3, Kind => Single_Type, Stride => Stride, Offset => 0);
+            GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, Stride, 3);  --  texture
+            GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Stride, 5);
 
             GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
             aMaterial_Index := anEntry.Material_Index;  --  normal

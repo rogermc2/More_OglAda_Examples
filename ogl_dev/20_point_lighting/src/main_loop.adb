@@ -103,7 +103,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
       Point_Lights         : Lighting_Technique_20.Point_Lights_Array (1 .. 2);
-      Stride               : constant Int := Buffers_20.Vertex_Buffer_Stride;
+      Stride               : constant Int := Maths.Stride8;
    begin
       Scale := Scale + 0.0057;  --  orig 0.0057
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
