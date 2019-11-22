@@ -11,11 +11,27 @@ with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Uniforms;
 
+with Utilities;
+
 with Ogldev_Engine_Common;
 
 with Random_Texture;
 
 package body Particle_System is
+    --  A particle can be either a launcher, a shell or a secondary shell.
+    --  The launcher is static and is responsible for generating the other particles.
+    --  It is unique in the system and periodically creates shell particles and
+    --  fires them upwards.
+    --  After a few seconds the shells explode into secondary shells that fly in
+    --  random directions.
+    --  All particles except the launcher have a lifetime which is tracked by the
+    --  system in milliseconds.
+    --  When a particle's lifetime reaches a certain threshold the particle is removed.
+    --  Each particle has a current position and velocity.
+    --  When a particle is created it is given some velocity (a vector).
+    --  The velocity is influenced by gravity which pulls the particle down.
+    --  On every frame the velocity updates the world position of the particle.
+    --  The position is later used to render the particle.
 
    type Particle_Type is new Single range 0.0 .. 3.0;
 
@@ -31,7 +47,7 @@ package body Particle_System is
       Velocity      : Singles.Vector3 := (0.0, 0.0, 0.0);
       Lifetime_ms   : GL.Types.Single := 0.0;
    end record;
-   pragma Convention (C, Particle);
+--     pragma Convention (C, Particle);
    Particle_Stride  : constant Int := Particle'Size / Single'Size;
 
    type Particle_Array is array (GL.Types.UInt range <>) of aliased Particle;
@@ -49,14 +65,14 @@ package body Particle_System is
 
    --  -------------------------------------------------------------------------
 
-   function Get_TFB_Index (PS  : Particle_System) return Buffer_Index is
+   function TFB_Index (PS  : Particle_System) return Buffer_Index is
    begin
       if PS.Current_VB_Index = 2 then
          return 1;
       else
          return 2;
       end if;
-   end  Get_TFB_Index;
+   end  TFB_Index;
 
    --  -------------------------------------------------------------------------
 
@@ -97,7 +113,7 @@ package body Particle_System is
       Billboard_Technique.Use_Program (PS.Display_Method);
       Billboard_Technique.Set_Colour_Texture_Unit
         (PS.Display_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
-      Billboard_Technique.Set_Billboard_Size (PS.Display_Method, 0.08);  --  orig 0.01
+      Billboard_Technique.Set_Billboard_Size (PS.Display_Method, 0.04);  --  orig 0.01
 
       if Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
                                       "../Content/fireworks_red.jpg") then
@@ -117,8 +133,8 @@ package body Particle_System is
    begin
       Update_Particles (PS, Delta_Time);
       Render_Particles (PS, View_Point, Camera_Pos);
-      --  Swap buffers
-      PS.Current_VB_Index := Get_TFB_Index (PS);
+
+      PS.Current_VB_Index := TFB_Index (PS);  --  Swap buffers
       PS.PS_Time := PS.PS_Time + Delta_Time;
 
    exception
@@ -137,6 +153,7 @@ package body Particle_System is
       Billboard_Technique.Set_Camera_Position (PS.Display_Method, Camera_Pos);
       Billboard_Technique.Set_View_Point (PS.Display_Method, View_Point);
 
+      Utilities.Clear_Colour_Buffer_And_Depth;
       Ogldev_Texture.Bind (PS.Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
 
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
@@ -152,7 +169,7 @@ package body Particle_System is
       --  first set to zero and count set to the number of vertices
       --  captured on vertex stream zero the last time transform feedback was active on the transform feedback object named by id
       GL.Objects.Buffers.Draw_Transform_Feedback
-        (Points, PS.Feedback_Buffer (Get_TFB_Index (PS)));
+        (Points, PS.Feedback_Buffer (TFB_Index (PS)));
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
 
    exception
@@ -173,15 +190,16 @@ package body Particle_System is
       Feedback                         : GL.Types.Single_Array
         (1 .. 11 * Feedback_Record_Size) := (others => 99.0);
       VB_Index                         : constant Buffer_Index := PS.Current_VB_Index;
-      TFB_Index                        : constant Buffer_Index := Get_TFB_Index (PS);
+      Feedback_Index                   : constant Buffer_Index := TFB_Index (PS);
       count                            : Int := 1;
    begin
       PS_Update_Technique.Use_Program (PS.Update_Method);
       PS_Update_Technique.Set_Time (PS.Update_Method, PS.PS_Time);
       PS_Update_Technique.Set_Delta_Millisec (PS.Update_Method, Delta_Time);
-      --        Put_Line ("Particle_System.Update_Particles PS.PS_Time, Delta_Time." &
-      --                    GL.Types.UInt'Image (PS.PS_Time) & GL.Types.UInt'Image (Delta_Time));
 
+      Utilities.Clear_Colour_Buffer_And_Depth;
+      --  PS.Random_Texture is a texture containing random numbers.
+      --  It will be mapped on the particles and the current global time variable.
       Random_Texture.Bind (PS.Random_Texture,
                            Ogldev_Engine_Common.Random_Texture_Unit);
       --  Rasterizer_Discard causes vertices to be recorded into the
@@ -189,10 +207,12 @@ package body Particle_System is
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 
       --  Bind the current vertex buffer to the Array Buffer
+      --  Input buffer
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (VB_Index));
       --  Binding a transform feedback object causes the number of vertices
       --  in the buffer to become zero.
-      GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (TFB_Index));
+      --  Output buffer
+      GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (Feedback_Index));
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
