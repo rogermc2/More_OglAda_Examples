@@ -30,6 +30,8 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
+with Maths;
+
 with Buffers;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
@@ -173,8 +175,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Array_Buffer.Bind (VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
-                                               Stride => 5, Offset => 0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 5, 3);
+                                               Stride => Maths.Stride5, Offset => 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, Maths.Stride5, 3);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (IBO);
 
