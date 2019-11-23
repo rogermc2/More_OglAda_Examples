@@ -101,9 +101,9 @@ package body Particle_System is
       PS_Update_Technique.Use_Program (PS.Update_Method);
       PS_Update_Technique.Set_Random_Texture_Unit
         (PS.Update_Method, Ogldev_Engine_Common.Random_Texture_Unit);
-      PS_Update_Technique.Set_Launcher_Lifetime (PS.Update_Method, 100.0); --  100.0
-      PS_Update_Technique.Set_Shell_Lifetime (PS.Update_Method, 10000.0);   --  10000.0)
-      PS_Update_Technique.Set_Secondary_Shell_Lifetime (PS.Update_Method, 2500.0);  --  2500.0
+      PS_Update_Technique.Set_Launcher_Lifetime (PS.Update_Method, 100.0);
+      PS_Update_Technique.Set_Shell_Lifetime (PS.Update_Method, 10000.0);
+      PS_Update_Technique.Set_Secondary_Shell_Lifetime (PS.Update_Method, 2500.0);
 
       Random_Texture.Init_Random_Texture (PS.Random_Texture, Max_Particles);
       Random_Texture.Bind (PS.Random_Texture,
@@ -113,7 +113,7 @@ package body Particle_System is
       Billboard_Technique.Use_Program (PS.Display_Method);
       Billboard_Technique.Set_Colour_Texture_Unit
         (PS.Display_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
-      Billboard_Technique.Set_Billboard_Size (PS.Display_Method, 0.04);  --  orig 0.01
+      Billboard_Technique.Set_Billboard_Size (PS.Display_Method, 0.01);
 
       if Ogldev_Texture.Init_Texture (PS.Texture, GL.Low_Level.Enums.Texture_2D,
                                       "../Content/fireworks_red.jpg") then
@@ -198,21 +198,12 @@ package body Particle_System is
       PS_Update_Technique.Set_Delta_Millisec (PS.Update_Method, Delta_Time);
 
       Utilities.Clear_Colour_Buffer_And_Depth;
-      --  PS.Random_Texture is a texture containing random numbers.
-      --  It will be mapped on the particles and the current global time variable.
-      --  GL_TEXTURE3 is the texture unit deciated to binding random textures.
       Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit);
---                             Ogldev_Engine_Common.Random_Texture_Unit);
-      --  Rasterizer_Discard causes vertices to be recorded into the
-      --  output transform feedback buffers without anything being rasterized.
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 
-      --  Bind the current vertex buffer to the Array Buffer
-      --  Input buffer
       GL.Objects.Buffers.Array_Buffer.Bind (PS.Particle_Buffer (VB_Index));
       --  Binding a transform feedback object causes the number of vertices
       --  in the buffer to become zero.
-      --  Output buffer
       GL.Objects.Buffers.Bind_Transform_Feedback (PS.Feedback_Buffer (Feedback_Index));
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -231,8 +222,6 @@ package body Particle_System is
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
       GL.Objects.Queries.Begin_Query
         (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written, Query);
-      --  Transform feedback mode captures the values of varying variables
-      --  written by the geometry shader).
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       if PS.Is_First then
          --  Write the current vertex buffer into the currently bound
