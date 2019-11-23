@@ -201,7 +201,7 @@ package body Particle_System is
       --  PS.Random_Texture is a texture containing random numbers.
       --  It will be mapped on the particles and the current global time variable.
       --  GL_TEXTURE3 is the texture unit deciated to binding random textures.
-      Random_Texture.Bind (PS.Random_Texture, 3);
+      Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit);
 --                             Ogldev_Engine_Common.Random_Texture_Unit);
       --  Rasterizer_Discard causes vertices to be recorded into the
       --  output transform feedback buffers without anything being rasterized.
