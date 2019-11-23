@@ -47,8 +47,7 @@ void main()
             {
             Type1 = PARTICLE_TYPE_SHELL;
             Position1 = Position0[0];     //  Shell starts at launcher
-            // TexCoord1 = gTime / 1000.0;
-            TexCoord1 = fract (gTime);
+            TexCoord1 = gTime / 1000.0;
             Dir = GetRandomDir(TexCoord1);
             Dir.y = max(Dir.y, 0.5);
             Velocity1 = normalize(Dir) / 20.0;  //  20.0

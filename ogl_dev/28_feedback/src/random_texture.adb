@@ -1,19 +1,21 @@
 
-
 with Ada.Numerics.Float_Random;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
 
+with Ogldev_Engine_Common;
+
 package body Random_Texture is
+
+   Gen : Ada.Numerics.Float_Random.Generator;
 
    procedure Init_Random_Texture (aTexture : in out GL.Objects.Textures.Texture;
                                   Texture_Length : GL.Types.UInt) is
       use Ada.Numerics.Float_Random;
       use GL.Objects.Textures.Targets;
       use GL.Types;
-      Gen          : Generator;
       Random_Data  : Singles.Vector3_Array (Int range 1 .. Int (Texture_Length));
    begin
       --  GL_TEXTURE_1D reads data as a sequence of signed or unsigned bytes,
@@ -26,6 +28,7 @@ package body Random_Texture is
                                  Single (Random (Gen)));
       end loop;
 
+      GL.Objects.Textures.Set_Active_Unit (Ogldev_Engine_Common.Random_Texture_Unit);
       aTexture.Initialize_Id;
       Texture_1D.Bind (aTexture);
       Texture_1D.Load_From_Data
