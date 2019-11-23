@@ -152,6 +152,8 @@ package body Particle_System is
       Billboard_Technique.Use_Program (PS.Display_Method);
       Billboard_Technique.Set_Camera_Position (PS.Display_Method, Camera_Pos);
       Billboard_Technique.Set_View_Point (PS.Display_Method, View_Point);
+      Billboard_Technique.Set_Colour_Texture_Unit
+          (PS.Display_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
 
       Utilities.Clear_Colour_Buffer_And_Depth;
       Ogldev_Texture.Bind (PS.Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
