@@ -184,7 +184,7 @@ package body Particle_System is
                                Delta_Time : GL.Types.UInt) is
       use GL.Objects.Buffers;
       Feedback_Record_Size             : constant Int := 8;
-      Primitives                       : UInt;
+--        Primitives                       : UInt;
       Query                            : GL.Objects.Queries.Query_Object;
       Feedback_Buffer                  : GL.Objects.Buffers.Buffer;
       Feedback                         : GL.Types.Single_Array
@@ -218,27 +218,21 @@ package body Particle_System is
       GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Particle_Stride, 4);  --  Velocity
       GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, Particle_Stride, 7);  --  Age
 
-      Query.Initialize_Id;
+--        Query.Initialize_Id;
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
-      GL.Objects.Queries.Begin_Query
-        (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written, Query);
+--        GL.Objects.Queries.Begin_Query
+--          (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written, Query);
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       if PS.Is_First then
-         --  Write the current vertex buffer into the currently bound
-         --  transform feedback buffer
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
          PS.Is_First := False;
       else
-         --  Transform Feedback Varyings were set by PS.Update_Technique.Init
-         --  PS.Feedback_Buffer (VB_Index) is processed by the geometry shader
-         --  and the results (varyings) are written into the
-         --  currently bound transform feedback buffer (TFB_Index):
          GL.Objects.Buffers.Draw_Transform_Feedback
            (Points, PS.Feedback_Buffer (VB_Index));
       end if;
       GL.Objects.Programs.End_Transform_Feedback;
-      GL.Objects.Queries.End_Query
-        (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written);
+--        GL.Objects.Queries.End_Query
+--          (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written);
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
       Flush;
 
@@ -247,31 +241,31 @@ package body Particle_System is
       GL.Attributes.Disable_Vertex_Attrib_Array (2);
       GL.Attributes.Disable_Vertex_Attrib_Array (3);
 
-      GL.Objects.Queries.Get_Query_Object
-        (Query, GL.Low_Level.Enums.Query_Result, Primitives);
-      Put_Line (UInt'Image (Primitives) & " primitives written!");
-
-      Get_Sub_Data (Transform_Feedback_Buffer, 0, Feedback);
-      Put_Line ("Feedback values: ");
-      while count in Feedback'Range loop
-         if count <= Int (Primitives) * Feedback_Record_Size then
-            Put_Line (" Type " & Single'Image (Feedback (count)));
-            count := count + 1;
-            for  index in count .. count + 2 loop
-               Put (Single'Image (Feedback (index)) & "  ");
-            end loop;
-            New_Line;
-            count := count + 3;
-            for  index in count .. count + 2 loop
-               Put (Single'Image (Feedback (index)) & "  ");
-            end loop;
-            New_Line;
-            count := count + 3;
-            Put_Line (" Age " & Single'Image (Feedback (count)));
-            New_Line;
-         end if;
-         count := count + 1;
-      end loop;
+--        GL.Objects.Queries.Get_Query_Object
+--          (Query, GL.Low_Level.Enums.Query_Result, Primitives);
+--        Put_Line (UInt'Image (Primitives) & " primitives written!");
+--
+--        Get_Sub_Data (Transform_Feedback_Buffer, 0, Feedback);
+--        Put_Line ("Feedback values: ");
+--        while count in Feedback'Range loop
+--           if count <= Int (Primitives) * Feedback_Record_Size then
+--              Put_Line (" Type " & Single'Image (Feedback (count)));
+--              count := count + 1;
+--              for  index in count .. count + 2 loop
+--                 Put (Single'Image (Feedback (index)) & "  ");
+--              end loop;
+--              New_Line;
+--              count := count + 3;
+--              for  index in count .. count + 2 loop
+--                 Put (Single'Image (Feedback (index)) & "  ");
+--              end loop;
+--              New_Line;
+--              count := count + 3;
+--              Put_Line (" Age " & Single'Image (Feedback (count)));
+--              New_Line;
+--           end if;
+--           count := count + 1;
+--        end loop;
 
    exception
       when  others =>
