@@ -152,10 +152,7 @@ package body Particle_System is
       Billboard_Technique.Use_Program (PS.Display_Method);
       Billboard_Technique.Set_Camera_Position (PS.Display_Method, Camera_Pos);
       Billboard_Technique.Set_View_Point (PS.Display_Method, View_Point);
-      Billboard_Technique.Set_Colour_Texture_Unit
-          (PS.Display_Method, Ogldev_Engine_Common.Colour_Texture_Unit);
 
-      Utilities.Clear_Colour_Buffer_And_Depth;
       Ogldev_Texture.Bind (PS.Texture, Ogldev_Engine_Common.Colour_Texture_Unit);
 
       GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
@@ -166,10 +163,7 @@ package body Particle_System is
                                                Kind   => Single_Type,
                                                Stride => Particle_Stride,
                                                Offset => 1);
-      --  Draw_Transform_Feedback is equivalent to calling
-      --  GL.Objects.VertexArrays.Draw_Arrays with mode as specified,
-      --  first set to zero and count set to the number of vertices
-      --  captured on vertex stream zero the last time transform feedback was active on the transform feedback object named by id
+
       GL.Objects.Buffers.Draw_Transform_Feedback
         (Points, PS.Feedback_Buffer (TFB_Index (PS.Current_VB_Index)));
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
@@ -235,7 +229,6 @@ package body Particle_System is
       GL.Objects.Programs.End_Transform_Feedback;
 --        GL.Objects.Queries.End_Query
 --          (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written);
-      GL.Toggles.Disable (GL.Toggles.Rasterizer_Discard);
       Flush;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
