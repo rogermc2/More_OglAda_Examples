@@ -33,8 +33,6 @@ with PS_Update_Technique;
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Background             : constant GL.Types.Colors.Color := (0.5, 0.5, 0.5, 0.0);
-
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Lighting_Technique     : Ogldev_Basic_Lighting.Basic_Lighting_Technique;
    Game_Camera            : Ogldev_Camera.Camera;
@@ -63,7 +61,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       VAO.Bind;
       Previous_Time_MilliSec := Single (Glfw.Time);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-      Utilities.Clear_Background_Colour_And_Depth (Background);
 
       Ogldev_Lights_Common.Init_Directional_Light
         (Light          => Dir_Light,
