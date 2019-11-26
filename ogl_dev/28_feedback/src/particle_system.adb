@@ -193,7 +193,6 @@ package body Particle_System is
       PS_Update_Technique.Set_Time (PS.Update_Method, PS.PS_Time);
       PS_Update_Technique.Set_Delta_Millisec (PS.Update_Method, Delta_Time);
 
-      Utilities.Clear_Colour_Buffer_And_Depth;
       Random_Texture.Bind (PS.Random_Texture, Ogldev_Engine_Common.Random_Texture_Unit);
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
 

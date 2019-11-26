@@ -67,7 +67,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Amb_Intensity  => 0.2,  --  0.2
          Diff_Intensity => 0.8,
          theColour      => (1.0, 1.0, 1.0),
-         Dir            => (1.0, 1.0, 0.0));   --  1.0, 0.0, 0.0
+         Dir            => (1.0, 0.0, 0.0));   --  1.0, 0.0, 0.0
 
       Ogldev_Math.Set_Perspective_Info
         (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
