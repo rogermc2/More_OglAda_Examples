@@ -53,8 +53,8 @@ package body Ogldev_Basic_Lighting is
 
    begin
       Lighting_Technique.Lighting_Program :=
-        Program_From ((Src ("../common/shaders/basic_lighting.vs", Vertex_Shader),
-                      Src ("../common/shaders/basic_lighting.fs", Fragment_Shader)));
+        Program_From ((Src ("../../ogl_dev_common/shaders/basic_lighting.vs", Vertex_Shader),
+                      Src ("../../ogl_dev_common/shaders/basic_lighting.fs", Fragment_Shader)));
       OK := GL.Objects.Programs.Link_Status (Lighting_Technique.Lighting_Program);
       if not OK then
          Put_Line ("Ogldev_Basic_Lighting.Init, Lighting_Program link failed");
