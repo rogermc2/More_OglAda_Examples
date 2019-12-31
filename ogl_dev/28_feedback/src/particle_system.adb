@@ -6,7 +6,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Low_Level.Enums;
-with GL.Objects.Queries;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Uniforms;
@@ -35,7 +34,7 @@ package body Particle_System is
 
    type Particle_Type is new Single range 0.0 .. 3.0;
 
-   Max_Particles     : constant GL.Types.UInt := 1000;  --  1000;
+   Max_Particles     : constant GL.Types.UInt := 1000;
    Particle_Launcher : constant Particle_Type := 0.0;
    Shell             : constant Particle_Type := 1.0;
    Secondary_Shell   : constant Particle_Type := 2.0;
@@ -43,11 +42,10 @@ package body Particle_System is
 
    type Particle is record
       Particle_Kind : Particle_Type := Particle_Launcher;
-      Position      : Singles.Vector3 := (0.0, 0.0, 0.0);   --  (0.0, 0.0, 0.0)
+      Position      : Singles.Vector3 := (0.0, 0.0, 0.0);
       Velocity      : Singles.Vector3 := (0.0, 0.0, 0.0);
       Lifetime_ms   : GL.Types.Single := 0.0;
    end record;
---     pragma Convention (C, Particle);
    Particle_Stride  : constant Int := Particle'Size / Single'Size;
 
    type Particle_Array is array (GL.Types.UInt range <>) of aliased Particle;
@@ -180,8 +178,6 @@ package body Particle_System is
                                Delta_Time : GL.Types.UInt) is
       use GL.Objects.Buffers;
       Feedback_Record_Size             : constant Int := 8;
---        Primitives                       : UInt;
-      Query                            : GL.Objects.Queries.Query_Object;
       Feedback_Buffer                  : GL.Objects.Buffers.Buffer;
       Feedback                         : GL.Types.Single_Array
         (1 .. 11 * Feedback_Record_Size) := (others => 99.0);
@@ -213,10 +209,7 @@ package body Particle_System is
       GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Particle_Stride, 4);  --  Velocity
       GL.Attributes.Set_Vertex_Attrib_Pointer (3, 1, Single_Type, Particle_Stride, 7);  --  Age
 
---        Query.Initialize_Id;
       GL.Toggles.Enable (GL.Toggles.Rasterizer_Discard);
---        GL.Objects.Queries.Begin_Query
---          (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written, Query);
       GL.Objects.Programs.Begin_Transform_Feedback (Points);
       if PS.Is_First then
          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
@@ -226,40 +219,12 @@ package body Particle_System is
            (Points, PS.Feedback_Buffer (VB_Index));
       end if;
       GL.Objects.Programs.End_Transform_Feedback;
---        GL.Objects.Queries.End_Query
---          (GL.Low_Level.Enums.Transform_Feedback_Primitives_Written);
       Flush;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
       GL.Attributes.Disable_Vertex_Attrib_Array (1);
       GL.Attributes.Disable_Vertex_Attrib_Array (2);
       GL.Attributes.Disable_Vertex_Attrib_Array (3);
-
---        GL.Objects.Queries.Get_Query_Object
---          (Query, GL.Low_Level.Enums.Query_Result, Primitives);
---        Put_Line (UInt'Image (Primitives) & " primitives written!");
---
---        Get_Sub_Data (Transform_Feedback_Buffer, 0, Feedback);
---        Put_Line ("Feedback values: ");
---        while count in Feedback'Range loop
---           if count <= Int (Primitives) * Feedback_Record_Size then
---              Put_Line (" Type " & Single'Image (Feedback (count)));
---              count := count + 1;
---              for  index in count .. count + 2 loop
---                 Put (Single'Image (Feedback (index)) & "  ");
---              end loop;
---              New_Line;
---              count := count + 3;
---              for  index in count .. count + 2 loop
---                 Put (Single'Image (Feedback (index)) & "  ");
---              end loop;
---              New_Line;
---              count := count + 3;
---              Put_Line (" Age " & Single'Image (Feedback (count)));
---              New_Line;
---           end if;
---           count := count + 1;
---        end loop;
 
    exception
       when  others =>
