@@ -21,37 +21,49 @@ package body Shader_Manager is
         ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
          Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
 
-      Render_Uniforms.View_Matrix_ID :=
-        Uniform_Location (Render_Program, "view_matrix");
-      Render_Uniforms.Model_Matrix_ID :=
-        Uniform_Location (Render_Program, "model_matrix");
-      Render_Uniforms.Projection_Matrix_ID :=
-        Uniform_Location (Render_Program, "projection_matrix");
-      Render_Uniforms.Model_View_Matrix_ID :=
-        Uniform_Location (Render_Program, "mv_matrix");
+      Render_Uniforms.Matrix_Normal_ID :=
+        Uniform_Location (Render_Program, "matrixNormal");
+      Render_Uniforms.Matrix_Model_View_ID :=
+        Uniform_Location (Render_Program, "matrixModelView");
+      Render_Uniforms.Matrix_Model_View_Projection_ID :=
+        Uniform_Location (Render_Program, "matrixModelViewProjection");
       Render_Uniforms.Light_Position_ID :=
-        Uniform_Location (Render_Program, "light_position");
-      Render_Uniforms.Point_Size_ID :=
-        Uniform_Location (Render_Program, "point_size");
+        Uniform_Location (Render_Program, "lightPosition");
 
-      Render_Uniforms.Ambient_Colour_ID :=
-        Uniform_Location (Render_Program, "Ambient_Colour");
-      Render_Uniforms.Diffuse_Colour_ID :=
-        Uniform_Location (Render_Program, "Diffuse_Colour");
-      Render_Uniforms.Drawing_Colour_ID :=
-        Uniform_Location (Render_Program, "Drawing_Colour");
+      Render_Uniforms.Light_Ambient_ID :=
+        Uniform_Location (Render_Program, "lightAmbient");
+      Render_Uniforms.Light_Diffuse_ID :=
+        Uniform_Location (Render_Program, "lightDiffuse");
+      Render_Uniforms.Light_Specular_ID :=
+        Uniform_Location (Render_Program, "lightSpecular");
+      Render_Uniforms.Material_Ambient_ID :=
+        Uniform_Location (Render_Program, "materialAmbient");
+      Render_Uniforms.Material_Diffuse_ID :=
+        Uniform_Location (Render_Program, "materialDiffuse");
+      Render_Uniforms.Material_Specular_ID :=
+        Uniform_Location (Render_Program, "materialSpecular");
+      Render_Uniforms.Material_Shininess_ID :=
+        Uniform_Location (Render_Program, "materialShininess");
+      Render_Uniforms.Map0_ID :=
+        Uniform_Location (Render_Program, "map0");
+      Render_Uniforms.Texture_Used_ID :=
+        Uniform_Location (Render_Program, "textureUsed");
 
       Use_Program (Render_Program);
       GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Light);
-      GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Identity4);
-      GL.Uniforms.Set_Single (Render_Uniforms.Model_View_Matrix_ID, Identity4);
-      GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Light);
-      GL.Uniforms.Set_Single (Render_Uniforms.Point_Size_ID, 1.0);
-      GL.Uniforms.Set_Single (Render_Uniforms.View_Matrix_ID, Identity4);
+      GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Normal_ID, Identity4);
+      GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_ID, Identity4);
+      GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_Projection_ID, Identity4);
 
-      GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Colour_ID, Black);
-      GL.Uniforms.Set_Single (Render_Uniforms.Diffuse_Colour_ID, Black);
-      GL.Uniforms.Set_Single (Render_Uniforms.Drawing_Colour_ID, Black);
+      GL.Uniforms.Set_Single (Render_Uniforms.Light_Ambient_ID, Black);
+      GL.Uniforms.Set_Single (Render_Uniforms.Light_Diffuse_ID, Black);
+      GL.Uniforms.Set_Single (Render_Uniforms.Light_Specular_ID, Black);
+      GL.Uniforms.Set_Single (Render_Uniforms.Material_Ambient_ID, Black);
+      GL.Uniforms.Set_Single (Render_Uniforms.Material_Diffuse_ID, Black);
+      GL.Uniforms.Set_Single (Render_Uniforms.Material_Specular_ID, Black);
+      GL.Uniforms.Set_Single (Render_Uniforms.Material_Shininess_ID, 0.0);
+
+--        GL.Uniforms.Set_Boolean (Render_Uniforms.Texture_Used_ID, False);
 
    exception
       when others =>
@@ -61,26 +73,26 @@ package body Shader_Manager is
 
   --  -------------------------------------------------------------------------
 
-   procedure Set_Ambient_Colour (Ambient_Colour : Singles.Vector4) is
+   procedure Set_Light_Ambient (Ambient_Colour : Singles.Vector4) is
    begin
-      GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Colour_ID, Ambient_Colour);
-   end Set_Ambient_Colour;
+      GL.Uniforms.Set_Single (Render_Uniforms.Light_Ambient_ID, Ambient_Colour);
+   end Set_Light_Ambient;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Diffuse_Colour (Diffuse_Colour : Singles.Vector4) is
+   procedure Set_Light_Diffuse (Diffuse_Colour : Singles.Vector4) is
    begin
       GL.Uniforms.Set_Single
-        (Render_Uniforms.Diffuse_Colour_ID, Diffuse_Colour);
-   end Set_Diffuse_Colour;
+        (Render_Uniforms.Light_Diffuse_ID, Diffuse_Colour);
+   end Set_Light_Diffuse;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Drawing_Colour (Drawing_Colour : Singles.Vector4) is
+   procedure Set_Light_Specular (Specular_Colour : Singles.Vector4) is
    begin
       GL.Uniforms.Set_Single
-        (Render_Uniforms.Drawing_Colour_ID, Drawing_Colour);
-   end Set_Drawing_Colour;
+        (Render_Uniforms.Light_Specular_ID, Specular_Colour);
+   end Set_Light_Specular;
 
    --  -------------------------------------------------------------------------
 
@@ -92,40 +104,55 @@ package body Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Model_Matrix (Model_Matrix : Singles.Matrix4) is
+    procedure Set_Material_Ambient (Ambient_Colour : Singles.Vector4) is
    begin
-      GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Model_Matrix);
-   end Set_Model_Matrix;
+      GL.Uniforms.Set_Single (Render_Uniforms.Material_Ambient_ID, Ambient_Colour);
+   end Set_Material_Ambient;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Point_Size (Point_Size  : Single) is
-   begin
-      GL.Uniforms.Set_Single (Render_Uniforms.Point_Size_ID, Point_Size);
-   end Set_Point_Size;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_View_Matrix (View_Matrix  : Singles.Matrix4) is
-   begin
-      GL.Uniforms.Set_Single (Render_Uniforms.View_Matrix_ID, View_Matrix);
-   end Set_View_Matrix;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_Model_View_Matrix (Model_View_Matrix : Singles.Matrix4) is
+   procedure Set_Material_Diffuse (Diffuse_Colour : Singles.Vector4) is
    begin
       GL.Uniforms.Set_Single
-        (Render_Uniforms.Model_View_Matrix_ID, Model_View_Matrix);
-   end Set_Model_View_Matrix;
+        (Render_Uniforms.Material_Diffuse_ID, Diffuse_Colour);
+   end Set_Material_Diffuse;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Projection_Matrix (Projection_Matrix : Singles.Matrix4) is
+   procedure Set_Material_Specular (Specular_Colour : Singles.Vector4) is
    begin
       GL.Uniforms.Set_Single
-        (Render_Uniforms.Projection_Matrix_ID, Projection_Matrix);
-   end Set_Projection_Matrix;
+        (Render_Uniforms.Material_Specular_ID, Specular_Colour);
+   end Set_Material_Specular;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Material_Shininess (Shininess : Single) is
+   begin
+      GL.Uniforms.Set_Single
+        (Render_Uniforms.Material_Shininess_ID, Shininess);
+   end Set_Material_Shininess;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Matrix_Normal (Normal_Matrix : Singles.Matrix4) is
+   begin
+      GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Normal_ID, Normal_Matrix);
+   end Set_Matrix_Normal;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Matrix_Model_View (Model_View_Matrix : Singles.Matrix4) is
+   begin
+      GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_ID, Model_View_Matrix);
+   end Set_Matrix_Model_View;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Matrix_Model_View_Projection (MVP_Matrix  : Singles.Matrix4) is
+   begin
+      GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_Projection_ID, MVP_Matrix);
+   end Set_Matrix_Model_View_Projection;
 
    --  -------------------------------------------------------------------------
 
