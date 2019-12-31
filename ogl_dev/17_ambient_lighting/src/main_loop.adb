@@ -30,6 +30,8 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
+with Maths;
+
 with Buffers;
 with Lighting_Technique_17;
 
@@ -57,7 +59,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Lighting_Technique_17;
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (0.0, 0.0, -3.0); --  Normalized by Camera.Init
+      Position            : Singles.Vector3 := (0.0, 0.0, 3.0); --  Normalized by Camera.Init
       Target              : Singles.Vector3 := (0.0, 0.0, -1.0);  --  Normalized by Camera.Init
       Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -139,10 +141,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       --  First attribute buffer : Vertices
       GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 5, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, Maths.Stride5, 0);
 
       --  Second attribute buffer : Textures
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 5, 3);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, Maths.Stride5, 3);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (Indices_Buffer);
 

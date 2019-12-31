@@ -30,6 +30,8 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
+with Maths;
+
 with Buffers;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
@@ -162,7 +164,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Scale (Pipe, 2.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, Scale, 0.0);
-      Ogldev_Pipeline.Set_World_Position (Pipe, 1.0, -1.0, -3.0);
+      Ogldev_Pipeline.Set_World_Position (Pipe, 1.0, -1.0, 3.0);
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
@@ -173,8 +175,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Buffers.Array_Buffer.Bind (VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => Single_Type,
-                                               Stride => 5, Offset => 0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 5, 3);
+                                               Stride => Maths.Stride5, Offset => 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, Maths.Stride5, 3);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (IBO);
 

@@ -23,7 +23,7 @@ with Ogldev_Math;
 with Ogldev_Pipeline;
 with Ogldev_Texture;
 
-with Buffers;
+with Buffers_20;
 with Lighting_Technique_20;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
@@ -65,7 +65,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Ogldev_Camera.Init_Camera (Game_Camera, Window, Camera_Position, Target, Up);
 
          Utilities.Clear_Background_Colour_And_Depth (Background);
-         Buffers.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
+         Buffers_20.Create_Vertex_Buffer (Vertex_Buffer, Field_Depth, Field_Width);
 
          Lighting_Technique_20.Init_Directional_Light (Direct_Light);
 
@@ -103,6 +103,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
       Point_Lights         : Lighting_Technique_20.Point_Lights_Array (1 .. 2);
+      Stride               : constant Int := Maths.Stride8;
    begin
       Scale := Scale + 0.0057;  --  orig 0.0057
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
@@ -147,11 +148,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       --  First attribute buffer : Vertices
       GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 8, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, Stride, 0);
       --  Second attribute buffer : Textures
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, Stride, 3);
       --  Third attribute buffer : Normals
-      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Stride, 5);
 
       GL.Objects.Textures.Set_Active_Unit (0);
       GL.Objects.Textures.Targets.Texture_2D.Bind (theTexture.Texture_Object);

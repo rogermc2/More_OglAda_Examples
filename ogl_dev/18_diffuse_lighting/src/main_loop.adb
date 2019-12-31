@@ -142,15 +142,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       --  First attribute buffer : Vertices
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 0, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, 3, 0);
       --  Second attribute buffer : Textures
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Objects.Buffers.Array_Buffer.Bind (Texture_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 0, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 2, 0);
       --  Third attribute buffer : Normals
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
       GL.Objects.Buffers.Array_Buffer.Bind (Normals_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 0, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 3, 0);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (Indices_Buffer);
 

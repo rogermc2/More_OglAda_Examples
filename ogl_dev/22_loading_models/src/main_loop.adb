@@ -44,7 +44,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         Window_Width        : Glfw.Size;
         Window_Height       : Glfw.Size;
-        Camera_Position     : constant Singles.Vector3 := (2.0, 2.0, -10.0); --  Normalized by Camera.Init
+        Camera_Position     : constant Singles.Vector3 := (2.0, 2.0, 10.0); --  Normalized by Camera.Init
         Target_Position     : constant Singles.Vector3 := (0.0, 0.0, -1.0);  --  Normalized by Camera.Init
         Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
     begin
