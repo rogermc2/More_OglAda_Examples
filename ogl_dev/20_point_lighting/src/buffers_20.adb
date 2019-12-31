@@ -2,7 +2,7 @@
 with Maths;
 with Utilities;
 
-package body Buffers is
+package body Buffers_20 is
 
     procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer;
                                    Field_Depth, Field_Width : Gl.Types.Single) is
@@ -26,4 +26,4 @@ package body Buffers is
 
     --  ------------------------------------------------------------------------
 
- end Buffers;
+ end Buffers_20;

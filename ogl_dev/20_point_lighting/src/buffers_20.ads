@@ -2,7 +2,7 @@
 with GL.Objects.Buffers;
 with GL.Types;
 
-package Buffers is
+package Buffers_20 is
     use GL.Types.Singles;
     type Vertex is record
         Position : Vector3;
@@ -16,4 +16,4 @@ package Buffers is
 
     --  ------------------------------------------------------------------------
 
-end Buffers;
+end Buffers_20;

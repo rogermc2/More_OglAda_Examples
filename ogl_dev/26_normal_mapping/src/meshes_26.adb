@@ -277,6 +277,7 @@ package body Meshes_26 is
       anEntry        : Mesh_Entry;
       Textures       : constant Ogldev_Texture.Mesh_Texture_Map := theMesh.Textures;
       aTexture       : Ogldev_Texture.Ogl_Texture;
+      Stride         : constant Int := Vertex'Size / Single'Size;
    begin
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
@@ -288,10 +289,10 @@ package body Meshes_26 is
          GL.Objects.Buffers.Array_Buffer.Bind (anEntry.Vertex_Buffer);
 
          GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Index  => 0, Count => 3, Kind => Single_Type, Stride => 11, Offset => 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 11, 3);  --  texture
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 11, 5);  --  normal
-         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, 11, 8);  --  tangent
+           (Index  => 0, Count => 3, Kind => Single_Type, Stride => Stride, Offset => 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, Stride, 3);  --  texture
+         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, Stride, 5);  --  normal
+         GL.Attributes.Set_Vertex_Attrib_Pointer (3, 3, Single_Type, Stride, 8);  --  tangent
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
          if Textures.Contains (anEntry.Material_Index) then
