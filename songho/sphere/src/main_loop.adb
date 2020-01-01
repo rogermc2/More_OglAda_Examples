@@ -5,7 +5,6 @@ with GL.Attributes;
 with GL.Buffers;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Shaders;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
@@ -18,18 +17,24 @@ with Glfw.Input.Keys;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
-with Sphere_Data;
 with Maths;
-with Program_Loader;
-with Load_DDS;
+with Shader_Manager;
 with Utilities;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     Dark_Blue                : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 1.0);
+    Screen_Width             : constant GL.Types.Int := 1500;
+    Screen_Height            : constant GL.Types.Int := 500;
+    Camera_Distance          : constant GL.Types.Single := 4.0;
+    Text_Width               : constant GL.Types.Int := 8;
+    Text_Height              : constant GL.Types.Int := 13;
 
     Vertices_Array_Object    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Vertex_Buffer            : GL.Objects.Buffers.Buffer;
+    Vertex_Buffer_1          : GL.Objects.Buffers.Buffer;
+    Vertex_Buffer_2          : GL.Objects.Buffers.Buffer;
+    Index_Buffer_1           : GL.Objects.Buffers.Buffer;
+    Index_Buffer_2           : GL.Objects.Buffers.Buffer;
     UVs_Buffer               : GL.Objects.Buffers.Buffer;
     Render_Program           : GL.Objects.Programs.Program;
     MVP_Matrix_ID            : GL.Uniforms.Uniform;
@@ -120,8 +125,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     procedure Setup (Window : in out Glfw.Windows.Window) is
         use GL.Objects.Buffers;
-        use GL.Objects.Shaders;
     begin
+        Shader_Manager.Init (Render_Program);
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Utilities.Clear_Background_Colour (Dark_Blue);
 
@@ -133,17 +138,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Set_MVP_Matrix (Window, Render_Program);
 
-        Load_DDS ("src/textures/uvtemplate.DDS", Cube_Texture);
+--          Load_DDS ("src/textures/uvtemplate.DDS", Cube_Texture);
         Texture_ID := GL.Objects.Programs.Uniform_Location
                       (Render_Program, "myTextureSampler");
 
         Vertex_Buffer.Initialize_Id;
         Array_Buffer.Bind (Vertex_Buffer);
-        Utilities.Load_Vertex_Buffer (Array_Buffer, Cube_Data.Vertex_Data, Static_Draw);
+        Utilities.Load_Vertex_Buffer (Array_Buffer, Sphere_Data.Vertex_Data, Static_Draw);
 
         UVs_Buffer.Initialize_Id;
         Array_Buffer.Bind (UVs_Buffer);
-        Utilities.Load_Vertex_Buffer (Array_Buffer, Cube_Data.UV_Data, Static_Draw);
+        Utilities.Load_Vertex_Buffer (Array_Buffer, Sphere_Data.UV_Data, Static_Draw);
 
     exception
         when others =>
