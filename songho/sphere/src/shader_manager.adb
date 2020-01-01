@@ -7,7 +7,6 @@ with Program_Loader;
 
 package body Shader_Manager is
 
-   Black           : constant GL.Types.Singles.Vector4 := (0.0, 0.0, 0.0, 0.0);
    Render_Uniforms : Shader_Uniforms;
 
    procedure Init (Render_Program  : in out GL.Objects.Programs.Program) is
@@ -15,18 +14,26 @@ package body Shader_Manager is
       use GL.Objects.Shaders;
       use GL.Types.Singles;
       use Program_Loader;
-      Light   : constant Singles.Vector3 := (0.0, 4.0, 1.0);
+      Light             : constant Singles.Vector4 := (0.0, 0.0, 1.0, 0.0);
+      Ambient           : constant Singles.Vector4 := (0.3, 0.3, 0.3, 1.0);
+      Diffuse           : constant Singles.Vector4 := (0.7, 0.7, 0.7, 1.0);
+      Specula           : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
+      Material_Ambient  : constant Singles.Vector4 := (0.5, 0.5, 0.5, 1.0);
+      Material_Diffuse  : constant Singles.Vector4 := (0.7, 0.7, 0.7, 1.0);
+      Material_Specular : constant Singles.Vector4 := (0.4, 0.4, 0.4, 1.0);
+      Shininess         : constant Int := 16;
    begin
       Render_Program := Program_From
         ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
          Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
 
-      Render_Uniforms.Matrix_Normal_ID :=
-        Uniform_Location (Render_Program, "matrixNormal");
+      Use_Program (Render_Program);
       Render_Uniforms.Matrix_Model_View_ID :=
         Uniform_Location (Render_Program, "matrixModelView");
       Render_Uniforms.Matrix_Model_View_Projection_ID :=
         Uniform_Location (Render_Program, "matrixModelViewProjection");
+      Render_Uniforms.Matrix_Normal_ID :=
+        Uniform_Location (Render_Program, "matrixNormal");
       Render_Uniforms.Light_Position_ID :=
         Uniform_Location (Render_Program, "lightPosition");
 
@@ -44,26 +51,27 @@ package body Shader_Manager is
         Uniform_Location (Render_Program, "materialSpecular");
       Render_Uniforms.Material_Shininess_ID :=
         Uniform_Location (Render_Program, "materialShininess");
+
       Render_Uniforms.Map0_ID :=
         Uniform_Location (Render_Program, "map0");
       Render_Uniforms.Texture_Used_ID :=
         Uniform_Location (Render_Program, "textureUsed");
 
-      Use_Program (Render_Program);
       GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Light);
       GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Normal_ID, Identity4);
       GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_ID, Identity4);
       GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_Projection_ID, Identity4);
 
-      GL.Uniforms.Set_Single (Render_Uniforms.Light_Ambient_ID, Black);
-      GL.Uniforms.Set_Single (Render_Uniforms.Light_Diffuse_ID, Black);
-      GL.Uniforms.Set_Single (Render_Uniforms.Light_Specular_ID, Black);
-      GL.Uniforms.Set_Single (Render_Uniforms.Material_Ambient_ID, Black);
-      GL.Uniforms.Set_Single (Render_Uniforms.Material_Diffuse_ID, Black);
-      GL.Uniforms.Set_Single (Render_Uniforms.Material_Specular_ID, Black);
-      GL.Uniforms.Set_Single (Render_Uniforms.Material_Shininess_ID, 0.0);
+      GL.Uniforms.Set_Single (Render_Uniforms.Light_Ambient_ID, Ambient);
+      GL.Uniforms.Set_Single (Render_Uniforms.Light_Diffuse_ID, Diffuse);
+      GL.Uniforms.Set_Single (Render_Uniforms.Light_Specular_ID, Specula);
+      GL.Uniforms.Set_Single (Render_Uniforms.Material_Ambient_ID, Material_Ambient);
+      GL.Uniforms.Set_Single (Render_Uniforms.Material_Diffuse_ID, Material_Diffuse);
+      GL.Uniforms.Set_Single (Render_Uniforms.Material_Specular_ID, Material_Specular);
+      GL.Uniforms.Set_Int (Render_Uniforms.Material_Shininess_ID, Shininess);
 
---        GL.Uniforms.Set_Boolean (Render_Uniforms.Texture_Used_ID, False);
+      GL.Uniforms.Set_Int (Render_Uniforms.Map0_ID, 0);
+      GL.Uniforms.Set_Int (Render_Uniforms.Texture_Used_ID, 1);
 
    exception
       when others =>
