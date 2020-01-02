@@ -3,11 +3,13 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Buffers;
+with GL.Fixed.Lighting;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
+with GL.Pixels;
 with GL.Toggles;
 with GL.Types; use GL.Types;
 with GL.Types.Colors;
@@ -18,12 +20,15 @@ with Glfw.Windows;
 with Glfw.Windows.Context;
 
 with Maths;
-with Shader_Manager;
 with Utilities;
+
+with Shader_Manager;
+with Textures_Manager;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-    Dark_Blue                : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 1.0);
+    Black                    : constant GL.Types.Colors.Color :=
+                                 (0.0, 0.0, 0.0, 0.0);
     Screen_Width             : constant GL.Types.Int := 1500;
     Screen_Height            : constant GL.Types.Int := 500;
     Camera_Distance          : constant GL.Types.Single := 4.0;
@@ -39,13 +44,51 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Render_Program           : GL.Objects.Programs.Program;
     MVP_Matrix_ID            : GL.Uniforms.Uniform;
     Texture_ID               : GL.Uniforms.Uniform;
-    Cube_Texture             : GL.Objects.Textures.Texture;
+    Earth_Texture            : GL.Objects.Textures.Texture;
     MVP_Matrix               : GL.Types.Singles.Matrix4;
 
     --  ------------------------------------------------------------------------
 
+    procedure Init_Lights;
     procedure Set_MVP_Matrix (Window : in out Glfw.Windows.Window;
                               Render_Program : GL.Objects.Programs.Program);
+
+    --  ------------------------------------------------------------------------
+
+    procedure Init_GL is
+        use GL.Fixed.Lighting;
+        use GL.Pixels;
+    begin
+        Set_Shade_Model (Smooth);
+        Set_Unpack_Alignment (Words);
+        GL.Toggles.Enable (GL.Toggles.Depth_Test);
+        GL.Toggles.Enable (GL.Toggles.Lighting);
+        GL.Toggles.Enable (GL.Toggles.Texture_2D);
+        GL.Toggles.Enable (GL.Toggles.Cull_Face);
+
+        Utilities.Clear_Background_Colour (Black);
+        GL.Buffers.Clear_Stencil_Buffer (0);
+        GL.Buffers.Clear_Depth_Buffer (1.0);
+
+        GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
+        Init_Lights;
+    end Init_GL;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Init_Lights is
+        use GL.Fixed.Lighting;
+        Ambient  : constant Colors.Color := (0.3, 0.3, 0.3, 1.0);    -- ambient light
+        Diffuse  : constant Colors.Color := (0.7, 0.7, 0.7, 1.0);    -- diffuse light
+        Specular : constant Colors.Color := (1.0, 1.0, 1.0, 1.0);    -- specular light
+        Position : constant Singles.Vector4 := (0.0, 0.0, 1.0, 0.0); --  directional light
+     begin
+        Set_Ambient (Light (0), Ambient);
+        Set_Diffuse (Light (0), Diffuse);
+        Set_Specular (Light (0), Specular);
+        Set_Position (Light (0), Position);
+        GL.Toggles.Enable (GL.Toggles.Light0);
+    end Init_Lights;
 
     --  ------------------------------------------------------------------------
 
@@ -53,19 +96,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         use GL.Objects.Buffers;
 
     begin
-        Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
+        Utilities.Clear_Background_Colour_And_Depth (Black);
 
         GL.Objects.Programs.Use_Program (Render_Program);
         GL.Uniforms.Set_Single (MVP_Matrix_ID, MVP_Matrix);
 
         GL.Objects.Textures.Set_Active_Unit (0);
-        GL.Objects.Textures.Targets.Texture_2D.Bind (Cube_Texture);
+        GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
         --  Set myTextureSampler sampler to use Texture Unit 0
         GL.Uniforms.Set_Int (Texture_ID, 0);
 
         --  First attribute buffer : vertices
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
-        Array_Buffer.Bind (Vertex_Buffer);
+        Array_Buffer.Bind (Vertex_Buffer_1);
         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
 
         --  Second attribute buffer : UVs
@@ -126,29 +169,24 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     procedure Setup (Window : in out Glfw.Windows.Window) is
         use GL.Objects.Buffers;
     begin
-        Shader_Manager.Init (Render_Program);
+        Init_GL;
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
-        Utilities.Clear_Background_Colour (Dark_Blue);
-
-        GL.Toggles.Enable (GL.Toggles.Depth_Test);
-        GL.Buffers.Set_Depth_Function (GL.Types.Less);
+        Shader_Manager.Init (Render_Program);
 
         Vertices_Array_Object.Initialize_Id;
         Vertices_Array_Object.Bind;
 
         Set_MVP_Matrix (Window, Render_Program);
 
---          Load_DDS ("src/textures/uvtemplate.DDS", Cube_Texture);
-        Texture_ID := GL.Objects.Programs.Uniform_Location
-                      (Render_Program, "myTextureSampler");
+        Textures_Manager.Load_Texture (Earth_Texture, "earth2048.bmp");
 
-        Vertex_Buffer.Initialize_Id;
-        Array_Buffer.Bind (Vertex_Buffer);
-        Utilities.Load_Vertex_Buffer (Array_Buffer, Sphere_Data.Vertex_Data, Static_Draw);
+        Vertex_Buffer_1.Initialize_Id;
+        Array_Buffer.Bind (Vertex_Buffer_1);
+--          Utilities.Load_Vertex_Buffer (Array_Buffer, Sphere., Static_Draw);
 
         UVs_Buffer.Initialize_Id;
         Array_Buffer.Bind (UVs_Buffer);
-        Utilities.Load_Vertex_Buffer (Array_Buffer, Sphere_Data.UV_Data, Static_Draw);
+--          Utilities.Load_Vertex_Buffer (Array_Buffer, Sphere_Data.UV_Data, Static_Draw);
 
     exception
         when others =>
