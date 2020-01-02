@@ -22,6 +22,7 @@ with Glfw.Windows.Context;
 with Maths;
 with Utilities;
 
+with Buffers_Manager;
 with Shader_Manager;
 with Sphere;
 with Textures_Manager;
@@ -47,7 +48,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     UVs_Buffer               : GL.Objects.Buffers.Buffer;
     Render_Program           : GL.Objects.Programs.Program;
     MVP_Matrix_ID            : GL.Uniforms.Uniform;
-    Texture_ID               : GL.Uniforms.Uniform;
     Earth_Texture            : GL.Objects.Textures.Texture;
     MVP_Matrix               : GL.Types.Singles.Matrix4;
 
@@ -107,8 +107,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         GL.Objects.Textures.Set_Active_Unit (0);
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
-        --  Set myTextureSampler sampler to use Texture Unit 0
-        GL.Uniforms.Set_Int (Texture_ID, 0);
 
         --  First attribute buffer : vertices
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -183,6 +181,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Vertices_Array_Object.Initialize_Id;
         Vertices_Array_Object.Bind;
+
+        Buffers_Manager.Create_Index_Buffers (Index_Buffer_1, Index_Buffer_2,
+                                              Sphere_1, Sphere_2);
+        Buffers_Manager.Create_Vertex_Buffers (Vertex_Buffer_1, Vertex_Buffer_2,
+                                               Sphere_1, Sphere_2);
 
         Set_MVP_Matrix (Window, Render_Program);
 
