@@ -23,6 +23,7 @@ with Maths;
 with Utilities;
 
 with Shader_Manager;
+with Sphere;
 with Textures_Manager;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
@@ -34,6 +35,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Camera_Distance          : constant GL.Types.Single := 4.0;
     Text_Width               : constant GL.Types.Int := 8;
     Text_Height              : constant GL.Types.Int := 13;
+
+    Sphere_1                 : Sphere.Sphere;
+    Sphere_2                 : Sphere.Sphere;
 
     Vertices_Array_Object    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Vertex_Buffer_1          : GL.Objects.Buffers.Buffer;
@@ -173,12 +177,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
         Shader_Manager.Init (Render_Program);
 
+        Sphere.Init (theSphere => Sphere_1, Radius => 1.0,
+                     Sector_Count => 36, Stack_Count => 18, Smooth => False);
+        Sphere.Init (Sphere_2);
+
         Vertices_Array_Object.Initialize_Id;
         Vertices_Array_Object.Bind;
 
         Set_MVP_Matrix (Window, Render_Program);
 
-        Textures_Manager.Load_Texture (Earth_Texture, "earth2048.bmp");
+        Textures_Manager.Load_Texture (Earth_Texture, "earth2048.bmp", True);
 
         Vertex_Buffer_1.Initialize_Id;
         Array_Buffer.Bind (Vertex_Buffer_1);
