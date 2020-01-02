@@ -3,12 +3,18 @@ with Ada.Containers.Doubly_Linked_Lists;
 
 with GL.Types; use GL.Types;
 
+with Maths;
+
 package Sphere is
     type Sphere is private;
 
     procedure Init (theSphere : out Sphere; Radius : Single := 1.0;
                     Sector_Count : Int := 36; Stack_Count : Int := 18;
                     Smooth : Boolean := True);
+    function Get_Indices_Size (theSphere : Sphere) return Int;
+    function Get_Indices (theSphere : Sphere) return Int_Array;
+    function Get_Interleaved_Size (theSphere : Sphere) return Int;
+    function Get_Interleaved_Vertices (theSphere : Sphere) return Maths.Vector8_Array;
 
 private
     type Vertex is record
@@ -30,7 +36,9 @@ private
     package Line_Indices_Package is new Ada.Containers.Doubly_Linked_Lists (UInt);
     type Line_Indices_List is new Line_Indices_Package.List with null record;
 
-    package Interleaved_Vertices_Package is new Ada.Containers.Doubly_Linked_Lists (Single);
+    type Interleaved_Vector is array (Maths.Index_8) of aliased Single;
+    package Interleaved_Vertices_Package is new
+      Ada.Containers.Doubly_Linked_Lists (Interleaved_Vector);
     type Interleaved_Vertices_List is new Interleaved_Vertices_Package.List with null record;
 
     type Tex_Coords is record

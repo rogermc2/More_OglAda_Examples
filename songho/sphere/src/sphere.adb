@@ -1,8 +1,6 @@
 
 with Ada.Numerics;
 
-with Maths;
-
 package body Sphere is
 
     Min_Sector_Count : constant Int := 3;
@@ -29,25 +27,28 @@ package body Sphere is
     procedure Build_Interleaved_Vertices (theSphere : in out Sphere) is
         use Vertex_Data_Package;
         use Tex_Coords_Package;
+        use Maths;
         Vertex_Cursor    : Vertex_Data_Package.Cursor := theSphere.Vertices.First;
         Normals_Cursor   : Vertex_Data_Package.Cursor := theSphere.Normals.First;
         Tex_Cursor       : Tex_Coords_Package.Cursor := theSphere.Tex_Coords.First;
+        I_Vec            : Interleaved_Vector;
     begin
         Reverse_Elements (theSphere.Interleaved_Vertices);
         for count in 1 .. Int (theSphere.Vertices.Length) loop
-            theSphere.Interleaved_Vertices.Append (Element (Vertex_Cursor).X);
-            theSphere.Interleaved_Vertices.Append (Element (Vertex_Cursor).Y);
-            theSphere.Interleaved_Vertices.Append (Element (Vertex_Cursor).Z);
+            I_Vec (X) := Element (Vertex_Cursor).X;
+            I_Vec (Y) := Element (Vertex_Cursor).Y;
+            I_Vec (Z) := Element (Vertex_Cursor).Z;
             Next (Vertex_Cursor);
 
-            theSphere.Interleaved_Vertices.Append (Element (Normals_Cursor).X);
-            theSphere.Interleaved_Vertices.Append (Element (Normals_Cursor).Y);
-            theSphere.Interleaved_Vertices.Append (Element (Normals_Cursor).Z);
+            I_Vec (NX) := Element (Normals_Cursor).X;
+            I_Vec (NY) := Element (Normals_Cursor).Y;
+            I_Vec (NZ) := Element (Normals_Cursor).Z;
             Next (Normals_Cursor);
 
-            theSphere.Interleaved_Vertices.Append (Element (Tex_Cursor).U);
-            theSphere.Interleaved_Vertices.Append (Element (Tex_Cursor).V);
+            I_Vec (U) := Element (Tex_Cursor).U;
+            I_Vec (U) := Element (Tex_Cursor).V;
             Next (Tex_Cursor);
+            theSphere.Interleaved_Vertices.Append (I_Vec);
         end loop;
     end Build_Interleaved_Vertices;
 
@@ -286,6 +287,63 @@ package body Sphere is
         end if;
         return Normals;
     end Compute_Face_Normal;
+
+    --   ----------------------------------------------------------------------
+
+    function Get_Indices (theSphere : Sphere) return Int_Array is
+        use Indices_Package;
+        Index_Cursor : Indices_Package.Cursor :=
+                          theSphere.Indices.First;
+        S_Indices    : Int_Array
+          (1 .. Int (theSphere.Indices.Length));
+        V_Indices    : Indices;
+        I_Index      : Int := 0;
+    begin
+        while Has_Element (Index_Cursor) loop
+            V_Indices := (Element (Index_Cursor));
+            I_Index := I_Index + 1;
+            S_Indices (I_Index) := Int (V_Indices.Vertex_1);
+            I_Index := I_Index + 1;
+            S_Indices (I_Index) := Int (V_Indices.Vertex_2);
+            I_Index := I_Index + 1;
+            S_Indices (I_Index) := Int (V_Indices.Vertex_3);
+            Next (Index_Cursor);
+        end loop;
+        return S_Indices;
+    end Get_Indices;
+
+    --   ----------------------------------------------------------------------
+
+    function Get_Indices_Size (theSphere : Sphere) return Int is
+    begin
+        return 3 * Int (theSphere.Indices.Length);
+    end Get_Indices_Size;
+
+    --   ----------------------------------------------------------------------
+    function Get_Interleaved_Size (theSphere : Sphere) return Int is
+    begin
+        return Int (theSphere.Interleaved_Vertices.Length);
+    end Get_Interleaved_Size;
+
+    --   ----------------------------------------------------------------------
+
+    function Get_Interleaved_Vertices (theSphere : Sphere)
+                                       return Maths.Vector8_Array is
+        use Interleaved_Vertices_Package;
+        use Maths;
+        Vertex_Cursor : Interleaved_Vertices_Package.Cursor :=
+                          theSphere.Interleaved_Vertices.First;
+        Vertices      : Vector8_Array
+          (1 .. Int (theSphere.Interleaved_Vertices.Length));
+        V_Index       : Int := 0;
+    begin
+        while Has_Element (Vertex_Cursor) loop
+            V_Index := V_Index + 1;
+            Vertices (V_Index) := Vector8 (Element (Vertex_Cursor));
+            Next (Vertex_Cursor);
+        end loop;
+        return Vertices;
+    end Get_Interleaved_Vertices;
 
     --   ----------------------------------------------------------------------
 
