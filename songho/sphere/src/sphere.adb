@@ -157,20 +157,13 @@ package body Sphere is
                 Flat_Vertices.Append (aVertex);
             end loop;
         end loop;
---          Put_Line ("Sphere.Build_Vertices_Flat Flat_Vertices built, size: " &
---                      Int'Image (theSphere.Sector_Count * theSphere.Stack_Count) &
---                      Ada.Containers.Count_Type'Image (Flat_Vertices.Length));
 
         for index in Natural range 1 .. Natural (theSphere.Stack_Count - 1) loop
             V_Index_1 := (index - 1) * Natural (theSphere.Sector_Count);
             V_Index_2 := index * Natural (theSphere.Sector_Count);
             for index_2 in Natural range 1 .. Natural (theSphere.Sector_Count) loop
---                  Put_Line ("Sphere.Build_Vertices_Flat Flat_Vertices built, index_1, index_2: " &
---                      Natural'Image (index) & Natural'Image (index_2));
                 Vertex_1 := Element (To_Cursor (Flat_Vertices, V_Index_1));
                 Vertex_2 := Element (To_Cursor (Flat_Vertices, V_Index_2));
---                  Put_Line ("Sphere.Build_Vertices_Flat Flat_Vertices built, V_Index_1, V_Index_2: " &
---                      Natural'Image (V_Index_1) & Natural'Image (V_Index_2));
                 Vertex_3 := Element (To_Cursor (Flat_Vertices, V_Index_1 + 1));
                 Vertex_4 := Element (To_Cursor (Flat_Vertices, V_Index_2 + 1));
 
