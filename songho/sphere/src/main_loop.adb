@@ -122,8 +122,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
 
         --  First attribute buffer : vertices
-        GL.Attributes.Enable_Vertex_Attrib_Array (0);
         Array_Buffer.Bind (Vertex_Buffer_1);
+        GL.Attributes.Enable_Vertex_Attrib_Array (0);
         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, Stride, 0);
 
         --  Second attribute buffer : Normals
@@ -201,7 +201,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             when Right_Sphere =>
                 Shader_Manager.Set_Texture_Used (True);
                 Matrix_Model_Common :=
-                  Translation_Matrix ((-2.5, 0.0, 0.0)) * Matrix_Model_Common;
+                  Translation_Matrix ((2.5, 0.0, 0.0)) * Matrix_Model_Common;
                 Matrix_Model_View := View_Matrix * Matrix_Model_Common;
         end case;
 
