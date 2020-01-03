@@ -13,7 +13,6 @@ with GL.Pixels;
 with GL.Toggles;
 with GL.Types; use GL.Types;
 with GL.Types.Colors;
-with GL.Uniforms;
 
 with Glfw.Input.Keys;
 with Glfw.Windows;
@@ -29,13 +28,15 @@ with Textures_Manager;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
+    type Sphere_Position is (Left_Sphere, Centre_Sphere, Right_Sphere);
+
     Black                    : constant GL.Types.Colors.Color :=
                                  (0.0, 0.0, 0.0, 0.0);
-    Screen_Width             : constant GL.Types.Int := 1500;
-    Screen_Height            : constant GL.Types.Int := 500;
+--      Screen_Width             : constant GL.Types.Int := 1500;
+--      Screen_Height            : constant GL.Types.Int := 500;
     Camera_Distance          : constant GL.Types.Single := 4.0;
-    Text_Width               : constant GL.Types.Int := 8;
-    Text_Height              : constant GL.Types.Int := 13;
+--      Text_Width               : constant GL.Types.Int := 8;
+--      Text_Height              : constant GL.Types.Int := 13;
 
     Sphere_1                 : Sphere.Sphere;
     Sphere_2                 : Sphere.Sphere;
@@ -47,15 +48,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Index_Buffer_2           : GL.Objects.Buffers.Buffer;
     UVs_Buffer               : GL.Objects.Buffers.Buffer;
     Render_Program           : GL.Objects.Programs.Program;
-    MVP_Matrix_ID            : GL.Uniforms.Uniform;
     Earth_Texture            : GL.Objects.Textures.Texture;
-    MVP_Matrix               : GL.Types.Singles.Matrix4;
 
     --  ------------------------------------------------------------------------
 
     procedure Init_Lights;
-    procedure Set_MVP_Matrix (Window : in out Glfw.Windows.Window;
-                              Render_Program : GL.Objects.Programs.Program);
+    procedure Set_Matrices (Window_Width, Window_Height : Glfw.Size;
+                            Render_Program : GL.Objects.Programs.Program;
+                            Position : Sphere_Position);
 
     --  ------------------------------------------------------------------------
 
@@ -96,14 +96,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Render is
+    procedure Render (Window : in out Glfw.Windows.Window) is
         use GL.Objects.Buffers;
-
+        Window_Width      : Glfw.Size;
+        Window_Height     : Glfw.Size;
     begin
-        Utilities.Clear_Background_Colour_And_Depth (Black);
+        --  Clear (GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT, COLOR_BUFFER_BIT)
+        GL.Buffers.Clear ((True, False, True, True));
+        Window.Get_Framebuffer_Size (Window_Width, Window_Height);
 
         GL.Objects.Programs.Use_Program (Render_Program);
-        GL.Uniforms.Set_Single (MVP_Matrix_ID, MVP_Matrix);
+
+        Set_Matrices (Window_Width, Window_Height, Render_Program, Left_Sphere);
+        GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
 
         GL.Objects.Textures.Set_Active_Unit (0);
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
@@ -132,39 +137,79 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Set_MVP_Matrix (Window : in out Glfw.Windows.Window;
-                              Render_Program : GL.Objects.Programs.Program) is
+    procedure Set_Matrices (Window_Width, Window_Height : Glfw.Size;
+                            Render_Program : GL.Objects.Programs.Program;
+                            Position : Sphere_Position) is
         use GL.Types.Singles;
         use Maths;
         --  Camera position, Look_At and Up are world coordinates.
-        Camera_Position   : constant Vector3 := (4.0, 3.0, -3.0);
-        Look_At           : constant Vector3 := (0.0, 0.0, 0.0);
-        Up                : constant Vector3 := (0.0, 1.0, 0.0);
+--          Camera_Position    : constant Vector3 := (4.0, 3.0, -3.0);
+        Camera_Angle_X     : constant Single := 0.0;
+        Camera_Angle_Y     : constant Single := 0.0;
+--          Look_At            : constant Vector3 := (0.0, 0.0, 0.0);
+--          Up                 : constant Vector3 := (0.0, 1.0, 0.0);
         --  The Model_Matrix operates in world coordinates.
-        Model_Matrix      : constant Matrix4 := Singles.Identity4;
+        Matrix_Model_Common : Matrix4 := Identity4;
+--          Matrix_Model_Left   : Matrix4 := Identity4;
+--          Matrix_Model_Centre : Matrix4 := Identity4;
+--          Matrix_Model_Right  : Matrix4 := Identity4;
+        Matrix_Model_View   : Matrix4 :=  Identity4;
+        --  The View_Matrix transforms the world_cordinates of the world view
+        --  into view (camera) coordinates.
+        View_Matrix       : Matrix4 :=  Identity4;
+        Normal_Matrix     : Matrix4 :=  Identity4;
         --  The Projection_Matrix projects the camera view in camera coordinates
         --  onto the camera view's Near plane
         Projection_Matrix : Matrix4;
-        --  The View_Matrix transforms the world_cordinates of the world view
-        --  into view (camera) coordinates.
-        View_Matrix       : Matrix4;
-        Window_Width      : Glfw.Size;
-        Window_Height     : Glfw.Size;
+        MVP_Matrix        : Matrix4;
     begin
-        Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-        MVP_Matrix_ID := GL.Objects.Programs.Uniform_Location
-          (Render_Program, "MVP_5");
+        View_Matrix := Translation_Matrix ((0.0, 0.0, -Camera_Distance)) * View_Matrix;
+        Matrix_Model_Common :=
+          Rotation_Matrix (Degree (90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
+        Matrix_Model_Common :=
+          Rotation_Matrix (Degree (Camera_Angle_Y), (0.0, 1.0, 0.0)) * Matrix_Model_Common;
+        Matrix_Model_Common :=
+          Rotation_Matrix (Degree (Camera_Angle_X), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
 
-        Init_Lookat_Transform (Camera_Position, Look_At, Up, View_Matrix);
-        Init_Perspective_Transform (45.0, Single (Window_Width),
+        GL.Objects.Programs.Use_Program (Render_Program);
+
+--          Init_Lookat_Transform (Camera_Position, Look_At, Up, View_Matrix);
+        Init_Perspective_Transform (40.0, Single (Window_Width),
                                           Single (Window_Height),
                                     0.1, 100.0, Projection_Matrix);
-       MVP_Matrix :=  Projection_Matrix * View_Matrix * Model_Matrix;
+        case Position is
+            when Left_Sphere =>
+                Matrix_Model_Common :=
+                  Translation_Matrix ((-2.5, 0.0, 0.0)) * Matrix_Model_Common;
+                Matrix_Model_View := View_Matrix * Matrix_Model_Common;
+                Shader_Manager.Set_Texture_Used (False);
+            when Centre_Sphere =>
+                Shader_Manager.Set_Texture_Used (False);
+                Matrix_Model_View := View_Matrix * Matrix_Model_Common;
+            when Right_Sphere =>
+                Shader_Manager.Set_Texture_Used (True);
+                Matrix_Model_Common :=
+                  Translation_Matrix ((-2.5, 0.0, 0.0)) * Matrix_Model_Common;
+                Matrix_Model_View := View_Matrix * Matrix_Model_Common;
+        end case;
+
+        Normal_Matrix := Matrix_Model_View;
+        Normal_Matrix (GL.X, GL.W) := 0.0;
+        Normal_Matrix (GL.Y, GL.W) := 0.0;
+        Normal_Matrix (GL.Z, GL.W) := 0.0;
+        Normal_Matrix (GL.W, GL.W) := 1.0;
+
+        MVP_Matrix :=  Projection_Matrix * Matrix_Model_View;
+
+        Shader_Manager.Set_Matrix_Model_View (Matrix_Model_View);
+        Shader_Manager.Set_Matrix_Model_View_Projection (MVP_Matrix);
+        Shader_Manager.Set_Matrix_Normal (Normal_Matrix);
+
     exception
         when others =>
-            Put_Line ("An exception occurred in Set_MVP_Matrix.");
+            Put_Line ("An exception occurred in Man_Loop.Set_Matrices.");
             raise;
-    end Set_MVP_Matrix;
+    end Set_Matrices;
 
     --  ------------------------------------------------------------------------
 
@@ -186,8 +231,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                               Sphere_1, Sphere_2);
         Buffers_Manager.Create_Vertex_Buffers (Vertex_Buffer_1, Vertex_Buffer_2,
                                                Sphere_1, Sphere_2);
-
-        Set_MVP_Matrix (Window, Render_Program);
 
         Textures_Manager.Load_Texture (Earth_Texture, "earth2048.bmp", True);
 
@@ -212,7 +255,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 begin
     Setup (Main_Window);
     while Running loop
-        Render;
+        Render (Main_Window);
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
         Glfw.Input.Poll_Events;
         Running := Running and then
