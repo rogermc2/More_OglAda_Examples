@@ -1,4 +1,5 @@
 
+with Ada.Containers.Vectors;
 with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -14,8 +15,8 @@ package body Sphere is
         S : Single := 0.0;
         T : Single := 0.0;
     end record;
-    package Flat_Vertex_Package is new Ada.Containers.Doubly_Linked_Lists (Flat_Vertex);
-    type Flat_Vertex_List is new Flat_Vertex_Package.List with null record;
+    package Flat_Vertex_Package is new Ada.Containers.Vectors (Natural, Flat_Vertex);
+    type Flat_Vertex_Vector is new Flat_Vertex_Package.Vector with null record;
 
 --      package Face_Normal_Package is new Ada.Containers.Doubly_Linked_Lists (Single);
 --      type Face_Normal_List is new Face_Normal_Package.List with null record;
@@ -124,8 +125,7 @@ package body Sphere is
     procedure Build_Vertices_Flat (theSphere : in out Sphere) is
         use Maths.Single_Math_Functions;
         use Flat_Vertex_Package;
-        Flat_Vertices  : Flat_Vertex_List;
-        Flat_Cursor    : Flat_Vertex_Package.Cursor := Flat_Vertices.First;
+        Flat_Vertices  : Flat_Vertex_Vector;
         aVertex        : Flat_Vertex;
         Vertex_1       : Flat_Vertex;
         Vertex_2       : Flat_Vertex;
@@ -140,6 +140,8 @@ package body Sphere is
         Sector_Angle   : Single;
         Face_Normal    : Vertex;
         Vertex_Index   : UInt := 0;
+        V_Index_1      : Natural;
+        V_Index_2      : Natural;
     begin
         --  compute all vertices first, each vertex contains (x,y,z,s,t) except normal
         for index in 1 .. theSphere.Stack_Count loop
@@ -155,20 +157,22 @@ package body Sphere is
                 Flat_Vertices.Append (aVertex);
             end loop;
         end loop;
+--          Put_Line ("Sphere.Build_Vertices_Flat Flat_Vertices built, size: " &
+--                      Int'Image (theSphere.Sector_Count * theSphere.Stack_Count) &
+--                      Ada.Containers.Count_Type'Image (Flat_Vertices.Length));
 
-        Flat_Cursor := Flat_Vertices.First;
-        for index in 1 .. theSphere.Stack_Count loop
---              V_Index_1 := (index - 1) * (theSphere.Sector_Count + 1);
---              V_Index_2 := index * (theSphere.Sector_Count + 1);
-            for index_2 in 1 .. theSphere.Sector_Count loop
-                Vertex_1 := Flat_Vertex_Package.Element (Flat_Cursor);
-                Next (Flat_Cursor);
-                Vertex_2 := Flat_Vertex_Package.Element (Flat_Cursor);
-                Next (Flat_Cursor);
-                Vertex_3 := Flat_Vertex_Package.Element (Flat_Cursor);
-                Next (Flat_Cursor);
-                Vertex_4 := Flat_Vertex_Package.Element (Flat_Cursor);
-                Next (Flat_Cursor);
+        for index in Natural range 1 .. Natural (theSphere.Stack_Count - 1) loop
+            V_Index_1 := (index - 1) * Natural (theSphere.Sector_Count);
+            V_Index_2 := index * Natural (theSphere.Sector_Count);
+            for index_2 in Natural range 1 .. Natural (theSphere.Sector_Count) loop
+--                  Put_Line ("Sphere.Build_Vertices_Flat Flat_Vertices built, index_1, index_2: " &
+--                      Natural'Image (index) & Natural'Image (index_2));
+                Vertex_1 := Element (To_Cursor (Flat_Vertices, V_Index_1));
+                Vertex_2 := Element (To_Cursor (Flat_Vertices, V_Index_2));
+--                  Put_Line ("Sphere.Build_Vertices_Flat Flat_Vertices built, V_Index_1, V_Index_2: " &
+--                      Natural'Image (V_Index_1) & Natural'Image (V_Index_2));
+                Vertex_3 := Element (To_Cursor (Flat_Vertices, V_Index_1 + 1));
+                Vertex_4 := Element (To_Cursor (Flat_Vertices, V_Index_2 + 1));
 
                 --  If 1st stack and last stack, store only 1 triangle per sector
                 --  otherwise, store 2 triangles (quad) per sector
@@ -197,7 +201,7 @@ package body Sphere is
                     theSphere.Line_Indices.Append (Vertex_Index + 1);
 
                     Vertex_Index := Vertex_Index + 3;
-                elsif index = theSphere.Stack_Count then
+                elsif index = Integer (theSphere.Stack_Count) then
                     theSphere.Vertices.Append ((Vertex_1.X, Vertex_1.Y, Vertex_1.Z));
                     theSphere.Vertices.Append ((Vertex_2.X, Vertex_2.Y, Vertex_2.Z));
                     theSphere.Vertices.Append ((Vertex_3.X, Vertex_3.Y, Vertex_3.Z));
@@ -260,6 +264,11 @@ package body Sphere is
 
         Build_Interleaved_Vertices (theSphere);
 
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Sphere.Build_Vertices_Flat.");
+            raise;
+
     end Build_Vertices_Flat;
 
     --   ----------------------------------------------------------------------
@@ -287,17 +296,23 @@ package body Sphere is
             Normals := (Inv_Length * Nx, Inv_Length * Ny, Inv_Length * Nz);
         end if;
         return Normals;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Sphere.Compute_Face_Normal.");
+            raise;
     end Compute_Face_Normal;
 
     --   ----------------------------------------------------------------------
 
     function Get_Indices (theSphere : Sphere) return Int_Array is
+        use Ada.Containers;
         use Indices_Package;
         Index_Cursor : Indices_Package.Cursor :=
                           theSphere.Indices.First;
         S_Indices    : Int_Array
-          (1 .. Int (theSphere.Indices.Length));
-        V_Indices    : Indices;
+          (1 .. Int (3 * theSphere.Indices.Length));
+        V_Indices    : Triangle_Indices;
         I_Index      : Int := 0;
     begin
         while Has_Element (Index_Cursor) loop
