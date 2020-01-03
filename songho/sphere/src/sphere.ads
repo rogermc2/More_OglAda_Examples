@@ -37,9 +37,9 @@ private
     package Line_Indices_Package is new Ada.Containers.Doubly_Linked_Lists (UInt);
     type Line_Indices_List is new Line_Indices_Package.List with null record;
 
-    type Interleaved_Vector is array (Maths.Index_8) of aliased Single;
+    function "=" (Left, Right : Maths.Vector8) return Boolean;
     package Interleaved_Vertices_Package is new
-      Ada.Containers.Doubly_Linked_Lists (Interleaved_Vector);
+      Ada.Containers.Doubly_Linked_Lists (Maths.Vector8, "=");
     type Interleaved_Vertices_List is new Interleaved_Vertices_Package.List with null record;
 
     type Tex_Coords is record
@@ -50,10 +50,10 @@ private
     package Tex_Coords_Package is new Ada.Containers.Doubly_Linked_Lists (Tex_Coords);
     type Tex_Coords_List is new Tex_Coords_Package.List with null record;
 
-    type Vertex_Array is new  Singles.Vector3_Array;
-    type Normals_Array is new  Singles.Vector3_Array;
-    type Tex_Coords_Array is new  Singles.Vector3_Array;
-    type Indices_Array is new  UInt_Array;
+    type Vertex_Array is new Singles.Vector3_Array;
+    type Normals_Array is new Singles.Vector3_Array;
+    type Tex_Coords_Array is new Singles.Vector3_Array;
+    type Indices_Array is new UInt_Array;
     type Line_Indices_Array is new  UInt_Array;
     type Sphere is record
         Radius               : Single := 1.0;

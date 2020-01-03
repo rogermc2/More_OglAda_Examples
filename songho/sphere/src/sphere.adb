@@ -26,6 +26,16 @@ package body Sphere is
 
     --   ----------------------------------------------------------------------
 
+    function "=" (Left, Right : Maths.Vector8) return Boolean is
+        use Maths;
+    begin
+        return Left (X) = Right (X) and Left (Y) = Right (Y) and Left (Z) = Right (Z)
+        and Left (NX) = Right (NX) and Left (NY) = Right (NY) and Left (NZ) = Right (NZ)
+        and Left (U) = Right (U) and Left (V) = Right (V);
+    end "=";
+
+    --   ----------------------------------------------------------------------
+
     procedure Build_Interleaved_Vertices (theSphere : in out Sphere) is
         use Vertex_Data_Package;
         use Tex_Coords_Package;
@@ -33,7 +43,7 @@ package body Sphere is
         Vertex_Cursor    : Vertex_Data_Package.Cursor := theSphere.Vertices.First;
         Normals_Cursor   : Vertex_Data_Package.Cursor := theSphere.Normals.First;
         Tex_Cursor       : Tex_Coords_Package.Cursor := theSphere.Tex_Coords.First;
-        I_Vec            : Interleaved_Vector;
+        I_Vec            : Maths.Vector8;
     begin
         Reverse_Elements (theSphere.Interleaved_Vertices);
         for count in 1 .. Int (theSphere.Vertices.Length) loop
@@ -55,7 +65,12 @@ package body Sphere is
     end Build_Interleaved_Vertices;
 
     --   ----------------------------------------------------------------------
-
+    --  build vertices of sphere with smooth shading using parametric equation
+    --  x = r * cos(u) * cos(v)
+    --  y = r * cos(u) * sin(v)
+    --  z = r * sin(u)
+    --  where u: stack(latitude) angle (-90 <= u <= 90)
+    --        v: sector(longitude) angle (0 <= v <= 360)
     procedure Build_Vertices_Smooth (theSphere : in out Sphere) is
         use Maths.Single_Math_Functions;
         aVertex        : Vertex;
@@ -344,10 +359,11 @@ package body Sphere is
 
     function Get_Interleaved_Stride return Int is
     begin
-        return Int (Interleaved_Vector'Size / 8);
+        return Int (Maths.Vector8'Size / 8);
     end Get_Interleaved_Stride;
 
     --   ----------------------------------------------------------------------
+
     function Get_Interleaved_Vertices (theSphere : Sphere)
                                        return Maths.Vector8_Array is
         use Interleaved_Vertices_Package;
