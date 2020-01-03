@@ -5,7 +5,7 @@ in vec2 texCoord0;
 in vec3 esVertex;
 in vec3 esNormal;
 
-out fragColor;
+out vec4 fragColor;
 
 uniform vec4 lightPosition;             // should be in the eye space
 uniform vec4 lightAmbient;              // light ambient color
@@ -37,7 +37,7 @@ void main()
     float dotNL = max(dot(normal, light), 0.0);
     color = color + lightDiffuse.rgb * materialDiffuse.rgb * dotNL;    // add diffuse
     if(textureUsed)
-        color *= texture2D(map0, texCoord0).rgb;                // modulate texture map
+        color *= texture(map0, texCoord0).rgb;                // modulate texture map
     float dotNH = max(dot(normal, halfv), 0.0);
     color = color + pow(dotNH, materialShininess) * lightSpecular.rgb * materialSpecular.rgb; // add specular
     
