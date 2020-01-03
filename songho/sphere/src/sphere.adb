@@ -342,6 +342,12 @@ package body Sphere is
 
     --   ----------------------------------------------------------------------
 
+    function Get_Interleaved_Stride return Int is
+    begin
+        return Int (Interleaved_Vector'Size / 8);
+    end Get_Interleaved_Stride;
+
+    --   ----------------------------------------------------------------------
     function Get_Interleaved_Vertices (theSphere : Sphere)
                                        return Maths.Vector8_Array is
         use Interleaved_Vertices_Package;

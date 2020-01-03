@@ -14,6 +14,7 @@ package Sphere is
     function Get_Indices_Size (theSphere : Sphere) return Int;
     function Get_Indices (theSphere : Sphere) return Int_Array;
     function Get_Interleaved_Size (theSphere : Sphere) return Int;
+    function Get_Interleaved_Stride return Int;
     function Get_Interleaved_Vertices (theSphere : Sphere) return Maths.Vector8_Array;
 
 private

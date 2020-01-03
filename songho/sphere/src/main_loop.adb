@@ -106,6 +106,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         use GL.Objects.Buffers;
         Window_Width      : Glfw.Size;
         Window_Height     : Glfw.Size;
+--          Stride            : constant Int := 32;   -- bytes count
+        Stride            : constant Int := Sphere.Get_Interleaved_Stride;
     begin
         --  Clear (GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT, COLOR_BUFFER_BIT)
         GL.Buffers.Clear ((True, False, True, True));
@@ -122,15 +124,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         --  First attribute buffer : vertices
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         Array_Buffer.Bind (Vertex_Buffer_1);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, Stride, 0);
 
         --  Second attribute buffer : Normals
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, 0, 3);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, Stride, 3);
 
         --  Second attribute buffer : Tex Coords
         GL.Attributes.Enable_Vertex_Attrib_Array (2);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, 0, 6);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, Stride, 6);
 
         GL.Objects.Buffers.Draw_Elements (Triangles, Sphere.Get_Indices_Size (Sphere_1),
                                            UInt_Type, 0);
@@ -190,7 +192,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         case Position is
             when Left_Sphere =>
                 Matrix_Model_Common :=
-                  Translation_Matrix ((-2.5, 0.0, 0.0)) * Matrix_Model_Common;
+                  Translation_Matrix ((-1.0, 0.0, 0.0)) * Matrix_Model_Common; --  orig -2.5
                 Matrix_Model_View := View_Matrix * Matrix_Model_Common;
                 Shader_Manager.Set_Texture_Used (False);
             when Centre_Sphere =>
@@ -241,7 +243,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                                Sphere_1, Sphere_2);
 
         Textures_Manager.Load_Texture (Earth_Texture, "src/earth2048.bmp", True);
-        Put_Line ("Setup complete.");
 
     exception
         when others =>
