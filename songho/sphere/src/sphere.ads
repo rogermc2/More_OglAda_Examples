@@ -25,12 +25,12 @@ private
     package Vertex_Data_Package is new Ada.Containers.Doubly_Linked_Lists (Vertex);
     type Vertex_List is new Vertex_Data_Package.List with null record;
 
-    type Indices is record
+    type Triangle_Indices is record
         Vertex_1 : UInt := 0;
         Vertex_2 : UInt := 0;
         Vertex_3 : UInt := 0;
     end record;
-    package Indices_Package is new Ada.Containers.Doubly_Linked_Lists (Indices);
+    package Indices_Package is new Ada.Containers.Doubly_Linked_Lists (Triangle_Indices);
     type Indices_List is new Indices_Package.List with null record;
 
     package Line_Indices_Package is new Ada.Containers.Doubly_Linked_Lists (UInt);
