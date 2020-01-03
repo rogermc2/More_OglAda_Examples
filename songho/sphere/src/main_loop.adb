@@ -32,8 +32,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     Black                    : constant GL.Types.Colors.Color :=
                                  (0.0, 0.0, 0.0, 0.0);
---      Screen_Width             : constant GL.Types.Int := 1500;
---      Screen_Height            : constant GL.Types.Int := 500;
+    Screen_Width             : constant Glfw.Size := 1500;
+    Screen_Height            : constant Glfw.Size := 500;
     Camera_Distance          : constant GL.Types.Single := 4.0;
 --      Text_Width               : constant GL.Types.Int := 8;
 --      Text_Height              : constant GL.Types.Int := 13;
@@ -192,7 +192,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         case Position is
             when Left_Sphere =>
                 Matrix_Model_Common :=
-                  Translation_Matrix ((-1.0, 0.0, 0.0)) * Matrix_Model_Common; --  orig -2.5
+                  Translation_Matrix ((-2.5, 0.0, 0.0)) * Matrix_Model_Common;
                 Matrix_Model_View := View_Matrix * Matrix_Model_Common;
                 Shader_Manager.Set_Texture_Used (False);
             when Centre_Sphere =>
@@ -225,8 +225,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Setup is
+    procedure Setup (Window : in out Glfw.Windows.Window) is
     begin
+        Window.Set_Size (Screen_Width, Screen_Height);
         Init_GL;
         Vertices_Array_Object.Initialize_Id;
         Vertices_Array_Object.Bind;
@@ -255,7 +256,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     use Glfw.Input;
     Running : Boolean := True;
 begin
-    Setup;
+    Setup (Main_Window);
     while Running loop
         Render (Main_Window);
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
