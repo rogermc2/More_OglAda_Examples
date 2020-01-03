@@ -21,7 +21,7 @@ package body Shader_Manager is
         Material_Ambient  : constant Singles.Vector4 := (0.5, 0.5, 0.5, 1.0);
         Material_Diffuse  : constant Singles.Vector4 := (0.7, 0.7, 0.7, 1.0);
         Material_Specular : constant Singles.Vector4 := (0.4, 0.4, 0.4, 1.0);
-        Shininess         : constant Int := 16;
+        Shininess         : constant Single := 16.0;
     begin
         Render_Program := Program_From
           ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
@@ -56,7 +56,6 @@ package body Shader_Manager is
           Uniform_Location (Render_Program, "map0");
         Render_Uniforms.Texture_Used_ID :=
           Uniform_Location (Render_Program, "textureUsed");
-
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Light);
         GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Normal_ID, Identity4);
         GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_ID, Identity4);
@@ -65,10 +64,11 @@ package body Shader_Manager is
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Ambient_ID, Ambient);
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Diffuse_ID, Diffuse);
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Specular_ID, Specula);
+
         GL.Uniforms.Set_Single (Render_Uniforms.Material_Ambient_ID, Material_Ambient);
         GL.Uniforms.Set_Single (Render_Uniforms.Material_Diffuse_ID, Material_Diffuse);
         GL.Uniforms.Set_Single (Render_Uniforms.Material_Specular_ID, Material_Specular);
-        GL.Uniforms.Set_Int (Render_Uniforms.Material_Shininess_ID, Shininess);
+        GL.Uniforms.Set_Single (Render_Uniforms.Material_Shininess_ID, Shininess);
 
         GL.Uniforms.Set_Int (Render_Uniforms.Map0_ID, 0);
         GL.Uniforms.Set_Int (Render_Uniforms.Texture_Used_ID, 1);

@@ -1,5 +1,6 @@
 
 with Ada.Numerics;
+with Ada.Text_IO; use Ada.Text_IO;
 
 package body Sphere is
 
@@ -124,7 +125,7 @@ package body Sphere is
         use Maths.Single_Math_Functions;
         use Flat_Vertex_Package;
         Flat_Vertices  : Flat_Vertex_List;
-        Flat_Cursor    : Flat_Vertex_Package.Cursor;
+        Flat_Cursor    : Flat_Vertex_Package.Cursor := Flat_Vertices.First;
         aVertex        : Flat_Vertex;
         Vertex_1       : Flat_Vertex;
         Vertex_2       : Flat_Vertex;
@@ -310,6 +311,11 @@ package body Sphere is
             Next (Index_Cursor);
         end loop;
         return S_Indices;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Sphere.Get_Indices.");
+            raise;
     end Get_Indices;
 
     --   ----------------------------------------------------------------------
@@ -320,6 +326,7 @@ package body Sphere is
     end Get_Indices_Size;
 
     --   ----------------------------------------------------------------------
+
     function Get_Interleaved_Size (theSphere : Sphere) return Int is
     begin
         return Int (theSphere.Interleaved_Vertices.Length);
@@ -343,6 +350,11 @@ package body Sphere is
             Next (Vertex_Cursor);
         end loop;
         return Vertices;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Sphere.Get_Interleaved_Vertices.");
+            raise;
     end Get_Interleaved_Vertices;
 
     --   ----------------------------------------------------------------------
@@ -369,6 +381,11 @@ package body Sphere is
         else
             Build_Vertices_Flat (theSphere);
         end if;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Sphere.Init.");
+            raise;
     end Init;
 
     --   ----------------------------------------------------------------------

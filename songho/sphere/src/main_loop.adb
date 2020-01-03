@@ -3,7 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Buffers;
-with GL.Fixed.Lighting;
+--  with GL.Fixed.Lighting;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures;
@@ -52,7 +52,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Init_Lights;
+--      procedure Init_Lights;
     procedure Set_Matrices (Window_Width, Window_Height : Glfw.Size;
                             Render_Program : GL.Objects.Programs.Program;
                             Position : Sphere_Position);
@@ -60,14 +60,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Init_GL is
-        use GL.Fixed.Lighting;
+--          use GL.Fixed.Lighting;
         use GL.Pixels;
     begin
-        Set_Shade_Model (Smooth);
+--          Set_Shade_Model (Smooth);
         Set_Unpack_Alignment (Words);
         GL.Toggles.Enable (GL.Toggles.Depth_Test);
-        GL.Toggles.Enable (GL.Toggles.Lighting);
-        GL.Toggles.Enable (GL.Toggles.Texture_2D);
+--          GL.Toggles.Enable (GL.Toggles.Lighting);
+--          Put_Line ("Init_GL Lighting enabled.");
         GL.Toggles.Enable (GL.Toggles.Cull_Face);
 
         Utilities.Clear_Background_Colour (Black);
@@ -75,24 +75,31 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Buffers.Clear_Depth_Buffer (1.0);
 
         GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
-        Init_Lights;
+        Put_Line ("Init_GL Depth_Function set.");
+
+--          Init_Lights;
+--          Put_Line ("Init_GL Lights initialised.");
     end Init_GL;
 
     --  ------------------------------------------------------------------------
 
-    procedure Init_Lights is
-        use GL.Fixed.Lighting;
-        Ambient  : constant Colors.Color := (0.3, 0.3, 0.3, 1.0);    -- ambient light
-        Diffuse  : constant Colors.Color := (0.7, 0.7, 0.7, 1.0);    -- diffuse light
-        Specular : constant Colors.Color := (1.0, 1.0, 1.0, 1.0);    -- specular light
-        Position : constant Singles.Vector4 := (0.0, 0.0, 1.0, 0.0); --  directional light
-     begin
-        Set_Ambient (Light (0), Ambient);
-        Set_Diffuse (Light (0), Diffuse);
-        Set_Specular (Light (0), Specular);
-        Set_Position (Light (0), Position);
-        GL.Toggles.Enable (GL.Toggles.Light0);
-    end Init_Lights;
+--      procedure Init_Lights is
+--          use GL.Fixed.Lighting;
+--          Ambient  : constant Colors.Color := (0.3, 0.3, 0.3, 1.0);    -- ambient light
+--          Diffuse  : constant Colors.Color := (0.7, 0.7, 0.7, 1.0);    -- diffuse light
+--          Specular : constant Colors.Color := (1.0, 1.0, 1.0, 1.0);    -- specular light
+--          Position : constant Singles.Vector4 := (0.0, 0.0, 1.0, 0.0); --  directional light
+--       begin
+--          Put_Line ("Init_Lights entered.");
+--          Set_Ambient (Light (0), Ambient);
+--          Put_Line ("Init_Lights Ambient set.");
+--          Set_Diffuse (Light (0), Diffuse);
+--          Set_Specular (Light (0), Specular);
+--          Set_Position (Light (0), Position);
+--          Put_Line ("Init_Lights Light (0) set.");
+--          GL.Toggles.Enable (GL.Toggles.Light0);
+--
+--      end Init_Lights;
 
     --  ------------------------------------------------------------------------
 
@@ -118,17 +125,23 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Array_Buffer.Bind (Vertex_Buffer_1);
         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
 
-        --  Second attribute buffer : UVs
+        --  Second attribute buffer : Normals
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
         Array_Buffer.Bind (UVs_Buffer);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, True, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, 0, 0);
 
-        GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
-                                              First => 0,
-                                              Count => 12 * 3);
+        --  Second attribute buffer : Tex Coords
+        GL.Attributes.Enable_Vertex_Attrib_Array (2);
+        Array_Buffer.Bind (UVs_Buffer);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, 0, 0);
+
+        GL.Objects.Buffers.Draw_Elements (Triangles, Sphere.Get_Indices_Size (Sphere_1),
+                                           UInt_Type, 0);
 
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
         GL.Attributes.Disable_Vertex_Attrib_Array (1);
+        GL.Attributes.Disable_Vertex_Attrib_Array (2);
+
     exception
         when others =>
             Put_Line ("An exception occurred in Render.");
@@ -213,19 +226,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Setup (Window : in out Glfw.Windows.Window) is
-        use GL.Objects.Buffers;
+    procedure Setup is
     begin
         Init_GL;
-        Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
+        Vertices_Array_Object.Initialize_Id;
+        Vertices_Array_Object.Bind;
+
         Shader_Manager.Init (Render_Program);
+        Put_Line ("Setup shaders initialized.");
 
         Sphere.Init (theSphere => Sphere_1, Radius => 1.0,
                      Sector_Count => 36, Stack_Count => 18, Smooth => False);
+        Put_Line ("Setup sphere 1 initialized.");
         Sphere.Init (Sphere_2);
-
-        Vertices_Array_Object.Initialize_Id;
-        Vertices_Array_Object.Bind;
+        Put_Line ("Setup sphere 2 initialized.");
 
         Buffers_Manager.Create_Index_Buffers (Index_Buffer_1, Index_Buffer_2,
                                               Sphere_1, Sphere_2);
@@ -233,14 +247,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                                Sphere_1, Sphere_2);
 
         Textures_Manager.Load_Texture (Earth_Texture, "earth2048.bmp", True);
-
-        Vertex_Buffer_1.Initialize_Id;
-        Array_Buffer.Bind (Vertex_Buffer_1);
---          Utilities.Load_Vertex_Buffer (Array_Buffer, Sphere., Static_Draw);
-
-        UVs_Buffer.Initialize_Id;
-        Array_Buffer.Bind (UVs_Buffer);
---          Utilities.Load_Vertex_Buffer (Array_Buffer, Sphere_Data.UV_Data, Static_Draw);
+        Put_Line ("Setup complete.");
 
     exception
         when others =>
@@ -253,7 +260,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     use Glfw.Input;
     Running : Boolean := True;
 begin
-    Setup (Main_Window);
+    Setup;
     while Running loop
         Render (Main_Window);
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
