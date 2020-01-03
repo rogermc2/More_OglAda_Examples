@@ -46,7 +46,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Vertex_Buffer_2          : GL.Objects.Buffers.Buffer;
     Index_Buffer_1           : GL.Objects.Buffers.Buffer;
     Index_Buffer_2           : GL.Objects.Buffers.Buffer;
-    UVs_Buffer               : GL.Objects.Buffers.Buffer;
     Render_Program           : GL.Objects.Programs.Program;
     Earth_Texture            : GL.Objects.Textures.Texture;
 
@@ -75,7 +74,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Buffers.Clear_Depth_Buffer (1.0);
 
         GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
-        Put_Line ("Init_GL Depth_Function set.");
+--          Put_Line ("Init_GL Depth_Function set.");
 
 --          Init_Lights;
 --          Put_Line ("Init_GL Lights initialised.");
@@ -127,13 +126,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         --  Second attribute buffer : Normals
         GL.Attributes.Enable_Vertex_Attrib_Array (1);
-        Array_Buffer.Bind (UVs_Buffer);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, 0, 3);
 
         --  Second attribute buffer : Tex Coords
         GL.Attributes.Enable_Vertex_Attrib_Array (2);
-        Array_Buffer.Bind (UVs_Buffer);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, 0, 0);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, 0, 6);
 
         GL.Objects.Buffers.Draw_Elements (Triangles, Sphere.Get_Indices_Size (Sphere_1),
                                            UInt_Type, 0);
@@ -233,20 +230,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Vertices_Array_Object.Bind;
 
         Shader_Manager.Init (Render_Program);
-        Put_Line ("Setup shaders initialized.");
 
         Sphere.Init (theSphere => Sphere_1, Radius => 1.0,
                      Sector_Count => 36, Stack_Count => 18, Smooth => False);
-        Put_Line ("Setup sphere 1 initialized.");
         Sphere.Init (Sphere_2);
-        Put_Line ("Setup sphere 2 initialized.");
 
         Buffers_Manager.Create_Index_Buffers (Index_Buffer_1, Index_Buffer_2,
                                               Sphere_1, Sphere_2);
         Buffers_Manager.Create_Vertex_Buffers (Vertex_Buffer_1, Vertex_Buffer_2,
                                                Sphere_1, Sphere_2);
 
-        Textures_Manager.Load_Texture (Earth_Texture, "earth2048.bmp", True);
+        Textures_Manager.Load_Texture (Earth_Texture, "src/earth2048.bmp", True);
         Put_Line ("Setup complete.");
 
     exception
