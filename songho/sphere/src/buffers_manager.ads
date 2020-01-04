@@ -6,11 +6,8 @@ with Sphere;
 
 package Buffers_Manager is
     use GL.Types.Singles;
-    type Vertex is record
-        Position : Vector3;
-        Texture  : Vector2;
-    end record;
 
+    type Vertex is private;
     type Vertices_Array is array (GL.Types.UInt range <>) of Vertex;
 
     procedure Create_Index_Buffers
@@ -20,6 +17,10 @@ package Buffers_Manager is
       (VBO_1, VBO_2 : in out GL.Objects.Buffers.Buffer;
        Sphere_1, Sphere_2 : Sphere.Sphere);
 
-    --  ------------------------------------------------------------------------
+private
+    type Vertex is record
+        Position : Vector3;
+        Texture  : Vector2;
+    end record;
 
 end Buffers_Manager;
