@@ -9,12 +9,12 @@ package body Buffers_Manager is
      begin
         VBO_1.Initialize_Id;
         Array_Buffer.Bind (VBO_1);
-        Utilities.Load_Vector8_Buffer (Array_Buffer,
-                                       Sphere.Get_Interleaved_Vertices (Sphere_1), Static_Draw);
+        Utilities.Load_Vector8_Buffer
+          (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_1), Static_Draw);
         VBO_2.Initialize_Id;
         Array_Buffer.Bind (VBO_2);
-        Utilities.Load_Vector8_Buffer (Array_Buffer,
-                                       Sphere.Get_Interleaved_Vertices (Sphere_2), Static_Draw);
+        Utilities.Load_Vector8_Buffer
+          (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_2), Static_Draw);
     end Create_Vertex_Buffers;
 
     --  ------------------------------------------------------------------------
@@ -25,12 +25,12 @@ package body Buffers_Manager is
     begin
         IBO_1.Initialize_Id;
         Element_Array_Buffer.Bind (IBO_1);
-        Utilities.Load_Element_Buffer (Element_Array_Buffer,
-                                       Sphere.Get_Indices (Sphere_1), Static_Draw);
+        Utilities.Load_Element_Buffer
+          (Element_Array_Buffer, Sphere.Get_Indices (Sphere_1), Static_Draw);
         IBO_2.Initialize_Id;
         Element_Array_Buffer.Bind (IBO_2);
-        Utilities.Load_Element_Buffer (Element_Array_Buffer,
-                                       Sphere.Get_Indices (Sphere_2), Static_Draw);
+        Utilities.Load_Element_Buffer
+          (Element_Array_Buffer, Sphere.Get_Indices (Sphere_2), Static_Draw);
 
     end Create_Index_Buffers;
 
