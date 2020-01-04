@@ -58,6 +58,8 @@ package body Utilities is
        new Print_Singles_Vector (GL.Index_3D, GL.Types.Singles.Vector3);
    procedure Print_Singles_Vector4 is
        new Print_Singles_Vector (GL.Index_Homogeneous, GL.Types.Singles.Vector4);
+   procedure Print_Singles_Vector5 is
+       new Print_Singles_Vector (Maths.Index_5, Maths.Vector5);
    procedure Print_Singles_Vector6 is
        new Print_Singles_Vector (Maths.Index_6, Maths.Vector6);
    procedure Print_Singles_Vector8 is
@@ -391,6 +393,20 @@ package body Utilities is
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector4) is
    begin
       Print_Singles_Vector4 (Name, aVector);
+   end Print_Vector;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Print_Vector (Name : String; aVector : Maths.Vector5) is
+   begin
+      Print_Singles_Vector5 (Name, aVector);
+   end Print_Vector;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Print_Vector (Name : String; aVector : Maths.Vector8) is
+   begin
+      Print_Singles_Vector8 (Name, aVector);
    end Print_Vector;
 
    --  ------------------------------------------------------------------------
