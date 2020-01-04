@@ -13,6 +13,7 @@ with GL.Pixels;
 with GL.Toggles;
 with GL.Types; use GL.Types;
 with GL.Types.Colors;
+with GL.Window;
 
 with Glfw.Input.Keys;
 with Glfw.Windows;
@@ -37,6 +38,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Camera_Distance          : constant GL.Types.Single := 4.0;
 --      Text_Width               : constant GL.Types.Int := 8;
 --      Text_Height              : constant GL.Types.Int := 13;
+--      Draw_Mode : constant GL.Types.Int := 0;
 
     Sphere_1                 : Sphere.Sphere;
     Sphere_2                 : Sphere.Sphere;
@@ -121,6 +123,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Objects.Textures.Set_Active_Unit (0);
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
 
+        Shader_Manager.Set_Texture_Used (False);
+
         --  First attribute buffer : vertices
         Array_Buffer.Bind (Vertex_Buffer_1);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -134,6 +138,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Attributes.Enable_Vertex_Attrib_Array (2);
         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, Stride, 6);
 
+        Element_Array_Buffer.Bind (Index_Buffer_1);
         GL.Objects.Buffers.Draw_Elements (Triangles, Sphere.Get_Indices_Size (Sphere_1),
                                            UInt_Type, 0);
 
@@ -175,6 +180,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Projection_Matrix : Matrix4;
         MVP_Matrix        : Matrix4;
     begin
+        GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
         View_Matrix := Translation_Matrix ((0.0, 0.0, -Camera_Distance)) * View_Matrix;
         Matrix_Model_Common :=
           Rotation_Matrix (Degree (90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
@@ -186,8 +192,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Objects.Programs.Use_Program (Render_Program);
 
 --          Init_Lookat_Transform (Camera_Position, Look_At, Up, View_Matrix);
-        Init_Perspective_Transform (40.0, Single (Window_Width),
-                                          Single (Window_Height),
+        Init_Perspective_Transform (Degree (40.0), Single (Window_Width),
+                                    Single (Window_Height),
                                     0.1, 100.0, Projection_Matrix);
         case Position is
             when Left_Sphere =>
@@ -235,13 +241,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Shader_Manager.Init (Render_Program);
 
         Sphere.Init (theSphere => Sphere_1, Radius => 1.0,
-                     Sector_Count => 36, Stack_Count => 18, Smooth => False);
+                     Sector_Count => 10, Stack_Count => 5, Smooth => False);
+--                       Sector_Count => 36, Stack_Count => 18, Smooth => False);
         Sphere.Init (Sphere_2);
 
-        Buffers_Manager.Create_Index_Buffers (Index_Buffer_1, Index_Buffer_2,
-                                              Sphere_1, Sphere_2);
         Buffers_Manager.Create_Vertex_Buffers (Vertex_Buffer_1, Vertex_Buffer_2,
                                                Sphere_1, Sphere_2);
+        Buffers_Manager.Create_Index_Buffers (Index_Buffer_1, Index_Buffer_2,
+                                              Sphere_1, Sphere_2);
 
         Textures_Manager.Load_Texture (Earth_Texture, "src/earth2048.bmp", True);
 
