@@ -72,6 +72,8 @@ package Utilities is
    procedure Print_Vector (Name : String; aVector : GL.Types.Ints.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector4);
+   procedure Print_Vector (Name : String; aVector : Maths.Vector5);
+   procedure Print_Vector (Name : String; aVector : Maths.Vector8);
    procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
                                    Location       : String;
                                    theUniform     : in out GL.Uniforms.Uniform);
