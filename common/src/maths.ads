@@ -40,6 +40,7 @@ package Maths is
 
    Math_Exception : Exception;
 
+   function "=" (Left, Right : Maths.Vector8) return Boolean;
    function Cube_Root (Value : Single) return Single;
    function Degrees (Angle : Radian) return Degree;
    function Factorial (Num : Natural) return Positive;
