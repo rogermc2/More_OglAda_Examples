@@ -8,13 +8,14 @@ package body Sphere is
     Min_Sector_Count : constant Int := 3;
     Min_Stack_Count  : constant Int := 2;
 
-    type Flat_Vertex is record
-        X : Single := 0.0;
-        Y : Single := 0.0;
-        Z : Single := 0.0;
-        S : Single := 0.0;
-        T : Single := 0.0;
-    end record;
+--      type Flat_Vertex is record
+--          X : Single := 0.0;
+--          Y : Single := 0.0;
+--          Z : Single := 0.0;
+--          S : Single := 0.0;
+--          T : Single := 0.0;
+--      end record;
+    subtype Flat_Vertex is Maths.Vector5;
     package Flat_Vertex_Package is new Ada.Containers.Vectors (Natural, Flat_Vertex);
     type Flat_Vertex_Vector is new Flat_Vertex_Package.Vector with null record;
 
@@ -26,41 +27,41 @@ package body Sphere is
 
     --   ----------------------------------------------------------------------
 
-    function "=" (Left, Right : Maths.Vector8) return Boolean is
-        use Maths;
-    begin
-        return Left (X) = Right (X) and Left (Y) = Right (Y) and Left (Z) = Right (Z)
-        and Left (NX) = Right (NX) and Left (NY) = Right (NY) and Left (NZ) = Right (NZ)
-        and Left (U) = Right (U) and Left (V) = Right (V);
-    end "=";
+--      function "=" (Left, Right : Maths.Vector8) return Boolean is
+--          use Maths;
+--      begin
+--          return Left (X) = Right (X) and Left (Y) = Right (Y) and Left (Z) = Right (Z)
+--          and Left (NX) = Right (NX) and Left (NY) = Right (NY) and Left (NZ) = Right (NZ)
+--          and Left (U) = Right (U) and Left (V) = Right (V);
+--      end "=";
 
     --   ----------------------------------------------------------------------
 
     procedure Build_Interleaved_Vertices (theSphere : in out Sphere) is
         use Vertex_Data_Package;
         use Tex_Coords_Package;
-        use Maths;
         Vertex_Cursor    : Vertex_Data_Package.Cursor := theSphere.Vertices.First;
         Normals_Cursor   : Vertex_Data_Package.Cursor := theSphere.Normals.First;
         Tex_Cursor       : Tex_Coords_Package.Cursor := theSphere.Tex_Coords.First;
         I_Vec            : Maths.Vector8;
     begin
-        Reverse_Elements (theSphere.Interleaved_Vertices);
+
         for count in 1 .. Int (theSphere.Vertices.Length) loop
-            I_Vec (X) := Element (Vertex_Cursor).X;
-            I_Vec (Y) := Element (Vertex_Cursor).Y;
-            I_Vec (Z) := Element (Vertex_Cursor).Z;
-            Next (Vertex_Cursor);
+            I_Vec (X) := Element (Vertex_Cursor) (GL.X);
+            I_Vec (Y) := Element (Vertex_Cursor) (GL.Y);
+            I_Vec (Z) := Element (Vertex_Cursor) (GL.Z);
 
-            I_Vec (NX) := Element (Normals_Cursor).X;
-            I_Vec (NY) := Element (Normals_Cursor).Y;
-            I_Vec (NZ) := Element (Normals_Cursor).Z;
-            Next (Normals_Cursor);
+            I_Vec (NX) := Element (Normals_Cursor) (GL.X);
+            I_Vec (NY) := Element (Normals_Cursor) (GL.Y);
+            I_Vec (NZ) := Element (Normals_Cursor) (GL.Z);
 
-            I_Vec (U) := Element (Tex_Cursor).U;
-            I_Vec (U) := Element (Tex_Cursor).V;
-            Next (Tex_Cursor);
+            I_Vec (U) := Element (Tex_Cursor) (GL.X);
+            I_Vec (V) := Element (Tex_Cursor) (GL.Y);
             theSphere.Interleaved_Vertices.Append (I_Vec);
+
+            Next (Vertex_Cursor);
+            Next (Normals_Cursor);
+            Next (Tex_Cursor);
         end loop;
     end Build_Interleaved_Vertices;
 
@@ -90,20 +91,20 @@ package body Sphere is
         for index in 1 .. theSphere.Stack_Count loop
             Stack_Angle := Ada.Numerics.Pi / 2.0 - Single (index - 1) * Stack_Step;
             XY := theSphere.Radius * Cos (Stack_Angle);
-            aVertex.Z := theSphere.Radius * Sin (Stack_Angle);
+            aVertex (GL.Z) := theSphere.Radius * Sin (Stack_Angle);
             for index_2 in 1 .. theSphere.Sector_Count loop
                 Sector_Angle := Single (index_2 - 1) * Sector_Step;
-                aVertex.X := XY * Cos (Sector_Angle);
-                aVertex.Y := XY * Sin (Sector_Angle);
+                aVertex (GL.X) := XY * Cos (Sector_Angle);
+                aVertex (GL.Y) := XY * Sin (Sector_Angle);
                 theSphere.Vertices.Append (aVertex);
 
-                Normals.X := aVertex.X * Inverse_Length;
-                Normals.Y := aVertex.Y * Inverse_Length;
-                Normals.Z := aVertex.Z * Inverse_Length;
+                Normals (GL.X) := aVertex (GL.X) * Inverse_Length;
+                Normals (GL.Y) := aVertex (GL.Y) * Inverse_Length;
+                Normals (GL.Z) := aVertex (GL.Z) * Inverse_Length;
                 theSphere.Normals.Append (Normals);
 
-                UV.U := Single (index_2 - 1) / Single (theSphere.Sector_Count);
-                UV.V := Single (index - 1) / Single (theSphere.Stack_Count);
+                UV (GL.X) := Single (index_2 - 1) / Single (theSphere.Sector_Count);
+                UV (GL.Y) := Single (index - 1) / Single (theSphere.Stack_Count);
                 theSphere.Tex_Coords.Append (UV);
             end loop;
         end loop;
@@ -162,13 +163,13 @@ package body Sphere is
         for index in 1 .. theSphere.Stack_Count loop
             Stack_Angle := Ada.Numerics.Pi / 2.0 - Single (index - 1) * Stack_Step;
             XY := theSphere.Radius * Cos (Stack_Angle);
-            aVertex.Z := theSphere.Radius * Sin (Stack_Angle);
+            aVertex (Z) := theSphere.Radius * Sin (Stack_Angle);
             for index_2 in 1 .. theSphere.Sector_Count loop
                 Sector_Angle := Single (index_2 - 1) * Sector_Step;
-                aVertex.X := XY * Cos (Sector_Angle);
-                aVertex.Y := XY * Sin (Sector_Angle);
-                aVertex.S := Single (index_2 - 1) / Single (theSphere.Sector_Count);
-                aVertex.T := Single (index - 1) / Single (theSphere.Stack_Count);
+                aVertex (X) := XY * Cos (Sector_Angle);
+                aVertex (Y) := XY * Sin (Sector_Angle);
+                aVertex (U) := Single (index_2 - 1) / Single (theSphere.Sector_Count);
+                aVertex (V) := Single (index - 1) / Single (theSphere.Stack_Count);
                 Flat_Vertices.Append (aVertex);
             end loop;
         end loop;
@@ -185,17 +186,17 @@ package body Sphere is
                 --  If 1st stack and last stack, store only 1 triangle per sector
                 --  otherwise, store 2 triangles (quad) per sector
                 if index = 1 then
-                    theSphere.Vertices.Append ((Vertex_1.X, Vertex_1.Y, Vertex_1.Z));
-                    theSphere.Vertices.Append ((Vertex_2.X, Vertex_2.Y, Vertex_2.Z));
-                    theSphere.Vertices.Append ((Vertex_4.X, Vertex_4.Y, Vertex_4.Z));
-                    theSphere.Tex_Coords.Append ((Vertex_1.S, Vertex_1.T));
-                    theSphere.Tex_Coords.Append ((Vertex_2.S, Vertex_2.T));
-                    theSphere.Tex_Coords.Append ((Vertex_4.S, Vertex_4.T));
+                    theSphere.Vertices.Append ((Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z)));
+                    theSphere.Vertices.Append ((Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z)));
+                    theSphere.Vertices.Append ((Vertex_4 (X), Vertex_4 (Y), Vertex_4 (Z)));
+                    theSphere.Tex_Coords.Append ((Vertex_1 (U), Vertex_1 (V)));
+                    theSphere.Tex_Coords.Append ((Vertex_2 (U), Vertex_2 (V)));
+                    theSphere.Tex_Coords.Append ((Vertex_4 (U), Vertex_4 (V)));
 
                     Face_Normal := Compute_Face_Normal
-                      (Vertex_1.X, Vertex_1.Y, Vertex_1.Z,
-                       Vertex_2.X, Vertex_2.Y, Vertex_2.Z,
-                       Vertex_4.X, Vertex_4.Y, Vertex_4.Z);
+                      (Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z),
+                       Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z),
+                       Vertex_4 (X), Vertex_4 (Y), Vertex_4 (Z));
                     --  same normals for 3 vertices
                     theSphere.Normals.Append (Face_Normal);
                     theSphere.Normals.Append (Face_Normal);
@@ -210,17 +211,17 @@ package body Sphere is
 
                     Vertex_Index := Vertex_Index + 3;
                 elsif index = Integer (theSphere.Stack_Count) then
-                    theSphere.Vertices.Append ((Vertex_1.X, Vertex_1.Y, Vertex_1.Z));
-                    theSphere.Vertices.Append ((Vertex_2.X, Vertex_2.Y, Vertex_2.Z));
-                    theSphere.Vertices.Append ((Vertex_3.X, Vertex_3.Y, Vertex_3.Z));
-                    theSphere.Tex_Coords.Append ((Vertex_1.S, Vertex_1.T));
-                    theSphere.Tex_Coords.Append ((Vertex_2.S, Vertex_2.T));
-                    theSphere.Tex_Coords.Append ((Vertex_3.S, Vertex_3.T));
+                    theSphere.Vertices.Append ((Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z)));
+                    theSphere.Vertices.Append ((Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z)));
+                    theSphere.Vertices.Append ((Vertex_3 (X), Vertex_3 (Y), Vertex_3 (Z)));
+                    theSphere.Tex_Coords.Append ((Vertex_1 (U), Vertex_1 (V)));
+                    theSphere.Tex_Coords.Append ((Vertex_2 (U), Vertex_2 (V)));
+                    theSphere.Tex_Coords.Append ((Vertex_3 (U), Vertex_3 (V)));
 
                     Face_Normal := Compute_Face_Normal
-                      (Vertex_1.X, Vertex_1.Y, Vertex_1.Z,
-                       Vertex_2.X, Vertex_2.Y, Vertex_2.Z,
-                       Vertex_3.X, Vertex_3.Y, Vertex_3.Z);
+                      (Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z),
+                       Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z),
+                       Vertex_3 (X), Vertex_3 (Y), Vertex_3 (Z));
                     --  same normals for 3 vertices
                     theSphere.Normals.Append (Face_Normal);
                     theSphere.Normals.Append (Face_Normal);
@@ -236,19 +237,19 @@ package body Sphere is
 
                     Vertex_Index := Vertex_Index + 3;
                 else --  2 triangles for others
-                    theSphere.Vertices.Append ((Vertex_1.X, Vertex_1.Y, Vertex_1.Z));
-                    theSphere.Vertices.Append ((Vertex_2.X, Vertex_2.Y, Vertex_2.Z));
-                    theSphere.Vertices.Append ((Vertex_3.X, Vertex_3.Y, Vertex_3.Z));
-                    theSphere.Vertices.Append ((Vertex_4.X, Vertex_4.Y, Vertex_4.Z));
-                    theSphere.Tex_Coords.Append ((Vertex_1.S, Vertex_1.T));
-                    theSphere.Tex_Coords.Append ((Vertex_2.S, Vertex_2.T));
-                    theSphere.Tex_Coords.Append ((Vertex_3.S, Vertex_3.T));
-                    theSphere.Tex_Coords.Append ((Vertex_4.S, Vertex_4.T));
+                    theSphere.Vertices.Append ((Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z)));
+                    theSphere.Vertices.Append ((Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z)));
+                    theSphere.Vertices.Append ((Vertex_3 (X), Vertex_3 (Y), Vertex_3 (Z)));
+                    theSphere.Vertices.Append ((Vertex_4 (X), Vertex_4 (Y), Vertex_4 (Z)));
+                    theSphere.Tex_Coords.Append ((Vertex_1 (U), Vertex_1 (V)));
+                    theSphere.Tex_Coords.Append ((Vertex_2 (U), Vertex_2 (V)));
+                    theSphere.Tex_Coords.Append ((Vertex_3 (U), Vertex_3 (V)));
+                    theSphere.Tex_Coords.Append ((Vertex_4 (U), Vertex_4 (V)));
 
                     Face_Normal := Compute_Face_Normal
-                      (Vertex_1.X, Vertex_1.Y, Vertex_1.Z,
-                       Vertex_2.X, Vertex_2.Y, Vertex_2.Z,
-                       Vertex_3.X, Vertex_3.Y, Vertex_3.Z);
+                      (Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z),
+                       Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z),
+                       Vertex_3 (X), Vertex_3 (Y), Vertex_3 (Z));
                     --  same normals for 4 vertices
                     theSphere.Normals.Append (Face_Normal);
                     theSphere.Normals.Append (Face_Normal);
@@ -326,11 +327,11 @@ package body Sphere is
         while Has_Element (Index_Cursor) loop
             V_Indices := (Element (Index_Cursor));
             I_Index := I_Index + 1;
-            S_Indices (I_Index) := Int (V_Indices.Vertex_1);
+            S_Indices (I_Index) := Int (V_Indices (GL.X));
             I_Index := I_Index + 1;
-            S_Indices (I_Index) := Int (V_Indices.Vertex_2);
+            S_Indices (I_Index) := Int (V_Indices (GL.Y));
             I_Index := I_Index + 1;
-            S_Indices (I_Index) := Int (V_Indices.Vertex_3);
+            S_Indices (I_Index) := Int (V_Indices (GL.Z));
             Next (Index_Cursor);
         end loop;
         return S_Indices;
@@ -367,7 +368,6 @@ package body Sphere is
     function Get_Interleaved_Vertices (theSphere : Sphere)
                                        return Maths.Vector8_Array is
         use Interleaved_Vertices_Package;
-        use Maths;
         Vertex_Cursor : Interleaved_Vertices_Package.Cursor :=
                           theSphere.Interleaved_Vertices.First;
         Vertices      : Vector8_Array
@@ -399,6 +399,7 @@ package body Sphere is
         else
             theSphere.Sector_Count := Sector_Count;
         end if;
+
         if Stack_Count < Min_Stack_Count then
             theSphere.Sector_Count := Min_Stack_Count;
         else
