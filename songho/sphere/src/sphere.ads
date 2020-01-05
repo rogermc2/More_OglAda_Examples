@@ -21,20 +21,11 @@ private
     use GL.Types.Singles;
     use GL.Types.UInts;
     use Maths;
---      type Vertex is record
---          X : Single := 0.0;
---          Y : Single := 0.0;
---          Z : Single := 0.0;
---      end record;
+
     subtype Vertex is GL.Types.Singles.Vector3;
     package Vertex_Data_Package is new Ada.Containers.Doubly_Linked_Lists (Vertex);
     type Vertex_List is new Vertex_Data_Package.List with null record;
 
---      type Triangle_Indices is record
---          Vertex_1 : UInt := 0;
---          Vertex_2 : UInt := 0;
---          Vertex_3 : UInt := 0;
---      end record;
     subtype Triangle_Indices is  GL.Types.UInts.Vector3;
     package Indices_Package is new Ada.Containers.Doubly_Linked_Lists (Triangle_Indices);
     type Indices_List is new Indices_Package.List with null record;
@@ -45,11 +36,6 @@ private
     package Interleaved_Vertices_Package is new
       Ada.Containers.Doubly_Linked_Lists (Maths.Vector8);
     type Interleaved_Vertices_List is new Interleaved_Vertices_Package.List with null record;
-
---      type Tex_Coords is record
---          U : Single := 0.0;
---          V : Single := 0.0;
---      end record;
 
     subtype Tex_Coords is  GL.Types.Singles.Vector2;
     package Tex_Coords_Package is new Ada.Containers.Doubly_Linked_Lists (Tex_Coords);
