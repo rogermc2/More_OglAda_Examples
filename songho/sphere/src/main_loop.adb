@@ -3,6 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Buffers;
+--  with  GL.Culling;
 --  with GL.Fixed.Lighting;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
@@ -35,7 +36,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                  (0.0, 0.0, 0.0, 0.0);
     Screen_Width             : constant Glfw.Size := 1500;
     Screen_Height            : constant Glfw.Size := 500;
-    Camera_Distance          : constant GL.Types.Single := 4.0;
 --      Text_Width               : constant GL.Types.Int := 8;
 --      Text_Height              : constant GL.Types.Int := 13;
 --      Draw_Mode : constant GL.Types.Int := 0;
@@ -69,7 +69,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Toggles.Enable (GL.Toggles.Depth_Test);
 --          GL.Toggles.Enable (GL.Toggles.Lighting);
 --          Put_Line ("Init_GL Lighting enabled.");
-        GL.Toggles.Enable (GL.Toggles.Cull_Face);
+--          GL.Culling.Set_Cull_Face (GL.Culling.Front);
+--          GL.Toggles.Enable (GL.Toggles.Cull_Face);
 
         Utilities.Clear_Background_Colour (Black);
         GL.Buffers.Clear_Stencil_Buffer (0);
@@ -161,6 +162,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         use Maths;
         --  Camera position, Look_At and Up are world coordinates.
 --          Camera_Position    : constant Vector3 := (4.0, 3.0, -3.0);
+        Camera_Distance    : constant GL.Types.Single := 3.5;  --  4.0;
         Camera_Angle_X     : constant Single := 0.0;
         Camera_Angle_Y     : constant Single := 0.0;
 --          Look_At            : constant Vector3 := (0.0, 0.0, 0.0);
@@ -183,7 +185,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
         View_Matrix := Translation_Matrix ((0.0, 0.0, -Camera_Distance)) * View_Matrix;
         Matrix_Model_Common :=
-          Rotation_Matrix (Degree (90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
+          Rotation_Matrix (Degree (0.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
           Rotation_Matrix (Degree (Camera_Angle_Y), (0.0, 1.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
@@ -241,10 +243,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Shader_Manager.Init (Render_Program);
 
         Sphere.Init (theSphere => Sphere_1, Radius => 1.0,
-                     Sector_Count => 10, Stack_Count => 5, Smooth => False);
---                       Sector_Count => 36, Stack_Count => 18, Smooth => False);
+                     Sector_Count => 36, Stack_Count => 18, Smooth => False);
         Sphere.Init (Sphere_2);
-
+        --  Create Buffers after sphere initialization
         Buffers_Manager.Create_Vertex_Buffers (Vertex_Buffer_1, Vertex_Buffer_2,
                                                Sphere_1, Sphere_2);
         Buffers_Manager.Create_Index_Buffers (Index_Buffer_1, Index_Buffer_2,
