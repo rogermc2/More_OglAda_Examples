@@ -53,6 +53,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
+    procedure Draw;
 --      procedure Init_Lights;
     procedure Set_Matrices (Window_Width, Window_Height : Glfw.Size;
                             Render_Program : GL.Objects.Programs.Program;
@@ -105,16 +106,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Render (Window : in out Glfw.Windows.Window) is
-        use GL.Objects.Buffers;
-        Window_Width      : Glfw.Size;
+    procedure Display (Window : in out Glfw.Windows.Window) is        Window_Width      : Glfw.Size;
         Window_Height     : Glfw.Size;
---          Stride            : constant Int := 32;   -- bytes count
-        Stride            : constant Int := Sphere.Get_Interleaved_Stride;
     begin
         --  Clear (GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT, COLOR_BUFFER_BIT)
         GL.Buffers.Clear ((True, False, True, True));
         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+        GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
 
         GL.Objects.Programs.Use_Program (Render_Program);
 
@@ -124,6 +122,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Objects.Textures.Set_Active_Unit (0);
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
 
+        Draw;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Render.");
+            raise;
+    end Display;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Draw is
+        use GL.Objects.Buffers;
+        Stride  : constant Int := Sphere.Get_Interleaved_Stride;
+    begin
         Shader_Manager.Set_Texture_Used (False);
 
         --  First attribute buffer : vertices
@@ -147,11 +159,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Attributes.Disable_Vertex_Attrib_Array (1);
         GL.Attributes.Disable_Vertex_Attrib_Array (2);
 
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Render.");
-            raise;
-    end Render;
+    end Draw;
 
     --  ------------------------------------------------------------------------
 
@@ -182,10 +190,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Projection_Matrix : Matrix4;
         MVP_Matrix        : Matrix4;
     begin
-        GL.Window.Set_Viewport (0, 0, Int (Window_Width), Int (Window_Height));
         View_Matrix := Translation_Matrix ((0.0, 0.0, -Camera_Distance)) * View_Matrix;
         Matrix_Model_Common :=
-          Rotation_Matrix (Degree (0.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
+          Rotation_Matrix (Degree (90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
           Rotation_Matrix (Degree (Camera_Angle_Y), (0.0, 1.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
@@ -266,7 +273,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 begin
     Setup (Main_Window);
     while Running loop
-        Render (Main_Window);
+        Display (Main_Window);
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
         Glfw.Input.Poll_Events;
         Running := Running and then
