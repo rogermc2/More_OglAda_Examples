@@ -56,6 +56,7 @@ package body Shader_Manager is
           Uniform_Location (Render_Program, "map0");
         Render_Uniforms.Texture_Used_ID :=
           Uniform_Location (Render_Program, "textureUsed");
+
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Light);
         GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Normal_ID, Identity4);
         GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_ID, Identity4);
