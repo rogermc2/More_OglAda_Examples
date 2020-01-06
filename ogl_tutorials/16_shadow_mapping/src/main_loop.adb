@@ -32,17 +32,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Render_Program           : GL.Objects.Programs.Program;
    Vertices_Array_Object    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Normals_Buffer           : GL.Objects.Buffers.Buffer;
-   UVs_Buffer               : GL.Objects.Buffers.Buffer;
-   Vertex_Buffer            : GL.Objects.Buffers.Buffer;
    Indexed_Normals_Buffer   : GL.Objects.Buffers.Buffer;
    Indexed_UVs_Buffer       : GL.Objects.Buffers.Buffer;
    Indexed_Vertex_Buffer    : GL.Objects.Buffers.Buffer;
    Element_Buffer           : GL.Objects.Buffers.Buffer;
    Indices_Size             : GL.Types.Int;
    UV_Map                   : GL.Objects.Textures.Texture;
-   Vertex_Count             : GL.Types.Int;
-   Indexed_Vertex_Count     : GL.Types.Int;
    Depth_Matrix_ID          : GL.Uniforms.Uniform;
    MVP_Matrix_ID            : GL.Uniforms.Uniform;
    Texture_ID               : GL.Uniforms.Uniform;
@@ -86,16 +81,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       --  First attribute buffer : vertices
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
+      GL.Objects.Buffers.Array_Buffer.Bind (Indexed_Vertex_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, 0, 0);
       --  Second attribute buffer : UVs
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
-      GL.Objects.Buffers.Array_Buffer.Bind (UVs_Buffer);
+      GL.Objects.Buffers.Array_Buffer.Bind (Indexed_UVs_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, True, 0, 0);
       --  Third attribute buffer : Normals
---        GL.Attributes.Enable_Vertex_Attrib_Array (2);
---        GL.Objects.Buffers.Array_Buffer.Bind (Normals_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, True, 0, 0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (2);
+      GL.Objects.Buffers.Array_Buffer.Bind (Indexed_Normals_Buffer);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, True, 0, 0);
 
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, Vertex_Count);
 
@@ -152,8 +147,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Texture_ID := GL.Objects.Programs.Uniform_Location
         (Render_Program, "myTextureSampler");
 
-        Buffers_Manager.Load_Buffers
-          (Vertex_Buffer, UVs_Buffer, Normals_Buffer, Element_Buffer, Indices_Size);
+        Buffers_Manager.Load_Buffers (Indexed_Vertex_Buffer, Indexed_UVs_Buffer,
+                                      Indexed_Normals_Buffer, Element_Buffer, Indices_Size);
 
    exception
       when others =>

@@ -7,9 +7,9 @@ with VBO_Indexer;
 
 package body Buffers_Manager is
 
-    procedure Load_Buffers (Normals_Buffer : in out GL.Objects.Buffers.Buffer;
-                            UVs_Buffer : in out GL.Objects.Buffers.Buffer;
-                            Vertex_Buffer : in out GL.Objects.Buffers.Buffer;
+    procedure Load_Buffers (Indexed_Vertices_Buffer : in out GL.Objects.Buffers.Buffer;
+                            Indexed_UVs_Buffer : in out GL.Objects.Buffers.Buffer;
+                            Indexed_Normals_Buffer : in out GL.Objects.Buffers.Buffer;
                             Element_Buffer : in out GL.Objects.Buffers.Buffer;
                             Indices_Size : out GL.Types.Int) is
       use GL.Objects.Buffers;
@@ -42,16 +42,16 @@ package body Buffers_Manager is
             Indices          : constant GL.Types.UInt_Array (1 .. Indices_Size)
               := Temp_Indices  (1 .. Indices_Size);
          begin
-            Vertex_Buffer.Initialize_Id;
-            Array_Buffer.Bind (Vertex_Buffer);
+            Indexed_Vertices_Buffer.Initialize_Id;
+            Array_Buffer.Bind (Indexed_Vertices_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices_Indexed, Static_Draw);
 
-            UVs_Buffer.Initialize_Id;
-            Array_Buffer.Bind (UVs_Buffer);
+            Indexed_UVs_Buffer.Initialize_Id;
+            Array_Buffer.Bind (Indexed_UVs_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, UVs_Indexed, Static_Draw);
 
-            Normals_Buffer.Initialize_Id;
-            Array_Buffer.Bind (Normals_Buffer);
+            Indexed_Normals_Buffer.Initialize_Id;
+            Array_Buffer.Bind (Indexed_Normals_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Normals_Indexed, Static_Draw);
 
             Element_Buffer.Initialize_Id;
