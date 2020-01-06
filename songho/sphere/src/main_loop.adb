@@ -53,8 +53,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Draw;
---      procedure Init_Lights;
+    procedure Draw (Position : Sphere_Position);
+    procedure Init_Lights (Render_Program : GL.Objects.Programs.Program);
     procedure Set_Matrices (Window_Width, Window_Height : Glfw.Size;
                             Render_Program : GL.Objects.Programs.Program;
                             Position : Sphere_Position);
@@ -62,14 +62,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Init_GL is
---          use GL.Fixed.Lighting;
         use GL.Pixels;
     begin
---          Set_Shade_Model (Smooth);
         Set_Unpack_Alignment (Words);
         GL.Toggles.Enable (GL.Toggles.Depth_Test);
---          GL.Toggles.Enable (GL.Toggles.Lighting);
---          Put_Line ("Init_GL Lighting enabled.");
 --          GL.Culling.Set_Cull_Face (GL.Culling.Front);
 --          GL.Toggles.Enable (GL.Toggles.Cull_Face);
 
@@ -78,35 +74,28 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Buffers.Clear_Depth_Buffer (1.0);
 
         GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
---          Put_Line ("Init_GL Depth_Function set.");
-
---          Init_Lights;
---          Put_Line ("Init_GL Lights initialised.");
     end Init_GL;
 
     --  ------------------------------------------------------------------------
 
---      procedure Init_Lights is
---          use GL.Fixed.Lighting;
---          Ambient  : constant Colors.Color := (0.3, 0.3, 0.3, 1.0);    -- ambient light
---          Diffuse  : constant Colors.Color := (0.7, 0.7, 0.7, 1.0);    -- diffuse light
---          Specular : constant Colors.Color := (1.0, 1.0, 1.0, 1.0);    -- specular light
---          Position : constant Singles.Vector4 := (0.0, 0.0, 1.0, 0.0); --  directional light
---       begin
---          Put_Line ("Init_Lights entered.");
---          Set_Ambient (Light (0), Ambient);
---          Put_Line ("Init_Lights Ambient set.");
---          Set_Diffuse (Light (0), Diffuse);
---          Set_Specular (Light (0), Specular);
---          Set_Position (Light (0), Position);
---          Put_Line ("Init_Lights Light (0) set.");
---          GL.Toggles.Enable (GL.Toggles.Light0);
---
---      end Init_Lights;
+    procedure Init_Lights (Render_Program : GL.Objects.Programs.Program) is
+        use Shader_Manager;
+        Ambient  : constant GL.Types.Singles.Vector4 := (0.3, 0.3, 0.3, 1.0);  -- ambient light
+        Diffuse  : constant GL.Types.Singles.Vector4 := (0.7, 0.7, 0.7, 1.0);  -- diffuse light
+        Specular : constant GL.Types.Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);  -- specular light
+--          Direct   : constant Singles.Vector4 := (0.0, 0.0, 1.0, 0.0); --  directional light
+     begin
+        GL.Objects.Programs.Use_Program (Render_Program);
+        Set_Light_Ambient (Ambient);
+        Set_Light_Diffuse (Diffuse);
+--          Set_Light_Direct (Direct);
+        Set_Light_Specular (Specular);
+    end Init_Lights;
 
     --  ------------------------------------------------------------------------
 
-    procedure Display (Window : in out Glfw.Windows.Window) is        Window_Width      : Glfw.Size;
+    procedure Display (Window : in out Glfw.Windows.Window) is
+        Window_Width      : Glfw.Size;
         Window_Height     : Glfw.Size;
     begin
         --  Clear (GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT, COLOR_BUFFER_BIT)
@@ -122,7 +111,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Objects.Textures.Set_Active_Unit (0);
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
 
-        Draw;
+        Draw (Left_Sphere);
+        Draw (Centre_Sphere);
 
     exception
         when others =>
@@ -132,14 +122,31 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Draw is
+    procedure Draw  (Position : Sphere_Position) is
         use GL.Objects.Buffers;
-        Stride  : constant Int := Sphere.Get_Interleaved_Stride;
+        Vertex_Buffer : Buffer;
+        Index_Buffer  : Buffer;
+        theSphere     : Sphere.Sphere;
+        Stride        : constant Int := Sphere.Get_Interleaved_Stride;
     begin
-        Shader_Manager.Set_Texture_Used (False);
+        case Position is
+            when Left_Sphere =>
+                theSphere := Sphere_1;
+                Vertex_Buffer := Vertex_Buffer_1;
+                Index_Buffer := Index_Buffer_1;
+                Shader_Manager.Set_Texture_Used (False);
+            when Centre_Sphere => theSphere := Sphere_2;
+                 Vertex_Buffer := Vertex_Buffer_2;
+                 Index_Buffer := Index_Buffer_2;
+                Shader_Manager.Set_Texture_Used (False);
+            when Right_Sphere => theSphere := Sphere_2;
+                 Vertex_Buffer := Vertex_Buffer_2;
+                 Index_Buffer := Index_Buffer_2;
+                 Shader_Manager.Set_Texture_Used (True);
+        end case;
 
         --  First attribute buffer : vertices
-        Array_Buffer.Bind (Vertex_Buffer_1);
+        Array_Buffer.Bind (Vertex_Buffer);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, Stride, 0);
 
@@ -151,8 +158,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Attributes.Enable_Vertex_Attrib_Array (2);
         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, Stride, 6);
 
-        Element_Array_Buffer.Bind (Index_Buffer_1);
-        GL.Objects.Buffers.Draw_Elements (Triangles, Sphere.Get_Indices_Size (Sphere_1),
+        Element_Array_Buffer.Bind (Index_Buffer);
+        GL.Objects.Buffers.Draw_Elements (Triangles, Sphere.Get_Indices_Size (theSphere),
                                            UInt_Type, 0);
 
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
@@ -168,27 +175,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                             Position : Sphere_Position) is
         use GL.Types.Singles;
         use Maths;
-        --  Camera position, Look_At and Up are world coordinates.
---          Camera_Position    : constant Vector3 := (4.0, 3.0, -3.0);
-        Camera_Distance    : constant GL.Types.Single := 3.5;  --  4.0;
-        Camera_Angle_X     : constant Single := 0.0;
-        Camera_Angle_Y     : constant Single := 0.0;
---          Look_At            : constant Vector3 := (0.0, 0.0, 0.0);
---          Up                 : constant Vector3 := (0.0, 1.0, 0.0);
-        --  The Model_Matrix operates in world coordinates.
+        Camera_Distance    : constant GL.Types.Single := 4.0;
+        Camera_Angle_X      : constant Single := 0.0;
+        Camera_Angle_Y      : constant Single := 0.0;
         Matrix_Model_Common : Matrix4 := Identity4;
---          Matrix_Model_Left   : Matrix4 := Identity4;
---          Matrix_Model_Centre : Matrix4 := Identity4;
---          Matrix_Model_Right  : Matrix4 := Identity4;
         Matrix_Model_View   : Matrix4 :=  Identity4;
-        --  The View_Matrix transforms the world_cordinates of the world view
-        --  into view (camera) coordinates.
-        View_Matrix       : Matrix4 :=  Identity4;
-        Normal_Matrix     : Matrix4 :=  Identity4;
-        --  The Projection_Matrix projects the camera view in camera coordinates
-        --  onto the camera view's Near plane
-        Projection_Matrix : Matrix4;
-        MVP_Matrix        : Matrix4;
+        View_Matrix         : Matrix4 :=  Identity4;
+        Normal_Matrix       : Matrix4 :=  Identity4;
+        Projection_Matrix   : Matrix4;
+        MVP_Matrix          : Matrix4;
     begin
         View_Matrix := Translation_Matrix ((0.0, 0.0, -Camera_Distance)) * View_Matrix;
         Matrix_Model_Common :=
@@ -197,24 +192,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
           Rotation_Matrix (Degree (Camera_Angle_Y), (0.0, 1.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
           Rotation_Matrix (Degree (Camera_Angle_X), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
-
-        GL.Objects.Programs.Use_Program (Render_Program);
-
---          Init_Lookat_Transform (Camera_Position, Look_At, Up, View_Matrix);
         Init_Perspective_Transform (Degree (40.0), Single (Window_Width),
                                     Single (Window_Height),
                                     0.1, 100.0, Projection_Matrix);
+
+        GL.Objects.Programs.Use_Program (Render_Program);
         case Position is
             when Left_Sphere =>
                 Matrix_Model_Common :=
                   Translation_Matrix ((-2.5, 0.0, 0.0)) * Matrix_Model_Common;
                 Matrix_Model_View := View_Matrix * Matrix_Model_Common;
-                Shader_Manager.Set_Texture_Used (False);
             when Centre_Sphere =>
                 Shader_Manager.Set_Texture_Used (False);
                 Matrix_Model_View := View_Matrix * Matrix_Model_Common;
             when Right_Sphere =>
-                Shader_Manager.Set_Texture_Used (True);
                 Matrix_Model_Common :=
                   Translation_Matrix ((2.5, 0.0, 0.0)) * Matrix_Model_Common;
                 Matrix_Model_View := View_Matrix * Matrix_Model_Common;
@@ -248,6 +239,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Vertices_Array_Object.Bind;
 
         Shader_Manager.Init (Render_Program);
+        Init_Lights (Render_Program);
 
         Sphere.Init (theSphere => Sphere_1, Radius => 1.0,
                      Sector_Count => 36, Stack_Count => 18, Smooth => False);
