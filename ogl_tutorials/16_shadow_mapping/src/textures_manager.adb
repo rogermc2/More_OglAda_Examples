@@ -73,7 +73,6 @@ package body Textures_Manager is
            "Load_Image; " & Image_File_Name & " failed to load.";
       end if;
 
-
       Texture_2D.Load_Empty_Texture  (0, GL.Pixels.Depth_Component16, Width, Height);
 --        Texture_2D.Generate_Mipmap;
 

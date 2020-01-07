@@ -7,9 +7,9 @@ with VBO_Indexer;
 
 package body Buffers_Manager is
 
-    procedure Load_Buffers (Indexed_Vertices_Buffer : in out GL.Objects.Buffers.Buffer;
-                            Indexed_UVs_Buffer : in out GL.Objects.Buffers.Buffer;
-                            Indexed_Normals_Buffer : in out GL.Objects.Buffers.Buffer;
+    procedure Load_Buffers (Vertex_Buffer : in out GL.Objects.Buffers.Buffer;
+                            UVs_Buffer : in out GL.Objects.Buffers.Buffer;
+                            Normals_Buffer : in out GL.Objects.Buffers.Buffer;
                             Element_Buffer : in out GL.Objects.Buffers.Buffer;
                             Vertex_Count, Indices_Size : out GL.Types.Int) is
       use GL.Objects.Buffers;
@@ -17,7 +17,7 @@ package body Buffers_Manager is
 
       Vertices_Size   : Int;
    begin
-      Vertex_Count := Load_Object_File.Mesh_Size ("src/textures/suzanne.obj");
+      Vertex_Count := Load_Object_File.Mesh_Size ("src/textures/room_thickwalls.obj");
       declare
          Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
          UVs              : Singles.Vector2_Array (1 .. Vertex_Count);
@@ -43,16 +43,16 @@ package body Buffers_Manager is
             Indices          : constant GL.Types.UInt_Array (1 .. Indices_Size)
               := Temp_Indices  (1 .. Indices_Size);
          begin
-            Indexed_Vertices_Buffer.Initialize_Id;
-            Array_Buffer.Bind (Indexed_Vertices_Buffer);
+            Vertex_Buffer.Initialize_Id;
+            Array_Buffer.Bind (Vertex_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices_Indexed, Static_Draw);
 
-            Indexed_UVs_Buffer.Initialize_Id;
-            Array_Buffer.Bind (Indexed_UVs_Buffer);
+            UVs_Buffer.Initialize_Id;
+            Array_Buffer.Bind (UVs_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, UVs_Indexed, Static_Draw);
 
-            Indexed_Normals_Buffer.Initialize_Id;
-            Array_Buffer.Bind (Indexed_Normals_Buffer);
+            Normals_Buffer.Initialize_Id;
+            Array_Buffer.Bind (Normals_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Normals_Indexed, Static_Draw);
 
             Element_Buffer.Initialize_Id;
