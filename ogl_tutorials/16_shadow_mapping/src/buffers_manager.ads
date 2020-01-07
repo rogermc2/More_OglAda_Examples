@@ -9,7 +9,7 @@ package Buffers_Manager is
                             Indexed_UVs_Buffer : in out GL.Objects.Buffers.Buffer;
                             Indexed_Normals_Buffer : in out GL.Objects.Buffers.Buffer;
                             Element_Buffer : in out GL.Objects.Buffers.Buffer;
-                            Indices_Size : out GL.Types.Int);
+                            Vertex_Count, Indices_Size : out GL.Types.Int);
 
     --  ------------------------------------------------------------------------
 
