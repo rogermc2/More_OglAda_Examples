@@ -11,10 +11,10 @@ package body Buffers_Manager is
                             Indexed_UVs_Buffer : in out GL.Objects.Buffers.Buffer;
                             Indexed_Normals_Buffer : in out GL.Objects.Buffers.Buffer;
                             Element_Buffer : in out GL.Objects.Buffers.Buffer;
-                            Indices_Size : out GL.Types.Int) is
+                            Vertex_Count, Indices_Size : out GL.Types.Int) is
       use GL.Objects.Buffers;
       use GL.Types;
-      Vertex_Count    : Int;
+
       Vertices_Size   : Int;
    begin
       Vertex_Count := Load_Object_File.Mesh_Size ("src/textures/suzanne.obj");
@@ -28,7 +28,8 @@ package body Buffers_Manager is
          Temp_Indices     : UInt_Array (1 .. Vertex_Count);
 
       begin
-         Load_Object_File.Load_Object ("src/textures/suzanne.obj", Vertices, UVs, Normals);
+         Load_Object_File.Load_Object ("src/textures/room_thickwalls.obj",
+                                       Vertices, UVs, Normals);
          VBO_Indexer.Index_VBO (Vertices, UVs,  Normals,
                                 Indexed_Vertices, Indexed_UVs, Indexed_Normals,
                                 Temp_Indices, Indices_Size, Vertices_Size);

@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Attributes;
 with GL.Buffers;
 with GL.Objects.Buffers;
+with GL.Objects.Framebuffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Textures;
@@ -20,11 +21,11 @@ with Glfw.Windows.Context;
 
 with Controls;
 with Program_Loader;
-with Load_DDS;
 with Maths;
 with Utilities;
 
 with Buffers_Manager;
+with Textures_Manager;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
@@ -32,11 +33,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Render_Program           : GL.Objects.Programs.Program;
    Vertices_Array_Object    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Frame_Buffer             : GL.Objects.Framebuffers.Framebuffer;
    Indexed_Normals_Buffer   : GL.Objects.Buffers.Buffer;
    Indexed_UVs_Buffer       : GL.Objects.Buffers.Buffer;
    Indexed_Vertex_Buffer    : GL.Objects.Buffers.Buffer;
    Element_Buffer           : GL.Objects.Buffers.Buffer;
    Indices_Size             : GL.Types.Int;
+   Vertex_Count             : GL.Types.Int;
    UV_Map                   : GL.Objects.Textures.Texture;
    Depth_Matrix_ID          : GL.Uniforms.Uniform;
    MVP_Matrix_ID            : GL.Uniforms.Uniform;
@@ -96,7 +99,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
       GL.Attributes.Disable_Vertex_Attrib_Array (1);
---        GL.Attributes.Disable_Vertex_Attrib_Array (2);
+      GL.Attributes.Disable_Vertex_Attrib_Array (2);
 
    exception
       when others =>
@@ -107,6 +110,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Setup (Window : in out Glfw.Windows.Window) is
+      use GL.Objects.Framebuffers;
       use GL.Objects.Shaders;
       use GL.Types;
       use GL.Types.Singles;
@@ -131,6 +135,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Vertices_Array_Object.Initialize_Id;
       Vertices_Array_Object.Bind;
 
+      Frame_Buffer.Initialize_Id;
+      Read_And_Draw_Target.Bind (Frame_Buffer);
+
       Render_Program := Program_Loader.Program_From
         ((Program_Loader.Src ("src/shaders/depth_rtt_vertex_shader.glsl",
          Vertex_Shader),
@@ -143,12 +150,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       MVP_Matrix_ID := GL.Objects.Programs.Uniform_Location
         (Render_Program, "MVP");
 
-      Load_DDS ("src/textures/uvmap.DDS", UV_Map);
       Texture_ID := GL.Objects.Programs.Uniform_Location
         (Render_Program, "myTextureSampler");
 
         Buffers_Manager.Load_Buffers (Indexed_Vertex_Buffer, Indexed_UVs_Buffer,
-                                      Indexed_Normals_Buffer, Element_Buffer, Indices_Size);
+                                      Indexed_Normals_Buffer, Element_Buffer,
+                                      Vertex_Count, Indices_Size);
+        Textures_Manager.Init (Frame_Buffer, UV_Map);
+--          Textures_Manager.Load_Texture (UV_Map, "src/textures/uvmap.DDS");
 
    exception
       when others =>
