@@ -22,6 +22,7 @@ with Glfw.Windows;
 with Glfw.Windows.Context;
 
 with Controls;
+with Load_DDS;
 with Program_Loader;
 with Maths;
 with Utilities;
@@ -50,7 +51,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    MVP_Matrix_ID            : GL.Uniforms.Uniform;
    Shadow_Map_ID            : GL.Uniforms.Uniform;
    Texture_ID               : GL.Uniforms.Uniform;
-   Model_Matrix             : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Model_Matrix             : GL.Types.Singles.Matrix4 :=
+                                 GL.Types.Singles.Identity4;
 
    --  ------------------------------------------------------------------------
 
@@ -69,7 +71,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Depth_MVP_Matrix        : Matrix4;
       Depth_Projection_Matrix : Matrix4;
       Depth_View_Matrix       : Matrix4;
-      Model_Matrix            : constant Matrix4 := Identity4;
       MVP_Matrix              : Matrix4;
       Projection_Matrix       : Matrix4;
       View_Matrix             : Matrix4;
@@ -185,7 +186,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                     Mouse.Coordinate (0.5 * Single (Window_Height)));
       Model_Matrix := Maths.Rotation_Matrix
           (Maths.Degrees (90.0), (0.0, 1.0, 0.0)) * Model_Matrix;
-      Model_Matrix := Maths.Translation_Matrix ((-1.0, -2.0, -8.0)) * Model_Matrix;
+      Model_Matrix := Maths.Translation_Matrix ((-1.0, -3.0, -12.0)) * Model_Matrix;
 
       Vertices_Array_Object.Initialize_Id;
       Vertices_Array_Object.Bind;
@@ -201,6 +202,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Depth_Matrix_ID := GL.Objects.Programs.Uniform_Location
         (Depth_Program, "depthMVP");
 
+      Load_DDS ("src/textures/uvmap.DDS", UV_Map);
       Render_Program := Program_Loader.Program_From
         ((Program_Loader.Src ("src/shaders/shadow_mapping_simple_version_vertex_shader.glsl",
          Vertex_Shader),
@@ -220,7 +222,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                       Normals_Buffer, Element_Buffer,
                                       Vertex_Count, Indices_Size);
         Textures_Manager.Init (Frame_Buffer, Depth_Texture);
---          Textures_Manager.Load_Texture (UV_Map, "src/textures/uvmap.DDS");
 
    exception
       when others =>
