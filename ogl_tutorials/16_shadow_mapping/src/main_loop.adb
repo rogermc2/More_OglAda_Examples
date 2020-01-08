@@ -63,8 +63,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use Maths;
       Window_Width            : Glfw.Size;
       Window_Height           : Glfw.Size;
-      Inv_Light_Direction     : constant Vector3 := (0.5, 2.0, -2.0);
-      Camera_Position         : constant Vector3 := (-2.0, -1.0, 5.0);
+      Inv_Light_Direction     : constant Vector3 := (-0.5, 2.0, 2.0);
+      Camera_Position         : constant Vector3 := (0.0, -1.0, 0.0);
       Up                      : constant Vector3 := (0.0, 1.0, 0.0);
       Depth_Model_Matrix      : constant Matrix4 := Identity4;
       Depth_MVP_Matrix        : Matrix4;
@@ -92,6 +92,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Dark_Blue);
 
       GL.Objects.Programs.Use_Program (Depth_Program);
+      --  The MVP matrix renders the scene from the light's point of view.
+      --  The View matrix rotates the world so that, in camera space,
+      --  the light direction is -Z
+      --  A directional light is used for which rays are parallel therefore use
+      --  orthographic projection
       Init_Orthographic_Transform
           (-10.0, 10.0, -10.0, 10.0, -10.0, 20.0, Depth_Projection_Matrix);
       Init_Lookat_Transform (Position => Camera_Position,
@@ -169,6 +174,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Types;
       use GL.Types.Singles;
       use Glfw.Input;
+      use Maths;
       Window_Width    : Glfw.Size := 1024;
       Window_Height   : Glfw.Size := 768;
    begin
@@ -183,9 +189,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window'Access.Set_Size (Window_Width, Window_Height);
       Window'Access.Set_Cursor_Pos (Mouse.Coordinate (0.5 * Single (Window_Width)),
                                     Mouse.Coordinate (0.5 * Single (Window_Height)));
-      Model_Matrix := Maths.Rotation_Matrix
-          (Maths.Degrees (90.0), (0.0, 1.0, 0.0)) * Model_Matrix;
-      Model_Matrix := Maths.Translation_Matrix ((-1.0, -3.0, -12.0)) * Model_Matrix;
+      Model_Matrix := Rotation_Matrix
+          (-Maths.Degree (70.0), (0.0, 1.0, 0.0)) * Model_Matrix;
+      Model_Matrix := Translation_Matrix ((-1.0, -3.0, -12.0)) * Model_Matrix;
 
       Vertices_Array_Object.Initialize_Id;
       Vertices_Array_Object.Bind;
