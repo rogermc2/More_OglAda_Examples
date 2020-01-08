@@ -12,6 +12,8 @@ uniform mat4 DepthBiasMVP;
 
 void main()
     {
+    //  gl_Position is the position of the vertex as seen from the current camera.
+    //  ShadowCoord is the position of the vertex as seen from the last camera (the light)
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
 	ShadowCoord = DepthBiasMVP * vec4(vertexPosition_modelspace,1);
 	UV = vertexUV;
