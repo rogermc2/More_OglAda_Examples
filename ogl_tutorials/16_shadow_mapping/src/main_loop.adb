@@ -57,7 +57,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render (Window : in out Glfw.Windows.Window) is
---        use GL.Objects.Buffers;
       use GL.Types;
       use GL.Types.Singles;
       use GL.Objects.Textures.Targets;
@@ -101,8 +100,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                              Look_At  => Depth_View_Matrix);
       Depth_MVP_Matrix := Depth_Projection_Matrix * Depth_View_Matrix * Depth_Model_Matrix;
       GL.Uniforms.Set_Single (Depth_Matrix_ID, Depth_MVP_Matrix);
-
---        Load_Texture (Window, UV_Map);
 
       --  First attribute buffer : vertices
       GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
