@@ -30,7 +30,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Dark_Blue                : constant GL.Types.Colors.Color := (0.0, 0.0, 0.4, 0.0);
 
    Vertices_Array_Object    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
---     Normals_Buffer           : GL.Objects.Buffers.Buffer;
    UV_Buffer                : GL.Objects.Buffers.Buffer;
    Vertex_Buffer            : GL.Objects.Buffers.Buffer;
    MVP_Matrix_ID            : GL.Uniforms.Uniform;
@@ -84,16 +83,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
       GL.Objects.Buffers.Array_Buffer.Bind (UV_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, True, 0, 0);
-      --  Third attribute buffer : Normals
---        GL.Attributes.Enable_Vertex_Attrib_Array (2);
---        GL.Objects.Buffers.Array_Buffer.Bind (Normals_Buffer);
---        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, True, 0, 0);
 
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, Vertex_Count);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
       GL.Attributes.Disable_Vertex_Attrib_Array (1);
---        GL.Attributes.Disable_Vertex_Attrib_Array (2);
 
    exception
       when others =>
@@ -161,10 +155,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          UV_Buffer.Initialize_Id;
          Array_Buffer.Bind (UV_Buffer);
          Utilities.Load_Vertex_Buffer (Array_Buffer, UVs, Static_Draw);
-
---           Normals_Buffer.Initialize_Id;
---           Array_Buffer.Bind (Normals_Buffer);
---           Utilities.Load_Vertex_Buffer (Array_Buffer, Normals, Static_Draw);
       end;
 
    exception
