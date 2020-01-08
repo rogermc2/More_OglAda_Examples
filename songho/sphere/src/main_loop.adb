@@ -53,11 +53,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Draw (Position : Sphere_Position);
+    procedure Draw (Window_Width, Window_Height : Glfw.Size;
+                    thePosition : Sphere_Position);
     procedure Init_Lights (Render_Program : GL.Objects.Programs.Program);
     procedure Set_Matrices (Window_Width, Window_Height : Glfw.Size;
                             Render_Program : GL.Objects.Programs.Program;
-                            Position : Sphere_Position);
+                            thePosition : Sphere_Position);
 
     --  ------------------------------------------------------------------------
 
@@ -105,14 +106,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         GL.Objects.Programs.Use_Program (Render_Program);
 
-        Set_Matrices (Window_Width, Window_Height, Render_Program, Left_Sphere);
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
 
         GL.Objects.Textures.Set_Active_Unit (0);
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
 
-        Draw (Left_Sphere);
-        Draw (Centre_Sphere);
+        Draw (Window_Width, Window_Height, Left_Sphere);
+        Draw (Window_Width, Window_Height, Centre_Sphere);
+        Draw (Window_Width, Window_Height, Right_Sphere);
 
     exception
         when others =>
@@ -122,14 +123,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Draw  (Position : Sphere_Position) is
+    procedure Draw  (Window_Width, Window_Height : Glfw.Size;
+                     thePosition : Sphere_Position) is
         use GL.Objects.Buffers;
         Vertex_Buffer : Buffer;
         Index_Buffer  : Buffer;
         theSphere     : Sphere.Sphere;
         Stride        : constant Int := Sphere.Get_Interleaved_Stride;
     begin
-        case Position is
+
+        Set_Matrices (Window_Width, Window_Height, Render_Program, thePosition);
+        case thePosition is
             when Left_Sphere =>
                 theSphere := Sphere_1;
                 Vertex_Buffer := Vertex_Buffer_1;
@@ -138,7 +142,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             when Centre_Sphere => theSphere := Sphere_2;
                  Vertex_Buffer := Vertex_Buffer_2;
                  Index_Buffer := Index_Buffer_2;
-                Shader_Manager.Set_Texture_Used (False);
+                 Shader_Manager.Set_Texture_Used (False);
             when Right_Sphere => theSphere := Sphere_2;
                  Vertex_Buffer := Vertex_Buffer_2;
                  Index_Buffer := Index_Buffer_2;
@@ -172,22 +176,22 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     procedure Set_Matrices (Window_Width, Window_Height : Glfw.Size;
                             Render_Program : GL.Objects.Programs.Program;
-                            Position : Sphere_Position) is
+                            thePosition : Sphere_Position) is
         use GL.Types.Singles;
         use Maths;
         Camera_Distance    : constant GL.Types.Single := 4.0;
         Camera_Angle_X      : constant Single := 0.0;
         Camera_Angle_Y      : constant Single := 0.0;
         Matrix_Model_Common : Matrix4 := Identity4;
-        Matrix_Model_View   : Matrix4 :=  Identity4;
-        View_Matrix         : Matrix4 :=  Identity4;
-        Normal_Matrix       : Matrix4 :=  Identity4;
+        Matrix_Model_View   : Matrix4 := Identity4;
+        View_Matrix         : constant Matrix4 :=
+                                Translation_Matrix ((0.0, 0.0, -Camera_Distance));
+        Normal_Matrix       : Matrix4 := Identity4;
         Projection_Matrix   : Matrix4;
         MVP_Matrix          : Matrix4;
     begin
-        View_Matrix := Translation_Matrix ((0.0, 0.0, -Camera_Distance)) * View_Matrix;
         Matrix_Model_Common :=
-          Rotation_Matrix (Degree (90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
+          Rotation_Matrix (Degree (-90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
           Rotation_Matrix (Degree (Camera_Angle_Y), (0.0, 1.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
@@ -196,20 +200,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                     Single (Window_Height),
                                     0.1, 100.0, Projection_Matrix);
 
-        GL.Objects.Programs.Use_Program (Render_Program);
-        case Position is
+        case thePosition is
             when Left_Sphere =>
                 Matrix_Model_Common :=
-                  Translation_Matrix ((-2.5, 0.0, 0.0)) * Matrix_Model_Common;
-                Matrix_Model_View := View_Matrix * Matrix_Model_Common;
+                   Translation_Matrix ((-2.5, 0.0, 0.0)) * Matrix_Model_Common;
             when Centre_Sphere =>
-                Shader_Manager.Set_Texture_Used (False);
-                Matrix_Model_View := View_Matrix * Matrix_Model_Common;
+                null;
             when Right_Sphere =>
                 Matrix_Model_Common :=
                   Translation_Matrix ((2.5, 0.0, 0.0)) * Matrix_Model_Common;
-                Matrix_Model_View := View_Matrix * Matrix_Model_Common;
         end case;
+        Matrix_Model_View := View_Matrix * Matrix_Model_Common;
 
         Normal_Matrix := Matrix_Model_View;
         Normal_Matrix (GL.X, GL.W) := 0.0;
@@ -219,6 +220,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         MVP_Matrix :=  Projection_Matrix * Matrix_Model_View;
 
+        GL.Objects.Programs.Use_Program (Render_Program);
         Shader_Manager.Set_Matrix_Model_View (Matrix_Model_View);
         Shader_Manager.Set_Matrix_Model_View_Projection (MVP_Matrix);
         Shader_Manager.Set_Matrix_Normal (Normal_Matrix);
