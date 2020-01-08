@@ -64,8 +64,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use Maths;
       Window_Width            : Glfw.Size;
       Window_Height           : Glfw.Size;
-      Inv_Light_Direction     : constant Vector3 := (0.05, 2.0, 2.0);
-      Camera_Position         : constant Vector3 := (4.0, 3.0, 3.0);
+      Inv_Light_Direction     : constant Vector3 := (0.5, 2.0, -2.0);
+      Camera_Position         : constant Vector3 := (-2.0, -1.0, 5.0);
       Up                      : constant Vector3 := (0.0, 1.0, 0.0);
       Depth_Model_Matrix      : constant Matrix4 := Identity4;
       Depth_MVP_Matrix        : Matrix4;
@@ -95,8 +95,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Programs.Use_Program (Depth_Program);
       Init_Orthographic_Transform
           (-10.0, 10.0, -10.0, 10.0, -10.0, 20.0, Depth_Projection_Matrix);
-      Init_Lookat_Transform (Camera_Position, Inv_Light_Direction, Up,
-                             Depth_View_Matrix);
+      Init_Lookat_Transform (Position => Camera_Position,
+                             Target   => Inv_Light_Direction,
+                             Up       => Up,
+                             Look_At  => Depth_View_Matrix);
       Depth_MVP_Matrix := Depth_Projection_Matrix * Depth_View_Matrix * Depth_Model_Matrix;
       GL.Uniforms.Set_Single (Depth_Matrix_ID, Depth_MVP_Matrix);
 
