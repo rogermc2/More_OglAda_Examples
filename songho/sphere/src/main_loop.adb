@@ -172,7 +172,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         MVP_Matrix          : Matrix4;
     begin
         Matrix_Model_Common :=
-          Rotation_Matrix (Degree (-90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
+          Rotation_Matrix (Degree (90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
           Rotation_Matrix (Degree (Camera_Angle_Y), (0.0, 1.0, 0.0)) * Matrix_Model_Common;
         Matrix_Model_Common :=
