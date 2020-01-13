@@ -36,15 +36,13 @@ void main()
     vec3 color = lightAmbient.rgb * materialAmbient.rgb;
 
     float dotNL = max(dot(normal, light), 0.0);
-            // add diffuse
+    // add diffuse
     color = color + lightDiffuse.rgb * materialDiffuse.rgb * dotNL;
-
     // modulate texture map
     if(textureUsed)
         color = color * texture(map0, texCoord0).rgb;
     float dotNH = max(dot(normal, halfv), 0.0);
     // add specular
     color = color + pow(dotNH, materialShininess) * lightSpecular.rgb * materialSpecular.rgb;
-    fragColor = 3 * vec4(color, materialDiffuse.a);
-   // fragColor =  vec4(texCoord0.x,0,0, 0.0);
+    fragColor = vec4(color, materialDiffuse.a);
     }
