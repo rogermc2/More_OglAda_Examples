@@ -16,6 +16,8 @@ package Buffers_Manager is
     procedure Create_Vertex_Buffers
       (VBO_1, VBO_2 : in out GL.Objects.Buffers.Buffer;
        Sphere_1, Sphere_2 : Sphere.Sphere);
+    procedure Load_Vertex_Buffer (Vertex_Buffer : GL.Objects.Buffers.Buffer;
+                                  aSphere : Sphere.Sphere);
 
 private
     type Vertex is record
