@@ -33,7 +33,7 @@ package Shader_Manager is
     procedure Set_Material_Diffuse (Diffuse_Colour : Singles.Vector4);
     procedure Set_Material_Specular (Specular_Colour : Singles.Vector4);
     procedure Set_Material_Shininess (Shininess : Single);
---      procedure Set_Map0 (Map0 : UInt);
+    procedure Set_Map0 (Map0 : Int);
     procedure Set_Matrix_Normal (Normal_Matrix : Singles.Matrix4);
     procedure Set_Matrix_Model_View (Model_View_Matrix : Singles.Matrix4);
     procedure Set_Matrix_Model_View_Projection (MVP_Matrix : Singles.Matrix4);
