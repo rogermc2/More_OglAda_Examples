@@ -32,15 +32,19 @@ void main()
         }
     vec3 view = normalize(-esVertex);
     vec3 halfv = normalize(light + view);
-    
-    vec3 color = lightAmbient.rgb * materialAmbient.rgb;        // begin with ambient
+    // begin with ambient
+    vec3 color = lightAmbient.rgb * materialAmbient.rgb;
+
     float dotNL = max(dot(normal, light), 0.0);
-    color = color + lightDiffuse.rgb * materialDiffuse.rgb * dotNL;    // add diffuse
+            // add diffuse
+    color = color + lightDiffuse.rgb * materialDiffuse.rgb * dotNL;
+
+    // modulate texture map
     if(textureUsed)
-        color *= texture(map0, texCoord0).rgb;                // modulate texture map
+        color = color * texture(map0, texCoord0).rgb;
     float dotNH = max(dot(normal, halfv), 0.0);
-    color = color + pow(dotNH, materialShininess) * lightSpecular.rgb * materialSpecular.rgb; // add specular
-    
-    // set frag color
-    fragColor = vec4(color, materialDiffuse.a);
+    // add specular
+    color = color + pow(dotNH, materialShininess) * lightSpecular.rgb * materialSpecular.rgb;
+    fragColor = 3 * vec4(color, materialDiffuse.a);
+   // fragColor =  vec4(texCoord0.x,0,0, 0.0);
     }

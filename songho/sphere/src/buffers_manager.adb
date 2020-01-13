@@ -9,13 +9,17 @@ package body Buffers_Manager is
      begin
         VBO_1.Initialize_Id;
         Array_Buffer.Bind (VBO_1);
-        Utilities.Load_Vector8_Buffer
-          (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_1), Static_Draw);
+        Allocate (Array_Buffer, Sphere.Interleaved_Vertices_Size (Sphere_1), Stream_Draw);
+--          Utilities.Load_Vector8_Buffer
+--            (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_1), Static_Draw);
 
         VBO_2.Initialize_Id;
         Array_Buffer.Bind (VBO_2);
-        Utilities.Load_Vector8_Buffer
-          (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_2), Static_Draw);
+        Allocate (Array_Buffer, Sphere.Interleaved_Vertices_Size (Sphere_2), Stream_Draw);
+--          Utilities.Load_Vector8_Buffer
+--            (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_2), Static_Draw);
+--          Utilities.Print_GL_Array8 ("Main_Loop.Draw, Sphere_2 Interleaved_Vertices",
+--                                      Sphere.Get_Interleaved_Vertices (Sphere_2));
 
     end Create_Vertex_Buffers;
 
@@ -29,13 +33,27 @@ package body Buffers_Manager is
         Element_Array_Buffer.Bind (IBO_1);
         Utilities.Load_Element_Buffer
           (Element_Array_Buffer, Sphere.Get_Indices (Sphere_1), Static_Draw);
+
         IBO_2.Initialize_Id;
         Element_Array_Buffer.Bind (IBO_2);
         Utilities.Load_Element_Buffer
           (Element_Array_Buffer, Sphere.Get_Indices (Sphere_2), Static_Draw);
---            Utilities.Print_GL_Int_Array ("Indices", Sphere.Get_Indices (Sphere_1));
+--          Utilities.Print_GL_Int_Array ("Sphere_2 Indices", Sphere.Get_Indices (Sphere_2));
 
     end Create_Index_Buffers;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Load_Vertex_Buffer (Vertex_Buffer : GL.Objects.Buffers.Buffer;
+                                  aSphere : Sphere.Sphere) is
+    use GL.Objects.Buffers;
+     begin
+        Array_Buffer.Bind (Vertex_Buffer);
+        Allocate (Array_Buffer, Sphere.Interleaved_Vertices_Size (aSphere), Stream_Draw);
+        Utilities.Load_Vertex_Sub_Buffer (Array_Buffer, 0,
+                                          Sphere.Get_Interleaved_Vertices (aSphere));
+--          Utilities.Print_GL_Array8 ("Buffers_Manager.Load_Vertex_Buffer Sphere Vertices", Sphere.Get_Interleaved_Vertices (aSphere));
+    end Load_Vertex_Buffer;
 
     --  ------------------------------------------------------------------------
 

@@ -34,13 +34,15 @@ package body Sphere is
             I_Vec (X) := Element (Vertex_Cursor) (GL.X);
             I_Vec (Y) := Element (Vertex_Cursor) (GL.Y);
             I_Vec (Z) := Element (Vertex_Cursor) (GL.Z);
+--              I_Vec (Y) := 0.2;
+
+            I_Vec (U) := Element (Tex_Cursor) (GL.X);
+            I_Vec (V) := Element (Tex_Cursor) (GL.Y);
 
             I_Vec (NX) := Element (Normals_Cursor) (GL.X);
             I_Vec (NY) := Element (Normals_Cursor) (GL.Y);
             I_Vec (NZ) := Element (Normals_Cursor) (GL.Z);
 
-            I_Vec (U) := Element (Tex_Cursor) (GL.X);
-            I_Vec (V) := Element (Tex_Cursor) (GL.Y);
             theSphere.Interleaved_Vertices.Append (I_Vec);
 
             Next (Vertex_Cursor);
@@ -76,13 +78,8 @@ package body Sphere is
         V_Index_2      : Natural;
     begin
         --  compute all vertices first, each vertex contains (x,y,z,s,t) except normal
---          Put_Line ("Build_Vertices_Flat Stack_Step" & Single'Image (Stack_Step));
---          Put_Line ("Build_Vertices_Flat Sector_Step" & Single'Image (Sector_Step));
---          Put_Line ("Build_Vertices_Flat Stack_Count" & Int'Image (Stack_Count));
         for index_1 in 0 .. Stack_Count loop
             Stack_Angle := Ada.Numerics.Pi / 2.0 - Single (index_1) * Stack_Step;
---              Put_Line ("Build_Vertices_Flat Stack_Angle" &
---              Int'Image (index_1) & "  " & Single'Image (Stack_Angle));
             XY := theSphere.Radius * Cos (Stack_Angle);
             aVertex (Z) := theSphere.Radius * Sin (Stack_Angle);
             --  Add (sectorCount+1) vertices per stack
@@ -95,13 +92,7 @@ package body Sphere is
                 aVertex (U) := Single (index_2) / Single (Sector_Count);
                 aVertex (V) := Single (index_1) / Single (Stack_Count);
                 Flat_Vertices.Append (aVertex);
---                  if index_1 = 1 then
---                      Put_Line ("Build_Vertices_Flat last Sector_Angles" &
---                               Single'Image (Sector_Angle));
---                      Utilities.Print_Vector ("Build_Vertices_Flat Vertices", aVertex);
---                  end if;
             end loop;
---              New_Line;
         end loop;
 
         for index_1 in Natural range 0 .. Natural (Stack_Count - 1) loop
@@ -121,11 +112,6 @@ package body Sphere is
                     theSphere.Vertices.Append ((Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z)));
                     theSphere.Vertices.Append ((Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z)));
 --                      theSphere.Vertices.Append ((Vertex_4 (X), Vertex_4 (Y), Vertex_4 (Z)));
---                      Put_Line ("Build_Vertices_Flat index_1" & Natural'Image (index_1));
---                      Utilities.Print_Vector ("Build_Vertices_Flat Vertex_1", Vertex_1);
---                      Utilities.Print_Vector ("Build_Vertices_Flat Vertex_2", Vertex_2);
---                      Utilities.Print_Vector ("Build_Vertices_Flat Vertex_4", Vertex_4);
---                      New_Line;
 
                     theSphere.Tex_Coords.Append ((Vertex_1 (U), Vertex_1 (V)));
                     theSphere.Tex_Coords.Append ((Vertex_2 (U), Vertex_2 (V)));
@@ -230,12 +216,12 @@ package body Sphere is
     --        v: sector(longitude) angle (0 <= v <= 360)
     procedure Build_Vertices_Smooth (theSphere : in out Sphere) is
         use Maths.Single_Math_Functions;
-        aVertex        : Vertex;
+        aVertex        : Singles.Vector3;
         XY             : Single;
         Stack_Count    : constant Int := theSphere.Stack_Count;
         Sector_Count   : constant Int := theSphere.Sector_Count;
         Normals        : Vertex;
-        UV             : Tex_Coords;
+        ST             : Singles.Vector2;
         Inverse_Length : constant Single := 1.0 / theSphere.Radius;
         Stack_Step     : constant Single :=
                             Ada.Numerics.Pi / Single (Stack_Count);
@@ -261,29 +247,36 @@ package body Sphere is
                 Normals (GL.Z) := aVertex (GL.Z) * Inverse_Length;
                 theSphere.Normals.Append (Normals);
 
-                UV (GL.X) := Single (index_2) / Single (Sector_Count);
-                UV (GL.Y) := Single (index_1) / Single (Stack_Count);
-                theSphere.Tex_Coords.Append (UV);
+                ST (GL.X) := Single (index_2) / Single (Sector_Count);
+                ST (GL.Y) := Single (index_1) / Single (Stack_Count);
+                theSphere.Tex_Coords.Append (ST);
             end loop;
         end loop;
 
+        --  Each sector in a stack requires two triangles.
+        --  If the first vertex index in the current stack is k1 and the next stack is k2,
+        --  then the counterclockwise orders of vertex indices of two triangles are:
+        --  k1 -> k2 -> k1+1
+        --  k1+1 -> k2 -> k2+1
+        --  But, the top and bottom stacks require only one triangle per sector.
+        --  Generate all triangles of the sphere:
         for index_1 in UInt range 0 .. UInt (Stack_Count - 1) loop
             --  Two triangles per sector excluding 1st and last stacks
-            k1 := index_1 * UInt (Sector_Count + 1);        --  beginning of current stack
-            k2 := (index_1 + 1) * UInt (Sector_Count + 1);  --  beginning of next stack
-            for index_2 in 1 .. (Sector_Count - 1) loop
+            k1 := index_1 * UInt (Sector_Count + 1);   --  beginning of current stack
+            k2 := k1 + UInt (Sector_Count + 1);        --  beginning of next stack
+            for index_2 in 0 .. (Sector_Count - 1) loop
                 --  2 triangles per sector excluding 1st and last stacks
-                if index_1 /= 0 then
+                if index_1 > 0 then
                     theSphere.Indices.Append ((k1, k2, k1 + 1));
                 end if;
-                if index_1 /= UInt (Sector_Count - 1) then
+                if index_1 < UInt (Sector_Count - 1) then
                     theSphere.Indices.Append ((k1 + 1, k2, k2 + 1));
                 end if;
                 --  Vertical lines for all stacks
                 theSphere.Line_Indices.Append (k1);
                 theSphere.Line_Indices.Append (k2);
                 --  Horizontal lines except 1st stack
-                if index_1 /= 0 then
+                if index_1 > 0 then
                     theSphere.Line_Indices.Append (k1);
                     theSphere.Line_Indices.Append (k1 + 1);
                 end if;
@@ -365,13 +358,6 @@ package body Sphere is
 
     --   ----------------------------------------------------------------------
 
-    function Get_Interleaved_Size (theSphere : Sphere) return Int is
-    begin
-        return Int (theSphere.Interleaved_Vertices.Length);
-    end Get_Interleaved_Size;
-
-    --   ----------------------------------------------------------------------
-
     function Get_Interleaved_Stride  return Int is
     begin
         return Int (Maths.Vector8'Size / 8);
@@ -432,6 +418,14 @@ package body Sphere is
             Put_Line ("An exception occurred in Sphere.Init.");
             raise;
     end Init;
+
+    --   ----------------------------------------------------------------------
+
+    function Interleaved_Vertices_Size (aSphere : Sphere)  return Long is
+        Element_Bytes : constant Long := Single'Size;  --  8 Singles * Single'Size / 8
+    begin
+        return Long (aSphere.Interleaved_Vertices.Length) * Element_Bytes;
+    end Interleaved_Vertices_Size;
 
     --   ----------------------------------------------------------------------
 

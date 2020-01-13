@@ -2,9 +2,9 @@
 
 // blinn shading with texture
 
-layout(location = 0) in vec3 vertexPosition;
-layout(location = 1) in vec3 vertexNormal;
-layout(location = 2) in vec2 vertexTexCoord;
+layout(location = 0) in vec3 Position;
+layout(location = 1) in vec2 TexCoord;
+layout(location = 2) in vec3 Normal;
 
 out vec3 esVertex;
 out vec3 esNormal;
@@ -16,9 +16,9 @@ uniform mat4 matrixModelViewProjection;
 
 void main()
     {
-    esVertex = vec3(matrixModelView * vec4(vertexPosition, 1.0));
-    esNormal = vec3(matrixNormal * vec4(vertexNormal, 1.0));
-    texCoord0 = vertexTexCoord;
-    gl_Position = matrixModelViewProjection * vec4(vertexPosition, 1.0);
+    esVertex = vec3(matrixModelView * vec4(Position, 1.0));
+    esNormal = vec3(matrixNormal * vec4(Normal, 1.0));
+    texCoord0 = TexCoord;
+    gl_Position = matrixModelViewProjection * vec4(Position, 1.0);
     }
 
