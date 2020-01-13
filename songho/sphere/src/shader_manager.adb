@@ -14,7 +14,7 @@ package body Shader_Manager is
         use GL.Objects.Shaders;
         use GL.Types.Singles;
         use Program_Loader;
-        Light             : constant Singles.Vector4 := (0.0, 0.0, 1.0, 0.0);
+        Light_Position    : constant Singles.Vector4 := (0.0, 0.0, 1.0, 0.0);
         Ambient           : constant Singles.Vector4 := (0.3, 0.3, 0.3, 1.0);
         Diffuse           : constant Singles.Vector4 := (0.7, 0.7, 0.7, 1.0);
         Specula           : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
@@ -57,7 +57,7 @@ package body Shader_Manager is
         Render_Uniforms.Texture_Used_ID :=
           Uniform_Location (Render_Program, "textureUsed");
 
-        GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Light);
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Light_Position);
         GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Normal_ID, Identity4);
         GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_ID, Identity4);
         GL.Uniforms.Set_Single (Render_Uniforms.Matrix_Model_View_Projection_ID, Identity4);
@@ -72,7 +72,7 @@ package body Shader_Manager is
         GL.Uniforms.Set_Single (Render_Uniforms.Material_Shininess_ID, Shininess);
 
         GL.Uniforms.Set_Int (Render_Uniforms.Map0_ID, 0);
-        GL.Uniforms.Set_Int (Render_Uniforms.Texture_Used_ID, 1);
+        GL.Uniforms.Set_Int (Render_Uniforms.Texture_Used_ID, 0);
 
     exception
         when others =>
@@ -113,6 +113,12 @@ package body Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
+    procedure Set_Map0 (Map0 : Int)  is
+    begin
+        GL.Uniforms.Set_Int (Render_Uniforms.Map0_ID, Map0);
+    end Set_Map0;
+
+    --  -------------------------------------------------------------------------
     procedure Set_Material_Ambient (Ambient_Colour : Singles.Vector4) is
     begin
         GL.Uniforms.Set_Single (Render_Uniforms.Material_Ambient_ID, Ambient_Colour);
