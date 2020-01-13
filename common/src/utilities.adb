@@ -287,6 +287,30 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
+   procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array;
+                                 Start, Finish : GL.Types.Int) is
+      use GL.Types;
+      Count : Integer := 1;
+   begin
+      Put_Line (Name & ": ");
+      if Start >= anArray'First and then Finish <= anArray'Last then
+         for Index in Start .. Finish loop
+            Put (Int'Image (Index) & ": " & Int'Image (anArray (Index)) &
+                     "   ");
+            Count := Count + 1;
+            if Count > 3 then
+               New_Line;
+               Count := 1;
+            end if;
+         end loop;
+      else
+         Put_Line ("Utilities.Print_GL_Int_Array called with invalid start or finish index.");
+      end if;
+      New_Line;
+   end Print_GL_Int_Array;
+
+   --  ------------------------------------------------------------------------
+
    procedure Print_GL_UInt_Array (Name : String; anArray : GL.Types.UInt_Array) is
       use GL.Types;
    begin
@@ -362,7 +386,7 @@ package body Utilities is
             end if;
          end loop;
       else
-         Put_Line ("Print_Singles_Array called with invalid start or finish index.");
+         Put_Line ("Utilities.Print_Singles_Array called with invalid start or finish index.");
       end if;
       New_Line;
    end Print_Singles_Array;
