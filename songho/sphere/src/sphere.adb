@@ -288,19 +288,20 @@ package body Sphere is
     --   ----------------------------------------------------------------------
 
     function Compute_Face_Normal (V1, V2, V3 : Vertex) return Vertex is
-        use GL;       Normals     : Vertex := (others => 0.0);
+       Normal      : Vertex := (others => 0.0);
        Epsilon     : constant Single := 0.000001;
+       --  Define two edge vectors:
        E1          : constant Vertex := V2 - V1;
        E2          : constant Vertex := V3 - V1;
        Norm        : constant Vertex := Cross_Product (E1, E2);
        Norm_Length : constant Single := Maths.Length (Norm);
-       Inv_Length : Single;
+       Inv_Length  : Single;
     begin
         if Norm_Length > Epsilon then
             Inv_Length := 1.0 / Norm_Length;
-            Normals := Inv_Length * Norm;
+            Normal := Inv_Length * Norm;
         end if;
-        return Normals;
+        return Normal;
 
     exception
         when others =>
