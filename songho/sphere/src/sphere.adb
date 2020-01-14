@@ -17,8 +17,7 @@ package body Sphere is
 --      package Face_Normal_Package is new Ada.Containers.Doubly_Linked_Lists (Single);
 --      type Face_Normal_List is new Face_Normal_Package.List with null record;
 
-    function Compute_Face_Normal (X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3 : Single)
-                                  return Vertex;
+    function Compute_Face_Normal (V1, V2, V3 : Vertex) return Vertex;
 
     --   ----------------------------------------------------------------------
 
@@ -116,10 +115,9 @@ package body Sphere is
                     theSphere.Tex_Coords.Append ((Vertex_2 (U), Vertex_2 (V)));
                     theSphere.Tex_Coords.Append ((Vertex_4 (U), Vertex_4 (V)));
 
-                    Face_Normal := Compute_Face_Normal
-                      (Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z),
-                       Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z),
-                       Vertex_4 (X), Vertex_4 (Y), Vertex_4 (Z));
+                    Face_Normal := Compute_Face_Normal ((Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z)),
+                                                        (Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z)),
+                                                        (Vertex_4 (X), Vertex_4 (Y), Vertex_4 (Z)));
                     --  same normals for 3 vertices
                     theSphere.Normals.Append (Face_Normal);
                     theSphere.Normals.Append (Face_Normal);
@@ -143,9 +141,9 @@ package body Sphere is
                     theSphere.Tex_Coords.Append ((Vertex_3 (U), Vertex_3 (V)));
 
                     Face_Normal := Compute_Face_Normal
-                      (Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z),
-                       Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z),
-                       Vertex_3 (X), Vertex_3 (Y), Vertex_3 (Z));
+                      ((Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z)),
+                       (Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z)),
+                       (Vertex_3 (X), Vertex_3 (Y), Vertex_3 (Z)));
                     --  same normals for 3 vertices
                     theSphere.Normals.Append (Face_Normal);
                     theSphere.Normals.Append (Face_Normal);
@@ -171,9 +169,9 @@ package body Sphere is
                     theSphere.Tex_Coords.Append ((Vertex_4 (U), Vertex_4 (V)));
 
                     Face_Normal := Compute_Face_Normal
-                      (Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z),
-                       Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z),
-                       Vertex_3 (X), Vertex_3 (Y), Vertex_3 (Z));
+                      ((Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z)),
+                       (Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z)),
+                       (Vertex_3 (X), Vertex_3 (Y), Vertex_3 (Z)));
                     --  same normals for 4 vertices
                     theSphere.Normals.Append (Face_Normal);
                     theSphere.Normals.Append (Face_Normal);
@@ -289,27 +287,18 @@ package body Sphere is
 
     --   ----------------------------------------------------------------------
 
-    function Compute_Face_Normal (X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3 : Single)
-                                  return Vertex is
-       use Maths.Single_Math_Functions;
-       Normals    : Vertex;
-       Epsilon    : constant Single := 0.000001;
-       Ex1        : constant Single := X2 - X1;
-       Ey1        : constant Single := Y2 - Y1;
-       Ez1        : constant Single := Z2 - Z1;
-       Ex2        : constant Single := X3 - X1;
-       Ey2        : constant Single := Y3 - Y1;
-       Ez2        : constant Single := Z3 - Z1;
-       --  Cross products
-       Nx         : constant Single := Ey1 * Ez2 - Ez1 * Ey2;
-       Ny         : constant Single := Ez1 * Ex2 - Ex1 * Ez2;
-       Nz         : constant Single := Ex1 * Ey2 - Ey1 * Ex2;
-       Vec_Length : constant Single := Sqrt (Nx * Nx + Ny * Ny + Nz * Nz);
+    function Compute_Face_Normal (V1, V2, V3 : Vertex) return Vertex is
+        use GL;       Normals     : Vertex := (others => 0.0);
+       Epsilon     : constant Single := 0.000001;
+       E1          : constant Vertex := V2 - V1;
+       E2          : constant Vertex := V3 - V1;
+       Norm        : constant Vertex := Cross_Product (E1, E2);
+       Norm_Length : constant Single := Maths.Length (Norm);
        Inv_Length : Single;
     begin
-        if Vec_Length > Epsilon then
-            Inv_Length := 1.0 / Vec_Length;
-            Normals := (Inv_Length * Nx, Inv_Length * Ny, Inv_Length * Nz);
+        if Norm_Length > Epsilon then
+            Inv_Length := 1.0 / Norm_Length;
+            Normals := Inv_Length * Norm;
         end if;
         return Normals;
 
