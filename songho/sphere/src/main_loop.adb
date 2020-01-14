@@ -140,8 +140,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, Stride, 3);
 
         --  Second attribute buffer Normals:
---          GL.Attributes.Enable_Vertex_Attrib_Array (2);
---          GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, False, Stride, 5);
+        GL.Attributes.Enable_Vertex_Attrib_Array (2);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, False, Stride, 5);
 
         GL.Objects.Buffers.Draw_Elements (Triangles, Indices_Size, UInt_Type, 0);
 

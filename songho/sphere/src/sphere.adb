@@ -34,7 +34,6 @@ package body Sphere is
             I_Vec (X) := Element (Vertex_Cursor) (GL.X);
             I_Vec (Y) := Element (Vertex_Cursor) (GL.Y);
             I_Vec (Z) := Element (Vertex_Cursor) (GL.Z);
---              I_Vec (Y) := 0.2;
 
             I_Vec (U) := Element (Tex_Cursor) (GL.X);
             I_Vec (V) := Element (Tex_Cursor) (GL.Y);
@@ -111,7 +110,7 @@ package body Sphere is
                     --  Add a triangle for first stack
                     theSphere.Vertices.Append ((Vertex_1 (X), Vertex_1 (Y), Vertex_1 (Z)));
                     theSphere.Vertices.Append ((Vertex_2 (X), Vertex_2 (Y), Vertex_2 (Z)));
---                      theSphere.Vertices.Append ((Vertex_4 (X), Vertex_4 (Y), Vertex_4 (Z)));
+                    theSphere.Vertices.Append ((Vertex_4 (X), Vertex_4 (Y), Vertex_4 (Z)));
 
                     theSphere.Tex_Coords.Append ((Vertex_1 (U), Vertex_1 (V)));
                     theSphere.Tex_Coords.Append ((Vertex_2 (U), Vertex_2 (V)));
