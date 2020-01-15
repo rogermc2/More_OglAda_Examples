@@ -9,15 +9,13 @@ package body Buffers_Manager is
      begin
         VBO_1.Initialize_Id;
         Array_Buffer.Bind (VBO_1);
-        Allocate (Array_Buffer, Sphere.Interleaved_Vertices_Size (Sphere_1), Stream_Draw);
---          Utilities.Load_Vector8_Buffer
---            (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_1), Static_Draw);
+        Utilities.Load_Vector8_Buffer
+          (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_1), Static_Draw);
 
         VBO_2.Initialize_Id;
         Array_Buffer.Bind (VBO_2);
-        Allocate (Array_Buffer, Sphere.Interleaved_Vertices_Size (Sphere_2), Stream_Draw);
---          Utilities.Load_Vector8_Buffer
---            (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_2), Static_Draw);
+        Utilities.Load_Vector8_Buffer
+          (Array_Buffer, Sphere.Get_Interleaved_Vertices (Sphere_2), Static_Draw);
 --          Utilities.Print_GL_Array8 ("Main_Loop.Draw, Sphere_2 Interleaved_Vertices",
 --                                      Sphere.Get_Interleaved_Vertices (Sphere_2));
 

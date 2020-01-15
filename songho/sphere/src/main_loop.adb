@@ -9,6 +9,7 @@ with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
+with GL.Pixels;
 with GL.Toggles;
 with GL.Types; use GL.Types;
 with GL.Types.Colors;
@@ -71,6 +72,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Utilities.Clear_Background_Colour (Black);
         GL.Buffers.Clear_Stencil_Buffer (0);
         GL.Buffers.Clear_Depth_Buffer (1.0);
+        GL.Pixels.Set_Unpack_Alignment (GL.Pixels.Words);
 
     end Init_GL;
 
@@ -109,28 +111,28 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     begin
         Set_Matrices (Window_Width, Window_Height, Render_Program, thePosition);
         GL.Objects.Programs.Use_Program (Render_Program);
+        GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
         case thePosition is
             when Left_Sphere =>
-                Buffers_Manager.Load_Vertex_Buffer (Vertex_Buffer_1, Sphere_1);
+                Array_Buffer.Bind (Vertex_Buffer_1);
                 Element_Array_Buffer.Bind (Index_Buffer_1);
                 Indices_Size := Sphere.Get_Indices_Size (Sphere_1);
                 Shader_Manager.Set_Texture_Used (False);
             when Centre_Sphere =>
-                Buffers_Manager.Load_Vertex_Buffer (Vertex_Buffer_2, Sphere_2);
+                Array_Buffer.Bind (Vertex_Buffer_2);
                 Element_Array_Buffer.Bind (Index_Buffer_2);
                 Indices_Size := Sphere.Get_Indices_Size (Sphere_2);
                 Shader_Manager.Set_Texture_Used (False);
+                Utilities.Print_GL_Array8 ("Sphere_2 vertices",
+                                           Sphere.Get_Interleaved_Vertices (Sphere_2));
             when Right_Sphere =>
-                Buffers_Manager.Load_Vertex_Buffer (Vertex_Buffer_2, Sphere_2);
+                Array_Buffer.Bind (Vertex_Buffer_2);
                 Element_Array_Buffer.Bind (Index_Buffer_2);
                 Indices_Size := Sphere.Get_Indices_Size (Sphere_2);
-                GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
                 Shader_Manager.Set_Texture_Used (True);
                 GL.Objects.Textures.Set_Active_Unit (0);
                 Shader_Manager.Set_Map0 (0);
         end case;
---          Put_Line ("Stride: " & Int'Image (Stride));
---          Put_Line ("Single size: " & Int'Image (Single'Size / 8));
         --  First attribute buffer : vertices
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, Stride, 0);
@@ -163,39 +165,37 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Camera_Angle_Y      : constant Single := 0.0;
         --          Up                  : constant Vector3 := (0.0, 1.0, 0.0);
         Target_Position     : Vector3;
-        Matrix_Model_Common : Matrix4 := Identity4;
-        Matrix_Model_View   : Matrix4 := Identity4;
+        Matrix_Model        : Matrix4 := Identity4;
         View_Matrix         : constant Matrix4 :=
                                 Translation_Matrix ((0.0, 0.0, -Camera_Distance));
+        Matrix_Model_View   : Matrix4 := Identity4;
         Normal_Matrix       : Matrix4 := Identity4;
         Projection_Matrix   : Matrix4;
         MVP_Matrix          : Matrix4;
     begin
-        Matrix_Model_Common :=
-          Rotation_Matrix (Degree (90.0), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
-        Matrix_Model_Common :=
-          Rotation_Matrix (Degree (Camera_Angle_Y), (0.0, 1.0, 0.0)) * Matrix_Model_Common;
-        Matrix_Model_Common :=
-          Rotation_Matrix (Degree (Camera_Angle_X), (1.0, 0.0, 0.0)) * Matrix_Model_Common;
+        Matrix_Model :=
+          Rotation_Matrix (Degree (90.0), (1.0, 0.0, 0.0)) * Matrix_Model;
+        Matrix_Model :=
+          Rotation_Matrix (Degree (Camera_Angle_Y), (0.0, 1.0, 0.0)) * Matrix_Model;
+        Matrix_Model :=
+          Rotation_Matrix (Degree (Camera_Angle_X), (1.0, 0.0, 0.0)) * Matrix_Model;
         Init_Perspective_Transform (Degree (45.0), Single (Window_Width),
                                     Single (Window_Height),
                                     0.1, 100.0, Projection_Matrix);
         case thePosition is
             when Left_Sphere =>
                 Target_Position := (-2.5, 0.0, 0.0);
-                Matrix_Model_Common :=
-                  Translation_Matrix (Target_Position) * Matrix_Model_Common;
+                Matrix_Model := Translation_Matrix (Target_Position) * Matrix_Model;
             when Centre_Sphere =>
                 Target_Position := (0.0, 0.0, 0.0);
             when Right_Sphere =>
                 Target_Position := (2.5, 0.0, 0.0);
-                Matrix_Model_Common :=
-                  Translation_Matrix (Target_Position) * Matrix_Model_Common;
+                Matrix_Model := Translation_Matrix (Target_Position) * Matrix_Model;
         end case;
         --          Camera_Position := Target_Position + (0.0, 0.0, -Camera_Distance);
         --          Utilities.Print_Vector ("Camera_Position", Camera_Position);
         --          Init_Lookat_Transform (Camera_Position, Target_Position, Up, View_Matrix);
-        Matrix_Model_View := View_Matrix * Matrix_Model_Common;
+        Matrix_Model_View := View_Matrix * Matrix_Model;
 
         Normal_Matrix := Matrix_Model_View;
         Normal_Matrix (GL.X, GL.W) := 0.0;
@@ -228,6 +228,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Shader_Manager.Init (Render_Program);
         Sphere.Init (theSphere => Sphere_1, Radius => 1.0,
                      Sector_Count => 36, Stack_Count => 18, Smooth => False);
+--          Sphere.Init (theSphere => Sphere_1, Radius => 1.0,
+--                       Sector_Count => 6, Stack_Count => 3, Smooth => False);
         Sphere.Init (Sphere_2, 1.0, 36, 18, True);
         --  Create Buffers after sphere initialization
         Buffers_Manager.Create_Vertex_Buffers (Vertex_Buffer_1, Vertex_Buffer_2,

@@ -14,7 +14,7 @@ package body Shader_Manager is
         use GL.Objects.Shaders;
         use GL.Types.Singles;
         use Program_Loader;
-        Light_Position    : constant Singles.Vector4 := (0.0, 0.0, -2.0, 0.0);
+        Light_Position    : constant Singles.Vector4 := (0.0, 0.0, -3.0, 0.0);
         Ambient           : constant Singles.Vector4 := (0.3, 0.3, 0.3, 1.0);
         Diffuse           : constant Singles.Vector4 := (0.7, 0.7, 0.7, 1.0);
         Specula           : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);

@@ -14,9 +14,6 @@ package body Sphere is
     package Flat_Vertex_Package is new Ada.Containers.Vectors (Natural, Flat_Vertex);
     type Flat_Vertex_Vector is new Flat_Vertex_Package.Vector with null record;
 
---      package Face_Normal_Package is new Ada.Containers.Doubly_Linked_Lists (Single);
---      type Face_Normal_List is new Face_Normal_Package.List with null record;
-
     function Compute_Face_Normal (V1, V2, V3 : Vertex) return Vertex;
 
     --   ----------------------------------------------------------------------
@@ -24,24 +21,24 @@ package body Sphere is
    procedure Build_Interleaved_Vertices (theSphere : in out Sphere) is
         use Vertex_Data_Package;
         use Tex_Coords_Package;
-        Vertex_Cursor    : Vertex_Data_Package.Cursor := theSphere.Vertices.First;
-        Normals_Cursor   : Vertex_Data_Package.Cursor := theSphere.Normals.First;
-        Tex_Cursor       : Tex_Coords_Package.Cursor := theSphere.Tex_Coords.First;
-        I_Vec            : Maths.Vector8;
+        Vertex_Cursor   : Vertex_Data_Package.Cursor := theSphere.Vertices.First;
+        Normals_Cursor  : Vertex_Data_Package.Cursor := theSphere.Normals.First;
+        Tex_Cursor      : Tex_Coords_Package.Cursor := theSphere.Tex_Coords.First;
+        Vec8            : Maths.Vector8;
     begin
         while Has_Element (Vertex_Cursor) loop
-            I_Vec (X) := Element (Vertex_Cursor) (GL.X);
-            I_Vec (Y) := Element (Vertex_Cursor) (GL.Y);
-            I_Vec (Z) := Element (Vertex_Cursor) (GL.Z);
+            Vec8 (X) := Element (Vertex_Cursor) (GL.X);
+            Vec8 (Y) := Element (Vertex_Cursor) (GL.Y);
+            Vec8 (Z) := Element (Vertex_Cursor) (GL.Z);
 
-            I_Vec (U) := Element (Tex_Cursor) (GL.X);
-            I_Vec (V) := Element (Tex_Cursor) (GL.Y);
+            Vec8 (U) := Element (Tex_Cursor) (GL.X);
+            Vec8 (V) := Element (Tex_Cursor) (GL.Y);
 
-            I_Vec (NX) := Element (Normals_Cursor) (GL.X);
-            I_Vec (NY) := Element (Normals_Cursor) (GL.Y);
-            I_Vec (NZ) := Element (Normals_Cursor) (GL.Z);
+            Vec8 (NX) := Element (Normals_Cursor) (GL.X);
+            Vec8 (NY) := Element (Normals_Cursor) (GL.Y);
+            Vec8 (NZ) := Element (Normals_Cursor) (GL.Z);
 
-            theSphere.Interleaved_Vertices.Append (I_Vec);
+            theSphere.Interleaved_Vertices.Append (Vec8);
 
             Next (Vertex_Cursor);
             Next (Normals_Cursor);
@@ -217,7 +214,7 @@ package body Sphere is
         XY             : Single;
         Stack_Count    : constant Int := theSphere.Stack_Count;
         Sector_Count   : constant Int := theSphere.Sector_Count;
-        Normals        : Vertex;
+        Face_Normal    : Vertex;
         ST             : Singles.Vector2;
         Inverse_Length : constant Single := 1.0 / theSphere.Radius;
         Stack_Step     : constant Single :=
@@ -239,10 +236,11 @@ package body Sphere is
                 aVertex (GL.Y) := XY * Sin (Sector_Angle);
                 theSphere.Vertices.Append (aVertex);
 
-                Normals (GL.X) := aVertex (GL.X) * Inverse_Length;
-                Normals (GL.Y) := aVertex (GL.Y) * Inverse_Length;
-                Normals (GL.Z) := aVertex (GL.Z) * Inverse_Length;
-                theSphere.Normals.Append (Normals);
+                Face_Normal (GL.X) := aVertex (GL.X) * Inverse_Length;
+                Face_Normal (GL.Y) := aVertex (GL.Y) * Inverse_Length;
+                Face_Normal (GL.Z) := aVertex (GL.Z) * Inverse_Length;
+--                  Face_Normal := (1.0, 1.0, 0.0);
+                theSphere.Normals.Append (Face_Normal);
 
                 ST (GL.X) := Single (index_2) / Single (Sector_Count);
                 ST (GL.Y) := Single (index_1) / Single (Stack_Count);
