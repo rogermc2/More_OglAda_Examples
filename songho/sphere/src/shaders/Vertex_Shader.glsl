@@ -16,8 +16,8 @@ uniform mat4 matrixModelViewProjection;
 
 void main()
     {
-    esVertex = vec3(matrixModelView * vec4(Position, 1.0));
-    esNormal = vec3(matrixNormal * vec4(Normal, 1.0));
+    esVertex = -(matrixModelView * vec4(Position, 1.0)).xyz;
+    esNormal = (matrixNormal * vec4(Normal, 1.0)).xyz;
     texCoord0 = TexCoord;
     gl_Position = matrixModelViewProjection * vec4(Position, 1.0);
     }

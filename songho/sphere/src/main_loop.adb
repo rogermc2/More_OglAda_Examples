@@ -112,6 +112,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Set_Matrices (Window_Width, Window_Height, Render_Program, thePosition);
         GL.Objects.Programs.Use_Program (Render_Program);
         GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
+        GL.Objects.Textures.Targets.Texture_2D.Generate_Mipmap;
         case thePosition is
             when Left_Sphere =>
                 Array_Buffer.Bind (Vertex_Buffer_1);
@@ -123,8 +124,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                 Element_Array_Buffer.Bind (Index_Buffer_2);
                 Indices_Size := Sphere.Get_Indices_Size (Sphere_2);
                 Shader_Manager.Set_Texture_Used (False);
-                Utilities.Print_GL_Array8 ("Sphere_2 vertices",
-                                           Sphere.Get_Interleaved_Vertices (Sphere_2));
             when Right_Sphere =>
                 Array_Buffer.Bind (Vertex_Buffer_2);
                 Element_Array_Buffer.Bind (Index_Buffer_2);
@@ -201,6 +200,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Normal_Matrix (GL.X, GL.W) := 0.0;
         Normal_Matrix (GL.Y, GL.W) := 0.0;
         Normal_Matrix (GL.Z, GL.W) := 0.0;
+        Normal_Matrix (GL.W, GL.X) := 0.0;
+        Normal_Matrix (GL.W, GL.Y) := 0.0;
+        Normal_Matrix (GL.W, GL.Z) := 0.0;
         Normal_Matrix (GL.W, GL.W) := 1.0;
 
         MVP_Matrix :=  Projection_Matrix * Matrix_Model_View;
