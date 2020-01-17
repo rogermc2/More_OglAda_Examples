@@ -23,6 +23,7 @@ package body Textures_Manager is
 --          Pixel_Format   : GL.Pixels.Internal_Format;
 --          Data_Format    : GL.Pixels.Data_Format := GL.Pixels.RGB;
     begin
+        Load_BMP_File.Load_BMP_To_Texture (Image_File_Name, Wrap, aTexture);
 --          Image.Load (Image_File_Name);
 --          aTexture.Initialize_Id;
 --          Texture_2D.Bind (aTexture);
@@ -56,20 +57,20 @@ package body Textures_Manager is
 --          aTexture.Initialize_Id;
 --          Texture_2D.Bind (aTexture);
         --  All upcoming GL_TEXTURE_2D operations affect this texture object
-        Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear_Mipmap_Linear);
-        Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+--          Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear_Mipmap_Linear);
+--          Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
         --  If wrap is true the texture wraps over at the edges (repeat).
         --  If false the texture ends at the edges (clamp).
-        if Wrap then
-            Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Repeat); --  Wrap_S
-            Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Repeat); --  Wrap_T
-        else
-            Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp);
-            Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp);
-        end if;
-
+--          if Wrap then
+--              Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Repeat); --  Wrap_S
+--              Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Repeat); --  Wrap_T
+--          else
+--              Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp);
+--              Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp);
+--          end if;
+--
+--          GL.Objects.Textures.Targets.Texture_2D.Generate_Mipmap;
         GL.Objects.Textures.Set_Active_Unit (0);
-        Load_BMP_File.Load_BMP_To_Texture (Image_File_Name, aTexture);
 
 --          Texture_2D.Load_From_Data  (0, Pixel_Format, Width, Height,
 --                                      Data_Format, GL.Pixels.Unsigned_Byte,
