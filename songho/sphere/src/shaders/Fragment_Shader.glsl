@@ -43,6 +43,5 @@ void main()
     float dotNH = max(dot(normal, halfv), 0.0);
     // add specular
     color = color + pow(dotNH, materialShininess) * lightSpecular.rgb * materialSpecular.rgb;
-
- fragColor =  3 * vec4(color, materialDiffuse.a);
+    fragColor =  3 * vec4(color, materialDiffuse.a);
     }
