@@ -20,11 +20,13 @@ uniform bool textureUsed;               // flag for texture
 
 void main()
     {
+    // begin with ambient
+    vec3 color = lightAmbient.rgb * materialAmbient.rgb;
     vec3 normal = normalize(esNormal);
     vec3 light_pos;
     if(lightPosition.w == 0.0)
         {
-        light_pos = normalize(lightPosition.xyz);
+        light_pos = normalize(lightPosition.xyz);  //  0, 0, -1
         }
     else
         {
@@ -32,8 +34,6 @@ void main()
         }
     vec3 view = normalize(-esVertex);
     vec3 halfv = normalize(light_pos + view);
-    // begin with ambient
-    vec3 color = lightAmbient.rgb * materialAmbient.rgb;
     float dotNL = max(dot(normal, light_pos), 0.0);
     // add diffuse
     color = color + lightDiffuse.rgb * materialDiffuse.rgb * dotNL;
