@@ -15,7 +15,6 @@ package Sphere is
     function Get_Indices (theSphere : Sphere) return Int_Array;
     function Get_Interleaved_Stride return Int;
     function Get_Interleaved_Vertices (theSphere : Sphere) return Maths.Vector8_Array;
-    function Interleaved_Vertices_Size (aSphere : Sphere)  return Long;
 
 private
     use GL.Types.Singles;
@@ -33,10 +32,6 @@ private
     package Line_Indices_Package is new Ada.Containers.Doubly_Linked_Lists (UInt);
     type Line_Indices_List is new Line_Indices_Package.List with null record;
 
-    package Interleaved_Vertices_Package is new
-      Ada.Containers.Doubly_Linked_Lists (Maths.Vector8);
-    type Interleaved_Vertices_List is new Interleaved_Vertices_Package.List with null record;
-
     subtype Tex_Coords is  GL.Types.Singles.Vector2;
     package Tex_Coords_Package is new Ada.Containers.Doubly_Linked_Lists (Tex_Coords);
     type Tex_Coords_List is new Tex_Coords_Package.List with null record;
@@ -53,7 +48,6 @@ private
         Smooth               : Boolean := True;
         Interleaved_Stride   : Int := 0;
         Vertices             : Vertex_List;
-        Interleaved_Vertices : Interleaved_Vertices_List;
         Normals              : Vertex_List;
         Tex_Coords           : Tex_Coords_List;
         Indices              : Indices_List;

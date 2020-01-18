@@ -44,9 +44,8 @@ package body Buffers_Manager is
     use GL.Objects.Buffers;
      begin
         Array_Buffer.Bind (Vertex_Buffer);
-        Allocate (Array_Buffer, Sphere.Interleaved_Vertices_Size (aSphere), Stream_Draw);
-        Utilities.Load_Vertex_Sub_Buffer (Array_Buffer, 0,
-                                          Sphere.Get_Interleaved_Vertices (aSphere));
+        Utilities.Load_Vector8_Buffer
+          (Array_Buffer, Sphere.Get_Interleaved_Vertices (aSphere), Static_Draw);
     end Load_Vertex_Buffer;
 
     --  ------------------------------------------------------------------------

@@ -18,35 +18,6 @@ package body Sphere is
 
     --   ----------------------------------------------------------------------
 
-   procedure Build_Interleaved_Vertices (theSphere : in out Sphere) is
-        use Vertex_Data_Package;
-        use Tex_Coords_Package;
-        Vertex_Cursor   : Vertex_Data_Package.Cursor := theSphere.Vertices.First;
-        Normals_Cursor  : Vertex_Data_Package.Cursor := theSphere.Normals.First;
-        Tex_Cursor      : Tex_Coords_Package.Cursor := theSphere.Tex_Coords.First;
-        Vec8            : Maths.Vector8;
-    begin
-        while Has_Element (Vertex_Cursor) loop
-            Vec8 (X) := Element (Vertex_Cursor) (GL.X);
-            Vec8 (Y) := Element (Vertex_Cursor) (GL.Y);
-            Vec8 (Z) := Element (Vertex_Cursor) (GL.Z);
-
-            Vec8 (U) := Element (Tex_Cursor) (GL.X);
-            Vec8 (V) := Element (Tex_Cursor) (GL.Y);
-
-            Vec8 (NX) := Element (Normals_Cursor) (GL.X);
-            Vec8 (NY) := Element (Normals_Cursor) (GL.Y);
-            Vec8 (NZ) := Element (Normals_Cursor) (GL.Z);
-
-            theSphere.Interleaved_Vertices.Append (Vec8);
-
-            Next (Vertex_Cursor);
-            Next (Normals_Cursor);
-            Next (Tex_Cursor);
-        end loop;
-    end Build_Interleaved_Vertices;
-
-    --  ----------------------------------------------------------------------
     --  Build_Vertices_Flat generates vertices with flat shading.
     --  Each triangle is independent (no shared vertices).
     procedure Build_Vertices_Flat (theSphere : in out Sphere) is
@@ -191,8 +162,6 @@ package body Sphere is
             end loop;
         end loop;
 
-        Build_Interleaved_Vertices (theSphere);
-
     exception
         when others =>
             Put_Line ("An exception occurred in Sphere.Build_Vertices_Flat.");
@@ -280,7 +249,6 @@ package body Sphere is
             end loop;
         end loop;
 
-        Build_Interleaved_Vertices (theSphere);
     end Build_Vertices_Smooth;
 
     --   ----------------------------------------------------------------------
@@ -352,29 +320,37 @@ package body Sphere is
 
     --   ----------------------------------------------------------------------
 
-    function Get_Interleaved_Vertices (theSphere : Sphere)
-                                       return Maths.Vector8_Array is
-        use Interleaved_Vertices_Package;
-        Vertex_Cursor : Interleaved_Vertices_Package.Cursor :=
-                          theSphere.Interleaved_Vertices.First;
+    function Get_Interleaved_Vertices (theSphere : Sphere) return Maths.Vector8_Array is
+        use Vertex_Data_Package;
+        use Tex_Coords_Package;
+        Vertex_Cursor   : Vertex_Data_Package.Cursor := theSphere.Vertices.First;
+        Normals_Cursor  : Vertex_Data_Package.Cursor := theSphere.Normals.First;
+        Tex_Cursor      : Tex_Coords_Package.Cursor := theSphere.Tex_Coords.First;
         Vertices      : Vector8_Array
-          (1 .. Int (theSphere.Interleaved_Vertices.Length));
+          (1 .. Int (theSphere.Vertices.Length));
         V_Index       : Int := 0;
     begin
         while Has_Element (Vertex_Cursor) loop
             V_Index := V_Index + 1;
-            Vertices (V_Index) := Element (Vertex_Cursor);
+            Vertices (V_Index) (X) := Element (Vertex_Cursor) (GL.X);
+            Vertices (V_Index) (Y) := Element (Vertex_Cursor) (GL.Y);
+            Vertices (V_Index) (Z) := Element (Vertex_Cursor) (GL.Z);
+
+            Vertices (V_Index) (U) := Element (Tex_Cursor) (GL.X);
+            Vertices (V_Index) (V) := Element (Tex_Cursor) (GL.Y);
+
+            Vertices (V_Index) (NX) := Element (Normals_Cursor) (GL.X);
+            Vertices (V_Index) (NY) := Element (Normals_Cursor) (GL.Y);
+            Vertices (V_Index) (NZ) := Element (Normals_Cursor) (GL.Z);
+
             Next (Vertex_Cursor);
+            Next (Normals_Cursor);
+            Next (Tex_Cursor);
         end loop;
         return Vertices;
-
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Sphere.Get_Interleaved_Vertices.");
-            raise;
     end Get_Interleaved_Vertices;
 
-    --   ----------------------------------------------------------------------
+    --  ----------------------------------------------------------------------
 
     procedure Init (theSphere : out Sphere; Radius : Single := 1.0;
                     Sector_Count : Int := 36; Stack_Count : Int := 18;
@@ -405,14 +381,6 @@ package body Sphere is
             Put_Line ("An exception occurred in Sphere.Init.");
             raise;
     end Init;
-
-    --   ----------------------------------------------------------------------
-
-    function Interleaved_Vertices_Size (aSphere : Sphere)  return Long is
-        Element_Bytes : constant Long := Single'Size;  --  8 Singles * Single'Size / 8
-    begin
-        return Long (aSphere.Interleaved_Vertices.Length) * Element_Bytes;
-    end Interleaved_Vertices_Size;
 
     --   ----------------------------------------------------------------------
 
