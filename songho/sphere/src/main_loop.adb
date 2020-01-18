@@ -105,14 +105,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                      thePosition : Sphere_Position) is
         use GL.Objects.Buffers;
         Indices_Size  : Int;
---          Stride        : constant Int := Maths.Vector8'Size / 8;
-        --          Stride        : constant Int := Sphere.Get_Interleaved_Stride;
-         Stride        : constant Int := 32;
+        Stride        : constant Int := Maths.Vector8'Size / 8;
     begin
         Set_Matrices (Window_Width, Window_Height, Render_Program, thePosition);
         GL.Objects.Programs.Use_Program (Render_Program);
-        GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
-        GL.Objects.Textures.Targets.Texture_2D.Generate_Mipmap;
         case thePosition is
             when Left_Sphere =>
                 Array_Buffer.Bind (Vertex_Buffer_1);
@@ -129,8 +125,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                 Element_Array_Buffer.Bind (Index_Buffer_2);
                 Indices_Size := Sphere.Get_Indices_Size (Sphere_2);
                 Shader_Manager.Set_Texture_Used (True);
+                GL.Objects.Textures.Targets.Texture_2D.Bind (Earth_Texture);
                 GL.Objects.Textures.Set_Active_Unit (0);
                 Shader_Manager.Set_Map0 (0);
+                GL.Objects.Textures.Targets.Texture_2D.Generate_Mipmap;
         end case;
         --  First attribute buffer : vertices
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
