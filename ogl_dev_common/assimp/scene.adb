@@ -21,9 +21,7 @@ package body Scene is
       end if;
       aNode.Transformation :=
         Ogldev_Math.To_GL_Matrix4 (Root_Node.Transformation);
-      --          aNode.Meshes :=
-      --            Assimp_Mesh.To_AI_Mesh_Map (Root_Node.Num_Meshes, Root_Node.Meshes.all);
-      Nodes.Append (aNode);
+       Nodes.Append (aNode);
 
       for index in 1 .. Root_Node.Num_Children loop
          null;
@@ -56,22 +54,6 @@ package body Scene is
                   unsigned'Image (Num_Animations) & unsigned'Image (Num_Textures) &
                   unsigned'Image (Num_Lights) & unsigned'Image (Num_Cameras));
 
---        Put ("Primitive_Types, Num_Vertices, Num_Faces: ");
---        Put_Line (unsigned'Image (C_Mesh_Array (1).Primitive_Types) &
---                    unsigned'Image (C_Mesh_Array (1).Num_Vertices) &
---                    unsigned'Image (C_Mesh_Array (1).Num_Faces));
---        Put ("Num_Animations, Num_Bones, Material_Index: ");
---        Put_Line (unsigned'Image (C_Mesh_Array (1).Num_Bones) &
---                    unsigned'Image (C_Mesh_Array (1).Num_Anim_Meshes) &
---                    unsigned'Image (C_Mesh_Array (1).Material_Index));
---        New_Line;
---        for index in 1 .. C_Mesh_Array'Length loop
---           Put_Line ("Name length, string: Mesh" & Integer'Image (index) & ": " &
---                       size_t'Image (C_Mesh_Array (unsigned (index)).Name.Length) & " '" &
---                       Assimp_Util.To_String (C_Mesh_Array (1).Name) & " '");
---        end loop;
---        New_Line;
-
       theScene.Flags := C_Scene.Flags;
       if C_Scene.Root_Node /= null then
          C_Root_Node := Scene.Node_Pointers.Value (C_Scene.Root_Node, 1) (0);
@@ -84,8 +66,6 @@ package body Scene is
           (C_Scene.Materials, ptrdiff_t (Num_Materials));
          theScene.Materials :=
            AI_Conversion.To_AI_Materials_Map (Num_Materials, C_Material_Ptrs_Array);
---           Put_Line ("Scene.To_AI_Scene theScene.Materials set, Num_Materials, Num_Textures: " &
---                    unsigned'Image (Num_Materials) & unsigned'Image (Num_Textures));
       end if;
 
       if Num_Textures > 0 then
