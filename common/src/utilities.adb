@@ -58,6 +58,8 @@ package body Utilities is
        new Print_Singles_Vector (GL.Index_3D, GL.Types.Singles.Vector3);
    procedure Print_Singles_Vector4 is
        new Print_Singles_Vector (GL.Index_Homogeneous, GL.Types.Singles.Vector4);
+   procedure Print_Singles_Vector5 is
+       new Print_Singles_Vector (Maths.Index_5, Maths.Vector5);
    procedure Print_Singles_Vector6 is
        new Print_Singles_Vector (Maths.Index_6, Maths.Vector6);
    procedure Print_Singles_Vector8 is
@@ -285,6 +287,30 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
+   procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array;
+                                 Start, Finish : GL.Types.Int) is
+      use GL.Types;
+      Count : Integer := 1;
+   begin
+      Put_Line (Name & ": ");
+      if Start >= anArray'First and then Finish <= anArray'Last then
+         for Index in Start .. Finish loop
+            Put (Int'Image (Index) & ": " & Int'Image (anArray (Index)) &
+                     "   ");
+            Count := Count + 1;
+            if Count > 3 then
+               New_Line;
+               Count := 1;
+            end if;
+         end loop;
+      else
+         Put_Line ("Utilities.Print_GL_Int_Array called with invalid start or finish index.");
+      end if;
+      New_Line;
+   end Print_GL_Int_Array;
+
+   --  ------------------------------------------------------------------------
+
    procedure Print_GL_UInt_Array (Name : String; anArray : GL.Types.UInt_Array) is
       use GL.Types;
    begin
@@ -360,7 +386,7 @@ package body Utilities is
             end if;
          end loop;
       else
-         Put_Line ("Print_Singles_Array called with invalid start or finish index.");
+         Put_Line ("Utilities.Print_Singles_Array called with invalid start or finish index.");
       end if;
       New_Line;
    end Print_Singles_Array;
@@ -391,6 +417,20 @@ package body Utilities is
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector4) is
    begin
       Print_Singles_Vector4 (Name, aVector);
+   end Print_Vector;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Print_Vector (Name : String; aVector : Maths.Vector5) is
+   begin
+      Print_Singles_Vector5 (Name, aVector);
+   end Print_Vector;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Print_Vector (Name : String; aVector : Maths.Vector8) is
+   begin
+      Print_Singles_Vector8 (Name, aVector);
    end Print_Vector;
 
    --  ------------------------------------------------------------------------

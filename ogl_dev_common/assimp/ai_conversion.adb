@@ -8,9 +8,7 @@ with Assimp_Types;
 
 package body AI_Conversion is
 
---     type String_4 is new String (1 .. 4);
    type Byte_Array4 is array (1 .. 4) of GL.Types.UByte;
---     type Byte_Array12 is array (1 .. 12) of GL.Types.UByte;
 
    procedure To_AI_Property_List (Property_Ptr_Array : Material.API_Property_Ptr_Array;
                                   AI_Properties      : out Material.AI_Material_Property_List);
@@ -95,7 +93,6 @@ package body AI_Conversion is
 
    --  ------------------------------------------------------------------------
 
---     procedure To_AI_Property (anAPI_Material : Material.API_Material;
    procedure To_AI_Property (API_Property   : Material.API_Material_Property;
                              theAI_Property : out Material.AI_Material_Property) is
       use Interfaces.C;
@@ -108,8 +105,6 @@ package body AI_Conversion is
       Data_Length   : constant UInt := UInt (API_Property.Data_Length);
       Data_Array    : Raw_Byte_Data (1 .. Data_Length);
       Data4         : Byte_Array4;
---        Key_String    : constant String (1 .. Integer (Key_Length)) :=
---                          To_Ada (API_Property.Key.Data);
       AI_Property   : Material.AI_Material_Property (API_Property.Data_Type);
    begin
       if Key_Length > 0 then
@@ -154,7 +149,6 @@ package body AI_Conversion is
 
    --  ----------------------------------------------------------------------
 
---     procedure To_AI_Property_List (anAPI_Material     : Material.API_Material;
    procedure To_AI_Property_List (Property_Ptr_Array : Material.API_Property_Ptr_Array;
                                   AI_Properties      : out Material.AI_Material_Property_List) is
       use Interfaces.C;

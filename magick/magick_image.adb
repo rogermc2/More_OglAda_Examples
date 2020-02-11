@@ -12,7 +12,6 @@ with Magick_Image.API;
 
 package body Magick_Image is
 
-   --  Blob_Data is Blob_Package.List;
    function Get_Blob_Data return Magick_Blob.Blob_Data is
       use Interfaces.C;
       use Magick_Blob.Blob_Package;
@@ -53,13 +52,6 @@ package body Magick_Image is
          Put_Line ("An exception occurred in Magick_Image.Get_Image.");
          raise;
    end Get_Image;
-
-   --  -------------------------------------------------------------------------
-
-   --      function Get_Blob_Length return GL.Types.UInt is
-   --      begin
-   --          return GL.Types.UInt (Magick_Image.API.Blob_Length);
-   --      end Get_Blob_Length;
 
    --  -------------------------------------------------------------------------
 

@@ -70,20 +70,10 @@ package body Particle_System is
 
    --  -------------------------------------------------------------------------
 
-     procedure Init is
-      use GL.Objects.Buffers;
-   begin
+     procedure Init is   begin
       Load_Shaders;
       Load_DDS ("src/textures/particle.DDS", Particle_Texture);
-
-      Positions_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Positions_Buffer);
       Load_Buffers;
-      GL.Objects.Buffers.Allocate (Array_Buffer, Buffer_Size, Stream_Draw);
-
-      Colour_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Colour_Buffer);
-      GL.Objects.Buffers.Allocate (Array_Buffer, Buffer_Size, Stream_Draw);
 
    exception
       when others =>
@@ -126,11 +116,11 @@ package body Particle_System is
 
       Positions_Buffer.Initialize_Id;
       Array_Buffer.Bind (Positions_Buffer);
-      Allocate (Array_Buffer, Buffer_Size, Static_Draw);
+      Allocate (Array_Buffer, Buffer_Size, Stream_Draw);
 
       Colour_Buffer.Initialize_Id;
       Array_Buffer.Bind (Colour_Buffer);
-      Allocate (Array_Buffer, Buffer_Size, Static_Draw);
+      Allocate (Array_Buffer, Buffer_Size, Stream_Draw);
 
    exception
       when others =>
@@ -180,6 +170,7 @@ package body Particle_System is
    end Random_Colour;
 
    --  ------------------------------------------------------------------------
+
    procedure Render_Particles is
       use GL.Blending;
       use GL.Objects.Buffers;

@@ -33,7 +33,7 @@ Package Ogldev_Texture is
    function Init_Texture (theTexture : in out Ogl_Texture;
                           Target_Type : GL.Low_Level.Enums.Texture_Kind;
                           Texture_File  :  String) return Boolean;
-   procedure Load (theTexture : in out Ogl_Texture);
+   procedure Load (theTexture : in out Ogl_Texture; Data_Type : String := "RGBA");
    function Texture_Map_Size (theMap : Ogldev_Texture.Mesh_Texture_Map)
                               return GL.Types.UInt;
 
