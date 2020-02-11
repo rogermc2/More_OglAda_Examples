@@ -18,6 +18,14 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+    function "=" (Left, Right : Maths.Vector8) return Boolean is
+    begin
+        return Left (X) = Right (X) and Left (Y) = Right (Y) and Left (Z) = Right (Z)
+        and Left (NX) = Right (NX) and Left (NY) = Right (NY) and Left (NZ) = Right (NZ)
+        and Left (U) = Right (U) and Left (V) = Right (V);
+    end "=";
+
+    --   ----------------------------------------------------------------------
     generic
       type Index_Type is (<>);
       type Vector_Type is array (Index_Type) of aliased GL.Types.Single;

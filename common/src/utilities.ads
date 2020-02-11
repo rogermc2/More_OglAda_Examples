@@ -50,6 +50,8 @@ package Utilities is
      GL.Objects.Buffers.Set_Sub_Data (GL.Types.Singles.Vector3_Pointers);
    procedure Load_Vertex_Sub_Buffer is new
      GL.Objects.Buffers.Set_Sub_Data (GL.Types.Singles.Vector4_Pointers);
+   procedure Load_Vertex_Sub_Buffer is new
+     GL.Objects.Buffers.Set_Sub_Data (Maths.Vector8_Pointers);
 
    procedure Print_Array6 (Name : String; anArray : Maths.Vector6_Array);
    procedure Print_Byte_Array (Name : String; anArray : Byte_Array;
@@ -61,6 +63,8 @@ package Utilities is
    procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Singles.Vector4_Array);
    procedure Print_GL_Array8 (Name : String; anArray : Maths.Vector8_Array);
    procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array);
+   procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array;
+                                 Start, Finish : GL.Types.Int);
    procedure Print_GL_UInt_Array (Name : String; anArray : GL.Types.UInt_Array);
    procedure Print_Matrix (Name    : String;
                            aMatrix : GL.Types.Ints.Matrix4);
@@ -72,6 +76,8 @@ package Utilities is
    procedure Print_Vector (Name : String; aVector : GL.Types.Ints.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector4);
+   procedure Print_Vector (Name : String; aVector : Maths.Vector5);
+   procedure Print_Vector (Name : String; aVector : Maths.Vector8);
    procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
                                    Location       : String;
                                    theUniform     : in out GL.Uniforms.Uniform);

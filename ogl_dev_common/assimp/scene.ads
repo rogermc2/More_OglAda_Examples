@@ -23,8 +23,6 @@ with Metadata;
 
 package Scene is
 
-    --     package Mesh_Address_Conversion is new
-    --       System.Address_To_Access_Conversions (Mesh.API_Mesh_Array);
     type Scene_Flags is (AI_Scene_Flags_Incomplete, AI_Scene_Flags_Validated,
                          AI_Scene_Flags_Validation_Warning, AI_Scene_Flags_Non_Verbose_Format,
                          AI_Scene_Flags_Terrain);
@@ -39,8 +37,6 @@ package Scene is
     type AI_Node is record
         Name           : Ada.Strings.Unbounded.Unbounded_String;
         Transformation : GL.Types.Singles.Matrix4;
-        --        Parent         : Node_Ptr := Null;
-        --        Children       : AI_Node_Array_Ptr := Null;
         Meshes         : Assimp_Mesh.AI_Mesh_Map;
         Meta_Data      : Metadata.AI_Metadata;
     end record;
