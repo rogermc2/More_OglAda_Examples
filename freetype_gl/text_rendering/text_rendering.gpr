@@ -1,7 +1,7 @@
 with  "../../common/common.gpr";
-limited with "../../../OpenGLAda/FreeTypeAda/freetype.gpr";
-with "../../../OpenGLAda/opengl.gpr";
-limited with "../../../OpenGLAda/opengl-glfw.gpr";
+limited with "opengl-text.gpr";
+with "opengl.gpr";
+limited with "opengl-glfw.gpr";
 
 project Text_Rendering is
 
