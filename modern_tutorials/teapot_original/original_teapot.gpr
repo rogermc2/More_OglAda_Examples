@@ -1,5 +1,5 @@
-with "../../../OpenGLAda/opengl-glfw.gpr";
-with "../../../OpenGLAda/opengl.gpr";
+with "opengl-glfw.gpr";
+with "opengl.gpr";
 
 project Original_Teapot is
 
