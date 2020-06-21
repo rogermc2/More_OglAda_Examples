@@ -1,7 +1,7 @@
 with "../../common/common.gpr";
-with "../../../OpenGLAda/opengl.gpr";
-limited with "../../../OpenGLAda/opengl-soil.gpr";
-limited with "../../../OpenGLAda/opengl-glfw.gpr";
+with "opengl.gpr";
+limited with "opengl-images.gpr";
+limited with "opengl-glfw.gpr";
 
 project Buffers_And_Textures is
 
