@@ -1,6 +1,6 @@
 with "../../common/common.gpr";
-with "../../../OpenGLAda/opengl.gpr";
-limited with "../../../OpenGLAda/opengl-glfw.gpr";
+with "opengl.gpr";
+limited with "opengl-glfw.gpr";
 
 project Camera_Control_2 is
 
