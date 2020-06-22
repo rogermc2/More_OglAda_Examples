@@ -27,7 +27,7 @@ package Morph is
 
    package Mesh_Morph_Weight_Pointers is new Interfaces.C.Pointers
      (Interfaces.C.unsigned, API_Morph_Weight, API_Morph_Weights_Array,
-      API_Morph_Weight'(Interfaces.C.double'Last));
+      API_Morph_Weight'(API_Morph_Weight'Last));
 
    type API_Mesh_Morph_Key is record
       Key_Time               : Interfaces.C.double := 0.0;
