@@ -1,0 +1,16 @@
+with "../../common/common.gpr";
+with "opengl.gpr";
+limited with "opengl-images.gpr";
+limited with "opengl-glfw.gpr";
+
+project Win_Simple is
+
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Exec_Dir use ".";
+   for Main use ("simple_window.adb");
+
+    package Compiler renames OpenGL.Compiler;
+
+end Win_Simple;
+
