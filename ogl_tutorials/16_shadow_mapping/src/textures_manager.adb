@@ -6,8 +6,7 @@ with GL.Objects.Textures.Targets;
 with GL.Pixels;
 with GL.Types; use GL.Types;
 
-with SOIL;
-with SOIL.Images;
+with GL.Images;
 
 package body Textures_Manager is
 
@@ -32,7 +31,6 @@ package body Textures_Manager is
       Texture_2D.Toggle_Compare_X_To_Texture (True);
 
       Texture_2D.Load_Empty_Texture  (0, GL.Pixels.Depth_Component16, 1024, 1024);
---        Texture_2D.Generate_Mipmap;
 
       Read_And_Draw_Target.Attach_Texture (Depth_Attachment, Depth_Texture, 0);
 
@@ -54,27 +52,15 @@ package body Textures_Manager is
    --  -----------------------------------------------------------------------------
 
     procedure Load_Texture (Frame_Buffer : in out GL.Objects.Framebuffers.Framebuffer;
-                            Image_File_Name : String) is
+                            Image_File_Name : String;
+                            theTexture : in out GL.Objects.Textures.Texture) is
       use GL.Objects.Framebuffers;
-      use GL.Objects.Textures.Targets;
-      Image    : SOIL.Images.Image;
-      Width    : Int;
-      Height   : Int;
       Status   : Framebuffer_Status;
    begin
       Frame_Buffer.Initialize_Id;
       Read_And_Draw_Target.Bind (Frame_Buffer);
 
-      Image.Load (Image_File_Name);
-      Width := SOIL.Images.Width (Image);
-      Height := SOIL.Images.Height (Image);
-      if not SOIL.Images.Loaded (Image) then
-         raise Image_Error with
-           "Load_Image; " & Image_File_Name & " failed to load.";
-      end if;
-
-      Texture_2D.Load_Empty_Texture  (0, GL.Pixels.Depth_Component16, Width, Height);
---        Texture_2D.Generate_Mipmap;
+      GL.Images.Load_File_To_Texture (Image_File_Name, theTexture, GL.Pixels.RGBA);
 
       Status := GL.Objects.Framebuffers.Status (Read_And_Draw_Target);
       if Status /= Complete then
