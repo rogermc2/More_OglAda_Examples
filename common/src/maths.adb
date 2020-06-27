@@ -36,6 +36,12 @@ package body Maths is
       return Vector_Type'Size / GL.Types.Single'Size;
    end Stride;
 
+   function Stride_4 is new Stride (Index_4, Vector4);
+   function Stride4 return Int is
+   begin
+        return Stride_4;
+   end Stride4;
+
    function Stride_5 is new Stride (Index_5, Vector5);
    function Stride5 return Int is
    begin

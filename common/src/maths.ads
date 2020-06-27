@@ -10,10 +10,13 @@ package Maths is
    type Degree is new Single;
    type Radian is new Single;
 
+   type Index_4 is (X, Y, U, V);
    type Index_5 is (X, Y, Z, U, V);
    type Index_6 is (X, Y, Z, R, G, B);
    type Index_8 is (X, Y, Z, U, V, NX, NY, NZ);
 
+   type Vector4 is array (Index_4) of aliased Single;
+   pragma Convention (C, Vector4);
    type Vector5 is array (Index_5) of aliased Single;
    pragma Convention (C, Vector5);
    type Vector6 is array (Index_6) of aliased Single;
@@ -81,6 +84,7 @@ package Maths is
                              return Singles.Matrix4;
    function Scaling_Matrix (Scale_Factor : Single) return Singles.Matrix4;
    function Scaling_Matrix (Scale_Factor : Singles.Vector3) return Singles.Matrix4;
+   function Stride4 return Int;
    function Stride5 return Int;
    function Stride6 return Int;
    function Stride8 return Int;
