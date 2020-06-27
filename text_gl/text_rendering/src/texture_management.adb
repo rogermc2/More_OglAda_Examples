@@ -16,7 +16,6 @@ with FT.Faces;
 with FT.Glyphs;
 
 --  with Maths;
-with Utilities;
 
 package body Texture_Management is
    use Interfaces.C;
@@ -142,7 +141,7 @@ package body Texture_Management is
                                     GL.Blending.Blend_Func_Src_Alpha;
       One_Minus_Src_Alpha_Blend : constant  GL.Blending.Blend_Factor :=
                                     GL.Blending.One_Minus_Src_Alpha;
-      Num_Components            : constant GL.Types.Int := 4;     -- Coords vector size;
+      Num_Components            : constant GL.Types.Int := 4;  -- Coords vector size;
       Num_Vertices              : constant GL.Types.Int :=
                                     Text'Length * 3 * Triangles_Per_Quad;
 
@@ -178,11 +177,8 @@ package body Texture_Management is
                                                Kind       => GL.Types.Single_Type,
                                                Normalized => True,
                                                Stride     => 0, Offset => 0);
---        GL.Objects.Vertex_Arrays.Draw_Arrays (Triangle_Strip, 0, 6);
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangle_Strip, 0, Num_Vertices);
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
-      --  Bitshift by 6 to get value in pixels (2^6 = 64
-      --  (divide amount of 1/64th pixels by 64 to get amount of pixels))
 
       GL.Toggles.Set (GL.Toggles.Blend, Blend_State);
       GL.Blending.Set_Blend_Func (Src_Alpha_Blend, One_Minus_Src_Alpha_Blend);
@@ -257,9 +253,8 @@ package body Texture_Management is
       use GL.Types;
       Num_Vertices        : constant GL.Types.Int := 3 * Triangles_Per_Quad; -- Two triangles per quad
 
-      Scale0              : constant GL.Types.Single := 0.01 * Scale;
-      X_Orig              : Single := 0.0 * X;
-      Y_Orig              : constant Single := 0.0 * Y;
+      X_Orig              : Single := X;
+      Y_Orig              : constant Single := Y;
       X_Pos               : Single;
       Base                : Single;
       Quad_Width          : Single;
@@ -272,24 +267,20 @@ package body Texture_Management is
       --        Y_Max          : Pixel_Size;
       Num_Chars           : constant GL.Types.Int := Text'Length;
       --  2D quad rendered as two triangles requires 2 * 3 vertices
-      --        Vertex_Data         : Singles.Vector4_Array (1 .. 1 * Num_Vertices);
       Vertex_Data         : Singles.Vector4_Array (1 .. Num_Chars * Num_Vertices);
 
    begin
       Vertex_Buffer.Initialize_Id;
       Array_Buffer.Bind (Vertex_Buffer);
       for index in 1 .. Num_Chars loop
-         --        for index in 1 .. 1 loop
-         --           Char := Text (index);
          Char := Text (Integer (index));
          Char_Data := Extended_Ascii_Data (Character'Pos (Char));
-         X_Pos := X_Orig + Single (Char_Data.Left) * Scale0;
-         Base := Y_Orig - Single (Char_Data.Rows - Char_Data.Top) * Scale0;
-         Quad_Width := Single (Char_Data.Width) * Scale0;
-         Quad_Height := Single (Char_Data.Rows) * Scale0;
+         X_Pos := X_Orig + Single (Char_Data.Left) * Scale;
+         Base := Y_Orig - Single (Char_Data.Rows - Char_Data.Top) * Scale;
+         Quad_Width := Single (Char_Data.Width) * Scale;
+         Quad_Height := Single (Char_Data.Rows) * Scale;
 
          Vertex_Data (6 * (index - 1) + 1 .. 6 * (index - 1) + 6) :=
-         --           Vertex_Data (1 .. 6) :=
            ((X_Pos, Base,                            0.0, 0.0),  --  Lower left X, Y, U, V
             (X_Pos + Quad_Width, Base,               1.0, 0.0),  --  Lower right
             (X_Pos, Base + Quad_Height,              0.0, 1.0),  --  Upper left
@@ -299,9 +290,6 @@ package body Texture_Management is
             (X_Pos + Quad_Width, Base,               1.0, 0.0)); --  Lower right
          X_Orig := X_Orig + Single (Advance_X (Char_Data)) / 64.0 * Scale;
       end loop;
-
-      Utilities.Print_GL_Array4 ("Vertex_Data", Vertex_Data);
-      --          Utilities.Print_GL_Array4 ("Vertex_Data", Vertex_Data (1 .. 20));
 
       Vertex_Array.Bind;
       Array_Buffer.Bind (Vertex_Buffer);
