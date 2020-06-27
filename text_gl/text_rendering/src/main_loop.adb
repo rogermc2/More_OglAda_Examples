@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Toggles;
+with GL.Text;
 with GL.Types;
 with GL.Types.Colors;
 with GL.Uniforms;
@@ -22,6 +23,7 @@ with Texture_Management;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Render_Program        : GL.Objects.Programs.Program;
+   Renderer_Ref          : GL.Text.Renderer_Reference;
    Texture_ID            : GL.Uniforms.Uniform;
    Projection_Matrix_ID  : GL.Uniforms.Uniform;
    Colour_ID             : GL.Uniforms.Uniform;
@@ -44,7 +46,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Height   : Glfw.Size;
       Pos_X           : constant GL.Types.Single := 5.0;
       Pos_Y           : constant GL.Types.Single := 50.0;
-      Scale_1         : constant GL.Types.Single := 0.4;
+--        Scale_1         : constant GL.Types.Single := 0.4;
       Scale_2         : constant GL.Types.Single := 0.6;
    begin
       Window.Get_Size (Window_Width, Window_Height);
@@ -54,8 +56,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Maths.Init_Orthographic_Transform (Single (Window_Height), 0.0, 0.0,
                                          Single (Window_Width), 0.1, -100.0,
                                          Projection_Matrix);
-      Render_The_Text ("The Quick Brown Fox jumps over the zoo's Lazy Dog.",
-                       Pos_X, Pos_Y, Scale_1, Text_Colour);
+--        Render_The_Text ("The Quick Brown Fox jumps over the zoo's Lazy Dog.",
+--                         Pos_X, Pos_Y, Scale_1, Text_Colour);
       Render_The_Text ("1234567890 !@#$%^&*()_+=,./?;':""{}[]\|~`",
                        Pos_X + 20.0, Pos_Y + 150.0, Scale_2, Text_Colour);
    end Render;
@@ -65,9 +67,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Render_The_Text (Text   : String; X, Y, Scale : GL.Types.Single;
                               Colour : GL.Types.Colors.Basic_Color) is
    begin
-     Texture_Management.Render_Text (Render_Program, Text, X, Y, Scale, Colour,
-                         Texture_ID, Projection_Matrix_ID, Colour_ID,
-                         Projection_Matrix);
+     Texture_Management.Render_Text (Render_Program, Renderer_Ref, Text, X, Y,
+                                     Scale, Colour, Texture_ID, Projection_Matrix_ID,
+                                     Colour_ID, Projection_Matrix);
    end Render_The_Text;
 
    --  ------------------------------------------------------------------------
@@ -99,7 +101,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
 
-      Texture_Management.Initialize_Font_Data (Font_File_1);
+      Renderer_Ref := Texture_Management.Initialize_Font_Data (Font_File_1);
    end Setup;
 
    --  ------------------------------------------------------------------------
