@@ -134,15 +134,11 @@ package body Texture_Management is
 
    -- --------------------------------------------------------------------------
 
-   procedure Render (Text                             : String;
-                     Colour                           : GL.Types.Colors.Basic_Color;
-                     String_Texture                   : GL.Objects.Textures.Texture;
-                     Texture_ID, Projection_Matrix_ID : GL.Uniforms.Uniform;
-                     Colour_ID                        : GL.Uniforms.Uniform;
-                     Projection_Matrix                : GL.Types.Singles.Matrix4) is
+   procedure Render (Text_Length : GL.Types.Int;
+                     String_Texture : GL.Objects.Textures.Texture;
+                     Texture_ID : GL.Uniforms.Uniform) is
       use GL.Objects.Buffers;
       use GL.Objects.Textures.Targets;
-      use GL.Types.Colors;
       use GL.Types;
 
       Blend_State               : constant GL.Toggles.Toggle_State :=
@@ -153,13 +149,11 @@ package body Texture_Management is
                                     GL.Blending.One_Minus_Src_Alpha;
       Num_Components            : constant GL.Types.Int := 4;  -- Coords vector size;
       Num_Vertices              : constant GL.Types.Int :=
-                                    Text'Length * 3 * Triangles_Per_Quad;
+                                    Text_Length * 3 * Triangles_Per_Quad;
    begin
       GL.Objects.Textures.Set_Active_Unit (0);
       Texture_2D.Bind (String_Texture);
       GL.Uniforms.Set_Int (Texture_ID, 0);
-      GL.Uniforms.Set_Single (Colour_ID, Colour (R), Colour (G), Colour (B));
-      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       Array_Buffer.Bind (Vertex_Buffer);
@@ -190,12 +184,8 @@ package body Texture_Management is
                           Projection_Matrix                : GL.Types.Singles.Matrix4) is
       use GL.Text;
       use GL.Types.Colors;
-      String_Texture            : GL.Objects.Textures.Texture;
+      String_Texture  : GL.Objects.Textures.Texture;
    begin
-
-      GL.Objects.Programs.Use_Program (Render_Program);
-      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
-
       String_Texture := To_Texture (Renderer_Ref, UTF_8_String (Text),
                                     (Colour (R), Colour (G), Colour (B), 1.0));
       --  Blending allows a fragment colour's alpha value to control the resulting
@@ -204,8 +194,9 @@ package body Texture_Management is
       GL.Toggles.Enable (GL.Toggles.Blend);
       GL.Blending.Set_Blend_Func (GL.Blending.Src_Alpha,
                                   GL.Blending.One_Minus_Src_Alpha);
-      GL.Objects.Programs.Use_Program (Render_Program);
 
+      GL.Objects.Programs.Use_Program (Render_Program);
+      GL.Uniforms.Set_Single (Colour_ID, Colour (R), Colour (G), Colour (B));
       GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
 
       Setup_Buffer (Text, X, Y, Scale);
@@ -215,8 +206,7 @@ package body Texture_Management is
       if not GL.Objects.Textures.Is_Texture  (String_Texture.Raw_Id) then
          raise OGL_Exception with "FT.OGL.Render_Text, String_Texture is invalid.";
       end if;
-      Render (Text, Colour, String_Texture, Texture_ID,
-              Projection_Matrix_ID, Colour_ID, Projection_Matrix);
+      Render (Text'Length, String_Texture, Texture_ID);
 
    exception
       when others =>
