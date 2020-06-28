@@ -95,42 +95,42 @@ package body Texture_Management is
    end Initialize_Font_Data;
 
    --  ------------------------------------------------------------------------
-
-   procedure Load_Texture (Face_Ptr           : FT.Faces.Face_Reference;
-                           Char_Data          : in out Character_Record;
-                           Width, Height      : GL.Types.Size;
-                           X_Offset, Y_Offset : GL.Types.Int) is
-      use GL.Objects.Textures.Targets;
-      use GL.Pixels;
-      use GL.Types;
-      aTexture          : GL.Objects.Textures.Texture;
-      Bitmap_Image_Ptr  : GL.Objects.Textures.Image_Source;
-      Bitmap            : constant FT.Bitmap_Record :=
-                            FT.Glyphs.Bitmap (Face_Ptr.Glyph_Slot);
-      Num_Levels        : constant GL.Types.Size := 1;
-      Mip_Level_0       : constant GL.Objects.Textures.Mipmap_Level := 0;
-   begin
-      aTexture.Initialize_Id;
-      Texture_2D.Bind (aTexture);
-      Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
-      Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
-      Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
-      Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
-
-      if Width > 0 and then Height > 0 then
-         Texture_2D.Storage (Num_Levels, RGBA8, Width, Height);
-      else
-         Texture_2D.Storage (Num_Levels, RGBA8, 1, 1);
-      end if;
-
-      Bitmap_Image_Ptr := GL.Objects.Textures.Image_Source (Bitmap.Buffer);
-      if Width > 0 and Height > 0 then
-         Texture_2D.Load_Sub_Image_From_Data
-           (Mip_Level_0, X_Offset, Y_Offset, Width, Height, Red, Unsigned_Byte,
-            Bitmap_Image_Ptr);
-      end if;
-      Char_Data.Texture := aTexture;
-   end Load_Texture;
+--
+--     procedure Load_Texture (Face_Ptr           : FT.Faces.Face_Reference;
+--                             Char_Data          : in out Character_Record;
+--                             Width, Height      : GL.Types.Size;
+--                             X_Offset, Y_Offset : GL.Types.Int) is
+--        use GL.Objects.Textures.Targets;
+--        use GL.Pixels;
+--        use GL.Types;
+--        aTexture          : GL.Objects.Textures.Texture;
+--        Bitmap_Image_Ptr  : GL.Objects.Textures.Image_Source;
+--        Bitmap            : constant FT.Bitmap_Record :=
+--                              FT.Glyphs.Bitmap (Face_Ptr.Glyph_Slot);
+--        Num_Levels        : constant GL.Types.Size := 1;
+--        Mip_Level_0       : constant GL.Objects.Textures.Mipmap_Level := 0;
+--     begin
+--        aTexture.Initialize_Id;
+--        Texture_2D.Bind (aTexture);
+--        Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Linear);
+--        Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+--        Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
+--        Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
+--
+--        if Width > 0 and then Height > 0 then
+--           Texture_2D.Storage (Num_Levels, RGBA8, Width, Height);
+--        else
+--           Texture_2D.Storage (Num_Levels, RGBA8, 1, 1);
+--        end if;
+--
+--        Bitmap_Image_Ptr := GL.Objects.Textures.Image_Source (Bitmap.Buffer);
+--        if Width > 0 and Height > 0 then
+--           Texture_2D.Load_Sub_Image_From_Data
+--             (Mip_Level_0, X_Offset, Y_Offset, Width, Height, Red, Unsigned_Byte,
+--              Bitmap_Image_Ptr);
+--        end if;
+--        Char_Data.Texture := aTexture;
+--     end Load_Texture;
 
    -- --------------------------------------------------------------------------
 
@@ -308,23 +308,23 @@ package body Texture_Management is
    --  ------------------------------------------------------------------------
 
    procedure Setup_Character_Textures (Face_Ptr : FT.Faces.Face_Reference) is
-      use GL.Objects.Buffers;
+--        use GL.Objects.Buffers;
       Glyph_Slot   : constant FT.Glyph_Slot_Reference := Face_Ptr.Glyph_Slot;
       Width        : GL.Types.Size;
       Height       : GL.Types.Size;
-      X_Offset     : constant GL.Types.Int := 0;
-      Y_Offset     : constant GL.Types.Int := 0;
+--        X_Offset     : constant GL.Types.Int := 0;
+--        Y_Offset     : constant GL.Types.Int := 0;
       Char_Data    : Character_Record;
    begin
       --  Blending allows a fragment colour's alpha value to control the resulting
       --  colour which will be transparent for all the glyph's background colours and
       --  non-transparent for the actual character pixels.
-      GL.Toggles.Enable (GL.Toggles.Blend);
-      GL.Blending.Set_Blend_Func (GL.Blending.Src_Alpha,
-                                  GL.Blending.One_Minus_Src_Alpha);
-
-      Vertex_Array.Bind;
-      Array_Buffer.Bind (Vertex_Buffer);
+--        GL.Toggles.Enable (GL.Toggles.Blend);
+--        GL.Blending.Set_Blend_Func (GL.Blending.Src_Alpha,
+--                                    GL.Blending.One_Minus_Src_Alpha);
+--
+--        Vertex_Array.Bind;
+--        Array_Buffer.Bind (Vertex_Buffer);
 
       for index in Extended_Ascii_Data'Range loop
          --  Load_Render asks FreeType to create an 8-bit grayscale bitmap image
@@ -342,7 +342,7 @@ package body Texture_Management is
                         GL.Types.Int (FT.Glyphs.Bitmap_Top (Glyph_Slot)),
                         GL.Types.Int (FT.Glyphs.Advance (Glyph_Slot).X));
 
-         Load_Texture (Face_Ptr, Char_Data, Width, Height, X_Offset, Y_Offset);
+--           Load_Texture (Face_Ptr, Char_Data, Width, Height, X_Offset, Y_Offset);
          Extended_Ascii_Data (index) := Char_Data;
       end loop;
    end Setup_Character_Textures;
