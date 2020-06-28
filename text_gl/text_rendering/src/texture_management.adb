@@ -34,11 +34,13 @@ package body Texture_Management is
 
    type Character_Data_Vector is array (Natural range <>) of Character_Record;
 
+   Renderer_Ref         : GL.Text.Renderer_Reference;
    Triangles_Per_Quad   : constant GL.Types.Int := 2;
    Vertex_Array         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer        : GL.Objects.Buffers.Buffer;
    Extended_Ascii_Data  : Character_Data_Vector (0 .. 255);
    OGL_Exception        : Exception;
+   Font_File_1          : constant String := "../fonts/NotoSerif-Regular.ttf";
 
    procedure Load_Vertex_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (GL.Types.Singles.Vector4_Pointers);
@@ -57,13 +59,15 @@ package body Texture_Management is
 
    --  ------------------------------------------------------------------------
 
-   procedure Initialze is
+   procedure Initialize is
    begin
       Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
       Vertex_Buffer.Initialize_Id;
       GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
-   end Initialze;
+
+      Renderer_Ref := Texture_Management.Initialize_Font_Data (Font_File_1);
+   end Initialize;
 
    --  ------------------------------------------------------------------------
 
@@ -200,7 +204,6 @@ package body Texture_Management is
    --  ------------------------------------------------------------------------
 
    procedure Render_Text (Render_Program                   : GL.Objects.Programs.Program;
-                          Renderer_Ref                     : GL.Text.Renderer_Reference;
                           Text                             : String; X, Y, Scale     : GL.Types.Single;
                           Colour                           : GL.Types.Colors.Basic_Color;
                           Texture_ID, Projection_Matrix_ID : GL.Uniforms.Uniform;
