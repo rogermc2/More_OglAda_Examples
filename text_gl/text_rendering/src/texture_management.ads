@@ -6,6 +6,7 @@ with GL.Types.Colors;
 with GL.Uniforms;
 
 package Texture_Management is
+   procedure Initialze;
    function Initialize_Font_Data (Font_File : String)
                                   return GL.Text.Renderer_Reference;
    procedure Render_Text (Render_Program : GL.Objects.Programs.Program;
