@@ -32,18 +32,16 @@ package body Texture_Management is
       Advance_X : GL.Types.Int := 0;   -- Total width of bitmap in 1/64th pixel
    end record;
 
-   OGL_Exception      : Exception;
-   Triangles_Per_Quad : constant GL.Types.Int := 2;
-
-   procedure Load_Vertex_Buffer is new
-     GL.Objects.Buffers.Load_To_Buffer (GL.Types.Singles.Vector4_Pointers);
-
    type Character_Data_Vector is array (Natural range <>) of Character_Record;
 
+   Triangles_Per_Quad   : constant GL.Types.Int := 2;
    Vertex_Array         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer        : GL.Objects.Buffers.Buffer;
    Extended_Ascii_Data  : Character_Data_Vector (0 .. 255);
+   OGL_Exception        : Exception;
 
+   procedure Load_Vertex_Buffer is new
+     GL.Objects.Buffers.Load_To_Buffer (GL.Types.Singles.Vector4_Pointers);
    procedure Setup_Buffer (Text : String; X, Y, Scale : GL.Types.Single);
    procedure Setup_Character_Textures (Face_Ptr : FT.Faces.Face_Reference);
    procedure Setup_Font (theLibrary : FT.Library_Reference;
@@ -56,6 +54,16 @@ package body Texture_Management is
    begin
       return Data.Advance_X;
    end Advance_X;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Initialze is
+   begin
+      Vertex_Array.Initialize_Id;
+      Vertex_Array.Bind;
+      Vertex_Buffer.Initialize_Id;
+      GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
+   end Initialze;
 
    --  ------------------------------------------------------------------------
 
@@ -270,8 +278,6 @@ package body Texture_Management is
       Vertex_Data         : Singles.Vector4_Array (1 .. Num_Chars * Num_Vertices);
 
    begin
-      Vertex_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Vertex_Buffer);
       for index in 1 .. Num_Chars loop
          Char := Text (Integer (index));
          Char_Data := Extended_Ascii_Data (Character'Pos (Char));
@@ -314,10 +320,7 @@ package body Texture_Management is
       GL.Blending.Set_Blend_Func (GL.Blending.Src_Alpha,
                                   GL.Blending.One_Minus_Src_Alpha);
 
-      Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
-
-      Vertex_Buffer.Initialize_Id;
       Array_Buffer.Bind (Vertex_Buffer);
 
       for index in Extended_Ascii_Data'Range loop

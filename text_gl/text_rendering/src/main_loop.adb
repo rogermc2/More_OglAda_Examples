@@ -101,6 +101,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
 
+      Texture_Management.Initialze;
       Renderer_Ref := Texture_Management.Initialize_Font_Data (Font_File_1);
    end Setup;
 
