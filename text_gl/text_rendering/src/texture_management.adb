@@ -134,9 +134,7 @@ package body Texture_Management is
 
    -- --------------------------------------------------------------------------
 
-   procedure Render (Render_Program                   : GL.Objects.Programs.Program;
-                     Text                             : String;
-                     X, Y, Scale                      : GL.Types.Single;
+   procedure Render (Text                             : String;
                      Colour                           : GL.Types.Colors.Basic_Color;
                      String_Texture                   : GL.Objects.Textures.Texture;
                      Texture_ID, Projection_Matrix_ID : GL.Uniforms.Uniform;
@@ -156,26 +154,7 @@ package body Texture_Management is
       Num_Components            : constant GL.Types.Int := 4;  -- Coords vector size;
       Num_Vertices              : constant GL.Types.Int :=
                                     Text'Length * 3 * Triangles_Per_Quad;
-
    begin
-      --  Blending allows a fragment colour's alpha value to control the resulting
-      --  colour which will be transparent for all the glyph's background colours and
-      --  non-transparent for the actual character pixels.
-      GL.Toggles.Enable (GL.Toggles.Blend);
-      GL.Blending.Set_Blend_Func (GL.Blending.Src_Alpha,
-                                  GL.Blending.One_Minus_Src_Alpha);
-      GL.Objects.Programs.Use_Program (Render_Program);
-
-      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
-
-      Setup_Buffer (Text, X, Y, Scale);
-
-      --           Char_Texture :=  Char_Data.Texture;
-      --           if not GL.Objects.Textures.Is_Texture  (Char_Texture.Raw_Id) then
-      if not GL.Objects.Textures.Is_Texture  (String_Texture.Raw_Id) then
-         raise OGL_Exception with "FT.OGL.Render_Text, String_Texture is invalid.";
-      end if;
-
       GL.Objects.Textures.Set_Active_Unit (0);
       Texture_2D.Bind (String_Texture);
       GL.Uniforms.Set_Int (Texture_ID, 0);
@@ -211,15 +190,14 @@ package body Texture_Management is
                           Projection_Matrix                : GL.Types.Singles.Matrix4) is
       use GL.Text;
       use GL.Types.Colors;
-
-      Blend_State               : constant GL.Toggles.Toggle_State :=
-                                    GL.Toggles.State (GL.Toggles.Blend);
-      Src_Alpha_Blend           : constant  GL.Blending.Blend_Factor :=
-                                    GL.Blending.Blend_Func_Src_Alpha;
-      One_Minus_Src_Alpha_Blend : constant  GL.Blending.Blend_Factor :=
-                                    GL.Blending.One_Minus_Src_Alpha;
       String_Texture            : GL.Objects.Textures.Texture;
    begin
+
+      GL.Objects.Programs.Use_Program (Render_Program);
+      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
+
+      String_Texture := To_Texture (Renderer_Ref, UTF_8_String (Text),
+                                    (Colour (R), Colour (G), Colour (B), 1.0));
       --  Blending allows a fragment colour's alpha value to control the resulting
       --  colour which will be transparent for all the glyph's background colours and
       --  non-transparent for the actual character pixels.
@@ -230,12 +208,15 @@ package body Texture_Management is
 
       GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
 
-      String_Texture := To_Texture (Renderer_Ref, UTF_8_String (Text),
-                                    (Colour (R), Colour (G), Colour (B), 1.0));
-      Render (Render_Program, Text, X, Y, Scale, Colour, String_Texture, Texture_ID,
+      Setup_Buffer (Text, X, Y, Scale);
+
+      --           Char_Texture :=  Char_Data.Texture;
+      --           if not GL.Objects.Textures.Is_Texture  (Char_Texture.Raw_Id) then
+      if not GL.Objects.Textures.Is_Texture  (String_Texture.Raw_Id) then
+         raise OGL_Exception with "FT.OGL.Render_Text, String_Texture is invalid.";
+      end if;
+      Render (Text, Colour, String_Texture, Texture_ID,
               Projection_Matrix_ID, Colour_ID, Projection_Matrix);
-      GL.Toggles.Set (GL.Toggles.Blend, Blend_State);
-      GL.Blending.Set_Blend_Func (Src_Alpha_Blend, One_Minus_Src_Alpha_Blend);
 
    exception
       when others =>
