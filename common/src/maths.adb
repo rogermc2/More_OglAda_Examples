@@ -235,6 +235,32 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+   function Min (L, R : GL.Types.Single) return GL.Types.Single is
+      Result : GL.Types.Single;
+   begin
+      if L < R then
+         Result := L;
+      else
+         Result := R;
+      end if;
+      return Result;
+   end Min;
+
+   --  ------------------------------------------------------------------------
+
+   function Max (L, R : GL.Types.Single) return GL.Types.Single is
+      Result : GL.Types.Single;
+   begin
+      if L > R then
+         Result := L;
+      else
+         Result := R;
+      end if;
+      return Result;
+   end Max;
+
+   --  ------------------------------------------------------------------------
+
    function New_Quaternion (Angle : Radian; Axis : GL.Types.Singles.Vector3)
                             return Single_Quaternion.Quaternion is
       use Maths.Single_Math_Functions;
