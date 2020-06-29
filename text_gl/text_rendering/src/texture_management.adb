@@ -15,7 +15,7 @@ with FT;
 with FT.Faces;
 with FT.Glyphs;
 
---  with Maths;
+with Maths;
 
 package body Texture_Management is
    use Interfaces.C;
@@ -35,12 +35,13 @@ package body Texture_Management is
    type Character_Data_Vector is array (Natural range <>) of Character_Record;
 
    Renderer_Ref         : GL.Text.Renderer_Reference;
-   Triangles_Per_Quad   : constant GL.Types.Int := 2;
    Vertex_Array         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer        : GL.Objects.Buffers.Buffer;
+   String_Texture       : GL.Objects.Textures.Texture;
    Extended_Ascii_Data  : Character_Data_Vector (0 .. 255);
-   OGL_Exception        : Exception;
+   Triangles_Per_Quad   : constant GL.Types.Int := 2;
    Font_File_1          : constant String := "../fonts/NotoSerif-Regular.ttf";
+   OGL_Exception        : Exception;
 
    procedure Load_Vertex_Buffer is new
      GL.Objects.Buffers.Load_To_Buffer (GL.Types.Singles.Vector4_Pointers);
@@ -52,9 +53,10 @@ package body Texture_Management is
 
    --  ------------------------------------------------------------------------
 
-   function Advance_X (Data : Character_Record) return GL.Types.Int is
+   function Advance_X (Data : Character_Record) return GL.Types.Single is
+      use GL.Types;
    begin
-      return Data.Advance_X;
+      return Single (Data.Advance_X) / 64.0;
    end Advance_X;
 
    --  ------------------------------------------------------------------------
@@ -134,29 +136,32 @@ package body Texture_Management is
 
    -- --------------------------------------------------------------------------
 
-   procedure Render (Text_Length : GL.Types.Int;
-                     String_Texture : GL.Objects.Textures.Texture;
+--     procedure Render (Text_Length : GL.Types.Int;
+   procedure Render (String_Texture : GL.Objects.Textures.Texture;
                      Texture_ID : GL.Uniforms.Uniform) is
       use GL.Objects.Buffers;
       use GL.Objects.Textures.Targets;
       use GL.Types;
 
-      Blend_State               : constant GL.Toggles.Toggle_State :=
-                                    GL.Toggles.State (GL.Toggles.Blend);
-      Src_Alpha_Blend           : constant  GL.Blending.Blend_Factor :=
-                                    GL.Blending.Blend_Func_Src_Alpha;
-      One_Minus_Src_Alpha_Blend : constant  GL.Blending.Blend_Factor :=
-                                    GL.Blending.One_Minus_Src_Alpha;
+--        Blend_State               : constant GL.Toggles.Toggle_State :=
+--                                      GL.Toggles.State (GL.Toggles.Blend);
+--        Src_Alpha_Blend           : constant  GL.Blending.Blend_Factor :=
+--                                      GL.Blending.Blend_Func_Src_Alpha;
+--        One_Minus_Src_Alpha_Blend : constant  GL.Blending.Blend_Factor :=
+--                                      GL.Blending.One_Minus_Src_Alpha;
       Num_Components            : constant GL.Types.Int := 4;  -- Coords vector size;
-      Num_Vertices              : constant GL.Types.Int :=
-                                    Text_Length * 3 * Triangles_Per_Quad;
+--        Num_Vertices              : constant GL.Types.Int :=
+--                                      Text_Length * 3 * Triangles_Per_Quad;
+      Num_Vertices              : constant GL.Types.Int := 3 * Triangles_Per_Quad;
    begin
+      Vertex_Array.Bind;
+      Array_Buffer.Bind (Vertex_Buffer);
+
       GL.Objects.Textures.Set_Active_Unit (0);
       Texture_2D.Bind (String_Texture);
       GL.Uniforms.Set_Int (Texture_ID, 0);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      Array_Buffer.Bind (Vertex_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index      => 0,
                                                Count      => Num_Components,
                                                Kind       => GL.Types.Single_Type,
@@ -165,8 +170,8 @@ package body Texture_Management is
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangle_Strip, 0, Num_Vertices);
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
 
-      GL.Toggles.Set (GL.Toggles.Blend, Blend_State);
-      GL.Blending.Set_Blend_Func (Src_Alpha_Blend, One_Minus_Src_Alpha_Blend);
+--        GL.Toggles.Set (GL.Toggles.Blend, Blend_State);
+--        GL.Blending.Set_Blend_Func (Src_Alpha_Blend, One_Minus_Src_Alpha_Blend);
 
    exception
       when others =>
@@ -184,7 +189,6 @@ package body Texture_Management is
                           Projection_Matrix                : GL.Types.Singles.Matrix4) is
       use GL.Text;
       use GL.Types.Colors;
-      String_Texture  : GL.Objects.Textures.Texture;
    begin
       String_Texture := To_Texture (Renderer_Ref, UTF_8_String (Text),
                                     (Colour (R), Colour (G), Colour (B), 1.0));
@@ -206,7 +210,8 @@ package body Texture_Management is
       if not GL.Objects.Textures.Is_Texture  (String_Texture.Raw_Id) then
          raise OGL_Exception with "FT.OGL.Render_Text, String_Texture is invalid.";
       end if;
-      Render (Text'Length, String_Texture, Texture_ID);
+      Render (String_Texture, Texture_ID);
+--        Render (Text'Length, String_Texture, Texture_ID);
 
    exception
       when others =>
@@ -235,12 +240,15 @@ package body Texture_Management is
       use GL.Types;
       Num_Vertices        : constant GL.Types.Int := 3 * Triangles_Per_Quad; -- Two triangles per quad
 
-      X_Orig              : Single := X;
+      X_Start             : constant Single := X;
       Y_Orig              : constant Single := Y;
-      X_Pos               : Single;
+      X_End               : Single := X_Start;
       Base                : Single;
-      Quad_Width          : Single;
-      Quad_Height         : Single;
+      Base_Min            : Single := Y_Orig;
+      Top                 : Single;
+      Top_Max             : Single := Y_Orig;
+--        Quad_Width          : Single;
+--        Quad_Height         : Single;
       Char                : Character;
       Char_Data           : Character_Record;
       --        Char_Texture   : GL.Objects.Textures.Texture;
@@ -249,27 +257,41 @@ package body Texture_Management is
       --        Y_Max          : Pixel_Size;
       Num_Chars           : constant GL.Types.Int := Text'Length;
       --  2D quad rendered as two triangles requires 2 * 3 vertices
-      Vertex_Data         : Singles.Vector4_Array (1 .. Num_Chars * Num_Vertices);
+      Vertex_Data         : Singles.Vector4_Array (1 .. Num_Vertices);
+--        Vertex_Data         : Singles.Vector4_Array (1 .. Num_Chars * Num_Vertices);
 
    begin
       for index in 1 .. Num_Chars loop
          Char := Text (Integer (index));
          Char_Data := Extended_Ascii_Data (Character'Pos (Char));
-         X_Pos := X_Orig + Single (Char_Data.Left) * Scale;
+--           X_Pos := X_Orig + Single (Char_Data.Left) * Scale;
+         X_End := X_End + Advance_X (Char_Data) * Scale;
          Base := Y_Orig - Single (Char_Data.Rows - Char_Data.Top) * Scale;
-         Quad_Width := Single (Char_Data.Width) * Scale;
-         Quad_Height := Single (Char_Data.Rows) * Scale;
-
-         Vertex_Data (6 * (index - 1) + 1 .. 6 * (index - 1) + 6) :=
-           ((X_Pos, Base,                            0.0, 0.0),  --  Lower left X, Y, U, V
-            (X_Pos + Quad_Width, Base,               1.0, 0.0),  --  Lower right
-            (X_Pos, Base + Quad_Height,              0.0, 1.0),  --  Upper left
-
-            (X_Pos, Base + Quad_Height,              0.0, 1.0),  --  Upper left
-            (X_Pos + Quad_Width, Base + Quad_Height, 1.0, 1.0),  --  Upper Right --  Lower right --  Lower right
-            (X_Pos + Quad_Width, Base,               1.0, 0.0)); --  Lower right
-         X_Orig := X_Orig + Single (Advance_X (Char_Data)) / 64.0 * Scale;
+         Base_Min := Maths.Min (Base_Min, Base);
+--           Quad_Width := Single (Char_Data.Width) * Scale;
+--           Quad_Height := Single (Char_Data.Rows) * Scale;
+         Top := Base + Single (Char_Data.Rows) * Scale;
+         Top_Max := Maths.Max (Top_Max, Top);
+--           X_Orig := X_Orig + Single (Advance_X (Char_Data)) / 64.0 * Scale;
       end loop;
+
+--        Vertex_Data := Vertex_Data (6 * (index - 1) + 1 .. 6 * (index - 1) + 6)
+--             ((X_Pos, Base,                            0.0, 0.0),  --  Lower left X, Y, U, V
+--              (X_Pos + Quad_Width, Base,               1.0, 0.0),  --  Lower right
+--              (X_Pos, Base + Quad_Height,              0.0, 1.0),  --  Upper left
+--
+--              (X_Pos, Base + Quad_Height,              0.0, 1.0),  --  Upper left
+--              (X_Pos + Quad_Width, Base + Quad_Height, 1.0, 1.0),  --  Upper Right --  Lower right --  Lower right
+--              (X_Pos + Quad_Width, Base,               1.0, 0.0)); --  Lower right
+
+      Vertex_Data :=
+           ((X_Start, Base_Min, 0.0, 0.0),  --  Lower left X, Y, U, V
+            (X_End,   Base_Min, 1.0, 0.0),  --  Lower right
+            (X_Start, Top_Max,  0.0, 1.0),  --  Upper left
+
+            (X_Start, Top_Max,  0.0, 1.0),  --  Upper left
+            (X_End,   Top_Max,  1.0, 1.0),  --  Upper Right --  Lower right --  Lower right
+            (X_End,   Base_Min, 1.0, 0.0)); --  Lower right
 
       Vertex_Array.Bind;
       Array_Buffer.Bind (Vertex_Buffer);
