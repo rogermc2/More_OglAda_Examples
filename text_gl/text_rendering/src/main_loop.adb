@@ -42,7 +42,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
       Pos_X           : constant GL.Types.Single := 5.0;
-      Pos_Y           : constant GL.Types.Single := 50.0;
+      Pos_Y           : constant GL.Types.Single := 70.0;
       Scale_1         : constant GL.Types.Single := 0.4;
       Scale_2         : constant GL.Types.Single := 0.6;
    begin
@@ -53,6 +53,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Maths.Init_Orthographic_Transform (Single (Window_Height), 0.0, 0.0,
                                          Single (Window_Width), 0.1, -100.0,
                                          Projection_Matrix);
+      GL.Objects.Programs.Use_Program (Render_Program);
+      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
+
       Render_The_Text ("The Quick Brown Fox jumps over the zoo's Lazy Dog.",
                        Pos_X, Pos_Y, Scale_1, Text_Colour);
       Render_The_Text ("1234567890 !@#$%^&*()_+=,./?;':""{}[]\|~`",
@@ -96,8 +99,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Colour_ID := GL.Objects.Programs.Uniform_Location
           (Render_Program, "text_colour");
 
-      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
-
       Texture_Management.Initialize;
    end Setup;
 
@@ -109,6 +110,7 @@ begin
    Setup (Main_Window);
    while Running loop
       Render (Main_Window);
+      Delay (4.0);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and then not
