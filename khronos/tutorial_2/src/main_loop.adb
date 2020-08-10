@@ -71,8 +71,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         Vertex_Array.Bind;
 
         Render_Program := Program_From
-          ((Src ("src/shaders/tutorial3.vert", Vertex_Shader),
-           Src ("src/shaders/tutorial3.frag", Fragment_Shader)));
+          ((Src ("src/shaders/tutorial2.vert", Vertex_Shader),
+           Src ("src/shaders/tutorial2.frag", Fragment_Shader)));
 
         Use_Program (Render_Program);
 
