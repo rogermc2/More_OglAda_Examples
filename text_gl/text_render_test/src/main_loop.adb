@@ -108,7 +108,7 @@ begin
    Setup (Main_Window);
    while Running loop
       Render (Main_Window);
-      Delay (2.0);
+      Delay (1.0);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and then not

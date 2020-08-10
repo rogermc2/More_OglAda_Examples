@@ -16,9 +16,11 @@ with FT.Faces;
 package body Texture_Test is
 
    Renderer_Ref         : GL.Text.Renderer_Reference;
+   Vertex_Array         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Vertex_Buffer        : GL.Objects.Buffers.Buffer;
    String_Texture       : GL.Objects.Textures.Texture;
    Triangles_Per_Quad   : constant GL.Types.Int := 2;
-   Font_File_1          : constant String := "./NotoSerif-Regular.ttf";
+   Font_File_1          : constant String := "../fonts/NotoSerif-Regular.ttf";
 
    function Initialize_Font_Data (Font_File : String)
                                   return GL.Text.Renderer_Reference;
@@ -33,6 +35,10 @@ package body Texture_Test is
 
    procedure Initialize is
    begin
+      Vertex_Array.Initialize_Id;
+      Vertex_Array.Bind;
+      Vertex_Buffer.Initialize_Id;
+      GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer);
       String_Texture.Initialize_Id;
       GL.Objects.Textures.Targets.Texture_2D.Bind (String_Texture);
 
@@ -132,37 +138,33 @@ package body Texture_Test is
       use GL.Objects.Buffers;
       use GL.Text;
       use GL.Types;
-      Num_Vertices        : constant GL.Types.Int := 3 * Triangles_Per_Quad;
-      X_Start             : constant Single := X;
-      X_End               : Single;
-      Width               : Pixel_Difference;
-      Base                : Pixel_Difference;
-      S_Base              : Single;
-      Top                 : Pixel_Difference;
-      S_Top               : Single;
-      Vertex_Data         : Singles.Vector4_Array (1 .. Num_Vertices);
-      Vertex_Array        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Vertex_Buffer       : GL.Objects.Buffers.Buffer;
+      Num_Vertices : constant GL.Types.Int := 3 * Triangles_Per_Quad;
+      X_End        : Single;
+      Width        : Pixel_Difference;
+      Base         : Pixel_Difference;
+      S_Base       : Single;
+      Top          : Pixel_Difference;
+      S_Top        : Single;
+      Vertex_Data  : Singles.Vector4_Array (1 .. Num_Vertices);
+
    begin
       Calculate_Dimensions (Renderer_Ref, Text, Width, Base, Top);
-      S_Base :=  Y + Single (Base);
+      S_Base := Y + Single (Base);
       S_Top := Y + Single (Top) * Scale;
-      X_End := X_Start + Single (Width) * Scale;
+      X_End := X + Single (Width) * Scale;
 
       Vertex_Data :=
-           ((X_Start, S_Base, 0.0, 0.0),  --  Lower left X, Y, U, V
+           ((X,       S_Base, 0.0, 0.0),  --  Lower left X, Y, U, V
             (X_End,   S_Base, 1.0, 0.0),  --  Lower right
-            (X_Start, S_Top,  0.0, 1.0),  --  Upper left
+            (X,       S_Top,  0.0, 1.0),  --  Upper left
 
-            (X_Start, S_Top,  0.0, 1.0),  --  Upper left
+            (X,       S_Top,  0.0, 1.0),  --  Upper left
             (X_End,   S_Top,  1.0, 1.0),  --  Upper Right
             (X_End,   S_Base, 1.0, 0.0)); --  Lower right
 
-      Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
-      Vertex_Buffer.Initialize_Id;
       Array_Buffer.Bind (Vertex_Buffer);
-      Load_Vertex_Buffer (Array_Buffer, Vertex_Data, Static_Draw);
+      Load_Vertex_Buffer (Array_Buffer, Vertex_Data, Dynamic_Draw);
    end Setup_Buffer;
 
    --  ------------------------------------------------------------------------
