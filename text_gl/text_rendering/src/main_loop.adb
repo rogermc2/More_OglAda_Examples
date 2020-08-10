@@ -1,6 +1,7 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Blending;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Toggles;
@@ -29,6 +30,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Background      : constant GL.Types.Colors.Color := (0.4, 0.6, 0.6, 1.0);
    Text_Colour     : constant GL.Types.Colors.Basic_Color := (0.5, 0.2, 0.6);
+   Font_File_1     : constant String := "../fonts/NotoSerif-Regular.ttf";
 
    --  ------------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Pos_X           : constant GL.Types.Single := 5.0;
       Pos_Y           : constant GL.Types.Single := 70.0;
       Scale_1         : constant GL.Types.Single := 0.4;
-      Scale_2         : constant GL.Types.Single := 0.6;
+--        Scale_2         : constant GL.Types.Single := 0.6;
    begin
       Window.Get_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -53,13 +55,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Maths.Init_Orthographic_Transform (Single (Window_Height), 0.0, 0.0,
                                          Single (Window_Width), 0.1, -100.0,
                                          Projection_Matrix);
-      GL.Objects.Programs.Use_Program (Render_Program);
-      GL.Uniforms.Set_Single (Projection_Matrix_ID, Projection_Matrix);
 
       Render_The_Text ("The Quick Brown Fox jumps over the zoo's Lazy Dog.",
                        Pos_X, Pos_Y, Scale_1, Text_Colour);
-      Render_The_Text ("1234567890 !@#$%^&*()_+=,./?;':""{}[]\|~`",
-                       Pos_X + 20.0, Pos_Y + 150.0, Scale_2, Text_Colour);
+--        Render_The_Text ("1234567890 !@#$%^&*()_+=,./?;':""{}[]\|~`",
+--                         Pos_X + 20.0, Pos_Y + 150.0, Scale_2, Text_Colour);
    end Render;
 
    --  ------------------------------------------------------------------------
@@ -85,7 +85,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window.Get_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
+
       GL.Toggles.Enable (GL.Toggles.Cull_Face);
+      GL.Toggles.Enable (GL.Toggles.Blend);
+      GL.Blending.Set_Blend_Func (GL.Blending.Src_Alpha,
+                                  GL.Blending.One_Minus_Src_Alpha);
 
       Render_Program := Program_From
           ((Src ("src/shaders/text_vertex_shader.glsl", Vertex_Shader),
@@ -99,7 +103,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Colour_ID := GL.Objects.Programs.Uniform_Location
           (Render_Program, "text_colour");
 
-      Texture_Management.Initialize;
+      Texture_Management.Initialize (Font_File_1);
    end Setup;
 
    --  ------------------------------------------------------------------------
@@ -110,7 +114,7 @@ begin
    Setup (Main_Window);
    while Running loop
       Render (Main_Window);
-      Delay (4.0);
+--        Delay (0.6);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and then not
