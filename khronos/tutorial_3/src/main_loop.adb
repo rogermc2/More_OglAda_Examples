@@ -30,12 +30,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Vertex_Array        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer       : GL.Objects.Buffers.Buffer;
    Colour_Buffer       : GL.Objects.Buffers.Buffer;
-   Model_Matrix        : GL.Types.Singles.Matrix4;
-   Projection_Matrix   : GL.Types.Singles.Matrix4;
+   Model_Matrix        : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Projection_Matrix   : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
    Render_Program      : GL.Objects.Programs.Program;
    MVP_Uniform         : GL.Uniforms.Uniform;
 
-   Black : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
+   Black : constant GL.Types.Colors.Color := (0.3, 0.3, 0.3, 1.0);
 
    --  ------------------------------------------------------------------------
 
@@ -47,12 +47,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Objects.Programs.Use_Program (Render_Program);
       Utilities.Clear_Background_Colour (Black);
 
-      Model_Matrix := Identity4;
 --        Model_Matrix := Rotation_Matrix (-Index, (1.0, 0.0, 0.0)) * Model_Matrix;
 --        Model_Matrix := Rotation_Matrix (Index, (0.0, 1.0, 0.0)) * Model_Matrix;
 --        Model_Matrix := Rotation_Matrix (0.5 * Index, (0.0, 0.0, 1.0)) * Model_Matrix;
 --        Model_Matrix := Translation_Matrix ((0.0, 0.0, -0.5)) * Model_Matrix;
---      Model_Matrix := Projection_Matrix * Model_Matrix;
+      Model_Matrix := Projection_Matrix * Model_Matrix;
       GL.Uniforms.Set_Single (MVP_Uniform, Model_Matrix);
 
       Array_Buffer.Bind (Vertex_Buffer);
@@ -94,15 +93,15 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                       MVP_Uniform);
 
       GL.Toggles.Enable (GL.Toggles.Multisample);
-      GL.Toggles.Enable (GL.Toggles.Depth_Test);
+--        GL.Toggles.Enable (GL.Toggles.Depth_Test);
       --  Enable Z depth testing so objects closest to the viewpoint
       --  are in front of objects further away
-      GL.Buffers.Set_Depth_Function (Less);
+--        GL.Buffers.Set_Depth_Function (Less);
 
       Use_Program (Render_Program);
 
       Projection_Matrix :=
-        Maths.Perspective_Matrix (Maths.Degrees (45.0), 1.0, 0.1, 100.0);
+        Maths.Perspective_Matrix (Maths.Degrees (65.0), 1.0, -0.1, -100.0);
 
       Vertex_Buffer.Initialize_Id;
       Array_Buffer.Bind (Vertex_Buffer);
@@ -134,7 +133,7 @@ begin
       Glfw.Input.Poll_Events;
       Delay (0.5);
       Index := Index + 1.0;
-      Running := Running and Index < 360.0 and not
+      Running := Running and Index < 20.0 and not
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and not Main_Window.Should_Close;
    end loop;
