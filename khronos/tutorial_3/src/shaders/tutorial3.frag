@@ -3,10 +3,10 @@
 precision highp float;
 
 in  vec3 ex_Colour;
-out vec4 gl_FragColour;
+out vec4 fragColour;
 
 void main(void)
     {
     // Pass the original colour with full opacity.
-    gl_FragColour = vec4(ex_Colour, 1.0);
+    fragColour = vec4(ex_Colour, 1.0);
     }

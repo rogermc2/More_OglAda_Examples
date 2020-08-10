@@ -1,8 +1,8 @@
 #version 410 core
 // in_Position was bound to attribute index 0
 // in_Color was bound to attribute index 1
-in  vec2 in_Position;
-in  vec3 in_Colour;
+layout(location = 0) in vec2 in_Position;
+layout(location = 1) in vec3 in_Colour;
 
 // Set the ex_Colour variable to the next shader in the chain
 out vec3 ex_Colour;
