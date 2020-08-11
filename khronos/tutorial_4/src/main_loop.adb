@@ -94,12 +94,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Utilities.Set_Uniform_Location (Render_Program, "mvp_matrix",
                                       MVP_Uniform);
 
-      GL.Toggles.Enable (GL.Toggles.Multisample);
+--        GL.Toggles.Enable (GL.Toggles.Multisample);
       GL.Toggles.Enable (GL.Toggles.Depth_Test);
       --  Enable Z depth testing so objects closest to the viewpoint
       --  are in front of objects further away
       --  (Never, Less, Equal, LEqual, Greater, Not_Equal, GEqual, Always)
-      GL.Buffers.Set_Depth_Function (Not_Equal);
+      GL.Buffers.Set_Depth_Function (Always);
 
       Use_Program (Render_Program);
 
@@ -145,6 +145,7 @@ begin
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and not Main_Window.Should_Close;
    end loop;
+   GL.Toggles.Disable (GL.Toggles.Depth_Test);
 exception
    when others =>
       Put_Line ("An exceptiom occurred in Main_Loop.");
