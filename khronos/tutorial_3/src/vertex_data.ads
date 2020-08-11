@@ -4,11 +4,23 @@ with GL.Types;
 package Vertex_Data is
     use  GL.Types;
 
-    Diamond_Vertices : Singles.Vector2_Array (1 .. 4)
-      :=  ((0.0, 1.0),    --  Top
-           (1.0, 0.0),    --  Right
-           (0.0, -1.0),   --  Bottom
-           (-1.0, 0.0));  --  Left
+    Tetrahedron_Vertices : Singles.Vector3_Array (1 .. 12)
+                                --  Face 1
+      :=  ((-1.0, 1.0, -1.0),   --  Vertex 1
+           (1.0, -1.0, -1.0),   --  Vertex 1
+           (-1.0, -1.0, 1.0),   --  Vertex 3
+                                --  Face 2
+           (1.0, 1.0, 1.0),     --  Vertex 1
+           (-1.0, -1.0, 1.0),   --  Vertex 2
+           (1.0, -1.0, -1.0),   --  Vertex 3
+                                --  Face 3
+           (1.0, 1.0, 1.0),     --  Vertex 1
+           (-1.0, 1.0, -1.0),   --  Vertex 2
+           (-1.0, -1.0, 1.0),   --  Vertex 3
+                                --  Face 4
+           (1.0, 1.0, 1.0),     --  Vertex 1
+           (1.0, -1.0, -1.0),   --  Vertex 2
+           (-1.0, 1.0, -1.0));  --  Vertex 3
 
     Colour_Data : Singles.Vector3_Array (1 .. 4)
       :=  ((1.0, 0.0, 0.0),  -- Red
