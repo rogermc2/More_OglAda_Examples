@@ -3,6 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Buffers;
+with GL.Culling;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
@@ -95,11 +96,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                       MVP_Uniform);
 
 --        GL.Toggles.Enable (GL.Toggles.Multisample);
-      GL.Toggles.Enable (GL.Toggles.Depth_Test);
-      --  Enable Z depth testing so objects closest to the viewpoint
-      --  are in front of objects further away
-      --  (Never, Less, Equal, LEqual, Greater, Not_Equal, GEqual, Always)
-      GL.Buffers.Set_Depth_Function (Always);
 
       Use_Program (Render_Program);
 
@@ -120,6 +116,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Array_Buffer.Bind (Colour_Buffer);
       Utilities.Load_Vertex_Buffer
         (Array_Buffer, Vertex_Data.Colour_Data, Static_Draw);
+
+        GL.Toggles.Enable (GL.Toggles.Cull_Face);
+        GL.Culling.Set_Front_Face (GL.Types.Counter_Clockwise);
+        --  Depth_Function specifies the function used to compare each
+        --  incoming pixel depth value with the depth value present in
+        --  the depth buffer.
+      --  (Never, Less, Equal, LEqual, Greater, Not_Equal, GEqual, Always)
+        GL.Toggles.Enable (GL.Toggles.Depth_Test);
+        GL.Buffers.Set_Depth_Function (Always);
+--          GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
 
    exception
       when others =>
