@@ -264,7 +264,7 @@ package body Ogldev_Camera is
         use Maths;
         H_Axis : Vector3;
         V_Axis : constant Vector3 := (0.0, 1.0, 0.0);
-        View   : Vector4 := (1.0, 0.0, 0.0, 1.0);
+        View   : GL.Types.Singles.Vector4 := (1.0, 0.0, 0.0, 1.0);
     begin
         --  Rotate the view vector by the horizontal angle around the vertical axis
         View := Normalized (Maths.Rotation_Matrix (theCamera.Angle_H, V_Axis) * View);
