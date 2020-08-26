@@ -1,6 +1,7 @@
-with "opengl-glfw.gpr";
-with "opengl-text.gpr";
-with "opengl.gpr";
+with "opengl-glfw";
+with "opengl-text";
+with "opengl";
+With "deps/gid/gid";
 
 project Common is
 
