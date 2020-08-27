@@ -1,32 +1,54 @@
 
-with Ada.Numerics.Float_Random;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Objects.Framebuffers;
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
 
 with Ogldev_Engine_Common;
 
-package body Random_Texture is
+package body Picking_Texture is
 
-   Gen : Ada.Numerics.Float_Random.Generator;
+   FBO           :  GL.Objects.Framebuffers.Framebuffer;
+   Depth_Texture : GL.Objects.Textures.Texture;
+   Pick_Texture  : GL.Objects.Textures.Texture;
 
-   procedure Init_Random_Texture (aTexture : in out GL.Objects.Textures.Texture;
-                                  Texture_Length : GL.Types.UInt) is
-      use Ada.Numerics.Float_Random;
+   --  ------------------------------------------------------------------------
+
+  procedure  Bind (aTexture : in out GL.Objects.Textures.Texture;
+                    Texture_Unit : GL.Objects.Textures.Texture_Unit) is
+   use GL.Objects.Textures;
+   begin
+      Set_Active_Unit (Texture_Unit);
+      Targets.Texture_1D.Bind (aTexture);
+   end Bind;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Disable_Writing is
+   begin
+      null;
+   end Disable_Writing;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Enable_Writing is
+      use GL.Objects.Framebuffers;
+   begin
+      null;
+   end Enable_Writing;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Picking_Texture (Window_Width, Window_Height : GL.Types.UInt) is
       use GL.Objects.Textures.Targets;
       use GL.Types;
-      Random_Data  : Singles.Vector3_Array (Int range 1 .. Int (Texture_Length));
    begin
       --  GL_TEXTURE_1D reads data as a sequence of signed or unsigned bytes,
       --  shorts, longs or single-precision floating-point values,
       --  depending on type.
       --  These values are grouped into sets of one, two, three or four values,
       --  depending on format, to form elements.
-      for index in Random_Data'Range loop
-         Random_Data (index) := (Single (Random (Gen)), Single (Random (Gen)),
-                                 Single (Random (Gen)));
-      end loop;
 
       GL.Objects.Textures.Set_Active_Unit (Ogldev_Engine_Common.Random_Texture_Unit);
       aTexture.Initialize_Id;
@@ -45,20 +67,10 @@ package body Random_Texture is
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in Random_Texture.Init_Random_Texture.");
+         Put_Line ("An exception occurred in Picking_Texture.Init_Picking_Texture.");
          raise;
-   end Init_Random_Texture;
+   end Init_Picking_Texture;
 
    --  ------------------------------------------------------------------------
 
-   procedure  Bind (aTexture : in out GL.Objects.Textures.Texture;
-                    Texture_Unit : GL.Objects.Textures.Texture_Unit) is
-   use GL.Objects.Textures;
-   begin
-      Set_Active_Unit (Texture_Unit);
-      Targets.Texture_1D.Bind (aTexture);
-   end Bind;
-
-   --  ------------------------------------------------------------------------
-
-end Random_Texture;
+end Picking_Texture;

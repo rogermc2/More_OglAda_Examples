@@ -1,4 +1,4 @@
-#version 330                                                                        
+#version 410 Core
                                                                                     
 layout(location = 0) out vec4 FragColor;                                            
                                                                                     
