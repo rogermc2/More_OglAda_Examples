@@ -1,103 +1,84 @@
 
-
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Objects.Shaders;
 with GL.Objects.Shaders.Lists;
 
 with Program_Loader;
+with Utilities;
 
-Package body Simple_Colour_Technique is
+package body Simple_Colour_Technique is
 
-   function Active_Attributes (theTechnique : Technique) return GL.Types.Size is
+   function Get_WVP_Location (theTechnique : Colour_Technique)
+                              return GL.Uniforms.Uniform is
    begin
-      return GL.Objects.Programs.Active_Attributes (theTechnique.Program);
-   end Active_Attributes;
+      return theTechnique.WVP_Location;
+   end Get_WVP_Location;
 
    --  -------------------------------------------------------------------------
 
-   function Billboard_Program (theTechnique : Technique)
-                               return GL.Objects.Programs.Program is
-   begin
-      return theTechnique.Program;
-   end Billboard_Program;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Init (theTechnique : out Technique) is
+   procedure Init (theTechnique : in out Colour_Technique) is
+      use GL.Objects.Programs;
+      use GL.Objects.Shaders;
       use Program_Loader;
-      use  GL.Objects.Shaders;
+      OK        : Boolean;
    begin
-      theTechnique.Program := Program_From
-        ((Src ("src/shaders/billboard_28.vs", Vertex_Shader),
-         Src ("src/shaders/billboard_28.fs", Fragment_Shader),
-         Src ("src/shaders/billboard_28.gs", Geometry_Shader)));
+      --  Program_From includes linking
+      theTechnique.Colour_Program := Program_From
+        ((Src ("src/shaders/simple_colour_29.vs", Vertex_Shader),
+          Src ("src/shaders/simple_colour_29.fs", Fragment_Shader)));
 
-      GL.Objects.Programs.Use_Program  (theTechnique.Program);
-      theTechnique.View_Point_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Program, "gVP");
-      theTechnique.Camera_Position_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Program, "gCameraPos");
-      theTechnique.Billboard_Size_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Program, "gBillboardSize");
-      theTechnique.Colour_Map_Location := GL.Objects.Programs.Uniform_Location
-        (theTechnique.Program, "gColorMap");
+      OK := GL.Objects.Programs.Link_Status (theTechnique.Colour_Program);
+      if not OK then
+         Put_Line ("Simple_Colour_Technique.Init, Colour_Program Link failed");
+         Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Colour_Program));
+      end if;
+
+      Utilities.Set_Uniform_Location (theTechnique.Colour_Program, "gWVP",
+                                      theTechnique.WVP_Location);
+    exception
+      when  others =>
+         Put_Line ("An exception occurred in Simple_Colour_Technique.Init.");
+         raise;
    end Init;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Billboard_Size (theTechnique : Technique;
-                                 Size         : GL.Types.Single) is
+   procedure Set_WVP (theTechnique : Colour_Technique;
+                      WVP : GL.Types.Singles.Matrix4) is
    begin
-      GL.Uniforms.Set_Single (theTechnique.Billboard_Size_Location, Size);
-   end Set_Billboard_Size;
+      GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);
+   end Set_WVP;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Camera_Position (theTechnique : Technique;
-                                  Position     : GL.Types.Singles.Vector3) is
+   function Simple_Colour_Program  (theTechnique : Colour_Technique)
+                                    return GL.Objects.Programs.Program is
    begin
-      GL.Uniforms.Set_Single (theTechnique.Camera_Position_Location, Position);
-   end Set_Camera_Position;
+      return theTechnique.Colour_Program;
+   end Simple_Colour_Program;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Colour_Texture_Unit (theTechnique : Technique;
-                                      Texture_Unit : GL.Types.Int) is
-   begin
-      GL.Uniforms.Set_Int (theTechnique.Colour_Map_Location, Texture_Unit);
-   end Set_Colour_Texture_Unit;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_View_Point (theTechnique : Technique;
-                             View_Point   : GL.Types.Singles.Matrix4) is
-   begin
-      GL.Uniforms.Set_Single (theTechnique.View_Point_Location, View_Point);
-   end Set_View_Point;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Use_Program (theTechnique : Technique) is
+   procedure Use_Program (theTechnique : Colour_Technique) is
       use GL.Objects.Programs;
       use GL.Objects.Shaders.Lists;
       Shaders_List : GL.Objects.Shaders.Lists.List :=
-                       GL.Objects.Programs.Attached_Shaders (theTechnique.Program);
+                       GL.Objects.Programs.Attached_Shaders (theTechnique.Colour_Program);
       Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
    begin
-      if GL.Objects.Programs.Link_Status (theTechnique.Program) then
+      if GL.Objects.Programs.Link_Status (theTechnique.Colour_Program) then
          if Curs = GL.Objects.Shaders.Lists.No_Element then
             Put_Line ("Simple_Colour_Technique.Use_Program, Shaders list is empty");
          else
-            GL.Objects.Programs.Use_Program (theTechnique.Program);
+            GL.Objects.Programs.Use_Program (theTechnique.Colour_Program);
          end if;
       else
-         Put_Line ("Simple_Colour_Technique.Use_Program Update_Program link check failed.");
+         Put_Line ("Simple_Colour_Technique.Use_Program Picking_Program link check failed.");
       end if;
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in Simple_Colour_Technique.Use_Program.");
+         Put_Line ("An exception occurred in Simple_Colour_Technique.Picking_Program.");
          raise;
    end Use_Program;
 

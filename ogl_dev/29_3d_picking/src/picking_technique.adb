@@ -6,83 +6,56 @@ with GL.Objects.Shaders.Lists;
 with Program_Loader;
 with Utilities;
 
-with OglDev_Technique;
 
 package body Picking_Technique is
 
-   function Active_Attributes (theTechnique : Update_Technique) return GL.Types.Size is
+   function Get_Draw_Index_Location (theTechnique : Pick_Technique)
+                                     return GL.Uniforms.Uniform is
    begin
-      return GL.Objects.Programs.Active_Attributes (theTechnique.Update_Program);
-   end Active_Attributes;
+      return theTechnique.Draw_Index_Location;
+   end Get_Draw_Index_Location;
 
    --  -------------------------------------------------------------------------
 
-   function Get_Random_Texture_Location (theTechnique : Update_Technique)
-                                         return GL.Uniforms.Uniform is
+   function Get_Object_Index_Location (theTechnique : Pick_Technique)
+                                       return GL.Uniforms.Uniform is
    begin
-      return theTechnique.Random_Texture_Location;
-   end Get_Random_Texture_Location;
+      return theTechnique.Object_Index_Location;
+   end Get_Object_Index_Location;
 
    --  -------------------------------------------------------------------------
 
-   function Get_Time_Location (theTechnique : Update_Technique)
-                               return GL.Uniforms.Uniform is
+   function Get_WVP_Location (theTechnique : Pick_Technique)
+                              return GL.Uniforms.Uniform is
    begin
-      return theTechnique.Time_Location;
-   end Get_Time_Location;
+      return theTechnique.WVP_Location;
+   end Get_WVP_Location;
 
    --  -------------------------------------------------------------------------
 
-   function Get_Update_Program (theTechnique : Update_Technique)
-                                return GL.Objects.Programs.Program is
-   begin
-      return theTechnique.Update_Program;
-   end Get_Update_Program;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Init (theTechnique : in out Update_Technique) is
+   procedure Init (theTechnique : in out Pick_Technique) is
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
       use Program_Loader;
-      Varyings  : constant String := "Type1,Position1,Velocity1,Age1";
       OK        : Boolean;
    begin
       --  Program_From includes linking
-      theTechnique.Update_Program := Program_From
-        ((Src ("src/shaders/ps_update.vs", Vertex_Shader),
-         Src ("src/shaders/ps_update.gs", Geometry_Shader)));
+      theTechnique.Picking_Program := Program_From
+        ((Src ("src/shaders/picking_29.vs", Vertex_Shader),
+         Src ("src/shaders/picking_29.fs", Fragment_Shader)));
 
-      OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
+      OK := GL.Objects.Programs.Link_Status (theTechnique.Picking_Program);
       if not OK then
-         Put_Line ("Picking_Technique.Init, Update_Program Link failed");
-         Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Update_Program));
+         Put_Line ("Picking_Technique.Init, Picking_Program Link failed");
+         Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Picking_Program));
       end if;
 
-      Use_Program (theTechnique.Update_Program);
-      --  Interleaved_Attribs means that the varyings are recorded
-      --  consecetively into a single buffer.
-      Transform_Feedback_Varyings (theTechnique.Update_Program, Varyings,
-                                   Interleaved_Attribs);
-      theTechnique.Update_Program.Link;
-      OK := GL.Objects.Programs.Link_Status (theTechnique.Update_Program);
-      if not OK then
-         Put_Line ("Picking_Technique.Init, Update_Program Link for Varyings failed");
-         Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Update_Program));
-      end if;
-
-      Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gDeltaTimeMillis",
-                                      theTechnique.Delta_Millisec_Location);
-      Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gRandomTexture",
-                                      theTechnique.Random_Texture_Location);
-      Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gTime",
-                                      theTechnique.Time_Location);
-      Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gLauncherLifetime",
-                                      theTechnique.Launcher_Lifetime_Location);
-      Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gShellLifetime",
-                                      theTechnique.Shell_Lifetime_Location);
-      Utilities.Set_Uniform_Location (theTechnique.Update_Program, "gSecondaryShellLifetime",
-                                      theTechnique.Secondary_Shell_Lifetime_Location);
+      Utilities.Set_Uniform_Location (theTechnique.Picking_Program, "gDrawIndex",
+                                      theTechnique.Draw_Index_Location);
+      Utilities.Set_Uniform_Location (theTechnique.Picking_Program, "gObjectIndex",
+                                      theTechnique.Object_Index_Location);
+      Utilities.Set_Uniform_Location (theTechnique.Picking_Program, "gWVP",
+                                      theTechnique.WVP_Location);
    exception
       when  others =>
          Put_Line ("An exception occurred in Picking_Technique.Init.");
@@ -91,82 +64,58 @@ package body Picking_Technique is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Delta_Millisec (theTechnique : Update_Technique;
-                                 Delta_Time   : GL.Types.UInt) is
+   procedure Set_Draw_Index (theTechnique : Pick_Technique;
+                             Draw_Index   : GL.Types.UInt) is
    begin
-      GL.Uniforms.Set_Single (theTechnique.Delta_Millisec_Location, GL.Types.Single (Delta_Time));
-   end Set_Delta_Millisec;
+      GL.Uniforms.Set_UInt (theTechnique.Draw_Index_Location, Draw_Index);
+   end Set_Draw_Index;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Time (theTechnique : Update_Technique;
-                       theTime      : GL.Types.UInt) is
+   procedure Set_Object_Index (theTechnique : Pick_Technique;
+                               Object_Index : GL.Types.UInt) is
    begin
-      GL.Uniforms.Set_Single (theTechnique.Time_Location, GL.Types.Single (theTime));
-   end Set_Time;
+      GL.Uniforms.Set_UInt (theTechnique.Object_Index_Location, Object_Index);
+   end Set_Object_Index;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Random_Texture_Unit (theTechnique : Update_Technique;
-                                      Texture_Unit : GL.Types.Int) is
+   procedure Set_WVP (theTechnique : Pick_Technique;
+                      WVP          : GL.Types.Singles.Matrix4) is
    begin
-      GL.Uniforms.Set_Int (theTechnique.Random_Texture_Location, Texture_Unit);
-   end Set_Random_Texture_Unit;
+      GL.Uniforms.Set_Single (theTechnique.WVP_Location, WVP);
+   end Set_WVP;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Launcher_Lifetime (theTechnique : Update_Technique;
-                                    Lifetime     : GL.Types.Single) is
+   function Picking_Program  (theTechnique : Pick_Technique)
+                              return GL.Objects.Programs.Program is
    begin
-      GL.Uniforms.Set_Single (theTechnique.Launcher_Lifetime_Location, Lifetime);
-   end Set_Launcher_Lifetime;
+      return theTechnique.Picking_Program;
+   end Picking_Program;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Shell_Lifetime (theTechnique : Update_Technique;
-                                 Lifetime     : GL.Types.Single) is
-   begin
-      GL.Uniforms.Set_Single (theTechnique.Shell_Lifetime_Location, Lifetime);
-   end Set_Shell_Lifetime;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_Secondary_Shell_Lifetime (theTechnique : Update_Technique;
-                                           Lifetime     : GL.Types.Single) is
-   begin
-      GL.Uniforms.Set_Single (theTechnique.Secondary_Shell_Lifetime_Location, Lifetime);
-   end Set_Secondary_Shell_Lifetime;
-
-   --  -------------------------------------------------------------------------
-
-   function Update_Program  (theTechnique : Update_Technique)
-                             return GL.Objects.Programs.Program is
-   begin
-      return theTechnique.Update_Program;
-   end Update_Program;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Use_Program (theTechnique : Update_Technique) is
+   procedure Use_Program (theTechnique : Pick_Technique) is
       use GL.Objects.Programs;
       use GL.Objects.Shaders.Lists;
       Shaders_List : GL.Objects.Shaders.Lists.List :=
-                       GL.Objects.Programs.Attached_Shaders (theTechnique.Update_Program);
+                       GL.Objects.Programs.Attached_Shaders (theTechnique.Picking_Program);
       Curs         : GL.Objects.Shaders.Lists.Cursor := Shaders_List.First;
    begin
-      if GL.Objects.Programs.Link_Status (theTechnique.Update_Program) then
+      if GL.Objects.Programs.Link_Status (theTechnique.Picking_Program) then
          if Curs = GL.Objects.Shaders.Lists.No_Element then
             Put_Line ("Picking_Technique.Use_Program, Shaders list is empty");
          else
-            GL.Objects.Programs.Use_Program (theTechnique.Update_Program);
+            GL.Objects.Programs.Use_Program (theTechnique.Picking_Program);
          end if;
       else
-         Put_Line ("Picking_Technique.Use_Program Update_Program link check failed.");
+         Put_Line ("Picking_Technique.Use_Program Picking_Program link check failed.");
       end if;
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in Picking_Technique.Use_Program.");
+         Put_Line ("An exception occurred in Picking_Technique.Picking_Program.");
          raise;
    end Use_Program;
 
