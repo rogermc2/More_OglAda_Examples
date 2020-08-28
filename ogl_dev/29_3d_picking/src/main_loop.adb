@@ -24,10 +24,10 @@ with Ogldev_Engine_Common;
 with Ogldev_Lights_Common;
 with Ogldev_Math;
 with Ogldev_Pipeline;
-with Ogldev_Texture;
 
 with Meshes_29;
 with Picking_Technique;
+with Picking_Texture;
 with Simple_Colour_Technique;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
@@ -48,7 +48,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Game_Camera            : Ogldev_Camera.Camera;
    Dir_Light              : Ogldev_Lights_Common.Directional_Light;
    Mesh                   : Meshes_29.Mesh_29;
-   Picking_Texture        : Ogldev_Texture.Ogl_Texture;
+   Pick_Texture           : Picking_Texture.Pick_Texture;
    Left_Mouse_Button      : Mouse_Status;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    World_Position         : GL.Types.Singles.Vector3_Array (1 .. 2) :=
@@ -58,7 +58,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init (Window : in out Glfw.Windows.Window; Result : out Boolean) is
+   procedure Init (Window : in out Glfw.Windows.Window) is
       Position            : constant Singles.Vector3 := (0.0, 5.0, -22.0);  --  Normalized by Camera.Init
       Target              : constant Singles.Vector3 := (0.0, -0.2, 1.0);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
@@ -75,38 +75,23 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          theColour      => (1.0, 1.0, 1.0),
          Dir            => (1.0, -1.0, 0.0));
 
-      Ogldev_Math.Set_Perspective_Info
-        (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
-         1.0, 100.0);
-
-      Result := Ogldev_Basic_Lighting.Init (Lighting_Technique);
-      if Result then
+--        Ogldev_Math.Set_Perspective_Info
+--          (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
+--           1.0, 100.0);
+--
+      if Ogldev_Basic_Lighting.Init (Lighting_Technique) then
          GL.Objects.Programs.Use_Program
            (Ogldev_Basic_Lighting.Lighting_Program (Lighting_Technique));
-         Ogldev_Basic_Lighting.Set_Directional_Light_Location
-           (Lighting_Technique, Dir_Light);
          Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location
            (Lighting_Technique, UInt (Ogldev_Engine_Common.Colour_Texture_Unit));
+         Ogldev_Basic_Lighting.Set_Directional_Light_Location
+           (Lighting_Technique, Dir_Light);
 
-         Meshes_29.Load_Mesh (Mesh, "src/quad.obj");
-         if Ogldev_Texture.Init_Texture Bricks, GL.Low_Level.Enums.Texture_2D,
-                                         "../Content/bricks.jpg") then
-            Ogldev_Texture.Load (Bricks);
-            Ogldev_Texture.Bind
-              (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
+         Picking_Texture.Init (Pick_Texture, Window_Width, Window_Height);
+         Picking_Technique.Init (Picking_Effect);
+         Simple_Colour_Technique.Init (Colour_Effect);
 
-            if Ogldev_Texture.Init_Texture (Normal_Map, GL.Low_Level.Enums.Texture_2D,
-                                            "../Content/normal_map.jpg") then
-               Ogldev_Texture.Load (Normal_Map);
-
-            else
-               Put_Line ("Main_Loop.Init, normal_map.jpg failed to load.");
-            end if;
-         else
-            Put_Line ("Main_Loop.Init, bricks.jpg failed to load.");
-         end if;
-      else
-         Put_Line ("Main_Loop.Init, Ogldev_Basic_Lighting failed to initialize.");
+         Meshes_29.Load_Mesh (Mesh, "content/spider.obj");
       end if;
 
    exception
@@ -117,26 +102,24 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Render_Scene (Window : in out Glfw.Windows.Window) is
+   procedure Picking_Phase (Window : in out Glfw.Windows.Window) is
+   begin
+      null;
+   end Picking_Phase;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Render_Phase (Window : in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Ogldev_Camera;
       use Ogldev_Basic_Lighting;
       Window_Width     : Glfw.Size;
       Window_Height    : Glfw.Size;
       Pipe             : Ogldev_Pipeline.Pipeline;
-      Time_Millisec    : constant Single := 1000.0 * Single (Glfw.Time);
-      Delta_Millisec   : UInt;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
-      if First then
-          Delta_Millisec := 0;
-          First := False;
-      else
-          Delta_Millisec := UInt (Time_Millisec - Previous_Time_MilliSec);
-      end if;
-      Previous_Time_MilliSec := Time_Millisec;
 
       Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Colour_Buffer_And_Depth;
@@ -161,16 +144,24 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in Main_Loop.Render_Scene.");
+         Put_Line ("An exception occurred in Main_Loop.Render_Phase.");
          raise;
+   end Render_Phase;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Render_Scene (Window : in out Glfw.Windows.Window) is
+   begin
+      Render_Phase (Window);
+      Picking_Phase (Window);
    end Render_Scene;
 
    --  ------------------------------------------------------------------------
 
    use Glfw.Input;
-   Running : Boolean;
+   Running : Boolean := True;
 begin
-   Init (Main_Window, Running);
+   Init (Main_Window);
    while Running loop
       Render_Scene (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
