@@ -3,6 +3,8 @@ with GL.Objects.Framebuffers;
 with GL.Objects.Textures;
 with GL.Types;
 
+with Glfw.Windows;
+
 package Picking_Texture is
 
    type Pick_Texture is private;
@@ -12,6 +14,9 @@ package Picking_Texture is
    procedure Enable_Writing (aTexture : in out Pick_Texture);
    procedure Init (theTexture : in out Pick_Texture;
                    Window_Width, Window_Height : GL.Types.Int);
+   function Read_Pixel (Window   : in out Glfw.Windows.Window;
+                        aTexture : in out Pick_Texture;
+                        X, Y : Gl.Types.Int) return Pixel_Info;
 
 private
    type Pick_Texture is record

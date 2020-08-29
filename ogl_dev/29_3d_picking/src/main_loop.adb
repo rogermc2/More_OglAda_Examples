@@ -49,7 +49,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Dir_Light              : Ogldev_Lights_Common.Directional_Light;
    Mesh                   : Meshes_29.Mesh_29;
    Pick_Texture           : Picking_Texture.Pick_Texture;
-   Left_Mouse_Button      : Mouse_Status;
+   Mouse_Button           : Mouse_Status;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    World_Position         : GL.Types.Singles.Vector3_Array (1 .. 2) :=
                               ((-10.0, 0.0, 5.0),
@@ -116,25 +116,31 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width     : Glfw.Size;
       Window_Height    : Glfw.Size;
       Pipe             : Ogldev_Pipeline.Pipeline;
+      aTexture         : Picking_Texture.Pick_Texture;
+      X                : Gl.Types.Int := 0;
+      Y                : Gl.Types.Int := 0;
+      Info             : Picking_Texture.Pixel_Info;
    begin
-      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
-                              GL.Types.Int (Window_Height));
-
-      Ogldev_Camera.Update_Camera (Game_Camera, Window);
       Utilities.Clear_Colour_Buffer_And_Depth;
+
+      --        Ogldev_Camera.Update_Camera (Game_Camera, Window);
+
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.1, 0.1, 0.1);
+      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 90.0, 0.0);
+      Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
+                                  Get_Target (Game_Camera), Get_Up (Game_Camera));
+      Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Init_Transforms (Pipe);
+
+      if Mouse_Button.Left_Button_Pressed then
+         Info := Picking_Texture.Read_Pixel (Window, aTexture, X, Y);
+      end if;
 
       GL.Objects.Programs.Use_Program (Lighting_Program (Lighting_Technique));
 
       Ogldev_Texture.Bind (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
       Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
 
-      Ogldev_Pipeline.Set_Scale (Pipe, 20.0, 20.0, 1.0);
-      Ogldev_Pipeline.Set_Rotation (Pipe, 90.0, 0.0, 0.0);
-      Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
-                                  Get_Target (Game_Camera), Get_Up (Game_Camera));
-      Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
-      Ogldev_Pipeline.Init_Transforms (Pipe);
 
       Set_WVP_Location (Lighting_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
       Set_World_Matrix_Location

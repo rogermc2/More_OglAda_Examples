@@ -1,11 +1,17 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Framebuffer;
 with GL.Objects.Framebuffers;
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
 
 package body Picking_Texture is
+   use GL.Types;
+
+   type Pixel_Array_Type is array (Int range <>) of aliased UByte;
+   procedure Picking_Read_Pixels is new
+     GL.Framebuffer.Read_Pixels (UByte, Int, Pixel_Array_Type);
 
    --  ------------------------------------------------------------------------
 
@@ -69,6 +75,38 @@ package body Picking_Texture is
          Put_Line ("An exception occurred in Picking_Texture.Init_Picking_Texture.");
          raise;
    end Init;
+
+   --  ------------------------------------------------------------------------
+   --  X, Y are the window coordinates of the first pixel that is read from
+   --  the frame buffer.
+   --  X, Y is the lower left corner of a rectangular block of pixels.
+   --  A width and height of one correspond to a single pixel.
+   function Read_Pixel (Window   : in out Glfw.Windows.Window;
+                        aTexture : in out Pick_Texture;
+                        X, Y : Gl.Types.Int) return Pixel_Info is
+      use GL.Objects.Framebuffers;
+      use GL.Pixels;
+      Window_Width  : Glfw.Size;
+      Window_Height : Glfw.Size;
+      Info          : Pixel_Info;
+   begin
+      Read_Target.Bind (aTexture.FBO);
+      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      declare
+         Pixel_Width   : Size := 1;
+         Pixel_Height  : Size := 1;
+         Pixels        : Pixel_Array_Type
+           (1 .. GL.Types.Int (Window_Width) * GL.Types.Int (Window_Height));
+      begin
+         Picking_Read_Pixels (X, Y, Pixel_Width, Pixel_Height,
+                              RGB, GL.Pixels.Float, Pixels);
+      end;  --  declare block
+      return Info;
+   exception
+      when  others =>
+         Put_Line ("An exception occurred in Picking_Texture.Read_Pixel.");
+         raise;
+   end Read_Pixel;
 
    --  ------------------------------------------------------------------------
 
