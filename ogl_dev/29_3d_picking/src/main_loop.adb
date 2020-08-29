@@ -34,9 +34,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
    type Mouse_Status is record
-      X                   : GL.Types.Int := 0;
-      Y                   : GL.Types.Int := 0;
-      Left_Button_Pressed : Boolean := False;
+      X              : GL.Types.Int := 0;
+      Y              : GL.Types.Int := 0;
+      Button_Pressed : Boolean := False;
    end record;
 
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -117,9 +117,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Height    : Glfw.Size;
       Pipe             : Ogldev_Pipeline.Pipeline;
       aTexture         : Picking_Texture.Pick_Texture;
-      X                : Gl.Types.Int := 0;
-      Y                : Gl.Types.Int := 0;
-      Info             : Picking_Texture.Pixel_Info;
+      Pixel_Data       : Picking_Texture.Pixel_Info;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
 
@@ -132,8 +130,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
-      if Mouse_Button.Left_Button_Pressed then
-         Info := Picking_Texture.Read_Pixel (Window, aTexture, X, Y);
+      if Mouse_Button.Button_Pressed then
+         Pixel_Data := Picking_Texture.Read_Pixel
+           (Window, aTexture, Mouse_Button.X,
+            Int (Window_Height) - Mouse_Button.Y - 1);
+         if Picking_Texture.Prim_ID (Pixel_Data) /= 0.0 then
+            Simple_Colour_Technique.Use_Program (Colour_Effect);
+            Ogldev_Pipeline.Set_World_Position
+              (Pipe, World_Position (Int (Picking_Texture.Object_ID (Pixel_Data))));
+            Simple_Colour_Technique.Set_WVP (Colour_Effect, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+         end if;
       end if;
 
       GL.Objects.Programs.Use_Program (Lighting_Program (Lighting_Technique));
@@ -156,20 +162,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Render_Scene (Window : in out Glfw.Windows.Window) is
-   begin
-      Render_Phase (Window);
-      Picking_Phase (Window);
-   end Render_Scene;
-
-   --  ------------------------------------------------------------------------
-
    use Glfw.Input;
    Running : Boolean := True;
 begin
    Init (Main_Window);
    while Running loop
-      Render_Scene (Main_Window);
+      Render_Phase (Window);
+      Picking_Phase (Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and not

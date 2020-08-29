@@ -1,6 +1,7 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Buffers;
 with GL.Framebuffer;
 with GL.Objects.Framebuffers;
 with GL.Objects.Textures.Targets;
@@ -9,9 +10,9 @@ with GL.Pixels;
 package body Picking_Texture is
    use GL.Types;
 
-   type Pixel_Array_Type is array (Int range <>) of aliased UByte;
+   type Pixel_Array_Type is array (Int range <>) of aliased Pixel_Info;
    procedure Picking_Read_Pixels is new
-     GL.Framebuffer.Read_Pixels (UByte, Int, Pixel_Array_Type);
+     GL.Framebuffer.Read_Pixels (Pixel_Info, Int, Pixel_Array_Type);
 
    --  ------------------------------------------------------------------------
 
@@ -76,6 +77,20 @@ package body Picking_Texture is
          raise;
    end Init;
 
+     --  ------------------------------------------------------------------------
+
+   function Object_ID (Pixel_Data : Pixel_Info) return GL.Types.Single is
+   begin
+      return Pixel_Data.Object_ID;
+   end Object_ID;
+
+   --  ------------------------------------------------------------------------
+
+   function Prim_ID (Pixel_Data : Pixel_Info) return GL.Types.Single is
+   begin
+      return Pixel_Data.Prim_ID;
+   end Prim_ID;
+
    --  ------------------------------------------------------------------------
    --  X, Y are the window coordinates of the first pixel that is read from
    --  the frame buffer.
@@ -88,20 +103,27 @@ package body Picking_Texture is
       use GL.Pixels;
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
+      Color_Buffers : GL.Buffers.Explicit_Color_Buffer_List (1 .. 1);
+      Pixel_Width   : Size := 1;
+      Pixel_Height  : Size := 1;
       Info          : Pixel_Info;
    begin
       Read_Target.Bind (aTexture.FBO);
+      Color_Buffers (1) := GL.Buffers.Color_Attachment0;
+      GL.Buffers.Set_Active_Buffers (Color_Buffers);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       declare
-         Pixel_Width   : Size := 1;
-         Pixel_Height  : Size := 1;
-         Pixels        : Pixel_Array_Type
+      Pixels        : Pixel_Array_Type
            (1 .. GL.Types.Int (Window_Width) * GL.Types.Int (Window_Height));
       begin
+         --  Read one pixel
          Picking_Read_Pixels (X, Y, Pixel_Width, Pixel_Height,
                               RGB, GL.Pixels.Float, Pixels);
-      end;  --  declare block
+         Info := Pixels (1);
+      end; --  declare block
+      Read_Target.Bind (Default_Framebuffer);
       return Info;
+
    exception
       when  others =>
          Put_Line ("An exception occurred in Picking_Texture.Read_Pixel.");

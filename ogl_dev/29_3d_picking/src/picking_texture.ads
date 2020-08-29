@@ -14,6 +14,8 @@ package Picking_Texture is
    procedure Enable_Writing (aTexture : in out Pick_Texture);
    procedure Init (theTexture : in out Pick_Texture;
                    Window_Width, Window_Height : GL.Types.Int);
+   function Object_ID (Pixel_Data : Pixel_Info) return GL.Types.Single;
+   function Prim_ID (Pixel_Data : Pixel_Info) return GL.Types.Single;
    function Read_Pixel (Window   : in out Glfw.Windows.Window;
                         aTexture : in out Pick_Texture;
                         X, Y : Gl.Types.Int) return Pixel_Info;
