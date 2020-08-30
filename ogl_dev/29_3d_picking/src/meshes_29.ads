@@ -14,9 +14,10 @@ package Meshes_29 is
 
    procedure Load_Mesh (theMesh : in out Mesh_29; File_Name : String);
    procedure Render (theMesh : Mesh_29);
+   procedure  Render (theMesh             : Mesh_29;
+                      Draw_Index, Prim_ID : GL.Types.UInt);
 
 private
-
    Invalid_Material : constant GL.Types.UInt := 16#FFFFFFFF#;
 
    type Mesh_Entry is record

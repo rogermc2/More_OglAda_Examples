@@ -118,6 +118,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Pipe             : Ogldev_Pipeline.Pipeline;
       aTexture         : Picking_Texture.Pick_Texture;
       Pixel_Data       : Picking_Texture.Pixel_Info;
+      PT_Object_ID     : Single;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
 
@@ -136,9 +137,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             Int (Window_Height) - Mouse_Button.Y - 1);
          if Picking_Texture.Prim_ID (Pixel_Data) /= 0.0 then
             Simple_Colour_Technique.Use_Program (Colour_Effect);
+            PT_Object_ID := Picking_Texture.Object_ID (Pixel_Data);
+            if Integer (PT_Object_ID) /= World_Position'Length then
             Ogldev_Pipeline.Set_World_Position
-              (Pipe, World_Position (Int (Picking_Texture.Object_ID (Pixel_Data))));
-            Simple_Colour_Technique.Set_WVP (Colour_Effect, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+              (Pipe, World_Position (Int (PT_Object_ID)));
+               Simple_Colour_Technique.Set_WVP
+                 (Colour_Effect, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+            else
+               Put_Line ("Main_Loop.Render_Phase, invalid Object_ID: " &
+                          Single'Image (PT_Object_ID));
+            end if;
          end if;
       end if;
 
