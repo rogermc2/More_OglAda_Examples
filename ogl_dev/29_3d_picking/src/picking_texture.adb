@@ -24,6 +24,13 @@ package body Picking_Texture is
 
    --  ------------------------------------------------------------------------
 
+   function Draw_ID (Pixel_Data : Pixel_Info) return GL.Types.Single is
+   begin
+      return Pixel_Data.Draw_ID;
+   end Draw_ID;
+
+   --  ------------------------------------------------------------------------
+
    procedure Enable_Writing (aTexture : in out Pick_Texture) is
       use GL.Objects.Framebuffers;
    begin

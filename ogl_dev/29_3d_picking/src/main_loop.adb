@@ -113,12 +113,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use GL.Types.Singles;
       use Ogldev_Camera;
       use Ogldev_Basic_Lighting;
-      Window_Width     : Glfw.Size;
-      Window_Height    : Glfw.Size;
       Pipe             : Ogldev_Pipeline.Pipeline;
       aTexture         : Picking_Texture.Pick_Texture;
       Pixel_Data       : Picking_Texture.Pixel_Info;
       PT_Object_ID     : Single;
+      PT_Draw_ID     : Single;
+      PT_Prim_ID     : Single;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
 
@@ -135,14 +135,17 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Pixel_Data := Picking_Texture.Read_Pixel
            (Window, aTexture, Mouse_Button.X,
             Int (Window_Height) - Mouse_Button.Y - 1);
-         if Picking_Texture.Prim_ID (Pixel_Data) /= 0.0 then
+         PT_Prim_ID := Picking_Texture.Prim_ID (Pixel_Data);
+         if PT_Prim_ID /= 0.0 then
             Simple_Colour_Technique.Use_Program (Colour_Effect);
             PT_Object_ID := Picking_Texture.Object_ID (Pixel_Data);
             if Integer (PT_Object_ID) /= World_Position'Length then
-            Ogldev_Pipeline.Set_World_Position
-              (Pipe, World_Position (Int (PT_Object_ID)));
+               PT_Draw_ID := Picking_Texture.Draw_ID (Pixel_Data);
+               Ogldev_Pipeline.Set_World_Position
+                 (Pipe, World_Position (Int (PT_Object_ID)));
                Simple_Colour_Technique.Set_WVP
                  (Colour_Effect, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+               Meshes_29.Render (Mesh, UInt (PT_Draw_ID), UInt (PT_Prim_ID) - 1);
             else
                Put_Line ("Main_Loop.Render_Phase, invalid Object_ID: " &
                           Single'Image (PT_Object_ID));
@@ -150,17 +153,18 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          end if;
       end if;
 
-      GL.Objects.Programs.Use_Program (Lighting_Program (Lighting_Technique));
-
-      Ogldev_Texture.Bind (Bricks, Ogldev_Engine_Common.Colour_Texture_Unit);
-      Ogldev_Texture.Bind (Normal_Map, Ogldev_Engine_Common.Normal_Texture_Unit);
-
-
-      Set_WVP_Location (Lighting_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
-      Set_World_Matrix_Location
-        (Lighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
-
-      Meshes_29.Render (Mesh);
+      Use_Program (Lighting_Technique);
+      Set_Eye_World_Pos_Location
+        (Lighting_Technique, Ogldev_Camera.Get_Position (Game_Camera));
+      for index in Int range 1 .. World_Position'Length loop
+         Ogldev_Pipeline.Set_World_Position (Pipe, World_Position (index));
+         Set_WVP_Location (Lighting_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+         Set_WVP_Location
+           (Lighting_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+         Set_World_Matrix_Location
+           (Lighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
+         Meshes_29.Render (Mesh);
+      end loop;
 
    exception
       when  others =>
@@ -175,8 +179,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 begin
    Init (Main_Window);
    while Running loop
-      Render_Phase (Window);
-      Picking_Phase (Window);
+      Render_Phase (Main_Window);
+      Picking_Phase (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and not
