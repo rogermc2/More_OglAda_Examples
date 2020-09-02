@@ -103,8 +103,28 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Picking_Phase (Window : in out Glfw.Windows.Window) is
+      use Ogldev_Camera;
+      use Ogldev_Basic_Lighting;
+      Pipe             : Ogldev_Pipeline.Pipeline;
    begin
-      null;
+      Utilities.Clear_Colour_Buffer_And_Depth;
+
+      Ogldev_Pipeline.Set_Scale (Pipe, 0.1, 0.1, 0.1);
+      Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 90.0, 0.0);
+      Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
+                                  Get_Target (Game_Camera), Get_Up (Game_Camera));
+      Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
+      Ogldev_Pipeline.Init_Transforms (Pipe);
+
+      Picking_Texture.Enable_Writing (Pick_Texture);
+      Picking_Technique.Use_Program (Picking_Effect);
+      for index in Int range 1 .. World_Position'Length loop
+         Ogldev_Pipeline.Set_World_Position (Pipe, World_Position (index));
+         Picking_Technique.Set_WVP (Picking_Effect, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+         Meshes_29.Render (Mesh);
+      end loop;
+      Picking_Texture.Disable_Writing;
+
    end Picking_Phase;
 
    --  ------------------------------------------------------------------------
@@ -120,9 +140,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       PT_Draw_ID     : Single;
       PT_Prim_ID     : Single;
    begin
+      Process_Mouse (Game_Camera, Window);
       Utilities.Clear_Colour_Buffer_And_Depth;
-
-      --        Ogldev_Camera.Update_Camera (Game_Camera, Window);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.1, 0.1, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 90.0, 0.0);
@@ -158,7 +177,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         (Lighting_Technique, Ogldev_Camera.Get_Position (Game_Camera));
       for index in Int range 1 .. World_Position'Length loop
          Ogldev_Pipeline.Set_World_Position (Pipe, World_Position (index));
-         Set_WVP_Location (Lighting_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
          Set_WVP_Location
            (Lighting_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
          Set_World_Matrix_Location

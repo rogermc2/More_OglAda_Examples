@@ -50,6 +50,7 @@ package body Picking_Texture is
       theTexture.FBO.Initialize_Id;
       Read_And_Draw_Target.Bind (theTexture.FBO);
 
+      --  Create the texture object for the primitive information buffer
       theTexture.Picking_Texture.Initialize_Id;
       Texture_2D.Bind (theTexture.Picking_Texture);
       Texture_2D.Load_Empty_Texture  (Level           => 0,
@@ -57,15 +58,16 @@ package body Picking_Texture is
                                       Width           => Int (Window_Width),
                                       Height          => Int (Window_Width));
 
-      Read_And_Draw_Target.Attach_Texture (Color_Attachment_0, theTexture.Picking_Texture, 0);
+      Draw_Target.Attach_Texture (Color_Attachment_0, theTexture.Picking_Texture, 0);
 
+      --  Create the texture object for the depth buffer
       theTexture.Depth_Texture.Initialize_Id;
       Texture_2D.Bind (theTexture.Depth_Texture);
       Texture_2D.Load_Empty_Texture  (Level           => 0,
                                       Internal_Format => GL.Pixels.Depth_Component,
                                       Width           => Int (Window_Width),
                                       Height          => Int (Window_Width));
-      Read_And_Draw_Target.Attach_Texture (Depth_Attachment, theTexture.Depth_Texture, 0);
+      Draw_Target.Attach_Texture (Depth_Attachment, theTexture.Depth_Texture, 0);
 
       --  Reset Read_Target to screen framebffer
       Draw_Target.Bind (Default_Framebuffer);

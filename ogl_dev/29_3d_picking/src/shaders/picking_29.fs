@@ -1,4 +1,4 @@
-#version 410 Core
+#version 410 core
                                                                                                                                                                                                                                                         
 uniform uint gDrawIndex;                                                            
 uniform uint gObjectIndex;                                                          
