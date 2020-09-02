@@ -91,7 +91,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Picking_Technique.Init (Picking_Effect);
          Simple_Colour_Technique.Init (Colour_Effect);
 
-         Meshes_29.Load_Mesh (Mesh, "content/spider.obj");
+         Meshes_29.Load_Mesh (Mesh, "../content/spider.obj");
       end if;
 
    exception
