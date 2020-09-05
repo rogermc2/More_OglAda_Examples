@@ -3,6 +3,7 @@ with GL.Types;
 
 package Text is
 
+    Text_Exception : Exception;
     function Add_Text (theText : String;
                        X, Y, Size_In_Pixels, R, G, B, A : Float) return Integer;
     procedure Centre_Text (ID : Positive; X, Y : Float);
