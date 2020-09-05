@@ -1,0 +1,497 @@
+under
+1:55
+story_lines 21
+a SNAKE'S EGG cracked into the pot
+and the contents stirred into a
+fuming mass of strange ingredients.
+
+"CRONGDOR, hearken now. a
+RED-ROBED figure rises in the east.
+an empire that was ancient when
+our people were young will be
+again, wicked and wielding power
+man was never meant to know. its
+purple spires will tower over
+every city once more, and our
+proud people will be VANQUISHED!"
+
+"you see this in the brew?" asked
+crongdor, puzzled.
+
+"no, our agents tell us all!
+tomorrow you will hunt this
+CHANNELER, but now, this is our
+dinner - EAT!"
+War_Drum_Pro_Movements-loop.wav
+0
+facings 32x32
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNENNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNSNNNNNNNNNENENNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNENNNNNNNNNNNWNNNENNNNNNNN
+NNNNNNNENENNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNENNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNENNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNSNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNENNNNNN
+NNNNNNNNNENNNNNNNNNNNNNNNENNNENN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNSSSSNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNSSSSNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+textures 32x32
+ccccccccccccccccccdddddddccccccc
+cccccccccccc77888cd88888dcccc00c
+cc45ccccc22c7c888cd88888dccccccc
+c444cccccc2c7cccccdde6eddccccccc
+eeeecccccc2c7ccccccce6ec99cccc0c
+0eee0c22222cce9999cce6ecccc0cccc
+0eee0cccec2ccecccccce6eccccccccc
+0ee00ccccccceeedccdde6edcccc00cc
+0e000000000000eeeeeee6edccdc00cc
+00000000000000e6666666ecccdc00cc
+000cc0cccccc00e6eeeeeeecccdccc0c
+000cc0cccccc00eee000000ccccccccc
+0000000000cc00eee000000eeee777ec
+00000000000000eee00cc00ecee777ec
+eeeeeeee00cc00eee00cc00777eeceec
+eeecccce00cc00eee00cc0077777e77c
+eeeceece00cc000e000cc0000000e000
+eccceece00cc0000000cc00000000020
+eeeceecc00ccccccccccccccc0000020
+eeeceece00ccccccccccccccc0000020
+eccceece00000000000cc00000000020
+eeeeeeee0000000e000cceee00000020
+eeeeccceeeeeeeece00cc2eeece00020
+eeeececceeeeeeeee00cc2eeece00020
+ecccceece0000000000cceee0000e000
+eeeeeeeee0000000000cc0077777777e
+6666002c200ccccc0cccc007777777ee
+66660c0c000ccccc0cccc0077777777e
+66660ccc000000000222000e777777ee
+66660c0c00000c00022200077777777e
+6662cc0000cccccc022220ee7e77e7ee
+6666000000000000000000eeeeeeeeee
+types 32x32
+00000000000000000000000000000000
+00/000000000000000000000000~~000
+0/00000000000/0000000000000~~~~0
+000000000000000000000000000~~~~0
+000000000000000000000000000~~~00
+000000000000/000000/000/0000~~~0
+0000000/0/00000000000000000000~0
+00000000000000000000~0~~~~~~00~0
+000000000000000000000000000~0~~0
+000000000000000000000000000~0~~0
+00~~~~~~~~~~00000000000/000~~~00
+00~~~~~~~~~~00000000000000000000
+0000000000~~00000000000000000000
+0000000000~~0000000~~000/0000000
+0000000000~~0000000~~0000000/000
+000~~~~000~~000/000~~00000000000
+000~00~000~~0000000~~00000000000
+0~~~00~00~~~0000000~~00000000000
+000~00~~~~~~~~~~~~~~~~~~~0000000
+000~00~00~~~~~~~~~~~~~~~~0000000
+0~~~0~~000000000000~~00~00000000
+0000000000000000000~~00000000000
+0000~~~00000000/000~~0000/000000
+0000~0~~0/000000000~~0000/000/00
+0~~~~00~00000000000~~00000000000
+0000000000000~00000~~00000000000
+000000~~000~~~~~~~~~~00000000000
+00000~0~000~~~~~~~~~~00000000000
+00000~~~00000~000000000000000000
+00000~0~~0000~000000000000000000
+0000~~00~~~~~~~~0000000000000000
+00000000000000000000000000000000
+heights 32x32
+ccccccaccccccdddddbbbbbbbbbbbbbb
+c99aaaaacaacaabbbdb88888b88888bb
+c888caaaaaaaaabbbdb88888b888888b
+c888caaaccacacdbddcc888ccbb8888b
+bb8bccccccacacbbbbb98889aab8888b
+a888ab9999ac9caaaa98888899b8888b
+a888ab8899ac99999999989999bbbb8b
+a88aab8bbcccccb9999988888888888b
+a8aaaa8aaaaaaa888888888888b8888b
+a888888888888a888888888999b8888b
+a877777777778a888888888899b8888b
+a877777777778a888aaaaaab9bbbbbbb
+a888888888778a888a8888a99999999b
+aaaaaaaaa8778a888a8778a98999999b
+99999999a8778a888a8778a88899899b
+97977779a8778a888a8778a88888888b
+97979979a8778aa9aa8778aaaaaa8aaa
+97779979a77788888887788888a8889a
+99979977777777777777777778a8889a
+99979979a77777777777777778a8889a
+97779779a8888888888778878888889a
+97999999aaaaaaa9aa877999aaa8889a
+97997779a88888888a8777797788889a
+97997977778888888a8777777788889a
+97777997aaaaaaaaaa877999aaaa8aaa
+9999999999888788888778988888888a
+999999777987777777777888888888aa
+7779979799877777777778988888888a
+97799777998887889777999a888888aa
+9779979779999799977799988888888a
+9777779977777777977779aa8a88a8aa
+99999999999999999999998aaaaaaaa8
+dm textures/anton2_dm.png
+sm textures/anton2_sm.png
+props 262 # script uv h f rx tx
+secret_tile.script 23,23 0 N -1 -1
+dungeonBridge.script 15,17 1 N -1 -1
+dungeonBridge.script 15,18 2 N -1 -1
+dungeonBridge.script 15,19 2 N -1 -1
+dungeonBridge.script 15,20 1 N -1 -1
+dungeonBridge.script 23,20 1 E -1 -1
+dungeonBridge.script 19,14 1 E -1 -1
+dungeonBridge.script 20,14 1 E -1 -1
+dungeonDoor.script 26,20 0 E -1 -1
+dungeonBridge.script 10,13 1 E -1 -1
+dungeonDoor.script 22,26 0 E -1 -1
+dungeonBridge.script 13,28 1 E -1 -1
+dungeonBridge.script 20,25 1 E -1 -1
+dungeonBridge.script 19,25 1 E -1 -1
+portcullis_raise.script 8,18 0 W 4 4
+stone_door.script 1,8 0 N 0 0
+dungeonDoor.script 2,4 0 S -1 -1
+stone_door.script 4,1 0 W 1 1
+barrel.script 3,3 0 N -1 -1
+barrel.script 2,2 0 W -1 -1
+windlass.script 2,7 0 N 0 0
+barrel.script 3,2 0 N -1 -1
+secret_tile.script 1,22 0 N -1 -1
+wall_torch_blue.script 9,19 0 W -1 -1
+wall_torch_green.script 21,27 0 E -1 -1
+wall_torch_green.script 25,20 0 S -1 -1
+wall_ring.script 13,17 0 N -1 -1
+wall_ring.script 12,12 0 E -1 -1
+wall_ring.script 7,10 0 N -1 -1
+wall_ring_chain.script 2,12 0 S -1 -1
+wall_ring_chain.script 6,12 0 S -1 -1
+wall_ring_chain.script 5,9 0 N -1 -1
+wall_ring_chain.script 11,15 0 E -1 -1
+wall_ring_chain.script 10,19 0 S -1 -1
+wall_ring_chain.script 18,16 0 W -1 -1
+wall_ring.script 21,18 0 N -1 -1
+wall_ring.script 19,23 0 W -1 -1
+wall_ring.script 16,25 0 N -1 -1
+wall_ring.script 11,25 0 N -1 -1
+wall_ring.script 10,27 0 W -1 -1
+wall_ring_chain.script 14,28 0 S -1 -1
+wall_ring_chain.script 22,20 0 S -1 -1
+wall_ring_chain.script 21,13 0 E -1 -1
+wall_ring.script 9,14 0 W -1 -1
+wall_torch_green.script 1,11 0 W -1 -1
+secret_tile.script 6,8 0 N -1 -1
+stone_door.script 6,0 0 S -1 -1
+windlass.script 5,2 0 E 1 1
+tapestry.script 7,3 0 S -1 -1
+amphora.script 5,3 0 W -1 -1
+amphora.script 5,3 0 S -1 -1
+amphora.script 5,3 0 E -1 -1
+chalice.script 6,3 0 N -1 -1
+chalice.script 7,3 0 N -1 -1
+coins.script 6,5 0 N -1 -1
+coins.script 7,5 0 E -1 -1
+coins.script 9,5 0 N -1 -1
+corner_webs.script 6,5 1 N -1 -1
+corner_webs.script 9,5 0 E -1 -1
+corner_webs.script 10,6 0 S -1 -1
+corner_webs.script 9,1 1 N -1 -1
+corner_webs.script 10,1 0 E -1 -1
+wall_shield.script 8,5 1 N -1 -1
+coins.script 9,1 0 N -1 -1
+turkey_dinner.script 6,2 0 N -1 -1
+corner_webs.script 1,5 1 N -1 -1
+corner_webs.script 2,7 0 S -1 -1
+corner_webs.script 3,6 0 S -1 -1
+corner_webs.script 1,12 1 W -1 -1
+corner_webs.script 6,15 0 E -1 -1
+corner_webs.script 3,15 1 N -1 -1
+corner_webs.script 9,20 1 W -1 -1
+corner_webs.script 12,9 0 E -1 -1
+corner_webs.script 25,17 1 E -1 -1
+corner_webs.script 18,12 1 N -1 -1
+dungeonDoor.script 8,2 0 W -1 -1
+brazier_3d.script 28,18 0 N -1 -1
+brazier_green.script 28,18 0 N -1 -1
+turkey_dinner.script 29,17 0 N -1 -1
+turkey_dinner.script 27,18 0 W -1 -1
+portcullis_raise.script 28,16 0 N 3 3
+dungeonDoor.script 28,24 0 S -1 -1
+coins.script 29,19 0 E -1 -1
+coins.script 27,17 0 N -1 -1
+windlass.script 26,25 0 N 3 3
+windlass.script 24,25 0 N 2 2
+down_lift.script 24,28 0 N 2 2
+down_lift.script 25,28 0 N 2 2
+down_lift.script 25,29 0 N 2 2
+down_lift.script 28,29 0 N 2 2
+down_lift.script 28,28 0 N 2 2
+down_lift.script 29,28 0 N 2 2
+down_lift.script 26,29 0 N 2 2
+down_lift.script 27,29 0 N 2 2
+coins.script 30,25 0 E -1 -1
+turkey_dinner.script 27,28 0 N -1 -1
+crown.script 8,26 0 N -1 -1
+wall_shield.script 2,29 1 E -1 -1
+wall_shield.script 2,27 1 E -1 -1
+wall_shield.script 1,29 1 W -1 -1
+wall_shield.script 1,28 1 W -1 -1
+wall_shield.script 2,28 1 E -1 -1
+coins.script 2,28 0 W -1 -1
+coins.script 1,28 0 N -1 -1
+coins.script 1,29 0 S -1 -1
+coins.script 1,30 0 N -1 -1
+chalice.script 2,29 0 N -1 -1
+coins.script 2,30 0 W -1 -1
+stone_door.script 0,27 0 E -1 -1
+chalice.script 1,27 0 N -1 -1
+wall_shield.script 1,30 1 W -1 -1
+windlass.script 20,30 0 W 4 4
+javelin_stand.script 28,13 0 N -1 -1
+stone_door.script 24,11 0 N 5 5
+windlass.script 24,9 0 N 5 5
+skull_arch.script 21,4 0 N -1 -1
+monolith_exterior.script 21,1 0 N -1 -1
+monolith_interior.script 21,1 0 N -1 -1
+brazier_3d.script 19,4 0 N -1 -1
+brazier_3d.script 23,4 0 N -1 -1
+dungeonBridge.script 13,25 1 W -1 -1
+corner_webs.script 5,20 0 W -1 -1
+portcullis_raise.script 21,6 0 N 6 6
+skull_pole.script 19,28 0 S -1 -1
+dungeonTable.script 11,22 0 E -1 -1
+turkey_dinner.script 13,22 0 N -1 -1
+coins.script 9,22 0 N -1 -1
+coins.script 10,22 0 N -1 -1
+wall_torch.script 15,23 1 S -1 -1
+wall_torch.script 16,17 1 N -1 -1
+dungeonDoor.script 15,16 0 N -1 -1
+amphora.script 14,8 0 W -1 -1
+amphora.script 14,13 0 W -1 -1
+amphora.script 14,15 0 S -1 -1
+amphora.script 14,15 0 E -1 -1
+amphora.script 16,15 0 N -1 -1
+amphora.script 18,10 0 E -1 -1
+amphora.script 20,10 0 S -1 -1
+amphora.script 18,8 0 N -1 -1
+coins.script 14,14 0 N -1 -1
+coins.script 17,10 0 N -1 -1
+coins.script 19,10 0 E -1 -1
+coins.script 21,10 0 N -1 -1
+coins.script 16,8 0 N -1 -1
+coins.script 22,8 0 S -1 -1
+coins.script 18,7 0 N -1 -1
+brazier_3d.script 15,7 0 N -1 -1
+brazier_3d.script 17,7 0 N -1 -1
+brazier_3d.script 19,7 0 N -1 -1
+brazier_3d.script 23,9 0 N -1 -1
+skull_pole.script 20,6 0 N 0 0
+skullshebab.script 22,6 0 N -1 -1
+skullshebab.script 28,7 0 E -1 -1
+skull_pole.script 28,9 0 N -1 -1
+arch_arab.script 26,7 0 E -1 -1
+brazier_3d.script 24,6 0 N -1 -1
+brazier_red.script 23,4 0 N -1 -1
+brazier_red.script 19,4 0 N -1 -1
+wall_torch_green.script 28,1 0 N -1 -1
+windlass.script 25,1 0 N 6 6
+corner_webs.script 25,2 0 W -1 -1
+corner_webs.script 25,1 1 N -1 -1
+coins.script 25,2 0 N -1 -1
+coins.script 26,1 0 N -1 -1
+coins.script 29,1 0 N -1 -1
+coins.script 30,4 0 N -1 -1
+down_lift_delay.script 13,6 0 N 7 7
+touchPlate.script 25,6 0 N 7 7
+down_lift.script 11,2 0 N 8 8
+windlass.script 12,1 0 N 8 8
+dungeonTable.script 16,1 0 S -1 -1
+wall_torch.script 13,1 2 N -1 -1
+turkey_dinner.script 15,2 0 N -1 -1
+tapestry.script 16,1 0 E -1 -1
+brazier_3d.script 14,5 0 N -1 -1
+brazier_3d.script 16,5 0 N -1 -1
+brazier_3d.script 25,4 0 N -1 -1
+corner_webs.script 27,5 1 W -1 -1
+corner_webs.script 30,10 1 S -1 -1
+corner_webs.script 27,10 2 W -1 -1
+corner_webs.script 27,10 0 W -1 -1
+wall_ring.script 28,7 0 N -1 -1
+wall_ring.script 30,8 0 E -1 -1
+wall_ring_chain.script 29,5 0 S -1 -1
+turkey_dinner.script 30,10 0 N -1 -1
+turkey_dinner.script 29,7 0 N -1 -1
+wall_shield.script 30,21 0 E -1 -1
+wall_shield.script 30,18 0 E -1 -1
+touchPlate.script 12,6 0 N 7 7
+hammer_shrine.script 2,27 0 E -1 -1
+hammer.script 2,27 0 E -1 -1
+turkey_dinner.script 17,30 0 N -1 -1
+turkey_dinner.script 1,15 0 N -1 -1
+start_level_portal.script 3,1 0 N -1 -1
+end_camera.script 10,18 1 E -1 -1
+sewer_grating.script 2,11 0 W -1 -1
+sewer_grating.script 2,10 0 W -1 -1
+sewer_grating.script 1,17 0 W -1 -1
+sewer_grating.script 1,20 0 W -1 -1
+sewer_grating.script 1,24 0 W -1 -1
+sewer_grating.script 7,24 0 S -1 -1
+sewer_grating.script 7,26 0 N -1 -1
+sewer_grating.script 13,30 0 S -1 -1
+sewer_grating.script 13,25 0 N -1 -1
+sewer_grating.script 11,26 0 W -1 -1
+sewer_grating.script 11,27 0 W -1 -1
+sewer_grating.script 24,18 0 E -1 -1
+sewer_grating.script 24,19 0 E -1 -1
+sewer_grating.script 19,13 0 N -1 -1
+sewer_grating.script 20,13 0 N -1 -1
+sewer_grating.script 11,10 0 N -1 -1
+sewer_grating.script 17,18 0 N -1 -1
+sewer_grating.script 23,20 0 S -1 -1
+sewer_grating.script 20,27 0 E -1 -1
+sewer_grating.script 20,26 0 E -1 -1
+slime_pool.script 3,9 0 E -1 -1
+slime_pool.script 9,12 0 N -1 -1
+slime_pool.script 11,20 0 N -1 -1
+slime_pool.script 20,12 0 N -1 -1
+slime_pool.script 21,20 0 N -1 -1
+slime_pool.script 18,24 0 N -1 -1
+slime_pool.script 15,28 0 N -1 -1
+slime_pool.script 21,27 0 N -1 -1
+slime_pool.script 11,10 0 N -1 -1
+slime_pool.script 9,17 0 N -1 -1
+slime_pool.script 20,19 0 N -1 -1
+slime_pool.script 16,18 0 N -1 -1
+slime_pool.script 12,19 0 N -1 -1
+slime_pool.script 20,22 0 N -1 -1
+slime_pool.script 18,26 0 N -1 -1
+slime_pool.script 14,26 0 N -1 -1
+slime_pool.script 11,30 0 N -1 -1
+slime_pool.script 7,28 0 N -1 -1
+slime_pool.script 6,22 0 N -1 -1
+slime_pool.script 3,24 0 N -1 -1
+slime_pool.script 3,19 0 N -1 -1
+slime_pool.script 3,15 0 N -1 -1
+slime_pool.script 6,20 0 N -1 -1
+diamond_trigger.script 1,3 0 N 9 9
+diamond_trigger.script 1,1 0 N 10 10
+diamond_trigger.script 2,6 0 N 11 11
+diamond_trigger.script 19,30 0 N 12 12
+diamond_trigger.script 1,21 0 N 13 13
+pillar.script 26,14 0 N -1 -1
+pillar.script 30,14 0 N -1 -1
+wall_shield.script 28,12 1 N -1 -1
+wall_shield.script 26,12 1 N -1 -1
+wall_shield.script 30,12 1 N -1 -1
+wall_shield.script 24,15 1 S -1 -1
+wall_shield.script 26,15 1 S -1 -1
+carpet.script 26,12 0 E -1 -1
+carpet.script 30,12 0 W -1 -1
+carpet.script 30,13 0 W -1 -1
+carpet.script 26,13 0 E -1 -1
+carpet_jav.script 28,13 0 N -1 -1
+wall_carpet.script 30,12 0 E -1 -1
+wall_carpet.script 26,12 0 N -1 -1
+wall_carpet.script 29,12 0 N -1 -1
+secret_tile_mustard.script 15,3 0 N -1 -1
+chalice.script 15,1 0 N -1 -1
+chalice.script 14,1 0 N -1 -1
+crown.script 18,4 0 N -1 -1
+chars 48 # script u,v heading
+crongdor.character 3,1 90
+spearman.character 22,17 90
+archer.character 17,28 0
+spearman.character 18,29 0
+spearman.character 7,1 180
+archer.character 30,19 90
+captain.character 28,19 0
+spearman.character 29,18 0
+spearman.character 23,29 0
+captain.character 26,30 0
+captain.character 24,29 0
+captain.character 30,29 0
+spearman.character 29,29 0
+spearman.character 27,30 0
+spearman.character 30,27 90
+archer.character 29,30 0
+archer.character 24,30 0
+spearman.character 21,23 90
+spearman.character 22,22 90
+merchant.character 28,12 180
+sewerman.character 11,14 0
+sewerman.character 10,18 0
+sewerman.character 11,19 0
+sewerman.character 22,18 0
+sewerman.character 20,17 0
+sewerman.character 19,16 0
+sewerman.character 7,26 0
+sewerman.character 5,29 0
+sewerman.character 5,27 0
+sewerman.character 5,30 0
+sewerman.character 15,19 0
+sewerman.character 19,22 0
+sewerman.character 1,17 270
+sewerman.character 5,20 270
+sewerman.character 1,20 0
+sewerman.character 4,24 90
+sewerman.character 7,23 90
+spearman.character 15,23 0
+captain.character 14,10 180
+captain.character 16,11 180
+archer.character 15,10 180
+spearman.character 14,12 180
+spearman.character 16,12 180
+archer.character 16,7 180
+archer.character 23,10 90
+sewerman.character 28,1 0
+sewerman.character 30,3 0
+sewerman.character 27,1 180
+amb_snds 18 # f u,v h r
+AMBIENCE_SCI-FI_Static_Tonal_loop_stereo.wav 21,2 14 14.00
+scary_drip_apg.ogg 1,9 14 10.00
+STREAM_FOUNTAIN_Lively_loop_mono.wav 7,10 13 10.00
+STREAM_FOUNTAIN_Lively_loop_mono.wav 11,17 13 10.00
+STREAM_FOUNTAIN_Lively_loop_mono.wav 19,18 13 10.00
+STREAM_FOUNTAIN_Lively_loop_mono.wav 13,27 13 10.00
+STREAM_FOUNTAIN_Lively_loop_mono.wav 20,24 13 10.00
+scary_drip_apg.ogg 7,28 13 10.00
+AMBIENCE_SCI-FI_Static_Tonal_loop_stereo.wav 2,28 13 10.00
+AMBIENCE_Ferry_Outside_01_loop_stereo.wav 19,30 13 10.00
+AMBIENCE_Ferry_Outside_01_loop_stereo.wav 27,26 14 10.00
+AMBIENCE_Ferry_Outside_02_loop_stereo.wav 28,20 14 10.00
+AMBIENCE_Ferry_Outside_02_loop_stereo.wav 27,13 15 10.00
+AMBIENCE_Ferry_Outside_02_loop_stereo.wav 6,1 16 10.00
+AMBIENCE_UNDER_WATER_Deep_Dark_loop_stereo.wav 15,11 14 10.00
+AMBIENCE_UNDER_WATER_Deep_Dark_loop_stereo.wav 22,9 14 10.00
+scary_drip_apg.ogg 28,7 14 10.00
+scary_drip_apg.ogg 28,2 14 10.00
+popups 5
+9 (0.2 0.9 0.2 1.0) DISGUISING as a priest would have\nbeen foolish!
+10 (0.2 0.9 0.3 1.0) to find the RED-ROBED one,\ncrongdor must enter the\ntemples of the HIGH PRIESTS
+11 (0.2 0.9 0.3 1.0) no, he would use an old THIEF'S\ntrick - he would take the SEWERS!
+12 (1 1 0 1) "this must open the\nPORTCULLIS where i entered the\nsewers."
+13 (1 1 0 1) "the fish men are HIDING\nsomething in this maze!"

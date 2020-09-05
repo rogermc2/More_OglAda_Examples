@@ -1,0 +1,34 @@
+mesh: monolith_interior.apg
+outlines_mesh: monolith_interior.apg
+diffuse_map: monolith_stars.png
+specular_map: monolith_stars_sm.png
+normal_map: blankNM.png
+casts_shadow: 0
+#starts_open:
+starts_visible: 1
+lamp_offset_pos (0.0, 2.0, 0.0)
+lamp_diffuse_colour (1.0, 0.0, 1.0)
+lamp_specular_colour (1.0, 0.5, 1.0)
+lamp_range 10.0
+type: portal
+#scale: (1.0, 1.0, 1.0)
+uses_sprite: 0
+#sprite_map_rows 1
+#sprite_map_cols 1
+#sprite_y_offset 0.0
+#height: 0.2
+#radius: 1.0
+#trigger_only_once: 1
+#character_activated:
+#npc_activated:
+#hide_after_triggering:
+#box_xz_point:
+#setOpeningTime_s:
+#goes_back_up:
+#goes_back_down:
+#delay_s:
+#value: 5
+transparent: 0
+
+particles: portal.particles
+particles_offset: (0.0, 1.0, 0.0)

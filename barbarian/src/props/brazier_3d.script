@@ -1,0 +1,14 @@
+mesh: brazier_redux.apg
+diffuse_map: brazier_redux_aom_with_dm.png
+specular_map: brazier_redux_sm.png
+#diffuse_map: brazier3d_diff_512.png
+#specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 1
+
+type: generic
+radius: 0.9
+height: 1.19
+
+particles: brazier_smoke.particles
+particles_offset: (0.0, 1.0, 0.0)

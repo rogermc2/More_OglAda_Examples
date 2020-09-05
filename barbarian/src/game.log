@@ -1,0 +1,788 @@
+GAME_LOG_FILE log. local time Wed Aug 19 22:00:27 2020
+
+build version: osx64 Jun  7 2016 00:42:32
+Steam API started
+steam stats requested succsessfully
+Steam achievements object constructed with user stats,
+initialising steam controllers
+0 steam controller connections found
+steam digital_actions[0] for (attack) = handle 0
+steam digital_actions[1] for (open_door) = handle 0
+steam digital_actions[2] for (wipe_screen) = handle 0
+steam digital_actions[3] for (cycle_weapons) = handle 0
+steam digital_actions[4] for (ok) = handle 0
+steam digital_actions[5] for (menu_open) = handle 0
+steam digital_actions[6] for (menu_clear) = handle 0
+steam digital_actions[7] for (menu_back) = handle 0
+steam digital_actions[8] for (left) = handle 0
+steam digital_actions[9] for (right) = handle 0
+steam digital_actions[10] for (up) = handle 0
+steam digital_actions[11] for (down) = handle 0
+steam controller init success
+registering input actions
+starting GLFW...
+GLFW version is 3.1.2 Cocoa NSGL chdir menubar retina
+requesting fullscreen at native desktop res: 1920x1080
+requesting GL version 3.2
+shaders folder is shaders_3_2/
+setting MSAA to 4
+vertical sync enabled
+starting GLEW...
+GLEW version is 1.13.0
+ARB_debug_output = NO
+ARB_framebuffer (also mipmaps) = YES
+ARB_vertex_array_object = YES
+ARB_uniform_buffer_object = YES
+WARNING: ARB_texture_float = NO
+GLEW init done
+glfwGetFramebufferSize reports 1920x1080
+OpenGL vendor Intel Inc.
+renderer Intel(R) UHD Graphics 630
+OpenGL version supported 4.1 INTEL-14.7.8
+GLSL version supported 4.10
+GL version. Major: 4
+GL version. Minor: 1
+GL_MAX_VIEWPORT_DIMS = [16384,16384]
+GL_MAX_VERTEX_ATTRIBS = 16 (4-component attribs.)
+GL_MAX_VARYING_FLOATS = 16
+GL_MAX_VERTEX_UNIFORM_COMPONENTS = 4096
+GL_MAX_FRAGMENT_UNIFORM_COMPONENTS = 4096
+GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS = 80
+GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS = 16
+GL_MAX_TEXTURE_IMAGE_UNITS = 16 (frag shader)
+GL_MAX_TEXTURE_SIZE = 16384
+init_shaders start
+building fallback shaders
+linking shader programme 3
+linking done
+fallback shaders built
+init_shaders end
+starting audio engine...
+available devices:
+0: default device
+loading VOM audio/mus.vom...
+VOM tracks: 12
+reading vom track 0 Warlock_Symphony.ogg, sz 10890749
+reading vom track 1 Protagonist_through_Pain.ogg, sz 16912307
+reading vom track 2 Strong_Taiko_War_Drum.wav, sz 9261044
+reading vom track 3 War_Drum_Action.wav, sz 13230044
+reading vom track 4 War_Drum_Fluid_Rhythm-loop.wav, sz 8467244
+reading vom track 5 War_Drum_Hero-loop.wav, sz 8467244
+reading vom track 6 War_Drum_Pro_Directions-loop.wav, sz 8467244
+reading vom track 7 War_Drum_Pro_Movements-loop.wav, sz 8467244
+reading vom track 8 War_Drum_Scene.wav, sz 18257444
+reading vom track 9 War_Drum_Speciality.wav, sz 9525644
+reading vom track 10 War_Drum_Thunder-loop.wav, sz 4233644
+reading vom track 11 War_Drum_Tribal-loop.wav, sz 8467244
+vom loaded 124647096 bytes
+loading VOM audio/snd.vom...
+VOM tracks: 81
+reading vom track 0 AMBIENCE_Ferry_Outside_01_loop_stereo.wav, sz 1614378
+reading vom track 1 AMBIENCE_Ferry_Outside_02_loop_stereo.wav, sz 1683818
+reading vom track 2 AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav, sz 958254
+reading vom track 3 AMBIENCE_SCI-FI_Static_Tonal_loop_stereo.wav, sz 869130
+reading vom track 4 AMBIENCE_UNDER_WATER_Active_loop_stereo.wav, sz 1224366
+reading vom track 5 AMBIENCE_UNDER_WATER_Deep_Dark_loop_stereo.wav, sz 1833770
+reading vom track 6 barbar.ogg, sz 8765
+reading vom track 7 BOW_Release_Arrow_mono.wav, sz 24482
+reading vom track 8 BREAK_Crack_stereo.wav, sz 81736
+reading vom track 9 bsod2.ogg, sz 6105
+reading vom track 10 bsod.ogg, sz 7266
+reading vom track 11 BUTTON_Short_Dry_mono.wav, sz 32724
+reading vom track 12 CLASP_Metal_Gate_Mechanism_Unclasp_03_mono.wav, sz 154474
+reading vom track 13 CREAK_Wood_Hollow_Deep_Smooth_mono.wav, sz 65170
+reading vom track 14 CREATURE_Squeel_05_mono.wav, sz 78018
+reading vom track 15 crong_die_2.ogg, sz 22403
+reading vom track 16 dartshooter.ogg, sz 11366
+reading vom track 17 DEMOLISH_Wood_Metal_Deep_stereo.wav, sz 343380
+reading vom track 18 DRINK_Surple_mono_clickremoved.ogg, sz 16935
+reading vom track 19 DRINK_Surple_mono.wav, sz 98154
+reading vom track 20 EAT_Chew_3_Times_mono.wav, sz 119700
+reading vom track 21 enter_portal.wav, sz 304090
+reading vom track 22 EXPLOSION_Long_Distant_Impact_Rumble_stereo.wav, sz 1010106
+reading vom track 23 EXPLOSION_Medium_Implosion_with_Bright_Overlay_stereo.wav, sz 352610
+reading vom track 24 EXPLOSION_Medium_Little_Debris_Burning_Tail_stereo.wav, sz 433702
+reading vom track 25 EXPLOSION_Short_Impact_Explosion_stereo.wav, sz 97410
+reading vom track 26 FOOTSTEP_Walk_Trainers_Asphalt_Slow_RR1_mono.wav, sz 54734
+reading vom track 27 FRICTION_Brick_Slide_01_mono.wav, sz 122708
+reading vom track 28 FRICTION_Brick_Slide_02_mono.wav, sz 113188
+reading vom track 29 gong_1.wav, sz 222092
+reading vom track 30 GORE_Blade_Chop_mono.wav, sz 102410
+reading vom track 31 GORE_Splat_Hit_Bubbles_mono.wav, sz 86350
+reading vom track 32 GORE_Splat_Hit_Short_mono.wav, sz 58912
+reading vom track 33 GORE_Stab_Splat_Only_mono.wav, sz 94602
+reading vom track 34 green_ball_of_fire2.ogg, sz 29752
+reading vom track 35 GROAN_Male_Hurt_Long_mono.wav, sz 97360
+reading vom track 36 GROAN_Male_Hurt_Long_Pain_mono.wav, sz 92636
+reading vom track 37 GRUNT_Male_Hurt_01_mono.wav, sz 37034
+reading vom track 38 GRUNT_Male_Hurt_02_mono.wav, sz 42962
+reading vom track 39 GRUNT_Male_Hurt_03_mono.wav, sz 38828
+reading vom track 40 GRUNT_Male_Hurt_With_Cough_mono.wav, sz 30638
+reading vom track 41 GRUNT_Male_Quick_Deep_mono.wav, sz 32564
+reading vom track 42 GRUNT_Male_Quick_mono.wav, sz 28874
+reading vom track 43 GRUNT_Male_Subtle_Hurt_mono.wav, sz 38690
+reading vom track 44 HAMMER_Hit_Metal_Armor_stereo.wav, sz 127372
+reading vom track 45 hello_my_frien.ogg, sz 12521
+reading vom track 46 MAGIC_SPELL_Fade_In_Wobble_Noise_Fade_Out_stereo.wav, sz 774864
+reading vom track 47 MAGIC_SPELL_Passing_Tunnel_Sci-Fi_Fast_Rapid_Echo_stereo.wav, sz 699100
+reading vom track 48 MAGIC_SPELL_Percussive_Flanger_Bright_Tail_stereo.wav, sz 453176
+reading vom track 49 MAGIC_SPELL_Quick_Deep_Fast_Attack_Echo_Fade_stereo.wav, sz 384368
+reading vom track 50 MAGIC_SPELL_Scary_Raising_Reverse_Rain_Subtle_stereo.wav, sz 206512
+reading vom track 51 MECHANICS_Metal_Mechanism_17_mono.wav, sz 95628
+reading vom track 52 merchant_ah_thank_you.ogg, sz 11954
+reading vom track 53 metal_clack_1.wav, sz 53428
+reading vom track 54 metal_wood_clack_1.wav, sz 63058
+reading vom track 55 MONSTER_Hurt_mono.wav, sz 69236
+reading vom track 56 MONSTER_Squeel_Deep_mono.wav, sz 118252
+reading vom track 57 MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav, sz 987326
+reading vom track 58 MUSIC_EFFECT_Orchestral_Battle_Neutral_stereo.wav, sz 917998
+reading vom track 59 pickup_coins.wav, sz 31500
+reading vom track 60 pickup_crown.wav, sz 62806
+reading vom track 61 pickup_cup.wav, sz 52960
+reading vom track 62 RAIN_Suburban_Medium_loop_stereo.wav, sz 985314
+reading vom track 63 scary_drip_apg.ogg, sz 285145
+reading vom track 64 scary_wind_apg.ogg, sz 191282
+reading vom track 65 SCRAPE_Concrete_Slab_on_Concrete_Slab_Medium_mono.wav, sz 112980
+reading vom track 66 SCRAPE_Hollow_Fade_In_Out_mono.wav, sz 73798
+reading vom track 67 SHATTER_Glass_Medium_01_mono.wav, sz 107936
+reading vom track 68 SHATTER_Glass_Medium_Short_01_mono.wav, sz 65544
+reading vom track 69 shish_kebab_apg.ogg, sz 51256
+reading vom track 70 spearman_kalu.ogg, sz 10353
+reading vom track 71 SPLASH_Small_03_mono.wav, sz 128294
+reading vom track 72 squeak_short.ogg, sz 14539
+reading vom track 73 STREAM_FOUNTAIN_Lively_loop_mono.wav, sz 215640
+reading vom track 74 SWORD_Hit_Metal_Armor_RR3_mono.wav, sz 71680
+reading vom track 75 two_in_one_apg.ogg, sz 43424
+reading vom track 76 WHOOSH_Bright_Short_mono.wav, sz 15738
+reading vom track 77 WHOOSH_Deep_Smooth_01_mono.wav, sz 31188
+reading vom track 78 WHOOSH_Long_stereo.wav, sz 101866
+reading vom track 79 WHOOSH_Miss_mono.wav, sz 41142
+reading vom track 80 WHOOSH_Short_03_mono.wav, sz 23162
+vom loaded 20468986 bytes
+audio engine started successfully
+------------------------------INIT TEXTURE MANAGER-----------------------------
+allocating space for 256 textures
+anisotropy max 16.000000
+anisotropy user 4
+anisotropy set to 4.000000
+creating default texture
+texture loaded
+loading controller glyphs
+loading image textures/steam_controller/button_a.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/button_a.png] loaded in 0.00s
+loading image textures/steam_controller/button_b.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/button_b.png] loaded in 0.00s
+loading image textures/steam_controller/button_x.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/button_x.png] loaded in 0.00s
+loading image textures/steam_controller/button_y.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/button_y.png] loaded in 0.00s
+loading image textures/steam_controller/shoulder_l.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/shoulder_l.png] loaded in 0.00s
+loading image textures/steam_controller/shoulder_r.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/shoulder_r.png] loaded in 0.00s
+loading image textures/steam_controller/grip_l.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/grip_l.png] loaded in 0.00s
+loading image textures/steam_controller/grip_r.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/grip_r.png] loaded in 0.00s
+loading image textures/steam_controller/button_start.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/button_start.png] loaded in 0.00s
+loading image textures/steam_controller/button_select.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/button_select.png] loaded in 0.00s
+loading image textures/steam_controller/pad_l_touch.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_l_touch.png] loaded in 0.00s
+loading image textures/steam_controller/pad_l_swipe.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_l_swipe.png] loaded in 0.00s
+loading image textures/steam_controller/pad_l_click.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_l_click.png] loaded in 0.00s
+loading image textures/steam_controller/pad_l_dpad_n.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_l_dpad_n.png] loaded in 0.00s
+loading image textures/steam_controller/pad_l_dpad_s.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_l_dpad_s.png] loaded in 0.00s
+loading image textures/steam_controller/pad_l_dpad_w.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_l_dpad_w.png] loaded in 0.00s
+loading image textures/steam_controller/pad_l_dpad_e.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_l_dpad_e.png] loaded in 0.00s
+loading image textures/steam_controller/pad_r_touch.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_r_touch.png] loaded in 0.00s
+loading image textures/steam_controller/pad_r_swipe.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_r_swipe.png] loaded in 0.00s
+loading image textures/steam_controller/pad_r_click.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_r_click.png] loaded in 0.00s
+loading image textures/steam_controller/pad_r_dpad_n.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_r_dpad_n.png] loaded in 0.00s
+loading image textures/steam_controller/pad_r_dpad_s.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_r_dpad_s.png] loaded in 0.00s
+loading image textures/steam_controller/pad_r_dpad_w.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_r_dpad_w.png] loaded in 0.00s
+loading image textures/steam_controller/pad_r_dpad_e.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_r_dpad_e.png] loaded in 0.00s
+loading image textures/steam_controller/trigger_l_pull.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/trigger_l_pull.png] loaded in 0.00s
+loading image textures/steam_controller/trigger_l_click.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/trigger_l_click.png] loaded in 0.00s
+loading image textures/steam_controller/trigger_r_pull.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/trigger_r_pull.png] loaded in 0.00s
+loading image textures/steam_controller/trigger_r_click.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/trigger_r_click.png] loaded in 0.00s
+loading image textures/steam_controller/stick_move.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/stick_move.png] loaded in 0.00s
+loading image textures/steam_controller/stick_click.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/stick_click.png] loaded in 0.00s
+loading image textures/steam_controller/stick_dpad_n.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/stick_dpad_n.png] loaded in 0.00s
+loading image textures/steam_controller/stick_dpad_s.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/stick_dpad_s.png] loaded in 0.00s
+loading image textures/steam_controller/stick_dpad_w.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/stick_dpad_w.png] loaded in 0.00s
+loading image textures/steam_controller/stick_dpad_e.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/stick_dpad_e.png] loaded in 0.00s
+loading image textures/steam_controller/gyro.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/gyro.png] loaded in 0.00s
+loading image textures/steam_controller/button_steam_off.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/button_steam_off.png] loaded in 0.00s
+loading image textures/steam_controller/button_steam_on.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/button_steam_on.png] loaded in 0.00s
+loading image textures/steam_controller/pad_l.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_l.png] loaded in 0.00s
+loading image textures/steam_controller/pad_r.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/pad_r.png] loaded in 0.00s
+loading image textures/steam_controller/stick.png
+image loaded: 128x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/steam_controller/stick.png] loaded in 0.00s
+reserving memory for meshes...
+----------------------------------CAMERA INIT----------------------------------
+creating shader programme from [shaders_3_2/frustum_debug.vert] and [shaders_3_2/frustum_debug.frag]
+parsing shader from shaders_3_2/frustum_debug.vert
+shader parsed
+compiled shader 4 from shaders_3_2/frustum_debug.vert
+parsing shader from shaders_3_2/frustum_debug.frag
+shader parsed
+compiled shader 5 from shaders_3_2/frustum_debug.frag
+linking shader programme 6
+linking done
+initialising text rendering...
+creating font shaders...
+creating shader programme from [shaders_3_2/text.vert] and [shaders_3_2/text.frag]
+parsing shader from shaders_3_2/text.vert
+shader parsed
+compiled shader 7 from shaders_3_2/text.vert
+parsing shader from shaders_3_2/text.frag
+shader parsed
+compiled shader 8 from shaders_3_2/text.frag
+linking shader programme 9
+linking done
+creating shader programme from [shaders_3_2/text_box.vert] and [shaders_3_2/text_box.frag]
+parsing shader from shaders_3_2/text_box.vert
+shader parsed
+compiled shader 10 from shaders_3_2/text_box.vert
+parsing shader from shaders_3_2/text_box.frag
+shader parsed
+compiled shader 11 from shaders_3_2/text_box.frag
+linking shader programme 12
+linking done
+loading image textures/comicscript.png
+image loaded: 1024x1024 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/comicscript.png] loaded in 0.02s
+loading font meta-data from file: fonts/comicscript.meta
+...............................................................................................text initialised
+creating shader programme from [shaders_3_2/image_panel.vert] and [shaders_3_2/image_panel.frag]
+parsing shader from shaders_3_2/image_panel.vert
+shader parsed
+compiled shader 13 from shaders_3_2/image_panel.vert
+parsing shader from shaders_3_2/image_panel.frag
+shader parsed
+compiled shader 14 from shaders_3_2/image_panel.frag
+linking shader programme 15
+linking done
+-----------------------------INIT PARTICLE SYSTEMS-----------------------------
+creating shader programme from [shaders_3_2/basic_particle.vert] and [shaders_3_2/basic_particle.frag]
+parsing shader from shaders_3_2/basic_particle.vert
+shader parsed
+compiled shader 16 from shaders_3_2/basic_particle.vert
+parsing shader from shaders_3_2/basic_particle.frag
+shader parsed
+compiled shader 17 from shaders_3_2/basic_particle.frag
+linking shader programme 18
+linking done
+loading particle script torch_smoke.particles
+loading image textures/fire_particle.png
+image loaded: 128x128 4 bytes per pixel
+mipmaps generated textures/fire_particle.png
+setting anisotropy factor 4.000000
+texture [textures/fire_particle.png] loaded in 0.00s
+loading particle script blood_fountain.particles
+loading image textures/blood_globule3.png
+image loaded: 128x128 4 bytes per pixel
+mipmaps generated textures/blood_globule3.png
+setting anisotropy factor 4.000000
+texture [textures/blood_globule3.png] loaded in 0.00s
+loading particle script blood_damage.particles
+loading particle script blood_artery_jet.particles
+loading particle script dust.particles
+loading image textures/smoke.png
+image loaded: 128x128 4 bytes per pixel
+mipmaps generated textures/smoke.png
+setting anisotropy factor 4.000000
+texture [textures/smoke.png] loaded in 0.00s
+loading particle script splash.particles
+-----------------------------------INIT PROPS----------------------------------
+allocating 466944 bytes for prop scripts...
+allocating 1163264 bytes for props...
+loading prop shaders... vs: [prop.vert] fs: [prop.frag]
+creating shader programme from [shaders_3_2/prop.vert] and [shaders_3_2/prop.frag]
+parsing shader from shaders_3_2/prop.vert
+shader parsed
+compiled shader 19 from shaders_3_2/prop.vert
+parsing shader from shaders_3_2/prop.frag
+shader parsed
+compiled shader 20 from shaders_3_2/prop.frag
+linking shader programme 21
+linking done
+creating shader programme from [shaders_3_2/prop_skinned.vert] and [shaders_3_2/prop_skinned.frag]
+parsing shader from shaders_3_2/prop_skinned.vert
+shader parsed
+compiled shader 22 from shaders_3_2/prop_skinned.vert
+parsing shader from shaders_3_2/prop_skinned.frag
+shader parsed
+compiled shader 23 from shaders_3_2/prop_skinned.frag
+linking shader programme 24
+linking done
+creating shader programme from [shaders_3_2/coins.vert] and [shaders_3_2/coins.frag]
+parsing shader from shaders_3_2/coins.vert
+shader parsed
+compiled shader 25 from shaders_3_2/coins.vert
+parsing shader from shaders_3_2/coins.frag
+shader parsed
+compiled shader 26 from shaders_3_2/coins.frag
+linking shader programme 27
+linking done
+creating shader programme from [shaders_3_2/jav_stand.vert] and [shaders_3_2/jav_stand.frag]
+parsing shader from shaders_3_2/jav_stand.vert
+shader parsed
+compiled shader 28 from shaders_3_2/jav_stand.vert
+parsing shader from shaders_3_2/jav_stand.frag
+shader parsed
+compiled shader 29 from shaders_3_2/jav_stand.frag
+linking shader programme 30
+linking done
+creating shader programme from [shaders_3_2/portal.vert] and [shaders_3_2/portal.frag]
+parsing shader from shaders_3_2/portal.vert
+shader parsed
+compiled shader 31 from shaders_3_2/portal.vert
+parsing shader from shaders_3_2/portal.frag
+shader parsed
+compiled shader 32 from shaders_3_2/portal.frag
+linking shader programme 33
+linking done
+creating shader programme from [shaders_3_2/sound_sphere.vert] and [shaders_3_2/sound_sphere.frag]
+parsing shader from shaders_3_2/sound_sphere.vert
+shader parsed
+compiled shader 34 from shaders_3_2/sound_sphere.vert
+parsing shader from shaders_3_2/sound_sphere.frag
+shader parsed
+compiled shader 35 from shaders_3_2/sound_sphere.frag
+linking shader programme 36
+linking done
+loading mesh meshes/unit_sphere.apg
+mesh gpu data created
+mesh file loaded
+loading particle script pot.particles
+loading image textures/pot_shard.png
+image loaded: 128x128 4 bytes per pixel
+mipmaps generated textures/pot_shard.png
+setting anisotropy factor 4.000000
+texture [textures/pot_shard.png] loaded in 0.00s
+loading particle script mirror.particles
+loading image textures/glass_shard.png
+image loaded: 256x256 4 bytes per pixel
+mipmaps generated textures/glass_shard.png
+setting anisotropy factor 4.000000
+texture [textures/glass_shard.png] loaded in 0.00s
+----------------------------------INIT SPRITES---------------------------------
+clearing sprites...
+creating shader programme from [shaders_3_2/sprite.vert] and [shaders_3_2/sprite.frag]
+parsing shader from shaders_3_2/sprite.vert
+shader parsed
+compiled shader 37 from shaders_3_2/sprite.vert
+parsing shader from shaders_3_2/sprite.frag
+shader parsed
+compiled shader 38 from shaders_3_2/sprite.frag
+linking shader programme 39
+linking done
+init sprite world map...
+------------------------------------INIT GUI-----------------------------------
+loading image textures/hbar_red_dragon.png
+image loaded: 512x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/hbar_red_dragon.png] loaded in 0.00s
+loading image textures/hbar_black_dragon.png
+image loaded: 512x128 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/hbar_black_dragon.png] loaded in 0.00s
+creating shader programme from [shaders_3_2/health.vert] and [shaders_3_2/health.frag]
+parsing shader from shaders_3_2/health.vert
+shader parsed
+compiled shader 40 from shaders_3_2/health.vert
+parsing shader from shaders_3_2/health.frag
+shader parsed
+compiled shader 41 from shaders_3_2/health.frag
+linking shader programme 42
+linking done
+creating shader programme from [shaders_3_2/gui_atlas.vert] and [shaders_3_2/gui_atlas.frag]
+parsing shader from shaders_3_2/gui_atlas.vert
+shader parsed
+compiled shader 43 from shaders_3_2/gui_atlas.vert
+parsing shader from shaders_3_2/gui_atlas.frag
+shader parsed
+compiled shader 44 from shaders_3_2/gui_atlas.frag
+linking shader programme 45
+linking done
+loading image textures/gui_crong_head.png
+image loaded: 1024x1024 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/gui_crong_head.png] loaded in 0.02s
+loading image textures/gui_icon_javs.png
+image loaded: 64x64 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/gui_icon_javs.png] loaded in 0.00s
+loading image textures/gui_icon_coin.png
+image loaded: 64x64 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/gui_icon_coin.png] loaded in 0.00s
+loading image textures/gui_icon_kills.png
+image loaded: 64x64 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/gui_icon_kills.png] loaded in 0.00s
+loading image textures/hairy_hand.png
+image loaded: 512x512 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/hairy_hand.png] loaded in 0.01s
+loading image textures/gui_splatlass.png
+image loaded: 1024x1024 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/gui_splatlass.png] loaded in 0.04s
+-------------------------------INIT BLOOD SPLATS-------------------------------
+loading image textures/splat.png
+image loaded: 256x256 4 bytes per pixel
+mipmaps generated textures/splat.png
+setting anisotropy factor 4.000000
+texture [textures/splat.png] loaded in 0.00s
+allocated 18432 bytes for blood splat buffer
+creating shader programme from [shaders_3_2/splats.vert] and [shaders_3_2/splats.frag]
+parsing shader from shaders_3_2/splats.vert
+shader parsed
+compiled shader 46 from shaders_3_2/splats.vert
+parsing shader from shaders_3_2/splats.frag
+shader parsed
+compiled shader 47 from shaders_3_2/splats.frag
+linking shader programme 48
+linking done
+-------------------------------INIT FRAMEBUFFER--------------------------------
+creating special fx framebuffer
+framebuffer is complete
+creating wibbly wobbly framebuffer
+framebuffer is complete
+creating shader programme from [shaders_3_2/fb_default.vert] and [shaders_3_2/fb_default.frag]
+parsing shader from shaders_3_2/fb_default.vert
+shader parsed
+compiled shader 49 from shaders_3_2/fb_default.vert
+parsing shader from shaders_3_2/fb_default.frag
+shader parsed
+compiled shader 50 from shaders_3_2/fb_default.frag
+linking shader programme 51
+linking done
+creating shader programme from [shaders_3_2/fb_gold.vert] and [shaders_3_2/fb_gold.frag]
+parsing shader from shaders_3_2/fb_gold.vert
+shader parsed
+compiled shader 52 from shaders_3_2/fb_gold.vert
+parsing shader from shaders_3_2/fb_gold.frag
+shader parsed
+compiled shader 53 from shaders_3_2/fb_gold.frag
+linking shader programme 54
+linking done
+creating shader programme from [shaders_3_2/fb_red.vert] and [shaders_3_2/fb_red.frag]
+parsing shader from shaders_3_2/fb_red.vert
+shader parsed
+compiled shader 55 from shaders_3_2/fb_red.vert
+parsing shader from shaders_3_2/fb_red.frag
+shader parsed
+compiled shader 56 from shaders_3_2/fb_red.frag
+linking shader programme 57
+linking done
+creating shader programme from [shaders_3_2/fb_fadein.vert] and [shaders_3_2/fb_fadein.frag]
+parsing shader from shaders_3_2/fb_fadein.vert
+shader parsed
+compiled shader 58 from shaders_3_2/fb_fadein.vert
+parsing shader from shaders_3_2/fb_fadein.frag
+shader parsed
+compiled shader 59 from shaders_3_2/fb_fadein.frag
+linking shader programme 60
+linking done
+creating shader programme from [shaders_3_2/fb_fadeout.vert] and [shaders_3_2/fb_fadeout.frag]
+parsing shader from shaders_3_2/fb_fadeout.vert
+shader parsed
+compiled shader 61 from shaders_3_2/fb_fadeout.vert
+parsing shader from shaders_3_2/fb_fadeout.frag
+shader parsed
+compiled shader 62 from shaders_3_2/fb_fadeout.frag
+linking shader programme 63
+linking done
+creating shader programme from [shaders_3_2/fb_screw.vert] and [shaders_3_2/fb_screw.frag]
+parsing shader from shaders_3_2/fb_screw.vert
+shader parsed
+compiled shader 64 from shaders_3_2/fb_screw.vert
+parsing shader from shaders_3_2/fb_screw.frag
+shader parsed
+compiled shader 65 from shaders_3_2/fb_screw.frag
+linking shader programme 66
+linking done
+creating shader programme from [shaders_3_2/fb_grey.vert] and [shaders_3_2/fb_grey.frag]
+parsing shader from shaders_3_2/fb_grey.vert
+shader parsed
+compiled shader 67 from shaders_3_2/fb_grey.vert
+parsing shader from shaders_3_2/fb_grey.frag
+shader parsed
+compiled shader 68 from shaders_3_2/fb_grey.frag
+linking shader programme 69
+linking done
+creating shader programme from [shaders_3_2/fb_white.vert] and [shaders_3_2/fb_white.frag]
+parsing shader from shaders_3_2/fb_white.vert
+shader parsed
+compiled shader 70 from shaders_3_2/fb_white.vert
+parsing shader from shaders_3_2/fb_white.frag
+shader parsed
+compiled shader 71 from shaders_3_2/fb_white.frag
+linking shader programme 72
+linking done
+creating shader programme from [shaders_3_2/fb_green.vert] and [shaders_3_2/fb_green.frag]
+parsing shader from shaders_3_2/fb_green.vert
+shader parsed
+compiled shader 73 from shaders_3_2/fb_green.vert
+parsing shader from shaders_3_2/fb_green.frag
+shader parsed
+compiled shader 74 from shaders_3_2/fb_green.frag
+linking shader programme 75
+linking done
+----------------------------------INIT SHADOWS---------------------------------
+creating shader programme from [shaders_3_2/depth.vert] and [shaders_3_2/depth.frag]
+parsing shader from shaders_3_2/depth.vert
+shader parsed
+compiled shader 76 from shaders_3_2/depth.vert
+parsing shader from shaders_3_2/depth.frag
+shader parsed
+compiled shader 77 from shaders_3_2/depth.frag
+linking shader programme 78
+linking done
+creating shader programme from [shaders_3_2/depth_skinned.vert] and [shaders_3_2/depth_skinned.frag]
+parsing shader from shaders_3_2/depth_skinned.vert
+shader parsed
+compiled shader 79 from shaders_3_2/depth_skinned.vert
+parsing shader from shaders_3_2/depth_skinned.frag
+shader parsed
+compiled shader 80 from shaders_3_2/depth_skinned.frag
+linking shader programme 81
+linking done
+creating shader programme from [shaders_3_2/debug_quad.vert] and [shaders_3_2/debug_quad.frag]
+parsing shader from shaders_3_2/debug_quad.vert
+shader parsed
+compiled shader 82 from shaders_3_2/debug_quad.vert
+parsing shader from shaders_3_2/debug_quad.frag
+shader parsed
+compiled shader 83 from shaders_3_2/debug_quad.frag
+linking shader programme 84
+linking done
+using CUBEMAP + renderbuffer shadows
+generating shadow textures, size 512framebuffer is complete
+init manifold
+creating shader programme from [shaders_3_2/manifold.vert] and [shaders_3_2/manifold.frag]
+parsing shader from shaders_3_2/manifold.vert
+shader parsed
+compiled shader 85 from shaders_3_2/manifold.vert
+parsing shader from shaders_3_2/manifold.frag
+shader parsed
+compiled shader 86 from shaders_3_2/manifold.frag
+linking shader programme 87
+linking done
+creating shader programme from [shaders_3_2/water.vert] and [shaders_3_2/water.frag]
+parsing shader from shaders_3_2/water.vert
+shader parsed
+compiled shader 88 from shaders_3_2/water.vert
+parsing shader from shaders_3_2/water.frag
+shader parsed
+compiled shader 89 from shaders_3_2/water.frag
+linking shader programme 90
+linking done
+loading mesh data meshes/ramp_may_2014.apg
+loading mesh data meshes/ramp_smooth.apg
+loading mesh data meshes/water.apg
+manifold init done
+------------------------------------MAIN MENU-----------------------------------
+loading mesh meshes/3dtitle_idea.apg
+mesh gpu data created
+mesh file loaded
+creating shader programme from [shaders_3_2/title.vert] and [shaders_3_2/title.frag]
+parsing shader from shaders_3_2/title.vert
+shader parsed
+compiled shader 91 from shaders_3_2/title.vert
+parsing shader from shaders_3_2/title.frag
+shader parsed
+compiled shader 92 from shaders_3_2/title.frag
+linking shader programme 93
+linking done
+creating shader programme from [shaders_3_2/cursor.vert] and [shaders_3_2/cursor.frag]
+parsing shader from shaders_3_2/cursor.vert
+shader parsed
+compiled shader 94 from shaders_3_2/cursor.vert
+parsing shader from shaders_3_2/cursor.frag
+shader parsed
+compiled shader 95 from shaders_3_2/cursor.frag
+linking shader programme 96
+linking done
+loading mesh meshes/skull_helmet.apg
+mesh gpu data created
+mesh file loaded
+creating shader programme from [shaders_3_2/mmenu_credits.vert] and [shaders_3_2/mmenu_credits.frag]
+parsing shader from shaders_3_2/mmenu_credits.vert
+shader parsed
+compiled shader 97 from shaders_3_2/mmenu_credits.vert
+parsing shader from shaders_3_2/mmenu_credits.frag
+shader parsed
+compiled shader 98 from shaders_3_2/mmenu_credits.frag
+linking shader programme 99
+linking done
+loading image textures/skull_small_helmet_painterv_shade.png
+image loaded: 512x512 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/skull_small_helmet_painterv_shade.png] loaded in 0.01s
+loading image textures/title_skull.png
+image loaded: 2048x2048 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/title_skull.png] loaded in 0.15s
+loading image textures/victory.png
+image loaded: 2048x2048 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/victory.png] loaded in 0.23s
+loading image textures/text_bkrnd.png
+image loaded: 1024x1024 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/text_bkrnd.png] loaded in 0.05s
+-------------------------------INIT INPUT HANDLER------------------------------
+detecting joysticks...
+Received stats and achievements from Steam
+level gui init...
+no ../../../save/maps.dat - found -- locking all but first
+level chooser is peeking in map maps/introduction.map
+loading image textures/gui_level_chooser_back.png
+image loaded: 1024x1024 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/gui_level_chooser_back.png] loaded in 0.04s
+loading image textures/map_2048.png
+image loaded: 2048x2048 4 bytes per pixel
+setting anisotropy factor 4.000000
+texture [textures/map_2048.png] loaded in 0.28s
+level gui initialised
+-----------------------------------GAME END------------------------------------
+min_frame_cpu_ms = 0.000000
+max_frame_cpu_ms = 0.000000
+avg_frame_cpu_ms = 0.000000
+freeing character controller...
+freeing character map
+character map freed
+g_most_characters_updated_in_one_frame: 0
+specs allocd/reserved = 0/32
+most steps per frame: 0
+closing audio engine...
+freeing vom
+freed vom
+freeing vom
+freed vom
+engine closed successfully
+freeing manifold meta-data
+props used 0/512
+props scripts used 0/128
+freeing texture resources..
+texture memory blocks used/reserved: 62/256
+freeing all mesh memory
+meshes loaded: 3/128
+stopping GLFW...steam API shutdown...
+steam_controller_shutdown

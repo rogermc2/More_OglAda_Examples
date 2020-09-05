@@ -1,0 +1,8 @@
+mesh: dungeon_bridge.apg
+outlines_mesh: dungeon_bridge_smooth.apg
+diffuse_map: dungeonBridge.png
+specular_map: dungeon_bridge_sm.png
+normal_map: blankNM.png
+casts_shadow: 1
+
+type: bridge

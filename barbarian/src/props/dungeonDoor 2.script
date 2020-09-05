@@ -1,0 +1,22 @@
+mesh: dungeonDoor_revision3.apg
+outlines_mesh: dungeon_door_smooth.apg
+diffuse_map: dungeonDoor_diff.png
+specular_map: dungeonDoor_spec.png
+normal_map: blankNM.png
+casts_shadow: 1
+
+setOpeningTime_s: 0.2
+character_activated: 1
+sound_activate: CREAK_Wood_Hollow_Deep_Smooth_mono.wav
+
+type: door
+radius: 0.0
+height: 3.0
+box_xz_point: -1.0, -0.25
+box_xz_point: 1.0, -0.25
+box_xz_point: -1.0, 0.25
+box_xz_point: 1.0, 0.25
+
+
+#radius: 1.0
+#height: 3.0

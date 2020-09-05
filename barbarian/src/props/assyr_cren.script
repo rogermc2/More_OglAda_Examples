@@ -1,0 +1,14 @@
+mesh: assyr_cren.apg
+outlines_mesh: assyr_cren_smooth.apg
+diffuse_map: assyr_cren_dm.png
+specular_map: blankSM.png
+normal_map: assyr_cren_nm.png
+casts_shadow: 1
+
+type: box
+radius: 0.0
+height: 1.6
+box_xz_point: 1.0, -1.0
+box_xz_point: 1.2, -1.0
+box_xz_point: 1.0, 1.0
+box_xz_point: 1.2, 1.0

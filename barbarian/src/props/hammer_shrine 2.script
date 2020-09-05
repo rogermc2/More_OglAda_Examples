@@ -1,0 +1,14 @@
+mesh: small_hammer_shrine.apg
+outlines_mesh: small_hammer_shrine_smooth.apg
+diffuse_map: small_hammer_shrine_dm.png
+specular_map: small_hammer_shrine_sm.png
+normal_map: blankNM.png
+casts_shadow: 1
+
+type: box
+radius: 0.0
+height: 0.6
+box_xz_point: -0.84, -0.42
+box_xz_point: -0.84, 0.42
+box_xz_point: 0.84, -0.42
+box_xz_point: 0.84, 0.42

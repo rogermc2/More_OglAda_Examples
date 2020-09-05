@@ -1,0 +1,12 @@
+mesh: sewer_grating.apg
+#outlines_mesh: wall_ring_chain_smooth.apg
+diffuse_map: sewer_grating_dm.png
+specular_map: blankSM.png
+normal_map: rough_nm.png
+casts_shadow: 0
+draw_outlines: 0
+
+type: generic
+
+#radius: 0.4
+#height: 1.0

@@ -1,0 +1,327 @@
+introduction
+1:00
+story_lines 18
+in a time before time, out of the
+mist-cloaked north came THE
+BARBARIANS. come to pillage the
+shadow-haunted temples of the
+wicked cults of civilisation. the
+barbarians were grim, brutal men,
+with THICKLY CORDED MUSCLES. they
+spoke in a barking tongue, and
+were proficient with long sword
+and javelin.
+
+let me tell you the tale of the
+STRONGEST and MOST VALIANT of
+the barbarians. his name made the
+strongest rulers quake on their
+thrones. this is the tale of
+CRONGDOR - barbarian, raider,
+thief!
+War_Drum_Action.wav
+0
+facings 32x32
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNWNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNEWNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNWNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNEENNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNEENNNNNNNN
+NNNNNNNNNNNNNSNNNNNNNNEENNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNWNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNSNNNNNNN
+NNNSNNNNNNNNNNNNNNNNNNNNNENNNNNN
+NNNSNNNNNNNNNNNNNNNNNNNNNNNNNSNN
+NNNNNNNNNNNNNNNNNNEEEENNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNENNNN
+NNSSSNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNEENNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNEENNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNENWNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+textures 32x32
+44444444333333334444444444eeeee4
+444444443ccc7777ccc4444444eeeee4
+444444443ccc7777777c444444eeeee4
+444444443ccc7777c777cceeeeeeeeee
+44444444333cccccc77777cc8888888e
+44444444cccccccccc7777cc8888888e
+44444444ccceccccccc777ec8888888e
+44cccccccccecccecccccceeeeeeeeee
+44ccccccccceccceccccccccecccccce
+44cccccceeeeccceeeeeeeccecccccce
+44ccc444444ecccccccccccceeeeeeee
+44ccc444444eccccccccccccceeeeeee
+9997b994444eccccccccccccceeeeeee
+97777794444eeeeeeeeeeeccceeeeeee
+a7ccc7b44444444444444cccceeeeeee
+979997944444444444444ddcddcccccc
+97999794444444444444cccccccccccc
+9b999994444444444444cccccccccccc
+444433333447777744444ccccccccccc
+44443666344777777777777777444444
+44443666344777777777777777744444
+44443363344777777777777777744444
+44444444444777777777777777444444
+444444444444ccc44444444444444444
+444444444444ccc44444444444444444
+444444444444dcd44444444444444444
+44444444444ccccc4444444444444444
+44444444444cfffc4444444444444444
+44444444444cfffc4444444444444444
+44444444444cfffc4444444444444444
+44444444444ccccc4444444444444444
+44444444444444444444444444444444
+types 32x32
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000/00000000000000000000
+0000000000000000000000//00000000
+0000000000000000000000//00000000
+0000000000000/00000000//00000000
+00000000000000000000000000000000
+000000000000~0~000000~~~0~~~~~~0
+000000000000~~~000000~~~0~~~~~~0
+000/00000000~~~~~~~~~~0000000000
+000/00000000~0000000~~0000000000
+000000000000~~~~~~~~~~0000000000
+00000000000000000000000000000000
+00///000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000//0000
+00000000000000000000000000//0000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+000000/0000000000000000000000000
+000000/0000000000000000000000000
+000000/0000000000000000000000000
+000000/0000000000000000000000000
+000000/000000/000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+heights 32x32
+88888888bbbbbbbb8888888888ccccc8
+88888888b9998888aaa8888888caaac8
+88888888b9998888888a888888caaac8
+88888888b9988888a888aaccccccaccc
+88888888bbbbb8bbb8888889aaaaaaac
+88888888b888888bbb888889aaaaaaac
+88888888b88a888bbbb88889aaaaaaac
+88bbbbbbb88a999bbbbbbbccccacacac
+88baaaaaaaaa595aaaaaa555a555555c
+88cacbbbbbbb555bbbbbb555a555555c
+88dad888888b5555555555ccaaaaaaac
+88ebe888888b599999995599ccaaaaac
+eeeceee8888b555555555599bcaaaaac
+eccccce8888bbbbbbbbbbbb9bcaaaaac
+eccccce88888888888888bb9bccccccc
+ecdddce88888888888888bb9bbcddddd
+ecdddce8888888888888b999999abbbd
+eefffee8888888888888b999999abbbd
+8888fffff88aaaaa88888bb99bcddddd
+8888fdddf88a999abbbbbbb99b888888
+8888fdddf88a99999999999999b88888
+8888ffdff88a99999999999999b88888
+88888fcf888aa9aabbbbbbbbbb888888
+88888ebe8888a9a88888888888888888
+88888dad8888a9a88888888888888888
+88888c9c8888b9b88888888888888888
+88888b8baaaaa8aa8888888888888888
+88888a888888888a8888888888888888
+88888aaaaaaa888a8888888888888888
+88888888888988898888888888888888
+8888888888899a998888888888888888
+88888888888888888888888888888888
+dm textures/anton2_dm.png
+sm textures/anton2_sm.png
+props 134 # script uv h f rx tx
+dungeonDoor.script 13,22 0 N -1 -1
+diamond_trigger.script 13,23 0 N 1 1
+wall_torch.script 12,28 1 W -1 -1
+wall_torch.script 14,28 1 E -1 -1
+diamond_trigger.script 13,20 0 N 2 2
+coins.script 12,20 0 E -1 -1
+coins.script 14,20 0 N -1 -1
+coins.script 12,19 0 S -1 -1
+coins.script 14,19 0 E -1 -1
+coins.script 13,19 0 W -1 -1
+diamond_trigger.script 17,20 0 N 3 3
+skull_pole.script 12,26 0 N -1 -1
+skullshebab.script 14,26 0 N -1 -1
+wall_shield.script 17,20 1 N 3 3
+wall_shield.script 19,20 1 N -1 -1
+wall_shield.script 21,20 1 N -1 -1
+wall_shield.script 17,21 1 S -1 -1
+wall_shield.script 19,21 1 S -1 -1
+wall_shield.script 21,21 1 S -1 -1
+wall_torch_blue.script 20,21 1 S -1 -1
+diamond_trigger.script 24,19 0 N 4 4
+wall_shield.script 23,21 1 S -1 -1
+wall_shield.script 25,21 1 S -1 -1
+windlass.script 30,16 0 W 6 6
+stone_door.script 23,15 0 N 6 6
+diamond_trigger.script 23,16 0 N 5 5
+turkey_dinner.script 21,17 0 N -1 -1
+dungeonBridge.script 21,11 4 E -1 -1
+dungeonBridge.script 20,11 4 E -1 -1
+dungeonBridge.script 13,10 4 N -1 -1
+dungeonBridge.script 13,9 4 N -1 -1
+touchPlate.script 19,11 0 N 8 8
+touchPlate.script 18,11 0 N 9 9
+touchPlate.script 17,11 0 N 10 10
+touchPlate.script 16,11 0 N 11 11
+touchPlate.script 15,11 0 N 12 12
+diamond_trigger.script 23,11 0 N 7 7
+wall_ring.script 20,10 3 N -1 -1
+wall_ring_chain.script 20,12 4 S -1 -1
+wall_ring_chain.script 14,12 4 S -1 -1
+wall_ring_chain.script 14,8 2 E -1 -1
+wall_ring.script 12,10 4 W -1 -1
+dartshooter.script 15,10 4 S 12 12
+dartshooter.script 19,10 4 S 8 8
+dartshooter.script 18,12 4 N 9 9
+dartshooter.script 16,12 4 N 11 11
+dartshooter.script 17,10 4 S 10 10
+wall_torch.script 12,11 4 W -1 -1
+wall_torch.script 14,6 1 E -1 -1
+diamond_trigger.script 13,5 0 N 13 13
+corner_webs.script 30,17 1 S -1 -1
+chalice.script 9,6 0 N -1 -1
+stone_door.script 13,4 0 N 14 14
+diamond_trigger.script 13,3 0 N 15 15
+coins.script 14,3 0 E -1 -1
+coins.script 15,3 0 N -1 -1
+coins.script 12,3 0 E -1 -1
+dungeonDoor.script 16,2 0 E -1 -1
+dungeonTable.script 15,1 0 W -1 -1
+wall_torch_blue.script 14,1 1 N -1 -1
+diamond_trigger.script 15,2 0 N 16 16
+dungeonBridge.script 28,8 5 N -1 -1
+dungeonBridge.script 28,9 5 N -1 -1
+chalice.script 27,2 0 N -1 -1
+chalice.script 29,2 0 N -1 -1
+wall_torch_blue.script 18,2 1 N -1 -1
+wall_torch_blue.script 20,6 1 S -1 -1
+dungeonBridge.script 21,8 5 E -1 -1
+dungeonBridge.script 22,8 5 E -1 -1
+dungeonBridge.script 23,8 5 E -1 -1
+stone_door.script 28,7 0 N 18 18
+windlass.script 29,10 0 N 18 18
+secret_tile.script 28,3 0 N -1 -1
+pillar.script 26,7 0 S -1 -1
+pillar.script 30,7 0 S -1 -1
+turkey_dinner.script 28,13 0 N -1 -1
+coins.script 30,13 0 N -1 -1
+coins.script 26,13 0 N -1 -1
+hammer_shrine.script 29,5 0 E -1 -1
+hammer.script 29,5 0 E -1 -1
+wall_torch_blue.script 30,5 0 E -1 -1
+diamond_trigger.script 24,5 0 N 17 17
+dungeonBridge.script 14,8 5 E -1 -1
+dungeonBridge.script 13,8 1 E -1 -1
+secret_tile.script 11,5 0 N -1 -1
+chalice.script 9,5 0 N -1 -1
+chalice.script 10,6 0 N -1 -1
+windlass.script 9,7 0 N 14 14
+dungeonBridge.script 12,8 5 E -1 -1
+dungeonDoor.script 8,8 0 W -1 -1
+dungeonDoor.script 3,12 0 N -1 -1
+monolith_exterior.script 3,16 0 N -1 -1
+monolith_interior.script 3,16 0 N -1 -1
+coins.script 1,13 0 W -1 -1
+coins.script 2,15 0 E -1 -1
+coins.script 4,15 0 N -1 -1
+chalice.script 5,13 0 N -1 -1
+chalice.script 1,15 0 N -1 -1
+amphora.script 5,16 0 E -1 -1
+amphora.script 1,16 0 W -1 -1
+amphora.script 5,15 0 S -1 -1
+diamond_trigger.script 9,8 0 N 19 19
+skull_pole.script 11,6 0 W -1 -1
+wall_torch.script 20,8 0 N -1 -1
+wall_torch.script 24,8 0 N -1 -1
+wall_torch.script 10,8 0 S -1 -1
+end_camera.script 28,10 1 N -1 -1
+diamond_trigger.script 13,27 0 N 0 0
+start_level_portal.script 13,29 0 N -1 -1
+tavern.script 10,2 0 W -1 -1
+dungeonTable.script 9,1 0 E -1 -1
+amphora.script 9,3 0 S -1 -1
+amphora.script 9,3 0 W -1 -1
+amphora.script 9,3 0 E -1 -1
+amphora.script 11,1 0 N -1 -1
+amphora.script 11,1 0 W -1 -1
+amphora.script 11,1 0 E -1 -1
+diamond_trigger.script 11,2 0 N 20 20
+javelin_stand.script 12,2 0 N -1 -1
+barrel.script 13,1 0 W -1 -1
+barrel.script 13,2 0 N -1 -1
+carpet_wine.script 10,2 0 W -1 -1
+carpet_jav.script 12,2 0 N -1 -1
+wall_carpet.script 15,3 1 S -1 -1
+wall_carpet.script 12,3 1 S -1 -1
+secret_tile_mustard.script 11,27 0 N -1 -1
+coins.script 5,20 0 E -1 -1
+coins.script 7,20 0 W -1 -1
+wall_torch_green.script 6,25 1 W -1 -1
+windlass.script 28,1 0 N 30 30
+stone_door.script 6,21 0 N 30 30
+crown.script 6,19 0 N -1 -1
+brazier_3d.script 5,19 0 N -1 -1
+brazier_3d.script 7,19 0 N -1 -1
+chars 13 # script u,v heading
+crongdor.character 13,29 0
+spearman.character 21,20 90
+merchant.character 12,1 180
+spearman.character 27,12 0
+captain.character 29,12 0
+spearman.character 3,11 0
+spearman.character 3,9 0
+spearman.character 19,3 90
+spearman.character 18,5 0
+spearman.character 23,4 90
+captain.character 21,5 90
+spearman.character 23,6 90
+merchant.character 9,2 270
+amb_snds 6 # f u,v h r
+scary_drip_apg.ogg 16,11 15 10.00
+AMBIENCE_SCI-FI_Static_Tonal_loop_stereo.wav 3,15 19 10.00
+AMBIENCE_UNDER_WATER_Active_loop_stereo.wav 13,21 15 10.00
+AMBIENCE_UNDER_WATER_Active_loop_stereo.wav 22,21 15 10.00
+AMBIENCE_Ferry_Outside_01_loop_stereo.wav 18,3 14 10.00
+AMBIENCE_Ferry_Outside_01_loop_stereo.wav 27,5 16 10.00
+popups 13
+0 (1 1 1 1) and so begins the tale of CRONGDOR, barbarian!
+1 (1 1 1 1) open doors with button (default W)
+2 (1 1 1 1) crongdor came to PLUNDER ALL OF THE\nTREASURE!
+3 (1 1 1 1) and to SLAY! (default Q)
+4 (1 1 1 1) if the camera is splattered\nwipe it! (default E)
+5 (1 1 1 1) stone doors can not be opened manually...
+7 (1 1 1 1) the temples of cruel gods are guarded\nwith many wicked traps
+13 (1 1 1 1) crongdor's keen eye spied a false\nwall... (default W)
+15 (1 1 1 1) buy with button (default W)\n...if you have gold and room
+16 (1 1 1 1) switch weapons with (default 1,2,3)
+17 (1 1 1 1) the maul is a deadly weapon\nbut can also knock down obstacles
+19 (1 1 1 1) at the heart of the temple is a gate\nthrough the very aether. what further\nadventures await on the other side?
+20 (1 1 0 1) crongdor returns to DRINK\ncarafe after carafe when wounded.

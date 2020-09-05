@@ -1,0 +1,7 @@
+mesh: end_camera.apg
+diffuse_map: blue.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 0
+type: end_camera
+starts_visible: 0

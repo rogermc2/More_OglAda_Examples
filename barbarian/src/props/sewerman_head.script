@@ -1,0 +1,8 @@
+mesh: sewerman_head.apg
+diffuse_map: sewerman_head_dm.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 1
+
+type: decapitated_head
+radius: 0.2

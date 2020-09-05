@@ -1,0 +1,15 @@
+max_initial_velocity (3.0, 20.0, 3.0)
+min_initial_velocity (-3.0, 5.0, -3.0)
+acceleration (0.0, -10.0, 0.0)
+initial_colour (1.0, 1.0, 1.0, 1.0)
+final_colour (1.0, 1.0, 1.0, 0.0)
+total_system_seconds 5.0
+particle_lifetime 5.0
+seconds_between_emissions 0.001
+initial_scale 0.25
+final_scale 0.25
+degrees_per_second 720.0
+bounding_radius 10.0
+texture glass_shard.png
+total_particles 200
+loops 0

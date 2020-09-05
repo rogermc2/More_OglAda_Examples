@@ -1,0 +1,2 @@
+anton2_dm.png anton2_sm.png
+boom_dm.png boom_sm.png

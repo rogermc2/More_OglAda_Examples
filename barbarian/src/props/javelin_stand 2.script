@@ -1,0 +1,11 @@
+mesh: javelin_stand.apg
+diffuse_map: javelin_diff.png
+specular_map: javelin_spec.png
+normal_map: blankNM.png
+casts_shadow: 0
+draw_outlines: 0
+transparent: 1
+starts_visible: 1
+type: javelin_stall
+height: 0.0
+radius: 0.0

@@ -1,0 +1,35 @@
+mesh: amphora_smashed.apg
+#outlines_mesh:
+diffuse_map: amphora.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 0
+#draws_outlines:
+#transparent:
+#starts_open:
+#starts_visible:
+#lamp_offset_pos
+#lamp_diffuse_colour
+#lamp_specular_colour
+#lamp_range
+#particles_offset:
+# careful not to do type pot here!
+type: generic
+#scale:
+#uses_sprite:
+#sprite_map_rows
+#sprite_map_cols
+#sprite_y_offset
+height: 0.01
+radius: 0.4
+origin: (0.5, 0.0, -0.5)
+#trigger_only_once:
+#character_activated:
+#npc_activated:
+#hide_after_triggering:
+#box_xz_point:
+#setOpeningTime_s:
+#goes_back_up:
+#goes_back_down:
+#delay_s:
+#value:

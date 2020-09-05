@@ -1,0 +1,49 @@
+
+with Ada.Strings.Unbounded;
+with Ada.Text_IO; use Ada.Text_IO;
+
+with GL.Objects.Programs;
+
+package body Image_Panel is
+
+    procedure Init (Image_Panel_Program : in out Shader_Manager.Shader) is
+        use Ada.Strings.Unbounded;
+        use GL.Objects.Programs;
+        use Shader_Manager;
+        Shader_Program : constant GL.Objects.Programs.Program :=
+                           Shader_Manager.Get_Program (Image_Panel_Program);
+        SU     : Shader_Uniform;
+        U_List : Shader_Manager.Uniforms_List;
+    begin
+        SU := (To_Unbounded_String ("Model_Matrix_ID"),
+                Uniform_Location (Shader_Program, "model_matrix"));
+        U_List.Append (SU);
+        SU := (To_Unbounded_String ("Texture_ID"),
+               Uniform_Location (Shader_Program, "tex"));
+        U_List.Append (SU);
+        Shader_Manager.Set_Uniforms (Image_Panel_Program, U_List);
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Image_Panel.Init.");
+            raise;
+    end Init;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Set_Model_Matrix (Model_Uniform_ID : GL.Uniforms.Uniform;
+                                Model_Matrix : Singles.Matrix4) is
+    begin
+        GL.Uniforms.Set_Single (Model_Uniform_ID, Model_Matrix);
+    end Set_Model_Matrix;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Set_Texture (Texture_Uniform_ID : GL.Uniforms.Uniform;
+                           theTexture : Singles.Matrix4) is
+    begin
+        GL.Uniforms.Set_Single (Texture_Uniform_ID, theTexture);
+    end Set_Texture;
+
+    --  -------------------------------------------------------------------------
+
+end Image_Panel;

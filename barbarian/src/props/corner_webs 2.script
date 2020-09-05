@@ -1,0 +1,11 @@
+mesh: corner_webs_smooth.apg
+#outlines_mesh: corner_webs_smooth.apg
+diffuse_map: corner_webs_trans_dm.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 0 # all transparent props are ignored for shadows anyway
+transparent: 1
+draw_outlines: 0
+
+type: generic
+#type: no_physics

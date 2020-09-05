@@ -1,0 +1,32 @@
+name: spearman
+team_id: 1
+
+sprite_map_diffuse spearman_dm.png
+sprite_map_specular spearman_sm.png
+sprite_map_rows 4
+sprite_map_cols 4
+add_anim_frame anim_num: 0 atlas_index: 0 seconds: 0.0 // spear idle
+add_anim_frame anim_num: 1 atlas_index: 1 seconds: 0.20 // spear walk
+add_anim_frame anim_num: 1 atlas_index: 2 seconds: 0.20
+add_anim_frame anim_num: 1 atlas_index: 3 seconds: 0.20
+add_anim_frame anim_num: 1 atlas_index: 4 seconds: 0.20
+add_anim_frame anim_num: 2 atlas_index: 5 seconds: 0.2 // spear attack
+add_anim_frame anim_num: 2 atlas_index: 6 seconds: 0.2
+add_anim_frame anim_num: 2 atlas_index: 7 seconds: 0.2
+add_anim_frame anim_num: 2 atlas_index: 8 seconds: 0.2
+add_anim_frame anim_num: 15 atlas_index: 9 seconds: 0.0 // DEAD
+add_anim_frame anim_num: 16 atlas_index: 10 seconds: 0.0 // DEAD AND HEADLESS
+// NB: 14 is dead and 15 is no head
+attack_duration weapon: 0 seconds: 0.8
+attack_event weapon: 0 time: 0.7 location: (0.25, 1.0, -0.5) radius_m: 0.75 min_damage: 5 max_damage: 10 throw_back_mps: 10.0
+sight_range_tiles 6
+attack_range weapon: 0 meters: 1.0
+add_attack_sound: WHOOSH_Long_stereo.wav
+add_attack_sound: WHOOSH_Long_stereo.wav
+add_attack_sound: WHOOSH_Long_stereo.wav
+add_alert_sound: spearman_kalu.ogg
+add_hurt_sound: GRUNT_Male_Hurt_01_mono.wav
+add_death_sound: GROAN_Male_Hurt_Long_Pain_mono.wav
+initial_health 100
+
+decapitated_head_script: spearman_head.script

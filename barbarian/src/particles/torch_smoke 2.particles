@@ -1,0 +1,17 @@
+max_initial_velocity (0.025, 2.0, 0.025)
+min_initial_velocity (-0.025, 1.0, -0.025)
+acceleration (0.0, 0.0, 0.0)
+initial_colour (0.2, 0.2, 0.2, 0.8)
+final_colour (0.0, 0.0, 0.0, 0.0)
+#initial_colour (1.0, 0.25, 0.0, 1.0)
+#final_colour (1.0, 0.85, 0.0, 0.2)
+total_system_seconds 0.0
+particle_lifetime 1.0
+seconds_between_emissions 0.05
+initial_scale 0.3
+final_scale 0.75
+degrees_per_second 10.0
+bounding_radius 3.0
+texture fire_particle.png
+total_particles 20
+loops 1

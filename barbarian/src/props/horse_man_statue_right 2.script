@@ -1,0 +1,16 @@
+mesh: horse_man_statue_right.apg
+outlines_mesh: horse_man_statue_right_smooth.apg
+diffuse_map: horse_man_statue_mixed.png
+specular_map: blankSM.png
+normal_map: giant_nm.png
+#blankNM.png
+#rough_nm.png
+casts_shadow: 1
+
+type: big_box
+radius: 0.0
+height: 7.67
+box_xz_point: -4.0, -0.5
+box_xz_point: -4.0, 0.4
+box_xz_point: 4.0, -0.5
+box_xz_point: 4.0, 0.4

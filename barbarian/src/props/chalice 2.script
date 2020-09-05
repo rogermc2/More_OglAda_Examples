@@ -1,0 +1,31 @@
+mesh: chalice.apg
+#outlines_mesh: chalice.apg
+diffuse_map: coin.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 0
+#starts_open:
+starts_visible: 1
+#lamp_offset_pos
+#lamp_diffuse_colour
+#lamp_specular_colour
+#lamp_range
+type: treasure
+#scale: (1.0, 1.0, 1.0)
+uses_sprite: 0
+#sprite_map_rows 1
+#sprite_map_cols 1
+#sprite_y_offset 0.0
+#height: 0.2
+#radius: 1.0
+#trigger_only_once: 1
+#character_activated:
+#npc_activated:
+#hide_after_triggering:
+#box_xz_point:
+#setOpeningTime_s:
+#goes_back_up:
+#goes_back_down:
+#delay_s:
+value: 25
+sound_activate: pickup_cup.wav

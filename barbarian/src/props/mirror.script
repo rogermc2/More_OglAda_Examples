@@ -1,0 +1,17 @@
+mesh: mirror.apg
+#outlines_mesh: mirror.apg
+smashed_script: mirror_smashed.script
+diffuse_map: mirror_dm.png
+specular_map: mirror_sm.png
+normal_map: blankNM.png
+casts_shadow: 1
+
+type: mirror
+radius: 0.0
+height: 4.2
+box_xz_point: -1.0, -1.0
+box_xz_point: -1.0, -0.8
+box_xz_point: 1.0, -1.0
+box_xz_point: 1.0, -0.8
+
+sound_activate: SHATTER_Glass_Medium_Short_01_mono.wav

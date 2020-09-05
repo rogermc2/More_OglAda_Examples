@@ -1,0 +1,18 @@
+mesh: skull_portal.apg
+diffuse_map: skull_arch_dm.png
+specular_map: skull_arch_sm.png
+normal_map: blankNM.png # skull_arch_nm.png
+casts_shadow: 1
+
+type: big_box
+radius: 0.0
+height: 8.72
+box_xz_point: -3.0, 0.27
+box_xz_point: -3.0, -2.86
+box_xz_point: 3.0, 0.27
+box_xz_point: 3.0, -2.86
+hole_height: 4.06
+hole_xz_point: -1.41, 1.27
+hole_xz_point: -1.41, -3.86
+hole_xz_point: 1.41, 1.27
+hole_xz_point: 1.41, -3.86

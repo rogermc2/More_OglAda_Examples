@@ -1,0 +1,361 @@
+the warlock
+0:30
+story_lines 14
+it came to be that an EVIL PRIEST
+was in the employ of a prince's
+rivals. he had his thugs kidnap
+the princess, and SACRIFICED HER
+to a foul daemon - thus granting
+him power to sap away at the
+prince's own blood.
+
+"HO!", the prince said to crongdor,
+"MY CHAMPION, venture to this
+warlock's tower in the desert. it
+is my desire that you BRING BACK
+HIS HEAD!" "for this you will be
+RICHLY REWARDED."
+War_Drum_Hero-loop.wav
+0
+facings 32x32
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNSNNNNNNNENNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+WNNNNENNNNNNNNNNNNNNNNNNNNNNNNNN
+WNNNNENNNNNNNNSNNNNNNNNNNNNNNNNN
+NNNNNNNNNWNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNWNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNENNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNENNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNENNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNSNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNSNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNENNNNNNNNNNNNNNNNN
+ENNNNNNNNNNNNNNSNNNNNNNNNNNNNNNN
+SENNNNNNNNNNNNNSNNNNNNNNNNNNNNNN
+ENNEENNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNEENENNNNNNNNNNNNNNNNNNNNNNNNNN
+NNENENNNNNNNNNNNNNNNNNNNNNNNNNNN
+SNEENNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNENNNNNNNNNNNNNNNNNNNNNNNNNN
+ENNNNENNNNNNNNNNNNNNNNNNNNNNNNNN
+EEENENENNNNNNNNNNNNNNNNNNNNNNNNN
+textures 32x32
+ee9eee9999999994999944fff4444444
+e999eea999b999999a9944fff4444444
+9b999a999999999999994ffff4444444
+a9999b999999999a99994ffff4444444
+b9999a99b9999fafffff4ffff4444444
+e9a9ee9999999fffaffffffff4444444
+ee9eee9999a99e9f94fffffff4444444
+eeee6eeeeeeeee9b944ffffff4444444
+eee66eee66666e99944ffffff4444444
+eeeeee4eeeeeeeccc444ffff44444444
+eee4544444e88eccc444ffff44444444
+eeeeee4eeee88eccc44fffff44444444
+eee4444454e68eccc44fffff44444444
+eeeeee4eeeeeeeccc44fffff44444444
+eee454444e77777c774fffff44444444
+eeeeee4eee777777774fffff44444444
+eeeee44444777777774fffff44444444
+eeeee44444777444444fffff44444444
+eeeee44547777444444fffff44444444
+eeeee4444c7774444ffffff444444444
+eeeee44444777ffffffffff444444444
+eeeee6666667cccccffffff444444444
+ccccc6666666cececffffff444444444
+cccccc666666cceccffffff444444444
+ccccc66666667eeccffffff444444444
+ccccc6666666cceecffffff444444444
+ccccc6666666ceeecffffff444444444
+cffff6666666cccccfffffffffff4444
+cffff6666666cfffffffffffffff4444
+cffffcfffffffffccfccfffffcff4444
+cffffcccccccccccccccccccccff4444
+cccccccccccccccccccccccccfff4444
+types 32x32
+00000062222222600000000000000000
+00600060000000266000000000000000
+06066620000000006000000000000000
+6-#00000000006246000000000000000
+6--46620000060600000000000000000
+06460060000060006000000000000000
+00600066666660606000000000000000
+00000000000000646000000000000000
+00000222000000606000000000000000
+00022202220000606000000000000000
+00020000020000606000000000000000
+00022202220000626000000000000000
+000200000200006/6000000000000000
+000222022200006/6000000000000000
+000200000244444/4400000000000000
+00022202222000000400000000000000
+00002000004024444400000000000000
+00002000004040000000000000000000
+00002000020040000000000000000000
+000020000/4040000000000000000000
+00002000004040000000000000000000
+00000444442046666000000000000000
+44444200000042/26000000000000000
+2000000000004/0/6000000000000000
+200002000000020/6000000000000000
+2000020000006/066000000000000000
+22222200000060006000000000000000
+400/0400000046666000000000000000
+400004444444400aa0aa00000a000000
+400004aaaaaaaaa~~a~~aaaaa~a00000
+40000a~~~~~~~~~~~~~~~~~~~~a00000
+aaaaaa~~~~~~~~~~~~~~~~~~~aaaaaaa
+heights 32x32
+88e888eeeeeeeee8eeee888988888888
+8ece88eccccccceeecce888988888888
+eccceeecccccccccccce888988888888
+ecccccccccccceeceeee889988888888
+eccceeeccccce8e88888888988888888
+8eceaaeccccce888e888888988888888
+8bebbbeeeeeeebe8e888888988888888
+8bbb8bbbbbbbbbece888889988888888
+8ba88aaa88888aece888889888888888
+8ba8aa8aaaa8aaece888889888888888
+8ba8888888a88aece888889888888888
+8baaaa8aaaa88aece888889888888888
+8ba8888888888aebe888899888888888
+8ba8aa8aaaaaaadad888889888888888
+8ba888888abbbbc9cc88889888888888
+8baaaa8aaab999999b88899888888888
+8bbba88888b9bbbbbb88889888888888
+888ba88888b9b8888888899888888888
+888ba8888999b8888888898888888888
+888ba88888b9b8888888898888888888
+888ba88888b9b8888888998888888888
+888bbbbbbbb9ddddd889988888888888
+bbbbbb999999daabd889998888888888
+b99999999999d98bd888898888888888
+b9999b999999998cd888898888888888
+b9999b999999d88dd889998888888888
+baa9ab999999d888d888988888888888
+b8888b999999ddddd888999999998888
+b8888bbbbbbbb8888888888888898888
+b8888b88888888888888888888898888
+b8888b88888888888888888888898888
+bbbbbb88888888888888888888898888
+dm textures/anton2_dm.png
+sm textures/anton2_sm.png
+props 169 # script uv h f rx tx
+palmTree.script 2,29 0 N -1 -1
+dungeonDoor.script 3,26 0 N -1 -1
+amphora.script 1,27 0 E -1 -1
+amphora.script 2,27 0 N -1 -1
+dungeonDoor.script 5,23 0 E -1 -1
+pillar.script 7,26 0 N -1 -1
+pillar.script 10,26 0 N -1 -1
+dungeonDoor.script 12,24 0 E -1 -1
+tapestry.script 6,25 0 W -1 -1
+assyr_cren.script 14,27 0 E -1 -1
+assyr_cren.script 13,27 0 E -1 -1
+assyr_cren.script 12,27 0 E -1 -1
+assyr_cren.script 12,27 0 S -1 -1
+assyr_cren.script 12,26 0 S -1 -1
+assyr_cren.script 12,25 0 S -1 -1
+assyr_cren.script 12,24 4 S -1 -1
+assyr_cren.script 12,23 0 S -1 -1
+assyr_cren.script 12,22 0 S -1 -1
+assyr_cren.script 12,21 0 S -1 -1
+assyr_cren.script 12,21 0 W -1 -1
+assyr_cren.script 13,21 0 W -1 -1
+assyr_cren.script 14,21 0 W -1 -1
+assyr_cren.script 15,21 0 W -1 -1
+assyr_cren.script 16,21 0 W -1 -1
+assyr_cren.script 16,21 0 N -1 -1
+assyr_cren.script 16,22 0 N -1 -1
+assyr_cren.script 16,23 0 N -1 -1
+assyr_cren.script 16,24 0 N -1 -1
+assyr_cren.script 16,25 0 N -1 -1
+assyr_cren.script 16,26 0 N -1 -1
+assyr_cren.script 16,27 0 N -1 -1
+assyr_cren.script 16,27 0 E -1 -1
+assyr_cren.script 15,27 0 E -1 -1
+palmTree.script 19,27 0 N -1 -1
+palmTree.script 22,29 0 N -1 -1
+palmTree.script 14,29 0 N -1 -1
+palmTree.script 19,23 0 N -1 -1
+palmTree.script 17,19 0 N -1 -1
+dungeonDoor.script 11,17 0 N -1 -1
+dungeonDoor.script 10,18 0 W -1 -1
+dungeonTable.script 6,19 0 N -1 -1
+amphora.script 5,16 0 E -1 -1
+amphora.script 8,16 0 N -1 -1
+amphora.script 9,16 0 N -1 -1
+amphora.script 9,17 0 N -1 -1
+amphora.script 8,17 0 N -1 -1
+dungeonDoor.script 15,8 0 N -1 -1
+dungeonBridge.script 15,6 4 N -1 -1
+dungeonBridge.script 15,5 4 N -1 -1
+dungeonBridge.script 15,4 4 N -1 -1
+dungeonDoor.script 14,2 0 W -1 -1
+bookshelf.script 9,5 0 S -1 -1
+dartshooter.script 13,1 0 S 3 2
+touchPlate.script 13,2 0 N 2 3
+dungeonTable.script 11,5 0 N -1 -1
+dungeonTable.script 2,24 0 E -1 -1
+amphora.script 1,25 0 N -1 -1
+amphora.script 1,24 0 N -1 -1
+amphora.script 2,25 0 N -1 -1
+corner_webs.script 1,23 1 N 11 11
+tapestry.script 8,22 0 N -1 -1
+tapestry.script 10,1 0 N -1 -1
+coins.script 15,26 0 S -1 -1
+coins.script 14,26 0 N -1 -1
+coins.script 14,25 0 W -1 -1
+coins.script 14,24 0 E -1 -1
+coins.script 14,23 0 S -1 -1
+coins.script 2,23 0 N -1 -1
+coins.script 5,19 0 N -1 -1
+coins.script 7,2 0 E -1 -1
+coins.script 9,5 0 W -1 -1
+dungeonDoor.script 6,15 0 N -1 -1
+amphora.script 7,16 0 E -1 -1
+portcullis_raise.script 7,14 0 E 1 -1
+corner_webs.script 3,4 1 S -1 -1
+coins.script 3,3 0 N -1 -1
+coins.script 3,4 0 N -1 -1
+coins.script 4,3 0 N -1 -1
+brazier_3d.script 7,23 0 N -1 -1
+brazier_3d.script 10,23 0 N -1 -1
+barrel.script 4,27 0 N -1 -1
+barrel.script 4,28 0 E -1 -1
+barrel.script 4,29 0 N -1 -1
+barrel.script 5,20 0 N -1 -1
+barrel.script 6,20 0 N -1 -1
+wall_torch.script 5,18 0 W -1 -1
+brazier_3d.script 9,3 0 N -1 -1
+brazier_blue.script 9,3 0 N -1 -1
+dartshooter.script 4,23 0 S 5 -1
+monolith_exterior.script 1,3 0 E -1 -1
+monolith_interior.script 1,3 0 E -1 -1
+corner_webs.script 2,1 0 E -1 -1
+corner_webs.script 2,5 1 S -1 -1
+brazier_red.script 10,23 0 N -1 -1
+brazier_red.script 7,23 0 N -1 -1
+window_arab.script 13,22 0 N -1 -1
+window_arab.script 15,22 0 E -1 -1
+window_arab.script 14,15 0 S -1 -1
+window_arab.script 16,15 0 E -1 -1
+window_arab.script 15,10 0 E -1 -1
+window_arab.script 11,19 0 E -1 -1
+window_arab.script 7,27 0 S -1 -1
+window_arab.script 10,27 0 S -1 -1
+arch_arab.script 11,21 0 N -1 -1
+portcullis_raise.script 7,10 0 E 1 1
+portcullis_raise.script 7,12 0 E 1 1
+portcullis_raise.script 5,12 0 E 1 1
+portcullis_raise.script 5,10 0 E 1 1
+portcullis_raise.script 5,14 0 E -1 -1
+windlass.script 6,9 0 N 1 1
+coins.script 8,14 0 N -1 -1
+secret_tile.script 3,13 0 N -1 -1
+chalice.script 3,14 0 N -1 -1
+turkey_dinner.script 3,10 0 N -1 -1
+javelin_stand.script 8,10 0 N -1 -1
+start_level_portal.script 3,30 0 N -1 -1
+coins.script 1,30 0 N -1 -1
+down_lift_delay.script 10,12 0 N 2 2
+touchPlate.script 4,14 0 N 2 2
+secret_tile.script 11,9 0 N -1 -1
+corner_webs.script 11,10 1 N -1 -1
+corner_webs.script 12,10 0 E -1 -1
+chalice.script 12,10 0 N -1 -1
+coins.script 12,12 0 N -1 -1
+crown.script 12,8 0 N -1 -1
+hammer_shrine.script 8,8 0 E -1 -1
+hammer.script 8,8 0 E -1 -1
+wall_ring_chain.script 11,8 1 N -1 -1
+wall_shield.script 8,8 0 W -1 -1
+wall_shield.script 8,8 1 W -1 -1
+wall_shield.script 12,11 1 E -1 -1
+wall_shield.script 11,11 1 W -1 -1
+secret_tile.script 3,9 0 N -1 -1
+crown.script 4,7 0 N -1 -1
+corner_webs.script 4,7 1 N -1 -1
+end_camera.script 12,3 1 W -1 -1
+touchPlate.script 11,12 0 N 2 2
+chalice.script 4,20 0 N -1 -1
+stone_door.script 6,3 0 E 0 0
+touchPlate.script 4,24 0 N 5 5
+diamond_trigger.script 3,28 0 N 10 10
+diamond_trigger.script 1,23 0 N 11 11
+diamond_trigger.script 13,24 0 N 13 13
+diamond_trigger.script 7,19 0 N 14 14
+diamond_trigger.script 11,16 0 N 12 12
+bookshelf_b.script 7,5 0 S -1 -1
+coins.script 7,5 0 N -1 -1
+bookshelf.script 7,1 0 N -1 -1
+bookshelf_b.script 9,1 0 N -1 -1
+coins.script 9,1 0 S -1 -1
+bookshelf_c.script 8,5 0 S -1 -1
+bookshelf_c.script 7,4 0 W -1 -1
+bookshelf_c.script 8,1 0 N -1 -1
+bookshelf_c.script 12,3 0 E -1 -1
+bookshelf_b.script 12,1 0 N -1 -1
+turkey_dinner.script 17,1 0 E -1 -1
+barrel.script 18,1 0 W -1 -1
+amphora.script 18,1 0 E -1 -1
+amphora.script 18,2 0 N -1 -1
+amphora.script 18,2 0 E -1 -1
+amphora.script 18,2 0 S -1 -1
+diamond_trigger.script 15,2 0 N 15 15
+palmTree.script 20,7 0 E -1 -1
+palmTree.script 22,4 0 E -1 -1
+palmTree.script 22,1 0 N -1 -1
+palmTree.script 19,12 0 S -1 -1
+palmTree.script 20,17 0 W -1 -1
+wall_shield.script 18,2 1 E -1 -1
+carpet_jav.script 8,10 0 E -1 -1
+chars 24 # script u,v heading
+crongdor.character 3,30 0
+captain.character 8,2 270
+captain.character 10,5 0
+captain.character 11,3 270
+captain.character 8,4 270
+spearman.character 15,9 180
+spearman.character 11,18 0
+spearman.character 8,26 0
+spearman.character 8,22 90
+spearman.character 10,25 0
+spearman.character 10,22 90
+archer.character 11,24 90
+archer.character 9,27 0
+archer.character 16,27 180
+archer.character 12,21 0
+archer.character 16,21 270
+spearman.character 13,26 0
+spearman.character 6,11 180
+spearman.character 5,17 270
+spearman.character 7,20 270
+archer.character 16,15 90
+archer.character 15,3 180
+merchant.character 9,10 90
+warlock_tx.character 8,3 270
+amb_snds 5 # f u,v h r
+AMBIENCE_SCI-FI_Static_Tonal_loop_stereo.wav 2,3 18 10.00
+AMBIENCE_UNDER_WATER_Deep_Dark_loop_stereo.wav 11,3 18 10.00
+AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav 6,10 14 10.00
+AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav 7,18 14 10.00
+AMBIENCE_Ferry_Outside_02_loop_stereo.wav 8,25 15 10.00
+popups 6
+10 (1 1 0 1) a BAG OF GOLD bought the location\nof a quiet courtyard entrance
+11 (1 1 0 1) the building was old long before\nthe WARLOCK took residence
+12 (1 1 0 1) crongdor was afraid of no man, but\nhad the PRIMITIVE'S superstitions.\nsorcery was not something he\ncould CLEAVE!
+13 (1 1 0 1) the barbarian's narrowed eyes scanned\n...a watch tower\n...and TREASURY!
+14 (1 1 0 1) crongdor had been locked in\nenough dungeons to recognise\nthe SMELL at once
+15 (1 0.5 1 1) his hand TREMBLED, surely\nthe WARLOCK did weird magics\nbehind this door

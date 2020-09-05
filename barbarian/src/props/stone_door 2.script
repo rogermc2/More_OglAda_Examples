@@ -1,0 +1,21 @@
+mesh: stone_door_retex.apg
+outlines_mesh: stone_door_smooth.apg
+diffuse_map: stone_door_retex_dm.png
+specular_map: stone_door_retex_sm.png
+normal_map: rough_nm.png
+casts_shadow: 1
+
+setOpeningTime_s: 0.8
+character_activated: 0
+starts_open: 0
+sound_activate: FRICTION_Brick_Slide_02_mono.wav
+
+type: door
+radius: 0.0
+height: 3.0
+box_xz_point: -1.0, -0.25
+box_xz_point: 1.0, -0.25
+box_xz_point: -1.0, 0.25
+box_xz_point: 1.0, 0.25
+#radius: 1.0
+#height: 3.0

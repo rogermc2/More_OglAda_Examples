@@ -1,0 +1,9 @@
+mesh: palm_tree.apg
+diffuse_map: palmTree.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 0
+
+type: generic
+height: 6.18
+radius: 0.34

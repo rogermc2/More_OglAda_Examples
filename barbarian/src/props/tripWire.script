@@ -1,0 +1,15 @@
+#mesh: tripwire.apg
+diffuse_map: tripwire.png
+specular_map: tripwire_sm.png
+normal_map: blankNM.png
+casts_shadow: 0
+
+character_activated: 1
+npc_activated: 0
+trigger_only_once: 1
+hide_after_triggering: 1
+
+type: touch_plate
+uses_sprite: 1
+scale: (1.0, 1.0, 1.0)
+sound_activate: BUTTON_Short_Dry_mono.wav

@@ -1,0 +1,15 @@
+max_initial_velocity (0.5, 25.0, 0.5) # initial velocity for each particle is randomised between max and min
+min_initial_velocity (-0.5, 20.0, -0.5)
+acceleration (0.0, -10.0, 0.0) # can be used to apply gravity to particles
+initial_colour (1.0, 1.0, 1.0, 1.0) # colour modifier RGBA where alpha is opacity
+final_colour (1.0, 1.0, 1.0, 0.0) # colour at end of particle's lifetime. alpha of 0.0 means fade away
+total_system_seconds 10.0 # total seconds that particle are emitted
+particle_lifetime 1.0 # each particle lives this long and is respawned
+seconds_between_emissions 0.1 # wait this long between particle spawns
+initial_scale 1.0 # at 0 distance from camera a scale of 1.0 covers entire view width
+final_scale 1.0 # scale of particle at end of life-time
+degrees_per_second 0.0 # if > 0.0 then particle's texture will rotate
+bounding_radius 10.0 # size of radius in meters after which to cut off from rendering
+texture blood_particle_texture.png # a texture within the particles/ folder
+total_particles 1000 # total particles available to emitter
+loops 1 # if particle system should reset (1) or finish (0) when system time runs out

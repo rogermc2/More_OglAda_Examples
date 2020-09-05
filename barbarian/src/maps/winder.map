@@ -1,0 +1,430 @@
+winder
+1:30
+story_lines 22
+"but tell me of your HOMELAND,
+barbarian!" said the tavern-keeper,
+as the wide-shouldered CRONGDOR
+drank deeply and threw yet more
+gold across the bar.
+
+"it is a gloomy place - darkly wooded
+hills, skies nearly always grey, and
+moaning winds."
+
+"one can see why you choose a life
+of adventure!" he bellowed.
+
+"yes, but despite no fear of battle,
+the schemes of so-called
+"civilised" men i cannot fight - i can
+barely pay for board!"
+
+"ah, BARBAR, let me tell you of a
+place glittering with gems - where
+a born fighting man might make his
+fortune ... should he SURVIVE!"
+War_Drum_Pro_Directions-loop.wav
+0
+facings 32x32
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNENNENNENNENNENNENNEEEN
+NNNNNWWNNEENNENNENNENNENNENNEEEN
+NNNNNNNNNEENNENNNNNNNNNNNNNNNNNN
+NNNNNNNNNENNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNWNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNWNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNWNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNSSNNNN
+NNNNNNNNNNNNNNNNNNSNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNSWNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNWNNNNNNSSNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNSSNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNEENNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNEEEEENNNNNNNNNNNNN
+NNNNNNNNNNNNNNEENNNNSNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNSNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNWNNNNNNNNNSNNNNNNNNNNNNN
+NNNNNNNNWNNNWWWNNNSNNNNNNNNNNNNN
+NNNNNNNNNNNSEEEEEENEEEEEEEENEENN
+NNEEEEEEENNNEEEEEEEEEEEEEEENEENN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+textures 32x32
+ee44444444444444444444eee4444444
+eeeeee44eeeeeeeeeeeeeeeeeeeeeeee
+4eeeeeeee4ceeceeeeeeeeceeeeeccce
+4eeee444444eeceeeeeeeeeeeeeeccce
+4eeee444444422222eeeeeeeeeeeeeee
+4ee444444444222227e7efeeefffccfc
+44e444422444222227c72fffccccccfc
+44e444222244222227772fffcccccccc
+4ee444222244222222222ffffbccfffc
+4ee444422444ee2eeeeeeeee9fffffff
+4ee4444444eeeee2ee8888889affffff
+4ee4444444e22222eeeeeeee9a999fff
+4eeeeeeeeee22222eeeeeeeee9999fff
+4eee4444eeeeeeeeeeeeeeeee99b9faf
+4eee4444444444444eeeeeeee9999fff
+4444444444444444498888994499ffff
+444444444444444449c88889949bff9f
+444444ccccdddc44499888894b999fff
+444444cddddddd444988888945a9ffff
+444444cccccccd44498888994499f9ff
+444444ccddcecddcc9999999ee99eeef
+444444ccd22222deeee66eeee77777ef
+444444dcc29999ccee666e77e74447ef
+444444dcc299a9ccee666eeee74477ee
+444444ddd2b999ccee6c6e7777447e7e
+444444ddd22222deee6c6e74445477ee
+444444eeedcdcddd4c6c6e74444447ee
+444444eeceeeecc444445e77777777ee
+444444eeecccedd4dd666eeeeee7eece
+eeeeeeeeeedddddddddddeeeeee7e4ce
+ccc4454eccdccccccccddceeeeeee54e
+eeeeeeeeeedddddddddddddcccceeeee
+types 32x32
+00000000000000000000000000000000
+00000000000000000000000000000000
+0000000000/00/00/00/00/00/00///0
+00000//000/00/00/00/00/00/00///0
+00000000000000000000000000000000
+000000000000000000/000000000~~0~
+000000000000000000/00000~~~~~~~~
+00000000000000000000000~~~~~~~~~
+0000000000/000000000000000~~000~
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000/00000000000000~0~
+00000000000000/00000000000000~~~
+00000000000000000000000000000~0~
+00000000000000000000000000//0~~~
+0000000000000000000000000000000~
+000000000000000000/000000000000~
+0000000000000000000/000000//0~~~
+000000000000000000/00000000000~~
+0000000000000000000000000000000~
+00000000000000000000000000//000~
+00000000000000000000000000000000
+00000000000000//0000000000000000
+00000000000000//0000000000000000
+00000000000000//000/000000000000
+0000000000000000000/000000000000
+0000000000000000000/000000000000
+00000000/00000000000000000000000
+0000000000000//000000000000000/0
+0000000000000000000000000//000/0
+00~~~~~0/000///0///0/0/////00000
+00000000000000000000000000000000
+heights 32x32
+cc88888888888888888888fef8888888
+cccbcc88ccbbcbcbcdcddefdfffgiiii
+8caaacbbc88999aaabbbcccdddeeefgi
+8baaa988888999aaabbbcccdddeeefgi
+8caaa8888888ccaccdbecefdffeeiiii
+8cc888888888caaac9a9e8fff8888888
+88b888899888aaaac999c88888888888
+88b888999988aaaac999c88888888888
+8cc888999988aaaaccccc8888f888888
+8ca888899888ccaacgggggggg8888888
+8ba8888888cbcccacgeeeeeeee888888
+8ca8888888bbbbaacgeeeeeegfeef888
+8cabcbcbcbcbbbaacgeeeeeegeeee888
+8bab8888cccccccccgeeeeeegeeee8e8
+8cbc8888888888888gggeegggeeee888
+88888888888888888geeeegg88ff8888
+88888888888888888geeeeegh8ff88g8
+88888888888888888gfeeeeg8ffff888
+88888886666668888geeeeeg88gg8888
+88888886666668888geeeegg88gg8g88
+88888886888688888gggggggjjggjjj8
+888888868666668999999jjjjhhhhhj8
+888888868655555677977jhhjh888hj8
+888888868655555677777jhjjh88hhjj
+888888866655555677967jhhhh88hjhj
+888888888666668999957jh88888hhhj
+888888999886888646947jh888888hjj
+888888976666687444444jhhhhhhhhhj
+888888977aaa654466888hjjjjjhjjgj
+aaaaaaa7aa8aabcdefgghfffffghjffj
+77000007788889abbcdeefghijkljffj
+aaaaaaaaaaaaabcdefgghhhhhhhhjjjj
+dm textures/anton2_dm.png
+sm textures/anton2_sm.png
+props 215 # script uv h f rx tx
+dungeonBridge.script 3,11 2 N -1 -1
+dungeonBridge.script 3,10 2 N -1 -1
+dungeonBridge.script 3,9 2 N -1 -1
+dungeonBridge.script 3,8 2 N -1 -1
+dungeonBridge.script 3,7 2 N -1 -1
+dungeonBridge.script 3,6 2 N -1 -1
+dungeonBridge.script 3,5 2 N -1 -1
+dungeonDoor.script 14,4 0 S -1 -1
+secret_tile.script 2,12 0 N -1 -1
+crown.script 2,13 0 N -1 -1
+stone_door.script 17,2 0 W 0 0
+stone_door.script 17,3 0 W 0 0
+windlass.script 14,9 0 N 0 0
+secret_tile.script 15,9 0 N -1 -1
+chalice.script 11,11 0 N -1 -1
+chalice.script 11,12 0 N -1 -1
+chalice.script 12,12 0 N -1 -1
+chalice.script 12,11 0 N -1 -1
+chalice.script 11,10 0 N -1 -1
+chalice.script 10,11 0 N -1 -1
+amphora.script 15,5 0 N -1 -1
+amphora.script 15,5 0 E -1 -1
+skullshebab.script 4,4 0 N -1 -1
+skull_pole.script 4,4 0 W -1 -1
+skull_pole.script 3,12 0 S -1 -1
+skull_pole.script 9,12 0 S -1 -1
+barrel.script 11,4 0 W -1 -1
+barrel.script 11,5 0 E -1 -1
+barrel.script 10,4 0 N -1 -1
+barrel.script 4,11 0 E -1 -1
+barrel.script 5,11 0 W -1 -1
+barrel.script 9,11 0 N -1 -1
+amphora.script 4,5 0 N -1 -1
+amphora.script 5,4 0 W -1 -1
+amphora.script 6,9 0 N -1 -1
+wall_torch.script 5,3 1 N -1 -1
+dungeonBridge.script 27,5 6 N -1 -1
+dungeonBridge.script 26,5 6 N -1 -1
+dungeonBridge.script 26,6 6 N -1 -1
+dungeonBridge.script 26,9 6 N -1 -1
+dungeonBridge.script 26,10 6 N -1 -1
+dungeonBridge.script 27,10 6 N -1 -1
+dungeonBridge.script 27,9 6 N -1 -1
+dungeonBridge.script 27,7 6 N -1 -1
+dungeonBridge.script 27,6 6 N -1 -1
+dungeonBridge.script 27,8 6 N -1 -1
+boulder.script 29,2 0 N 1 1
+boulder.script 30,2 0 N 2 2
+boulder.script 30,3 0 N 2 2
+boulder.script 29,3 0 N 1 1
+tripWire.script 18,3 0 E 1 1
+tripWire.script 18,2 0 E 1 1
+tripWire.script 23,3 0 W 2 2
+tripWire.script 23,2 0 W 2 2
+stone_door.script 27,11 0 N 4 4
+stone_door.script 26,11 0 N 4 4
+wall_torch_blue.script 25,10 0 S -1 -1
+wall_torch_blue.script 25,7 5 S -1 -1
+secret_tile.script 18,4 0 N -1 -1
+chalice.script 17,5 0 N -1 -1
+chalice.script 17,6 0 N -1 -1
+chalice.script 19,6 0 N -1 -1
+chalice.script 19,5 0 N -1 -1
+turkey_dinner.script 19,7 0 N -1 -1
+turkey_dinner.script 17,7 0 W -1 -1
+dungeonDoor.script 24,10 0 W -1 -1
+windlass.script 18,10 0 E 4 4
+down_lift.script 18,11 0 N 3 3
+down_lift.script 19,11 0 N 3 3
+down_lift.script 20,11 0 N 3 3
+down_lift.script 21,11 0 N 3 3
+down_lift.script 22,11 0 N 3 3
+down_lift.script 23,11 0 N 3 3
+tripWire.script 20,10 0 W 3 3
+wall_shield.script 19,13 1 S -1 -1
+wall_shield.script 22,13 1 S -1 -1
+wall_torch.script 19,10 0 N -1 -1
+hammer_shrine.script 18,17 0 E -1 -1
+hammer.script 18,17 0 E -1 -1
+coins.script 22,16 0 N -1 -1
+coins.script 21,19 0 E -1 -1
+coins.script 21,18 0 W -1 -1
+coins.script 22,18 0 N -1 -1
+coins.script 19,15 0 N -1 -1
+coins.script 18,15 0 N -1 -1
+coins.script 18,19 0 N -1 -1
+coins.script 19,18 0 E -1 -1
+turkey_dinner.script 18,13 0 N -1 -1
+turkey_dinner.script 18,12 0 S -1 -1
+boulder.script 26,20 0 N 5 5
+tripWire.script 26,12 0 N 5 5
+secret_tile.script 30,25 0 N -1 -1
+secret_tile.script 30,27 0 N -1 -1
+wall_ring.script 28,24 0 E -1 -1
+wall_ring.script 24,24 0 N -1 -1
+wall_ring_chain.script 24,27 0 S -1 -1
+wall_ring_chain.script 25,21 1 W -1 -1
+wall_ring.script 27,24 8 E -1 -1
+wall_ring.script 23,26 8 W -1 -1
+wall_torch_blue.script 27,28 0 E -1 -1
+secret_tile.script 22,23 0 N -1 -1
+monolith_exterior.script 11,23 0 W -1 -1
+monolith_interior.script 11,23 0 E -1 -1
+coins.script 11,21 0 N -1 -1
+coins.script 9,21 0 N -1 -1
+coins.script 9,25 0 N -1 -1
+coins.script 11,25 0 N -1 -1
+chalice.script 10,21 0 N -1 -1
+chalice.script 12,21 0 N -1 -1
+chalice.script 12,25 0 N -1 -1
+chalice.script 10,25 0 N -1 -1
+brazier_3d.script 9,23 0 N -1 -1
+brazier_3d.script 13,25 0 N -1 -1
+brazier_3d.script 13,21 0 N -1 -1
+brazier_3d.script 16,23 0 N -1 -1
+brazier_green.script 16,23 0 N -1 -1
+dartshooter.script 12,18 0 W 10 10
+touchPlate.script 11,18 0 N 10 10
+touchPlate.script 9,19 0 N 9 9
+coins.script 12,18 0 N 1 1
+coins.script 16,22 0 N -1 -1
+coins.script 16,24 0 N -1 -1
+crown.script 29,29 0 N -1 -1
+chalice.script 30,24 0 N -1 -1
+chalice.script 23,22 0 N -1 -1
+coins.script 29,25 0 N -1 -1
+coins.script 23,24 0 N -1 -1
+coins.script 22,25 0 N -1 -1
+coins.script 25,27 0 N -1 -1
+skull_pole.script 25,17 0 S -1 -1
+skullshebab.script 28,17 0 S -1 -1
+skullshebab.script 25,14 0 N -1 -1
+skull_pole.script 28,14 0 N -1 -1
+skull_pole.script 30,13 0 E -1 -1
+skull_pole.script 30,16 0 S -1 -1
+skullshebab.script 29,19 0 E -1 -1
+wall_torch.script 28,19 8 S -1 -1
+wall_torch.script 25,19 8 S -1 -1
+skull_pole.script 25,12 0 W -1 -1
+turkey_dinner.script 17,22 0 N -1 -1
+turkey_dinner.script 17,24 0 E -1 -1
+turkey_dinner.script 27,21 0 E -1 -1
+stone_door.script 17,27 0 E 7 7
+stone_door.script 9,30 0 E -1 -1
+wall_torch_blue.script 7,30 0 S -1 -1
+dungeonDoor.script 7,29 0 N -1 -1
+boulder.script 26,30 0 N 6 6
+wall_torch.script 21,29 0 W -1 -1
+wall_shield.script 10,29 1 N -1 -1
+wall_shield.script 27,29 1 S -1 -1
+wall_shield.script 15,3 1 S -1 -1
+wall_shield.script 13,3 2 S -1 -1
+wall_torch.script 14,2 1 N -1 -1
+skull_pole.script 10,1 0 N -1 -1
+skull_pole.script 16,1 0 S -1 -1
+skullshebab.script 20,1 0 S -1 -1
+skull_pole.script 24,0 0 W -1 -1
+skull_pole.script 6,2 0 S -1 -1
+skull_pole.script 1,4 0 E -1 -1
+tripWire.script 15,30 0 E 6 6
+dungeonBridge.script 6,30 7 E -1 -1
+stone_door.script 0,30 0 E -1 -1
+windlass.script 16,26 0 N 7 7
+windlass.script 20,22 0 N 8 8
+stone_door.script 18,23 0 E 8 8
+crown.script 20,26 0 N -1 -1
+turkey_dinner.script 20,27 0 E -1 -1
+barrel.script 19,22 0 W -1 -1
+barrel.script 19,22 0 E -1 -1
+amphora.script 7,18 0 W -1 -1
+amphora.script 7,18 0 N -1 -1
+amphora.script 7,18 0 S -1 -1
+bookshelf.script 13,12 0 S -1 -1
+corner_webs.script 15,12 1 S -1 -1
+corner_webs.script 11,12 0 W -1 -1
+corner_webs.script 2,13 0 S -1 -1
+wall_torch.script 20,24 0 E -1 -1
+corner_webs.script 30,30 3 S -1 -1
+corner_webs.script 29,29 1 N -1 -1
+corner_webs.script 22,22 1 N -1 -1
+corner_webs.script 23,22 1 E -1 -1
+corner_webs.script 30,24 1 N -1 -1
+brazier_3d.script 22,17 0 N -1 -1
+coins.script 25,13 0 N -1 -1
+coins.script 28,12 0 N -1 -1
+dartshooter.script 12,19 0 W 9 9
+chalice.script 11,19 0 N -1 -1
+coins.script 8,28 0 N -1 -1
+dungeonBridge.script 2,30 7 E -1 -1
+wall_torch.script 1,30 0 S -1 -1
+wall_ring_chain.script 20,27 1 E -1 -1
+end_camera.script 5,3 2 S -1 -1
+wall_ring_chain.script 6,11 3 S -1 -1
+wall_ring.script 4,11 3 S -1 -1
+wall_shield.script 5,11 1 S -1 -1
+wall_shield.script 7,11 1 S -1 -1
+wall_shield.script 7,3 1 N -1 -1
+wall_shield.script 15,6 1 E -1 -1
+wall_torch.script 13,8 0 S -1 -1
+brazier_3d.script 6,6 0 N -1 -1
+brazier_red.script 6,6 0 N -1 -1
+window_arab.script 20,10 0 N -1 -1
+window_arab.script 18,13 0 W -1 -1
+window_arab.script 18,15 0 W -1 -1
+window_arab.script 15,12 0 S -1 -1
+window_arab.script 19,19 0 S -1 -1
+start_level_portal.script 2,10 0 N -1 -1
+sewer_grating.script 2,30 3 W -1 -1
+sewer_grating.script 20,27 1 E -1 -1
+sewer_grating.script 23,25 1 W -1 -1
+sewer_grating.script 11,9 1 S -1 -1
+sewer_grating.script 9,2 1 N -1 -1
+secret_tile_mustard.script 11,26 0 N -1 -1
+secret_tile_mustard.script 8,24 0 N -1 -1
+secret_tile_mustard.script 11,20 0 N -1 -1
+chars 39 # script u,v heading
+crongdor.character 2,10 270
+archer.character 12,6 90
+archer.character 7,8 90
+captain.character 8,7 0
+spearman.character 3,3 180
+spearman.character 14,3 90
+captain.character 18,3 90
+spearman.character 18,2 90
+archer.character 19,3 90
+captain.character 12,8 0
+spearman.character 13,8 0
+spearman.character 15,7 0
+spearman.character 19,12 0
+spearman.character 21,12 0
+spearman.character 23,12 0
+archer.character 20,13 0
+captain.character 22,13 0
+captain.character 26,13 0
+captain.character 28,13 0
+archer.character 27,15 0
+archer.character 26,14 0
+spearman.character 26,15 0
+spearman.character 27,18 0
+spearman.character 26,18 0
+captain.character 27,19 0
+archer.character 28,27 0
+archer.character 26,27 0
+archer.character 22,27 0
+archer.character 29,27 0
+captain.character 13,22 270
+spearman.character 13,23 270
+spearman.character 12,24 270
+archer.character 9,24 270
+archer.character 9,22 270
+captain.character 27,29 0
+spearman.character 19,23 270
+spearman.character 10,27 90
+spearman.character 12,27 90
+captain.character 23,1 180
+amb_snds 11 # f u,v h r
+scary_drip_apg.ogg 25,24 23 10.00
+scary_wind_apg.ogg 27,17 21 10.00
+AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav 7,27 13 10.00
+AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav 16,27 10 10.00
+AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav 9,19 12 10.00
+AMBIENCE_SCI-FI_Static_Tonal_loop_stereo.wav 20,17 20 10.00
+AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav 20,3 18 10.00
+AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav 14,3 16 10.00
+AMBIENCE_SCI-FI_Space_Hangar_loop_stereo.wav 6,3 14 10.00
+scary_wind_apg.ogg 27,8 17 10.00
+AMBIENCE_UNDER_WATER_Active_loop_stereo.wav 13,12 17 10.00
+popups 0
