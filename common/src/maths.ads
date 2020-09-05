@@ -41,6 +41,9 @@ package Maths is
    package Vector8_Pointers is new Interfaces.C.Pointers
      (Size, Vector8, Vector8_Array, Vector8'(others => <>));
 
+   Vec3_0 : constant Singles.Vector3 := (0.0, 0.0, 0.0);
+   Vec4_0 : constant Singles.Vector4 := (0.0, 0.0, 0.0, 0.0);
+
    Math_Exception : Exception;
 
    function "=" (Left, Right : Maths.Vector8) return Boolean;
