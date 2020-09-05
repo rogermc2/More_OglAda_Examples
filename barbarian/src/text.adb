@@ -134,7 +134,8 @@ package body Text is
             Length := X - 0.5 * Width;
             Move_Text (ID, Length, Y);
         else
-            null;
+            raise Text_Exception with "Text.Centre_Text encountered an invalid ID:" &
+            Integer'Image (ID);
         end if;
     end Centre_Text;
 
@@ -161,8 +162,8 @@ package body Text is
         end loop;
 
         if not Valid_ID then
-            Put_Line ("Text.Change_Text_Colour encountered an invalid ID:" &
-                      Integer'Image (ID));
+            raise Text_Exception with "Text.Change_Text_Colour encountered an invalid ID:" &
+            Integer'Image (ID);
         end if;
 
     end Change_Text_Colour;
@@ -245,7 +246,9 @@ package body Text is
             Text.Top_Left_Y := Y;
             Renderable_Texts.Replace_Element (ID, Text);
         else
-            null;
+            raise Text_Exception with
+            "Text.Move.Text detected invalid Renderable Text ID: " &
+            Positive'Image (ID);
         end if;
     end Move_Text;
 
@@ -269,8 +272,8 @@ package body Text is
         end loop;
 
         if not Valid_ID then
-            Put_Line ("Text.Set_Text_Visible encountered an invalid ID:" &
-                      Integer'Image (ID));
+            raise Text_Exception with "Text.Set_Text_Visible encountered an invalid ID:" &
+            Integer'Image (ID);
         end if;
 
     end Set_Text_Visible;
@@ -382,12 +385,18 @@ package body Text is
     --  ------------------------------------------------------------------------
 
     procedure Update_Text (ID : Positive; aString : String) is
-        Item : Renderable_Text := Renderable_Texts.Element (ID);
+        Item : Renderable_Text;
         use GL.Types;
     begin
-        Text_To_VBO (aString, Item.Size_Px, Item.Points_VBO, Item.Tex_Coords_VBO,
-                     Item.Point_Count, Single (Item.Bottom_Right_X),
-                     Single (Item.Bottom_Right_Y));
+        if ID <= Positive (Renderable_Texts.Length) then
+            Item := Renderable_Texts.Element (ID);
+            Text_To_VBO (aString, Item.Size_Px, Item.Points_VBO, Item.Tex_Coords_VBO,
+                         Item.Point_Count, Single (Item.Bottom_Right_X),
+                         Single (Item.Bottom_Right_Y));
+        else
+            raise Text_Exception with "Text.Update_Text encountered an invalid ID:" &
+              Integer'Image (ID);
+        end if;
     end Update_Text;
 
     --  ------------------------------------------------------------------------
