@@ -1,0 +1,11 @@
+mesh: javelin_stand.apg
+diffuse_map: wine_stand.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 0
+draw_outlines: 0
+transparent: 1
+starts_visible: 1
+type: tavern
+height: 0.0
+radius: 0.0

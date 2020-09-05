@@ -1,0 +1,10 @@
+archer.character
+captain.character
+crongdor.character
+merchant.character
+sewerman.character
+snake
+sorcerer_tx.character
+spearman.character
+warlock.character
+warlock_tx.character

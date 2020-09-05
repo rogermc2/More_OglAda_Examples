@@ -1,0 +1,32 @@
+#mesh: windlass.apg
+mesh: winch3d.apg
+#outlines_mesh: dungeon_door_smooth.apg
+#diffuse_map: windlass_dm.png
+diffuse_map: winch3d_dm.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 1
+
+setOpeningTime_s: 0.2
+
+character_activated: 1
+npc_activated: 0
+#triggeredByMonster: 0
+#triggeredByProp: 0
+#onlyTriggersOnce: 1
+trigger_only_once: 1
+
+sound_activate: CLASP_Metal_Gate_Mechanism_Unclasp_03_mono.wav
+
+type: windlass
+radius: 0.0
+height: 1.19
+# x is actually .7 in model but want to allow to get closer
+box_xz_point: -0.6, -0.4
+box_xz_point: 0.6, -0.4
+box_xz_point: -0.6, 0.4
+box_xz_point: 0.6, 0.4
+
+
+#radius: 1.0
+#height: 3.0

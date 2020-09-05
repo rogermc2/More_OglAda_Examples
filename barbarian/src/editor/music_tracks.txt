@@ -1,0 +1,13 @@
+Warlock_Symphony.ogg
+Protagonist_through_Pain.ogg
+Strong_Taiko_War_Drum.wav
+War_Drum_Action.wav
+War_Drum_Fluid_Rhythm-loop.wav
+War_Drum_Hero-loop.wav
+War_Drum_Pro_Directions-loop.wav
+War_Drum_Pro_Movements-loop.wav
+War_Drum_Scene.wav
+War_Drum_Speciality.wav
+War_Drum_Thunder-loop.wav
+War_Drum_Tribal-loop.wav
+0

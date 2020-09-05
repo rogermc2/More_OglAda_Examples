@@ -1,0 +1,8 @@
+mesh: tapestry.apg
+diffuse_map: trogtap.png
+specular_map: blankSM.png
+normal_map: blankNM.png
+casts_shadow: 1
+transparent: 1
+
+type: generic

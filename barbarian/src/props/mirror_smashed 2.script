@@ -1,0 +1,14 @@
+mesh: mirror.apg
+#outlines_mesh: mirror.apg
+diffuse_map: mirror_smashed_dm.png
+specular_map: mirror_smashed_sm.png
+normal_map: blankNM.png
+casts_shadow: 1
+
+type: box
+radius: 0.0
+height: 4.2
+box_xz_point: -1.0, -1.0
+box_xz_point: -1.0, -0.8
+box_xz_point: 1.0, -1.0
+box_xz_point: 1.0, -0.8

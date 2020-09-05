@@ -1,0 +1,15 @@
+
+with GL.Types; use GL.Types;
+with GL.Uniforms;
+
+with Shader_Manager;
+
+package Image_Panel is
+
+    procedure Init (Image_Panel_Program : in out Shader_Manager.Shader);
+    procedure Set_Model_Matrix (Model_Uniform_ID : GL.Uniforms.Uniform;
+                                Model_Matrix : Singles.Matrix4);
+    procedure Set_Texture (Texture_Uniform_ID : GL.Uniforms.Uniform;
+                           theTexture : Singles.Matrix4);
+
+end Image_Panel;

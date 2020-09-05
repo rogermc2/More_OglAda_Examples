@@ -1,0 +1,39 @@
+mesh: monolith.apg
+outlines_mesh: monolith.apg
+diffuse_map: monolith_dm.png
+specular_map: monolith_sm.png
+normal_map: blankNM.png
+casts_shadow: 1
+#starts_open:
+starts_visible: 1
+#lamp_offset_pos (0.0, 1.0, 0.0)
+#lamp_diffuse_colour (1.0, 0.0, 1.0)
+#lamp_specular_colour (1.0, 0.5, 1.0)
+#lamp_range 5.0
+#scale: (1.0, 1.0, 1.0)
+uses_sprite: 0
+#sprite_map_rows 1
+#sprite_map_cols 1
+#sprite_y_offset 0.0
+#trigger_only_once: 1
+#character_activated:
+#npc_activated:
+#hide_after_triggering:
+#setOpeningTime_s:
+#goes_back_up:
+#goes_back_down:
+#delay_s:
+#value: 5
+
+type: big_box
+radius: 0.0
+height: 4.4
+box_xz_point: -2.0, -1.0
+box_xz_point: -2.0, 1.0
+box_xz_point: 2.0, -1.0
+box_xz_point: 2.0, 1.0
+hole_height: 4.0
+hole_xz_point: -0.9, -2.0
+hole_xz_point: -0.9, 2.0
+hole_xz_point: 0.9, -2.0
+hole_xz_point: 0.9, 2.0

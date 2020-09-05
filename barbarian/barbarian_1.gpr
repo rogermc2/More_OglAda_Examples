@@ -1,0 +1,16 @@
+with "../common/common";
+with "opengl";
+with "opengl-images";
+with "opengl-glfw";
+limited with "deps/gid/gid";
+
+project Barbarian_1 is
+
+   for Source_Dirs use ("src", "src/management", "src/maps", "../ogl_dev_common");
+   for Object_Dir use "obj";
+   for Main use ("barbarian_1a");
+
+   package Compiler renames Opengl.Compiler;
+
+end Barbarian_1;
+

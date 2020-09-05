@@ -1,0 +1,9 @@
+mesh: boulder.apg
+diffuse_map: boulder_dm.png
+specular_map: boulder_sm.png
+normal_map: rough_nm.png
+casts_shadow: 1
+
+type: boulder
+radius: 0.9
+#if 1.0 it gets stuck going down narrow tubes

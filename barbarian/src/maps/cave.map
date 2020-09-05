@@ -1,0 +1,231 @@
+empty
+99:99
+story_lines 3
+The rest of this file is the introduction text
+which can have line-breaks to format it on the
+book page.
+audio/first_track.ogg
+0
+facings 32x32
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNWNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNWWNNNNNNENNNNNNNNNNNNNNNNNNNN
+NNNNWNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+textures 32x32
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+ccc3cccccccccccccccccccccccccccc
+ccc3d3333333cccccccccccccccccccc
+ccc3dc33333d3ccccccccccccccccccc
+eeeddc3ccc3cdccccccccccccccccccc
+eee3cc3ccc3cdccccccccccccccccccc
+eeeddc3ccc3cdccccccccccccccccccc
+ccc3dc33333d3ccccccccccccccccccc
+ccc3d3333333cccccccccccccccccccc
+ccc3cccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+types 32x32
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+0000000~~~0000000000000000000000
+000//00~0~0000000000000000000000
+0000000~~~0000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+00000000000000000000000000000000
+heights 32x32
+88888888888888888888888888888888
+88888888888888888888888888888888
+888cccccccccc8888888888888888888
+888caaaaaaaacc888888888888888888
+88cc98888889ac888888888888888888
+ccca98888888ac888888888888888888
+caa988889888ac888888888888888888
+ccca98888888ac888888888888888888
+8ccc98888889ac888888888888888888
+8cccaaaaaaaacc888888888888888888
+88ccccccccccc8888888888888888888
+88ccc888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+88888888888888888888888888888888
+dm textures/anton2_dm.png
+sm textures/anton2_sm.png
+props 78 # script uv h f rx tx
+carpet.script 5,5 0 N -1 -1
+carpet.script 6,4 0 S -1 -1
+coins.script 6,4 0 N -1 -1
+chalice.script 5,4 0 N -1 -1
+carpet.script 7,4 0 E -1 -1
+carpet.script 10,8 0 W -1 -1
+carpet.script 10,4 0 W -1 -1
+carpet.script 5,7 0 S -1 -1
+carpet.script 6,8 0 N -1 -1
+carpet.script 11,5 0 W -1 -1
+carpet.script 10,6 0 E -1 -1
+carpet.script 11,7 0 W -1 -1
+carpet.script 7,8 0 E -1 -1
+crown.script 8,6 0 N -1 -1
+coins.script 5,5 0 W -1 -1
+coins.script 6,5 0 W -1 -1
+coins.script 5,8 0 E -1 -1
+coins.script 5,7 0 W -1 -1
+coins.script 6,8 0 N -1 -1
+chalice.script 7,8 0 W -1 -1
+chalice.script 8,4 0 N -1 -1
+chalice.script 11,5 0 N -1 -1
+chalice.script 10,6 0 N -1 -1
+chalice.script 10,8 0 N -1 -1
+chalice.script 6,7 0 N -1 -1
+coins.script 7,4 0 N -1 -1
+coins.script 10,4 0 W -1 -1
+crown.script 11,6 0 W -1 -1
+coins.script 10,7 0 N -1 -1
+coins.script 11,7 0 W -1 -1
+coins.script 9,4 0 S -1 -1
+coins.script 10,5 0 N -1 -1
+coins.script 9,8 0 N -1 -1
+coins.script 8,8 0 S -1 -1
+coins.script 7,3 0 E -1 -1
+coins.script 10,3 0 N -1 -1
+coins.script 6,9 0 N -1 -1
+coins.script 7,9 0 W -1 -1
+coins.script 9,9 0 W -1 -1
+coins.script 12,6 0 W -1 -1
+chalice.script 12,5 0 N -1 -1
+crown.script 12,7 0 E -1 -1
+chalice.script 4,8 0 N -1 -1
+pillar.script 3,7 0 N -1 -1
+pillar.script 3,5 0 N -1 -1
+stone_door.script 1,6 0 E -1 -1
+carpet.script 6,6 0 W -1 -1
+brazier_3d.script 11,4 0 N -1 -1
+brazier_3d.script 11,8 0 W -1 -1
+pillar.script 11,3 0 N -1 -1
+pillar.script 12,4 0 N -1 -1
+pillar.script 12,8 0 N -1 -1
+pillar.script 11,9 0 N -1 -1
+pillar.script 8,9 0 N -1 -1
+pillar.script 8,3 0 N -1 -1
+pillar.script 5,3 0 N -1 -1
+pillar.script 5,9 0 N -1 -1
+chalice.script 4,9 0 N -1 -1
+coins.script 4,4 0 N -1 -1
+coins.script 4,3 0 W -1 -1
+coins.script 6,3 0 N -1 -1
+wall_torch.script 11,6 0 E -1 -1
+amphora.script 9,3 0 N -1 -1
+amphora.script 9,3 0 W -1 -1
+amphora.script 4,5 0 W -1 -1
+amphora.script 4,7 0 E -1 -1
+amphora.script 4,7 0 W -1 -1
+amphora.script 10,9 0 E -1 -1
+amphora.script 6,9 0 E -1 -1
+amphora.script 6,4 0 N -1 -1
+amphora.script 11,5 0 N -1 -1
+amphora.script 11,5 0 E -1 -1
+amphora.script 9,8 0 E -1 -1
+amphora.script 7,8 0 E -1 -1
+amphora.script 7,4 0 W -1 -1
+amphora.script 9,4 0 N -1 -1
+amphora.script 5,8 0 S -1 -1
+amphora.script 4,9 0 S -1 -1
+chars 1 # script u,v heading
+crongdor.character 2,6 270
+amb_snds 0 # f u,v h r
+popups 6
+2 (0.8 0.2 0.2 0.8) LOOK OUT! BOULDER TRAP!
+0 (1 1 1 1) some textnew!!!
+3 (0 1 0 1) crondor saw the stairs\nturn north and to the east\nand drew his sword as he aproached
+4 (0 1 0 1) as stealthily as a panther\ncrongdor crept acros the rooftops
+5 (0 1 0 1) crongdor drew his sword\nand entered the alleyway
+6 (0 1 0 1) crongdor knew well the\nadvantage of travelling higher up\nthan his enemies expected...

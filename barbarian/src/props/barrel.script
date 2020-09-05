@@ -1,0 +1,11 @@
+mesh: barrel_offs.apg
+diffuse_map: barrelDif.png
+specular_map: barrelSpec.png
+normal_map: barrelNM.png
+casts_shadow: 1
+
+type: generic
+radius: 0.7
+height: 1.15
+origin: (0.404, 0.0, -0.403)
+
