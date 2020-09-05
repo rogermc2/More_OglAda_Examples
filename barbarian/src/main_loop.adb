@@ -204,11 +204,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             raise Initialize_Exception with "Changed_Camera_Height failed.";
         end if;
         Camera.Set_Camera_Height (Camera_Height);
-        if not Text.Init_Text_Rendering
+        Text.Init_Text_Rendering
           ("textures/comicscript.png", "fonts/comicscript.meta",
-           Settings.Framebuffer_Width, Settings.Framebuffer_Height) then
-            raise Initialize_Exception with "Init_Text_Rendering failed.";
-        end if;
+           Settings.Framebuffer_Width, Settings.Framebuffer_Height);
         if not Particle_System.Init_Particle_Systems then
             raise Initialize_Exception with "Init_Particle_Systems failed.";
         end if;
@@ -278,7 +276,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         end loop;
 
         if not Main_Window.Should_Close then
-            GUI_Level_Chooser.Init_GUI_Level_Chooser;
+            GUI_Level_Chooser.Init;
         end if;
 
     exception

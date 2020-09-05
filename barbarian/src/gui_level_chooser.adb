@@ -96,6 +96,8 @@ package body GUI_Level_Chooser is
         Choose_Map_Text :=
           Text.Add_Text ("choose thy battle!", 0.0, Top_Margin_Cl,
                          30.0, 1.0, 1.0, 0.0, 0.8);
+        Text.Centre_Text (Choose_Map_Text, 0.0, Top_Margin_Cl);
+        Text.Set_Text_Visible (Choose_Map_Text, False);
 
     exception
         when others =>
