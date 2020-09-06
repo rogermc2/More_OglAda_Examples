@@ -35,6 +35,7 @@ package body Simple_Colour_Technique is
 
       Utilities.Set_Uniform_Location (theTechnique.Colour_Program, "gWVP",
                                       theTechnique.WVP_Location);
+      Utilities.Show_Shader_Program_Data (theTechnique.Colour_Program);
     exception
       when  others =>
          Put_Line ("An exception occurred in Simple_Colour_Technique.Init.");
@@ -73,12 +74,12 @@ package body Simple_Colour_Technique is
             GL.Objects.Programs.Use_Program (theTechnique.Colour_Program);
          end if;
       else
-         Put_Line ("Simple_Colour_Technique.Use_Program Picking_Program link check failed.");
+         Put_Line ("Simple_Colour_Technique.Use_Program Colour_Program link check failed.");
       end if;
 
    exception
       when  others =>
-         Put_Line ("An exception occurred in Simple_Colour_Technique.Picking_Program.");
+         Put_Line ("An exception occurred in Simple_Colour_Technique.Colour_Program.");
          raise;
    end Use_Program;
 

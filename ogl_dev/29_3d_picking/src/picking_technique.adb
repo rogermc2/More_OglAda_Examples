@@ -50,12 +50,14 @@ package body Picking_Technique is
          Put_Line (GL.Objects.Programs.Info_Log (theTechnique.Picking_Program));
       end if;
 
+      Use_Program (theTechnique.Picking_Program);
+      Utilities.Set_Uniform_Location (theTechnique.Picking_Program, "gWVP",
+                                      theTechnique.WVP_Location);
       Utilities.Set_Uniform_Location (theTechnique.Picking_Program, "gDrawIndex",
                                       theTechnique.Draw_Index_Location);
       Utilities.Set_Uniform_Location (theTechnique.Picking_Program, "gObjectIndex",
                                       theTechnique.Object_Index_Location);
-      Utilities.Set_Uniform_Location (theTechnique.Picking_Program, "gWVP",
-                                      theTechnique.WVP_Location);
+      Utilities.Show_Shader_Program_Data (theTechnique.Picking_Program);
    exception
       when  others =>
          Put_Line ("An exception occurred in Picking_Technique.Init.");
