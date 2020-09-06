@@ -442,7 +442,10 @@ package body Utilities is
    begin
       theUniform := GL.Objects.Programs.Uniform_Location (Shader_Program, Location);
       if theUniform < 0 then
-         Put_Line ("Set_Uniform_Location, Uniform " & Location & " not found.");
+         Put_Line ("Utilities.Set_Uniform_Location, Uniform " & Location &
+                   " not found.");
+         Put_Line ("This can occur if Uniform " & Location &
+                   " is not used in the shader code.");
       end if;
    end Set_Uniform_Location;
 
