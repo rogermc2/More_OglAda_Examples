@@ -1,9 +1,5 @@
-//
-// Crongdor the Barbarian
+
 // 3d menu cursor
-// First version Anton Gerdelan, ? 2014
-// Latest code review 15 Dec 2014
-//
 
 #version 150
 out vec4 frag_colour;
@@ -13,10 +9,11 @@ in vec2 st;
 
 uniform sampler2D diff_map;
 
-void main () {
+void main ()
+    {
 	vec4 texel_diff = texture (diff_map, st);
 	vec3 n = normalize (n_eye);
 	float dp = max (0.0, dot (n, normalize (-p_eye)));
 	frag_colour.rgb = texel_diff.rgb * dp;
 	frag_colour.a = texel_diff.a;
-}
+    }

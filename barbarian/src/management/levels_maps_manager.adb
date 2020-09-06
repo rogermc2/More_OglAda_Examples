@@ -14,6 +14,25 @@ package body Levels_Maps_Manager is
 
     -- -------------------------------------------------------------------------
 
+    function Get_Map_Name (Maps : Maps_List; Selected_Map : Positive)
+                           return String is
+        aMap    : Level_Map_Data;
+        Result  : String := "";
+    begin
+        if not Maps.Is_Empty and then Selected_Map <= Maps.Last_Index then
+            aMap := Maps.Element (Selected_Map);
+            Result := To_String (aMap.Map_Name);
+        else
+            Game_Utils.Game_Log
+              ("Levels_Maps_Manager.Get_Map_Name " &
+              "encountered an invalid Map ID: " & Integer'Image (Selected_Map));
+        end if;
+
+        return Result;
+    end Get_Map_Name;
+
+    --  ------------------------------------------------------------------------
+
     procedure Init_Maps (From : Maps_List; To : in out Maps_List;
                          Left_Margin_Cl, Top_Margin_Cl : Float) is
         use Settings;

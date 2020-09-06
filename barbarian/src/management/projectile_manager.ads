@@ -7,8 +7,11 @@ package Projectile_Manager is
                              Arrow_Proj_Type, Fireball_Proj_Type,
                              Skull_Proj_Type, Na_Proj_Type);
 
+    Update_Exception : Exception;
+
     procedure Init_Projectiles;
     procedure Reset_Projectiles;
+    procedure Update_Projectiles (Step_Time : Float);
 
 private
     type Characters_Hit_Array is  array (1 .. 10) of Int;

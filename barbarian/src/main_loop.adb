@@ -14,7 +14,7 @@ with Glfw.Input;
 with Glfw.Input.Keys;
 with Glfw.Windows.Context;
 
---  with Maths;
+with Maths;
 with Utilities;
 
 --  with GL_Util;
@@ -22,7 +22,7 @@ with Utilities;
 with Audio;
 with Blood_Splats;
 with Camera;
---  with Character_Controller;
+with Character_Controller;
 with FB_Effects;
 with Game_Utils;
 with GL_Utils;
@@ -34,8 +34,8 @@ with Maps_Manager;
 with Mesh_Loader;
 with MMenu;
 with Particle_System;
---  with Projectile_Manager;
---  with Prop_Renderer;
+with Projectile_Manager;
+with Prop_Renderer;
 with Settings;
 with Shader_Manager;
 with Shadows;
@@ -53,17 +53,18 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --     Yellow         : constant GL.Types.Singles.Vector4 := (1.0, 1.0, 0.0, 0.5);
     White          : constant Colors.Color := (1.0, 1.0, 1.0, 0.0);
     Key_Pressed    : boolean := False;
---      Flash_Timer    : float := 0.0;
---      Lt             : float := float (Glfw.Time);
     Last_Time      : float := 0.0;
     Mmenu_Open     : Boolean := True;
+--      Title_Track    : constant String := "Warlock_Symphony.ogg";
+--      Is_Playing_Hammer_Track : Boolean := False;
 
---      Logic_Step_Seconds   : constant Float := 0.01;
+    Logic_Step_Seconds   : constant Float := 0.01;
     Char_Map_Tell        : Integer;
     --     Fps_Text             : Integer;
---      Max_Steps_Per_Frame  : Integer;
+    Max_Steps_Per_Frame  : Integer;
     Game_Map             : Maps_Manager.Map;
-    Level_Name            : Unbounded_String :=
+    Game_Camera          : Camera.Camera := Camera.Default_Camera;
+    Level_Name           : Unbounded_String :=
                                  To_Unbounded_String ("anton2");
     Quit_Game            : Boolean := False;
     Skip_Intro           : Boolean := True;
@@ -81,108 +82,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Fps_Text               : Integer;
 
     Initialize_Exception   : Exception;
---      Update_Exception       : Exception;
+    Update_Exception       : Exception;
 
---      function Update_Logic_Steps (Seconds : Float) return Boolean is
---          Accum_Time : Float := Seconds;
---          Time_Step  : Integer := 0;
---          OK         : Boolean := True;
---      begin
---          while OK and Accum_Time >= Logic_Step_Seconds loop
---              OK := Character_Controller.Update_Characters (Logic_Step_Seconds);
---              if not OK then
---                  raise Update_Exception with
---                    "Update_Logic_Steps, error updating characters";
---              end if;
---              OK := Prop_Renderer.Update_Props (Logic_Step_Seconds);
---              if not OK then
---                  raise Update_Exception with
---                    "Update_Logic_Steps, error updating props";
---              end if;
---              OK := Projectile_Manager.Update_Projectiles (Logic_Step_Seconds);
---              if not OK then
---                  raise Update_Exception with
---                    "Update_Logic_Steps, error updating projectiles";
---              end if;
---              Time_Step := Time_Step + 1;
---              Accum_Time := Accum_Time + Logic_Step_Seconds;
---          end loop;
---          Max_Steps_Per_Frame := Game_Utils.Max (Max_Steps_Per_Frame, Time_Step);
---
---          return OK;
---      end Update_Logic_Steps;
-
-    --  ----------------------------------------------------------------------------
-
-    procedure Run_Game (Window : in out Glfw.Windows.Window) is
-    --          use GL.Objects.Buffers;
-    --          use GL.Types.Colors;
-    --          use GL.Types.Singles;     --  for matrix multiplication
-        Width               : GL.Types.Single;
-        Height              : GL.Types.Single;
-        Map_Path            : Unbounded_String;
-        --        Model_Matrix        : constant Matrix4 := Identity4;
-        --          Translation_Matrix  : Matrix4 := Identity4;
-        --          Projection_Matrix   : Matrix4 := Identity4;
-        --          View_Matrix         : Matrix4 := Identity4;
-        --          View_Angle          : constant Maths.Degree := 50.0;
-        --          View_Matrix         : Matrix4 := Identity4;
-        --          Camera_Position     : constant Vector3 := (0.0, 0.0, 5.0);
-        --          Half_Pi             : constant Single := 0.5 * Ada.Numerics.Pi;
-        --          Horizontal_Angle    : constant Single := Ada.Numerics.Pi;
-        --          Vertical_Angle      : constant Single := 0.0;
-        --          Direction           : Vector3;
-        --          Right               : Vector3;
-        --          Up                  : Vector3;
-
-    begin
-        if not Skip_Intro then
-            if GUI_Level_Chooser.Start_Level_Chooser_Loop
-              (MMenu.Are_We_In_Custom_Maps) then
-                Level_Name := To_Unbounded_String
-              (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
-            end if;
-        end if;
-	--   Even if flagged to skip initial intro this means that the level
-	--  chooser can be accessed if the player selects "new game" in the main menu.
-        Skip_Intro := False;
-        --  Level has been selected, start creating level
-        Map_Path := To_Unbounded_String ("maps/") & Level_Name &
-          To_Unbounded_String (".map");
-        --  Name line
-        Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
-        Maps_Manager.Load_Map (To_String (Map_Path), Game_Map, Char_Map_Tell);
-        --  Properties are loaded by Load_Map
-        Game_Utils.Game_Log ("Game map loaded, Char_Map_Tell: " &
-                              Integer'Image (Char_Map_Tell));
-
-        Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-        Width := Single (Window_Width);
-        Height := Single (Window_Height);
-        GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
-
-        --          Maths.Init_Perspective_Transform
-        --            (View_Angle, Width, Height, 0.1, -100.0, Projection_Matrix);
-        --          Shader_Manager.Set_Projection_Matrix (Projection_Matrix);
-
-        --          Translation_Matrix := Maths.Translation_Matrix ((0.0, 0.0, -14.0));
-        --
-        --          View_Matrix := Translation_Matrix * View_Matrix;
-        --          Shader_Manager.Set_View_Matrix (View_Matrix);
-        --        View_Matrix := Translation_Matrix * View_Matrix;
-        --        Shader_Manager.Set_View_Matrix (View_Matrix);
-        --  View and model matrices are initilized to identity by
-        --  shader initialization.
-        Utilities.Clear_Background_Colour_And_Depth (White);
-        GL.Toggles.Enable (GL.Toggles.Depth_Test);
-        GL.Toggles.Enable (GL.Toggles.Cull_Face);
-        GL.Culling.Set_Cull_Face (GL.Culling.Back);
-
-    exception
-        when others =>
-            Put_Line ("An exception occurred in Main_Loop.Run_Game.");
-            raise;
-    end Run_Game;
+    function Update_Logic_Steps (Seconds : Float) return Boolean;
 
     --  ------------------------------------------------------------------------
 
@@ -238,6 +140,119 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
+    procedure Main_Game_Loop is
+        Logic_Delta : constant Float := 0.0;
+    begin
+       if Update_Logic_Steps (Logic_Delta) then
+            null;
+       end if;
+
+    end Main_Game_Loop;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Run_Game (Window : in out Glfw.Windows.Window) is
+       use Maths;
+       use Single_Math_Functions;
+    --          use GL.Objects.Buffers;
+    --          use GL.Types.Colors;
+    --          use GL.Types.Singles;     --  for matrix multiplication
+        Width               : GL.Types.Single;
+        Height              : GL.Types.Single;
+        Map_Path            : Unbounded_String;
+        Flash_Timer         : Float := 0.0;
+        Curr_Time           : Integer := Integer (Glfw.Time);
+        Last_Time           : Integer := Integer (Glfw.Time);
+        Elapsed_Time        : Integer := Curr_Time - Last_Time;
+        b                   : GL.Types.Single := 0.0;
+        Colour              : Colors.Color;
+        Is_Running          : Boolean := False;
+        --        Model_Matrix        : constant Matrix4 := Identity4;
+        --          Translation_Matrix  : Matrix4 := Identity4;
+        --          Projection_Matrix   : Matrix4 := Identity4;
+        --          View_Matrix         : Matrix4 := Identity4;
+        --          View_Angle          : constant Maths.Degree := 50.0;
+        --          View_Matrix         : Matrix4 := Identity4;
+        --          Camera_Position     : constant Vector3 := (0.0, 0.0, 5.0);
+        --          Half_Pi             : constant Single := 0.5 * Ada.Numerics.Pi;
+        --          Horizontal_Angle    : constant Single := Ada.Numerics.Pi;
+        --          Vertical_Angle      : constant Single := 0.0;
+        --          Direction           : Vector3;
+        --          Right               : Vector3;
+        --          Up                  : Vector3;
+
+    begin
+--          Play_Music (Title_Track);
+--          Is_Playing_Hammer_Track := False;
+
+        if not Skip_Intro then
+            Is_Running := True;
+            Game_Camera.Is_Dirty := True;
+            while Is_Running loop
+                Last_Time := Curr_Time;
+                if Flash_Timer < 0.25 then
+                    Flash_Timer := Flash_Timer + Float (Elapsed_Time);
+                    b := Sin (Single ((30.0)) * Single (Curr_Time));
+                    Colour := (b, b, b, 1.0);
+                    Utilities.Clear_Background_Colour_And_Depth (Colour);
+                else
+                    Utilities.Clear_Background_Colour_And_Depth (Black);
+                    Draw_Title_Only;
+                end if;
+                Is_Running := False;
+            end loop;
+
+            if GUI_Level_Chooser.Start_Level_Chooser_Loop
+              (MMenu.Are_We_In_Custom_Maps) then
+                Level_Name := To_Unbounded_String
+              (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
+            end if;
+        end if;
+	--   Even if flagged to skip initial intro this means that the level
+	--  chooser can be accessed if the player selects "new game" in the main menu.
+        Skip_Intro := False;
+        --  Level has been selected, start creating level
+        Map_Path := To_Unbounded_String ("maps/") & Level_Name &
+          To_Unbounded_String (".map");
+        --  Name line
+        Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
+        Maps_Manager.Load_Map (To_String (Map_Path), Game_Map, Char_Map_Tell);
+        --  Properties are loaded by Load_Map
+        Game_Utils.Game_Log ("Game map loaded, Char_Map_Tell: " &
+                              Integer'Image (Char_Map_Tell));
+
+        Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+        Width := Single (Window_Width);
+        Height := Single (Window_Height);
+        GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
+
+        --          Maths.Init_Perspective_Transform
+        --            (View_Angle, Width, Height, 0.1, -100.0, Projection_Matrix);
+        --          Shader_Manager.Set_Projection_Matrix (Projection_Matrix);
+
+        --          Translation_Matrix := Maths.Translation_Matrix ((0.0, 0.0, -14.0));
+        --
+        --          View_Matrix := Translation_Matrix * View_Matrix;
+        --          Shader_Manager.Set_View_Matrix (View_Matrix);
+        --        View_Matrix := Translation_Matrix * View_Matrix;
+        --        Shader_Manager.Set_View_Matrix (View_Matrix);
+        --  View and model matrices are initilized to identity by
+        --  shader initialization.
+        Utilities.Clear_Background_Colour_And_Depth (White);
+        GL.Toggles.Enable (GL.Toggles.Depth_Test);
+        GL.Toggles.Enable (GL.Toggles.Cull_Face);
+        GL.Culling.Set_Cull_Face (GL.Culling.Back);
+
+        Main_Game_Loop;
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Main_Loop.Run_Game.");
+            raise;
+    end Run_Game;
+
+    --  ------------------------------------------------------------------------
+
     procedure Setup is
     --          use GL.Objects.Buffers;
     --        Font_File : string := "../fonts/Helvetica.ttc";
@@ -284,6 +299,33 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             Put_Line ("An exception occurred in Main_Loop.Setup.");
             raise;
     end Setup;
+
+    --  ------------------------------------------------------------------------
+
+    function Update_Logic_Steps (Seconds : Float) return Boolean is
+        Accum_Time : Float := Seconds;
+        Time_Step  : Integer := 0;
+        OK         : Boolean := True;
+    begin
+        while OK and Accum_Time >= Logic_Step_Seconds loop
+            OK := Character_Controller.Update_Characters (Logic_Step_Seconds);
+            if not OK then
+                raise Update_Exception with
+                  "Update_Logic_Steps, error updating characters";
+            end if;
+            OK := Prop_Renderer.Update_Props (Logic_Step_Seconds);
+            if not OK then
+                raise Update_Exception with
+                  "Update_Logic_Steps, error updating props";
+            end if;
+            Projectile_Manager.Update_Projectiles (Logic_Step_Seconds);
+            Time_Step := Time_Step + 1;
+            Accum_Time := Accum_Time + Logic_Step_Seconds;
+        end loop;
+        Max_Steps_Per_Frame := Game_Utils.Max (Max_Steps_Per_Frame, Time_Step);
+
+        return OK;
+    end Update_Logic_Steps;
 
     --  ----------------------------------------------------------------------------
 
