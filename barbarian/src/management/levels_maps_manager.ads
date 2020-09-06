@@ -21,6 +21,8 @@ package Levels_Maps_Manager is
     type Custom_Maps_List is new Maps_Package.Vector with null record;
     type Maps_List is new Maps_Package.Vector with null record;
 
+    function Get_Map_Name (Maps : Maps_List; Selected_Map : Positive)
+                           return String;
     procedure Init_Maps (From : Maps_List; To : in out Maps_List;
                          Left_Margin_Cl, Top_Margin_Cl : Float);
     procedure Load_Names (Path : String; Names : in out Maps_List);

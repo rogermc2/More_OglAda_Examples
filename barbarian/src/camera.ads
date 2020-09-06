@@ -5,13 +5,6 @@ with Maths;
 
 package Camera is
 
-    type Camera is private;
-
-    function Default_Camera return Camera;
-    procedure Init_Camera;
-    procedure Set_Camera_Height (Height : Single);
-
-private
     type Camera is record
         PV                 : Singles.Matrix4 := Singles.Identity4;
         View_Matrix        : Singles.Matrix4 := (others => (others => 0.0));
@@ -34,5 +27,9 @@ private
         Is_Dirty                        : Boolean := True;
         Manual_Override                 : Boolean := False;
     end record;
+
+    function Default_Camera return Camera;
+    procedure Init_Camera;
+    procedure Set_Camera_Height (Height : Single);
 
 end Camera;
