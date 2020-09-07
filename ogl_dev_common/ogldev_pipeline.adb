@@ -174,7 +174,7 @@ package body Ogldev_Pipeline is
       Camera_Translation_Trans : Matrix4;
       Camera_Rotate_Trans      : Matrix4;
    begin
-      Camera_Translation_Trans := Maths.Translation_Matrix (-P.Camera.Position);
+      Camera_Translation_Trans := Maths.Translation_Matrix (P.Camera.Position);
       Camera_Rotate_Trans := Ogldev_Math.Init_Camera_Transform (P.Camera.Target, P.Camera.Up);
       P.View_Transform := Camera_Translation_Trans * Camera_Rotate_Trans;
    exception

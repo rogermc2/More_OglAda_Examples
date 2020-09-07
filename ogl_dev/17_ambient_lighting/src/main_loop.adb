@@ -59,7 +59,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Lighting_Technique_17;
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : Singles.Vector3 := (0.0, 0.0, 3.0); --  Normalized by Camera.Init
+      Position            : Singles.Vector3 := (0.0, 0.0, -3.0); --  Normalized by Camera.Init
       Target              : Singles.Vector3 := (0.0, 0.0, -1.0);  --  Normalized by Camera.Init
       Up                  : Singles.Vector3 := (0.0, 1.0, 0.0);
    begin

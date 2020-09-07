@@ -89,7 +89,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Buffers.Create_Vertex_Buffer (VBO);
          Buffers.Create_Index_Buffer (IBO);
 
-
          Ogldev_Math.Set_Perspective_Info (Info   => Perspective_Proj_Info,
                                            FOV    => 60.0,
                                            Width  => GL.Types.UInt (Window_Width),
@@ -113,7 +112,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width         : Glfw.Size;
       Window_Height        : Glfw.Size;
       Pipe                 : Ogldev_Pipeline.Pipeline;
-      Camera_Position      : constant GL.Types.Singles.Vector3 := (1.0, 1.0, 3.0);
+      Camera_Position      : constant GL.Types.Singles.Vector3 := (1.0, 1.0, -3.0);
       Camera_Target        : constant GL.Types.Singles.Vector3 := (0.0, 0.0, 2.0);
       Camera_Up            : constant GL.Types.Singles.Vector3 := (0.0, 1.0, 0.0);
    begin

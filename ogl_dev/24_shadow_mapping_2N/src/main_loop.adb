@@ -40,7 +40,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Ground_Texture         : Ogldev_Texture.Ogl_Texture;
    Perspective_Proj_Info  : Ogldev_Math.Perspective_Projection_Info;
    Spot_Lights            : Lighting_Technique_24N.Spot_Lights_Array (1 .. 1);
-   Phoenix_Position       : constant Singles.Vector3 := (0.0, 0.0, 3.0);
+   Phoenix_Position       : constant Singles.Vector3 := (0.0, 0.0, -3.0);
    Scale                  : Single := 0.0;
 
    procedure Render_Pass  (Window : in out Glfw.Windows.Window);
@@ -55,7 +55,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Window_Width    : Glfw.Size;
       Window_Height   : Glfw.Size;
 
-      Camera_Position : constant Singles.Vector3 := (3.0, 8.0, 10.0);
+      Camera_Position : constant Singles.Vector3 := (3.0, 8.0, -10.0);
       Target          : constant Singles.Vector3 := (0.0, -0.2, 1.0);
       Up              : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -167,7 +167,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Set_Scale (Pipe, 10.0);  --  10.0
-      Set_World_Position (Pipe, 0.0, 0.0, 1.0);
+      Set_World_Position (Pipe, 0.0, -5.0, 1.0);
       Set_Rotation (Pipe, -90.0, 0.0, 0.0);
       Set_Camera (Pipe, Get_Position (Game_Camera),
                   Get_Target (Game_Camera), Get_Up (Game_Camera));

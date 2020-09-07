@@ -44,7 +44,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         Window_Width        : Glfw.Size;
         Window_Height       : Glfw.Size;
-        Camera_Position     : constant Singles.Vector3 := (2.0, 2.0, 10.0); --  Normalized by Camera.Init
+        Camera_Position     : constant Singles.Vector3 := (2.0, 2.0, -10.0); --  Normalized by Camera.Init
         Target_Position     : constant Singles.Vector3 := (0.0, 0.0, -1.0);  --  Normalized by Camera.Init
         Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
     begin
@@ -73,7 +73,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
             Ogldev_Basic_Lighting.Set_Color_Texture_Unit_Location (Light_Technique, 0);
 
             Meshes_22.Load_Mesh
-              (theMesh, "/Ada_Source/OglAda_Examples/ogl_dev/content/phoenix_ugv.md2");
+              (theMesh, "../content/phoenix_ugv.md2");
         else
             Put_Line ("Main_Loop.Init, Ogldev_Basic_Lighting.Init failed.");
         end if;
@@ -133,7 +133,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
         Ogldev_Pipeline.Set_Scale (Pipe, 0.04);
         Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 30.0 * Scale, 0.0);
-        Ogldev_Pipeline.Set_World_Position (Pipe, 0.0, 0.0, -6.0);
+        Ogldev_Pipeline.Set_World_Position (Pipe, 4.0, -3.0, -6.0);
         Ogldev_Pipeline.Set_Camera (Pipe, Game_Camera);
         Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
         Ogldev_Pipeline.Init_Transforms  (Pipe);

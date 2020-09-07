@@ -53,7 +53,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
 
-      Camera_Position     : constant Singles.Vector3 := (0.5, 1.025, 0.25);
+      Camera_Position     : constant Singles.Vector3 := (0.5, 1.025, -0.25);
       Target              : constant Singles.Vector3 := (0.0, -0.5, -1.0);
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
       Particle_System_Pos : constant GL.Types.Singles.Vector3 := (0.0, 0.0, -1.0);

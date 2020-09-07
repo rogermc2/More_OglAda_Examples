@@ -52,10 +52,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
 
-      Position            : constant Singles.Vector3 := (0.0, 0.4, 2.0);  --  Normalized by Camera.Init
-      Target              : constant Singles.Vector3 := (0.0, 0.2, 1.0);  --  Normalized by Camera.Init
+      Position            : constant Singles.Vector3 := (0.0, -0.4, -2.0);  --  Normalized by Camera.Init
+      Target              : constant Singles.Vector3 := (0.0, 0.2, -1.0);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
-      Particle_System_Pos : constant Singles.Vector3 := (0.0, 0.0, 1.0);
+      Particle_System_Pos : constant Singles.Vector3 := (0.0, 0.3, -1.0);
    begin
       VAO.Initialize_Id;
       VAO.Bind;

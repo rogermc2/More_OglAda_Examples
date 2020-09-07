@@ -55,7 +55,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Window_Width        : Glfw.Size;
       Window_Height       : Glfw.Size;
-      Position            : constant Singles.Vector3 := (0.0, 0.0, 1.0); --  Normalized by Camera.Init
+      Position            : constant Singles.Vector3 := (0.0, 0.0, -1.0); --  Normalized by Camera.Init
       Target              : constant Singles.Vector3 := (0.0, 0.0, 1.0);  --  Normalized by Camera.Init
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
@@ -78,7 +78,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Lighting_Technique_18.Set_Texture_Unit (0);
          if  Ogldev_Texture.Init_Texture (theTexture, GL.Low_Level.Enums.Texture_2D,
-                                      "/Ada_Source/OglAda_Examples/ogl_dev/content/test.png") then
+                                      "../../ogl_dev/content/test.png") then
                 Ogldev_Texture.Load (theTexture);
          else
                 Put_Line ("Main_Loop.Init test.png failed to load");
