@@ -5,7 +5,7 @@
 // Latest code review 28 Dec 2014
 //
 
-#version 150
+#version 410 core
 out vec4 frag_colour;
 
 in vec3 p_loc, n_loc;
@@ -16,7 +16,8 @@ vec3 bot_c = vec3 (0.0, 0.0, 1.0);
 
 uniform float time;
 
-void main () {
+void main ()
+    {
 	// title is 0 to 3 on vertical
 	float top_f = max (0.0, p_loc.y - 2.0);
 	
@@ -46,4 +47,4 @@ void main () {
 	frag_colour.rgb += vec3 (shinef,shinef,shinef);
 	
 	frag_colour.a = 1.0;
-}
+    }

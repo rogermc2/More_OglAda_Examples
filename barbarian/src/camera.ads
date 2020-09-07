@@ -5,7 +5,7 @@ with Maths;
 
 package Camera is
 
-    type Camera is record
+    type Camera_Data is record
         PV                 : Singles.Matrix4 := Singles.Identity4;
         View_Matrix        : Singles.Matrix4 := (others => (others => 0.0));
         Projection_Matrix  : Singles.Matrix4 := (others => (others => 0.0));
@@ -28,7 +28,8 @@ package Camera is
         Manual_Override                 : Boolean := False;
     end record;
 
-    function Default_Camera return Camera;
+    function Default_Camera return Camera_Data;
+    function Projection_Matrix return Singles.Matrix4;
     procedure Init_Camera;
     procedure Set_Camera_Height (Height : Single);
 

@@ -2,13 +2,19 @@
 with Settings;
 
 package body Camera is
-    G_Cam         : Camera;
+    G_Cam         : Camera_Data;
     Prev_Cam_Pos  : Singles.Vector3 := (0.0, 0.0, 0.0);
     Far_Point_Dir : Singles.Vector3 := (0.0, 0.0, -1.0);
     First_Person  : Boolean := False;
 
     --  ------------------------------------------------------------------------
 
+    function Projection_Matrix return Singles.Matrix4 is
+    begin
+        return G_Cam.Projection_Matrix;
+    end Projection_Matrix;
+
+    --  ------------------------------------------------------------------------
     procedure Init_Camera is
         use Singles;
         use Maths;
@@ -55,7 +61,7 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
-    function Default_Camera return Camera is
+    function Default_Camera return Camera_Data is
     begin
         return G_Cam;
     end Default_Camera;
