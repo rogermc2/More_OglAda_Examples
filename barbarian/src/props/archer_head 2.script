@@ -1,8 +1,0 @@
-mesh: assyr_archer_head.apg
-diffuse_map: archer_head_dm.png
-specular_map: archer_head_sm.png
-normal_map: blankNM.png
-casts_shadow: 1
-
-type: decapitated_head
-radius: 0.2

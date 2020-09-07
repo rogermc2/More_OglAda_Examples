@@ -1,9 +1,0 @@
-mesh: warlock_head.apg
-#outlines_mesh: warlock_hood.apg
-diffuse_map: warlock_head_dm.png
-specular_map: warlock_head_sm.png
-normal_map: blankNM.png
-casts_shadow: 1
-
-type: decapitated_head
-radius: 0.2
