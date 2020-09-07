@@ -1,4 +1,6 @@
 
+with GL.Types;
+
 package MMenu is
 
     function Are_We_In_Custom_Maps return Boolean;
@@ -7,7 +9,7 @@ package MMenu is
     procedure Draw_Menu (Elapsed : Float);
     procedure Draw_Title_Only (Cursor_SF : GL.Types.Single);
     function End_Story_Open return Boolean;
-    function Init_MMenu return Boolean;
+    procedure Init_MMenu;
     procedure Start_Mmenu_Title_Bounce;
     function Update_MMenu (Delta_Time : Float) return Boolean;
 
