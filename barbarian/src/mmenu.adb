@@ -17,7 +17,6 @@ with Utilities;
 with Camera;
 with Cursor_Shader_Manager;
 with GL_Utils;
-with Settings;
 with Shader_Attributes;
 with Title_Shader_Manager;
 
@@ -93,13 +92,11 @@ package body MMenu is
 
     --  ------------------------------------------------------------------------
 
-    procedure Draw_Title_Only (Cursor_SF : GL.Types.Single) is
+    procedure Draw_Title_Only is
         use GL.Types;
         use Singles;
         use Maths;
-        Scale        : constant Single :=
-                         Cursor_SF / Single (Settings.Framebuffer_Height);
-        S_Matrix     : constant Singles.Matrix4 := Scaling_Matrix (Scale);
+        S_Matrix     : constant Singles.Matrix4 := Scaling_Matrix (10.0);
         T_Matrix     : constant Singles.Matrix4 :=
                          Translation_Matrix ((0.0, -10.0, -30.0));
         M_Matrix     : constant Singles.Matrix4 := T_Matrix * S_Matrix;

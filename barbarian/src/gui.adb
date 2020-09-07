@@ -67,13 +67,13 @@ package body GUI is
         use  GL.Toggles;
         use GL.Types;
         use Singles;
-        Scale_X    : Single := 64.0 / Single (Settings.Framebuffer_Width);
-	Scale_Y    : Single := 64.0 / Single (Settings.Framebuffer_Height);
-	X          : Singles.Vector3 :=
+        Scale_X    : constant Single := 64.0 / Single (Settings.Framebuffer_Width);
+	Scale_Y    : constant Single := 64.0 / Single (Settings.Framebuffer_Height);
+	X          : constant Singles.Vector3 :=
                        ((-3.0 * Scale_X), (0.0), (3.0 * Scale_X));
         X_GL_Index : constant array (1 .. 3) of GL.Index_Homogeneous :=
                        (GL.X, GL.Y, GL.X);
-	Y          : Single := -1.0 + 3.0 * Scale_Y;
+	Y          : constant Single := -1.0 + 3.0 * Scale_Y;
         M_Matrix   : Singles.Matrix4 := Singles.Identity4;
     begin
         GL.Culling.Set_Front_Face (GL.Types.Clockwise);
