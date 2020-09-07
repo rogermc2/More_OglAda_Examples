@@ -63,7 +63,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --     Fps_Text             : Integer;
     Max_Steps_Per_Frame  : Integer;
     Game_Map             : Maps_Manager.Map;
-    Game_Camera          : Camera.Camera := Camera.Default_Camera;
+    Game_Camera          : Camera.Camera_Data := Camera.Default_Camera;
     Level_Name           : Unbounded_String :=
                                  To_Unbounded_String ("anton2");
     Quit_Game            : Boolean := False;
@@ -130,9 +130,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         if not Manifold.Init_Manifold then
             raise Initialize_Exception with "Init_Manifold failed.";
         end if;
-        if not MMenu.Init_MMenu then
-            raise Initialize_Exception with "Init_MMenu failed.";
-        end if;
+        MMenu.Init_MMenu;
         if not Input_Handler.Init_Input_Handler then
             raise Initialize_Exception with "Init_Input_Handler failed.";
         end if;
@@ -152,8 +150,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Run_Game (Window : in out Glfw.Windows.Window) is
-       use Maths;
-       use Single_Math_Functions;
+       use Maths.Single_Math_Functions;
     --          use GL.Objects.Buffers;
     --          use GL.Types.Colors;
     --          use GL.Types.Singles;     --  for matrix multiplication
@@ -161,9 +158,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Height              : GL.Types.Single;
         Map_Path            : Unbounded_String;
         Flash_Timer         : Float := 0.0;
-        Curr_Time           : Integer := Integer (Glfw.Time);
+        Curr_Time           : constant Integer := Integer (Glfw.Time);
         Last_Time           : Integer := Integer (Glfw.Time);
-        Elapsed_Time        : Integer := Curr_Time - Last_Time;
+        Elapsed_Time        : constant Float := Float (Curr_Time - Last_Time);
         b                   : GL.Types.Single := 0.0;
         Colour              : Colors.Color;
         Is_Running          : Boolean := False;
@@ -191,16 +188,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             while Is_Running loop
                 Last_Time := Curr_Time;
                 if Flash_Timer < 0.25 then
-                    Flash_Timer := Flash_Timer + Float (Elapsed_Time);
+                    Flash_Timer := Flash_Timer + Elapsed_Time;
                     b := Sin (Single ((30.0)) * Single (Curr_Time));
                     Colour := (b, b, b, 1.0);
                     Utilities.Clear_Background_Colour_And_Depth (Colour);
                 else
                     Utilities.Clear_Background_Colour_And_Depth (Black);
-                    Draw_Title_Only;
+                    MMenu.Draw_Title_Only;
                 end if;
+                GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
+                Glfw.Input.Poll_Events;
+                Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
                 Is_Running := False;
-            end loop;
+            end loop;  --  Is_Running
 
             if GUI_Level_Chooser.Start_Level_Chooser_Loop
               (MMenu.Are_We_In_Custom_Maps) then
@@ -226,18 +226,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Height := Single (Window_Height);
         GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
 
-        --          Maths.Init_Perspective_Transform
-        --            (View_Angle, Width, Height, 0.1, -100.0, Projection_Matrix);
-        --          Shader_Manager.Set_Projection_Matrix (Projection_Matrix);
-
-        --          Translation_Matrix := Maths.Translation_Matrix ((0.0, 0.0, -14.0));
-        --
-        --          View_Matrix := Translation_Matrix * View_Matrix;
-        --          Shader_Manager.Set_View_Matrix (View_Matrix);
-        --        View_Matrix := Translation_Matrix * View_Matrix;
-        --        Shader_Manager.Set_View_Matrix (View_Matrix);
-        --  View and model matrices are initilized to identity by
-        --  shader initialization.
         Utilities.Clear_Background_Colour_And_Depth (White);
         GL.Toggles.Enable (GL.Toggles.Depth_Test);
         GL.Toggles.Enable (GL.Toggles.Cull_Face);

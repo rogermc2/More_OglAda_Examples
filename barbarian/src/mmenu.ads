@@ -7,7 +7,7 @@ package MMenu is
     function Did_User_Choose_Custom_Maps return Boolean;
     function Did_User_Choose_New_Game return Boolean;
     procedure Draw_Menu (Elapsed : Float);
-    procedure Draw_Title_Only (Cursor_SF : GL.Types.Single);
+    procedure Draw_Title_Only;
     function End_Story_Open return Boolean;
     procedure Init_MMenu;
     procedure Start_Mmenu_Title_Bounce;
