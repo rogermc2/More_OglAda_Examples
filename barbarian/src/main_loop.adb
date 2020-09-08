@@ -131,23 +131,26 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             raise Initialize_Exception with "Init_Manifold failed.";
         end if;
         MMenu.Init_MMenu;
-        if not Input_Handler.Init_Input_Handler then
-            raise Initialize_Exception with "Init_Input_Handler failed.";
-        end if;
+        Input_Handler.Init;
     end Init_Modules;
 
     --  ------------------------------------------------------------------------
 
-    procedure Introduction (Current_Time, Elapsed_Time : Float;
+    procedure Introduction (Window : in out Glfw.Windows.Window;
                             Last_Time, Flash_Timer : in out Float;
                             Is_Running : in out Boolean) is
+        use Glfw.Input.Keys;
         use Maths.Single_Math_Functions;
-        b      : GL.Types.Single := 0.0;
-        Colour : Colors.Color;
+        Current_Time  : Float := 0.0;
+        Elapsed_Time  : Float;
+        b             : GL.Types.Single := 0.0;
+        Colour        : Colors.Color;
     begin
         Is_Running := True;
         Game_Camera.Is_Dirty := True;
         while Is_Running loop
+            Current_Time := Float (Glfw.Time);
+            Elapsed_Time := Current_Time - Last_Time;
             Last_Time := Current_Time;
             if Flash_Timer < 0.25 then
                 Flash_Timer := Flash_Timer + Elapsed_Time;
@@ -161,14 +164,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
             Glfw.Input.Poll_Events;
             Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
-            Is_Running := False;
-        end loop;  --  Is_Running
 
-        if GUI_Level_Chooser.Start_Level_Chooser_Loop
-          (MMenu.Are_We_In_Custom_Maps) then
-            Level_Name := To_Unbounded_String
-              (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
-        end if;
+            Game_Camera.Is_Dirty := False;
+            Is_Running := Input_Handler.Was_Key_Pressed (Escape) or
+              Input_Handler.Was_Key_Pressed (Space) or
+              Input_Handler.Was_Key_Pressed (Enter) or
+              Input_Handler.Was_OK_Action_Pressed or
+              Input_Handler.Was_Attack_Action_Pressed;
+            if Window.Should_Close then
+                Game_Utils.Game_Log ("Window closed by user or system ...exiting");
+            else
+                Game_Camera.Is_Dirty := False;
+            end if;
+        end loop;  --  Is_Running
 
     end Introduction;
 
@@ -185,17 +193,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Run_Game (Window : in out Glfw.Windows.Window) is
-        --          use GL.Objects.Buffers;
-        --          use GL.Types.Colors;
-        --          use GL.Types.Singles;     --  for matrix multiplication
+    --          use GL.Objects.Buffers;
+    --          use GL.Types.Colors;
+    --          use GL.Types.Singles;     --  for matrix multiplication
         Width               : GL.Types.Single;
         Height              : GL.Types.Single;
         Map_Path            : Unbounded_String;
         Flash_Timer         : Float := 0.0;
         Curr_Time           : constant Float := Float (Glfw.Time);
+        Current_Time        : Float := 0.0;
+        Delta_Time          : Float := 0.0;
         Last_Time           : Float := Float (Glfw.Time);
-        Elapsed_Time        : constant Float := Curr_Time - Last_Time;
-        Is_Running          : Boolean := False;
         --        Model_Matrix        : constant Matrix4 := Identity4;
         --          Translation_Matrix  : Matrix4 := Identity4;
         --          Projection_Matrix   : Matrix4 := Identity4;
@@ -211,38 +219,39 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         --          Up                  : Vector3;
 
     begin
-        --          Play_Music (Title_Track);
-        --          Is_Playing_Hammer_Track := False;
 
-        if not Skip_Intro then
-            Introduction (Curr_Time, Elapsed_Time, Last_Time, Flash_Timer,
-                          Is_Running);
-        end if;
+        while not Quit_Game loop
+            if GUI_Level_Chooser.Start_Level_Chooser_Loop
+              (MMenu.Are_We_In_Custom_Maps) then
+                Level_Name := To_Unbounded_String
+                  (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
+            end if;
 
-        --   Even if flagged to skip initial intro this means that the level
-        --  chooser can be accessed if the player selects "new game" in the main menu.
-        Skip_Intro := False;
-        --  Level has been selected, start creating level
-        Map_Path := To_Unbounded_String ("maps/") & Level_Name &
-          To_Unbounded_String (".map");
-        --  Name line
-        Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
-        Maps_Manager.Load_Map (To_String (Map_Path), Game_Map, Char_Map_Tell);
-        --  Properties are loaded by Load_Map
-        Game_Utils.Game_Log ("Game map loaded, Char_Map_Tell: " &
-                               Integer'Image (Char_Map_Tell));
+            --   Even if flagged to skip initial intro this means that the level
+            --  chooser can be accessed if the player selects "new game" in the main menu.
+            Skip_Intro := False;
+            --  Level has been selected, start creating level
+            Map_Path := To_Unbounded_String ("maps/") & Level_Name &
+              To_Unbounded_String (".map");
+            --  Name line
+            Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
+            Maps_Manager.Load_Map (To_String (Map_Path), Game_Map, Char_Map_Tell);
+            --  Properties are loaded by Load_Map
+            Game_Utils.Game_Log ("Game map loaded, Char_Map_Tell: " &
+                                   Integer'Image (Char_Map_Tell));
 
-        Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-        Width := Single (Window_Width);
-        Height := Single (Window_Height);
-        GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
+            Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+            Width := Single (Window_Width);
+            Height := Single (Window_Height);
+            GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
 
-        Utilities.Clear_Background_Colour_And_Depth (White);
-        GL.Toggles.Enable (GL.Toggles.Depth_Test);
-        GL.Toggles.Enable (GL.Toggles.Cull_Face);
-        GL.Culling.Set_Cull_Face (GL.Culling.Back);
+            Utilities.Clear_Background_Colour_And_Depth (White);
+            GL.Toggles.Enable (GL.Toggles.Depth_Test);
+            GL.Toggles.Enable (GL.Toggles.Cull_Face);
+            GL.Culling.Set_Cull_Face (GL.Culling.Back);
 
-        Main_Game_Loop (Curr_Time);
+            Main_Game_Loop (Curr_Time);
+        end loop;
 
     exception
         when others =>
@@ -252,11 +261,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Setup is
-    --          use GL.Objects.Buffers;
-    --        Font_File : string := "../fonts/Helvetica.ttc";
+    procedure Setup (Window : in out Glfw.Windows.Window) is
         Current_Time : Float := 0.0;
         Delta_Time   : Float := 0.0;
+        Flash_Timer  : Float := 0.0;
+        Is_Running   : Boolean := False;
+        Continue     : Boolean := True;
     begin
         --          Param := Game_Utils.Check_Param ("-map");
         Text.Init_Particle_Texts;
@@ -268,25 +278,45 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GUI.Load_Gui_Shaders;
         Init_Modules;
 
+        --          Play_Music (Title_Track);
+        --          Is_Playing_Hammer_Track := False;
+
+        if not Skip_Intro then
+            Introduction (Window, Last_Time, Flash_Timer, Is_Running);
+        end if;
+
+        --  initiate main menu loop
         MMenu.Start_Mmenu_Title_Bounce;
         Utilities.Clear_Background_Colour_And_Depth (Black);
+
+        if not Skip_Intro then
+            MMenu.Set_MMenu_Open (True);
+        end if;
+
         Last_Time := GL_Utils.Get_Elapsed_Seconds;
         GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
                                 Settings.Framebuffer_Height);
-        while Mmenu_Open loop
+        while Mmenu_Open and Continue loop
             Current_Time := GL_Utils.Get_Elapsed_Seconds;
             Delta_Time := Current_Time - Last_Time;
             Last_Time := Current_Time;
             Utilities.Clear_Background_Colour_And_Depth (Black);
             MMenu.Draw_Menu (Delta_Time);
+
             GUI.Draw_Controller_Button_Overlays (Delta_Time);
             Glfw.Input.Poll_Events;
-            Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
+            --  Poll_Joystick
+            Glfw.Windows.Context.Swap_Buffers (Window'Access);
+            if not MMenu.Update_MMenu (Delta_Time) then
+                MMenu.Set_MMenu_Open (False);
+                Quit_Game := True;
+            end if;
 
-            Quit_Game := not MMenu.Update_MMenu (Delta_Time);
-            Mmenu_Open := not Quit_Game;
-            Mmenu_Open := Mmenu_Open and not (MMenu.Did_User_Choose_New_Game or
-                                                MMenu.Did_User_Choose_Custom_Maps);
+            if MMenu.Did_User_Choose_New_Game or
+              MMenu.Did_User_Choose_Custom_Maps then
+                MMenu.Set_MMenu_Open (False);
+            end if;
+            Continue := not Main_Window.Should_Close;
         end loop;
 
         if not Main_Window.Should_Close then
@@ -335,7 +365,7 @@ begin
     Utilities.Clear_Background_Colour_And_Depth (White);
     Main_Window.Set_Input_Toggle (Sticky_Keys, True);
     Glfw.Input.Poll_Events;
-    Setup;
+    Setup (Main_Window);
     Running := not Main_Window.Should_Close;
     while Running loop
         --  Swap_Buffers first to display background colour on start up.
