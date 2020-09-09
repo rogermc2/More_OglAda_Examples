@@ -261,12 +261,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Setup (Window : in out Glfw.Windows.Window) is
+    procedure Setup (Window : in out Glfw.Windows.Window;
+                     Is_Running : in out Boolean) is
         Current_Time : Float := 0.0;
         Delta_Time   : Float := 0.0;
         Flash_Timer  : Float := 0.0;
-        Is_Running   : Boolean := False;
-        Continue     : Boolean := True;
     begin
         --          Param := Game_Utils.Check_Param ("-map");
         Text.Init_Particle_Texts;
@@ -296,7 +295,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Last_Time := GL_Utils.Get_Elapsed_Seconds;
         GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
                                 Settings.Framebuffer_Height);
-        while Mmenu_Open and Continue loop
+        while Mmenu_Open and Is_Running loop
             Current_Time := GL_Utils.Get_Elapsed_Seconds;
             Delta_Time := Current_Time - Last_Time;
             Last_Time := Current_Time;
@@ -316,10 +315,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
               MMenu.Did_User_Choose_Custom_Maps then
                 MMenu.Set_MMenu_Open (False);
             end if;
-            Continue := not Main_Window.Should_Close;
+            Is_Running := not Main_Window.Should_Close;
         end loop;
 
-        if not Main_Window.Should_Close then
+        if Is_Running then
             GUI_Level_Chooser.Init;
         end if;
 
@@ -365,7 +364,7 @@ begin
     Utilities.Clear_Background_Colour_And_Depth (White);
     Main_Window.Set_Input_Toggle (Sticky_Keys, True);
     Glfw.Input.Poll_Events;
-    Setup (Main_Window);
+    Setup (Main_Window, Running);
     Running := not Main_Window.Should_Close;
     while Running loop
         --  Swap_Buffers first to display background colour on start up.
