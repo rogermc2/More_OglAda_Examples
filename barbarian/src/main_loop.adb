@@ -235,10 +235,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
               To_Unbounded_String (".map");
             --  Name line
             Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
-            Maps_Manager.Load_Map (To_String (Map_Path), Game_Map, Char_Map_Tell);
-            --  Properties are loaded by Load_Map
+            Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map, Char_Map_Tell);
+            --  Properties and characters are loaded by Load_Maps
             Game_Utils.Game_Log ("Game map loaded, Char_Map_Tell: " &
                                    Integer'Image (Char_Map_Tell));
+            Projectile_Manager.Init;
 
             Window.Get_Framebuffer_Size (Window_Width, Window_Height);
             Width := Single (Window_Width);

@@ -42,7 +42,7 @@ package body Projectile_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Init_Projectiles is
+    procedure Init is
         use Texture_Manager;
         Create_Mips : constant Boolean := True;
         SRGB        : constant Boolean := True;
@@ -72,8 +72,7 @@ package body Projectile_Manager is
                                Jav_Skull_Ball_Diff_Texture, Create_Mips, SRGB);
         Load_Image_To_Texture ("textures/sball_spec.png",
                                Jav_Skull_Ball_Spec_Texture, Create_Mips, SRGB);
-    end Init_Projectiles;
-
+    end Init;
     --  ------------------------------------------------------------------------
 
     procedure Reset_Projectiles is
@@ -88,7 +87,29 @@ package body Projectile_Manager is
         Fireball_Count := 0;
         Next_skull_Ball := 0;
         Skull_Ball_Count := 0;
+
+        for index in 1 .. Max_Javelin_Projectiles loop
+            Javelins (index).Sprite_Index :=
+              Add_Sprite (Jav_Diff_Texture, Jav_Spec_Texture, 1, 1);
+        end loop;
+
     end Reset_Projectiles;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Update_Projectiles (Step_Time : Float) is
+    begin
+        Next_Javelin := 0;
+        Javelin_Count := 0;
+        Next_Dart := 0;
+        Dart_Count := 0;
+        Next_Arrow := 0;
+        Arrow_Count := 0;
+        Next_Fireball := 0;
+        Fireball_Count := 0;
+        Next_skull_Ball := 0;
+        Skull_Ball_Count := 0;
+    end Update_Projectiles;
 
     --  ------------------------------------------------------------------------
 
