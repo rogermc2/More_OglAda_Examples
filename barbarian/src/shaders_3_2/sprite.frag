@@ -5,7 +5,7 @@
 // Latest code review 5 Feb 2015
 //
 
-#version 150
+#version 410 core
 out vec4 frag_colour;
 #define NUM_LIGHTS 3
 

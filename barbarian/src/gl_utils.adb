@@ -3,7 +3,6 @@ with Glfw;
 
 with GL.Buffers;
 with GL.Culling;
---  with GL.Objects;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types.Colors;
@@ -17,16 +16,29 @@ package body GL_Utils is
 
     --  ------------------------------------------------------------------------
 
---      function Create_VBO (Dimensionality, Length : Int;
---                           theBuffer : out GL.Objects.Buffers.Buffer)
---                           return GL.Types.UInt is
---          use GL.Objects.Buffers;
---      begin
---          theBuffer.Initialize_Id;
---         Array_Buffer.Bind (theBuffer);
---          Utilities.Load_Vertex_Buffer (
---          return GL.Objects.Raw_Id (GL.Objects.GL_Object (theBuffer));
---      end Create_VBO;
+    function Create_2D_VBO (Data : GL.Types.Singles.Vector2_Array)
+                            return GL.Objects.Buffers.Buffer is
+        use GL.Objects.Buffers;
+        New_Buffer : Buffer;
+    begin
+        New_Buffer.Initialize_Id;
+        Array_Buffer.Bind (New_Buffer);
+        Utilities.Load_Vertex_Buffer (Array_Buffer, Data, Static_Draw);
+        return New_Buffer;
+    end Create_2D_VBO;
+
+    --  ------------------------------------------------------------------------
+
+    function Create_3D_VBO (Data : GL.Types.Singles.Vector3_Array)
+                            return GL.Objects.Buffers.Buffer is
+        use GL.Objects.Buffers;
+        New_Buffer : Buffer;
+    begin
+        New_Buffer.Initialize_Id;
+        Array_Buffer.Bind (New_Buffer);
+        Utilities.Load_Vertex_Buffer (Array_Buffer, Data, Static_Draw);
+        return New_Buffer;
+    end Create_3D_VBO;
 
     --  ------------------------------------------------------------------------
 

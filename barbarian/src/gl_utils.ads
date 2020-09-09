@@ -1,10 +1,15 @@
 
+with GL.Objects.Buffers;
 with GL.Types;
 
 package GL_Utils is
 
     type Gfx_Stats is private;
 
+    function Create_2D_VBO (Data : GL.Types.Singles.Vector2_Array)
+                            return GL.Objects.Buffers.Buffer;
+    function Create_3D_VBO (Data : GL.Types.Singles.Vector3_Array)
+                            return GL.Objects.Buffers.Buffer;
     procedure Draw_Triangles (Number : GL.Types.Int);
     procedure Draw_Triangle_Strip (Number : GL.Types.Int);
     function Get_Elapsed_Seconds return Float;

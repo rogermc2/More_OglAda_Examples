@@ -1,11 +1,5 @@
-//
-// Crongdor the Barbarian
-// animated sprite shader
-// First version Anton Gerdelan, 31 Jan 2014
-// Latest code review 5 Feb 2015
-//
 
-#version 150
+#version 410 core
 
 in vec3 vp;
 in vec3 vn;
@@ -20,7 +14,8 @@ out vec3 n_eye, p_eye; // TODO change to p_wor to save some outs
 // shadow
 out vec3 texcoords; // TODO p_wor use instead
 
-void main() {
+void main()
+    {
 	//int sprite_col = mod (int (current_sprite), int (columns));
 	int sprite_col = int (current_sprite - columns *
 		floor (current_sprite / columns));
@@ -35,4 +30,4 @@ void main() {
 	p_eye = vec3 (V * vec4 (texcoords, 1.0));
 	
 	gl_Position = P * vec4 (p_eye, 1.0);
-}
+    }

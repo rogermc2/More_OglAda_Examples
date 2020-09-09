@@ -9,7 +9,7 @@ with Properties_Manager;
 
 package body Maps_Manager is
 
-    procedure Load_Map (Path : String; theMap : out Map;
+    procedure Load_Maps (Path : String; theMap : out Map;
                         Current_Pos : out Integer) is
         use Ada.Streams;
         Input_File       : Stream_IO.File_Type;
@@ -51,9 +51,9 @@ package body Maps_Manager is
 
     exception
         when anError : others =>
-            Put_Line ("An exception occurred in Maps_Manager.Load_Map!");
+            Put_Line ("An exception occurred in Maps_Manager.Load_Maps!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
-    end Load_Map;
+    end Load_Maps;
 
     --  ----------------------------------------------------------------------------
 

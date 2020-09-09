@@ -9,7 +9,7 @@ package Projectile_Manager is
 
     Update_Exception : Exception;
 
-    procedure Init_Projectiles;
+    procedure Init;
     procedure Reset_Projectiles;
     procedure Update_Projectiles (Step_Time : Float);
 
