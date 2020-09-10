@@ -52,8 +52,6 @@ package body Picking_Texture is
       theTexture.FBO.Initialize_Id;
       Read_And_Draw_Target.Bind (theTexture.FBO);
 
-      Color_Buffers (1) := GL.Buffers.Color_Attachment0;
-
       --  Create the texture object for the primitive information buffer
       theTexture.Picking_Texture.Initialize_Id;
       Texture_2D.Bind (theTexture.Picking_Texture);
@@ -77,7 +75,11 @@ package body Picking_Texture is
       --  Reset Read_Target to screen framebffer
       Draw_Target.Bind (Default_Framebuffer);
       Read_Target.Bind (Default_Framebuffer);
-      GL.Buffers.Set_Active_Buffer (GL.Buffers.Color_Attachment0);
+
+      Color_Buffers (1) := GL.Buffers.Color_Attachment0;
+      Put_Line ("Picking_Texture.Init_Picking_Texture Set_Active_Buffer");
+      GL.Buffers.Set_Active_Buffer (Color_Buffers (1));
+      Put_Line ("Picking_Texture.Init_Picking_Texture Active_Buffer set");
 
       FB_Status := GL.Objects.Framebuffers.Status (Read_And_Draw_Target);
       if  FB_Status /= Complete then
@@ -122,9 +124,9 @@ package body Picking_Texture is
       Info          : Pixel_Info;
    begin
       Read_Target.Bind (aTexture.FBO);
---        Put_Line ("Picking_Texture.Read_Pixel Color_Buffers (1) attached");
+      Put_Line ("Picking_Texture.Read_Pixel Color_Buffers (1) attached");
       GL.Buffers.Set_Active_Buffers (Color_Buffers);
---        Put_Line ("Picking_Texture.Read_Pixel Color_Buffers active");
+      Put_Line ("Picking_Texture.Read_Pixel Color_Buffers active");
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Put_Line ("Picking_Texture.Read_Pixel enter declare block");
       declare
