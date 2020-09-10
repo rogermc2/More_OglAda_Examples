@@ -22,8 +22,8 @@ package body Sprite_Renderer is
         Model_Matrix           : Singles.Matrix4 := Singles.Identity4;
         World_Position         : Singles.Vector3 := (0.0, 0.0, 0.0);
         Scale                  : Singles.Vector3 := (1.0, 1.0, 1.0);
-        Heading_Deg            : Float := 0.0;
-        Pitch_Deg              : Float := 0.0;
+        Heading_Deg            : Maths.Degree := 0.0;
+        Pitch_Deg              : Maths.Degree := 0.0;
         Sprite_Map_Diffuse_Id  : GL.Objects.Textures.Texture;
         Sprite_Map_Specular_Id : GL.Objects.Textures.Texture;
         Sprite_Map_Rows        : Int := 0;
@@ -150,14 +150,16 @@ package body Sprite_Renderer is
 
    --  -------------------------------------------------------------------------
 
-    procedure Set_Sprite_Heading (Sprite_Index : Integer; Heading_Deg : Float) is
+    procedure Set_Sprite_Heading (Sprite_Index : Integer;
+                                  Heading_Deg : Maths.Degree) is
    begin
       Sprites (Sprite_Index).Heading_Deg := Heading_Deg;
    end Set_Sprite_Heading;
 
    --  -------------------------------------------------------------------------
 
-    procedure Set_Sprite_Pitch (Sprite_Index : Integer; Pitch_Deg : Float) is
+    procedure Set_Sprite_Pitch (Sprite_Index : Integer;
+                                Pitch_Deg : Maths.Degree) is
    begin
       Sprites (Sprite_Index).Pitch_Deg := Pitch_Deg;
    end Set_Sprite_Pitch;
@@ -166,8 +168,18 @@ package body Sprite_Renderer is
 
     procedure Set_Sprite_Position (Sprite_Index : Integer;
                                    World_Pos : Singles.Vector3) is
+      use Singles;
+      use Maths;
    begin
       Sprites (Sprite_Index).World_Position := World_Pos;
+      Sprites (Sprite_Index).Model_Matrix :=
+          Scaling_Matrix (Sprites (Sprite_Index).Scale);
+      if Sprites (Sprite_Index).Has_Pitch then
+            Sprites (Sprite_Index).Model_Matrix :=
+              Rotation_Matrix (To_Radians (Sprites (Sprite_Index).Pitch_Deg),
+                               (1.0, 0.0, 0.0)) *
+              Sprites (Sprite_Index).Model_Matrix;
+      end if;
    end Set_Sprite_Position;
 
    --  -------------------------------------------------------------------------

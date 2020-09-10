@@ -1,4 +1,6 @@
 
+with Maths;
+
 with GL.Objects.Textures;
 with GL.Types; use GL.Types;
 
@@ -13,8 +15,9 @@ package Sprite_Renderer is
     procedure Init;
     procedure Render_Sprite (Sprite_Index : Integer);
     procedure Set_Sprite_Current_Sprite (Sprite_Index, Current_Sprite : Integer);
-    procedure Set_Sprite_Heading (Sprite_Index : Integer; Heading_Deg : Float);
-    procedure Set_Sprite_Pitch (Sprite_Index : Integer; Pitch_Deg : Float);
+    procedure Set_Sprite_Heading (Sprite_Index : Integer;
+                                  Heading_Deg : Maths.Degree);
+    procedure Set_Sprite_Pitch (Sprite_Index : Integer; Pitch_Deg : Maths.Degree);
     procedure Set_Sprite_Position (Sprite_Index : Integer;
                                    World_Pos : Singles.Vector3);
     procedure Set_Sprite_Scale (Sprite_Index : Integer; Scale : Singles.Vector3);
