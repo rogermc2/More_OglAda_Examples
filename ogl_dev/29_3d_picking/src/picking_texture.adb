@@ -14,6 +14,8 @@ package body Picking_Texture is
    procedure Picking_Read_Pixels is new
      GL.Framebuffer.Read_Pixels (Pixel_Info, Int, Pixel_Array_Type);
 
+   Color_Buffers : GL.Buffers.Explicit_Color_Buffer_List (1 .. 1);
+
    --  ------------------------------------------------------------------------
 
    procedure Disable_Writing is
@@ -49,6 +51,8 @@ package body Picking_Texture is
    begin
       theTexture.FBO.Initialize_Id;
       Read_And_Draw_Target.Bind (theTexture.FBO);
+
+      Color_Buffers (1) := GL.Buffers.Color_Attachment0;
 
       --  Create the texture object for the primitive information buffer
       theTexture.Picking_Texture.Initialize_Id;
@@ -113,14 +117,11 @@ package body Picking_Texture is
       use GL.Pixels;
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
-      Color_Buffers : GL.Buffers.Explicit_Color_Buffer_List (1 .. 1);
       Pixel_Width   : Size := 1;
       Pixel_Height  : Size := 1;
       Info          : Pixel_Info;
    begin
       Read_Target.Bind (aTexture.FBO);
-      Color_Buffers (1) := GL.Buffers.Color_Attachment0;
-      GL.Framebuffer.Set_Read_Buffer (GL.Buffers.Color_Attachment0);
 --        Put_Line ("Picking_Texture.Read_Pixel Color_Buffers (1) attached");
       GL.Buffers.Set_Active_Buffers (Color_Buffers);
 --        Put_Line ("Picking_Texture.Read_Pixel Color_Buffers active");
