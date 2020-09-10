@@ -12,7 +12,6 @@ package body Ogldev_Camera is
    Margin           : constant Glfw.Input.Mouse.Coordinate := 10.0;
 
    procedure Update (theCamera : in out Camera);
-   procedure Update_Render (theCamera : in out Camera);
 
    --  -------------------------------------------------------------------------
 
@@ -244,7 +243,8 @@ package body Ogldev_Camera is
                         theCamera.On_Left_Edge or theCamera.On_Right_Edge;
    begin
       if Should_Update then
-         --  The camera should continuously move until the mouse moves away from the edge.
+         --  The camera should continuously move until
+         --  the mouse moves away from the edge.
          if theCamera.On_Left_Edge then
             theCamera.Angle_H := theCamera.Angle_H - Edge_Step;
          elsif theCamera.On_Right_Edge then

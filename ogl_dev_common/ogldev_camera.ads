@@ -28,7 +28,8 @@ Package Ogldev_Camera is
                             Window    : in out Glfw.Windows.Window);
    procedure Set_Step_Size (Step_Size : GL.Types.Single);
    procedure Update_Camera (theCamera : in out Camera;
-                            Window : in out Glfw.Windows.Window);
+                            Window    : in out Glfw.Windows.Window);
+   procedure Update_Render (theCamera : in out Camera);
 
 private
    type Camera is record
