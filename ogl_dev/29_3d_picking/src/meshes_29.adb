@@ -73,7 +73,6 @@ package body Meshes_29 is
       Utilities.Load_Vector8_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
       Element_Array_Buffer.Bind (theEntry.Index_Buffer);
       Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
-      --          Utilities.Print_GL_UInt_Array ("Meshes_29.Init_Buffers.Indices", Indices);
 
    exception
       when others =>
@@ -131,8 +130,8 @@ package body Meshes_29 is
          aTexture   : Ogldev_Texture.Ogl_Texture;
          Index      : constant GL.Types.UInt := Key (Material_Curs);
       begin
-         Put_Line ("Meshes_29.Init_Materials.Load_Textures: Texture_Count: "
-                   & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
+--           Put_Line ("Meshes_29.Init_Materials.Load_Textures: Texture_Count: "
+--                     & UInt'Image (Get_Texture_Count (aMaterial, AI_Texture_Diffuse)));
          if Result = Assimp_Types.API_Return_Success and then
            Get_Texture_Count (aMaterial, AI_Texture_Diffuse) > 0 then
             Result := Material_System.Get_Texture
@@ -152,7 +151,6 @@ package body Meshes_29 is
                  (aTexture, GL.Low_Level.Enums.Texture_2D, Dir & "white.png") then
                   Ogldev_Texture.Load (aTexture);
                   theMesh.Textures.Insert (index, aTexture);
-                  New_Line;
                   Put_Line ("Meshes_29.Init_Materials.Load_Textures loaded default texture from "
                             & Dir & "white.png");
                else
@@ -166,7 +164,6 @@ package body Meshes_29 is
       end Load_Textures;
 
    begin
-      New_Line;
       Materials_Map.Iterate (Load_Textures'Access);
 
    exception
@@ -220,8 +217,8 @@ package body Meshes_29 is
       if Source_Mesh.Faces.Is_Empty then
          Put_Line ("Meshes_29.Init_Mesh, Source_Mesh.Faces is empty.");
       else
-         Put_Line ("Meshes_29.Init_Mesh, Source_Mesh.Faces size: " &
-                     Count_Type'Image (Source_Mesh.Faces.Length));
+--           Put_Line ("Meshes_29.Init_Mesh, Source_Mesh.Faces size: " &
+--                       Count_Type'Image (Source_Mesh.Faces.Length));
          for Face_Index in 1 .. Source_Mesh.Faces.Length loop
             Face := Source_Mesh.Faces.Element (UInt (Face_Index));
             Indices_Index := Indices_Index + 1;
@@ -274,8 +271,8 @@ package body Meshes_29 is
       aTexture       : Ogldev_Texture.Ogl_Texture;
    begin
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (1);
-      GL.Attributes.Enable_Vertex_Attrib_Array (2);
+--        GL.Attributes.Enable_Vertex_Attrib_Array (1);
+--        GL.Attributes.Enable_Vertex_Attrib_Array (2);
 
       while Has_Element (Entry_Cursor) loop
          anEntry := Element (Entry_Cursor);
@@ -283,8 +280,8 @@ package body Meshes_29 is
 
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Index  => 0, Count => 3, Kind => Single_Type, Stride => 8, Offset => 0);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
-         GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
+--           GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, Single_Type, 8, 3);  --  texture
+--           GL.Attributes.Set_Vertex_Attrib_Pointer (2, 3, Single_Type, 8, 5);  --  normal
 
          GL.Objects.Buffers.Element_Array_Buffer.Bind (anEntry.Index_Buffer);
          if Textures.Contains (anEntry.Material_Index) then
@@ -293,14 +290,16 @@ package body Meshes_29 is
             Put_Line ("Meshes_29.Render aTexture bound.");
          end if;
 
+--           Put_Line ("Meshes_29.Render anEntry.Num_Indices: " &
+--                       UInt'Image (anEntry.Num_Indices));
          GL.Objects.Buffers.Draw_Elements
            (GL.Types.Triangles, GL.Types.Int (anEntry.Num_Indices), UInt_Type);
          Next (Entry_Cursor);
       end loop;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
-      GL.Attributes.Disable_Vertex_Attrib_Array (1);
-      GL.Attributes.Disable_Vertex_Attrib_Array (2);
+--        GL.Attributes.Disable_Vertex_Attrib_Array (1);
+--        GL.Attributes.Disable_Vertex_Attrib_Array (2);
    end Render;
 
    --  --------------------------------------------------------------------------

@@ -1,11 +1,14 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Buffers;
 with GL.Low_Level.Enums;
 with GL.Objects;
+with GL.Objects.Framebuffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 with GL.Types.Colors;
 with GL.Uniforms;
 with GL.Window;
@@ -13,8 +16,10 @@ with GL.Window;
 with Glfw;
 with Glfw.Input;
 with Glfw.Input.Keys;
+with Glfw.Input.Mouse;
 with Glfw.Windows.Context;
 
+with Maths;
 with Program_Loader;
 with Utilities;
 
@@ -39,6 +44,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Button_Pressed : Boolean := False;
    end record;
 
+   Background             : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
    VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Window_Width           : constant GL.Types.Int := 1680;
    Window_Height          : constant GL.Types.Int := 1050;
@@ -59,8 +65,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Init (Window : in out Glfw.Windows.Window) is
-      Position            : constant Singles.Vector3 := (0.0, 5.0, -22.0);  --  Normalized by Camera.Init
-      Target              : constant Singles.Vector3 := (0.0, -0.2, 1.0);  --  Normalized by Camera.Init
+      Position            : constant Singles.Vector3 := (5.0, 5.0, -22.0);  --  0.0, 5.0, -22.0
+      Target              : constant Singles.Vector3 := (0.0, -0.2, 1.0);
       Up                  : constant Singles.Vector3 := (0.0, 1.0, 0.0);
    begin
       VAO.Initialize_Id;
@@ -75,10 +81,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          theColour      => (1.0, 1.0, 1.0),
          Dir            => (1.0, -1.0, 0.0));
 
---        Ogldev_Math.Set_Perspective_Info
---          (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
---           1.0, 100.0);
---
+      Ogldev_Math.Set_Perspective_Info
+        (Perspective_Proj_Info, 60.0, UInt (Window_Width), UInt (Window_Height),
+         1.0, 100.0);
+
       if Ogldev_Basic_Lighting.Init (Lighting_Technique) then
          GL.Objects.Programs.Use_Program
            (Ogldev_Basic_Lighting.Lighting_Program (Lighting_Technique));
@@ -89,8 +95,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          Picking_Texture.Init (Pick_Texture, Window_Width, Window_Height);
          Picking_Technique.Init (Picking_Effect);
+         Picking_Technique.Use_Program (Picking_Effect);
          Simple_Colour_Technique.Init (Colour_Effect);
+         Simple_Colour_Technique.Use_Program (Colour_Effect);
 
+        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+        GL.Toggles.Enable (GL.Toggles.Depth_Test);
+        GL.Buffers.Set_Depth_Function (GL.Types.Less);
          Meshes_29.Load_Mesh (Mesh, "../content/spider.obj");
       end if;
 
@@ -102,13 +113,33 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
+   procedure Mouse_Handler (Window : in out Glfw.Windows.Window) is
+      use Glfw.Input;
+      use Mouse;
+      use Maths;
+      Cursor_X       : Coordinate;
+      Cursor_Y       : Coordinate;
+   begin
+      Window'Access.Get_Cursor_Pos (Cursor_X, Cursor_Y);
+      Mouse_Button.X := Int (Cursor_X);
+      Mouse_Button.Y := Int (Cursor_Y);
+      Mouse_Button.Button_Pressed :=
+        Window'Access.Mouse_Button_State (Left_Button) = Pressed or
+        Window'Access.Mouse_Button_State (Middle_Button) = Pressed or
+        Window'Access.Mouse_Button_State (Right_Button) = Pressed;
+   end Mouse_Handler;
+
+   --  ------------------------------------------------------------------------
+
    procedure Picking_Phase (Window : in out Glfw.Windows.Window) is
       use Ogldev_Camera;
       use Ogldev_Basic_Lighting;
       Pipe             : Ogldev_Pipeline.Pipeline;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
+      Utilities.Clear_Background_Colour_And_Depth (Background);
 
+      Picking_Technique.Use_Program (Picking_Effect);
       Ogldev_Pipeline.Set_Scale (Pipe, 0.1, 0.1, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 90.0, 0.0);
       Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
@@ -117,10 +148,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
       Picking_Texture.Enable_Writing (Pick_Texture);
-      Picking_Technique.Use_Program (Picking_Effect);
       for index in Int range 1 .. World_Position'Length loop
          Ogldev_Pipeline.Set_World_Position (Pipe, World_Position (index));
          Picking_Technique.Set_WVP (Picking_Effect, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+--           GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
          Meshes_29.Render (Mesh);
       end loop;
       Picking_Texture.Disable_Writing;
@@ -130,29 +161,31 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render_Phase (Window : in out Glfw.Windows.Window) is
+      use GL.Objects.Framebuffers;
       use GL.Types.Singles;
-      use Ogldev_Camera;
       use Ogldev_Basic_Lighting;
-      Pipe             : Ogldev_Pipeline.Pipeline;
-      aTexture         : Picking_Texture.Pick_Texture;
-      Pixel_Data       : Picking_Texture.Pixel_Info;
-      PT_Object_ID     : Single;
+      Pipe           : Ogldev_Pipeline.Pipeline;
+      Pixel_Data     : Picking_Texture.Pixel_Info;
+      PT_Object_ID   : Single;
       PT_Draw_ID     : Single;
       PT_Prim_ID     : Single;
    begin
-      Process_Mouse (Game_Camera, Window);
       Utilities.Clear_Colour_Buffer_And_Depth;
+      Utilities.Clear_Background_Colour_And_Depth (Background);
+      Draw_Target.Bind (Default_Framebuffer);
 
       Ogldev_Pipeline.Set_Scale (Pipe, 0.1, 0.1, 0.1);
       Ogldev_Pipeline.Set_Rotation (Pipe, 0.0, 90.0, 0.0);
-      Ogldev_Pipeline.Set_Camera (Pipe, Get_Position (Game_Camera),
-                                  Get_Target (Game_Camera), Get_Up (Game_Camera));
+      Ogldev_Pipeline.Set_Camera (Pipe, Ogldev_Camera.Get_Position (Game_Camera),
+                                  Ogldev_Camera.Get_Target (Game_Camera),
+                                  Ogldev_Camera.Get_Up (Game_Camera));
       Ogldev_Pipeline.Set_Perspective_Projection (Pipe, Perspective_Proj_Info);
       Ogldev_Pipeline.Init_Transforms (Pipe);
 
       if Mouse_Button.Button_Pressed then
+         Put_Line ("Main_Loop.Render_Phase, Mouse_Button.Button_Pressed ");
          Pixel_Data := Picking_Texture.Read_Pixel
-           (Window, aTexture, Mouse_Button.X,
+           (Window, Pick_Texture, Mouse_Button.X,
             Int (Window_Height) - Mouse_Button.Y - 1);
          PT_Prim_ID := Picking_Texture.Prim_ID (Pixel_Data);
          if PT_Prim_ID /= 0.0 then
@@ -164,6 +197,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                  (Pipe, World_Position (Int (PT_Object_ID)));
                Simple_Colour_Technique.Set_WVP
                  (Colour_Effect, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
+               Simple_Colour_Technique.Use_Program (Colour_Effect);
+               GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
                Meshes_29.Render (Mesh, UInt (PT_Draw_ID), UInt (PT_Prim_ID) - 1);
             else
                Put_Line ("Main_Loop.Render_Phase, invalid Object_ID: " &
@@ -181,6 +216,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
            (Lighting_Technique, Ogldev_Pipeline.Get_WVP_Transform (Pipe));
          Set_World_Matrix_Location
            (Lighting_Technique, Ogldev_Pipeline.Get_World_Transform (Pipe));
+         Ogldev_Pipeline.Init_Transforms (Pipe);
+--           GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
          Meshes_29.Render (Mesh);
       end loop;
 
@@ -197,8 +234,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 begin
    Init (Main_Window);
    while Running loop
-      Render_Phase (Main_Window);
+      Mouse_Handler (Main_Window);
+      Ogldev_Camera.Update_Render (Game_Camera);
       Picking_Phase (Main_Window);
+      Render_Phase (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and not

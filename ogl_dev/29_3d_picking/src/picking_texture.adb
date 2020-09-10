@@ -58,7 +58,8 @@ package body Picking_Texture is
                                       Width           => Int (Window_Width),
                                       Height          => Int (Window_Width));
 
-      Draw_Target.Attach_Texture (Color_Attachment_0, theTexture.Picking_Texture, 0);
+      Read_And_Draw_Target.Attach_Texture
+        (Color_Attachment_0, theTexture.Picking_Texture, 0);
 
       --  Create the texture object for the depth buffer
       theTexture.Depth_Texture.Initialize_Id;
@@ -72,7 +73,7 @@ package body Picking_Texture is
       --  Reset Read_Target to screen framebffer
       Draw_Target.Bind (Default_Framebuffer);
       Read_Target.Bind (Default_Framebuffer);
-      --        Draw_Target.Bind (Color_Attachment_0);
+      GL.Buffers.Set_Active_Buffer (GL.Buffers.Color_Attachment0);
 
       FB_Status := GL.Objects.Framebuffers.Status (Read_And_Draw_Target);
       if  FB_Status /= Complete then
@@ -119,10 +120,14 @@ package body Picking_Texture is
    begin
       Read_Target.Bind (aTexture.FBO);
       Color_Buffers (1) := GL.Buffers.Color_Attachment0;
+      GL.Framebuffer.Set_Read_Buffer (GL.Buffers.Color_Attachment0);
+--        Put_Line ("Picking_Texture.Read_Pixel Color_Buffers (1) attached");
       GL.Buffers.Set_Active_Buffers (Color_Buffers);
+--        Put_Line ("Picking_Texture.Read_Pixel Color_Buffers active");
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      Put_Line ("Picking_Texture.Read_Pixel enter declare block");
       declare
-      Pixels        : Pixel_Array_Type
+         Pixels : Pixel_Array_Type
            (1 .. GL.Types.Int (Window_Width) * GL.Types.Int (Window_Height));
       begin
          --  Read one pixel
