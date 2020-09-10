@@ -138,8 +138,15 @@ package body Sprite_Renderer is
     --  -------------------------------------------------------------------------
 
     procedure Render_Sprite (Sprite_Index : Integer) is
+        use Singles;
+        use Maths;
+        Opacity : Float := 1.0;
+	U    : Int := Sprites (Sprite_Index).Wmap_U;
+	V    : Int := Sprites (Sprite_Index).Wmap_V;
     begin
-        null;
+        if Sprites (Sprite_Index).Is_Visible then
+
+        end if;
     end Render_Sprite;
 
     --  -------------------------------------------------------------------------
