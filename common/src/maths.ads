@@ -48,7 +48,6 @@ package Maths is
 
    function "=" (Left, Right : Maths.Vector8) return Boolean;
    function Cube_Root (Value : Single) return Single;
-   function Degrees (Angle : Radian) return Degree;
    function Factorial (Num : Natural) return Positive;
    function Frustum_Matrix (Left, Right, Bottom, Top, Near, Far : GL.Types.Single)
                             return GL.Types.Singles.Matrix4;
@@ -73,7 +72,6 @@ package Maths is
                                 return Singles.Matrix4;
    function Perspective_Matrix (Top, Bottom, Left, Right, Near, Far : Single)
                                 return GL.Types.Singles.Matrix4;
-   function Radians (Angle : Degree) return Radian;
    function Random_Float return Single;
    function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
                            return Singles.Vector3;
@@ -93,6 +91,8 @@ package Maths is
    function Stride5 return Int;
    function Stride6 return Int;
    function Stride8 return Int;
+   function To_Degrees (Angle : Radian) return Degree;
+   function To_Radians (Angle : Degree) return Radian;
    function Translation_Matrix (Change : Singles.Vector3)
                                 return Singles.Matrix4;
 end Maths;

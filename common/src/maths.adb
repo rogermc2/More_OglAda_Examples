@@ -64,15 +64,9 @@ package body Maths is
 
    function Cube_Root (Value : Single) return Single is
    begin
-      return Maths.Single_Math_Functions.Exp (Maths.Single_Math_Functions.Log (Value) / 3.0);
+      return Maths.Single_Math_Functions.Exp
+          (Maths.Single_Math_Functions.Log (Value) / 3.0);
    end Cube_Root;
-
-   --  ------------------------------------------------------------------------
-
-   function Degrees (Angle : Radian) return Degree is
-   begin
-      return Degree (Angle) * Degrees_Per_Radian;
-   end Degrees;
 
    --  ------------------------------------------------------------------------
 
@@ -191,9 +185,9 @@ package body Maths is
       Rx   : Matrix4 := Singles.Identity4;
       Ry   : Matrix4 := Singles.Identity4;
       Rz   : Matrix4 := Singles.Identity4;
-      Xrad : constant Single := Single (Radians (Rotate_X));
-      Yrad : constant Single := Single (Radians (Rotate_Y));
-      Zrad : constant Single := Single (Radians (Rotate_Z));
+      Xrad : constant Single := Single (To_Radians (Rotate_X));
+      Yrad : constant Single := Single (To_Radians (Rotate_Y));
+      Zrad : constant Single := Single (To_Radians (Rotate_Z));
    begin
       Rx (Y, Y) := Cos (Xrad);
       Rx (Y, Z) := -Sin (Xrad);
@@ -332,19 +326,12 @@ package body Maths is
       Right  : Single;
       Left   : Single;
    begin
-      Top := Near * Tan (Single (0.5 * Radians (View_Angle)));
+      Top := Near * Tan (Single (0.5 * To_Radians (View_Angle)));
       Bottom := -Top;
       Right  := Top * Aspect;
       Left   := -Right;
       return Perspective_Matrix (Top, Bottom, Left, Right, Near, Far);
    end Perspective_Matrix;
-
-   --  ------------------------------------------------------------------------
-
-   function Radians (Angle : Degree) return Radian is
-   begin
-      return Radian (Angle) * Radians_Per_Degree;
-   end Radians;
 
    --  ------------------------------------------------------------------------
 
@@ -436,7 +423,7 @@ package body Maths is
    function Rotation_Matrix (Angle : Degree; Axis : GL.Types.Singles.Vector3)
                              return GL.Types.Singles.Matrix4 is
    begin
-      return Rotation_Matrix (Radians (Angle), Axis);
+      return Rotation_Matrix (To_Radians (Angle), Axis);
    end Rotation_Matrix;
 
    --  ------------------------------------------------------------------------
@@ -444,7 +431,7 @@ package body Maths is
    function Rotation_Matrix (Angle : Degree; Axis : GL.Types.Singles.Vector3)
                              return GL.Types.Singles.Matrix3 is
    begin
-      return Rotation_Matrix (Radians (Angle), Axis);
+      return Rotation_Matrix (To_Radians (Angle), Axis);
    end Rotation_Matrix;
 
    --  ------------------------------------------------------------------------
@@ -452,7 +439,8 @@ package body Maths is
    procedure Rotate (Vec   : in out GL.Types.Singles.Vector3;
                      Angle : Degree; Axis : GL.Types.Singles.Vector3) is
       use Single_Quaternion;
-      Rotation_Q  : constant Quaternion := New_Quaternion (Radians (Angle), Axis);
+      Rotation_Q  : constant Quaternion :=
+                        New_Quaternion (To_Radians (Angle), Axis);
       Conjugate_Q : constant Quaternion := Single_Quaternion.Conj (Rotation_Q);
       W           : constant Quaternion := Rotation_Q * Vec * Conjugate_Q;
       W_Vec       : GL.Types.Singles.Vector4;
@@ -482,6 +470,20 @@ package body Maths is
    begin
       return Scaling_Matrix ((Scale_Factor, Scale_Factor, Scale_Factor));
    end Scaling_Matrix;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Degrees (Angle : Radian) return Degree is
+   begin
+      return Degree (Angle) * Degrees_Per_Radian;
+   end To_Degrees;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Radians (Angle : Degree) return Radian is
+   begin
+      return Radian (Angle) * Radians_Per_Degree;
+   end To_Radians;
 
    --  ------------------------------------------------------------------------
    --  Translation_Matrix is derived from Computer Graphics Using OpenGL
