@@ -16,7 +16,7 @@ package Manifold is
 
     type Batch_Meta is private;
 
-    Max_Tile_Cols : constant Integer := 64;
+    Max_Tile_Cols : constant GL.Types.Int := 64;
     Manifold_Parsing_Exception : Exception;
 
     function Batch_Split_Size return Integer;
