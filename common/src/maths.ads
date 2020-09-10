@@ -64,7 +64,9 @@ package Maths is
    procedure Init_Rotation_Transform
      (Rotation_Vec : Singles.Vector3; Transform : out Singles.Matrix4);
    function Length (V : Singles.Vector3) return Single;
+   function Min_Int (L, R : GL.Types.Int) return GL.Types.Int;
    function Min (L, R : GL.Types.Single) return GL.Types.Single;
+   function Max_Int (L, R : GL.Types.Int) return GL.Types.Int;
    function Max (L, R : GL.Types.Single) return GL.Types.Single;
    function Normalized (V : Singles.Vector3) return Singles.Vector3;
    function Normalized (V : Singles.Vector4) return Singles.Vector4;
