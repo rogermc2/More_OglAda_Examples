@@ -59,7 +59,7 @@ package body Lighting_Technique_24N is
 
     --  -------------------------------------------------------------------------
     function Get_Uniform (theTechnique : Technique; Uniform_Name : String)
-                                   return GL.Uniforms.Uniform is
+                          return GL.Uniforms.Uniform is
     begin
         return GL.Objects.Programs.Uniform_Location (Light_Program (theTechnique), Uniform_Name);
     end Get_Uniform;
@@ -212,7 +212,7 @@ package body Lighting_Technique_24N is
 
     --  -------------------------------------------------------------------------
     
-   procedure Set_Directional_Light_Uniform (theTechnique : Technique; 
+    procedure Set_Directional_Light_Uniform (theTechnique : Technique; 
                                              Light        : Directional_Light) is
         Direction : constant Singles.Vector3 := Maths.Normalized (Light.Direction);
     begin
@@ -296,14 +296,14 @@ package body Lighting_Technique_24N is
    
     --   -----------------------------------------------------------------------------
     
-    procedure Set_Spot_Ambient (Light : in out Spot_Light; Ambient: Single) is
+    procedure Set_Spot_Ambient (Light : in out Spot_Light; Ambient : Single) is
     begin
         Light.Point.Base.Ambient_Intensity := Ambient;
     end Set_Spot_Ambient;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Spot_Diffuse (Light : in out Spot_Light; Diffuse: Single) is
+    procedure Set_Spot_Diffuse (Light : in out Spot_Light; Diffuse : Single) is
     begin
         Light.Point.Base.Diffuse_Intensity := Diffuse;
     end Set_Spot_Diffuse;
@@ -325,25 +325,30 @@ package body Lighting_Technique_24N is
 
     --  -------------------------------------------------------------------------
    
-     procedure Set_Spot_Light_Uniforms (theTechnique : Technique; Lights : Spot_Lights_Array) is
-    use Maths.Single_Math_Functions;
+    procedure Set_Spot_Light_Uniforms (theTechnique : Technique; 
+                                       Lights : Spot_Lights_Array) is
+        use Maths.Single_Math_Functions;
     begin
         GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Uniform, Max_Spot_Lights);
         for index in GL.Types.Int range Lights'First .. Lights'Last loop
             GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Colour,
                                     Lights (index).Point.Base.Colour);
-            GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Ambient_Intensity,
-                                    Lights (index).Point.Base.Ambient_Intensity);
-            GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Diffuse_Intensity,
-                                    Lights (index).Point.Base.Diffuse_Intensity);
+            GL.Uniforms.Set_Single
+              (theTechnique.Spot_Uniforms (index).Ambient_Intensity,
+               Lights (index).Point.Base.Ambient_Intensity);
+            GL.Uniforms.Set_Single 
+              (theTechnique.Spot_Uniforms (index).Diffuse_Intensity,
+               Lights (index).Point.Base.Diffuse_Intensity);
             GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Position,
                                     Lights (index).Point.Position);
             GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Direction,
                                     Maths.Normalized (Lights (index).Direction));
-            GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Cutoff,
-                                    Cos (Single (Maths.Radians (Lights (index).Cutoff))));
-            GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Atten.Constant_Atten,
-                                    Lights (index).Point.Atten.Constant_Atten);
+            GL.Uniforms.Set_Single 
+              (theTechnique.Spot_Uniforms (index).Cutoff,
+               Cos (Single (Maths.To_Radians (Lights (index).Cutoff))));
+            GL.Uniforms.Set_Single
+              (theTechnique.Spot_Uniforms (index).Atten.Constant_Atten,
+               Lights (index).Point.Atten.Constant_Atten);
             GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Atten.Linear,
                                     Lights (index).Point.Atten.Linear);
             GL.Uniforms.Set_Single (theTechnique.Spot_Uniforms (index).Atten.Exp,
@@ -360,7 +365,7 @@ package body Lighting_Technique_24N is
    
     --   -----------------------------------------------------------------------------
   
-   procedure Set_World_Matrix_Uniform (theTechnique  : Technique;
+    procedure Set_World_Matrix_Uniform (theTechnique  : Technique;
                                         World_Inverse : Singles.Matrix4) is
     begin
         GL.Uniforms.Set_Single (theTechnique.World_Matrix_Uniform, World_Inverse);

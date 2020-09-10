@@ -241,7 +241,8 @@ package body Ogldev_Basic_Lighting is
          Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
          Set_Single (Location.Position, Position (Spot));
          Set_Single (Location.Direction, Maths.Normalized (Light_Direction));
-         Set_Single (Location.Cut_Off, Cos (Single (Maths.Radians (Cut_Off (Spot)))));
+         Set_Single (Location.Cut_Off,
+                     Cos (Single (Maths.To_Radians (Cut_Off (Spot)))));
          Set_Single (Location.Attenuation.Atten_Constant,
                      Attenuation_Constant (Spot));
          Set_Single (Location.Attenuation.Linear, Attenuation_Linear (Spot));
@@ -266,7 +267,7 @@ package body Ogldev_Basic_Lighting is
       Set_Single (Location.Ambient_Intensity, Ambient_Intensity (Spot));
       Set_Single (Location.Diffuse_Intensity, Diffuse_Intensity (Spot));
       Set_Single (Location.Direction, Light_Direction);
-      Set_Single (Location.Cut_Off, Cos (Single (Maths.Radians (Cut_Off (Spot)))));
+      Set_Single (Location.Cut_Off, Cos (Single (Maths.To_Radians (Cut_Off (Spot)))));
    end Set_Spot_Light_Location;
 
    --  -------------------------------------------------------------------------

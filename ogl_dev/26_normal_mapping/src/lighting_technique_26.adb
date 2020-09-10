@@ -18,7 +18,8 @@ Package body Lighting_Technique_26 is
    function Get_Uniform_Location (theTechnique : Technique; Uniform_Name : String)
                                    return GL.Uniforms.Uniform is
    begin
-      return GL.Objects.Programs.Uniform_Location (Light_Program (theTechnique), Uniform_Name);
+      return GL.Objects.Programs.Uniform_Location
+          (Light_Program (theTechnique), Uniform_Name);
    end Get_Uniform_Location;
 
    --  -------------------------------------------------------------------------
@@ -239,7 +240,8 @@ Package body Lighting_Technique_26 is
       use GL.Uniforms;
       use Maths.Single_Math_Functions;
    begin
-      GL.Uniforms.Set_Int (theTechnique.Num_Spot_Lights_Location, Spot_Lights_Array'Size);
+      GL.Uniforms.Set_Int
+          (theTechnique.Num_Spot_Lights_Location, Spot_Lights_Array'Size);
       for index in GL.Types.UInt range 1 .. Spot_Lights_Array'Size loop
          Set_Single (theTechnique.Spot_Lights_Locations (index).Color,
                      Lights (index).Point.Base.Colour);
@@ -252,7 +254,7 @@ Package body Lighting_Technique_26 is
          Set_Single (theTechnique.Spot_Lights_Locations (index).Direction,
                      Maths.Normalized (Lights (index).Direction));
          Set_Single (theTechnique.Spot_Lights_Locations (index).Cutoff,
-                     Cos (GL.Types.Single (Maths.Radians (Lights (index).Cutoff))));
+                     Cos (GL.Types.Single (Maths.To_Radians (Lights (index).Cutoff))));
          Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Constant_Atten,
                      Lights (index).Point.Atten.Constant_Atten);
          Set_Single (theTechnique.Spot_Lights_Locations (index).Atten.Linear,
