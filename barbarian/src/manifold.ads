@@ -26,9 +26,9 @@ package Manifold is
     Manifold_Parsing_Exception : Exception;
 
     function Batch_Split_Size return Integer;
-    function Get_Batch_Index (Column, Row : Integer) return Integer;
-    function Get_Light_Index (Column, Row, Light_Number : Integer)
-                              return Integer;
+    function Get_Batch_Index (Column, Row : Int) return Int;
+    function Get_Light_Index (Column, Row : Int; Light_Number : Integer)
+                              return Int;
     function Init_Manifold return Boolean;
     procedure Load_Tiles (Input_Stream : Stream_IO.Stream_Access);
     function Number_Of_Tiles return Integer;

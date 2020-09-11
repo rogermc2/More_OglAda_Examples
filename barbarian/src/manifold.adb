@@ -19,11 +19,11 @@ package body Manifold is
 
     Batches           : Batches_List;
 
-    Batches_Across    : Integer := 0;
-    Batches_Down      : Integer := 0;
+    Batches_Across    : Int := 0;
+    Batches_Down      : Int := 0;
     Batch_Split_Count : Integer := 0;
-    Max_Cols          : Integer := 0;
-    Max_Rows          : Integer := 0;
+    Max_Cols          : Int := 0;
+    Max_Rows          : Int := 0;
     Total_Tiles       : Integer := 0;
     Tile_Heights      : Tiles_List;
     Tile_Facings      : Tiles_List;
@@ -41,23 +41,25 @@ package body Manifold is
 
 --  ----------------------------------------------------------------------------
 
-    function Get_Batch_Index (Column, Row : Integer) return Integer is
-        Result : Integer := -1;
+    function Get_Batch_Index (Column, Row : Int) return Int is
+        Result : Int := -1;
     begin
         if Column >= 0 and Column < Max_Cols and Row >= 0 and Row < Max_Rows then
-            Result := (Column + Batches_Across * Row) / Settings.Tile_Batch_Width;
+            Result := (Column + Batches_Across * Row) /
+              Int (Settings.Tile_Batch_Width);
         end if;
         return Result;
     end Get_Batch_Index;
 
 --  ----------------------------------------------------------------------------
 
-    function Get_Light_Index (Column, Row, Light_Number : Integer)
-                              return Integer is
-        Batch_Index   : constant Integer := Get_Batch_Index (Column, Row);
+    function Get_Light_Index (Column, Row : Int; Light_Number : Integer)
+                              return Int is
+        Batch_Index   : constant Positive :=
+                          Positive (Get_Batch_Index (Column, Row));
         Batch         : Batch_Meta;
         Light_Indices : Tile_Nodes_List;
-        Result        : Integer := -1;
+        Result        : Int := -1;
     begin
         if not Batches.Is_Empty then
            Batch := Batches.Element (Batch_Index);
@@ -66,11 +68,11 @@ package body Manifold is
                 raise Manifold_Exception with
                   "Manifold.Get_Light_Index; Light number " &
                   Integer'Image (Light_Number) & " requested at ( " &
-                  Integer'Image (Column) & "," & Integer'Image (Row) &
+                  Int'Image (Column) & "," & Int'Image (Row) &
                   ") in batch " &  Integer'Image (Batch_Index) &
 		" does not exist.";
            end if;
-           Result := Light_Indices.Element (Light_Number);
+           Result := Int (Light_Indices.Element (Light_Number));
         end if;
         return Result;
     end Get_Light_Index;
@@ -97,7 +99,7 @@ package body Manifold is
             begin
                 prev_Char := ASCII.NUL;
                 for col in 1 .. Max_Cols loop
-                    tex_Char := aString (col);
+                    tex_Char := aString (Integer (col));
                     if prev_Char = '\' and then
                       (tex_Char = 'n' or tex_Char = ASCII.NUL) then
                       Tile_List.Delete_Last;
@@ -131,7 +133,7 @@ package body Manifold is
             begin
                 prev_Char := ASCII.NUL;
                 for col in 1 .. Max_Cols loop
-                    tex_Char := aString (col);
+                    tex_Char := aString (Integer (col));
                     if prev_Char = '\' and then
                       (tex_Char = 'n' or tex_Char = ASCII.NUL) then
                       Tile_List.Delete_Last;
@@ -176,15 +178,15 @@ package body Manifold is
               "Invalid format, ""facings"" expected.";
         end if;
 
-        Integer'Read (Input_Stream, Max_Cols);
+        Int'Read (Input_Stream, Max_Cols);
         Character'Read (Input_Stream, aChar);
-        Integer'Read (Input_Stream, Max_Rows);
-        Total_Tiles := Max_Rows * Max_Cols;
+        Int'Read (Input_Stream, Max_Rows);
+        Total_Tiles := Integer (Max_Rows * Max_Cols);
         Batches_Across :=
-          Integer (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
+          Int (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
         Batches_Down :=
-          Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
-        Batch_Split_Count := Batches_Across * Batches_Down;
+          Int (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
+        Batch_Split_Count := Integer (Batches_Across * Batches_Down);
 
         Load_Part (Input_Stream, Tile_Facings);
         Unbounded_String'Read (Input_Stream, Tex_Header);

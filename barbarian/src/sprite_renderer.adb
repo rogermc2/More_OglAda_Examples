@@ -157,7 +157,9 @@ package body Sprite_Renderer is
           Set_Current_Sprite (Single (Sprites (Sprite_Index).Current_Sprite));
           Set_Opacity (Opacity);
           Set_Model (Sprites (Sprite_Index).Model_Matrix);
---            Set_Static_Light_Indices (
+          Set_Static_Light_Indices ((Single (Manifold.Get_Light_Index (U, V, 0)),
+                                   Single (Manifold.Get_Light_Index (U, V, 1))));
+          GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
         end if;
     end Render_Sprite;
 
