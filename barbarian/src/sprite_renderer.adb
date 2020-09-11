@@ -10,6 +10,7 @@ with Manifold;
 with Shader_Attributes;
 with Sprite_Shader_Manager;
 with Sprite_World_Map;
+with Texture_Manager;
 
 package body Sprite_Renderer is
 
@@ -141,13 +142,22 @@ package body Sprite_Renderer is
     procedure Render_Sprite (Sprite_Index : Integer) is
         use Singles;
         use Maths;
-        Opacity : Float := 1.0;
+        use Sprite_Shader_Manager;
+        use Texture_Manager;
+        Opacity : Single := 1.0;
 	U    : Int := Sprites (Sprite_Index).Wmap_U;
 	V    : Int := Sprites (Sprite_Index).Wmap_V;
     begin
         if Sprites (Sprite_Index).Is_Visible and  Frustum.Is_Sphere_In_Frustum
           (Sprites (Sprite_Index).World_Position, 1.0) then
           Bind_Texture (0, Sprites (Sprite_Index).Sprite_Map_Diffuse_Id);
+          Bind_Texture (1, Sprites (Sprite_Index).Sprite_Map_Specular_Id);
+          Set_Rows (Single (Sprites (Sprite_Index).Sprite_Map_Rows));
+          Set_Columns (Single (Sprites (Sprite_Index).Sprite_Map_Columns));
+          Set_Current_Sprite (Single (Sprites (Sprite_Index).Current_Sprite));
+          Set_Opacity (Opacity);
+          Set_Model (Sprites (Sprite_Index).Model_Matrix);
+--            Set_Static_Light_Indices (
         end if;
     end Render_Sprite;
 

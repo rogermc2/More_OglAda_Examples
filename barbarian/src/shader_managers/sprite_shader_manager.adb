@@ -65,7 +65,8 @@ package body Sprite_Shader_Manager is
         Sprite_Uniform.Sprite_St_ID := Uniform_Location (Sprite_Shader, "sprite_st");
         Sprite_Uniform.Columns_ID :=  Uniform_Location (Sprite_Shader, "columns");
         Sprite_Uniform.Rows_ID :=  Uniform_Location (Sprite_Shader, "rows");
-        Sprite_Uniform.Current_Sprite_ID :=  Uniform_Location (Sprite_Shader, "current_sprite");
+        Sprite_Uniform.Current_Sprite_ID :=
+          Uniform_Location (Sprite_Shader, "current_sprite");
         Sprite_Uniform.Dyn_Light_Pos_World_ID :=
           Uniform_Location (Sprite_Shader, "dyn_light_pos_wor");
         Sprite_Uniform.Dyn_Light_Diff_ID :=
@@ -115,6 +116,7 @@ package body Sprite_Shader_Manager is
         GL.Uniforms.Set_Single (Sprite_Uniform.Caster_Pos_World_ID, Vec3_Init);
         GL.Uniforms.Set_Single (Sprite_Uniform.Columns_ID, 1.0);
         GL.Uniforms.Set_UInt (Sprite_Uniform.Cube_Texture_ID, 0);
+        GL.Uniforms.Set_Single (Sprite_Uniform.Current_Sprite_ID, 0.0);
         GL.Uniforms.Set_UInt (Sprite_Uniform.Diff_Map_ID, 0);
         GL.Uniforms.Set_Single (Sprite_Uniform.Dyn_Light_Pos_World_ID, Vec3_Init);
         GL.Uniforms.Set_Single (Sprite_Uniform.Dyn_Light_Diff_ID, Vec3_Init);
@@ -157,6 +159,12 @@ package body Sprite_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
+    procedure Set_Current_Sprite (Sprite_ID : Single) is
+    begin
+        GL.Uniforms.Set_Single (Sprite_Uniform.Current_Sprite_ID, Sprite_ID);
+    end Set_Current_Sprite;
+
+    --  -------------------------------------------------------------------------
     procedure Set_Diff_Map (Diff_Map : UInt) is
     begin
         GL.Uniforms.Set_UInt (Sprite_Uniform.Diff_Map_ID, Diff_Map);
