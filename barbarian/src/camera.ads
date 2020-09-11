@@ -29,8 +29,9 @@ package Camera is
     end record;
 
     function Default_Camera return Camera_Data;
+    procedure Init;
     function Projection_Matrix return Singles.Matrix4;
-    procedure Init_Camera;
+    function PV_Matrix return Singles.Matrix4;
     procedure Set_Camera_Height (Height : Single);
 
 end Camera;

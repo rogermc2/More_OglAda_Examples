@@ -6,7 +6,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
-with GL.Types;
 
 with GID_Image_Loader;
 
@@ -28,8 +27,28 @@ package body Texture_Manager is
       (Loaded_Texture);
     type Loaded_Textures_List is new Loaded_Textures_Package.List with null record;
 
-    Bound_Textures : Bound_Textures_List;
+    Bound_Textures  : Bound_Textures_List;
     Loaded_Textures : Loaded_Textures_List;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Bind_Texture (Slot : GL.Types.Int;
+                            Tex : GL.Objects.Textures.Texture) is
+        use GL.Objects.Textures.Targets;
+        use GL.Types;
+    begin
+        if Slot > 12 then
+            raise Texture_Exception with
+              "Texture.Bind_Texture, active texture unit number for binding "
+               & "is high:" & Int'Image (Slot);
+        end if;
+        if Tex /= Bound_Textures (Slot) then
+            Set_Active_Unit (Slot - 1);
+            Texture_2D.Bind (Tex);
+            Bound_Textures (Slot) := Tex;
+        end if;
+
+    end Bind_Texture;
 
     --  ------------------------------------------------------------------------
 
