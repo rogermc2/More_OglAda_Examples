@@ -1,11 +1,12 @@
 
-with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Containers.Vectors;
 with Ada.Streams.Stream_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
+with GL.Types;
 
 with GID_Image_Loader;
 
@@ -14,25 +15,27 @@ with Settings;
 
 package body Texture_Manager is
 
-    package Bound_Textures_Package is new Ada.Containers.Doubly_Linked_Lists
-      (GL.Objects.Textures.Texture);
-    type Bound_Textures_List is new Bound_Textures_Package.List with null record;
+    package Bound_Textures_Package is new Ada.Containers.Vectors
+      (Positive, GL.Objects.Textures.Texture);
+    type Bound_Textures_List is new Bound_Textures_Package.Vector with null record;
 
     type Loaded_Texture is record
         File_Name   : Unbounded_String;
         Texture_ID  : GL.Types.UInt;
         Has_Mipmaps : Boolean := False;
     end record;
-    package Loaded_Textures_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Loaded_Texture);
-    type Loaded_Textures_List is new Loaded_Textures_Package.List with null record;
+    package Loaded_Textures_Package is new Ada.Containers.Vectors
+      (Positive, Loaded_Texture);
+    type Loaded_Textures_List is new Loaded_Textures_Package.Vector with null record;
 
     Bound_Textures  : Bound_Textures_List;
     Loaded_Textures : Loaded_Textures_List;
 
+    function Is_Bound (Slot : Positive) return Boolean;
+
     --  ------------------------------------------------------------------------
 
-    procedure Bind_Texture (Slot : GL.Types.Int;
+    procedure Bind_Texture (Slot : Positive;
                             Tex : GL.Objects.Textures.Texture) is
         use GL.Objects.Textures.Targets;
         use GL.Types;
@@ -40,15 +43,35 @@ package body Texture_Manager is
         if Slot > 12 then
             raise Texture_Exception with
               "Texture.Bind_Texture, active texture unit number for binding "
-               & "is high:" & Int'Image (Slot);
+               & "is high:" & Positive'Image (Slot);
         end if;
-        if Tex /= Bound_Textures (Slot) then
-            Set_Active_Unit (Slot - 1);
+        if not Is_Bound (Slot) then
+            Set_Active_Unit (GL.Types.Int (Slot - 1));
             Texture_2D.Bind (Tex);
-            Bound_Textures (Slot) := Tex;
+            Bound_Textures.Replace_Element (Slot, Tex);
         end if;
 
     end Bind_Texture;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Bind_Cube_Texture (Slot : Positive;
+                            Tex : GL.Objects.Textures.Texture) is
+        use GL.Objects.Textures.Targets;
+        use GL.Types;
+    begin
+        if Slot > 12 then
+            raise Texture_Exception with
+              "Texture.Bind_Cube_Texture, active texture unit number for binding "
+               & "is high:" & Positive'Image (Slot);
+        end if;
+        if not Is_Bound (Slot) then
+            Set_Active_Unit (GL.Types.Int (Slot - 1));
+            Texture_Cube_Map.Bind (Tex);
+            Bound_Textures.Replace_Element (Slot, Tex);
+        end if;
+
+    end Bind_Cube_Texture;
 
     --  ------------------------------------------------------------------------
 
@@ -251,6 +274,25 @@ package body Texture_Manager is
         when others =>
             Put_Line ("An exception occurred in Texture_Manager.Load_Image_To_Texture!");
     end Load_Image_To_Texture;
+
+    --  ------------------------------------------------------------------------
+
+    function Is_Bound (Slot : Positive) return Boolean is
+        use Bound_Textures_Package;
+        Found : Boolean := False;
+        Index : Positive;
+        Curs  : Cursor;
+    begin
+        if not Bound_Textures.Is_Empty then
+            Index := Bound_Textures.First_Index;
+            while Index <= Bound_Textures.Last_Index and not Found loop
+                Found := Slot = Index;
+                Curs := Bound_Textures.To_Cursor (Index);
+                Next (Curs);
+            end loop;
+        end if;
+        return Found;
+    end Is_Bound;
 
     --  ------------------------------------------------------------------------
 
