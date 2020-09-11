@@ -3,6 +3,7 @@ with GL.Attributes;
 with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
 
+with Frustum;
 with Game_Utils;
 with GL_Utils;
 with Manifold;
@@ -144,8 +145,9 @@ package body Sprite_Renderer is
 	U    : Int := Sprites (Sprite_Index).Wmap_U;
 	V    : Int := Sprites (Sprite_Index).Wmap_V;
     begin
-        if Sprites (Sprite_Index).Is_Visible then
-
+        if Sprites (Sprite_Index).Is_Visible and  Frustum.Is_Sphere_In_Frustum
+          (Sprites (Sprite_Index).World_Position, 1.0) then
+          Bind_Texture (0, Sprites (Sprite_Index).Sprite_Map_Diffuse_Id);
         end if;
     end Render_Sprite;
 

@@ -101,7 +101,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             raise Initialize_Exception with "Init_Texture_Manager failed.";
         end if;
         Mesh_Loader.Init;
-        Camera.Init_Camera;
+        Camera.Init;
         if not Changed_Camera_Height then
             raise Initialize_Exception with "Changed_Camera_Height failed.";
         end if;
@@ -112,7 +112,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         if not Particle_System.Init_Particle_Systems then
             raise Initialize_Exception with "Init_Particle_Systems failed.";
         end if;
-        Sprite_Renderer.Init_Sprite_Renderer;
+        Sprite_Renderer.Init;
         if not GUI.Init_GUIs then
             raise Initialize_Exception with "Init_Sprite_Renderer failed.";
         end if;

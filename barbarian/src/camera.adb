@@ -9,13 +9,7 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
-    function Projection_Matrix return Singles.Matrix4 is
-    begin
-        return G_Cam.Projection_Matrix;
-    end Projection_Matrix;
-
-    --  ------------------------------------------------------------------------
-    procedure Init_Camera is
+    procedure Init is
         use Singles;
         use Maths;
         Dir     : Singles.Vector3;
@@ -57,7 +51,7 @@ package body Camera is
         G_Cam.Is_Dirty  := True;
         G_Cam.Manual_Override := False;
         G_Cam.Height := 13.0;
-    end Init_Camera;
+    end Init;
 
     --  ------------------------------------------------------------------------
 
@@ -68,10 +62,25 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+    function Projection_Matrix return Singles.Matrix4 is
+    begin
+        return G_Cam.Projection_Matrix;
+    end Projection_Matrix;
+
+    --  ------------------------------------------------------------------------
+
+    function PV_Matrix return Singles.Matrix4 is
+    begin
+        return G_Cam.PV;
+    end PV_Matrix;
+
+    --  ------------------------------------------------------------------------
+
     procedure Set_Camera_Height (Height : Single) is
     begin
         G_Cam.Height := Height;
     end Set_Camera_Height;
 
     --  ------------------------------------------------------------------------
+
 end Camera;
