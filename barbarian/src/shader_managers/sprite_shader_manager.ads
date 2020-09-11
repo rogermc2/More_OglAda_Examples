@@ -10,6 +10,7 @@ package Sprite_Shader_Manager is
     procedure Set_Caster_Position (Position : Singles.Vector3);
     procedure Set_Columns (Columns : Single);
     procedure Set_Cube_Texture (Texture : UInt);
+    procedure Set_Current_Sprite (Sprite_ID : Single);
     procedure Set_Diff_Map (Diff_Map : UInt);
     procedure Set_Dyn_Light_Pos (Position : Singles.Vector3);
     procedure Set_Dyn_Light_Diff (Diff : Singles.Vector3);

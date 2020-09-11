@@ -16,7 +16,7 @@ with Settings;
 package body Texture_Manager is
 
     package Bound_Textures_Package is new Ada.Containers.Vectors
-      (Positive, GL.Objects.Textures.Texture);
+      (Natural, GL.Objects.Textures.Texture);
     type Bound_Textures_List is new Bound_Textures_Package.Vector with null record;
 
     type Loaded_Texture is record
@@ -25,25 +25,25 @@ package body Texture_Manager is
         Has_Mipmaps : Boolean := False;
     end record;
     package Loaded_Textures_Package is new Ada.Containers.Vectors
-      (Positive, Loaded_Texture);
+      (Natural, Loaded_Texture);
     type Loaded_Textures_List is new Loaded_Textures_Package.Vector with null record;
 
     Bound_Textures  : Bound_Textures_List;
     Loaded_Textures : Loaded_Textures_List;
 
-    function Is_Bound (Slot : Positive) return Boolean;
+    function Is_Bound (Slot : Natural) return Boolean;
 
     --  ------------------------------------------------------------------------
 
-    procedure Bind_Texture (Slot : Positive;
+    procedure Bind_Texture (Slot : Natural;
                             Tex : GL.Objects.Textures.Texture) is
         use GL.Objects.Textures.Targets;
         use GL.Types;
     begin
-        if Slot > 12 then
+        if Slot > 11 then
             raise Texture_Exception with
               "Texture.Bind_Texture, active texture unit number for binding "
-               & "is high:" & Positive'Image (Slot);
+               & "is high:" & Natural'Image (Slot);
         end if;
         if not Is_Bound (Slot) then
             Set_Active_Unit (GL.Types.Int (Slot - 1));
@@ -55,18 +55,18 @@ package body Texture_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Bind_Cube_Texture (Slot : Positive;
-                            Tex : GL.Objects.Textures.Texture) is
+    procedure Bind_Cube_Texture (Slot : Natural;
+                                 Tex : GL.Objects.Textures.Texture) is
         use GL.Objects.Textures.Targets;
         use GL.Types;
     begin
-        if Slot > 12 then
+        if Slot > 11 then
             raise Texture_Exception with
               "Texture.Bind_Cube_Texture, active texture unit number for binding "
                & "is high:" & Positive'Image (Slot);
         end if;
         if not Is_Bound (Slot) then
-            Set_Active_Unit (GL.Types.Int (Slot - 1));
+            Set_Active_Unit (GL.Types.Int (Slot));
             Texture_Cube_Map.Bind (Tex);
             Bound_Textures.Replace_Element (Slot, Tex);
         end if;
@@ -277,10 +277,10 @@ package body Texture_Manager is
 
     --  ------------------------------------------------------------------------
 
-    function Is_Bound (Slot : Positive) return Boolean is
+    function Is_Bound (Slot : Natural) return Boolean is
         use Bound_Textures_Package;
         Found : Boolean := False;
-        Index : Positive;
+        Index : Natural;
         Curs  : Cursor;
     begin
         if not Bound_Textures.Is_Empty then

@@ -13,6 +13,12 @@ package body Manifold is
       (Character);
     type Tiles_List is new Tiles_Package.List with null record;
 
+    package Batches_Package is new Ada.Containers.Vectors
+      (Positive, Batch_Meta);
+    type Batches_List is new Batches_Package.Vector with null record;
+
+    Batches           : Batches_List;
+
     Batches_Across    : Integer := 0;
     Batches_Down      : Integer := 0;
     Batch_Split_Count : Integer := 0;
@@ -32,6 +38,42 @@ package body Manifold is
     begin
         return Batch_Split_Count;
     end Batch_Split_Size;
+
+--  ----------------------------------------------------------------------------
+
+    function Get_Batch_Index (Column, Row : Integer) return Integer is
+        Result : Integer := -1;
+    begin
+        if Column >= 0 and Column < Max_Cols and Row >= 0 and Row < Max_Rows then
+            Result := (Column + Batches_Across * Row) / Settings.Tile_Batch_Width;
+        end if;
+        return Result;
+    end Get_Batch_Index;
+
+--  ----------------------------------------------------------------------------
+
+    function Get_Light_Index (Column, Row, Light_Number : Integer)
+                              return Integer is
+        Batch_Index   : constant Integer := Get_Batch_Index (Column, Row);
+        Batch         : Batch_Meta;
+        Light_Indices : Tile_Nodes_List;
+        Result        : Integer := -1;
+    begin
+        if not Batches.Is_Empty then
+           Batch := Batches.Element (Batch_Index);
+           Light_Indices := Batch.Static_Light_Indices;
+           if Light_Number > Integer (Light_Indices.Length) then
+                raise Manifold_Exception with
+                  "Manifold.Get_Light_Index; Light number " &
+                  Integer'Image (Light_Number) & " requested at ( " &
+                  Integer'Image (Column) & "," & Integer'Image (Row) &
+                  ") in batch " &  Integer'Image (Batch_Index) &
+		" does not exist.";
+           end if;
+           Result := Light_Indices.Element (Light_Number);
+        end if;
+        return Result;
+    end Get_Light_Index;
 
 --  ----------------------------------------------------------------------------
 
