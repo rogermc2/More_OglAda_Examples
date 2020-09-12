@@ -19,7 +19,7 @@ with Utilities;
 
 --  with GL_Util;
 
-with Audio;
+--  with Audio_Manager;
 with Blood_Splats;
 with Camera;
 with Character_Controller;
@@ -93,9 +93,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         if not Shader_Manager.Init_Shaders then
             raise Initialize_Exception with "Init_Shaders failed.";
         end if;
-        if not Audio.Init_Audio then
-            raise Initialize_Exception with "Init_Audio failed.";
-        end if;
+--          if not Audio.Init_Audio then
+--              raise Initialize_Exception with "Init_Audio failed.";
+--          end if;
         Texture_Manager.Init_Texture_Manager;
         if not GUI.Load_Controller_Textures then
             raise Initialize_Exception with "Init_Texture_Manager failed.";

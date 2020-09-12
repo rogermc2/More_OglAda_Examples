@@ -45,10 +45,18 @@ package body Settings is
     end Particle_Mipmaps_Enabled;
 
     --  ------------------------------------------------------------------------
+
     function Save_Settings return Boolean is
     begin
         return True;
     end Save_Settings;
+
+    --  ------------------------------------------------------------------------
+
+    function Shadows_Enabled return Boolean is
+    begin
+        return G_Settings.Shadows_Enabled;
+    end Shadows_Enabled;
 
     --  ------------------------------------------------------------------------
 

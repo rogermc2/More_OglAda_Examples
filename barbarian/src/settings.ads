@@ -14,6 +14,7 @@ package Settings is
     function Load_Settings return Boolean;
     function Particle_Mipmaps_Enabled return Boolean;
     function Save_Settings return Boolean;
+    function Shadows_Enabled return Boolean;
     function Texture_Filter return Integer;
     function Tile_Batch_Width return Integer;
 

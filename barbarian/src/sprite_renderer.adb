@@ -7,7 +7,9 @@ with Frustum;
 with Game_Utils;
 with GL_Utils;
 with Manifold;
+with Settings;
 with Shader_Attributes;
+with Shadows;
 with Sprite_Shader_Manager;
 with Sprite_World_Map;
 with Texture_Manager;
@@ -244,10 +246,29 @@ package body Sprite_Renderer is
     end Sr_Set_Ambient_Light_Level;
 
     --  -------------------------------------------------------------------------
-
-    procedure Start_Sprite_Rendering is
+    --  NOTE : assuming blend etc. already set
+    --  glEnable (GL_BLEND);
+    --  glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    --  disable writing to depth buffer but still allow testing it
+    --  for 3d transparency.
+    --  glDepthMask (GL_FALSE);
+    procedure Start_Sprite_Rendering (G_Camera : Camera.Camera_Data) is
     begin
-        null;
+        GL_Utils.Bind_VAO (Sprite_VAO);
+        Sprite_Shader_Manager.Use_Sprite_Shader;
+        if G_Camera.Is_Dirty then
+            Sprite_Shader_Manager.Set_View (G_Camera.View_Matrix);
+            Sprite_Shader_Manager.Set_Perspective (G_Camera.Projection_Matrix);
+        end if;
+
+        if Settings.Shadows_Enabled then
+            Sprite_Shader_Manager.Set_Shadow_Enabled (1.0);
+            Shadows.Bind_Cube_Shadow_Texture (3);
+            Sprite_Shader_Manager.Set_Caster_Position (Shadows.Caster_Position);
+        else
+            Sprite_Shader_Manager.Set_Shadow_Enabled (0.0);
+        end if;
+
     end Start_Sprite_Rendering;
 
     --  -------------------------------------------------------------------------
