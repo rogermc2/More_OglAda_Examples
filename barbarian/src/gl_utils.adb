@@ -3,7 +3,6 @@ with Glfw;
 
 with GL.Buffers;
 with GL.Culling;
-with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
 with GL.Types.Colors;
 
@@ -11,8 +10,18 @@ with Utilities;
 
 package body GL_Utils is
 
-    Statistics       : Gfx_Stats;
-    Previous_Seconds : Float := 0.0;
+    G_Current_Program  : GL.Objects.Programs.Program;
+    Bound_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+    Statistics         : Gfx_Stats;
+    Previous_Seconds   : Float := 0.0;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Bind_VAO (VAO : GL.Objects.Vertex_Arrays.Vertex_Array_Object) is
+    begin
+        VAO.Bind;
+        Bound_VAO := VAO;
+    end Bind_VAO;
 
     --  ------------------------------------------------------------------------
 
@@ -39,6 +48,13 @@ package body GL_Utils is
         Utilities.Load_Vertex_Buffer (Array_Buffer, Data, Static_Draw);
         return New_Buffer;
     end Create_3D_VBO;
+
+    --  ------------------------------------------------------------------------
+
+    function Current_Program return GL.Objects.Programs.Program is
+        begin
+           return G_Current_Program;
+        end Current_Program;
 
     --  ------------------------------------------------------------------------
 
@@ -71,6 +87,13 @@ package body GL_Utils is
 
     --  ------------------------------------------------------------------------
 
+    procedure Set_Current_Program (Current_Prog : GL.Objects.Programs.Program) is
+        begin
+           G_Current_Program := Current_Prog;
+        end Set_Current_Program;
+
+    --  ------------------------------------------------------------------------
+
     procedure Set_Render_Defaults is
         use GL.Toggles;
         use Utilities;
@@ -86,7 +109,7 @@ package body GL_Utils is
            Disable (Blend);
         end Set_Render_Defaults;
 
-    --  ------------------------------------------------------------------------
+    --  ------------------------------------------------------------
 
     procedure Update_Batch_Count (Change : Integer) is
     begin

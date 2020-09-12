@@ -38,8 +38,8 @@ package body Sprite_Shader_Manager is
         Caster_Pos_World_ID     : GL.Uniforms.Uniform := 0;
     end record;
 
-    Sprite_Uniform         : Sprite_Uniforms;
-    Sprite_Shader          : Program;  --  Basic shader
+    Sprite_Uniform    : Sprite_Uniforms;
+    Sprite_Shader     : Program;  --  Basic shader
 
     Vec2_Init         : constant GL.Types.Singles.Vector2 := (0.0, 0.0);
     Vec3_Init         : constant GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
@@ -293,6 +293,13 @@ package body Sprite_Shader_Manager is
     begin
         GL.Uniforms.Set_Single (Sprite_Uniform.View_ID, View_Matrix);
     end Set_View;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Use_Sprite_Shader is
+    begin
+        Use_Program (Sprite_Shader);
+    end Use_Sprite_Shader;
 
     --  -------------------------------------------------------------------------
 

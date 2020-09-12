@@ -29,6 +29,7 @@ package Sprite_Shader_Manager is
     procedure Set_Spec_Map (Spec_Map : UInt);
     procedure Set_Static_Light_Indices (Indices : Singles.Vector2);
     procedure Set_View (View_Matrix : Singles.Matrix4);
+    procedure Use_Sprite_Shader;
 
     private
        type Light_Array is new Singles.Vector3_Array (1 .. 32);

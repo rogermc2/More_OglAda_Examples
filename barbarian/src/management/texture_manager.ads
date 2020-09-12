@@ -8,7 +8,7 @@ package Texture_Manager is
     procedure Bind_Texture (Slot : Natural;
                             Tex : GL.Objects.Textures.Texture);
     procedure Bind_Cube_Texture (Slot : Natural;
-                            Tex : GL.Objects.Textures.Texture);
+                                 Tex : GL.Objects.Textures.Texture);
     procedure Init_Texture_Manager;
     procedure Load_Image_To_Texture (File_Name : String;
                                      aTexture : out Texture;

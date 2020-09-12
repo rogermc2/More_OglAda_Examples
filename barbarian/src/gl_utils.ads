@@ -1,19 +1,25 @@
 
 with GL.Objects.Buffers;
+with GL.Objects.Programs;
+with GL.Objects.Vertex_Arrays;
 with GL.Types;
 
 package GL_Utils is
 
     type Gfx_Stats is private;
 
+    procedure Bind_VAO (VAO : GL.Objects.Vertex_Arrays.Vertex_Array_Object);
     function Create_2D_VBO (Data : GL.Types.Singles.Vector2_Array)
                             return GL.Objects.Buffers.Buffer;
     function Create_3D_VBO (Data : GL.Types.Singles.Vector3_Array)
                             return GL.Objects.Buffers.Buffer;
+    function Current_Program return GL.Objects.Programs.Program;
     procedure Draw_Triangles (Number : GL.Types.Int);
     procedure Draw_Triangle_Strip (Number : GL.Types.Int);
     function Get_Elapsed_Seconds return Float;
     procedure Set_Render_Defaults;
+    procedure Set_Current_Program (Current_Prog :
+                                   GL.Objects.Programs.Program);
     procedure Update_Batch_Count (Change : Integer);
     procedure Update_Vertex_Count (Change : Integer);
 
