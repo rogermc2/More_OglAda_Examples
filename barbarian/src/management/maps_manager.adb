@@ -6,6 +6,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Character_Controller;
 with Manifold;
 with Properties_Manager;
+with Text_Manager;
 
 package body Maps_Manager is
 
@@ -47,6 +48,8 @@ package body Maps_Manager is
 
         Character_Controller.Init;
         Character_Controller.Load_Characters (Input_Stream, False);
+
+        Text_Manager.Preload_Comic_Texts  (Input_Stream);
 
 
     exception
