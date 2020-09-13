@@ -51,10 +51,10 @@ private
         Joy_Axis_Threshold           : Float := 0.0;
         Render_OLS                   : Boolean := False;
         Shadows_Enabled              : Boolean := False;
-	Fb_effects_enabled           : Boolean := False;
-	Particles_enabled            : Boolean := False;
-	Auto_blood_wipe              : Boolean := False;
-	--  can disable to get around bug in MESA renderer
+	Fb_effects_Enabled           : Boolean := False;
+	Particles_Enabled            : Boolean := False;
+	Auto_Blood_Wipe              : Boolean := False;
+	--  Can disable to get around bug in MESA renderer
 	Particle_Mipmaps_Enabled     : Boolean := False;
 	Show_Fps                     : Boolean := False;
 	Vid_Rec_Mode                 : Boolean := False;

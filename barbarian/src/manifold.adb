@@ -22,9 +22,7 @@ package body Manifold is
     Batches_Across    : Int := 0;
     Batches_Down      : Int := 0;
     Batch_Split_Count : Integer := 0;
-    Max_Cols          : Int := 0;
-    Max_Rows          : Int := 0;
-    Total_Tiles       : Integer := 0;
+    Total_Tiles       : Int := 0;
     Tile_Heights      : Tiles_List;
     Tile_Facings      : Tiles_List;
     Tile_Textures     : Tiles_List;
@@ -44,10 +42,10 @@ package body Manifold is
     function Get_Batch_Index (Column, Row : Int) return Int is
         Result : Int := -1;
     begin
-        if Column >= 0 and Column < Max_Cols and Row >= 0 and Row < Max_Rows then
+--          if Column >= 0 and Column < Max_Cols and Row >= 0 and Row < Max_Rows then
             Result := (Column + Batches_Across * Row) /
               Int (Settings.Tile_Batch_Width);
-        end if;
+--          end if;
         return Result;
     end Get_Batch_Index;
 
@@ -122,8 +120,8 @@ package body Manifold is
     procedure Load_Modified_Part (Input_Stream : Stream_IO.Stream_Access;
                                   Tile_List : in out Tiles_List) is
         aLine      : Unbounded_String;
-        prev_Char  : Character;
-        tex_Char   : Character;
+        Prev_Char  : Character;
+        Tex_Char   : Character;
         Char_Index : Integer;
     begin
         for row in 1 .. Max_Rows loop
@@ -131,26 +129,26 @@ package body Manifold is
             declare
                 aString : constant String := To_String (aLine);
             begin
-                prev_Char := ASCII.NUL;
+                Prev_Char := ASCII.NUL;
                 for col in 1 .. Max_Cols loop
-                    tex_Char := aString (Integer (col));
-                    if prev_Char = '\' and then
-                      (tex_Char = 'n' or tex_Char = ASCII.NUL) then
+                    Tex_Char := aString (Integer (col));
+                    if Prev_Char = '\' and then
+                      (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
                       Tile_List.Delete_Last;
                     else
-                      if tex_Char >= '0' and tex_Char <= '9' then
-                          Char_Index := Character'Pos (tex_Char);
+                      if Tex_Char >= '0' and Tex_Char <= '9' then
+                          Char_Index := Character'Pos (Tex_Char);
                           Char_Index := Char_Index - Character'Pos ('0');
-                          tex_Char := Character'Val (Char_Index);
+                          Tex_Char := Character'Val (Char_Index);
                       else
-                          tex_Char := Character'Val (Char_Index);
+                          Tex_Char := Character'Val (Char_Index);
                           Char_Index := 10 + Char_Index - Character'Pos ('a');
-                          tex_Char := Character'Val (Char_Index);
+                          Tex_Char := Character'Val (Char_Index);
                       end if;
-                      Tile_List.Append (tex_Char);
+                      Tile_List.Append (Tex_Char);
                     end if;
                 end loop;
-                prev_Char := tex_Char;
+                Prev_Char := Tex_Char;
             end;
         end loop;
 
@@ -162,26 +160,36 @@ package body Manifold is
 
 --  ----------------------------------------------------------------------------
 
+    function Is_Tile_Valid (Col, Row : Int) return Boolean is
+    begin
+        return Col >= 0 and Col < Max_Cols and  Row >= 0 and Row < Max_Rows;
+    end Is_Tile_Valid;
+
+--  ----------------------------------------------------------------------------
+
     procedure Load_Tiles (Input_Stream : Stream_IO.Stream_Access) is
         use Stream_IO;
         use Settings;
-        String8       : String (1 .. 8);
+        type Tiles_Header is record
+            Name     : String (1 .. 8) := "        ";
+            Max_Cols : Int := 0;
+            X        : Character := ' ';
+            Max_Rows : Int := 0;
+        end record;
         String3       : String (1 .. 3);
-        aChar         : Character;
+        Header      : Tiles_Header;
         Tex_Header    : Unbounded_String;
     begin
         Game_Utils.Game_Log ("loading tiles and generating manifold from FP...");
-        String'Read (Input_Stream, String8);
-        String'Read (Input_Stream, String8);  --  "facings "
-        if Ada.Characters.Handling.To_Lower (String8) /= "facings " then
+        Tiles_Header'Read (Input_Stream, Header);
+        if Header.Name /= "facings " then
             raise Manifold_Parsing_Exception with
-              "Invalid format, ""facings"" expected.";
+              "Invalid format, ""facings"" expected: " & Header.Name;
         end if;
 
-        Int'Read (Input_Stream, Max_Cols);
-        Character'Read (Input_Stream, aChar);
-        Int'Read (Input_Stream, Max_Rows);
-        Total_Tiles := Integer (Max_Rows * Max_Cols);
+        Max_Cols := Header.Max_Cols;
+        Max_Rows := Header.Max_Rows;
+        Total_Tiles := Max_Rows * Max_Cols;
         Batches_Across :=
           Int (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
         Batches_Down :=
@@ -218,7 +226,7 @@ package body Manifold is
 
     function Number_Of_Tiles return Integer is
     begin
-        return Total_Tiles;
+        return Integer (Total_Tiles);
     end Number_Of_Tiles;
 
 --  ----------------------------------------------------------------------------

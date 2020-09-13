@@ -20,12 +20,7 @@ package body Text_Manager is
 
     type Popup_Data is record
         Rx          : Integer;
-        Open_Paren  : Character := ' ';
-        Red         : Integer;
-        Green       : Integer;
-        Blue        : Integer;
-        A           : Integer;
-        Close_Paren : String (1 .. 2);
+        RGBA        : GL.Types.Colors.Color;
         Popup_Text  : Unbounded_String := To_Unbounded_String ("");
     end record;
 
@@ -47,21 +42,18 @@ package body Text_Manager is
         Pos := Index (aLine, " ");
         if Slice (aLine, 1, Pos - 1) /= "popups" then
             raise Text_Manager_Exception with
-              "Text_Manager.Preload_Comic_Texts; Invalid Comic_Texts format";
+              "Text_Manager.Preload_Comic_Texts; Invalid Comic_Texts format:
+              & aLine;
         end if;
         Popup_Count :=
           Integer'Value (Slice (aLine, Pos + 1, Length (aLine)));
         for index in 1 .. Popup_Count loop
-            Popup.Open_Paren := ' ';
             Popup.Popup_Text := To_Unbounded_String ("");
             Popup_Data'Read (Input_Stream, Popup);
-            if Popup.Open_Paren = '(' and Length (Popup.Popup_Text) > 0 then
                 -- Process any \n?
                 C_Text.Text := Popup.Popup_Text;
-                C_Text.Colour := (Single (Popup.Red), Single (Popup.Green),
-                                  Single (Popup.Blue), Single (Popup.A));
+                C_Text.Colour := Popup.RGBA;
                 Preloaded_Comic_Texts.Append (C_Text);
-            end if;
             --  register rx code
             --  if (!gEventController.addReceiver (rx, RX_STORY,
 	    --  g_preloaded_comic_colours.size () - 1))

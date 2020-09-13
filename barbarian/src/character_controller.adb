@@ -1,48 +1,112 @@
 
+with Ada.Exceptions;
+with Ada.Text_IO; use Ada.Text_IO;
+
+with Game_Utils;
+with GUI;
+with Manifold;
+
 package body Character_Controller is
 
-   procedure Init is
-   begin
+--      type Integer_Array is array (Integer range <>) of Integer;
+    type Character_Data is record
+       Script_File   : Unbounded_String := To_Unbounded_String ("");
+       U      : GL.Types.Int := 0;
+       V      : GL.Types.Int := 0;
+       H      : Float := 0.0;
+    end record;
+
+    Characters : Character_List;
+    Specs      : Specs_List;
+
+    Portal_Fadeout_Started  : Boolean := False;
+    Characters_To_Reserve   : constant Integer := 256;
+    Characters_Allocd_Count : Integer := Characters_To_Reserve;
+    Character_Count         : Integer := Characters_To_Reserve;
+    Gold_Current            : Integer := 0;
+    Kills_Current           : Integer := 0;
+    Kills_Max               : Integer := 0;
+
+    procedure Set_Character_Defaults (Character_Index : Integer);
+
+    --  -------------------------------------------------------------------------
+
+    procedure Create_Character (theCharacter : Character_Data) is
+        use GL.Types;
+    begin
+        if theCharacter.Script_File = "" then
+            raise Character_Controller_Exception with
+            "Character_Controller.Create_Character, no script file name.";
+        end if;
+        if Manifold.Is_Tile_Valid (theCharacter.U, theCharacter.V) then
+            Game_Utils.Game_Log ("Creating character from " &
+                                  To_String (theCharacter.Script_File));
+            if Character_Count >= Characters_Allocd_Count then
+                Game_Utils.Game_Log ("WARNING: realloc characters.");
+                Characters_Allocd_Count := Character_Count + 64;
+            end if;
+
+        else
+            raise Character_Controller_Exception with
+            "Character_Controller.Create_Character, invalid tile siza" &
+            Int'Image (theCharacter.U) & "x" & Int'Image (theCharacter.V);
+        end if;
+    end Create_Character;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Init is
+    begin
         null;
-   end Init;
+    end Init;
 
-   --  -------------------------------------------------------------------------
-
-   --  read characters from an already open file stream
+    --  -------------------------------------------------------------------------
+    --  read characters from an already open file stream
     procedure Load_Characters (Input_Stream : Stream_IO.Stream_Access;
                                Editor_Mode : Boolean) is
-        use Ada.Streams;
-        Input_File       : Stream_IO.File_Type;
+        type Character_Header is record
+            Label     : String (1 .. 6) := "      ";
+            Num_Characters : Integer := 0;
+            Comment   : Unbounded_String := To_Unbounded_String ("");
+        end record;
 
-        aLine            : Unbounded_String;
-        Num_Story_Lines  : Natural;
-        Story_Lines      : Story_Lines_List;
-        --          MN_Start_Time : Float;  --  Debug variable
+        Header     : Character_Header;
+        aCharacter : Character_Data;
     begin
-        Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
-        Input_Stream := Stream_IO.Stream (Input_File);
-        Unbounded_String'Read (Input_Stream, theMap.Level_Title);
-        Unbounded_String'Read (Input_Stream, theMap.Level_Par_Time);
+       Game_Utils.Game_Log
+              ("Character_Controller.Load_Characters, loading characters.");
+        Portal_Fadeout_Started := False;
+        Specs.Clear;
 
-        --  Story
-        Unbounded_String'Read (Input_Stream, aLine);
-        declare
-            aString  : constant String := To_String (aLine);
-            Num_Part : constant String := aString (13 .. aString'Length);
-        begin
-            Num_Story_Lines := Integer'Value (Num_Part);
-            for line_num in 1 .. Num_Story_Lines loop
-                Unbounded_String'Read (Input_Stream, aLine);
-                Story_Lines.Append (aLine);
-            end loop;
-        end;  --  declare block
+        if Characters.Is_Empty then
+            Characters_Allocd_Count := Characters_To_Reserve;
+        else
+            Game_Utils.Game_Log
+              ("Character_Controller.Load_Characters, " &
+                Ada.Containers.Count_Type'Image (Characters.Length) & "/" &
+                Integer'Image (Characters_To_Reserve) & "were used last time.");
+        end if;
+        Characters.Clear;
+        Kills_Current := 0;
+        Kills_Max := 0;
 
-        Unbounded_String'Read (Input_Stream, theMap.Music_Track);
-        Unbounded_String'Read (Input_Stream, theMap.Hammer_Music_Track);
+        if not Editor_Mode then
+            GUI.Set_GUI_Gold (Gold_Current);
+            GUI.Set_GUI_Kills (Kills_Current);
+            GUI.Set_GUI_Javalin_Ammo (0);
+        end if;
 
-        Manifold.Load_Tiles (Input_Stream);
+        Character_Header'Read (Input_Stream, Header);
+        if Header.Label /= "chars " then
+            raise Character_Controller_Exception with
+            "Character_Controller.Load_Characters, invalid Character header: "
+            & Header.Label;
+        end if;
 
-        --          MN_Start_Time := Float (Glfw.Time);  --  Set debug variable
+        for count in 1 .. Header.Num_Characters loop
+            Character_Data'Read (Input_Stream, aCharacter);
+            Create_Character (aCharacter);
+        end loop;
 
     exception
         when anError : others =>
@@ -52,11 +116,17 @@ package body Character_Controller is
 
     --  ----------------------------------------------------------------------------
 
-   function Update_Characters (Seconds : Float) return Boolean is
-   begin
-        return False;
-   end Update_Characters;
+    procedure Set_Character_Defaults (Character_Index : Integer) is
+    begin
+        null;
+    end Set_Character_Defaults;
 
-   --  -------------------------------------------------------------------------
+    --  -------------------------------------------------------------------------
+    function Update_Characters (Seconds : Float) return Boolean is
+    begin
+        return False;
+    end Update_Characters;
+
+    --  -------------------------------------------------------------------------
 
 end Character_Controller;
