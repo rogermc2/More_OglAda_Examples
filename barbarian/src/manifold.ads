@@ -21,7 +21,10 @@ package Manifold is
 
     type Batch_Meta is private;
 
-    Max_Tile_Cols : constant GL.Types.Int := 64;
+    Max_Tile_Cols : constant Int := 64;
+    Max_Cols      : Int := 0;
+    Max_Rows      : Int := 0;
+
     Manifold_Exception : Exception;
     Manifold_Parsing_Exception : Exception;
 
@@ -30,6 +33,7 @@ package Manifold is
     function Get_Light_Index (Column, Row : Int; Light_Number : Integer)
                               return Int;
     function Init_Manifold return Boolean;
+    function Is_Tile_Valid (Col, Row : Int) return Boolean;
     procedure Load_Tiles (Input_Stream : Stream_IO.Stream_Access);
     function Number_Of_Tiles return Integer;
     procedure Reset_Manifold_Vars;

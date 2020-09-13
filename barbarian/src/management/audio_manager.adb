@@ -19,7 +19,15 @@ package body Audio_Manager is
     function Init_Audio return Boolean is
     begin
         return False;
-    end;
+    end Init_Audio;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Load_Ambient_Sounds
+      (Input_Stream : Ada.Streams.Stream_IO.Stream_Access) is
+    begin
+        null;
+    end Load_Ambient_Sounds;
 
     --  ------------------------------------------------------------------------
 
