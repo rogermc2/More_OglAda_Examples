@@ -17,8 +17,10 @@ package body Manifold is
       (Positive, Batch_Meta);
     type Batches_List is new Batches_Package.Vector with null record;
 
+--      Max_Tile_Cols : constant Int := 64;
+    Max_Cols      : Int := 0;
+    Max_Rows      : Int := 0;
     Batches           : Batches_List;
-
     Batches_Across    : Int := 0;
     Batches_Down      : Int := 0;
     Batch_Split_Count : Integer := 0;
