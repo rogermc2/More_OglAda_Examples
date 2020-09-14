@@ -21,10 +21,6 @@ package Manifold is
 
     type Batch_Meta is private;
 
-    Max_Tile_Cols : constant Int := 64;
-    Max_Cols      : Int := 0;
-    Max_Rows      : Int := 0;
-
     Manifold_Exception : Exception;
     Manifold_Parsing_Exception : Exception;
 
