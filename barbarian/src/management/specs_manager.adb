@@ -1,5 +1,6 @@
 
 with Ada.Exceptions;
+with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Texture_Manager;
@@ -59,7 +60,9 @@ package body Specs_Manager is
 
     --  -------------------------------------------------------------------------
 
+
     function Load_Specs_File (File_Name : String) return Boolean is
+        use Ada.Strings;
         Path          : String := "characters/" & File_Name;
         Input_File    : File_Type;
         Specs_Count   : constant Integer := Integer (Specs.Length);
@@ -77,13 +80,17 @@ package body Specs_Manager is
 
         while not End_Of_File (Input_File) loop
             declare
+                use Anim_Frame_Package_1D;
+                use Anim_Frame_Package;
                 aLine    : constant String := Get_Line (Input_File);
-                UB       : Unbounded_String := To_Unbounded_String (aLine);
                 S_Length : constant Natural := aLine'Length;
-                Pos1     : Natural := Index (UB, " ");
+                Pos1     : Natural := Fixed.Index (aLine, " ");
                 Pos2     : Natural;
-                Pos_M1   : Natural := Pos1 - 1;
-                Pos_P1   : Natural := Pos1 + 1;
+                Pos_M1   : constant Natural := Pos1 - 1;
+                Pos_P1   : constant Natural := Pos1 + 1;
+                anAnim   : Anim_Frame;
+                Anim_1D  : Anim_Frame_List;
+                Anim_2D  : Anim_Frame_Array;
             begin
                 if  aLine'Length < 2 or else aLine (1 .. 1) = "#" or else
                   aLine (1 .. 1) = "/"  then
@@ -111,27 +118,27 @@ package body Specs_Manager is
                     theSpec.Atlas_Cols :=
                       Integer'Value (aLine (Pos_P1 .. S_Length));
                 elsif aLine (1 .. Pos_M1) = "add_anim_frame" then
-                    UB := To_Unbounded_String (Slice (UB, Pos_P1, S_Length));
-                    Pos2 := Index (UB, " ");
+                    Pos2 := Fixed.Index (aLine, " ");
                     Anim_Num := Int'Value (aLine (Pos_P1 .. Pos2 - 1));
                     Result := Anim_Num >= 0 and Anim_Num < Max_Animations;
                     if Result then
                         --  Skip "atlas_index:"
-                        UB := To_Unbounded_String (Slice (UB, Pos2 + 1, S_Length));
-                        Pos1 := Index (UB, " ") + 1;
-                        UB := To_Unbounded_String (Slice (UB, Pos1, S_Length));
-                        Pos2 := Index (UB, " ");
+                        Pos1 := Fixed.Index (aLine, " ") + 1;
+                        Pos2 := Fixed.Index (aLine, " ");
                         Atlas_Index :=  Integer'Value (aLine (Pos1 .. Pos2 - 1));
                         --  Skip "seconds:"
-                        UB := To_Unbounded_String (Slice (UB, Pos2 + 1, S_Length));
-                        Pos1 := Index (UB, " ") + 1;
-                        UB := To_Unbounded_String (Slice (UB, Pos1, S_Length));
-                        Pos2 := Index (UB, " ");
+                        Pos1 := Fixed.Index (aLine, " ") + 1;
+                        Pos2 := Fixed.Index (aLine, " ");
                         Seconds :=  Float'Value (aLine (Pos_P1 .. Pos2 - 1));
                         AFC := theSpec.Animation_Frame_Count (Anim_Num);
                         Result := AFC < Max_Animations;
                         if Result then
-                            null;
+                            anAnim := (Int (Atlas_Index), Single (Seconds));
+                            Anim_1D.Replace_Element (Integer (Anim_Num), anAnim);
+                            Anim_2D.Replace_Element (Integer (Anim_Num), Anim_1D);
+                            theSpec.Animations := Anim_2D;
+                            theSpec.Animation_Frame_Count (Anim_Num) :=
+                              theSpec.Animation_Frame_Count (Anim_Num) + 1;
                         else
                             raise Specs_Exception with
                            "Specs_Manager.Load_Specs_File too many animation frames.";
