@@ -38,16 +38,21 @@ package Specs_Manager is
         Min_Damage      : Int := 0;
     end record;
 
-    package Anim_Frame_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Anim_Frame);
+    package Anim_Frame_Package_1D is new Ada.Containers.Vectors
+      (Positive, Anim_Frame);
+    type Anim_Frame_List is new Anim_Frame_Package_1D.Vector with null Record;
+
+    package Anim_Frame_Package is new Ada.Containers.Vectors
+      (Positive, Anim_Frame_List);
+    type Anim_Frame_Array is new Anim_Frame_Package.Vector with null Record;
+
     package Attack_Events_Package is new Ada.Containers.Doubly_Linked_Lists
       (Attack_Event);
     type Attack_Events_List is new Attack_Events_Package.List with null Record;
-    type Anim_Frame_List is new Anim_Frame_Package.List with null Record;
 
     type Spec_Data is record
         Attack_Events           : Attack_Events_List;
-        Animations              : Anim_Frame_List;
+        Animations              : Anim_Frame_Array;
         Animation_Frame_Count   : Int_Array (1 .. Max_Animations) :=
                                     (others => 0);
         File_Name               : Unbounded_String := To_Unbounded_String ("");
