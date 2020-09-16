@@ -3,6 +3,8 @@ with GL.Types;
 
 package Settings is
 
+    type Gfx_Presets_Types is (Gfx_Dire, Gfx_Low, Gfx_Medium, Gfx_High,
+                               Gfx_Ultra, Gfx_Custom);
     type Settings is private;
     type V_GL is (V2_1, V3_2);
     subtype Audio_Volume_Range is Integer range 0 .. 10;
@@ -20,7 +22,8 @@ package Settings is
 
 private
     type Settings is record
-        Gfx_Presets                  : Boolean := False;
+        Joy_Axis_Thresh              : Float := 0.5;
+        Gfx_Presets                  : Gfx_Presets_Types := Gfx_Medium;
         GL_Version                   : V_GL := V3_2;
         GL_Version_To_Save           : V_GL := V3_2;
         Allow_Rand_Pitch             : Boolean := False;
@@ -44,15 +47,18 @@ private
         Far_Clip                     : GL.Types.Single := 0.0;
         --  Number of tiles*tiles to put in batches
 	Tile_Batch_Width             : Integer := 8;
+        Texf                         : Integer := 2;
+        Aniso                        : Integer := 4;
         Audio_Volume                 : Audio_Volume_Range := 5;
         Music_Volume                 : Audio_Volume_Range := 5;
+        Render_Dist                  : Integer := 15;
         Disable_Joystick             : Boolean := True;
         Joy_Axis_Threshold           : Float := 0.0;
 	Show_Fps                     : Boolean := False;
 	Vid_Rec_Mode                 : Boolean := False;
         Render_OLS                   : Boolean := True;
         Shadows_Enabled              : Boolean := True;
-	Fb_effects_Enabled           : Boolean := True;
+	Fb_Effects_Enabled           : Boolean := True;
 	Particles_Enabled            : Boolean := True;
 	Particle_Mipmaps_Enabled     : Boolean := True;
 	Auto_Blood_Wipe              : Boolean := False;
