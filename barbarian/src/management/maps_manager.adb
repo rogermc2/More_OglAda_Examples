@@ -1,56 +1,53 @@
 
 with Ada.Exceptions;
-with Ada.Streams.Stream_IO;
+--  with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Character_Controller;
+--  with Character_Controller;
 with Manifold;
-with Properties_Manager;
-with Text_Manager;
+--  with Properties_Manager;
+--  with Text_Manager;
 
 package body Maps_Manager is
 
-    procedure Load_Maps (Path : String; theMap : out Map;
-                        Current_Pos : out Integer) is
-        use Ada.Streams;
-        Input_File       : Stream_IO.File_Type;
-        Input_Stream     : Stream_IO.Stream_Access;
+    procedure Load_Maps (Path : String; theMap : out Map) is
+        use Ada.Strings;
+        Input_File       : File_Type;
         aLine            : Unbounded_String;
+        Pos1             : Natural;
         Num_Story_Lines  : Natural;
-        Story_Lines      : Story_Lines_List;
+--          Story_Lines      : Story_Lines_List;
     begin
-        Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
-        Input_Stream := Stream_IO.Stream (Input_File);
-        Unbounded_String'Read (Input_Stream, theMap.Level_Title);
-        Unbounded_String'Read (Input_Stream, theMap.Level_Par_Time);
+        Put_Line ("Maps_Manager.Load_Maps opening " & Path);
+        Open (Input_File, In_File, Path);
+        Put_Line ("Maps_Manager.Load_Maps, " & Path & " opened.");
+        theMap.Level_Title := To_Unbounded_String (Get_Line (Input_File));
+        theMap.Level_Par_Time := To_Unbounded_String (Get_Line (Input_File));
 
         --  Story
-        Unbounded_String'Read (Input_Stream, aLine);
-        declare
-            aString  : constant String := To_String (aLine);
-            Num_Part : constant String := aString (13 .. aString'Length);
-        begin
-            Num_Story_Lines := Integer'Value (Num_Part);
-            for line_num in 1 .. Num_Story_Lines loop
-                Unbounded_String'Read (Input_Stream, aLine);
-                Story_Lines.Append (aLine);
-            end loop;
-        end;  --  declare block
+        aLine := To_Unbounded_String (Get_Line (Input_File));
+        Pos1 := Index (aLine, " ");
+        Num_Story_Lines := Integer'Value (Slice (aLine, Pos1, Length (aLine)));
+        for line_num in 1 .. Num_Story_Lines loop
+            aLine := To_Unbounded_String (Get_Line (Input_File));
+        end loop;
+        --  Music_Track
+        aLine := To_Unbounded_String (Get_Line (Input_File));
+        --  Hammer_Music_Track
+        aLine := To_Unbounded_String (Get_Line (Input_File));
 
-        Unbounded_String'Read (Input_Stream, theMap.Music_Track);
-        Unbounded_String'Read (Input_Stream, theMap.Hammer_Music_Track);
+        Put_Line ("Maps_Manager.Load_Maps loading tiles ");
+        Manifold.Load_Tiles (Input_File);
 
-        Manifold.Load_Tiles (Input_Stream);
-
-        Properties_Manager.Load_Properties
-          (Input_Stream, Stream_IO.Index (Input_File));
-        Current_Pos := Integer (Stream_IO.Index (Input_File));
-
-        Character_Controller.Init;
-        Character_Controller.Load_Characters (Input_Stream, False);
-
-        Text_Manager.Preload_Comic_Texts  (Input_Stream);
-
+        --          Properties_Manager.Load_Properties (Input_Stream);
+        --  --            (Input_Stream, Stream_IO.Index (Input_File));
+        --          Current_Pos := Integer (Stream_IO.Index (Input_File));
+        --
+        --          Character_Controller.Init;
+        --          Character_Controller.Load_Characters (Input_Stream, False);
+        --
+        --          Text_Manager.Preload_Comic_Texts  (Input_Stream);
+        Close (Input_File);
 
     exception
         when anError : others =>
@@ -71,13 +68,6 @@ package body Maps_Manager is
     begin
         aMap.Level_Title := Time;
     end Set_Par_Time;
-
-    --  ----------------------------------------------------------------------------
-
-    procedure Set_Story_Lines (aMap : in out Map; Lines : Unbounded_String) is
-    begin
-        aMap.Story_Lines := Lines;
-    end Set_Story_Lines;
 
     --  ----------------------------------------------------------------------------
 

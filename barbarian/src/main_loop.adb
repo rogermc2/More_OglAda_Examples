@@ -231,7 +231,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             --  chooser can be accessed if the player selects "new game" in the main menu.
             Skip_Intro := False;
             --  Level has been selected, start creating level
-            Map_Path := To_Unbounded_String ("maps/") & Level_Name &
+            Map_Path := To_Unbounded_String ("src/maps/") & Level_Name &
               To_Unbounded_String (".map");
             --  Name line
             Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
@@ -365,6 +365,7 @@ begin
     Utilities.Clear_Background_Colour_And_Depth (White);
     Main_Window.Set_Input_Toggle (Sticky_Keys, True);
     Glfw.Input.Poll_Events;
+    Game_Utils.Restart_Game_Log;
     Setup (Main_Window, Running);
     Running := not Main_Window.Should_Close;
     while Running loop
@@ -385,4 +386,6 @@ begin
           not (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
         Running := Running and then not Main_Window.Should_Close;
     end loop;
+    Game_Utils.Close_Game_Log;
+
 end Main_Loop;

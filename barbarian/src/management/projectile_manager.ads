@@ -10,8 +10,8 @@ package Projectile_Manager is
     Update_Exception : Exception;
 
     procedure Init;
-    procedure Reset_Projectiles;
-    procedure Update_Projectiles (Step_Time : Float);
+--      procedure Reset_Projectiles;
+--      procedure Update_Projectiles (Step_Time : Float);
 
 private
     type Characters_Hit_Array is  array (1 .. 10) of Int;

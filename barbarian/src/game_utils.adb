@@ -9,15 +9,23 @@ with Ada.Text_IO; use Ada.Text_IO;
 package body Game_Utils is
 
    Game_Log_File : constant String := "game.log";
+   Log_File      : File_Type;
 
    --  ------------------------------------------------------------------------
 
-   function Check_Param (Check : String) return Integer is
+--     function Check_Param (Check : String) return Integer is
+--     begin
+--          return 0;
+--     end Check_Param;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Close_Game_Log is
    begin
-        return 0;
-   end Check_Param;
+        Close (Log_File);
+   end Close_Game_Log;
 
-   --  ------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
     procedure Game_Log (Message : String) is
      File_Descriptor  : Ada.Text_IO.File_Type;
@@ -65,6 +73,19 @@ package body Game_Utils is
       end if;
       return Result;
    end Max;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Restart_Game_Log is
+   begin
+        if Is_Open (Log_File) then
+           Close (Log_File);
+        end if;
+        Delete_File (Game_Log_File);
+        Create (Log_File, Out_File, Game_Log_File);
+        Close (Log_File);
+
+   end Restart_Game_Log;
 
    --  ------------------------------------------------------------------------
 

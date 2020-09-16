@@ -1,7 +1,7 @@
 
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Vectors;
-with Ada.Streams.Stream_IO; use Ada.Streams;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
@@ -30,7 +30,7 @@ package Manifold is
                               return Int;
     function Init_Manifold return Boolean;
     function Is_Tile_Valid (Col, Row : Int) return Boolean;
-    procedure Load_Tiles (Input_Stream : Stream_IO.Stream_Access);
+    procedure Load_Tiles (File : File_Type);
     function Number_Of_Tiles return Integer;
     procedure Reset_Manifold_Vars;
 

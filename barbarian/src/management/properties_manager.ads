@@ -22,8 +22,8 @@ package Properties_Manager is
 
     Properties_Exception : Exception;
 
-    procedure Load_Properties (Input_Stream : Stream_IO.Stream_Access;
-                               Stream_Index : Stream_IO.Count);
+    procedure Load_Properties (Input_Stream : Stream_IO.Stream_Access);
+--                                 Stream_Index : Stream_IO.Count);
 
 private
     type Prop is record

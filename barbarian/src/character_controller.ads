@@ -18,7 +18,7 @@ type Barbarian_Character is private;
     procedure Init;
     procedure Load_Characters (Input_Stream : Stream_IO.Stream_Access;
                                Editor_Mode : Boolean);
-    function Update_Characters (Seconds : Float) return Boolean;
+--      function Update_Characters (Seconds : Float) return Boolean;
 
 private
     use GL.Types;
