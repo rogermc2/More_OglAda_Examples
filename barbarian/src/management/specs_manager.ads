@@ -12,6 +12,7 @@ package Specs_Manager is
 
     Max_Weapons       : constant GL.Types.Int := 9;
     Max_Animations    : constant GL.Types.Int := 32;
+    Max_Attack_Events : constant GL.Types.Int := 32;
     Max_Particle_Systems_Attached_To_Character : constant GL.Types.Int :=  8;
 
     type Unbounded_String_Array is array (GL.Types.Int range <>)
@@ -50,15 +51,24 @@ package Specs_Manager is
       (Attack_Event);
     type Attack_Events_List is new Attack_Events_Package.List with null Record;
 
+    type Weapon_Array is array
+      (Weapon_Type range Weapon_Type'First .. Weapon_Type'Last) of Float;
+
+    type Attack_Events_Array is array
+      (Weapon_Type range Weapon_Type'First .. Weapon_Type'Last) of Attack_Events_List;
+
+    type Event_Count_Array is array
+      (Weapon_Type range Weapon_Type'First .. Weapon_Type'Last) of Integer;
+
     type Spec_Data is record
-        Attack_Events           : Attack_Events_List;
+        Attack_Events           : Attack_Events_Array;
+        Attack_Event_Count      : Event_Count_Array := (others => 0);
         Animations              : Anim_Frame_Array;
         Animation_Frame_Count   : Int_Array (1 .. Max_Animations) :=
                                     (others => 0);
         File_Name               : Unbounded_String := To_Unbounded_String ("");
         Name                    : Unbounded_String := To_Unbounded_String ("");
-        Weapon_Attack_Time      : GL.Types.Int_Array (1 .. Max_Weapons) :=
-                                    (others => 0);
+        Weapon_Attack_Time      : Weapon_Array := (others => 0.0);
         Attack_Range_Metre      : GL.Types.Int_Array (1 .. Max_Weapons) :=
                                     (others => 0);
         Move_Speed_MPS          : Float := 0.0;
@@ -115,6 +125,6 @@ package Specs_Manager is
 
     procedure Clear_Specs;
     function Get_Script_Index (File_Name : String) return Integer;
-    function Load_Specs_File (File_Name : String) return Boolean;
+    procedure Load_Specs_File (File_Name : String);
 
 end Specs_Manager;

@@ -33,11 +33,11 @@ package body GUI is
       GL.Objects.Textures.Texture;
 
     --      Num_Steam_Controller_Images : constant Integer := 43;
-    type GUI_Icon_Data is record
-        XY_Position       : Float_Array (1 .. 6) := (others => 0.0);
-        Anim_Countdowns   : Float_Array (1 .. 3) := (others => 0.0);
-        Textures          : Texture_Array (1 .. 3);
-    end record;
+--      type GUI_Icon_Data is record
+--          XY_Position       : Float_Array (1 .. 6) := (others => 0.0);
+--          Anim_Countdowns   : Float_Array (1 .. 3) := (others => 0.0);
+--          Textures          : Texture_Array (1 .. 3);
+--      end record;
 
     type Controller_Button_Overlays_Data is record
     --  temporary values for each of 3 positions
@@ -53,16 +53,16 @@ package body GUI is
     Health_Bar_Width_Px               : constant Integer := 256;
     Health_Bar_Height_Px              : constant Integer := 64;
     Crong_Head_Width_Px               : constant Integer := 80;
-    Crong_Head_Height_Px              : constant Integer := 80;
-    Gold_Panel_Width_Px               : constant Integer := 512;
-    Gold_Panel_Height_Px              : constant Integer := 64;
-    Fist_Scale                        : constant Float := 1.2;
-    Screen_Splat_Scale                : constant Float := 0.27;
+--      Crong_Head_Height_Px              : constant Integer := 80;
+--      Gold_Panel_Width_Px               : constant Integer := 512;
+--      Gold_Panel_Height_Px              : constant Integer := 64;
+--      Fist_Scale                        : constant Float := 1.2;
+--      Screen_Splat_Scale                : constant Float := 0.27;
 
     --  Effect settings
-    Max_Screen_Splats                 : constant Integer := 32;
-    Fist_Time                         : constant Float := 0.75;
-    Javelin_X_Offset                  : constant Float := 1.25;
+--      Max_Screen_Splats                 : constant Integer := 32;
+--      Fist_Time                         : constant Float := 0.75;
+--      Javelin_X_Offset                  : constant Float := 1.25;
 
     -- texture paths
     --      TEX_HEALTH_METER_BASE : constant String := "textures/hbar_black_dragon.png";
@@ -89,9 +89,9 @@ package body GUI is
     --      LOSE_SOUND : constant String := "MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav";
 
     --  Text
-    Gold_Text_Index          : Integer := 0;
-    Javelin_Ammo_Text_Index  : Integer := 0;
-    Kills_Text_Index         : Integer := 0;
+--      Gold_Text_Index          : Integer := 0;
+--      Javelin_Ammo_Text_Index  : Integer := 0;
+--      Kills_Text_Index         : Integer := 0;
     Bottom_Health_Text_Index : Integer := 0;
     Top_Health_Text_Index    : Integer := 0;
     Finish_Stats_Text_Index  : Integer := 0;
@@ -103,7 +103,7 @@ package body GUI is
     Crong_Head_SP            : GL.Objects.Programs.Program;
     Image_Panel_SP           : GL.Objects.Programs.Program;
     Control_Button_Overlays  : Controller_Button_Overlays_Data;
-    GUI_Icons                : GUI_Icon_Data;
+--      GUI_Icons                : GUI_Icon_Data;
     GUIs_Initialized         : Boolean := False;
 
     function Init_Crong_Head return Boolean;
@@ -270,27 +270,27 @@ package body GUI is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Set_GUI_Gold (Amount : Integer) is
-    begin
-        Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
-        GUI_Icons.Anim_Countdowns (2) := 1.0;
-    end Set_GUI_Gold;
+--      procedure Set_GUI_Gold (Amount : Integer) is
+--      begin
+--          Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
+--          GUI_Icons.Anim_Countdowns (2) := 1.0;
+--      end Set_GUI_Gold;
 
     --  ----------------------------------------------------------------------------
 
-    procedure Set_GUI_Javalin_Ammo (Amount : Integer) is
-    begin
-        Text.Update_Text (Javelin_Ammo_Text_Index, Integer'Image (Amount));
-        GUI_Icons.Anim_Countdowns (1) := 1.0;
-    end Set_GUI_Javalin_Ammo;
+--      procedure Set_GUI_Javalin_Ammo (Amount : Integer) is
+--      begin
+--          Text.Update_Text (Javelin_Ammo_Text_Index, Integer'Image (Amount));
+--          GUI_Icons.Anim_Countdowns (1) := 1.0;
+--      end Set_GUI_Javalin_Ammo;
 
     --  ------------------------------------------------------------------------
 
-    procedure Set_GUI_Kills (Amount : Integer) is
-    begin
-        Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
-        GUI_Icons.Anim_Countdowns (3) := 1.0;
-    end Set_GUI_Kills;
+--      procedure Set_GUI_Kills (Amount : Integer) is
+--      begin
+--          Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
+--          GUI_Icons.Anim_Countdowns (3) := 1.0;
+--      end Set_GUI_Kills;
 
     --  ----------------------------------------------------------------------------
 

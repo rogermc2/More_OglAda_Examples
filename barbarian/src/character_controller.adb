@@ -4,7 +4,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Game_Utils;
-with GUI;
+--  with GUI;
 with Manifold;
 
 package body Character_Controller is
@@ -19,18 +19,18 @@ package body Character_Controller is
 
     Characters : Character_List;
 
-    Portal_Fadeout_Started  : Boolean := False;
+--      Portal_Fadeout_Started  : Boolean := False;
     Characters_To_Reserve   : constant Integer := 256;
     Characters_Allocd_Count : Integer := Characters_To_Reserve;
     Character_Count         : Integer := Characters_To_Reserve;
-    Specs_Allocd_Count      : Integer := 0;
-    Specs_Count             : Integer := 0;
-    Gold_Current            : Integer := 0;
-    Kills_Current           : Integer := 0;
-    Kills_Max               : Integer := 0;
+--      Specs_Allocd_Count      : Integer := 0;
+--      Specs_Count             : Integer := 0;
+--      Gold_Current            : constant Integer := 0;
+--      Kills_Current           : Integer := 0;
+--      Kills_Max               : Integer := 0;
 
-    function Is_Character_Valid (Char_Index : Integer) return Boolean;
-    function Is_Spec_Valid (Spec_Index : Integer) return Boolean;
+--      function Is_Character_Valid (Char_Index : Integer) return Boolean;
+--      function Is_Spec_Valid (Spec_Index : Integer) return Boolean;
     procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character);
 
     --  -------------------------------------------------------------------------
@@ -73,17 +73,17 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-    function Is_Character_Valid (Char_Index : Integer) return Boolean is
-    begin
-        return Char_Index >= 0 and Char_Index < Characters_Allocd_Count;
-    end Is_Character_Valid;
+--      function Is_Character_Valid (Char_Index : Integer) return Boolean is
+--      begin
+--          return Char_Index >= 0 and Char_Index < Characters_Allocd_Count;
+--      end Is_Character_Valid;
 
     --  -------------------------------------------------------------------------
 
-    function Is_Spec_Valid (Spec_Index : Integer) return Boolean is
-    begin
-        return Spec_Index >= 0 and Spec_Index < Specs_Allocd_Count;
-    end Is_Spec_Valid;
+--      function Is_Spec_Valid (Spec_Index : Integer) return Boolean is
+--      begin
+--          return Spec_Index >= 0 and Spec_Index < Specs_Allocd_Count;
+--      end Is_Spec_Valid;
 
     --  -------------------------------------------------------------------------
     --  read characters from an already open file stream
@@ -101,7 +101,7 @@ package body Character_Controller is
     begin
         Game_Utils.Game_Log
           ("Character_Controller.Load_Characters, loading characters.");
-        Portal_Fadeout_Started := False;
+--          Portal_Fadeout_Started := False;
         Specs_Manager.Clear_Specs;
 
         if Characters.Is_Empty then
@@ -113,13 +113,14 @@ package body Character_Controller is
                  Integer'Image (Characters_To_Reserve) & "were used last time.");
         end if;
         Characters.Clear;
-        Kills_Current := 0;
-        Kills_Max := 0;
+--          Kills_Current := 0;
+--          Kills_Max := 0;
 
         if not Editor_Mode then
-            GUI.Set_GUI_Gold (Gold_Current);
-            GUI.Set_GUI_Kills (Kills_Current);
-            GUI.Set_GUI_Javalin_Ammo (0);
+            Put_Line ("not Editor_Mode");
+--              GUI.Set_GUI_Gold (Gold_Current);
+--              GUI.Set_GUI_Kills (Kills_Current);
+--              GUI.Set_GUI_Javalin_Ammo (0);
         end if;
 
         Character_Header'Read (Input_Stream, Header);
@@ -152,10 +153,10 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-    function Update_Characters (Seconds : Float) return Boolean is
-    begin
-        return False;
-    end Update_Characters;
+--      function Update_Characters (Seconds : Float) return Boolean is
+--      begin
+--          return False;
+--      end Update_Characters;
 
     --  -------------------------------------------------------------------------
 

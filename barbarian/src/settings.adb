@@ -69,7 +69,7 @@ package body Settings is
 
     function Tile_Batch_Width return Integer is
     begin
-        return G_Settings.GL_Tile_Batch_Width;
+        return G_Settings.Tile_Batch_Width;
     end Tile_Batch_Width;
 
     --  ------------------------------------------------------------------------

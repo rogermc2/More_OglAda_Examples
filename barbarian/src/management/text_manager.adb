@@ -42,8 +42,8 @@ package body Text_Manager is
         Pos := Index (aLine, " ");
         if Slice (aLine, 1, Pos - 1) /= "popups" then
             raise Text_Manager_Exception with
-              "Text_Manager.Preload_Comic_Texts; Invalid Comic_Texts format:
-              & aLine;
+              "Text_Manager.Preload_Comic_Texts; Invalid Comic_Texts format:"
+              & To_String (aLine);
         end if;
         Popup_Count :=
           Integer'Value (Slice (aLine, Pos + 1, Length (aLine)));
