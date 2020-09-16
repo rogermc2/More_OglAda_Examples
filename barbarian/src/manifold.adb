@@ -1,11 +1,16 @@
 
 with Ada.Exceptions;
 with Ada.Strings.Fixed;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Game_Utils;
 with Settings;
 
 package body Manifold is
+
+    package Int_Package is new Ada.Containers.Doubly_Linked_Lists
+      (Int);
+    type Int_List is new Int_Package.List with null record;
 
     package Tiles_Package is new Ada.Containers.Doubly_Linked_Lists
       (Character);
@@ -25,12 +30,12 @@ package body Manifold is
     Total_Tiles       : Int := 0;
     Tile_Heights      : Tiles_List;
     Tile_Facings      : Tiles_List;
-    Tile_Textures     : Tiles_List;
+    Tile_Textures     : Int_List;
     Tile_Types        : Tiles_List;
-    --      Diff_Palette_Name : Unbounded_String := To_Unbounded_String ("");
-    --      Spec_Palette_Name : Unbounded_String := To_Unbounded_String ("");
+    Diff_Palette_Name : Unbounded_String := To_Unbounded_String ("");
+    Spec_Palette_Name : Unbounded_String := To_Unbounded_String ("");
 
-    procedure Parse_Facings_By_Row (File : File_Type;
+    procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int;
                                     Tile_List : in out Tiles_List);
 
     --  ----------------------------------------------------------------------------
@@ -94,40 +99,136 @@ package body Manifold is
 
 --  ----------------------------------------------------------------------------
 
-    procedure Load_Texture_Rows (File : File_Type;
-                                 Tile_List : in out Tiles_List) is
+    procedure Load_Palette_File_Names (File : File_Type) is
+
+        function  Get_Palette_File_Name (ID : String) return Unbounded_String is
+           aLine : constant String := Get_Line (File);
+           Label : constant String (1 .. 3) := aLine (1 .. 3);
+        begin
+                if Label /= ID then
+                    raise Manifold_Parsing_Exception with
+                      "Invalid format, " & ID & " expected starting " & aLine;
+                end if;
+                return To_Unbounded_String (aLine (4 .. aLine'Last));
+        end Get_Palette_File_Name;
+
+    begin
+        Game_Utils.Game_Log ("Loading palette file names");
+        Diff_Palette_Name := Get_Palette_File_Name ("dm ");
+        Spec_Palette_Name := Get_Palette_File_Name ("sm ");
+
+
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Manifold.Load_Palette_File_Names!");
+            Put_Line (Ada.Exceptions.Exception_Information (anError));
+    end Load_Palette_File_Names;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Load_Rows (File : File_Type; Load_Type : String;
+                         Tile_List : in out Tiles_List) is
+        use Ada.Strings;
+        Header     : constant String := Get_Line (File);
+        Cols       : Int := 0;
+        Rows       : Int := 0;
+        Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
+        Pos2       : Natural;
         Prev_Char  : Character;
     begin
-        for row in 1 .. Max_Rows loop
+        if Fixed.Index (Header (1 .. Load_Type'Length), Load_Type) = 0 then
+            Game_Utils.Game_Log ("Error: Invalid format, " & Load_Type &
+                                 " expected: " & Header (1 .. Pos1));
+            raise Manifold_Parsing_Exception with
+              "Invalid format, " & Load_Type & " expected: " & Header (1 .. Pos1);
+        end if;
+
+        Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
+        Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
+        Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
+
+        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," & Int'Image (Rows)
+                            & " rows, "  & Int'Image (Cols) & " columns");
+        for row in 1 .. Rows loop
             declare
                 aString    : constant String := Get_Line (File);
                 Tex_Char   : Character;
-                Char_Index : Integer;
             begin
+                Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Max_Cols then
                     raise Manifold_Parsing_Exception with
-                    "Manifold.Load_Texture_Rows: textures line has not enough columns.";
+                    "Manifold.Load_Rows: textures line has not enough columns.";
                 end if;
                 Prev_Char := ASCII.NUL;
-                for col in 1 .. Max_Cols loop
+                for col in 1 .. Cols loop
                     Tex_Char := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
                         Tile_List.Delete_Last;
                     else
-                        if Tex_Char >= '0' and Tex_Char <= '9' then
-                            Char_Index := Character'Pos (Tex_Char) -
-                              Character'Pos ('0');
-                        else
-                            Char_Index := 10 + Character'Pos (Tex_Char) -
-                              Character'Pos ('a');
-                        end if;
-                        Tex_Char := Character'Val (Char_Index);
                         Tile_List.Append (Tex_Char);
                     end if;
                 end loop;
                 Prev_Char := Tex_Char;
-            end;
+            end;  --  declare block
+            Game_Utils.Game_Log ("Row end " & Int'Image (row));
+        end loop;
+
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Manifold.Load_Rows!");
+            Put_Line (Ada.Exceptions.Exception_Information (anError));
+    end Load_Rows;
+
+    --  ----------------------------------------------------------------------------
+
+    procedure Load_Texture_Rows (File : File_Type;
+                                 Texture_List : in out Int_List) is
+        use Ada.Strings;
+        Header     : constant String := Get_Line (File);
+        Cols       : Int := 0;
+        Rows       : Int := 0;
+        Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
+        Pos2       : Natural;
+        Prev_Char  : Character;
+    begin
+        if Fixed.Index (Header (1 .. 8), "textures") = 0 then
+            Game_Utils.Game_Log ("Error: Invalid format, textures expected: " &
+                                   Header (1 .. Pos1));
+            raise Manifold_Parsing_Exception with
+              "Invalid format, textures expected: " & Header (1 .. Pos1);
+        end if;
+
+        Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
+        Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
+        Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
+
+        Game_Utils.Game_Log ("Loading texture rows," & Int'Image (Rows)
+                            & " rows, "  & Int'Image (Cols) & " columns");
+        for row in 1 .. Rows loop
+            declare
+                aString    : constant String := Get_Line (File);
+                Tex_Char   : Character;
+                Tex_Int    : Int;
+            begin
+                Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
+                if aString'Length < Max_Cols then
+                    raise Manifold_Parsing_Exception with
+                    "Manifold.Load_Rows: textures line has not enough columns.";
+                end if;
+                Prev_Char := ASCII.NUL;
+                for col in 1 .. Cols loop
+                    Tex_Char := aString (Integer (col));
+                    if Prev_Char = '\' and then
+                      (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
+                        Texture_List.Delete_Last;
+                    else
+                        Texture_List.Append (Tex_Int);
+                    end if;
+                end loop;
+                Prev_Char := Tex_Char;
+            end;  --  declare block
+            Game_Utils.Game_Log ("Row end " & Int'Image (row));
         end loop;
 
     exception
@@ -148,6 +249,7 @@ procedure Load_Tiles (File : File_Type) is
     Pos2     : Natural;
 begin
     Game_Utils.Game_Log ("Loading tiles and generating manifold from FP...");
+    Put_Line ("Manifold.Load_Tiles loading tiles ");
     Pos1 := Fixed.Index (aLine, " ") + 1;
     if Fixed.Index (aLine, "facings ") = 0 then
         raise Manifold_Parsing_Exception with
@@ -162,8 +264,6 @@ begin
     Game_Utils.Game_Log (" Maximum columns " & Int'Image (Max_Cols) &
                            ", maximum rows " & Int'Image (Max_Rows) &
                            ", total tiles " & Int'Image (Total_Tiles));
-
-    Put_Line ("Manifold.Load_Tiles Tile_Batch_Width " & Integer'Image (Tile_Batch_Width));
     Batches_Across :=
       Int (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
     Batches_Down :=
@@ -175,31 +275,15 @@ begin
          "; batches across " & Int'Image (Batches_Across) &
          " down " & Int'Image (Batches_Down));
 
-    Parse_Facings_By_Row (File, Tile_Facings);
-    declare
-        Header  : constant String := Get_Line (File);
-    begin
-        if Fixed.Index (Header, "textures ") = 0 then
-            raise Manifold_Parsing_Exception with
-              "Invalid format, ""textures"" expected: " & Header (1 .. Pos1);
-        end if;
-    end;
-    Load_Texture_Rows (File, Tile_Textures);
---      Load_Modified_Part (File, Tile_Heights);
+    Parse_Facings_By_Row (File, Max_Rows, Max_Cols, Tile_Facings);
 
-    --          String'Read (Input_Stream, String3);  --  "dm "
-    --          if Ada.Characters.Handling.To_Lower (String3) /= "dm " then
-    --              raise Manifold_Parsing_Exception with
-    --                "Invalid format, ""dm"" expected.";
-    --          end if;
-    --          Unbounded_String'Read (Input_Stream, Diff_Palette_Name);
-    --
-    --          String'Read (Input_Stream, String3);  --  "sm "
-    --          if Ada.Characters.Handling.To_Lower (String3) /= "sm " then
-    --              raise Manifold_Parsing_Exception with
-    --                "Invalid format, ""sm"" expected.";
-    --          end if;
-    --          Unbounded_String'Read (Input_Stream, Spec_Palette_Name);
+    Load_Texture_Rows (File, Tile_Textures);
+    Load_Rows (File, "types", Tile_Types);
+    Load_Rows (File, "heights", Tile_Heights);
+    Load_Palette_File_Names (File);
+
+    Game_Utils.Game_Log ("Palette file names: " & To_String (Diff_Palette_Name)
+    & ", " & To_String (Spec_Palette_Name));
 
 exception
     when anError : others =>
@@ -216,7 +300,7 @@ end Number_Of_Tiles;
 
 --  ----------------------------------------------------------------------------
 
-    procedure Parse_Facings_By_Row (File : File_Type;
+    procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int;
                                     Tile_List : in out Tiles_List) is
         prev_Char : Character;
     begin
@@ -260,8 +344,8 @@ begin
     Tile_Facings.Clear;
     Tile_Textures.Clear;
     Tile_Types.Clear;
-    --          Diff_Palette_Name := To_Unbounded_String ("");
-    --          Spec_Palette_Name := To_Unbounded_String ("");
+    Diff_Palette_Name := To_Unbounded_String ("");
+    Spec_Palette_Name := To_Unbounded_String ("");
 end Reset_Manifold_Vars;
 
 --  ----------------------------------------------------------------------------
