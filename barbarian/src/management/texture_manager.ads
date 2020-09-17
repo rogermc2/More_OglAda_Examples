@@ -11,6 +11,6 @@ package Texture_Manager is
                                  Tex : GL.Objects.Textures.Texture);
     procedure Init_Texture_Manager;
     procedure Load_Image_To_Texture (File_Name : String;
-                                     aTexture : out Texture;
+                                     aTexture : in out Texture;
                                      Gen_Mips, Use_SRGB : Boolean);
 end Texture_Manager;
