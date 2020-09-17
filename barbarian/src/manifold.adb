@@ -109,7 +109,7 @@ package body Manifold is
                     raise Manifold_Parsing_Exception with
                       "Invalid format, " & ID & " expected starting " & aLine;
                 end if;
-                return To_Unbounded_String (aLine (4 .. aLine'Last));
+                return To_Unbounded_String ("src/" & aLine (4 .. aLine'Last));
         end Get_Palette_File_Name;
 
     begin
@@ -154,7 +154,7 @@ package body Manifold is
                 aString    : constant String := Get_Line (File);
                 Tex_Char   : Character;
             begin
-                Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
+--                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Max_Cols then
                     raise Manifold_Parsing_Exception with
                     "Manifold.Load_Rows: textures line has not enough columns.";
@@ -171,7 +171,6 @@ package body Manifold is
                 end loop;
                 Prev_Char := Tex_Char;
             end;  --  declare block
-            Game_Utils.Game_Log ("Row end " & Int'Image (row));
         end loop;
 
     exception
@@ -186,6 +185,8 @@ package body Manifold is
                                  Texture_List : in out Int_List) is
         use Ada.Strings;
         Header     : constant String := Get_Line (File);
+        Code_0     : constant Int := Character'Pos ('0');
+        Code_a     : constant Int := Character'Pos ('a');
         Cols       : Int := 0;
         Rows       : Int := 0;
         Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
@@ -211,7 +212,7 @@ package body Manifold is
                 Tex_Char   : Character;
                 Tex_Int    : Int;
             begin
-                Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
+--                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Max_Cols then
                     raise Manifold_Parsing_Exception with
                     "Manifold.Load_Rows: textures line has not enough columns.";
@@ -223,12 +224,16 @@ package body Manifold is
                       (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
                         Texture_List.Delete_Last;
                     else
+                         if Tex_Char >= '0' and Tex_Char <= '9' then
+                            Tex_Int := Character'Pos (Tex_Char) - Code_0;
+                        else
+                            Tex_Int := 10 + Character'Pos (Tex_Char) - Code_a;
+                        end if;
                         Texture_List.Append (Tex_Int);
                     end if;
                 end loop;
                 Prev_Char := Tex_Char;
             end;  --  declare block
-            Game_Utils.Game_Log ("Row end " & Int'Image (row));
         end loop;
 
     exception
