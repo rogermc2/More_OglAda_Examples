@@ -28,7 +28,7 @@ package body Manifold is
     Batches_Down      : Int := 0;
     Batch_Split_Count : Integer := 0;
     Total_Tiles       : Int := 0;
-    Tile_Heights      : Tiles_List;
+    Tile_Heights      : Int_List;
     Tile_Facings      : Tiles_List;
     Tile_Textures     : Int_List;
     Tile_Types        : Tiles_List;
@@ -126,8 +126,8 @@ package body Manifold is
 
     --  ------------------------------------------------------------------------
 
-    procedure Load_Rows (File : File_Type; Load_Type : String;
-                         Tile_List : in out Tiles_List) is
+    procedure Load_Char_Rows (File : File_Type; Load_Type : String;
+                              Tile_List : in out Tiles_List) is
         use Ada.Strings;
         Header     : constant String := Get_Line (File);
         Cols       : Int := 0;
@@ -151,38 +151,38 @@ package body Manifold is
                             & " rows, "  & Int'Image (Cols) & " columns");
         for row in 1 .. Rows loop
             declare
-                aString    : constant String := Get_Line (File);
-                Tex_Char   : Character;
+                aString : constant String := Get_Line (File);
+                aChar   : Character;
             begin
 --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Max_Cols then
                     raise Manifold_Parsing_Exception with
-                    "Manifold.Load_Rows: textures line has not enough columns.";
+                    "Manifold.Load_Char_Rows: textures line has not enough columns.";
                 end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
-                    Tex_Char := aString (Integer (col));
+                    aChar := aString (Integer (col));
                     if Prev_Char = '\' and then
-                      (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
+                      (aChar = 'n' or aChar = ASCII.NUL) then
                         Tile_List.Delete_Last;
                     else
-                        Tile_List.Append (Tex_Char);
+                        Tile_List.Append (aChar);
                     end if;
                 end loop;
-                Prev_Char := Tex_Char;
+                Prev_Char := aChar;
             end;  --  declare block
         end loop;
 
     exception
         when anError : others =>
-            Put_Line ("An exception occurred in Manifold.Load_Rows!");
+            Put_Line ("An exception occurred in Manifold.Load_Char_Rows!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
-    end Load_Rows;
+    end Load_Char_Rows;
 
     --  ----------------------------------------------------------------------------
 
-    procedure Load_Texture_Rows (File : File_Type;
-                                 Texture_List : in out Int_List) is
+    procedure Load_Int_Rows (File : File_Type; Load_Type : String;
+                             Texture_List : in out Int_List) is
         use Ada.Strings;
         Header     : constant String := Get_Line (File);
         Code_0     : constant Int := Character'Pos ('0');
@@ -193,18 +193,18 @@ package body Manifold is
         Pos2       : Natural;
         Prev_Char  : Character;
     begin
-        if Fixed.Index (Header (1 .. 8), "textures") = 0 then
-            Game_Utils.Game_Log ("Error: Invalid format, textures expected: " &
-                                   Header (1 .. Pos1));
+        if Fixed.Index (Header (1 .. Load_Type'Length), Load_Type) = 0 then
+            Game_Utils.Game_Log ("Error: Invalid format, " & Load_Type &
+                                 " expected: " & Header (1 .. Pos1));
             raise Manifold_Parsing_Exception with
-              "Invalid format, textures expected: " & Header (1 .. Pos1);
+              "Invalid format, " & Load_Type & " expected: " & Header (1 .. Pos1);
         end if;
 
         Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
         Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
         Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
 
-        Game_Utils.Game_Log ("Loading texture rows," & Int'Image (Rows)
+        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," & Int'Image (Rows)
                             & " rows, "  & Int'Image (Cols) & " columns");
         for row in 1 .. Rows loop
             declare
@@ -215,7 +215,7 @@ package body Manifold is
 --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Max_Cols then
                     raise Manifold_Parsing_Exception with
-                    "Manifold.Load_Rows: textures line has not enough columns.";
+                    "Manifold.Load_Int_Rows: textures line has not enough columns.";
                 end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
@@ -238,9 +238,9 @@ package body Manifold is
 
     exception
         when anError : others =>
-            Put_Line ("An exception occurred in Manifold.Load_Texture_Rows!");
+            Put_Line ("An exception occurred in Manifold.Load_Int_Rows!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
-    end Load_Texture_Rows;
+    end Load_Int_Rows;
 
     --  ----------------------------------------------------------------------------
 
@@ -282,9 +282,9 @@ begin
 
     Parse_Facings_By_Row (File, Max_Rows, Max_Cols, Tile_Facings);
 
-    Load_Texture_Rows (File, Tile_Textures);
-    Load_Rows (File, "types", Tile_Types);
-    Load_Rows (File, "heights", Tile_Heights);
+    Load_Int_Rows (File, "textures", Tile_Textures);
+    Load_Char_Rows (File, "types", Tile_Types);
+    Load_Int_Rows (File, "heights", Tile_Heights);
     Load_Palette_File_Names (File);
 
     Game_Utils.Game_Log ("Palette file names: " & To_String (Diff_Palette_Name)
