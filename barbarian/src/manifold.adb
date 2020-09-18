@@ -260,26 +260,28 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Load_Textures is
+    function Load_Textures return Boolean is
+        use Texture_Manager;
+        OK : Boolean := False;
     begin
-        Texture_Manager.Load_Image_To_Texture (To_String (Diff_Palette_Name),
-                                               Tile_Tex, True, True);
-        Texture_Manager.Load_Image_To_Texture (To_String (Spec_Palette_Name),
-                                               Tile_Spec_Tex, True, True);
-        Texture_Manager.Load_Image_To_Texture
-          ("src/textures/stepsTileSet1_diff.png", Ramp_Diff_Tex, True, True);
-        Texture_Manager.Load_Image_To_Texture
-          ("src/textures/stepsTileSet1_spec.png", Ramp_Spec_Tex, True, True);
-
-    exception
-        when anError : others =>
-            Put_Line ("An exception occurred in Manifold.Load_Textures!");
-            Put_Line (Ada.Exceptions.Exception_Information (anError));
+        if Load_Image_To_Texture
+          (To_String (Diff_Palette_Name), Tile_Tex, True, True) then
+            if Load_Image_To_Texture (To_String (Spec_Palette_Name),
+                                      Tile_Spec_Tex, True, True) then
+                if Load_Image_To_Texture ("src/textures/stepsTileSet1_diff.png",
+                                          Ramp_Diff_Tex, True, True) then
+                    OK := Load_Image_To_Texture
+                      ("src/textures/stepsTileSet1_spec.png",
+                       Ramp_Spec_Tex, True, True);
+                end if;
+            end if;
+        end if;
+        return OK;
     end Load_Textures;
 
     --  ------------------------------------------------------------------------
 
-    procedure Load_Tiles (File : File_Type) is
+    function Load_Tiles (File : File_Type) return Boolean is
         use Ada.Strings;
         use Settings;
         Max_Cols : Int := 0;
@@ -325,12 +327,13 @@ package body Manifold is
         Put_Line ("Manifold.Load_Tiles file names loaded.");
         Game_Utils.Game_Log ("Palette file names: " & To_String (Diff_Palette_Name)
                              & ", " & To_String (Spec_Palette_Name));
-        Load_Textures;
+        return Load_Textures;
 
     exception
         when anError : others =>
             Put_Line ("An exception occurred in Manifold.Load_Tiles!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            return False;
     end Load_Tiles;
 
     --  ----------------------------------------------------------------------------

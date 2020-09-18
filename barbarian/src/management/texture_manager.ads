@@ -9,8 +9,8 @@ package Texture_Manager is
                             Tex : GL.Objects.Textures.Texture);
     procedure Bind_Cube_Texture (Slot : Natural;
                                  Tex : GL.Objects.Textures.Texture);
-    procedure Init_Texture_Manager;
-    procedure Load_Image_To_Texture (File_Name : String;
-                                     aTexture : in out Texture;
-                                     Gen_Mips, Use_SRGB : Boolean);
+    function Init_Texture_Manager return Boolean;
+    function Load_Image_To_Texture (File_Name : String;
+                                    aTexture : in out Texture;
+                                    Gen_Mips, Use_SRGB : Boolean) return Boolean;
 end Texture_Manager;

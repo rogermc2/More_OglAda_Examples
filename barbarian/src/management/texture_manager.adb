@@ -75,17 +75,17 @@ package body Texture_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Create_Default_Texture is
+    function Create_Default_Texture return Boolean is
         use GL.Objects.Textures.Targets;
         use GL.Pixels;
         use GL.Types;
-        Dt_Pixel_C   : constant Integer := 16 * 16;
-        Dt_Data_Size : constant Integer :=  4 * Dt_Pixel_C;
-        Dt_Data      : array (1 .. Dt_Data_Size) of UByte := (others => 0);
-        Sq_Ac        : Integer;
-        Sq_Dn        : Integer;
-        Index        : Positive := 1;
-        theTexture   : GL.Objects.Textures.Texture;
+        Dt_Pixel_C      : constant Integer := 16 * 16;
+        Dt_Data_Size    : constant Integer :=  4 * Dt_Pixel_C;
+        Dt_Data         : array (1 .. Dt_Data_Size) of UByte := (others => 0);
+        Sq_Ac           : Integer;
+        Sq_Dn           : Integer;
+        Index           : Positive := 1;
+        Default_Texture : Texture;
     begin
         Game_Utils.Game_Log ("Creating default texture Dt_Data_Size " &
                                Integer'Image (Dt_Data_Size));
@@ -110,15 +110,12 @@ package body Texture_Manager is
             end if;
             Index := Index + 4;
         end loop;
-        Game_Utils.Game_Log ("default texture Dt_Data loaded ");
 
-        theTexture.Initialize_Id;
-        Game_Utils.Game_Log ("default texture theTexture initialized ");
-        GL.Objects.Textures.Set_Active_Unit (0);
-        Texture_2D.Bind (theTexture);
-        Game_Utils.Game_Log ("default texture theTexture bound ");
-        Bound_Textures.Append (theTexture);
-        Game_Utils.Game_Log ("default texture loading data ");
+        Default_Texture.Initialize_Id;
+        Set_Active_Unit (0);
+
+        Texture_2D.Bind (Default_Texture);
+        Bound_Textures.Append (Default_Texture);
         Texture_2D.Load_From_Data
           (0, RGBA, 16, 16, RGBA, Unsigned_Byte,
            GL.Objects.Textures.Image_Source (Dt_Data'Address));
@@ -129,24 +126,22 @@ package body Texture_Manager is
         Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
 
         Game_Utils.Game_Log ("Default texture loaded.");
-
+        return True;
     exception
-            --          when anError : Constraint_Error =>
-            --              Put_Line (Ada.Exceptions.Exception_Information (anError));
-            --              Game_Utils.Game_Log (Ada.Exceptions.Exception_Information (anError));
         when anError : others =>
             Put_Line ("An exception occurred in Texture_Manager.Create_Default_Texture!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
             Game_Utils.Game_Log  ("An exception occurred in Texture_Manager.Create_Default_Texture!");
             Game_Utils.Game_Log (Ada.Exceptions.Exception_Information (anError));
+            return False;
     end Create_Default_Texture;
 
     --  ------------------------------------------------------------------------
 
-    procedure Init_Texture_Manager is
+    function Init_Texture_Manager return Boolean is
     begin
         Game_Utils.Game_Log ("Initializing texture manager.");
-        Create_Default_Texture;
+        return Create_Default_Texture;
     end Init_Texture_Manager;
 
     --  ------------------------------------------------------------------------
@@ -171,9 +166,9 @@ package body Texture_Manager is
     --  ------------------------------------------------------------------------
 
     --      pragma Warnings (off);
-    procedure Load_Image_To_Texture (File_Name : String;
+    function Load_Image_To_Texture (File_Name : String;
                                      aTexture : in out Texture;
-                                     Gen_Mips, Use_SRGB : Boolean) is
+                                     Gen_Mips, Use_SRGB : Boolean) return Boolean is
         use GL.Objects.Textures.Targets;
         use GL.Pixels;
         use GL.Types;
@@ -200,6 +195,10 @@ package body Texture_Manager is
         end loop;
 
         if not Texture_Loaded then
+            if not Initialized (aTexture) then
+                aTexture.Initialize_Id;
+            end if;
+            Bind_Texture (0, aTexture);
             Game_Utils.Game_Log ("Load_Image_To_Texture loading image " & File_Name);
             GID_Image_Loader.Load_File_To_Image
               (File_Name, Data_Ptr, Data_Length, X, Y, Force_Channels);
@@ -303,6 +302,7 @@ package body Texture_Manager is
         else
             Game_Utils.Game_Log ("Image " & File_Name & " already loaded.");
         end if;
+        return True;
 
     exception
         when anError : others =>
@@ -310,6 +310,7 @@ package body Texture_Manager is
                         "Texture_Manager.Load_Image_To_Texture when loading " &
                         File_Name);
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            return False;
     end Load_Image_To_Texture;
 
     --  ------------------------------------------------------------------------
