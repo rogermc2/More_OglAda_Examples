@@ -226,6 +226,8 @@ package body Texture_Manager is
         Texture_Loaded        : Boolean := False;
         Texture_Data          : Loaded_Texture;
     begin
+        Game_Utils.Game_Log (ASCII.CR & "Loading data from " & File_Name);
+        Put_Line ("Loading data from " & File_Name);
         while Has_Element (Curs) and not Texture_Loaded loop
             Texture_Loaded := Element (Curs).File_Name = File_Name;
             Next (Curs);
@@ -256,8 +258,6 @@ package body Texture_Manager is
                 Data_Bottom  : GL.Types.Int := 0;
             begin
                 Data_Raw := Image_Data_Ptr.all;
-                Game_Utils.Game_Log ("Loading data; Texture_Data.Texture_ID " &
-                                       GL.Types.UInt'Image (Texture_Data.Texture_ID));
                 for index in 1 .. Data_Length loop
 --                      Game_Utils.Game_Log
 --                        ("Loading data; index " & GL.Types.Int'Image (index));
@@ -286,6 +286,11 @@ package body Texture_Manager is
                 Texture_Data.Texture_ID := aTexture.Raw_Id;
                 Set_Active_Unit (0);
                 Texture_2D.Bind (aTexture);
+
+                Game_Utils.Game_Log ("Loading data; Texture_Data.Texture_ID " &
+                                       GL.Types.UInt'Image (Texture_Data.Texture_ID));
+                Put_Line ("Loading data; Texture_Data.Texture_ID " &
+                           GL.Types.UInt'Image (Texture_Data.Texture_ID));
                 if Bound_Textures.Is_Empty then
                     Bound_Textures.Append (aTexture);
                 else
