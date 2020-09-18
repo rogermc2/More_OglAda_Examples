@@ -15,6 +15,8 @@ with Settings;
 
 package body Texture_Manager is
 
+    type Mod_16 is mod 2 ** 16;
+
     package Bound_Textures_Package is new Ada.Containers.Vectors
       (Natural, GL.Objects.Textures.Texture);
     type Bound_Textures_List is new Bound_Textures_Package.Vector with null record;
@@ -28,49 +30,78 @@ package body Texture_Manager is
       (Natural, Loaded_Texture);
     type Loaded_Textures_List is new Loaded_Textures_Package.Vector with null record;
 
-    Bound_Textures  : Bound_Textures_List;
-    Loaded_Textures : Loaded_Textures_List;
+    --      Max_Textures         : constant Integer := 256;
+    --      Loaded_Texture_Count_Allocated : Integer := Max_Textures;
+    Loaded_Texture_Count : Integer := 0;
+    Bound_Textures       : Bound_Textures_List;
+    Loaded_Textures      : Loaded_Textures_List;
 
     function Is_Bound (Slot : Natural) return Boolean;
 
     --  ------------------------------------------------------------------------
 
-    procedure Bind_Texture (Slot : Natural;
-                            Tex : GL.Objects.Textures.Texture) is
+    function Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture)
+                           return Boolean is
         use GL.Objects.Textures.Targets;
         use GL.Types;
+        OK : Boolean := False;
     begin
-        if Slot > 11 then
+        OK := Slot < 12;
+        if not OK then
             raise Texture_Exception with
               "Texture.Bind_Texture, active texture unit number for binding "
               & "is high:" & Natural'Image (Slot);
-        end if;
-        if not Is_Bound (Slot) then
-            Set_Active_Unit (GL.Types.Int (Slot - 1));
+        elsif not Is_Bound (Slot) then
+            Set_Active_Unit (GL.Types.Int (Slot));
             Texture_2D.Bind (Tex);
+            Game_Utils.Game_Log ("Load_Image_To_Texture Bind_Texture for Active_Unit"
+                                 & Natural'Image (Slot));
+            Game_Utils.Game_Log ("Load_Image_To_Texture Bound_Textures.First_Index"
+                                 & Natural'Image (Bound_Textures.First_Index));
             Bound_Textures.Replace_Element (Slot, Tex);
+            Game_Utils.Game_Log ("Load_Image_To_Texture Texture bound for Active_Unit"
+                                 & Natural'Image (Slot));
+            OK := True;
         end if;
+        return OK;
 
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Texture_Manager.Bind_Texture "
+                      & Natural'Image (Slot));
+            Put_Line (Ada.Exceptions.Exception_Information (anError));
+            return False;
     end Bind_Texture;
 
     --  ------------------------------------------------------------------------
 
-    procedure Bind_Cube_Texture (Slot : Natural;
-                                 Tex : GL.Objects.Textures.Texture) is
+    function Bind_Cube_Texture (Slot : Natural;
+                                Tex : GL.Objects.Textures.Texture)
+                                return Boolean is
         use GL.Objects.Textures.Targets;
         use GL.Types;
+        OK : Boolean := False;
     begin
-        if Slot > 11 then
+        OK := Slot < 12;
+        if not OK then
             raise Texture_Exception with
               "Texture.Bind_Cube_Texture, active texture unit number for binding "
               & "is high:" & Positive'Image (Slot);
-        end if;
-        if not Is_Bound (Slot) then
+        elsif not Is_Bound (Slot) then
             Set_Active_Unit (GL.Types.Int (Slot));
             Texture_Cube_Map.Bind (Tex);
             Bound_Textures.Replace_Element (Slot, Tex);
+            OK := True;
         end if;
+        return OK;
 
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in " &
+                        "Texture_Manager.Bind_Cube_Texture for slot " &
+                        Natural'Image (Slot));
+            Put_Line (Ada.Exceptions.Exception_Information (anError));
+            return False;
     end Bind_Cube_Texture;
 
     --  ------------------------------------------------------------------------
@@ -113,9 +144,8 @@ package body Texture_Manager is
 
         Default_Texture.Initialize_Id;
         Set_Active_Unit (0);
-
         Texture_2D.Bind (Default_Texture);
-        Bound_Textures.Append (Default_Texture);
+
         Texture_2D.Load_From_Data
           (0, RGBA, 16, 16, RGBA, Unsigned_Byte,
            GL.Objects.Textures.Image_Source (Dt_Data'Address));
@@ -125,8 +155,11 @@ package body Texture_Manager is
         Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
         Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
 
+        Bound_Textures.Append (Default_Texture);
+        Loaded_Texture_Count := Loaded_Texture_Count + 1;
         Game_Utils.Game_Log ("Default texture loaded.");
         return True;
+
     exception
         when anError : others =>
             Put_Line ("An exception occurred in Texture_Manager.Create_Default_Texture!");
@@ -141,6 +174,8 @@ package body Texture_Manager is
     function Init_Texture_Manager return Boolean is
     begin
         Game_Utils.Game_Log ("Initializing texture manager.");
+        Bound_Textures.Clear;
+        Loaded_Textures.Clear;
         return Create_Default_Texture;
     end Init_Texture_Manager;
 
@@ -167,19 +202,20 @@ package body Texture_Manager is
 
     --      pragma Warnings (off);
     function Load_Image_To_Texture (File_Name : String;
-                                     aTexture : in out Texture;
-                                     Gen_Mips, Use_SRGB : Boolean) return Boolean is
+                                    aTexture : in out Texture;
+                                    Gen_Mips, Use_SRGB : Boolean) return Boolean is
         use GL.Objects.Textures.Targets;
         use GL.Pixels;
         use GL.Types;
         use Loaded_Textures_Package;
         Curs                  : Cursor := Loaded_Textures.First;
-        X                     : GL.Types.Int := 0;  --  Image width
-        Y                     : GL.Types.Int := 0;  --  Image height
-        --          N                : Integer;  --  Bytes per pixel
+        X                     : GL.Types.Int := 0;  --  Image width in pixels
+        Y                     : GL.Types.Int := 0;  --  Image height in pixels
+        X_16                  : Mod_16 := 0;
+        Y_16                  : Mod_16 := 0;
         Force_Channels        : constant GL.Types.Int := 4;
-        Data_Ptr              : GID_Image_Loader.Raw_Data_Ptr;
-        Data_Length           : GL.Types.Int := 0;
+        Image_Data_Ptr        : GID_Image_Loader.Raw_Data_Ptr;
+        Data_Length           : GL.Types.Int := 0;   --  in bytes
         Half_Height_In_Pixels : GL.Types.Int := 0;
         Height_In_Pixels      : GL.Types.Int := 0;
         --  Assuming RGBA for 4 components per pixel.
@@ -188,6 +224,7 @@ package body Texture_Manager is
         Width_In_Chars        : GL.Types.Int := 0;
         Dt_Data               : Unbounded_String := To_Unbounded_String ("");
         Texture_Loaded        : Boolean := False;
+        Texture_Data          : Loaded_Texture;
     begin
         while Has_Element (Curs) and not Texture_Loaded loop
             Texture_Loaded := Element (Curs).File_Name = File_Name;
@@ -195,41 +232,57 @@ package body Texture_Manager is
         end loop;
 
         if not Texture_Loaded then
-            if not Initialized (aTexture) then
-                aTexture.Initialize_Id;
-            end if;
-            Bind_Texture (0, aTexture);
-            Game_Utils.Game_Log ("Load_Image_To_Texture loading image " & File_Name);
+            --              if Loaded_Texture_Count > Loaded_Texture_Count_Allocated then
+            --                  Game_Utils.Game_Log ("Load_Image_To_Texture loading image " &
+            --                                     File_Name);
+            --              end if;
             GID_Image_Loader.Load_File_To_Image
-              (File_Name, Data_Ptr, Data_Length, X, Y, Force_Channels);
-            Game_Utils.Game_Log ("Load_Image_To_Texture, X, Y Data_Length " &
-                                   GL.Types.Int'Image (X) & "  " & GL.Types.Int'Image (Y) & "  "
-                                 & GL.Types.Int'Image (Data_Length));
+              (File_Name, Image_Data_Ptr, Data_Length, X, Y, Force_Channels);
+            Game_Utils.Game_Log ("Load_Image_To_Texture result: X, Y Data_Length "
+                                 & GL.Types.Int'Image (X) & "  " &
+                                   GL.Types.Int'Image (Y) & "  " &
+                                   GL.Types.Int'Image (Data_Length));
 
+            X_16 := Mod_16 (X);
+            Y_16 := Mod_16 (Y);
+            if (X_16 and (X_16 - 1)) /= 0 or (Y_16 and (Y_16 - 1)) /= 0 then
+                Game_Utils.Game_Log
+                  ("WARNING: texture is not power-of-two dimensions " & File_Name);
+            end if;
+
+            pragma Warnings (Off);
             declare
-                Data_Raw     : constant GID_Image_Loader.Raw_Data := Data_Ptr.all;
+                Data_Raw : GID_Image_Loader.Raw_Data (1 .. Data_Length / 4);
+            begin
+                Game_Utils.Game_Log
+                  ("Texture_Manager.Load_Image_To_Texture declare block 1 entered");
+            end;
+
+            Game_Utils.Game_Log
+              ("Texture_Manager.Load_Image_To_Texture entering declare block 2");
+            declare
+                Data_Raw     : GID_Image_Loader.Raw_Data (1 .. Data_Length);
                 -- Data is an array of UBytes
-                Data         : array (1 .. Data_Length) of UByte;
+                --                  Data         : array (1 .. Data_Length) of UByte;
                 Swap         : UByte;
                 --                  Swap         : GID_Image_Loader.Component;  --  GL.Types.UByte
                 Data_Top     : GL.Types.Int := 0;
                 Data_Bottom  : GL.Types.Int := 0;
-                Texture_Data : Loaded_Texture;
             begin
                 Game_Utils.Game_Log
-                  ("Texture_Manager.Load_Image_To_Texture declare block entered");
-                Texture_Data.Texture_ID := aTexture.Raw_Id;
+                  ("Texture_Manager.Load_Image_To_Texture declare block 2 entered");
+                Data_Raw := Image_Data_Ptr.all;
                 Game_Utils.Game_Log ("Loading data; Texture_Data.Texture_ID " &
                                        GL.Types.UInt'Image (Texture_Data.Texture_ID));
                 for index in 1 .. Data_Length loop
                     Game_Utils.Game_Log
                       ("Loading data; index " & GL.Types.Int'Image (index));
-                    Data (index) := UByte (Data_Raw (index));
+                    --                      Data (index) := UByte (Data_Raw (index));
                 end loop;
                 Game_Utils.Game_Log
                   ("Texture_Manager.Load_Image_To_Texture calling GID_Image_Loader.to Data_Ptr");
 
-                GID_Image_Loader.Free_Data (Data_Ptr);
+                GID_Image_Loader.Free_Data (Image_Data_Ptr);
                 Game_Utils.Game_Log
                   ("Texture_Manager.Load_Image_To_Texture, image loaded from "
                    & File_Name);
@@ -242,18 +295,25 @@ package body Texture_Manager is
                     Data_Bottom :=
                       (Height_In_Pixels - index_h - 1) * Width_In_Chars;
                     for index_h in 1 .. Width_In_Chars loop
-                        Swap := Data (Data_Top);
-                        Data (Data_Top) := Data (Data_Bottom);
-                        Data (Data_Bottom) := Swap;
+                        --                          Swap := Data (Data_Top);
+                        --                          Data (Data_Top) := Data (Data_Bottom);
+                        --                          Data (Data_Bottom) := Swap;
                         Data_Top := Data_Top + 1;
                         Data_Bottom := Data_Bottom + 1;
                     end loop;
                 end loop;
 
-                Set_Active_Unit (0);
                 aTexture.Initialize_Id;
+                Texture_Data.File_Name := To_Unbounded_String (File_Name);
+                Texture_Data.Texture_ID := aTexture.Raw_Id;
+                Set_Active_Unit (0);
                 Texture_2D.Bind (aTexture);
-                Bound_Textures.Append (aTexture);
+                if Bound_Textures.Is_Empty then
+                    Bound_Textures.Append (aTexture);
+                else
+                    Bound_Textures.Replace_Element (0, aTexture);
+                end if;
+
                 if Use_SRGB then
                     Texture_2D.Load_From_Data
                       (0, SRGB_Alpha, 16, 16, RGBA, Unsigned_Byte,
@@ -298,6 +358,7 @@ package body Texture_Manager is
                 Texture_2D.Set_Y_Wrapping (Clamp_To_Edge);
                 Texture_Data.Texture_ID := aTexture.Raw_Id;
                 Loaded_Textures.Append (Texture_Data);
+                Loaded_Texture_Count := Loaded_Texture_Count + 1;
             end; -- declare block
         else
             Game_Utils.Game_Log ("Image " & File_Name & " already loaded.");
