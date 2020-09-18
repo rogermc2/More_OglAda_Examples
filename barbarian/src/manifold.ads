@@ -30,7 +30,7 @@ package Manifold is
                               return Int;
     function Init_Manifold return Boolean;
     function Is_Tile_Valid (Col, Row : Int) return Boolean;
-    procedure Load_Tiles (File : File_Type);
+    function Load_Tiles (File : File_Type) return Boolean;
     function Number_Of_Tiles return Integer;
     procedure Reset_Manifold_Vars;
 
