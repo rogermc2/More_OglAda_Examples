@@ -232,10 +232,6 @@ package body Texture_Manager is
         end loop;
 
         if not Texture_Loaded then
-            --              if Loaded_Texture_Count > Loaded_Texture_Count_Allocated then
-            --                  Game_Utils.Game_Log ("Load_Image_To_Texture loading image " &
-            --                                     File_Name);
-            --              end if;
             GID_Image_Loader.Load_File_To_Image
               (File_Name, Image_Data_Ptr, Data_Length, X, Y, Force_Channels);
             Game_Utils.Game_Log ("Load_Image_To_Texture result: X, Y Data_Length "
@@ -250,42 +246,24 @@ package body Texture_Manager is
                   ("WARNING: texture is not power-of-two dimensions " & File_Name);
             end if;
 
-            pragma Warnings (Off);
-            declare
-                Data_Raw : GID_Image_Loader.Raw_Data (1 .. Data_Length / 4);
-            begin
-                Game_Utils.Game_Log
-                  ("Texture_Manager.Load_Image_To_Texture declare block 1 entered");
-            end;
-
-            Game_Utils.Game_Log
-              ("Texture_Manager.Load_Image_To_Texture entering declare block 2");
+--              pragma Warnings (Off);
             declare
                 Data_Raw     : GID_Image_Loader.Raw_Data (1 .. Data_Length);
                 -- Data is an array of UBytes
-                --                  Data         : array (1 .. Data_Length) of UByte;
-                Swap         : UByte;
-                --                  Swap         : GID_Image_Loader.Component;  --  GL.Types.UByte
+                Data         : array (1 .. Data_Length) of GID_Image_Loader.Component;
+                Swap         : GID_Image_Loader.Component;
                 Data_Top     : GL.Types.Int := 0;
                 Data_Bottom  : GL.Types.Int := 0;
             begin
-                Game_Utils.Game_Log
-                  ("Texture_Manager.Load_Image_To_Texture declare block 2 entered");
                 Data_Raw := Image_Data_Ptr.all;
                 Game_Utils.Game_Log ("Loading data; Texture_Data.Texture_ID " &
                                        GL.Types.UInt'Image (Texture_Data.Texture_ID));
                 for index in 1 .. Data_Length loop
-                    Game_Utils.Game_Log
-                      ("Loading data; index " & GL.Types.Int'Image (index));
-                    --                      Data (index) := UByte (Data_Raw (index));
+--                      Game_Utils.Game_Log
+--                        ("Loading data; index " & GL.Types.Int'Image (index));
+                Data (index) :=  Data_Raw (index);
                 end loop;
-                Game_Utils.Game_Log
-                  ("Texture_Manager.Load_Image_To_Texture calling GID_Image_Loader.to Data_Ptr");
-
                 GID_Image_Loader.Free_Data (Image_Data_Ptr);
-                Game_Utils.Game_Log
-                  ("Texture_Manager.Load_Image_To_Texture, image loaded from "
-                   & File_Name);
 
                 Half_Height_In_Pixels := Y / 2;
                 Height_In_Pixels := Y;
@@ -295,9 +273,9 @@ package body Texture_Manager is
                     Data_Bottom :=
                       (Height_In_Pixels - index_h - 1) * Width_In_Chars;
                     for index_h in 1 .. Width_In_Chars loop
-                        --                          Swap := Data (Data_Top);
-                        --                          Data (Data_Top) := Data (Data_Bottom);
-                        --                          Data (Data_Bottom) := Swap;
+                        Swap := Data (Data_Top);
+                        Data (Data_Top) := Data (Data_Bottom);
+                        Data (Data_Bottom) := Swap;
                         Data_Top := Data_Top + 1;
                         Data_Bottom := Data_Bottom + 1;
                     end loop;
