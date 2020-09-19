@@ -11,3 +11,5 @@ bin
 *.o
 *.ooutline
 * copy.gpr
+*.log
+
