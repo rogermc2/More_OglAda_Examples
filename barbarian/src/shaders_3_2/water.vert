@@ -1,16 +1,11 @@
-//
-// Crongdor the Barbarian
-// water tile shader
-// First version Anton Gerdelan, ? 2014
-// Latest code review 5 Feb 2016
-//
 
-#version 150
+#version 410 core
 
 in vec3 vp;
 
 uniform mat4 M, V, P;
 uniform float t; // time. used for vertex animation
+
 out vec3 p_eye, p_wor, n_eye;
 
 float two_pi = 6.28319; // 2pi

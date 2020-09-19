@@ -1,11 +1,5 @@
-//
-// Crongdor the Barbarian
-// water tile shader
-// First version Anton Gerdelan, ? 2014
-// Latest code review 5 Feb 2016
-//
 
-#version 150
+#version 410 core
 out vec4 frag_colour;
 
 in vec3 p_wor, p_eye, n_eye;
