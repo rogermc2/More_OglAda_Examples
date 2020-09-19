@@ -287,10 +287,6 @@ package body Texture_Manager is
                 Set_Active_Unit (0);
                 Texture_2D.Bind (aTexture);
 
-                Game_Utils.Game_Log ("Loading data; Texture_Data.Texture_ID " &
-                                       GL.Types.UInt'Image (Texture_Data.Texture_ID));
-                Put_Line ("Loading data; Texture_Data.Texture_ID " &
-                           GL.Types.UInt'Image (Texture_Data.Texture_ID));
                 if Bound_Textures.Is_Empty then
                     Bound_Textures.Append (aTexture);
                 else
@@ -343,6 +339,7 @@ package body Texture_Manager is
                 Loaded_Textures.Append (Texture_Data);
                 Loaded_Texture_Count := Loaded_Texture_Count + 1;
             end; -- declare block
+            Game_Utils.Game_Log ("Image " & File_Name & " loaded.");
         else
             Game_Utils.Game_Log ("Image " & File_Name & " already loaded.");
         end if;
