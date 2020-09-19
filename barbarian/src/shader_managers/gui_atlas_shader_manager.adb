@@ -22,7 +22,7 @@ package body GUI_Atlas_Shader_Manager is
 
       Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
 
-      Render_Uniforms.Alpha_ID := Uniform_Location (Shader_Program, "alpa");
+      Render_Uniforms.Alpha_ID := Uniform_Location (Shader_Program, "alpha");
       Render_Uniforms.Atlas_ID := Uniform_Location (Shader_Program, "atlas");
       Render_Uniforms.Model_Matrix_ID :=
         Uniform_Location (Shader_Program, "model_mat");

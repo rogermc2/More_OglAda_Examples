@@ -1,11 +1,5 @@
-//
-// Crongdor the Barbarian
-// screen-space image quad shader
-// First version Anton Gerdelan, 2 June 2014
-// Latest code review 4 Feb 2016
-//
 
-#version 150
+#version 410 core
 out vec4 frag_colour;
 
 in vec3 p_eye; // TODO change to _wor
@@ -45,8 +39,8 @@ float specular_exponent = 50.0;
 void calc_a_light (
 	in vec3 light_pos_wor, in float range, in vec3 l_d, in vec3 l_s,
 	in vec4 texel_diff, in vec4 texel_spec, in vec3 n_eye,
-	inout vec3 I_d, inout vec3 I_s
-) {
+	inout vec3 I_d, inout vec3 I_s)
+    {
 	vec3 light_pos_eye = (V * vec4 (light_pos_wor, 1.0)).xyz;
 	float d = distance (light_pos_eye, p_eye);
 	float roll_off_fac = range - clamp (d, 0.0, range); // 1 to 0
@@ -62,10 +56,11 @@ void calc_a_light (
 	// summations
 	I_d += l_d * texel_diff.rgb * diff_fac * roll_off_fac;
 	I_s += l_s * texel_spec.rgb * spec_fac * roll_off_fac;
-}
+    }
 
 // work out all lighting on surface
-vec3 blinn_phong (in vec4 texel_diff, in vec4 texel_spec) {
+vec3 blinn_phong (in vec4 texel_diff, in vec4 texel_spec)
+    {
 	vec3 n = normalize (n_eye); // re-normalised normal
 	vec3 I_a = texel_diff.rgb * L_a; // summed ambient intensity
 	vec3 I_d = vec3 (0.0, 0.0, 0.0); // summed diffuse intensity
@@ -90,24 +85,28 @@ vec3 blinn_phong (in vec4 texel_diff, in vec4 texel_spec) {
 		I_d, I_s);
 	// summation
 	return I_a + I_d + I_s;
-}
+    }
 
-float eval_shadow (in float l, in vec3 tc, in samplerCube cube) {
+float eval_shadow (in float l, in vec3 tc, in samplerCube cube)
+    {
 	float texel = texture (cube, tc).r;
 	// bias is used in case of self-shadowing
 	float bias = 0.025;
 	float diff = (texel + bias) - l;
-	if (diff < 0.0) {
+	if (diff < 0.0)
+        {
 		return 0.01;
-	}
+        }
 	return 1.0;
-}
+    }
 
-void main() {
-	if (ol_pass > 0.1) {
+void main()
+    {
+	if (ol_pass > 0.1)
+        {
 		frag_colour = vec4 (0.0, 0.0, 0.0, 1.0);
 		return;
-	}
+        }
 	// sampling
 	vec4 texel_diff = texture (diff_map, st);
 	vec4 texel_spec = texture (spec_map, st);
@@ -117,12 +116,13 @@ void main() {
 	vec3 I = blinn_phong (texel_diff, texel_spec);
 	frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - light_emission_factor);
 	// shadows
-	if (shadow_enabled > 0.0) {
+	if (shadow_enabled > 0.0)
+        {
 		vec3 dir = texcoords - caster_pos_wor;
 		float l = length (dir);
 		float sf_f = eval_shadow (l, dir, cube_texture);
 		// shadow affected by emission map
 		sf_f = mix (sf_f, 1.0, 1.0 - light_emission_factor);
 		frag_colour.rgb *= sf_f;
-	}
-}
+        }
+    }
