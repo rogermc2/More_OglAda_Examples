@@ -47,6 +47,13 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
+    function Add_Tiles_To_Batches return Boolean is
+    begin
+        return False;
+    end Add_Tiles_To_Batches;
+
+    --  ----------------------------------------------------------------------------
+
     function Batch_Split_Size return Integer is
     begin
         return Batch_Split_Count;
@@ -140,7 +147,7 @@ package body Manifold is
     end Load_Palette_File_Names;
 
     --  ------------------------------------------------------------------------
-    pragma Warnings (off);
+--      pragma Warnings (off);
     procedure Load_Char_Rows (File : File_Type; Load_Type : String;
                               Tile_List : in out Tiles_List) is
         use Ada.Strings;
@@ -245,7 +252,7 @@ package body Manifold is
                         else
                             Tex_Int := 10 + Character'Pos (Tex_Char) - Code_a;
                         end if;
---                          Texture_List.Append (Tex_Int);
+                    Texture_List.Append (Tex_Int);
                     end if;
                 end loop;
                 Prev_Char := Tex_Char;
@@ -275,6 +282,9 @@ package body Manifold is
                        Ramp_Spec_Tex, True, True);
                 end if;
             end if;
+        end if;
+        if OK then
+            OK := Add_Tiles_To_Batches;
         end if;
         return OK;
     end Load_Textures;
