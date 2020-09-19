@@ -4,10 +4,13 @@ with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with GL.Objects.Textures;
+with GL.Objects.Programs;
 
 with Game_Utils;
+with Manifold_Shader_Manager;
 with Settings;
 with Texture_Manager;
+with Water_Shader_Manager;
 
 package body Manifold is
 
@@ -23,6 +26,8 @@ package body Manifold is
       (Positive, Batch_Meta);
     type Batches_List is new Batches_Package.Vector with null record;
 
+    Manifold_Program  : GL.Objects.Programs.Program;
+    Water_Program     : GL.Objects.Programs.Program;
     --      Max_Tile_Cols : constant Int := 64;
     Max_Cols      : Int := 0;
     Max_Rows      : Int := 0;
@@ -97,10 +102,22 @@ package body Manifold is
         return Result;
     end Get_Light_Index;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     function Init_Manifold return Boolean is
     begin
+        Manifold_Shader_Manager.Init (Manifold_Program);
+        Manifold_Shader_Manager.Set_Ambient_Light_Colour ((0.0125, 0.0125, 0.0125));
+        Manifold_Shader_Manager.Set_Diff_Map (0);
+        Manifold_Shader_Manager.Set_Spec_Map (1);
+        Manifold_Shader_Manager.Set_Cube_Texture (3);
+
+        Water_Shader_Manager.Init (Water_Program);
+        Water_Shader_Manager.Set_K_Diff ((0.03, 0.50, 0.20, 0.75));
+        Water_Shader_Manager.Set_K_Spec ((0.5, 0.5, 0.5, 1.0));
+        Water_Shader_Manager.Set_Ambient_Light_Colour ((0.0125, 0.0125, 0.0125));
+        Water_Shader_Manager.Set_Cube_Texture (3);
+
         return False;
     end Init_Manifold;
 
