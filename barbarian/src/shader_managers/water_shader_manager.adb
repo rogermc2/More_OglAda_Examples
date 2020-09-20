@@ -3,6 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Shaders;
 
+--  with Game_Utils;
 with Maths;
 with Program_Loader;
 
@@ -60,13 +61,14 @@ package body Water_Shader_Manager is
           Uniform_Location (Shader_Program, "static_light_indices");
         Render_Uniforms.View_Matrix_ID :=
           Uniform_Location (Shader_Program, "V");
+--          Game_Utils.Game_Log ("Render_Uniforms initialized");
 
         Use_Program (Shader_Program);
         GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_Colour_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Animation_Time_ID, 0.0);
         GL.Uniforms.Set_Single (Render_Uniforms.Caster_Position_ID, Maths.Vec3_0);
-        GL.Uniforms.Set_UInt (Render_Uniforms.Cube_Texture_ID, 0);
-        GL.Uniforms.Set_UInt (Render_Uniforms.Diff_Map_ID, 0);
+        GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
+        GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, 0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Pos_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Diff_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Spec_ID, Maths.Vec3_0);
@@ -76,8 +78,8 @@ package body Water_Shader_Manager is
         GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Identity4);
         GL.Uniforms.Set_Single (Render_Uniforms.Projection_Matrix_ID, Identity4);
         GL.Uniforms.Set_Single (Render_Uniforms.Shadow_Enabled_ID, 0.0);
-        GL.Uniforms.Set_UInt (Render_Uniforms.Spec_Map_ID, 0);
-        GL.Uniforms.Set_Single (Render_Uniforms.Static_Light_Indices_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Int (Render_Uniforms.Spec_Map_ID, 0);
+--          GL.Uniforms.Set_Single (Render_Uniforms.Static_Light_Indices_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.View_Matrix_ID, Identity4);
 
     exception
@@ -109,16 +111,16 @@ package body Water_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Cube_Texture (Texture : UInt) is
+    procedure Set_Cube_Texture (Texture : Int) is
     begin
-        GL.Uniforms.Set_UInt (Render_Uniforms.Cube_Texture_ID, Texture);
+        GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, Texture);
     end Set_Cube_Texture;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Diff_Map (Map : UInt) is
+    procedure Set_Diff_Map (Map : Int) is
     begin
-        GL.Uniforms.Set_UInt (Render_Uniforms.Diff_Map_ID, Map);
+        GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, Map);
     end Set_Diff_Map;
 
     --  -------------------------------------------------------------------------
@@ -163,7 +165,8 @@ package body Water_Shader_Manager is
         GL.Uniforms.Set_Single (Render_Uniforms.K_Spec_ID, K_Spec);
     end Set_K_Spec;
 
-    --  ------------------------------------------------------------
+    --  ------------------------------------------------------------------------
+
     procedure Set_Light_Diffuse (Diffuse : Singles.Vector3_Array) is
     begin
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Diffuse_ID, Diffuse);
@@ -213,9 +216,9 @@ package body Water_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Spec_Map (Map : UInt) is
+    procedure Set_Spec_Map (Map : Int) is
     begin
-        GL.Uniforms.Set_UInt (Render_Uniforms.Spec_Map_ID, Map);
+        GL.Uniforms.Set_Int (Render_Uniforms.Spec_Map_ID, Map);
     end Set_Spec_Map;
 
     --  -------------------------------------------------------------------------

@@ -126,17 +126,20 @@ package body Manifold is
     begin
         Game_Utils.Game_Log ("Initializing manifold.");
         Manifold_Shader_Manager.Init (Manifold_Program);
+        Game_Utils.Game_Log ("Manifold_Program initialized.");
         Manifold_Shader_Manager.Set_Ambient_Light_Colour ((0.0125, 0.0125, 0.0125));
         Manifold_Shader_Manager.Set_Diff_Map (0);
         Manifold_Shader_Manager.Set_Spec_Map (1);
         Manifold_Shader_Manager.Set_Cube_Texture (3);
 
         Water_Shader_Manager.Init (Water_Program);
+        Game_Utils.Game_Log ("Water_Program initialized.");
         Water_Shader_Manager.Set_K_Diff ((0.03, 0.50, 0.20, 0.75));
         Water_Shader_Manager.Set_K_Spec ((0.5, 0.5, 0.5, 1.0));
         Water_Shader_Manager.Set_Ambient_Light_Colour ((0.0125, 0.0125, 0.0125));
         Water_Shader_Manager.Set_Cube_Texture (3);
 
+        Game_Utils.Game_Log ("Manifold shaders initialized.");
         Free_Manifold_Mesh_Data;
         if not Mesh_Loader.Load_Mesh_Data_Only
           ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
@@ -145,6 +148,7 @@ package body Manifold is
               "Manifold.Init_Manifold error loading ramp mesh data from file "
               & "src/meshes/ramp_may_2014.apg";
         end if;
+        Game_Utils.Game_Log ("ramp_may_2014.apg loaded.");
 
         if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                                 Points, Texcoords,
@@ -154,6 +158,7 @@ package body Manifold is
               "Manifold.Init_Manifold error loading ramp mesh data from file "
               & "src/meshes/ramp_smooth.apg";
         end if;
+        Game_Utils.Game_Log ("ramp_smooth.apg loaded.");
 
         if not Mesh_Loader.Load_Mesh_Data_Only
           ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
@@ -162,6 +167,7 @@ package body Manifold is
               "Manifold.Init_Manifold error loading ramp mesh data from file "
               & "src/meshes/water.apg";
         end if;
+        Game_Utils.Game_Log ("water.apg loaded.");
 
         Game_Utils.Game_Log ("Manifold initialized.");
         return True;
