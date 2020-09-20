@@ -4,6 +4,7 @@ with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 --  with Character_Controller;
+with Game_Utils;
 with Manifold;
 --  with Properties_Manager;
 --  with Text_Manager;
@@ -20,8 +21,10 @@ package body Maps_Manager is
         Result : Boolean := False;
     begin
         Put_Line ("Maps_Manager.Load_Maps opening " & Path);
+        Game_Utils.Game_Log ("Maps_Manager.Load_Maps opening " & Path);
         Open (Input_File, In_File, Path);
         Put_Line ("Maps_Manager.Load_Maps, " & Path & " opened.");
+        Game_Utils.Game_Log ("Maps_Manager.Load_Maps, " & Path & " opened.");
         theMap.Level_Title := To_Unbounded_String (Get_Line (Input_File));
         theMap.Level_Par_Time := To_Unbounded_String (Get_Line (Input_File));
 

@@ -56,8 +56,8 @@ package body Mesh_Loader is
     package Meshes_Package is new Ada.Containers.Vectors (Positive, Mesh);
     type Mesh_List is new Meshes_Package.Vector with null record;
 
-    Loaded_Mesh_Count    : Integer := 0;
-    Allocated_Mesh_Count : Integer := 128;
+--      Loaded_Mesh_Count    : Integer := 0;
+--      Allocated_Mesh_Count : Integer := 128;
     Loaded_Meshes        : Mesh_List;
 
     --  ------------------------------------------------------------------------
@@ -65,8 +65,8 @@ package body Mesh_Loader is
     procedure Init is
     begin
         Loaded_Meshes.Clear;
-        Loaded_Mesh_Count := 0;
-        Allocated_Mesh_Count := 0;
+--          Loaded_Mesh_Count := 0;
+--          Allocated_Mesh_Count := 0;
     end Init;
 
     --  ------------------------------------------------------------------------
@@ -89,12 +89,12 @@ package body Mesh_Loader is
 
     --  ------------------------------------------------------------------------
 
-    function Load_Managed_Mesh (Mesh : String; Has_Vp, Has_Vn, Has_Vt,
-                                Has_Vtangents, Has_bones : Boolean := False)
-                                return Integer is
-    begin
-        return 0;
-    end Load_Managed_Mesh;
+--      function Load_Managed_Mesh (Mesh : String; Has_Vp, Has_Vn, Has_Vt,
+--                                  Has_Vtangents, Has_bones : Boolean := False)
+--                                  return Integer is
+--      begin
+--          return 0;
+--      end Load_Managed_Mesh;
 
     --  ------------------------------------------------------------------------
 
@@ -115,14 +115,17 @@ package body Mesh_Loader is
         Open (Input_File, In_File, File_Name);
         while not End_Of_File (Input_File) loop
             declare
-                aString    : constant String := Get_Line (Input_File);
+                aString      : constant String := Get_Line (Input_File);
+                Sring_Length : constant Integer := aString'Length;
             begin
+--                  Game_Utils.Game_Log ("Loaded_Mesh_Data_Only Sring_Length: " &
+--                                         integer'Image (Sring_Length));
                 if aString (1 .. 1) = "@" then
-                    if aString (2 .. 9) = "Anton's " then
+                    if Sring_Length > 8 and aString (2 .. 9) = "Anton's " then
                         null;
-                    elsif aString (2 .. 12) = "vert_count " then
+                    elsif Sring_Length > 12 and then aString (2 .. 12) = "vert_count " then
                         Point_Count := Integer'Value (aString (13 .. aString'Last));
-                    elsif aString (2 .. 10) = "vp comps " then
+                    elsif Sring_Length > 11 and then aString (2 .. 10) = "vp comps " then
                         Comps  := Integer'Value (aString (11 .. aString'Last));
                         if Comps * Point_Count > 0 then
                             for index in 1 .. Comps * Point_Count loop
@@ -131,7 +134,7 @@ package body Mesh_Loader is
                             end loop;
                         end if;
 
-                    elsif aString (2 .. 4) = "vn " then
+                    elsif Sring_Length > 5 and then aString (2 .. 4) = "vn " then
                         Comps  := Integer'Value (aString (11 .. aString'Last));
                         if Comps * Point_Count > 0 then
                             for index in 1 .. Comps * Point_Count loop
@@ -140,7 +143,7 @@ package body Mesh_Loader is
                             end loop;
                         end if;
 
-                    elsif aString (2 .. 4) = "vt " then
+                    elsif Sring_Length > 5 and then aString (2 .. 4) = "vt " then
                         Comps := Integer'Value (aString (11 .. aString'Last));
                         if Comps * Point_Count > 0 then
                             for index in 1 .. Comps * Point_Count loop
@@ -162,7 +165,9 @@ package body Mesh_Loader is
             end;  --  declare block
         end loop;
         Close (Input_File);
-        return False;
+        Game_Utils.Game_Log ("Loaded_Mesh_Data_Only mesh data loaded from: " &
+                              File_Name);
+        return True;
     end Load_Mesh_Data_Only;
 
     --  ------------------------------------------------------------------------

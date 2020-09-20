@@ -6,6 +6,7 @@ with GL.Objects.Shaders;
 with Maths;
 with Program_Loader;
 
+--  with Game_Utils;
 with Shader_Attributes;
 
 package body Manifold_Shader_Manager is
@@ -21,6 +22,7 @@ package body Manifold_Shader_Manager is
         Shader_Program := Program_From
           ((Src ("src/shaders_3_2/manifold.vert", Vertex_Shader),
            Src ("src/shaders_3_2/manifold.frag", Fragment_Shader)));
+--          Game_Utils.Game_Log ("Manifold_Shader_Manager Shader_Program initialized.");
 
         Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
 
@@ -56,23 +58,25 @@ package body Manifold_Shader_Manager is
           Uniform_Location (Shader_Program, "static_light_indices");
         Render_Uniforms.View_Matrix_ID :=
           Uniform_Location (Shader_Program, "V");
+--          Game_Utils.Game_Log ("Manifold_Shader_Manager Render_Uniforms initialized.");
 
         Use_Program (Shader_Program);
         GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_Colour_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Caster_Position_ID, Maths.Vec3_0);
-        GL.Uniforms.Set_UInt (Render_Uniforms.Cube_Texture_ID, 0);
-        GL.Uniforms.Set_UInt (Render_Uniforms.Diff_Map_ID, 0);
+        GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
+        GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, 0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Pos_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Diff_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Spec_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Range_ID, 0.0);
         GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Identity4);
-        GL.Uniforms.Set_Single (Render_Uniforms.Outline_Pass_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Outline_Pass_ID, 0.0);
         GL.Uniforms.Set_Single (Render_Uniforms.Projection_Matrix_ID, Identity4);
         GL.Uniforms.Set_Single (Render_Uniforms.Shadow_Enabled_ID, 0.0);
-        GL.Uniforms.Set_UInt (Render_Uniforms.Spec_Map_ID, 0);
-        GL.Uniforms.Set_Single (Render_Uniforms.Static_Light_Indices_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Int (Render_Uniforms.Spec_Map_ID, 0);
+--          GL.Uniforms.Set_Single (Render_Uniforms.Static_Light_Indices_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.View_Matrix_ID, Identity4);
+--          Game_Utils.Game_Log ("Manifold_Shader_Manager Uniforms initialized.");
 
     exception
         when others =>
@@ -96,16 +100,16 @@ package body Manifold_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Cube_Texture (Texture : UInt) is
+    procedure Set_Cube_Texture (Texture : Int) is
     begin
-        GL.Uniforms.Set_UInt (Render_Uniforms.Cube_Texture_ID, Texture);
+        GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, Texture);
     end Set_Cube_Texture;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Diff_Map (Map : UInt) is
+    procedure Set_Diff_Map (Map : Int) is
     begin
-        GL.Uniforms.Set_UInt (Render_Uniforms.Diff_Map_ID, Map);
+        GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, Map);
     end Set_Diff_Map;
 
     --  -------------------------------------------------------------------------
@@ -194,9 +198,9 @@ package body Manifold_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Spec_Map (Map : UInt) is
+    procedure Set_Spec_Map (Map : Int) is
     begin
-        GL.Uniforms.Set_UInt (Render_Uniforms.Spec_Map_ID, Map);
+        GL.Uniforms.Set_Int (Render_Uniforms.Spec_Map_ID, Map);
     end Set_Spec_Map;
 
     --  -------------------------------------------------------------------------

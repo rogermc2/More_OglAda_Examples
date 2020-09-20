@@ -9,9 +9,9 @@ package Mesh_Loader is
     Max_Bones : constant  Int := 32;
 
     procedure Init;
-    function Load_Managed_Mesh (Mesh : String; Has_Vp, Has_Vn, Has_Vt,
-                                Has_Vtangents, Has_bones : Boolean := False)
-                                return Integer;
+--      function Load_Managed_Mesh (Mesh : String; Has_Vp, Has_Vn, Has_Vt,
+--                                  Has_Vtangents, Has_bones : Boolean := False)
+--                                  return Integer;
     function Load_Mesh_Data_Only (File_Name : String;
                                   Points : in out GL_Maths.Vector3_List;
                                   Tex_Coords : in out GL_Maths.Vector2_List;
