@@ -1,5 +1,4 @@
 
-with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -7,12 +6,10 @@ with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
 with GL.Types;
 
+with GL_Maths;
+
 package Manifold is
     use GL.Types;
-
-    package Singles_Data_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Single);
-    type Singles_Data_List is new Singles_Data_Package.List with null record;
 
     subtype Tile_Index is Integer;
     package Tile_Nodes_Package is new Ada.Containers.Vectors
@@ -39,9 +36,9 @@ private
         Tiles                : Tile_Nodes_List;
         AABB_Mins            : Singles.Vector3;
         AABB_Mixs            : Singles.Vector3;
-        Points               : Singles_Data_List;
-        Normals              : Singles_Data_List;
-        Tex_Coords           : Singles_Data_List;
+        Points               : GL_Maths.Singles_List;
+        Normals              : GL_Maths.Singles_List;
+        Tex_Coords           : GL_Maths.Singles_List;
         VAO                  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
         Points_VBO           : GL.Objects.Buffers.Buffer;
         Normals_VBO          : GL.Objects.Buffers.Buffer;

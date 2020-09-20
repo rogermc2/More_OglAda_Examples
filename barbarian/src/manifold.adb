@@ -66,6 +66,13 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
+    procedure Free_Manifold_Mesh_Data is
+    begin
+        null;
+    end Free_Manifold_Mesh_Data;
+
+    --  ----------------------------------------------------------------------------
+
     function Get_Batch_Index (Column, Row : Int) return Int is
         Result : Int := -1;
     begin
@@ -117,6 +124,8 @@ package body Manifold is
         Water_Shader_Manager.Set_K_Spec ((0.5, 0.5, 0.5, 1.0));
         Water_Shader_Manager.Set_Ambient_Light_Colour ((0.0125, 0.0125, 0.0125));
         Water_Shader_Manager.Set_Cube_Texture (3);
+
+        Free_Manifold_Mesh_Data;
 
         return False;
     end Init_Manifold;
