@@ -26,6 +26,7 @@ package body Texture_Manager is
         Texture_ID  : GL.Types.UInt;
         Has_Mipmaps : Boolean := False;
     end record;
+
     package Loaded_Textures_Package is new Ada.Containers.Vectors
       (Natural, Loaded_Texture);
     type Loaded_Textures_List is new Loaded_Textures_Package.Vector with null record;
