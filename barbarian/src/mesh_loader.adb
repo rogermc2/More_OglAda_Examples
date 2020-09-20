@@ -71,21 +71,39 @@ package body Mesh_Loader is
 
     --  ------------------------------------------------------------------------
 
-    procedure Load_Data (Input_File : File_Type; Vec : in out Vector3) is
+    procedure Load_Normal_Data (Input_File : File_Type; Vec : in out Vector3) is
         use Ada.Strings;
-        Value : constant String := Get_Line (Input_File);
-        Pos1  : constant Natural := Fixed.Index (Value, " ");
+        Data  : constant String := Get_Line (Input_File);
+        Pos1  : constant Natural := Fixed.Index (Data, " ");
         Pos2  : Natural;
     begin
         Vec (GL.X) :=
-          Single'Value (Value (1 .. Pos1 - 1));
+          Single (Integer'Value (Data (1 .. Pos1)));
         Pos2 :=
-          Fixed.Index (Value (Pos1 .. Value'Last), " ");
+          Fixed.Index (Data (Pos1 + 1 .. Data'Last), " ");
         Vec (GL.Y) :=
-          Single'Value (Value (Pos1 + 1 .. Pos2 - 1));
+          Single (Integer'Value (Data (Pos1 + 1 .. Pos2)));
         Vec (GL.Z) :=
-          Single'Value (Value (Pos2 + 1 .. Value'Last));
-    end Load_Data;
+          Single (Integer'Value (Data (Pos2 + 1 .. Data'Last)));
+    end Load_Normal_Data;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Load_Point_Data (Input_File : File_Type; Vec : in out Vector3) is
+        use Ada.Strings;
+        Data  : constant String := Get_Line (Input_File);
+        Pos1  : constant Natural := Fixed.Index (Data, " ");
+        Pos2  : Natural;
+    begin
+        Vec (GL.X) :=
+          Single'Value (Data (1 .. Pos1 - 1));
+        Pos2 :=
+          Fixed.Index (Data (Pos1 .. Data'Last), " ");
+        Vec (GL.Y) :=
+          Single'Value (Data (Pos1 + 1 .. Pos2 - 1));
+        Vec (GL.Z) :=
+          Single'Value (Data (Pos2 + 1 .. Data'Last));
+    end Load_Point_Data;
 
     --  ------------------------------------------------------------------------
 
@@ -106,8 +124,6 @@ package body Mesh_Loader is
                                   return Boolean is
         use Ada.Strings;
         Input_File : File_Type;
-        Comps      : Integer := 0;
-        Vec3       : Vector3;
     begin
         Point_Count := 0;
         Game_Utils.Game_Log ("Loaded_Mesh_Data_Only loading mesh data from: " &
@@ -115,35 +131,36 @@ package body Mesh_Loader is
         Open (Input_File, In_File, File_Name);
         while not End_Of_File (Input_File) loop
             declare
-                aString      : constant String := Get_Line (Input_File);
-                Sring_Length : constant Integer := aString'Length;
+                aString       : constant String := Get_Line (Input_File);
+                String_Length : constant Integer := aString'Length;
+                Comps         : Integer := 0;
+                Vec3          : Vector3 := (0.0, 0.0, 0.0);
             begin
---                  Game_Utils.Game_Log ("Loaded_Mesh_Data_Only Sring_Length: " &
---                                         integer'Image (Sring_Length));
+--                  Game_Utils.Game_Log ("Loaded_Mesh_Data_Only String: " & aString);
                 if aString (1 .. 1) = "@" then
-                    if Sring_Length > 8 and aString (2 .. 9) = "Anton's " then
+                    if String_Length > 8 and aString (2 .. 9) = "Anton's " then
                         null;
-                    elsif Sring_Length > 12 and then aString (2 .. 12) = "vert_count " then
+                    elsif String_Length > 12 and then aString (2 .. 12) = "vert_count " then
                         Point_Count := Integer'Value (aString (13 .. aString'Last));
-                    elsif Sring_Length > 11 and then aString (2 .. 10) = "vp comps " then
+                    elsif String_Length > 11 and then aString (2 .. 10) = "vp comps " then
                         Comps  := Integer'Value (aString (11 .. aString'Last));
                         if Comps * Point_Count > 0 then
                             for index in 1 .. Comps * Point_Count loop
-                                Load_Data (Input_File, Vec3);
+                                Load_Point_Data (Input_File, Vec3);
                                 Points.Append (Vec3);
                             end loop;
                         end if;
 
-                    elsif Sring_Length > 5 and then aString (2 .. 4) = "vn " then
+                    elsif String_Length > 11 and then aString (2 .. 10) = "vn comps " then
                         Comps  := Integer'Value (aString (11 .. aString'Last));
                         if Comps * Point_Count > 0 then
                             for index in 1 .. Comps * Point_Count loop
-                                Load_Data (Input_File, Vec3);
+                                Load_Normal_Data (Input_File, Vec3);
                                 Normals.Append (Vec3);
                             end loop;
                         end if;
 
-                    elsif Sring_Length > 5 and then aString (2 .. 4) = "vt " then
+                    elsif String_Length > 11 and then aString (2 .. 10) = "vt comps " then
                         Comps := Integer'Value (aString (11 .. aString'Last));
                         if Comps * Point_Count > 0 then
                             for index in 1 .. Comps * Point_Count loop
