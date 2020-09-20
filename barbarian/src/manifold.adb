@@ -1,5 +1,4 @@
 
-with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Exceptions;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -7,7 +6,9 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with GL.Objects.Textures;
 with GL.Objects.Programs;
 
+with Batch_Manager;
 with Game_Utils;
+with GL_Maths;
 with Manifold_Shader_Manager;
 with Mesh_Loader;
 with Settings;
@@ -16,27 +17,23 @@ with Water_Shader_Manager;
 
 package body Manifold is
 
-    package Tiles_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Character);
-    type Tiles_List is new Tiles_Package.List with null record;
-
-    package Batches_Package is new Ada.Containers.Vectors
-      (Positive, Batch_Meta);
-    type Batches_List is new Batches_Package.Vector with null record;
+    package Tiles_Package is new Ada.Containers.Vectors
+      (Positive, Character);
+    type Tiles_List is new Tiles_Package.Vector with null record;
 
     Manifold_Program      : GL.Objects.Programs.Program;
     Water_Program         : GL.Objects.Programs.Program;
     --      Max_Tile_Cols    : constant Int := 64;
-    Max_Cols              : Int := 0;
-    Max_Rows              : Int := 0;
-    Batches               : Batches_List;
-    Batches_Across        : Int := 0;
-    Batches_Down          : Int := 0;
+    Max_Cols              : Integer := 0;
+    Max_Rows              : Integer := 0;
+    Batches               : Batch_Manager.Batches_List;
+    Batches_Across        : Integer := 0;
+    Batches_Down          : Integer := 0;
     Batch_Split_Count     : Integer := 0;
-    Total_Tiles           : Int := 0;
-    Tile_Heights          : GL_Maths.Ints_List;
+    Total_Tiles           : Integer := 0;
+    Tile_Heights          : GL_Maths.Integers_List;
     Tile_Facings          : Tiles_List;
-    Tile_Textures         : GL_Maths.Ints_List;
+    Tile_Textures         : GL_Maths.Integers_List;
     Tile_Types            : Tiles_List;
     Diff_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
     Spec_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
@@ -53,14 +50,76 @@ package body Manifold is
     Water_Mesh_Normals       : GL_Maths.Vector3_List;
     Water_Mesh_Texcoords     : GL_Maths.Vector2_List;
     Water_Mesh_Point_Count   : Integer := 0;
+    Static_Lights            : Static_Light_List;
 
-    procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int;
+    procedure Add_Static_Light (Col, Row, Tile_Height_Offset : Integer;
+                               Offset, Diffuse, Specular : Singles.Vector3;
+                               Light_Range : Single);
+    function Get_Tile_Level (Col, Row : Integer) return Integer;
+    procedure Parse_Facings_By_Row (File : File_Type;
+                                    Max_Rows, Max_Cols : Integer;
                                     Tile_List : in out Tiles_List);
 
     --  ----------------------------------------------------------------------------
 
-    function Add_Tiles_To_Batches return Boolean is
+    procedure Add_Dummy_Manifold_Lights is
+        use Maths;
     begin
+        Add_Static_Light (0, 0, 0, Vec3_0, Vec3_0, Vec3_0, 0.0);
+        Add_Static_Light (0, 0, 0, Vec3_0, Vec3_0, Vec3_0, 0.0);
+    end Add_Dummy_Manifold_Lights;
+
+    --  ----------------------------------------------------------------------------
+
+    procedure Add_Static_Light (Col, Row, Tile_Height_Offset : Integer;
+                               Offset, Diffuse, Specular : Singles.Vector3;
+                               Light_Range : Single) is
+        X     : constant Single := Single (2 * Col) + Offset (GL.X);
+        Y     : constant Single :=
+                  Single (2 * Get_Tile_Level (Col, Row) + Tile_Height_Offset) +
+                  Offset (GL.Y);
+        Z      : constant Single := Single (2 * (Row - 1)) + Offset (GL.Z);
+        Total_Batches :  constant Integer := Batches_Across * Batches_Down;
+--          Sorted        : Boolean := False;
+        New_Light     : Static_Light_Data;
+        aBatch        : Batch_Manager.Batch_Meta;
+    begin
+        New_Light.Row := Row;
+        New_Light.Column := Col;
+        New_Light.Position := (X, Y, Z);
+        New_Light.Diffuse := Diffuse;
+        New_Light.Specular := Specular;
+        New_Light.Distance := Light_Range;
+        Static_Lights.Append (New_Light);
+
+        for index in 1 .. Total_Batches loop
+            aBatch := Batches.Element (index);
+            aBatch.Static_Light_Indices.Append (Static_Lights.Last_Index);
+            Batches.Replace_Element (index, aBatch);
+        end loop;
+
+    end Add_Static_Light;
+
+    --  ----------------------------------------------------------------------------
+
+    function Add_Tiles_To_Batches return Boolean is
+        Row           : Integer;
+	Col           : Integer;
+	Batch_Across  : Integer;
+        Batch_Down    : Integer;
+        Batch         : Batch_Manager.Batch_Meta;
+        Batch_Index   : Positive;
+    begin
+        for index in 1 .. Total_Tiles loop
+            Row := index / Max_Cols;
+            Col := index - Row * Max_Cols;
+            Batch_Across := Col / Settings.Tile_Batch_Width;
+            Batch_Down  := Row / Settings.Tile_Batch_Width;
+            Batch_Index := Positive (Batches_Across * Batch_Down + Batch_Across);
+            Batch := Batches.Element (Batch_Index);
+            Batch.Tile_Count := Batch.Tile_Count + 1;
+            Batches.Replace_Element (Batch_Index, Batch);
+        end loop;
         return False;
     end Add_Tiles_To_Batches;
 
@@ -80,25 +139,26 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Batch_Index (Column, Row : Int) return Int is
-        Result : Int := -1;
+    function Get_Batch_Index (Column, Row : Integer) return Integer is
+        Result : Integer := -1;
     begin
-        --          if Column >= 0 and Column < Max_Cols and Row >= 0 and Row < Max_Rows then
-        Result := (Column + Batches_Across * Row) /
-          Int (Settings.Tile_Batch_Width);
-        --          end if;
+        if Column >= 0 and Column < Max_Cols and
+          Row >= 0 and Row < Max_Rows then
+            Result := (Column + Batches_Across * Row) /
+              Settings.Tile_Batch_Width;
+        end if;
         return Result;
     end Get_Batch_Index;
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Light_Index (Column, Row : Int; Light_Number : Integer)
-                              return Int is
+    function Get_Light_Index (Column, Row, Light_Number : Integer)
+                              return Integer is
         Batch_Index   : constant Positive :=
                           Positive (Get_Batch_Index (Column, Row));
-        Batch         : Batch_Meta;
-        Light_Indices : Tile_Nodes_List;
-        Result        : Int := -1;
+        Batch         : Batch_Manager.Batch_Meta;
+        Light_Indices : GL_Maths.Integers_List;
+        Result        : Integer := -1;
     begin
         if not Batches.Is_Empty then
             Batch := Batches.Element (Batch_Index);
@@ -107,18 +167,30 @@ package body Manifold is
                 raise Manifold_Exception with
                   "Manifold.Get_Light_Index; Light number " &
                   Integer'Image (Light_Number) & " requested at ( " &
-                  Int'Image (Column) & "," & Int'Image (Row) &
+                  Integer'Image (Column) & "," & Integer'Image (Row) &
                   ") in batch " &  Integer'Image (Batch_Index) &
                   " does not exist.";
             end if;
-            Result := Int (Light_Indices.Element (Light_Number));
+            Result := Light_Indices.Element (Light_Number);
         end if;
         return Result;
     end Get_Light_Index;
 
     --  ------------------------------------------------------------------------
 
-    function Init_Manifold return Boolean is
+    function Get_Tile_Level (Col, Row : Integer) return Integer is
+    begin
+        if Col < 1 or Col > Max_Cols or Row < 1 or Row > Max_Rows then
+            raise Manifold_Exception with
+            "Manifold.Get_Tile_Level, invalid row or column: " &
+            Integer'Image (Row) & ", " & Integer'Image (Col);
+        end if;
+        return Tile_Heights.Element ((Row - 1) * Max_Cols + Col);
+    end Get_Tile_Level;
+
+    --  ----------------------------------------------------------------------------
+
+    procedure Init is
         Points       : GL_Maths.Vector3_List;
         Texcoords    : GL_Maths.Vector2_List;
         Points_Count : Integer := 0;
@@ -168,14 +240,13 @@ package body Manifold is
               & "src/meshes/water.apg";
         end if;
         Game_Utils.Game_Log ("water.apg loaded.");
-
         Game_Utils.Game_Log ("Manifold initialized.");
-        return True;
-    end Init_Manifold;
+
+    end Init;
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Tile_Valid (Col, Row : Int) return Boolean is
+    function Is_Tile_Valid (Col, Row : Integer) return Boolean is
     begin
         return Col >= 0 and Col < Max_Cols and  Row >= 0 and Row < Max_Rows;
     end Is_Tile_Valid;
@@ -273,13 +344,13 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     procedure Load_Int_Rows (File : File_Type; Load_Type : String;
-                             Texture_List : in out GL_Maths.Ints_List) is
+                             Texture_List : in out GL_Maths.Integers_List) is
         use Ada.Strings;
         Header     : constant String := Get_Line (File);
-        Code_0     : constant Int := Character'Pos ('0');
-        Code_a     : constant Int := Character'Pos ('a');
-        Cols       : Int := 0;
-        Rows       : Int := 0;
+        Code_0     : constant Integer := Character'Pos ('0');
+        Code_a     : constant Integer := Character'Pos ('a');
+        Cols       : Integer := 0;
+        Rows       : Integer := 0;
         Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
         Pos2       : Natural;
         Prev_Char  : Character;
@@ -292,16 +363,17 @@ package body Manifold is
         end if;
 
         Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
-        Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
-        Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
+        Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
+        Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
 
-        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," & Int'Image (Rows)
-                             & " rows, "  & Int'Image (Cols) & " columns");
+        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," &
+                              Integer'Image (Rows) & " rows, "  &
+                               Integer'Image (Cols) & " columns");
         for row in 1 .. Rows loop
             declare
                 aString    : constant String := Get_Line (File);
                 Tex_Char   : Character;
-                Tex_Int    : Int;
+                Tex_Int    : Integer;
             begin
                 --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Max_Cols then
@@ -362,11 +434,12 @@ package body Manifold is
     function Load_Tiles (File : File_Type) return Boolean is
         use Ada.Strings;
         use Settings;
-        Max_Cols : Int := 0;
-        Max_Rows : Int := 0;
+        Max_Cols : Integer := 0;
+        Max_Rows : Integer := 0;
         aLine    : constant String := Get_Line (File);
         Pos1     : Natural;
         Pos2     : Natural;
+        Result   : Boolean := False;
     begin
         Game_Utils.Game_Log ("Loading tiles and generating manifold from FP...");
         Put_Line ("Manifold.Load_Tiles loading tiles ");
@@ -378,22 +451,22 @@ package body Manifold is
 
         Pos2 := Fixed.Index (aLine (Pos1 + 1 .. aLine'Last), "x");
 
-        Max_Cols := Int'Value (aLine (Pos1 .. Pos2 - 1));
-        Max_Rows := Int'Value (aLine (Pos2 + 1 .. aLine'Last));
+        Max_Cols := Integer'Value (aLine (Pos1 .. Pos2 - 1));
+        Max_Rows := Integer'Value (aLine (Pos2 + 1 .. aLine'Last));
         Total_Tiles := Max_Rows * Max_Cols;
-        Game_Utils.Game_Log (" Maximum columns " & Int'Image (Max_Cols) &
-                               ", maximum rows " & Int'Image (Max_Rows) &
-                               ", total tiles " & Int'Image (Total_Tiles));
+        Game_Utils.Game_Log (" Maximum columns " & Integer'Image (Max_Cols) &
+                               ", maximum rows " & Integer'Image (Max_Rows) &
+                               ", total tiles " & Integer'Image (Total_Tiles));
         Batches_Across :=
-          Int (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
+          Integer (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
         Batches_Down :=
-          Int (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
+          Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
         Batch_Split_Count := Integer (Batches_Across * Batches_Down);
         Game_Utils.Game_Log
           (Integer'Image (Batch_Split_Count) &
              " batches of width " & Integer'Image (Settings.Tile_Batch_Width) &
-             "; batches across " & Int'Image (Batches_Across) &
-             " down " & Int'Image (Batches_Down));
+             "; batches across " & Integer'Image (Batches_Across) &
+             " down " & Integer'Image (Batches_Down));
 
         Parse_Facings_By_Row (File, Max_Rows, Max_Cols, Tile_Facings);
 
@@ -403,9 +476,14 @@ package body Manifold is
 
         Load_Palette_File_Names (File);
         Put_Line ("Manifold.Load_Tiles file names loaded.");
-        Game_Utils.Game_Log ("Palette file names: " & To_String (Diff_Palette_Name)
+        Game_Utils.Game_Log ("Palette file names: " &
+                               To_String (Diff_Palette_Name)
                              & ", " & To_String (Spec_Palette_Name));
-        return Load_Textures;
+        if Load_Textures then
+            Result := Add_Tiles_To_Batches;
+        end if;
+        Add_Dummy_Manifold_Lights;
+        return Result;
 
     exception
         when anError : others =>
@@ -418,12 +496,13 @@ package body Manifold is
 
     function Number_Of_Tiles return Integer is
     begin
-        return Integer (Total_Tiles);
+        return Total_Tiles;
     end Number_Of_Tiles;
 
     --  ----------------------------------------------------------------------------
 
-    procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int;
+    procedure Parse_Facings_By_Row (File : File_Type;
+                                    Max_Rows, Max_Cols : Integer;
                                     Tile_List : in out Tiles_List) is
         prev_Char : Character;
     begin
