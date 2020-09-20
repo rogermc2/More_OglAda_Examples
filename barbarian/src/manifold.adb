@@ -1,4 +1,5 @@
 
+with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Exceptions;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -8,15 +9,12 @@ with GL.Objects.Programs;
 
 with Game_Utils;
 with Manifold_Shader_Manager;
+with Mesh_Loader;
 with Settings;
 with Texture_Manager;
 with Water_Shader_Manager;
 
 package body Manifold is
-
-    package Int_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Int);
-    type Int_List is new Int_Package.List with null record;
 
     package Tiles_Package is new Ada.Containers.Doubly_Linked_Lists
       (Character);
@@ -26,26 +24,35 @@ package body Manifold is
       (Positive, Batch_Meta);
     type Batches_List is new Batches_Package.Vector with null record;
 
-    Manifold_Program  : GL.Objects.Programs.Program;
-    Water_Program     : GL.Objects.Programs.Program;
-    --      Max_Tile_Cols : constant Int := 64;
-    Max_Cols      : Int := 0;
-    Max_Rows      : Int := 0;
-    Batches           : Batches_List;
-    Batches_Across    : Int := 0;
-    Batches_Down      : Int := 0;
-    Batch_Split_Count : Integer := 0;
-    Total_Tiles       : Int := 0;
-    Tile_Heights      : Int_List;
-    Tile_Facings      : Tiles_List;
-    Tile_Textures     : Int_List;
-    Tile_Types        : Tiles_List;
-    Diff_Palette_Name : Unbounded_String := To_Unbounded_String ("");
-    Spec_Palette_Name : Unbounded_String := To_Unbounded_String ("");
-    Tile_Tex          : GL.Objects.Textures.Texture;
-    Tile_Spec_Tex     : GL.Objects.Textures.Texture;
-    Ramp_Diff_Tex     : GL.Objects.Textures.Texture;
-    Ramp_Spec_Tex     : GL.Objects.Textures.Texture;
+    Manifold_Program      : GL.Objects.Programs.Program;
+    Water_Program         : GL.Objects.Programs.Program;
+    --      Max_Tile_Cols    : constant Int := 64;
+    Max_Cols              : Int := 0;
+    Max_Rows              : Int := 0;
+    Batches               : Batches_List;
+    Batches_Across        : Int := 0;
+    Batches_Down          : Int := 0;
+    Batch_Split_Count     : Integer := 0;
+    Total_Tiles           : Int := 0;
+    Tile_Heights          : GL_Maths.Ints_List;
+    Tile_Facings          : Tiles_List;
+    Tile_Textures         : GL_Maths.Ints_List;
+    Tile_Types            : Tiles_List;
+    Diff_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
+    Spec_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
+    Tile_Tex              : GL.Objects.Textures.Texture;
+    Tile_Spec_Tex         : GL.Objects.Textures.Texture;
+    Ramp_Diff_Tex         : GL.Objects.Textures.Texture;
+    Ramp_Spec_Tex         : GL.Objects.Textures.Texture;
+    Ramp_Mesh_Points      : GL_Maths.Vector3_List;
+    Ramp_Mesh_Normals     : GL_Maths.Vector3_List;
+    Ramp_Mesh_Smooth_Normals : GL_Maths.Vector3_List;
+    Ramp_Mesh_Texcoords      : GL_Maths.Vector2_List;
+    Ramp_Mesh_Point_Count    : Integer := 0;
+    Water_Mesh_Points        : GL_Maths.Vector3_List;
+    Water_Mesh_Normals       : GL_Maths.Vector3_List;
+    Water_Mesh_Texcoords     : GL_Maths.Vector2_List;
+    Water_Mesh_Point_Count   : Integer := 0;
 
     procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int;
                                     Tile_List : in out Tiles_List);
@@ -112,7 +119,12 @@ package body Manifold is
     --  ------------------------------------------------------------------------
 
     function Init_Manifold return Boolean is
+        Points       : GL_Maths.Vector3_List;
+        Texcoords    : GL_Maths.Vector2_List;
+        Points_Count : Integer := 0;
+
     begin
+        Game_Utils.Game_Log ("Initializing manifold.");
         Manifold_Shader_Manager.Init (Manifold_Program);
         Manifold_Shader_Manager.Set_Ambient_Light_Colour ((0.0125, 0.0125, 0.0125));
         Manifold_Shader_Manager.Set_Diff_Map (0);
@@ -126,8 +138,33 @@ package body Manifold is
         Water_Shader_Manager.Set_Cube_Texture (3);
 
         Free_Manifold_Mesh_Data;
+        if not Mesh_Loader.Load_Mesh_Data_Only
+          ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
+            Ramp_Mesh_Texcoords, Ramp_Mesh_Normals, Ramp_Mesh_Point_Count) then
+            raise Manifold_Exception with
+              "Manifold.Init_Manifold error loading ramp mesh data from file "
+              & "src/meshes/ramp_may_2014.apg";
+        end if;
 
-        return False;
+        if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
+                                                Points, Texcoords,
+                                                Ramp_Mesh_Smooth_Normals,
+                                                Points_Count) then
+            raise Manifold_Exception with
+              "Manifold.Init_Manifold error loading ramp mesh data from file "
+              & "src/meshes/ramp_smooth.apg";
+        end if;
+
+        if not Mesh_Loader.Load_Mesh_Data_Only
+          ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
+            Water_Mesh_Normals, Water_Mesh_Point_Count) then
+            raise Manifold_Exception with
+              "Manifold.Init_Manifold error loading ramp mesh data from file "
+              & "src/meshes/water.apg";
+        end if;
+
+        Game_Utils.Game_Log ("Manifold initialized.");
+        return True;
     end Init_Manifold;
 
     --  ----------------------------------------------------------------------------
@@ -173,7 +210,7 @@ package body Manifold is
     end Load_Palette_File_Names;
 
     --  ------------------------------------------------------------------------
---      pragma Warnings (off);
+    --      pragma Warnings (off);
     procedure Load_Char_Rows (File : File_Type; Load_Type : String;
                               Tile_List : in out Tiles_List) is
         use Ada.Strings;
@@ -214,8 +251,7 @@ package body Manifold is
                       (aChar = 'n' or aChar = ASCII.NUL) then
                         Tile_List.Delete_Last;
                     else
---                          Tile_List.Append (aChar);
-                        Null;
+                        Tile_List.Append (aChar);
                     end if;
                 end loop;
                 Prev_Char := aChar;
@@ -231,7 +267,7 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     procedure Load_Int_Rows (File : File_Type; Load_Type : String;
-                             Texture_List : in out Int_List) is
+                             Texture_List : in out GL_Maths.Ints_List) is
         use Ada.Strings;
         Header     : constant String := Get_Line (File);
         Code_0     : constant Int := Character'Pos ('0');
@@ -278,7 +314,7 @@ package body Manifold is
                         else
                             Tex_Int := 10 + Character'Pos (Tex_Char) - Code_a;
                         end if;
-                    Texture_List.Append (Tex_Int);
+                        Texture_List.Append (Tex_Int);
                     end if;
                 end loop;
                 Prev_Char := Tex_Char;
