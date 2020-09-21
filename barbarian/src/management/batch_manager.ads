@@ -7,22 +7,42 @@ with GL.Types; use GL.Types;
 
 with GL_Maths;
 
+with Tiles_Manager;
+
 package Batch_Manager is
 
-    subtype Tile_Index is Integer;
-    package Tile_Nodes_Package is new Ada.Containers.Vectors
-      (Positive, Tile_Index);
-    type Tile_Nodes_List is new Tile_Nodes_Package.Vector with null record;
+    Max_Cols               : Integer := 0;  --  Set by map file
+    Max_Rows               : Integer := 0;  --  Set by map file
+    Batches_Across         : Integer := 0;
+    Batches_Down           : Integer := 0;
+    Batch_Split_Count      : Integer := 0;
+    Ramp_Mesh_Point_Count  : Integer := 0;
+    Water_Mesh_Point_Count : Integer := 0;
+    Total_Points           : Integer := 0;
 
     type Batch_Meta is record
-        Tiles                : Tile_Nodes_List;
+        Tiles                : Tiles_Manager.Tile_List;
         Tile_Count           : Integer := 0;
         AABB_Mins            : Singles.Vector3;
         AABB_Mixs            : Singles.Vector3;
-        Points               : GL_Maths.Singles_List;
-        Normals              : GL_Maths.Singles_List;
-        Tex_Coords           : GL_Maths.Singles_List;
+        Points               : GL_Maths.Vector3_List;
+        Point_Count          : Integer := 0;
+        Ramp_Points          : GL_Maths.Vector3_List;
+        Ramp_Point_Count     : Integer := 0;
+        Water_Points         : GL_Maths.Vector3_List;
+        Water_Point_Count    : Integer := 0;
+        Normals              : GL_Maths.Vector3_List;
+        Normal_Count         : Integer := 0;
+        Ramp_Normals         : GL_Maths.Vector3_List;
+        Ramp_Normal_Count    : Integer := 0;
+        Ramp_Smooth_Normals  : GL_Maths.Singles_List;
+        Tex_Coords           : GL_Maths.Vector2_List;
+        Tex_Coord_Count      : Integer := 0;
+        Ramp_Tex_Coords      : GL_Maths.Vector2_List;
+        Ramp_Tex_Coord_Count : Integer := 0;
         VAO                  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+        Ramp_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+        Water_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
         Points_VBO           : GL.Objects.Buffers.Buffer;
         Normals_VBO          : GL.Objects.Buffers.Buffer;
         Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
@@ -33,6 +53,8 @@ package Batch_Manager is
       (Positive, Batch_Meta);
     type Batches_List is new Batches_Package.Vector with null record;
 
-    function Regenerate_Batch return Boolean;
+    function Get_Batch_Index (Column, Row : Integer) return Integer;
+    function Regenerate_Batch (Batches : in out Batches_List;
+                               Batch_Index : Positive) return Boolean;
 
 end Batch_Manager;

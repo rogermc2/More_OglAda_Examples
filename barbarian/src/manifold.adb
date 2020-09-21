@@ -24,12 +24,7 @@ package body Manifold is
     Manifold_Program      : GL.Objects.Programs.Program;
     Water_Program         : GL.Objects.Programs.Program;
     --      Max_Tile_Cols    : constant Int := 64;
-    Max_Cols              : Integer := 0;
-    Max_Rows              : Integer := 0;
     Batches               : Batch_Manager.Batches_List;
-    Batches_Across        : Integer := 0;
-    Batches_Down          : Integer := 0;
-    Batch_Split_Count     : Integer := 0;
     Total_Tiles           : Integer := 0;
     Tile_Heights          : GL_Maths.Integers_List;
     Tile_Facings          : Tiles_List;
@@ -103,6 +98,7 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     function Add_Tiles_To_Batches return Boolean is
+        use Batch_Manager;
         Row           : Integer;
 	Col           : Integer;
 	Batch_Across  : Integer;
@@ -139,21 +135,9 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Batch_Index (Column, Row : Integer) return Integer is
-        Result : Integer := -1;
-    begin
-        if Column >= 0 and Column < Max_Cols and
-          Row >= 0 and Row < Max_Rows then
-            Result := (Column + Batches_Across * Row) /
-              Settings.Tile_Batch_Width;
-        end if;
-        return Result;
-    end Get_Batch_Index;
-
-    --  ----------------------------------------------------------------------------
-
     function Get_Light_Index (Column, Row, Light_Number : Integer)
                               return Integer is
+        use Batch_Manager;
         Batch_Index   : constant Positive :=
                           Positive (Get_Batch_Index (Column, Row));
         Batch         : Batch_Manager.Batch_Meta;
@@ -179,6 +163,7 @@ package body Manifold is
     --  ------------------------------------------------------------------------
 
     function Get_Tile_Level (Col, Row : Integer) return Integer is
+        use Batch_Manager;
     begin
         if Col < 1 or Col > Max_Cols or Row < 1 or Row > Max_Rows then
             raise Manifold_Exception with
@@ -247,6 +232,7 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     function Is_Tile_Valid (Col, Row : Integer) return Boolean is
+        use Batch_Manager;
     begin
         return Col >= 0 and Col < Max_Cols and  Row >= 0 and Row < Max_Rows;
     end Is_Tile_Valid;
@@ -317,7 +303,7 @@ package body Manifold is
                 aChar   : Character;
             begin
                 --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
-                if aString'Length < Max_Cols then
+                if aString'Length < Batch_Manager.Max_Cols then
                     raise Manifold_Parsing_Exception with
                       "Manifold.Load_Char_Rows: textures line has not enough columns.";
                 end if;
@@ -376,7 +362,7 @@ package body Manifold is
                 Tex_Int    : Integer;
             begin
                 --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
-                if aString'Length < Max_Cols then
+                if aString'Length < Batch_Manager.Max_Cols then
                     raise Manifold_Parsing_Exception with
                       "Manifold.Load_Int_Rows: textures line has not enough columns.";
                 end if;
@@ -433,9 +419,8 @@ package body Manifold is
 
     function Load_Tiles (File : File_Type) return Boolean is
         use Ada.Strings;
+        use Batch_Manager;
         use Settings;
-        Max_Cols : Integer := 0;
-        Max_Rows : Integer := 0;
         aLine    : constant String := Get_Line (File);
         Pos1     : Natural;
         Pos2     : Natural;
@@ -539,8 +524,8 @@ package body Manifold is
         Batches_Across := 0;
         Batches_Down := 0;
         Batch_Split_Count := 0;
-        Max_Cols := 0;
-        Max_Rows := 0;
+        Batch_Manager.Max_Cols := 0;
+        Batch_Manager.Max_Rows := 0;
         Total_Tiles  := 0;
         Tile_Heights.Clear;
         Tile_Facings.Clear;
