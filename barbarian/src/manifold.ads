@@ -13,7 +13,6 @@ package Manifold is
     Manifold_Parsing_Exception : Exception;
 
     function Batch_Split_Size return Integer;
-    function Get_Batch_Index (Column, Row : Integer) return Integer;
     function Get_Light_Index (Column, Row, Light_Number : Integer)
                               return Integer;
     procedure Init;
