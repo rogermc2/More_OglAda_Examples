@@ -7,8 +7,6 @@ with GL.Types; use GL.Types;
 
 with GL_Maths;
 
-with Tiles_Manager;
-
 package Batch_Manager is
 
     Max_Cols               : Integer := 0;  --  Set by map file
@@ -21,7 +19,8 @@ package Batch_Manager is
     Total_Points           : Integer := 0;
 
     type Batch_Meta is record
-        Tiles                : Tiles_Manager.Tile_List;
+--          Tiles                : Tiles_Manager.Tile_List;
+        Tile_Indices         : GL_Maths.Integers_List;
         Tile_Count           : Integer := 0;
         AABB_Mins            : Singles.Vector3;
         AABB_Mixs            : Singles.Vector3;
@@ -47,14 +46,18 @@ package Batch_Manager is
         Normals_VBO          : GL.Objects.Buffers.Buffer;
         Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
         Static_Light_Indices : GL_Maths.Integers_List;
+        Static_Light_Count   : Integer := 0;
     end record;
 
     package Batches_Package is new Ada.Containers.Vectors
       (Positive, Batch_Meta);
     type Batches_List is new Batches_Package.Vector with null record;
 
+    Batches                 : Batches_List;
+    Batch_Manager_Exception : Exception;
+
+    function Batch_Split_Size return Integer;
     function Get_Batch_Index (Column, Row : Integer) return Integer;
-    function Regenerate_Batch (Batches : in out Batches_List;
-                               Batch_Index : Positive) return Boolean;
+    procedure Regenerate_Batch (Batch_Index : Positive);
 
 end Batch_Manager;
