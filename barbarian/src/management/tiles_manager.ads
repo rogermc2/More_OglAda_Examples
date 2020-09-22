@@ -2,13 +2,11 @@
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Objects.Textures;
-
 package Tiles_Manager is
 
     type Tile_Data is record
         Height    : Integer;
-        Texture   : GL.Objects.Textures.Texture;
+        Texture   : Integer;
         Facing    : Character := ASCII.NUL;
         Tile_Type : Character := ASCII.NUL;
     end record;

@@ -3,6 +3,7 @@ with Ada.Exceptions;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with GL.Objects.Textures;
 with GL.Types; use GL.Types;
 
 with Maths;
@@ -40,6 +41,8 @@ package body Tiles_Manager is
     Diff_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
     Spec_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
     Total_Tiles           : Integer := 0;
+
+    Tiles                 : Tile_List;
 
     procedure Add_Static_Light (Col, Row, Tile_Height_Offset : Integer;
                                 Offset, Diffuse, Specular : Singles.Vector3;
@@ -175,12 +178,15 @@ package body Tiles_Manager is
     procedure Load_Char_Rows (File : File_Type; Load_Type : String;
                               Tiles : in out Tile_List) is
         use Ada.Strings;
+        use Tile_Data_Package;
         Header     : constant String := Get_Line (File);
-        Cols       : Int := 0;
-        Rows       : Int := 0;
+        Cols       : Integer := 0;
+        Rows       : Integer := 0;
         Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
         Pos2       : Natural;
         Prev_Char  : Character;
+        aTile      : Tile_Data;
+        Tile_Index : Positive;
     begin
         if Fixed.Index (Header (1 .. Load_Type'Length), Load_Type) = 0 then
             Game_Utils.Game_Log ("Error: Invalid format, " & Load_Type &
@@ -190,11 +196,11 @@ package body Tiles_Manager is
         end if;
 
         Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
-        Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
-        Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
+        Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
+        Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
 
-        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," & Int'Image (Rows)
-                             & " rows, "  & Int'Image (Cols) & " columns");
+        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," & Integer'Image (Rows)
+                             & " rows, "  & Integer'Image (Cols) & " columns");
         for row in 1 .. Rows loop
             declare
                 aString : constant String := Get_Line (File);
@@ -207,16 +213,24 @@ package body Tiles_Manager is
                 end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
+                    Tile_Index := (row - 1) * Batch_Manager.Max_Cols + col;
                     aChar := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (aChar = 'n' or aChar = ASCII.NUL) then
                         Tiles.Delete_Last;
                     else
-                        Tiles.Append (aChar);
+                        aTile.Tile_Type := aChar;  --  ?????
+                    end if;
+
+                    if Has_Element (Tiles.To_Cursor (Tile_Index)) then
+                        Tiles.Replace_Element (Tile_Index, aTile);
+                    else
+                        Tiles.Append (aTile);
                     end if;
                 end loop;
                 Prev_Char := aChar;
             end;  --  declare block
+            Tiles.Append (aTile);
         end loop;
 
     exception
@@ -228,8 +242,9 @@ package body Tiles_Manager is
     --  ----------------------------------------------------------------------------
 
     procedure Load_Int_Rows (File : File_Type; Load_Type : String;
-                             Texture_List : in out GL_Maths.Integers_List) is
+                             Tiles : in out Tile_List) is
         use Ada.Strings;
+        use Tile_Data_Package;
         Header     : constant String := Get_Line (File);
         Code_0     : constant Integer := Character'Pos ('0');
         Code_a     : constant Integer := Character'Pos ('a');
@@ -238,6 +253,8 @@ package body Tiles_Manager is
         Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
         Pos2       : Natural;
         Prev_Char  : Character;
+        aTile      : Tile_Data;
+        Tile_Index : Positive;
     begin
         if Fixed.Index (Header (1 .. Load_Type'Length), Load_Type) = 0 then
             Game_Utils.Game_Log ("Error: Invalid format, " & Load_Type &
@@ -266,17 +283,24 @@ package body Tiles_Manager is
                 end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
+                    Tile_Index := (row - 1) * Batch_Manager.Max_Cols + col;
                     Tex_Char := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
-                        Texture_List.Delete_Last;
+                        Tiles.Delete_Last;
                     else
                         if Tex_Char >= '0' and Tex_Char <= '9' then
                             Tex_Int := Character'Pos (Tex_Char) - Code_0;
                         else
                             Tex_Int := 10 + Character'Pos (Tex_Char) - Code_a;
                         end if;
-                        Texture_List.Append (Tex_Int);
+
+                        aTile.Texture := Tex_Int;
+                        if Has_Element (Tiles.To_Cursor (Tile_Index)) then
+                            Tiles.Replace_Element (Tile_Index, aTile);
+                        else
+                            Tiles.Append (aTile);
+                        end if;
                     end if;
                 end loop;
                 Prev_Char := Tex_Char;
@@ -369,25 +393,17 @@ package body Tiles_Manager is
         Max_Cols := Integer'Value (aLine (Pos1 .. Pos2 - 1));
         Max_Rows := Integer'Value (aLine (Pos2 + 1 .. aLine'Last));
         Total_Tiles := Max_Rows * Max_Cols;
---          Game_Utils.Game_Log (" Maximum columns " & Integer'Image (Max_Cols) &
---                                 ", maximum rows " & Integer'Image (Max_Rows) &
---                                 ", total tiles " & Integer'Image (Total_Tiles));
         Batches_Across :=
           Integer (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
         Batches_Down :=
           Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
         Batch_Split_Count := Integer (Batches_Across * Batches_Down);
---          Game_Utils.Game_Log
---            (Integer'Image (Batch_Split_Count) &
---               " batches of width " & Integer'Image (Settings.Tile_Batch_Width) &
---               "; batches across " & Integer'Image (Batches_Across) &
---               " down " & Integer'Image (Batches_Down));
 
         Parse_Facings_By_Row (File, Max_Rows, Max_Cols, Tile_Facings);
 
-        Load_Int_Rows (File, "textures", Tile_Textures);
-        Load_Char_Rows (File, "types", Tile_Types);
-        Load_Int_Rows (File, "heights", Tile_Heights);
+        Load_Int_Rows (File, "textures", Tiles);
+        Load_Char_Rows (File, "types", Tiles);
+        Load_Int_Rows (File, "heights", Tiles);
 
         Load_Palette_File_Names (File);
         Game_Utils.Game_Log ("Palette file names: " &
@@ -420,25 +436,35 @@ package body Tiles_Manager is
     procedure Parse_Facings_By_Row (File : File_Type;
                                     Max_Rows, Max_Cols : Integer;
                                     Tiles : in out Tile_List) is
-        prev_Char : Character;
+        use Tile_Data_Package;
+        Prev_Char  : Character;
+        aTile      : Tile_Data;
+        Tile_Index : Positive;
     begin
         Game_Utils.Game_Log ("Parsing facings by row");
         for row in 1 .. Max_Rows loop
             declare
-                aString : constant String := Get_Line (File);
-                tex_Char  : Character;
+                aString   : constant String := Get_Line (File);
+                Text_Char : Character;
             begin
-                prev_Char := ASCII.NUL;
+                Prev_Char := ASCII.NUL;
                 for col in 1 .. Max_Cols loop
-                    tex_Char := aString (Integer (col));
-                    if prev_Char = '\' and then
-                      (tex_Char = 'n' or tex_Char = ASCII.NUL) then
+                    Tile_Index := (row - 1) * Max_Cols + col;
+                    Text_Char := aString (Integer (col));
+                    if Prev_Char = '\' and then
+                      (Text_Char = 'n' or Text_Char = ASCII.NUL) then
                         Tiles.Delete_Last;
                     else
-                        Tiles.Append (tex_Char);
+                        aTile.Facing := Text_Char;
+                    end if;
+
+                    if Has_Element (Tiles.To_Cursor (Tile_Index)) then
+                        Tiles.Replace_Element (Tile_Index, aTile);
+                    else
+                        Tiles.Append (aTile);
                     end if;
                 end loop;
-                prev_Char := tex_Char;
+                Prev_Char := Text_Char;
             end;
         end loop;
 
