@@ -1,5 +1,7 @@
 
+with Game_Utils;
 with Settings;
+with Tiles_Manager;
 
 package body Batch_Manager is
 
@@ -11,6 +13,13 @@ package body Batch_Manager is
                            Row, Col, Height : Integer;
                            Tiles : Tiles_Manager.Tile_List;
                            Tile_Index : positive);
+
+    --  ----------------------------------------------------------------------------
+
+    function Batch_Split_Size return Integer is
+    begin
+        return Batch_Split_Count;
+    end Batch_Split_Size;
 
     --  ----------------------------------------------------------------------------
 
@@ -160,12 +169,11 @@ package body Batch_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    function Regenerate_Batch (Batches : in out Batches_List;
-                               Batch_Index : Positive) return Boolean is
+    procedure Regenerate_Batch (Batch_Index : Positive) is
         use Tiles_Manager;
         use Tile_Data_Package;
         theBatch : Batch_Meta  :=  Batches.Element (Batch_Index);
-        Tiles    : constant Tile_List := theBatch.Tiles;
+        Tiles    : Tile_List;
         aTile    : Tile_Data;
         Row      : Integer;
         Column   : Integer;
@@ -174,7 +182,6 @@ package body Batch_Manager is
         N_Index  : Integer;
         N_Height : Integer;
         Diff     : Integer;
-        Flat_Points_Alloc_Count : Integer;
 
         procedure Add_Point_Count (Diff : Integer) is
         begin
@@ -186,7 +193,12 @@ package body Batch_Manager is
 
     begin
         Free_Batch_Data (theBatch);
-        if not Is_Empty (Tiles) then
+        theBatch.Static_Light_Count := 0;
+        if Is_Empty (Tiles) then
+            Game_Utils.Game_Log ("Regenerate_Batch, theBatch.Tiles is empty.");
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
+        else
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
                 aTile := Tiles.Element (Tile_Index);
                 Row := Tile_Index / Max_Cols + 1;
@@ -274,7 +286,6 @@ package body Batch_Manager is
         end if;  --  not Tiles not empty
 
         theBatch.VAO.Initialize_Id;
-        Flat_Points_Alloc_Count := theBatch.Point_Count;
         theBatch.Point_Count := 0;
         theBatch.Normal_Count := 0;
         theBatch.Tex_Coord_Count := 0;
@@ -288,7 +299,10 @@ package body Batch_Manager is
         theBatch.Water_Point_Count := 0;
 
         Generate_Points (theBatch, Tiles);
-        return False;
+        Batches.Replace_Element (Batch_Index, theBatch);
+        Game_Utils.Game_Log ("Regenerate_Batch,Total_Points " &
+                               Integer'Image (Total_Points));
+
     end Regenerate_Batch;
 
     --  ----------------------------------------------------------------------------

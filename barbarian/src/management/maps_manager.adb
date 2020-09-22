@@ -5,20 +5,19 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 --  with Character_Controller;
 with Game_Utils;
-with Manifold;
 --  with Properties_Manager;
 --  with Text_Manager;
+with Tiles_Manager;
 
 package body Maps_Manager is
 
-    function Load_Maps (Path : String; theMap : out Map) return Boolean is
+    procedure Load_Maps (Path : String; theMap : out Map) is
         use Ada.Strings;
         Input_File       : File_Type;
         aLine            : Unbounded_String;
         Pos1             : Natural;
         Num_Story_Lines  : Natural;
 --          Story_Lines      : Story_Lines_List;
-        Result : Boolean := False;
     begin
         Put_Line ("Maps_Manager.Load_Maps opening " & Path);
         Game_Utils.Game_Log ("Maps_Manager.Load_Maps opening " & Path);
@@ -41,7 +40,7 @@ package body Maps_Manager is
         aLine := To_Unbounded_String (Get_Line (Input_File));
 
         Put_Line ("Maps_Manager.Load_Maps loading tiles ");
-        Result := Manifold.Load_Tiles (Input_File);
+        Tiles_Manager.Load_Tiles (Input_File);
 
         --          Properties_Manager.Load_Properties (Input_Stream);
         --  --            (Input_Stream, Stream_IO.Index (Input_File));
@@ -52,13 +51,11 @@ package body Maps_Manager is
         --
         --          Text_Manager.Preload_Comic_Texts  (Input_Stream);
         Close (Input_File);
-        return Result;
 
     exception
         when anError : others =>
             Put_Line ("An exception occurred in Maps_Manager.Load_Maps!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
-            return False;
     end Load_Maps;
 
     --  ----------------------------------------------------------------------------
