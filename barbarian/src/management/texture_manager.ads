@@ -5,8 +5,7 @@ package Texture_Manager is
 
     Texture_Exception : Exception;
 
-    function Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture)
-                           return Boolean;
+    procedure Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture);
     procedure Bind_Cube_Texture (Slot : Natural;
                                  Tex : GL.Objects.Textures.Texture);
     function Init_Texture_Manager return Boolean;

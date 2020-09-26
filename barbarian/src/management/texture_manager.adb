@@ -41,8 +41,7 @@ package body Texture_Manager is
 
     --  ------------------------------------------------------------------------
 
-    function Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture)
-                           return Boolean is
+    procedure Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture) is
         use GL.Objects.Textures.Targets;
         use GL.Types;
         OK : Boolean := False;
@@ -64,14 +63,12 @@ package body Texture_Manager is
                                  & Natural'Image (Slot));
             OK := True;
         end if;
-        return OK;
 
     exception
         when anError : others =>
             Put_Line ("An exception occurred in Texture_Manager.Bind_Texture "
                       & Natural'Image (Slot));
             Put_Line (Ada.Exceptions.Exception_Information (anError));
-            return False;
     end Bind_Texture;
 
     --  ------------------------------------------------------------------------
