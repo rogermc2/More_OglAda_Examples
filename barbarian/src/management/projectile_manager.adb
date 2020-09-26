@@ -1,19 +1,20 @@
 
 with GL.Objects.Textures;
 
+with Sprite_Renderer;
 with Texture_Manager;
 
 package body Projectile_Manager is
 
---      Max_Javelin_Projectiles : constant Int := 32;
---      type Javelins_Array is array (1 .. Max_Javelin_Projectiles)
---        of Projectile_Status;
+    Max_Javelin_Projectiles : constant Integer := 32;
+    type Javelins_Array is array (1 .. Max_Javelin_Projectiles)
+      of Projectile_Status;
 
---      Arrows      : Javelins_Array;
---      Darts       : Javelins_Array;
---      Fireballs   : Javelins_Array;
---      Javelins    : Javelins_Array;
---      Skull_Balls : Javelins_Array;
+    Arrows      : Javelins_Array;
+    Darts       : Javelins_Array;
+    Fireballs   : Javelins_Array;
+    Javelins    : Javelins_Array;
+    Skull_Balls : Javelins_Array;
 
     Jav_Diff_Texture            : GL.Objects.Textures.Texture;
     Jav_Spec_Texture            : GL.Objects.Textures.Texture;
@@ -29,16 +30,16 @@ package body Projectile_Manager is
     Jav_Skull_Ball_Diff_Texture : GL.Objects.Textures.Texture;
     Jav_Skull_Ball_Spec_Texture : GL.Objects.Textures.Texture;
 
---      Next_Javelin     : Int := 0;
---      Javelin_Count    : Int := 0;
---      Next_Dart        : Int := 0;
---      Dart_Count       : Int := 0;
---      Next_Arrow       : Int := 0;
---      Arrow_Count      : Int := 0;
---      Next_Fireball    : Int := 0;
---      Fireball_Count   : Int := 0;
---      Next_skull_Ball  : Int := 0;
---      Skull_Ball_Count : Int := 0;
+    Next_Javelin     : Int := 0;
+    Javelin_Count    : Int := 0;
+    Next_Dart        : Int := 0;
+    Dart_Count       : Int := 0;
+    Next_Arrow       : Int := 0;
+    Arrow_Count      : Int := 0;
+    Next_Fireball    : Int := 0;
+    Fireball_Count   : Int := 0;
+    Next_skull_Ball  : Int := 0;
+    Skull_Ball_Count : Int := 0;
 
     --  ------------------------------------------------------------------------
 
@@ -75,41 +76,41 @@ package body Projectile_Manager is
     end Init;
     --  ------------------------------------------------------------------------
 
---      procedure Reset_Projectiles is
---      begin
---          Next_Javelin := 0;
---          Javelin_Count := 0;
---          Next_Dart := 0;
---          Dart_Count := 0;
---          Next_Arrow := 0;
---          Arrow_Count := 0;
---          Next_Fireball := 0;
---          Fireball_Count := 0;
---          Next_skull_Ball := 0;
---          Skull_Ball_Count := 0;
+    procedure Reset_Projectiles is
+    begin
+        Next_Javelin := 0;
+        Javelin_Count := 0;
+        Next_Dart := 0;
+        Dart_Count := 0;
+        Next_Arrow := 0;
+        Arrow_Count := 0;
+        Next_Fireball := 0;
+        Fireball_Count := 0;
+        Next_skull_Ball := 0;
+        Skull_Ball_Count := 0;
 
---          for index in 1 .. Max_Javelin_Projectiles loop
---              Javelins (index).Sprite_Index :=
---                Add_Sprite (Jav_Diff_Texture, Jav_Spec_Texture, 1, 1);
---          end loop;
+        for index in 1 .. Max_Javelin_Projectiles loop
+            Javelins (index).Sprite_Index :=
+              Sprite_Renderer.Add_Sprite (Jav_Diff_Texture, Jav_Spec_Texture, 1, 1);
+        end loop;
 
---      end Reset_Projectiles;
+    end Reset_Projectiles;
 
     --  ------------------------------------------------------------------------
 
---      procedure Update_Projectiles (Step_Time : Float) is
---      begin
---          Next_Javelin := 0;
---          Javelin_Count := 0;
---          Next_Dart := 0;
---          Dart_Count := 0;
---          Next_Arrow := 0;
---          Arrow_Count := 0;
---          Next_Fireball := 0;
---          Fireball_Count := 0;
---          Next_skull_Ball := 0;
---          Skull_Ball_Count := 0;
---      end Update_Projectiles;
+    procedure Update_Projectiles (Step_Time : Float) is
+    begin
+        Next_Javelin := 0;
+        Javelin_Count := 0;
+        Next_Dart := 0;
+        Dart_Count := 0;
+        Next_Arrow := 0;
+        Arrow_Count := 0;
+        Next_Fireball := 0;
+        Fireball_Count := 0;
+        Next_skull_Ball := 0;
+        Skull_Ball_Count := 0;
+    end Update_Projectiles;
 
     --  ------------------------------------------------------------------------
 
