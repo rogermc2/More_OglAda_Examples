@@ -151,7 +151,7 @@ package body Tiles_Manager is
                             Integer'Image (Batch_Split_Count) & ", " &
                             Integer'Image (Total_Tiles));
         for index in 1 .. Batch_Split_Count loop
-            Regenerate_Batch (index);
+            Regenerate_Batch (Tiles, index);
         end loop;
 
     exception
@@ -209,17 +209,22 @@ package body Tiles_Manager is
                 --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Batch_Manager.Max_Cols then
                     raise Tiles_Manager_Exception with
-                      "Tiles_Manager.Load_Char_Rows: textures line has not enough columns.";
+                      "Tiles_Manager.Load_Char_Rows: " & Load_Type &
+                      " line has not enough columns.";
                 end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
                     Tile_Index := (row - 1) * Batch_Manager.Max_Cols + col;
+                    if Has_Element (Tiles.To_Cursor (Tile_Index)) then
+                        aTile := Tiles.Element (Tile_Index);
+                    end if;
+
                     aChar := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (aChar = 'n' or aChar = ASCII.NUL) then
                         Tiles.Delete_Last;
                     else
-                        aTile.Tile_Type := aChar;  --  ?????
+                        aTile.Tile_Type := aChar;
                     end if;
 
                     if Has_Element (Tiles.To_Cursor (Tile_Index)) then
@@ -279,11 +284,16 @@ package body Tiles_Manager is
                 --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Batch_Manager.Max_Cols then
                     raise Tiles_Manager_Exception with
-                      " Tiles_Manager.Load_Int_Rows: textures line has not enough columns.";
+                      " Tiles_Manager.Load_Int_Rows: " & Load_Type &
+                      " line has not enough columns.";
                 end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
                     Tile_Index := (row - 1) * Batch_Manager.Max_Cols + col;
+                    if Has_Element (Tiles.To_Cursor (Tile_Index)) then
+                        aTile := Tiles.Element (Tile_Index);
+                    end if;
+
                     Tex_Char := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
@@ -295,7 +305,11 @@ package body Tiles_Manager is
                             Tex_Int := 10 + Character'Pos (Tex_Char) - Code_a;
                         end if;
 
-                        aTile.Texture := Tex_Int;
+                        if Load_Type = "textures" then
+                            aTile.Texture := Tex_Int;
+                        elsif Load_Type = "heights" then
+                            aTile.Height := Tex_Int;
+                        end if;
                         if Has_Element (Tiles.To_Cursor (Tile_Index)) then
                             Tiles.Replace_Element (Tile_Index, aTile);
                         else

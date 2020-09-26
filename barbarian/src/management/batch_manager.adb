@@ -1,7 +1,6 @@
 
 with Game_Utils;
 with Settings;
-with Tiles_Manager;
 
 package body Batch_Manager is
 
@@ -169,11 +168,11 @@ package body Batch_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Regenerate_Batch (Batch_Index : Positive) is
+    procedure Regenerate_Batch (Tiles : Tiles_Manager.Tile_List;
+                                Batch_Index : Positive) is
         use Tiles_Manager;
         use Tile_Data_Package;
         theBatch : Batch_Meta  :=  Batches.Element (Batch_Index);
-        Tiles    : Tile_List;
         aTile    : Tile_Data;
         Row      : Integer;
         Column   : Integer;
