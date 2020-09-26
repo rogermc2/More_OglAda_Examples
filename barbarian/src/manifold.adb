@@ -33,11 +33,12 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Light_Index (Column, Row, Light_Number : Integer)
+    function Get_Light_Index (Column, Row : GL.Types.Int; Light_Number : Integer)
                               return Integer is
-        use Batch_Manager;
+      use GL.Types;
+      use Batch_Manager;
         Batch_Index   : constant Positive :=
-                          Positive (Get_Batch_Index (Column, Row));
+                          Get_Batch_Index (Positive (Column), Positive (Row));
         Batch         : Batch_Manager.Batch_Meta;
         Light_Indices : GL_Maths.Integers_List;
         Result        : Integer := -1;
@@ -49,7 +50,7 @@ package body Manifold is
                 raise Manifold_Exception with
                   "Manifold.Get_Light_Index; Light number " &
                   Integer'Image (Light_Number) & " requested at ( " &
-                  Integer'Image (Column) & "," & Integer'Image (Row) &
+                  Int'Image (Column) & "," & Int'Image (Row) &
                   ") in batch " &  Integer'Image (Batch_Index) &
                   " does not exist.";
             end if;

@@ -103,12 +103,11 @@ package body Particle_System_Manager is
             elsif aString (1 .. Pos_M1) = "texture" then
                Set_Index (Input_File, Val_Pos);
                Unbounded_String'Read (Input_Stream, Texture_String);
-            elsif not Texture_Manager.Load_Image_To_Texture
+            end if;
+            Texture_Manager.Load_Image_To_Texture
               ("textures/" & To_String (Texture_String), Script.Texture,
-               Settings.Particle_Mipmaps_Enabled, SRGB) then
-               raise Particle_System_Manager_exception with
-                 "Particle_System_Manager.Load_Particle_Script Load_Image_To_Texture failed";
-            elsif aString (1 .. Pos_M1) = "loops" then
+               Settings.Particle_Mipmaps_Enabled, SRGB);
+            if aString (1 .. Pos_M1) = "loops" then
                Script.Is_Looping := aString (Pos_P1 .. Pos_P1) = "1";
             else
                Put_Line
