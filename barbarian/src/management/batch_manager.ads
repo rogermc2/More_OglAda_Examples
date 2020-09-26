@@ -5,6 +5,7 @@ with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
 with GL.Types; use GL.Types;
 
+with Tiles_Manager;
 with GL_Maths;
 
 package Batch_Manager is
@@ -58,6 +59,7 @@ package Batch_Manager is
 
     function Batch_Split_Size return Integer;
     function Get_Batch_Index (Column, Row : Integer) return Integer;
-    procedure Regenerate_Batch (Batch_Index : Positive);
+    procedure Regenerate_Batch (Tiles : Tiles_Manager.Tile_List;
+                                Batch_Index : Positive);
 
 end Batch_Manager;
