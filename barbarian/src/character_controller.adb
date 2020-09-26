@@ -153,10 +153,10 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
---      function Update_Characters (Seconds : Float) return Boolean is
---      begin
---          return False;
---      end Update_Characters;
+    function Update_Characters (Seconds : Float) return Boolean is
+    begin
+        return False;
+    end Update_Characters;
 
     --  -------------------------------------------------------------------------
 
