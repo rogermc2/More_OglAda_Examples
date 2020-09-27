@@ -364,24 +364,17 @@ package body Tiles_Manager is
 
     --  ------------------------------------------------------------------------
 
-    function Load_Textures return Boolean is
+    procedure Load_Textures is
         use Texture_Manager;
-        OK : Boolean := False;
     begin
-        if Load_Image_To_Texture
-          (To_String (Diff_Palette_Name), Tile_Tex, True, True) then
-            if Load_Image_To_Texture (To_String (Spec_Palette_Name),
-                                      Tile_Spec_Tex, True, True) then
-                if Load_Image_To_Texture ("src/textures/stepsTileSet1_diff.png",
-                                          Ramp_Diff_Tex, True, True) then
-                    OK := Load_Image_To_Texture
-                      ("src/textures/stepsTileSet1_spec.png",
-                       Ramp_Spec_Tex, True, True);
-                end if;
-            end if;
-        end if;
-
-        return OK;
+        Load_Image_To_Texture
+          (To_String (Diff_Palette_Name), Tile_Tex, True, True);
+         Load_Image_To_Texture (To_String (Spec_Palette_Name),
+                                      Tile_Spec_Tex, True, True);
+         Load_Image_To_Texture ("src/textures/stepsTileSet1_diff.png",
+                                          Ramp_Diff_Tex, True, True);
+         Load_Image_To_Texture ("src/textures/stepsTileSet1_spec.png",
+                                Ramp_Spec_Tex, True, True);
     end Load_Textures;
 
     --  ------------------------------------------------------------------------
@@ -423,9 +416,8 @@ package body Tiles_Manager is
         Game_Utils.Game_Log ("Palette file names: " &
                                To_String (Diff_Palette_Name)
                              & ", " & To_String (Spec_Palette_Name));
-        if Load_Textures then
-            Add_Tiles_To_Batches;
-        end if;
+        Load_Textures;
+        Add_Tiles_To_Batches;
         Add_Dummy_Manifold_Lights;
 
         Game_Utils.Game_Log ("Total points " & Integer'Image (Total_Points));

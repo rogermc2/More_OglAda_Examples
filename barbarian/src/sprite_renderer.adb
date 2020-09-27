@@ -3,6 +3,7 @@ with GL.Attributes;
 with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
 
+with Batch_Manager;
 with Frustum;
 with Game_Utils;
 with GL_Utils;
@@ -198,8 +199,8 @@ package body Sprite_Renderer is
 	U    : Int := Int (Max (0.5 * (World_Pos (GL.X) + 1.0), 0.0));
 	V    : Int := Int (Max (0.5 * (World_Pos (GL.Y) + 1.0), 0.0));
     begin
-	U := Min_Int (U, Int (Manifold.Max_Tile_Cols - 1));
-	V := Min_Int (V, Int (Manifold.Max_Tile_Cols - 1));
+	U := Min_Int (U, Int (Batch_Manager.Max_Rows - 1));
+	V := Min_Int (V, Int (Batch_Manager.Max_Cols - 1));
 
         Sprites (Sprite_Index).World_Position := World_Pos;
         Sprites (Sprite_Index).Model_Matrix :=

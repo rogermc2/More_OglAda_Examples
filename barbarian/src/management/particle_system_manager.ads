@@ -51,6 +51,8 @@ package Particle_System_Manager is
       Ada.Containers.Vectors (Positive, Particle_Script);
     type Particle_Script_List is new Script_Package.Vector with null record;
 
+   Particle_System_Manager_exception : exception;
+
     procedure Load_Particle_Script (File_Name : String;
                                     Scripts : in out Particle_Script_List);
 
