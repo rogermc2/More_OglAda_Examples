@@ -53,7 +53,8 @@ package body Particle_System is
         when anError : others =>
             Put_Line
               ("An exception occurred in Particle_System.Create_Particle_System!");
-            Put_Line (Ada.Exceptions.Exception_Information (anError));
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+        return Result;
     end Create_Particle_System;
 
     --  ------------------------------------------------------------------------
@@ -83,13 +84,12 @@ package body Particle_System is
 
     function Init_Particle_Systems return Boolean is
         use Particle_System_Manager;
-        Script : Particle_Script;
     begin
         Game_Utils.Game_Log ("------- Initialising Particle Systems -------");
         Particle_System_Shader_Manager.Init (Basic_Particles_SP);
         Scripts.Clear;
         Particle_Systems.Clear;
-        Load_Particle_Script ("blood_fountain.particles", Script);
+        Load_Particle_Script ("blood_fountain.particles", Scripts);
         return False;
     end Init_Particle_Systems;
 

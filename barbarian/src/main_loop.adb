@@ -96,7 +96,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 --          if not Audio.Init_Audio then
 --              raise Initialize_Exception with "Init_Audio failed.";
 --          end if;
-        Texture_Manager.Init_Texture_Manager;
+      if not Texture_Manager.Init_Texture_Manager then
+         null;
+      end if;
         if not GUI.Load_Controller_Textures then
             raise Initialize_Exception with "Init_Texture_Manager failed.";
         end if;
@@ -127,9 +129,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         if not Shadows.Init_Shadows then
             raise Initialize_Exception with "Init_Shadows failed.";
         end if;
-        if not Manifold.Init_Manifold then
-            raise Initialize_Exception with "Init_Manifold failed.";
-        end if;
+        Manifold.Init;
         MMenu.Init_MMenu;
         Input_Handler.Init;
     end Init_Modules;
@@ -183,8 +183,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --  ------------------------------------------------------------------------
 
     procedure Main_Game_Loop (Current_Time : Float) is
-        Last_Time   : Float := GL_Utils.Get_Elapsed_Seconds;
-        Logic_Delta : Float := Current_Time - Last_Time;
+        Last_Time   : constant  Float := GL_Utils.Get_Elapsed_Seconds;
+--          Logic_Delta : Float := Current_Time - Last_Time;
     begin
         null;
 
@@ -235,7 +235,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
               To_Unbounded_String (".map");
             --  Name line
             Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
-            Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map, Char_Map_Tell);
+            Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map);
             --  Properties and characters are loaded by Load_Maps
             Game_Utils.Game_Log ("Game map loaded, Char_Map_Tell: " &
                                    Integer'Image (Char_Map_Tell));

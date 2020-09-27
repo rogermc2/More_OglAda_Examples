@@ -41,8 +41,7 @@ package body Texture_Manager is
 
     --  ------------------------------------------------------------------------
 
-    function Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture)
-                           return Boolean is
+    procedure Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture) is
         use GL.Objects.Textures.Targets;
         use GL.Types;
         OK : Boolean := False;
@@ -64,21 +63,18 @@ package body Texture_Manager is
                                  & Natural'Image (Slot));
             OK := True;
         end if;
-        return OK;
 
     exception
         when anError : others =>
             Put_Line ("An exception occurred in Texture_Manager.Bind_Texture "
                       & Natural'Image (Slot));
             Put_Line (Ada.Exceptions.Exception_Information (anError));
-            return False;
     end Bind_Texture;
 
     --  ------------------------------------------------------------------------
 
-    function Bind_Cube_Texture (Slot : Natural;
-                                Tex : GL.Objects.Textures.Texture)
-                                return Boolean is
+    procedure Bind_Cube_Texture (Slot : Natural;
+                                Tex : GL.Objects.Textures.Texture) is
         use GL.Objects.Textures.Targets;
         use GL.Types;
         OK : Boolean := False;
@@ -94,7 +90,6 @@ package body Texture_Manager is
             Bound_Textures.Replace_Element (Slot, Tex);
             OK := True;
         end if;
-        return OK;
 
     exception
         when anError : others =>
@@ -102,7 +97,6 @@ package body Texture_Manager is
                         "Texture_Manager.Bind_Cube_Texture for slot " &
                         Natural'Image (Slot));
             Put_Line (Ada.Exceptions.Exception_Information (anError));
-            return False;
     end Bind_Cube_Texture;
 
     --  ------------------------------------------------------------------------
@@ -202,9 +196,9 @@ package body Texture_Manager is
     --  ------------------------------------------------------------------------
 
     --      pragma Warnings (off);
-    function Load_Image_To_Texture (File_Name : String;
+    procedure Load_Image_To_Texture (File_Name : String;
                                     aTexture : in out Texture;
-                                    Gen_Mips, Use_SRGB : Boolean) return Boolean is
+                                    Gen_Mips, Use_SRGB : Boolean) is
         use GL.Objects.Textures.Targets;
         use GL.Pixels;
         use GL.Types;
@@ -344,7 +338,6 @@ package body Texture_Manager is
         else
             Game_Utils.Game_Log ("Image " & File_Name & " already loaded.");
         end if;
-        return True;
 
     exception
         when anError : others =>
@@ -352,7 +345,6 @@ package body Texture_Manager is
                         "Texture_Manager.Load_Image_To_Texture when loading " &
                         File_Name);
             Put_Line (Ada.Exceptions.Exception_Information (anError));
-            return False;
     end Load_Image_To_Texture;
 
     --  ------------------------------------------------------------------------
