@@ -121,8 +121,8 @@ package body Manifold is
       use Batch_Manager;
       use GL.Types;
     begin
-      return Col >= 0 and Col < Int (Max_Cols) and
-        Row >= 0 and Row < Int (Max_Rows);
+      return Col >= 0 and Col < Max_Cols and
+        Row >= 0 and Row < Max_Rows;
     end Is_Tile_Valid;
 
     --  ----------------------------------------------------------------------------
