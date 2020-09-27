@@ -1,0 +1,25 @@
+with "../common/common";
+with "opengl";
+with "opengl-images";
+with "opengl-glfw";
+limited with "deps/gid/gid";
+
+project Parse_Test is
+
+   for Source_Dirs use ("src", "src/management", "src/shader_managers", "src/maps", "../ogl_dev_common");
+   for Object_Dir use "obj";
+   for Main use ("barbarian_parse_test");
+
+   package Compiler renames Opengl.Compiler;
+
+   package Binder is
+      for Switches ("ada") use ("-u10", "-d65532k");
+   end Binder;
+
+   package Linker is
+      --  Set stack size
+      --  for Default_Switches ("ada") use ("Wl", "--stack=65532000");
+   end Linker;
+
+end Parse_Test;
+
