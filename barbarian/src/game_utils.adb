@@ -1,6 +1,4 @@
 
---  with Interfaces.C;
-
 with Ada.Directories; use Ada.Directories;
 with Ada.Exceptions;
 with Ada.IO_Exceptions;
@@ -13,31 +11,31 @@ package body Game_Utils is
 
    --  ------------------------------------------------------------------------
 
---     function Check_Param (Check : String) return Integer is
---     begin
---          return 0;
---     end Check_Param;
+   --     function Check_Param (Check : String) return Integer is
+   --     begin
+   --          return 0;
+   --     end Check_Param;
 
    --  -------------------------------------------------------------------------
 
    procedure Close_Game_Log is
    begin
-        Close (Log_File);
+      Close (Log_File);
    end Close_Game_Log;
 
    --  -------------------------------------------------------------------------
 
-    procedure Game_Log (Message : String) is
-     File_Descriptor  : Ada.Text_IO.File_Type;
-     Log_Directory    : constant String := ".";
-     Directory_Set    : Boolean := False;
+   procedure Game_Log (Message : String) is
+      File_Descriptor  : Ada.Text_IO.File_Type;
+      Log_Directory    : constant String := ".";
+      Directory_Set    : Boolean := False;
    begin
       Set_Directory (Log_Directory);
       Directory_Set := True;
       if Exists (Game_Log_File) then
          Open (File_Descriptor, Append_File, Game_Log_File);
       else
-         Create (File_Descriptor, Append_File, "Log_Directory.Game_Log_File");
+         Create (File_Descriptor, Append_File, Game_Log_File);
       end if;
       Put_Line (File_Descriptor, Message);
       Close (File_Descriptor);
@@ -46,7 +44,7 @@ package body Game_Utils is
       when anError : Ada.IO_Exceptions.Name_Error  =>
          if not Directory_Set then
             Put_Line ("Game_Utils.Game_Log, there is no directory " &
-                       Log_Directory);
+                        Log_Directory);
          end if;
          Put_Line (Ada.Exceptions.Exception_Information (anError));
 
@@ -57,15 +55,15 @@ package body Game_Utils is
 
    --  ------------------------------------------------------------------------
 
---      function Is_little_endian return Boolean is
---          use Interfaces.C;
---  	Test     : constant array (1 .. 2) of unsigned_char := (1, 0);
---  	X        : constant short := short (Test);
---      begin
---  	return 1 = X;
---      end Is_little_endian;
+   --      function Is_little_endian return Boolean is
+   --          use Interfaces.C;
+   --  	Test     : constant array (1 .. 2) of unsigned_char := (1, 0);
+   --  	X        : constant short := short (Test);
+   --      begin
+   --  	return 1 = X;
+   --      end Is_little_endian;
 
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
    function Max (L, R : Integer) return Integer is
       Result : Integer;
@@ -82,12 +80,13 @@ package body Game_Utils is
 
    procedure Restart_Game_Log is
    begin
-        if Is_Open (Log_File) then
-           Close (Log_File);
-        end if;
-        Delete_File (Game_Log_File);
-        Create (Log_File, Out_File, Game_Log_File);
-        Close (Log_File);
+      Set_Directory (".");
+      if Is_Open (Log_File) then
+         Close (Log_File);
+      end if;
+      Delete_File (Game_Log_File);
+      Create (Log_File, Out_File, Game_Log_File);
+      Close (Log_File);
 
    exception
       when anError : others =>
