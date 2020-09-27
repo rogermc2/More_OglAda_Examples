@@ -8,7 +8,7 @@ package body Sprite_World_Map is
       (1 .. Batch_Manager.Max_Rows, 1 .. Batch_Manager.Max_Cols,
        1 .. Max_Sprites_In_Tile) of Integer;
     type Sprites_Count_Array is array
-      (1 .. Batch_Manager.Max_Rows, 1 .. Batch_Manager.Max_Cols) of Integer;
+      (1 .. Int (Batch_Manager.Max_Rows), 1 .. Int (Batch_Manager.Max_Cols)) of Integer;
     type Sprites_Single_Array is array
       (1 .. Batch_Manager.Max_Rows, 1 .. Batch_Manager.Max_Cols,
        1 .. Max_Sprites_In_Tile) of Single;

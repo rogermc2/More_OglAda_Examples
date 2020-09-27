@@ -9,7 +9,7 @@ package body Batch_Manager is
     ST_Offset         : constant Single := 8.0 / 2048.0;
 
     procedure North_Check (aBatch : in out Batch_Meta;
-                           Row, Col, Height : Integer;
+                           Row, Col :   Int; Height : Integer;
                            Tiles : Tiles_Manager.Tile_List;
                            Tile_Index : positive);
 
@@ -46,8 +46,8 @@ package body Batch_Manager is
                                Tiles : Tiles_Manager.Tile_List) is
         use Tiles_Manager;
         aTile     : Tile_Data;
-        Row       : Integer;
-        Column    : Integer;
+        Row       : Int;
+        Column    : Int;
         Height    : Integer;
         X         : Single;
         Y         : Single;
@@ -65,8 +65,8 @@ package body Batch_Manager is
         if not Is_Empty (Tiles) then
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
                 aTile := Tiles.Element (Tile_Index);
-                Row := Tile_Index / Max_Cols + 1;
-                Column := Tile_Index - Row * Max_Cols;
+                Row := Int (Tile_Index) / Max_Cols + 1;
+                Column := Int (Tile_Index) - Row * Max_Cols;
                 Height := aTile.Height;
                 X := Single (2 * Column);
                 Y := Single (2 * Height);
@@ -108,12 +108,12 @@ package body Batch_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Batch_Index (Column, Row : Integer) return Integer is
+    function Get_Batch_Index (Column, Row : Int) return Integer is
         Result : Integer := -1;
     begin
         if Column >= 0 and Column < Max_Cols and
           Row >= 0 and Row < Max_Rows then
-            Result := (Column + Batches_Across * Row) /
+            Result := (Integer (Column) + Batches_Across * Integer (Row)) /
               Settings.Tile_Batch_Width;
         end if;
         return Result;
@@ -122,11 +122,11 @@ package body Batch_Manager is
     --  ----------------------------------------------------------------------------
 
     procedure North_Check (aBatch : in out Batch_Meta;
-                           Row, Col, Height : Integer;
+                           Row, Col: Int; Height : Integer;
                            Tiles : Tiles_Manager.Tile_List;
                            Tile_Index : positive) is
         use Tiles_Manager;
-        N_Index  : constant Integer := Tile_Index - Max_Cols;
+        N_Index  : constant Integer := Tile_Index - Integer (Max_Cols);
         aTile    : constant Tile_Data := Tiles.Element (N_Index);
         N_Height : Integer := aTile.Height;
         Diff     : Integer;
@@ -174,8 +174,8 @@ package body Batch_Manager is
         use Tile_Data_Package;
         theBatch : Batch_Meta  :=  Batches.Element (Batch_Index);
         aTile    : Tile_Data;
-        Row      : Integer;
-        Column   : Integer;
+        Row      : Int;
+        Column   : Int;
         Height   : Integer;
         N_Tile   : Tile_Data;
         N_Index  : Integer;
@@ -200,8 +200,8 @@ package body Batch_Manager is
         else
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
                 aTile := Tiles.Element (Tile_Index);
-                Row := Tile_Index / Max_Cols + 1;
-                Column := Tile_Index - Row * Max_Cols;
+                Row := Int (Tile_Index) / Max_Cols + 1;
+                Column :=  Int (Tile_Index) - Row * Max_Cols;
                 Height := aTile.Height;
                 if aTile.Tile_Type = '~' then
                     Height := Height - 1;
@@ -218,7 +218,7 @@ package body Batch_Manager is
                 end if;
                 --  Sides count
                 if Row > 1 then
-                    N_Index := Tile_Index - Max_Cols;
+                    N_Index := Tile_Index - Integer (Max_Cols);
                     N_Tile := Tiles.Element (N_Index);
                     N_Height := N_Tile.Height;
                     if N_Tile.Tile_Type = '~' then
@@ -235,7 +235,7 @@ package body Batch_Manager is
                 end if;
 
                 if Row < Max_Rows then
-                    N_Index := Tile_Index + Max_Cols;
+                    N_Index := Tile_Index + Integer (Max_Cols);
                     N_Tile := Tiles.Element (N_Index);
                     N_Height := N_Tile.Height;
                     if N_Tile.Tile_Type = '~' then

@@ -10,8 +10,8 @@ with GL_Maths;
 
 package Batch_Manager is
 
-    Max_Cols               : Integer := 0;  --  Set by map file
-    Max_Rows               : Integer := 0;  --  Set by map file
+    Max_Cols               : Int := 0;  --  Set by map file
+    Max_Rows               : Int := 0;  --  Set by map file
     Batches_Across         : Integer := 0;
     Batches_Down           : Integer := 0;
     Batch_Split_Count      : Integer := 0;
@@ -58,7 +58,7 @@ package Batch_Manager is
     Batch_Manager_Exception : Exception;
 
     function Batch_Split_Size return Integer;
-    function Get_Batch_Index (Column, Row : Integer) return Integer;
+    function Get_Batch_Index (Column, Row : Int) return Integer;
     procedure Regenerate_Batch (Tiles : Tiles_Manager.Tile_List;
                                 Batch_Index : Positive);
 
