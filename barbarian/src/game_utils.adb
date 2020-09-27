@@ -34,7 +34,11 @@ package body Game_Utils is
    begin
       Set_Directory (Log_Directory);
       Directory_Set := True;
-      Open (File_Descriptor, Append_File, Game_Log_File);
+      if Exists (Game_Log_File) then
+         Open (File_Descriptor, Append_File, Game_Log_File);
+      else
+         Create (File_Descriptor, Append_File, "Log_Directory.Game_Log_File");
+      end if;
       Put_Line (File_Descriptor, Message);
       Close (File_Descriptor);
 
@@ -85,6 +89,10 @@ package body Game_Utils is
         Create (Log_File, Out_File, Game_Log_File);
         Close (Log_File);
 
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Game_Utils.Restart_Game_Log! ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Restart_Game_Log;
 
    --  ------------------------------------------------------------------------
