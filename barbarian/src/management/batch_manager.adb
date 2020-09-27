@@ -122,7 +122,7 @@ package body Batch_Manager is
     --  ----------------------------------------------------------------------------
 
     procedure North_Check (aBatch : in out Batch_Meta;
-                           Row, Col: Int; Height : Integer;
+                           Row, Col : Int; Height : Integer;
                            Tiles : Tiles_Manager.Tile_List;
                            Tile_Index : positive) is
         use Tiles_Manager;
