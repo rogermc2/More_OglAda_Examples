@@ -38,7 +38,7 @@ package body Manifold is
       use GL.Types;
       use Batch_Manager;
         Batch_Index   : constant Positive :=
-                          Get_Batch_Index (Positive (Column), Positive (Row));
+                          Get_Batch_Index (Column, Row);
         Batch         : Batch_Manager.Batch_Meta;
         Light_Indices : GL_Maths.Integers_List;
         Result        : Integer := -1;

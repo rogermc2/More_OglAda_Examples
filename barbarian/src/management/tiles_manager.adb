@@ -17,8 +17,8 @@ with Texture_Manager;
 package body Tiles_Manager is
 
     type Static_Light_Data is record
-        Row      : Integer := 0;
-        Column   : Integer := 0;
+        Row      : Int := 0;
+        Column   : Int := 0;
         Position : GL.Types.Singles.Vector3 := Maths.Vec3_0;
         Diffuse  : GL.Types.Singles.Vector3 := Maths.Vec3_0;
         Specular : GL.Types.Singles.Vector3 := Maths.Vec3_0;
@@ -44,12 +44,12 @@ package body Tiles_Manager is
 
     Tiles                 : Tile_List;
 
-    procedure Add_Static_Light (Col, Row, Tile_Height_Offset : Integer;
+    procedure Add_Static_Light (Col, Row : Int; Tile_Height_Offset : Integer;
                                 Offset, Diffuse, Specular : Singles.Vector3;
                                 Light_Range : Single);
-    function Get_Tile_Level (Col, Row : Integer) return Integer;
+    function Get_Tile_Level (Col, Row : Int) return Integer;
     procedure Parse_Facings_By_Row (File : File_Type;
-                                    Max_Rows, Max_Cols : Integer;
+                                    Max_Rows, Max_Cols : Int;
                                     Tiles : in out Tile_List);
 
     --  ------------------------------------------------------------------------
@@ -63,7 +63,7 @@ package body Tiles_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Add_Static_Light (Col, Row, Tile_Height_Offset : Integer;
+    procedure Add_Static_Light (Col, Row : Int; Tile_Height_Offset : Integer;
                                 Offset, Diffuse, Specular : Singles.Vector3;
                                 Light_Range : Single) is
         use Batch_Manager;
@@ -124,13 +124,13 @@ package body Tiles_Manager is
             --              Row := index / Max_Cols + 1;
 --              Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Row" &
 --                                     Integer'Image (Row));
-            Batch_Down  := (Row - 1) / Settings.Tile_Batch_Width;
+            Batch_Down  := Integer (Row - 1) / Settings.Tile_Batch_Width;
             for Col in 1 .. Max_Cols loop
                 --              Col := index - (Row - 1) * Max_Cols;
 --                  Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Col" &
 --                                         Integer'Image (Col));
-                Tile_Index := (Row - 1) * Max_Cols + Col;
-                Batch_Across := (Col - 1) / Settings.Tile_Batch_Width;
+                Tile_Index := Integer ((Row - 1) * Max_Cols + Col);
+                Batch_Across := Integer (Col - 1) / Settings.Tile_Batch_Width;
                 Batch_Index := Batches_Across * Batch_Down + Batch_Across + 1;
 --                  Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Batch_Index" &
 --                                         Integer'Image (Batch_Index));
@@ -162,15 +162,15 @@ package body Tiles_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Tile_Level (Col, Row : Integer) return Integer is
+    function Get_Tile_Level (Col, Row : Int) return Integer is
         use Batch_Manager;
     begin
         if Col < 1 or Col > Max_Cols or Row < 1 or Row > Max_Rows then
             raise Tiles_Manager_Exception with
               " Tiles_Manager.Get_Tile_Level, invalid row or column: " &
-              Integer'Image (Row) & ", " & Integer'Image (Col);
+              Int'Image (Row) & ", " & Int'Image (Col);
         end if;
-        return Tile_Heights.Element ((Row - 1) * Max_Cols + Col);
+        return Tile_Heights.Element (Positive ((Row - 1) * Max_Cols + Col));
     end Get_Tile_Level;
 
     --  ----------------------------------------------------------------------------
@@ -180,8 +180,8 @@ package body Tiles_Manager is
         use Ada.Strings;
         use Tile_Data_Package;
         Header     : constant String := Get_Line (File);
-        Cols       : Integer := 0;
-        Rows       : Integer := 0;
+        Cols       : Int := 0;
+        Rows       : Int := 0;
         Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
         Pos2       : Natural;
         Prev_Char  : Character;
@@ -196,11 +196,11 @@ package body Tiles_Manager is
         end if;
 
         Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
-        Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
-        Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
+        Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
+        Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
 
-        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," & Integer'Image (Rows)
-                             & " rows, "  & Integer'Image (Cols) & " columns");
+        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," & Int'Image (Rows)
+                             & " rows, "  & Int'Image (Cols) & " columns");
         for row in 1 .. Rows loop
             declare
                 aString : constant String := Get_Line (File);
@@ -214,7 +214,7 @@ package body Tiles_Manager is
                 end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
-                    Tile_Index := (row - 1) * Batch_Manager.Max_Cols + col;
+                    Tile_Index := Integer ((row - 1) * Batch_Manager.Max_Cols + col);
                     if Has_Element (Tiles.To_Cursor (Tile_Index)) then
                         aTile := Tiles.Element (Tile_Index);
                     end if;
@@ -253,8 +253,8 @@ package body Tiles_Manager is
         Header     : constant String := Get_Line (File);
         Code_0     : constant Integer := Character'Pos ('0');
         Code_a     : constant Integer := Character'Pos ('a');
-        Cols       : Integer := 0;
-        Rows       : Integer := 0;
+        Cols       : Int := 0;
+        Rows       : Int := 0;
         Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
         Pos2       : Natural;
         Prev_Char  : Character;
@@ -269,13 +269,13 @@ package body Tiles_Manager is
         end if;
 
         Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
-        Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
-        Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
+        Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
+        Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
 
         Game_Utils.Game_Log ("Loading " & Load_Type & " rows," &
-                               Integer'Image (Rows) & " rows, "  &
-                               Integer'Image (Cols) & " columns");
-        for row in 1 .. Rows loop
+                               Int'Image (Rows) & " rows, "  &
+                               Int'Image (Cols) & " columns");
+        for row in Int range 1 .. Rows loop
             declare
                 aString    : constant String := Get_Line (File);
                 Tex_Char   : Character;
@@ -289,7 +289,7 @@ package body Tiles_Manager is
                 end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
-                    Tile_Index := (row - 1) * Batch_Manager.Max_Cols + col;
+                    Tile_Index := Integer ((row - 1) * Batch_Manager.Max_Cols + col);
                     if Has_Element (Tiles.To_Cursor (Tile_Index)) then
                         aTile := Tiles.Element (Tile_Index);
                     end if;
@@ -397,9 +397,9 @@ package body Tiles_Manager is
 
         Pos2 := Fixed.Index (aLine (Pos1 + 1 .. aLine'Last), "x");
 
-        Max_Cols := Integer'Value (aLine (Pos1 .. Pos2 - 1));
-        Max_Rows := Integer'Value (aLine (Pos2 + 1 .. aLine'Last));
-        Total_Tiles := Max_Rows * Max_Cols;
+        Max_Cols := Int'Value (aLine (Pos1 .. Pos2 - 1));
+        Max_Rows := Int'Value (aLine (Pos2 + 1 .. aLine'Last));
+        Total_Tiles := Integer (Max_Rows * Max_Cols);
         Batches_Across :=
           Integer (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
         Batches_Down :=
@@ -440,7 +440,7 @@ package body Tiles_Manager is
     --  ----------------------------------------------------------------------------
 
     procedure Parse_Facings_By_Row (File : File_Type;
-                                    Max_Rows, Max_Cols : Integer;
+                                    Max_Rows, Max_Cols : Int;
                                     Tiles : in out Tile_List) is
         use Tile_Data_Package;
         Prev_Char  : Character;
@@ -455,7 +455,7 @@ package body Tiles_Manager is
             begin
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Max_Cols loop
-                    Tile_Index := (row - 1) * Max_Cols + col;
+                    Tile_Index := Integer ((row - 1) * Max_Cols + col);
                     Text_Char := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (Text_Char = 'n' or Text_Char = ASCII.NUL) then
