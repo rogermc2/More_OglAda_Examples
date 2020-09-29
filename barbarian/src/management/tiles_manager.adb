@@ -199,8 +199,8 @@ package body Tiles_Manager is
         Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
         Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
 
-        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," & Int'Image (Rows)
-                             & " rows, "  & Int'Image (Cols) & " columns");
+--          Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows loading '" & Load_Type & "'," & Int'Image (Rows)
+--                               & " rows, "  & Int'Image (Cols) & " columns");
         for row in 1 .. Rows loop
             declare
                 aString : constant String := Get_Line (File);
@@ -235,7 +235,6 @@ package body Tiles_Manager is
                 end loop;
                 Prev_Char := aChar;
             end;  --  declare block
-            Tiles.Append (aTile);
         end loop;
 
     exception
@@ -272,9 +271,9 @@ package body Tiles_Manager is
         Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
         Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
 
-        Game_Utils.Game_Log ("Loading " & Load_Type & " rows," &
-                               Int'Image (Rows) & " rows, "  &
-                               Int'Image (Cols) & " columns");
+--          Game_Utils.Game_Log ("Tiles_Manager.Load_Int_Rows loading '" & Load_Type & "', " &
+--                                 Int'Image (Rows) & " rows, "  &
+--                                 Int'Image (Cols) & " columns");
         for row in Int range 1 .. Rows loop
             declare
                 aString    : constant String := Get_Line (File);

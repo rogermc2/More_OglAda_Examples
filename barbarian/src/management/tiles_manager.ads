@@ -5,8 +5,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 package Tiles_Manager is
 
     type Tile_Data is record
-        Height    : Integer;
-        Texture   : Integer;
+        Height    : Integer := 0;
+        Texture   : Integer := 0;
         Facing    : Character := ASCII.NUL;
         Tile_Type : Character := ASCII.NUL;
     end record;
