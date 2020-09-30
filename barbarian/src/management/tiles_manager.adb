@@ -10,7 +10,6 @@ with Maths;
 
 with Batch_Manager;
 with Game_Utils;
-with GL_Maths;
 with Settings;
 with Texture_Manager;
 
@@ -31,10 +30,6 @@ package body Tiles_Manager is
 
     Tile_Tex              : GL.Objects.Textures.Texture;
     Tile_Spec_Tex         : GL.Objects.Textures.Texture;
-    Tile_Heights          : GL_Maths.Integers_List;
-    Tile_Facings          : Tile_List;
-    Tile_Textures         : GL_Maths.Integers_List;
-    Tile_Types            : Tile_List;
     Ramp_Diff_Tex         : GL.Objects.Textures.Texture;
     Ramp_Spec_Tex         : GL.Objects.Textures.Texture;
     Static_Lights         : Static_Light_List;
@@ -410,7 +405,7 @@ package body Tiles_Manager is
           Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
         Batch_Split_Count := Integer (Batches_Across * Batches_Down);
 
-        Parse_Facings_By_Row (File, Max_Rows, Max_Cols, Tile_Facings);
+        Parse_Facings_By_Row (File, Max_Rows, Max_Cols, Tiles);
 
         Load_Int_Rows (File, "textures", Tiles);
         Load_Char_Rows (File, "types", Tiles);
@@ -490,10 +485,6 @@ package body Tiles_Manager is
     procedure Reset_Vars is
     begin
         Total_Tiles  := 0;
-        Tile_Heights.Clear;
-        Tile_Facings.Clear;
-        Tile_Textures.Clear;
-        Tile_Types.Clear;
         Diff_Palette_Name := To_Unbounded_String ("");
         Spec_Palette_Name := To_Unbounded_String ("");
     end Reset_Vars;
