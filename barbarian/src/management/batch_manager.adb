@@ -22,22 +22,16 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Free_Batch_Data (Batch : in out Batch_Meta) is
+   procedure Free_Batch_Data (Batch_Index : Positive) is
+      theBatch : Batch_Meta := Batches.Element (Batch_Index);
    begin
-      Batch.Points.Clear;
-      Batch.Point_Count := 0;
-      Batch.Normals.Clear;
-      Batch.Normal_Count := 0;
-      Batch.Tex_Coords.Clear;
-      Batch.Tex_Coord_Count := 0;
-      Batch.Ramp_Points.Clear;
-      Batch.Ramp_Point_Count := 0;
-      Batch.Ramp_Normals.Clear;
-      Batch.Ramp_Normal_Count := 0;
-      Batch.Ramp_Smooth_Normals.Clear;
-      Batch.Water_Points.Clear;
-      Batch.Water_Point_Count := 0;
-      Batch.Static_Light_Indices.Clear;
+      theBatch.Points.Clear;
+      theBatch.Point_Count := 0;
+      theBatch.Ramp_Points.Clear;
+      theBatch.Ramp_Point_Count := 0;
+      theBatch.Water_Points.Clear;
+      theBatch.Water_Point_Count := 0;
+      Batches.Replace_Element  (Batch_Index, theBatch);
    end Free_Batch_Data;
 
    --  ----------------------------------------------------------------------------
@@ -126,14 +120,19 @@ package body Batch_Manager is
                           Tiles      : Tiles_Manager.Tile_List;
                           Tile_Index : positive) is
       use Tiles_Manager;
-      N_Index  : constant Integer := Tile_Index - Integer (Max_Cols);
-      aTile    : constant Tile_Data := Tiles.Element (N_Index);
-      N_Height : Integer := aTile.Height;
+      N_Index  : constant Integer := Tile_Index + Integer (Max_Cols);
+      aTile    :  Tile_Data;
+      N_Height : Integer;
       Diff     : Integer;
       X        : Single;
       Y        : Single;
       Z        : Single;
    begin
+--        Game_Utils.Game_Log ("Batch_Manager.North_Check, Tile_Index, N_Index "
+--                                   & Integer'Image (Tile_Index) & ",  "
+--                                   & Integer'Image (N_Index));
+      aTile := Tiles.Element (N_Index);
+      N_Height := aTile.Height;
       if aTile.Tile_Type = '~' then
          N_Height := N_Height - 1;
       end if;
@@ -171,16 +170,16 @@ package body Batch_Manager is
    procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_List;
                                Batch_Index : Positive) is
       use Tiles_Manager;
-      use Tile_Data_Package;
-      theBatch : Batch_Meta  :=  Batches.Element (Batch_Index);
-      aTile    : Tile_Data;
-      Row      : Int := 0;
-      Column   : Int := 0;
-      Height   : Integer := 0;
-      N_Tile   : Tile_Data;
-      N_Index  : Integer := 0;
-      N_Height : Integer := 0;
-      Diff     : Integer := 0;
+      theBatch    : Batch_Meta := Batches.Element (Batch_Index);
+      aTile       : Tile_Data;
+      Batch_Tiles : constant Tile_Indices := theBatch.Tiles;
+      Row         : Int := 0;
+      Column      : Int := 0;
+      Height      : Integer := 0;
+      N_Tile      : Tile_Data;
+      N_Index     : Integer := 0;
+      N_Height    : Integer := 0;
+      Diff        : Integer := 0;
 
       procedure Add_Point_Count (Diff : Integer) is
       begin
@@ -194,18 +193,17 @@ package body Batch_Manager is
       end Add_Point_Count;
 
    begin
-      Free_Batch_Data (theBatch);
+      Free_Batch_Data (Batch_Index);
       theBatch.Static_Light_Count := 0;
       if Is_Empty (Tiles) then
          Game_Utils.Game_Log ("Regenerate_Batch, theBatch.Tiles is empty.");
          raise Batch_Manager_Exception with
            "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
       else
-         for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
---              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Tile_Index, tiles size, last index "
+         for Tile_Index in Batch_Tiles.First_Index .. Batch_Tiles.Last_Index loop
+--              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Tile_Index, last index "
 --                                   & Integer'Image (Tile_Index)
---                                   & Ada.Containers.Count_Type'Image (Tiles.Length)
---                                   & Integer'Image (Tiles.Last_Index));
+--                                   & Integer'Image (Batch_Tiles.Last_Index));
             aTile := Tiles.Element (Tile_Index);
             Row := Int (Tile_Index) / Max_Cols + 1;
             Column :=  Int (Tile_Index) - Row * Max_Cols;
@@ -324,8 +322,8 @@ package body Batch_Manager is
 
       Generate_Points (theBatch, Tiles);
       Batches.Replace_Element (Batch_Index, theBatch);
-      Game_Utils.Game_Log ("Regenerate_Batch,Total_Points " &
-                             Integer'Image (Total_Points));
+--        Game_Utils.Game_Log ("Regenerate_Batch,Total_Points " &
+--                               Integer'Image (Total_Points));
 
    end Regenerate_Batch;
 

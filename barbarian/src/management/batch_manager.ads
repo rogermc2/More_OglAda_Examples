@@ -17,11 +17,14 @@ package Batch_Manager is
     Batch_Split_Count      : Integer := 0;
     Ramp_Mesh_Point_Count  : Integer := 0;
     Water_Mesh_Point_Count : Integer := 0;
-    Total_Points           : Integer := 0;
+   Total_Points           : Integer := 0;
+
+    package Tile_Indices_Package is new Ada.Containers.Vectors
+      (Positive, Positive);
+    type Tile_Indices is new Tile_Indices_Package.Vector with null record;
 
     type Batch_Meta is record
---          Tiles                : Tiles_Manager.Tile_List;
-        Tile_Indices         : GL_Maths.Integers_List;
+        Tiles                : Tile_Indices;
         Tile_Count           : Integer := 0;
         AABB_Mins            : Singles.Vector3;
         AABB_Mixs            : Singles.Vector3;
@@ -46,7 +49,7 @@ package Batch_Manager is
         Points_VBO           : GL.Objects.Buffers.Buffer;
         Normals_VBO          : GL.Objects.Buffers.Buffer;
         Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
-        Static_Light_Indices : GL_Maths.Integers_List;
+        Static_Light_Indices : Tile_Indices;
         Static_Light_Count   : Integer := 0;
     end record;
 
