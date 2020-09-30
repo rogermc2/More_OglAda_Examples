@@ -68,11 +68,10 @@ package body Tiles_Manager is
                                 Light_Range : Single) is
         use Batch_Manager;
         X     : constant Single := Single (2 * Col) + Offset (GL.X);
-        Y     : constant Single :=
-                  Single (2 * Get_Tile_Level (Col, Row) + Tile_Height_Offset) +
+        Y     : constant Single := Single (2 * Get_Tile_Level (Col, Row) + Tile_Height_Offset) +
                   Offset (GL.Y);
-        Z      : constant Single := Single (2 * (Row - 1)) + Offset (GL.Z);
-        Total_Batches :  constant Integer := Batches_Across * Batches_Down;
+        Z     : constant Single := Single (2 * (Row - 1)) + Offset (GL.Z);
+        Total_Batches : constant Integer := Batches_Across * Batches_Down;
         --          Sorted        : Boolean := False;
         New_Light     : Static_Light_Data;
         aBatch        : Batch_Manager.Batch_Meta;
@@ -96,9 +95,9 @@ package body Tiles_Manager is
     --  ----------------------------------------------------------------------------
 
       procedure Add_Tile_Index (Batch : in out Batch_Manager.Batch_Meta;
-                              Tile_Index : Positive) is
+                                Tile_Index : Positive) is
     begin
-        Batch.Tile_Indices.Append (Tile_Index);
+        Batch.Tiles.Append (Tile_Index);
     end Add_Tile_Index;
 
     --  ----------------------------------------------------------------------------
@@ -145,13 +144,15 @@ package body Tiles_Manager is
                 end if;
             end loop;
         end loop;
-        Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch, Batches.Length " &
-                              Ada.Containers.Count_Type'Image (Batches.Length));
-        Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch_Split_Count, total tiles " &
-                            Integer'Image (Batch_Split_Count) & ", " &
-                            Integer'Image (Total_Tiles));
+--          Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch, Batches.Length " &
+--                                Ada.Containers.Count_Type'Image (Batches.Length));
+--          Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch_Split_Count, total tiles " &
+--                              Integer'Image (Batch_Split_Count) & ", " &
+--                              Integer'Image (Total_Tiles));
         for index in 1 .. Batch_Split_Count loop
             Regenerate_Batch (Tiles, index);
+--              Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch " &
+--                                Integer'Image (index) & " regenerated");
         end loop;
 
     exception
@@ -163,14 +164,18 @@ package body Tiles_Manager is
     --  ----------------------------------------------------------------------------
 
     function Get_Tile_Level (Col, Row : Int) return Integer is
-        use Batch_Manager;
+      use Batch_Manager;
+      aTile : Tile_Data;
     begin
         if Col < 1 or Col > Max_Cols or Row < 1 or Row > Max_Rows then
             raise Tiles_Manager_Exception with
               " Tiles_Manager.Get_Tile_Level, invalid row or column: " &
               Int'Image (Row) & ", " & Int'Image (Col);
         end if;
-        return Tile_Heights.Element (Positive ((Row - 1) * Max_Cols + Col));
+--        Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Level row, col " &
+--                               Int'Image (Row) & ", " & Int'Image (Col));
+      aTile := Tiles.Element (Positive ((Row - 1) * Max_Cols + Col));
+      return aTile.Height;
     end Get_Tile_Level;
 
     --  ----------------------------------------------------------------------------
@@ -417,6 +422,7 @@ package body Tiles_Manager is
                              & ", " & To_String (Spec_Palette_Name));
         Load_Textures;
         Add_Tiles_To_Batches;
+        Game_Utils.Game_Log ("Load_Tiles Batch calling Add_Dummy_Manifold_Lights");
         Add_Dummy_Manifold_Lights;
 
         Game_Utils.Game_Log ("Total points " & Integer'Image (Total_Points));

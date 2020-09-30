@@ -40,7 +40,7 @@ package body Manifold is
         Batch_Index   : constant Positive :=
                           Get_Batch_Index (Column, Row);
         Batch         : Batch_Manager.Batch_Meta;
-        Light_Indices : GL_Maths.Integers_List;
+        Light_Indices : Batch_Manager.Tile_Indices;
         Result        : Integer := -1;
     begin
         if not Batches.Is_Empty then
