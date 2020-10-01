@@ -10,6 +10,7 @@ with GL.Objects.Vertex_Arrays;
 
 with Character_Controller;
 with Game_Utils;
+with Manifold;
 
 package body Properties_Manager is
 
@@ -133,21 +134,33 @@ package body Properties_Manager is
    Prop_Scripts : Properties_Script_List;
    Portal_Index : Integer := -1;
 
+   function Get_Index_Of_Prop_Script (Script_File : String) return Positive;
    function Load_Property_Script (File_Name : String; Index : out Positive)
                                   return Boolean;
 
    -- -------------------------------------------------------------------------
    --  Height_level is the property's own height offset from the tile.
    --  Facing is the compass facing 'N' 'S' 'W' or 'E'.
-   procedure Create_Prop_From_Script (Script_File                : String;
-                                      Map_U, Map_V, Height_Level : Integer;
-                                      Facing                     : Character; Tx, Rx : Integer) is
-      New_Props : Prop;
+   procedure Create_Prop_From_Script (Script_File : String;
+                                      Map_U, Map_V : Int; Height_Level : Integer;
+                                      Facing       : Character; Tx, Rx : Integer) is
+      use Properties_Script_Package;
+      New_Props     : Prop;
+      Script_Index  : constant Positive := Get_Index_Of_Prop_Script (Script_File);
+      aScript       : constant Prop_Script := Prop_Scripts.Element (Script_Index);
+      Script_Type   : constant Prop_Type := aScript.Prop_Kind;
+      Respect_Ramps : Boolean := Script_Type = Boulder;
    begin
-      Game_Utils.Game_Log ("Properties Manager creating property from script "
-                           & Script_File);
-      --        Set_Property_Defaults;   set by record defaults
---        New_Props.Script_Index
+      if Manifold.Is_Tile_Valid (Map_U, Map_V) then
+         Game_Utils.Game_Log ("Properties Manager creating property from script "
+                              & Script_File);
+         New_Props.Script_Index := Script_Index;
+         --        Set_Property_Defaults;   set by record defaults
+         New_Props.World_Pos (GL.X) := 2.0 * Single (Map_U);
+         New_Props.World_Pos (GL.Y) := 2.0 * Single (Map_V);
+         New_Props.World_Pos (GL.Z) := 2.0 * Single (Map_V);
+         New_Props.Is_Visible := aScript.Starts_Visible;
+      end if;
    end Create_Prop_From_Script;
 
    -- -------------------------------------------------------------------------
@@ -187,8 +200,8 @@ package body Properties_Manager is
       S_Length       : Integer := aLine'Length;
       Property_Count : Integer := 0;
       Script_File    : Unbounded_String;
-      U              : Integer := 0;       --  map position
-      V              : Integer := 0;
+      U              : Int := 0;       --  map position
+      V              : Int := 0;
       Height         : Integer := 0;       --  map height level
       Facing         : Character := 'N';   --  compass facing
       Rx             : Integer := -1;      --  receive code
@@ -217,9 +230,9 @@ package body Properties_Manager is
             PosL := Fixed.Index (Prop_Line, " ");
             Script_File := To_Unbounded_String (Prop_Line (1 .. PosL - 1));
             PosR := Fixed.Index (Prop_Line (PosL .. S_Length), ",");
-            U := Integer'Value (Prop_Line (PosL + 1 .. PosR - 1));
+            U := Int'Value (Prop_Line (PosL + 1 .. PosR - 1));
             PosL := Fixed.Index (Prop_Line (PosR .. S_Length), " ");
-            V := Integer'Value (Prop_Line (PosR + 1 .. PosL - 1));
+            V := Int'Value (Prop_Line (PosR + 1 .. PosL - 1));
 
             PosR := Fixed.Index (Prop_Line (PosL + 1 .. S_Length), " ");
             Height := Integer'Value (Prop_Line (PosL + 1 .. PosR - 1));
@@ -263,8 +276,8 @@ package body Properties_Manager is
       OK                  : Boolean := False;
    begin
       Open (Script_File, In_File, With_Path);
-      Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, " &
-                             With_Path & " opened.");
+      --        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, " &
+      --                               With_Path & " opened.");
       aScript.File_Name := To_Unbounded_String (File_Name);
 
       while not End_Of_File (Script_File) loop
@@ -369,7 +382,7 @@ package body Properties_Manager is
                   null;
                else
                   Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, "
-                                      & "invalid property in " & File_Name);
+                                       & "invalid property in " & File_Name);
                end if;
             end if;
          end;  --  declare block
@@ -388,6 +401,7 @@ package body Properties_Manager is
          Prop_Scripts.Replace_Element (Index, aScript);
       end if;
 
+      Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, script properties loaded");
       return OK;
    end Load_Property_Script;
 

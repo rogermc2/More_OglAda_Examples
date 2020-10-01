@@ -117,7 +117,7 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Tile_Valid (Col, Row : GL.Types.Int) return Boolean is
+    function Is_Tile_Valid (Row, Col : GL.Types.Int) return Boolean is
       use Batch_Manager;
       use GL.Types;
     begin
