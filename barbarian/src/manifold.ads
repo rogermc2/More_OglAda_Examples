@@ -9,7 +9,6 @@ package Manifold is
    function Get_Light_Index (Column, Row  : GL.Types.Int;
                              Light_Number : Integer) return Integer;
     procedure Init;
-    function Is_Tile_Valid (Row, Col : GL.Types.Int) return Boolean;
     procedure Reset_Manifold_Vars;
 
 end Manifold;

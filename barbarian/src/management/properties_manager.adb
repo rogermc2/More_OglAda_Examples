@@ -10,7 +10,7 @@ with GL.Objects.Vertex_Arrays;
 
 with Character_Controller;
 with Game_Utils;
-with Manifold;
+with Tiles_Manager;
 
 package body Properties_Manager is
 
@@ -151,7 +151,7 @@ package body Properties_Manager is
       Script_Type   : constant Prop_Type := aScript.Prop_Kind;
       Respect_Ramps : Boolean := Script_Type = Boulder;
    begin
-      if Manifold.Is_Tile_Valid (Map_U, Map_V) then
+      if Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
          Game_Utils.Game_Log ("Properties Manager creating property from script "
                               & Script_File);
          New_Props.Script_Index := Script_Index;
@@ -285,104 +285,106 @@ package body Properties_Manager is
             aLine    : constant String := Get_Line (Script_File);
             S_Length : constant Integer := aLine'Length;
          begin
-            if S_Length > 1 and aLine (1) /= '#' then
-               if aLine (1 .. 5)  = "mesh:" then
+            if S_Length > 1 and then aLine (1) /= '#' then
+               if S_Length > 4 and then aLine (1 .. 5)  = "mesh:" then
                   null;
-               elsif aLine (1 .. 14)  = "outlines_mesh:" then
+               elsif S_Length > 13 and then aLine (1 .. 14)  = "outlines_mesh:" then
                   null;
-               elsif aLine (1 .. 15)  = "smashed_script:" then
+               elsif S_Length > 14 and then aLine (1 .. 15)  = "smashed_script:" then
                   null;
-               elsif aLine (1 .. 12)  = "diffuse_map:" then
+               elsif S_Length > 11 and then aLine (1 .. 12)  = "diffuse_map:" then
                   null;
-               elsif aLine (1 .. 13)  = "specular_map:" then
+               elsif S_Length > 12 and then aLine (1 .. 13)  = "specular_map:" then
                   null;
-               elsif aLine (1 .. 11)  = "normal_map:" then
+               elsif S_Length > 10 and then aLine (1 .. 11)  = "normal_map:" then
                   null;
-               elsif aLine (1 .. 13)  = "casts_shadow:" then
+               elsif S_Length > 12 and then aLine (1 .. 13)  = "casts_shadow:" then
                   null;
-               elsif aLine (1 .. 14)  = "draw_outlines:" then
+               elsif S_Length > 13 and then aLine (1 .. 14)  = "draw_outlines:" then
                   null;
-               elsif aLine (1 .. 12)  = "transparent:" then
+               elsif S_Length > 11 and then aLine (1 .. 12)  = "transparent:" then
                   null;
-               elsif aLine (1 .. 12)  = "starts_open:" then
+               elsif S_Length > 11 and then aLine (1 .. 12)  = "starts_open:" then
                   null;
-               elsif aLine (1 .. 15)  = "starts_visible:" then
+               elsif S_Length > 14 and then aLine (1 .. 15)  = "starts_visible:" then
                   null;
-               elsif aLine (1 .. 16)  = "lamp_offset_pos:" then
+               elsif S_Length > 15 and then aLine (1 .. 16)  = "lamp_offset_pos:" then
                   null;
-               elsif aLine (1 .. 20)  = "lamp_diffuse_colour:" then
+               elsif S_Length > 19 and then aLine (1 .. 20)  = "lamp_diffuse_colour:" then
                   null;
-               elsif aLine (1 .. 21)  = "lamp_specular_colour:" then
+               elsif S_Length > 20 and then aLine (1 .. 21)  = "lamp_specular_colour:" then
                   null;
-               elsif aLine (1 .. 11)  = "lamp_range:" then
+               elsif S_Length > 10 and then aLine (1 .. 11)  = "lamp_range:" then
                   null;
-               elsif aLine (1 .. 10)  = "particles:" then
+               elsif S_Length > 9 and then aLine (1 .. 10)  = "particles:" then
                   null;
-               elsif aLine (1 .. 17)  = "particles_offset:" then
+               elsif S_Length > 16 and then aLine (1 .. 17)  = "particles_offset:" then
                   null;
-               elsif aLine (1 .. 5)  = "type:" then
+               elsif S_Length > 4 and then aLine (1 .. 5)  = "type:" then
                   null;
-               elsif aLine (1 .. 6)  = "scale:" then
+               elsif S_Length > 5 and then aLine (1 .. 6)  = "scale:" then
                   null;
-               elsif aLine (1 .. 12)  = "uses_sprite:" then
+               elsif S_Length > 11 and then aLine (1 .. 12)  = "uses_sprite:" then
                   null;
-               elsif aLine (1 .. 16)  = "sprite_map_rows:" then
+               elsif S_Length > 15 and then aLine (1 .. 16)  = "sprite_map_rows:" then
                   null;
-               elsif aLine (1 .. 16)  = "sprite_map_cols:" then
+               elsif S_Length > 15 and then aLine (1 .. 16)  = "sprite_map_cols:" then
                   null;
-               elsif aLine (1 .. 16)  = "sprite_y_offset:" then
+               elsif S_Length > 15 and then aLine (1 .. 16)  = "sprite_y_offset:" then
                   null;
-               elsif aLine (1 .. 13)  = "sprite_timer:" then
+               elsif S_Length > 12 and then aLine (1 .. 13)  = "sprite_timer:" then
                   null;
-               elsif aLine (1 .. 6)  = "height:" then
+               elsif S_Length > 6 and then aLine (1 .. 7)  = "height:" then
                   null;
-               elsif aLine (1 .. 7)  = "radius:" then
+               elsif S_Length > 6 and then aLine (1 .. 7)  = "radius:" then
                   null;
-               elsif aLine (1 .. 7)  = "origin:" then
+               elsif S_Length > 6 and then aLine (1 .. 7)  = "origin:" then
                   null;
-               elsif aLine (1 .. 18)  = "trigger_only_once:" then
+               elsif S_Length > 17 and then aLine (1 .. 18)  = "trigger_only_once:" then
                   null;
-               elsif aLine (1 .. 20)  = "character_activated:" then
+               elsif S_Length > 19 and then aLine (1 .. 20)  = "character_activated:" then
                   null;
-               elsif aLine (1 .. 14)  = "npc_activated:" then
+               elsif S_Length > 13 and then aLine (1 .. 14)  = "npc_activated:" then
                   null;
-               elsif aLine (1 .. 22)  = "hide_after_triggering:" then
+               elsif S_Length > 21 and then
+                 aLine (1 .. 22)  = "hide_after_triggering:" then
                   null;
-               elsif aLine (1 .. 13)  = "box_xz_point:" then
+               elsif S_Length > 12 and then aLine (1 .. 13)  = "box_xz_point:" then
                   null;
-               elsif aLine (1 .. 12)  = "hole_height:" then
+               elsif S_Length > 11 and then aLine (1 .. 12)  = "hole_height:" then
                   null;
-               elsif aLine (1 .. 14)  = "hole_xz_point:" then
+               elsif S_Length > 13 and then aLine (1 .. 14)  = "hole_xz_point:" then
                   null;
-               elsif aLine (1 .. 17)  = "setOpeningTime_s:" then
+               elsif S_Length > 16 and then aLine (1 .. 17)  = "setOpeningTime_s:" then
                   null;
-               elsif aLine (1 .. 13)  = "goes_back_up:" then
+               elsif S_Length > 12 and then aLine (1 .. 13)  = "goes_back_up:" then
                   null;
-               elsif aLine (1 .. 15)  = "goes_back_down:" then
+               elsif S_Length > 14 and then aLine (1 .. 15)  = "goes_back_down:" then
                   null;
-               elsif aLine (1 .. 17)  = "starts_at_bottom:" then
+               elsif S_Length > 16 and then aLine (1 .. 17)  = "starts_at_bottom:" then
                   null;
-               elsif aLine (1 .. 24)  = "elevator_visible_at_top:" then
+               elsif S_Length > 23 and then aLine (1 .. 24)  = "elevator_visible_at_top:" then
                   null;
-               elsif aLine (1 .. 27)  = "elevator_visible_at_bottom:" then
+               elsif S_Length > 26 and then aLine (1 .. 27)  = "elevator_visible_at_bottom:" then
                   null;
-               elsif aLine (1 .. 20)  = "elevator_top_height:" then
+               elsif S_Length > 19 and then aLine (1 .. 20)  = "elevator_top_height:" then
                   null;
-               elsif aLine (1 .. 23)  = "elevator_bottom_height:" then
+               elsif S_Length > 22 and then aLine (1 .. 23)  = "elevator_bottom_height:" then
                   null;
-               elsif aLine (1 .. 23)  = "elevator_down_duration:" then
+               elsif S_Length > 22 and then aLine (1 .. 23)  = "elevator_down_duration:" then
                   null;
-               elsif aLine (1 .. 21)  = "elevator_up_duration:" then
+               elsif S_Length > 20 and then aLine (1 .. 21)  = "elevator_up_duration:" then
                   null;
-               elsif aLine (1 .. 8)  = "delay_s:" then
+               elsif S_Length > 7 and then aLine (1 .. 8)  = "delay_s:" then
                   null;
-               elsif aLine (1 .. 6)  = "value:" then
+               elsif S_Length > 5 and then aLine (1 .. 6)  = "value:" then
                   null;
-               elsif aLine (1 .. 15)  = "sound_activate:" then
+               elsif S_Length > 14 and then aLine (1 .. 15)  = "sound_activate:" then
                   null;
                else
                   Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, "
-                                       & "invalid property in " & File_Name);
+                                       & "invalid property in " & File_Name &
+                                       ": " & aLine);
                end if;
             end if;
          end;  --  declare block
