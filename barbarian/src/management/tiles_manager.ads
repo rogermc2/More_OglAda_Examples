@@ -20,9 +20,11 @@ package Tiles_Manager is
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
+   function Get_Facing (Col, Row : Int) return Character;
    function Get_Tile (Col, Row : Int) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
+    function Is_Tile_Valid (Row, Col : GL.Types.Int) return Boolean;
     procedure Load_Tiles (File : File_Type);
     function Number_Of_Tiles return Integer;
     procedure Reset_Vars;

@@ -4,8 +4,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Game_Utils;
---  with GUI;
-with Manifold;
+with Tiles_Manager;
 
 package body Character_Controller is
 
@@ -42,7 +41,7 @@ package body Character_Controller is
             raise Character_Controller_Exception with
               "Character_Controller.Create_Character, no script file name.";
         end if;
-        if Manifold.Is_Tile_Valid (Source.U, Source.V) then
+        if Tiles_Manager.Is_Tile_Valid (Source.U, Source.V) then
             Game_Utils.Game_Log ("Creating character from " &
                                    To_String (Source.Script_File));
             if Character_Count >= Characters_Allocd_Count then

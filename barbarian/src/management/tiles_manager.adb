@@ -34,7 +34,6 @@ package body Tiles_Manager is
    Static_Lights         : Static_Light_List;
    Diff_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
    Spec_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
-   Total_Tiles           : Integer := 0;
 
    Tiles                 : Tile_List;
 
@@ -159,6 +158,22 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
+   function Get_Facing (Col, Row : Int) return Character is
+      use Batch_Manager;
+      aTile  : Tile_Data;
+      Result : Character;
+   begin
+      if Is_Tile_Valid (Col, Row) then
+         aTile := Get_Tile (Col, Row);
+         Result := aTile.Facing;
+      else
+         Result := 'N';
+      end if;
+      return Result;
+   end Get_Facing;
+
+   --  ----------------------------------------------------------------------------
+
    function Get_Tile (Col, Row : Int) return Tile_Data is
       use Batch_Manager;
    begin
@@ -227,6 +242,15 @@ package body Tiles_Manager is
    begin
       return aTile.Tile_Type = '/';
    end Is_Ramp;
+
+   --  ----------------------------------------------------------------------------
+
+   function Is_Tile_Valid (Row, Col : GL.Types.Int) return Boolean is
+      use Batch_Manager;
+   begin
+      return Col > 0 and Col <= Max_Cols and
+        Row > 0 and Row <= Max_Rows;
+   end Is_Tile_Valid;
 
    --  ----------------------------------------------------------------------------
 
@@ -462,7 +486,6 @@ package body Tiles_Manager is
 
       Max_Cols := Int'Value (aLine (Pos1 .. Pos2 - 1));
       Max_Rows := Int'Value (aLine (Pos2 + 1 .. aLine'Last));
-      Total_Tiles := Integer (Max_Rows * Max_Cols);
       Batches_Across :=
         Integer (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
       Batches_Down :=
@@ -548,7 +571,6 @@ package body Tiles_Manager is
 
    procedure Reset_Vars is
    begin
-      Total_Tiles  := 0;
       Diff_Palette_Name := To_Unbounded_String ("");
       Spec_Palette_Name := To_Unbounded_String ("");
    end Reset_Vars;

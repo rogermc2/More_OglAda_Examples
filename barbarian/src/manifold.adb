@@ -117,16 +117,6 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Tile_Valid (Row, Col : GL.Types.Int) return Boolean is
-      use Batch_Manager;
-      use GL.Types;
-    begin
-      return Col >= 0 and Col < Max_Cols and
-        Row >= 0 and Row < Max_Rows;
-    end Is_Tile_Valid;
-
-    --  ----------------------------------------------------------------------------
-
     procedure Reset_Manifold_Vars is
         use Batch_Manager;
     begin
