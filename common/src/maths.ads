@@ -5,6 +5,8 @@ with Ada.Numerics.Generic_Elementary_Functions;
 
 with GL.Types; use GL.Types;
 
+with Quaternions;
+
 package Maths is
 
    type Degree is new Single;
@@ -33,6 +35,8 @@ package Maths is
 
    package Single_Math_Functions is new
      Ada.Numerics.Generic_Elementary_Functions (GL.Types.Single);
+
+   package Single_Quaternion is new Quaternions (GL.Types.Single);
 
    package Vector5_Pointers is new Interfaces.C.Pointers
      (Size, Vector5, Vector5_Array, Vector5'(others => <>));
@@ -68,6 +72,8 @@ package Maths is
    function Min (L, R : GL.Types.Single) return GL.Types.Single;
    function Max_Int (L, R : GL.Types.Int) return GL.Types.Int;
    function Max (L, R : GL.Types.Single) return GL.Types.Single;
+   function New_Quaternion (Angle : Radian; Axis : GL.Types.Singles.Vector3)
+                            return Single_Quaternion.Quaternion;
    function Normalized (V : Singles.Vector3) return Singles.Vector3;
    function Normalized (V : Singles.Vector4) return Singles.Vector4;
    function Perspective_Matrix (View_Angle : Degree; Aspect, Near, Far : Single)
