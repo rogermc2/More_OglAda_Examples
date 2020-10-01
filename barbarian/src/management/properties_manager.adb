@@ -125,10 +125,16 @@ package body Properties_Manager is
      (Positive, Prop);
    type Properties_List is new Properties_Package.Vector with null record;
 
+   package Properties_Script_Package is new Ada.Containers.Vectors
+     (Positive, Prop_Script);
+   type Properties_Script_List is new Properties_Script_Package.Vector with null record;
+
    Properties   : Properties_List;
+   Prop_Scripts : Properties_Script_List;
    Portal_Index : Integer := -1;
 
-   procedure Set_Property_Defaults;
+   function Load_Property_Script (File_Name : String; Index : out Positive)
+                                  return Boolean;
 
    -- -------------------------------------------------------------------------
    --  Height_level is the property's own height offset from the tile.
@@ -136,14 +142,42 @@ package body Properties_Manager is
    procedure Create_Prop_From_Script (Script_File                : String;
                                       Map_U, Map_V, Height_Level : Integer;
                                       Facing                     : Character; Tx, Rx : Integer) is
-
+      New_Props : Prop;
    begin
       Game_Utils.Game_Log ("Properties Manager creating property from script "
                            & Script_File);
-      Set_Property_Defaults;
+      --        Set_Property_Defaults;   set by record defaults
+--        New_Props.Script_Index
    end Create_Prop_From_Script;
 
    -- -------------------------------------------------------------------------
+
+   function Get_Index_Of_Prop_Script (Script_File : String) return Positive is
+      use Properties_Script_Package;
+      Curs    : Cursor := Prop_Scripts.First;
+      aScript : Prop_Script;
+      Found   : Boolean := False;
+      Index   : Positive;
+      OK      : Boolean := False;
+   begin
+      while Has_Element (Curs) and not Found loop
+         aScript := Element (Curs);
+         Found := aScript.File_Name = To_Unbounded_String (Script_File);
+         if Found then
+            Index := To_Index (Curs);
+         else
+            Next (Curs);
+         end if;
+      end loop;
+      if not Found then
+         OK := Load_Property_Script (Script_File, Index);
+      end if;
+
+      return Index;
+   end Get_Index_Of_Prop_Script;
+
+   -- -------------------------------------------------------------------------
+
    --  read properties from an already open file
    procedure Load_Properties (Prop_File : File_Type) is
       use Ada.Strings;
@@ -208,7 +242,6 @@ package body Properties_Manager is
                                   Facing, Tx, Rx);
       end loop;
 
-
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Properties_Manager.Load_Properties!");
@@ -217,11 +250,146 @@ package body Properties_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Set_Property_Defaults is
-
+   function Load_Property_Script (File_Name : String; Index : out Positive)
+                                  return Boolean is
+      use Properties_Script_Package;
+      With_Path           : constant String := "src/props/" & File_Name;
+      Script_File         : File_Type;
+      aScript             : Prop_Script;
+      Box_Point_Count     : Integer := 0;
+      Hole_Point_Count    : Integer := 0;
+      Smashed_Script_File : Unbounded_String;
+      Has_Smashed_Script  : Boolean := False;
+      OK                  : Boolean := False;
    begin
-      null;
-   end Set_Property_Defaults;
+      Open (Script_File, In_File, With_Path);
+      Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, " &
+                             With_Path & " opened.");
+      aScript.File_Name := To_Unbounded_String (File_Name);
+
+      while not End_Of_File (Script_File) loop
+         declare
+            aLine    : constant String := Get_Line (Script_File);
+            S_Length : constant Integer := aLine'Length;
+         begin
+            if S_Length > 1 and aLine (1) /= '#' then
+               if aLine (1 .. 5)  = "mesh:" then
+                  null;
+               elsif aLine (1 .. 14)  = "outlines_mesh:" then
+                  null;
+               elsif aLine (1 .. 15)  = "smashed_script:" then
+                  null;
+               elsif aLine (1 .. 12)  = "diffuse_map:" then
+                  null;
+               elsif aLine (1 .. 13)  = "specular_map:" then
+                  null;
+               elsif aLine (1 .. 11)  = "normal_map:" then
+                  null;
+               elsif aLine (1 .. 13)  = "casts_shadow:" then
+                  null;
+               elsif aLine (1 .. 14)  = "draw_outlines:" then
+                  null;
+               elsif aLine (1 .. 12)  = "transparent:" then
+                  null;
+               elsif aLine (1 .. 12)  = "starts_open:" then
+                  null;
+               elsif aLine (1 .. 15)  = "starts_visible:" then
+                  null;
+               elsif aLine (1 .. 16)  = "lamp_offset_pos:" then
+                  null;
+               elsif aLine (1 .. 20)  = "lamp_diffuse_colour:" then
+                  null;
+               elsif aLine (1 .. 21)  = "lamp_specular_colour:" then
+                  null;
+               elsif aLine (1 .. 11)  = "lamp_range:" then
+                  null;
+               elsif aLine (1 .. 10)  = "particles:" then
+                  null;
+               elsif aLine (1 .. 17)  = "particles_offset:" then
+                  null;
+               elsif aLine (1 .. 5)  = "type:" then
+                  null;
+               elsif aLine (1 .. 6)  = "scale:" then
+                  null;
+               elsif aLine (1 .. 12)  = "uses_sprite:" then
+                  null;
+               elsif aLine (1 .. 16)  = "sprite_map_rows:" then
+                  null;
+               elsif aLine (1 .. 16)  = "sprite_map_cols:" then
+                  null;
+               elsif aLine (1 .. 16)  = "sprite_y_offset:" then
+                  null;
+               elsif aLine (1 .. 13)  = "sprite_timer:" then
+                  null;
+               elsif aLine (1 .. 6)  = "height:" then
+                  null;
+               elsif aLine (1 .. 7)  = "radius:" then
+                  null;
+               elsif aLine (1 .. 7)  = "origin:" then
+                  null;
+               elsif aLine (1 .. 18)  = "trigger_only_once:" then
+                  null;
+               elsif aLine (1 .. 20)  = "character_activated:" then
+                  null;
+               elsif aLine (1 .. 14)  = "npc_activated:" then
+                  null;
+               elsif aLine (1 .. 22)  = "hide_after_triggering:" then
+                  null;
+               elsif aLine (1 .. 13)  = "box_xz_point:" then
+                  null;
+               elsif aLine (1 .. 12)  = "hole_height:" then
+                  null;
+               elsif aLine (1 .. 14)  = "hole_xz_point:" then
+                  null;
+               elsif aLine (1 .. 17)  = "setOpeningTime_s:" then
+                  null;
+               elsif aLine (1 .. 13)  = "goes_back_up:" then
+                  null;
+               elsif aLine (1 .. 15)  = "goes_back_down:" then
+                  null;
+               elsif aLine (1 .. 17)  = "starts_at_bottom:" then
+                  null;
+               elsif aLine (1 .. 24)  = "elevator_visible_at_top:" then
+                  null;
+               elsif aLine (1 .. 27)  = "elevator_visible_at_bottom:" then
+                  null;
+               elsif aLine (1 .. 20)  = "elevator_top_height:" then
+                  null;
+               elsif aLine (1 .. 23)  = "elevator_bottom_height:" then
+                  null;
+               elsif aLine (1 .. 23)  = "elevator_down_duration:" then
+                  null;
+               elsif aLine (1 .. 21)  = "elevator_up_duration:" then
+                  null;
+               elsif aLine (1 .. 8)  = "delay_s:" then
+                  null;
+               elsif aLine (1 .. 6)  = "value:" then
+                  null;
+               elsif aLine (1 .. 15)  = "sound_activate:" then
+                  null;
+               else
+                  Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, "
+                                      & "invalid property in " & File_Name);
+               end if;
+            end if;
+         end;  --  declare block
+      end loop;
+
+      Close (Script_File);
+
+      if OK then
+         Prop_Scripts.Append (aScript);
+         Index := Prop_Scripts.Last_Index;
+      end if;
+
+      if Has_Smashed_Script then
+         OK := Load_Property_Script
+           (To_String (Smashed_Script_File), aScript.Smashed_Script_Index);
+         Prop_Scripts.Replace_Element (Index, aScript);
+      end if;
+
+      return OK;
+   end Load_Property_Script;
 
    -- --------------------------------------------------------------------------
 
