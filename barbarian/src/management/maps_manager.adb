@@ -5,7 +5,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 --  with Character_Controller;
 with Game_Utils;
---  with Properties_Manager;
+with Properties_Manager;
 --  with Text_Manager;
 with Tiles_Manager;
 
@@ -42,8 +42,7 @@ package body Maps_Manager is
         Put_Line ("Maps_Manager.Load_Maps loading tiles ");
         Tiles_Manager.Load_Tiles (Input_File);
 
-        --          Properties_Manager.Load_Properties (Input_Stream);
-        --  --            (Input_Stream, Stream_IO.Index (Input_File));
+        Properties_Manager.Load_Properties (Input_File);
         --          Current_Pos := Integer (Stream_IO.Index (Input_File));
         --
         --          Character_Controller.Init;

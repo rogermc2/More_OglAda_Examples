@@ -10,8 +10,6 @@ project Parse_Test is
    for Object_Dir use "obj";
    for Main use ("barbarian_parse_test");
 
-   package Compiler renames Opengl.Compiler;
-
    package Binder is
       for Switches ("ada") use ("-u10", "-d65532k");
    end Binder;

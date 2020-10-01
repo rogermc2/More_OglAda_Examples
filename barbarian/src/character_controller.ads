@@ -10,8 +10,13 @@ package Character_Controller is
 
 type Barbarian_Character is private;
 
-    Char_Mount_Wall_Max_Height : constant GL.Types.Single := 1.0;  --  0.75F --  Was 1.0
-    Max_Inventory_Javelins     : constant GL.Types.Int := 4;
+   Char_Mount_Wall_Max_Height : constant GL.Types.Single := 1.0;  --  0.75F --  Was 1.0
+   Max_Inventory_Javelins     : constant GL.Types.Int := 4;
+   Gold_Current               : Integer := 0;
+   Gold_Max                   : Integer := 0;
+   Total_Treasure_Found       : Integer := 0;
+   Kills_Current              : Integer := 0;
+   Kills_Max                  : Integer := 0;
 
     Character_Controller_Exception : Exception;
 
