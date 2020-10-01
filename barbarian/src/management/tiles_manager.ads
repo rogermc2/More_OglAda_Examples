@@ -2,6 +2,8 @@
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Types; use GL.Types;
+
 package Tiles_Manager is
 
     type Tile_Data is record
@@ -15,8 +17,11 @@ package Tiles_Manager is
       (Positive, Tile_Data);
     type Tile_List is new Tile_Data_Package.Vector with null record;
 
-    Tiles_Manager_Exception : Exception;
+   Tiles_Manager_Exception : Exception;
+   Out_Of_Bounds_Height    : constant Single := 1024.0;
 
+   function Get_Tile_Height
+     (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
     procedure Load_Tiles (File : File_Type);
     function Number_Of_Tiles return Integer;
     procedure Reset_Vars;
