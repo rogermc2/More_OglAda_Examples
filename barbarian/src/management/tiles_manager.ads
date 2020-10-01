@@ -20,6 +20,7 @@ package Tiles_Manager is
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
+   function Get_Tile (Col, Row : Int) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
     procedure Load_Tiles (File : File_Type);

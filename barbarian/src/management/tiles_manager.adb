@@ -159,6 +159,19 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
+   function Get_Tile (Col, Row : Int) return Tile_Data is
+      use Batch_Manager;
+   begin
+      if Col < 1 or Col > Max_Cols or Row < 1 or Row > Max_Rows then
+         raise Tiles_Manager_Exception with
+           " Tiles_Manager.Get_Tile, invalid row or column: " &
+           Int'Image (Row) & ", " & Int'Image (Col);
+      end if;
+      return  Tiles.Element (Positive ((Row - 1) * Max_Cols + Col));
+   end Get_Tile;
+
+   --  ----------------------------------------------------------------------------
+
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single  is
       use Batch_Manager;
@@ -172,7 +185,7 @@ package body Tiles_Manager is
       if X < -1.0 or Col > Max_Cols or Z < -1.0 or Row > Max_Rows then
          Height := Out_Of_Bounds_Height;
       else
-         aTile := Tiles.Element (Positive ((Row - 1) * Max_Cols + Col));
+         aTile := Get_Tile (Col, Row);
          Height := 2.0 * Single (aTile.Height);
          if Respect_Ramps and then Is_Ramp (Col, Row) then
             --  Work out position within ramp. subtract left-most pos from x, etc.
@@ -201,16 +214,8 @@ package body Tiles_Manager is
 
    function Get_Tile_Level (Col, Row : Int) return Integer is
       use Batch_Manager;
-      aTile : Tile_Data;
+      aTile : constant Tile_Data := Get_Tile (Col, Row);
    begin
-      if Col < 1 or Col > Max_Cols or Row < 1 or Row > Max_Rows then
-         raise Tiles_Manager_Exception with
-           " Tiles_Manager.Get_Tile_Level, invalid row or column: " &
-           Int'Image (Row) & ", " & Int'Image (Col);
-      end if;
-      --        Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Level row, col " &
-      --                               Int'Image (Row) & ", " & Int'Image (Col));
-      aTile := Tiles.Element (Positive ((Row - 1) * Max_Cols + Col));
       return aTile.Height;
    end Get_Tile_Level;
 
@@ -218,20 +223,18 @@ package body Tiles_Manager is
 
    function Is_Ramp (Col, Row : Int) return Boolean is
       use Batch_Manager;
-      aTile : Tile_Data := Tiles.Element (Positive ((Row - 1) * Max_Cols + Col));
+      aTile : constant Tile_Data := Get_Tile (Col, Row);
    begin
-      return Col > 0 and Col <= Max_Cols and Row > 0 and Row <= Max_Rows and
-        aTile.Tile_Type = '/';
+      return aTile.Tile_Type = '/';
    end Is_Ramp;
 
    --  ----------------------------------------------------------------------------
 
    function Is_Water (Col, Row : Int) return Boolean is
       use Batch_Manager;
-      aTile : Tile_Data := Tiles.Element (Positive ((Row - 1) * Max_Cols + Col));
+      aTile : constant Tile_Data := Get_Tile (Col, Row);
    begin
-      return Col > 0 and Col <= Max_Cols and Row > 0 and Row <= Max_Rows and
-        aTile.Tile_Type = '~';
+      return aTile.Tile_Type = '~';
    end Is_Water;
 
    --  ----------------------------------------------------------------------------
@@ -495,7 +498,7 @@ package body Tiles_Manager is
 
    function Number_Of_Tiles return Integer is
    begin
-      return Total_Tiles;
+      return Integer (Tiles.Length);
    end Number_Of_Tiles;
 
    --  ----------------------------------------------------------------------------
