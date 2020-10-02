@@ -195,7 +195,6 @@ package body Texture_Manager is
 
    --  ------------------------------------------------------------------------
 
-   --      pragma Warnings (off);
    procedure Load_Image_To_Texture (File_Name          : String;
                                     aTexture           : in out Texture;
                                     Gen_Mips, Use_SRGB : Boolean) is
@@ -221,8 +220,8 @@ package body Texture_Manager is
       Texture_Loaded        : Boolean := False;
       Texture_Data          : Loaded_Texture;
    begin
-      Game_Utils.Game_Log (ASCII.CR & "Loading data from " & File_Name);
-      Put_Line ("Loading data from " & File_Name);
+      Game_Utils.Game_Log (ASCII.CR & "Texture_Manager.Load_Image_To_Texture loading data from " & File_Name);
+      Put_Line ("Texture_Manager.Load_Image_To_Texture loading data from " & File_Name);
       while Has_Element (Curs) and not Texture_Loaded loop
          Texture_Loaded := Element (Curs).File_Name = File_Name;
          Next (Curs);
@@ -231,7 +230,7 @@ package body Texture_Manager is
       if not Texture_Loaded then
          GID_Image_Loader.Load_File_To_Image
            (File_Name, Image_Data_Ptr, Data_Length, X, Y, Force_Channels);
-         Game_Utils.Game_Log ("Load_Image_To_Texture result: X, Y Data_Length "
+         Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture, Load_Image_To_Texture result: X, Y Data_Length "
                               & GL.Types.Int'Image (X) & "  " &
                                 GL.Types.Int'Image (Y) & "  " &
                                 GL.Types.Int'Image (Data_Length));
@@ -334,9 +333,9 @@ package body Texture_Manager is
             Loaded_Textures.Append (Texture_Data);
             Loaded_Texture_Count := Loaded_Texture_Count + 1;
          end; -- declare block
-         Game_Utils.Game_Log ("Image " & File_Name & " loaded.");
+         Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " & File_Name & " loaded.");
       else
-         Game_Utils.Game_Log ("Image " & File_Name & " already loaded.");
+         Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " & File_Name & " already loaded.");
       end if;
 
    exception

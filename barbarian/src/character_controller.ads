@@ -1,6 +1,6 @@
 
 with Ada.Containers.Vectors;
-with Ada.Streams.Stream_IO; use Ada.Streams;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Types;
 
@@ -21,8 +21,7 @@ type Barbarian_Character is private;
     Character_Controller_Exception : Exception;
 
     procedure Init;
-    procedure Load_Characters (Input_Stream : Stream_IO.Stream_Access;
-                               Editor_Mode : Boolean);
+    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);
     function Update_Characters (Seconds : Float) return Boolean;
 
 private
