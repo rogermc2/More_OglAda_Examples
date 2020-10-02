@@ -51,6 +51,16 @@ package Specs_Manager is
       (Attack_Event);
     type Attack_Events_List is new Attack_Events_Package.List with null Record;
 
+    for Weapon_Type use (Sword_Wt    => 0,
+                         Missile_Wt  => 1,  --  Used for javelin, arrow and green fireballs
+                         Hammer_Wt   => 2,
+                         Skull_Wt    => 3,  --  Was originally for deleted the crossbow trap
+                         Teleport_Wt => 4,
+                         Pillar_Wt   => 5,
+                         Boulder_Wt  => 6,
+                         Fall_Wt     => 7,
+                         Na_Wt       => 8); --  Everything else
+
     type Weapon_Array is array
       (Weapon_Type range Weapon_Type'First .. Weapon_Type'Last) of Float;
 
@@ -69,8 +79,7 @@ package Specs_Manager is
         File_Name               : Unbounded_String := To_Unbounded_String ("");
         Name                    : Unbounded_String := To_Unbounded_String ("");
         Weapon_Attack_Time      : Weapon_Array := (others => 0.0);
-        Attack_Range_Metre      : GL.Types.Int_Array (1 .. Max_Weapons) :=
-                                    (others => 0);
+        Attack_Range_Metre      : Weapon_Array := (others => 0.0);
         Move_Speed_MPS          : Float := 0.0;
         Height_Metre            : Float := 0.0;
         Width_Radius            : Float := 0.0;
@@ -79,10 +88,10 @@ package Specs_Manager is
         Atlas_Cols              : Integer := 0;
         Sight_Range_Tiles       : Integer := 0;
         Initial_Health          : Integer := 0;
-        Deafault_Weapon         : Weapon_Type := Na_Wt;
+        Default_Weapon          : Weapon_Type := Na_Wt;
         Projectile              : Projectile_Manager.Projectile_Type :=
                                     Projectile_Manager.Na_Proj_Type;
-        Decapitated_Head_Prop_Script : Integer := 0;
+        Decapitated_Head_Script : Unbounded_String := To_Unbounded_String ("");
         Team_ID                 : Integer := 0;
         Tx_On_Death             : Integer := 0;
         Land_Move               : Boolean;  --  False for sewerman
@@ -125,6 +134,7 @@ package Specs_Manager is
 
     procedure Clear_Specs;
     function Get_Script_Index (File_Name : String) return Integer;
-    procedure Load_Specs_File (File_Name : String);
+   procedure Load_Specs_File (File_Name : String);
+
 
 end Specs_Manager;
