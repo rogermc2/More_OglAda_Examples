@@ -92,21 +92,24 @@ package body Specs_Manager is
       use Ada.Strings;
       Weapon_ID : Weapon_Type := Na_Wt;
       Seconds   : Float := 0.0;
-      Pos1      : Natural := Fixed.Index (aLine, " ");
-      Pos2      : Natural;
-      Pos_P1    : constant Natural := Pos1 + 1;
+      L_Length    : constant Integer := aLine'Length;
+      Pos1        : Integer := Fixed.Index (aLine, ":");
+      Pos2        : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
    begin
-      Pos2 := Fixed.Index (aLine, " ");
-      Weapon_ID := Weapon_Type'Value (aLine (Pos_P1 .. Pos2 - 1));
+      Weapon_ID := Weapon_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
       if Weapon_ID'Valid then
          Game_Utils.Game_Log ("ERROR: invalid weapon ID in attack event.");
          Weapon_ID := Na_Wt;
       else
-         Pos1 := Fixed.Index (aLine, " ") + 1;
-         Pos2 := Fixed.Index (aLine, " ");
-         Seconds :=  Float'Value (aLine (Pos_P1 .. Pos2 - 1));
+         Pos1 := Fixed.Index (aLine (Pos2 + 1 .. L_Length), ":");
+         Seconds :=  Float'Value (aLine (Pos1 + 2 .. L_Length));
          theSpec.Weapon_Attack_Time (Weapon_ID) := Seconds;
       end if;
+
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Specs_Manager.Add_Attack_Duration!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Add_Attack_Duration;
 
    --  -------------------------------------------------------------------------
@@ -114,49 +117,47 @@ package body Specs_Manager is
    procedure Add_Attack_Event (aLine : String; theSpec : in out Spec_Data) is
       use Ada.Strings;
       Weapon_ID   : Weapon_Type := Na_Wt;
-      Seconds     : Float := 0.0;
-      F_Val       : Float;
-      Int_Val     : Integer;
-      Pos1        : Natural := Fixed.Index (aLine, " ");
       Last        : constant Natural := aLine'Last;
-      Pos2        : Natural;
+      Pos1        : Integer := Fixed.Index (aLine, ":");
+      Pos2        : Integer := Fixed.Index (aLine (Pos1 + 2 .. Last), " ");
       AEC         : Integer;
       anEvent     : Attack_Event;
    begin
-      --  Skip "attack_event weapon:"
-      Pos2 := Fixed.Index (Source => aLine, Pattern => " ", From => Pos1 + 1);
-      Weapon_ID := Weapon_Type'Value (aLine (Pos1 .. Pos2));
+      Put_Line ("Specs_Manager.Add_Attack_Event, Weapon_ID int: " &
+                  aLine (Pos1 + 2 .. Pos2 - 1));
+      Weapon_ID := Weapon_Type'Enum_Val (Integer'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
+      Game_Utils.Game_Log ("Specs_Manager.Add_Attack_Event, Weapon_ID: " &
+                                   Weapon_Type'Image (Weapon_ID));
+      Put_Line ("Specs_Manager.Add_Attack_Event, Weapon_ID: " &
+                                   Weapon_Type'Image (Weapon_ID));
       if Weapon_ID'Valid then
-         --  Skip "time:"
-         Pos1 := Fixed.Index (aLine, "time") + 5;
-         Ada.Float_Text_IO.Get (aLine (Pos1 .. Last), Seconds, Pos2);
-         anEvent.Time_Sec := Single (Seconds);
-         --  Skip "location:"
-         Pos1 := Fixed.Index (aLine (Pos2 .. Last), " ");
-         Ada.Float_Text_IO.Get (aLine (Pos1 .. Last), F_Val, Pos2);
-         anEvent.Location (GL.X) := Single (F_Val);
-         Pos1 := Fixed.Index (aLine (Pos2 .. Last), " ");
-         Ada.Float_Text_IO.Get (aLine (Pos1 .. Last), F_Val, Pos2);
-         anEvent.Location (GL.Y) := Single (F_Val);
-         Pos1 := Fixed.Index (aLine (Pos2 .. Last), " ");
-         Ada.Float_Text_IO.Get (aLine (Pos1 .. Last), F_Val, Pos2);
-         anEvent.Location (GL.Z) := Single (F_Val);
-         --  Skip "radius_m:"
-         Pos1 := Fixed.Index (aLine (Pos2 .. Last), " ");
-         Ada.Float_Text_IO.Get (aLine (Pos1 .. Last), F_Val, Pos2);
-         anEvent.Radius := Single (F_Val);
-         --  Skip "min_damage:"
-         Pos1 := Fixed.Index (aLine (Pos2 .. Last), " ");
-         Ada.Integer_Text_IO.Get (aLine (Pos1 .. Last), Int_Val, Pos2);
-         anEvent.Min_Damage := Int (Int_Val);
-         --  Skip "max_damage:"
-         Pos1 := Fixed.Index (aLine (Pos2 .. Last), " ");
-         Ada.Integer_Text_IO.Get (aLine (Pos1 .. Last), Int_Val, Pos2);
-         anEvent.Max_Damage := Int (Int_Val);
-         --  Skip "throw_back_mps:"
-         Pos1 := Fixed.Index (aLine (Pos2 .. Last), " ");
-         Ada.Float_Text_IO.Get (aLine (Pos1 .. Last), F_Val, Pos2);
-         anEvent.Throw_Back_MPS := Single (F_Val);
+         --  "time:"
+         Pos1 := Fixed.Index (aLine (Pos2 + 1 .. Last), ":");
+         Pos2 := Fixed.Index (aLine (Pos1 + 2 .. Last), " ");
+         anEvent.Time_Sec := Single'Value (aLine (Pos1 + 2 .. Pos2 - 1));
+         --  "location:"
+         Pos1 := Fixed.Index (aLine (Pos2 + 1 .. Last), "(");
+         Pos2 := Fixed.Index (aLine (Pos1 + 1 .. Last), ",");
+         anEvent.Location (GL.X) := Single'Value (aLine (Pos1 + 1 .. Pos2 - 1));
+         Pos1 := Fixed.Index (aLine (Pos2 + 1 .. Last), ",");
+         anEvent.Location (GL.Y) := Single'Value (aLine (Pos2 + 1 .. Pos1 - 1));
+         Pos2 := Fixed.Index (aLine (Pos1 + 1 .. Last), ")");
+         anEvent.Location (GL.Z) := Single'Value (aLine (Pos1 + 1 .. Pos2 - 1));
+         --  "radius_m:"
+         Pos1 := Fixed.Index (aLine (Pos2 + 1 .. Last), ":");
+         Pos2 := Fixed.Index (aLine (Pos1 + 2 .. Last), " ");
+         anEvent.Radius := Single'Value (aLine (Pos1 + 2 .. Pos2 - 1));
+         --  "min_damage:"
+         Pos1 := Fixed.Index (aLine (Pos2 + 1 .. Last), ":");
+         Pos2 := Fixed.Index (aLine (Pos1 + 2 .. Last), " ");
+         anEvent.Min_Damage := Int'Value (aLine (Pos1 + 1 .. Pos2 - 1));
+         --  "max_damage:"
+         Pos1 := Fixed.Index (aLine (Pos2 + 1 .. Last), ":");
+         Pos2 := Fixed.Index (aLine (Pos1 + 2 .. Last), " ");
+         anEvent.Max_Damage := Int'Value (aLine (Pos1 + 1 .. Pos2 - 1));
+         --  "throw_back_mps:"
+         Pos1 := Fixed.Index (aLine (Pos2 + 1 .. Last), ":");
+         anEvent.Throw_Back_MPS := Single'Value (aLine (Pos1 + 1 .. Last));
 
          AEC := theSpec.Attack_Event_Count (Weapon_ID);
          if AEC < 0 or AEC >= Integer (Max_Attack_Events) then

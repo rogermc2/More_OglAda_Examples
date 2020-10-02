@@ -45,11 +45,6 @@ package body Character_Controller is
       if Tiles_Manager.Is_Tile_Valid (Source.U, Source.V) then
          Game_Utils.Game_Log ("Character_Controller.Create_Character creating character from " &
                                 To_String (Source.Script_File));
---           if Character_Count >= Characters_Allocd_Count then
---              Game_Utils.Game_Log ("WARNING: realloc characters.");
---              Characters_Allocd_Count := Character_Count + 64;
---           end if;
-
          Set_Character_Defaults (theCharacter);
          theCharacter.Heading_Deg := Source.H;
          theCharacter.Map_X := Source.U;
@@ -149,6 +144,8 @@ package body Character_Controller is
             Create_Character (Field, aCharacter);
          end;
       end loop;
+      Game_Utils.Game_Log
+        ("Character_Controller.Load_Characters, all characters loaded.");
 
    exception
       when anError : others =>
