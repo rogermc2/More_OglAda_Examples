@@ -147,13 +147,15 @@ package body Properties_Manager is
       use Properties_Script_Package;
       New_Props     : Prop;
       Script_Index  : constant Positive := Get_Index_Of_Prop_Script (Script_File);
-      aScript       : constant Prop_Script := Prop_Scripts.Element (Script_Index);
+      aScript       : constant Prop_Script:= Prop_Scripts.Element (Script_Index);
       Script_Type   : constant Prop_Type := aScript.Prop_Kind;
       Respect_Ramps : Boolean := Script_Type = Boulder;
    begin
+--        Game_Utils.Game_Log ("Properties Manager creating property from script index"
+--                                & Integer'Image (Script_Index));
       if Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
-         Game_Utils.Game_Log ("Properties Manager creating property from script "
-                              & Script_File);
+--           Game_Utils.Game_Log ("Properties Manager creating property from script "
+--                                & Script_File);
          New_Props.Script_Index := Script_Index;
          --        Set_Property_Defaults;   set by record defaults
          New_Props.World_Pos (GL.X) := 2.0 * Single (Map_U);
@@ -170,7 +172,7 @@ package body Properties_Manager is
       Curs    : Cursor := Prop_Scripts.First;
       aScript : Prop_Script;
       Found   : Boolean := False;
-      Index   : Positive;
+      Index   : integer := 0;
       OK      : Boolean := False;
    begin
       while Has_Element (Curs) and not Found loop
@@ -215,8 +217,6 @@ package body Properties_Manager is
       PosR := Fixed.Index (aLine (PosL .. S_Length), " ");
 
       Property_Count := Integer'Value (aLine (PosL .. PosR));
-      Game_Utils.Game_Log ("Properties_Manager reading " &
-                             Integer'Image (Property_Count) & " properties");
       Portal_Index := -1;
       Character_Controller.Gold_Current := 0;
       Character_Controller.Gold_Max := 0;
@@ -273,11 +273,11 @@ package body Properties_Manager is
       Hole_Point_Count    : Integer := 0;
       Smashed_Script_File : Unbounded_String;
       Has_Smashed_Script  : Boolean := False;
-      OK                  : Boolean := False;
+      OK                  : Boolean := True;
    begin
       Open (Script_File, In_File, With_Path);
-      --        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, " &
-      --                               With_Path & " opened.");
+--        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, " &
+--                                     With_Path & " opened.");
       aScript.File_Name := To_Unbounded_String (File_Name);
 
       while not End_Of_File (Script_File) loop
@@ -308,13 +308,13 @@ package body Properties_Manager is
                   null;
                elsif S_Length > 14 and then aLine (1 .. 15)  = "starts_visible:" then
                   null;
-               elsif S_Length > 15 and then aLine (1 .. 16)  = "lamp_offset_pos:" then
+               elsif S_Length > 14 and then aLine (1 .. 15)  = "lamp_offset_pos" then
                   null;
-               elsif S_Length > 19 and then aLine (1 .. 20)  = "lamp_diffuse_colour:" then
+               elsif S_Length > 18 and then aLine (1 .. 19)  = "lamp_diffuse_colour" then
                   null;
-               elsif S_Length > 20 and then aLine (1 .. 21)  = "lamp_specular_colour:" then
+               elsif S_Length > 19 and then aLine (1 .. 20)  = "lamp_specular_colour" then
                   null;
-               elsif S_Length > 10 and then aLine (1 .. 11)  = "lamp_range:" then
+               elsif S_Length > 9 and then aLine (1 .. 10)  = "lamp_range" then
                   null;
                elsif S_Length > 9 and then aLine (1 .. 10)  = "particles:" then
                   null;
@@ -382,6 +382,7 @@ package body Properties_Manager is
                elsif S_Length > 14 and then aLine (1 .. 15)  = "sound_activate:" then
                   null;
                else
+                  OK := False;
                   Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, "
                                        & "invalid property in " & File_Name &
                                        ": " & aLine);
@@ -403,7 +404,7 @@ package body Properties_Manager is
          Prop_Scripts.Replace_Element (Index, aScript);
       end if;
 
-      Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, script properties loaded");
+--        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, script properties loaded");
       return OK;
    end Load_Property_Script;
 
