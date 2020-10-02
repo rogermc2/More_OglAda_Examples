@@ -5,6 +5,7 @@ with Ada.Float_Text_IO;
 with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Maths;
 with Texture_Manager;
 
 with Game_Utils;
@@ -88,13 +89,14 @@ package body Specs_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_Attack_Duration (aLine : String; theSpec : in out Spec_Data) is
+   procedure Add_Attack_Float (aLine        : String;
+                               theSpec_Item : in out Weapon_Array) is
       use Ada.Strings;
       Weapon_ID : Weapon_Type := Na_Wt;
-      Seconds   : Float := 0.0;
-      L_Length    : constant Integer := aLine'Length;
-      Pos1        : Integer := Fixed.Index (aLine, ":");
-      Pos2        : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
+      theFloat  : Float := 0.0;
+      L_Length  : constant Integer := aLine'Length;
+      Pos1      : Integer := Fixed.Index (aLine, ":");
+      Pos2      : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
    begin
       Weapon_ID := Weapon_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
       if Weapon_ID'Valid then
@@ -102,15 +104,15 @@ package body Specs_Manager is
          Weapon_ID := Na_Wt;
       else
          Pos1 := Fixed.Index (aLine (Pos2 + 1 .. L_Length), ":");
-         Seconds :=  Float'Value (aLine (Pos1 + 2 .. L_Length));
-         theSpec.Weapon_Attack_Time (Weapon_ID) := Seconds;
+         theFloat :=  Float'Value (aLine (Pos1 + 2 .. L_Length));
+         theSpec_Item (Weapon_ID) := theFloat;
       end if;
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Specs_Manager.Add_Attack_Duration!");
+         Put_Line ("An exception occurred in Specs_Manager.Add_Attack_Float!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
-   end Add_Attack_Duration;
+   end Add_Attack_Float;
 
    --  -------------------------------------------------------------------------
 
@@ -123,13 +125,11 @@ package body Specs_Manager is
       AEC         : Integer;
       anEvent     : Attack_Event;
    begin
-      Put_Line ("Specs_Manager.Add_Attack_Event, Weapon_ID int: " &
-                  aLine (Pos1 + 2 .. Pos2 - 1));
       Weapon_ID := Weapon_Type'Enum_Val (Integer'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
-      Game_Utils.Game_Log ("Specs_Manager.Add_Attack_Event, Weapon_ID: " &
-                                   Weapon_Type'Image (Weapon_ID));
-      Put_Line ("Specs_Manager.Add_Attack_Event, Weapon_ID: " &
-                                   Weapon_Type'Image (Weapon_ID));
+--        Game_Utils.Game_Log ("Specs_Manager.Add_Attack_Event, Weapon_ID: " &
+--                                     Weapon_Type'Image (Weapon_ID));
+--        Put_Line ("Specs_Manager.Add_Attack_Event, Weapon_ID: " &
+--                                     Weapon_Type'Image (Weapon_ID));
       if Weapon_ID'Valid then
          --  "time:"
          Pos1 := Fixed.Index (aLine (Pos2 + 1 .. Last), ":");
@@ -164,7 +164,7 @@ package body Specs_Manager is
             raise Specs_Exception with
               "Specs_Manager.Add_Attack_Event, too many attack_event instances.";
          else
-            Game_Utils.Game_Log ("Adding attack_event time: " &
+            Game_Utils.Game_Log (" Specs_Manager.Add_Projectile_Type adding attack_event time: " &
                                    Single'Image (anEvent.Time_Sec));
             theSpec.Attack_Events (Weapon_ID).Append (anEvent);
             theSpec.Attack_Event_Count (Weapon_ID) :=
@@ -180,6 +180,53 @@ package body Specs_Manager is
          Put_Line ("An exception occurred in Specs_Manager.Add_Attack_Event!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Add_Attack_Event;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Add_Default_Weapon (aLine : String; theSpec : in out Spec_Data) is
+      use Ada.Strings;
+      Weapon_ID : Weapon_Type := Na_Wt;
+      L_Length  : constant Integer := aLine'Length;
+      Pos1      : Integer := Fixed.Index (aLine, ":");
+      Pos2      : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
+   begin
+      Weapon_ID := Weapon_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
+      if Weapon_ID'Valid then
+         Game_Utils.Game_Log (" Specs_Manager.Add_Projectile_Type ERROR: invalid weapon ID in attack event.");
+         Weapon_ID := Na_Wt;
+      else
+         theSpec.Default_Weapon := Weapon_ID;
+      end if;
+
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Specs_Manager.Add_Default_Weapon!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+   end Add_Default_Weapon;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Add_Projectile_Type (aLine : String; theSpec : in out Spec_Data) is
+      use Ada.Strings;
+      use Projectile_Manager;
+      Projectile : Projectile_Type := Na_Proj_Type;
+      L_Length   : constant Integer := aLine'Length;
+      Pos1       : Integer := Fixed.Index (aLine, ":");
+      Pos2       : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
+   begin
+      Projectile := Projectile_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
+      if Projectile'Valid then
+         Game_Utils.Game_Log (" Specs_Manager.Add_Projectile_Type ERROR: invalid projectile type.");
+         theSpec.Projectile := Na_Proj_Type;
+      else
+         theSpec.Projectile := Projectile;
+      end if;
+
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Specs_Manager.Add_Projectile_Type!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+   end Add_Projectile_Type;
 
    --  -------------------------------------------------------------------------
 
@@ -229,7 +276,7 @@ package body Specs_Manager is
       use Ada.Strings;
       Path          : constant String := "src/characters/" & File_Name;
       Input_File    : File_Type;
-      --          Attack_Sound  : Integer := 0;
+      Attack_Sound  : Int := 1;
       theSpec       : Spec_Data;
    begin
       Open (Input_File, In_File, Path);
@@ -251,12 +298,9 @@ package body Specs_Manager is
             if  aLine'Length < 2 or else aLine (1 .. 1) = "#" or else
               aLine (1 .. 1) = "/"  then
                null;
-            elsif aLine (1 .. Pos_M1) = "name" then
+            elsif aLine (1 .. Pos_M1) = "name:" then
                theSpec.Name :=
                  To_Unbounded_String (aLine (Pos_P1 .. S_Length));
-            elsif aLine (1 .. Pos_M1) = "team_id:" then
-               theSpec.Team_ID :=
-                 Integer'Value (aLine (Pos_P1 .. S_Length));
             elsif aLine (1 .. Pos_M1) = "sprite_map_diffuse" then
                declare
                   Map_Path : constant String := "src/textures/" & aLine (Pos_P1 .. S_Length);
@@ -283,10 +327,55 @@ package body Specs_Manager is
             elsif aLine (1 .. Pos_M1) = "add_anim_frame" then
                Add_Animation_Frame (aLine, theSpec);
             elsif aLine (1 .. Pos_M1) = "attack_duration" then
-               Add_Attack_Duration (aLine, theSpec);
+               Add_Attack_Float (aLine, theSpec.Weapon_Attack_Time);
             elsif aLine (1 .. Pos_M1) = "attack_event" then
                Add_Attack_Event (aLine, theSpec);
-
+            elsif aLine (1 .. Pos_M1) = "add_alert_sound:" then
+               theSpec.Alert_Sound_File_Name :=
+                 To_Unbounded_String (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "add_attack_sound:" then
+               theSpec.Attack_Sound_File_Name (Attack_Sound) :=
+                 To_Unbounded_String (aLine (Pos_P1 .. S_Length));
+               Attack_Sound := Maths.Min_Int (Attack_Sound + 1, Max_Weapons);
+            elsif aLine (1 .. Pos_M1) = "add_hurt_sound:" then
+               theSpec.Hurt_Sound_File_Name :=
+                 To_Unbounded_String (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "add_death_sound:" then
+               theSpec.Death_Sound_File_Name :=
+                 To_Unbounded_String (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "sight_range_tiles" then
+               theSpec.Sight_Range_Tiles :=
+                 Integer'Value (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "attack_range" then
+               Add_Attack_Float (aLine, theSpec.Attack_Range_Metre);
+            elsif aLine (1 .. Pos_M1) = "initial_health" then
+               theSpec.Initial_Health :=
+                 Integer'Value (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "move_speed_mps" then
+               theSpec.Move_Speed_MPS :=
+                 Float'Value (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "default_weapon:" then
+               Add_Default_Weapon (aLine, theSpec);
+            elsif aLine (1 .. Pos_M1) = "team_id:" then
+               theSpec.Team_ID :=
+                 Integer'Value (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "land_move:" then
+               theSpec.Land_Move :=
+                 Integer'Value (aLine (Pos_P1 .. S_Length)) > 0;
+            elsif aLine (1 .. Pos_M1) = "projectile_type:" then
+               Add_Projectile_Type (aLine, theSpec);
+            elsif aLine (1 .. Pos_M1) = "decapitated_head_script:" then
+               theSpec.Decapitated_Head_Script :=
+                 To_Unbounded_String (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "tx_on_death:" then
+               theSpec.Tx_On_Death :=
+                 Integer'Value (aLine (Pos_P1 .. S_Length));
+            elsif aLine (1 .. Pos_M1) = "sprite_offset_adj" then
+               theSpec.Sprite_Offset_Adjust :=
+                 Float'Value (aLine (Pos_P1 .. S_Length));
+            else
+               Game_Utils.Game_Log ("Specs_Manager.Load_Specs_File, unknown property: "
+                                   & aLine);
             end if;
          end;  --  declare block
       end loop;
@@ -307,7 +396,7 @@ package body Specs_Manager is
       aSpec.Height_Metre := 1.8;
       aSpec.Width_Radius := 0.5;
       aSpec.Initial_Health := 100;
-      aSpec.Decapitated_Head_Prop_Script := -1;
+      aSpec.Decapitated_Head_Script := To_Unbounded_String ("");
       aSpec.Land_Move := True;
       aSpec.Tx_On_Death := -1;
    end Set_Specs_Defaults;
