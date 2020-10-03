@@ -27,7 +27,7 @@ package body Particle_System_Manager is
       Script           : Particle_Script;
    begin
       Game_Utils.Game_Log ("Particle System Manager loading " & File_Name);
-      Stream_IO.Open (Input_File, Stream_IO.In_File, "particles/" & File_Name);
+      Stream_IO.Open (Input_File, Stream_IO.In_File, "src/particles/" & File_Name);
       Input_Stream := Stream_IO.Stream (Input_File);
       Script.Script_Name := To_Unbounded_String (File_Name);
       while not Stream_IO.End_Of_File (Input_File) loop
