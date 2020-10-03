@@ -73,7 +73,8 @@ package body Projectile_Manager is
                                Jav_Skull_Ball_Diff_Texture, Create_Mips, SRGB);
         Load_Image_To_Texture ("textures/sball_spec.png",
                                Jav_Skull_Ball_Spec_Texture, Create_Mips, SRGB);
-    end Init;
+   end Init;
+
     --  ------------------------------------------------------------------------
 
     procedure Reset_Projectiles is
