@@ -1,10 +1,11 @@
 
-with Ada.Streams.Stream_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
 package Audio_Manager is
 
-    function Init_Audio return Boolean;
-    procedure Load_Ambient_Sounds
-      (Input_Stream : Ada.Streams.Stream_IO.Stream_Access);
+   Audio_Manager_Exception : Exception;
+
+   function Init_Audio return Boolean;
+   procedure Load_Ambient_Sounds (Input_File : File_Type);
 
 end Audio_Manager;

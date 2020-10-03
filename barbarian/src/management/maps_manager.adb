@@ -5,6 +5,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Character_Controller;
 with Game_Utils;
+with Projectile_Manager;
 with Properties_Manager;
 --  with Text_Manager;
 with Tiles_Manager;
@@ -44,8 +45,8 @@ package body Maps_Manager is
 
         Properties_Manager.Load_Properties (Input_File);
         Character_Controller.Init;
-        Character_Controller.Load_Characters (Input_File, False);
-        --
+      Character_Controller.Load_Characters (Input_File, False);
+      Projectile_Manager.Init;
         --          Text_Manager.Preload_Comic_Texts  (Input_Stream);
         Close (Input_File);
 
