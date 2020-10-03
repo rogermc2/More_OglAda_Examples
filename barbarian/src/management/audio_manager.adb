@@ -108,7 +108,7 @@ package body Audio_Manager is
             Index := Index + 1;
             Game_Audio.Ambient_Sounds (Index).File_Name :=
               To_Unbounded_String (Sound_File);
---              Game_Audio.Ambient_Sounds (Index).Snd := Snd;
+            --              Game_Audio.Ambient_Sounds (Index).Snd := Snd;
             Game_Audio.Ambient_Sounds (Index).X := 2.0 * Float (Map_S);
             Game_Audio.Ambient_Sounds (Index).Y := 2.0 * Float (Height);
             Game_Audio.Ambient_Sounds (Index).Z := 2.0 * Float (Map_T);
@@ -133,10 +133,10 @@ package body Audio_Manager is
    procedure Load_Ambient_Sounds (Input_File : File_Type) is
       use Ada.Strings;
       aLine      : constant String := Get_Line (Input_File);
-      Last       : constant Integer := Integer (aLine'Last);
+      Last       : Integer := Integer (aLine'Last);
       Sound_File : Unbounded_String;
       Pos1       : Integer := Fixed.Index (aLine, " ");
-      Pos2       : Integer;
+      Pos2       : Integer := Fixed.Index (aLine (Pos1 + 1 .. Last), " ");
       Num_Sounds : Integer;
       S          : Int;
       T          : Int;
@@ -144,24 +144,28 @@ package body Audio_Manager is
       Radius     : Float;
    begin
       Release_Ambient_Sounds;
-      Num_Sounds := Integer'Value (aLine (Pos1 + 1 .. Last));
+      Num_Sounds := Integer'Value (aLine (Pos1 + 1 .. Pos2 - 1));
       for count in 1 .. Num_Sounds loop
          declare
             aString : constant String := Get_Line (Input_File);
          begin
-            Pos1 := Fixed.Index (aLine, " ");
-            Sound_File := To_Unbounded_String (aLine (1 .. Pos1 - 1));
-            Pos2 := Fixed.Index (aLine (Pos1 + 1 .. Last), ",");
-            S := Int'Value (aLine (Pos1 + 1 .. Pos2 - 1));
-            Pos1 := Fixed.Index (aLine (Pos2 + 2 .. Last), " ");
-            T := Int'Value (aLine (Pos2 + 1 .. Pos1 - 1));
-            Pos2 := Fixed.Index (aLine (Pos1 + 1 .. Last), " ");
-            Height := Integer'Value (aLine (Pos1 + 1 .. Pos2 - 1));
-            Radius := Float'Value (aLine (Pos2 + 1 .. Last));
+            Last := Integer (aString'Last);
+            Pos1 := Fixed.Index (aString, " ");
+            Sound_File := To_Unbounded_String (aString (1 .. Pos1 - 1));
+            Pos2 := Fixed.Index (aString (Pos1 + 1 .. Last), ",");
+            S := Int'Value (aString (Pos1 + 1 .. Pos2 - 1));
+            Pos1 := Fixed.Index (aString (Pos2 .. Last), " ");
+            T := Int'Value (aString (Pos2 + 1 ..  Pos1 - 1));
+            Pos2 := Fixed.Index (aString (Pos1 + 1 .. Last), " ");
+            Height := Integer'Value (aString (Pos1 + 1 .. Pos2 - 1));
+            Radius := Float'Value (aString (Pos2 + 1 .. Last));
          end;
          Create_Managed_Ambient_Source (To_String (Sound_File),
                                         S, T, Height, Radius);
       end loop;
+      Game_Utils.Game_Log ("Audio_Manager.Load_Ambient_Sounds ambient sounds loaded");
+      Put_Line ("Audio_Manager.Load_Ambient_Sounds ambient sounds loaded");
+
    end Load_Ambient_Sounds;
 
    --  ------------------------------------------------------------------------
@@ -169,9 +173,9 @@ package body Audio_Manager is
    procedure Release_Ambient_Sounds is
    begin
       for index in 1 .. Game_Audio.Ambient_Sound_Count loop
---           if Game_Audio.Ambient_Sounds (index).Snd /= 0 then
---              null;
---           end if;
+         --           if Game_Audio.Ambient_Sounds (index).Snd /= 0 then
+         --              null;
+         --           end if;
          Game_Audio.Ambient_Sound_Count := 0;
       end loop;
    end Release_Ambient_Sounds;

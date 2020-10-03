@@ -1,8 +1,9 @@
 
 with Ada.Containers.Vectors;
 with Ada.Exceptions;
+with Ada.Exceptions;
+with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Types.Colors;
 
@@ -28,28 +29,26 @@ package body Text_Manager is
 
     -- -------------------------------------------------------------------------
 
-    procedure Preload_Comic_Texts
-      (Input_Stream : Ada.Streams.Stream_IO.Stream_Access) is
+   procedure Preload_Comic_Texts (Input_File : File_Type) is
+        use Ada.Strings;
         use GL.Types;
-        aLine       : Unbounded_String;
+        aLine       : String := Get_Line (Input_File);
+        Last        : Integer := Integer (aLine'Length);
         Pos         : Natural;
         Popup_Count : Integer := 0;
         Popup       : Popup_Data;
         C_Text      : Coloured_Text;
     begin
         Preloaded_Comic_Texts.Clear;
-        Unbounded_String'Read (Input_Stream, aLine);
-        Pos := Index (aLine, " ");
-        if Slice (aLine, 1, Pos - 1) /= "popups" then
+        Pos := Fixed.Index (aLine, " ");
+        if aLine (1 .. Pos - 1) /= "popups" then
             raise Text_Manager_Exception with
-              "Text_Manager.Preload_Comic_Texts; Invalid Comic_Texts format:"
-              & To_String (aLine);
+              "Text_Manager.Preload_Comic_Texts; Invalid Comic_Texts format: "
+               & aLine;
         end if;
-        Popup_Count :=
-          Integer'Value (Slice (aLine, Pos + 1, Length (aLine)));
+        Popup_Count := Integer'Value (aLine (Pos + 1 .. Last));
         for index in 1 .. Popup_Count loop
             Popup.Popup_Text := To_Unbounded_String ("");
-            Popup_Data'Read (Input_Stream, Popup);
                 -- Process any \n?
                 C_Text.Text := Popup.Popup_Text;
                 C_Text.Colour := Popup.RGBA;

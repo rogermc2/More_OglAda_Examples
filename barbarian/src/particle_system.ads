@@ -17,7 +17,7 @@ package Particle_System is
     function Create_Particle_System
       (Script_Name : String; Start_Now, Always_Update, Always_Draw : Boolean)
        return Integer;
-    function Init_Particle_Systems return Boolean;
+    procedure Init_Particle_Systems;
 
 private
     package Ages_Package is new

@@ -99,8 +99,9 @@ package body Specs_Manager is
       Pos2      : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
    begin
       Weapon_ID := Weapon_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
-      if Weapon_ID'Valid then
-         Game_Utils.Game_Log ("ERROR: invalid weapon ID in attack event.");
+      if not Weapon_ID'Valid then
+         Game_Utils.Game_Log ("ERROR: invalid weapon ID in float: " &
+                                aLine (Pos1 + 2 .. Pos2 - 1));
          Weapon_ID := Na_Wt;
       else
          Pos1 := Fixed.Index (aLine (Pos2 + 1 .. L_Length), ":");
@@ -295,8 +296,8 @@ package body Specs_Manager is
             if  aLine'Length > 0 then
                Pos_M1 := Pos1 - 1;
             end if;
-            if  aLine'Length < 2 or else aLine (1 .. 1) = "#" or else
-              aLine (1 .. 1) = "/"  then
+            if  aLine'Length < 2 or else aLine (1 ) = '#' or else
+              aLine (1) = '/'  then
                null;
             elsif aLine (1 .. Pos_M1) = "name:" then
                theSpec.Name :=
