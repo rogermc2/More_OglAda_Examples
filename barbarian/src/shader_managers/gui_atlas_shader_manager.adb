@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Shaders;
 with Program_Loader;
 
+with Game_Utils;
 with Shader_Attributes;
 
 package body GUI_Atlas_Shader_Manager is
@@ -28,11 +29,11 @@ package body GUI_Atlas_Shader_Manager is
         Uniform_Location (Shader_Program, "model_mat");
       Render_Uniforms.Columns_ID := Uniform_Location (Shader_Program, "columns");
       Render_Uniforms.Current_Sprite_ID :=
-          Uniform_Location (Shader_Program, "current_sprite");
+        Uniform_Location (Shader_Program, "current_sprite");
 
       Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (Render_Uniforms.Alpha_ID, 0.0);
-      GL.Uniforms.Set_Single (Render_Uniforms.Atlas_ID, 0.0);
+      GL.Uniforms.Set_Int (Render_Uniforms.Atlas_ID, 0);
       GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Identity4);
       GL.Uniforms.Set_Single (Render_Uniforms.Columns_ID, 0.0);
       GL.Uniforms.Set_Single (Render_Uniforms.Current_Sprite_ID, 0.0);
@@ -52,9 +53,9 @@ package body GUI_Atlas_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Atlas (Atlas  : Single) is
+   procedure Set_Atlas (Atlas : Int) is
    begin
-      GL.Uniforms.Set_Single (Render_Uniforms.Atlas_ID, Atlas);
+      GL.Uniforms.Set_Int (Render_Uniforms.Atlas_ID, Atlas);
    end Set_Atlas;
 
    --  -------------------------------------------------------------------------

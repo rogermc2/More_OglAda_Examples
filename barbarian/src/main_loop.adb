@@ -79,7 +79,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --      Param                  : Integer := 0;
     Camera_Height          : constant GL.Types.Single := 13.0;
     Changed_Camera_Height  : constant Boolean := False;
-    Fps_Text               : Integer;
+    Fps_Text_Index         : Integer;
 
     Initialize_Exception   : Exception;
     Update_Exception       : Exception;
@@ -267,16 +267,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
        Game_Utils.Game_Log ("Main_Loop.Setup started");
         --          Param := Game_Utils.Check_Param ("-map");
         Text.Init_Particle_Texts;
-        Fps_Text := Text.Add_Text ("fps: batches: vertices: ",
+        Fps_Text_Index := Text.Add_Text ("fps: batches: vertices: ",
                                    -1.0, 1.0, 15.0, 1.0, 1.0, 0.0, 0.9);
-        Game_Utils.Game_Log ("Main_Loop.Setup Fps_Text set");
-        Text.Set_Text_Visible (Fps_Text, False);
-        Game_Utils.Game_Log ("Main_Loop.Setup calling Init_Comic_Texts");
+        Text.Set_Text_Visible (Fps_Text_Index, False);
         Text.Init_Comic_Texts;
-        Game_Utils.Game_Log ("Main_Loop.Setup Init_Comic_Texts returned");
         GL_Utils.Set_Render_Defaults;
         GUI.Load_Gui_Shaders;
-        Game_Utils.Game_Log ("Main_Loop.Setup Load_Gui_Shaders returned");
+        Game_Utils.Game_Log ("Main_Loop.Setup Load_Gui_Shaders initialized");
         Init_Modules;
         Game_Utils.Game_Log ("Main_Loop.Setup Init_Modules returned");
         --          Play_Music (Title_Track);

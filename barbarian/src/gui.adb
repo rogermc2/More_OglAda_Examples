@@ -263,7 +263,7 @@ package body GUI is
 
     procedure Load_Gui_Shaders is
     begin
-        Health_Shader_Manager.Init (HB_SP);
+      Health_Shader_Manager.Init (HB_SP);
         Image_Panel_Shader_Manager.Init (Image_Panel_SP);
         GUI_Atlas_Shader_Manager.Init (Crong_Head_SP);
     end Load_Gui_Shaders;
