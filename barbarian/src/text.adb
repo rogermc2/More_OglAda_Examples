@@ -117,8 +117,9 @@ package body Text is
       R_Text.Blue := B;
       R_Text.A := A;
 
-      Num_Render_Strings := Num_Render_Strings + 1;
-      return Num_Render_Strings;
+      Renderable_Texts.Append (R_Text);
+      Num_Render_Strings := Integer (Renderable_Texts.Length);
+      return Renderable_Texts.Last_Index;
 
    end Add_Text;
 

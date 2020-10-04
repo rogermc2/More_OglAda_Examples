@@ -15,7 +15,7 @@ package GUI_Atlas_Shader_Manager is
 
     procedure Init (Shader_Program : in out GL.Objects.Programs.Program);
     procedure Set_Alpha (Alpha : Single);
-    procedure Set_Atlas (Atlas : Single);
+    procedure Set_Atlas (Atlas : Int);
     procedure Set_Model_Matrix (Model_Matrix : Singles.Matrix4);
     procedure Set_Columns (Columns : Single);
     procedure Set_Current_Sprite (Current_Sprite : Single);
