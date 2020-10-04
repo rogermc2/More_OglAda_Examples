@@ -9,6 +9,8 @@ with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
 
+with Event_Controller;
+with Game_Utils;
 
 package body Text_Manager is
    use GL.Types;
@@ -29,7 +31,7 @@ package body Text_Manager is
       Popup_Text  : Unbounded_String := To_Unbounded_String ("");
    end record;
 
-   Preloaded_Comic_Texts   : Coloured_Text_List;
+   Preloaded_Comic_Texts : Coloured_Text_List;
 
    -- -------------------------------------------------------------------------
 
@@ -72,6 +74,8 @@ package body Text_Manager is
       Popup_Count := Integer'Value (aLine (Pos1 + 1 .. Last));
       for index in 1 .. Popup_Count loop
          declare
+            use Event_Controller;
+            use Coloured_Text_Package;
             Pop_Line   : constant String := Get_Line (Input_File);
             J_Index    : Integer := 0;
             R          : Single := 1.0;
@@ -84,23 +88,19 @@ package body Text_Manager is
             Last := Integer (Pop_Line'Length);
             Pos1 := Fixed.Index (Pop_Line, " ");
             Rx := Integer'Value (Pop_Line (1 .. Pos1 - 1));
-            Pos2 := Fixed.Index (Pop_Line (Pos1 + 1 .. Last), "(");
-            Pos1 := Fixed.Index (Pop_Line, " ");
-            R := Single'Value (Pop_Line (Pos2 + 1 .. Pos1 - 1));
+            Pos2 := Fixed.Index (Pop_Line (Pos1 .. Last), "(");
             Pos1 := Fixed.Index (Pop_Line (Pos2 + 1 .. Last), " ");
+            R := Single (Integer'Value (Pop_Line (Pos2 + 1 .. Pos1 - 1)));
             Pos2 := Fixed.Index (Pop_Line (Pos1 + 1 .. Last), " ");
-            G := Single'Value (Pop_Line (Pos1 + 1 .. Pos2 - 1));
-            Pos2 := Fixed.Index (Pop_Line (Pos1 + 1 .. Last), " ");
-            Pos1 := Fixed.Index (Pop_Line, " ");
-            B := Single'Value (Pop_Line (Pos2 + 1 .. Pos1 - 1));
+            G := Single (Integer'Value (Pop_Line (Pos1 + 1 .. Pos2 - 1)));
             Pos1 := Fixed.Index (Pop_Line (Pos2 + 1 .. Last), " ");
+            B := Single (Integer'Value (Pop_Line (Pos2 + 1 .. Pos1 - 1)));
             Pos2 := Fixed.Index (Pop_Line (Pos1 + 1 .. Last), ")");
-            A := Single'Value (Pop_Line (Pos1 + 1 .. Pos2 - 1));
+            A := Single (Integer'Value (Pop_Line (Pos1 + 1 .. Pos2 - 1)));
             Data := (Process_Text (Pop_Line), (R, G, B ,A));
             Preloaded_Comic_Texts.Append (Data);
             --  register rx code
-            --  if (!gEventController.addReceiver (rx, RX_STORY,
-            --  g_preloaded_comic_colours.size () - 1))
+            Add_Receiver (Rx, Rx_Story, Preloaded_Comic_Texts.Last_Index);
          end;
       end loop;
 

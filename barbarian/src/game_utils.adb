@@ -20,7 +20,9 @@ package body Game_Utils is
 
    procedure Close_Game_Log is
    begin
-      Close (Log_File);
+      if Is_Open (Log_File) then
+         Close (Log_File);
+      end if;
    end Close_Game_Log;
 
    --  -------------------------------------------------------------------------

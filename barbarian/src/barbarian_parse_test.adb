@@ -35,6 +35,7 @@ begin
             pragma Warnings (Off);
 --              Game_Utils.Game_Log ("Barbarian_Parse_Test Texture_Manager initialized.");
             Maps_Manager.Load_Maps (Path, theMap);
+            Put_Line ("Barbarian_Parse_Test maps loaded.");
         else
             Game_Utils.Game_Log ("Barbarian_Parse_Test Init_Texture_Manager failed.");
         end if;

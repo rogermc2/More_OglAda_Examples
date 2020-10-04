@@ -6,6 +6,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Audio_Manager;
 with Character_Controller;
 with Game_Utils;
+with GUI_Level_Chooser;
 with Projectile_Manager;
 with Properties_Manager;
 with Text_Manager;
@@ -13,7 +14,7 @@ with Tiles_Manager;
 
 package body Maps_Manager is
 
-   procedure Load_Maps (Path : String; theMap : out Map) is
+   procedure Load_Maps (Map_Path : String; theMap : out Map) is
       use Ada.Strings;
       Input_File       : File_Type;
       aLine            : Unbounded_String;
@@ -21,11 +22,11 @@ package body Maps_Manager is
       Num_Story_Lines  : Natural;
       --          Story_Lines      : Story_Lines_List;
    begin
-      Put_Line ("Maps_Manager.Load_Maps opening " & Path);
-      Game_Utils.Game_Log ("Maps_Manager.Load_Maps opening " & Path);
-      Open (Input_File, In_File, Path);
-      Put_Line ("Maps_Manager.Load_Maps, " & Path & " opened.");
-      Game_Utils.Game_Log ("Maps_Manager.Load_Maps, " & Path & " opened.");
+      Put_Line ("Maps_Manager.Load_Maps opening " & Map_Path);
+      Game_Utils.Game_Log ("Maps_Manager.Load_Maps opening " & Map_Path);
+      Open (Input_File, In_File, Map_Path);
+      Put_Line ("Maps_Manager.Load_Maps, " & Map_Path & " opened.");
+      Game_Utils.Game_Log ("Maps_Manager.Load_Maps, " & Map_Path & " opened.");
       theMap.Level_Title := To_Unbounded_String (Get_Line (Input_File));
       theMap.Level_Par_Time := To_Unbounded_String (Get_Line (Input_File));
 
@@ -51,6 +52,7 @@ package body Maps_Manager is
       Audio_Manager.Load_Ambient_Sounds (Input_File);
       Text_Manager.Preload_Comic_Texts (Input_File);
       Close (Input_File);
+      Game_Utils.Game_Log ("Maps_Manager.Load_Maps loaded: " & Map_Path);
 
    exception
       when anError : others =>

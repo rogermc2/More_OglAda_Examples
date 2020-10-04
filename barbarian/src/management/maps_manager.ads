@@ -10,7 +10,7 @@ package Maps_Manager is
 
     type Map is private;
 
-    procedure Load_Maps (Path : String; theMap : out Map);
+    procedure Load_Maps (Map_Path : String; theMap : out Map);
     procedure Set_Title (aMap : in out Map; Title : Unbounded_String);
     procedure Set_Par_Time (aMap : in out Map; Time : Unbounded_String);
     procedure Set_Music_Track (aMap : in out Map; Track : Unbounded_String);
