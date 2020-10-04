@@ -59,7 +59,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     --      Is_Playing_Hammer_Track : Boolean := False;
 
     Logic_Step_Seconds   : constant Float := 0.01;
-    Char_Map_Tell        : Integer;
+--      Char_Map_Tell        : Integer;
     --     Fps_Text             : Integer;
     Max_Steps_Per_Frame  : Integer;
     Game_Map             : Maps_Manager.Map;
@@ -111,9 +111,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Text.Init_Text_Rendering
           ("textures/comicscript.png", "fonts/comicscript.meta",
            Settings.Framebuffer_Width, Settings.Framebuffer_Height);
-        if not Particle_System.Init_Particle_Systems then
-            raise Initialize_Exception with "Init_Particle_Systems failed.";
-        end if;
+        Particle_System.Init_Particle_Systems;
         Sprite_Renderer.Init;
         if not GUI.Init_GUIs then
             raise Initialize_Exception with "Init_Sprite_Renderer failed.";
@@ -237,8 +235,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
             Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map);
             --  Properties and characters are loaded by Load_Maps
-            Game_Utils.Game_Log ("Game map loaded, Char_Map_Tell: " &
-                                   Integer'Image (Char_Map_Tell));
             Projectile_Manager.Init;
 
             Window.Get_Framebuffer_Size (Window_Width, Window_Height);

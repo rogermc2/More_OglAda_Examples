@@ -6,8 +6,9 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body Game_Utils is
 
-   Game_Log_File : constant String := "game.log";
-   Log_File      : File_Type;
+   Log_Directory       : constant String := ".";
+   Game_Log_File       : constant String := "game.log";
+   Log_File_Descriptor : File_Type;
 
    --  ------------------------------------------------------------------------
 
@@ -20,27 +21,27 @@ package body Game_Utils is
 
    procedure Close_Game_Log is
    begin
-      if Is_Open (Log_File) then
-         Close (Log_File);
+      if Is_Open (Log_File_Descriptor) then
+         Close (Log_File_Descriptor);
       end if;
    end Close_Game_Log;
 
    --  -------------------------------------------------------------------------
 
    procedure Game_Log (Message : String) is
-      File_Descriptor  : Ada.Text_IO.File_Type;
-      Log_Directory    : constant String := ".";
       Directory_Set    : Boolean := False;
    begin
       Set_Directory (Log_Directory);
       Directory_Set := True;
       if Exists (Game_Log_File) then
-         Open (File_Descriptor, Append_File, Game_Log_File);
+         if not Is_Open (Log_File_Descriptor) then
+            Open (Log_File_Descriptor, Append_File, Game_Log_File);
+         end if;
       else
-         Create (File_Descriptor, Append_File, Game_Log_File);
+         Create (Log_File_Descriptor, Append_File, Game_Log_File);
       end if;
-      Put_Line (File_Descriptor, Message);
-      Close (File_Descriptor);
+      Put_Line (Log_File_Descriptor, Message);
+      Close (Log_File_Descriptor);
 
    exception
       when anError : Ada.IO_Exceptions.Name_Error  =>
@@ -83,12 +84,12 @@ package body Game_Utils is
    procedure Restart_Game_Log is
    begin
       Set_Directory (".");
-      if Is_Open (Log_File) then
-         Close (Log_File);
+      if Is_Open (Log_File_Descriptor) then
+         Close (Log_File_Descriptor);
       end if;
       Delete_File (Game_Log_File);
-      Create (Log_File, Out_File, Game_Log_File);
-      Close (Log_File);
+      Create (Log_File_Descriptor, Out_File, Game_Log_File);
+      Game_Log ("Game log restarted");
 
    exception
       when anError : others =>
