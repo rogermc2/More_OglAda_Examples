@@ -101,7 +101,7 @@ package body Texture_Manager is
 
    --  ------------------------------------------------------------------------
 
-   function Create_Default_Texture return Boolean is
+   procedure Create_Default_Texture is
       use GL.Objects.Textures.Targets;
       use GL.Pixels;
       use GL.Types;
@@ -153,7 +153,6 @@ package body Texture_Manager is
       Bound_Textures.Append (Default_Texture);
       Loaded_Texture_Count := Loaded_Texture_Count + 1;
       Game_Utils.Game_Log ("Default texture loaded.");
-      return True;
 
    exception
       when anError : others =>
@@ -161,18 +160,18 @@ package body Texture_Manager is
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          Game_Utils.Game_Log  ("An exception occurred in Texture_Manager.Create_Default_Texture!");
          Game_Utils.Game_Log (Ada.Exceptions.Exception_Information (anError));
-         return False;
    end Create_Default_Texture;
 
    --  ------------------------------------------------------------------------
 
-   function Init_Texture_Manager return Boolean is
+   procedure Init is
    begin
       Game_Utils.Game_Log ("Initializing texture manager.");
       Bound_Textures.Clear;
       Loaded_Textures.Clear;
-      return Create_Default_Texture;
-   end Init_Texture_Manager;
+      Create_Default_Texture;
+      Game_Utils.Game_Log ("Texture manager initialized.");
+   end Init;
 
    --  ------------------------------------------------------------------------
 
