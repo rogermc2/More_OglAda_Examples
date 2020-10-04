@@ -217,7 +217,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         --          Up                  : Vector3;
 
     begin
-
+      Game_Utils.Game_Log ("Main_Loop.Run_Game started");
         while not Quit_Game loop
             if GUI_Level_Chooser.Start_Level_Chooser_Loop
               (MMenu.Are_We_In_Custom_Maps) then
@@ -264,16 +264,21 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Delta_Time   : Float := 0.0;
         Flash_Timer  : Float := 0.0;
     begin
+       Game_Utils.Game_Log ("Main_Loop.Setup started");
         --          Param := Game_Utils.Check_Param ("-map");
         Text.Init_Particle_Texts;
         Fps_Text := Text.Add_Text ("fps: batches: vertices: ",
                                    -1.0, 1.0, 15.0, 1.0, 1.0, 0.0, 0.9);
+        Game_Utils.Game_Log ("Main_Loop.Setup Fps_Text set");
         Text.Set_Text_Visible (Fps_Text, False);
+        Game_Utils.Game_Log ("Main_Loop.Setup calling Init_Comic_Texts");
         Text.Init_Comic_Texts;
+        Game_Utils.Game_Log ("Main_Loop.Setup Init_Comic_Texts returned");
         GL_Utils.Set_Render_Defaults;
         GUI.Load_Gui_Shaders;
+        Game_Utils.Game_Log ("Main_Loop.Setup Load_Gui_Shaders returned");
         Init_Modules;
-
+        Game_Utils.Game_Log ("Main_Loop.Setup Init_Modules returned");
         --          Play_Music (Title_Track);
         --          Is_Playing_Hammer_Track := False;
 
