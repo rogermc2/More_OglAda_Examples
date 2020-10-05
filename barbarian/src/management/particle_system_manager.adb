@@ -71,7 +71,7 @@ package body Particle_System_Manager is
             Tail           : constant String := aLine (Pos + 1 .. Last);
             SRGB           : constant Boolean := True;
          begin
-      Game_Utils.Game_Log ("Particle System Manager Head '" & Head & "'");
+--              Game_Utils.Game_Log ("Particle System Manager Head '" & Head & "'");
             if aLine (1 .. 1) = "#" then
                null;
             elsif Head = "total_particles" then
