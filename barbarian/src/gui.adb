@@ -254,13 +254,6 @@ package body GUI is
 
     --  --------------------------------------------------------------------------
 
-    function Load_Controller_Textures return Boolean is
-    begin
-        return False;
-    end Load_Controller_Textures;
-
-    --  ----------------------------------------------------------------------------
-
     procedure Load_Gui_Shaders is
     begin
       Health_Shader_Manager.Init (HB_SP);
