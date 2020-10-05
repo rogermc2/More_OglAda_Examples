@@ -9,9 +9,9 @@ package Sprite_Shader_Manager is
     procedure Load_Sprite_Shaders;
     procedure Set_Caster_Position (Position : Singles.Vector3);
     procedure Set_Columns (Columns : Single);
-    procedure Set_Cube_Texture (Texture : UInt);
+    procedure Set_Cube_Texture (Texture : Int);
     procedure Set_Current_Sprite (Sprite_ID : Single);
-    procedure Set_Diff_Map (Diff_Map : UInt);
+    procedure Set_Diff_Map (Diff_Map : Int);
     procedure Set_Dyn_Light_Pos (Position : Singles.Vector3);
     procedure Set_Dyn_Light_Diff (Diff : Singles.Vector3);
     procedure Set_Dyn_Light_Spec (Spec : Singles.Vector3);
@@ -26,8 +26,8 @@ package Sprite_Shader_Manager is
     procedure Set_Perspective (Perspective_Matrix : Singles.Matrix4);
     procedure Set_Rows (Rows : Single);
     procedure Set_Shadow_Enabled (Enable : Single);
-    procedure Set_Spec_Map (Spec_Map : UInt);
-    procedure Set_Static_Light_Indices (Indices : Singles.Vector2);
+    procedure Set_Spec_Map (Spec_Map : Int);
+    procedure Set_Static_Light_Indices (Indices : Ints.Vector2);
     procedure Set_View (View_Matrix : Singles.Matrix4);
     procedure Use_Sprite_Shader;
 

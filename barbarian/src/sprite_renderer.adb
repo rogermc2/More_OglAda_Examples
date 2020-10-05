@@ -70,7 +70,22 @@ package body Sprite_Renderer is
 
     procedure Clear_Sprites is
     begin
-        null;
+      for index in 1 .. Num_Sprites loop
+       Sprites (index).Model_Matrix  := Singles.Identity4;
+        Sprites (index).World_Position := (0.0, 0.0, 0.0);
+        Sprites (index).Scale := (1.0, 1.0, 1.0);
+        Sprites (index).Heading_Deg := 0.0;
+        Sprites (index).Pitch_Deg := 0.0;
+--          Sprite_Map_Diffuse_Id  : GL.Objects.Textures.Texture;
+--          Sprite_Map_Specular_Id : GL.Objects.Textures.Texture;
+        Sprites (index).Sprite_Map_Rows := 0;
+        Sprites (index).Sprite_Map_Columns := 0;
+        Sprites (index).Current_Sprite := 0;
+        Sprites (index).Wmap_U := -1;
+        Sprites (index).Wmap_V := -1;
+        Sprites (index).Has_Pitch := False;
+        Sprites (index).Is_Visible := True;
+      end loop;
     end Clear_Sprites;
 
     --  -----------------------------------------------------------------
@@ -130,7 +145,9 @@ package body Sprite_Renderer is
         Game_Utils.Game_Log ("--- Initializing Sprites ---");
         Clear_Sprites;
         Create_Character_VBOs;
+        Game_Utils.Game_Log ("Character_VBOs created");
         Sprite_Shader_Manager.Load_Sprite_Shaders;
+        Game_Utils.Game_Log ("--- Sprites Initialized ---");
     end Init;
 
     --  -------------------------------------------------------------------------
@@ -160,8 +177,8 @@ package body Sprite_Renderer is
           Set_Current_Sprite (Single (Sprites (Sprite_Index).Current_Sprite));
           Set_Opacity (Opacity);
           Set_Model (Sprites (Sprite_Index).Model_Matrix);
-          Set_Static_Light_Indices ((Single (Manifold.Get_Light_Index (U, V, 0)),
-                                   Single (Manifold.Get_Light_Index (U, V, 1))));
+          Set_Static_Light_Indices ((Int (Manifold.Get_Light_Index (U, V, 0)),
+                                    Int (Manifold.Get_Light_Index (U, V, 1))));
           GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
         end if;
     end Render_Sprite;
