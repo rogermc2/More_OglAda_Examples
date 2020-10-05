@@ -1,11 +1,3 @@
-//
-// Crongdor the Barbarian
-// basic point-sprite particle shader
-// First version Anton Gerdelan, 4 Aug 2013
-// Latest code review 5 Dec 2014
-//
-// ANDREA: changed from 'degrees' to 'degs' because name was reserved GL 4.1
-//
 
 #version 410 core
     

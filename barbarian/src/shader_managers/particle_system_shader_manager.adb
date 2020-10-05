@@ -54,7 +54,7 @@ package body Particle_System_Shader_Manager is
       GL.Uniforms.Set_Single (Particle_Uniforms.Lifetime_ID, 0.0);
       GL.Uniforms.Set_Single (Particle_Uniforms.Perspective_View_ID, Identity4);
       GL.Uniforms.Set_Single (Particle_Uniforms.Pixel_Width_ID, 0.0);
-      GL.Uniforms.Set_UInt (Particle_Uniforms.Texture_Map_ID, 0);
+      GL.Uniforms.Set_Int (Particle_Uniforms.Texture_Map_ID, 0);
 
    exception
       when others =>
@@ -119,9 +119,9 @@ package body Particle_System_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Texture_Map (Map : UInt) is
+   procedure Set_Texture_Map (Map : Int) is
    begin
-      GL.Uniforms.Set_UInt (Particle_Uniforms.Texture_Map_ID, Map);
+      GL.Uniforms.Set_Int (Particle_Uniforms.Texture_Map_ID, Map);
    end Set_Texture_Map;
 
    --  -------------------------------------------------------------------------
