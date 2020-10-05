@@ -3,7 +3,9 @@ with GL.Types; use GL.Types;
 
 package Font_Metadata_Manager is
 
-    type Glyph_Array is private;
+   type Glyph_Array is private;
+
+   Font_Metadata_Manager_Exception : Exception;
 
     procedure Load_Metadata (Path : String; Glyphs : out Glyph_Array);
     function Width (Glyphs : Glyph_Array; Index : Integer) return Single;
