@@ -23,6 +23,7 @@ with Utilities;
 with Blood_Splats;
 with Camera;
 with Character_Controller;
+with Controller_Textures_Manager;
 with FB_Effects;
 with Game_Utils;
 with GL_Utils;
@@ -97,17 +98,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       --              raise Initialize_Exception with "Init_Audio failed.";
       --          end if;
       Texture_Manager.Init;
-      if not GUI.Load_Controller_Textures then
-         raise Initialize_Exception with "GUI.Load_Controller_Textures failed.";
-      end if;
+      Controller_Textures_Manager.Load_Controller_Textures;
       Mesh_Loader.Init;
       Camera.Init;
-      if not Changed_Camera_Height then
-         raise Initialize_Exception with "Changed_Camera_Height failed.";
+      if Changed_Camera_Height then
+         Camera.Set_Camera_Height (Camera_Height);
       end if;
-      Camera.Set_Camera_Height (Camera_Height);
       Text.Init_Text_Rendering
-        ("textures/comicscript.png", "fonts/comicscript.meta",
+        ("src/textures/comicscript.png", "src/fonts/comicscript.meta",
          Settings.Framebuffer_Width, Settings.Framebuffer_Height);
       Particle_System.Init_Particle_Systems;
       Sprite_Renderer.Init;
