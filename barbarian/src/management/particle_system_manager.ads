@@ -29,9 +29,9 @@ package Particle_System_Manager is
         Anim_Move_Emitter_To             : Singles.Vector3 := Maths.Vec3_0;
         Script_Name                      : Unbounded_String :=
                                              To_Unbounded_String ("");
-        Total_System_Seconds             : Int := 0;
-        Particle_Lifetime                : Int := 0;
-        Seconds_Between                  : Int := 0;
+        Total_System_Seconds             : Single := 0.0;
+        Particle_Lifetime                : Single := 0.0;
+        Seconds_Between                  : Single := 0.0;
         Rotate_Emitter_Around_Degs_Per_S : Single := 0.0;
         Initial_Scale                    : Single := 0.0;
         Final_Scale                      : Single := 0.0;

@@ -18,39 +18,43 @@ package body Particle_System_Manager is
 
    procedure Load_Particle_Script (File_Name : String;
                                    Scripts   : in out Particle_Script_List) is
+      --        pragma Warnings (Off, "index for * may assume lower bound of *");
       use Ada.Strings;
       Input_File       : File_Type;
       Min_Velocity     : Vector3 := Maths.Vec3_0;
       Max_Velocity     : Vector3 := Maths.Vec3_0;
       Script           : Particle_Script;
 
-      function Read_Vec3 (Data : String) return Vector3 is
-         Data_Length : constant Integer := Data'Length;
-         theVec      : Vector3;
-         Pos_1       : Natural := Fixed.Index (Data, " ");
-         Pos_2       : Natural;
+      function Read_Vec3 (Vec : String) return Vector3 is
+         Vec_Start : constant Integer := Vec'First;
+         Vec_Last  : constant Integer := Vec'Last;
+         theVec    : Vector3;
+         Pos_1     : Natural := Fixed.Index (Vec, ",");
+         Pos_2     : Natural;
       begin
-         theVec (GL.X) := Single'Value (Data (Data'First + 1 .. Pos_1 - 1));
-         Pos_2 := Fixed.Index (Data (Pos_1 + 1 .. Data_Length), " ");
-         theVec (GL.Y) := Single'Value (Data (Pos_1 - 1 .. Pos_2 - 1));
-         Pos_1 := Fixed.Index (Data (Pos_2 + 1 .. Data_Length), ")");
-         theVec (GL.Z) := Single'Value (Data (Pos_2 + 1 .. Pos_1 - 1));
+         theVec (GL.X) := Single'Value (Vec (Vec_Start + 1 .. Pos_1 - 1));
+         Pos_2 := Fixed.Index (Vec (Pos_1 + 1 .. Vec_Last), ",");
+         theVec (GL.Y) := Single'Value (Vec (Pos_1 + 1 .. Pos_2 - 1));
+         Pos_1 := Fixed.Index (Vec (Pos_2 + 2 .. Vec_Last), ")");
+         theVec (GL.Z) := Single'Value (Vec (Pos_2 + 2 .. Pos_1 - 1));
          return theVec;
       end Read_Vec3;
 
-      function Read_Vec4 (Data : String) return Vector4 is
-         Data_Length : constant Integer := Data'Length;
+      function Read_Vec4 (Vec : String) return Vector4 is
+         Vec_Start   : constant Integer := Vec'First;
+         Vec_Last    : constant Integer := Vec'Last;
          theVec      : Vector4;
-         Pos_1       : Natural := Fixed.Index (Data, " ");
+         Pos_1       : Natural := Fixed.Index (Vec, ",");
          Pos_2       : Natural;
       begin
-         theVec (GL.X) := Single'Value (Data (Data'First + 1 .. Pos_1 - 1));
-         Pos_2 := Fixed.Index (Data (Pos_1 + 1 .. Data_Length), " ");
-         theVec (GL.Y) := Single'Value (Data (Pos_1 - 1 .. Pos_2 - 1));
-         Pos_1 := Fixed.Index (Data (Pos_2 + 1 .. Data_Length), " ");
-         theVec (GL.Z) := Single'Value (Data (Pos_2 + 1 .. Pos_1 - 1));
-         Pos_2 := Fixed.Index (Data (Pos_2 + 1 .. Data_Length), ")");
-         theVec (GL.W) := Single'Value (Data (Pos_1 + 1 .. Pos_2 - 1));
+--        Game_Utils.Game_Log ("Particle System Manager Read_Vec4 Vec: " & Vec);
+         theVec (GL.X) := Single'Value (Vec (Vec_Start + 1 .. Pos_1 - 1));
+         Pos_2 := Fixed.Index (Vec (Pos_1 + 2 .. Vec_Last), ",");
+         theVec (GL.Y) := Single'Value (Vec (Pos_1 + 2 .. Pos_2 - 1));
+         Pos_1 := Fixed.Index (Vec (Pos_2 + 2 .. Vec_Last), ",");
+         theVec (GL.Z) := Single'Value (Vec (Pos_2 + 2 .. Pos_1 - 1));
+         Pos_2 := Fixed.Index (Vec (Pos_1 + 2 .. Vec_Last), ")");
+         theVec (GL.W) := Single'Value (Vec (Pos_1 + 2 .. Pos_2 - 1));
          return theVec;
       end Read_Vec4;
 
@@ -65,9 +69,9 @@ package body Particle_System_Manager is
             Pos            : constant Natural := Fixed.Index (aLine, " ");
             Head           : constant String := aLine (1 .. Pos - 1);
             Tail           : constant String := aLine (Pos + 1 .. Last);
-            Texture_String : Unbounded_String;
             SRGB           : constant Boolean := True;
          begin
+      Game_Utils.Game_Log ("Particle System Manager Head '" & Head & "'");
             if aLine (1 .. 1) = "#" then
                null;
             elsif Head = "total_particles" then
@@ -83,11 +87,11 @@ package body Particle_System_Manager is
             elsif Head = "final_colour" then
                Script.Final_Colour := Read_Vec4 (Tail);
             elsif Head = "total_system_seconds" then
-               Script.Total_System_Seconds := Int'Value (Tail);
+               Script.Total_System_Seconds := Single'Value (Tail);
             elsif Head = "particle_lifetime" then
-               Script.Total_System_Seconds := Int'Value (Tail);
+               Script.Total_System_Seconds := Single'Value (Tail);
             elsif Head = "seconds_between_emissions" then
-               Script.Seconds_Between := Int'Value (Tail);
+               Script.Seconds_Between := Single'Value (Tail);
             elsif Head = "initial_scale" then
                Script.Initial_Scale := Single'Value (Tail);
             elsif Head = "final_scale" then
@@ -105,12 +109,10 @@ package body Particle_System_Manager is
             elsif Head = "bounding_radius" then
                Script.Final_Scale := Single'Value (Tail);
             elsif Head = "texture" then
-               Texture_String := To_Unbounded_String (Tail);
-            end if;
-            Texture_Manager.Load_Image_To_Texture
-              ("textures/" & To_String (Texture_String), Script.Texture,
-               Settings.Particle_Mipmaps_Enabled, SRGB);
-            if Head = "loops" then
+               Texture_Manager.Load_Image_To_Texture
+                 ("src/textures/" & Tail, Script.Texture,
+                  Settings.Particle_Mipmaps_Enabled, SRGB);
+            elsif Head = "loops" then
                Script.Is_Looping := Tail = "1";
             else
                Put_Line
@@ -123,6 +125,7 @@ package body Particle_System_Manager is
 
       Load_Attribute_Data (Script, Min_Velocity, Max_Velocity);
       Scripts.Append (Script);
+      Game_Utils.Game_Log ("Particle System Manager loaded " & File_Name);
 
    exception
       when anError : others =>
@@ -147,7 +150,7 @@ package body Particle_System_Manager is
          Velocity (X) := Min_Velocity (X) + Maths.Random_Float / Delta_V (X);
          Velocity (Y) := Min_Velocity (Y) + Maths.Random_Float / Delta_V (Y);
          Velocity (Z) := Min_Velocity (Z) + Maths.Random_Float / Delta_V (Z);
-         Age_Offset (index) := -Single (index * PS.Seconds_Between);
+         Age_Offset (index) := -Single (index) * PS.Seconds_Between;
          PS.Particle_Initial_Velocity.Append (Velocity);
       end loop;
 
