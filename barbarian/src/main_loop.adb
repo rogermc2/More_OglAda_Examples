@@ -107,7 +107,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Text.Init_Text_Rendering
         ("src/textures/comicscript.png", "src/fonts/comicscript.meta",
          Settings.Framebuffer_Width, Settings.Framebuffer_Height);
-      Particle_System.Init_Particle_Systems;
+      Particle_System.Init;
       Sprite_Renderer.Init;
       if not GUI.Init_GUIs then
          raise Initialize_Exception with "Init_Sprite_Renderer failed.";

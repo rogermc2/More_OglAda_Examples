@@ -26,6 +26,6 @@ package Particle_System_Shader_Manager is
     procedure Set_Lifetime (Lifetime : Single);
     procedure Set_Perspective_View (PV : Singles.Matrix4);
     procedure Set_Pixel_Width (Width : Single);
-    procedure Set_Texture_Map (Map : UInt);
+    procedure Set_Texture_Map (Map : Int);
 
 end Particle_System_Shader_Manager;

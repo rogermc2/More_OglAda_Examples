@@ -1,11 +1,3 @@
-//
-// Crongdor the Barbarian
-// basic point-sprite particle shader
-// First version Anton Gerdelan, 4 Aug 2013
-// Latest code review 5 Dec 2014
-//
-// ANDREA: changed from 'degrees' to 'degs' because name was reserved GL 4.1
-//
 
 #version 410 core
 
@@ -30,13 +22,15 @@ void main ()
 	fcolour = life_fac * final_colour + (1.0 - life_fac) * initial_colour;
 
 	// fade-in
-	if (life_fac < 0.1) {
+	if (life_fac < 0.1)
+        {
 		fcolour.a *= max (0.0, life_fac * 10.0);
-	}
+        }
 	// fade-out
-	if (life_fac > 0.9) {
+	if (life_fac > 0.9)
+        {
 		fcolour.a *= min (1.0, (1.0 - life_fac) * 10.0);
-	}
+        }
 
 	fdegree = degs * particle_age;
 	gl_Position = PV * vec4 (particle_world_pos, 1.0);
@@ -53,4 +47,4 @@ void main ()
 	float dist = 2.0 * abs (gl_Position.x / gl_Position.w - pp.x / pp.w);
 
 	gl_PointSize = width_px * curr_scale * dist;
-}
+    }
