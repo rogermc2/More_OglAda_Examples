@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Shaders;
 with Program_Loader;
 
+with Maths;
 with Shader_Attributes;
 
 package body Splats_Shader_Manager is
@@ -14,6 +15,7 @@ package body Splats_Shader_Manager is
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
       use GL.Types.Singles;
+      use Maths;
       use Program_Loader;
    begin
       Shader_Program := Program_From
@@ -48,11 +50,11 @@ package body Splats_Shader_Manager is
         Uniform_Location (Shader_Program, "V");
 
       Use_Program (Shader_Program);
-      GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Colour_ID, Identity3);
+      GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Colour_ID, Vec3_0);
       GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
-      GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Pos_ID, Identity3);
-      GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Diff_ID, Identity3);
-      GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Spec_ID, Identity3);
+      GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Pos_ID, Vec3_0);
+      GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Diff_ID, Vec3_0);
+      GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Spec_ID, Vec3_0);
       GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Range_ID, 0.0);
       GL.Uniforms.Set_Single (Render_Uniforms.Projection_Matrix_ID, Identity4);
       GL.Uniforms.Set_Single (Render_Uniforms.Shadow_Enabled_ID, 0.0);

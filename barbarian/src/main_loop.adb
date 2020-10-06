@@ -110,9 +110,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Particle_System.Init;
       Sprite_Renderer.Init;
       GUI.Init_GUIs;
-      if not Blood_Splats.Init_Blood_Splats then
-         raise Initialize_Exception with "Init_Blood_Splats failed.";
-      end if;
+      Blood_Splats.Init;
       if not FB_Effects.Init_FB
         (Integer (Window_Width),
          Integer (Window_Height)) then
