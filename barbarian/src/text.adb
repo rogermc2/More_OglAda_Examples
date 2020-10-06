@@ -278,7 +278,8 @@ package body Text is
    end Set_Text_Visible;
 
    --  ------------------------------------------------------------------------
-
+   --  Text_To_VBO creates a VBO from a string of text using our font's
+   --  glyph sizes to make a set of quads
    procedure Text_To_VBO (theText        : String; Scale_Px : Float;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
                           Tex_Coords_VBO : in out GL.Objects.Buffers.Buffer;
@@ -288,8 +289,8 @@ package body Text is
       use GL.Types;
       Scale_Px_S         : constant Single := Single (Scale_Px);
       Text_Length        : constant Integer := theText'Length;
-      Points_Tmp         : Singles.Vector2_Array (1 .. Int (Text_Length / 2));
-      Tex_Coords_Tmp     : Singles.Vector2_Array (1 .. Int (Text_Length / 2));
+      Points_Tmp         : Singles.Vector2_Array (1 .. Int (6 * Text_Length));
+      Tex_Coords_Tmp     : Singles.Vector2_Array (1 .. Int (6 * Text_Length));
       Atlas_Rows_S       : constant Single := Single (Atlas_Rows);
       Atlas_Cols_S       : constant Single := Single (Atlas_Cols);
       Font_VP_Height_S   : constant Single := Single (Font_Viewport_Height);
@@ -307,6 +308,8 @@ package body Text is
       Y_Pos              : Single;
       Skip_Next          : Boolean := False;
    begin
+      Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
+                            Integer'Image (Text_Length) & ", " & theText);
       Br_X := 0.0;
       Br_Y := 0.0;
       for index in 1 .. Text_Length loop
