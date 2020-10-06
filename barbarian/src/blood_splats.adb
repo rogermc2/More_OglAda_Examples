@@ -6,19 +6,21 @@ with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Types;
 
-with Shader_Attributes;
 with Game_Utils;
+with Settings;
+with Shader_Attributes;
+with Splats_Shader_Manager;
 with Texture_Manager;
 
 package body Blood_Splats is
    use GL.Types;
-   Num_Splats_In_Play   : Integer;
-   Next_Splat_Mem_Index : Integer;
+   Num_Splats_In_Play   : Integer := 0;
+   Next_Splat_Mem_Index : Integer := 0;
    Max_Splats           : constant Int := 256;
    Splat_Vao            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Splat_Buffer         : GL.Objects.Buffers.Buffer;
    Splat_Normals_Vbo    : GL.Objects.Buffers.Buffer;
-   Splat_Sp_I           : GL.Objects.Programs.Program;
+   Splat_Sp             : GL.Objects.Programs.Program;
    Blood_Splats_Tex     : GL.Objects.Textures.Texture;
 
    Bsb_Sz   : Single_Array (1 .. 18 * Max_Splats) := (others => 0.0);
@@ -63,6 +65,15 @@ package body Blood_Splats is
       Array_Buffer.Bind (Splat_Normals_Vbo);
       Enable_Vertex_Attrib_Array (Attrib_VN);
       Set_Vertex_Attrib_Pointer (Attrib_VN, 3, Single_Type, False, 0, 0);
+
+      Splats_Shader_Manager.Init (Splat_Sp);
+      Splats_Shader_Manager.Set_Cube_Texture (1);
+      if Settings.Shadows_Enabled then
+         Splats_Shader_Manager.Set_Shadow_Enabled (1.0);
+      else
+         Splats_Shader_Manager.Set_Shadow_Enabled (0.0);
+      end if;
+      Game_Utils.Game_Log ("----BLOOD SPLATS INITIALIZED---");
 
     end Init;
 
