@@ -2,7 +2,7 @@
 package GUI is
 
     procedure Draw_Controller_Button_Overlays (Elapsed : Float);
-    function Init_GUIs return Boolean;
+    procedure Init_GUIs;
     procedure Load_Gui_Shaders;
 --      procedure Set_GUI_Gold (Amount : Integer);
 --      procedure Set_GUI_Javalin_Ammo (Amount : Integer);

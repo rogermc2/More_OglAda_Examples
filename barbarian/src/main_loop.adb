@@ -109,9 +109,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Settings.Framebuffer_Width, Settings.Framebuffer_Height);
       Particle_System.Init;
       Sprite_Renderer.Init;
-      if not GUI.Init_GUIs then
-         raise Initialize_Exception with "Init_GUIs failed.";
-      end if;
+      GUI.Init_GUIs;
       if not Blood_Splats.Init_Blood_Splats then
          raise Initialize_Exception with "Init_Blood_Splats failed.";
       end if;
