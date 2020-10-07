@@ -1,5 +1,5 @@
 
-with GL.Types;
+with GL.Types; use GL.Types;
 
 package Settings is
 
@@ -17,6 +17,7 @@ package Settings is
     function Particle_Mipmaps_Enabled return Boolean;
     function Save_Settings return Boolean;
     function Shadows_Enabled return Boolean;
+    function Super_Sample_Anti_Aliasing return Single;
     function Texture_Filter return Integer;
     function Tile_Batch_Width return Integer;
 
@@ -31,8 +32,8 @@ private
         --  lock drawing to monitor's vertical synch i.e. 60Hz
         GL_Window_Width              : Integer := 1024;
         GL_Window_Height             : Integer := 768;
-        GL_Framebuffer_Width         : GL.Types.Int := 512;
-        GL_Framebuffer_Height        : GL.Types.Int := 512;
+        GL_Framebuffer_Width         : Int := 512;
+        GL_Framebuffer_Height        : Int := 512;
         GL_Window_Width_To_Save      : Integer := 1024;
         GL_Window_Height_To_Save     : Integer := 768;
 	--  Built-in multi-sample anti-aliasing. Not used much if using FB FX
@@ -44,7 +45,7 @@ private
         An_Isotroic_Texturing_Factor : Float := 1.0;  -- 1.0 to 16.0
         --  Maximum rendering distance in tiles from player
         Render_Distance              : Integer := 15;
-        Far_Clip                     : GL.Types.Single := 0.0;
+        Far_Clip                     : Single := 0.0;
         --  Number of tiles*tiles to put in batches
 	Tile_Batch_Width             : Integer := 8;
         Texf                         : Integer := 2;

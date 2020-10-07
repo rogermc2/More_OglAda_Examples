@@ -1,19 +1,14 @@
-//
-// Crongdor the Barbarian
-// pass-through multi-pass shader
-// First version Anton Gerdelan, ? 2013
-// Latest code review 15 Dec 2014
-//
 
-#version 150
+#version 410 core
+
 out vec4 frag_colour;
 
 in vec2 fp, st;
 uniform sampler2D tex;
 uniform float t, f;
 
-void main () {
-	
+void main ()
+    {
 	vec2 ast;
 	// put in range of -1 to 1
 	ast = st * 2.0 - 1.0;
@@ -22,4 +17,4 @@ void main () {
 	ast = (ast + 1.0) * 0.5;
 	
 	frag_colour = texture (tex, ast);
-}
+    }

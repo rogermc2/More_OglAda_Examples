@@ -1,6 +1,8 @@
 
 package FB_Effects is
 
-    function Init_FB (Width, Height : Integer) return Boolean;
+   FB_Effects_Exception : Exception;
+
+    procedure Init (Width, Height : Integer);
 
 end FB_Effects;

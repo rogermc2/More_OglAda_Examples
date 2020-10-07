@@ -111,11 +111,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Sprite_Renderer.Init;
       GUI.Init_GUIs;
       Blood_Splats.Init;
-      if not FB_Effects.Init_FB
-        (Integer (Window_Width),
-         Integer (Window_Height)) then
-         raise Initialize_Exception with "Init_FB failed.";
-      end if;
+      FB_Effects.Init (Integer (Window_Width), Integer (Window_Height));
+
       if not Shadows.Init_Shadows then
          raise Initialize_Exception with "Init_Shadows failed.";
       end if;
@@ -211,6 +208,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Game_Utils.Game_Log ("Main_Loop.Run_Game started");
       while not Quit_Game loop
+         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+         Width := Single (Window_Width);
+         Height := Single (Window_Height);
+         GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
+
          if GUI_Level_Chooser.Start_Level_Chooser_Loop
            (MMenu.Are_We_In_Custom_Maps) then
             Level_Name := To_Unbounded_String
@@ -228,11 +230,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map);
          --  Properties and characters are loaded by Load_Maps
          Projectile_Manager.Init;
-
-         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-         Width := Single (Window_Width);
-         Height := Single (Window_Height);
-         GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
 
          Utilities.Clear_Background_Colour_And_Depth (White);
          GL.Toggles.Enable (GL.Toggles.Depth_Test);
@@ -252,11 +249,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Setup (Window     : in out Glfw.Windows.Window;
                     Is_Running : in out Boolean) is
+      Width        : GL.Types.Single;
+      Height       : GL.Types.Single;
       Current_Time : Float := 0.0;
       Delta_Time   : Float := 0.0;
       Flash_Timer  : Float := 0.0;
    begin
       Game_Utils.Game_Log ("Main_Loop.Setup started");
+         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+         Width := Single (Window_Width);
+         Height := Single (Window_Height);
       --          Param := Game_Utils.Check_Param ("-map");
       Text.Init_Particle_Texts;
       Fps_Text_Index := Text.Add_Text ("fps: batches: vertices: ",
