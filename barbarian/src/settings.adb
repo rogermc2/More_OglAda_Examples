@@ -88,6 +88,13 @@ package body Settings is
 
     --  ------------------------------------------------------------------------
 
+    function Super_Sample_Anti_Aliasing return Single is
+    begin
+        return Single (G_Settings.Super_Sample_Anti_Aliasing);
+    end Super_Sample_Anti_Aliasing;
+
+    --  ------------------------------------------------------------------------
+
     function Texture_Filter return Integer is
     begin
         return G_Settings.Texture_Filtering;
