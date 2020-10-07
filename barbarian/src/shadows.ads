@@ -9,6 +9,6 @@ package Shadows is
 
     procedure Bind_Cube_Shadow_Texture (Slot : Integer);
     function Caster_Position return Singles.Vector3;
-    function Init_Shadows return Boolean;
+    procedure Init;
 
 end Shadows;

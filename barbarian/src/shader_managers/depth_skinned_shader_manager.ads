@@ -4,7 +4,7 @@ with GL.Objects.Programs;
 
 package Depth_Skinned_Shader_Manager is
 
-    subtype Bone_Matrices_Array is Singles.Vector4_Array (1 .. 32);
+    subtype Bone_Matrices_Array is Singles.Matrix4_Array (1 .. 32);
 
     procedure Init (Shader_Program : in out GL.Objects.Programs.Program);
     procedure Set_Bone_Matrices (Bone_Matrices : Bone_Matrices_Array);

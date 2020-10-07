@@ -107,11 +107,8 @@ package body FB_Effects is
       FB_Fadeout_Shader_Manager.Init (FB_Shader_Programs (5));
       FB_Screw_Shader_Manager.Init (FB_Shader_Programs (6));
       FB_Grey_Shader_Manager.Init (FB_Shader_Programs (7));
-      Put_Line (" shadow program 7 initalized");
       FB_White_Shader_Manager.Init (FB_Shader_Programs (8));
-      Put_Line (" shadow program 8 initalized");
       FB_Green_Shader_Manager.Init (FB_Shader_Programs (9));
-      Put_Line (" shadow program 9 initalized");
 
       Game_Utils.Game_Log ("---FRAMEBUFFER INITIALIZED---");
 
