@@ -112,13 +112,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GUI.Init_GUIs;
       Blood_Splats.Init;
       FB_Effects.Init (Integer (Window_Width), Integer (Window_Height));
-
-      if not Shadows.Init_Shadows then
-         raise Initialize_Exception with "Init_Shadows failed.";
-      end if;
+      Shadows.Init;
       Manifold.Init;
       MMenu.Init_MMenu;
       Input_Handler.Init;
+      Game_Utils.Game_Log ("----MODULES INITIALIZED----");
    end Init_Modules;
 
    --  ------------------------------------------------------------------------
@@ -267,9 +265,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Text.Init_Comic_Texts;
       GL_Utils.Set_Render_Defaults;
       GUI.Load_Gui_Shaders;
-      Game_Utils.Game_Log ("Main_Loop.Setup Load_Gui_Shaders initialized");
       Init_Modules;
-      Game_Utils.Game_Log ("Main_Loop.Setup Init_Modules returned");
+      Put_Line ("Main_Loop.Setup Init_Modules returned");
       --          Play_Music (Title_Track);
       --          Is_Playing_Hammer_Track := False;
 
@@ -278,6 +275,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       end if;
 
       --  initiate main menu loop
+      Put_Line ("Main_Loop.Setup initiate main menu loop");
       MMenu.Start_Mmenu_Title_Bounce;
       Utilities.Clear_Background_Colour_And_Depth (Black);
 
@@ -288,7 +286,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Last_Time := GL_Utils.Get_Elapsed_Seconds;
       GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
                               Settings.Framebuffer_Height);
+      Put_Line ("Main_Loop.Setup Viewport set");
       while Mmenu_Open and Is_Running loop
+         Put_Line ("Main_Loop.Setup Mmenu_Open");
          Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
