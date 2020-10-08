@@ -81,7 +81,7 @@ package body GUI_Level_Chooser is
    procedure Init is
       use GL.Types;
       use Settings;
-      Name_Maps       : Levels_Maps_Manager.Maps_List;
+--        Map_Names       : Levels_Maps_Manager.Maps_List;
       Text_Height     : constant Single :=
                           50.0 / Single (Settings.Framebuffer_Height);
       Choose_Map_Text : Integer;
@@ -110,10 +110,10 @@ package body GUI_Level_Chooser is
       --      end if;
       Game_Utils.Game_Log ("GUI_Level_Chooser loading maps from " &
                              "src/save/maps.dat");
-      Levels_Maps_Manager.Load_Names ("src/save/maps.dat", Name_Maps);
-      Game_Utils.Game_Log ("GUI_Level_Chooser Name_Maps loaded ");
-      Levels_Maps_Manager.Init_Maps (Name_Maps, Maps, Left_Margin_Cl,
-                                     Top_Margin_Cl);
+      Levels_Maps_Manager.Load_Names ("src/save/maps.dat", Maps);
+      Game_Utils.Game_Log ("GUI_Level_Chooser Map_Names loaded ");
+      Levels_Maps_Manager.Init_Maps (Maps, Selected_Map_ID,
+                                     Left_Margin_Cl, Top_Margin_Cl);
       Game_Utils.Game_Log ("GUI_Level_Chooser Maps initialized. ");
       Update_Selected_Entry_Dot_Map (True, False);
       Choose_Map_Text :=
