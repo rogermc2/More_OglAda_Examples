@@ -34,11 +34,11 @@ package body Levels_Maps_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Maps (From                          : Maps_List; To          : in out Maps_List;
+   procedure Init_Maps (Name_Maps : Maps_List; Maps  : in out Maps_List;
                         Left_Margin_Cl, Top_Margin_Cl : Single) is
       use Settings;
       use Maps_Package;
-      In_Cursor          : Cursor := From.First;
+      In_Cursor          : Cursor := Name_Maps.First;
       --          Out_Cursor         : Cursor;
       Text_Height        : constant Single := 50.0 / Single (Framebuffer_Height);
       Text_Offset_Height : constant Single := 220.0 / Single (Framebuffer_Height);
@@ -47,31 +47,28 @@ package body Levels_Maps_Manager is
       Out_Data           : Level_Map_Data;
       Count              : Single := 0.0;
    begin
-      Put_Line ("Levels_Maps_Manager.Init_Maps initalizing To Maps");
-      Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Maps initalizing To Maps---");
-      if From.Is_Empty then
+      Put_Line ("Levels_Maps_Manager.Init_Maps initalizing Maps");
+      Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Maps initalizing Maps---");
+      if Name_Maps.Is_Empty then
          raise Levels_Maps_Manager_Exception with
-           "Levels_Maps_Manager.Init_Maps From Maps_List is empty.";
+           "Levels_Maps_Manager.Init_Maps Name_Maps List is empty.";
       end if;
 
       while Has_Element (In_Cursor) loop
-         Put_Line ("Levels_Maps_Manager.Init_Maps Adding Map");
          In_Data := Element (In_Cursor);
-         To.Append (In_Data);
-         --              Out_Cursor := To.Last;
-         Out_Data := To.Last_Element;
          Name_Y := Top_Margin_Cl - 2.0 * Count * Text_Height - Text_Offset_Height;
          Count := Count + 1.0;
          declare
             Map_Index : Positive;
             Name      : String := To_String (In_Data.Map_Name);
          begin
-            Map_Index := To_Index  (In_Cursor);
+            Map_Index := To_Index (In_Cursor);
             for index in Positive range 1 .. Name'Length loop
                if index = Map_Index and Name (index) = '_' then
                   Name (index) := ' ';
                end if;
             end loop;
+
             if Out_Data.Locked then
                Out_Data.Map_Name_Text_ID :=
                  Text.Add_Text (Name, Left_Margin_Cl, Name_Y,
@@ -82,13 +79,16 @@ package body Levels_Maps_Manager is
                                 25.0, 0.25, 0.25, 0.25, 1.0);
             end if;
             Text.Set_Text_Visible (Out_Data.Map_Name_Text_ID, False);
+            Maps.Append (Out_Data);
          end;  --  declare block
          Next (In_Cursor);
       end loop;
+      Put_Line ("Levels_Maps_Manager.Init_Maps Maps size : " &
+               Ada.Containers.Count_Type'Image (Maps.Length));
 
       Text.Change_Text_Colour
-        (Element (To.First).Map_Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
-      Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Maps To Maps Initialized---");
+        (Element (Maps.First).Map_Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
+      Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Maps Maps Initialized---");
 
    end Init_Maps;
 

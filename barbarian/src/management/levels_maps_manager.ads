@@ -27,7 +27,7 @@ package Levels_Maps_Manager is
 
    function Get_Map_Name (Maps : Maps_List; Selected_Map : Positive)
                            return String;
-   procedure Init_Maps (From                          : Maps_List; To          : in out Maps_List;
+   procedure Init_Maps (Name_Maps : Maps_List; Maps : in out Maps_List;
                         Left_Margin_Cl, Top_Margin_Cl : Single);
    procedure Load_Names (Path : String; Names : in out Maps_List);
    procedure Load_Map (Path             : String; theMap : in out Level_Map_Data;
