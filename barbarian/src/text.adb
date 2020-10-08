@@ -24,15 +24,15 @@ package body Text is
       VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Points_VBO     : GL.Objects.Buffers.Buffer;
       Tex_Coords_VBO : GL.Objects.Buffers.Buffer;
-      Top_Left_X     : Float := 0.0;
-      Top_Left_Y     : Float := 0.0;
-      Bottom_Right_X : Float := 0.0;
-      Bottom_Right_Y : Float := 0.0;
-      Size_Px        : Float := 0.0;
-      Red            : Float := 0.0;
-      Green          : Float := 0.0;
-      Blue           : Float := 0.0;
-      A              : Float := 0.0;
+      Top_Left_X     : Single := 0.0;
+      Top_Left_Y     : Single := 0.0;
+      Bottom_Right_X : Single := 0.0;
+      Bottom_Right_Y : Single := 0.0;
+      Size_Px        : Single := 0.0;
+      Red            : Single := 0.0;
+      Green          : Single := 0.0;
+      Blue           : Single := 0.0;
+      A              : Single := 0.0;
       Point_Count    : Integer := 0;
       Visible        : Boolean := False;
    end record;
@@ -63,7 +63,7 @@ package body Text is
    Glyphs : Font_Metadata_Manager.Glyph_Array;
 
    procedure Load_Font (Atlas_Image, Atlas_Metadata : String);
-   procedure Text_To_VBO (theText        : String; Scale_Px : Float;
+   procedure Text_To_VBO (theText        : String; Scale_Px : GL.Types.Single;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
                           Tex_Coords_VBO : in out GL.Objects.Buffers.Buffer;
                           Point_Count    : in out Integer;
@@ -77,7 +77,7 @@ package body Text is
    --  size_is_px is the size of maximum-sized glyph in pixels on screen
    --  r, g, b, a is the colour of the text string
    function Add_Text (theText                          : String;
-                      X, Y, Size_In_Pixels, R, G, B, A : Float) return Integer is
+                      X, Y, Size_In_Pixels, R, G, B, A : Single) return Integer is
       use GL.Objects.Buffers;
       use GL.Types;
       use Shader_Attributes;
@@ -125,9 +125,10 @@ package body Text is
 
    --  ------------------------------------------------------------------------
 
-   procedure Centre_Text (ID : Positive; X, Y : Float) is
-      Width  : Float;
-      Length : Float;    begin
+   procedure Centre_Text (ID : Positive; X, Y : Single) is
+      Width  : Single;
+      Length : Single;
+   begin
       if ID <= Renderable_Texts.Last_Index then
          Width := Renderable_Texts.Element (ID).Bottom_Right_X;
          Length := X - 0.5 * Width;
@@ -140,7 +141,7 @@ package body Text is
 
    --  ------------------------------------------------------------------------
 
-   procedure Change_Text_Colour (ID : Positive; R, G, B, A : Float) is
+   procedure Change_Text_Colour (ID : Positive; R, G, B, A : Single) is
       use Renderable_Texts_Package;
       Curs     : Cursor := Renderable_Texts.First;
       Valid_ID : Boolean := False;
@@ -174,6 +175,20 @@ package body Text is
       Text_Shader_Manager.Init (Font_Shader);
       Text_Box_Shader_Manager.Init (Text_Box_Shader);
    end Create_Font_Shaders;
+
+   --  ------------------------------------------------------------------------
+
+   function Create_Text_Box (Text                    : String; Font_ID  : Integer;
+                             X_Min, Y_Min, Scale     : Single;
+                             Text_Colour, Box_Colour : GL.Types.Colors.Color)
+                             return Integer is
+      use GL.Types.Colors;
+      Text_Index : Integer :=
+                     Add_Text (Text, X_Min, Y_Min, Scale, Text_Colour (R),
+                               Text_Colour (G), Text_Colour (B), Text_Colour (A));
+   begin
+      return Text_Index;
+   end Create_Text_Box;
 
    --  ------------------------------------------------------------------------
 
@@ -236,7 +251,7 @@ package body Text is
 
    --  ------------------------------------------------------------------------
 
-   procedure Move_Text (ID : Positive; X, Y : Float) is
+   procedure Move_Text (ID : Positive; X, Y : Single) is
       Text : Renderable_Text;
    begin
       if ID <= Renderable_Texts.Last_Index then
@@ -280,7 +295,8 @@ package body Text is
    --  ------------------------------------------------------------------------
    --  Text_To_VBO creates a VBO from a string of text using our font's
    --  glyph sizes to make a set of quads
-   procedure Text_To_VBO (theText        : String; Scale_Px : Float;
+   procedure Text_To_VBO (theText        : String; Scale_Px : Single
+                          ;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
                           Tex_Coords_VBO : in out GL.Objects.Buffers.Buffer;
                           Point_Count    : in out Integer;

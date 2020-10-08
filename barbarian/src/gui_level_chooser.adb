@@ -2,19 +2,29 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Types;
+with Glfw;
+with Glfw.Input.Keys;
+
+with GL.Types; use GL.Types;
+with GL.Objects.Vertex_Arrays;
+
+with Maths;
+with Utilities;
 
 with Custom_Maps_Manager;
 with Game_Utils;
---  with GL_Utils;
+with GL_Utils;
+with Input_Handler;
 with Levels_Maps_Manager;
---  with MMenu;
+with Menu_Credits_Shader_Manager;
+with MMenu;
 with Selected_Map_Manager;
 with Settings;
 with Text;
 
 package body GUI_Level_Chooser is
 
+   Quad_VAO                  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Custom_Maps               : Custom_Maps_Manager.Custom_Maps_List;
    Num_Custom_Maps           : Natural := 0;
    Maps                      : Levels_Maps_Manager.Maps_List;
@@ -22,10 +32,15 @@ package body GUI_Level_Chooser is
    Selected_Map              : Selected_Map_Manager.Selected_Map_Data;
    Map_Title_Text            : Integer := -1;
    Map_Story_Text            : Integer := -1;
-   Left_Margin_Cl            : Float := 0.0;
-   Top_Margin_Cl             : Float := 0.0;
-   Level_GUI_Width           : Float := 1024.0;
-   Level_GUI_Height          : Float := 768.0;
+   Left_Margin_Cl            : Single := 0.0;
+   Top_Margin_Cl             : Single := 0.0;
+   Level_GUI_Width           : Single := 1024.0;
+   Level_GUI_Height          : Single := 768.0;
+
+   Choose_Map_Txt            : Integer := -1;
+   Map_Title_Txt             : Integer := -1;
+   Map_Story_Txt             : Integer := -1;
+   Loading_Map_Txt           : Integer := -1;
 
    Cheated                   : Boolean := False;
    Map_Is_Unmodified         : Boolean := True;
@@ -34,6 +49,7 @@ package body GUI_Level_Chooser is
    Hammer_Kills              : Integer := 0;
    Fall_Kills                : Integer := 0;
 
+   procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean);
    procedure Update_Selected_Entry_Dot_Map (First, Custom : Boolean);
 
    --  ------------------------------------------------------------------------
@@ -65,8 +81,8 @@ package body GUI_Level_Chooser is
       use GL.Types;
       use Settings;
       Name_Maps       : Levels_Maps_Manager.Maps_List;
-      Text_Height     : constant Float :=
-                          50.0 / Float (Settings.Framebuffer_Height);
+      Text_Height     : constant Single :=
+                          50.0 / Single (Settings.Framebuffer_Height);
       Choose_Map_Text : Integer;
    begin
       Game_Utils.Game_Log ("GUI_Level_Chooser.Init ...");
@@ -81,8 +97,8 @@ package body GUI_Level_Chooser is
          Game_Utils.Game_Log
            ("Level gui menu size reduced to medium (width < 1024px).");
       end if;
-      Left_Margin_Cl := -Level_GUI_Width / float (Framebuffer_Width);
-      Top_Margin_Cl := Level_GUI_Height / float (Framebuffer_Height);
+      Left_Margin_Cl := -Level_GUI_Width / Single (Framebuffer_Width);
+      Top_Margin_Cl := Level_GUI_Height / Single (Framebuffer_Height);
 
       --      if not Game_Utils.Is_Little_Endian then
       --              Put_Line ("GUI_Level_Chooser.Init!");
@@ -91,22 +107,67 @@ package body GUI_Level_Chooser is
       --              Put_Line ("please notify game designer and provide your system specs.");
       --      end if;
       Levels_Maps_Manager.Load_Names ("../save/maps.dat", Name_Maps);
-      Levels_Maps_Manager.Init_Maps (Name_Maps, Maps, Left_Margin_Cl, Top_Margin_Cl);
+      Levels_Maps_Manager.Init_Maps (Name_Maps, Maps, Left_Margin_Cl,
+                                     Top_Margin_Cl);
       Update_Selected_Entry_Dot_Map (True, False);
       Choose_Map_Text :=
-        Text.Add_Text ("choose thy battle!", 0.0, Top_Margin_Cl,
+        Text.Add_Text ("choose thy battle!", 0.0, Single (Top_Margin_Cl),
                        30.0, 1.0, 1.0, 0.0, 0.8);
-      Text.Centre_Text (Choose_Map_Text, 0.0, Top_Margin_Cl);
+      Text.Centre_Text (Choose_Map_Text, 0.0, Single (Top_Margin_Cl));
       Text.Set_Text_Visible (Choose_Map_Text, False);
 
       Custom_Maps_Manager.Load_Custom_Map
-        ("editor/maps.txt", Custom_Maps, Top_Margin_Cl, Left_Margin_Cl,
-         Text_Height, Num_Custom_Maps);
+        ("src/editor/maps.txt", Custom_Maps, Top_Margin_Cl,
+         Left_Margin_Cl, Text_Height, Num_Custom_Maps);
    exception
       when others =>
          Put_Line ("An exception occurred in GUI_Level_Chooser.Init.");
          raise;
    end Init;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Process_Input (Menu_Open, Started_Loading_Map, Cheat_Unlock : in out Boolean) is
+      use  Glfw.Input.Keys;
+      use Input_Handler;
+      use Levels_Maps_Manager.Maps_Package;
+      Selected_Map : Levels_Maps_Manager.Level_Map_Data :=
+                       Maps.Element (Selected_Map_ID);
+   begin
+      if Was_Key_Pressed (Enter) or Was_Action_Pressed (OK_Action)
+        or Was_Action_Pressed (Attack_Action)then
+         if not Selected_Map.Locked or Cheat_Unlock then
+            Started_Loading_Map := True;
+         end if;
+      elsif Was_Key_Pressed (Escape) or Was_Action_Pressed (Open_Menu_Action) then
+         Menu_Open := True;
+      elsif Is_Key_Down (A) and Is_Key_Down (N)  and Is_Key_Down (D) then
+         if not Cheat_Unlock then
+            --              Play_Sound (GONG_SOUND_FILE, true);
+            Cheat_Unlock := True;
+            Game_Utils.Game_Log ("cheater!");
+         end if;
+      end if;
+   end Process_Input;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Render is
+      use GL.Types;
+      use Maths.Single_Math_Functions;
+      Aspect : constant Single := Single (Settings.Framebuffer_Width) /
+                 Single (Settings.Framebuffer_Height);
+      Now    : constant Single := Single (Glfw.Time);
+      Sx     : constant Single := 2.0;
+      Sy     : constant Single := 2.0 * Aspect;
+      Px     : constant Single := Sin (0.15 * Now);
+      Py     :constant  Single := -1.5 * Cos (0.09 * Now);
+   begin
+      Utilities.Clear_Colour;
+      Menu_Credits_Shader_Manager.Set_Scale ((Sx, Sy));
+      Menu_Credits_Shader_Manager.Set_Position ((Px, Py));
+
+   end Render;
 
    --  ------------------------------------------------------------------------
 
@@ -147,25 +208,70 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-   function Start_Level_Chooser_Loop (Custom : Boolean) return Boolean is
-      --          Menu_Open    : Boolean := MMenu.End_Story_Open;
-      --          Menu_Quit    : Boolean := False;
-      --          Cheat_Unlock : Boolean := False;
-      --          Last_Time    : Float := GL_Utils.Get_Elapsed_Seconds;
+   function Start_Level_Chooser_Loop (Window     : in out Glfw.Windows.Window;
+                                      Custom_Maps: Boolean) return Boolean is
+      Menu_Open           : Boolean := MMenu.End_Story_Open;
+      Menu_Quit           : Boolean := False;
+      Cheat_Unlock        : Boolean := False;
+      Started_Loading_Map : Boolean := False;
+      Current_Time        : Float;
+      Delta_Time          : Float;
+      Last_Time           : Float := GL_Utils.Get_Elapsed_Seconds;
+      Continue            : Boolean := True;
+      Restart             : Boolean := False;
+      Result              : Boolean := False;
    begin
-      Reset_GUI_Level_Selection (Custom);
+      Reset_GUI_Level_Selection (Custom_Maps);
+      while not Window.Should_Close and Continue loop
+         Current_Time := GL_Utils.Get_Elapsed_Seconds;
+         Delta_Time := Current_Time - Last_Time;
+         Last_Time := Current_Time;
+         if Menu_Open then
+            Menu_Quit := not MMenu.Update_MMenu (Delta_Time);
+            if MMenu.Menu_Was_Closed then
+               Menu_Open := False;
+            end if;
+            if MMenu.Did_User_Choose_New_Game or
+              MMenu.Did_User_Choose_Custom_Maps then
+               Menu_Open := False;
+               Continue := False;
+               Restart := True;
+            elsif Menu_Quit then
+               Continue := False;
+            end if;
+         else
+            Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
+         end if;
 
-      return False;
+         if Continue then
+            if not Menu_Open then
+               Process_Input (Menu_Open, Started_Loading_Map, Cheat_Unlock);
+            end if;
+            Render;
+         end if;
+      end loop;
+
+      if Restart then
+         Result := Start_Level_Chooser_Loop (Window, False);
+      end if;
+      return Result;
    end Start_Level_Chooser_Loop;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean)  is
+   begin
+      null;
+   end Update_GUI_Level_Chooser;
 
    --  ------------------------------------------------------------------------
 
    procedure Update_Selected_Entry_Dot_Map (First, Custom : Boolean) is
       use Custom_Maps_Manager;
       Map_Path     : Unbounded_String;
-      Lt_Margin_Px : constant Float := 650.0;
-      Lt_Margin_Cl : constant Float :=
-                       Lt_Margin_Px / Float (Settings.Framebuffer_Width);
+      Lt_Margin_Px : constant Single := 650.0;
+      Lt_Margin_Cl : constant Single :=
+                       Lt_Margin_Px / Single (Settings.Framebuffer_Width);
    begin
       if Selected_Map.Locked and not Custom then
          Selected_Map.Map_Title := To_Unbounded_String ("locked");
@@ -190,14 +296,14 @@ package body GUI_Level_Chooser is
          Map_Title_Text :=
            Text.Add_Text (To_String (Selected_Map.Map_Title),
                           Left_Margin_Cl + Lt_Margin_Cl,
-                          Top_Margin_Cl - 180.0 / Float (Settings.Framebuffer_Height),
+                          Top_Margin_Cl - 180.0 / Single (Settings.Framebuffer_Height),
                           30.0, 0.9, 0.9, 0.0, 0.8);
          Text.Set_Text_Visible (Map_Title_Text, False);
 
          Map_Story_Text :=
            Text.Add_Text (To_String (Selected_Map.Map_Intro_Text),
                           Left_Margin_Cl + Lt_Margin_Cl,
-                          Top_Margin_Cl - 300.0 / Float (Settings.Framebuffer_Height),
+                          Top_Margin_Cl - 300.0 / Single (Settings.Framebuffer_Height),
                           20.0, 0.75, 0.75, 0.75, 1.0);
          Text.Set_Text_Visible (Map_Story_Text, False);
       else
