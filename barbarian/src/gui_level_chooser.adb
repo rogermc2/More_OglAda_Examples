@@ -81,7 +81,6 @@ package body GUI_Level_Chooser is
    procedure Init is
       use GL.Types;
       use Settings;
---        Map_Names       : Levels_Maps_Manager.Maps_List;
       Text_Height     : constant Single :=
                           50.0 / Single (Settings.Framebuffer_Height);
       Choose_Map_Text : Integer;
