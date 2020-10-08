@@ -48,6 +48,7 @@ package body GUI_Level_Chooser is
    Boulder_Crushes           : Integer := 0;
    Hammer_Kills              : Integer := 0;
    Fall_Kills                : Integer := 0;
+   Since_Last_Key            : Float := 0.0;
 
    procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean);
    procedure Update_Selected_Entry_Dot_Map (First, Custom : Boolean);
@@ -222,6 +223,7 @@ package body GUI_Level_Chooser is
       Result              : Boolean := False;
    begin
       Reset_GUI_Level_Selection (Custom_Maps);
+      Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop GUI_Level_Selection reset. ");
       while not Window.Should_Close and Continue loop
          Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
@@ -242,6 +244,7 @@ package body GUI_Level_Chooser is
          else
             Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
          end if;
+         Put_Line ("Start_Level_Chooser_Loop continue?");
 
          if Continue then
             if not Menu_Open then
@@ -255,13 +258,55 @@ package body GUI_Level_Chooser is
          Result := Start_Level_Chooser_Loop (Window, False);
       end if;
       return Result;
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in GUI_Level_Chooser.Start_Level_Chooser_Loop.");
+         return False;
+
    end Start_Level_Chooser_Loop;
 
    --  ------------------------------------------------------------------------
 
-   procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean)  is
+   procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean) is
+      use Glfw.Input.Keys;
+      use Input_Handler;
+      Old_Sel : Integer := Selected_Map_ID;
+      Old_Map : Levels_Maps_Manager.Level_Map_Data := Maps.Element (Old_Sel);
    begin
-      null;
+      Since_Last_Key := Since_Last_Key + Delta_Time;
+      if Since_Last_Key > 0.15 then
+         if Is_Key_Down (Down) or Is_Action_Down (Down_Action) then
+            Selected_Map_ID := Selected_Map_ID + 1;
+            --              Play_Sound (LEVEL_BEEP_SOUND, true);
+            Since_Last_Key := 0.0;
+         elsif Is_Key_Down (Up) or Is_Action_Down (Up_Action) then
+            Selected_Map_ID := Selected_Map_ID - 1;
+            --              Play_Sound (LEVEL_BEEP_SOUND, true);
+            Since_Last_Key := 0.0;
+         end if;
+
+         if Custom_Maps then
+            if Selected_Map_ID >= Num_Custom_Maps then
+               Selected_Map_ID := Selected_Map_ID - Num_Custom_Maps + 1;
+            end if;
+            if Selected_Map_ID /= Old_Sel then
+               Text.Change_Text_Colour (Selected_Map_ID, 1.0, 0.0, 1.0, 1.0);
+               Text.Change_Text_Colour (Old_Sel, 1.0, 1.0, 1.0, 1.0);
+               Update_Selected_Entry_Dot_Map (False, Custom_Maps);
+            end if;
+         else
+            if Selected_Map_ID >= Maps.Last_Index then
+               Selected_Map_ID := Selected_Map_ID - Maps.Last_Index + 1;
+            end if;
+            if not Old_Map.Locked then
+               Text.Change_Text_Colour (Old_Sel, 1.0, 1.0, 1.0, 1.0);
+            else
+               Text.Change_Text_Colour (Old_Sel, 0.25, 0.25, 0.25, 1.0);
+            end if;
+               Update_Selected_Entry_Dot_Map (False, Custom_Maps);
+         end if;
+      end if;
    end Update_GUI_Level_Chooser;
 
    --  ------------------------------------------------------------------------
@@ -279,8 +324,8 @@ package body GUI_Level_Chooser is
            ("clear previous temples to unlock" &
               ASCII.CR & ASCII.LF & "the portal to this map");
       else
-         if Custom then Map_Path := To_Unbounded_String ("maps/" &
-                                                           Get_Custom_Map_Name (Custom_Maps, Selected_Map_ID) & ".map");
+         if Custom then Map_Path := To_Unbounded_String
+              ("maps/" & Get_Custom_Map_Name (Custom_Maps, Selected_Map_ID) & ".map");
             Game_Utils.Game_Log ("level chooser is peeking in map " &
                                    To_String (Map_Path));
          else

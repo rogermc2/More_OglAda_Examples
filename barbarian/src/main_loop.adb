@@ -68,7 +68,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Level_Name           : Unbounded_String :=
                             To_Unbounded_String ("anton2");
    Quit_Game            : Boolean := False;
-   Skip_Intro           : Boolean := True;
+   Skip_Intro           : Boolean := False;
    --     Batching_Mode        : Boolean := True;
    --
    --     Reserve_video_Memory : Boolean := True;
@@ -131,6 +131,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       b             : GL.Types.Single := 0.0;
       Colour        : Colors.Color;
    begin
+      Game_Utils.Game_Log ("---Main_Loop.Introduction---");
       Is_Running := True;
       Game_Camera.Is_Dirty := True;
       while Is_Running loop
@@ -139,13 +140,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Last_Time := Current_Time;
          if Flash_Timer < 0.25 then
             Flash_Timer := Flash_Timer + Elapsed_Time;
-            b := Sin (Single ((30.0)) * Single (Current_Time));
+            b := Abs (Sin (Single ((30.0)) * Single (Current_Time)));
+--              Put_Line ("Main_Loop.Introduction.b: " & Single'Image (b));
             Colour := (b, b, b, 1.0);
             Utilities.Clear_Background_Colour_And_Depth (Colour);
          else
             Utilities.Clear_Background_Colour_And_Depth (Black);
             MMenu.Draw_Title_Only;
          end if;
+         Game_Utils.Game_Log ("Main_Loop.Introduction Draw_Controller_Button_Overlays");
          GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
          Glfw.Input.Poll_Events;
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
@@ -205,6 +208,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    begin
       Game_Utils.Game_Log ("Main_Loop.Run_Game started");
+      Put_Line ("Main_Loop.Run_Game started");
       while not Quit_Game loop
          Window.Get_Framebuffer_Size (Window_Width, Window_Height);
          Width := Single (Window_Width);
@@ -215,7 +219,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
            (Window, MMenu.Are_We_In_Custom_Maps) then
             Level_Name := To_Unbounded_String
               (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
+            Put_Line ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
+                     & To_String (Level_Name));
          end if;
+         Put_Line ("Main_Loop.Run_Game Start_Level_Chooser_Loop done");
 
          --   Even if flagged to skip initial intro this means that the level
          --  chooser can be accessed if the player selects "new game" in the main menu.
@@ -266,7 +273,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL_Utils.Set_Render_Defaults;
       GUI.Load_Gui_Shaders;
       Init_Modules;
-      Put_Line ("Main_Loop.Setup Init_Modules returned");
       --          Play_Music (Title_Track);
       --          Is_Playing_Hammer_Track := False;
 
