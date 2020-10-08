@@ -23,6 +23,8 @@ package Levels_Maps_Manager is
    type Custom_Maps_List is new Maps_Package.Vector with null record;
    type Maps_List is new Maps_Package.Vector with null record;
 
+   Levels_Maps_Manager_Exception : Exception;
+
    function Get_Map_Name (Maps : Maps_List; Selected_Map : Positive)
                            return String;
    procedure Init_Maps (From                          : Maps_List; To          : in out Maps_List;
@@ -31,7 +33,5 @@ package Levels_Maps_Manager is
    procedure Load_Map (Path             : String; theMap : in out Level_Map_Data;
                        Has_Hammer_Track : out Boolean);
    function Number_Of_Maps return Integer;
-
-private
 
 end Levels_Maps_Manager;

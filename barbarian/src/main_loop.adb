@@ -316,9 +316,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Is_Running := not Main_Window.Should_Close;
       end loop;
 
-      if Is_Running then
-         GUI_Level_Chooser.Init;
-      end if;
+      GUI_Level_Chooser.Init;
 
    exception
       when others =>
