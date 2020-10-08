@@ -21,6 +21,13 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Down_Action return Integer is
+   begin
+      return Input_Actions.Down_Action;
+   end Down_Action;
+
+   --  ------------------------------------------------------------------------
+
    procedure Default_Key_Configuration is
    begin
       Set_Key_For_Action ("Move_Left", 263);
@@ -181,6 +188,13 @@ package body Input_Handler is
    begin
       null;
    end Set_Joy_Button_For_Action;
+
+   --  ------------------------------------------------------------------------
+
+   function Up_Action return Integer is
+   begin
+      return Input_Actions.Up_Action;
+   end Up_Action;
 
    --  ------------------------------------------------------------------------
 
