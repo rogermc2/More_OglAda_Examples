@@ -3,6 +3,8 @@ with Glfw.Windows;
 
 package GUI_Level_Chooser is
 
+   GUI_Level_Chooser_Exception : Exception;
+
    function Cheated_On_Map return Boolean;
    procedure Init;
    function Get_Selected_Map_Name (Custom : Boolean) return String;

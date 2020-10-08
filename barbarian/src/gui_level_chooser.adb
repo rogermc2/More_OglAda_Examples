@@ -98,6 +98,7 @@ package body GUI_Level_Chooser is
          Game_Utils.Game_Log
            ("Level gui menu size reduced to medium (width < 1024px).");
       end if;
+
       Left_Margin_Cl := -Level_GUI_Width / Single (Framebuffer_Width);
       Top_Margin_Cl := Level_GUI_Height / Single (Framebuffer_Height);
 
@@ -107,9 +108,13 @@ package body GUI_Level_Chooser is
       --              Put_Line ("game may cease to function at this point.");
       --              Put_Line ("please notify game designer and provide your system specs.");
       --      end if;
-      Levels_Maps_Manager.Load_Names ("../save/maps.dat", Name_Maps);
+      Game_Utils.Game_Log ("GUI_Level_Chooser loading maps from " &
+                             "src/save/maps.dat");
+      Levels_Maps_Manager.Load_Names ("src/save/maps.dat", Name_Maps);
+      Game_Utils.Game_Log ("GUI_Level_Chooser Name_Maps loaded ");
       Levels_Maps_Manager.Init_Maps (Name_Maps, Maps, Left_Margin_Cl,
                                      Top_Margin_Cl);
+      Game_Utils.Game_Log ("GUI_Level_Chooser Maps initialized. ");
       Update_Selected_Entry_Dot_Map (True, False);
       Choose_Map_Text :=
         Text.Add_Text ("choose thy battle!", 0.0, Single (Top_Margin_Cl),
@@ -242,6 +247,7 @@ package body GUI_Level_Chooser is
                Continue := False;
             end if;
          else
+            Put_Line ("Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
             Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
          end if;
          Put_Line ("Start_Level_Chooser_Loop continue?");
@@ -272,9 +278,24 @@ package body GUI_Level_Chooser is
       use Glfw.Input.Keys;
       use Input_Handler;
       Old_Sel : Integer := Selected_Map_ID;
-      Old_Map : Levels_Maps_Manager.Level_Map_Data := Maps.Element (Old_Sel);
+      Old_Map : Levels_Maps_Manager.Level_Map_Data;
    begin
+      New_Line;
       Since_Last_Key := Since_Last_Key + Delta_Time;
+      Put_Line ("Update_GUI_Level_Chooser: Selected_Map_ID" & Integer'Image (Selected_Map_ID));
+      if Maps.Is_Empty then
+         raise GUI_Level_Chooser_Exception with "Maps.Is_Empty ";
+      end if;
+      if Selected_Map_ID < Maps.First_Index or
+        Selected_Map_ID > Maps.Last_Index then
+         raise GUI_Level_Chooser_Exception with
+         "Invalid Selected_Map_ID: " & Integer'Image (Selected_Map_ID);
+      end if;
+
+      Put_Line ("Update_GUI_Level_Chooser get old map Old_Sel: " &
+               Integer'Image (Old_Sel));
+      Old_Map := Maps.Element (Old_Sel);
+      Put_Line ("Update_GUI_Level_Chooser check Last_Key ");
       if Since_Last_Key > 0.15 then
          if Is_Key_Down (Down) or Is_Action_Down (Down_Action) then
             Selected_Map_ID := Selected_Map_ID + 1;
@@ -286,6 +307,7 @@ package body GUI_Level_Chooser is
             Since_Last_Key := 0.0;
          end if;
 
+         Put_Line ("Update_GUI_Level_Chooser check Custom_Maps ");
          if Custom_Maps then
             if Selected_Map_ID >= Num_Custom_Maps then
                Selected_Map_ID := Selected_Map_ID - Num_Custom_Maps + 1;
@@ -307,6 +329,7 @@ package body GUI_Level_Chooser is
                Update_Selected_Entry_Dot_Map (False, Custom_Maps);
          end if;
       end if;
+
    end Update_GUI_Level_Chooser;
 
    --  ------------------------------------------------------------------------
