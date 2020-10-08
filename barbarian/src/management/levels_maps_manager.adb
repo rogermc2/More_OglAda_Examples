@@ -16,7 +16,7 @@ package body Levels_Maps_Manager is
    -- -------------------------------------------------------------------------
 
    function Get_Map_Name (Maps : Maps_List; Selected_Map : Positive)
-                           return String is
+                          return String is
       aMap    : Level_Map_Data;
       Result  : String := "";
    begin
@@ -159,12 +159,9 @@ package body Levels_Maps_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Load_Names (Path : String; Names : in out Maps_List) is
-      use Ada.Streams;
-      Input_File       : Stream_IO.File_Type;
-      Input_Stream     : Stream_IO.Stream_Access;
-      aLine            : Unbounded_String;
-      Line_Count       : Integer := 0;
-      Lock             : Boolean;
+      Input_File : File_Type;
+      Line_Count : Integer := 0;
+
       procedure Append_Data (Name : String; Lock : Boolean := True) is
          Data : Level_Map_Data;
       begin
@@ -172,10 +169,11 @@ package body Levels_Maps_Manager is
          Data.Locked := Lock;
          Names.Append (Data);
       end Append_Data;
+
    begin
       Put_Line ("Levels_Maps_Manager.Load_Names loading " & Path);
-      Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
-      if not Stream_IO.Is_Open (Input_File) then
+      Open (Input_File, In_File, Path);
+      if not Is_Open (Input_File) then
          Names.Clear;
          Append_Data ("introduction", False);
          Append_Data ("three_doors");
@@ -187,20 +185,20 @@ package body Levels_Maps_Manager is
          Append_Data  ("attercoppe");
          Num_Maps := Integer (Length (Names));
       else
-         Input_Stream := Stream_IO.Stream (Input_File);
-         while not Stream_IO.End_Of_File (Input_File) loop
-            Unbounded_String'Read (Input_Stream, aLine);
-            Line_Count := Line_Count + 1;
-            if Length (aLine) < 2 then
-               Game_Utils.Game_Log ("WARNING: skipping short line " &
-                                      To_String (aLine) & " in maps list.");
-            else
-               Boolean'Read (Input_Stream, Lock);
-               Append_Data (To_String (aLine), Lock);
-               Line_Count := Line_Count + 1;
-            end if;
+         while not End_Of_File (Input_File) loop
+            declare
+               aLine : String := Get_Line (Input_File);
+            begin
+               if aLine'Length < 2 then
+                  Game_Utils.Game_Log ("WARNING: Load_Names skipping short line " &
+                                         aLine & " in maps list.");
+               else
+                  Append_Data (aLine, true);
+                  Num_Maps := Num_Maps + 1;
+               end if;
+            end;
          end loop;
-         Stream_IO.Close (Input_File);
+         Close (Input_File);
       end if;
 
    exception
