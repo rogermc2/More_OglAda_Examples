@@ -185,6 +185,13 @@ package body MMenu is
 
     --  ------------------------------------------------------------------------
 
+    function Menu_Was_Closed return Boolean is
+    begin
+        return Mmenu_Was_Closed;
+    end Menu_Was_Closed;
+
+   --  ------------------------------------------------------------------------
+
     procedure Set_MMenu_Open (State : Boolean) is
     begin
         MMenu_Open := State;

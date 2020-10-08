@@ -33,7 +33,7 @@ package body Custom_Maps_Manager is
 
     procedure Load_Custom_Map (Path : String; Maps : in out Custom_Maps_List;
                                Top_Margin_Cl, Left_Margin_Cl,
-                               Text_Height : Float;
+                               Text_Height : Single;
                                Num_Custom_Maps : in out Integer) is
         use Ada.Streams;
         Input_File       : Stream_IO.File_Type;
@@ -41,11 +41,11 @@ package body Custom_Maps_Manager is
         aLine            : Unbounded_String;
         Line_Length      : Integer;
         Data             : Custom_Data;
-        Text_Height_Offset : constant Float :=
-                               220.0 / Float (Settings.Framebuffer_Height);
-        Mname_Y            : constant Float :=
+        Text_Height_Offset : constant Single :=
+                               220.0 / Single (Settings.Framebuffer_Height);
+        Mname_Y            : constant Single :=
                                Top_Margin_Cl - 2.0 * Text_Height *
-                               Float (Num_Custom_Maps) - Text_Height_Offset;
+                               Single (Num_Custom_Maps) - Text_Height_Offset;
     begin
         Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
         Input_Stream := Stream_IO.Stream (Input_File);
@@ -85,18 +85,18 @@ package body Custom_Maps_Manager is
 
     procedure Replace_Custom_Map (Path : String; Maps : in out Custom_Maps_List;
                                   Top_Margin_Cl, Left_Margin_Cl,
-                                  Text_Height : Float; Map_ID : Positive) is
+                                  Text_Height : Single; Map_ID : Positive) is
         use Ada.Streams;
         Input_File       : Stream_IO.File_Type;
         Input_Stream     : Stream_IO.Stream_Access;
         aLine            : Unbounded_String;
         Line_Length      : Integer;
         Data             : Custom_Data;
-        Text_Height_Offset : constant Float :=
-                               220.0 / Float (Settings.Framebuffer_Height);
-        Mname_Y            : constant Float :=
+        Text_Height_Offset : constant Single :=
+                               220.0 / Single (Settings.Framebuffer_Height);
+        Mname_Y            : constant Single :=
                                Top_Margin_Cl - 2.0 * Text_Height *
-                               Float (Map_ID) - Text_Height_Offset;
+                               Single (Map_ID) - Text_Height_Offset;
     begin
         Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
         Input_Stream := Stream_IO.Stream (Input_File);

@@ -34,17 +34,17 @@ package body Levels_Maps_Manager is
     --  ------------------------------------------------------------------------
 
     procedure Init_Maps (From : Maps_List; To : in out Maps_List;
-                         Left_Margin_Cl, Top_Margin_Cl : Float) is
+                         Left_Margin_Cl, Top_Margin_Cl : Single) is
         use Settings;
         use Maps_Package;
         In_Cursor          : Cursor := From.First;
         --          Out_Cursor         : Cursor;
-        Text_Height        : constant Float := 50.0 / Float (Framebuffer_Height);
-        Text_Offset_Height : constant Float := 220.0 / Float (Framebuffer_Height);
-        Name_Y             : Float;
+        Text_Height        : constant Single := 50.0 / Single (Framebuffer_Height);
+        Text_Offset_Height : constant Single := 220.0 / Single (Framebuffer_Height);
+        Name_Y             : Single;
         In_Data            : Level_Map_Data;
         Out_Data           : Level_Map_Data;
-        Count              : Float := 0.0;
+        Count              : Single := 0.0;
     begin
         while Has_Element (In_Cursor) loop
             In_Data := Element (In_Cursor);

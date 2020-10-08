@@ -212,7 +212,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
 
          if GUI_Level_Chooser.Start_Level_Chooser_Loop
-           (MMenu.Are_We_In_Custom_Maps) then
+           (Window, MMenu.Are_We_In_Custom_Maps) then
             Level_Name := To_Unbounded_String
               (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
          end if;
@@ -288,7 +288,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                               Settings.Framebuffer_Height);
       Put_Line ("Main_Loop.Setup Viewport set");
       while Mmenu_Open and Is_Running loop
-         Put_Line ("Main_Loop.Setup Mmenu_Open");
          Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;

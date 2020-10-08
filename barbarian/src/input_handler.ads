@@ -1,5 +1,8 @@
 
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
 with Glfw.Input.Keys; use Glfw.Input.Keys;
+
 package Input_Handler is
 
     Max_Actions : constant Integer := 256;
@@ -9,15 +12,20 @@ package Input_Handler is
     type Joystick_Axes_State is array (Integer range <>) of Float;
     type Joystick_State  is array (Integer range <>) of Boolean;
     type Integer_Array is array (Integer range <>) of Integer;
+    type Key_String is array (Integer range <>) of Unbounded_String;
     type Key_Characters is array (Integer range <>, Integer range <>) of Character;
     type Key_State is array (1 .. Max_Keys) of Boolean;
     type Key_Binding_State is array (1 .. Max_Actions) of Key;
 
     Input_Handler_Exception : Exception;
 
+   function Attack_Action return Integer;
     procedure Init;
     function Is_Key_Down (aKey : Key) return Boolean;
-    function Is_Action_Down (Action : Integer) return Boolean;
+   function Is_Action_Down (Action : Integer) return Boolean;
+   function OK_Action return Integer;
+   function Open_Menu_Action return Integer;
+    function Was_Action_Pressed (Action : Integer) return Boolean;
     function Was_Attack_Action_Pressed return Boolean;
     function Was_Key_Pressed (aKey : Key) return Boolean;
     function Was_Menu_Back_Action_Pressed return Boolean;
@@ -27,7 +35,8 @@ package Input_Handler is
 private
     type Input_State_Data is record
     -- localised name of each key - not supporting wchar_t to protect 256 sz atlas
-        Key_Names                      : Key_Characters (1 .. Max_Keys, 1 .. 256);
+      Key_Names                      : Key_String (1 .. Max_Keys) :=
+                                         (others => To_Unbounded_String (""));
         Last_Key_Down                  : Integer := 0;
         Key_Pressed                    : Boolean := False;
         Keys_Down                      : Key_State := (others => False);
@@ -52,7 +61,7 @@ private
 
     type Input_Actions_Data is record
     -- Names of game's registered actions. "jump" "shoot" etc.
-        Action_Names         : Key_Characters (1 .. Max_Actions, 1 .. 256);
+        Action_Names         : Key_String (1 .. Max_Actions);
         Num_Actions          : Integer := 0;
         Left_Action          : Integer := 0;
         Right_Action         : Integer := 0;
@@ -68,7 +77,7 @@ private
         Open_Menu_Action     : Integer := 0;
         Menu_Back_Action     : Integer := 0;
         Ok_Action            : Integer := 0;
-        Clear_Binding_Action : Boolean := False;
+        Clear_Binding_Action : Integer := 0;
         -- Actual key code for each registered action ingame
         Key_Bindings         : Key_Binding_State;
         Joy_Button_Bindings  : Integer_Array (1 .. Max_Actions) :=

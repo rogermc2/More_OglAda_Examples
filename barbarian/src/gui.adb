@@ -259,10 +259,10 @@ package body GUI is
         Text.Add_Text (To_String (Bottom_Health_Name),
                        0.0, 0.0, 32.0, 1.0, 1.0, 1.0, 1.0);
       Text.Centre_Text (Bottom_Health_Text_Index,
-                        Float (5 + Health_Bar_Width_Px + 2 * Crong_Head_Width_Px)
-                        / Float (Settings.Framebuffer_Width) - 1.0,
-                        Float (32 + Health_Bar_Height_Px)
-                        / Float (Settings.Framebuffer_Height) - 1.0);
+                        Single (5 + Health_Bar_Width_Px + 2 * Crong_Head_Width_Px)
+                        / Single (Settings.Framebuffer_Width) - 1.0,
+                        Single (32 + Health_Bar_Height_Px)
+                        / Single (Settings.Framebuffer_Height) - 1.0);
       Top_Health_Text_Index :=
         Text.Add_Text (To_String (Top_Health_Name),
                        0.0, 0.0, 32.0, 1.0, 1.0, 1.0, 1.0);
