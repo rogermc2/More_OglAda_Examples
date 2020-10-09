@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Game_Utils;
 
 package body Input_Handler is
@@ -201,13 +203,15 @@ package body Input_Handler is
    function Was_Action_Pressed (Action : Integer) return Boolean is
       Result : Boolean := False;
    begin
-      if Action < 0 or Action >= Max_Actions then
+      if Action <= 0 or Action > Max_Actions then
          raise Input_Handler_Exception with
            "Input_Handler.Was_Action_Pressed invalid action code: " &
            Integer'Image (Action);
       end if;
 
       --  Joystick not implemented
+    Put_Line ("Input_Handler.Was_Action_Pressed action code: " &
+           Integer'Image (Action));
       Result := Was_Key_Pressed (Input_Actions.Key_Bindings (Action));
       return Result;
    end Was_Action_Pressed;
@@ -225,7 +229,7 @@ package body Input_Handler is
       Key_Val : constant Integer := Key'Enum_Rep (aKey);
       Pressed : Boolean := False;
    begin
-      if Key_Val < 0 or Key_Val >= Max_Keys then
+      if Key_Val < 32 or Key_Val > Max_Keys then
          raise Input_Handler_Exception with
            "Input_Handler.Was_Key_Pressed, invalid key code " &
            Integer'Image (Key_Val) & " detected.";

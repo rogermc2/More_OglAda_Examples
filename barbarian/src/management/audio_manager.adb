@@ -122,11 +122,11 @@ package body Audio_Manager is
 
    --  ------------------------------------------------------------------------
 
-   function Init_Audio return Boolean is
+   procedure Init is
    begin
+      Game_Utils.Game_Log ("Audio_Manager.Init starting audio engine.");
       Game_Audio.Device_Name := To_Unbounded_String ("None");
-      return False;
-   end Init_Audio;
+   end Init;
 
    --  ------------------------------------------------------------------------
 
