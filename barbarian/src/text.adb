@@ -97,8 +97,10 @@ package body Text is
       R_Text.Points_VBO.Initialize_Id;
       R_Text.Tex_Coords_VBO.Initialize_Id;
 
+      Put_Line ("Text.Add_Text R_Text set.");
       Text_To_VBO (theText, Size_In_Pixels, R_Text.Points_VBO,
                    R_Text.Tex_Coords_VBO, Point_Count, BR_X, BR_Y);
+      Put_Line ("Text.Add_Text R_Text.VAO.Initialize_Id.");
       R_Text.VAO.Initialize_Id;
       R_Text.VAO.Bind;
 
@@ -121,6 +123,11 @@ package body Text is
       Num_Render_Strings := Integer (Renderable_Texts.Length);
       return Renderable_Texts.Last_Index;
 
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Text.Add_Text.");
+         raise;
+         return -1;
    end Add_Text;
 
    --  ------------------------------------------------------------------------
@@ -224,6 +231,11 @@ package body Text is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (1, 2, GL.Types.Single_Type, False, 0, 0);
       Game_Utils.Game_Log ("Text initialised");
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Text.Init_Text_Rendering.");
+         raise;
    end Init_Text_Rendering;
 
    --  ------------------------------------------------------------------------
@@ -404,6 +416,13 @@ package body Text is
       Array_Buffer.Bind (Tex_Coords_VBO);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Tex_Coords_Tmp, Dynamic_Draw);
       Point_Count := 6 * Integer (Current_Index);
+
+      Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length finished");
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Text.Text_To_VBO.");
+         raise;
    end Text_To_VBO;
 
    --  ------------------------------------------------------------------------
@@ -421,6 +440,7 @@ package body Text is
          raise Text_Exception with "Text.Update_Text encountered an invalid ID:" &
            Integer'Image (ID);
       end if;
+
    end Update_Text;
 
    --  ------------------------------------------------------------------------

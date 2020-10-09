@@ -19,7 +19,7 @@ with Utilities;
 
 --  with GL_Util;
 
---  with Audio_Manager;
+with Audio_Manager;
 with Blood_Splats;
 with Camera;
 with Character_Controller;
@@ -141,7 +141,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          if Flash_Timer < 0.25 then
             Flash_Timer := Flash_Timer + Elapsed_Time;
             b := Abs (Sin (Single ((30.0)) * Single (Current_Time)));
---              Put_Line ("Main_Loop.Introduction.b: " & Single'Image (b));
+            --              Put_Line ("Main_Loop.Introduction.b: " & Single'Image (b));
             Colour := (b, b, b, 1.0);
             Utilities.Clear_Background_Colour_And_Depth (Colour);
          else
@@ -214,15 +214,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Width := Single (Window_Width);
          Height := Single (Window_Height);
          GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
+         Game_Utils.Game_Log ("Main_Loop.Run_Game Viewport set");
 
          if GUI_Level_Chooser.Start_Level_Chooser_Loop
            (Window, MMenu.Are_We_In_Custom_Maps) then
+            Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop started. ");
             Level_Name := To_Unbounded_String
               (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
-            Put_Line ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
-                     & To_String (Level_Name));
+            Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
+                                 & To_String (Level_Name));
          end if;
-         Put_Line ("Main_Loop.Run_Game Start_Level_Chooser_Loop done");
+         Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop done");
 
          --   Even if flagged to skip initial intro this means that the level
          --  chooser can be accessed if the player selects "new game" in the main menu.
@@ -261,10 +263,22 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Flash_Timer  : Float := 0.0;
    begin
       Game_Utils.Game_Log ("Main_Loop.Setup started");
-         Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-         Width := Single (Window_Width);
-         Height := Single (Window_Height);
+      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      Width := Single (Window_Width);
+      Height := Single (Window_Height);
       --          Param := Game_Utils.Check_Param ("-map");
+      Shader_Manager.Init_Shaders;
+      Audio_Manager.Init;
+      Texture_Manager.Init;
+      Controller_Textures_Manager.Load_Controller_Textures;
+      Mesh_Loader.Init;
+      Camera.Init;
+      if Changed_Camera_Height then
+         Camera.Set_Camera_Height (Camera_Height);
+      end if;
+      Text.Init_Text_Rendering
+        ("src/textures/comicscript.png", "sec/fonts/comicscript.meta",
+         Settings.Framebuffer_Width,  Settings.Framebuffer_Height);
       Text.Init_Particle_Texts;
       Fps_Text_Index := Text.Add_Text ("fps: batches: vertices: ",
                                        -1.0, 1.0, 15.0, 1.0, 1.0, 0.0, 0.9);

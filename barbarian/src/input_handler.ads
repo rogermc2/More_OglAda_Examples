@@ -6,7 +6,7 @@ with Glfw.Input.Keys; use Glfw.Input.Keys;
 package Input_Handler is
 
    Max_Actions : constant Integer := 256;
-   Max_Keys    : constant Integer := 512;
+   Max_Keys    : constant Integer := 348;
 
    type Character_Array is array (Integer range <>) of Character;
    type Joystick_Axes_State is array (Integer range <>) of Float;

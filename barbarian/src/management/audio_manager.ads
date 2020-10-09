@@ -5,7 +5,7 @@ package Audio_Manager is
 
    Audio_Manager_Exception : Exception;
 
-   function Init_Audio return Boolean;
+   procedure Init;
    procedure Load_Ambient_Sounds (Input_File : File_Type);
 
 end Audio_Manager;
