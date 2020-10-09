@@ -91,12 +91,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Init_Modules is
    begin
-      if not Shader_Manager.Init_Shaders then
-         raise Initialize_Exception with "Init_Shaders failed.";
-      end if;
-      --          if not Audio.Init_Audio then
-      --              raise Initialize_Exception with "Init_Audio failed.";
-      --          end if;
+      Shader_Manager.Init;
+      Audio_Manager.Init;
       Texture_Manager.Init;
       Controller_Textures_Manager.Load_Controller_Textures;
       Mesh_Loader.Init;
@@ -107,7 +103,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Text.Init_Text_Rendering
         ("src/textures/comicscript.png", "src/fonts/comicscript.meta",
          Settings.Framebuffer_Width, Settings.Framebuffer_Height);
+      Text.Init_Particle_Texts;
+      Fps_Text_Index := Text.Add_Text ("fps: batches: vertices: ",
+                                       -1.0, 1.0, 15.0, 1.0, 1.0, 0.0, 0.9);
+      Text.Set_Text_Visible (Fps_Text_Index, False);
+      Text.Init_Comic_Texts;
+
+      GL_Utils.Set_Render_Defaults;
+      GUI.Load_Gui_Shaders;
+
       Particle_System.Init;
+      Prop_Renderer.Init_Prop_Renderer;
       Sprite_Renderer.Init;
       GUI.Init_GUIs;
       Blood_Splats.Init;
@@ -117,6 +123,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       MMenu.Init_MMenu;
       Input_Handler.Init;
       Game_Utils.Game_Log ("----MODULES INITIALIZED----");
+
    end Init_Modules;
 
    --  ------------------------------------------------------------------------
@@ -267,25 +274,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Width := Single (Window_Width);
       Height := Single (Window_Height);
       --          Param := Game_Utils.Check_Param ("-map");
-      Shader_Manager.Init_Shaders;
-      Audio_Manager.Init;
-      Texture_Manager.Init;
-      Controller_Textures_Manager.Load_Controller_Textures;
-      Mesh_Loader.Init;
-      Camera.Init;
-      if Changed_Camera_Height then
-         Camera.Set_Camera_Height (Camera_Height);
-      end if;
-      Text.Init_Text_Rendering
-        ("src/textures/comicscript.png", "sec/fonts/comicscript.meta",
-         Settings.Framebuffer_Width,  Settings.Framebuffer_Height);
-      Text.Init_Particle_Texts;
-      Fps_Text_Index := Text.Add_Text ("fps: batches: vertices: ",
-                                       -1.0, 1.0, 15.0, 1.0, 1.0, 0.0, 0.9);
-      Text.Set_Text_Visible (Fps_Text_Index, False);
-      Text.Init_Comic_Texts;
-      GL_Utils.Set_Render_Defaults;
-      GUI.Load_Gui_Shaders;
+
       Init_Modules;
       --          Play_Music (Title_Track);
       --          Is_Playing_Hammer_Track := False;
