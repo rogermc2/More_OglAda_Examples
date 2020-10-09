@@ -3,7 +3,6 @@ with Ada.Containers.Vectors;
 
 with GL.Objects.Shaders;
 
-with GL.Types; use GL.Types;
 with GL.Objects.Programs;
 with GL.Uniforms;
 with Program_Loader;
@@ -14,13 +13,11 @@ package body Shader_Manager is
    use  GL.Uniforms;
    use GL.Objects.Programs;
 
-   package Shader_Uniforms_Package is new
-     Ada.Containers.Vectors (Positive, Uniform);
-   type Shader_Uniforms_List is new Shader_Uniforms_Package.Vector with null Record;
-
    type Shader_Program_Data is record
-      Shader_Uniforms : Shader_Uniforms_List;
-      Shader_Program  : Program;   --  Sp
+      Shader_Program        : Program;   --  Sp
+      Model_Matrix_ID       : GL.Uniforms.Uniform := 0;
+      Projection_Matrix_ID  : GL.Uniforms.Uniform := 0;
+      View_Matrix_ID        : GL.Uniforms.Uniform := 0;
 --        Vertex_Shader   : Shader;    --  Vs
 --        Fragment_Shader : Shader;    --  Fs
 --        Uniform_Count   : Int := 0;
@@ -33,7 +30,6 @@ package body Shader_Manager is
    type Shader_Programs_List is new Shader_Programs_Package.Vector with null Record;
 
    Fallback_Shader_Programs  : Shader_Programs_List;
-   Fallback_Uniforms         : Shader_Uniforms_List;
 
    procedure Init_Fallback;
 
@@ -50,7 +46,6 @@ package body Shader_Manager is
       use GL.Objects.Shaders;
       use Program_Loader;
       SP_Data : Shader_Program_Data;
-      SU_List : Shader_Uniforms_List;
    begin
       SP_Data.Shader_Program:= Program_From
         ((Src ("src/shaders_3_2/fallback_410.vert", Vertex_Shader),
@@ -59,14 +54,48 @@ package body Shader_Manager is
       Bind_Attrib_Location (SP_Data.Shader_Program,
                             Shader_Attributes.Attrib_VP, "vp");
 
-      SU_List.Append (Uniform_Location (SP_Data.Shader_Program, "P"));
-      SU_List.Append (Uniform_Location (SP_Data.Shader_Program, "V"));
-      SU_List.Append (Uniform_Location (SP_Data.Shader_Program, "M"));
-      SP_Data.Shader_Uniforms := SU_List;
+      SP_Data.Model_Matrix_ID := Uniform_Location (SP_Data.Shader_Program, "M");
+      SP_Data.Projection_Matrix_ID := Uniform_Location (SP_Data.Shader_Program, "P");
+      SP_Data.View_Matrix_ID := Uniform_Location (SP_Data.Shader_Program, "V");
+
+      Use_Program (SP_Data.Shader_Program);
+      GL.Uniforms.Set_Single (SP_Data.Model_Matrix_ID, Singles.Identity4);
+      GL.Uniforms.Set_Single (SP_Data.Projection_Matrix_ID, Singles.Identity4);
+      GL.Uniforms.Set_Single (SP_Data.View_Matrix_ID, Singles.Identity4);
 
       Fallback_Shader_Programs.Append (SP_Data);
 
    end Init_Fallback;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Model_Matrix (Program_Index : Positive;
+                               Model_Matrix  : Singles.Matrix4) is
+      SP_Data : constant Shader_Program_Data :=
+                  Fallback_Shader_Programs.Element (Program_Index);
+   begin
+      GL.Uniforms.Set_Single (SP_Data.Model_Matrix_ID, Model_Matrix);
+   end Set_Model_Matrix;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Projection_Matrix (Program_Index : Positive;
+                                    Projection_Matrix: Singles.Matrix4) is
+      SP_Data : constant Shader_Program_Data :=
+                  Fallback_Shader_Programs.Element (Program_Index);
+   begin
+      GL.Uniforms.Set_Single (SP_Data.Projection_Matrix_ID, Projection_Matrix);
+   end Set_Projection_Matrix;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_View_Matrix (Program_Index : Positive;
+                               View_Matrix  : Singles.Matrix4) is
+      SP_Data : constant Shader_Program_Data :=
+                  Fallback_Shader_Programs.Element (Program_Index);
+   begin
+      GL.Uniforms.Set_Single (SP_Data.View_Matrix_ID, View_Matrix);
+   end Set_View_Matrix;
 
    --  -------------------------------------------------------------------------
 
