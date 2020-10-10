@@ -11,11 +11,10 @@ with Water_Shader_Manager;
 
 package body Manifold is
 
-    Manifold_Program      : GL.Objects.Programs.Program;
-    Water_Program         : GL.Objects.Programs.Program;
-    --      Max_Tile_Cols    : constant Int := 64;
-    Ramp_Mesh_Points      : GL_Maths.Vector3_List;
-    Ramp_Mesh_Normals     : GL_Maths.Vector3_List;
+    Manifold_Program         : GL.Objects.Programs.Program;
+    Water_Program            : GL.Objects.Programs.Program;
+    Ramp_Mesh_Points         : GL_Maths.Vector3_List;
+    Ramp_Mesh_Normals        : GL_Maths.Vector3_List;
     Ramp_Mesh_Smooth_Normals : GL_Maths.Vector3_List;
     Ramp_Mesh_Texcoords      : GL_Maths.Vector2_List;
     Ramp_Mesh_Point_Count    : Integer := 0;

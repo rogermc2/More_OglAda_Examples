@@ -6,6 +6,7 @@ with GL.Types; use GL.Types;
 
 with Maths;
 
+with Depth_Skinned_Shader_Manager;
 with Mesh_Loader;
 
 package Prop_Renderer is
@@ -30,7 +31,9 @@ package Prop_Renderer is
    type Activator_Type is (Prop_Activator_Player_State, Prop_Activator_Npc_State,
                            Prop_Activator_Prop_State);
 
-   procedure Init_Prop_Renderer;
+   Prop_Renderer_Exception : Exception;
+
+   procedure Init;
    function Update_Props (Seconds : Float) return Boolean;
 
 private
@@ -139,5 +142,69 @@ private
       -- Audio
       Sound_Activate_File_Name : Unbounded_String := To_Unbounded_String ("");
    end record;
+
+   Type Property_Data Is Record
+      -- Prop_Script To Use From Array Of Them (Properties For This Type Of Prop)
+      Script_Index          : Positive := 1;
+
+      -- Index Of Any Sprite Used In Sprite Renderer
+      Sprite_Index          : Positive := 1;
+      -- If Particles Attached This Is Index In Particle Renderer
+      Particle_System_Index : Positive := 1;
+      Boulder_Snd_Idx       : Positive := 1;
+
+      -- Transmit And Recieve Codes For Events And Traps
+      -- -----------------------------------------------
+      Tx_Code                : Integer := 0;
+      Rx_Code                : Integer := 0;
+
+      -- Tile-Based Position And Facing
+      -- ------------------------------
+      -- 2D Tile Position
+      Map_U                : Int := 0;
+      Map_V                : Int := 0;
+      -- In 2M Levels Above Ground
+      Height_Level         : Integer := 0;
+      -- Compass Facing
+      Facing               : Character := 'N';
+
+      -- Position And Facing In Meters And Degrees
+      -- -----------------------------------------
+      World_Pos           : Singles.Vector3 := Maths.Vec3_0;
+      Quat                : Singles.Vector4 := Maths.Vec4_0;  --  Versor
+      Heading_Deg         : Float := 0.0;
+      Velocity            : Singles.Vector3 := Maths.Vec3_0;
+      Origin_World        : Singles.Vector3 := Maths.Vec3_0;
+
+      -- Animation And Rendering
+      -- -----------------------
+      Model_Mat               : Singles.Matrix4 := Singles.Identity4;
+      Current_Bone_Transforms : Depth_Skinned_Shader_Manager.Bone_Matrices_Array
+        := (others => Singles.Identity4);
+      Anim_Duration           : Float := 0.0;
+      Anim_Elapsed_Time       : Float := 0.0;
+      Sprite_Duration         : Float := 0.0;
+      Delay_Countdown         : Float := 0.0;
+      -- Hack To Stop Decap Head Bouncing When Stuck
+      Bounce_Count            : Integer := 0;
+
+      -- Various States
+      -- --------------
+      Door                    : Door_State := Closed_State;
+      Elevator                : Elevator_State := At_Bottom_State;
+      Trap                    : Trap_State := Trap_Primed_State;
+      Was_Triggered           : Boolean := False;
+      Is_On_Ground            : Boolean := True;
+      No_Save                 : Boolean := False;
+      Is_Animating            : Boolean := False;
+      Is_Visible              : Boolean := False;
+      -- These Two Are For The Pillar As They Are Set At Diff Times Into Animation
+      First_Doom_Tile_Set     : Boolean := False;
+      Second_Doom_Tile_Set    : Boolean := False;
+      -- Gold
+      Was_Collected_By_Player : Boolean := False;
+      -- Pot
+      Was_Smashed             : Boolean := False;
+   End Record;
 
 end Prop_Renderer;

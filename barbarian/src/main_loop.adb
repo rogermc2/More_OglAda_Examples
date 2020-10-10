@@ -113,7 +113,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GUI.Load_Gui_Shaders;
 
       Particle_System.Init;
-      Prop_Renderer.Init_Prop_Renderer;
+      Prop_Renderer.Init;
       Sprite_Renderer.Init;
       GUI.Init_GUIs;
       Blood_Splats.Init;
