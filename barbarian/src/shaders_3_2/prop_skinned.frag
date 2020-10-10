@@ -1,11 +1,6 @@
-//
-// Crongdor the Barbarian
-// 3d skinned prop shader
-// First version Anton Gerdelan, 31 Jan 2014
-// Latest code review 15 Dec 2014
-//
 
 #version 410 core
+
 out vec4 frag_colour;
 
 // vertex points in light coordinate space

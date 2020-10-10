@@ -1,15 +1,11 @@
-//
-// Crongdor the Barbarian
-// javelin stand's 'look at me' flashing lighting
-// First version Anton Gerdelan, 17 June 2015
-// Latest code review
-//
 
 #version 410 core
+
 out vec4 frag_colour;
 
 in vec2 st;
 in vec3 n, p;
+
 uniform sampler2D dm;
 uniform float time;
 uniform float ol_pass;

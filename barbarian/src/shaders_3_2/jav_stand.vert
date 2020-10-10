@@ -1,9 +1,3 @@
-//
-// Crongdor the Barbarian
-// javelin stand's 'look at me' flashing lighting
-// First version Anton Gerdelan, 17 June 2015
-// Latest code review
-//
 
 #version 410 core
 
@@ -13,6 +7,7 @@ in vec3 vn; // normals
 
 uniform mat4 M, V, P;
 uniform float ol_pass;
+
 float ol_dist = 0.01;
 
 out vec2 st;

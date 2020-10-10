@@ -1,11 +1,6 @@
-//
-// Crongdor the Barbarian
-// 3d prop shader
-// First version Anton Gerdelan, 31 Jan 2014
-// Latest code review 9 Mar 2016
-//
 
-#version 150
+#version 410 core
+
 #define NUM_LIGHTS 3
 
 in vec3 vp;
