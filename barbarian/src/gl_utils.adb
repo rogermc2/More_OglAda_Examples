@@ -1,4 +1,5 @@
 
+with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw;
@@ -31,7 +32,7 @@ package body GL_Utils is
    --  ------------------------------------------------------------------------
 
    function Create_2D_VBO (Data : GL.Types.Singles.Vector2_Array)
-                            return GL.Objects.Buffers.Buffer is
+                           return GL.Objects.Buffers.Buffer is
       use GL.Objects.Buffers;
       New_Buffer : Buffer;
    begin
@@ -44,7 +45,7 @@ package body GL_Utils is
    --  ------------------------------------------------------------------------
 
    function Create_3D_VBO (Data : GL.Types.Singles.Vector3_Array)
-                            return GL.Objects.Buffers.Buffer is
+                           return GL.Objects.Buffers.Buffer is
       use GL.Objects.Buffers;
       New_Buffer : Buffer;
    begin
@@ -89,6 +90,59 @@ package body GL_Utils is
       Previous_Seconds := Float (Glfw.Time);
       return Elapsed;
    end Get_Elapsed_Seconds;
+
+   --  ------------------------------------------------------------------------
+
+   function Read_Vec2 (Vec : String) return GL.Types.Singles.Vector2 is
+      use Ada.Strings;
+      use GL.Types;
+      Vec_Start : constant Integer := Vec'First;
+      Vec_Last  : constant Integer := Vec'Last;
+      Pos_1     : constant Natural := Fixed.Index (Vec, " ");
+      theVec    : Singles.Vector2;
+   begin
+      theVec (GL.X) := Single'Value (Vec (Vec_Start .. Pos_1 - 1));
+      theVec (GL.Y) := Single'Value (Vec (Pos_1 + 1 .. Vec_Last));
+      return theVec;
+   end Read_Vec2;
+
+   --  ------------------------------------------------------------------------
+
+   function Read_Vec3 (Vec : String) return GL.Types.Singles.Vector3 is
+      use Ada.Strings;
+      use GL.Types;
+      Vec_Start : constant Integer := Vec'First;
+      Vec_Last  : constant Integer := Vec'Last;
+      Pos_1     : constant Natural := Fixed.Index (Vec, " ");
+      Pos_2     : constant Natural := Fixed.Index (Vec (Pos_1 + 1 .. Vec_Last), " ");
+      theVec    : Singles.Vector3;
+   begin
+--        Game_Utils.Game_Log ("GL_Utils Read_Vec3 Vec: " & Vec);
+      theVec (GL.X) := Single'Value (Vec (Vec_Start .. Pos_1 - 1));
+      theVec (GL.Y) := Single'Value (Vec (Pos_1 + 1 .. Pos_2 - 1));
+      theVec (GL.Z) := Single'Value (Vec (Pos_2 + 1 .. Vec_Last));
+      return theVec;
+   end Read_Vec3;
+
+   --  ------------------------------------------------------------------------
+
+   function Read_Vec4 (Vec : String) return GL.Types.Singles.Vector4 is
+      use Ada.Strings;
+      use GL.Types;
+      Vec_Start   : constant Integer := Vec'First;
+      Vec_Last    : constant Integer := Vec'Last;
+      Pos_1       : constant Natural := Fixed.Index (Vec, " ");
+      Pos_2       : constant Natural := Fixed.Index (Vec (Pos_1 + 1 .. Vec_Last), " ");
+      Pos_3       : constant Natural := Fixed.Index (Vec (Pos_2 + 1 .. Vec_Last), " ");
+      theVec      : Singles.Vector4;
+   begin
+      --        Game_Utils.Game_Log ("Particle System Manager Read_Vec4 Vec: " & Vec);
+      theVec (GL.X) := Single'Value (Vec (Vec_Start .. Pos_1 - 1));
+      theVec (GL.Y) := Single'Value (Vec (Pos_1 + 1 .. Pos_2 - 1));
+      theVec (GL.Z) := Single'Value (Vec (Pos_2 + 1 .. Pos_3 - 1));
+      theVec (GL.W) := Single'Value (Vec (Pos_3 + 1 .. Vec_Last));
+      return theVec;
+   end Read_Vec4;
 
    --  ------------------------------------------------------------------------
 
