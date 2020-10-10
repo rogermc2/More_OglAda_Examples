@@ -43,8 +43,8 @@ package body Projectile_Manager is
    Fireball_Count       : Integer := 0;
    Next_skull_Ball      : Integer := 0;
    Skull_Ball_Count     : Integer := 0;
-   Blue_Spec_Particles  : Integer := 0;
-   Green_Spec_Particles : Integer := 0;
+   Blue_Spec_Particles  : Int := 0;
+   Green_Spec_Particles : Int := 0;
 
    --  ------------------------------------------------------------------------
 
