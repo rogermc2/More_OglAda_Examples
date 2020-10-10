@@ -8,6 +8,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Buffers;
 
 with Game_Utils;
+with GL_Utils;
 
 package body Mesh_Loader is
    use GL.Objects.Vertex_Arrays;
@@ -152,6 +153,7 @@ package body Mesh_Loader is
    function Load_Mesh (Path : String; Meshes : in out Mesh_List)
                        return Integer is
       use Ada.Strings;
+      use GL_Utils;
       Vp_Comps             : Integer := 0;
       Vn_Comps             : Integer := 0;
       Vt_Comps             : Integer := 0;
@@ -163,51 +165,6 @@ package body Mesh_Loader is
       New_Mesh             : Mesh;
       Result               : Integer := 0;
 
-      function Read_Vec2 (Vec : String) return Vector2 is
-         Vec_Start : constant Integer := Vec'First;
-         Vec_Last  : constant Integer := Vec'Last;
-         theVec    : Vector2;
-         Pos_1     : Natural := Fixed.Index (Vec, ",");
-         Pos_2     : Natural;
-      begin
-         theVec (GL.X) := Single'Value (Vec (Vec_Start + 1 .. Pos_1 - 1));
-         Pos_2 := Fixed.Index (Vec (Pos_1 + 1 .. Vec_Last), ")");
-         theVec (GL.Y) := Single'Value (Vec (Pos_1 + 1 .. Pos_2 - 1));
-         return theVec;
-      end Read_Vec2;
-
-      function Read_Vec3 (Vec : String) return Vector3 is
-         Vec_Start : constant Integer := Vec'First;
-         Vec_Last  : constant Integer := Vec'Last;
-         theVec    : Vector3;
-         Pos_1     : Natural := Fixed.Index (Vec, ",");
-         Pos_2     : Natural;
-      begin
-         theVec (GL.X) := Single'Value (Vec (Vec_Start + 1 .. Pos_1 - 1));
-         Pos_2 := Fixed.Index (Vec (Pos_1 + 1 .. Vec_Last), ",");
-         theVec (GL.Y) := Single'Value (Vec (Pos_1 + 1 .. Pos_2 - 1));
-         Pos_1 := Fixed.Index (Vec (Pos_2 + 2 .. Vec_Last), ")");
-         theVec (GL.Z) := Single'Value (Vec (Pos_2 + 2 .. Pos_1 - 1));
-         return theVec;
-      end Read_Vec3;
-
-      function Read_Vec4 (Vec : String) return Vector4 is
-         Vec_Start   : constant Integer := Vec'First;
-         Vec_Last    : constant Integer := Vec'Last;
-         theVec      : Vector4;
-         Pos_1       : Natural := Fixed.Index (Vec, ",");
-         Pos_2       : Natural;
-      begin
-         --        Game_Utils.Game_Log ("Particle System Manager Read_Vec4 Vec: " & Vec);
-         theVec (GL.X) := Single'Value (Vec (Vec_Start + 1 .. Pos_1 - 1));
-         Pos_2 := Fixed.Index (Vec (Pos_1 + 2 .. Vec_Last), ",");
-         theVec (GL.Y) := Single'Value (Vec (Pos_1 + 2 .. Pos_2 - 1));
-         Pos_1 := Fixed.Index (Vec (Pos_2 + 2 .. Vec_Last), ",");
-         theVec (GL.Z) := Single'Value (Vec (Pos_2 + 2 .. Pos_1 - 1));
-         Pos_2 := Fixed.Index (Vec (Pos_1 + 2 .. Vec_Last), ")");
-         theVec (GL.W) := Single'Value (Vec (Pos_1 + 2 .. Pos_2 - 1));
-         return theVec;
-      end Read_Vec4;
    begin
       Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh loading " & Path);
       Open (Input_File, In_File, Path);
@@ -219,40 +176,46 @@ package body Mesh_Loader is
             Pos            : constant Natural := Fixed.Index (aLine, " ");
             Head           : constant String := aLine (2 .. Pos - 1);
             Tail           : constant String := aLine (Pos + 1 .. Last);
+            Pos2           : Natural := Fixed.Index (Tail, " ");
             VBS            : Vector3_List;
             VPS            : Vector3_List;
             VNS            : Vector3_List;
             VTS            : Vector2_List;
             VTanS          : Vector4_List;
          begin
+--              Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh aLine " & aLine);
             if aLine (1) = '@' then
                if Head = "Anton's" then
                   null;
                elsif Head = "vert_count" then
                   New_Mesh.Point_Count := Integer'Value (Tail);
+--                    Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh vert_count: " &
+--                                           Integer'Image (New_Mesh.Point_Count));
                elsif Head = "vp" then
-                  Vp_Comps := Integer'Value (Tail);
+                  Vp_Comps := Integer'Value (Tail(Pos2 + 1 .. Last));
+--                    Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh Vp_Comps: " &
+--                                           Integer'Image (Vp_Comps));
                   if Vp_Comps = 3 then
                      for index in 1 .. New_Mesh.Point_Count loop
                         VPS.Append (Read_Vec3 (Get_Line (Input_File)));
                      end loop;
                   end if;
                elsif Head = "vn" then
-                  Vn_Comps := Integer'Value (Tail);
+                  Vn_Comps := Integer'Value (Tail (Pos2 + 1 .. Last));
                   if Vn_Comps = 3 then
                      for index in 1 .. New_Mesh.Point_Count loop
                         VNS.Append (Read_Vec3 (Get_Line (Input_File)));
                      end loop;
                   end if;
                elsif Head = "vt" then
-                  Vt_Comps := Integer'Value (Tail);
+                  Vt_Comps := Integer'Value (Tail (Pos2 + 1 .. Last));
                   if Vt_Comps = 3 then
                      for index in 1 .. New_Mesh.Point_Count loop
                         VTS.Append (Read_Vec2 (Get_Line (Input_File)));
                      end loop;
                   end if;
                elsif Head = "vtan" then
-                  Vtan_Comps := Integer'Value (Tail);
+                  Vtan_Comps := Integer'Value (Tail (Pos2 + 1 .. Last));
                   if Vtan_Comps = 4 then
                      for index in 1 .. New_Mesh.Point_Count loop
                         VTanS.Append (Read_Vec4 (Get_Line (Input_File)));

@@ -17,6 +17,9 @@ package GL_Utils is
    procedure Draw_Triangles (Number : GL.Types.Int);
    procedure Draw_Triangle_Strip (Number : GL.Types.Int);
    function Get_Elapsed_Seconds return Float;
+   function Read_Vec2 (Vec : String) return GL.Types.Singles.Vector2;
+   function Read_Vec3 (Vec : String) return GL.Types.Singles.Vector3;
+   function Read_Vec4 (Vec : String) return GL.Types.Singles.Vector4;
    procedure Set_Render_Defaults;
    procedure Set_Current_Program (Current_Prog :
                                   GL.Objects.Programs.Program);
