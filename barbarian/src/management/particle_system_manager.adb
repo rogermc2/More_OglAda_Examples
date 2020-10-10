@@ -18,7 +18,6 @@ package body Particle_System_Manager is
 
    procedure Load_Particle_Script (File_Name : String;
                                    Scripts   : in out Particle_Script_List) is
-      --        pragma Warnings (Off, "index for * may assume lower bound of *");
       use Ada.Strings;
       Input_File       : File_Type;
       Min_Velocity     : Vector3 := Maths.Vec3_0;

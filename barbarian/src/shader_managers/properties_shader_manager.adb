@@ -176,7 +176,7 @@ package body Properties_Shader_Manager is
 
         Sound_Sphere_Shader_Manager.Init_Sound_Sphere_Shader (Bounding_Sphere_Shader);
         Sphere_Mesh_Index := Mesh_Loader.Load_Managed_Mesh
-          ("meshes/unit_sphere.apg", True, False, False, False, False);
+          ("src/meshes/unit_sphere.apg", True, False, False, False, False);
         if Mesh_Loader.Loaded_Mesh_VAO (Sphere_Mesh_Index, VAO) then
             Bounding_Sphere_VAO := VAO;
             Bounding_Sphere_Point_Count := Mesh_Loader.Point_Count (Sphere_Mesh_Index);
