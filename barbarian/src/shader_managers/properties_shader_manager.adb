@@ -1,5 +1,4 @@
 
---  with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Programs;
@@ -10,6 +9,7 @@ with GL.Uniforms;
 with Program_Loader;
 
 with Coins_Shader_Manager;
+with Game_Utils;
 with Jav_Stand_Shader_Manager;
 with Mesh_Loader;
 with Portal_Shader_Manager;
@@ -58,6 +58,7 @@ package body Properties_Shader_Manager is
     Bounding_Sphere_Point_Count : Integer := 0;
 
     Vec2_Init         : constant GL.Types.Singles.Vector2 := (0.0, 0.0);
+    IVec2_Init        : constant GL.Types.Ints.Vector2 := (0, 0);
     Vec3_Init         : constant GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
     Light_Init        : constant Singles.Vector3_Array (1 .. 32) :=
                           (others => (0.0, 0.0, 0.0));
@@ -70,6 +71,7 @@ package body Properties_Shader_Manager is
         use GL.Types.Singles;
         use Program_Loader;
     begin
+        Game_Utils.Game_Log ("___INITIALIZING PROP SHADER---");
         Prop_Shader := Program_From
           ((Src ("src/shaders_3_2/prop.vert", Vertex_Shader),
            Src ("src/shaders_3_2/prop.frag", Fragment_Shader)));
@@ -121,8 +123,8 @@ package body Properties_Shader_Manager is
         Use_Program (Prop_Shader);
         GL.Uniforms.Set_Single (Property_Uniforms.Camera_Pos_World_ID, Vec3_Init);
         GL.Uniforms.Set_Single (Property_Uniforms.Caster_Pos_World_ID, Vec3_Init);
-        GL.Uniforms.Set_UInt (Property_Uniforms.Cube_Texture_ID, 0);
-        GL.Uniforms.Set_UInt (Property_Uniforms.Diff_Map_ID, 0);
+        GL.Uniforms.Set_Int (Property_Uniforms.Cube_Texture_ID, 0);
+        GL.Uniforms.Set_Int (Property_Uniforms.Diff_Map_ID, 0);
         GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Pos_World_ID, Vec3_Init);
         GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Diff_ID, Vec3_Init);
         GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Spec_ID, Vec3_Init);
@@ -133,13 +135,14 @@ package body Properties_Shader_Manager is
         GL.Uniforms.Set_Single (Property_Uniforms.Light_Spec_ID, Light_Init);
         GL.Uniforms.Set_Single (Property_Uniforms.Light_Range_ID, Range_Init);
         GL.Uniforms.Set_Single (Property_Uniforms.Model_ID, Identity4);
-        GL.Uniforms.Set_UInt (Property_Uniforms.Norm_Map_ID, 0);
+        GL.Uniforms.Set_Int (Property_Uniforms.Norm_Map_ID, 0);
         GL.Uniforms.Set_Single (Property_Uniforms.Ol_Pass_ID, 0.0);
         GL.Uniforms.Set_Single (Property_Uniforms.Perspective_ID, Identity4);
         GL.Uniforms.Set_Single (Property_Uniforms.Shadow_Enabled_ID, 0.0);
-        GL.Uniforms.Set_UInt (Property_Uniforms.Spec_Map_ID, 0);
-        GL.Uniforms.Set_Single (Property_Uniforms.Static_Light_Indices_ID, Vec2_Init);
+        GL.Uniforms.Set_Int (Property_Uniforms.Spec_Map_ID, 0);
+        GL.Uniforms.Set_Int (Property_Uniforms.Static_Light_Indices_ID, IVec2_Init);
         GL.Uniforms.Set_Single (Property_Uniforms.View_ID, Identity4);
+        Game_Utils.Game_Log ("___PROP SHADER INITIALIZED---");
 
     exception
         when others =>
@@ -154,27 +157,36 @@ package body Properties_Shader_Manager is
           (1 .. Mesh_Loader.Max_Bones) := (others => Singles.Identity4);
         VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     begin
+        Game_Utils.Game_Log ("___INITIALIZING PROP SHADERS---");
         Init_Prop_Shader;
         Set_Diff_Map (0);
         Set_Spec_Map (1);
         Set_Norm_Map (2);
         Set_Cube_Texture (3);
 
+        Game_Utils.Game_Log (" Loading Prop_Skinned_Shader");
         Properties_Skinned_Shader_Manager.Init_Prop_Skinned_Shader
           (Prop_Skinned_Shader);
+        Game_Utils.Game_Log ("Prop_Skinned_Shader initialized");
         Properties_Skinned_Shader_Manager.Set_Diff_Map (0);
         Properties_Skinned_Shader_Manager.Set_Spec_Map (1);
         Properties_Skinned_Shader_Manager.Set_Cube_Texture (3);
+        Game_Utils.Game_Log ("Cube_Texture set");
         Properties_Skinned_Shader_Manager.Set_Bone_Matrices (Identity4_Array);
+        Game_Utils.Game_Log ("Prop_Skinned_Shader loaded");
 
         Coins_Shader_Manager.Init_Coins_Shader (Coins_Shader);
         Coins_Shader_Manager.Set_DM (0);
         Coins_Shader_Manager.Set_Cube_Texture (1);
+        Game_Utils.Game_Log ("Coins_Shader loaded");
 
         Jav_Stand_Shader_Manager.Init_Jav_Stand_Shader (Jav_Stand_Shader);
+        Game_Utils.Game_Log ("Jav_Stand_Shader loaded");
         Portal_Shader_Manager.Init_Portal_Shader (Portal_Shader);
+        Game_Utils.Game_Log ("Portal_Shader loaded");
 
         Sound_Sphere_Shader_Manager.Init_Sound_Sphere_Shader (Bounding_Sphere_Shader);
+        Game_Utils.Game_Log ("Bounding_Sphere_Shader loaded");
         Sphere_Mesh_Index := Mesh_Loader.Load_Managed_Mesh
           ("src/meshes/unit_sphere.apg", True, False, False, False, False);
         if Mesh_Loader.Loaded_Mesh_VAO (Sphere_Mesh_Index, VAO) then
@@ -208,16 +220,16 @@ package body Properties_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Cube_Texture (Texture : UInt)  is
+    procedure Set_Cube_Texture (Texture : Int)  is
     begin
-        GL.Uniforms.Set_UInt (Property_Uniforms.Cube_Texture_ID, Texture);
+        GL.Uniforms.Set_Int (Property_Uniforms.Cube_Texture_ID, Texture);
     end Set_Cube_Texture;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Diff_Map (Diff_Map : UInt) is
+    procedure Set_Diff_Map (Diff_Map : Int) is
     begin
-        GL.Uniforms.Set_UInt (Property_Uniforms.Diff_Map_ID, Diff_Map);
+        GL.Uniforms.Set_Int (Property_Uniforms.Diff_Map_ID, Diff_Map);
     end Set_Diff_Map;
 
     --  -------------------------------------------------------------------------
@@ -303,9 +315,9 @@ package body Properties_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Norm_Map (Norm_Map : UInt) is
+    procedure Set_Norm_Map (Norm_Map : Int) is
     begin
-        GL.Uniforms.Set_UInt (Property_Uniforms.Norm_Map_ID, Norm_Map);
+        GL.Uniforms.Set_Int (Property_Uniforms.Norm_Map_ID, Norm_Map);
     end Set_Norm_Map;
 
     --  -------------------------------------------------------------------------
@@ -332,16 +344,16 @@ package body Properties_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Spec_Map (Spec_Map : UInt) is
+    procedure Set_Spec_Map (Spec_Map : Int) is
     begin
-        GL.Uniforms.Set_UInt (Property_Uniforms.Spec_Map_ID, Spec_Map);
+        GL.Uniforms.Set_Int (Property_Uniforms.Spec_Map_ID, Spec_Map);
     end Set_Spec_Map;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Static_Light_Indices (Indices : Singles.Vector2) is
+    procedure Set_Static_Light_Indices (Indices : Ints.Vector2) is
     begin
-        GL.Uniforms.Set_Single (Property_Uniforms.Static_Light_Indices_ID, Indices);
+        GL.Uniforms.Set_Int (Property_Uniforms.Static_Light_Indices_ID, Indices);
     end Set_Static_Light_Indices;
 
     --  -------------------------------------------------------------------------

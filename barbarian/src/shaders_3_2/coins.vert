@@ -1,9 +1,3 @@
-//
-// Crongdor the Barbarian
-// treasure shader
-// First version Anton Gerdelan, ? 2014
-// Latest code review ?
-//
 
 #version 410 core
 

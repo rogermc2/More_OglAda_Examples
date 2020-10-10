@@ -1,13 +1,6 @@
-//
-// Crongdor the Barbarian
-// 3d prop shader
-// First version Anton Gerdelan, 31 Jan 2014
-// Latest code review 9 Mar 2016
-// -- managed to reduce in floats from 20 to 12!
-// (didnt make fps difference on amd at work but is under apple's reported max)
-//
 
-#version 410 Core
+#version 410 core
+
 out vec4 frag_colour;
 #define NUM_LIGHTS 3
 

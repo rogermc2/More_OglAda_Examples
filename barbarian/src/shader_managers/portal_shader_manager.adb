@@ -39,11 +39,13 @@ package body Portal_Shader_Manager is
         Portal_Uniforms.View_ID := Uniform_Location (Portal_Shader, "V");
         Portal_Uniforms.Model_ID :=  Uniform_Location (Portal_Shader, "M");
         Portal_Uniforms.DM_ID :=  Uniform_Location (Portal_Shader, "dm");
+        Portal_Uniforms.Time_ID :=  Uniform_Location (Portal_Shader, "time");
 
         Use_Program (Portal_Shader);
-        GL.Uniforms.Set_UInt (Portal_Uniforms.DM_ID, 0);
+        GL.Uniforms.Set_Int (Portal_Uniforms.DM_ID, 0);
         GL.Uniforms.Set_Single (Portal_Uniforms.Model_ID, Identity4);
         GL.Uniforms.Set_Single (Portal_Uniforms.Perspective_ID, Identity4);
+        GL.Uniforms.Set_Single (Portal_Uniforms.Time_ID, 0.0);
         GL.Uniforms.Set_Single (Portal_Uniforms.View_ID, Identity4);
 
     exception
@@ -54,9 +56,9 @@ package body Portal_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_DM (DM : UInt) is
+    procedure Set_DM (DM : Int) is
     begin
-        GL.Uniforms.Set_UInt (Portal_Uniforms.DM_ID, DM);
+        GL.Uniforms.Set_Int (Portal_Uniforms.DM_ID, DM);
     end Set_DM;
 
     --  -------------------------------------------------------------------------
@@ -75,6 +77,13 @@ package body Portal_Shader_Manager is
     end Set_Perspective;
 
     --  -------------------------------------------------------------------------
+
+    procedure Set_Time (theTime : Single) is
+    begin
+        GL.Uniforms.Set_Single (Portal_Uniforms.Time_ID, theTime);
+    end Set_Time;
+
+   --  -------------------------------------------------------------------------
 
     procedure Set_View (View_Matrix : Singles.Matrix4) is
     begin

@@ -77,6 +77,7 @@ package body Prop_Renderer is
       Treasure_Props_Render_List.Clear;
 
       Properties_Shader_Manager.Load_Prop_Shaders;
+      Game_Utils.Game_Log ("Prop_Shaders loaded");
 
       for index in Int range 1 .. Max_Decap_Particles loop
          Head_Particles (index) := Particle_System.Create_Particle_System
