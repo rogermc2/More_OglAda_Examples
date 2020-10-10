@@ -23,12 +23,12 @@ package body Particle_System is
 
    function Create_Particle_System
      (Script_Name : String; Start_Now, Always_Update, Always_Draw : Boolean)
-       return Integer is
+      return Int is
       Particle_Count : Integer;
       Script_Num     : Positive;
       Script         : Particle_System_Manager.Particle_Script;
       P_System       : Particle_System;
-      Result         : Integer := -1;
+      Result         : Int := -1;
    begin
       if Particles_Initialised then
          if Get_Particle_Script_Number (Script_Name, Script_Num) then
@@ -44,17 +44,17 @@ package body Particle_System is
             P_System.Always_Update := Always_Update;
             P_System.Always_Draw := Always_Draw;
             Particle_Systems.Append (P_System);
-            Result := Integer (Particle_Systems.Length);
+            Result := Int (Particle_Systems.Last_Index);
          end if;
       end if;
+
+      if Result < 1 then
+         raise Particle_System_Exception with
+           " Particle_System.Create_Particle_System failed";
+      end if;
+
       return Result;
 
-   exception
-      when anError : others =>
-         Put_Line
-           ("An exception occurred in Particle_System.Create_Particle_System!");
-         Put_Line (Ada.Exceptions.Exception_Information (anError));
-         return Result;
    end Create_Particle_System;
 
    --  ------------------------------------------------------------------------

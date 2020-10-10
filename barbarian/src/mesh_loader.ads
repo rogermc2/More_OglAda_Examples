@@ -10,7 +10,7 @@ package Mesh_Loader is
 
     procedure Init;
 --      function Load_Managed_Mesh (Mesh : String; Has_Vp, Has_Vn, Has_Vt,
---                                  Has_Vtangents, Has_bones : Boolean := False)
+--                                  Has_tangents, Has_bones : Boolean := False)
 --                                  return Integer;
     function Load_Mesh_Data_Only (File_Name : String;
                                   Points : in out GL_Maths.Vector3_List;
