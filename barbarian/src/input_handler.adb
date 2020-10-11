@@ -265,7 +265,7 @@ package body Input_Handler is
       if Action_Name'Length < 1 then
          raise Input_Handler_Exception with
            " Input_Handler.Set_Key_For_Action, Action_Name is empty.";
-      elsif Key_Code < Max_Keys then
+      elsif Key_Code > Max_Keys then
          raise Input_Handler_Exception with
            " Input_Handler.Set_Key_For_Action, invalid Key_Code: ." &
            Natural'Image (Key_Code);
@@ -280,9 +280,8 @@ package body Input_Handler is
       for index in 1 .. Input_Actions.Num_Actions loop
          if Input_Actions.Action_Names (index) /= Action_Name  and
            Input_Actions.Key_Bindings (index) = Key'Enum_Val (Key_Code) then
-            raise Input_Handler_Exception with
-              " Input_Handler.Set_Key_For_Action, duplicate entry for Key_Code: "
-              & Natural'Image (Key_Code);
+            Game_Utils.Game_Log (" Input_Handler.Set_Key_For_Action,  WARNING:" &
+                                   " duplicate entry for Key_Code: " & Natural'Image (Key_Code));
          end if;
       end loop;
 
