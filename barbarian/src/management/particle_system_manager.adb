@@ -60,7 +60,7 @@ package body Particle_System_Manager is
    begin
       Game_Utils.Game_Log ("Particle System Manager loading " & File_Name);
       Open (Input_File, In_File, "src/particles/" & File_Name);
-      Script.Script_Name := To_Unbounded_String (Get_Line (Input_File));
+      Script.Script_Name := To_Unbounded_String (File_Name);
       while not End_Of_File (Input_File) loop
          declare
             aLine          : constant String := Get_Line (Input_File);

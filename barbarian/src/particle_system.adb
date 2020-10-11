@@ -25,12 +25,18 @@ package body Particle_System is
      (Script_Name : String; Start_Now, Always_Update, Always_Draw : Boolean)
       return Int is
       Particle_Count : Integer;
-      Script_Num     : Positive;
+      Script_Num     : Natural := 0;
       Script         : Particle_System_Manager.Particle_Script;
       P_System       : Particle_System;
-      Result         : Int := -1;
+      Last_Index     : Int := -1;
    begin
-      if Particles_Initialised then
+      if Script_Name'Length < 1 then
+         raise Particle_System_Exception with
+           " Particle_System.Create_Particle_System Particles empty Script_Name.";
+      elsif not Particles_Initialised then
+         raise Particle_System_Exception with
+           " Particle_System.Create_Particle_System Particles not initialised.";
+      else
          if Get_Particle_Script_Number (Script_Name, Script_Num) then
             Script := Scripts.Element (Script_Num);
             Particle_Count := Integer (Script.Particle_Count);
@@ -44,16 +50,21 @@ package body Particle_System is
             P_System.Always_Update := Always_Update;
             P_System.Always_Draw := Always_Draw;
             Particle_Systems.Append (P_System);
-            Result := Int (Particle_Systems.Last_Index);
+            Last_Index := Int (Particle_Systems.Last_Index);
+         else
+            raise Particle_System_Exception with
+              " Particle_System.Create_Particle_System Particles invalid script number: "
+              & Positive'Image (Script_Num);
          end if;
       end if;
 
-      if Result < 1 then
+      if Last_Index < 1 then
          raise Particle_System_Exception with
-           " Particle_System.Create_Particle_System failed";
+           " Particle_System.Create_Particle_System failed, Last_Index: " &
+           Int'Image (Last_Index);
       end if;
 
-      return Result;
+      return Last_Index;
 
    end Create_Particle_System;
 
@@ -66,8 +77,16 @@ package body Particle_System is
       Curs          : Cursor := Scripts.First;
       Found         : Boolean := False;
    begin
-      if Particles_Initialised then
+      if Name'Length < 1 then
+         raise Particle_System_Exception with
+           " Particle_System.Get_Particle_Script_Number Particles empty Script_Name.";
+      elsif not Particles_Initialised then
+         raise Particle_System_Exception with
+           " Particle_System.Get_Particle_Script_Number Particles not initialised.";
+      else
          while Has_Element (Curs) and not Found loop
+            Game_Utils.Game_Log (" Particle_System.Get_Particle_Script_Number" &
+                                " existing Script_Name: " & To_String (Element (Curs).Script_Name));
             Found := To_String (Element (Curs).Script_Name) = Name;
             if Found then
                Script_Number := To_Index (Curs);
@@ -77,7 +96,17 @@ package body Particle_System is
          end loop;
       end if;
 
+      if not Found then
+         Particle_System_Manager.Load_Particle_Script (Name, Scripts);
+         Found := Get_Particle_Script_Number (Name, Script_Number);
+         if not Found then
+            raise Particle_System_Exception with
+              " Particle_System.Get_Particle_Script_Number, particle: " & Name &
+              " not found.";
+         end if;
+      end if;
       return Found;
+
    end Get_Particle_Script_Number;
 
    --  ------------------------------------------------------------------------
@@ -92,7 +121,6 @@ package body Particle_System is
       Particle_Systems.Clear;
       Put_Line ("Particle Systems cleared");
       Load_Particle_Script ("torch_smoke.particles", Scripts);
-      Put_Line ("Particle Systems torch_smoke loaded");
       Load_Particle_Script ("blood_fountain.particles", Scripts);
       Load_Particle_Script ("blood_damage.particles", Scripts);
       Load_Particle_Script ("blood_artery_jet.particles", Scripts);

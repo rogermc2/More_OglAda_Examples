@@ -83,16 +83,16 @@ package body Prop_Renderer is
          Head_Particles (index) := Particle_System.Create_Particle_System
            ("blood_artery_jet.particles", Start_Now, Always_Update, Always_Draw);
       end loop;
+      Pot_Particles := Particle_System.Create_Particle_System
+           ("pot.particles", Start_Now, Always_Update, Always_Draw);
+      Mirror_Particles := Particle_System.Create_Particle_System
+           ("mirror.particles", Start_Now, Always_Update, Always_Draw);
       Dust_Particles := Particle_System.Create_Particle_System
            ("dust.particles", Start_Now, Always_Update, Always_Draw);
       Dust_Particlesb := Particle_System.Create_Particle_System
            ("dust.particles", Start_Now, Always_Update, Always_Draw);
       Dust_Particlesc := Particle_System.Create_Particle_System
            ("dust.particles", Start_Now, Always_Update, Always_Draw);
-      Mirror_Particles := Particle_System.Create_Particle_System
-           ("mirror.particles", Start_Now, Always_Update, Always_Draw);
-      Pot_Particles := Particle_System.Create_Particle_System
-           ("pot.particles", Start_Now, Always_Update, Always_Draw);
       Splash_Particles := Particle_System.Create_Particle_System
            ("splash.particles", Start_Now, Always_Update, Always_Draw);
 

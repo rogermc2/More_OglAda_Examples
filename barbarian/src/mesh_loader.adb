@@ -72,6 +72,12 @@ package body Mesh_Loader is
    Loaded_Meshes        : Mesh_List;
 
    function Load_Mesh (Path : String; Meshes : in out Mesh_List) return Integer;
+   function To_Vector2_Array (Vec : Vector2_Package.Vector)
+                              return Singles.Vector2_Array;
+   function To_Vector3_Array (Vec : Vector3_Package.Vector)
+                              return Singles.Vector3_Array;
+   function To_Vector4_Array (Vec : Vector4_Package.Vector)
+                              return Singles.Vector4_Array;
 
    --  ------------------------------------------------------------------------
 
@@ -122,7 +128,7 @@ package body Mesh_Loader is
 
    function Load_Managed_Mesh (Mesh_Name               : String; Has_Vp, Has_Vn, Has_Vt,
                                Has_Tangents, Has_bones : Boolean := False)
-                                return Integer is
+                               return Integer is
       use Meshes_Package;
       aMesh  : Mesh;
       Found  : Boolean := False;
@@ -154,6 +160,11 @@ package body Mesh_Loader is
                        return Integer is
       use Ada.Strings;
       use GL_Utils;
+      VBS                  : Vector3_Package.Vector;
+      VPS                  : Vector3_Package.Vector;
+      VNS                  : Vector3_Package.Vector;
+      VTS                  : Vector2_Package.Vector;
+      VTanS                : Vector4_Package.Vector;
       Vp_Comps             : Integer := 0;
       Vn_Comps             : Integer := 0;
       Vt_Comps             : Integer := 0;
@@ -177,24 +188,19 @@ package body Mesh_Loader is
             Head           : constant String := aLine (2 .. Pos - 1);
             Tail           : constant String := aLine (Pos + 1 .. Last);
             Pos2           : Natural := Fixed.Index (Tail, " ");
-            VBS            : Vector3_List;
-            VPS            : Vector3_List;
-            VNS            : Vector3_List;
-            VTS            : Vector2_List;
-            VTanS          : Vector4_List;
          begin
---              Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh aLine " & aLine);
+            --              Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh aLine " & aLine);
             if aLine (1) = '@' then
                if Head = "Anton's" then
                   null;
                elsif Head = "vert_count" then
                   New_Mesh.Point_Count := Integer'Value (Tail);
---                    Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh vert_count: " &
---                                           Integer'Image (New_Mesh.Point_Count));
+                  --                    Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh vert_count: " &
+                  --                                           Integer'Image (New_Mesh.Point_Count));
                elsif Head = "vp" then
                   Vp_Comps := Integer'Value (Tail(Pos2 + 1 .. Last));
---                    Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh Vp_Comps: " &
---                                           Integer'Image (Vp_Comps));
+                  --                    Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh Vp_Comps: " &
+                  --                                           Integer'Image (Vp_Comps));
                   if Vp_Comps = 3 then
                      for index in 1 .. New_Mesh.Point_Count loop
                         VPS.Append (Read_Vec3 (Get_Line (Input_File)));
@@ -252,6 +258,34 @@ package body Mesh_Loader is
       end loop;
       Close (Input_File);
 
+      if not VTanS.Is_Empty then
+         New_Mesh.Vtan_Count := New_Mesh.Point_Count;
+         New_Mesh.Vtans_Vbo := Create_4D_VBO (To_Vector4_Array (VTanS));
+      end if;
+
+      if not VBS.Is_Empty then
+         New_Mesh.Vb_Count := New_Mesh.Point_Count;
+         New_Mesh.Bone_Ids_Vbo := Create_3D_VBO (To_Vector3_Array (VBS));
+      end if;
+
+      if not VTS.Is_Empty then
+         New_Mesh.Vt_Count := New_Mesh.Point_Count;
+         New_Mesh.Texcoords_Vbo := Create_2D_VBO (To_Vector2_Array (VTS));
+      end if;
+
+      if not VNS.Is_Empty then
+         New_Mesh.Vn_Count := New_Mesh.Point_Count;
+         New_Mesh.Normals_Vbo := Create_3D_VBO (To_Vector3_Array (VNS));
+      end if;
+
+      if not VPS.Is_Empty then
+         New_Mesh.Vp_Count := New_Mesh.Point_Count;
+         New_Mesh.Points_Vbo := Create_3D_VBO (To_Vector3_Array (VPS));
+      end if;
+
+      Loaded_Meshes.Append (New_Mesh);
+      Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh gpu data created.");
+
       return Result;
    end Load_Mesh;
 
@@ -262,7 +296,7 @@ package body Mesh_Loader is
                                  Tex_Coords  : in out GL_Maths.Vector2_List;
                                  Normals     : in out GL_Maths.Vector3_List;
                                  Point_Count : in out Integer)
-                                  return Boolean is
+                                 return Boolean is
       use Ada.Strings;
       Input_File : File_Type;
    begin
@@ -332,7 +366,7 @@ package body Mesh_Loader is
 
    function Loaded_Mesh_VAO (Index : Integer;
                              VAO   : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object)
-                              return Boolean is
+                             return Boolean is
       use Meshes_Package;
       Curs  : Cursor := Loaded_Meshes.First;
       Found : Boolean := False;
@@ -368,6 +402,54 @@ package body Mesh_Loader is
 
       return Count;
    end Point_Count;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Vector2_Array (Vec : Vector2_Package.Vector)
+                              return Singles.Vector2_Array is
+      use Vector2_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Singles.Vector2_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector2_Array;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Vector3_Array (Vec : Vector3_Package.Vector)
+                              return Singles.Vector3_Array is
+      use Vector3_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Singles.Vector3_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector3_Array;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Vector4_Array (Vec : Vector4_Package.Vector)
+                              return Singles.Vector4_Array is
+      use Vector4_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Singles.Vector4_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector4_Array;
 
    --  ------------------------------------------------------------------------
 
