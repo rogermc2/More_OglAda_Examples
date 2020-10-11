@@ -57,6 +57,19 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
+   function Create_4D_VBO (Data : GL.Types.Singles.Vector4_Array)
+                           return GL.Objects.Buffers.Buffer is
+      use GL.Objects.Buffers;
+      New_Buffer : Buffer;
+   begin
+      New_Buffer.Initialize_Id;
+      Array_Buffer.Bind (New_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Data, Static_Draw);
+      return New_Buffer;
+   end Create_4D_VBO;
+
+   --  ------------------------------------------------------------------------
+
    function Current_Program return GL.Objects.Programs.Program is
    begin
       return G_Current_Program;
