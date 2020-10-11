@@ -1,6 +1,7 @@
 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with Glfw.Windows;
 with Glfw.Input.Keys; use Glfw.Input.Keys;
 
 package Input_Handler is
@@ -21,7 +22,7 @@ package Input_Handler is
 
    function Attack_Action return Integer;
    function Down_Action return Integer;
-   procedure Init;
+   procedure Init (Window  : in out Glfw.Windows.Window);
    function Is_Key_Down (aKey : Key) return Boolean;
    function Is_Action_Down (Action : Integer) return Boolean;
    function OK_Action return Integer;

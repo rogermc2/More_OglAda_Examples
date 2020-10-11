@@ -139,7 +139,7 @@ package body GUI_Level_Chooser is
                        Maps.Element (Selected_Map_ID);
    begin
       if Was_Key_Pressed (Enter) or Was_Action_Pressed (OK_Action)
-        or Was_Action_Pressed (Attack_Action)then
+        or Was_Action_Pressed (Attack_Action) then
          if not Selected_Map.Locked or Cheat_Unlock then
             Started_Loading_Map := True;
          end if;
@@ -248,7 +248,8 @@ package body GUI_Level_Chooser is
             Game_Utils.Game_Log ("Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
             Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
          end if;
-         Game_Utils.Game_Log ("Start_Level_Chooser_Loop continue?");
+         Game_Utils.Game_Log ("Start_Level_Chooser_Loop continue: " &
+                             Boolean'Image (Continue));
 
          if Continue then
             if not Menu_Open then
