@@ -138,6 +138,8 @@ package body GUI_Level_Chooser is
       Selected_Map : Levels_Maps_Manager.Level_Map_Data :=
                        Maps.Element (Selected_Map_ID);
    begin
+      Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));
+      Game_Utils.Game_Log ("Process_Input Attack_Action: " & Natural'Image (Attack_Action));
       if Was_Key_Pressed (Enter) or Was_Action_Pressed (OK_Action)
         or Was_Action_Pressed (Attack_Action) then
          if not Selected_Map.Locked or Cheat_Unlock then

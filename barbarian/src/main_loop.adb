@@ -91,6 +91,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Init_Modules (Window : in out Glfw.Windows.Window) is
    begin
+      Input_Handler.Register_Input_Actions;
+      Settings.Load_Settings;
       Shader_Manager.Init;
       Audio_Manager.Init;
       Texture_Manager.Init;

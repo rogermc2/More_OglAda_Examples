@@ -1,6 +1,7 @@
 
 with Glfw.Input.Mouse;
 
+with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Game_Utils;
@@ -22,6 +23,57 @@ package body Input_Handler is
    begin
       return Input_Actions.Attack_Action;
    end Attack_Action;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Config_Joystick (aLine : String) is
+      use Ada.Strings;
+      Start   : constant Positive := aLine'First;
+      Last    : constant Positive := aLine'Last;
+      Pos1    : Positive := Fixed.Index (aLine, "_");
+      Pos2    : Positive := Fixed.Index (aLine, " ");
+      Action  : String := aLine (Start .. Pos2 - 1);
+      Code    : Integer;
+      Sign    : Character := '+';
+      Axis    : Integer := 0;
+      Index   : Integer := 0;
+      J_Index : Integer := -1;
+      Found   : Boolean := False;
+   begin
+      -- Find index of Action
+      while not Found and  index <= Input_Actions.Num_Actions loop
+         Index := Index + 1;
+         Found := Input_Actions.Action_Names (index) = Action;
+         if Found then
+            J_Index := Index;
+         end if;
+      end loop;
+
+      if Found then
+         if aLine (Pos2 + 1) /= 'B' then
+            Sign := aLine (Pos2 + 1);
+            if aLine (Pos2 + 2 .. Pos2 + 6) /= "AXIS" then
+               raise Input_Handler_Exception with
+                 "Read_Key_Config joy config line.";
+            end if;
+            Axis := Integer'Value (aLine (Pos2 + 7 .. Last));
+            if Axis < 0 or Axis > 7 then
+               Input_Actions.Joy_Axis_Bindings (J_Index) := -1;
+               Input_Actions.Joy_Axis_Sign (J_Index) := ' ';
+            else
+               if Sign /= '-' and Sign /= '+' then
+                  raise Input_Handler_Exception with
+                    "Read_Key_Config joystick axis sign " & Sign & "invalid.";
+               end if;
+               Input_Actions.Joy_Axis_Bindings (J_Index) := Axis;
+               Input_Actions.Joy_Axis_Sign (J_Index) := Sign;
+            end if;
+         end if;
+         Code := Integer'Value (aLine (Pos2 + 1 .. Last));
+         Set_Key_For_Action (Action, Code);
+      end if;
+
+   end Config_Joystick;
 
    --  ------------------------------------------------------------------------
 
@@ -125,6 +177,40 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   procedure Read_Key_Config (aLine : String) is
+      use Ada.Strings;
+      Start   : constant Positive := aLine'First;
+      Last    : constant Positive := aLine'Last;
+      Pos1    : Positive := Fixed.Index (aLine, "_");
+      Pos2    : Positive := Fixed.Index (aLine, " ");
+      Code    : Integer;
+      Sign    : Character := '+';
+      Axis    : Integer := 0;
+      Index   : Integer := 0;
+      J_Index : Integer := -1;
+      Found   : Boolean := False;
+   begin
+      if Last < 1 then
+         raise Input_Handler_Exception with
+           "Read_Key_Config called with empty string.";
+      end if;
+
+      if aLine (Start) = 'K' then
+         declare
+            Action : String := aLine (Start .. Pos2 - 1);
+         begin
+            Code := Integer'Value (aLine (Pos2 + 1 .. Last));
+            Set_Key_For_Action (Action, Code);
+         end ;
+
+      elsif aLine (Start) = 'J' then
+         Config_Joystick (aLine);
+      end if;
+
+   end Read_Key_Config;
+
+   --  ------------------------------------------------------------------------
+
    procedure Register_Input_Actions is
    begin
       --        if false then
@@ -132,7 +218,7 @@ package body Input_Handler is
       --             "Input_Handler.Register_Input_Actions could not read key names file: " &
       --           Integer'Image (Action);
       --        end if;
-
+      Game_Utils.Game_Log ("Register_Input_Actions");
       Input_Actions.Num_Actions := 0;
       Input_Actions.Left_Action := Register_Key_Action ("Move_Left");
       Input_Actions.Right_Action := Register_Key_Action ("Move_Right");
@@ -193,10 +279,10 @@ package body Input_Handler is
 
       for index in 1 .. Input_Actions.Num_Actions loop
          if Input_Actions.Action_Names (index) /= Action_Name  and
-            Input_Actions.Key_Bindings (index) = Key'Enum_Val (Key_Code) then
+           Input_Actions.Key_Bindings (index) = Key'Enum_Val (Key_Code) then
             raise Input_Handler_Exception with
               " Input_Handler.Set_Key_For_Action, duplicate entry for Key_Code: "
-            & Natural'Image (Key_Code);
+              & Natural'Image (Key_Code);
          end if;
       end loop;
 
@@ -236,8 +322,8 @@ package body Input_Handler is
       end if;
 
       --  Joystick not implemented
-    Put_Line ("Input_Handler.Was_Action_Pressed action code: " &
-           Integer'Image (Action));
+      Put_Line ("Input_Handler.Was_Action_Pressed action code: " &
+                  Integer'Image (Action));
       Result := Was_Key_Pressed (Input_Actions.Key_Bindings (Action));
       return Result;
    end Was_Action_Pressed;

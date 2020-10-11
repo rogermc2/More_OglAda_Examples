@@ -27,6 +27,7 @@ package Input_Handler is
    function Is_Action_Down (Action : Integer) return Boolean;
    function OK_Action return Integer;
    function Open_Menu_Action return Integer;
+   procedure Register_Input_Actions;
    function Up_Action return Integer;
    function Was_Action_Pressed (Action : Integer) return Boolean;
    function Was_Attack_Action_Pressed return Boolean;
@@ -87,7 +88,8 @@ private
                                 (others => 0);
       Joy_Axis_Bindings     : Integer_Array (1 .. Max_Actions) :=
                                 (others => 0);
-      Joy_Axis_Sign         : Character_Array (1 .. Max_Actions);
+      Joy_Axis_Sign         : Character_Array (1 .. Max_Actions) :=
+                                (others => ' ');
 
    end record;
 end Input_Handler;
