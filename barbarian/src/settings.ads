@@ -13,7 +13,7 @@ package Settings is
     function Far_Clip return GL.Types.Single;
     function Framebuffer_Height return GL.Types.Int;
     function Framebuffer_Width return GL.Types.Int;
-    function Load_Settings return Boolean;
+    procedure Load_Settings;
     function Particle_Mipmaps_Enabled return Boolean;
     function Save_Settings return Boolean;
     function Shadows_Enabled return Boolean;
