@@ -11,10 +11,10 @@ package body Input_Handler is
    Input_State   : Input_State_Data;
 
    function Register_Key_Action (Name : String) return Integer;
-   procedure Set_Joy_Axis_For_Action (Action_Name : String; Key_Code : Integer;
+   procedure Set_Joy_Axis_For_Action (Action_Name : String; Key_Code : Natural;
                                       Sign        : Character);
-   procedure Set_Joy_Button_For_Action (Action_Name : String; Key_Code : Integer);
-   procedure Set_Key_For_Action (Action_Name : String; Key_Code : Integer);
+   procedure Set_Joy_Button_For_Action (Action_Name : String; Key_Code : Natural);
+   procedure Set_Key_For_Action (Action_Name : String; Key_Code : Natural);
 
    --  ------------------------------------------------------------------------
 
@@ -49,6 +49,7 @@ package body Input_Handler is
       Set_Key_For_Action ("Menu_Back", 256);
       Set_Key_For_Action ("Ok", 257);
       Set_Key_For_Action ("Clear_Binding", 259);
+
       Set_Joy_Button_For_Action ("Move_Left", 13); -- Dpad left on Xbox
       Set_Joy_Button_For_Action ("Move_Right", 11);
       Set_Joy_Button_For_Action ("Move_Fwd", 10);
@@ -58,7 +59,7 @@ package body Input_Handler is
       Set_Joy_Button_For_Action ("Wipe_Screen", 2); -- X
       Set_Joy_Button_For_Action ("Select_Sword", 4); -- Lshldr
       Set_Joy_Button_For_Action ("Select_Javelin", 5); -- Rshdr
-      Set_Joy_Button_For_Action ("Select_Hammer", -1); -- Invalid/Nothing
+      Set_Joy_Button_For_Action ("Select_Hammer", 0); -- Invalid/Nothing
       Set_Joy_Button_For_Action ("Cycle_Weapons", 3); -- Y
       Set_Joy_Button_For_Action ("Open_Menu", 6); -- B
       Set_Joy_Button_For_Action ("Menu_Back", 1); -- <
@@ -173,14 +174,37 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Key_For_Action (Action_Name : String; Key_Code : Integer) is
+   procedure Set_Key_For_Action (Action_Name : String; Key_Code : Natural) is
    begin
-      null;
+      if Action_Name'Length < 1 then
+         raise Input_Handler_Exception with
+           " Input_Handler.Set_Key_For_Action, Action_Name is empty.";
+      elsif Key_Code < Max_Keys then
+         raise Input_Handler_Exception with
+           " Input_Handler.Set_Key_For_Action, invalid Key_Code: ." &
+           Natural'Image (Key_Code);
+      end if;
+
+      for index in 1 .. Input_Actions.Num_Actions loop
+         if Input_Actions.Action_Names (index) = Action_Name then
+            Input_Actions.Key_Bindings (index) := Key'Enum_Val (Key_Code);
+         end if;
+      end loop;
+
+      for index in 1 .. Input_Actions.Num_Actions loop
+         if Input_Actions.Action_Names (index) /= Action_Name  and
+            Input_Actions.Key_Bindings (index) = Key'Enum_Val (Key_Code) then
+            raise Input_Handler_Exception with
+              " Input_Handler.Set_Key_For_Action, duplicate entry for Key_Code: "
+            & Natural'Image (Key_Code);
+         end if;
+      end loop;
+
    end Set_Key_For_Action;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Joy_Axis_For_Action (Action_Name : String; Key_Code : Integer;
+   procedure Set_Joy_Axis_For_Action (Action_Name : String; Key_Code : Natural;
                                       Sign        : Character) is
    begin
       null;
@@ -188,7 +212,7 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Joy_Button_For_Action (Action_Name : String; Key_Code : Integer) is
+   procedure Set_Joy_Button_For_Action (Action_Name : String; Key_Code : Natural) is
    begin
       null;
    end Set_Joy_Button_For_Action;
