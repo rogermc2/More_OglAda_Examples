@@ -1,4 +1,6 @@
 
+with Glfw.Input.Mouse;
+
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Game_Utils;
@@ -76,11 +78,11 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init is
+   procedure Init (Window  : in out Glfw.Windows.Window) is
       --          Hide_Cursor : Boolean := True;
    begin
       Game_Utils.Game_Log ("--- Init Input Handler ---");
-      --          glfwSetInputMode (g_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+      Window.Set_Cursor_Mode (Glfw.Input.Mouse.Hidden);
       Input_State.Mouse_Cursor_Hidden := True;
    end Init;
 

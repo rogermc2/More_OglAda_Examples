@@ -89,7 +89,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Modules is
+   procedure Init_Modules (Window : in out Glfw.Windows.Window) is
    begin
       Shader_Manager.Init;
       Audio_Manager.Init;
@@ -121,7 +121,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadows.Init;
       Manifold.Init;
       MMenu.Init_MMenu;
-      Input_Handler.Init;
+      Input_Handler.Init (Window);
       Game_Utils.Game_Log ("----MODULES INITIALIZED----");
 
    end Init_Modules;
@@ -275,7 +275,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Height := Single (Window_Height);
       --          Param := Game_Utils.Check_Param ("-map");
 
-      Init_Modules;
+      Init_Modules (Window);
       --          Play_Music (Title_Track);
       --          Is_Playing_Hammer_Track := False;
 
