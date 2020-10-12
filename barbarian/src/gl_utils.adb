@@ -183,6 +183,41 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------
 
+   function To_Integer (Bool : Boolean) return Integer is
+   begin
+      if Bool then
+         return 1;
+      else
+         return 0;
+      end if;
+   end To_Integer;
+
+   --  ------------------------------------------------------------------------
+
+   function To_String (Bool : Boolean) return String is
+   begin
+      if Bool then
+         return ("1");
+      else
+         return ("0");
+      end if;
+   end To_String;
+
+   --  ------------------------------------------------------------------------
+
+   function To_UB_String (Bool : Boolean)
+                          return Ada.Strings.Unbounded.Unbounded_String is
+      use Ada.Strings.Unbounded;
+   begin
+      if Bool then
+         return To_Unbounded_String ("1");
+      else
+         return To_Unbounded_String ("0");
+      end if;
+   end To_UB_String;
+
+   --  ------------------------------------------------------------------------
+
    procedure Update_Batch_Count (Change : Integer) is
    begin
       Statistics.Batch_Count := Statistics.Batch_Count + Change;

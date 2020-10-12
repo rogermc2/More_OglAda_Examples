@@ -8,6 +8,20 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   function Anisotroic_Texturing_Factor return Float is
+   begin
+      return G_Settings.Anisotroic_Texturing_Factor;
+   end Anisotroic_Texturing_Factor;
+
+   --  ------------------------------------------------------------------------
+
+   function Auto_Blood_Wipe return Boolean is
+   begin
+      return G_Settings.Auto_Blood_Wipe;
+   end Auto_Blood_Wipe;
+
+   --  ------------------------------------------------------------------------
+
    procedure Default_Settings is
    begin
       G_Settings.Joy_Axis_Thresh := 0.5;
@@ -24,7 +38,7 @@ package body Settings is
       G_Settings.Shadow_Size := 512;
       G_Settings.Super_Sample_Anti_Aliasing := 2.0;
       G_Settings.Texf := 2;
-      G_Settings.Aniso := 4;
+      G_Settings.Anisotroic_Texturing_Factor := 4.0;
       G_Settings.Audio_Volume := 5;
       G_Settings.Music_Volume := 5;
       G_Settings.Render_Dist := 15;
@@ -49,6 +63,14 @@ package body Settings is
    end Far_Clip;
 
    --  ------------------------------------------------------------------------
+
+    function Fb_Effects_Enabled return Boolean is
+   begin
+      return G_Settings.Fb_Effects_Enabled;
+   end Fb_Effects_Enabled;
+
+   --  ------------------------------------------------------------------------
+
    function Framebuffer_Height return GL.Types.Int is
    begin
       return G_Settings.GL_Framebuffer_Height;
@@ -60,6 +82,20 @@ package body Settings is
    begin
       return G_Settings.GL_Framebuffer_Width;
    end Framebuffer_Width;
+
+   --  ------------------------------------------------------------------------
+
+    function Full_Screen return Boolean is
+   begin
+      return G_Settings.Full_Screen;
+   end Full_Screen;
+
+   --  ------------------------------------------------------------------------
+
+    function Graphic_Preset return Gfx_Preset_Type is
+   begin
+      return G_Settings.Gfx_Presets;
+   end Graphic_Preset;
 
    --  ------------------------------------------------------------------------
 
@@ -93,10 +129,31 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   function Multi_Sample_Anti_Aliasing return Integer is
+   begin
+      return G_Settings.Multi_Sample_Anti_Aliasing;
+   end Multi_Sample_Anti_Aliasing;
+
+   --  ------------------------------------------------------------------------
+
    function Particle_Mipmaps_Enabled return Boolean is
    begin
       return G_Settings.Particle_Mipmaps_Enabled;
    end Particle_Mipmaps_Enabled;
+
+   --  ------------------------------------------------------------------------
+
+   function Render_Distance return Integer is
+   begin
+      return G_Settings.Render_Distance;
+   end Render_Distance;
+
+   --  ------------------------------------------------------------------------
+
+    function Render_OLS return Boolean is
+   begin
+      return G_Settings.Render_OLS;
+   end Render_OLS;
 
    --  ------------------------------------------------------------------------
 
@@ -114,6 +171,20 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+    function Shadows_Size return Integer is
+   begin
+      return G_Settings.Shadow_Size;
+   end Shadows_Size;
+
+   --  ------------------------------------------------------------------------
+
+   function Show_FPS return Boolean is
+   begin
+      return G_Settings.Show_Fps;
+   end Show_FPS;
+
+   --  ------------------------------------------------------------------------
+
    function Super_Sample_Anti_Aliasing return Single is
    begin
       return Single (G_Settings.Super_Sample_Anti_Aliasing);
@@ -128,10 +199,38 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   function Texf return Integer is
+   begin
+      return G_Settings.Texf;
+   end Texf;
+
+   --  ------------------------------------------------------------------------
+
    function Tile_Batch_Width return Integer is
    begin
       return G_Settings.Tile_Batch_Width;
    end Tile_Batch_Width;
+
+   --  ------------------------------------------------------------------------
+
+   function V_Sync return Boolean is
+   begin
+      return G_Settings.V_Sync;
+   end V_Sync;
+
+   --  ------------------------------------------------------------------------
+
+    function Window_Width_To_Save return Integer is
+   begin
+      return G_Settings.GL_Window_Width_To_Save;
+   end Window_Width_To_Save;
+
+   --  ------------------------------------------------------------------------
+
+    function Window_Height_To_Save return Integer is
+   begin
+      return G_Settings.GL_Window_Height_To_Save;
+   end Window_Height_To_Save;
 
    --  ------------------------------------------------------------------------
 

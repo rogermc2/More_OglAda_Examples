@@ -1,4 +1,6 @@
 
+with Ada.Strings.Unbounded;
+
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
@@ -25,6 +27,10 @@ package GL_Utils is
    procedure Set_Render_Defaults;
    procedure Set_Current_Program (Current_Prog :
                                   GL.Objects.Programs.Program);
+   function To_Integer (Bool : Boolean) return Integer;
+   function To_String (Bool : Boolean) return String;
+   function To_UB_String (Bool : Boolean) return
+     Ada.Strings.Unbounded.Unbounded_String;
    procedure Update_Batch_Count (Change : Integer);
    procedure Update_Vertex_Count (Change : Integer);
    function Verify_Bound_Framebuffer return Boolean;

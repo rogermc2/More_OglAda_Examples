@@ -5,6 +5,7 @@ with Glfw.Input.Keys;
 
 with GL.Attributes;
 with GL.Objects.Buffers;
+with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
@@ -20,44 +21,102 @@ with Utilities;
 with Camera;
 with Cursor_Shader_Manager;
 with Game_Utils;
+with GL_Maths;
 with GL_Utils;
 with Input_Handler;
+with Menu_Strings;
+with Mesh_Loader;
+with Settings;
 with Shader_Attributes;
+with Text;
+with Texture_Manager;
 with Title_Shader_Manager;
 
 package body MMenu is
+   use GL.Types;
+
+   Mmenu_Text_Yoffs   : constant Single := 300.0; -- pixels above horizontal
+   --  for text to start
+   Mmenu_Big_Text_Sz  : constant Single := 80.0;  -- height of subseq lines to
+   --  offset below that
+   CRLF  : constant String := ASCII.LF & ASCII.CR;
+   CRLF2 : constant String := CRLF & CRLF;
+   CRLF3 : constant String := CRLF2 & CRLF;
+   CRLF4 : constant String := CRLF2 & CRLF2;
+
+   End_Story_String : constant String :=
+                        "crongdor glanced back at the temple" & CRLF2 &
+                        "through the shadowy palm groves. a" & CRLF2 &
+                        "power, its time long gone, would not" & CRLF2 &
+                        "rise again. the place of his barbarian" & CRLF2 &
+                        "people assured for now." & CRLF4 &
+                        "his friend the merchant was waiting\" & CRLF2 &
+                        "with two camels. the merchant eyed" & CRLF2 &
+                        "the crown in crongdor's hand." & CRLF4 &
+                        "you are rich! what will you do now?" & CRLF4 &
+                        "HAH! he said, running his fingers" & CRLF2 &
+                        "through his blood-matted mane." & CRLF4 &
+                        "with this i will hire a company of" & CRLF2 &
+                        "men to PLUNDER THE WORLD!" & CRLF2 &
+                        "but first, there is a tavern i know" & CRLF2 &
+                        "nearby where the meat is good, and" & CRLF2 &
+                        "the drink is strong. gods know, i" & CRLF2 &
+                        "have earned it today!" & CRLF3 &
+                        "COME!" & CRLF3;
 
    Black                 : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
    Cursor_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Title_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Num_Mmenu_Entries     : constant Integer := 7;
-   --      Num_Gra_Entries   : constant Integer := 17;
-   --      Num_Aud_Entries   : constant Integer := 3;
-   --      Num_Inp_Entries   : constant Integer := 4;
-   --      Num_Con_Entries   : constant Integer := 2;
 
-   Mmenu_Open             : Boolean := False;
-   Mmenu_Was_Closed       : Boolean := False;
-   Mmenu_Credits_Open     : Boolean := False;
-   Mmenu_End_Story_Open   : Boolean := False;
-   Mmenu_Gr_Open          : Boolean := False;
-   User_Chose_Custom_Maps : Boolean := False;
-   User_Chose_New_Game    : Boolean := False;
-   We_Are_In_Custom_Maps  : Boolean := False;
-   Title_Author_Text      : Unbounded_String := To_Unbounded_String ("");
-   Title_Skull_Texture    : GL.Objects.Textures.Texture;
+   Mmenu_Open                              : Boolean := False;
+   Mmenu_Was_Closed                        : Boolean := False;
+   Mmenu_Credits_Open                      : Boolean := False;
+   Mmenu_End_Story_Open                    : Boolean := False;
+   Mmenu_Gr_Open                           : Boolean := False;
+   Enabled_Strings                         : array (1 .. 2) of Unbounded_String
+     := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
+   Tex_Filter_Strings                         : array (1 .. 3) of Unbounded_String
+     := (To_Unbounded_String ( "nearest"), To_Unbounded_String ("bilinear"),
+        To_Unbounded_String ("trilinear"));
+   Menu_Text                               : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
+   Graphics_Text                           : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
+   Audio_Text                              : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
+   Input_Text                              : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
+   Quit_Text                               : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
+   Text_Background_Texture                 : GL.Objects.Textures.Texture;
+   User_Chose_Custom_Maps                  : Boolean := False;
+   User_Chose_New_Game                     : Boolean := False;
+   We_Are_In_Custom_Maps                   : Boolean := False;
+   Title_Author_Text                       : Integer := -1;
+   Title_Buildstamp_Text                   : Integer := -1;
+   Credits_Text_X                          : Single := 0.0;
+   Credits_Text_Y                          : constant Single := -1.0;
+   Mmenu_Credits_Texture                   : GL.Objects.Textures.Texture;
+   Title_Version_Text                      : Integer := -1;
+   End_Story_Text                          : Integer := -1;
+   Title_Shader_Program                    : GL.Objects.Programs.Program;
+   Title_Skull_Texture                     : GL.Objects.Textures.Texture;
 
-   Mmenu_Cursor_Curr_Item : Integer := -1;
-   Cursor_Current_Item    : Integer := -1;
-   Cursor_Point_Count     : GL.Types.Int := 0;
-   Title_Point_Count      : GL.Types.Int := 0;
-   Title_M                : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Title_V                : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Cursor_M               : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Cursor_V               : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Title_Bounce_Timer     : Float := 5.0;
-   Text_Timer             : Float := 0.0;
-   Since_Last_Key         : Float := 0.0;
+   Mmenu_Cursor_Curr_Item  : Integer := -1;
+   Cursor_Current_Item     : Integer := -1;
+   Cursor_Point_Count      : Integer := 0;
+   Cursor_Shader_Program   : GL.Objects.Programs.Program;
+   Mmenu_Cursor_Texture    : GL.Objects.Textures.Texture;
+   Title_Point_Count       : Integer := 0;
+   Title_M                 : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Title_V                 : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Cursor_M                : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Cursor_V                : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Title_Bounce_Timer      : Float := 5.0;
+   Text_Timer              : Float := 0.0;
+   Since_Last_Key          : Float := 0.0;
+
+   procedure Init_Graphic_Presets;
 
    --  ------------------------------------------------------------------------
 
@@ -84,11 +143,12 @@ package body MMenu is
 
    procedure Draw_Menu (Elapsed : Float) is
       use GL.Toggles;
+      use Menu_Strings;
    begin
       if Mmenu_Cursor_Curr_Item < 0 then
-         Mmenu_Cursor_Curr_Item := Num_Mmenu_Entries - 1;
+         Mmenu_Cursor_Curr_Item := Integer (Num_Menu_Entries - 1);
       end if;
-      if Mmenu_Cursor_Curr_Item >= Num_Mmenu_Entries then
+      if Mmenu_Cursor_Curr_Item >= Integer (Num_Menu_Entries) then
          Mmenu_Cursor_Curr_Item := 0;
       end if;
       Utilities.Clear_Depth;
@@ -117,21 +177,26 @@ package body MMenu is
       --  Draw cursor skull in background
       Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
       GL.Objects.Textures.Targets.Texture_2D.Bind (Title_Skull_Texture);
+      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
       Cursor_VAO.Initialize_Id;
       Cursor_VAO.Bind;
+      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_VAO bound");
       Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
       Cursor_Shader_Manager.Set_Model_Matrix (M_Matrix);
-      GL_Utils.Draw_Triangles (Cursor_Point_Count);
+      GL_Utils.Draw_Triangles (Int (Cursor_Point_Count));
 
+      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
       --  3D title
       Title_Shader_Manager.Set_View_Matrix (Title_V);
       Title_Shader_Manager.Set_Model_Matrix (Title_Matrix);
       Title_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
       Title_Shader_Manager.Set_Time (Current_Time);
+      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize VAO");
       Title_VAO.Initialize_Id;
       Title_VAO.Bind;
-      GL_Utils.Draw_Triangles (Title_Point_Count);
+      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Draw_Triangles");
+      GL_Utils.Draw_Triangles (Int (Title_Point_Count));
 
       --  Draw library logos and stuff
       --  Later
@@ -146,37 +211,161 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_MMenu is
+   procedure Init is
+
       use GL.Objects.Buffers;
       use GL.Types;
+      use GL.Types.Singles;
+      use Menu_Strings;
+
       Vertex_Array    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Vertex_Buffer   : Buffer;
+      Position_Buffer : Buffer;
       Texture_Buffer  : Buffer;
-      Position_Array  : constant Singles.Vector2_Array (1 .. 6) :=
+      Position_Array  : constant Vector2_Array (1 .. 6) :=
                           ((-1.0, 1.0), (-1.0, -1.0),  (1.0, -1.0),
                            (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0));
-      Texture_Array   : constant Singles.Vector2_Array (1 .. 6) :=
+      Texture_Array   : constant Vector2_Array (1 .. 6) :=
                           ((0.0, 1.0), (0.0, 0.0),  (1.0, 0.0),
                            (1.0, 0.0), (1.0, 1.0), (0.0, 1.0));
+      X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
+      Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
+
+      Camera_Position : Vector3 := (0.0, -6.5, 3.0);
+      Camera_Target   : Singles.Vector3 :=
+                          Camera_Position + (0.0, 1.0, -1.0);
       Title_Mesh      : Integer := 0;
       Cursor_Mesh     : Integer := 0;
+      Menu_Colour     : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
    begin
       Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
-      Vertex_Buffer.Initialize_Id;
+      Position_Buffer.Initialize_Id;
       Texture_Buffer.Initialize_Id;
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-      Array_Buffer.Bind (Vertex_Buffer);
+      Array_Buffer.Bind (Position_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VP, 2, Single_Type, False, 0, 0);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-      Array_Buffer.Bind (Vertex_Buffer);
+      Array_Buffer.Bind (Position_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
 
-   end Init_MMenu;
+      Title_Mesh := Mesh_Loader.Load_Managed_Mesh
+        ("src/meshes/3dtitle_idea.apg", True, True, False, False, False);
+      Title_VAO.Initialize_Id;
+      Title_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
+      Title_Author_Text := Text.Add_Text ("a game by anton gerdelan",
+                                          0.0, -0.4, 30.0, 0.75, 0.75, 0.75, 1.0);
+      Text.Centre_Text (Title_Author_Text, 0.0, -0.8);
+      Text.Set_Text_Visible (Title_Author_Text, False);
+
+      Title_Buildstamp_Text := Text.Add_Text ("v1.4 (core)",
+                                              X, Y, 10.0, 0.5, 0.5, 0.5, 1.0);
+      Text.Set_Text_Visible (Title_Buildstamp_Text, False);
+
+      Title_Version_Text := Text.Add_Text ("pre-release demo",
+                                           0.0, -0.2, 20.0, 1.0, 1.0, 0.0, 1.0);
+      Text.Centre_Text (Title_Author_Text, 0.0, -0.8);
+      Text.Set_Text_Visible (Title_Author_Text, False);
+
+      Title_Shader_Manager.Init (Title_Shader_Program);
+      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
+                                   (0.0, 1.0, 0.0), Title_V);
+      Title_M := Maths.Translation_Matrix ((-0.4, -3.0, -1.0));
+      Title_M := Maths.Scaling_Matrix ((0.5, 0.5, 0.5)) * Title_M;
+      Title_Shader_Manager.Set_Model_Matrix (Title_M);
+      Title_Shader_Manager.Set_View_Matrix (Title_V);
+      Title_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
+
+      Cursor_Shader_Manager.Init (Cursor_Shader_Program);
+      Cursor_M := Identity4;
+
+      Camera_Position := (0.0, 0.0, 10.0);
+      Camera_Target := (0.0, 0.0, 0.0);
+      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
+                                   (0.0, 1.0, 0.0), Title_V);
+      Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
+      Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
+      Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
+
+      Cursor_Mesh := Mesh_Loader.Load_Managed_Mesh
+        ("src/meshes/skull_helmet.apg", True, True, True, False, False);
+      if not Mesh_Loader.Loaded_Mesh_VAO (Title_Mesh, Cursor_VAO) then
+         raise MMenu_Exception with
+           "MMenu.Init_MMenu failed to initialize VAO for Title_Mesh";
+      end if;
+      Cursor_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
+
+      --  Credits shader not implemented
+      Credits_Text_X := -715.0 / Single (Settings.Framebuffer_Width);
+
+      End_Story_Text := Text.Add_Text (End_Story_String, Credits_Text_X,
+                                       Credits_Text_Y, 30.0, 1.0, 1.0, 0.1, 1.0);
+      Text.Set_Text_Visible (End_Story_Text, False);
+
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/skull_small_helmet_painterv_shade.png",
+         Mmenu_Cursor_Texture, False, True);
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/title_skull.png", Title_Skull_Texture, False, True);
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/victory.png", Mmenu_Credits_Texture, False, True);
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/text_bkrnd.png", Text_Background_Texture, False, True);
+
+      for index in 1 .. Num_Menu_Entries loop
+         Y := Mmenu_Text_Yoffs - Mmenu_Big_Text_Sz * Single (index - 1) /
+           Single (Settings.Framebuffer_Height);
+         Menu_Text (index) := Text.Add_Text (Menu_Strings.Menu_Strings (index),
+                                             0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Centre_Text (Menu_Text (index), 0.0, Y);
+         Text.Set_Text_Visible (Menu_Text (index), False);
+      end loop;
+
+      Init_Graphic_Presets;
+
+   end Init;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Graphic_Presets is
+      use Menu_Strings;
+      Graphic_Int     : Integer;
+      Graphic_Presets : array (1 .. Num_Graphic_Entries) of Unbounded_String :=
+                          (others => To_Unbounded_String (""));
+   begin
+      Graphic_Int := Settings.Gfx_Preset_Type'Enum_Rep (Settings.Graphic_Preset);
+      Append (Graphic_Presets (1), Character'Val (Graphic_Int));
+      Graphic_Presets (2) := To_Unbounded_String ("3.2");
+      Graphic_Presets (3) := To_Unbounded_String
+        (Integer'Image (Settings.Window_Width_To_Save) & 'x' &
+           Integer'Image (Settings.Window_Height_To_Save));
+      Graphic_Presets (4) := GL_Utils.To_UB_String (Settings.Full_Screen);
+      Graphic_Presets (5) := GL_Utils.To_UB_String  (Settings.V_Sync);
+      Graphic_Presets (6) := GL_Utils.To_UB_String  (Settings.Shadows_Enabled);
+      Graphic_Presets (7) := To_Unbounded_String
+        (Integer'Image (Settings.Shadows_Size));
+      Graphic_Presets (8) := GL_Utils.To_UB_String (Settings.Render_OLS);
+      Graphic_Presets (9) := GL_Utils.To_UB_String (Settings.Fb_Effects_Enabled);
+      Graphic_Presets (10) := To_Unbounded_String (Integer'Image (Settings.Texf));
+      Graphic_Presets (11) := To_Unbounded_String
+        (Float'Image (Settings.Anisotroic_Texturing_Factor));
+      Graphic_Presets (12) := To_Unbounded_String
+        (Integer'Image (Settings.Multi_Sample_Anti_Aliasing));
+      Graphic_Presets (13) := To_Unbounded_String
+        (Single'Image (Settings.Super_Sample_Anti_Aliasing));
+      Graphic_Presets (14) := To_Unbounded_String
+        (Integer'Image (Settings.Render_Distance));
+      Graphic_Presets (15) := To_Unbounded_String
+        (Single'Image (Settings.Far_Clip));
+      Graphic_Presets (16) :=
+        (Enabled_Strings (GL_Utils.To_Integer (Settings.Auto_Blood_Wipe)));
+      Graphic_Presets (17) :=
+        (Enabled_Strings (GL_Utils.To_Integer (Settings.Show_FPS)));
+
+   end Init_Graphic_Presets;
 
    --  ------------------------------------------------------------------------
 
