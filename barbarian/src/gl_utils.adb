@@ -205,6 +205,15 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
+   function To_UB_String (Val : Integer) return
+     Ada.Strings.Unbounded.Unbounded_String is
+      use Ada.Strings.Unbounded;
+   begin
+         return To_Unbounded_String (Integer'Image (Val));
+   end To_UB_String;
+
+   --  ------------------------------------------------------------------------
+
    function To_UB_String (Bool : Boolean)
                           return Ada.Strings.Unbounded.Unbounded_String is
       use Ada.Strings.Unbounded;

@@ -10,6 +10,7 @@ package Settings is
    subtype Audio_Volume_Range is Integer range 0 .. 10;
 
    function Anisotroic_Texturing_Factor return Float;
+   function Audio_Volume return Audio_Volume_Range;
    function Auto_Blood_Wipe return Boolean;
    procedure Default_Settings;
    function Far_Clip return GL.Types.Single;
@@ -20,6 +21,7 @@ package Settings is
    function Graphic_Preset return Gfx_Preset_Type;
    procedure Load_Settings;
    function Multi_Sample_Anti_Aliasing return Integer;
+   function Music_Volume return Audio_Volume_Range;
    function Particle_Mipmaps_Enabled return Boolean;
    function Render_OLS return Boolean;
    function Render_Distance return Integer;

@@ -29,6 +29,8 @@ package GL_Utils is
                                   GL.Objects.Programs.Program);
    function To_Integer (Bool : Boolean) return Integer;
    function To_String (Bool : Boolean) return String;
+   function To_UB_String (Val : Integer) return
+     Ada.Strings.Unbounded.Unbounded_String;
    function To_UB_String (Bool : Boolean) return
      Ada.Strings.Unbounded.Unbounded_String;
    procedure Update_Batch_Count (Change : Integer);

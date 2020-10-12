@@ -15,6 +15,13 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   function Audio_Volume return Audio_Volume_Range is
+   begin
+      return G_Settings.Audio_Volume;
+   end Audio_Volume;
+
+   --  ------------------------------------------------------------------------
+
    function Auto_Blood_Wipe return Boolean is
    begin
       return G_Settings.Auto_Blood_Wipe;
@@ -133,6 +140,13 @@ package body Settings is
    begin
       return G_Settings.Multi_Sample_Anti_Aliasing;
    end Multi_Sample_Anti_Aliasing;
+
+   --  ------------------------------------------------------------------------
+
+   function Music_Volume return Audio_Volume_Range is
+   begin
+      return G_Settings.Music_Volume;
+   end Music_Volume;
 
    --  ------------------------------------------------------------------------
 
