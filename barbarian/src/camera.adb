@@ -45,6 +45,8 @@ package body Camera is
 
         G_Cam.Projection_Matrix := Perspective_Matrix
           (G_Cam.Field_Of_View_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far);
+        G_Cam.GUI_Proj_Matrix := Perspective_Matrix
+          (G_Cam.Field_Of_View_Y, G_Cam.Aspect, 0.01, 1000.0);
         G_Cam.Clip_Plane := Perspective_Matrix
           (G_Cam.Field_Of_View_Y, G_Cam.Aspect, 0.1, 1000.0);
         G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
@@ -59,6 +61,13 @@ package body Camera is
     begin
         return G_Cam;
     end Default_Camera;
+
+    --  ------------------------------------------------------------------------
+
+    function GUI_Proj_Matrix return Singles.Matrix4 is
+    begin
+        return G_Cam.GUI_Proj_Matrix;
+    end GUI_Proj_Matrix;
 
     --  ------------------------------------------------------------------------
 

@@ -10,6 +10,7 @@ package Camera is
         View_Matrix        : Singles.Matrix4 := (others => (others => 0.0));
         Projection_Matrix  : Singles.Matrix4 := (others => (others => 0.0));
         Clip_Plane         : Singles.Matrix4 := (others => (others => 0.0));
+        GUI_Proj_Matrix    : Singles.Matrix4 := (others => (others => 0.0));
         World_Position     : Singles.Vector3 := (0.0, 0.0, 0.0);
         Shake_Mod_Position : Singles.Vector3 := (0.0, 0.0, 0.0);
         Original_Screen_Shake_Time      : Float := 1.0;
@@ -30,6 +31,7 @@ package Camera is
 
     function Default_Camera return Camera_Data;
     procedure Init;
+    function GUI_Proj_Matrix return Singles.Matrix4;
     function Projection_Matrix return Singles.Matrix4;
     function PV_Matrix return Singles.Matrix4;
     procedure Set_Camera_Height (Height : Single);

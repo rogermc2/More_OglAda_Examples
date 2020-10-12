@@ -27,5 +27,9 @@ package GL_Maths is
 
     package Vec4_Package is new Ada.Containers.Doubly_Linked_Lists
       (Singles.Vector4);
-    type Vector4_List is new Vec4_Package.List with null record;
+   type Vector4_List is new Vec4_Package.List with null record;
+
+   type Character_Array is array (Integer range <>) of Character;
+   type Integer_Array is array (Integer range <>) of Integer;
+
 end GL_Maths;

@@ -4,15 +4,15 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Glfw.Windows;
 with Glfw.Input.Keys; use Glfw.Input.Keys;
 
+with GL_Maths;
+
 package Input_Handler is
 
    Max_Actions : constant Integer := 256;
    Max_Keys    : constant Integer := 348;
 
-   type Character_Array is array (Integer range <>) of Character;
    type Joystick_Axes_State is array (Integer range <>) of Float;
    type Joystick_State  is array (Integer range <>) of Boolean;
-   type Integer_Array is array (Integer range <>) of Integer;
    type Key_String is array (Integer range <>) of Unbounded_String;
    type Key_Characters is array (Integer range <>, Integer range <>) of Character;
    type Key_State is array (1 .. Max_Keys) of Boolean;
@@ -53,10 +53,10 @@ private
       Num_Joy_Buttons                : Integer := 0;
       Joystick_Axis_Locked           : Joystick_State (1 .. 8) :=
                                          (others => False);
-      Joystick_Axis_Locked_Sign      : Character_Array (1 .. 8);
+      Joystick_Axis_Locked_Sign      : GL_Maths.Character_Array (1 .. 8);
       Joystick_Buttons_Locked        : Joystick_State (1 .. 32) :=
                                          (others => False);
-      Joystick_Buttons               : Integer_Array (1 .. 32) :=
+      Joystick_Buttons               : GL_Maths.Integer_Array (1 .. 32) :=
                                          (others => 0);
       Joystick_Connected             : Boolean := False;
       --  Steam needs this or the overlay falls to bits
@@ -84,12 +84,12 @@ private
       Clear_Binding_Action  : Integer := 0;
       -- Actual key code for each registered action ingame
       Key_Bindings          : Key_Binding_State;
-      Joy_Button_Bindings   : Integer_Array (1 .. Max_Actions) :=
+      Joy_Button_Bindings   : GL_Maths.Integer_Array (1 .. Max_Actions) :=
                                 (others => 0);
-      Joy_Axis_Bindings     : Integer_Array (1 .. Max_Actions) :=
+      Joy_Axis_Bindings     : GL_Maths.Integer_Array (1 .. Max_Actions) :=
                                 (others => 0);
-      Joy_Axis_Sign         : Character_Array (1 .. Max_Actions) :=
+      Joy_Axis_Sign         : GL_Maths.Character_Array (1 .. Max_Actions) :=
                                 (others => ' ');
-
    end record;
+
 end Input_Handler;
