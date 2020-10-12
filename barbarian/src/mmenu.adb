@@ -73,21 +73,28 @@ package body MMenu is
    Mmenu_Credits_Open                      : Boolean := False;
    Mmenu_End_Story_Open                    : Boolean := False;
    Mmenu_Gr_Open                           : Boolean := False;
+
    Enabled_Strings                         : array (1 .. 2) of Unbounded_String
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
    Tex_Filter_Strings                         : array (1 .. 3) of Unbounded_String
      := (To_Unbounded_String ( "nearest"), To_Unbounded_String ("bilinear"),
-        To_Unbounded_String ("trilinear"));
+         To_Unbounded_String ("trilinear"));
    Menu_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
    Graphics_Text                           : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
+   Graphic_Value_Strings                   : array (1 .. Menu_Strings.Num_Graphic_Entries)
+     of Unbounded_String := (others => To_Unbounded_String (""));
+   Graphic_Value_Text                      : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
+
    Audio_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
    Input_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
    Quit_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
+
    Text_Background_Texture                 : GL.Objects.Textures.Texture;
    User_Chose_Custom_Maps                  : Boolean := False;
    User_Chose_New_Game                     : Boolean := False;
@@ -116,7 +123,10 @@ package body MMenu is
    Text_Timer              : Float := 0.0;
    Since_Last_Key          : Float := 0.0;
 
-   procedure Init_Graphic_Presets;
+
+   procedure Init_Audio_Value_Strings;
+   procedure Init_Graphic_Value_Strings;
+   procedure Init_Graphic_Text;
 
    --  ------------------------------------------------------------------------
 
@@ -324,48 +334,105 @@ package body MMenu is
          Text.Set_Text_Visible (Menu_Text (index), False);
       end loop;
 
-      Init_Graphic_Presets;
+      Init_Graphic_Value_Strings;
+      Init_Graphic_Text;
+      Init_Audio_Value_Strings;
 
    end Init;
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Graphic_Presets is
+     procedure Init_Audio_Value_Strings is
+      use Menu_Strings;
+      use Settings;
+      Audio_Value_Strings : array (1 .. Num_Audio_Entries) of Unbounded_String
+      := (others => To_Unbounded_String (""));
+      X1  : constant Single :=
+              (-512.0 + 80.0) / Single (Framebuffer_Width);
+      X2  : constant Single :=
+              (512.0 - 330.0) / Single (Framebuffer_Width);
+      Y   : constant Single :=
+              760.0 / Single (Framebuffer_Height);
+   begin
+--        Audio_Value_Strings (1) := To_Unbounded_String (Get_Audio_Device_Name);
+      Audio_Value_Strings (2) := GL_Utils.To_UB_String (10 * Audio_Volume);
+      Audio_Value_Strings (3) := GL_Utils.To_UB_String (10 * Music_Volume);
+
+      for index in 1 .. Num_Audio_Entries loop
+         Audio_Text (index) :=
+           Text.Add_Text (Audio_Strings (index), X1, Single (index + 1) * Y,
+                          20.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Set_Text_Visible (Graphics_Text (index), False);
+
+         Audio_Text (index) :=
+           Text.Add_Text (To_String (Audio_Value_Strings (index)), X2,
+                          Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Set_Text_Visible (Audio_Text (index), False);
+      end loop;
+
+   end Init_Audio_Value_Strings;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Graphic_Value_Strings is
       use Menu_Strings;
       Graphic_Int     : Integer;
-      Graphic_Presets : array (1 .. Num_Graphic_Entries) of Unbounded_String :=
-                          (others => To_Unbounded_String (""));
    begin
       Graphic_Int := Settings.Gfx_Preset_Type'Enum_Rep (Settings.Graphic_Preset);
-      Append (Graphic_Presets (1), Character'Val (Graphic_Int));
-      Graphic_Presets (2) := To_Unbounded_String ("3.2");
-      Graphic_Presets (3) := To_Unbounded_String
+      Append (Graphic_Value_Strings (1), Character'Val (Graphic_Int));
+      Graphic_Value_Strings (2) := To_Unbounded_String ("3.2");
+      Graphic_Value_Strings (3) := To_Unbounded_String
         (Integer'Image (Settings.Window_Width_To_Save) & 'x' &
            Integer'Image (Settings.Window_Height_To_Save));
-      Graphic_Presets (4) := GL_Utils.To_UB_String (Settings.Full_Screen);
-      Graphic_Presets (5) := GL_Utils.To_UB_String  (Settings.V_Sync);
-      Graphic_Presets (6) := GL_Utils.To_UB_String  (Settings.Shadows_Enabled);
-      Graphic_Presets (7) := To_Unbounded_String
+      Graphic_Value_Strings (4) := GL_Utils.To_UB_String (Settings.Full_Screen);
+      Graphic_Value_Strings (5) := GL_Utils.To_UB_String  (Settings.V_Sync);
+      Graphic_Value_Strings (6) := GL_Utils.To_UB_String  (Settings.Shadows_Enabled);
+      Graphic_Value_Strings (7) := To_Unbounded_String
         (Integer'Image (Settings.Shadows_Size));
-      Graphic_Presets (8) := GL_Utils.To_UB_String (Settings.Render_OLS);
-      Graphic_Presets (9) := GL_Utils.To_UB_String (Settings.Fb_Effects_Enabled);
-      Graphic_Presets (10) := To_Unbounded_String (Integer'Image (Settings.Texf));
-      Graphic_Presets (11) := To_Unbounded_String
+      Graphic_Value_Strings (8) := GL_Utils.To_UB_String (Settings.Render_OLS);
+      Graphic_Value_Strings (9) := GL_Utils.To_UB_String (Settings.Fb_Effects_Enabled);
+      Graphic_Value_Strings (10) := To_Unbounded_String (Integer'Image (Settings.Texf));
+      Graphic_Value_Strings (11) := To_Unbounded_String
         (Float'Image (Settings.Anisotroic_Texturing_Factor));
-      Graphic_Presets (12) := To_Unbounded_String
+      Graphic_Value_Strings (12) := To_Unbounded_String
         (Integer'Image (Settings.Multi_Sample_Anti_Aliasing));
-      Graphic_Presets (13) := To_Unbounded_String
+      Graphic_Value_Strings (13) := To_Unbounded_String
         (Single'Image (Settings.Super_Sample_Anti_Aliasing));
-      Graphic_Presets (14) := To_Unbounded_String
+      Graphic_Value_Strings (14) := To_Unbounded_String
         (Integer'Image (Settings.Render_Distance));
-      Graphic_Presets (15) := To_Unbounded_String
+      Graphic_Value_Strings (15) := To_Unbounded_String
         (Single'Image (Settings.Far_Clip));
-      Graphic_Presets (16) :=
+      Graphic_Value_Strings (16) :=
         (Enabled_Strings (GL_Utils.To_Integer (Settings.Auto_Blood_Wipe)));
-      Graphic_Presets (17) :=
+      Graphic_Value_Strings (17) :=
         (Enabled_Strings (GL_Utils.To_Integer (Settings.Show_FPS)));
 
-   end Init_Graphic_Presets;
+   end Init_Graphic_Value_Strings;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Graphic_Text is
+      use Menu_Strings;
+      X1  : constant Single :=
+              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
+      X2  : constant Single :=
+              (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
+      Y   : constant Single :=
+              760.0 / Single (Settings.Framebuffer_Height);
+   begin
+      for index in 1 .. Num_Graphic_Entries loop
+         Graphics_Text (index) :=
+           Text.Add_Text (Graphic_Strings (index), X1, Single (index + 1) * Y,
+                          20.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Set_Text_Visible (Graphics_Text (index), False);
+
+         Graphic_Value_Text (index) :=
+           Text.Add_Text (To_String (Graphic_Value_Strings (index)), X2,
+                          Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Set_Text_Visible (Graphic_Value_Text (index), False);
+      end loop;
+
+   end Init_Graphic_Text;
 
    --  ------------------------------------------------------------------------
 

@@ -122,7 +122,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       FB_Effects.Init (Integer (Window_Width), Integer (Window_Height));
       Shadows.Init;
       Manifold.Init;
-      MMenu.Init_MMenu;
+      MMenu.Init;
       Input_Handler.Init (Window);
       Game_Utils.Game_Log ("----MODULES INITIALIZED----");
 
