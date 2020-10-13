@@ -42,7 +42,7 @@ package body Levels_Maps_Manager is
       Out_Data           : Level_Map_Data;
       Count              : Single := 0.0;
    begin
-      Put_Line ("Levels_Maps_Manager.Init_Maps initalizing Maps");
+--        Put_Line ("Levels_Maps_Manager.Init_Maps initalizing Maps");
       Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Maps initalizing Maps---");
       if Maps.Is_Empty then
          raise Levels_Maps_Manager_Exception with
@@ -79,8 +79,8 @@ package body Levels_Maps_Manager is
          end;  --  declare block
          Next (In_Cursor);
       end loop;
-      Put_Line ("Levels_Maps_Manager.Init_Maps Maps size : " &
-               Ada.Containers.Count_Type'Image (Maps.Length));
+--        Put_Line ("Levels_Maps_Manager.Init_Maps Maps size : " &
+--                 Ada.Containers.Count_Type'Image (Maps.Length));
 
       Text.Change_Text_Colour
         (Maps.Element (Selected_Map_ID).Map_Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
@@ -101,7 +101,7 @@ package body Levels_Maps_Manager is
       Num_Story_Lines  : Natural;
       Story_Lines      : Maps_Manager.Story_Lines_List;
    begin
-      Put_Line ("Levels_Maps_Manager.Load_Map loading " & Path);
+--        Put_Line ("Levels_Maps_Manager.Load_Map loading " & Path);
       Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
       Input_Stream := Stream_IO.Stream (Input_File);
       Unbounded_String'Read (Input_Stream, theMap.Map_Name);
@@ -146,6 +146,7 @@ package body Levels_Maps_Manager is
       theMap.Hammer_Track := aLine;
       Has_Hammer_Track := Length (aLine) > 3;
       Stream_IO.Close (Input_File);
+
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Levels_Maps_Manager.Load_Map!");
@@ -167,7 +168,7 @@ package body Levels_Maps_Manager is
       end Append_Data;
 
    begin
-      Put_Line ("Levels_Maps_Manager.Load_Names loading " & Path);
+--        Put_Line ("Levels_Maps_Manager.Load_Names loading " & Path);
       Open (Input_File, In_File, Path);
       if not Is_Open (Input_File) then
          Names.Clear;

@@ -327,8 +327,6 @@ package body MMenu is
 
       Cursor_Mesh := Mesh_Loader.Load_Managed_Mesh
         ("src/meshes/skull_helmet.apg", True, True, True, False, False);
-      Game_Utils.Game_Log("MMenu.Init_MMenu Cursor_Mesh: " &
-                            Integer'Image (Cursor_Mesh));
 
       if Cursor_Mesh <= 0 then
          raise MMenu_Exception with

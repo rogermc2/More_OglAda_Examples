@@ -164,29 +164,21 @@ package body Properties_Shader_Manager is
         Set_Norm_Map (2);
         Set_Cube_Texture (3);
 
-        Game_Utils.Game_Log (" Loading Prop_Skinned_Shader");
         Properties_Skinned_Shader_Manager.Init_Prop_Skinned_Shader
           (Prop_Skinned_Shader);
-        Game_Utils.Game_Log ("Prop_Skinned_Shader initialized");
         Properties_Skinned_Shader_Manager.Set_Diff_Map (0);
         Properties_Skinned_Shader_Manager.Set_Spec_Map (1);
         Properties_Skinned_Shader_Manager.Set_Cube_Texture (3);
-        Game_Utils.Game_Log ("Cube_Texture set");
         Properties_Skinned_Shader_Manager.Set_Bone_Matrices (Identity4_Array);
-        Game_Utils.Game_Log ("Prop_Skinned_Shader loaded");
 
         Coins_Shader_Manager.Init_Coins_Shader (Coins_Shader);
         Coins_Shader_Manager.Set_DM (0);
         Coins_Shader_Manager.Set_Cube_Texture (1);
-        Game_Utils.Game_Log ("Coins_Shader loaded");
 
         Jav_Stand_Shader_Manager.Init_Jav_Stand_Shader (Jav_Stand_Shader);
-        Game_Utils.Game_Log ("Jav_Stand_Shader loaded");
         Portal_Shader_Manager.Init_Portal_Shader (Portal_Shader);
-        Game_Utils.Game_Log ("Portal_Shader loaded");
 
         Sound_Sphere_Shader_Manager.Init_Sound_Sphere_Shader (Bounding_Sphere_Shader);
-        Game_Utils.Game_Log ("Bounding_Sphere_Shader loaded");
         Sphere_Mesh_Index := Mesh_Loader.Load_Managed_Mesh
           ("src/meshes/unit_sphere.apg", True, False, False, False, False);
         if Mesh_Loader.Loaded_Mesh_VAO (Sphere_Mesh_Index, VAO) then

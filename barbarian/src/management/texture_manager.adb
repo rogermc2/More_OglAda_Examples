@@ -54,21 +54,10 @@ package body Texture_Manager is
       elsif not Is_Bound (Slot) then
          Set_Active_Unit (GL.Types.Int (Slot));
          Texture_2D.Bind (Tex);
-         Game_Utils.Game_Log ("Load_Image_To_Texture Bind_Texture for Active_Unit"
-                              & Natural'Image (Slot));
-         Game_Utils.Game_Log ("Load_Image_To_Texture Bound_Textures.First_Index"
-                              & Natural'Image (Bound_Textures.First_Index));
-         Bound_Textures.Replace_Element (Slot, Tex);
-         Game_Utils.Game_Log ("Load_Image_To_Texture Texture bound for Active_Unit"
-                              & Natural'Image (Slot));
+                 Bound_Textures.Replace_Element (Slot, Tex);
          OK := True;
       end if;
 
-   exception
-      when anError : others =>
-         Put_Line ("An exception occurred in Texture_Manager.Bind_Texture "
-                   & Natural'Image (Slot));
-         Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Bind_Texture;
 
    --  ------------------------------------------------------------------------
@@ -91,12 +80,6 @@ package body Texture_Manager is
          OK := True;
       end if;
 
-   exception
-      when anError : others =>
-         Put_Line ("An exception occurred in " &
-                     "Texture_Manager.Bind_Cube_Texture for slot " &
-                     Natural'Image (Slot));
-         Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Bind_Cube_Texture;
 
    --  ------------------------------------------------------------------------
@@ -113,8 +96,6 @@ package body Texture_Manager is
       Index           : Positive := 1;
       Default_Texture : Texture;
    begin
-      Game_Utils.Game_Log ("Creating default texture Dt_Data_Size " &
-                             Integer'Image (Dt_Data_Size));
       ---  Generate RGBA pixels
       while Index <= Dt_Data_Size loop
          Sq_Ac := (Index - 1) / 16;
@@ -152,7 +133,7 @@ package body Texture_Manager is
 
       Bound_Textures.Append (Default_Texture);
       Loaded_Texture_Count := Loaded_Texture_Count + 1;
-      Game_Utils.Game_Log ("Default texture loaded.");
+--        Game_Utils.Game_Log ("Default texture loaded.");
 
    exception
       when anError : others =>
@@ -219,8 +200,8 @@ package body Texture_Manager is
       Texture_Loaded        : Boolean := False;
       Texture_Data          : Loaded_Texture;
    begin
-      Game_Utils.Game_Log (ASCII.CR & "Texture_Manager.Load_Image_To_Texture loading data from " & File_Name);
-      Put_Line ("Texture_Manager.Load_Image_To_Texture loading data from " & File_Name);
+--        Game_Utils.Game_Log (ASCII.CR & "Texture_Manager.Load_Image_To_Texture loading data from " & File_Name);
+--        Put_Line ("Texture_Manager.Load_Image_To_Texture loading data from " & File_Name);
       while Has_Element (Curs) and not Texture_Loaded loop
          Texture_Loaded := Element (Curs).File_Name = File_Name;
          Next (Curs);
@@ -229,10 +210,10 @@ package body Texture_Manager is
       if not Texture_Loaded then
          GID_Image_Loader.Load_File_To_Image
            (File_Name, Image_Data_Ptr, Data_Length, X, Y, Force_Channels);
-         Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture, Load_Image_To_Texture result: X, Y Data_Length "
-                              & GL.Types.Int'Image (X) & "  " &
-                                GL.Types.Int'Image (Y) & "  " &
-                                GL.Types.Int'Image (Data_Length));
+--           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture, Load_Image_To_Texture result: X, Y Data_Length "
+--                                & GL.Types.Int'Image (X) & "  " &
+--                                  GL.Types.Int'Image (Y) & "  " &
+--                                  GL.Types.Int'Image (Data_Length));
 
          X_16 := Mod_16 (X);
          Y_16 := Mod_16 (Y);
@@ -256,7 +237,6 @@ package body Texture_Manager is
                Data (index) :=  Data_Raw (index);
             end loop;
             GID_Image_Loader.Free_Data (Image_Data_Ptr);
---              Game_Utils.Game_Log ("Load_Image_To_Texture; data loaded ");
 
             Half_Height_In_Pixels := Y / 2;
             Height_In_Pixels := Y;
@@ -332,7 +312,7 @@ package body Texture_Manager is
             Loaded_Textures.Append (Texture_Data);
             Loaded_Texture_Count := Loaded_Texture_Count + 1;
          end; -- declare block
-         Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " & File_Name & " loaded.");
+--           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " & File_Name & " loaded.");
       else
          Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " & File_Name & " already loaded.");
       end if;
