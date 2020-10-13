@@ -6,7 +6,8 @@ with GL_Maths;
 
 package Mesh_Loader is
 
-    Max_Bones : constant  Int := 32;
+   Max_Bones : constant  Int := 32;
+   Mesh_Loader_Exception : Exception;
 
     procedure Init;
     function Load_Managed_Mesh (Mesh_Name : String; Has_Vp, Has_Vn, Has_Vt,

@@ -64,6 +64,13 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   function Disable_Joystick return Boolean is
+   begin
+      return G_Settings.Disable_Joystick;
+   end Disable_Joystick;
+
+   --  ------------------------------------------------------------------------
+
    function Far_Clip return GL.Types.Single is
    begin
       return G_Settings.Far_Clip;

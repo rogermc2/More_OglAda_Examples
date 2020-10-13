@@ -147,7 +147,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Current_Time := Float (Glfw.Time);
          Elapsed_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
-         Game_Utils.Game_Log ("Main_Loop.Introduction Is_Running");
+--           Game_Utils.Game_Log ("Main_Loop.Introduction Is_Running");
          if Flash_Timer < 0.25 then
             Flash_Timer := Flash_Timer + Elapsed_Time;
             b := Abs (Sin (Single ((30.0)) * Single (Current_Time)));
@@ -156,7 +156,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             Utilities.Clear_Background_Colour_And_Depth (Colour);
          else
             Utilities.Clear_Background_Colour_And_Depth (Black);
-            Game_Utils.Game_Log ("Main_Loop.Introduction Draw_Title_Only");
+--              Game_Utils.Game_Log ("Main_Loop.Introduction Draw_Title_Only");
             MMenu.Draw_Title_Only;
          end if;
          GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
@@ -164,13 +164,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
 
          Game_Camera.Is_Dirty := False;
-         Game_Utils.Game_Log ("Main_Loop.Introduction Is_Running?");
+--           Game_Utils.Game_Log ("Main_Loop.Introduction Is_Running?");
          Is_Running := Input_Handler.Was_Key_Pressed (Escape) or
            Input_Handler.Was_Key_Pressed (Space) or
            Input_Handler.Was_Key_Pressed (Enter) or
            Input_Handler.Was_OK_Action_Pressed or
            Input_Handler.Was_Attack_Action_Pressed;
-         Game_Utils.Game_Log ("Main_Loop.Introduction Should_Close?");
+--           Game_Utils.Game_Log ("Main_Loop.Introduction Should_Close?");
          if Window.Should_Close then
             Game_Utils.Game_Log ("Window closed by user or system ...exiting");
          else

@@ -16,6 +16,6 @@ package Cursor_Shader_Manager is
     procedure Set_Model_Matrix (Model_Matrix : Singles.Matrix4);
     procedure Set_Perspective_Matrix (Perspective_Matrix : Singles.Matrix4);
     procedure Set_View_Matrix (View_Matrix : Singles.Matrix4);
-    procedure Set_Diff_Map (Diff_Map : UInt);
+    procedure Set_Diff_Map (Diff_Map : Int);
 
 end Cursor_Shader_Manager;

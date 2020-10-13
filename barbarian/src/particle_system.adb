@@ -85,8 +85,8 @@ package body Particle_System is
            " Particle_System.Get_Particle_Script_Number Particles not initialised.";
       else
          while Has_Element (Curs) and not Found loop
-            Game_Utils.Game_Log (" Particle_System.Get_Particle_Script_Number" &
-                                " existing Script_Name: " & To_String (Element (Curs).Script_Name));
+--              Game_Utils.Game_Log (" Particle_System.Get_Particle_Script_Number" &
+--                                  " existing Script_Name: " & To_String (Element (Curs).Script_Name));
             Found := To_String (Element (Curs).Script_Name) = Name;
             if Found then
                Script_Number := To_Index (Curs);
