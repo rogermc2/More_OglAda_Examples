@@ -71,7 +71,7 @@ package body Mesh_Loader is
    --      Allocated_Mesh_Count : Integer := 128;
    Loaded_Meshes        : Mesh_List;
 
-   function Load_Mesh (Path : String; Meshes : in out Mesh_List) return Integer;
+   function Load_Mesh (Path : String; Meshes : in out Mesh_List) return Boolean;
    function To_Vector2_Array (Vec : Vector2_Package.Vector)
                               return Singles.Vector2_Array;
    function To_Vector3_Array (Vec : Vector3_Package.Vector)
@@ -149,7 +149,14 @@ package body Mesh_Loader is
       end if;
 
       if not Found then
-         Result := Load_Mesh (Mesh_Name, Loaded_Meshes);
+         Game_Utils.Game_Log("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading " &
+                              Mesh_Name);
+         if Load_Mesh (Mesh_Name, Loaded_Meshes) then
+            Result := Integer (Loaded_Meshes.Length);
+         else
+            raise Mesh_Loader_Exception with
+            "Mesh_Loader.Load_Managed_Mesh couldn't load " & Mesh_Name;
+         end if ;
       end if;
       return Result;
    end Load_Managed_Mesh;
@@ -157,7 +164,7 @@ package body Mesh_Loader is
    --  ------------------------------------------------------------------------
 
    function Load_Mesh (Path : String; Meshes : in out Mesh_List)
-                       return Integer is
+                       return Boolean is
       use Ada.Strings;
       use GL_Utils;
       VBS                  : Vector3_Package.Vector;
@@ -174,8 +181,7 @@ package body Mesh_Loader is
       Current_Anim_Index   : Integer := -1;
       Input_File           : File_Type;
       New_Mesh             : Mesh;
-      Result               : Integer := 0;
-
+      Result               : Boolean := False;
    begin
       Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh loading " & Path);
       Open (Input_File, In_File, Path);
@@ -283,8 +289,14 @@ package body Mesh_Loader is
          New_Mesh.Points_Vbo := Create_3D_VBO (To_Vector3_Array (VPS));
       end if;
 
-      Loaded_Meshes.Append (New_Mesh);
-      Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh gpu data created.");
+      Result := New_Mesh.Point_Count > 0;
+      if Result then
+         Loaded_Meshes.Append (New_Mesh);
+         Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh gpu data created.");
+      else
+         Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh data not created for "
+                              & Path);
+      end if;
 
       return Result;
    end Load_Mesh;

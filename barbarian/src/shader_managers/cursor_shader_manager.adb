@@ -32,7 +32,7 @@ package body Cursor_Shader_Manager is
       GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Identity4);
       GL.Uniforms.Set_Single (Render_Uniforms.Perspective_Matrix_ID, Identity4);
       GL.Uniforms.Set_Single (Render_Uniforms.View_Matrix_ID, Identity4);
-      GL.Uniforms.Set_UInt (Render_Uniforms.Diff_Map_ID, 0);
+      GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, 0);
 
    exception
       when others =>
@@ -64,9 +64,9 @@ package body Cursor_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Diff_Map (Diff_Map : UInt) is
+   procedure Set_Diff_Map (Diff_Map : Int) is
    begin
-      GL.Uniforms.Set_UInt (Render_Uniforms.Diff_Map_ID, Diff_Map);
+      GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, Diff_Map);
    end Set_Diff_Map;
 
    --  -------------------------------------------------------------------------

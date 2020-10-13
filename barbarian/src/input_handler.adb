@@ -19,6 +19,13 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Action_Name (Index: Integer) return Unbounded_String is
+   begin
+      return Input_Actions.Action_Names (Index);
+   end Action_Name;
+
+   --  ------------------------------------------------------------------------
+
    function Attack_Action return Integer is
    begin
       return Input_Actions.Attack_Action;
@@ -159,6 +166,48 @@ package body Input_Handler is
       end if;
       return Input_State.Keys_Down (Key_Val);
    end Is_Key_Down;
+
+   --  ------------------------------------------------------------------------
+
+   function Joy_Axis_Bindings (Index: Integer) return Integer is
+   begin
+      return Input_Actions.Joy_Axis_Bindings (Index);
+   end Joy_Axis_Bindings;
+
+   --  ------------------------------------------------------------------------
+
+   function Joy_Axis_Sign (Index: Integer) return Character is
+   begin
+      return Input_Actions.Joy_Axis_Sign (Index);
+   end Joy_Axis_Sign;
+
+   --  ------------------------------------------------------------------------
+
+   function Joy_Button_Bindings (Index: Integer) return Integer is
+   begin
+      return Input_Actions.Joy_Button_Bindings (Index);
+   end Joy_Button_Bindings;
+
+   --  ------------------------------------------------------------------------
+
+   function Key_Binding (Index: Integer) return Integer is
+   begin
+      return Key'Enum_Rep (Input_Actions.Key_Bindings (Index));
+   end Key_Binding;
+
+   --  ------------------------------------------------------------------------
+
+   function Key_Name (Index: Integer) return Unbounded_String is
+   begin
+      return Input_State.Key_Names (Index);
+   end Key_Name;
+
+   --  ------------------------------------------------------------------------
+
+   function Num_Actions return Integer is
+   begin
+      return Input_Actions.Num_Actions;
+   end Num_Actions;
 
    --  ------------------------------------------------------------------------
 

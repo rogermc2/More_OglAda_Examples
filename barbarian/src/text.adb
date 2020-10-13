@@ -86,6 +86,7 @@ package body Text is
       BR_X              : Single := 0.0;
       BR_Y              : Single := 0.0;
    begin
+--        Put_Line ("Text.Add_Text theText: " & theText);
       R_Text.Visible := True;
       R_Text.Top_Left_X := X;
       R_Text.Top_Left_Y := Y;
@@ -97,10 +98,9 @@ package body Text is
       R_Text.Points_VBO.Initialize_Id;
       R_Text.Tex_Coords_VBO.Initialize_Id;
 
-      Put_Line ("Text.Add_Text R_Text set.");
       Text_To_VBO (theText, Size_In_Pixels, R_Text.Points_VBO,
                    R_Text.Tex_Coords_VBO, Point_Count, BR_X, BR_Y);
-      Put_Line ("Text.Add_Text R_Text.VAO.Initialize_Id.");
+--        Put_Line ("Text.Add_Text R_Text.VAO.Initialize_Id.");
       R_Text.VAO.Initialize_Id;
       R_Text.VAO.Bind;
 
@@ -307,8 +307,7 @@ package body Text is
    --  ------------------------------------------------------------------------
    --  Text_To_VBO creates a VBO from a string of text using our font's
    --  glyph sizes to make a set of quads
-   procedure Text_To_VBO (theText        : String; Scale_Px : Single
-                          ;
+   procedure Text_To_VBO (theText        : String; Scale_Px : Single;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
                           Tex_Coords_VBO : in out GL.Objects.Buffers.Buffer;
                           Point_Count    : in out Integer;
@@ -336,8 +335,8 @@ package body Text is
       Y_Pos              : Single;
       Skip_Next          : Boolean := False;
    begin
-      Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
-                            Integer'Image (Text_Length) & ", " & theText);
+--        Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
+--                              Integer'Image (Text_Length) & ", " & theText);
       Br_X := 0.0;
       Br_Y := 0.0;
       for index in 1 .. Text_Length loop
@@ -416,8 +415,6 @@ package body Text is
       Array_Buffer.Bind (Tex_Coords_VBO);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Tex_Coords_Tmp, Dynamic_Draw);
       Point_Count := 6 * Integer (Current_Index);
-
-      Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length finished");
 
    exception
       when others =>

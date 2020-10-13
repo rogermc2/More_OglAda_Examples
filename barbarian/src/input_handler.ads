@@ -20,13 +20,20 @@ package Input_Handler is
 
    Input_Handler_Exception : Exception;
 
+   function Action_Name (Index: Integer) return Unbounded_String;
    function Attack_Action return Integer;
    function Down_Action return Integer;
    procedure Init (Window  : in out Glfw.Windows.Window);
    function Is_Key_Down (aKey : Key) return Boolean;
    function Is_Action_Down (Action : Integer) return Boolean;
+   function Joy_Axis_Bindings (Index: Integer) return Integer;
+   function Joy_Axis_Sign (Index: Integer) return Character;
+   function Joy_Button_Bindings (Index: Integer) return Integer;
+   function Key_Binding (Index: Integer) return Integer;
+   function Key_Name (Index: Integer) return Unbounded_String;
    function OK_Action return Integer;
    function Open_Menu_Action return Integer;
+   function Num_Actions return Integer;
    procedure Register_Input_Actions;
    function Up_Action return Integer;
    function Was_Action_Pressed (Action : Integer) return Boolean;

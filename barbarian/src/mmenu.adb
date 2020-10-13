@@ -86,14 +86,29 @@ package body MMenu is
    Graphic_Value_Strings                   : array (1 .. Menu_Strings.Num_Graphic_Entries)
      of Unbounded_String := (others => To_Unbounded_String (""));
    Graphic_Value_Text                      : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
-
+     (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
+   Cal_KB_Text                             : GL_Maths.Integer_Array
+     (1 .. Input_Handler.Max_Actions) := (others => -1);
+   Cal_GP_Text                             : GL_Maths.Integer_Array
+     (1 .. Input_Handler.Max_Actions) := (others => -1);
+   GP_Axis_Binding_Text                      : GL_Maths.Integer_Array
+     (1 .. Input_Handler.Max_Actions) := (others => -1);
+   GP_Buttons_Binding_Text                      : GL_Maths.Integer_Array
+     (1 .. Input_Handler.Max_Actions) := (others => -1);
    Audio_Text                              : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
+   Audio_Value_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
    Input_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
+   Input_Value_Text                              : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
    Quit_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
+   Confirm_Quit_Text                               : GL_Maths.Integer_Array
+     (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
+   KB_Binding_Text                         : GL_Maths.Integer_Array
+     (1 .. Input_Handler.Max_Actions) := (others => -1);
 
    Text_Background_Texture                 : GL.Objects.Textures.Texture;
    User_Chose_Custom_Maps                  : Boolean := False;
@@ -106,6 +121,12 @@ package body MMenu is
    Mmenu_Credits_Texture                   : GL.Objects.Textures.Texture;
    Title_Version_Text                      : Integer := -1;
    End_Story_Text                          : Integer := -1;
+   Joy_Name                                : Unbounded_String :=
+                                               To_Unbounded_String ("");
+   Joystick_Detected_Text                  : Integer := -1;
+   Greatest_Text_Axis                      : Integer := -1;
+   Restart_Graphics_Text                   : Integer := -1;
+   Already_Bound_Text                      : Integer := -1;
    Title_Shader_Program                    : GL.Objects.Programs.Program;
    Title_Skull_Texture                     : GL.Objects.Textures.Texture;
 
@@ -127,6 +148,10 @@ package body MMenu is
    procedure Init_Audio_Value_Strings;
    procedure Init_Graphic_Value_Strings;
    procedure Init_Graphic_Text;
+   procedure Init_Input_Text;
+   procedure Init_Input_Actions;
+   procedure Init_Quit_Text;
+   procedure Init_Various;
 
    --  ------------------------------------------------------------------------
 
@@ -185,27 +210,27 @@ package body MMenu is
       Current_Time : constant Single := Single (Glfw.Time);
    begin
       --  Draw cursor skull in background
-      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
       GL.Objects.Textures.Targets.Texture_2D.Bind (Title_Skull_Texture);
-      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
       Cursor_VAO.Initialize_Id;
       Cursor_VAO.Bind;
-      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_VAO bound");
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_VAO bound");
       Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
       Cursor_Shader_Manager.Set_Model_Matrix (M_Matrix);
       GL_Utils.Draw_Triangles (Int (Cursor_Point_Count));
 
-      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
       --  3D title
       Title_Shader_Manager.Set_View_Matrix (Title_V);
       Title_Shader_Manager.Set_Model_Matrix (Title_Matrix);
       Title_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
       Title_Shader_Manager.Set_Time (Current_Time);
-      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize VAO");
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize VAO");
       Title_VAO.Initialize_Id;
       Title_VAO.Bind;
-      Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Draw_Triangles");
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Draw_Triangles");
       GL_Utils.Draw_Triangles (Int (Title_Point_Count));
 
       --  Draw library logos and stuff
@@ -302,9 +327,15 @@ package body MMenu is
 
       Cursor_Mesh := Mesh_Loader.Load_Managed_Mesh
         ("src/meshes/skull_helmet.apg", True, True, True, False, False);
-      if not Mesh_Loader.Loaded_Mesh_VAO (Title_Mesh, Cursor_VAO) then
+      Game_Utils.Game_Log("MMenu.Init_MMenu Cursor_Mesh: " &
+                            Integer'Image (Cursor_Mesh));
+
+      if Cursor_Mesh <= 0 then
          raise MMenu_Exception with
-           "MMenu.Init_MMenu failed to initialize VAO for Title_Mesh";
+           "MMenu.Init_MMenu Load_Managed_Mesh failed to load src/meshes/skull_helmet.apg";
+      elsif not Mesh_Loader.Loaded_Mesh_VAO (Cursor_Mesh, Cursor_VAO) then
+         raise MMenu_Exception with
+           "MMenu.Init_MMenu failed to initialize VAO for Cursor_Mesh";
       end if;
       Cursor_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
 
@@ -337,37 +368,44 @@ package body MMenu is
       Init_Graphic_Value_Strings;
       Init_Graphic_Text;
       Init_Audio_Value_Strings;
+      Init_Input_Text;
+      Init_Various;
+      Init_Input_Actions;
+      Init_Quit_Text;
 
    end Init;
 
    --  ------------------------------------------------------------------------
 
-     procedure Init_Audio_Value_Strings is
+   procedure Init_Audio_Value_Strings is
       use Menu_Strings;
       use Settings;
       Audio_Value_Strings : array (1 .. Num_Audio_Entries) of Unbounded_String
-      := (others => To_Unbounded_String (""));
-      X1  : constant Single :=
-              (-512.0 + 80.0) / Single (Framebuffer_Width);
-      X2  : constant Single :=
-              (512.0 - 330.0) / Single (Framebuffer_Width);
-      Y   : constant Single :=
-              760.0 / Single (Framebuffer_Height);
+        := (others => To_Unbounded_String (""));
+      X1                  : constant Single :=
+                              (-512.0 + 80.0) / Single (Framebuffer_Width);
+      X2                  : constant Single :=
+                              (512.0 - 330.0) / Single (Framebuffer_Width);
+      Y                   : constant Single :=
+                              760.0 / Single (Framebuffer_Height);
    begin
---        Audio_Value_Strings (1) := To_Unbounded_String (Get_Audio_Device_Name);
+      --        Audio_Value_Strings (1) := To_Unbounded_String (Get_Audio_Device_Name);
       Audio_Value_Strings (2) := GL_Utils.To_UB_String (10 * Audio_Volume);
       Audio_Value_Strings (3) := GL_Utils.To_UB_String (10 * Music_Volume);
 
       for index in 1 .. Num_Audio_Entries loop
-         Audio_Text (index) :=
-           Text.Add_Text (Audio_Strings (index), X1, Single (index + 1) * Y,
-                          20.0, 1.0, 1.0, 1.0, 1.0);
-         Text.Set_Text_Visible (Graphics_Text (index), False);
+         if Audio_Strings (index) /= "" and
+           Audio_Value_Strings (index) /= ""then
+            Audio_Text (index) :=
+              Text.Add_Text (Audio_Strings (index), X1, Single (index + 1) * Y,
+                             20.0, 1.0, 1.0, 1.0, 1.0);
+            Text.Set_Text_Visible (Graphics_Text (index), False);
 
-         Audio_Text (index) :=
-           Text.Add_Text (To_String (Audio_Value_Strings (index)), X2,
-                          Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
-         Text.Set_Text_Visible (Audio_Text (index), False);
+            Audio_Value_Text (index) :=
+              Text.Add_Text (To_String (Audio_Value_Strings (index)), X2,
+                             Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+            Text.Set_Text_Visible (Audio_Text (index), False);
+         end if;
       end loop;
 
    end Init_Audio_Value_Strings;
@@ -403,9 +441,9 @@ package body MMenu is
       Graphic_Value_Strings (15) := To_Unbounded_String
         (Single'Image (Settings.Far_Clip));
       Graphic_Value_Strings (16) :=
-        (Enabled_Strings (GL_Utils.To_Integer (Settings.Auto_Blood_Wipe)));
+        (Enabled_Strings (GL_Utils.To_Integer (Settings.Auto_Blood_Wipe) + 1));
       Graphic_Value_Strings (17) :=
-        (Enabled_Strings (GL_Utils.To_Integer (Settings.Show_FPS)));
+        (Enabled_Strings (GL_Utils.To_Integer (Settings.Show_FPS) + 1));
 
    end Init_Graphic_Value_Strings;
 
@@ -433,6 +471,167 @@ package body MMenu is
       end loop;
 
    end Init_Graphic_Text;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Input_Actions is
+      use Menu_Strings;
+      X1      : Single :=
+                  (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
+      X2      : Single :=
+                  (512.0 - 465.0) / Single (Settings.Framebuffer_Width);
+      Y       : Single :=
+                  760.0 / Single (Settings.Framebuffer_Height);
+      K_Index : Integer;
+   begin
+      for index in 1 .. Input_Handler.Num_Actions loop
+         if To_String (Input_Handler.Action_Name (index)) /= "" then
+            Cal_KB_Text (index) :=
+              Text.Add_Text (To_String (Input_Handler.Action_Name (index)),
+                             X1, Single (index + 1) * Y,
+                             20.0, 1.0, 1.0, 1.0, 1.0);
+            Text.Set_Text_Visible (Cal_KB_Text (index), False);
+
+            Cal_GP_Text (index) :=
+              Text.Add_Text (To_String (Input_Handler.Action_Name (index)),
+                             X1, Single (index + 1) * Y,
+                             20.0, 1.0, 1.0, 1.0, 1.0);
+            Text.Set_Text_Visible (Cal_GP_Text (index), False);
+         end if;
+
+            K_Index := Input_Handler.Key_Binding (index);
+            if K_Index < 0 or K_Index >= Input_Handler.Max_Keys then
+               raise Mmenu_Exception with
+                 "Mmenu.Init_Input_Actions, invalid key code " &
+                 Integer'Image (K_Index) & " detected.";
+            end if;
+
+         if To_String (Input_Handler.Key_Name (index)) /= "" then
+            KB_Binding_Text (index) :=
+              Text.Add_Text (To_String (Input_Handler.Key_Name (index)),
+                             X2, Single (index + 1) * Y,
+                             20.0, 1.0, 1.0, 1.0, 1.0);
+            Text.Set_Text_Visible (KB_Binding_Text (index), False);
+
+            if Input_Handler.Joy_Axis_Bindings (index) < 0 or
+              Input_Handler.Joy_Axis_Bindings (index) >= 8 then
+               GP_Axis_Binding_Text (index) :=
+                 Text.Add_Text ("none", X2, Single (index + 1) * Y,
+                                20.0, 1.0, 1.0, 1.0, 1.0);
+            else
+               GP_Axis_Binding_Text (index) :=
+                 Text.Add_Text (Input_Handler.Joy_Axis_Sign (index) & "AXIS" &
+                                  Integer'Image (Input_Handler.Joy_Axis_Bindings (index)),
+                                X2, Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+            end if;
+            Text.Set_Text_Visible (GP_Axis_Binding_Text (index), False);
+
+            if Input_Handler.Joy_Button_Bindings (index) < 0 or
+              Input_Handler.Joy_Button_Bindings (index) >= 32 then
+               GP_Buttons_Binding_Text (index) :=
+                 Text.Add_Text ("none", X2, Single (index + 1) * Y,
+                                20.0, 1.0, 1.0, 1.0, 1.0);
+            else
+               GP_Buttons_Binding_Text (index) :=
+                 Text.Add_Text
+                   ("B" & Integer'Image (Input_Handler.Joy_Button_Bindings (index)),
+                    X2, Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+            end if;
+            Text.Set_Text_Visible (Input_Handler.Joy_Button_Bindings (index), False);
+         end if;
+      end loop;
+
+   end Init_Input_Actions;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Input_Text is
+      use Menu_Strings;
+      X  : constant Single :=
+             (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
+      Y  : constant Single :=
+             760.0 / Single (Settings.Framebuffer_Height);
+   begin
+      for index in 1 .. Num_Input_Entries loop
+         Input_Text (index) :=
+           Text.Add_Text (Input_Strings (index), X, Single (index + 1) * Y,
+                          20.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Set_Text_Visible (Graphics_Text (index), False);
+      end loop;
+
+   end Init_Input_Text;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Quit_Text is
+      use Menu_Strings;
+      X        : constant Single :=
+                   (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
+      Y1       : Single := 4.0 * 380.0 / Single (Settings.Framebuffer_Height);
+      Y2       : Single := 40.0 / Single (Settings.Framebuffer_Height);
+      ES_Index : Integer;
+   begin
+      if Settings.Disable_Joystick then
+         ES_Index := 1;
+      else
+         ES_Index := 2;
+      end if;
+      --  only 1 input text in right hand column
+      Input_Value_Text (1) :=
+        Text.Add_Text (To_String (Enabled_Strings (ES_Index)), X, Y1,
+                       20.0, 1.0, 1.0, 1.0, 1.0);
+      Text.Set_Text_Visible (Input_Value_Text (1), False);
+
+      for index in 1 .. Num_Quit_Entries loop
+         Confirm_Quit_Text (index) :=
+           Text.Add_Text (Graphic_Strings (index), X, Single (index) * Y2,
+                          20.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Set_Text_Visible (Confirm_Quit_Text (index), False);
+         Text.Centre_Text (Confirm_Quit_Text (index), 0.0, Y2);
+      end loop;
+
+   end Init_Quit_Text;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Various is
+      use Menu_Strings;
+      X  : constant Single :=
+             (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
+      Y  : Single :=
+             (-512.0 + 1500.0) / Single (Settings.Framebuffer_Height);
+   begin
+
+      Joystick_Detected_Text  :=
+        Text.Add_Text ("joystick detected: " & To_String (Joy_Name) & CRLF,
+                       X,  Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+      Text.Set_Text_Visible (Joystick_Detected_Text, False);
+
+      Greatest_Text_Axis  :=
+        Text.Add_Text ("axis: ", X,  Y,
+                       20.0, 1.0, 1.0, 0.0, 1.0);
+      Text.Set_Text_Visible (Greatest_Text_Axis, False);
+
+      Restart_Graphics_Text  :=
+        Text.Add_Text ("the game must be restarted" & CRLF &
+                         "for some changes to be applied", X,  Y,
+                       20.0, 1.0, 1.0, 0.0, 1.0);
+      Text.Set_Text_Visible (Restart_Graphics_Text, False);
+
+      Y := (-512.0 + 300.0) / Single (Settings.Framebuffer_Height);
+      Already_Bound_Text  :=
+        Text.Add_Text ("key is already bound!", X,  Y,
+                       20.0, 1.0, 1.0, 0.0, 1.0);
+      Text.Set_Text_Visible (Already_Bound_Text, False);
+
+      for index in 1 .. Num_Input_Entries loop
+         Input_Text (index) :=
+           Text.Add_Text (Input_Strings (index), X, Single (index + 1) * Y,
+                          20.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Set_Text_Visible (Graphics_Text (index), False);
+      end loop;
+
+   end Init_Various;
 
    --  ------------------------------------------------------------------------
 
