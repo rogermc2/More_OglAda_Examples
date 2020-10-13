@@ -58,7 +58,7 @@ package body Particle_System_Manager is
       end Read_Vec4;
 
    begin
-      Game_Utils.Game_Log ("Particle System Manager loading " & File_Name);
+--        Game_Utils.Game_Log ("Particle System Manager loading " & File_Name);
       Open (Input_File, In_File, "src/particles/" & File_Name);
       Script.Script_Name := To_Unbounded_String (File_Name);
       while not End_Of_File (Input_File) loop
@@ -124,7 +124,7 @@ package body Particle_System_Manager is
 
       Load_Attribute_Data (Script, Min_Velocity, Max_Velocity);
       Scripts.Append (Script);
-      Game_Utils.Game_Log ("Particle System Manager loaded " & File_Name);
+--        Game_Utils.Game_Log ("Particle System Manager loaded " & File_Name);
 
    exception
       when anError : others =>

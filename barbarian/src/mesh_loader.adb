@@ -67,9 +67,7 @@ package body Mesh_Loader is
    package Meshes_Package is new Ada.Containers.Vectors (Positive, Mesh);
    type Mesh_List is new Meshes_Package.Vector with null record;
 
-   --      Loaded_Mesh_Count    : Integer := 0;
-   --      Allocated_Mesh_Count : Integer := 128;
-   Loaded_Meshes        : Mesh_List;
+   Loaded_Meshes : Mesh_List;
 
    function Load_Mesh (Path : String; Meshes : in out Mesh_List) return Boolean;
    function To_Vector2_Array (Vec : Vector2_Package.Vector)
@@ -84,8 +82,6 @@ package body Mesh_Loader is
    procedure Init is
    begin
       Loaded_Meshes.Clear;
-      --          Loaded_Mesh_Count := 0;
-      --          Allocated_Mesh_Count := 0;
    end Init;
 
    --  ------------------------------------------------------------------------
@@ -149,8 +145,8 @@ package body Mesh_Loader is
       end if;
 
       if not Found then
-         Game_Utils.Game_Log("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading " &
-                              Mesh_Name);
+--           Game_Utils.Game_Log("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading " &
+--                                Mesh_Name);
          if Load_Mesh (Mesh_Name, Loaded_Meshes) then
             Result := Integer (Loaded_Meshes.Length);
          else
@@ -183,7 +179,7 @@ package body Mesh_Loader is
       New_Mesh             : Mesh;
       Result               : Boolean := False;
    begin
-      Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh loading " & Path);
+--        Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh loading " & Path);
       Open (Input_File, In_File, Path);
       New_Mesh.File_Name := To_Unbounded_String (Path);
       while not End_Of_File (Input_File) loop
@@ -292,7 +288,7 @@ package body Mesh_Loader is
       Result := New_Mesh.Point_Count > 0;
       if Result then
          Loaded_Meshes.Append (New_Mesh);
-         Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh gpu data created.");
+--           Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh gpu data created.");
       else
          Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh data not created for "
                               & Path);
@@ -313,8 +309,8 @@ package body Mesh_Loader is
       Input_File : File_Type;
    begin
       Point_Count := 0;
-      Game_Utils.Game_Log ("Loaded_Mesh_Data_Only loading mesh data from: " &
-                             File_Name);
+--        Game_Utils.Game_Log ("Loaded_Mesh_Data_Only loading mesh data from: " &
+--                               File_Name);
       Open (Input_File, In_File, File_Name);
       while not End_Of_File (Input_File) loop
          declare
@@ -369,8 +365,8 @@ package body Mesh_Loader is
          end;  --  declare block
       end loop;
       Close (Input_File);
-      Game_Utils.Game_Log ("Loaded_Mesh_Data_Only mesh data loaded from: " &
-                             File_Name);
+--        Game_Utils.Game_Log ("Loaded_Mesh_Data_Only mesh data loaded from: " &
+--                               File_Name);
       return True;
    end Load_Mesh_Data_Only;
 

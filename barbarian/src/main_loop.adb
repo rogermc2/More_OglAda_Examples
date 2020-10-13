@@ -139,19 +139,18 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Elapsed_Time  : Float;
       b             : GL.Types.Single := 0.0;
       Colour        : Colors.Color;
+      Window_Closed : Boolean := False;
    begin
       Game_Utils.Game_Log ("---Main_Loop.Introduction---");
       Is_Running := True;
       Game_Camera.Is_Dirty := True;
-      while Is_Running loop
+      while Is_Running and not Window_Closed loop
          Current_Time := Float (Glfw.Time);
          Elapsed_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
---           Game_Utils.Game_Log ("Main_Loop.Introduction Is_Running");
          if Flash_Timer < 0.25 then
             Flash_Timer := Flash_Timer + Elapsed_Time;
             b := Abs (Sin (Single ((30.0)) * Single (Current_Time)));
-            --              Put_Line ("Main_Loop.Introduction.b: " & Single'Image (b));
             Colour := (b, b, b, 1.0);
             Utilities.Clear_Background_Colour_And_Depth (Colour);
          else
@@ -164,18 +163,17 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
 
          Game_Camera.Is_Dirty := False;
---           Game_Utils.Game_Log ("Main_Loop.Introduction Is_Running?");
-         Is_Running := Input_Handler.Was_Key_Pressed (Escape) or
+         Is_Running := not (Input_Handler.Was_Key_Pressed (Escape) or
            Input_Handler.Was_Key_Pressed (Space) or
            Input_Handler.Was_Key_Pressed (Enter) or
            Input_Handler.Was_OK_Action_Pressed or
-           Input_Handler.Was_Attack_Action_Pressed;
---           Game_Utils.Game_Log ("Main_Loop.Introduction Should_Close?");
-         if Window.Should_Close then
+           Input_Handler.Was_Attack_Action_Pressed);
+         --           Game_Utils.Game_Log ("Main_Loop.Introduction Should_Close?");
+         Window_Closed := Window.Should_Close;
+         if Window_Closed then
             Game_Utils.Game_Log ("Window closed by user or system ...exiting");
-         else
-            Game_Camera.Is_Dirty := False;
          end if;
+         Game_Camera.Is_Dirty := False;
       end loop;  --  Is_Running
 
    end Introduction;
@@ -226,17 +224,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Width := Single (Window_Width);
          Height := Single (Window_Height);
          GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
-         Game_Utils.Game_Log ("Main_Loop.Run_Game Viewport set");
 
          if GUI_Level_Chooser.Start_Level_Chooser_Loop
            (Window, MMenu.Are_We_In_Custom_Maps) then
-            Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop started. ");
             Level_Name := To_Unbounded_String
               (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
             Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
                                  & To_String (Level_Name));
          end if;
-         Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop done");
 
          --   Even if flagged to skip initial intro this means that the level
          --  chooser can be accessed if the player selects "new game" in the main menu.
@@ -245,7 +240,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Map_Path := To_Unbounded_String ("src/maps/") & Level_Name &
            To_Unbounded_String (".map");
          --  Name line
-         Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
+--           Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
          Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map);
          --  Properties and characters are loaded by Load_Maps
          Projectile_Manager.Init;
@@ -289,7 +284,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       end if;
 
       --  initiate main menu loop
-      Put_Line ("Main_Loop.Setup initiate main menu loop");
       MMenu.Start_Mmenu_Title_Bounce;
       Utilities.Clear_Background_Colour_And_Depth (Black);
 
@@ -300,7 +294,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Last_Time := GL_Utils.Get_Elapsed_Seconds;
       GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
                               Settings.Framebuffer_Height);
-      Put_Line ("Main_Loop.Setup Viewport set");
       while Mmenu_Open and Is_Running loop
          Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
@@ -350,6 +343,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             raise Update_Exception with
               "Update_Logic_Steps, error updating props";
          end if;
+
          Projectile_Manager.Update_Projectiles (Logic_Step_Seconds);
          Time_Step := Time_Step + 1;
          Accum_Time := Accum_Time + Logic_Step_Seconds;

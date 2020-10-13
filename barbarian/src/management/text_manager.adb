@@ -104,11 +104,6 @@ package body Text_Manager is
          end;
       end loop;
 
-   exception
-      when anError : others =>
-         Put_Line
-           ("An exception occurred in Text_Manager.Preload_Comic_Texts!");
-         Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Preload_Comic_Texts;
 
    --  ----------------------------------------------------------------------------
