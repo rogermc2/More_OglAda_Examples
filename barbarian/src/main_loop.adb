@@ -135,6 +135,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                            Is_Running             : in out Boolean) is
       use Glfw.Input.Keys;
       use Maths.Single_Math_Functions;
+      use Input_Handler;
       Current_Time  : Float := 0.0;
       Elapsed_Time  : Float;
       b             : GL.Types.Single := 0.0;
@@ -155,7 +156,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
             Utilities.Clear_Background_Colour_And_Depth (Colour);
          else
             Utilities.Clear_Background_Colour_And_Depth (Black);
---              Game_Utils.Game_Log ("Main_Loop.Introduction Draw_Title_Only");
+            --              Game_Utils.Game_Log ("Main_Loop.Introduction Draw_Title_Only");
             MMenu.Draw_Title_Only;
          end if;
          GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
@@ -163,12 +164,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
 
          Game_Camera.Is_Dirty := False;
-         Is_Running := not (Input_Handler.Was_Key_Pressed (Escape) or
-           Input_Handler.Was_Key_Pressed (Space) or
-           Input_Handler.Was_Key_Pressed (Enter) or
-           Input_Handler.Was_OK_Action_Pressed or
-           Input_Handler.Was_Attack_Action_Pressed);
-         --           Game_Utils.Game_Log ("Main_Loop.Introduction Should_Close?");
+         if Was_Key_Pressed (Escape) or
+           Was_Key_Pressed (Space) or
+           Was_Key_Pressed (Enter) or
+           Was_Action_Pressed (OK_Action) or
+           Was_Action_Pressed (Attack_Action) then
+            Is_Running := False;
+         end if;
+
          Window_Closed := Window.Should_Close;
          if Window_Closed then
             Game_Utils.Game_Log ("Window closed by user or system ...exiting");
@@ -240,7 +243,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Map_Path := To_Unbounded_String ("src/maps/") & Level_Name &
            To_Unbounded_String (".map");
          --  Name line
---           Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
+         --           Game_Utils.Game_Log ("Opening map file " & To_String (Map_Path));
          Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map);
          --  Properties and characters are loaded by Load_Maps
          Projectile_Manager.Init;
@@ -261,15 +264,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Setup (Window     : in out Glfw.Windows.Window;
-                    Is_Running : in out Boolean) is
+   procedure Main_Setup (Window     : in out Glfw.Windows.Window;
+                         Is_Running : in out Boolean) is
       Width        : GL.Types.Single;
       Height       : GL.Types.Single;
       Current_Time : Float := 0.0;
       Delta_Time   : Float := 0.0;
       Flash_Timer  : Float := 0.0;
    begin
-      Game_Utils.Game_Log ("Main_Loop.Setup started");
+      Game_Utils.Game_Log ("Main_Loop.Main_Setup started");
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Width := Single (Window_Width);
       Height := Single (Window_Height);
@@ -317,13 +320,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Is_Running := not Main_Window.Should_Close;
       end loop;
 
-      GUI_Level_Chooser.Init;
+      if Is_Running then
+         GUI_Level_Chooser.Init;
+      end if;
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Main_Loop.Setup.");
+         Put_Line ("An exception occurred in Main_Loop.Main_Setup.");
          raise;
-   end Setup;
+   end Main_Setup;
 
    --  ------------------------------------------------------------------------
 
@@ -363,8 +368,8 @@ begin
    Main_Window.Set_Input_Toggle (Sticky_Keys, True);
    Glfw.Input.Poll_Events;
    Game_Utils.Restart_Game_Log;
-   Setup (Main_Window, Running);
-   Running := not Main_Window.Should_Close;
+   Main_Setup (Main_Window, Running);
+   --     Running := not Main_Window.Should_Close;
    while Running loop
       --  Swap_Buffers first to display background colour on start up.
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
