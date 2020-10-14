@@ -31,18 +31,14 @@ package Input_Handler is
    function Joy_Button_Bindings (Index: Integer) return Integer;
    function Key_Binding (Index: Integer) return Integer;
    function Key_Name (Index: Integer) return Unbounded_String;
+   function Menu_Back_Action return Integer;
    function OK_Action return Integer;
    function Open_Menu_Action return Integer;
    function Num_Actions return Integer;
    procedure Register_Input_Actions;
    function Up_Action return Integer;
    function Was_Action_Pressed (Action : Integer) return Boolean;
-   function Was_Attack_Action_Pressed return Boolean;
    function Was_Key_Pressed (aKey : Key) return Boolean;
-   function Was_Menu_Back_Action_Pressed return Boolean;
-   function Was_OK_Action_Pressed return Boolean;
-   function Was_Open_Menu_Action_Pressed return Boolean;
-
 private
    type Input_State_Data is record
       -- localised name of each key - not supporting wchar_t to protect 256 sz atlas

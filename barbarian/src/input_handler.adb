@@ -204,6 +204,13 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Menu_Back_Action return Integer is
+   begin
+      return Input_Actions.Menu_Back_Action;
+   end Menu_Back_Action;
+
+   --  ------------------------------------------------------------------------
+
    function Num_Actions return Integer is
    begin
       return Input_Actions.Num_Actions;
@@ -370,18 +377,9 @@ package body Input_Handler is
       end if;
 
       --  Joystick not implemented
-      Put_Line ("Input_Handler.Was_Action_Pressed action code: " &
-                  Integer'Image (Action));
       Result := Was_Key_Pressed (Input_Actions.Key_Bindings (Action));
       return Result;
    end Was_Action_Pressed;
-
-   --  ------------------------------------------------------------------------
-
-   function Was_Attack_Action_Pressed return Boolean is
-   begin
-      return Input_Actions.Attack_Action /= 0;
-   end Was_Attack_Action_Pressed;
 
    --  ------------------------------------------------------------------------
 
@@ -394,6 +392,7 @@ package body Input_Handler is
            "Input_Handler.Was_Key_Pressed, invalid key code " &
            Integer'Image (Key_Val) & " detected.";
       end if;
+
       Pressed := Input_State.Keys_Down (Key_Val) and
         not Input_State.Keys_Locked (Key_Val);
       if Pressed then
@@ -401,27 +400,6 @@ package body Input_Handler is
       end if;
       return Pressed;
    end Was_Key_Pressed;
-
-   --  ------------------------------------------------------------------------
-
-   function Was_Menu_Back_Action_Pressed return Boolean is
-   begin
-      return Input_Actions.Menu_Back_Action /= 0;
-   end Was_Menu_Back_Action_Pressed;
-
-   --  ------------------------------------------------------------------------
-
-   function Was_OK_Action_Pressed return Boolean is
-   begin
-      return Input_Actions.Ok_Action /= 0;
-   end Was_OK_Action_Pressed;
-
-   --  ------------------------------------------------------------------------
-
-   function Was_Open_Menu_Action_Pressed return Boolean is
-   begin
-      return Input_Actions.Open_Menu_Action /= 0;
-   end Was_Open_Menu_Action_Pressed;
 
    --  ------------------------------------------------------------------------
 

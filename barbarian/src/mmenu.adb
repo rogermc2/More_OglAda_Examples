@@ -683,14 +683,14 @@ package body MMenu is
          Result := Mmenu_Gr_Open;
          if Result then
             Result := Was_Key_Pressed (Escape) or
-              Was_Open_Menu_Action_Pressed or
-              Was_Menu_Back_Action_Pressed;
+              Was_Action_Pressed (Open_Menu_Action) or
+              Was_Action_Pressed (Menu_Back_Action);
             if Result then
                Mmenu_Gr_Open := False;
             else
                Result := Was_Key_Pressed (Enter) or
-                 Was_Ok_Action_Pressed or
-                 Was_Attack_Action_Pressed;
+                 Was_Action_Pressed (OK_Action) or
+                 Was_Action_Pressed (Attack_Action);
                if Result then
                   case Cursor_Current_Item is
                      when 0 => null;
