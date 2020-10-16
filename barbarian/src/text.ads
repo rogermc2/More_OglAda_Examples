@@ -5,14 +5,16 @@ with GL.Types.Colors;
 package Text is
 
    Text_Exception : Exception;
+
    function Add_Text (theText                          : String;
-                      X, Y, Size_In_Pixels, R, G, B, A : Single) return Integer;
+                      X, Y, Size_In_Pixels, R, G, B, A : Single) return Positive;
    procedure Centre_Text (ID : Positive; X, Y : Single);
    procedure Change_Text_Colour (ID : Positive; R, G, B, A : Single);
    function Create_Text_Box (Text                    : String; Font_ID  : Integer;
                              X_Min, Y_Min, Scale     : Single;
                              Text_Colour, Box_Colour : GL.Types.Colors.Color)
-                             return Integer;
+                             return Positive;
+   procedure Draw_Text (Text_Index : Positive);
    procedure Init_Comic_Texts;
    procedure Init_Particle_Texts;
    procedure Init_Text_Rendering
@@ -21,6 +23,7 @@ package Text is
    function Is_Text_ID_Valid (ID          : Positive; File_Name : String;
                               Line_Number : Integer) return Boolean;
    procedure Move_Text (ID : Positive; X, Y : Single);
+   function Number_Render_Strings return Integer;
    procedure Set_Text_Visible (ID : Positive; Visible : Boolean);
    procedure Update_Text (ID : Positive; aString : String);
 

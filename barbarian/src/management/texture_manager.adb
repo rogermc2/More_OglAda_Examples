@@ -50,7 +50,7 @@ package body Texture_Manager is
       if not OK then
          raise Texture_Exception with
            "Texture.Bind_Texture, active texture unit number for binding "
-           & "is high:" & Natural'Image (Slot);
+           & "is too high:" & Natural'Image (Slot);
       elsif not Is_Bound (Slot) then
          Set_Active_Unit (GL.Types.Int (Slot));
          Texture_2D.Bind (Tex);

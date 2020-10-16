@@ -15,7 +15,9 @@ with GL.Types; use GL.Types;
 with Maths;
 
 --  with Attributes;
+with Controller_Textures_Manager;
 with Game_Utils;
+with GL_Maths;
 with GL_Utils;
 with GUI_Atlas_Shader_Manager;
 with Health_Shader_Manager;
@@ -27,11 +29,10 @@ with Texture_Manager;
 
 package body GUI is
 
-   type Boolean_Array is array (GL.Types.Int range <>) of Boolean;
-   type Texture_Array is array (GL.Types.Int range <>) of
+   type Boolean_Array is array (Integer range <>) of Boolean;
+   type Texture_Array is array (Integer range <>) of
      GL.Objects.Textures.Texture;
 
-   --      Num_Steam_Controller_Images : constant Integer := 43;
    type GUI_Icon_Data is record
       XY_Position       : Single_Array (1 .. 6) := (others => 0.0);
       Anim_Countdowns   : Single_Array (1 .. 3) := (others => 0.0);
@@ -40,11 +41,11 @@ package body GUI is
 
    type Controller_Button_Overlays_Data is record
       --  temporary values for each of 3 positions
-      In_Use        : Boolean_Array (1 .. 3) := (False, False, False);
-      Textures      : Texture_Array (1 .. 3);
-      Life_Time     : Single_Array (1 .. 3) := (0.0, 0.0, 0.0);
-      --          Loaded_Glyphs_IDs : Integer_Array (1 .. Num_Steam_Controller_Images)
-      --            := (others => 0);
+      In_Use            : Boolean_Array (1 .. 3) := (False, False, False);
+      Textures          : Texture_Array (1 .. 3);
+      Life_Time         : Single_Array (1 .. 3) := (0.0, 0.0, 0.0);
+      Loaded_Glyphs_IDs : Texture_Array
+        (1 .. Controller_Textures_Manager.Num_Steam_Controller_Images);
    end record;
 
    --   Absolute pixel sizes of gui elements
@@ -146,20 +147,20 @@ package body GUI is
       GL.Objects.Vertex_Arrays.Bind (VAO_Quad_Tristrip);
       GL.Objects.Textures.Set_Active_Unit (0);
 
-      for index in Int range 1 .. 3 loop
+      for index in 1 .. 3 loop
          if Control_Button_Overlays.In_Use (index) then
-            Control_Button_Overlays.Life_Time (index) :=
-              Control_Button_Overlays.Life_Time (index) + Single (Elapsed);
-            if Control_Button_Overlays.Life_Time (index) >
+            Control_Button_Overlays.Life_Time (Int (index)) :=
+              Control_Button_Overlays.Life_Time (Int (index)) + Single (Elapsed);
+            if Control_Button_Overlays.Life_Time (Int (index)) >
               Seconds_To_Show_Controller_Glyphs then
                Control_Button_Overlays.In_Use (index) := False;
             else
                M_Matrix := Maths.Translation_Matrix
-                 ((X (X_GL_Index (index)), Y, 0.0)) *
+                 ((X (X_GL_Index (Int (index))), Y, 0.0)) *
                    Maths.Scaling_Matrix ((Scale_X, Scale_Y, 1.0));
                Image_Panel_Shader_Manager.Set_Model_Matrix (M_Matrix);
                GL.Objects.Textures.Targets.Texture_2D.Bind
-                 (Control_Button_Overlays.Textures (Int (index)));
+                 (Control_Button_Overlays.Textures (index));
                GL.Objects.Vertex_Arrays.Draw_Arrays
                  (GL.Types.Triangle_Strip, 0, 4);
                GL_Utils.Update_Batch_Count (1);
@@ -171,6 +172,7 @@ package body GUI is
       Enable (Depth_Test);
       Disable (Blend);
       GL.Culling.Set_Front_Face (GL.Types.Counter_Clockwise);
+
    end Draw_Controller_Button_Overlays;
 
    --  -------------------------------------------------------------------------
@@ -350,6 +352,31 @@ package body GUI is
    --          Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
    --          GUI_Icons.Anim_Countdowns (3) := 1.0;
    --      end Set_GUI_Kills;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Show_Controller_Button_Overlay (Tex_Index, Pos_Index : in out Integer) is
+   begin
+      if Pos_Index < 1 or Pos_Index > 3 then
+         Game_Utils.Game_Log ("GUI.Show_Controller_Button_Overlay, WARNING: " &
+                              "gui overlay pos_idx " & Integer'Image (Pos_Index)
+                              & " is invalid.");
+         Pos_Index := 2;
+      end if;
+      if Tex_Index < 1 or
+        Tex_Index > Controller_Textures_Manager.Num_Steam_Controller_Images then
+         Game_Utils.Game_Log
+           ("GUI.Show_Controller_Button_Overlay, WARNING: controller glyph texture index "
+              & Integer'Image (Tex_Index) & " is invalid.");
+         Tex_Index := 1;
+      end if;
+
+      Control_Button_Overlays.In_Use (Pos_Index) := True;
+      Control_Button_Overlays.Life_Time (Int (Pos_Index)) := 0.0;
+      Control_Button_Overlays.Textures (Pos_Index) :=
+      Control_Button_Overlays.Loaded_Glyphs_IDs (Tex_Index);
+
+   end Show_Controller_Button_Overlay;
 
    --  ----------------------------------------------------------------------------
 

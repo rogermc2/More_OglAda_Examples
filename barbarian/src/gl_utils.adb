@@ -23,7 +23,7 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
-   procedure Bind_VAO (VAO : GL.Objects.Vertex_Arrays.Vertex_Array_Object) is
+   procedure Bind_VAO (VAO : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object) is
    begin
       VAO.Bind;
       Bound_VAO := VAO;
@@ -76,26 +76,6 @@ package body GL_Utils is
    end Current_Program;
 
    --  ------------------------------------------------------------------------
-
-   procedure Draw_Triangles (Number : GL.Types.Int) is
-      use GL.Types;
-   begin
-      GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, Number);
-      Statistics.Vertex_Count := Statistics.Vertex_Count + Number;
-      Statistics.Batch_Count := Statistics.Batch_Count + 1;
-   end Draw_Triangles;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Draw_Triangle_Strip (Number : GL.Types.Int) is
-      use GL.Types;
-   begin
-      GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangle_Strip, 0, Number);
-      Statistics.Vertex_Count := Statistics.Vertex_Count + Number;
-      Statistics.Batch_Count := Statistics.Batch_Count + 1;
-   end Draw_Triangle_Strip;
-
-   --  -----------------------------------------------------------------------
 
    function Get_Elapsed_Seconds return float is
       Elapsed : constant Float := Float (Glfw.Time) - Previous_Seconds;

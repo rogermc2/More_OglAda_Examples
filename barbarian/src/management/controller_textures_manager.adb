@@ -9,8 +9,6 @@ with Texture_Manager;
 
 package body Controller_Textures_Manager is
 
-   Num_Steam_Controller_Images : constant Integer := 43;
-
    type Glyph_Ids is array (1 .. Num_Steam_Controller_Images) of
      GL.Objects.Textures.Texture;
    type Controller_Button_Overlays is record

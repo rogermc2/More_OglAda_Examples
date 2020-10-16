@@ -39,10 +39,10 @@ package body MMenu is
    --  for text to start
    Mmenu_Big_Text_Sz  : constant Single := 80.0;  -- height of subseq lines to
    --  offset below that
-   CRLF  : constant String := ASCII.LF & ASCII.CR;
-   CRLF2 : constant String := CRLF & CRLF;
-   CRLF3 : constant String := CRLF2 & CRLF;
-   CRLF4 : constant String := CRLF2 & CRLF2;
+   CRLF               : constant String := ASCII.LF & ASCII.CR;
+   CRLF2              : constant String := CRLF & CRLF;
+   CRLF3              : constant String := CRLF2 & CRLF;
+   CRLF4              : constant String := CRLF2 & CRLF2;
 
    End_Story_String : constant String :=
                         "crongdor glanced back at the temple" & CRLF2 &
@@ -74,40 +74,40 @@ package body MMenu is
    Mmenu_End_Story_Open                    : Boolean := False;
    Mmenu_Gr_Open                           : Boolean := False;
 
-   Enabled_Strings                         : array (1 .. 2) of Unbounded_String
+   Enabled_Strings                                 : array (1 .. 2) of Unbounded_String
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
-   Tex_Filter_Strings                         : array (1 .. 3) of Unbounded_String
+   Tex_Filter_Strings                              : array (1 .. 3) of Unbounded_String
      := (To_Unbounded_String ( "nearest"), To_Unbounded_String ("bilinear"),
          To_Unbounded_String ("trilinear"));
-   Menu_Text                               : GL_Maths.Integer_Array
+   Menu_Text                                       : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
-   Graphics_Text                           : GL_Maths.Integer_Array
+   Graphics_Text                                   : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Graphic_Value_Strings                   : array (1 .. Menu_Strings.Num_Graphic_Entries)
+   Graphic_Value_Strings                           : array (1 .. Menu_Strings.Num_Graphic_Entries)
      of Unbounded_String := (others => To_Unbounded_String (""));
-   Graphic_Value_Text                      : GL_Maths.Integer_Array
+   Graphic_Value_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Cal_KB_Text                             : GL_Maths.Integer_Array
+   Cal_KB_Text                                     : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Cal_GP_Text                             : GL_Maths.Integer_Array
+   Cal_GP_Text                                     : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Axis_Binding_Text                      : GL_Maths.Integer_Array
+   GP_Axis_Binding_Text                            : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Buttons_Binding_Text                      : GL_Maths.Integer_Array
+   GP_Buttons_Binding_Text                         : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Audio_Text                              : GL_Maths.Integer_Array
+   Audio_Text                                      : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Audio_Value_Text                              : GL_Maths.Integer_Array
+   Audio_Value_Text                                : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Input_Text                              : GL_Maths.Integer_Array
+   Input_Text                                      : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Input_Value_Text                              : GL_Maths.Integer_Array
+   Input_Value_Text                                : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Quit_Text                               : GL_Maths.Integer_Array
+   Quit_Text                                       : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
    Confirm_Quit_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
-   KB_Binding_Text                         : GL_Maths.Integer_Array
+   KB_Binding_Text                                 : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
 
    Text_Background_Texture                 : GL.Objects.Textures.Texture;
@@ -198,6 +198,7 @@ package body MMenu is
    --  ------------------------------------------------------------------------
 
    procedure Draw_Title_Only is
+      use GL.Objects.Vertex_Arrays;
       use GL.Types;
       use Singles;
       use Maths;
@@ -210,31 +211,45 @@ package body MMenu is
       Current_Time : constant Single := Single (Glfw.Time);
    begin
       --  Draw cursor skull in background
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
+      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
       GL.Objects.Textures.Targets.Texture_2D.Bind (Title_Skull_Texture);
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
+      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
       Cursor_VAO.Initialize_Id;
       Cursor_VAO.Bind;
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_VAO bound");
-      Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
-      Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
-      Cursor_Shader_Manager.Set_Model_Matrix (M_Matrix);
-      GL_Utils.Draw_Triangles (Int (Cursor_Point_Count));
+      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_VAO bound");
+      GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
+      Cursor_Shader_Manager.Set_Perspective_Matrix (Identity4);
+      Cursor_Shader_Manager.Set_View_Matrix (Identity4);
+      --        Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
+      --        Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
+      Cursor_Shader_Manager.Set_Model_Matrix (Identity4);
+      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_Point_Count" &
+      --                            Integer'Image (Cursor_Point_Count));
+      Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
 
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
+      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
       --  3D title
-      Title_Shader_Manager.Set_View_Matrix (Title_V);
-      Title_Shader_Manager.Set_Model_Matrix (Title_Matrix);
-      Title_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
+      GL.Objects.Programs.Use_Program (Title_Shader_Program);
+      --        Title_Shader_Manager.Set_View_Matrix (Title_V);
+      --        Title_Shader_Manager.Set_Model_Matrix (Title_Matrix);
+      --        Title_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
+      Title_Shader_Manager.Set_View_Matrix (Identity4);
+      Title_Shader_Manager.Set_Model_Matrix (Identity4);
+      Title_Shader_Manager.Set_Perspective_Matrix (Identity4);
       Title_Shader_Manager.Set_Time (Current_Time);
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize VAO");
+      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize VAO");
       Title_VAO.Initialize_Id;
       Title_VAO.Bind;
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Draw_Triangles");
-      GL_Utils.Draw_Triangles (Int (Title_Point_Count));
+--        Draw_Arrays (Triangles, 0, int (Title_Point_Count));
 
       --  Draw library logos and stuff
-      --  Later
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Title_Author_Text, Text_Index"
+--                            & Integer'Image (Title_Author_Text));
+      Text.Draw_Text (Title_Author_Text);
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Title_Buildstamp_Text, Text_Index"
+--                            & Integer'Image (Title_Buildstamp_Text));
+      Text.Draw_Text (Title_Buildstamp_Text);
+
    end Draw_Title_Only;
 
    --  ------------------------------------------------------------------------
@@ -497,12 +512,12 @@ package body MMenu is
             Text.Set_Text_Visible (Cal_GP_Text (index), False);
          end if;
 
-            K_Index := Input_Handler.Key_Binding (index);
-            if K_Index < 0 or K_Index >= Input_Handler.Max_Keys then
-               raise Mmenu_Exception with
-                 "Mmenu.Init_Input_Actions, invalid key code " &
-                 Integer'Image (K_Index) & " detected.";
-            end if;
+         K_Index := Input_Handler.Key_Binding (index);
+         if K_Index < 0 or K_Index >= Input_Handler.Max_Keys then
+            raise Mmenu_Exception with
+              "Mmenu.Init_Input_Actions, invalid key code " &
+              Integer'Image (K_Index) & " detected.";
+         end if;
 
          if To_String (Input_Handler.Key_Name (index)) /= "" then
             KB_Binding_Text (index) :=

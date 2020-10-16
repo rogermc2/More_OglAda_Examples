@@ -2,13 +2,18 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Shaders;
+with Maths;
 with Program_Loader;
+with Utilities;
 
 with Shader_Attributes;
 
 package body Text_Shader_Manager is
+   use GL.Uniforms;
 
-   Text_Uniforms : Shader_Uniforms;
+   Position_ID    : Uniform := -1;
+   Text_Colour_ID : Uniform := -1;
+   Texture_ID     : Uniform := -1;
 
    procedure Init (Shader_Program : in out GL.Objects.Programs.Program) is
       use GL.Objects.Programs;
@@ -22,37 +27,37 @@ package body Text_Shader_Manager is
       Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
       Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VT, "vt");
 
-      Text_Uniforms.Position_ID :=
-        Uniform_Location (Shader_Program, "pos");
-      Text_Uniforms.Text_Colour_ID :=
-          Uniform_Location (Shader_Program, "text_colour");
-      Text_Uniforms.Texture_ID := Uniform_Location (Shader_Program, "tex");
+      Use_Program (Shader_Program);
+      Position_ID := Uniform_Location (Shader_Program, "pos");
+      Text_Colour_ID := Uniform_Location (Shader_Program, "text_colour");
+      Texture_ID := Uniform_Location (Shader_Program, "tex");
 
-   exception
-      when others =>
-         Put_Line ("An exception occurred in Text_Shader_Manager.Init.");
-         raise;
+--        Utilities.Show_Shader_Program_Data (Shader_Program);
+      GL.Uniforms.Set_Single (Position_ID, Maths.Vec2_0);
+      GL.Uniforms.Set_Single (Text_Colour_ID, Maths.Vec4_0);
+      GL.Uniforms.Set_Int (Texture_ID, 0);
+
    end Init;
 
-  --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    procedure Set_Text_Colour_ID (Colour : Singles.Vector4) is
    begin
-      GL.Uniforms.Set_Single (Text_Uniforms.Position_ID, Colour);
+      GL.Uniforms.Set_Single (Text_Colour_ID, Colour);
    end Set_Text_Colour_ID;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Position_ID (Position : Singles.Vector2) is
    begin
-      GL.Uniforms.Set_Single (Text_Uniforms.Position_ID, Position);
+      GL.Uniforms.Set_Single (Position_ID, Position);
    end Set_Position_ID;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Texture_Unit (Texture_Unit : Int) is
    begin
-      GL.Uniforms.Set_Int (Text_Uniforms.Texture_ID, Texture_Unit);
+      GL.Uniforms.Set_Int (Texture_ID, Texture_Unit);
    end Set_Texture_Unit;
 
    --  -------------------------------------------------------------------------
