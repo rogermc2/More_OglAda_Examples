@@ -1,24 +1,38 @@
 
 with Ada.Containers.Vectors;
+with Ada.Strings.Unbounded; use  Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
+with GL.Blending;
+with GL.Buffers;
 with GL.Images;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures;
+with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Pixels;
+with GL.Toggles;
 
 with Utilities;
 
 with Game_Utils;
+with GL_Utils;
 with Font_Metadata_Manager;
 with Shader_Attributes;
 with Text_Box_Shader_Manager;
 with Text_Shader_Manager;
+with Texture_Manager;
 
 package body Text is
+
+   type Particle_Text_Data is record
+      Countdown : Float := 0.0;
+      Colour    : Singles.Vector4 := (0.0, 0.0, 0.0, 0.0);
+      World_Pos : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Text_ID   : Integer := 0;
+   end record;
 
    type Renderable_Text is record
       VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -33,16 +47,24 @@ package body Text is
       Green          : Single := 0.0;
       Blue           : Single := 0.0;
       A              : Single := 0.0;
-      Point_Count    : Integer := 0;
+      Point_Count    : Int := 0;
       Visible        : Boolean := False;
+      Has_Box        : Boolean := False;
+      Was_Triggered  : Boolean := False;
+      Box_Colour     : Colors.Color := (0.0, 0.0, 0.0, 0.0);
    end record;
 
    package Renderable_Texts_Package is new Ada.Containers.Vectors
      (Positive, Renderable_Text);
    type Renderable_Text_List is new Renderable_Texts_Package.Vector with null record;
 
-   Atlas_Cols                      : constant Integer := 16;
-   Atlas_Rows                      : constant Integer := 16;
+   Max_Particle_Texts : constant Integer := 8;
+   Atlas_Cols         : constant Integer := 16;
+   Atlas_Rows         : constant Integer := 16;
+   Comic_Texts        : array (1 .. 8) of Integer;
+   Particle_Texts     : array (1 .. Max_Particle_Texts) of Particle_Text_Data;
+
+   --     Max_Strings          : constant Integer := 256;
    --      MAX_POPUP_TEXTS                 : constant Integer := 128;
    --      MAX_PARTICLE_TEXTS              : constant Integer := 8;
    --      COMIC_TEXT_FULL_COLOUR_TIME     : constant Float := 3.0;
@@ -51,42 +73,49 @@ package body Text is
    --      PARTICLE_TEXT_TIME              : constant Float := 0.25;
    --      PARTICLE_TEXT_SPEED             : constant Float := 5.0;
 
-   Font_Shader                     : GL.Objects.Programs.Program;
-   Font_Texture                    : GL.Objects.Textures.Texture;
-   Text_Box_Shader                 : GL.Objects.Programs.Program;
-   Text_Box_VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Renderable_Texts                : Renderable_Text_List;
-   Font_Viewport_Width             : GL.Types.Int := 0;
-   Font_Viewport_Height            : GL.Types.Int := 0;
-   Num_Render_Strings              : Integer := 0;
+   Font_Shader          : GL.Objects.Programs.Program;
+   Font_Texture         : GL.Objects.Textures.Texture;
+   Text_Box_Shader      : GL.Objects.Programs.Program;
+   Text_Box_VAO         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Text_Box_Points      : constant GL.Types.Singles.Vector2_Array (1 .. 4) :=
+                            ((0.0, 0.0),
+                             (0.0, -1.0),
+                             (1.0,  0.0),
+                             (1.0, -1.0));
+   Renderable_Texts     : Renderable_Text_List;
+   Font_Viewport_Width  : Int := 0;
+   Font_Viewport_Height : Int := 0;
+   Num_Render_Strings   : Integer := 0;
 
-   Glyphs : Font_Metadata_Manager.Glyph_Array;
+   Glyphs               : Font_Metadata_Manager.Glyph_Array;
 
    procedure Load_Font (Atlas_Image, Atlas_Metadata : String);
-   procedure Text_To_VBO (theText        : String; Scale_Px : GL.Types.Single;
+   procedure Text_To_VBO (theText        : String;
+                          Glyph_Size_Px  : Single;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
                           Tex_Coords_VBO : in out GL.Objects.Buffers.Buffer;
-                          Point_Count    : in out Integer;
-                          Br_X, Br_Y     : in out GL.Types.Single);
+                          Point_Count    : in out Int;
+                          Br_X, Br_Y     : in out Single);
+   procedure Validate_Text_ID (Text_Index : Positive);
 
    --  ------------------------------------------------------------------------
    --  Add_Text adds a string of text to render on-screen
-   --  returns an integer to identify it with later if we want to change the text
-   --  returns <0 on error
+   --  returns an integer to identify it with later to change the text
    --  x,y are position of the bottom-left of the first character in clip space
    --  size_is_px is the size of maximum-sized glyph in pixels on screen
    --  r, g, b, a is the colour of the text string
    function Add_Text (theText                          : String;
-                      X, Y, Size_In_Pixels, R, G, B, A : Single) return Integer is
+                      X, Y, Size_In_Pixels, R, G, B, A : Single) return Positive is
       use GL.Objects.Buffers;
       use GL.Types;
       use Shader_Attributes;
       R_Text            : Renderable_Text;
-      Point_Count       : Integer := 0;
       BR_X              : Single := 0.0;
       BR_Y              : Single := 0.0;
    begin
---        Put_Line ("Text.Add_Text theText: " & theText);
+      --        Put_Line ("Text.Add_Text theText: " & theText);
+      R_Text.VAO.Initialize_Id;
+      R_Text.VAO.Bind;
       R_Text.Visible := True;
       R_Text.Top_Left_X := X;
       R_Text.Top_Left_Y := Y;
@@ -97,12 +126,10 @@ package body Text is
       R_Text.A := A;
       R_Text.Points_VBO.Initialize_Id;
       R_Text.Tex_Coords_VBO.Initialize_Id;
+      R_Text.Point_Count := 0;
 
       Text_To_VBO (theText, Size_In_Pixels, R_Text.Points_VBO,
-                   R_Text.Tex_Coords_VBO, Point_Count, BR_X, BR_Y);
---        Put_Line ("Text.Add_Text R_Text.VAO.Initialize_Id.");
-      R_Text.VAO.Initialize_Id;
-      R_Text.VAO.Bind;
+                   R_Text.Tex_Coords_VBO, R_Text.Point_Count, BR_X, BR_Y);
 
       Array_Buffer.Bind (R_Text.Points_VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type,
@@ -114,20 +141,15 @@ package body Text is
                                                False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VT);
 
-      R_Text.Red := R;
-      R_Text.Green := G;
-      R_Text.Blue := B;
-      R_Text.A := A;
-
       Renderable_Texts.Append (R_Text);
-      Num_Render_Strings := Integer (Renderable_Texts.Length);
+      Num_Render_Strings := Integer (Renderable_Texts.Last_Index);
       return Renderable_Texts.Last_Index;
 
    exception
       when others =>
          Put_Line ("An exception occurred in Text.Add_Text.");
          raise;
-         return -1;
+         return Renderable_Texts.Last_Index;
    end Add_Text;
 
    --  ------------------------------------------------------------------------
@@ -188,27 +210,132 @@ package body Text is
    function Create_Text_Box (Text                    : String; Font_ID  : Integer;
                              X_Min, Y_Min, Scale     : Single;
                              Text_Colour, Box_Colour : GL.Types.Colors.Color)
-                             return Integer is
+                             return Positive is
       use GL.Types.Colors;
-      Text_Index : Integer :=
+      Text_Index : constant Positive :=
                      Add_Text (Text, X_Min, Y_Min, Scale, Text_Colour (R),
                                Text_Colour (G), Text_Colour (B), Text_Colour (A));
+      R_Text     : Renderable_Text := Renderable_Texts.Element (Text_Index);
    begin
+      R_Text.Box_Colour := Box_Colour;
+      R_Text.Has_Box := True;
+      Renderable_Texts.Replace_Element (Text_Index, R_Text);
       return Text_Index;
+
    end Create_Text_Box;
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Comic_Texts is
+   procedure Draw_Text (Text_Index : Positive) is
+      use GL.Blending;
+      use GL.Objects.Buffers;
+      use GL.Objects.Textures;
+      use GL.Toggles;
+      use Renderable_Texts_Package;
+      use Shader_Attributes;
+      theText : Renderable_Text;
+      SX      : Single;
+      SY      : Single;
+      Back    : constant GL.Types.Colors.Basic_Color := (0.6, 0.6, 0.6);
    begin
-      null;
+      Validate_Text_ID (Text_Index);
+      Disable (Depth_Test);
+      GL.Blending.Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
+      Enable (Blend);
+
+--        Game_Utils.Game_Log ("Text.Draw_Text Text_Index: " &
+--                            Positive'Image (Text_Index));
+      theText := Renderable_Texts.Element (Text_Index);
+      theText.Visible := True;
+      if not theText.Points_VBO.Initialized then
+         raise Text_Exception with
+         "Text.Draw_Text the Points_VBO is invalid.";
+      end if;
+      --        Put_Line ("Text.Draw_Text theText.Size_Px"  & Single'Image (theText.Size_Px));
+      if theText.Has_Box then
+         SX := Single (theText.Bottom_Right_X + 0.05);
+         SY := Single (-theText.Bottom_Right_Y + 0.05);
+
+         Game_Utils.Game_Log ("Text.Draw_Text Text_Box_Shader");
+         GL.Objects.Programs.Use_Program (Text_Box_Shader);
+         Text_Box_Shader_Manager.Set_Scale ((SX, SY));
+         Text_Box_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.025,
+                                                  theText.Top_Left_Y + 0.025));
+         Text_Box_Shader_Manager.Set_Colour_ID (theText.Box_Colour);
+
+         GL_Utils.Bind_VAO (Text_Box_VAO);
+         GL.Objects.Vertex_Arrays.Draw_Arrays (Triangle_Strip_Adjacency, 0, 4);
+
+      end if;
+
+      if not Is_Texture (Font_Texture.Raw_Id) or else
+        not Font_Texture.Initialized then
+         raise Text_Exception with
+           "Text.Draw_Text, invalid font texture";
+      end if;
+
+      GL.Objects.Programs.Use_Program (Font_Shader);
+      --        Text_Shader_Manager.Set_Position_ID ((0.0, 0.2));
+      Text_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.95,
+                                           theText.Top_Left_Y + 0.4));
+--        Text_Shader_Manager.Set_Text_Colour_ID ((1.0, 0.0, 0.0, 1.0));
+      Text_Shader_Manager.Set_Text_Colour_ID ((theText.Red, theText.Green,
+                                               theText.Blue, theText.A));
+
+      theText.VAO.Initialize_Id;
+      GL_Utils.Bind_VAO (theText.VAO);
+
+--        Texture_Manager.Bind_Texture (0, Font_Texture);
+      Text_Shader_Manager.Set_Texture_Unit (0);
+      Targets.Texture_2D.Bind (Font_Texture);
+
+      GL.Objects.Buffers.Array_Buffer.Bind (theText.Points_VBO);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type,
+                                               False, 0, 0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VP);
+
+      GL.Objects.Buffers.Array_Buffer.Bind (theText.Tex_Coords_VBO);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VT, 2, Single_Type,
+                                               False, 0, 0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VT);
+
+--        Enable (GL.Toggles.Vertex_Program_Point_Size);
+--        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 600);
+      GL.Objects.Vertex_Arrays.Draw_Arrays
+        (Triangles, 0, Int (theText.Point_Count));
+
+      Enable (Depth_Test);
+      Disable (Blend);
+
+   end Draw_Text;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Init_Comic_Texts is
+
+      X           : Single_Array (1 .. 8) := (-0.8, -0.6, -0.2, -0.9, -0.8, -0.6, -0.4, -0.7);
+      Y           : Single_Array (1 .. 8) := (-0.6, -0.4, 0.4, 0.6, 0.4, 0.6, -0.6, -0.4);
+      Scale       : Single := 17.5;
+      Text_Colour : Colors.Color := (0.0, 0.0, 0.0, 1.0);
+      Box_Colour  : Colors.Color := (0.8, 0.8, 0.8, 1.0);
+   begin
+      for index in 1 .. 8 loop
+         Comic_Texts (index) :=
+           Create_Text_Box ("text " & Integer'Image (index), 0, X (Int (index)),
+                            Y (Int (index)), Scale, Text_Colour, Box_Colour);
+         Set_Text_Visible (Comic_Texts (index), False);
+      end loop;
    end Init_Comic_Texts;
 
    --  ------------------------------------------------------------------------
 
    procedure Init_Particle_Texts is
    begin
-      null;
+      for index in 1 .. Max_Particle_Texts loop
+         Particle_Texts (index).Text_ID :=
+           Add_Text ("text", 0.0, 0.0, 20.0, 1.0, 1.0, 1.0, 1.0);
+         Set_Text_Visible (Particle_Texts (index).Text_ID, False);
+      end loop;
    end Init_Particle_Texts;
 
    --  ------------------------------------------------------------------------
@@ -218,19 +345,21 @@ package body Text is
       Viewport_Width, Viewport_Height     : GL.Types.Int) is
       TB_Points_VBO : GL.Objects.Buffers.Buffer;
    begin
-      Game_Utils.Game_Log ("Initialising text rendering");
+      Game_Utils.Game_Log ("Text.Init_Text_Rendering initialising text rendering for " & Font_image_File);
       Font_Viewport_Width := Viewport_Width;
       Font_Viewport_Height := Viewport_Height;
       Create_Font_Shaders;
       Load_Font (Font_image_File, Font_Metadata_File);
       Text_Box_VAO.Initialize_Id;
       Text_Box_VAO.Bind;
-      TB_Points_VBO.Initialize_Id;
+
+      TB_Points_VBO := GL_Utils.Create_2D_VBO (Text_Box_Points);
       GL.Objects.Buffers.Array_Buffer.Bind (TB_Points_VBO);
-      GL.Attributes.Enable_Vertex_Attrib_Array (1);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+
       GL.Attributes.Set_Vertex_Attrib_Pointer
-        (1, 2, GL.Types.Single_Type, False, 0, 0);
-      Game_Utils.Game_Log ("Text initialised");
+        (Shader_Attributes.Attrib_VP, 2, GL.Types.Single_Type, False, 0, 0);
+      Game_Utils.Game_Log ("Text initialised for " & Font_image_File);
 
    exception
       when others =>
@@ -280,6 +409,13 @@ package body Text is
 
    --  ------------------------------------------------------------------------
 
+   function Number_Render_Strings return Integer is
+   begin
+      return Num_Render_Strings;
+   end Number_Render_Strings;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Text_Visible (ID : Positive; Visible : Boolean) is
       use Renderable_Texts_Package;
       Curs     : Cursor := Renderable_Texts.First;
@@ -307,36 +443,36 @@ package body Text is
    --  ------------------------------------------------------------------------
    --  Text_To_VBO creates a VBO from a string of text using our font's
    --  glyph sizes to make a set of quads
-   procedure Text_To_VBO (theText        : String; Scale_Px : Single;
+   procedure Text_To_VBO (theText        : String;
+                          Glyph_Size_Px  : Single;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
                           Tex_Coords_VBO : in out GL.Objects.Buffers.Buffer;
-                          Point_Count    : in out Integer;
+                          Point_Count    : in out Int;
                           Br_X, Br_Y     : in out GL.Types.Single) is
       use GL.Objects.Buffers;
       use GL.Types;
-      Scale_Px_S         : constant Single := Single (Scale_Px);
+      Glyph_Size         : constant Single := 2.0 * Single (Glyph_Size_Px);
       Text_Length        : constant Integer := theText'Length;
       Points_Tmp         : Singles.Vector2_Array (1 .. Int (6 * Text_Length));
       Tex_Coords_Tmp     : Singles.Vector2_Array (1 .. Int (6 * Text_Length));
       Atlas_Rows_S       : constant Single := Single (Atlas_Rows);
       Atlas_Cols_S       : constant Single := Single (Atlas_Cols);
-      Font_VP_Height_S   : constant Single := Single (Font_Viewport_Height);
-      Font_VP_Width_S    : constant Single := Single (Font_Viewport_Width);
+      Font_Height        : constant Single := Glyph_Size / Single (Font_Viewport_Height);
+      Font_Width         : constant Single := Glyph_Size / Single (Font_Viewport_Width);
       Line_Offset        : Single := 0.0;
       Current_X          : Single := 0.0;
-      Current_Index      : Int := 0;
-      Current_Index_12   : constant Int := 1;
+      Current_Index_6    : Int := -5;
       Ascii_Code         : Integer;
       Atlas_Col          : Integer;
       Atlas_Row          : Integer;
-      S                  : Single;
-      T                  : Single;
-      X_Pos              : Single;
-      Y_Pos              : Single;
+      S                  : Single := 0.0;
+      T                  : Single := 0.0;
+      X_Pos              : Single := 0.0;
+      Y_Pos              : Single := 0.0;
       Skip_Next          : Boolean := False;
    begin
---        Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
---                              Integer'Image (Text_Length) & ", " & theText);
+      --        Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
+      --                              Integer'Image (Text_Length) & ", " & theText);
       Br_X := 0.0;
       Br_Y := 0.0;
       for index in 1 .. Text_Length loop
@@ -345,76 +481,71 @@ package body Text is
          else
             if index < Text_Length and then
               theText (index .. index + 1) = "\n" then
-               Line_Offset := Line_Offset + 2.0 * Scale_Px_S / Font_VP_Height_S;
+               Line_Offset := Line_Offset +  Font_Height;
                Current_X := 0.0;
                Skip_Next := True;
             else
+               Current_Index_6 := Current_Index_6 + 6;
                Ascii_Code := Character'Pos (theText (index));
                Atlas_Col := (Ascii_Code - Character'Pos (' ')) mod Atlas_Cols;
                Atlas_Row := (Ascii_Code - Character'Pos (' ')) / Atlas_Cols;
                --  work out texture coordinates in atlas
                S := Single (Atlas_Col) * (1.0 / Atlas_Cols_S);
                T := Single (Atlas_Row + 1) * (1.0 / Atlas_Rows_S);
-
                --  Work out position of glyphtriangle_width
                X_Pos := Current_X;
-               Y_Pos := -2.0 * Scale_Px_S / Font_VP_Height_S *
+               Y_Pos := -Font_Height *
                  Font_Metadata_Manager.Y_Offset (Glyphs, Ascii_Code) - Line_Offset;
                --  Move next glyph along to the end of this one
-               if index + 1 < Text_Length then
+               if index < Text_Length then
                   --  Upper-case letters move twice as far
-                  Current_X := Current_X + 2.0 *
-                    Font_Metadata_Manager.Width (Glyphs, Ascii_Code) *
-                    Scale_Px_S / Font_VP_Width_S;
+                  Current_X := Current_X +
+                    Font_Metadata_Manager.Width (Glyphs, Ascii_Code) * Font_Width;
                end if;
-
                -- add 6 points and texture coordinates to buffers for each glyph
-               Points_Tmp (Current_Index_12) := (X_Pos, Y_Pos);
-               Points_Tmp (Current_Index_12 + 1) :=
-                 (X_Pos, Y_Pos - (2.0 * Scale_Px_S) / Font_VP_Height_S);
-               Points_Tmp (Current_Index_12 + 2) :=
-                 (X_Pos + (2.0 * Scale_Px_S) / Font_VP_Width_S,
-                  Y_Pos - (2.0 * Scale_Px_S) / Font_VP_Height_S);
+               Points_Tmp (Current_Index_6) := (X_Pos, Y_Pos);
+               Points_Tmp (Current_Index_6 + 1) := (X_Pos, Y_Pos - Font_Height);
+               Points_Tmp (Current_Index_6 + 2) :=
+                 (X_Pos + Font_Width, Y_Pos - Font_Height);
 
-               Points_Tmp (Current_Index_12 + 3) :=
-                 (X_Pos + (2.0 * Scale_Px_S) / Font_VP_Width_S,
-                  Y_Pos - (2.0 * Scale_Px_S) / Font_VP_Height_S);
-               Points_Tmp (Current_Index_12 + 4) :=
-                 (X_Pos + (2.0 * Scale_Px_S) / Font_VP_Width_S, Y_Pos);
-               Points_Tmp (Current_Index_12 + 5) := (X_Pos, Y_Pos);
+               Points_Tmp (Current_Index_6 + 3) :=
+                 (X_Pos + Font_Width, Y_Pos - Font_Height);
+               Points_Tmp (Current_Index_6 + 4) := (X_Pos + Font_Width, Y_Pos);
+               Points_Tmp (Current_Index_6 + 5) := (X_Pos, Y_Pos);
 
-               Tex_Coords_Tmp (Current_Index_12) :=
+               Tex_Coords_Tmp (Current_Index_6) :=
                  (S, 1.0 - T + 1.0 / Atlas_Rows_S);
-               Tex_Coords_Tmp (Current_Index_12 + 1) := (S,  1.0 - T);
-               Tex_Coords_Tmp (Current_Index_12 + 2) :=
+               Tex_Coords_Tmp (Current_Index_6 + 1) := (S,  1.0 - T);
+               Tex_Coords_Tmp (Current_Index_6 + 2) :=
                  (S + 1.0 / Atlas_Cols_S, 1.0 - T);
 
-               Tex_Coords_Tmp (Current_Index_12 + 3) :=
+               Tex_Coords_Tmp (Current_Index_6 + 3) :=
                  (S + 1.0 / Atlas_Cols_S, 1.0 - T);
-               Tex_Coords_Tmp (Current_Index_12 + 4) :=
+               Tex_Coords_Tmp (Current_Index_6 + 4) :=
                  (S + 1.0 / Atlas_Cols_S,
                   1.0 - T + 1.0 / Atlas_Rows_S);
-               Tex_Coords_Tmp (Current_Index_12 + 5) :=
+               Tex_Coords_Tmp (Current_Index_6 + 5) :=
                  (S, 1.0 - T + 1.0 / Atlas_Rows_S);
 
                --  Update record of bottom-right corner of text area
-               if X_Pos + 2.0 * Scale_Px_S / Font_VP_Width_S > Br_X then
-                  Br_X := X_Pos + 2.0 * Scale_Px_S / Font_VP_Width_S;
+               if X_Pos + Font_Width > Br_X then
+                  Br_X := X_Pos + Font_Width;
                end if;
-               if Y_Pos - 2.0 * Scale_Px_S / Font_VP_Height_S < Br_Y then
-                  Br_Y := Y_Pos - 2.0 * Scale_Px_S / Font_VP_Height_S;
+               if Y_Pos - Font_Height < Br_Y then
+                  Br_Y := Y_Pos - Font_Height;
                end if;
-               Current_Index := Current_Index + 1;
             end if;
          end if;
       end loop;
 
+      --        Utilities.Print_GL_Array2 ("Text.Text_To_VBO Points_Tmp", Points_Tmp);
       Array_Buffer.Bind (Points_VBO);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Points_Tmp, Dynamic_Draw);
 
+      --        Utilities.Print_GL_Array2 ("Text.Text_To_VBO Tex_Coords_Tmp", Tex_Coords_Tmp);
       Array_Buffer.Bind (Tex_Coords_VBO);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Tex_Coords_Tmp, Dynamic_Draw);
-      Point_Count := 6 * Integer (Current_Index);
+      Point_Count := Current_Index_6;
 
    exception
       when others =>
@@ -441,5 +572,15 @@ package body Text is
    end Update_Text;
 
    --  ------------------------------------------------------------------------
+
+   procedure Validate_Text_ID (Text_Index : Positive) is
+   begin
+      if Text_Index > Num_Render_Strings then
+         raise Text_Exception with ("Text.Is_Text_Boolean Text_Index " &
+                                      Integer'Image (Text_Index) & " is invalid.");
+      end if;
+   end Validate_Text_ID;
+
+   --  ----------------------------------------------------------------------------
 
 end Text;

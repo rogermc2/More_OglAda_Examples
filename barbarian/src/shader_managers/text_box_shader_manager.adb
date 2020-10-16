@@ -30,6 +30,7 @@ package body Text_Box_Shader_Manager is
 
       Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
 
+      Use_Program (Shader_Program);
       Text_Box.Colour_ID := Uniform_Location (Shader_Program, "colour");
       Text_Box.Position_ID := Uniform_Location (Shader_Program, "pos");
       Text_Box.Scale_ID := Uniform_Location (Shader_Program, "scale");
@@ -44,9 +45,15 @@ package body Text_Box_Shader_Manager is
 
   --  -------------------------------------------------------------------------
 
-   procedure Set_Colour_ID (Colour : Singles.Vector4) is
+   procedure Set_Colour_ID (Colour : GL.Types.Colors.Color) is
+      use GL.Types.Colors;
+      Col : Singles.Vector4;
    begin
-      GL.Uniforms.Set_Single (Text_Box.Colour_ID, Colour);
+      Col (GL.X) := Colour (R);
+      Col (GL.Y) := Colour (G);
+      Col (GL.Z) := Colour (B);
+      Col (GL.W) := Colour (A);
+      GL.Uniforms.Set_Single (Text_Box.Colour_ID, Col);
    end Set_Colour_ID;
 
    --  -------------------------------------------------------------------------
