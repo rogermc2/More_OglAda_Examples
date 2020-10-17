@@ -1,11 +1,6 @@
-//
-// Crongdor the Barbarian
-// 3d title text shader
-// First version Anton Gerdelan, ? 2014
-// Latest code review 28 Dec 2014
-//
 
 #version 410 core
+
 out vec4 frag_colour;
 
 in vec3 p_loc, n_loc;
@@ -47,4 +42,5 @@ void main ()
 	frag_colour.rgb += vec3 (shinef,shinef,shinef);
 	
 	frag_colour.a = 1.0;
+    frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
     }

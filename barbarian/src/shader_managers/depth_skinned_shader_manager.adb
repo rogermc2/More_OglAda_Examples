@@ -31,8 +31,6 @@ package body Depth_Skinned_Shader_Manager is
         ((Src ("src/shaders_3_2/depth.vert", Vertex_Shader),
          Src ("src/shaders_3_2/depth.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
-
       Render_Uniforms.Bone_Matrices_ID :=
           Uniform_Location (Shader_Program, "bone_matrices");
       Render_Uniforms.Light_Position_ID :=

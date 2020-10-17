@@ -20,8 +20,6 @@ package body Cursor_Shader_Manager is
         ((Src ("src/shaders_3_2/cursor.vert", Vertex_Shader),
          Src ("src/shaders_3_2/cursor.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
-
       Render_Uniforms.Model_Matrix_ID := Uniform_Location (Shader_Program, "M");
       Render_Uniforms.Perspective_Matrix_ID :=
           Uniform_Location (Shader_Program, "P");

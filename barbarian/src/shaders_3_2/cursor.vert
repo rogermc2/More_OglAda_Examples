@@ -3,9 +3,10 @@
 
 #version 410 core
 
-in vec3 vp, vn;
-in vec2 vt;
-in vec4 vtan;
+layout(location = 0) in vec3 vp;
+layout(location = 1) in vec3 vn;
+layout(location = 2) in vec2 vt;
+layout(location = 3) in vec4 vtan;
 
 uniform mat4 P, V, M;
 

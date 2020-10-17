@@ -1,7 +1,7 @@
 
 #version 410 core
 
-in vec3 particle_world_pos;
+layout(location = 0) in vec3 particle_world_pos;
 in float particle_age;
 
 uniform mat4 PV;

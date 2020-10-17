@@ -1,8 +1,8 @@
 
 #version 410 core
 
-in vec3 vp;
-in float bone_id;
+layout(location = 0) in vec3 vp;
+layout(location = 4) in float bone_id;
 
 uniform mat4 P, V, M, bone_matrices[32];
 uniform vec3 light_pos_wor;

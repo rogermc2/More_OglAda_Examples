@@ -3,7 +3,7 @@
 
 #version 410 core
 
-in vec3 vp; // points
+layout(location = 0) in vec3 vp; // points
 
 uniform mat4 PV; // model matrix
 

@@ -1,7 +1,7 @@
 
 #version 410 core
 
-in vec3 vp;
+layout(location = 0) in vec3 vp;
 
 uniform mat4 P, V, M;
 uniform vec3 light_pos_wor;

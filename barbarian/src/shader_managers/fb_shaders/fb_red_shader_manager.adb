@@ -4,9 +4,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Shaders;
 with Program_Loader;
 
-with Game_Utils;
-with Shader_Attributes;
-
 package body FB_Red_Shader_Manager is
 
    Render_Uniforms : Shader_Uniforms;
@@ -20,8 +17,6 @@ package body FB_Red_Shader_Manager is
       Shader_Program := Program_From
         ((Src ("src/shaders_3_2/fb_red.vert", Vertex_Shader),
          Src ("src/shaders_3_2/fb_red.frag", Fragment_Shader)));
-
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
 
       Render_Uniforms.Tex_ID := Uniform_Location (Shader_Program, "Tex");
       Render_Uniforms.Time_ID := Uniform_Location (Shader_Program, "t");

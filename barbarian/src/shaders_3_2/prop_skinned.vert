@@ -1,10 +1,10 @@
 
 #version 410 core
 
-in vec3 vp;
-in vec3 vn;
-in vec2 vt;
-in float bone_id;
+layout(location = 0) in vec3 vp;
+layout(location = 1) in vec3 vn;
+layout(location = 2) in vec2 vt;
+layout(location = 4) in float bone_id;
 
 uniform mat4 P, V, M, bone_matrices[32];
 

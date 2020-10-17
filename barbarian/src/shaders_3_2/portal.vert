@@ -1,14 +1,9 @@
-//
-// Crongdor the Barbarian
-// wobbly portal shader
-// First version Anton Gerdelan, 17 Jan 2015
-// Latest code review
-//
+
 #version 410 core
 
-in vec3 vp; // points
-in vec2 vt; // tex coords
-in vec3 vn; // normals
+layout(location = 0) in vec3 vp; // points
+layout(location = 2) in vec2 vt; // tex coords
+layout(location = 1) in vec3 vn; // normals
 
 uniform mat4 M, V, P;
 

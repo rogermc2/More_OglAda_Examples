@@ -21,8 +21,6 @@ package body Menu_Credits_Shader_Manager is
         ((Src ("src/shaders_3_2/mmenu_credits.vert", Vertex_Shader),
          Src ("src/shaders_3_2/mmenu_credits.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
-
       Render_Uniforms.Position_ID := Uniform_Location (Shader_Program, "pos");
       Render_Uniforms.Scale_ID := Uniform_Location (Shader_Program, "scale");
       Render_Uniforms.Texture_ID := Uniform_Location (Shader_Program, "tex");

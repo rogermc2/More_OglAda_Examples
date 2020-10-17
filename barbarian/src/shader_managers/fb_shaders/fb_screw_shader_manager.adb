@@ -4,9 +4,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Shaders;
 with Program_Loader;
 
-with Game_Utils;
-with Shader_Attributes;
-
 package body FB_Screw_Shader_Manager is
 
    Render_Uniforms : Shader_Uniforms;
@@ -20,8 +17,6 @@ package body FB_Screw_Shader_Manager is
       Shader_Program := Program_From
         ((Src ("src/shaders_3_2/fb_screw.vert", Vertex_Shader),
          Src ("src/shaders_3_2/fb_screw.frag", Fragment_Shader)));
-
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
 
       Render_Uniforms.Force_ID := Uniform_Location (Shader_Program, "f");
       Render_Uniforms.Tex_ID := Uniform_Location (Shader_Program, "Tex");

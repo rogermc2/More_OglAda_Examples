@@ -1,8 +1,8 @@
 
 #version 410 core
 
-in vec2 vp;
-in vec3 vt;
+layout(location = 0) in vec2 vp;
+layout(location = 2) in vec3 vt;
 
 out vec3 st;
 

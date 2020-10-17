@@ -33,8 +33,6 @@ package body Portal_Shader_Manager is
           ((Src ("src/shaders_3_2/portal.vert", Vertex_Shader),
            Src ("src/shaders_3_2/portal.frag", Fragment_Shader)));
 
-        Bind_Attrib_Location (Portal_Shader, Shader_Attributes.Attrib_VP, "vp");
-
         Portal_Uniforms.Perspective_ID := Uniform_Location (Portal_Shader, "P");
         Portal_Uniforms.View_ID := Uniform_Location (Portal_Shader, "V");
         Portal_Uniforms.Model_ID :=  Uniform_Location (Portal_Shader, "M");

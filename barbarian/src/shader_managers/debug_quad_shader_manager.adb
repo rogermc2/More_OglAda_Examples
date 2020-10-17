@@ -21,9 +21,6 @@ package body Debug_Quad_Shader_Manager is
         ((Src ("src/shaders_3_2/debug_quad.vert", Vertex_Shader),
          Src ("src/shaders_3_2/debug_quad.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VT, "vt");
-
       Render_Uniforms.Texture_ID := Uniform_Location (Shader_Program, "tex");
       Use_Program (Shader_Program);
       GL.Uniforms.Set_Int (Render_Uniforms.Texture_ID, 0);

@@ -51,9 +51,6 @@ package body Shader_Manager is
         ((Src ("src/shaders_3_2/fallback_410.vert", Vertex_Shader),
          Src ("src/shaders_3_2/fallback_410.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (SP_Data.Shader_Program,
-                            Shader_Attributes.Attrib_VP, "vp");
-
       SP_Data.Model_Matrix_ID := Uniform_Location (SP_Data.Shader_Program, "M");
       SP_Data.Projection_Matrix_ID := Uniform_Location (SP_Data.Shader_Program, "P");
       SP_Data.View_Matrix_ID := Uniform_Location (SP_Data.Shader_Program, "V");

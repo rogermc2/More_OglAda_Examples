@@ -22,11 +22,6 @@ package body Particle_System_Shader_Manager is
         ((Src ("src/shaders_3_2/basic_particle.vert", Vertex_Shader),
          Src ("src/shaders_3_2/basic_particle.frag", Fragment_Shader)));
 
---        Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_WP,
---                              "particle_world_pos");
---        Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_Age,
---                              "particle_age");
-
       Particle_Uniforms.Degrees_ID := Uniform_Location (Shader_Program, "degs");
       Particle_Uniforms.Final_Colour_ID :=
           Uniform_Location (Shader_Program, "final_colour");

@@ -1,13 +1,7 @@
-//
-// Crongdor the Barbarian
-// screen-space image quad shader
-// First version Anton Gerdelan, ? 2012
-// Latest code review 15 Dec 2014
-//
 
-#version 150
+#version 410 core
 
-in vec2 vp;
+layout(location = 0) in vec2 vp;
 // TODO replace this with pos/sca vec? (16 -> 4 floats)
 uniform mat4 model_mat;
 out vec2 st;
