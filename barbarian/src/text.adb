@@ -288,7 +288,7 @@ package body Text is
       GL.Objects.Buffers.Array_Buffer.Bind (theText.Points_VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type,
                                                False, 0, 0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VP);
 
       GL.Objects.Buffers.Array_Buffer.Bind (theText.Tex_Coords_VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VT, 2, Single_Type,
@@ -299,6 +299,9 @@ package body Text is
 --        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, theText.Point_Count);
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Triangles, 0, Int (theText.Point_Count));
+
+      GL.Attributes.Disable_Vertex_Attrib_Array (Attrib_VP);
+      GL.Attributes.Disable_Vertex_Attrib_Array (Attrib_VT);
 
       Enable (Depth_Test);
       Disable (Blend);
