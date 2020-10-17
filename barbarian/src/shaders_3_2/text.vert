@@ -10,7 +10,6 @@ out vec2 st;
 
 void main ()
     {
- //   gl_PointSize = 20.0;
     st = vt;
 	gl_Position = vec4 (pos + vp, 0.0, 1.0);
     }

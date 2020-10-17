@@ -139,7 +139,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Current_Time  : Float := 0.0;
       Elapsed_Time  : Float;
       b             : GL.Types.Single := 0.0;
-      Colour        : Colors.Color;
+      Back_Colour   : Colors.Color;
       Window_Closed : Boolean := False;
    begin
       Game_Utils.Game_Log ("---Main_Loop.Introduction---");
@@ -152,12 +152,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          if Flash_Timer < 0.25 then
             Flash_Timer := Flash_Timer + Elapsed_Time;
             b := Abs (Sin (Single ((30.0)) * Single (Current_Time)));
-            Colour := (b, b, b, 1.0);
-            Utilities.Clear_Background_Colour_And_Depth (Colour);
+            Back_Colour := (b, b, b, 1.0);
+            Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
          else
-            b := 0.4;
-            Colour := (b, b, b, 1.0);
-            Utilities.Clear_Background_Colour_And_Depth (Colour);
+            b := 0.0;
+            Back_Colour := (b, b, b, 1.0);
+            Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
             MMenu.Draw_Title_Only;
          end if;
          GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
@@ -209,7 +209,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       --          Param := Game_Utils.Check_Param ("-map");
 
       Init_Modules (Window);
-      Game_Utils.Game_Log ("Main_Loop.Main_Setup Modules initializd.");
       --          Play_Music (Title_Track);
       --          Is_Playing_Hammer_Track := False;
 

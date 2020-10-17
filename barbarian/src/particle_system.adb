@@ -115,11 +115,9 @@ package body Particle_System is
       use Particle_System_Manager;
    begin
       Game_Utils.Game_Log ("---- Initialising Particle Systems ----");
-      Put_Line ("---- Initialising Particle Systems ----");
       Particle_System_Shader_Manager.Init (Basic_Particles_SP);
       Scripts.Clear;
       Particle_Systems.Clear;
-      Put_Line ("Particle Systems cleared");
       Load_Particle_Script ("torch_smoke.particles", Scripts);
       Load_Particle_Script ("blood_fountain.particles", Scripts);
       Load_Particle_Script ("blood_damage.particles", Scripts);
@@ -127,7 +125,6 @@ package body Particle_System is
       Load_Particle_Script ("dust.particles", Scripts);
       Load_Particle_Script ("splash.particles", Scripts);
       Game_Utils.Game_Log ("---- Particle Systems Initialized ----");
-      Put_Line ("---- Particle Systems Initialized ----");
       Particles_Initialised := True;
    end Init;
 
