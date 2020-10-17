@@ -18,7 +18,7 @@ package body Texture_Manager is
    type Mod_16 is mod 2 ** 16;
 
    package Bound_Textures_Package is new Ada.Containers.Vectors
-     (Natural, GL.Objects.Textures.Texture);
+     (Positive, GL.Objects.Textures.Texture);
    type Bound_Textures_List is new Bound_Textures_Package.Vector with null record;
 
    type Loaded_Texture is record
@@ -183,8 +183,8 @@ package body Texture_Manager is
       use GL.Types;
       use Loaded_Textures_Package;
       Curs                  : Cursor := Loaded_Textures.First;
-      X                     : GL.Types.Int := 0;  --  Image width in pixels
-      Y                     : GL.Types.Int := 0;  --  Image height in pixels
+      X_Width               : GL.Types.Int := 0;  --  Image width in pixels
+      Y_Height              : GL.Types.Int := 0;  --  Image height in pixels
       X_16                  : Mod_16 := 0;
       Y_16                  : Mod_16 := 0;
       Force_Channels        : constant GL.Types.Int := 4;
@@ -196,7 +196,6 @@ package body Texture_Manager is
       Num_Color_Components  : constant GL.Types.Int := 4;
       --  Assuming each color component is an unsigned char.
       Width_In_Chars        : GL.Types.Int := 0;
-      Dt_Data               : Unbounded_String := To_Unbounded_String ("");
       Texture_Loaded        : Boolean := False;
       Texture_Data          : Loaded_Texture;
    begin
@@ -209,17 +208,18 @@ package body Texture_Manager is
 
       if not Texture_Loaded then
          GID_Image_Loader.Load_File_To_Image
-           (File_Name, Image_Data_Ptr, Data_Length, X, Y, Force_Channels);
+           (File_Name, Image_Data_Ptr, Data_Length, X_Width, Y_Height, Force_Channels);
 --           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture, Load_Image_To_Texture result: X, Y Data_Length "
---                                & GL.Types.Int'Image (X) & "  " &
---                                  GL.Types.Int'Image (Y) & "  " &
+--                                & GL.Types.Int'Image (X_Width) & "  " &
+--                                  GL.Types.Int'Image (Y_Height) & "  " &
 --                                  GL.Types.Int'Image (Data_Length));
 
-         X_16 := Mod_16 (X);
-         Y_16 := Mod_16 (Y);
+         X_16 := Mod_16 (X_Width);
+         Y_16 := Mod_16 (Y_Height);
          if (X_16 and (X_16 - 1)) /= 0 or (Y_16 and (Y_16 - 1)) /= 0 then
             Game_Utils.Game_Log
-              ("WARNING: texture is not power-of-two dimensions " & File_Name);
+              ("WARNING: Texture_Manager.Load_Image_To_Texture, texture is " &
+                 "not power-of-two dimensions " & File_Name);
          end if;
 
          declare
@@ -238,9 +238,9 @@ package body Texture_Manager is
             end loop;
             GID_Image_Loader.Free_Data (Image_Data_Ptr);
 
-            Half_Height_In_Pixels := Y / 2;
-            Height_In_Pixels := Y;
-            Width_In_Chars := X * Num_Color_Components;
+            Half_Height_In_Pixels := Y_Height / 2;
+            Height_In_Pixels := Y_Height;
+            Width_In_Chars := X_Width * Num_Color_Components;
             for index_h in 1 .. Half_Height_In_Pixels loop
                Data_Top := index_h * Width_In_Chars;
                Data_Bottom :=
@@ -254,6 +254,7 @@ package body Texture_Manager is
                end loop;
             end loop;
 
+            --  Copy Data into an OpenGL texture
             aTexture.Initialize_Id;
             Texture_Data.File_Name := To_Unbounded_String (File_Name);
             Texture_Data.Texture_ID := aTexture.Raw_Id;
@@ -263,17 +264,17 @@ package body Texture_Manager is
             if Bound_Textures.Is_Empty then
                Bound_Textures.Append (aTexture);
             else
-               Bound_Textures.Replace_Element (0, aTexture);
+               Bound_Textures.Replace_Element (1, aTexture);
             end if;
 
             if Use_SRGB then
                Texture_2D.Load_From_Data
                  (0, SRGB_Alpha, 16, 16, RGBA, Unsigned_Byte,
-                  GL.Objects.Textures.Image_Source (Dt_Data'Address));
+                  GL.Objects.Textures.Image_Source (Data'Address));
             else
                Texture_2D.Load_From_Data
                  (0, RGBA, 16, 16, RGBA, Unsigned_Byte,
-                  GL.Objects.Textures.Image_Source (Dt_Data'Address));
+                  GL.Objects.Textures.Image_Source (Data'Address));
             end if;
             Texture_Loaded := True;
 
@@ -308,13 +309,16 @@ package body Texture_Manager is
             end if;
             Texture_2D.Set_X_Wrapping (Clamp_To_Edge);
             Texture_2D.Set_Y_Wrapping (Clamp_To_Edge);
+
             Texture_Data.Texture_ID := aTexture.Raw_Id;
             Loaded_Textures.Append (Texture_Data);
             Loaded_Texture_Count := Loaded_Texture_Count + 1;
          end; -- declare block
---           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " & File_Name & " loaded.");
+--           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " &
+--                                  File_Name & " loaded.");
       else
-         Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " & File_Name & " already loaded.");
+         Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " &
+                              File_Name & " already loaded.");
       end if;
 
    exception
