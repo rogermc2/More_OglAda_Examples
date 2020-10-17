@@ -211,23 +211,23 @@ package body MMenu is
       Current_Time : constant Single := Single (Glfw.Time);
    begin
       --  Draw cursor skull in background
-      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
       GL.Objects.Textures.Targets.Texture_2D.Bind (Title_Skull_Texture);
-      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
+--              Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
       Cursor_VAO.Initialize_Id;
       Cursor_VAO.Bind;
-      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_VAO bound");
+--              Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_VAO bound");
       GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
       Cursor_Shader_Manager.Set_Perspective_Matrix (Identity4);
       Cursor_Shader_Manager.Set_View_Matrix (Identity4);
       --        Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
       --        Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
       Cursor_Shader_Manager.Set_Model_Matrix (Identity4);
-      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_Point_Count" &
-      --                            Integer'Image (Cursor_Point_Count));
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_Point_Count" &
+--                                  Integer'Image (Cursor_Point_Count));
       Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
 
-      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
       --  3D title
       GL.Objects.Programs.Use_Program (Title_Shader_Program);
       --        Title_Shader_Manager.Set_View_Matrix (Title_V);
@@ -237,17 +237,13 @@ package body MMenu is
       Title_Shader_Manager.Set_Model_Matrix (Identity4);
       Title_Shader_Manager.Set_Perspective_Matrix (Identity4);
       Title_Shader_Manager.Set_Time (Current_Time);
-      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize VAO");
+
       Title_VAO.Initialize_Id;
       Title_VAO.Bind;
---        Draw_Arrays (Triangles, 0, int (Title_Point_Count));
+      Draw_Arrays (Triangles, 0, Int (Title_Point_Count));
 
       --  Draw library logos and stuff
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Title_Author_Text, Text_Index"
---                            & Integer'Image (Title_Author_Text));
       Text.Draw_Text (Title_Author_Text);
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Title_Buildstamp_Text, Text_Index"
---                            & Integer'Image (Title_Buildstamp_Text));
       Text.Draw_Text (Title_Buildstamp_Text);
 
    end Draw_Title_Only;
@@ -317,8 +313,8 @@ package body MMenu is
 
       Title_Version_Text := Text.Add_Text ("pre-release demo",
                                            0.0, -0.2, 20.0, 1.0, 1.0, 0.0, 1.0);
-      Text.Centre_Text (Title_Author_Text, 0.0, -0.8);
-      Text.Set_Text_Visible (Title_Author_Text, False);
+      Text.Centre_Text (Title_Version_Text, 0.0, -0.8);
+      Text.Set_Text_Visible (Title_Version_Text, False);
 
       Title_Shader_Manager.Init (Title_Shader_Program);
       Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,

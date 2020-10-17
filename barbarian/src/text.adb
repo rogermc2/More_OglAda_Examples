@@ -7,6 +7,7 @@ with GL.Attributes;
 with GL.Blending;
 with GL.Buffers;
 with GL.Images;
+with GL.Low_Level.Enums;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures;
@@ -90,6 +91,7 @@ package body Text is
    Glyphs               : Font_Metadata_Manager.Glyph_Array;
 
    procedure Load_Font (Atlas_Image, Atlas_Metadata : String);
+   procedure Move_Text (Text : in out Renderable_Text; X, Y : Single);
    procedure Text_To_VBO (theText        : String;
                           Glyph_Size_Px  : Single;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
@@ -109,11 +111,10 @@ package body Text is
       use GL.Objects.Buffers;
       use GL.Types;
       use Shader_Attributes;
-      R_Text            : Renderable_Text;
-      BR_X              : Single := 0.0;
-      BR_Y              : Single := 0.0;
+      R_Text : Renderable_Text;
+      BR_X   : Single := 0.0;
+      BR_Y   : Single := 0.0;
    begin
-      --        Put_Line ("Text.Add_Text theText: " & theText);
       R_Text.VAO.Initialize_Id;
       R_Text.VAO.Bind;
       R_Text.Visible := True;
@@ -155,13 +156,16 @@ package body Text is
    --  ------------------------------------------------------------------------
 
    procedure Centre_Text (ID : Positive; X, Y : Single) is
-      Width  : Single;
-      Length : Single;
+      Width   : Single;
+      Length  : Single;
+      theText : Renderable_Text;
    begin
       if ID <= Renderable_Texts.Last_Index then
-         Width := Renderable_Texts.Element (ID).Bottom_Right_X;
+         theText := Renderable_Texts.Element (ID);
+         Width := theText.Bottom_Right_X;
          Length := X - 0.5 * Width;
-         Move_Text (ID, Length, Y);
+         Move_Text (theText, Length, Y);
+         Renderable_Texts.Replace_Element (ID, theText);
       else
          raise Text_Exception with "Text.Centre_Text encountered an invalid ID:" &
            Integer'Image (ID);
@@ -236,22 +240,19 @@ package body Text is
       theText : Renderable_Text;
       SX      : Single;
       SY      : Single;
-      Back    : constant GL.Types.Colors.Basic_Color := (0.6, 0.6, 0.6);
    begin
       Validate_Text_ID (Text_Index);
       Disable (Depth_Test);
       GL.Blending.Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
       Enable (Blend);
 
---        Game_Utils.Game_Log ("Text.Draw_Text Text_Index: " &
---                            Positive'Image (Text_Index));
       theText := Renderable_Texts.Element (Text_Index);
       theText.Visible := True;
       if not theText.Points_VBO.Initialized then
          raise Text_Exception with
          "Text.Draw_Text the Points_VBO is invalid.";
       end if;
-      --        Put_Line ("Text.Draw_Text theText.Size_Px"  & Single'Image (theText.Size_Px));
+
       if theText.Has_Box then
          SX := Single (theText.Bottom_Right_X + 0.05);
          SY := Single (-theText.Bottom_Right_Y + 0.05);
@@ -275,15 +276,10 @@ package body Text is
       end if;
 
       GL.Objects.Programs.Use_Program (Font_Shader);
-      --        Text_Shader_Manager.Set_Position_ID ((0.0, 0.2));
       Text_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.95,
-                                           theText.Top_Left_Y + 0.4));
---        Text_Shader_Manager.Set_Text_Colour_ID ((1.0, 0.0, 0.0, 1.0));
+                                           theText.Top_Left_Y));
       Text_Shader_Manager.Set_Text_Colour_ID ((theText.Red, theText.Green,
                                                theText.Blue, theText.A));
-
-      theText.VAO.Initialize_Id;
-      GL_Utils.Bind_VAO (theText.VAO);
 
 --        Texture_Manager.Bind_Texture (0, Font_Texture);
       Text_Shader_Manager.Set_Texture_Unit (0);
@@ -292,7 +288,7 @@ package body Text is
       GL.Objects.Buffers.Array_Buffer.Bind (theText.Points_VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type,
                                                False, 0, 0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VP);
+      GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
       GL.Objects.Buffers.Array_Buffer.Bind (theText.Tex_Coords_VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VT, 2, Single_Type,
@@ -300,7 +296,7 @@ package body Text is
       GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VT);
 
 --        Enable (GL.Toggles.Vertex_Program_Point_Size);
---        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 600);
+--        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, theText.Point_Count);
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Triangles, 0, Int (theText.Point_Count));
 
@@ -341,15 +337,16 @@ package body Text is
    --  ------------------------------------------------------------------------
 
    procedure Init_Text_Rendering
-     (Font_image_File, Font_Metadata_File : String;
+     (Font_Image_File, Font_Metadata_File : String;
       Viewport_Width, Viewport_Height     : GL.Types.Int) is
       TB_Points_VBO : GL.Objects.Buffers.Buffer;
    begin
-      Game_Utils.Game_Log ("Text.Init_Text_Rendering initialising text rendering for " & Font_image_File);
+      Game_Utils.Game_Log ("Text.Init_Text_Rendering initialising text rendering for "
+                           & Font_image_File);
       Font_Viewport_Width := Viewport_Width;
       Font_Viewport_Height := Viewport_Height;
       Create_Font_Shaders;
-      Load_Font (Font_image_File, Font_Metadata_File);
+      Load_Font (Font_Image_File, Font_Metadata_File);
       Text_Box_VAO.Initialize_Id;
       Text_Box_VAO.Bind;
 
@@ -386,9 +383,18 @@ package body Text is
       use GL.Images;
       use GL.Pixels;
    begin
-      Load_File_To_Texture (Atlas_Image, Font_Texture, RGB8, False);
+      Texture_Manager.Load_Image_To_Texture (Atlas_Image, Font_Texture, False, True);
       Font_Metadata_Manager.Load_Metadata (Atlas_Metadata, Glyphs);
+      Game_Utils.Game_Log ("Text.Load_Font Font_Texture " & Atlas_Image & " loaded ");
    end Load_Font;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Move_Text (Text : in out Renderable_Text; X, Y : Single) is
+   begin
+         Text.Top_Left_X := X;
+         Text.Top_Left_Y := Y;
+   end Move_Text;
 
    --  ------------------------------------------------------------------------
 
@@ -459,6 +465,8 @@ package body Text is
       Atlas_Cols_S       : constant Single := Single (Atlas_Cols);
       Font_Height        : constant Single := Glyph_Size / Single (Font_Viewport_Height);
       Font_Width         : constant Single := Glyph_Size / Single (Font_Viewport_Width);
+      Row_Recip          : constant Single := 1.0 / Atlas_Rows_S;
+      Col_Recip          : constant Single := 1.0 / Atlas_Cols_S;
       Line_Offset        : Single := 0.0;
       Current_X          : Single := 0.0;
       Current_Index_6    : Int := -5;
@@ -471,8 +479,8 @@ package body Text is
       Y_Pos              : Single := 0.0;
       Skip_Next          : Boolean := False;
    begin
-      --        Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
-      --                              Integer'Image (Text_Length) & ", " & theText);
+--        Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
+--                              Integer'Image (Text_Length) & ", " & theText);
       Br_X := 0.0;
       Br_Y := 0.0;
       for index in 1 .. Text_Length loop
@@ -487,11 +495,13 @@ package body Text is
             else
                Current_Index_6 := Current_Index_6 + 6;
                Ascii_Code := Character'Pos (theText (index));
+--                 Game_Utils.Game_Log ("Text.Text_To_VBO, Character: " &
+--                                        theText (index));
                Atlas_Col := (Ascii_Code - Character'Pos (' ')) mod Atlas_Cols;
                Atlas_Row := (Ascii_Code - Character'Pos (' ')) / Atlas_Cols;
                --  work out texture coordinates in atlas
-               S := Single (Atlas_Col) * (1.0 / Atlas_Cols_S);
-               T := Single (Atlas_Row + 1) * (1.0 / Atlas_Rows_S);
+               S := Single (Atlas_Col) * Col_Recip;
+               T := Single (Atlas_Row + 1) * Row_Recip;
                --  Work out position of glyphtriangle_width
                X_Pos := Current_X;
                Y_Pos := -Font_Height *
@@ -513,19 +523,12 @@ package body Text is
                Points_Tmp (Current_Index_6 + 4) := (X_Pos + Font_Width, Y_Pos);
                Points_Tmp (Current_Index_6 + 5) := (X_Pos, Y_Pos);
 
-               Tex_Coords_Tmp (Current_Index_6) :=
-                 (S, 1.0 - T + 1.0 / Atlas_Rows_S);
+               Tex_Coords_Tmp (Current_Index_6) := (S, 1.0 - T + Row_Recip);
                Tex_Coords_Tmp (Current_Index_6 + 1) := (S,  1.0 - T);
-               Tex_Coords_Tmp (Current_Index_6 + 2) :=
-                 (S + 1.0 / Atlas_Cols_S, 1.0 - T);
-
-               Tex_Coords_Tmp (Current_Index_6 + 3) :=
-                 (S + 1.0 / Atlas_Cols_S, 1.0 - T);
-               Tex_Coords_Tmp (Current_Index_6 + 4) :=
-                 (S + 1.0 / Atlas_Cols_S,
-                  1.0 - T + 1.0 / Atlas_Rows_S);
-               Tex_Coords_Tmp (Current_Index_6 + 5) :=
-                 (S, 1.0 - T + 1.0 / Atlas_Rows_S);
+               Tex_Coords_Tmp (Current_Index_6 + 2) := (S + Col_Recip, 1.0 - T);
+               Tex_Coords_Tmp (Current_Index_6 + 3) := (S + Col_Recip, 1.0 - T);
+               Tex_Coords_Tmp (Current_Index_6 + 4) := (S + Col_Recip, 1.0 - T + Row_Recip);
+               Tex_Coords_Tmp (Current_Index_6 + 5) := (S, 1.0 - T + Row_Recip);
 
                --  Update record of bottom-right corner of text area
                if X_Pos + Font_Width > Br_X then
@@ -538,14 +541,12 @@ package body Text is
          end if;
       end loop;
 
-      --        Utilities.Print_GL_Array2 ("Text.Text_To_VBO Points_Tmp", Points_Tmp);
       Array_Buffer.Bind (Points_VBO);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Points_Tmp, Dynamic_Draw);
 
-      --        Utilities.Print_GL_Array2 ("Text.Text_To_VBO Tex_Coords_Tmp", Tex_Coords_Tmp);
       Array_Buffer.Bind (Tex_Coords_VBO);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Tex_Coords_Tmp, Dynamic_Draw);
-      Point_Count := Current_Index_6;
+      Point_Count := Current_Index_6 + 5;
 
    exception
       when others =>

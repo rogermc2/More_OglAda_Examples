@@ -44,18 +44,15 @@ package body Texture_Manager is
    procedure Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture) is
       use GL.Objects.Textures.Targets;
       use GL.Types;
-      OK : Boolean := False;
    begin
-      OK := Slot < 12;
-      if not OK then
+      if Slot > 12 then
          raise Texture_Exception with
            "Texture.Bind_Texture, active texture unit number for binding "
            & "is too high:" & Natural'Image (Slot);
       elsif not Is_Bound (Slot) then
          Set_Active_Unit (GL.Types.Int (Slot));
          Texture_2D.Bind (Tex);
-                 Bound_Textures.Replace_Element (Slot, Tex);
-         OK := True;
+         Bound_Textures.Replace_Element (Slot, Tex);
       end if;
 
    end Bind_Texture;
@@ -190,17 +187,15 @@ package body Texture_Manager is
       Force_Channels        : constant GL.Types.Int := 4;
       Image_Data_Ptr        : GID_Image_Loader.Raw_Data_Ptr;
       Data_Length           : GL.Types.Int := 0;   --  in bytes
-      Half_Height_In_Pixels : GL.Types.Int := 0;
-      Height_In_Pixels      : GL.Types.Int := 0;
+--        Half_Height_In_Pixels : GL.Types.Int := 0;
+--        Height_In_Pixels      : GL.Types.Int := 0;
       --  Assuming RGBA for 4 components per pixel.
       Num_Color_Components  : constant GL.Types.Int := 4;
       --  Assuming each color component is an unsigned char.
-      Width_In_Chars        : GL.Types.Int := 0;
+--        Width_In_Chars        : GL.Types.Int := 0;
       Texture_Loaded        : Boolean := False;
       Texture_Data          : Loaded_Texture;
    begin
---        Game_Utils.Game_Log (ASCII.CR & "Texture_Manager.Load_Image_To_Texture loading data from " & File_Name);
---        Put_Line ("Texture_Manager.Load_Image_To_Texture loading data from " & File_Name);
       while Has_Element (Curs) and not Texture_Loaded loop
          Texture_Loaded := Element (Curs).File_Name = File_Name;
          Next (Curs);
@@ -226,33 +221,32 @@ package body Texture_Manager is
             Data_Raw     : GID_Image_Loader.Raw_Data (1 .. Data_Length);
             -- Data is an array of UBytes
             Data         : array (1 .. Data_Length) of GID_Image_Loader.Component;
-            Swap         : GID_Image_Loader.Component;
             Data_Top     : GL.Types.Int := 0;
             Data_Bottom  : GL.Types.Int := 0;
          begin
             Data_Raw := Image_Data_Ptr.all;
---              Game_Utils.Game_Log
---                   ("Load_Image_To_Texture data length " & GL.Types.Int'Image (Data_Length));
+--              Game_Utils.Game_Log ("Load_Image_To_Texture data length " &
+--                                     GL.Types.Int'Image (Data_Length));
             for index in 1 .. Data_Length loop
                Data (index) :=  Data_Raw (index);
             end loop;
             GID_Image_Loader.Free_Data (Image_Data_Ptr);
 
-            Half_Height_In_Pixels := Y_Height / 2;
-            Height_In_Pixels := Y_Height;
-            Width_In_Chars := X_Width * Num_Color_Components;
-            for index_h in 1 .. Half_Height_In_Pixels loop
-               Data_Top := index_h * Width_In_Chars;
-               Data_Bottom :=
-                 (Height_In_Pixels - index_h - 1) * Width_In_Chars;
-               for index_h in 1 .. Width_In_Chars loop
-                  Swap := Data (Data_Top);
-                  Data (Data_Top) := Data (Data_Bottom);
-                  Data (Data_Bottom) := Swap;
-                  Data_Top := Data_Top + 1;
-                  Data_Bottom := Data_Bottom + 1;
-               end loop;
-            end loop;
+--              Half_Height_In_Pixels := Y_Height / 2;
+--              Height_In_Pixels := Y_Height;
+--              Width_In_Chars := X_Width * Num_Color_Components;
+--              for index_h in 1 .. Half_Height_In_Pixels loop
+--                 Data_Top := index_h * Width_In_Chars;
+--                 Data_Bottom :=
+--                   (Height_In_Pixels - index_h - 1) * Width_In_Chars;
+--                 for index_h in 1 .. Width_In_Chars loop
+--                    Swap := Data (Data_Top);
+--                    Data (Data_Top) := Data (Data_Bottom);
+--                    Data (Data_Bottom) := Swap;
+--                    Data_Top := Data_Top + 1;
+--                    Data_Bottom := Data_Bottom + 1;
+--                 end loop;
+--              end loop;
 
             --  Copy Data into an OpenGL texture
             aTexture.Initialize_Id;
@@ -269,11 +263,11 @@ package body Texture_Manager is
 
             if Use_SRGB then
                Texture_2D.Load_From_Data
-                 (0, SRGB_Alpha, 16, 16, RGBA, Unsigned_Byte,
+                 (0, SRGB_Alpha, X_Width, Y_Height, RGBA, Unsigned_Byte,
                   GL.Objects.Textures.Image_Source (Data'Address));
             else
                Texture_2D.Load_From_Data
-                 (0, RGBA, 16, 16, RGBA, Unsigned_Byte,
+                 (0, RGBA, X_Width, Y_Height, RGBA, Unsigned_Byte,
                   GL.Objects.Textures.Image_Source (Data'Address));
             end if;
             Texture_Loaded := True;
@@ -314,8 +308,6 @@ package body Texture_Manager is
             Loaded_Textures.Append (Texture_Data);
             Loaded_Texture_Count := Loaded_Texture_Count + 1;
          end; -- declare block
---           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " &
---                                  File_Name & " loaded.");
       else
          Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " &
                               File_Name & " already loaded.");

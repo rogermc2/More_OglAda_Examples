@@ -43,7 +43,7 @@ package body Ogldev_Camera is
 
         function To_Degree (Angle : Single) return Degree is
         begin
-            return Degrees (Radian (Angle));
+            return Degree (Radian (Angle));
         end To_Degree;
 
         H_Target : Singles.Vector3 :=
