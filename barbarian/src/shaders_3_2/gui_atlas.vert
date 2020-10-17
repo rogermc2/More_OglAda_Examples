@@ -1,7 +1,7 @@
 
 #version 410 core
 
-in vec2 vp;
+layout(location = 0)  in vec2 vp;
 
 uniform mat4 model_mat;
 uniform float columns, current_sprite;

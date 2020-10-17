@@ -22,10 +22,6 @@ package body Splats_Shader_Manager is
         ((Src ("src/shaders_3_2/splats.vert", Vertex_Shader),
          Src ("src/shaders_3_2/splats.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VT, "vt");
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VN, "vn");
-
       Render_Uniforms.Ambient_Colour_ID :=
           Uniform_Location (Shader_Program, "L_a");
       Render_Uniforms.Caster_Pos_ID :=

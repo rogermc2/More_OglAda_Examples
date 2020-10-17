@@ -29,8 +29,6 @@ package body Sound_Sphere_Shader_Manager is
           ((Src ("src/shaders_3_2/sound_sphere.vert", Vertex_Shader),
            Src ("src/shaders_3_2/sound_sphere.frag", Fragment_Shader)));
 
-        Bind_Attrib_Location (Sound_Sphere_Shader, Shader_Attributes.Attrib_VP, "vp");
-
         Sound_Sphere_Uniforms.PVM_ID := Uniform_Location (Sound_Sphere_Shader, "PVM");
 
         Use_Program (Sound_Sphere_Shader);

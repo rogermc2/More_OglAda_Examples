@@ -3,11 +3,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Shaders;
 
---  with Game_Utils;
 with Maths;
 with Program_Loader;
-
-with Shader_Attributes;
 
 package body Water_Shader_Manager is
 
@@ -22,8 +19,6 @@ package body Water_Shader_Manager is
         Shader_Program := Program_From
           ((Src ("src/shaders_3_2/water.vert", Vertex_Shader),
            Src ("src/shaders_3_2/water.frag", Fragment_Shader)));
-
-        Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
 
         Render_Uniforms.Ambient_Light_Colour_ID :=
           Uniform_Location (Shader_Program, "L_a");

@@ -58,8 +58,6 @@ package body Sprite_Shader_Manager is
         ((Src ("src/shaders_3_2/sprite.vert", Vertex_Shader),
          Src ("src/shaders_3_2/sprite.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Sprite_Shader, Shader_Attributes.Attrib_VP, "vp");
-
       Sprite_Uniform.Perspective_ID := Uniform_Location (Sprite_Shader, "P");
       Sprite_Uniform.View_ID := Uniform_Location (Sprite_Shader, "V");
       Sprite_Uniform.Model_ID :=  Uniform_Location (Sprite_Shader, "M");

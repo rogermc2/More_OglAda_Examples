@@ -24,15 +24,11 @@ package body Text_Shader_Manager is
         ((Src ("src/shaders_3_2/text.vert", Vertex_Shader),
          Src ("src/shaders_3_2/text.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VT, "vt");
-
       Use_Program (Shader_Program);
       Position_ID := Uniform_Location (Shader_Program, "pos");
       Text_Colour_ID := Uniform_Location (Shader_Program, "text_colour");
       Texture_ID := Uniform_Location (Shader_Program, "tex");
 
---        Utilities.Show_Shader_Program_Data (Shader_Program);
       GL.Uniforms.Set_Single (Position_ID, Maths.Vec2_0);
       GL.Uniforms.Set_Single (Text_Colour_ID, Maths.Vec4_0);
       GL.Uniforms.Set_Int (Texture_ID, 0);

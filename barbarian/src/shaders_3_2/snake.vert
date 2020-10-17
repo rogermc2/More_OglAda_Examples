@@ -1,15 +1,10 @@
 //
-// Crongdor the Barbarian
-// shader for snake
-// First version Anton Gerdelan, 2 mar 2015
-// Latest code review
-//
 
-#version 150
+#version 410 core
 
-in vec3 vp;
-in vec2 vt;
-in vec3 vn;
+layout(location = 0) in vec3 vp;
+layout(location = 2) in vec2 vt;
+layout(location = 1) in vec3 vn;
 
 uniform mat4 PVM;
 

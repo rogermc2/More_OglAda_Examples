@@ -1,11 +1,13 @@
 
 // 3d title text shader
 
-
 #version 410 core
 
-in vec3 vp, vn;
+layout(location = 0) in vec3 vp;
+layout(location = 0) in vec3 vn;
+
 uniform mat4 P, V, M;
+
 out vec3 p_loc, n_loc;
 
 void main ()

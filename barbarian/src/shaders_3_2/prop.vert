@@ -3,10 +3,10 @@
 
 #define NUM_LIGHTS 3
 
-in vec3 vp;
-in vec3 vn;
-in vec2 vt;
-in vec4 vtangent;
+layout(location = 0) in vec3 vp;
+layout(location = 1) in vec3 vn;
+layout(location = 2) in vec2 vt;
+layout(location = 3) in vec4 vtangent;
 
 uniform mat4 P, V, M;
 uniform float ol_pass;

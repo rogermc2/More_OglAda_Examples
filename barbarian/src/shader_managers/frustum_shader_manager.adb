@@ -22,8 +22,6 @@ package body Frustum_Shader_Manager is
         ((Src ("src/shaders_3_2/frustum_debug.vert", Vertex_Shader),
          Src ("src/shaders_3_2/frustum_debug.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
-
       Render_Uniforms.Model_Matrix_ID := Uniform_Location (Shader_Program, "PV");
       Render_Uniforms.Colour_ID := Uniform_Location (Shader_Program, "colour");
 

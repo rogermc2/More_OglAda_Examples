@@ -1,18 +1,16 @@
-//
-// Crongdor the Barbarian
-// 2d text shader
-// First version Anton Gerdelan, Novemeber 2014
-// Latest code review 15 Dec 2014
-//
 
-#version 150
+#version 410 core
 
-in vec2 vp, vt;
+layout(location = 0) in vec2 vp;
+layout(location = 2) in vec2 vt;
+
 uniform vec2 pos;
+
 out vec2 st;
 
 void main ()
     {
-	st = vt;
+ //   gl_PointSize = 20.0;
+    st = vt;
 	gl_Position = vec4 (pos + vp, 0.0, 1.0);
     }

@@ -76,8 +76,6 @@ package body Properties_Shader_Manager is
           ((Src ("src/shaders_3_2/prop.vert", Vertex_Shader),
            Src ("src/shaders_3_2/prop.frag", Fragment_Shader)));
 
-        Bind_Attrib_Location (Prop_Shader, Shader_Attributes.Attrib_VP, "vp");
-
         Property_Uniforms.Perspective_ID := Uniform_Location (Prop_Shader, "P");
         Property_Uniforms.View_ID := Uniform_Location (Prop_Shader, "V");
         Property_Uniforms.Model_ID :=

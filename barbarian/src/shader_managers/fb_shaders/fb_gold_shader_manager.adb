@@ -5,7 +5,6 @@ with GL.Objects.Shaders;
 with Program_Loader;
 
 with Game_Utils;
-with Shader_Attributes;
 
 package body FB_Gold_Shader_Manager is
 
@@ -20,8 +19,6 @@ package body FB_Gold_Shader_Manager is
       Shader_Program := Program_From
         ((Src ("src/shaders_3_2/fb_gold.vert", Vertex_Shader),
          Src ("src/shaders_3_2/fb_gold.frag", Fragment_Shader)));
-
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
 
       Render_Uniforms.Tex_ID := Uniform_Location (Shader_Program, "Tex");
       Render_Uniforms.Time_ID := Uniform_Location (Shader_Program, "t");

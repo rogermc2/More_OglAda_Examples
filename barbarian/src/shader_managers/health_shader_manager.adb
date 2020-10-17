@@ -20,8 +20,6 @@ package body Health_Shader_Manager is
         ((Src ("src/shaders_3_2/health.vert", Vertex_Shader),
          Src ("src/shaders_3_2/health.frag", Fragment_Shader)));
 
-      Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
-
       Render_Uniforms.Base_Texture_ID :=
           Uniform_Location (Shader_Program, "tex_base");
       Render_Uniforms.Model_Matrix_ID :=

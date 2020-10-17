@@ -34,8 +34,6 @@ package body Jav_Stand_Shader_Manager is
           ((Src ("src/shaders_3_2/jav_stand.vert", Vertex_Shader),
            Src ("src/shaders_3_2/jav_stand.frag", Fragment_Shader)));
 
-        Bind_Attrib_Location (Jav_Stand_Shader, Shader_Attributes.Attrib_VP, "vp");
-
         Jav_Stand_Uniforms.Perspective_ID := Uniform_Location (Jav_Stand_Shader, "P");
         Jav_Stand_Uniforms.View_ID := Uniform_Location (Jav_Stand_Shader, "V");
         Jav_Stand_Uniforms.Model_ID :=  Uniform_Location (Jav_Stand_Shader, "M");

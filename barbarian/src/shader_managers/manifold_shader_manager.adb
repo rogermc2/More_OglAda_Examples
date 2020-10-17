@@ -22,9 +22,6 @@ package body Manifold_Shader_Manager is
         Shader_Program := Program_From
           ((Src ("src/shaders_3_2/manifold.vert", Vertex_Shader),
            Src ("src/shaders_3_2/manifold.frag", Fragment_Shader)));
---          Game_Utils.Game_Log ("Manifold_Shader_Manager Shader_Program initialized.");
-
-        Bind_Attrib_Location (Shader_Program, Shader_Attributes.Attrib_VP, "vp");
 
         Render_Uniforms.Ambient_Light_Colour_ID :=
           Uniform_Location (Shader_Program, "L_a");
