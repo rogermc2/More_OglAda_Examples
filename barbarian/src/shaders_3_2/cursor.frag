@@ -1,10 +1,12 @@
 
 // 3d menu cursor
 
-#version 150
+#version 410 core
+
 out vec4 frag_colour;
 
-in vec3 p_eye, n_eye;
+in vec3 p_eye;
+in vec3 n_eye;
 in vec2 st;
 
 uniform sampler2D diff_map;

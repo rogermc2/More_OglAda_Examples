@@ -2,11 +2,18 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Shaders;
+with GL.Uniforms;
+
 with Program_Loader;
 
-with Shader_Attributes;
-
 package body Cursor_Shader_Manager is
+
+    type Shader_Uniforms is record
+        Model_Matrix_ID       : GL.Uniforms.Uniform := 0;
+        Perspective_Matrix_ID : GL.Uniforms.Uniform := 0;
+        View_Matrix_ID        : GL.Uniforms.Uniform := 0;
+        Diff_Map_ID           : GL.Uniforms.Uniform := 0;
+   end record;
 
    Render_Uniforms : Shader_Uniforms;
 

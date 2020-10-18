@@ -10,7 +10,8 @@ layout(location = 3) in vec4 vtan;
 
 uniform mat4 P, V, M;
 
-out vec3 p_eye, n_eye;
+out vec3 p_eye;
+out vec3 n_eye;
 out vec2 st;
 
 void main ()

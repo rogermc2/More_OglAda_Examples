@@ -75,50 +75,50 @@ package body MMenu is
    Mmenu_End_Story_Open  : Boolean := False;
    Mmenu_Gr_Open         : Boolean := False;
 
-   Enabled_Strings         : array (1 .. 2) of Unbounded_String
+   Enabled_Strings                         : array (1 .. 2) of Unbounded_String
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
-   Tex_Filter_Strings      : array (1 .. 3) of Unbounded_String
+   Tex_Filter_Strings                      : array (1 .. 3) of Unbounded_String
      := (To_Unbounded_String ( "nearest"), To_Unbounded_String ("bilinear"),
          To_Unbounded_String ("trilinear"));
-   Menu_Text               : GL_Maths.Integer_Array
+   Menu_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
-   Graphics_Text           : GL_Maths.Integer_Array
+   Graphics_Text                           : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Graphic_Value_Strings   : array (1 .. Menu_Strings.Num_Graphic_Entries)
+   Graphic_Value_Strings                   : array (1 .. Menu_Strings.Num_Graphic_Entries)
      of Unbounded_String := (others => To_Unbounded_String (""));
-   Graphic_Value_Text      : GL_Maths.Integer_Array
+   Graphic_Value_Text                      : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Cal_KB_Text             : GL_Maths.Integer_Array
+   Cal_KB_Text                             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Cal_GP_Text             : GL_Maths.Integer_Array
+   Cal_GP_Text                             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Axis_Binding_Text    : GL_Maths.Integer_Array
+   GP_Axis_Binding_Text                    : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Buttons_Binding_Text : GL_Maths.Integer_Array
+   GP_Buttons_Binding_Text                 : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Audio_Text              : GL_Maths.Integer_Array
+   Audio_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Audio_Value_Text        : GL_Maths.Integer_Array
+   Audio_Value_Text                        : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Input_Text              : GL_Maths.Integer_Array
+   Input_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Input_Value_Text        : GL_Maths.Integer_Array
+   Input_Value_Text                        : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Quit_Text               : GL_Maths.Integer_Array
+   Quit_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
-   Confirm_Quit_Text       : GL_Maths.Integer_Array
+   Confirm_Quit_Text                       : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
-   KB_Binding_Text         : GL_Maths.Integer_Array
+   KB_Binding_Text                         : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
 
-   Text_Background_Texture   : GL.Objects.Textures.Texture;
-   User_Chose_Custom_Maps                  : Boolean := False;
-   User_Chose_New_Game                     : Boolean := False;
+   Text_Background_Texture    : GL.Objects.Textures.Texture;
+   User_Chose_Custom_Maps     : Boolean := False;
+   User_Chose_New_Game        : Boolean := False;
    We_Are_In_Custom_Maps      : Boolean := False;
    Title_Author_Text          : Integer := -1;
    Title_Buildstamp_Text      : Integer := -1;
-   Credits_Text_X: Single := 0.0;
-   Credits_Text_Y: constant Single := -1.0;
+   Credits_Text_X             : Single := 0.0;
+   Credits_Text_Y             : constant Single := -1.0;
    Mmenu_Credits_Texture      : GL.Objects.Textures.Texture;
    Title_Version_Text         : Integer := -1;
    End_Story_Text             : Integer := -1;
@@ -136,10 +136,9 @@ package body MMenu is
    Cursor_Shader_Program   : GL.Objects.Programs.Program;
    Mmenu_Cursor_Texture    : GL.Objects.Textures.Texture;
    Title_Point_Count       : Integer := 0;
+   Cursor_V                : Singles.Matrix4 := GL.Types.Singles.Identity4;
    Title_M                 : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
    Title_V                 : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Cursor_M                : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Cursor_V                : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
    Title_Bounce_Timer      : Float := 5.0;
    Text_Timer              : Float := 0.0;
    Since_Last_Key          : Float := 0.0;
@@ -214,21 +213,20 @@ package body MMenu is
       Current_Time : constant Single := Single (Glfw.Time);
    begin
       --  Draw cursor skull in background
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
-     Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
-      Cursor_VAO.Initialize_Id;
+      Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
       GL_Utils.Bind_VAO (Cursor_VAO);
+
       GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
-      Cursor_Shader_Manager.Set_Perspective_Matrix (Identity4);
-      Cursor_Shader_Manager.Set_View_Matrix (Identity4);
-      --        Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
-      --        Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
-      Cursor_Shader_Manager.Set_Model_Matrix (Identity4);
+      Cursor_Shader_Manager.Set_Model_Matrix (M_Matrix);
+      Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
+      Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
 --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_Point_Count" &
---                                  Integer'Image (Cursor_Point_Count));
+--                              Integer'Image (Cursor_Point_Count));
+--        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+--        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
 
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
+      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
       --  3D title
       GL.Objects.Programs.Use_Program (Title_Shader_Program);
       --        Title_Shader_Manager.Set_View_Matrix (Title_V);
@@ -275,7 +273,8 @@ package body MMenu is
       Init_Position_And_Texture_Buffers;
       Init_Title (Title_Mesh);
       Init_Cursor (Title_Mesh);
-
+--        Game_Utils.Game_Log ("Mmenu.Init, Cursor_Point_Count: " &
+--                            Integer'Image (Cursor_Point_Count));
       --  Credits shader not implemented
       Credits_Text_X := -715.0 / Single (Settings.Framebuffer_Width);
 
@@ -350,27 +349,30 @@ package body MMenu is
    procedure Init_Cursor  (Title_Mesh : Integer) is
       Camera_Position : Singles.Vector3 := (0.0, 0.0, 10.0);
       Camera_Target   : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Cursor_Mesh     : Integer := 0;
+      Cursor_M        : Singles.Matrix4 := GL.Types.Singles.Identity4;
+      Cursor_Mesh_ID  : Integer := 0;
    begin
-         Cursor_Shader_Manager.Init (Cursor_Shader_Program);
-      Cursor_M := Singles.Identity4;
+      Cursor_Mesh_ID := Mesh_Loader.Load_Managed_Mesh
+        ("src/meshes/skull_helmet.apg", True, True, True, False, False);
+
+      if Cursor_Mesh_ID <= 0 then
+         raise MMenu_Exception with
+           "MMenu.Init_Cursor Load_Managed_Mesh failed to load src/meshes/skull_helmet.apg";
+      --  Save Cursor_VAO
+      elsif not Mesh_Loader.Loaded_Mesh_VAO (Cursor_Mesh_ID, Cursor_VAO) then
+         raise MMenu_Exception with
+           "MMenu.Init_Cursor failed to initialize VAO for Cursor_Mesh";
+      end if;
+      Cursor_Point_Count := Mesh_Loader.Point_Count (Cursor_Mesh_ID);
 
       Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
                                    (0.0, 1.0, 0.0), Title_V);
+
+      Cursor_Shader_Manager.Init (Cursor_Shader_Program);
+      GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
       Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
       Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
-
-      Cursor_Mesh := Mesh_Loader.Load_Managed_Mesh
-        ("src/meshes/skull_helmet.apg", True, True, True, False, False);
-
-      if Cursor_Mesh <= 0 then
-         raise MMenu_Exception with
-           "MMenu.Init_MMenu Load_Managed_Mesh failed to load src/meshes/skull_helmet.apg";
-      elsif not Mesh_Loader.Loaded_Mesh_VAO (Cursor_Mesh, Cursor_VAO) then
-         raise MMenu_Exception with
-           "MMenu.Init_MMenu failed to initialize VAO for Cursor_Mesh";
-      end if;
 
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/skull_small_helmet_painterv_shade.png",
@@ -628,9 +630,12 @@ package body MMenu is
                                    (0.0, 1.0, 0.0), Title_V);
       Title_M := Maths.Translation_Matrix ((-0.4, -3.0, -1.0));
       Title_M := Maths.Scaling_Matrix ((0.5, 0.5, 0.5)) * Title_M;
+
+      GL.Objects.Programs.Use_Program (Title_Shader_Program);
       Title_Shader_Manager.Set_Model_Matrix (Title_M);
       Title_Shader_Manager.Set_View_Matrix (Title_V);
       Title_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
+      Game_Utils.Game_Log ("Mmenu.Init_Title done.");
 
    end Init_Title;
 

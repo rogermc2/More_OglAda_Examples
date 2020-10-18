@@ -1,16 +1,8 @@
 
 with GL.Types; use GL.Types;
 with GL.Objects.Programs;
-with GL.Uniforms;
 
 package Cursor_Shader_Manager is
-
-    type Shader_Uniforms is record
-        Model_Matrix_ID       : GL.Uniforms.Uniform := 0;
-        Perspective_Matrix_ID : GL.Uniforms.Uniform := 0;
-        View_Matrix_ID        : GL.Uniforms.Uniform := 0;
-        Diff_Map_ID           : GL.Uniforms.Uniform := 0;
-    end record;
 
     procedure Init (Shader_Program : in out GL.Objects.Programs.Program);
     procedure Set_Model_Matrix (Model_Matrix : Singles.Matrix4);

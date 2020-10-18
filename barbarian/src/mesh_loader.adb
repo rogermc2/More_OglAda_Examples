@@ -4,9 +4,10 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
-
+with GL.Attributes;
 with GL.Objects.Buffers;
 
+with Shader_Attributes;
 with Game_Utils;
 with GL_Utils;
 
@@ -60,7 +61,7 @@ package body Mesh_Loader is
       Points_Vbo             : GL.Objects.Buffers.Buffer;
       Normals_Vbo            : GL.Objects.Buffers.Buffer;
       Texcoords_Vbo          : GL.Objects.Buffers.Buffer;
-      Bone_Ids_Vbo           : GL.Objects.Buffers.Buffer;
+      Bones_Vbo              : GL.Objects.Buffers.Buffer;
       Vtans_Vbo              : GL.Objects.Buffers.Buffer;
    end record;
 
@@ -122,14 +123,19 @@ package body Mesh_Loader is
 
    --  ------------------------------------------------------------------------
 
-   function Load_Managed_Mesh (Mesh_Name               : String; Has_Vp, Has_Vn, Has_Vt,
+   function Load_Managed_Mesh (Mesh_Name               : String;
+                               Has_Vp, Has_Vn, Has_Vt,
                                Has_Tangents, Has_bones : Boolean := False)
                                return Integer is
+      use GL.Attributes;
+      use GL.Objects.Buffers;
+      use Shader_Attributes;
       use Meshes_Package;
-      aMesh  : Mesh;
-      Found  : Boolean := False;
-      Index  : Meshes_Package.Extended_Index;
-      Result : Integer := 0;
+      aMesh      : Mesh;
+      Found      : Boolean := False;
+      Index      : Meshes_Package.Extended_Index;
+      Attr_Count : Integer := 0;
+      Mesh_ID    : Integer := 0;
    begin
       if not Loaded_Meshes.Is_Empty then
          Index := Loaded_Meshes.First_Index;
@@ -137,7 +143,7 @@ package body Mesh_Loader is
             aMesh := Loaded_Meshes.Element (index);
             Found := aMesh.File_Name = To_Unbounded_String (Mesh_Name);
             if Found then
-               Result := Index;
+               Mesh_ID := Index;
             else
                Index := Index + 1;
             end if;
@@ -145,16 +151,74 @@ package body Mesh_Loader is
       end if;
 
       if not Found then
---           Game_Utils.Game_Log("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading " &
---                                Mesh_Name);
+         Game_Utils.Game_Log("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading " &
+                              Mesh_Name);
          if Load_Mesh (Mesh_Name, Loaded_Meshes) then
-            Result := Integer (Loaded_Meshes.Length);
+            Mesh_ID := Integer (Loaded_Meshes.Last_Index);
          else
             raise Mesh_Loader_Exception with
             "Mesh_Loader.Load_Managed_Mesh couldn't load " & Mesh_Name;
          end if ;
       end if;
-      return Result;
+
+      aMesh := Loaded_Meshes.Element (Mesh_ID);
+      aMesh.VAO.Initialize_Id;
+      GL_Utils.Bind_VAO (aMesh.VAO);
+      Loaded_Meshes.Replace_Element (Mesh_ID, aMesh);
+
+--        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh " & Mesh_Name &
+--                               " Vp_Count, Vt_Count " & Integer'Image (aMesh.Vp_Count)
+--                             & ", " & Integer'Image (aMesh.Vt_Count));
+
+      if Has_Vp and then aMesh.Vp_Count > 0 then
+         Array_Buffer.Bind (aMesh.Points_Vbo);
+         Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
+         Enable_Vertex_Attrib_Array (Attrib_VP);
+      end if;
+
+      if Has_Vn and then aMesh.Vn_Count > 0 then
+         Array_Buffer.Bind (aMesh.Normals_Vbo);
+         Set_Vertex_Attrib_Pointer (Attrib_VN, 3, Single_Type, False, 0, 0);
+         Enable_Vertex_Attrib_Array (Attrib_VN);
+      end if;
+
+      if Has_Vt and then aMesh.Vt_Count > 0 then
+         Array_Buffer.Bind (aMesh.Texcoords_Vbo);
+         Set_Vertex_Attrib_Pointer (Attrib_VT, 2, Single_Type, False, 0, 0);
+         Enable_Vertex_Attrib_Array (Attrib_VT);
+      end if;
+
+      if Has_Tangents and then aMesh.Vtan_Count > 0 then
+         Array_Buffer.Bind (aMesh.Vtans_Vbo);
+         Set_Vertex_Attrib_Pointer (Attrib_VTangent, 4, Single_Type, False, 0, 0);
+         Enable_Vertex_Attrib_Array (Attrib_VTangent);
+      end if;
+
+      if Has_bones and then aMesh.Vb_Count > 0 then
+         Array_Buffer.Bind (aMesh.Bones_Vbo);
+         Set_Vertex_Attrib_Pointer (Attrib_Bone, 1, Single_Type, False, 0, 0);
+         Enable_Vertex_Attrib_Array (Attrib_Bone);
+      end if;
+
+      aMesh := Loaded_Meshes.Element (Loaded_Meshes.Last_Index);
+      aMesh.Shadow_VAO.Initialize_Id;
+      GL_Utils.Bind_VAO (aMesh.Shadow_VAO);
+      if Has_Vp and then aMesh.Vp_Count > 0 then
+         Array_Buffer.Bind (aMesh.Points_Vbo);
+         Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
+         Enable_Vertex_Attrib_Array (Attrib_VP);
+      end if;
+
+      if Has_bones and then aMesh.Vb_Count > 0 then
+         Array_Buffer.Bind (aMesh.Bones_Vbo);
+         Set_Vertex_Attrib_Pointer (Attrib_Bone, 1, Single_Type, False, 0, 0);
+         Enable_Vertex_Attrib_Array (Attrib_Bone);
+      end if;
+
+      Loaded_Meshes.Replace_Element (Mesh_ID, aMesh);
+--        Game_Utils.Game_Log("Mesh_Loader.Load_Managed_Mesh Managed_Meshe " &
+--                              Mesh_Name & " loaded.");
+      return Mesh_ID;
    end Load_Managed_Mesh;
 
    --  ------------------------------------------------------------------------
@@ -217,7 +281,7 @@ package body Mesh_Loader is
                   end if;
                elsif Head = "vt" then
                   Vt_Comps := Integer'Value (Tail (Pos2 + 1 .. Last));
-                  if Vt_Comps = 3 then
+                  if Vt_Comps = 2 then
                      for index in 1 .. New_Mesh.Point_Count loop
                         VTS.Append (Read_Vec2 (Get_Line (Input_File)));
                      end loop;
@@ -267,7 +331,7 @@ package body Mesh_Loader is
 
       if not VBS.Is_Empty then
          New_Mesh.Vb_Count := New_Mesh.Point_Count;
-         New_Mesh.Bone_Ids_Vbo := Create_3D_VBO (To_Vector3_Array (VBS));
+         New_Mesh.Bones_Vbo := Create_3D_VBO (To_Vector3_Array (VBS));
       end if;
 
       if not VTS.Is_Empty then
@@ -288,7 +352,6 @@ package body Mesh_Loader is
       Result := New_Mesh.Point_Count > 0;
       if Result then
          Loaded_Meshes.Append (New_Mesh);
---           Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh gpu data created.");
       else
          Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh data not created for "
                               & Path);
@@ -365,8 +428,7 @@ package body Mesh_Loader is
          end;  --  declare block
       end loop;
       Close (Input_File);
---        Game_Utils.Game_Log ("Loaded_Mesh_Data_Only mesh data loaded from: " &
---                               File_Name);
+
       return True;
    end Load_Mesh_Data_Only;
 
@@ -383,6 +445,10 @@ package body Mesh_Loader is
          Found := To_Index (Curs) = Index;
          if Found then
             VAO := Element (Curs).VAO;
+            if VAO = Null_Array_Object then
+               raise Mesh_Loader_Exception with
+                 "Mesh_Loader.Loaded_Mesh_VAO, a Loaded Mesh VAO has not been initialised";
+            end if;
          else
             Next (Curs);
          end if;
