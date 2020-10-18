@@ -264,7 +264,7 @@ package body MMenu is
       use GL.Types.Singles;
       use Menu_Strings;
 
-      Vertex_Array    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Menu_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Position_Buffer : Buffer;
       Texture_Buffer  : Buffer;
       Position_Array  : constant Vector2_Array (1 .. 6) :=
@@ -279,19 +279,21 @@ package body MMenu is
       Title_Mesh      : Integer := 0;
       Menu_Colour     : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
    begin
-      Vertex_Array.Initialize_Id;
-      Vertex_Array.Bind;
+      Game_Utils.Game_Log ("---MAIN MENU---");
 
-      Position_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Position_Buffer);
+      Position_Buffer := GL_Utils.Create_2D_VBO (Position_Array);
+      Texture_Buffer := GL_Utils.Create_2D_VBO (Texture_Array);
 
-      Texture_Buffer.Initialize_Id;
+      Menu_VAO.Initialize_Id;
+      Menu_VAO.Bind;
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+      Array_Buffer.Bind (Position_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VP, 2, Single_Type, False, 0, 0);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
+      Array_Buffer.Bind (Texture_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
 
