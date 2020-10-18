@@ -11,7 +11,7 @@ package Mesh_Loader is
 
     procedure Init;
     function Load_Managed_Mesh (Mesh_Name : String; Has_Vp, Has_Vn, Has_Vt,
-                                Has_tangents, Has_bones : Boolean := False)
+                                Has_tangents, Has_Bones : Boolean := False)
                                 return Integer;
     function Load_Mesh_Data_Only (File_Name : String;
                                   Points : in out GL_Maths.Vector3_List;
@@ -19,7 +19,7 @@ package Mesh_Loader is
                                   Normals : in out GL_Maths.Vector3_List;
                                   Point_Count : in out Integer)
                                   return Boolean;
-    function Loaded_Mesh_VAO (Index : Integer;
+    function Loaded_Mesh_VAO (Mesh_ID : Integer;
                               VAO : in out  GL.Objects.Vertex_Arrays.Vertex_Array_Object)
                               return Boolean;
     function Point_Count (Index : Integer) return Integer;

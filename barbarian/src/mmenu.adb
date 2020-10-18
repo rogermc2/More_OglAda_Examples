@@ -152,7 +152,7 @@ package body MMenu is
    procedure Init_Input_Actions;
    procedure Init_Position_And_Texture_Buffers;
    procedure Init_Quit_Text;
-   procedure Init_Title (Title_Mesh : out Integer);
+   procedure Init_Title (Title_Mesh_ID : out Integer);
    procedure Init_Various;
 
    --  ------------------------------------------------------------------------
@@ -220,25 +220,20 @@ package body MMenu is
       Cursor_Shader_Manager.Set_Model_Matrix (M_Matrix);
       Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
---        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_Point_Count" &
---                              Integer'Image (Cursor_Point_Count));
---        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
---        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
-      Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
+--        Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
 
-      --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only 3D title");
       --  3D title
       GL.Objects.Programs.Use_Program (Title_Shader_Program);
-      --        Title_Shader_Manager.Set_View_Matrix (Title_V);
-      --        Title_Shader_Manager.Set_Model_Matrix (Title_Matrix);
-      --        Title_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
-      Title_Shader_Manager.Set_View_Matrix (Identity4);
-      Title_Shader_Manager.Set_Model_Matrix (Identity4);
-      Title_Shader_Manager.Set_Perspective_Matrix (Identity4);
+      Title_Shader_Manager.Set_View_Matrix (Title_V);
+      Title_Shader_Manager.Set_Model_Matrix (Title_Matrix);
+      Title_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
       Title_Shader_Manager.Set_Time (Current_Time);
 
-      Title_VAO.Initialize_Id;
-      Title_VAO.Bind;
+      GL_Utils.Bind_VAO (Title_VAO);
+      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+--        Game_Utils.Game_Log ("Mmenus.Draw_Title_Only, Title_Point_Count" &
+--                            Integer'Image (Title_Point_Count));
       Draw_Arrays (Triangles, 0, Int (Title_Point_Count));
 
       --  Draw library logos and stuff
@@ -599,24 +594,31 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Title (Title_Mesh : out Integer) is
+   procedure Init_Title (Title_Mesh_ID : out Integer) is
       use GL.Types.Singles;
       Camera_Position : Vector3 := (0.0, -6.5, 3.0);
-      Camera_Target   : Vector3 :=
-                          Camera_Position + (0.0, 1.0, -1.0);
+      Camera_Target   : Vector3 := Camera_Position + (0.0, 1.0, -1.0);
       X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
       Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
    begin
-      Title_Mesh := Mesh_Loader.Load_Managed_Mesh
+      Title_Mesh_ID := Mesh_Loader.Load_Managed_Mesh
         ("src/meshes/3dtitle_idea.apg", True, True, False, False, False);
-      Title_VAO.Initialize_Id;
-      Title_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
+      if Title_Mesh_ID <= 0 then
+         raise MMenu_Exception with
+           "MMenu.Init_Cursor Load_Managed_Mesh failed to load src/meshes/3dtitle_idea.apg";
+      --  Save Title_VAO
+      elsif not Mesh_Loader.Loaded_Mesh_VAO (Title_Mesh_ID, Title_VAO) then
+         raise MMenu_Exception with
+           "MMenu.Init_Title failed to initialize VAO for Title_Mesh";
+      end if;
+      Title_Point_Count := Mesh_Loader.Point_Count (Title_Mesh_ID);
+
       Title_Author_Text := Text.Add_Text ("a game by anton gerdelan",
                                           0.0, -0.4, 30.0, 0.75, 0.75, 0.75, 1.0);
       Text.Centre_Text (Title_Author_Text, 0.0, -0.8);
       Text.Set_Text_Visible (Title_Author_Text, False);
 
-      Title_Buildstamp_Text := Text.Add_Text ("v1.4 (core)",
+      Title_Buildstamp_Text := Text.Add_Text ("Ada v1.0 (alpha)",
                                               X, Y, 10.0, 0.5, 0.5, 0.5, 1.0);
       Text.Set_Text_Visible (Title_Buildstamp_Text, False);
 
