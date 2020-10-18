@@ -34,6 +34,7 @@ with Title_Shader_Manager;
 
 package body MMenu is
    use GL.Types;
+   use Menu_Strings;
 
    Mmenu_Text_Yoffs   : constant Single := 300.0; -- pixels above horizontal
    --  for text to start
@@ -68,67 +69,66 @@ package body MMenu is
    Cursor_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Title_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
 
-   Mmenu_Open                              : Boolean := False;
-   Mmenu_Was_Closed                        : Boolean := False;
-   Mmenu_Credits_Open                      : Boolean := False;
-   Mmenu_End_Story_Open                    : Boolean := False;
-   Mmenu_Gr_Open                           : Boolean := False;
+   Mmenu_Open            : Boolean := False;
+   Mmenu_Was_Closed      : Boolean := False;
+   Mmenu_Credits_Open    : Boolean := False;
+   Mmenu_End_Story_Open  : Boolean := False;
+   Mmenu_Gr_Open         : Boolean := False;
 
-   Enabled_Strings                                 : array (1 .. 2) of Unbounded_String
+   Enabled_Strings         : array (1 .. 2) of Unbounded_String
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
-   Tex_Filter_Strings                              : array (1 .. 3) of Unbounded_String
+   Tex_Filter_Strings      : array (1 .. 3) of Unbounded_String
      := (To_Unbounded_String ( "nearest"), To_Unbounded_String ("bilinear"),
          To_Unbounded_String ("trilinear"));
-   Menu_Text                                       : GL_Maths.Integer_Array
+   Menu_Text               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
-   Graphics_Text                                   : GL_Maths.Integer_Array
+   Graphics_Text           : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Graphic_Value_Strings                           : array (1 .. Menu_Strings.Num_Graphic_Entries)
+   Graphic_Value_Strings   : array (1 .. Menu_Strings.Num_Graphic_Entries)
      of Unbounded_String := (others => To_Unbounded_String (""));
-   Graphic_Value_Text                              : GL_Maths.Integer_Array
+   Graphic_Value_Text      : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Cal_KB_Text                                     : GL_Maths.Integer_Array
+   Cal_KB_Text             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Cal_GP_Text                                     : GL_Maths.Integer_Array
+   Cal_GP_Text             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Axis_Binding_Text                            : GL_Maths.Integer_Array
+   GP_Axis_Binding_Text    : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Buttons_Binding_Text                         : GL_Maths.Integer_Array
+   GP_Buttons_Binding_Text : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Audio_Text                                      : GL_Maths.Integer_Array
+   Audio_Text              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Audio_Value_Text                                : GL_Maths.Integer_Array
+   Audio_Value_Text        : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Input_Text                                      : GL_Maths.Integer_Array
+   Input_Text              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Input_Value_Text                                : GL_Maths.Integer_Array
+   Input_Value_Text        : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Quit_Text                                       : GL_Maths.Integer_Array
+   Quit_Text               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
-   Confirm_Quit_Text                               : GL_Maths.Integer_Array
+   Confirm_Quit_Text       : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
-   KB_Binding_Text                                 : GL_Maths.Integer_Array
+   KB_Binding_Text         : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
 
-   Text_Background_Texture                 : GL.Objects.Textures.Texture;
+   Text_Background_Texture   : GL.Objects.Textures.Texture;
    User_Chose_Custom_Maps                  : Boolean := False;
    User_Chose_New_Game                     : Boolean := False;
-   We_Are_In_Custom_Maps                   : Boolean := False;
-   Title_Author_Text                       : Integer := -1;
-   Title_Buildstamp_Text                   : Integer := -1;
-   Credits_Text_X                          : Single := 0.0;
-   Credits_Text_Y                          : constant Single := -1.0;
-   Mmenu_Credits_Texture                   : GL.Objects.Textures.Texture;
-   Title_Version_Text                      : Integer := -1;
-   End_Story_Text                          : Integer := -1;
-   Joy_Name                                : Unbounded_String :=
-                                               To_Unbounded_String ("");
-   Joystick_Detected_Text                  : Integer := -1;
-   Greatest_Text_Axis                      : Integer := -1;
-   Restart_Graphics_Text                   : Integer := -1;
-   Already_Bound_Text                      : Integer := -1;
-   Title_Shader_Program                    : GL.Objects.Programs.Program;
-   Title_Skull_Texture                     : GL.Objects.Textures.Texture;
+   We_Are_In_Custom_Maps      : Boolean := False;
+   Title_Author_Text          : Integer := -1;
+   Title_Buildstamp_Text      : Integer := -1;
+   Credits_Text_X: Single := 0.0;
+   Credits_Text_Y: constant Single := -1.0;
+   Mmenu_Credits_Texture      : GL.Objects.Textures.Texture;
+   Title_Version_Text         : Integer := -1;
+   End_Story_Text             : Integer := -1;
+   Joy_Name                   : Unbounded_String := To_Unbounded_String ("");
+   Joystick_Detected_Text     : Integer := -1;
+   Greatest_Text_Axis         : Integer := -1;
+   Restart_Graphics_Text      : Integer := -1;
+   Already_Bound_Text         : Integer := -1;
+   Title_Shader_Program       : GL.Objects.Programs.Program;
+   Title_Skull_Texture        : GL.Objects.Textures.Texture;
 
    Mmenu_Cursor_Curr_Item  : Integer := -1;
    Cursor_Current_Item     : Integer := -1;
@@ -215,10 +215,8 @@ package body MMenu is
       --  Draw cursor skull in background
 --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
      Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
---              Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
       Cursor_VAO.Initialize_Id;
-      Cursor_VAO.Bind;
---              Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Cursor_VAO bound");
+      GL_Utils.Bind_VAO (Cursor_VAO);
       GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
       Cursor_Shader_Manager.Set_Perspective_Matrix (Identity4);
       Cursor_Shader_Manager.Set_View_Matrix (Identity4);
@@ -317,8 +315,9 @@ package body MMenu is
       for index in 1 .. Num_Menu_Entries loop
          Y := Mmenu_Text_Yoffs - Mmenu_Big_Text_Sz * Single (index - 1) /
            Single (Settings.Framebuffer_Height);
-         Menu_Text (index) := Text.Add_Text (Menu_Strings.Menu_Strings (index),
-                                             0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
+         Menu_Text (index) :=
+           Text.Add_Text (Menu_Strings.Menu_String_Items (index),
+                          0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
          Text.Centre_Text (Menu_Text (index), 0.0, Y);
          Text.Set_Text_Visible (Menu_Text (index), False);
       end loop;

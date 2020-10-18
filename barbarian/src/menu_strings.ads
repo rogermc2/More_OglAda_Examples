@@ -18,7 +18,7 @@ package Menu_Strings is
    type Input_Text_Array is array (1 .. Num_Input_Entries) of String (1 .. 31);
    type Quit_Text_Array is array (1 .. Num_Quit_Entries) of String (1 .. 30);
 
-   Menu_Strings   : constant Menu_Text_Array :=
+   Menu_String_Items   : constant Menu_Text_Array :=
                       ("new game        ",
                        "custom maps     ",
                        "graphics        ",
