@@ -151,6 +151,7 @@ package body MMenu is
    procedure Init_Graphic_Text;
    procedure Init_Input_Text;
    procedure Init_Input_Actions;
+   procedure Init_Position_And_Texture_Buffers;
    procedure Init_Quit_Text;
    procedure Init_Title (Title_Mesh : out Integer);
    procedure Init_Various;
@@ -263,16 +264,6 @@ package body MMenu is
       use GL.Types;
       use GL.Types.Singles;
       use Menu_Strings;
-
-      Menu_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Position_Buffer : Buffer;
-      Texture_Buffer  : Buffer;
-      Position_Array  : constant Vector2_Array (1 .. 6) :=
-                          ((-1.0, 1.0), (-1.0, -1.0),  (1.0, -1.0),
-                           (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0));
-      Texture_Array   : constant Vector2_Array (1 .. 6) :=
-                          ((0.0, 1.0), (0.0, 0.0),  (1.0, 0.0),
-                           (1.0, 0.0), (1.0, 1.0), (0.0, 1.0));
       X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
       Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
 
@@ -281,22 +272,7 @@ package body MMenu is
    begin
       Game_Utils.Game_Log ("---MAIN MENU---");
 
-      Position_Buffer := GL_Utils.Create_2D_VBO (Position_Array);
-      Texture_Buffer := GL_Utils.Create_2D_VBO (Texture_Array);
-
-      Menu_VAO.Initialize_Id;
-      Menu_VAO.Bind;
-
-      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-      Array_Buffer.Bind (Position_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer
-        (Shader_Attributes.Attrib_VP, 2, Single_Type, False, 0, 0);
-
-      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-      Array_Buffer.Bind (Texture_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer
-        (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
-
+      Init_Position_And_Texture_Buffers;
       Init_Title (Title_Mesh);
       Init_Cursor (Title_Mesh);
 
@@ -556,6 +532,71 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
+   procedure Init_Position_And_Texture_Buffers is
+      use GL.Objects.Buffers;
+      use GL.Types;
+      use GL.Types.Singles;
+      Menu_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Position_Buffer : Buffer;
+      Texture_Buffer  : Buffer;
+      Position_Array  : constant Vector2_Array (1 .. 6) :=
+                          ((-1.0, 1.0), (-1.0, -1.0),  (1.0, -1.0),
+                           (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0));
+      Texture_Array   : constant Vector2_Array (1 .. 6) :=
+                          ((0.0, 1.0), (0.0, 0.0),  (1.0, 0.0),
+                           (1.0, 0.0), (1.0, 1.0), (0.0, 1.0));
+   begin
+      Position_Buffer := GL_Utils.Create_2D_VBO (Position_Array);
+      Texture_Buffer := GL_Utils.Create_2D_VBO (Texture_Array);
+
+      Menu_VAO.Initialize_Id;
+      Menu_VAO.Bind;
+
+      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+      Array_Buffer.Bind (Position_Buffer);
+      GL.Attributes.Set_Vertex_Attrib_Pointer
+        (Shader_Attributes.Attrib_VP, 2, Single_Type, False, 0, 0);
+
+      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
+      Array_Buffer.Bind (Texture_Buffer);
+      GL.Attributes.Set_Vertex_Attrib_Pointer
+        (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
+
+   end Init_Position_And_Texture_Buffers;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Quit_Text is
+      use Menu_Strings;
+      X        : constant Single :=
+                   (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
+      Y1       : Single := 4.0 * 380.0 / Single (Settings.Framebuffer_Height);
+      Y2       : Single := 40.0 / Single (Settings.Framebuffer_Height);
+      ES_Index : Integer;
+   begin
+      if Settings.Disable_Joystick then
+         ES_Index := 1;
+      else
+         ES_Index := 2;
+      end if;
+      --  only 1 input text in right hand column
+      Input_Value_Text (1) :=
+        Text.Add_Text (To_String (Enabled_Strings (ES_Index)), X, Y1,
+                       20.0, 1.0, 1.0, 1.0, 1.0);
+      Text.Set_Text_Visible (Input_Value_Text (1), False);
+
+      for index in 1 .. Num_Quit_Entries loop
+         Confirm_Quit_Text (index) :=
+           Text.Add_Text (Graphic_Strings (index), X, Single (index) * Y2,
+                          20.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Set_Text_Visible (Confirm_Quit_Text (index), False);
+         Text.Centre_Text (Confirm_Quit_Text (index), 0.0, Y2);
+      end loop;
+
+   end Init_Quit_Text;
+
+   --  ------------------------------------------------------------------------
+
    procedure Init_Title (Title_Mesh : out Integer) is
       use GL.Types.Singles;
       Camera_Position : Vector3 := (0.0, -6.5, 3.0);
@@ -592,38 +633,6 @@ package body MMenu is
       Title_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
 
    end Init_Title;
-
-   --  ------------------------------------------------------------------------
-
-
-   procedure Init_Quit_Text is
-      use Menu_Strings;
-      X        : constant Single :=
-                   (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
-      Y1       : Single := 4.0 * 380.0 / Single (Settings.Framebuffer_Height);
-      Y2       : Single := 40.0 / Single (Settings.Framebuffer_Height);
-      ES_Index : Integer;
-   begin
-      if Settings.Disable_Joystick then
-         ES_Index := 1;
-      else
-         ES_Index := 2;
-      end if;
-      --  only 1 input text in right hand column
-      Input_Value_Text (1) :=
-        Text.Add_Text (To_String (Enabled_Strings (ES_Index)), X, Y1,
-                       20.0, 1.0, 1.0, 1.0, 1.0);
-      Text.Set_Text_Visible (Input_Value_Text (1), False);
-
-      for index in 1 .. Num_Quit_Entries loop
-         Confirm_Quit_Text (index) :=
-           Text.Add_Text (Graphic_Strings (index), X, Single (index) * Y2,
-                          20.0, 1.0, 1.0, 1.0, 1.0);
-         Text.Set_Text_Visible (Confirm_Quit_Text (index), False);
-         Text.Centre_Text (Confirm_Quit_Text (index), 0.0, Y2);
-      end loop;
-
-   end Init_Quit_Text;
 
    --  ------------------------------------------------------------------------
 
