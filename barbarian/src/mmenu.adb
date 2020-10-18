@@ -146,11 +146,13 @@ package body MMenu is
 
 
    procedure Init_Audio_Value_Strings;
+   procedure Init_Cursor (Title_Mesh : Integer);
    procedure Init_Graphic_Value_Strings;
    procedure Init_Graphic_Text;
    procedure Init_Input_Text;
    procedure Init_Input_Actions;
    procedure Init_Quit_Text;
+   procedure Init_Title (Title_Mesh : out Integer);
    procedure Init_Various;
 
    --  ------------------------------------------------------------------------
@@ -212,7 +214,7 @@ package body MMenu is
    begin
       --  Draw cursor skull in background
 --        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only");
-      GL.Objects.Textures.Targets.Texture_2D.Bind (Title_Skull_Texture);
+     Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
 --              Game_Utils.Game_Log ("Mmenu.Draw_Title_Only initialize Cursor_VAO");
       Cursor_VAO.Initialize_Id;
       Cursor_VAO.Bind;
@@ -276,77 +278,27 @@ package body MMenu is
       X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
       Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
 
-      Camera_Position : Vector3 := (0.0, -6.5, 3.0);
-      Camera_Target   : Singles.Vector3 :=
-                          Camera_Position + (0.0, 1.0, -1.0);
       Title_Mesh      : Integer := 0;
-      Cursor_Mesh     : Integer := 0;
       Menu_Colour     : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
    begin
       Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
+
       Position_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Position_Buffer);
+
       Texture_Buffer.Initialize_Id;
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-      Array_Buffer.Bind (Position_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VP, 2, Single_Type, False, 0, 0);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-      Array_Buffer.Bind (Position_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
 
-      Title_Mesh := Mesh_Loader.Load_Managed_Mesh
-        ("src/meshes/3dtitle_idea.apg", True, True, False, False, False);
-      Title_VAO.Initialize_Id;
-      Title_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
-      Title_Author_Text := Text.Add_Text ("a game by anton gerdelan",
-                                          0.0, -0.4, 30.0, 0.75, 0.75, 0.75, 1.0);
-      Text.Centre_Text (Title_Author_Text, 0.0, -0.8);
-      Text.Set_Text_Visible (Title_Author_Text, False);
-
-      Title_Buildstamp_Text := Text.Add_Text ("v1.4 (core)",
-                                              X, Y, 10.0, 0.5, 0.5, 0.5, 1.0);
-      Text.Set_Text_Visible (Title_Buildstamp_Text, False);
-
-      Title_Version_Text := Text.Add_Text ("pre-release demo",
-                                           0.0, -0.2, 20.0, 1.0, 1.0, 0.0, 1.0);
-      Text.Centre_Text (Title_Version_Text, 0.0, -0.8);
-      Text.Set_Text_Visible (Title_Version_Text, False);
-
-      Title_Shader_Manager.Init (Title_Shader_Program);
-      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
-                                   (0.0, 1.0, 0.0), Title_V);
-      Title_M := Maths.Translation_Matrix ((-0.4, -3.0, -1.0));
-      Title_M := Maths.Scaling_Matrix ((0.5, 0.5, 0.5)) * Title_M;
-      Title_Shader_Manager.Set_Model_Matrix (Title_M);
-      Title_Shader_Manager.Set_View_Matrix (Title_V);
-      Title_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
-
-      Cursor_Shader_Manager.Init (Cursor_Shader_Program);
-      Cursor_M := Identity4;
-
-      Camera_Position := (0.0, 0.0, 10.0);
-      Camera_Target := (0.0, 0.0, 0.0);
-      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
-                                   (0.0, 1.0, 0.0), Title_V);
-      Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
-      Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
-      Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
-
-      Cursor_Mesh := Mesh_Loader.Load_Managed_Mesh
-        ("src/meshes/skull_helmet.apg", True, True, True, False, False);
-
-      if Cursor_Mesh <= 0 then
-         raise MMenu_Exception with
-           "MMenu.Init_MMenu Load_Managed_Mesh failed to load src/meshes/skull_helmet.apg";
-      elsif not Mesh_Loader.Loaded_Mesh_VAO (Cursor_Mesh, Cursor_VAO) then
-         raise MMenu_Exception with
-           "MMenu.Init_MMenu failed to initialize VAO for Cursor_Mesh";
-      end if;
-      Cursor_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
+      Init_Title (Title_Mesh);
+      Init_Cursor (Title_Mesh);
 
       --  Credits shader not implemented
       Credits_Text_X := -715.0 / Single (Settings.Framebuffer_Width);
@@ -355,9 +307,6 @@ package body MMenu is
                                        Credits_Text_Y, 30.0, 1.0, 1.0, 0.1, 1.0);
       Text.Set_Text_Visible (End_Story_Text, False);
 
-      Texture_Manager.Load_Image_To_Texture
-        ("src/textures/skull_small_helmet_painterv_shade.png",
-         Mmenu_Cursor_Texture, False, True);
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/title_skull.png", Title_Skull_Texture, False, True);
       Texture_Manager.Load_Image_To_Texture
@@ -418,6 +367,40 @@ package body MMenu is
       end loop;
 
    end Init_Audio_Value_Strings;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init_Cursor  (Title_Mesh : Integer) is
+      Camera_Position : Singles.Vector3 := (0.0, 0.0, 10.0);
+      Camera_Target   : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Cursor_Mesh     : Integer := 0;
+   begin
+         Cursor_Shader_Manager.Init (Cursor_Shader_Program);
+      Cursor_M := Singles.Identity4;
+
+      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
+                                   (0.0, 1.0, 0.0), Title_V);
+      Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
+      Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
+      Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
+
+      Cursor_Mesh := Mesh_Loader.Load_Managed_Mesh
+        ("src/meshes/skull_helmet.apg", True, True, True, False, False);
+
+      if Cursor_Mesh <= 0 then
+         raise MMenu_Exception with
+           "MMenu.Init_MMenu Load_Managed_Mesh failed to load src/meshes/skull_helmet.apg";
+      elsif not Mesh_Loader.Loaded_Mesh_VAO (Cursor_Mesh, Cursor_VAO) then
+         raise MMenu_Exception with
+           "MMenu.Init_MMenu failed to initialize VAO for Cursor_Mesh";
+      end if;
+
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/skull_small_helmet_painterv_shade.png",
+         Mmenu_Cursor_Texture, False, True);
+      Cursor_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
+
+   end Init_Cursor;
 
    --  ------------------------------------------------------------------------
 
@@ -571,6 +554,46 @@ package body MMenu is
    end Init_Input_Text;
 
    --  ------------------------------------------------------------------------
+
+   procedure Init_Title (Title_Mesh : out Integer) is
+      use GL.Types.Singles;
+      Camera_Position : Vector3 := (0.0, -6.5, 3.0);
+      Camera_Target   : Vector3 :=
+                          Camera_Position + (0.0, 1.0, -1.0);
+      X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
+      Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
+   begin
+      Title_Mesh := Mesh_Loader.Load_Managed_Mesh
+        ("src/meshes/3dtitle_idea.apg", True, True, False, False, False);
+      Title_VAO.Initialize_Id;
+      Title_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
+      Title_Author_Text := Text.Add_Text ("a game by anton gerdelan",
+                                          0.0, -0.4, 30.0, 0.75, 0.75, 0.75, 1.0);
+      Text.Centre_Text (Title_Author_Text, 0.0, -0.8);
+      Text.Set_Text_Visible (Title_Author_Text, False);
+
+      Title_Buildstamp_Text := Text.Add_Text ("v1.4 (core)",
+                                              X, Y, 10.0, 0.5, 0.5, 0.5, 1.0);
+      Text.Set_Text_Visible (Title_Buildstamp_Text, False);
+
+      Title_Version_Text := Text.Add_Text ("pre-release demo",
+                                           0.0, -0.2, 20.0, 1.0, 1.0, 0.0, 1.0);
+      Text.Centre_Text (Title_Version_Text, 0.0, -0.8);
+      Text.Set_Text_Visible (Title_Version_Text, False);
+
+      Title_Shader_Manager.Init (Title_Shader_Program);
+      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
+                                   (0.0, 1.0, 0.0), Title_V);
+      Title_M := Maths.Translation_Matrix ((-0.4, -3.0, -1.0));
+      Title_M := Maths.Scaling_Matrix ((0.5, 0.5, 0.5)) * Title_M;
+      Title_Shader_Manager.Set_Model_Matrix (Title_M);
+      Title_Shader_Manager.Set_View_Matrix (Title_V);
+      Title_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
+
+   end Init_Title;
+
+   --  ------------------------------------------------------------------------
+
 
    procedure Init_Quit_Text is
       use Menu_Strings;
