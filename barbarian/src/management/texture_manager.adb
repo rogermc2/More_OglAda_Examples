@@ -18,7 +18,7 @@ package body Texture_Manager is
    type Mod_16 is mod 2 ** 16;
 
    package Bound_Textures_Package is new Ada.Containers.Vectors
-     (Positive, GL.Objects.Textures.Texture);
+     (Natural, GL.Objects.Textures.Texture);
    type Bound_Textures_List is new Bound_Textures_Package.Vector with null record;
 
    type Loaded_Texture is record
@@ -44,6 +44,7 @@ package body Texture_Manager is
    procedure Bind_Texture (Slot : Natural; Tex : GL.Objects.Textures.Texture) is
       use GL.Objects.Textures.Targets;
       use GL.Types;
+      use Bound_Textures_Package;
    begin
       if Slot > 12 then
          raise Texture_Exception with
@@ -147,6 +148,8 @@ package body Texture_Manager is
       Game_Utils.Game_Log ("Initializing texture manager.");
       Bound_Textures.Clear;
       Loaded_Textures.Clear;
+      Bound_Textures.Set_Length (12);
+      Loaded_Textures.Set_Length (12);
       Create_Default_Texture;
       Game_Utils.Game_Log ("Texture manager initialized.");
    end Init;
@@ -157,14 +160,12 @@ package body Texture_Manager is
       use Bound_Textures_Package;
       Found : Boolean := False;
       Index : Natural;
-      Curs  : Cursor;
    begin
       if not Bound_Textures.Is_Empty then
          Index := Bound_Textures.First_Index;
          while Index <= Bound_Textures.Last_Index and not Found loop
             Found := Slot = Index;
-            Curs := Bound_Textures.To_Cursor (Index);
-            Next (Curs);
+            Index := Index + 1;
          end loop;
       end if;
       return Found;
