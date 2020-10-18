@@ -3,7 +3,8 @@
 
 out vec4 frag_colour;
 
-in vec3 p_loc, n_loc;
+in vec3 p_loc;
+in vec3 n_loc;
 
 vec3 top_c = vec3 (0.0, 1.0, 0.0);
 vec3 mid_c = vec3 (1.0, 1.0, 1.0);
@@ -39,7 +40,7 @@ void main ()
 	float peakx = -5.0 + mod (time * 20.0, 20.0);
 	float peakd = max (0.0, 1.0 - abs (peakx - p_loc.x));
 	float shinef = max(0.1,mid_f)* peakd;
-	frag_colour.rgb += vec3 (shinef,shinef,shinef);
+	frag_colour.rgb = frag_colour.rgb + vec3 (shinef,shinef,shinef);
 	
 	frag_colour.a = 1.0;
     frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
