@@ -17,8 +17,8 @@ package body Title_Shader_Manager is
       use Program_Loader;
    begin
       Shader_Program := Program_From
-        ((Src ("src/shaders_3_2/cursor.vert", Vertex_Shader),
-         Src ("src/shaders_3_2/cursor.frag", Fragment_Shader)));
+        ((Src ("src/shaders_3_2/title.vert", Vertex_Shader),
+         Src ("src/shaders_3_2/title.frag", Fragment_Shader)));
 
       Render_Uniforms.Model_Matrix_ID := Uniform_Location (Shader_Program, "M");
       Render_Uniforms.Perspective_Matrix_ID :=
