@@ -32,7 +32,7 @@ package body Menu_Credits_Shader_Manager is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Title_Shader_Manager.Init.");
+         Put_Line ("An exception occurred in Menu_Credits_Shader_Manager.");
          raise;
    end Init;
 

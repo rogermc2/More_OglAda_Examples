@@ -5,40 +5,18 @@ package Settings is
 
    type Gfx_Preset_Type is (Gfx_Dire, Gfx_Low, Gfx_Medium, Gfx_High,
                             Gfx_Ultra, Gfx_Custom);
-   type Settings is private;
+   for Gfx_Preset_Type use (Gfx_Dire    => 0,
+                            Gfx_Low     => 1,
+                            Gfx_Medium  => 2,
+                            Gfx_High    => 3,
+                            Gfx_Ultra   => 4,
+                            Gfx_Custom  => 5);
+
    type V_GL is (V2_1, V3_2);
+   for V_GL use (V2_1 => 0,
+                 V3_2 => 1);
    subtype Audio_Volume_Range is Integer range 0 .. 10;
 
-   function Anisotroic_Texturing_Factor return Float;
-   function Audio_Volume return Audio_Volume_Range;
-   function Auto_Blood_Wipe return Boolean;
-   procedure Default_Settings;
-   function Disable_Joystick return Boolean;
-   function Far_Clip return GL.Types.Single;
-   function Fb_Effects_Enabled return Boolean;
-   function Framebuffer_Height return GL.Types.Int;
-   function Framebuffer_Width return GL.Types.Int;
-   function Full_Screen return Boolean;
-   function Graphic_Preset return Gfx_Preset_Type;
-   procedure Load_Settings;
-   function Multi_Sample_Anti_Aliasing return Integer;
-   function Music_Volume return Audio_Volume_Range;
-   function Particle_Mipmaps_Enabled return Boolean;
-   function Render_OLS return Boolean;
-   function Render_Distance return Integer;
-   function Save_Settings return Boolean;
-   function Shadows_Enabled return Boolean;
-   function Show_FPS return Boolean;
-   function Shadows_Size return Integer;
-   function Super_Sample_Anti_Aliasing return Single;
-   function Texf return Integer;
-   function Texture_Filter return Integer;
-   function Tile_Batch_Width return Integer;
-   function V_Sync return Boolean;
-   function Window_Width_To_Save return Integer;
-   function Window_Height_To_Save return Integer;
-
-private
    type Settings is record
       Joy_Axis_Thresh              : Float := 0.5;
       Gfx_Presets                  : Gfx_Preset_Type := Gfx_Medium;
@@ -59,10 +37,10 @@ private
       Super_Sample_Anti_Aliasing   : Float := 2.0;
       --  Texture filtering nearest = 0, bilinear, trilinear
       Texture_Filtering            : Integer := 2;
-      Anisotroic_Texturing_Factor  : Float := 1.0;  -- 1.0 to 16.0
+      Anisotroic_Texturing_Factor  : Integer := 1;  -- 1 to 16
       --  Maximum rendering distance in tiles from player
       Render_Distance              : Integer := 15;
-      Far_Clip                     : Single := 0.0;
+      Far_Clip                     : Single := 40.0;
       --  Number of tiles*tiles to put in batches
       Tile_Batch_Width             : Integer := 8;
       Texf                         : Integer := 2;
@@ -75,12 +53,41 @@ private
       Vid_Rec_Mode                 : Boolean := False;
       Render_OLS                   : Boolean := True;
       Shadows_Enabled              : Boolean := True;
-      Fb_Effects_Enabled           : Boolean := True;
+      Fb_Effects_Enabled           : Boolean := False;
       Particles_Enabled            : Boolean := True;
       Particle_Mipmaps_Enabled     : Boolean := True;
       Auto_Blood_Wipe              : Boolean := False;
       V_Sync                       : Boolean := True;
       Hide_Gui                     : Boolean := False;
    end record;
+
+   function Anisotroic_Texturing_Factor return Integer;
+   function Audio_Volume return Audio_Volume_Range;
+   function Auto_Blood_Wipe return Boolean;
+   procedure Default_Settings;
+   function Disable_Joystick return Boolean;
+   function Far_Clip return GL.Types.Single;
+   function Fb_Effects_Enabled return Boolean;
+   function Framebuffer_Height return GL.Types.Int;
+   function Framebuffer_Width return GL.Types.Int;
+   function Full_Screen return Boolean;
+   function Graphic_Preset return Gfx_Preset_Type;
+   procedure Load_Settings (theSettings : Settings);
+   function Multi_Sample_Anti_Aliasing return Integer;
+   function Music_Volume return Audio_Volume_Range;
+   function Particle_Mipmaps_Enabled return Boolean;
+   function Render_OLS return Boolean;
+   function Render_Distance return Integer;
+   function Save_Settings return Boolean;
+   function Shadows_Enabled return Boolean;
+   function Show_FPS return Boolean;
+   function Shadows_Size return Integer;
+   function Super_Sample_Anti_Aliasing return Single;
+   function Texf return Integer;
+   function Texture_Filter return Integer;
+   function Tile_Batch_Width return Integer;
+   function V_Sync return Boolean;
+   function Window_Width_To_Save return Integer;
+   function Window_Height_To_Save return Integer;
 
 end Settings;
