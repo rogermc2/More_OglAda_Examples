@@ -43,5 +43,4 @@ void main ()
 	frag_colour.rgb = frag_colour.rgb + vec3 (shinef,shinef,shinef);
 	
 	frag_colour.a = 1.0;
-    frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
     }

@@ -1,11 +1,5 @@
-//
-// Crongdor the Barbarian
-// fade-to-black multi-pass shader
-// First version Anton Gerdelan, ? 2013
-// Latest code review 15 Dec 2014
-//
 
-#version 150
+#version 410 core
 
 layout(location = 0) in vec2 vp;
 
