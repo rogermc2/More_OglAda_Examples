@@ -2,13 +2,15 @@
 with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Input_Handler;
+
 package body Settings is
 
    G_Settings : Settings;
 
    --  ------------------------------------------------------------------------
 
-   function Anisotroic_Texturing_Factor return Float is
+   function Anisotroic_Texturing_Factor return Integer is
    begin
       return G_Settings.Anisotroic_Texturing_Factor;
    end Anisotroic_Texturing_Factor;
@@ -45,7 +47,7 @@ package body Settings is
       G_Settings.Shadow_Size := 512;
       G_Settings.Super_Sample_Anti_Aliasing := 2.0;
       G_Settings.Texf := 2;
-      G_Settings.Anisotroic_Texturing_Factor := 4.0;
+      G_Settings.Anisotroic_Texturing_Factor := 4;
       G_Settings.Audio_Volume := 5;
       G_Settings.Music_Volume := 5;
       G_Settings.Render_Dist := 15;
@@ -53,7 +55,7 @@ package body Settings is
       G_Settings.Tile_Batch_Width := 8;
       G_Settings.Render_OLS := True;
       G_Settings.Shadows_Enabled := True;
-      G_Settings.Fb_Effects_Enabled := True;
+      G_Settings.Fb_Effects_Enabled := False;
       G_Settings.Particles_Enabled := True;
       G_Settings.Particle_Mipmaps_Enabled := True;
       G_Settings.Auto_Blood_Wipe := False;
@@ -113,32 +115,9 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Settings is
-      use Ada.Strings;
-      Input_File       : File_Type;
+   procedure Load_Settings (theSettings : Settings) is
    begin
-      Open (Input_File, In_File, "src/settings.cfg");
-      while not End_Of_File (Input_File) loop
-         declare
-            aLine          : constant String := Get_Line (Input_File);
-            Last           : constant Integer := aLine'Length;
-            Pos            : constant Natural := Fixed.Index (aLine, "_");
-            Head           : constant String := aLine (1 .. Pos);
-            Tail           : constant String := aLine (Pos + 1 .. Last);
-         begin
-            if Head = "KEY_" then
-               null;
-            elsif Head = "Joy_" then
-               null;
-            elsif Head = "GFX_" then
-               null;
-            elsif Head = "AUD_" then
-               null;
-            end if;
-         end;  --  declare block
-      end loop;
-      Close (Input_File);
-
+      G_Settings := theSettings;
    end Load_Settings;
 
    --  ------------------------------------------------------------------------
