@@ -4,7 +4,7 @@ with Settings;
 package body Camera is
     G_Cam         : Camera_Data;
     Prev_Cam_Pos  : Singles.Vector3 := (0.0, 0.0, 0.0);
-    Far_Point_Dir : Singles.Vector3 := (0.0, 0.0, -1.0);
+    Far_Point_Dir : Singles.Vector3 := (0.0, 0.0, 0.0);
     First_Person  : Boolean := False;
 
     --  ------------------------------------------------------------------------
@@ -12,10 +12,10 @@ package body Camera is
     procedure Init is
         use Singles;
         use Maths;
-        Dir     : Singles.Vector3;
-        FP_Pos  : Singles.Vector3;
+        Dir               : Singles.Vector3;
+        First_Person_Pos  : Singles.Vector3;
     begin
-        G_Cam.World_Position := (2.0, 10.0, 2.0);
+        G_Cam.World_Position := (2.0, 10.0, -2.0);  -- orig 2.0
         Prev_Cam_Pos := G_Cam.World_Position;
         G_Cam.Shake_Mod_Position := (0.0, 0.0, 0.0);
         G_Cam.Original_Screen_Shake_Time := 0.0;
@@ -30,13 +30,13 @@ package body Camera is
           Single (Settings.Framebuffer_Width);
         G_Cam.Near := 0.1;
         G_Cam.Far := Settings.Far_Clip;
-        Far_Point_Dir := (0.0, 0.0, -1.0);
+        Far_Point_Dir := (0.0, 0.0, 1.0);  --  orig z -1.0
         if First_Person then
             Dir := G_Cam.World_Position - Prev_Cam_Pos;
             Dir (GL.X) := 0.0;
-            FP_Pos := G_Cam.World_Position;
-            FP_Pos (GL.X) := FP_Pos (GL.X) - 11.0;
-             Maths.Init_Lookat_Transform (FP_Pos, FP_Pos + Dir,
+            First_Person_Pos := G_Cam.World_Position;
+            First_Person_Pos (GL.X) := First_Person_Pos (GL.X) - 11.0;
+             Maths.Init_Lookat_Transform (First_Person_Pos, First_Person_Pos + Dir,
                                           (0.0, 1.0, 0.0), G_Cam.View_Matrix);
         else
             Maths.Init_Lookat_Transform (G_Cam.World_Position, (2.0, 0.0, 2.0),

@@ -16,6 +16,6 @@ void main ()
 	vec4 texel_diff = texture (diff_map, st);
 	vec3 n = normalize (n_eye);
 	float dp = max (0.0, dot (n, normalize (-p_eye)));
-	frag_colour.rgb = texel_diff.rgb * dp;
+	frag_colour.rgb = 3.0 * texel_diff.rgb * dp;
 	frag_colour.a = texel_diff.a;
     }

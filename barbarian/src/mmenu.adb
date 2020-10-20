@@ -204,23 +204,27 @@ package body MMenu is
       use GL.Types;
       use Singles;
       use Maths;
-      S_Matrix     : constant Singles.Matrix4 := Scaling_Matrix (10.0);
+      USE Shader_Attributes;
+      S_Matrix     : constant Singles.Matrix4 := Scaling_Matrix (5.0);  --  orig 10.0
       T_Matrix     : constant Singles.Matrix4 :=
-                       Translation_Matrix ((0.0, -10.0, -30.0));
+                       Translation_Matrix ((0.0, 0.0, -30.0)); --  orig 0.0, -10.0, -30.0
       M_Matrix     : constant Singles.Matrix4 := T_Matrix * S_Matrix;
       Title_Matrix : constant Singles.Matrix4 :=
-                       Translation_Matrix ((-0.4, -3.0, -1.0));
+                       Translation_Matrix ((-0.4, -3.0, 1.0)); --  orig z -1.0
       Current_Time : constant Single := Single (Glfw.Time);
    begin
       --  Draw cursor skull in background
       Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
       GL_Utils.Bind_VAO (Cursor_VAO);
 
+--        Game_Utils.Game_Log ("Mmenu.Draw_Title_Only Far: " &
+--                               Single'Image (Settings.Far_Clip));
+
       GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
       Cursor_Shader_Manager.Set_Model_Matrix (M_Matrix);
       Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.Projection_Matrix);
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
---        Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
+      Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
 
       --  3D title
       GL.Objects.Programs.Use_Program (Title_Shader_Program);
@@ -230,15 +234,12 @@ package body MMenu is
       Title_Shader_Manager.Set_Time (Current_Time);
 
       GL_Utils.Bind_VAO (Title_VAO);
-      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
---        Game_Utils.Game_Log ("Mmenus.Draw_Title_Only, Title_Point_Count" &
---                            Integer'Image (Title_Point_Count));
+--        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+--        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       Draw_Arrays (Triangles, 0, Int (Title_Point_Count));
-
       --  Draw library logos and stuff
-      Text.Draw_Text (Title_Author_Text);
-      Text.Draw_Text (Title_Buildstamp_Text);
+--        Text.Draw_Text (Title_Author_Text);
+--        Text.Draw_Text (Title_Buildstamp_Text);
 
    end Draw_Title_Only;
 
@@ -397,7 +398,7 @@ package body MMenu is
       Graphic_Value_Strings (9) := GL_Utils.To_UB_String (Settings.Fb_Effects_Enabled);
       Graphic_Value_Strings (10) := To_Unbounded_String (Integer'Image (Settings.Texf));
       Graphic_Value_Strings (11) := To_Unbounded_String
-        (Float'Image (Settings.Anisotroic_Texturing_Factor));
+        (Integer'Image (Settings.Anisotroic_Texturing_Factor));
       Graphic_Value_Strings (12) := To_Unbounded_String
         (Integer'Image (Settings.Multi_Sample_Anti_Aliasing));
       Graphic_Value_Strings (13) := To_Unbounded_String

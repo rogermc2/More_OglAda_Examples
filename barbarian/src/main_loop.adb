@@ -3,7 +3,6 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Culling;
---  with GL.Text;
 with GL.Toggles;
 with GL.Types; use GL.Types;
 with GL.Types.Colors;
@@ -38,6 +37,7 @@ with Particle_System;
 with Projectile_Manager;
 with Prop_Renderer;
 with Settings;
+with Settings_Loader;
 with Shader_Manager;
 with Shadows;
 with Sprite_Renderer;
@@ -92,7 +92,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Init_Modules (Window : in out Glfw.Windows.Window) is
    begin
       Input_Handler.Register_Input_Actions;
-      Settings.Load_Settings;
+      Settings_Loader.Load_Settings;
       Shader_Manager.Init;
       Audio_Manager.Init;
       Texture_Manager.Init;
