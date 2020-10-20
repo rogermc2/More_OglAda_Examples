@@ -8,9 +8,9 @@ with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
 with GL.Objects.Textures;
-with GL.Objects.Textures.Targets;
 with GL.Types;
 with GL.Types.Colors;
+with GL.Uniforms;
 with GL.Window;
 
 with Glfw;
@@ -33,13 +33,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Indices_Buffer : GL.Objects.Buffers.Buffer;
    theTexture     : GL.Objects.Textures.Texture;
    Render_Program : GL.Objects.Programs.Program;
+   Texture_ID     : GL.Uniforms.Uniform;
 
    --  ------------------------------------------------------------------------
 
    procedure Render  (Window  : in out Glfw.Windows.Window) is
       use GL.Types;
-      use GL.Objects.Buffers;
-      use GL.Objects.Textures.Targets;
       Background    : constant GL.Types.Colors.Color := (0.2, 0.3, 0.3, 1.0);
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
@@ -48,10 +47,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Background_Colour (Background);
-      GL.Objects.Programs.Use_Program (Render_Program);
-
-      Texture_2D.Bind (theTexture);
-      Array_Buffer.Bind (Vertex_Buffer);
 
       GL.Objects.Buffers.Draw_Elements (Triangles, 6, UInt_Type, 0);
 
@@ -68,7 +63,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use GL.Objects.Shaders;
       use GL.Types;
       use Program_Loader;
-      Stride : constant Int := Maths.Vector8'Size / 8;
+      Stride    : constant Int := Maths.Vector8'Size / 8;
+      Skip_Size : constant Int := Single'Size / 8;
    begin
       Vertex_Array.Initialize_Id;
       Vertex_Array.Bind;
@@ -87,14 +83,18 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
         ((Src ("src/shaders/4.1.texture.vs", Vertex_Shader),
          Src ("src/shaders/4.1.texture.fs", Fragment_Shader)));
 
+      GL.Objects.Programs.Use_Program (Render_Program);
+      Texture_ID := GL.Objects.Programs.Uniform_Location (Render_Program, "texture1");
+      GL.Uniforms.Set_Int (Texture_ID, 0);
+
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, True, Stride, 0);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, Stride, 3);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, True, Stride, 3 * Skip_Size);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (2);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, Stride, 6);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, True, Stride, 6 * Skip_Size);
 
       Textures_41.Load_Texture (theTexture,
                                 "../resources/textures/container.jpg");
