@@ -247,7 +247,6 @@ package body Text is
       Enable (Blend);
 
       theText := Renderable_Texts.Element (Text_Index);
-      theText.Visible := True;
       if not theText.Points_VBO.Initialized then
          raise Text_Exception with
          "Text.Draw_Text the Points_VBO is invalid.";
@@ -295,13 +294,8 @@ package body Text is
                                                False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VT);
 
---        Enable (GL.Toggles.Vertex_Program_Point_Size);
---        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, theText.Point_Count);
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Triangles, 0, Int (theText.Point_Count));
-
-      GL.Attributes.Disable_Vertex_Attrib_Array (Attrib_VP);
-      GL.Attributes.Disable_Vertex_Attrib_Array (Attrib_VT);
 
       Enable (Depth_Test);
       Disable (Blend);
