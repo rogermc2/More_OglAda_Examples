@@ -130,6 +130,9 @@ package body MMenu is
    Title_Shader_Program       : GL.Objects.Programs.Program;
    Title_Skull_Texture        : GL.Objects.Textures.Texture;
 
+   Menu_VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Position_Buffer         : GL.Objects.Buffers.Buffer;
+   Texture_Buffer          : GL.Objects.Buffers.Buffer;
    Mmenu_Cursor_Curr_Item  : Integer := -1;
    Cursor_Current_Item     : Integer := -1;
    Cursor_Point_Count      : Integer := 0;
@@ -234,12 +237,10 @@ package body MMenu is
       Title_Shader_Manager.Set_Time (Current_Time);
 
       GL_Utils.Bind_VAO (Title_VAO);
---        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
---        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       Draw_Arrays (Triangles, 0, Int (Title_Point_Count));
       --  Draw library logos and stuff
---        Text.Draw_Text (Title_Author_Text);
---        Text.Draw_Text (Title_Buildstamp_Text);
+      Text.Draw_Text (Title_Author_Text);
+      Text.Draw_Text (Title_Buildstamp_Text);
 
    end Draw_Title_Only;
 
@@ -263,6 +264,9 @@ package body MMenu is
 
       Title_Mesh      : Integer := 0;
       Menu_Colour     : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
+      Menu_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Position_Buffer : Buffer;
+      Texture_Buffer  : Buffer;
    begin
       Game_Utils.Game_Log ("---MAIN MENU---");
 
@@ -528,15 +532,12 @@ package body MMenu is
 
    end Init_Input_Text;
 
-   --  ------------------------------------------------------------------------
+   --  --------------------------- ---------------------------------------------
 
    procedure Init_Position_And_Texture_Buffers is
       use GL.Objects.Buffers;
       use GL.Types;
       use GL.Types.Singles;
-      Menu_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Position_Buffer : Buffer;
-      Texture_Buffer  : Buffer;
       Position_Array  : constant Vector2_Array (1 .. 6) :=
                           ((-1.0, 1.0), (-1.0, -1.0),  (1.0, -1.0),
                            (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0));
@@ -544,6 +545,13 @@ package body MMenu is
                           ((0.0, 1.0), (0.0, 0.0),  (1.0, 0.0),
                            (1.0, 0.0), (1.0, 1.0), (0.0, 1.0));
    begin
+      --  Each attribute stated in a Vertex Array Objects state vector may
+      --  refer to a different Vertex Buffer Object.
+      --  This reference is stored when Set_Vertex_Attrib_Pointer is called;
+      --  the buffer which is currently bound to the target ARRAY_BUFFER is
+      --  associated to the attribute and the name (value) of the object is
+      --  stored in the state vector of the VAO.
+      --  The ARRAY_BUFFER binding is a global state.
       Position_Buffer := GL_Utils.Create_2D_VBO (Position_Array);
       Texture_Buffer := GL_Utils.Create_2D_VBO (Texture_Array);
 
@@ -599,8 +607,8 @@ package body MMenu is
       use GL.Types.Singles;
       Camera_Position : Vector3 := (0.0, -6.5, 3.0);
       Camera_Target   : Vector3 := Camera_Position + (0.0, 1.0, -1.0);
-      X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
-      Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
+      X               : constant Single := 400.0 / Single (Settings.Framebuffer_Width);
+      Y               : Single := 40.0 / Single (Settings.Framebuffer_Height);
    begin
       Title_Mesh_ID := Mesh_Loader.Load_Managed_Mesh
         ("src/meshes/3dtitle_idea.apg", True, True, False, False, False);
@@ -621,6 +629,7 @@ package body MMenu is
 
       Title_Buildstamp_Text := Text.Add_Text ("Ada v1.0 (alpha)",
                                               X, Y, 10.0, 0.5, 0.5, 0.5, 1.0);
+--        Text.Centre_Text (Title_Buildstamp_Text, 0.0, 0.0);
       Text.Set_Text_Visible (Title_Buildstamp_Text, False);
 
       Title_Version_Text := Text.Add_Text ("pre-release demo",
