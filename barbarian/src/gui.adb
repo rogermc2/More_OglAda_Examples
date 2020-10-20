@@ -149,6 +149,7 @@ package body GUI is
 
       for index in 1 .. 3 loop
          if Control_Button_Overlays.In_Use (index) then
+            Game_Utils.Game_Log ("GUI.Draw_Controller_Button_Overlays, Control_Button_Overlay In_Use");
             Control_Button_Overlays.Life_Time (Int (index)) :=
               Control_Button_Overlays.Life_Time (Int (index)) + Single (Elapsed);
             if Control_Button_Overlays.Life_Time (Int (index)) >

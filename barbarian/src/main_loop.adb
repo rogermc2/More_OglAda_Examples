@@ -141,6 +141,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       b             : GL.Types.Single := 0.0;
       Back_Colour   : Colors.Color;
       Window_Closed : Boolean := False;
+      Key_Now       : Glfw.Input.Button_State;
    begin
       Game_Utils.Game_Log ("---Main_Loop.Introduction---");
       Is_Running := True;
@@ -165,12 +166,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
 
          Game_Camera.Is_Dirty := False;
-         if Was_Key_Pressed (Escape) or
-           Was_Key_Pressed (Space) or
-           Was_Key_Pressed (Enter) or
-           Was_Action_Pressed (OK_Action) or
-           Was_Action_Pressed (Attack_Action) then
+         Key_Now := Main_Window.Key_State (Glfw.Input.Keys.Space);
+         if Was_Key_Pressed (Window, Escape) or
+           Was_Key_Pressed (Window, Space) or
+           Was_Key_Pressed (Window, Enter) or
+           Was_Action_Pressed (Window, OK_Action) or
+           Was_Action_Pressed (Window, Attack_Action) then
             Is_Running := False;
+            Game_Utils.Game_Log ("Key pressed");
          end if;
 
          Window_Closed := Window.Should_Close;
@@ -203,6 +206,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Flash_Timer  : Float := 0.0;
    begin
       Game_Utils.Game_Log ("Main_Loop.Main_Setup started");
+      Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
+--        Utilities.Enable_Mouse_Callbacks (Window, True);
+--        Window.Enable_Callback (Glfw.Windows.Callbacks.Char);
+--        Window.Enable_Callback (Glfw.Windows.Callbacks.Position);
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Width := Single (Window_Width);
       Height := Single (Window_Height);
@@ -239,7 +246,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Glfw.Input.Poll_Events;
 --           --  Poll_Joystick
          Glfw.Windows.Context.Swap_Buffers (Window'Access);
-         if not MMenu.Update_MMenu (Delta_Time) then
+         if not MMenu.Update_MMenu (Window, Delta_Time) then
             MMenu.Set_MMenu_Open (False);
             Quit_Game := True;
          end if;

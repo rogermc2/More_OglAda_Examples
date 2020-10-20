@@ -38,8 +38,10 @@ package Input_Handler is
    procedure Read_Key_Config (aLine : String);
    procedure Register_Input_Actions;
    function Up_Action return Integer;
-   function Was_Action_Pressed (Action : Integer) return Boolean;
-   function Was_Key_Pressed (aKey : Key) return Boolean;
+   function Was_Action_Pressed (Window : in out Glfw.Windows.Window;
+                                Action : Integer) return Boolean;
+   function Was_Key_Pressed (Window : in out Glfw.Windows.Window; aKey : Key)
+                             return Boolean;
 private
    type Input_State_Data is record
       -- localised name of each key - not supporting wchar_t to protect 256 sz atlas
