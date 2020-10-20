@@ -162,7 +162,7 @@ package body Text is
    begin
       if ID <= Renderable_Texts.Last_Index then
          theText := Renderable_Texts.Element (ID);
-         Width := theText.Bottom_Right_X;
+         Width := theText.Bottom_Right_X - theText.Top_Left_X;
          Length := X - 0.5 * Width;
          Move_Text (theText, Length, Y);
          Renderable_Texts.Replace_Element (ID, theText);
@@ -265,7 +265,6 @@ package body Text is
 
          GL_Utils.Bind_VAO (Text_Box_VAO);
          GL.Objects.Vertex_Arrays.Draw_Arrays (Triangle_Strip_Adjacency, 0, 4);
-
       end if;
 
       if not Is_Texture (Font_Texture.Raw_Id) or else
@@ -275,14 +274,20 @@ package body Text is
       end if;
 
       GL.Objects.Programs.Use_Program (Font_Shader);
+--        Texture_Manager.Bind_Texture (0, Font_Texture);
+      Text_Shader_Manager.Set_Texture_Unit (0);
+      Targets.Texture_2D.Bind (Font_Texture);
+
+      if not theText.VAO.Initialized then
+         raise Text_Exception with
+         "Text.Draw_Text, theText.VAO is not intialized";
+      end if;
+      GL_Utils.Bind_VAO (theText.VAO);
+
       Text_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.95,
                                            theText.Top_Left_Y));
       Text_Shader_Manager.Set_Text_Colour_ID ((theText.Red, theText.Green,
                                                theText.Blue, theText.A));
-
---        Texture_Manager.Bind_Texture (0, Font_Texture);
-      Text_Shader_Manager.Set_Texture_Unit (0);
-      Targets.Texture_2D.Bind (Font_Texture);
 
       GL.Objects.Buffers.Array_Buffer.Bind (theText.Points_VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type,
@@ -296,6 +301,9 @@ package body Text is
 
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Triangles, 0, Int (theText.Point_Count));
+
+      GL.Attributes.Disable_Vertex_Attrib_Array (Attrib_VP);
+      GL.Attributes.Disable_Vertex_Attrib_Array (Attrib_VT);
 
       Enable (Depth_Test);
       Disable (Blend);
