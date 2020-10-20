@@ -1,4 +1,6 @@
 
+with Glfw.Windows;
+
 package MMenu is
 
    MMenu_Exception : Exception;
@@ -14,6 +16,7 @@ package MMenu is
    function Menu_Was_Closed return Boolean;
    procedure Set_MMenu_Open (State : Boolean);
    procedure Start_Mmenu_Title_Bounce;
-   function Update_MMenu (Delta_Time : Float) return Boolean;
+   function Update_MMenu (Window     : in out Glfw.Windows.Window;
+                          Delta_Time : Float) return Boolean;
 
 end MMenu;

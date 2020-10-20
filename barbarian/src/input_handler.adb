@@ -367,7 +367,8 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Was_Action_Pressed (Action : Integer) return Boolean is
+   function Was_Action_Pressed (Window : in out Glfw.Windows.Window;
+                                Action : Integer) return Boolean is
       Result : Boolean := False;
    begin
       if Action <= 0 or Action > Max_Actions then
@@ -377,15 +378,17 @@ package body Input_Handler is
       end if;
 
       --  Joystick not implemented
-      Result := Was_Key_Pressed (Input_Actions.Key_Bindings (Action));
+      Result := Was_Key_Pressed (Window, Input_Actions.Key_Bindings (Action));
       return Result;
    end Was_Action_Pressed;
 
    --  ------------------------------------------------------------------------
 
-   function Was_Key_Pressed (aKey : Key) return Boolean is
-      Key_Val : constant Integer := Key'Enum_Rep (aKey);
-      Pressed : Boolean := False;
+   function Was_Key_Pressed (Window : in out Glfw.Windows.Window; aKey : Key)
+                             return Boolean is
+      use Glfw.Input;
+      Key_Val     : constant Integer := Key'Enum_Rep (aKey);
+      Key_Pressed : Boolean := False;
    begin
       if Key_Val < 32 or Key_Val > Max_Keys then
          raise Input_Handler_Exception with
@@ -393,12 +396,11 @@ package body Input_Handler is
            Integer'Image (Key_Val) & " detected.";
       end if;
 
-      Pressed := Input_State.Keys_Down (Key_Val) and
-        not Input_State.Keys_Locked (Key_Val);
-      if Pressed then
+     Key_Pressed := Window'Access.Key_State (aKey) = Pressed;
+      if Key_Pressed then
          Input_State.Keys_Locked (Key_Val) := True;
       end if;
-      return Pressed;
+      return Key_Pressed;
    end Was_Key_Pressed;
 
    --  ------------------------------------------------------------------------

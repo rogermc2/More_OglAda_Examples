@@ -131,7 +131,8 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-   procedure Process_Input (Menu_Open, Started_Loading_Map, Cheat_Unlock : in out Boolean) is
+   procedure Process_Input (Window : in out Glfw.Windows.Window;
+                            Menu_Open, Started_Loading_Map, Cheat_Unlock : in out Boolean) is
       use  Glfw.Input.Keys;
       use Input_Handler;
       use Levels_Maps_Manager.Maps_Package;
@@ -140,12 +141,13 @@ package body GUI_Level_Chooser is
    begin
 --        Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));
 --        Game_Utils.Game_Log ("Process_Input Attack_Action: " & Natural'Image (Attack_Action));
-      if Was_Key_Pressed (Enter) or Was_Action_Pressed (OK_Action)
-        or Was_Action_Pressed (Attack_Action) then
+      if Was_Key_Pressed (Window, Enter) or Was_Action_Pressed (Window,OK_Action)
+        or Was_Action_Pressed (Window, Attack_Action) then
          if not Selected_Map.Locked or Cheat_Unlock then
             Started_Loading_Map := True;
          end if;
-      elsif Was_Key_Pressed (Escape) or Was_Action_Pressed (Open_Menu_Action) then
+      elsif Was_Key_Pressed (Window, Escape) or
+        Was_Action_Pressed (Window, Open_Menu_Action) then
          Menu_Open := True;
       elsif Is_Key_Down (A) and Is_Key_Down (N)  and Is_Key_Down (D) then
          if not Cheat_Unlock then
@@ -233,7 +235,7 @@ package body GUI_Level_Chooser is
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          if Menu_Open then
-            Menu_Quit := not MMenu.Update_MMenu (Delta_Time);
+            Menu_Quit := not MMenu.Update_MMenu (Window, Delta_Time);
             if MMenu.Menu_Was_Closed then
                Menu_Open := False;
             end if;
@@ -255,7 +257,7 @@ package body GUI_Level_Chooser is
          if Continue then
             if not Menu_Open then
                Game_Utils.Game_Log ("Start_Level_Chooser_Loop Menu not Open");
-               Process_Input (Menu_Open, Started_Loading_Map, Cheat_Unlock);
+               Process_Input (Window, Menu_Open, Started_Loading_Map, Cheat_Unlock);
             end if;
             Render;
          end if;

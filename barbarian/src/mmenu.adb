@@ -722,7 +722,8 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
-   function Update_MMenu (Delta_Time : Float) return Boolean is
+   function Update_MMenu (Window     : in out Glfw.Windows.Window;
+                          Delta_Time : Float) return Boolean is
       use Glfw.Input.Keys;
       use Input_Handler;
       Num_Video_Modes : constant Integer := 10;
@@ -743,15 +744,15 @@ package body MMenu is
       if not Result then
          Result := Mmenu_Gr_Open;
          if Result then
-            Result := Was_Key_Pressed (Escape) or
-              Was_Action_Pressed (Open_Menu_Action) or
-              Was_Action_Pressed (Menu_Back_Action);
+            Result := Was_Key_Pressed (Window, Escape) or
+              Was_Action_Pressed (Window, Open_Menu_Action) or
+              Was_Action_Pressed (Window, Menu_Back_Action);
             if Result then
                Mmenu_Gr_Open := False;
             else
-               Result := Was_Key_Pressed (Enter) or
-                 Was_Action_Pressed (OK_Action) or
-                 Was_Action_Pressed (Attack_Action);
+               Result := Was_Key_Pressed (Window, Enter) or
+                 Was_Action_Pressed (Window, OK_Action) or
+                 Was_Action_Pressed (Window, Attack_Action);
                if Result then
                   case Cursor_Current_Item is
                      when 0 => null;
