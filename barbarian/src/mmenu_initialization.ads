@@ -29,7 +29,8 @@ package MMenu_Initialization is
                    Position_Buffer, Texture_Buffer : in out GL.Objects.Buffers.Buffer;
                    Text_Background_Texture, Menu_Credits_Texture,
                    Title_Skull_Texture, Menu_Cursor_Texture : in out GL.Objects.Textures.Texture;
-                   Title_M, Title_V : in out GL.Types.Singles.Matrix4);
+                   Title_M, Title_V : in out GL.Types.Singles.Matrix4;
+                   Text_Background_Pos : in out GL.Types.Singles.Vector2);
 
 
 end MMenu_Initialization;
