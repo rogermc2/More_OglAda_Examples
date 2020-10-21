@@ -60,12 +60,7 @@ package body MMenu_Initialization is
 
    Credits_Text_X             : Single := 0.0;
    Credits_Text_Y             : Single := -1.0;
-   Credits_X                  : Single := 0.0;
-   Credits_Y                  : Single := -1.0;
-   Credits_Pos_X              : Single := 0.0;
-   Credits_Pos_Y              : Single := -1.0;
    Title_Version_Text         : Integer := -1;
-   End_Story_Text             : Integer := -1;
    Joy_Name                   : Unbounded_String := To_Unbounded_String ("");
    Joystick_Detected_Text     : Integer := -1;
    Greatest_Text_Axis         : Integer := -1;
@@ -76,76 +71,19 @@ package body MMenu_Initialization is
    Cursor_Current_Item     : Integer := -1;
    Cursor_V                : Singles.Matrix4 := GL.Types.Singles.Identity4;
 
-   procedure Init_Audio_Value_Strings
-     (Graphics_Text, Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array);
-   procedure Init_Credits
-     (Credits_Shader_Program : in out GL.Objects.Programs.Program;
-      Text_Background_Pos : in out singles. Vector2);
-   procedure Init_Cursor (Title_Mesh            : Integer; Title_V : in out GL.Types.Singles.Matrix4;
-                          Menu_Cursor_Texture   : in out GL.Objects.Textures.Texture;
-                          Cursor_Shader_Program : in out GL.Objects.Programs.Program;
-                          Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-                          Cursor_Point_Count    : in out Integer);
-   procedure Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings :
-                                         in out Menu_String_Array);
-   procedure Init_Graphic_Text
-     (Graphics_Text, Graphic_Value_Text : in out GL_Maths.Integer_Array;
-      Graphic_Value_Strings             : in out Menu_String_Array);
-   procedure Init_Input_Text (Graphics_Text, Input_Text :
-                              in out GL_Maths.Integer_Array);
-   procedure Init_Input_Actions
-     (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text, GP_Axis_Binding_Text,
-      GP_Buttons_Binding_Text : in out GL_Maths.Integer_Array);
-   procedure Init_Position_And_Texture_Buffers
-     (Menu_VAO                        : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Position_Buffer, Texture_Buffer : in out GL.Objects.Buffers.Buffer);
-   procedure Init_Quit_Text
-     (Input_Value_Text, Confirm_Quit_Text : in out GL_Maths.Integer_Array;
-      Enabled_Strings                     : in out Menu_String_Array);
-   procedure Init_Title
-     (Title_Mesh_ID                            : in out Integer;
-      Title_Author_Text, Title_Buildstamp_Text : in out Integer;
-      Title_M, Title_V                         : in out GL.Types.Singles.Matrix4;
-      Title_Shader_Program                     : in out GL.Objects.Programs.Program;
-      Title_VAO                                : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Title_Point_Count                        : in out Integer);
-   procedure Init_Various (Graphics_Text, Input_Text : in out GL_Maths.Integer_Array);
-
    --  ------------------------------------------------------------------------
 
-   procedure Init (Cursor_VAO, Title_VAO , Menu_VAO         : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-                   Enabled_Strings, Tex_Filter_Strings      : in out Menu_String_Array;
-                   Menu_Text, Graphics_Text, Graphic_Value_Text, Cal_KB_Text,
-                   Cal_GP_Text, GP_Axis_Binding_Text, GP_Buttons_Binding_Text,
-                   Audio_Text, Audio_Value_Text, Input_Text, Input_Value_Text,
-                   Confirm_Quit_Text, KB_Binding_Text       : in out GL_Maths.Integer_Array;
-                   Graphic_Value_Strings                    : in out Menu_String_Array;
-                   Title_Author_Text, Title_Buildstamp_Text : in out Integer;
-                   Title_Shader_Program, Cursor_Shader_Program,
-                   Credits_Shader_Program                   : in out GL.Objects.Programs.Program;
-                   Cursor_Point_Count, Title_Point_Count    : in out Integer;
-                   Position_Buffer, Texture_Buffer          : in out GL.Objects.Buffers.Buffer;
+   procedure Init (Menu_Text : in out GL_Maths.Integer_Array;
+                   End_Story_Text  :in out Integer;
                    Text_Background_Texture, Menu_Credits_Texture,
-                   Title_Skull_Texture, Menu_Cursor_Texture : in out GL.Objects.Textures.Texture;
-                   Title_M, Title_V                         : in out GL.Types.Singles.Matrix4;
-                   Text_Background_Pos                      : in out GL.Types.Singles.Vector2) is
+                   Title_Skull_Texture, Menu_Cursor_Texture :
+                   in out GL.Objects.Textures.Texture) is
       use GL.Types;
       use GL.Types.Singles;
       X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
       Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
-
-      Title_Mesh      : Integer := 0;
       Menu_Colour     : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
    begin
-      Game_Utils.Game_Log ("---MAIN MENU---");
-
-      Init_Position_And_Texture_Buffers (Menu_VAO, Position_Buffer, Texture_Buffer);
-      Init_Title (Title_Mesh, Title_Author_Text, Title_Buildstamp_Text, Title_M, Title_V,
-                  Title_Shader_Program, Title_VAO, Title_Point_Count);
-      Init_Cursor (Title_Mesh, Title_V, Menu_Cursor_Texture, Cursor_Shader_Program,
-                   Cursor_VAO, Cursor_Point_Count);
-      Init_Credits (Credits_Shader_Program, Text_Background_Pos);
-
       End_Story_Text := Text.Add_Text (End_Story_String, Credits_Text_X,
                                        Credits_Text_Y, 30.0, 1.0, 1.0, 0.1, 1.0);
       Text.Set_Text_Visible (End_Story_Text, False);
@@ -166,22 +104,12 @@ package body MMenu_Initialization is
          Text.Centre_Text (Menu_Text (index), 0.0, Y);
          Text.Set_Text_Visible (Menu_Text (index), False);
       end loop;
-
-      Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
-      Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
-      Init_Audio_Value_Strings (Graphics_Text, Audio_Text, Audio_Value_Text);
-      Init_Input_Text (Graphics_Text, Input_Text);
-      Init_Various (Graphics_Text, Input_Text);
-      Init_Input_Actions (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text,
-                          GP_Buttons_Binding_Text, GP_Axis_Binding_Text);
-      Init_Quit_Text (Input_Value_Text, Confirm_Quit_Text, Enabled_Strings);
-
    end Init;
 
    --  ------------------------------------------------------------------------
 
    procedure Init_Audio_Value_Strings
-     (Graphics_Text, Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array) is
+     (Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array) is
       use Settings;
       Audio_Value_Strings : array (1 .. Num_Audio_Entries) of Unbounded_String
         := (others => To_Unbounded_String (""));
@@ -202,7 +130,7 @@ package body MMenu_Initialization is
             Audio_Text (index) :=
               Text.Add_Text (Audio_Strings (index), X1, Single (index + 1) * Y,
                              20.0, 1.0, 1.0, 1.0, 1.0);
-            Text.Set_Text_Visible (Graphics_Text (index), False);
+            Text.Set_Text_Visible (Audio_Text (index), False);
 
             Audio_Value_Text (index) :=
               Text.Add_Text (To_String (Audio_Value_Strings (index)), X2,
