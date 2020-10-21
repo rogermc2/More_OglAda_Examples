@@ -79,7 +79,8 @@ package body MMenu_Initialization is
    procedure Init_Audio_Value_Strings
      (Graphics_Text, Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array);
    procedure Init_Credits
-     (Credits_Shader_Program : in out GL.Objects.Programs.Program);
+     (Credits_Shader_Program : in out GL.Objects.Programs.Program;
+      Text_Background_Pos : in out singles. Vector2);
    procedure Init_Cursor (Title_Mesh            : Integer; Title_V : in out GL.Types.Singles.Matrix4;
                           Menu_Cursor_Texture   : in out GL.Objects.Textures.Texture;
                           Cursor_Shader_Program : in out GL.Objects.Programs.Program;
@@ -105,7 +106,7 @@ package body MMenu_Initialization is
      (Title_Mesh_ID                            : in out Integer;
       Title_Author_Text, Title_Buildstamp_Text : in out Integer;
       Title_M, Title_V                         : in out GL.Types.Singles.Matrix4;
-        Title_Shader_Program : in out GL.Objects.Programs.Program;
+      Title_Shader_Program                     : in out GL.Objects.Programs.Program;
       Title_VAO                                : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Title_Point_Count                        : in out Integer);
    procedure Init_Various (Graphics_Text, Input_Text : in out GL_Maths.Integer_Array);
@@ -126,11 +127,10 @@ package body MMenu_Initialization is
                    Position_Buffer, Texture_Buffer          : in out GL.Objects.Buffers.Buffer;
                    Text_Background_Texture, Menu_Credits_Texture,
                    Title_Skull_Texture, Menu_Cursor_Texture : in out GL.Objects.Textures.Texture;
-                   Title_M, Title_V                         : in out GL.Types.Singles.Matrix4) is
-      use GL.Objects.Buffers;
+                   Title_M, Title_V                         : in out GL.Types.Singles.Matrix4;
+                   Text_Background_Pos                      : in out GL.Types.Singles.Vector2) is
       use GL.Types;
       use GL.Types.Singles;
-      use Menu_Strings;
       X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
       Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
 
@@ -144,10 +144,7 @@ package body MMenu_Initialization is
                   Title_Shader_Program, Title_VAO, Title_Point_Count);
       Init_Cursor (Title_Mesh, Title_V, Menu_Cursor_Texture, Cursor_Shader_Program,
                    Cursor_VAO, Cursor_Point_Count);
-      --        Game_Utils.Game_Log ("Mmenu.Init, Cursor_Point_Count: " &
-      --                            Integer'Image (Cursor_Point_Count));
-      --  Credits shader not implemented
-      Credits_Text_X := -715.0 / Single (Settings.Framebuffer_Width);
+      Init_Credits (Credits_Shader_Program, Text_Background_Pos);
 
       End_Story_Text := Text.Add_Text (End_Story_String, Credits_Text_X,
                                        Credits_Text_Y, 30.0, 1.0, 1.0, 0.1, 1.0);
@@ -185,7 +182,6 @@ package body MMenu_Initialization is
 
    procedure Init_Audio_Value_Strings
      (Graphics_Text, Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array) is
-      use Menu_Strings;
       use Settings;
       Audio_Value_Strings : array (1 .. Num_Audio_Entries) of Unbounded_String
         := (others => To_Unbounded_String (""));
@@ -220,10 +216,18 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Credits
-     (Credits_Shader_Program : in out GL.Objects.Programs.Program) is
+     (Credits_Shader_Program : in out GL.Objects.Programs.Program;
+      Text_Background_Pos : in out Singles.Vector2) is
+      use GL.Objects.Programs;
+      use GL.Types;
       use Menu_Credits_Shader_Manager;
       use Settings;
-      Scale  : Single := 2048.0;
+      FB_Width       : constant Single := Single (Settings.Framebuffer_Width);
+      FB_Height      : constant Single := Single (Settings.Framebuffer_Height);
+      Scale          : Single := 2048.0;
+      Credits_S      : Singles.Vector2;
+      Credits_P      : constant Singles.Vector2 := (0.0, 0.0);
+      Credits_Text_X : constant Single := -715.0 / FB_Width;
    begin
       Menu_Credits_Shader_Manager.Init (Credits_Shader_Program);
       if Framebuffer_Width < 1024 or Framebuffer_Height < 1024 then
@@ -231,6 +235,11 @@ package body MMenu_Initialization is
       elsif Framebuffer_Width < 2048 or Framebuffer_Height < 2048 then
          Scale := 1024.0;
       end if;
+      Credits_S := (Scale / FB_Width, Scale / FB_Height);
+      Use_Program (Credits_Shader_Program);
+      Set_Scale (Credits_S);
+      Set_Position (Credits_P);
+      Text_Background_Pos := (512.0 / FB_Width, 400.0 / FB_Height);
 
    end Init_Credits;
 
@@ -280,8 +289,7 @@ package body MMenu_Initialization is
 
    procedure Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings :
                                          in out Menu_String_Array) is
-      use Menu_Strings;
-      Graphic_Int     : Integer;
+      Graphic_Int : Integer;
    begin
       Graphic_Int := Settings.Gfx_Preset_Type'Enum_Rep (Settings.Graphic_Preset);
       Append (Graphic_Value_Strings (1), Character'Val (Graphic_Int));
@@ -319,7 +327,6 @@ package body MMenu_Initialization is
    procedure Init_Graphic_Text
      (Graphics_Text, Graphic_Value_Text : in out GL_Maths.Integer_Array;
       Graphic_Value_Strings             : in out Menu_String_Array) is
-      use Menu_Strings;
       X1  : constant Single :=
               (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       X2  : constant Single :=
@@ -346,7 +353,6 @@ package body MMenu_Initialization is
    procedure Init_Input_Actions
      (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text, GP_Axis_Binding_Text,
       GP_Buttons_Binding_Text : in out GL_Maths.Integer_Array) is
-      use Menu_Strings;
       X1      : Single :=
                   (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       X2      : Single :=
@@ -416,8 +422,8 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Input_Text (Graphics_Text, Input_Text : in out GL_Maths.Integer_Array) is
-      use Menu_Strings;
+   procedure Init_Input_Text
+     (Graphics_Text, Input_Text : in out GL_Maths.Integer_Array) is
       X  : constant Single :=
              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       Y  : constant Single :=
@@ -460,15 +466,15 @@ package body MMenu_Initialization is
       Menu_VAO.Initialize_Id;
       Menu_VAO.Bind;
 
-      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
       Array_Buffer.Bind (Position_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VP, 2, Single_Type, False, 0, 0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
-      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
       Array_Buffer.Bind (Texture_Buffer);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
 
    end Init_Position_And_Texture_Buffers;
 
@@ -477,7 +483,6 @@ package body MMenu_Initialization is
    procedure Init_Quit_Text
      (Input_Value_Text, Confirm_Quit_Text : in out GL_Maths.Integer_Array;
       Enabled_Strings                     : in out Menu_String_Array) is
-      use Menu_Strings;
       X        : constant Single :=
                    (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
       Y1       : Single := 4.0 * 380.0 / Single (Settings.Framebuffer_Height);
@@ -557,14 +562,12 @@ package body MMenu_Initialization is
       Title_Shader_Manager.Set_Model_Matrix (Title_M);
       Title_Shader_Manager.Set_View_Matrix (Title_V);
       Title_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
-      Game_Utils.Game_Log ("Mmenu.Init_Title done.");
 
    end Init_Title;
 
    --  ------------------------------------------------------------------------
 
    procedure Init_Various (Graphics_Text, Input_Text : in out GL_Maths.Integer_Array) is
-      use Menu_Strings;
       X  : constant Single :=
              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       Y  : Single :=
