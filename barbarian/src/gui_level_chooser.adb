@@ -235,7 +235,7 @@ package body GUI_Level_Chooser is
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          if Menu_Open then
-            Menu_Quit := not MMenu.Update_MMenu (Window, Delta_Time);
+            Menu_Quit := not MMenu.Update_Menu (Window, Delta_Time);
             if MMenu.Menu_Was_Closed then
                Menu_Open := False;
             end if;

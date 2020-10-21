@@ -55,7 +55,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    White          : constant Colors.Color := (1.0, 1.0, 1.0, 0.0);
    Key_Pressed    : boolean := False;
    Last_Time      : float := 0.0;
-   Mmenu_Open     : Boolean := True;
    --      Title_Track    : constant String := "Warlock_Symphony.ogg";
    --      Is_Playing_Hammer_Track : Boolean := False;
 
@@ -173,7 +172,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
            Was_Action_Pressed (Window, OK_Action) or
            Was_Action_Pressed (Window, Attack_Action) then
             Is_Running := False;
-            Game_Utils.Game_Log ("Key pressed");
          end if;
 
          Window_Closed := Window.Should_Close;
@@ -225,35 +223,38 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Game_Utils.Game_Log ("Main_Loop.Main_Setup Introduction done");
 
       --  initiate main menu loop
-      MMenu.Start_Mmenu_Title_Bounce;
+      MMenu.Start_Menu_Title_Bounce;
       Utilities.Clear_Background_Colour_And_Depth (Black);
 
       if not Skip_Intro then
-         MMenu.Set_MMenu_Open (True);
+         MMenu.Set_Menu_Open (True);
       end if;
 
       Last_Time := GL_Utils.Get_Elapsed_Seconds;
       GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
                               Settings.Framebuffer_Height);
-      while Mmenu_Open and Is_Running loop
+      Game_Utils.Game_Log ("Main_Loop.Main_Setup Is_Running: " &
+                          Boolean'Image (Is_Running));
+      while Mmenu.Menu_Open loop
          Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          Utilities.Clear_Background_Colour_And_Depth (Black);
+         Game_Utils.Game_Log ("Main_Loop.Main_Setup drawing menu");
          MMenu.Draw_Menu (Delta_Time);
 
          GUI.Draw_Controller_Button_Overlays (Delta_Time);
          Glfw.Input.Poll_Events;
 --           --  Poll_Joystick
          Glfw.Windows.Context.Swap_Buffers (Window'Access);
-         if not MMenu.Update_MMenu (Window, Delta_Time) then
-            MMenu.Set_MMenu_Open (False);
+         if not MMenu.Update_Menu (Window, Delta_Time) then
+            MMenu.Set_Menu_Open (False);
             Quit_Game := True;
          end if;
 
          if MMenu.Did_User_Choose_New_Game or
            MMenu.Did_User_Choose_Custom_Maps then
-            MMenu.Set_MMenu_Open (False);
+            MMenu.Set_Menu_Open (False);
          end if;
          Is_Running := not Main_Window.Should_Close;
       end loop;
