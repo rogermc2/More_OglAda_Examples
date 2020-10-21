@@ -52,40 +52,40 @@ package body MMenu is
    Menu_End_Story_Open  : Boolean := False;
    Menu_Gr_Open         : Boolean := False;
 
-   Enabled_Strings         : Menu_String_Array (1 .. 2)
+   Enabled_Strings                         : Menu_String_Array (1 .. 2)
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
-   Tex_Filter_Strings      : Menu_String_Array (1 .. 3)
+   Tex_Filter_Strings                      : Menu_String_Array (1 .. 3)
      := (To_Unbounded_String ( "nearest"), To_Unbounded_String ("bilinear"),
          To_Unbounded_String ("trilinear"));
-   Menu_Text               : GL_Maths.Integer_Array
+   Menu_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
-   Graphics_Text           : GL_Maths.Integer_Array
+   Graphics_Text                           : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Graphic_Value_Strings   : Menu_String_Array (1 .. Menu_Strings.Num_Graphic_Entries)
+   Graphic_Value_Strings                   : Menu_String_Array (1 .. Menu_Strings.Num_Graphic_Entries)
      := (others => To_Unbounded_String (""));
-   Graphic_Value_Text      : GL_Maths.Integer_Array
+   Graphic_Value_Text                      : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Cal_KB_Text             : GL_Maths.Integer_Array
+   Cal_KB_Text                             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Cal_GP_Text             : GL_Maths.Integer_Array
+   Cal_GP_Text                             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Axis_Binding_Text    : GL_Maths.Integer_Array
+   GP_Axis_Binding_Text                    : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Buttons_Binding_Text : GL_Maths.Integer_Array
+   GP_Buttons_Binding_Text                 : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Audio_Text              : GL_Maths.Integer_Array
+   Audio_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Audio_Value_Text        : GL_Maths.Integer_Array
+   Audio_Value_Text                        : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Input_Text              : GL_Maths.Integer_Array
+   Input_Text                              : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Input_Value_Text        : GL_Maths.Integer_Array
+   Input_Value_Text                        : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Quit_Text               : GL_Maths.Integer_Array
+   Quit_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
-   Confirm_Quit_Text       : GL_Maths.Integer_Array
+   Confirm_Quit_Text                       : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
-   KB_Binding_Text         : GL_Maths.Integer_Array
+   KB_Binding_Text                         : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
 
    User_Chose_Custom_Maps     : Boolean := False;
@@ -111,6 +111,8 @@ package body MMenu is
    Already_Bound_Text         : Integer := -1;
    Title_Shader_Program       : GL.Objects.Programs.Program;
    Title_Skull_Texture        : GL.Objects.Textures.Texture;
+   Title_Mesh                 : Integer := 0;
+   Title_Mesh_ID              : Integer := -1;
 
    Position_Buffer             : GL.Objects.Buffers.Buffer;
    Texture_Buffer              : GL.Objects.Buffers.Buffer;
@@ -205,11 +207,11 @@ package body MMenu is
       Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
       if not Title_Skull_Texture.Initialized then
          raise MMenu_Exception with
-         "MMen.Draw_Title_Only, Title_Skull_Texture has not been initialized";
+           "MMen.Draw_Title_Only, Title_Skull_Texture has not been initialized";
       end if;
       if not Cursor_VAO.Initialized then
          raise MMenu_Exception with
-         "MMen.Draw_Title_Only, Cursor_VAO has not been initialized";
+           "MMen.Draw_Title_Only, Cursor_VAO has not been initialized";
       end if;
       GL_Utils.Bind_VAO (Cursor_VAO);
 
@@ -228,7 +230,7 @@ package body MMenu is
 
       if not Title_VAO.Initialized then
          raise MMenu_Exception with
-         "MMen.Draw_Title_Only, Title_VAO has not been initialized";
+           "MMen.Draw_Title_Only, Title_VAO has not been initialized";
       end if;
       GL_Utils.Bind_VAO (Title_VAO);
       Draw_Arrays (Triangles, 0, Int (Title_Point_Count));
@@ -251,18 +253,25 @@ package body MMenu is
    procedure Init is
       use MMenu_Initialization;
    begin
-      Init (Cursor_VAO, Title_VAO, Menu_VAO, Enabled_Strings,
-            Tex_Filter_Strings,
-            Menu_Text, Graphics_Text, Graphic_Value_Text, Cal_KB_Text,
-            Cal_GP_Text, GP_Axis_Binding_Text, GP_Buttons_Binding_Text,
-            Audio_Text, Audio_Value_Text, Input_Text, Input_Value_Text,
-            Confirm_Quit_Text, KB_Binding_Text, Graphic_Value_Strings,
-            Title_Author_Text, Title_Buildstamp_Text, Title_Shader_Program,
-            Cursor_Shader_Program, Credits_Shader_Program, Cursor_Point_Count,
-            Title_Point_Count, Position_Buffer, Texture_Buffer,
-            Text_Background_Texture,  Menu_Credits_Texture,
-            Title_Skull_Texture, Menu_Cursor_Texture, Title_M, Title_V,
-            Text_Background_Pos);
+      Game_Utils.Game_Log ("---MAIN MENU---");
+      Init (Menu_Text, End_Story_Text, Text_Background_Texture,
+              Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
+      Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
+      Init_Credits (Credits_Shader_Program, Text_Background_Pos);
+      Init_Cursor (Title_Mesh, Title_V, Menu_Cursor_Texture,
+                   Cursor_Shader_Program, Cursor_VAO, Cursor_Point_Count);
+      Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
+      Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
+      Init_Input_Text (Graphics_Text, Input_Text);
+      Init_Input_Actions (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text,
+                          GP_Axis_Binding_Text, GP_Buttons_Binding_Text);
+      Init_Position_And_Texture_Buffers (Menu_VAO, Position_Buffer, Texture_Buffer);
+      Init_Quit_Text (Input_Value_Text, Confirm_Quit_Text, Enabled_Strings);
+      Init_Title (Title_Mesh_ID, Title_Author_Text, Title_Buildstamp_Text,
+                  Title_M, Title_V , Title_Shader_Program, Title_VAO,
+                  Title_Point_Count);
+      Init_Various (Graphics_Text, Input_Text );
+
    end Init;
 
    --  ------------------------------------------------------------------------
