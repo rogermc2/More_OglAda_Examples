@@ -14,6 +14,7 @@ package MMenu is
    procedure Init;
    function Menu_Open return Boolean;
    function Menu_Was_Closed return Boolean;
+   procedure Set_Joystick_Name (Name : String);
    procedure Set_Menu_Open (State : Boolean);
    procedure Start_Menu_Title_Bounce;
    function Update_Menu (Window     : in out Glfw.Windows.Window;

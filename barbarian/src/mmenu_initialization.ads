@@ -24,7 +24,8 @@ package MMenu_Initialization is
      (Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array);
    procedure Init_Credits
      (Credits_Shader_Program : in out GL.Objects.Programs.Program;
-      Text_Background_Pos : in out GL.Types.Singles.Vector2);
+      Text_Background_Pos : in out GL.Types.Singles.Vector2;
+      Credits_Text_ID : in out Integer);
    procedure Init_Cursor (Title_Mesh            : Integer;
                           Menu_Cursor_Texture   : in out GL.Objects.Textures.Texture;
                           Cursor_Shader_Program : in out GL.Objects.Programs.Program;
