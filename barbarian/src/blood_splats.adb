@@ -32,7 +32,7 @@ package body Blood_Splats is
       use GL.Objects.Buffers;
       use Shader_Attributes;
       VT_VBO  : Buffer;
-      VT_12   : Single_Array (1 .. 12) :=
+      VT_12   : constant Single_Array (1 .. 12) :=
                   (1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
                    0.0, 0.0, 1.0, 0.0,1.0, 1.0);
 

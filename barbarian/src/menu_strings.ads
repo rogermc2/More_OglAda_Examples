@@ -1,6 +1,4 @@
 
---  with GL.Types; use GL.Types;
-
 package Menu_Strings is
 
    Num_Menu_Entries           : constant Integer := 7;
