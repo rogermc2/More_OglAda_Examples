@@ -38,6 +38,56 @@ package body MMenu_Initialization is
    CRLF3              : constant String := CRLF2 & CRLF;
    CRLF4              : constant String := CRLF2 & CRLF2;
 
+
+   Credits_String   : constant String :=
+                        "ANTON GERDELAN" & CRLF2 &
+                        "       DAVID ERMAN" & CRLF2 &
+                        "       ANDREA DOMENICHINI" & CRLF2 &
+                        "     ROMEO DOMENICHINI" & CRLF2 &
+                        " ERIK WADSTEIN" & CRLF4 &
+                        "WARLOCK SYMPHONY" & CRLF &
+                        "written and performed by" & CRLF &
+                        "HORNANVASARA" & CRLF &
+                        "licenced courtesy of devil creations" & CRLF2 &
+                        "PROTAGONIST THROUGH PAIN" & CRLF &
+                        "written and performed by" & CRLF &
+                        "HORNANVASARA" & CRLF &
+                        "licenced courtesy of devil creations" & CRLF2 &
+                        "WAR DRUMS" & CRLF &
+                        "licenced courtesy of" & CRLF &
+                        "partners in rhyme" & CRLF4 &
+                        "crongdor the barbarian was" & CRLF &
+                        "originally programmed in c++ with" & CRLF &
+                        "OPENGL (graphics) and" & CRLF &
+                        "IRRKLANG (audio) libraries." & CRLF2 &
+                        "all of the major programme" & CRLF &
+                        "components were written by hand" & CRLF &
+                        "in ANTON's after-work hours" & CRLF &
+                        "over 4~6 years. no engine or" & CRLF &
+                        "framework was used because it's" & CRLF &
+                        "more fun to write it yourself!" & CRLF2 &
+                        "ERIK teaches technical artists" & CRLF &
+                        "in sweden, and painted concept" & CRLF &
+                        "art and made some game elements." & CRLF2 &
+                        "ROMEO is a drama student and" & CRLF &
+                        "produced the promotional video." & CRLF2 &
+                        "ANDREA has been supporting" & CRLF &
+                        "development and making some elements" & CRLF &
+                        "since the first prototype, 6 years" & CRLF &
+                        "ago." & CRLF2 &
+                        "DAVID ported the first version to" & CRLF &
+                        "OS X and recorded some of the sound" & CRLF &
+                        "effects." & CRLF2 &
+                        "Special thanks to EMMA CARRIGAN" & CRLF &
+                        "for extensive pre-release testing" & CRLF2 &
+                        "BLENDER was used to build the" & CRLF &
+                        "3D models, and GIMP was used to" & CRLF &
+                        "draw all of the art with a" & CRLF &
+                        "WACOM tablet. AUDACITY was used" & CRLF &
+                        "for audio work." & CRLF2 &
+                        "UNIVERSAL SOUND EFFECTS library" & CRLF &
+                        "is used under licence." & CRLF2;
+
    End_Story_String : constant String :=
                         "crongdor glanced back at the temple" & CRLF2 &
                         "through the shadowy palm groves. a" & CRLF2 &
@@ -72,11 +122,11 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init1 (Menu_Text : in out GL_Maths.Integer_Array;
-                   End_Story_Text  :in out Integer;
-                   Text_Background_Texture, Menu_Credits_Texture,
-                   Title_Skull_Texture :
-                   in out GL.Objects.Textures.Texture) is
+   procedure Init1 (Menu_Text           : in out GL_Maths.Integer_Array;
+                    End_Story_Text      :in out Integer;
+                    Text_Background_Texture, Menu_Credits_Texture,
+                    Title_Skull_Texture :
+                    in out GL.Objects.Textures.Texture) is
       use GL.Types;
       use GL.Types.Singles;
       X               : constant Single := 319.0 / Single (Settings.Framebuffer_Width);
@@ -144,7 +194,8 @@ package body MMenu_Initialization is
 
    procedure Init_Credits
      (Credits_Shader_Program : in out GL.Objects.Programs.Program;
-      Text_Background_Pos : in out Singles.Vector2) is
+      Text_Background_Pos    : in out Singles.Vector2;
+      Credits_Text_ID        : in out Integer) is
       use GL.Objects.Programs;
       use GL.Types;
       use Menu_Credits_Shader_Manager;
@@ -167,7 +218,9 @@ package body MMenu_Initialization is
       Set_Scale (Credits_S);
       Set_Position (Credits_P);
       Text_Background_Pos := (512.0 / FB_Width, 400.0 / FB_Height);
-
+      Credits_Text_ID := Text.Add_Text (Credits_String, Credits_Text_X,
+                                        Credits_Text_Y, 30.0, 1.0, 1.0, 1.0, 1.0);
+      Text.Set_Text_Visible (Credits_Text_ID, False);
    end Init_Credits;
 
    --  --------------------------- ---------------------------------------------
@@ -481,8 +534,11 @@ package body MMenu_Initialization is
       Title_Shader_Manager.Init (Title_Shader_Program);
       Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
                                    (0.0, 1.0, 0.0), Title_V);
+
+      Utilities.Print_Matrix ("Initialize Title_V", Title_V);
       Title_M := Maths.Translation_Matrix ((-0.4, -3.0, -1.0));
       Title_M := Maths.Scaling_Matrix ((0.5, 0.5, 0.5)) * Title_M;
+      Utilities.Print_Matrix ("Initialize Title_M", Title_M);
 
       GL.Objects.Programs.Use_Program (Title_Shader_Program);
       Title_Shader_Manager.Set_Model_Matrix (Title_M);
@@ -500,7 +556,6 @@ package body MMenu_Initialization is
       Y  : Single :=
              (-512.0 + 1500.0) / Single (Settings.Framebuffer_Height);
    begin
-
       Joystick_Detected_Text  :=
         Text.Add_Text ("joystick detected: " & Joy_Name & CRLF,
                        X,  Y, 20.0, 1.0, 1.0, 1.0, 1.0);

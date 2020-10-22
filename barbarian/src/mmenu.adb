@@ -18,6 +18,7 @@ with Glfw;
 with Maths;
 with Utilities;
 
+with Audio;
 with Camera;
 with Cursor_Shader_Manager;
 with Game_Utils;
@@ -27,6 +28,7 @@ with Input_Handler;
 with Menu_Credits_Shader_Manager;
 with MMenu_Initialization;
 with Menu_Strings;
+with Menu_Support;
 with Mesh_Loader;
 with Settings;
 with Shader_Attributes;
@@ -51,11 +53,12 @@ package body MMenu is
    Menu_Credits_Open    : Boolean := False;
    Menu_End_Story_Open  : Boolean := False;
    Menu_Gr_Open         : Boolean := False;
+   Menu_Beep_Sound      : constant String := "metal_wood_clack_1.wav";
 
    Enabled_Strings                         : Menu_String_Array (1 .. 2)
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
    Tex_Filter_Strings                      : Menu_String_Array (1 .. 3)
-     := (To_Unbounded_String ( "nearest"), To_Unbounded_String ("bilinear"),
+     := (To_Unbounded_String ("nearest"), To_Unbounded_String ("bilinear"),
          To_Unbounded_String ("trilinear"));
    Menu_Text                               : GL_Maths.Integer_Array
      (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
@@ -93,6 +96,7 @@ package body MMenu is
    We_Are_In_Custom_Maps      : Boolean := False;
    Title_Author_Text          : Integer := -1;
    Title_Buildstamp_Text      : Integer := -1;
+   Credits_Text_ID            : Integer := -1;
    Credits_Text_X             : Single := 0.0;
    Credits_Text_Y             : Single := -1.0;
    Credits_X                  : Single := 0.0;
@@ -202,14 +206,12 @@ package body MMenu is
                        Translation_Matrix ((-0.4, -3.0, 1.0)); --  orig z -1.0
       Current_Time : constant Single := Single (Glfw.Time);
    begin
-
       --  Draw cursor skull in background
       Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
       if not Title_Skull_Texture.Initialized then
          raise MMenu_Exception with
            "MMen.Draw_Title_Only, Title_Skull_Texture has not been initialized";
-      end if;
-      if not Cursor_VAO.Initialized then
+      elsif not Cursor_VAO.Initialized then
          raise MMenu_Exception with
            "MMen.Draw_Title_Only, Cursor_VAO has not been initialized";
       end if;
@@ -221,6 +223,7 @@ package body MMenu is
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
       Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
 
+      Utilities.Print_Matrix ("Title_Matrix", Title_Matrix);
       --  3D title
       GL.Objects.Programs.Use_Program (Title_Shader_Program);
       Title_Shader_Manager.Set_View_Matrix (Title_V);
@@ -260,7 +263,7 @@ package body MMenu is
                   Title_Point_Count);
       Init_Cursor (Title_Mesh, Menu_Cursor_Texture,
                    Cursor_Shader_Program, Cursor_VAO, Cursor_Point_Count);
-      Init_Credits (Credits_Shader_Program, Text_Background_Pos);
+      Init_Credits (Credits_Shader_Program, Text_Background_Pos, Credits_Text_ID);
       Init1 (Menu_Text, End_Story_Text, Text_Background_Texture,
               Menu_Credits_Texture, Title_Skull_Texture);
       Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
@@ -290,6 +293,13 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Joystick_Name (Name : String) is
+   begin
+      Joy_Name := To_Unbounded_String (Name);
+   end Set_Joystick_Name;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Menu_Open (State : Boolean) is
    begin
       Menu_Is_Open := State;
@@ -308,6 +318,8 @@ package body MMenu is
                          Delta_Time : Float) return Boolean is
       use Glfw.Input.Keys;
       use Input_Handler;
+      use Menu_Support;
+      use Menu_Strings;
       Num_Video_Modes : constant Integer := 10;
       type Size_Array is array (1 .. Num_Video_Modes) of Integer;
       Widths          : Size_Array := (640, 800, 1024, 1280, 1600,
@@ -322,8 +334,8 @@ package body MMenu is
       User_Chose_Custom_Maps := False;
       User_Chose_New_Game := False;
       --  Joystick processsing
-      Result := Since_Last_Key < 0.15;
-      if not Result then
+      Result := Since_Last_Key > 0.15;
+      if Result then
          Result := Menu_Gr_Open;
          if Result then
             Result := Was_Key_Pressed (Window, Escape) or
@@ -331,37 +343,25 @@ package body MMenu is
               Was_Action_Pressed (Window, Menu_Back_Action);
             if Result then
                Menu_Gr_Open := False;
-            else
-               Result := Was_Key_Pressed (Window, Enter) or
-                 Was_Action_Pressed (Window, OK_Action) or
-                 Was_Action_Pressed (Window, Attack_Action);
-               if Result then
-                  case Cursor_Current_Item is
-                     when 0 => null;
-                     when 1 => null;
-                     when 2 => null;
-                     when 3 => null;
-                     when 4 => null;
-                     when 5 => null;
-                     when 6 => null;
-                     when 7 => null;
-                     when 8 => null;
-                     when 9 => null;
-                     when 10 => null;
-                     when 11 => null;
-                     when 12 => null;
-                     when 13 => null;
-                     when 14 => null;
-                     when 15 => null;
-                     when 16 => null;
-                     when others => null;
-                  end case;
-               else
-                  Result := Is_Key_Down (Up);
+               --  return
+            elsif Was_Key_Pressed (Window, Enter) or
+              Was_Action_Pressed (Window, OK_Action) or
+              Was_Action_Pressed (Window, Attack_Action) then
+               Process_Menu_Gr (Cursor_Current_Item);
+               Audio.Play_Sound (Menu_Beep_Sound, True);
+               Result := True;
+               --  return
+            elsif Is_Key_Down (Up) or Is_Action_Down (Up_Action) then
+               Cursor_Current_Item := Cursor_Current_Item - 1;
+               if Cursor_Current_Item < 0 then
+                  Cursor_Current_Item := Num_Graphic_Entries - 1;
+                  Since_Last_Key := 0.0;
+                  Audio.Play_Sound (Menu_Beep_Sound, True);
                end if;
             end if;
          end if;
-      end if;
+
+      end if; --  Since_Last_Key < 0.15
 
       return Result;
    end Update_Menu;
