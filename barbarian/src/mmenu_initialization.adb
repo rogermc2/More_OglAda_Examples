@@ -58,10 +58,9 @@ package body MMenu_Initialization is
                         "have earned it today!" & CRLF3 &
                         "COME!" & CRLF3;
 
-   Credits_Text_X             : Single := 0.0;
-   Credits_Text_Y             : Single := -1.0;
+   Credits_Text_X             : constant Single := 0.0;
+   Credits_Text_Y             : constant Single := -1.0;
    Title_Version_Text         : Integer := -1;
-   Joy_Name                   : Unbounded_String := To_Unbounded_String ("");
    Joystick_Detected_Text     : Integer := -1;
    Greatest_Text_Axis         : Integer := -1;
    Restart_Graphics_Text      : Integer := -1;
@@ -73,10 +72,10 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init (Menu_Text : in out GL_Maths.Integer_Array;
+   procedure Init1 (Menu_Text : in out GL_Maths.Integer_Array;
                    End_Story_Text  :in out Integer;
                    Text_Background_Texture, Menu_Credits_Texture,
-                   Title_Skull_Texture, Menu_Cursor_Texture :
+                   Title_Skull_Texture :
                    in out GL.Objects.Textures.Texture) is
       use GL.Types;
       use GL.Types.Singles;
@@ -104,7 +103,7 @@ package body MMenu_Initialization is
          Text.Centre_Text (Menu_Text (index), 0.0, Y);
          Text.Set_Text_Visible (Menu_Text (index), False);
       end loop;
-   end Init;
+   end Init1;
 
    --  ------------------------------------------------------------------------
 
@@ -174,19 +173,27 @@ package body MMenu_Initialization is
    --  --------------------------- ---------------------------------------------
 
    procedure Init_Cursor
-     (Title_Mesh            : Integer; Title_V : in out GL.Types.Singles.Matrix4;
+     (Title_Mesh            : Integer;
       Menu_Cursor_Texture   : in out GL.Objects.Textures.Texture;
       Cursor_Shader_Program : in out GL.Objects.Programs.Program;
       Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Cursor_Point_Count    : in out Integer) is
-      Camera_Position : Singles.Vector3 := (0.0, 0.0, 10.0);
-      Camera_Target   : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Cursor_M        : Singles.Matrix4 := GL.Types.Singles.Identity4;
+      Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 10.0);
+      Camera_Target   : constant Singles.Vector3 := (0.0, 0.0, 0.0);
+      Cursor_M        : constant Singles.Matrix4 := GL.Types.Singles.Identity4;
+      Cursor_V        : Singles.Matrix4;
       Cursor_Mesh_ID  : Integer := 0;
    begin
+      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
+                                   (0.0, 1.0, 0.0), Cursor_V);
+      Cursor_Shader_Manager.Init (Cursor_Shader_Program);
+      GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
+      Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
+      Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
+      Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
+
       Cursor_Mesh_ID := Mesh_Loader.Load_Managed_Mesh
         ("src/meshes/skull_helmet.apg", True, True, True, False, False);
-
       if Cursor_Mesh_ID <= 0 then
          raise MMenu_Exception with
            "MMenu.Init_Cursor Load_Managed_Mesh failed to load src/meshes/skull_helmet.apg";
@@ -195,16 +202,8 @@ package body MMenu_Initialization is
          raise MMenu_Exception with
            "MMenu.Init_Cursor failed to initialize VAO for Cursor_Mesh";
       end if;
+
       Cursor_Point_Count := Mesh_Loader.Point_Count (Cursor_Mesh_ID);
-
-      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
-                                   (0.0, 1.0, 0.0), Title_V);
-
-      Cursor_Shader_Manager.Init (Cursor_Shader_Program);
-      GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
-      Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
-      Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
-      Cursor_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
 
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/skull_small_helmet_painterv_shade.png",
@@ -281,11 +280,11 @@ package body MMenu_Initialization is
    procedure Init_Input_Actions
      (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text, GP_Axis_Binding_Text,
       GP_Buttons_Binding_Text : in out GL_Maths.Integer_Array) is
-      X1      : Single :=
+      X1      : constant Single :=
                   (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
-      X2      : Single :=
+      X2      : constant Single :=
                   (512.0 - 465.0) / Single (Settings.Framebuffer_Width);
-      Y       : Single :=
+      Y       : constant Single :=
                   760.0 / Single (Settings.Framebuffer_Height);
       K_Index : Integer;
    begin
@@ -350,8 +349,7 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Input_Text
-     (Graphics_Text, Input_Text : in out GL_Maths.Integer_Array) is
+   procedure Init_Input_Text (Input_Text : in out GL_Maths.Integer_Array) is
       X  : constant Single :=
              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       Y  : constant Single :=
@@ -361,7 +359,7 @@ package body MMenu_Initialization is
          Input_Text (index) :=
            Text.Add_Text (Input_Strings (index), X, Single (index + 1) * Y,
                           20.0, 1.0, 1.0, 1.0, 1.0);
-         Text.Set_Text_Visible (Graphics_Text (index), False);
+         Text.Set_Text_Visible (Input_Text (index), False);
       end loop;
 
    end Init_Input_Text;
@@ -413,8 +411,8 @@ package body MMenu_Initialization is
       Enabled_Strings                     : in out Menu_String_Array) is
       X        : constant Single :=
                    (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
-      Y1       : Single := 4.0 * 380.0 / Single (Settings.Framebuffer_Height);
-      Y2       : Single := 40.0 / Single (Settings.Framebuffer_Height);
+      Y1       : constant Single := 4.0 * 380.0 / Single (Settings.Framebuffer_Height);
+      Y2       : constant Single := 40.0 / Single (Settings.Framebuffer_Height);
       ES_Index : Integer;
    begin
       if Settings.Disable_Joystick then
@@ -448,10 +446,10 @@ package body MMenu_Initialization is
       Title_VAO                                : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Title_Point_Count                        : in out Integer) is
       use GL.Types.Singles;
-      Camera_Position : Vector3 := (0.0, -6.5, 3.0);
-      Camera_Target   : Vector3 := Camera_Position + (0.0, 1.0, -1.0);
+      Camera_Position : constant Vector3 := (0.0, -6.5, 3.0);
+      Camera_Target   : constant Vector3 := Camera_Position + (0.0, 1.0, -1.0);
       X               : constant Single := 400.0 / Single (Settings.Framebuffer_Width);
-      Y               : Single := 40.0 / Single (Settings.Framebuffer_Height);
+      Y               : constant Single := 40.0 / Single (Settings.Framebuffer_Height);
    begin
       Title_Mesh_ID := Mesh_Loader.Load_Managed_Mesh
         ("src/meshes/3dtitle_idea.apg", True, True, False, False, False);
@@ -495,7 +493,8 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Various (Graphics_Text, Input_Text : in out GL_Maths.Integer_Array) is
+   procedure Init_Various
+     (Input_Text : in out GL_Maths.Integer_Array; Joy_Name : String) is
       X  : constant Single :=
              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       Y  : Single :=
@@ -503,7 +502,7 @@ package body MMenu_Initialization is
    begin
 
       Joystick_Detected_Text  :=
-        Text.Add_Text ("joystick detected: " & To_String (Joy_Name) & CRLF,
+        Text.Add_Text ("joystick detected: " & Joy_Name & CRLF,
                        X,  Y, 20.0, 1.0, 1.0, 1.0, 1.0);
       Text.Set_Text_Visible (Joystick_Detected_Text, False);
 
@@ -528,7 +527,7 @@ package body MMenu_Initialization is
          Input_Text (index) :=
            Text.Add_Text (Input_Strings (index), X, Single (index + 1) * Y,
                           20.0, 1.0, 1.0, 1.0, 1.0);
-         Text.Set_Text_Visible (Graphics_Text (index), False);
+         Text.Set_Text_Visible (Input_Text (index), False);
       end loop;
 
    end Init_Various;

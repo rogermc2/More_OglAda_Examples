@@ -254,23 +254,23 @@ package body MMenu is
       use MMenu_Initialization;
    begin
       Game_Utils.Game_Log ("---MAIN MENU---");
-      Init (Menu_Text, End_Story_Text, Text_Background_Texture,
-              Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
-      Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
-      Init_Credits (Credits_Shader_Program, Text_Background_Pos);
-      Init_Cursor (Title_Mesh, Title_V, Menu_Cursor_Texture,
-                   Cursor_Shader_Program, Cursor_VAO, Cursor_Point_Count);
-      Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
-      Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
-      Init_Input_Text (Graphics_Text, Input_Text);
-      Init_Input_Actions (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text,
-                          GP_Axis_Binding_Text, GP_Buttons_Binding_Text);
       Init_Position_And_Texture_Buffers (Menu_VAO, Position_Buffer, Texture_Buffer);
-      Init_Quit_Text (Input_Value_Text, Confirm_Quit_Text, Enabled_Strings);
       Init_Title (Title_Mesh_ID, Title_Author_Text, Title_Buildstamp_Text,
                   Title_M, Title_V , Title_Shader_Program, Title_VAO,
                   Title_Point_Count);
-      Init_Various (Graphics_Text, Input_Text );
+      Init_Cursor (Title_Mesh, Menu_Cursor_Texture,
+                   Cursor_Shader_Program, Cursor_VAO, Cursor_Point_Count);
+      Init_Credits (Credits_Shader_Program, Text_Background_Pos);
+      Init1 (Menu_Text, End_Story_Text, Text_Background_Texture,
+              Menu_Credits_Texture, Title_Skull_Texture);
+      Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
+      Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
+      Init_Input_Text (Input_Text);
+      Init_Input_Actions (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text,
+                          GP_Axis_Binding_Text, GP_Buttons_Binding_Text);
+      Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
+      Init_Quit_Text (Input_Value_Text, Confirm_Quit_Text, Enabled_Strings);
+      Init_Various (Input_Text, To_String (Joy_Name));
 
    end Init;
 

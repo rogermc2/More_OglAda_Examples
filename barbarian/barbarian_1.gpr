@@ -10,5 +10,9 @@ project Barbarian_1 is
    for Object_Dir use "obj";
    for Main use ("barbarian_1a");
 
+   package Compiler is
+      for Switches ("ada") use ("-gnato", "-fstack-check", "-gnatw.c.ufk");
+   end Compiler;
+
 end Barbarian_1;
 
