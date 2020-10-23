@@ -131,7 +131,6 @@ package body Camera is
          Frustum.Re_Extract_Frustum_Planes
            (G_Cam.Field_Of_View_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far,
             G_Cam.World_Position, G_Cam.View_Matrix);
-
       end if;
     end Set_Camera_Position;
 
@@ -141,6 +140,7 @@ package body Camera is
     begin
       First_Person := State;
       Set_Camera_Position (G_Cam.World_Position);
+      Frustum.Enable_Frustum_Cull (not State);
     end Set_First_Person;
 
     --  ------------------------------------------------------------------------

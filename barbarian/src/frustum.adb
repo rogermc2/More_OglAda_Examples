@@ -150,6 +150,20 @@ package body Frustum is
    end Draw_Frustum_Box;
 
    --  ------------------------------------------------------------------------
+
+   procedure Enable_Frustum_Cull (State : Boolean) is
+   begin
+      Cull_Enabled := State;
+   end Enable_Frustum_Cull;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Enable_Update (State : Boolean) is
+   begin
+      Update_Enabled := State;
+   end Enable_Update;
+
+   --  ------------------------------------------------------------------------
    --  Set to false to stop frustum culling alogether for testing
    function Frustum_Cull_Enabled return Boolean is
    begin
