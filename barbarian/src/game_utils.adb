@@ -68,6 +68,19 @@ package body Game_Utils is
 
    --  ------------------------------------------------------------------------
 
+   function Loop_I (Val, Min, Max : Integer) return Integer is
+      Result : Integer := Val;
+   begin
+      if Val < Min then
+         Result := Max;
+      elsif Val > Max then
+         Result := Min;
+      end if;
+      return Result;
+   end Loop_I;
+
+   --  ------------------------------------------------------------------------
+
    function Max (L, R : Integer) return Integer is
       Result : Integer;
    begin

@@ -80,7 +80,7 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-    function Fb_Effects_Enabled return Boolean is
+   function Fb_Effects_Enabled return Boolean is
    begin
       return G_Settings.Fb_Effects_Enabled;
    end Fb_Effects_Enabled;
@@ -101,14 +101,14 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-    function Full_Screen return Boolean is
+   function Full_Screen return Boolean is
    begin
       return G_Settings.Full_Screen;
    end Full_Screen;
 
    --  ------------------------------------------------------------------------
 
-    function Graphic_Preset return Gfx_Preset_Type is
+   function Graphic_Preset return Gfx_Preset_Type is
    begin
       return G_Settings.Gfx_Presets;
    end Graphic_Preset;
@@ -150,7 +150,7 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-    function Render_OLS return Boolean is
+   function Render_OLS return Boolean is
    begin
       return G_Settings.Render_OLS;
    end Render_OLS;
@@ -164,6 +164,96 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Graphic_Preset (Preset : Gfx_Preset_Type) is
+   begin
+      G_Settings.Gfx_Presets := Preset;
+   end Set_Graphic_Preset;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Window_Height_To_Save (Height : Integer) is
+   begin
+      G_Settings.GL_Window_Height_To_Save := Height;
+   end Set_Window_Height_To_Save;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Window_Width_To_Save (Width : Integer) is
+   begin
+      G_Settings.GL_Window_Width_To_Save := Width;
+   end Set_Window_Width_To_Save;
+
+   --  ------------------------------------------------------------------------
+   function Set_Menu_Graphic_Presets return Boolean is
+      OK : Boolean := True;
+   begin
+      case Graphic_Preset is
+         when Gfx_Dire =>
+            G_Settings.Multi_Sample_Anti_Aliasing := 1;
+            G_Settings.Super_Sample_Anti_Aliasing := 0.5;
+            G_Settings.Texf := 0;
+            G_Settings.Anisotroic_Texturing_Factor := 1;
+            G_Settings.Render_Dist := 7;
+            G_Settings.Far_Clip := 15.0;
+            G_Settings.Render_Ols := False;
+            G_Settings.Shadows_Enabled := False;
+            G_Settings.Shadow_Size := 256;
+            G_Settings.Fb_Effects_Enabled := True;
+
+         when Gfx_Low =>
+            G_Settings.Multi_Sample_Anti_Aliasing := 1;
+            G_Settings.Super_Sample_Anti_Aliasing := 1.0;
+            G_Settings.Texf := 2;
+            G_Settings.Anisotroic_Texturing_Factor := 1;
+            G_Settings.Render_Dist := 9;
+            G_Settings.Far_Clip := 25.0;
+            G_Settings.Render_Ols := False;
+            G_Settings.Shadows_Enabled := True;
+            G_Settings.Shadow_Size := 256;
+            G_Settings.Fb_Effects_Enabled := True;
+
+         when Gfx_Medium =>
+            G_Settings.Multi_Sample_Anti_Aliasing := 4;
+            G_Settings.Super_Sample_Anti_Aliasing := 2.0;
+            G_Settings.Texf := 2;
+            G_Settings.Anisotroic_Texturing_Factor := 4;
+            G_Settings.Render_Dist := 15;
+            G_Settings.Far_Clip := 40.0;
+            G_Settings.Render_Ols := True;
+            G_Settings.Shadows_Enabled := True;
+            G_Settings.Shadow_Size := 512;
+            G_Settings.Fb_Effects_Enabled := True;
+
+         when Gfx_High =>
+            G_Settings.Multi_Sample_Anti_Aliasing := 4;
+            G_Settings.Super_Sample_Anti_Aliasing := 2.0;
+            G_Settings.Texf := 2;
+            G_Settings.Anisotroic_Texturing_Factor := 16;
+            G_Settings.Render_Dist := 17;
+            G_Settings.Far_Clip := 45.0;
+            G_Settings.Render_Ols := True;
+            G_Settings.Shadows_Enabled := True;
+            G_Settings.Shadow_Size := 1024;
+            G_Settings.Fb_Effects_Enabled := True;
+
+         when Gfx_Ultra =>
+            G_Settings.Multi_Sample_Anti_Aliasing := 16;
+            G_Settings.Super_Sample_Anti_Aliasing := 2.0;
+            G_Settings.Texf := 2;
+            G_Settings.Anisotroic_Texturing_Factor := 16;
+            G_Settings.Render_Dist := 19;
+            G_Settings.Far_Clip := 50.0;
+            G_Settings.Render_Ols := True;
+            G_Settings.Shadows_Enabled := True;
+            G_Settings.Shadow_Size := 2048;
+            G_Settings.Fb_Effects_Enabled := True;
+         when others => OK := False;
+      end case;
+      return OK;
+   end Set_Menu_Graphic_Presets;
+
+   --  ------------------------------------------------------------------------
+
    function Shadows_Enabled return Boolean is
    begin
       return G_Settings.Shadows_Enabled;
@@ -171,7 +261,7 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-    function Shadows_Size return Integer is
+   function Shadows_Size return Integer is
    begin
       return G_Settings.Shadow_Size;
    end Shadows_Size;
@@ -220,14 +310,14 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-    function Window_Width_To_Save return Integer is
+   function Window_Width_To_Save return Integer is
    begin
       return G_Settings.GL_Window_Width_To_Save;
    end Window_Width_To_Save;
 
    --  ------------------------------------------------------------------------
 
-    function Window_Height_To_Save return Integer is
+   function Window_Height_To_Save return Integer is
    begin
       return G_Settings.GL_Window_Height_To_Save;
    end Window_Height_To_Save;

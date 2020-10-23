@@ -6,6 +6,7 @@ package Game_Utils is
 --     function Check_Param (Check : String) return Integer;
    procedure Close_Game_Log;
    procedure Game_Log (Message : String);
+   function Loop_I (Val, Min, Max : Integer) return Integer;
    function Max (L, R : Integer) return Integer;
    procedure Restart_Game_Log;
 

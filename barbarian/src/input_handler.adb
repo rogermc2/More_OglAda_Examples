@@ -38,8 +38,8 @@ package body Input_Handler is
       Start   : constant Positive := aLine'First;
       Last    : constant Positive := aLine'Last;
       Pos1    : Positive := Fixed.Index (aLine, "_");
-      Pos2    : Positive := Fixed.Index (aLine, " ");
-      Action  : String := aLine (Start .. Pos2 - 1);
+      Pos2    : constant Positive := Fixed.Index (aLine, " ");
+      Action  : constant String := aLine (Start .. Pos2 - 1);
       Code    : Integer;
       Sign    : Character := '+';
       Axis    : Integer := 0;
@@ -204,6 +204,13 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Left_Action return Integer is
+   begin
+      return Input_Actions.Left_Action;
+   end Left_Action;
+
+   --  ------------------------------------------------------------------------
+
    function Menu_Back_Action return Integer is
    begin
       return Input_Actions.Menu_Back_Action;
@@ -238,7 +245,7 @@ package body Input_Handler is
       Start   : constant Positive := aLine'First;
       Last    : constant Positive := aLine'Last;
       Pos1    : Positive := Fixed.Index (aLine, "_");
-      Pos2    : Positive := Fixed.Index (aLine, " ");
+      Pos2    : constant Positive := Fixed.Index (aLine, " ");
       Code    : Integer;
       Sign    : Character := '+';
       Axis    : Integer := 0;
@@ -253,7 +260,7 @@ package body Input_Handler is
 
       if aLine (Start) = 'K' then
          declare
-            Action : String := aLine (Start .. Pos2 - 1);
+            Action : constant String := aLine (Start .. Pos2 - 1);
          begin
             Code := Integer'Value (aLine (Pos2 + 1 .. Last));
             Set_Key_For_Action (Action, Code);
@@ -313,6 +320,13 @@ package body Input_Handler is
         To_Unbounded_String (Name);
       return Input_Actions.Num_Actions;
    end Register_Key_Action;
+
+   --  ------------------------------------------------------------------------
+
+   function Right_Action return Integer is
+   begin
+      return Input_Actions.Right_Action;
+   end Right_Action;
 
    --  ------------------------------------------------------------------------
 

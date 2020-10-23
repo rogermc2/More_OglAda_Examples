@@ -31,12 +31,14 @@ package Input_Handler is
    function Joy_Button_Bindings (Index: Integer) return Integer;
    function Key_Binding (Index: Integer) return Integer;
    function Key_Name (Index: Integer) return Unbounded_String;
+   function Left_Action return Integer;
    function Menu_Back_Action return Integer;
    function OK_Action return Integer;
    function Open_Menu_Action return Integer;
    function Num_Actions return Integer;
    procedure Read_Key_Config (aLine : String);
    procedure Register_Input_Actions;
+   function Right_Action return Integer;
    function Up_Action return Integer;
    function Was_Action_Pressed (Window : in out Glfw.Windows.Window;
                                 Action : Integer) return Boolean;
