@@ -225,7 +225,7 @@ package body GL_Utils is
    function Verify_Bound_Framebuffer return Boolean is
       use GL.Objects.Framebuffers;
       use Game_Utils;
-      Error_Head : String := "Incomplete framebuffer, reason: ";
+      Error_Head : constant String := "Incomplete framebuffer, reason: ";
       FB_Status  : constant Framebuffer_Status := Status (Read_And_Draw_Target);
       OK         : Boolean := False;
    begin

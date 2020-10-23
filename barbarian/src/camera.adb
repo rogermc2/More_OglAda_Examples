@@ -1,4 +1,5 @@
 
+with Frustum;
 with Settings;
 
 package body Camera is
@@ -127,6 +128,9 @@ package body Camera is
          end if;
          G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
          G_Cam.Is_Dirty := True;
+         Frustum.Re_Extract_Frustum_Planes
+           (G_Cam.Field_Of_View_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far,
+            G_Cam.World_Position, G_Cam.View_Matrix);
 
       end if;
     end Set_Camera_Position;
