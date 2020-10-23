@@ -19,7 +19,7 @@ package Camera is
         Original_Screen_Shake_Amplitude : Float := 0.0;
         Screen_Shake_Amplitude          : Float := 0.0;
         Screen_Shake_Frequency          : Float := 0.0;
-        Wind_In_Angle                   : Float := 0.0;
+        Wind_In_Angle                   : Maths.Degree := 0.0;
         Field_Of_View_Y                 : Maths.Degree := 67.0;
         Aspect                          : Single := 0.0;
         Near                            : Single := 0.0;
@@ -35,5 +35,7 @@ package Camera is
     function Projection_Matrix return Singles.Matrix4;
     function PV_Matrix return Singles.Matrix4;
     procedure Set_Camera_Height (Height : Single);
+   procedure Set_Camera_Position (World_Position : Singles.Vector3);
+    procedure Set_First_Person (State : Boolean);
 
 end Camera;

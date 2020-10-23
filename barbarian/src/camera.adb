@@ -92,4 +92,53 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+   procedure Set_Camera_Position (World_Position : Singles.Vector3) is
+      use GL.Types.Singles;
+      use Maths;
+      Cam_Target    : Singles.Vector3;
+      Dir           : Singles.Vector3;
+      Far_Point_Pos : Singles.Vector3;
+      Rot_Matrix    : Singles.Matrix4;
+   begin
+      if not G_Cam.Manual_Override then
+         Prev_Cam_Pos := G_Cam.World_Position;
+         G_Cam.World_Position := World_Position;
+         Cam_Target := World_Position + G_Cam.Shake_Mod_Position;
+         Cam_Target (GL.Y) := Cam_Target (GL.Y) - 1.0;
+         if not First_Person then
+            Maths.Init_Lookat_Transform
+              (World_Position + G_Cam.Shake_Mod_Position, Cam_Target,
+               (0.0, 0.0, 1.0), G_Cam.View_Matrix);
+            if G_Cam.Wind_In_Angle > 0.0 then
+               Rot_Matrix := Rotate_Z_Degree (Identity4, G_Cam.Wind_In_Angle);
+               G_Cam.View_Matrix := Rot_Matrix * G_Cam.View_Matrix;
+            end if;
+         else
+            Dir := G_Cam.World_Position - Prev_Cam_Pos;
+            Dir (GL.Y) := 0.0;
+            if Abs (Dir (GL.X) + Dir (GL.Z)) > 0.0 then
+               Far_Point_Dir := Dir;
+            end if;
+            Far_Point_Pos := G_Cam.World_Position;
+            Far_Point_Pos (GL.Y) := Far_Point_Pos (GL.Y) - 11.0 ;
+            Init_Lookat_Transform (Far_Point_Pos + G_Cam.Shake_Mod_Position,
+                                   Far_Point_Pos + Far_Point_Dir,
+                                   (0.0, 1.0, 0.0), G_Cam.View_Matrix);
+         end if;
+         G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
+         G_Cam.Is_Dirty := True;
+
+      end if;
+    end Set_Camera_Position;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Set_First_Person (State : Boolean) is
+    begin
+      First_Person := State;
+      Set_Camera_Position (G_Cam.World_Position);
+    end Set_First_Person;
+
+    --  ------------------------------------------------------------------------
+
 end Camera;
