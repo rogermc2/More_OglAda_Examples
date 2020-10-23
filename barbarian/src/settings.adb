@@ -17,9 +17,9 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   function Audio_Volume return Audio_Volume_Range is
+   function Audio_Volume return Integer is
    begin
-      return G_Settings.Audio_Volume;
+      return Integer (G_Settings.Audio_Volume);
    end Audio_Volume;
 
    --  ------------------------------------------------------------------------
@@ -161,6 +161,13 @@ package body Settings is
    begin
       return True;
    end Save_Settings;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Audio_Volume (Volume : Integer) is
+   begin
+      G_Settings.Audio_Volume := Volume;
+   end Set_Audio_Volume;
 
    --  ------------------------------------------------------------------------
 
