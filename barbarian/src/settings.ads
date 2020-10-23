@@ -63,7 +63,7 @@ package Settings is
    end record;
 
    function Anisotroic_Texturing_Factor return Integer;
-   function Audio_Volume return Audio_Volume_Range;
+   function Audio_Volume return Integer;
    function Auto_Blood_Wipe return Boolean;
    procedure Default_Settings;
    function Disable_Joystick return Boolean;
@@ -80,6 +80,7 @@ package Settings is
    function Render_OLS return Boolean;
    function Render_Distance return Integer;
    function Save_Settings return Boolean;
+   procedure Set_Audio_Volume (Volume : Integer);
    procedure Set_Graphic_Preset (Preset : Gfx_Preset_Type);
    procedure Set_Window_Height_To_Save (Height : Integer);
    procedure Set_Window_Width_To_Save (Width : Integer);
