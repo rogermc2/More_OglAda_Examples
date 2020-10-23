@@ -53,7 +53,7 @@ package body MMenu is
    Menu_Credits_Open    : Boolean := False;
    Menu_End_Story_Open  : Boolean := False;
    Menu_Gr_Open         : Boolean := False;
-   Menu_Beep_Sound      : constant String := "metal_wood_clack_1.wav";
+   Menu_Audio_Open      : Boolean := False;
 
    Enabled_Strings                         : Menu_String_Array (1 .. 2)
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
@@ -112,6 +112,7 @@ package body MMenu is
    Joystick_Detected_Text     : Integer := -1;
    Greatest_Text_Axis         : Integer := -1;
    Restart_Graphics_Text      : Integer := -1;
+   Graphics_Restart_Flag      : Boolean := False;
    Already_Bound_Text         : Integer := -1;
    Title_Shader_Program       : GL.Objects.Programs.Program;
    Title_Skull_Texture        : GL.Objects.Textures.Texture;
@@ -132,6 +133,7 @@ package body MMenu is
    Title_Bounce_Timer          : Float := 5.0;
    Text_Timer                  : Float := 0.0;
    Since_Last_Key              : Float := 0.0;
+   Current_Video_Mode          : Integer := -1;
    Credits_Shader_Program      : GL.Objects.Programs.Program;
 
    --  ------------------------------------------------------------------------
@@ -320,12 +322,7 @@ package body MMenu is
       use Input_Handler;
       use Menu_Support;
       use Menu_Strings;
-      Num_Video_Modes : constant Integer := 10;
-      type Size_Array is array (1 .. Num_Video_Modes) of Integer;
-      Widths          : Size_Array := (640, 800, 1024, 1280, 1600,
-                                       1920, 1280, 1366, 1600, 1920);
-      Heights         : Size_Array := (480, 600, 768, 960, 1200,
-                                       1440, 720, 768, 900, 1080);
+      use Settings;
       Temp            : Unbounded_String := To_Unbounded_String ("");
       Result          : Boolean := False;
    begin
@@ -338,29 +335,14 @@ package body MMenu is
       if Result then
          Result := Menu_Gr_Open;
          if Result then
-            Result := Was_Key_Pressed (Window, Escape) or
-              Was_Action_Pressed (Window, Open_Menu_Action) or
-              Was_Action_Pressed (Window, Menu_Back_Action);
-            if Result then
-               Menu_Gr_Open := False;
-               --  return
-            elsif Was_Key_Pressed (Window, Enter) or
-              Was_Action_Pressed (Window, OK_Action) or
-              Was_Action_Pressed (Window, Attack_Action) then
-               Process_Menu_Gr (Cursor_Current_Item);
-               Audio.Play_Sound (Menu_Beep_Sound, True);
-               Result := True;
-               --  return
-            elsif Is_Key_Down (Up) or Is_Action_Down (Up_Action) then
-               Cursor_Current_Item := Cursor_Current_Item - 1;
-               if Cursor_Current_Item < 0 then
-                  Cursor_Current_Item := Num_Graphic_Entries - 1;
-                  Since_Last_Key := 0.0;
-                  Audio.Play_Sound (Menu_Beep_Sound, True);
-               end if;
-            end if;
-         end if;
+            Result := Process_Menu_Gr
+              (Window, Graphic_Value_Text, Menu_Gr_Open, Graphics_Restart_Flag,
+               Since_Last_Key, Cursor_Current_Item, Current_Video_Mode);
+         end if;  --  Menu_Gr_Open
 
+         if Menu_Audio_Open then
+            Process_Menu_Audio (Cursor_Current_Item);
+         end if;  --  Menu_Audio_Open
       end if; --  Since_Last_Key < 0.15
 
       return Result;

@@ -11,6 +11,7 @@ package Settings is
                             Gfx_High    => 3,
                             Gfx_Ultra   => 4,
                             Gfx_Custom  => 5);
+   pragma Ordered (Gfx_Preset_Type);
 
    type V_GL is (V2_1, V3_2);
    for V_GL use (V2_1 => 0,
@@ -79,6 +80,10 @@ package Settings is
    function Render_OLS return Boolean;
    function Render_Distance return Integer;
    function Save_Settings return Boolean;
+   procedure Set_Graphic_Preset (Preset : Gfx_Preset_Type);
+   procedure Set_Window_Height_To_Save (Height : Integer);
+   procedure Set_Window_Width_To_Save (Width : Integer);
+   function Set_Menu_Graphic_Presets return Boolean;
    function Shadows_Enabled return Boolean;
    function Show_FPS return Boolean;
    function Shadows_Size return Integer;
@@ -87,7 +92,7 @@ package Settings is
    function Texture_Filter return Integer;
    function Tile_Batch_Width return Integer;
    function V_Sync return Boolean;
-   function Window_Width_To_Save return Integer;
    function Window_Height_To_Save return Integer;
+   function Window_Width_To_Save return Integer;
 
 end Settings;
