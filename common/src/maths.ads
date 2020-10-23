@@ -94,6 +94,12 @@ package Maths is
                              return Singles.Matrix3;
    function Rotation_Matrix (Angle : Radian; Axis : Singles.Vector3)
                              return Singles.Matrix4;
+   function Rotate_X_Degree (M : GL.Types.Singles.Matrix4;
+                             Angle : Degree) return GL.Types.Singles.Matrix4;
+   function Rotate_Y_Degree (M : GL.Types.Singles.Matrix4;
+                             Angle : Degree) return GL.Types.Singles.Matrix4;
+   function Rotate_Z_Degree (M : GL.Types.Singles.Matrix4;
+                             Angle : Degree) return GL.Types.Singles.Matrix4;
    function Scaling_Matrix (Scale_Factor : Single) return Singles.Matrix4;
    function Scaling_Matrix (Scale_Factor : Singles.Vector3) return Singles.Matrix4;
    function Stride4 return Int;

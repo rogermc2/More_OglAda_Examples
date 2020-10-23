@@ -381,6 +381,32 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+   function Rotate_X_Degree (M : GL.Types.Singles.Matrix4;
+                             Angle : Degree) return GL.Types.Singles.Matrix4 is
+      use GL.Types.Singles;
+   begin
+      return Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) * M;
+   end Rotate_X_Degree;
+
+   --  ------------------------------------------------------------------------
+
+   function Rotate_Y_Degree (M : GL.Types.Singles.Matrix4;
+                             Angle : Degree) return GL.Types.Singles.Matrix4 is
+      use GL.Types.Singles;
+   begin
+      return Rotation_Matrix (Angle, (0.0, 1.0, 0.0)) * M;
+   end Rotate_Y_Degree;
+
+   --  ------------------------------------------------------------------------
+
+   function Rotate_Z_Degree (M : GL.Types.Singles.Matrix4;
+                             Angle : Degree) return GL.Types.Singles.Matrix4 is
+      use GL.Types.Singles;
+   begin
+      return Rotation_Matrix (Angle, (0.0, 0.0, 1.0)) * M;
+   end Rotate_Z_Degree;
+
+   --  ------------------------------------------------------------------------
    --  Rotation_Matrix is based on "Quaternians and spatial rotation" by
    --  en.m.wikipedia.org, with the matrix transposed
 
