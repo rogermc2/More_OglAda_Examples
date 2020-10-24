@@ -38,10 +38,8 @@ with Title_Shader_Manager;
 
 package body MMenu is
    use GL.Types;
+   use Menu_Support;
    use MMenu_Initialization;
-
-   type Menu_Choice is (Menu_New_Game, Menu_Custom_Map, Menu_Graphics,
-                        Menu_Audio, Menu_Input, Menu_Credits, Menu_Quit);
 
    Black                : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
    Cursor_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -52,12 +50,14 @@ package body MMenu is
    Menu_Closed            : Boolean := False;
    Menu_Credits_Open      : Boolean := False;
    Menu_End_Story_Open    : Boolean := False;
-   Menu_Gr_Open           : Boolean := False;
+   Menu_Graphics_Open     : Boolean := False;
    Menu_Audio_Open        : Boolean := False;
    Menu_Cal_KB_Open       : Boolean := False;
    Menu_Input_Open        : Boolean := False;
+   Menu_Confirm_Quit_Open : Boolean := False;
    Menu_Cal_Gp_Butts_Open : Boolean := False;
    Menu_Cal_Gp_Axes_Open  : Boolean := False;
+   Menu_Choice            : Menu_Choice_Type := Menu_New_Game;
 
    Enabled_Strings                         : Menu_String_Array (1 .. 2)
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
@@ -109,6 +109,7 @@ package body MMenu is
    Credits_Pos_Y              : Single := -1.0;
    Cal_Kb_Cursor_Curr_Item    : Integer := -1;
    Cal_GP_Cursor_Curr_Item    : Integer := -1;  -- GP: game pad
+   Input_Cursor_Current_Item  : Integer := -1;
    Text_Background_Pos        : GL.Types.Singles.Vector2;
    Text_Background_Texture    : GL.Objects.Textures.Texture;
    Menu_Credits_Texture       : GL.Objects.Textures.Texture;
@@ -125,13 +126,12 @@ package body MMenu is
    Title_Mesh                 : Integer := 0;
    Title_Mesh_ID              : Integer := -1;
    Greatest_Axis_Text         : Integer := -1;
-   Joystick_Detected_Text     : Integer := -1;
    Modify_Binding_Mode        : Boolean := False;
    Already_Bound              : Boolean := False;
 
    Position_Buffer             : GL.Objects.Buffers.Buffer;
    Texture_Buffer              : GL.Objects.Buffers.Buffer;
-   Menu_Cursor_Curr_Item       : Integer := -1;
+   Menu_Cursor_Curr_Item       : Menu_Choice_Type := Menu_New_Game;
    Cursor_Current_Item         : Integer := -1;
    Cursor_Point_Count          : Integer := 0;
    Cursor_Shader_Program       : GL.Objects.Programs.Program;
@@ -176,12 +176,6 @@ package body MMenu is
       use Menu_Credits_Shader_Manager;
       use Menu_Strings;
    begin
-      if Menu_Cursor_Curr_Item < 0 then
-         Menu_Cursor_Curr_Item := Integer (Num_Menu_Entries - 1);
-      elsif Menu_Cursor_Curr_Item >= Integer (Num_Menu_Entries) then
-         Menu_Cursor_Curr_Item := 0;
-      end if;
-
       Utilities.Clear_Depth;
       if Menu_Credits_Open then
          Utilities.Clear_Background_Colour_And_Depth (Black);
@@ -344,11 +338,12 @@ package body MMenu is
       --  Joystick processsing
       Result := Since_Last_Key > 0.15;
       if Result then
-         if Menu_Gr_Open then
-            Result := Process_Menu_Gr
-              (Window, Graphic_Value_Text, Menu_Gr_Open, Graphics_Restart_Flag,
-               Since_Last_Key, Cursor_Current_Item, Current_Video_Mode);
-         end if;  --  Menu_Gr_Open
+         if Menu_Graphics_Open then
+            Result := Process_Menu_Graphics
+              (Window, Graphic_Value_Text, Menu_Graphics_Open,
+               Graphics_Restart_Flag, Since_Last_Key, Cursor_Current_Item,
+               Current_Video_Mode);
+         end if;  --  Menu_Graphics_Open
 
          if Menu_Audio_Open then
             Process_Menu_Audio (Window, Audio_Value_Text, Menu_Audio_Open,
@@ -363,9 +358,27 @@ package body MMenu is
             Process_Menu_Cal_GP (Window);
          end if;
          if Menu_Input_Open then
-            Menu_Input (Window, To_String (Joy_Name), Menu_Input_Open,
-                        Menu_Cal_Gp_Butts_Open, Joystick_Detected_Text);
+            Process_Menu_Input (Window, To_String (Joy_Name), Since_Last_Key,
+                                Menu_Input_Open,
+                                Menu_Cal_Gp_Butts_Open, Joystick_Detected_Text,
+                                Input_Cursor_Current_Item);
          end if;
+         if Menu_Confirm_Quit_Open then
+            Result := Confirm_Quit_Open (Window, Menu_Confirm_Quit_Open);
+         end if;
+         if Menu_Credits_Open then
+            Process_Menu_Credits (Window, Menu_Credits_Open,
+                                  Menu_End_Story_Open, Menu_Closed, Text_Timer);
+         end if;
+         Result := General_Menu_Support (Window, Joystick_Detected_Text,
+                                         To_String (Joy_Name),
+                                         Menu_Closed,  Menu_Graphics_Open,
+                                         Menu_Audio_Open, Menu_Input_Open,
+                                         Menu_Confirm_Quit_Open,
+                                         Menu_Credits_Open, User_Chose_New_Game,
+                                         We_Are_In_Custom_Maps,
+                                         User_Chose_Custom_Maps, Since_Last_Key,
+                                         Menu_Cursor_Curr_Item);
       end if; --  Since_Last_Key < 0.15
 
       return Result;
