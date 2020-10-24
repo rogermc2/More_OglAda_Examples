@@ -356,7 +356,7 @@ package body GUI is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Show_Controller_Button_Overlay (Tex_Index, Pos_Index : in out Integer) is
+   procedure Show_Controller_Button_Overlay (Pos_Index, Tex_Index : in out Integer) is
    begin
       if Pos_Index < 1 or Pos_Index > 3 then
          Game_Utils.Game_Log ("GUI.Show_Controller_Button_Overlay, WARNING: " &

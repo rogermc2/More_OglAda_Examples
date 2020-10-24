@@ -70,8 +70,10 @@ package Maths is
      (Rotation_Vec : Singles.Vector3; Transform : out Singles.Matrix4);
    function Length (V : Singles.Vector3) return Single;
    function Min_Int (L, R : GL.Types.Int) return GL.Types.Int;
+   function Min_Integer (L, R : Integer) return Integer;
    function Min (L, R : GL.Types.Single) return GL.Types.Single;
    function Max_Int (L, R : GL.Types.Int) return GL.Types.Int;
+   function Max_Integer (L, R : Integer) return Integer;
    function Max (L, R : GL.Types.Single) return GL.Types.Single;
    function New_Quaternion (Angle : Radian; Axis : GL.Types.Singles.Vector3)
                             return Single_Quaternion.Quaternion;

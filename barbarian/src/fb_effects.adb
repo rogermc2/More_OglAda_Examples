@@ -48,7 +48,7 @@ package body FB_Effects is
       use GL.Objects.Renderbuffers;
       use GL.Objects.Textures.Targets;
       use Shader_Attributes;
-      Points       : Singles.Vector2_Array (1 .. 6) :=
+      Points       : constant Singles.Vector2_Array (1 .. 6) :=
                        ((-1.0, -1.0),
                         ( 1.0,  1.0),
                         (-1.0,  1.0),

@@ -66,10 +66,17 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   function Disable_Joystick return Boolean is
+   procedure Disable_Joystick (State : Boolean) is
+   begin
+      G_Settings.Disable_Joystick := State;
+   end Disable_Joystick;
+
+   --  ------------------------------------------------------------------------
+
+   function Joystick_Disabled return Boolean is
    begin
       return G_Settings.Disable_Joystick;
-   end Disable_Joystick;
+   end Joystick_Disabled;
 
    --  ------------------------------------------------------------------------
 
@@ -175,6 +182,13 @@ package body Settings is
    begin
       G_Settings.Gfx_Presets := Preset;
    end Set_Graphic_Preset;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Music_Volume (Volume : Integer) is
+   begin
+      G_Settings.Music_Volume := Volume;
+   end Set_Music_Volume;
 
    --  ------------------------------------------------------------------------
 

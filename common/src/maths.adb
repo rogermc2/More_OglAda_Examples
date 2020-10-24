@@ -238,6 +238,19 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+   function Min_Integer (L, R : Integer) return Integer is
+      Result : Integer;
+   begin
+      if L < R then
+         Result := L;
+      else
+         Result := R;
+      end if;
+      return Result;
+   end Min_Integer;
+
+   --  ------------------------------------------------------------------------
+
    function Min (L, R : GL.Types.Single) return GL.Types.Single is
       Result : GL.Types.Single;
    begin
@@ -261,6 +274,19 @@ package body Maths is
       end if;
       return Result;
    end Max_Int;
+
+   --  ------------------------------------------------------------------------
+
+   function Max_Integer (L, R : Integer) return Integer is
+      Result : Integer;
+   begin
+      if L < R then
+         Result := L;
+      else
+         Result := R;
+      end if;
+      return Result;
+   end Max_Integer;
 
    --  ------------------------------------------------------------------------
 

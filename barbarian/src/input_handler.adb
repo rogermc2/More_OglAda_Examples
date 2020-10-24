@@ -5,6 +5,7 @@ with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Game_Utils;
+with Settings;
 
 package body Input_Handler is
 
@@ -12,16 +13,12 @@ package body Input_Handler is
    Input_State   : Input_State_Data;
 
    function Register_Key_Action (Name : String) return Integer;
-   procedure Set_Joy_Axis_For_Action (Action_Name : String; Key_Code : Natural;
-                                      Sign        : Character);
-   procedure Set_Joy_Button_For_Action (Action_Name : String; Key_Code : Natural);
-   procedure Set_Key_For_Action (Action_Name : String; Key_Code : Natural);
 
    --  ------------------------------------------------------------------------
 
-   function Action_Name (Index: Integer) return Unbounded_String is
+   function Action_Name (Index: Integer) return String is
    begin
-      return Input_Actions.Action_Names (Index);
+      return To_String (Input_Actions.Action_Names (Index));
    end Action_Name;
 
    --  ------------------------------------------------------------------------
@@ -81,6 +78,13 @@ package body Input_Handler is
       end if;
 
    end Config_Joystick;
+
+   --  ------------------------------------------------------------------------
+
+   function Clear_Binding_Action return Integer is
+   begin
+      return Input_Actions.Clear_Binding_Action;
+   end Clear_Binding_Action;
 
    --  ------------------------------------------------------------------------
 
@@ -190,6 +194,13 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Joystick_Connected return Boolean is
+   begin
+      return Input_State.Joystick_Connected;
+   end Joystick_Connected;
+
+   --  ------------------------------------------------------------------------
+
    function Key_Binding (Index: Integer) return Integer is
    begin
       return Key'Enum_Rep (Input_Actions.Key_Bindings (Index));
@@ -204,10 +215,35 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Key_Pressed return Boolean is
+   begin
+      return Input_State.Key_Pressed;
+   end Key_Pressed;
+
+   --  ------------------------------------------------------------------------
+
+   function Last_Key_Down return Key is
+   begin
+      return Input_State.Last_Key_Down;
+   end Last_Key_Down;
+
+   --  ------------------------------------------------------------------------
+
    function Left_Action return Integer is
    begin
       return Input_Actions.Left_Action;
    end Left_Action;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Lock_All_Keys is
+   begin
+      for index in Input_State.Keys_Down'Range loop
+         if Input_State.Keys_Down (index) then
+            Input_State.Keys_Locked (index) := True;
+         end if;
+      end loop;
+   end Lock_All_Keys;
 
    --  ------------------------------------------------------------------------
 
@@ -330,7 +366,32 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Joy_Axis_For_Action (Action_Name : String; Key_Code : Natural;
+                                      Sign        : Character) is
+   begin
+      null;
+   end Set_Joy_Axis_For_Action;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Joy_Button_For_Action (Action_Name : String; Key_Code : Natural) is
+   begin
+      null;
+   end Set_Joy_Button_For_Action;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Key_For_Action (Action_Name : String; Key_Code : Natural) is
+      Dump : constant Integer := Set_Key_For_Action (Action_Name, Key_Code);
+   begin
+      null;
+   end Set_Key_For_Action;
+
+   --  ------------------------------------------------------------------------
+
+   function Set_Key_For_Action (Action_Name : String; Key_Code : Natural)
+                                return Integer is
+      Result : Integer := -1;
    begin
       if Action_Name'Length < 1 then
          raise Input_Handler_Exception with
@@ -344,33 +405,30 @@ package body Input_Handler is
       for index in 1 .. Input_Actions.Num_Actions loop
          if Input_Actions.Action_Names (index) = Action_Name then
             Input_Actions.Key_Bindings (index) := Key'Enum_Val (Key_Code);
+            Result := index;
          end if;
       end loop;
 
       for index in 1 .. Input_Actions.Num_Actions loop
          if Input_Actions.Action_Names (index) /= Action_Name  and
            Input_Actions.Key_Bindings (index) = Key'Enum_Val (Key_Code) then
-            Game_Utils.Game_Log (" Input_Handler.Set_Key_For_Action,  WARNING:" &
-                                   " duplicate entry for Key_Code: " & Natural'Image (Key_Code));
+            Game_Utils.Game_Log ("Input_Handler.Set_Key_For_Action,  WARNING:"
+                                 &  " duplicate entry for Key_Code: " &
+                                 Natural'Image (Key_Code));
+            Result := -2;
          end if;
       end loop;
+
+      return Result;
 
    end Set_Key_For_Action;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Joy_Axis_For_Action (Action_Name : String; Key_Code : Natural;
-                                      Sign        : Character) is
+   procedure Set_Key_Pressed (Pressed : Boolean) is
    begin
-      null;
-   end Set_Joy_Axis_For_Action;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Set_Joy_Button_For_Action (Action_Name : String; Key_Code : Natural) is
-   begin
-      null;
-   end Set_Joy_Button_For_Action;
+      Input_State.Key_Pressed := Pressed;
+   end Set_Key_Pressed;
 
    --  ------------------------------------------------------------------------
 
@@ -398,6 +456,22 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Was_Joy_Y_Pressed return Boolean is
+      Result : Boolean := False;
+   begin
+      Result := Input_State.Joystick_Connected and then
+        not Settings.Joystick_Disabled and then
+        Input_State.Joystick_Buttons (3) > 0 and then
+        not Input_State.Joystick_Buttons_Locked (3);
+
+      if Result then
+         Input_State.Joystick_Buttons_Locked (3) := True;
+      end if;
+
+      return Result;
+   end Was_Joy_Y_Pressed;
+
+   --  ------------------------------------------------------------------------
    function Was_Key_Pressed (Window : in out Glfw.Windows.Window; aKey : Key)
                              return Boolean is
       use Glfw.Input;

@@ -136,7 +136,7 @@ package body GUI_Level_Chooser is
       use  Glfw.Input.Keys;
       use Input_Handler;
       use Levels_Maps_Manager.Maps_Package;
-      Selected_Map : Levels_Maps_Manager.Level_Map_Data :=
+      Selected_Map : constant Levels_Maps_Manager.Level_Map_Data :=
                        Maps.Element (Selected_Map_ID);
    begin
 --        Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));

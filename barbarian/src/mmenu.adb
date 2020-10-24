@@ -47,13 +47,17 @@ package body MMenu is
    Cursor_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Title_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
 
-   Menu_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Menu_Is_Open         : Boolean := False;
-   Menu_Closed          : Boolean := False;
-   Menu_Credits_Open    : Boolean := False;
-   Menu_End_Story_Open  : Boolean := False;
-   Menu_Gr_Open         : Boolean := False;
-   Menu_Audio_Open      : Boolean := False;
+   Menu_VAO               : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Menu_Is_Open           : Boolean := False;
+   Menu_Closed            : Boolean := False;
+   Menu_Credits_Open      : Boolean := False;
+   Menu_End_Story_Open    : Boolean := False;
+   Menu_Gr_Open           : Boolean := False;
+   Menu_Audio_Open        : Boolean := False;
+   Menu_Cal_KB_Open       : Boolean := False;
+   Menu_Input_Open        : Boolean := False;
+   Menu_Cal_Gp_Butts_Open : Boolean := False;
+   Menu_Cal_Gp_Axes_Open  : Boolean := False;
 
    Enabled_Strings                         : Menu_String_Array (1 .. 2)
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
@@ -103,6 +107,8 @@ package body MMenu is
    Credits_Y                  : Single := -1.0;
    Credits_Pos_X              : Single := 0.0;
    Credits_Pos_Y              : Single := -1.0;
+   Cal_Kb_Cursor_Curr_Item    : Integer := -1;
+   Cal_GP_Cursor_Curr_Item    : Integer := -1;  -- GP: game pad
    Text_Background_Pos        : GL.Types.Singles.Vector2;
    Text_Background_Texture    : GL.Objects.Textures.Texture;
    Menu_Credits_Texture       : GL.Objects.Textures.Texture;
@@ -118,6 +124,10 @@ package body MMenu is
    Title_Skull_Texture        : GL.Objects.Textures.Texture;
    Title_Mesh                 : Integer := 0;
    Title_Mesh_ID              : Integer := -1;
+   Greatest_Axis_Text         : Integer := -1;
+   Joystick_Detected_Text     : Integer := -1;
+   Modify_Binding_Mode        : Boolean := False;
+   Already_Bound              : Boolean := False;
 
    Position_Buffer             : GL.Objects.Buffers.Buffer;
    Texture_Buffer              : GL.Objects.Buffers.Buffer;
@@ -126,6 +136,7 @@ package body MMenu is
    Cursor_Point_Count          : Integer := 0;
    Cursor_Shader_Program       : GL.Objects.Programs.Program;
    Menu_Cursor_Texture         : GL.Objects.Textures.Texture;
+   Audio_Cursor_Current_Item   : Integer := -1;
    Title_Point_Count           : Integer := 0;
    Cursor_V                    : Singles.Matrix4 := GL.Types.Singles.Identity4;
    Title_M                     : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
@@ -333,16 +344,28 @@ package body MMenu is
       --  Joystick processsing
       Result := Since_Last_Key > 0.15;
       if Result then
-         Result := Menu_Gr_Open;
-         if Result then
+         if Menu_Gr_Open then
             Result := Process_Menu_Gr
               (Window, Graphic_Value_Text, Menu_Gr_Open, Graphics_Restart_Flag,
                Since_Last_Key, Cursor_Current_Item, Current_Video_Mode);
          end if;  --  Menu_Gr_Open
 
          if Menu_Audio_Open then
-            Process_Menu_Audio (Cursor_Current_Item);
+            Process_Menu_Audio (Window, Audio_Value_Text, Menu_Audio_Open,
+                                Since_Last_Key, Audio_Cursor_Current_Item );
          end if;  --  Menu_Audio_Open
+         if Menu_Cal_KB_Open then
+            Process_Menu_Cal_KB (Window, KB_Binding_Text, Greatest_Axis_Text,
+                                 Already_Bound_Text, Modify_Binding_Mode,
+                                 Already_Bound, Since_Last_Key);
+         end if;  --  Menu_Audio_Open
+         if Menu_Cal_Gp_Butts_Open or Menu_Cal_Gp_Axes_Open then
+            Process_Menu_Cal_GP (Window);
+         end if;
+         if Menu_Input_Open then
+            Menu_Input (Window, To_String (Joy_Name), Menu_Input_Open,
+                        Menu_Cal_Gp_Butts_Open, Joystick_Detected_Text);
+         end if;
       end if; --  Since_Last_Key < 0.15
 
       return Result;
