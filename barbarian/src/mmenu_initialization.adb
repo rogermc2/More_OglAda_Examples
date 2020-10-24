@@ -342,15 +342,15 @@ package body MMenu_Initialization is
       K_Index : Integer;
    begin
       for index in 1 .. Input_Handler.Num_Actions loop
-         if To_String (Input_Handler.Action_Name (index)) /= "" then
+         if Input_Handler.Action_Name (index) /= "" then
             Cal_KB_Text (index) :=
-              Text.Add_Text (To_String (Input_Handler.Action_Name (index)),
+              Text.Add_Text (Input_Handler.Action_Name (index),
                              X1, Single (index + 1) * Y,
                              20.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (Cal_KB_Text (index), False);
 
             Cal_GP_Text (index) :=
-              Text.Add_Text (To_String (Input_Handler.Action_Name (index)),
+              Text.Add_Text (Input_Handler.Action_Name (index),
                              X1, Single (index + 1) * Y,
                              20.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (Cal_GP_Text (index), False);
@@ -468,7 +468,7 @@ package body MMenu_Initialization is
       Y2       : constant Single := 40.0 / Single (Settings.Framebuffer_Height);
       ES_Index : Integer;
    begin
-      if Settings.Disable_Joystick then
+      if Settings.Joystick_Disabled then
          ES_Index := 1;
       else
          ES_Index := 2;

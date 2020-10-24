@@ -64,6 +64,19 @@ package body Audio is
    end record;
 
    G_Audio : Audio_Data;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Pause_Music (Pause : Boolean) is
+   begin
+      if G_Audio.Was_Init then
+         null;
+--           if G_Audio.Curr_Music_Snd then
+--              G_Audio.Curr_Music_Snd.Set_Is_Paused (Pause);
+--           end if;
+      end if;
+   end Pause_Music;
+
    --  -------------------------------------------------------------------------
 
    procedure Play_Sound (File_Name : String; Random_Pitch : Boolean) is
@@ -81,6 +94,15 @@ package body Audio is
          null;
       end if;
    end Set_Audio_Volume;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Stop_Credits_Music is
+   begin
+      if G_Audio.Was_Init then
+         null;
+      end if;
+   end Stop_Credits_Music;
 
    --  -------------------------------------------------------------------------
 
