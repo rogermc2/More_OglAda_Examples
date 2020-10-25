@@ -18,7 +18,7 @@ package body Controller_Textures_Manager is
    Ctrl_Butt_Overlays : Controller_Button_Overlays;
 
    procedure Load_Controller_Textures is
-      Controller_Glyphs : array (1 .. Num_Steam_Controller_Images) of Unbounded_String :=
+      Controller_Glyphs : constant array (1 .. Num_Steam_Controller_Images) of Unbounded_String :=
                             (To_Unbounded_String ("button_a.png"), -- matches enum k_EControllerActionOrigin_A
                              To_Unbounded_String ("button_b.png"),
                              To_Unbounded_String ("button_x.png"),
@@ -70,11 +70,11 @@ package body Controller_Textures_Manager is
                              To_Unbounded_String ("pad_l.png"),      --   not enumerated explicitly
                              To_Unbounded_String ("pad_r.png"),     --   not enumerated explicitly
                              To_Unbounded_String ("stick.png"));
-      Dir               : String := "src/textures/steam_controller/";
+      Dir               : constant String := "src/textures/steam_controller/";
    begin
       for index in 1 .. Num_Steam_Controller_Images loop
          declare
-            Path : String := Dir & To_String (Controller_Glyphs (index));
+            Path : constant String := Dir & To_String (Controller_Glyphs (index));
          begin
             Texture_Manager.Load_Image_To_Texture
               (Path, Ctrl_Butt_Overlays.Loaded_Glyph_Ids (index), False, True);

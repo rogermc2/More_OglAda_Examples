@@ -18,7 +18,8 @@ package MMenu_Initialization is
    procedure Init1 (Menu_Text : in out GL_Maths.Integer_Array;
                    End_Story_Text :in out Integer;
                    Text_Background_Texture, Menu_Credits_Texture,
-                   Title_Skull_Texture : in out GL.Objects.Textures.Texture);
+                    Title_Skull_Texture, Menu_Cursor_Texture :
+                    in out GL.Objects.Textures.Texture);
 
    procedure Init_Audio_Value_Strings
      (Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array);
@@ -26,9 +27,7 @@ package MMenu_Initialization is
      (Credits_Shader_Program : in out GL.Objects.Programs.Program;
       Text_Background_Pos : in out GL.Types.Singles.Vector2;
       Credits_Text_ID : in out Integer);
-   procedure Init_Cursor (Title_Mesh            : Integer;
-                          Menu_Cursor_Texture   : in out GL.Objects.Textures.Texture;
-                          Cursor_Shader_Program : in out GL.Objects.Programs.Program;
+   procedure Init_Cursor (Cursor_Shader_Program : in out GL.Objects.Programs.Program;
                           Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
                           Cursor_Point_Count    : in out Integer);
    procedure Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings :
@@ -47,8 +46,7 @@ package MMenu_Initialization is
      (Input_Value_Text, Confirm_Quit_Text : in out GL_Maths.Integer_Array;
       Enabled_Strings                     : in out Menu_String_Array);
    procedure Init_Title
-     (Title_Mesh_ID                            : in out Integer;
-      Title_Author_Text, Title_Buildstamp_Text : in out Integer;
+     (Title_Author_Text, Title_Buildstamp_Text : in out Integer;
       Title_M, Title_V                         : in out GL.Types.Singles.Matrix4;
       Title_Shader_Program                     : in out GL.Objects.Programs.Program;
       Title_VAO                                : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;

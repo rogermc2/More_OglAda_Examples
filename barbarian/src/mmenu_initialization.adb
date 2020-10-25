@@ -125,7 +125,7 @@ package body MMenu_Initialization is
    procedure Init1 (Menu_Text           : in out GL_Maths.Integer_Array;
                     End_Story_Text      :in out Integer;
                     Text_Background_Texture, Menu_Credits_Texture,
-                    Title_Skull_Texture :
+                    Title_Skull_Texture, Menu_Cursor_Texture :
                     in out GL.Objects.Textures.Texture) is
       use GL.Types;
       use GL.Types.Singles;
@@ -137,6 +137,8 @@ package body MMenu_Initialization is
                                        Credits_Text_Y, 30.0, 1.0, 1.0, 0.1, 1.0);
       Text.Set_Text_Visible (End_Story_Text, False);
 
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/skull_small_helmet_painterv_shade.png", Menu_Cursor_Texture, False, True);
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/title_skull.png", Title_Skull_Texture, False, True);
       Texture_Manager.Load_Image_To_Texture
@@ -226,16 +228,14 @@ package body MMenu_Initialization is
    --  --------------------------- ---------------------------------------------
 
    procedure Init_Cursor
-     (Title_Mesh            : Integer;
-      Menu_Cursor_Texture   : in out GL.Objects.Textures.Texture;
-      Cursor_Shader_Program : in out GL.Objects.Programs.Program;
+     (Cursor_Shader_Program : in out GL.Objects.Programs.Program;
       Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Cursor_Point_Count    : in out Integer) is
-      Camera_Position : constant Singles.Vector3 := (0.0, 0.0, 10.0);
-      Camera_Target   : constant Singles.Vector3 := (0.0, 0.0, 0.0);
-      Cursor_M        : constant Singles.Matrix4 := GL.Types.Singles.Identity4;
-      Cursor_V        : Singles.Matrix4;
-      Cursor_Mesh_ID  : Integer := 0;
+      Camera_Position       : constant Singles.Vector3 := (0.0, 0.0, 10.0);
+      Camera_Target         : constant Singles.Vector3 := (0.0, 0.0, 0.0);
+      Cursor_M              : constant Singles.Matrix4 := GL.Types.Singles.Identity4;
+      Cursor_V              : Singles.Matrix4;
+      Cursor_Mesh_ID        : Integer := -1;
    begin
       Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
                                    (0.0, 1.0, 0.0), Cursor_V);
@@ -257,12 +257,6 @@ package body MMenu_Initialization is
       end if;
 
       Cursor_Point_Count := Mesh_Loader.Point_Count (Cursor_Mesh_ID);
-
-      Texture_Manager.Load_Image_To_Texture
-        ("src/textures/skull_small_helmet_painterv_shade.png",
-         Menu_Cursor_Texture, False, True);
-      Cursor_Point_Count := Mesh_Loader.Point_Count (Title_Mesh);
-
    end Init_Cursor;
 
    --  ------------------------------------------------------------------------
@@ -492,13 +486,13 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Title
-     (Title_Mesh_ID                            : in out Integer;
-      Title_Author_Text, Title_Buildstamp_Text : in out Integer;
+     (Title_Author_Text, Title_Buildstamp_Text : in out Integer;
       Title_M, Title_V                         : in out GL.Types.Singles.Matrix4;
       Title_Shader_Program                     : in out GL.Objects.Programs.Program;
       Title_VAO                                : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Title_Point_Count                        : in out Integer) is
       use GL.Types.Singles;
+      Title_Mesh_ID   : Integer := -1;
       Camera_Position : constant Vector3 := (0.0, -6.5, 3.0);
       Camera_Target   : constant Vector3 := Camera_Position + (0.0, 1.0, -1.0);
       X               : constant Single := 400.0 / Single (Settings.Framebuffer_Width);
@@ -536,7 +530,7 @@ package body MMenu_Initialization is
                                    (0.0, 1.0, 0.0), Title_V);
 
       Utilities.Print_Matrix ("Initialize Title_V", Title_V);
-      Title_M := Maths.Translation_Matrix ((-0.4, -3.0, -1.0));
+      Title_M := Maths.Translation_Matrix ((-0.4, -3.0, -1.0)) * Identity4;
       Title_M := Maths.Scaling_Matrix ((0.5, 0.5, 0.5)) * Title_M;
       Utilities.Print_Matrix ("Initialize Title_M", Title_M);
 

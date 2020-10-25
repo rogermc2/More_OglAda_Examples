@@ -123,8 +123,6 @@ package body MMenu is
    Already_Bound_Text         : Integer := -1;
    Title_Shader_Program       : GL.Objects.Programs.Program;
    Title_Skull_Texture        : GL.Objects.Textures.Texture;
-   Title_Mesh                 : Integer := 0;
-   Title_Mesh_ID              : Integer := -1;
    Greatest_Axis_Text         : Integer := -1;
    Modify_Binding_Mode        : Boolean := False;
    Already_Bound              : Boolean := False;
@@ -200,6 +198,8 @@ package body MMenu is
    --  ------------------------------------------------------------------------
 
    procedure Draw_Title_Only is
+      use GL.Objects.Textures;
+      use GL.Objects.Textures.Targets;
       use GL.Objects.Vertex_Arrays;
       use GL.Types;
       use Singles;
@@ -207,14 +207,16 @@ package body MMenu is
       USE Shader_Attributes;
       S_Matrix     : constant Singles.Matrix4 := Scaling_Matrix (5.0);  --  orig 10.0
       T_Matrix     : constant Singles.Matrix4 :=
-                       Translation_Matrix ((0.0, 0.0, -30.0)); --  orig 0.0, -10.0, -30.0
+                       Translation_Matrix ((0.0, -10.0, -30.0)); --  orig 0.0, -10.0, -30.0
       M_Matrix     : constant Singles.Matrix4 := T_Matrix * S_Matrix;
       Title_Matrix : constant Singles.Matrix4 :=
-                       Translation_Matrix ((-0.4, -3.0, 1.0)); --  orig z -1.0
+                       Translation_Matrix ((-0.4, -2.0, -1.0)); --  orig z -1.0
       Current_Time : constant Single := Single (Glfw.Time);
    begin
       --  Draw cursor skull in background
       Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
+--           Set_Active_Unit (0);
+--           Texture_2D.Bind (Title_Skull_Texture);
       if not Title_Skull_Texture.Initialized then
          raise MMenu_Exception with
            "MMen.Draw_Title_Only, Title_Skull_Texture has not been initialized";
@@ -230,7 +232,6 @@ package body MMenu is
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
       Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
 
-      Utilities.Print_Matrix ("Title_Matrix", Title_Matrix);
       --  3D title
       GL.Objects.Programs.Use_Program (Title_Shader_Program);
       Title_Shader_Manager.Set_View_Matrix (Title_V);
@@ -265,14 +266,14 @@ package body MMenu is
    begin
       Game_Utils.Game_Log ("---MAIN MENU---");
       Init_Position_And_Texture_Buffers (Menu_VAO, Position_Buffer, Texture_Buffer);
-      Init_Title (Title_Mesh_ID, Title_Author_Text, Title_Buildstamp_Text,
+      Init_Title (Title_Author_Text, Title_Buildstamp_Text,
                   Title_M, Title_V , Title_Shader_Program, Title_VAO,
                   Title_Point_Count);
-      Init_Cursor (Title_Mesh, Menu_Cursor_Texture,
-                   Cursor_Shader_Program, Cursor_VAO, Cursor_Point_Count);
+      Init_Cursor (Cursor_Shader_Program, Cursor_VAO,
+                   Cursor_Point_Count);
       Init_Credits (Credits_Shader_Program, Text_Background_Pos, Credits_Text_ID);
       Init1 (Menu_Text, End_Story_Text, Text_Background_Texture,
-              Menu_Credits_Texture, Title_Skull_Texture);
+              Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
       Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
       Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
       Init_Input_Text (Input_Text);
