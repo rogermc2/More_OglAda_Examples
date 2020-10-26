@@ -196,7 +196,7 @@ package body MMenu_Initialization is
 
    procedure Init_Credits
      (Credits_Shader_Program : in out GL.Objects.Programs.Program;
-      Text_Background_Pos    : in out Singles.Vector2;
+      Text_Background_Scale, Text_Background_Pos : in out Singles.Vector2;
       Credits_Text_ID        : in out Integer) is
       use GL.Objects.Programs;
       use GL.Types;
@@ -219,7 +219,8 @@ package body MMenu_Initialization is
       Use_Program (Credits_Shader_Program);
       Set_Scale (Credits_S);
       Set_Position (Credits_P);
-      Text_Background_Pos := (512.0 / FB_Width, 400.0 / FB_Height);
+      Text_Background_Scale := (512.0 / FB_Width, 400.0 / FB_Height);
+      Text_Background_Pos := Credits_P;
       Credits_Text_ID := Text.Add_Text (Credits_String, Credits_Text_X,
                                         Credits_Text_Y, 30.0, 1.0, 1.0, 1.0, 1.0);
       Text.Set_Text_Visible (Credits_Text_ID, False);
@@ -230,13 +231,14 @@ package body MMenu_Initialization is
    procedure Init_Cursor
      (Cursor_Shader_Program : in out GL.Objects.Programs.Program;
       Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Cursor_M              : in out GL.Types.Singles.Matrix4;
       Cursor_Point_Count    : in out Integer) is
       Camera_Position       : constant Singles.Vector3 := (0.0, 0.0, 10.0);
       Camera_Target         : constant Singles.Vector3 := (0.0, 0.0, 0.0);
-      Cursor_M              : constant Singles.Matrix4 := GL.Types.Singles.Identity4;
       Cursor_V              : Singles.Matrix4;
       Cursor_Mesh_ID        : Integer := -1;
    begin
+      Cursor_M := Singles.Identity4;
       Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
                                    (0.0, 1.0, 0.0), Cursor_V);
       Cursor_Shader_Manager.Init (Cursor_Shader_Program);

@@ -8,15 +8,20 @@ with GL.Types;
 with Maths;
 
 with Audio;
+with Camera;
+with Cursor_Shader_Manager;
 with Game_Utils;
+with GL_Utils;
 with GUI;
 with Input_Handler;
 with Menu_Strings;
 with Settings;
 with Text;
+with Texture_Manager;
 
 package body Menu_Support is
 
+   Title_Impact_Sound : constant String := "DEMOLISH_Wood_Metal_Deep_stereo.wav";
    Num_Video_Modes    : constant Integer := 10;
    type Size_Array is array (1 .. Num_Video_Modes) of Integer;
 
@@ -31,6 +36,8 @@ package body Menu_Support is
    Prev_Gp_Binding_Text    : Unbounded_String := To_Unbounded_String ("");
    Cal_Kb_Cursor_Curr_Item : Integer := 0;
    Menu_Cal_KB_Open        : Boolean := False;
+   Cursor_Rot_Speed        : constant Float := 240.0; --  deg per sec
+   Cursor_Degrees          : Maths.Degree := 0.0;
 
    procedure Process_Menu_Graphic_Cases (Cursor_Item : Integer := -1);
    procedure Process_Video_Modes
@@ -72,6 +79,78 @@ package body Menu_Support is
       end if;
       return IP_Inc;
    end Cycle_Up_PC;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Do_Bounce (Title_Bounce_Timer : in out Float; Elapsed : Float;
+                        Title_V : in out GL.Types.Singles.Matrix4) is
+      use GL.Types;
+      use GL.Types.Singles;
+      use GL_Maths;
+      End_Fall_At   : constant Single := 0.5;
+      End_Bounce_At : constant Single := 1.0;
+      Num_Bounces   : constant Integer := 3;
+      Fall_Dist     : constant Single := 2.5; -- 1.0 is middle of 3d mesh at top of screen
+      Bounce_Amp    : Float := 0.5;
+      Bounce_Matrix : Matrix4 := Identity4;
+      Y             : Single;
+      Cam_Pos       : constant Vector3 := (0.0, -6.5, 3.0);
+      Cam_Target    : constant Vector3 := Cam_Pos + (0.0, 1.0, -1.0);
+   begin
+      if End_Bounce_At >= Single (Title_Bounce_Timer) then
+         Y := Accel_Exp (Single (Title_Bounce_Timer), (0.0, End_Fall_At),
+                         (Fall_Dist, 0.0));
+         if Float (End_Fall_At) < Title_Bounce_Timer + Elapsed then
+            Audio.Play_Sound (Title_Impact_Sound, False);
+         end if;
+      else
+         Y := Decel_Bounce (Single (Title_Bounce_Timer), (0.0, End_Fall_At),
+                         (Fall_Dist, 0.0), Num_Bounces);
+      end if;
+      Bounce_Matrix := Maths.Translation_Matrix ((0.0, Y, 0.0));
+
+      Maths.Init_Lookat_Transform
+        (Cam_Pos, Cam_Target, (0.0, 1.0, 1.0), Title_V);
+      Title_V := Bounce_Matrix * Title_V;
+      Title_Bounce_Timer := Title_Bounce_Timer + Elapsed;
+   end Do_Bounce;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Draw_3D_Menu_Items
+     (Menu_Cursor_Texture   : GL.Objects.Textures.Texture;
+      Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Cursor_Shader_Program : GL.Objects.Programs.Program;
+      Cursor_M              : in out GL.Types.Singles.Matrix4;
+      Cursor_V              : GL.Types.Singles.Matrix4;
+      Cursor_Pos            : GL.Types.Singles.Vector2;
+      Cursor_Scale          : GL.Types.Single;
+      Cursor_Point_Count    : Integer; Elapsed : Float) is
+      use GL.Objects.Vertex_Arrays;
+      use GL.Types;
+      use GL.Types.Singles;
+      use Maths;
+      Scale        : constant Single :=
+                       Cursor_Scale / Single (Settings.Framebuffer_Height);
+      Scale_Matrix : constant Matrix4 := Scaling_Matrix (Scale);
+      Rot_Matrix   : Matrix4;
+      T_Matrix     : Matrix4 := Identity4;
+      P_Matrix     : Matrix4 := Identity4;
+   begin
+      Texture_Manager.Bind_Texture (0, Menu_Cursor_Texture);
+      GL_Utils.Bind_VAO (Cursor_VAO);
+      Game_Utils.Game_Log ("Menu_Support.Draw_3D_Menu_Items, Cursor_VAO bound");
+      Cursor_Degrees := Cursor_Degrees + Degree (Cursor_Rot_Speed * Elapsed);
+      Rot_Matrix := Rotate_Y_Degree (Scale_Matrix, Cursor_Degrees);
+      Cursor_M := Rot_Matrix;
+      T_Matrix := Translation_Matrix ((Cursor_Pos (GL.X), Cursor_Pos (GL.X), 0.0));
+      P_Matrix := T_Matrix * Camera.GUI_Proj_Matrix;
+      GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
+      Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
+      Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
+      Cursor_Shader_Manager.Set_Perspective_Matrix (P_Matrix);
+      Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
+   end Draw_3D_Menu_Items;
 
    --  -------------------------------------------------------------------------
 

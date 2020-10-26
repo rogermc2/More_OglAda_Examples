@@ -37,7 +37,7 @@ package body Camera is
             Dir (GL.X) := 0.0;
             First_Person_Pos := G_Cam.World_Position;
             First_Person_Pos (GL.X) := First_Person_Pos (GL.X) - 11.0;
-             Maths.Init_Lookat_Transform (First_Person_Pos, First_Person_Pos + Dir,
+            Maths.Init_Lookat_Transform (First_Person_Pos, First_Person_Pos + Dir,
                                           (0.0, 1.0, 0.0), G_Cam.View_Matrix);
         else
             Maths.Init_Lookat_Transform (G_Cam.World_Position, (2.0, 0.0, 2.0),

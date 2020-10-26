@@ -1,6 +1,11 @@
 
 with Glfw.Windows;
 
+with GL.Objects.Programs;
+with GL.Objects.Textures;
+with GL.Objects.Vertex_Arrays;
+with GL.Types;
+
 with GL_Maths;
 
 package Menu_Support is
@@ -12,6 +17,17 @@ package Menu_Support is
    function Confirm_Quit_Open (Window : in out Glfw.Windows.Window;
                                Confirm_Quit_Open : in out Boolean)
                                return Boolean;
+   procedure Do_Bounce (Title_Bounce_Timer : in out Float; Elapsed : Float;
+                        Title_V : in out GL.Types.Singles.Matrix4);
+   procedure Draw_3D_Menu_Items
+     (Menu_Cursor_Texture : GL.Objects.Textures.Texture;
+      Cursor_VAO          : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Cursor_Shader_Program : GL.Objects.Programs.Program;
+      Cursor_M   : in out GL.Types.Singles.Matrix4;
+      Cursor_V  : GL.Types.Singles.Matrix4;
+      Cursor_Pos          : GL.Types.Singles.Vector2;
+      Cursor_Scale : GL.Types.Single;
+      Cursor_Point_Count  : Integer; Elapsed : Float);
    function General_Menu_Support (Window  : in out Glfw.Windows.Window;
                                  Joystick_Detected_Text    : Integer;
                                  Joy_Name : String;

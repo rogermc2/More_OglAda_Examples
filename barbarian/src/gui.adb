@@ -135,7 +135,7 @@ package body GUI is
       Scale_X    : constant Single := 64.0 / Single (Settings.Framebuffer_Width);
       Scale_Y    : constant Single := 64.0 / Single (Settings.Framebuffer_Height);
       X          : constant Singles.Vector3 :=
-                     ((-3.0 * Scale_X), (0.0), (3.0 * Scale_X));
+                     (-3.0 * Scale_X, 0.0, 3.0 * Scale_X);
       X_GL_Index : constant array (Int range 1 .. 3) of GL.Index_Homogeneous :=
                      (GL.X, GL.Y, GL.X);
       Y          : constant Single := -1.0 + 3.0 * Scale_Y;
@@ -144,7 +144,8 @@ package body GUI is
       GL.Culling.Set_Front_Face (GL.Types.Clockwise);
       Enable (Blend);
       Disable (Depth_Test);
-      GL.Objects.Vertex_Arrays.Bind (VAO_Quad_Tristrip);
+--        GL.Objects.Vertex_Arrays.Bind (VAO_Quad_Tristrip);
+      GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
       GL.Objects.Textures.Set_Active_Unit (0);
 
       for index in 1 .. 3 loop

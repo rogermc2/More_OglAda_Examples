@@ -11,6 +11,7 @@ package MMenu is
    procedure Draw_Menu (Elapsed : Float);
    procedure Draw_Title_Only;
    function End_Story_Open return Boolean;
+   procedure Flag_End_Story_Credits_Start;
    procedure Init;
    function Menu_Open return Boolean;
    function Menu_Was_Closed return Boolean;

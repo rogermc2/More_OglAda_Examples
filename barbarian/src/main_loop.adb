@@ -140,7 +140,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       b             : GL.Types.Single := 0.0;
       Back_Colour   : Colors.Color;
       Window_Closed : Boolean := False;
-      Key_Now       : Glfw.Input.Button_State;
    begin
       Game_Utils.Game_Log ("---Main_Loop.Introduction---");
       Is_Running := True;
@@ -165,7 +164,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
 
          Game_Camera.Is_Dirty := False;
-         Key_Now := Main_Window.Key_State (Glfw.Input.Keys.Space);
          if Was_Key_Pressed (Window, Escape) or
            Was_Key_Pressed (Window, Space) or
            Was_Key_Pressed (Window, Enter) or
@@ -197,6 +195,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Main_Setup (Window     : in out Glfw.Windows.Window;
                          Is_Running : in out Boolean) is
+      use Glfw.Input;
       Width        : GL.Types.Single;
       Height       : GL.Types.Single;
       Current_Time : Float := 0.0;
@@ -220,28 +219,28 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       if not Skip_Intro then
          Introduction (Window, Last_Time, Flash_Timer, Is_Running);
       end if;
-      Game_Utils.Game_Log ("Main_Loop.Main_Setup Introduction done");
 
       --  initiate main menu loop
       MMenu.Start_Menu_Title_Bounce;
+      Game_Utils.Game_Log ("Main_Loop.Main_Setup Start_Menu_Title_Bounce done");
       Utilities.Clear_Background_Colour_And_Depth (Black);
 
       if not Skip_Intro then
          MMenu.Set_Menu_Open (True);
+         Game_Utils.Game_Log ("Main_Loop.Main_Setup Set_Menu_Open done");
       end if;
 
       Last_Time := GL_Utils.Get_Elapsed_Seconds;
       GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
                               Settings.Framebuffer_Height);
-      Game_Utils.Game_Log ("Main_Loop.Main_Setup Is_Running: " &
-                          Boolean'Image (Is_Running));
+
       while Mmenu.Menu_Open loop
          Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          Utilities.Clear_Background_Colour_And_Depth (Black);
-         Game_Utils.Game_Log ("Main_Loop.Main_Setup drawing menu");
          MMenu.Draw_Menu (Delta_Time);
+         Game_Utils.Game_Log ("Main_Loop.Main_Setup Draw_Menu done");
 
          GUI.Draw_Controller_Button_Overlays (Delta_Time);
          Glfw.Input.Poll_Events;
@@ -256,12 +255,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
            MMenu.Did_User_Choose_Custom_Maps then
             MMenu.Set_Menu_Open (False);
          end if;
-         Is_Running := not Main_Window.Should_Close;
+         Is_Running := not Main_Window.Should_Close and
+           not (Main_Window.Key_State (Keys.Escape) = Glfw.Input.Pressed);
       end loop;
 
       if Is_Running then
          GUI_Level_Chooser.Init;
       end if;
+      Game_Utils.Game_Log ("Main_Loop.Main_Setup done");
 
    exception
       when others =>

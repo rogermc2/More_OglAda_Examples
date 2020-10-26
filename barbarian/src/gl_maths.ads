@@ -38,6 +38,9 @@ package GL_Maths is
    type Character_Array is array (Integer range <>) of Character;
    type Integer_Array is array (Integer range <>) of Integer;
 
+   function Accel_Exp (X : Single; Init, Final : Vector2) return Single;
+   function Decel_Bounce (X : Single; Init, Final : Vector2; Num : Integer)
+                          return Single;
    function From_Real_Matrix4 (R_Matrix : Single_Matrix) return Singles.Matrix4;
    function From_Real_Vector3 (R_Vec : Single_Vector) return Singles.Vector3;
    function From_Real_Vector4 (R_Vec : Single_Vector) return Singles.Vector4;
