@@ -230,11 +230,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Game_Utils.Game_Log ("Main_Loop.Main_Setup Set_Menu_Open done");
       end if;
 
+      Is_Running := True;
       Last_Time := GL_Utils.Get_Elapsed_Seconds;
       GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
                               Settings.Framebuffer_Height);
 
-      while Mmenu.Menu_Open loop
+      while Mmenu.Menu_Open and Is_Running loop
          Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
@@ -255,8 +256,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
            MMenu.Did_User_Choose_Custom_Maps then
             MMenu.Set_Menu_Open (False);
          end if;
-         Is_Running := not Main_Window.Should_Close and
-           not (Main_Window.Key_State (Keys.Escape) = Glfw.Input.Pressed);
+         Is_Running := not Window.Should_Close;
       end loop;
 
       if Is_Running then
