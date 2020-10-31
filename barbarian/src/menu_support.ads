@@ -19,7 +19,7 @@ package Menu_Support is
                                return Boolean;
    procedure Do_Bounce (Title_Bounce_Timer : in out Float; Elapsed : Float;
                         Title_V : in out GL.Types.Singles.Matrix4);
-   procedure Draw_3D_Menu_Items
+   procedure Draw_Skull_Cursor
      (Menu_Cursor_Texture : GL.Objects.Textures.Texture;
       Cursor_VAO          : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Cursor_Shader_Program : GL.Objects.Programs.Program;

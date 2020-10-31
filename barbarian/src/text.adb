@@ -286,8 +286,10 @@ package body Text is
       GL.Objects.Programs.Use_Program (Font_Shader);
       Text_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.95,
                                            theText.Top_Left_Y));
+--        Text_Shader_Manager.Set_Position_ID ((-0.8, 0.8));
       Text_Shader_Manager.Set_Text_Colour_ID ((theText.Red, theText.Green,
                                                theText.Blue, theText.A));
+--        Text_Shader_Manager.Set_Text_Colour_ID ((1.0, 0.0, 0.0, 1.0));
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Triangles, 0, Int (theText.Point_Count));
 

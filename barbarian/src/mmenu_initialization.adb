@@ -118,8 +118,7 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init1 (Menu_Text           : in out GL_Maths.Integer_Array;
-                    End_Story_Text      :in out Integer;
+   procedure Init1 (End_Story_Text      :in out Integer;
                     Text_Background_Texture, Menu_Credits_Texture,
                     Title_Skull_Texture, Menu_Cursor_Texture :
                     in out GL.Objects.Textures.Texture) is
@@ -141,16 +140,6 @@ package body MMenu_Initialization is
         ("src/textures/victory.png", Menu_Credits_Texture, False, True);
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/text_bkrnd.png", Text_Background_Texture, False, True);
-
-      for index in 1 .. Num_Menu_Entries loop
-         Y := Menu_Text_Yoffs - Menu_Big_Text_Sz * Single (index - 1) /
-           Single (Settings.Framebuffer_Height);
-         Menu_Text (index) :=
-           Text.Add_Text (Menu_Strings.Menu_String_Items (index),
-                          0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
-         Text.Centre_Text (Menu_Text (index), 0.0, Y);
-         Text.Set_Text_Visible (Menu_Text (index), False);
-      end loop;
    end Init1;
 
    --  ------------------------------------------------------------------------
@@ -257,8 +246,8 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings :
-                                         in out Menu_String_Array) is
+   procedure Init_Menu_Strings (Enabled_Strings, Graphic_Value_Strings :
+                                in out Menu_String_Array) is
       Graphic_Int : Integer;
    begin
       Graphic_Int := Settings.Gfx_Preset_Type'Enum_Rep (Settings.Graphic_Preset);
@@ -290,7 +279,7 @@ package body MMenu_Initialization is
       Graphic_Value_Strings (17) :=
         (Enabled_Strings (GL_Utils.To_Integer (Settings.Show_FPS) + 1));
 
-   end Init_Graphic_Value_Strings;
+   end Init_Menu_Strings;
 
    --  ------------------------------------------------------------------------
 
@@ -408,6 +397,25 @@ package body MMenu_Initialization is
    end Init_Input_Text;
 
    --  --------------------------- ---------------------------------------------
+
+   procedure Init_Menu_Text (Menu_Text : in out GL_Maths.Integer_Array) is
+      use GL.Types;
+      use GL.Types.Singles;
+      Y  : Single;
+   begin
+      for index in 1 .. Num_Menu_Entries loop
+         Y := (Menu_Text_Yoffs - Menu_Big_Text_Sz * Single (index - 1)) /
+           Single (Settings.Framebuffer_Height);
+         Menu_Text (index) :=
+           Text.Add_Text (Menu_Strings.Menu_String_Items (index),
+                          1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
+--                            0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
+         Text.Centre_Text (Menu_Text (index), 0.0, Y);
+         Text.Set_Text_Visible (Menu_Text (index), False);
+      end loop;
+   end Init_Menu_Text;
+
+   --  ------------------------------------------------------------------------
 
    procedure Init_Position_And_Texture_Buffers
      (Menu_VAO                        : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;

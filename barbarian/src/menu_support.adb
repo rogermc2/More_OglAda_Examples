@@ -119,7 +119,7 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Draw_3D_Menu_Items
+   procedure Draw_Skull_Cursor
      (Menu_Cursor_Texture   : GL.Objects.Textures.Texture;
       Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Cursor_Shader_Program : GL.Objects.Programs.Program;
@@ -153,7 +153,7 @@ package body Menu_Support is
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
       Cursor_Shader_Manager.Set_Perspective_Matrix (P_Matrix);
       Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
-   end Draw_3D_Menu_Items;
+   end Draw_Skull_Cursor;
 
    --  -------------------------------------------------------------------------
 

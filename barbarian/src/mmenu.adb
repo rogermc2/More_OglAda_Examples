@@ -105,14 +105,14 @@ package body MMenu is
    Title_Author_Text          : Integer := -1;
    Title_Buildstamp_Text      : Integer := -1;
    Credits_Text_ID            : Integer := -1;
-   Credits_Text_X             : Single := 0.0;
-   Credits_Text_Y             : Single := -1.0;
-   Credits_X                  : Single := 0.0;
-   Credits_Y                  : Single := -1.0;
-   Credits_Pos_X              : Single := 0.0;
-   Credits_Pos_Y              : Single := -1.0;
-   Cal_Kb_Cursor_Curr_Item    : Integer := -1;
-   Cal_GP_Cursor_Curr_Item    : Integer := -1;  -- GP: game pad
+   Credits_Text_X             : constant Single := 0.0;
+   Credits_Text_Y             : constant Single := -1.0;
+   Credits_X                  : constant Single := 0.0;
+   Credits_Y                  : constant Single := -1.0;
+   Credits_Pos_X              : constant Single := 0.0;
+   Credits_Pos_Y              : constant Single := -1.0;
+   Cal_Kb_Cursor_Curr_Item    : constant Integer := -1;
+   Cal_GP_Cursor_Curr_Item    : constant Integer := -1;  -- GP: game pad
    Input_Cursor_Current_Item  : Integer := -1;
    Text_Background_Pos        : constant GL.Types.Singles.Vector2 := (0.0, 0.0);
    Text_Background_Scale      : GL.Types.Singles.Vector2 := (1.0, 1.0);
@@ -123,7 +123,7 @@ package body MMenu is
    Joy_Name                   : Unbounded_String := To_Unbounded_String ("");
    Joystick_Detected_Text     : Integer := -1;
    Greatest_Text_Axis         : Integer := -1;
-   Restart_Graphics_Text      : Integer := -1;
+   Restart_Graphics_Text      : constant Positive := 1;
    Graphics_Restart_Flag      : Boolean := False;
    Already_Bound_Text         : Integer := -1;
    Title_Shader_Program       : GL.Objects.Programs.Program;
@@ -307,8 +307,11 @@ package body MMenu is
             end loop;
             Cursor_Pos (GL.Y) := 0.0;
          else
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu nothing Open");
+            Game_Utils.Game_Log ("Mmenu.Draw_Menu nothing Open, Menu_Cursor_Curr_Item "
+                                & Menu_Choice_Type'Image (Menu_Cursor_Curr_Item));
             for index in 1 .. Num_Menu_Entries loop
+            Game_Utils.Game_Log ("Mmenu.Draw_Menu nothing Open, Menu_Text (index) "
+                                & Integer'Image (Menu_Text (index)));
                Text.Draw_Text (Menu_Text (index));
             end loop;
             Cursor_Scale := 120.0;
@@ -319,7 +322,7 @@ package body MMenu is
               (Menu_Text_Y_Offset - Menu_Big_Text_Size * Cursor_Pos (GL.Y) - 40.0) /
                 Single (Framebuffer_Height);
          end if;
-         Draw_3D_Menu_Items (Menu_Cursor_Texture, Cursor_VAO,
+         Draw_Skull_Cursor (Menu_Cursor_Texture, Cursor_VAO,
                              Cursor_Shader_Program, Cursor_M, Cursor_V,
                              Cursor_Pos, Cursor_Scale, Cursor_Point_Count,
                              Elapsed);
@@ -444,9 +447,10 @@ package body MMenu is
                    Cursor_Point_Count);
       Init_Credits (Credits_Shader_Program, Text_Background_Scale,
                     Credits_Text_ID);
-      Init1 (Menu_Text, End_Story_Text, Text_Background_Texture,
-              Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
-      Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
+      Init1 (End_Story_Text, Text_Background_Texture,
+             Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
+      Init_Menu_Text (Menu_Text);
+      Init_Menu_Strings (Enabled_Strings, Graphic_Value_Strings);
       Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
       Init_Input_Text (Input_Text);
       Init_Input_Actions (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text,
