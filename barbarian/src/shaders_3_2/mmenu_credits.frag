@@ -10,5 +10,5 @@ uniform sampler2D tex;
 void main ()
     {
 	frag_colour = texture (tex, st);
-	frag_colour.rgb *= 0.7;
+    frag_colour.rgb = frag_colour.rgb * 1.2;  //  orig 0.7
     }
