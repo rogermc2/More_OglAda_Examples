@@ -9,6 +9,7 @@ with Utilities;
 
 with Camera;
 with Frustum_Shader_Manager;
+with Game_Utils;
 with GL_Maths;
 with Shader_Attributes;
 
@@ -49,39 +50,32 @@ package body Frustum is
 
    --  ------------------------------------------------------------------------
 
-   function Is_Sphere_In_Frustum (Centre : Singles.Vector3;  Radius : Single)
-                                   return Boolean is
-      Out_Of_Planes : Boolean;
-      In_Planes     : Boolean := not Frustum_Cull_Enabled;
-
-      function Is_Negative (P1, P2 : Singles.Vector3) return Boolean is
-         Distance      : Single := 0.0;
-      begin
-         Distance := Singles.Dot_Product (P1, Centre) -
-           Singles.Dot_Product (P1, P2);
-         return Distance + Radius < 0.0;
-      end Is_Negative;
+   function Compare_Plane_Aab (Mins, Maxs, Plane, Plane_Point :
+                               Singles.Vector3) return Boolean is
+      use GL;
+      use GL.Types.Singles;
+      Dist           : Singles.Vector3;
+      Farthest_Point : Singles.Vector3;
    begin
-      if not In_Planes then
-         Out_Of_Planes := Is_Negative (Norm_Right, F_Camera_Position) or else
-           Is_Negative (Norm_Left, F_Camera_Position) or else
-           Is_Negative (Norm_Top, F_Camera_Position) or else
-           Is_Negative (Norm_Bottom, F_Camera_Position) or else
-           Is_Negative (Norm_Near, Near_Centre) or else
-           Is_Negative (Norm_Far, Far_Centre) or else
-           Is_Negative (Norm_Left, Near_Centre);
-         In_Planes := not Out_Of_Planes;
+      if Plane (X) < 0.0 then
+         Farthest_Point (X) := Mins (X);
+      else
+         Farthest_Point (X) := Maxs (X);
       end if;
-      return In_Planes;
+      if Plane (Y) < 0.0 then
+         Farthest_Point (Y) := Mins (Y);
+      else
+         Farthest_Point (Y) := Maxs (Y);
+      end if;
+      if Plane (Z) < 0.0 then
+         Farthest_Point (Z) := Mins (Z);
+      else
+         Farthest_Point (Z) := Maxs (Z);
+      end if;
 
-   end Is_Sphere_In_Frustum;
-
-   --  ------------------------------------------------------------------------
-
-   function Is_Aabb_In_Frustum (Mins, Maxs : Singles.Vector3) return Boolean is
-   begin
-      return False;
-   end Is_Aabb_In_Frustum;
+      Dist := Farthest_Point - Plane_Point;
+      return Dot_Product (Plane, Dist) >= 0.0;
+   end Compare_Plane_Aab;
 
    --  ------------------------------------------------------------------------
    --  Init debug variables for frustum wireframe
@@ -172,6 +166,14 @@ package body Frustum is
 
    --  ------------------------------------------------------------------------
 
+   --  Set To False To Stop Frustum Plane Extraction
+   function Frustum_Update_Enabled return Boolean is
+   begin
+      return Update_Enabled;
+   end Frustum_Update_Enabled;
+
+   --  ------------------------------------------------------------------------
+
    procedure Init is
       use GL.Attributes;
       use GL.Objects.Buffers;
@@ -201,18 +203,79 @@ package body Frustum is
    end Init;
 
    --  ------------------------------------------------------------------------
-
-   --  Set To False To Stop Frustum Plane Extraction
-   function Frustum_Update_Enabled return Boolean is
+   --  For each frustum plane:
+   --   * assemble farthest xyz box corner point in direction of plane
+   --   * return false (cull) if that point is behind plane
+   --   * return true if all 6 farthest xyz points are in front of their planes
+   function Is_Aabb_In_Frustum (Mins, Maxs : Singles.Vector3) return Boolean is
+      use Singles;
+      Min3   : Vector3 := Mins;
+      Max3   : Vector3 := Maxs;
+      Result : Boolean := not Cull_Enabled;
    begin
-      return Update_Enabled;
-   end Frustum_Update_Enabled;
+      if not Result then
+         for index in Vector3'Range loop
+            if Mins (index) > Maxs (index) then
+               Min3 (index) := Maxs (index);
+               Max3 (index) := Mins (index);
+            end if;
+         end loop;
+
+         Result := Compare_Plane_Aab (Mins, Maxs, Norm_Near, Near_Top_Right);
+         if Result then
+            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Right, Near_Top_Right);
+         end if;
+         if Result then
+            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Left, Near_Top_Right);
+         end if;
+         if Result then
+            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Top, Near_Top_Right);
+         end if;
+         if Result then
+            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Bottom, Near_Top_Right);
+         end if;
+         if Result then
+            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Far, Near_Top_Right);
+         end if;
+      end if;
+
+      return Result;
+   end Is_Aabb_In_Frustum;
+
+   --  ------------------------------------------------------------------------
+
+   function Is_Sphere_In_Frustum (Centre : Singles.Vector3;  Radius : Single)
+                               return Boolean is
+      Out_Of_Planes : Boolean;
+      In_Planes     : Boolean := not Frustum_Cull_Enabled;
+
+      function Is_Negative (P1, P2 : Singles.Vector3) return Boolean is
+         Distance      : Single := 0.0;
+      begin
+         Distance := Singles.Dot_Product (P1, Centre) -
+           Singles.Dot_Product (P1, P2);
+         return Distance + Radius < 0.0;
+      end Is_Negative;
+   begin
+      if not In_Planes then
+         Out_Of_Planes := Is_Negative (Norm_Right, F_Camera_Position) or else
+           Is_Negative (Norm_Left, F_Camera_Position) or else
+           Is_Negative (Norm_Top, F_Camera_Position) or else
+           Is_Negative (Norm_Bottom, F_Camera_Position) or else
+           Is_Negative (Norm_Near, Near_Centre) or else
+           Is_Negative (Norm_Far, Far_Centre) or else
+           Is_Negative (Norm_Left, Near_Centre);
+         In_Planes := not Out_Of_Planes;
+      end if;
+      return In_Planes;
+
+   end Is_Sphere_In_Frustum;
 
    --  ------------------------------------------------------------------------
 
    procedure Re_Extract_Frustum_Planes
      (Fovy_Deg : Maths.Degree; Aspect, Near, Far : Single;
-      Cam_Pos  : Singles.Vector3; Mat : in out Singles.Matrix4) is
+      Cam_Pos  : Singles.Vector3; Mat : Singles.Matrix4) is
       use GL;
       use GL.Types.Singles;
       use Maths;
@@ -272,6 +335,7 @@ package body Frustum is
          Fc_Hat := Normalized (Near_Centre + 0.5 * Up_World * Near_Height - Cam_Pos);
          Fd_Hat := Normalized (Near_Centre - 0.5 * Up_World * Near_Height - Cam_Pos);
 
+         --        Game_Utils.Game_Log ("Frustum.Re_Extract_Frustum_Planes Norm_Right");
          Norm_Right := Normalized (Cross_Product (Up_World, Fa_Hat));
          Norm_Left := Normalized (Cross_Product (Fb_Hat, Up_World));
          Norm_Top := Normalized (Cross_Product (Fc_Hat, Right_World));

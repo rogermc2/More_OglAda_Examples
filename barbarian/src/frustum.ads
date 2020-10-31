@@ -19,6 +19,6 @@ package Frustum is
     function Is_Aabb_In_Frustum (Mins, Maxs : Singles.Vector3) return Boolean;
     procedure Re_Extract_Frustum_Planes
       (Fovy_Deg : Maths.Degree; Aspect, Near, Far : Single;
-       Cam_Pos  : Singles.Vector3; Mat : in out Singles.Matrix4);
+       Cam_Pos  : Singles.Vector3; Mat : Singles.Matrix4);
 
 end Frustum;
