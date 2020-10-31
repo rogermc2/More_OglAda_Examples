@@ -280,7 +280,7 @@ package body GUI_Level_Chooser is
    procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean) is
       use Glfw.Input.Keys;
       use Input_Handler;
-      Old_Sel : Integer := Selected_Map_ID;
+      Old_Sel : constant Integer := Selected_Map_ID;
       Old_Map : Levels_Maps_Manager.Level_Map_Data;
    begin
       New_Line;

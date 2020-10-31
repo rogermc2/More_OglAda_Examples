@@ -181,6 +181,8 @@ package body MMenu is
       use Menu_Credits_Shader_Manager;
       use Menu_Strings;
       use Settings;
+      FB_Width       : constant Single := Single (Framebuffer_Width);
+      FB_Height      : constant Single := Single (Framebuffer_Height);
       Cursor_Scale : Single := 60.0;  -- 60.0
       Cursor_Pos   : Singles.Vector2 :=
                        ((40.0 - 512.0) / Single (Framebuffer_Width), 0.0);
@@ -192,6 +194,7 @@ package body MMenu is
       end Cursor_Y;
    begin
       Utilities.Clear_Depth;
+      Text_Background_Scale := (512.0 / FB_Width, 400.0 / FB_Height);
       GL.Objects.Programs.Use_Program (Credits_Shader_Program);
       if Menu_Credits_Open then
          Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Credits_Open");
