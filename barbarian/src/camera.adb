@@ -123,7 +123,6 @@ package body Camera is
         (FOV_Y, Width, Height, 0.01, 1000.0, G_Cam.GUI_Proj_Matrix);
       G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
       G_Cam.Is_Dirty := True;
-      Game_Utils.Game_Log ("Camera.Recalculate_Perspective Re_Extract_Frustum_Planes");
       Frustum.Re_Extract_Frustum_Planes
         (FOV_Y, G_Cam.Aspect, Near, Far, G_Cam.World_Position, G_Cam.View_Matrix);
     end Recalculate_Perspective;

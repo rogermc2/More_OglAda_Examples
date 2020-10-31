@@ -211,7 +211,7 @@ package body Text is
 
    --  ------------------------------------------------------------------------
 
-   function Create_Text_Box (Text                    : String; Font_ID  : Integer;
+   function Create_Text_Box (Text                    : String;
                              X_Min, Y_Min, Scale     : Single;
                              Text_Colour, Box_Colour : GL.Types.Colors.Color)
                              return Positive is
@@ -273,10 +273,9 @@ package body Text is
            "Text.Draw_Text, invalid font texture";
       end if;
 
-      GL.Objects.Programs.Use_Program (Font_Shader);
---        Texture_Manager.Bind_Texture (0, Font_Texture);
-      Text_Shader_Manager.Set_Texture_Unit (0);
-      Targets.Texture_2D.Bind (Font_Texture);
+      Texture_Manager.Bind_Texture (0, Font_Texture);
+--        Text_Shader_Manager.Set_Texture_Unit (0);
+--        Targets.Texture_2D.Bind (Font_Texture);
 
       if not theText.VAO.Initialized then
          raise Text_Exception with
@@ -284,26 +283,13 @@ package body Text is
       end if;
       GL_Utils.Bind_VAO (theText.VAO);
 
+      GL.Objects.Programs.Use_Program (Font_Shader);
       Text_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.95,
                                            theText.Top_Left_Y));
       Text_Shader_Manager.Set_Text_Colour_ID ((theText.Red, theText.Green,
                                                theText.Blue, theText.A));
-
-      GL.Objects.Buffers.Array_Buffer.Bind (theText.Points_VBO);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type,
-                                               False, 0, 0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VP);
-
-      GL.Objects.Buffers.Array_Buffer.Bind (theText.Tex_Coords_VBO);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VT, 2, Single_Type,
-                                               False, 0, 0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (Attrib_VT);
-
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Triangles, 0, Int (theText.Point_Count));
-
-      GL.Attributes.Disable_Vertex_Attrib_Array (Attrib_VP);
-      GL.Attributes.Disable_Vertex_Attrib_Array (Attrib_VT);
 
       Enable (Depth_Test);
       Disable (Blend);
@@ -314,15 +300,15 @@ package body Text is
 
    procedure Init_Comic_Texts is
 
-      X           : Single_Array (1 .. 8) := (-0.8, -0.6, -0.2, -0.9, -0.8, -0.6, -0.4, -0.7);
-      Y           : Single_Array (1 .. 8) := (-0.6, -0.4, 0.4, 0.6, 0.4, 0.6, -0.6, -0.4);
-      Scale       : Single := 17.5;
-      Text_Colour : Colors.Color := (0.0, 0.0, 0.0, 1.0);
-      Box_Colour  : Colors.Color := (0.8, 0.8, 0.8, 1.0);
+      X           : constant Single_Array (1 .. 8) := (-0.8, -0.6, -0.2, -0.9, -0.8, -0.6, -0.4, -0.7);
+      Y           : constant Single_Array (1 .. 8) := (-0.6, -0.4, 0.4, 0.6, 0.4, 0.6, -0.6, -0.4);
+      Scale       : constant Single := 17.5;
+      Text_Colour : constant Colors.Color := (0.0, 0.0, 0.0, 1.0);
+      Box_Colour  : constant Colors.Color := (0.8, 0.8, 0.8, 1.0);
    begin
       for index in 1 .. 8 loop
          Comic_Texts (index) :=
-           Create_Text_Box ("text " & Integer'Image (index), 0, X (Int (index)),
+           Create_Text_Box ("text " & Integer'Image (index), X (Int (index)),
                             Y (Int (index)), Scale, Text_Colour, Box_Colour);
          Set_Text_Visible (Comic_Texts (index), False);
       end loop;

@@ -10,7 +10,7 @@ package Text is
                       X, Y, Size_In_Pixels, R, G, B, A : Single) return Positive;
    procedure Centre_Text (ID : Positive; X, Y : Single);
    procedure Change_Text_Colour (ID : Positive; R, G, B, A : Single);
-   function Create_Text_Box (Text                    : String; Font_ID  : Integer;
+   function Create_Text_Box (Text                    : String;
                              X_Min, Y_Min, Scale     : Single;
                              Text_Colour, Box_Colour : GL.Types.Colors.Color)
                              return Positive;

@@ -38,6 +38,9 @@ package body Menu_Support is
    Cursor_Rot_Speed        : constant Float := 240.0; --  deg per sec
    Cursor_Degrees          : Maths.Degree := 0.0;
 
+   Default_Axis_Values     : array (1 .. 16) of Float := (others => 0.0);
+   Axis_Defaults_Mode      : Boolean := False;
+
    procedure Process_Menu_Graphic_Cases (Cursor_Item : Integer := -1);
    procedure Process_Video_Modes
      (Current_Mode       : in out Integer; Cursor_Item : Integer;
@@ -136,9 +139,10 @@ package body Menu_Support is
       T_Matrix     : Matrix4 := Identity4;
       P_Matrix     : Matrix4 := Identity4;
    begin
+      --  Skull cursor
       Texture_Manager.Bind_Texture (0, Menu_Cursor_Texture);
       GL_Utils.Bind_VAO (Cursor_VAO);
-      Game_Utils.Game_Log ("Menu_Support.Draw_3D_Menu_Items, Cursor_VAO bound");
+--        Game_Utils.Game_Log ("Menu_Support.Draw_3D_Menu_Items, Cursor_VAO bound");
       Cursor_Degrees := Cursor_Degrees + Degree (Cursor_Rot_Speed * Elapsed);
       Rot_Matrix := Rotate_Y_Degree (Scale_Matrix, Cursor_Degrees);
       Cursor_M := Rot_Matrix;
@@ -177,6 +181,7 @@ package body Menu_Support is
             Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " &
                                  "ERROR: could not save settings from Mmenu");
          end if;
+
       elsif Is_Key_Down (Up) or
         Is_Action_Down (Up_Action) then
          Menu_Cursor_Item := Menu_Choice_Type'Pred (Menu_Cursor_Item);
@@ -239,9 +244,26 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Cal_GP (Window  : in out Glfw.Windows.Window) is
+   procedure Process_Menu_Cal_GP is
+      Pos_Index : Integer := 1;
+      Tex_Index : Integer := 1;
+--        Biggest_Diff   : Float := 0.0;
+--        Biggest_Diff_I : Integer := -1;
+--        Button_Pressed : Integer := -1;
+--        Sign           : Character := '-';
    begin
-      null;
+      GUI.Show_Controller_Button_Overlay (Pos_Index, Tex_Index);
+      Pos_Index := 2;
+      Tex_Index := 4;
+      GUI.Show_Controller_Button_Overlay (Pos_Index, Tex_Index);
+      Pos_Index := 3;
+      Tex_Index := 2;
+      GUI.Show_Controller_Button_Overlay (Pos_Index, Tex_Index);
+
+      Axis_Defaults_Mode := True;
+      --  Poll_Joystick;
+      --  Process Joystick
+
    end Process_Menu_Cal_GP;
 
    --  -------------------------------------------------------------------------
@@ -255,8 +277,8 @@ package body Menu_Support is
                                   Since_Last_Key                     : in out Float) is
       use Glfw.Input.Keys;
       use Input_Handler;
-      Pos_Index    : Integer := -1;
-      Tex_Index    : Integer := -1;
+      Pos_Index    : Integer := 1;
+      Tex_Index    : Integer := 1;
       R            : Integer := -1;
       Prev_Binding : Integer := -1;
    begin

@@ -43,7 +43,7 @@ package Menu_Support is
                                  Menu_Audio_Open           : in out Boolean;
                                  Since_Last_Key            : in out Float;
                                  Audio_Cursor_Item : in out Integer);
-   procedure Process_Menu_Cal_GP (Window : in out Glfw.Windows.Window);
+   procedure Process_Menu_Cal_GP;
    procedure Process_Menu_Cal_KB (Window                    : in out Glfw.Windows.Window;
                                   KB_Binding_Text          : GL_Maths.Integer_Array;
                                   Greatest_Axis_Text        : Integer;
