@@ -111,14 +111,10 @@ package body MMenu_Initialization is
    Credits_Text_X             : constant Single := 0.0;
    Credits_Text_Y             : constant Single := -1.0;
    Title_Version_Text         : Integer := -1;
-   Joystick_Detected_Text     : Integer := -1;
-   Greatest_Text_Axis         : Integer := -1;
    Restart_Graphics_Text      : Integer := -1;
-   Already_Bound_Text         : Integer := -1;
 
    Menu_Cursor_Curr_Item   : Integer := -1;
    Cursor_Current_Item     : Integer := -1;
-   Cursor_V                : Singles.Matrix4 := GL.Types.Singles.Identity4;
 
    --  ------------------------------------------------------------------------
 
@@ -196,7 +192,7 @@ package body MMenu_Initialization is
 
    procedure Init_Credits
      (Credits_Shader_Program : in out GL.Objects.Programs.Program;
-      Text_Background_Scale, Text_Background_Pos : in out Singles.Vector2;
+      Text_Background_Scale : in out Singles.Vector2;
       Credits_Text_ID        : in out Integer) is
       use GL.Objects.Programs;
       use GL.Types;
@@ -220,7 +216,6 @@ package body MMenu_Initialization is
       Set_Scale (Credits_S);
       Set_Position (Credits_P);
       Text_Background_Scale := (512.0 / FB_Width, 400.0 / FB_Height);
-      Text_Background_Pos := Credits_P;
       Credits_Text_ID := Text.Add_Text (Credits_String, Credits_Text_X,
                                         Credits_Text_Y, 30.0, 1.0, 1.0, 1.0, 1.0);
       Text.Set_Text_Visible (Credits_Text_ID, False);
@@ -231,11 +226,10 @@ package body MMenu_Initialization is
    procedure Init_Cursor
      (Cursor_Shader_Program : in out GL.Objects.Programs.Program;
       Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Cursor_M              : in out GL.Types.Singles.Matrix4;
+      Cursor_M, Cursor_V    : in out GL.Types.Singles.Matrix4;
       Cursor_Point_Count    : in out Integer) is
       Camera_Position       : constant Singles.Vector3 := (0.0, 0.0, 10.0);
       Camera_Target         : constant Singles.Vector3 := (0.0, 0.0, 0.0);
-      Cursor_V              : Singles.Matrix4;
       Cursor_Mesh_ID        : Integer := -1;
    begin
       Cursor_M := Singles.Identity4;
@@ -531,10 +525,8 @@ package body MMenu_Initialization is
       Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
                                    (0.0, 1.0, 0.0), Title_V);
 
-      Utilities.Print_Matrix ("Initialize Title_V", Title_V);
       Title_M := Maths.Translation_Matrix ((-0.4, -3.0, -1.0)) * Identity4;
       Title_M := Maths.Scaling_Matrix ((0.5, 0.5, 0.5)) * Title_M;
-      Utilities.Print_Matrix ("Initialize Title_M", Title_M);
 
       GL.Objects.Programs.Use_Program (Title_Shader_Program);
       Title_Shader_Manager.Set_Model_Matrix (Title_M);
@@ -546,7 +538,9 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Various
-     (Input_Text : in out GL_Maths.Integer_Array; Joy_Name : String) is
+     (Input_Text : in out GL_Maths.Integer_Array; Joy_Name : String;
+      Joystick_Detected_Text, Greatest_Axis_Text,
+      Already_Bound_Text : in out Integer) is
       X  : constant Single :=
              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       Y  : Single :=
@@ -557,10 +551,10 @@ package body MMenu_Initialization is
                        X,  Y, 20.0, 1.0, 1.0, 1.0, 1.0);
       Text.Set_Text_Visible (Joystick_Detected_Text, False);
 
-      Greatest_Text_Axis  :=
+      Greatest_Axis_Text  :=
         Text.Add_Text ("axis: ", X,  Y,
                        20.0, 1.0, 1.0, 0.0, 1.0);
-      Text.Set_Text_Visible (Greatest_Text_Axis, False);
+      Text.Set_Text_Visible (Greatest_Axis_Text, False);
 
       Restart_Graphics_Text  :=
         Text.Add_Text ("the game must be restarted" & CRLF &

@@ -48,7 +48,8 @@ package Menu_Support is
                                   KB_Binding_Text          : GL_Maths.Integer_Array;
                                   Greatest_Axis_Text        : Integer;
                                   Already_Bound_Text         : Integer;
-                                  Modify_Binding_Mode, Already_Bound : in out Boolean;
+                                  Modify_Binding_Mode,
+                                  Already_Bound, Menu_Cal_KB_Open : in out Boolean;
                                   Since_Last_Key            : in out Float);
    procedure Process_Menu_Credits (Window: in out Glfw.Windows.Window;
                                    Credits_Open, End_Story_Open,
@@ -63,7 +64,8 @@ package Menu_Support is
    procedure Process_Menu_Input (Window  : in out Glfw.Windows.Window;
                                  Joy_Name : String;
                                  Since_Last_Key        : in out Float;
-                                 Menu_Input_Open,
+                                 Menu_Input_Open, Menu_Cal_KB_Open,
+                                 Menu_Cal_Gp_Axes_Open,
                                  Menu_Cal_Gp_Butts_Open : in out Boolean;
                                  Joystick_Detected_Text  : Integer;
                                  Input_Cursor_Item : in out Integer);

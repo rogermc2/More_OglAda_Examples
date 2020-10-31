@@ -3,10 +3,11 @@ with Ada.Strings.Fixed;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Input_Handler;
+with Settings.Loader;
 
 package body Settings is
 
-   G_Settings : Settings;
+   G_Settings : Settings_Data;
 
    --  ------------------------------------------------------------------------
 
@@ -122,9 +123,9 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Settings (theSettings : Settings) is
+   procedure Load_Settings is
    begin
-      G_Settings := theSettings;
+      Settings.Loader.Load_Settings (G_Settings);
    end Load_Settings;
 
    --  ------------------------------------------------------------------------
@@ -178,6 +179,20 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Framebuffer_Height (Height : GL.Types.Int) is
+   begin
+      G_Settings.GL_Framebuffer_Height := Height;
+   end Set_Framebuffer_Height;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Framebuffer_Width (Width : GL.Types.Int) is
+   begin
+      G_Settings.GL_Framebuffer_Width := Width;
+   end Set_Framebuffer_Width;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Graphic_Preset (Preset : Gfx_Preset_Type) is
    begin
       G_Settings.Gfx_Presets := Preset;
@@ -192,10 +207,31 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_SSAA (Val : Float) is
+   begin
+      G_Settings.Super_Sample_Anti_Aliasing := Val;
+   end Set_SSAA;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Window_Height (Height : Integer) is
+   begin
+      G_Settings.GL_Window_Height := Height;
+   end Set_Window_Height;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Window_Height_To_Save (Height : Integer) is
    begin
       G_Settings.GL_Window_Height_To_Save := Height;
    end Set_Window_Height_To_Save;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Window_Width (Width : Integer) is
+   begin
+      G_Settings.GL_Window_Width := Width;
+   end Set_Window_Width;
 
    --  ------------------------------------------------------------------------
 
@@ -205,6 +241,7 @@ package body Settings is
    end Set_Window_Width_To_Save;
 
    --  ------------------------------------------------------------------------
+
    function Set_Menu_Graphic_Presets return Boolean is
       OK : Boolean := True;
    begin

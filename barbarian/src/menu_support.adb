@@ -35,7 +35,6 @@ package body Menu_Support is
    Prev_Kb_Binding_Text    : Unbounded_String := To_Unbounded_String ("");
    Prev_Gp_Binding_Text    : Unbounded_String := To_Unbounded_String ("");
    Cal_Kb_Cursor_Curr_Item : Integer := 0;
-   Menu_Cal_KB_Open        : Boolean := False;
    Cursor_Rot_Speed        : constant Float := 240.0; --  deg per sec
    Cursor_Degrees          : Maths.Degree := 0.0;
 
@@ -251,7 +250,8 @@ package body Menu_Support is
                                   KB_Binding_Text                    : GL_Maths.Integer_Array;
                                   Greatest_Axis_Text                 : Integer;
                                   Already_Bound_Text                 : Integer;
-                                  Modify_Binding_Mode, Already_Bound : in out Boolean;
+                                  Modify_Binding_Mode,
+                                  Already_Bound, Menu_Cal_KB_Open  : in out Boolean;
                                   Since_Last_Key                     : in out Float) is
       use Glfw.Input.Keys;
       use Input_Handler;
@@ -587,8 +587,9 @@ package body Menu_Support is
    procedure Process_Menu_Input (Window                    : in out Glfw.Windows.Window;
                                  Joy_Name                  : String;
                                  Since_Last_Key            : in out Float;
-                                 Menu_Input_Open,
-                                 Menu_Cal_Gp_Butts_Open    : in out Boolean;
+                                 Menu_Input_Open, Menu_Cal_KB_Open,
+                                 Menu_Cal_Gp_Axes_Open,
+                                 Menu_Cal_Gp_Butts_Open: in out Boolean;
                                  Joystick_Detected_Text    : Integer;
                                  Input_Cursor_Item : in out Integer) is
       use Glfw.Input.Keys;
@@ -606,9 +607,21 @@ package body Menu_Support is
          case Input_Cursor_Item is
             when 0 => Settings.Disable_Joystick (not Settings.Joystick_Disabled);
             when 1 => Menu_Cal_KB_Open := True;
-            when 2 | 3 =>
+            when 2 =>
                if Joystick_Connected and not Settings.Joystick_Disabled then
                   Menu_Cal_Gp_Butts_Open := True;
+                  Text.Update_Text (Joystick_Detected_Text,
+                                    "Joystick detected: " & Joy_Name);
+               elsif not Joystick_Connected then
+                  Text.Update_Text (Joystick_Detected_Text,
+                                    "Connect joystick first.");
+               else
+                  Text.Update_Text (Joystick_Detected_Text,
+                                    "Enable joystick first.");
+               end if;
+            when 3 =>
+               if Joystick_Connected and not Settings.Joystick_Disabled then
+                  Menu_Cal_Gp_Axes_Open := True;
                   Text.Update_Text (Joystick_Detected_Text,
                                     "Joystick detected: " & Joy_Name);
                elsif not Joystick_Connected then

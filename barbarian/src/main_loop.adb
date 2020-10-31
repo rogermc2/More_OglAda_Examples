@@ -37,7 +37,6 @@ with Particle_System;
 with Projectile_Manager;
 with Prop_Renderer;
 with Settings;
-with Settings_Loader;
 with Shader_Manager;
 with Shadows;
 with Sprite_Renderer;
@@ -91,7 +90,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Init_Modules (Window : in out Glfw.Windows.Window) is
    begin
       Input_Handler.Register_Input_Actions;
-      Settings_Loader.Load_Settings;
+      Settings.Load_Settings;
       Shader_Manager.Init;
       Audio_Manager.Init;
       Texture_Manager.Init;
@@ -196,8 +195,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Main_Setup (Window     : in out Glfw.Windows.Window;
                          Is_Running : in out Boolean) is
       use Glfw.Input;
-      Width        : GL.Types.Single;
-      Height       : GL.Types.Single;
       Current_Time : Float := 0.0;
       Delta_Time   : Float := 0.0;
       Flash_Timer  : Float := 0.0;
@@ -207,9 +204,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 --        Utilities.Enable_Mouse_Callbacks (Window, True);
 --        Window.Enable_Callback (Glfw.Windows.Callbacks.Char);
 --        Window.Enable_Callback (Glfw.Windows.Callbacks.Position);
-      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-      Width := Single (Window_Width);
-      Height := Single (Window_Height);
+
+      Window.Enable_Callback (Glfw.Windows.Callbacks.Framebuffer_Size);
+      Window.Enable_Callback (Glfw.Windows.Callbacks.Size);
       --          Param := Game_Utils.Check_Param ("-map");
 
       Init_Modules (Window);
@@ -232,10 +229,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Is_Running := True;
       Last_Time := GL_Utils.Get_Elapsed_Seconds;
-      GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
-                              Settings.Framebuffer_Height);
+--        GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
+--                                Settings.Framebuffer_Height);
 
       while Mmenu.Menu_Open and Is_Running loop
+         GL_Utils.Window_Resize (Window);
+         GL_Utils.Frame_Buffer_Resize (Window);
          Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;

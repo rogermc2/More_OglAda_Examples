@@ -184,7 +184,7 @@ package body Levels_Maps_Manager is
       else
          while not End_Of_File (Input_File) loop
             declare
-               aLine : String := Get_Line (Input_File);
+               aLine : constant String := Get_Line (Input_File);
             begin
                if aLine'Length < 2 then
                   Game_Utils.Game_Log ("WARNING: Load_Names skipping short line " &

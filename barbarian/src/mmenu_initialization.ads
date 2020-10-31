@@ -25,11 +25,11 @@ package MMenu_Initialization is
      (Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array);
    procedure Init_Credits
      (Credits_Shader_Program : in out GL.Objects.Programs.Program;
-      Text_Background_Scale, Text_Background_Pos : in out GL.Types.Singles.Vector2;
+      Text_Background_Scale : in out GL.Types.Singles.Vector2;
       Credits_Text_ID : in out Integer);
    procedure Init_Cursor (Cursor_Shader_Program : in out GL.Objects.Programs.Program;
                           Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-                          Cursor_M              : in out GL.Types.Singles.Matrix4;
+                          Cursor_M, Cursor_V    : in out GL.Types.Singles.Matrix4;
                           Cursor_Point_Count    : in out Integer);
    procedure Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings :
                                          in out Menu_String_Array);
@@ -53,7 +53,7 @@ package MMenu_Initialization is
       Title_VAO                                : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Title_Point_Count                        : in out Integer);
    procedure Init_Various (Input_Text : in out GL_Maths.Integer_Array;
-                           Joy_Name   : String);
-
+                           Joy_Name           : String; Joystick_Detected_Text,
+                           Greatest_Axis_Text, Already_Bound_Text : in out Integer);
 
 end MMenu_Initialization;

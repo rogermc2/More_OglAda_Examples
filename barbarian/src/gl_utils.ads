@@ -1,6 +1,8 @@
 
 with Ada.Strings.Unbounded;
 
+with Glfw.Windows;
+
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
@@ -18,6 +20,7 @@ package GL_Utils is
    function Create_4D_VBO (Data : GL.Types.Singles.Vector4_Array)
                            return GL.Objects.Buffers.Buffer;
    function Current_Program return GL.Objects.Programs.Program;
+   procedure Frame_Buffer_Resize (Window : in out Glfw.Windows.Window);
    function Get_Elapsed_Seconds return Float;
    function Read_Vec2 (Vec : String) return GL.Types.Singles.Vector2;
    function Read_Vec3 (Vec : String) return GL.Types.Singles.Vector3;
@@ -34,6 +37,7 @@ package GL_Utils is
    procedure Update_Batch_Count (Change : Integer);
    procedure Update_Vertex_Count (Change : Integer);
    function Verify_Bound_Framebuffer return Boolean;
+   procedure Window_Resize (Window : in out Glfw.Windows.Window);
 
 private
    type Gfx_Stats is record

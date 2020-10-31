@@ -12,7 +12,9 @@ with GL.Types.Colors;
 
 with Utilities;
 
+with Camera;
 with Game_Utils;
+with Settings;
 
 package body GL_Utils is
 
@@ -20,6 +22,7 @@ package body GL_Utils is
    Bound_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Statistics         : Gfx_Stats;
    Previous_Seconds   : Float := 0.0;
+   G_Resized_View     : Boolean := False;
 
    --  ------------------------------------------------------------------------
 
@@ -77,6 +80,32 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
+   procedure Frame_Buffer_Resize (Window : in out Glfw.Windows.Window) is
+      use GL.Types;
+      use Camera;
+      Width  : Glfw.Size;
+      Height : Glfw.Size;
+   begin
+      Window.Get_Framebuffer_Size (Width, Height);
+--        Game_Utils.Game_Log ("framebuffer resized to " & Glfw.Size'Image (Width)
+--                             & " x " & Glfw.Size'Image (Height));
+--        Put_Line ("framebuffer resized to " & Glfw.Size'Image (Width)
+--                  & " x " & Glfw.Size'Image (Height));
+      Settings.Set_Framebuffer_Width (Int (Width));
+      Settings.Set_Framebuffer_Height (Int (Height));
+      if Integer (Width) * Integer (Height) > 1920 * 1080 and
+        Settings.Super_Sample_Anti_Aliasing > 1.0 then
+        Put_Line ("Very high-resolution mode detected. Forcing SSAA to 1.0x");
+	Game_Utils.Game_Log ("very high-res mode detected. Forcing SSAA to 1.0x");
+	Settings.Set_SSAA (1.0);
+      end if;
+      Recalculate_Perspective (Field_Of_View_Y, Single (Width), Single (Height),
+                               Near, Far);
+      G_Resized_View := True;
+   end Frame_Buffer_Resize;
+
+   --  ------------------------------------------------------------------------
+
    function Get_Elapsed_Seconds return float is
       Elapsed : constant Float := Float (Glfw.Time) - Previous_Seconds;
    begin
@@ -110,7 +139,7 @@ package body GL_Utils is
       Pos_2     : constant Natural := Fixed.Index (Vec (Pos_1 + 1 .. Vec_Last), " ");
       theVec    : Singles.Vector3;
    begin
---        Game_Utils.Game_Log ("GL_Utils Read_Vec3 Vec: " & Vec);
+      --        Game_Utils.Game_Log ("GL_Utils Read_Vec3 Vec: " & Vec);
       theVec (GL.X) := Single'Value (Vec (Vec_Start .. Pos_1 - 1));
       theVec (GL.Y) := Single'Value (Vec (Pos_1 + 1 .. Pos_2 - 1));
       theVec (GL.Z) := Single'Value (Vec (Pos_2 + 1 .. Vec_Last));
@@ -189,7 +218,7 @@ package body GL_Utils is
      Ada.Strings.Unbounded.Unbounded_String is
       use Ada.Strings.Unbounded;
    begin
-         return To_Unbounded_String (Integer'Image (Val));
+      return To_Unbounded_String (Integer'Image (Val));
    end To_UB_String;
 
    --  ------------------------------------------------------------------------
@@ -250,6 +279,24 @@ package body GL_Utils is
       return OK;
 
    end Verify_Bound_Framebuffer;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Window_Resize (Window : in out Glfw.Windows.Window) is
+      use GL.Types;
+      use Camera;
+      Width  : Glfw.Size;
+      Height : Glfw.Size;
+   begin
+     Window.Get_Size (Width, Height);
+--        Game_Utils.Game_Log ("framebuffer resized to " & Glfw.Size'Image (Width)
+--                             & " x " & Glfw.Size'Image (Height));
+--        Put_Line ("framebuffer resized to " & Glfw.Size'Image (Width)
+--                  & " x " & Glfw.Size'Image (Height));
+      Settings.Set_Window_Width (Integer (Width));
+      Settings.Set_Window_Height (Integer (Height));
+
+   end Window_Resize;
 
    --  ------------------------------------------------------------------------
 

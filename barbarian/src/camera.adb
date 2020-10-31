@@ -1,5 +1,6 @@
 
 with Frustum;
+with Game_Utils;
 with Settings;
 
 package body Camera is
@@ -26,7 +27,7 @@ package body Camera is
         G_Cam.Screen_Shake_Amplitude := 0.0;
         G_Cam.Screen_Shake_Frequency := 0.0;
         G_Cam.Wind_In_Angle := 0.0;
-        G_Cam.Field_Of_View_Y := 67.0;
+        G_Cam.FOY_Y := 67.0;
         G_Cam.Aspect := Single (Settings.Framebuffer_Height) /
           Single (Settings.Framebuffer_Width);
         G_Cam.Near := 0.1;
@@ -45,11 +46,11 @@ package body Camera is
         end if;
 
         G_Cam.Projection_Matrix := Perspective_Matrix
-          (G_Cam.Field_Of_View_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far);
+          (G_Cam.FOY_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far);
         G_Cam.GUI_Proj_Matrix := Perspective_Matrix
-          (G_Cam.Field_Of_View_Y, G_Cam.Aspect, 0.01, 1000.0);
+          (G_Cam.FOY_Y, G_Cam.Aspect, 0.01, 1000.0);
         G_Cam.Clip_Plane := Perspective_Matrix
-          (G_Cam.Field_Of_View_Y, G_Cam.Aspect, 0.1, 1000.0);
+          (G_Cam.FOY_Y, G_Cam.Aspect, 0.1, 1000.0);
         G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
         G_Cam.Is_Dirty  := True;
         G_Cam.Manual_Override := False;
@@ -65,10 +66,31 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+    function Far return Single is
+    begin
+        return G_Cam.Far;
+    end Far;
+
+    --  ------------------------------------------------------------------------
+
+    function Field_Of_View_Y return Maths.Degree is
+    begin
+        return G_Cam.FOY_Y;
+    end Field_Of_View_Y;
+
+    --  ------------------------------------------------------------------------
+
     function GUI_Proj_Matrix return Singles.Matrix4 is
     begin
         return G_Cam.GUI_Proj_Matrix;
     end GUI_Proj_Matrix;
+
+    --  ------------------------------------------------------------------------
+
+    function Near return Single is
+    begin
+        return G_Cam.Near;
+    end Near;
 
     --  ------------------------------------------------------------------------
 
@@ -83,6 +105,28 @@ package body Camera is
     begin
         return G_Cam.PV;
     end PV_Matrix;
+
+    --  ------------------------------------------------------------------------
+
+   procedure Recalculate_Perspective (FOV_Y             : Maths.Degree;
+                                      Width, Height, Near, Far : Single) is
+      use GL.Types.Singles;
+      use Maths;
+    begin
+      G_Cam.FOY_Y := FOV_Y;
+      G_Cam.Aspect := Width / Height;
+      G_Cam.Near := Near;
+      G_Cam.Far := Far;
+      Init_Perspective_Transform
+        (FOV_Y, Width, Height, Near, Far, G_Cam.Projection_Matrix);
+      Init_Perspective_Transform
+        (FOV_Y, Width, Height, 0.01, 1000.0, G_Cam.GUI_Proj_Matrix);
+      G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
+      G_Cam.Is_Dirty := True;
+      Game_Utils.Game_Log ("Camera.Recalculate_Perspective Re_Extract_Frustum_Planes");
+      Frustum.Re_Extract_Frustum_Planes
+        (FOV_Y, G_Cam.Aspect, Near, Far, G_Cam.World_Position, G_Cam.View_Matrix);
+    end Recalculate_Perspective;
 
     --  ------------------------------------------------------------------------
 
@@ -129,7 +173,7 @@ package body Camera is
          G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
          G_Cam.Is_Dirty := True;
          Frustum.Re_Extract_Frustum_Planes
-           (G_Cam.Field_Of_View_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far,
+           (G_Cam.FOY_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far,
             G_Cam.World_Position, G_Cam.View_Matrix);
       end if;
     end Set_Camera_Position;
