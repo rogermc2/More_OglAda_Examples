@@ -410,8 +410,8 @@ package body MMenu_Initialization is
            Text.Add_Text (Menu_Strings.Menu_String_Items (index),
 --                            1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
                           0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
-         Text.Centre_Text (Menu_Text (index), 0.0, Y);
          Text.Set_Text_Visible (Menu_Text (index), False);
+         Text.Centre_Text (Menu_Text (index), 0.5, Y);  --  orig X: 0.0
       end loop;
    end Init_Menu_Text;
 

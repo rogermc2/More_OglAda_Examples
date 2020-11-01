@@ -93,7 +93,7 @@ package body Text is
    procedure Load_Font (Atlas_Image, Atlas_Metadata : String);
    procedure Move_Text (Text : in out Renderable_Text; X, Y : Single);
    procedure Text_To_VBO (theText        : String;
-                          Glyph_Size_Px  : Single;
+                          Glyph_Scale_Px : Single;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
                           Tex_Coords_VBO : in out GL.Objects.Buffers.Buffer;
                           Point_Count    : in out Int;
@@ -441,14 +441,14 @@ package body Text is
    --  Text_To_VBO creates a VBO from a string of text using our font's
    --  glyph sizes to make a set of quads
    procedure Text_To_VBO (theText        : String;
-                          Glyph_Size_Px  : Single;
+                          Glyph_Scale_Px : Single;
                           Points_VBO     : in out GL.Objects.Buffers.Buffer;
                           Tex_Coords_VBO : in out GL.Objects.Buffers.Buffer;
                           Point_Count    : in out Int;
                           Br_X, Br_Y     : in out GL.Types.Single) is
       use GL.Objects.Buffers;
       use GL.Types;
-      Glyph_Size         : constant Single := 2.0 * Single (Glyph_Size_Px);
+      Glyph_Size         : constant Single := 2.0 * Single (Glyph_Scale_Px);
       Text_Length        : constant Integer := theText'Length;
       Points_Tmp         : Singles.Vector2_Array (1 .. Int (6 * Text_Length));
       Tex_Coords_Tmp     : Singles.Vector2_Array (1 .. Int (6 * Text_Length));
