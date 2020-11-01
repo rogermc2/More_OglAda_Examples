@@ -70,8 +70,7 @@ package body Mesh_Loader is
 
    Loaded_Meshes : Mesh_List;
 
-   function Load_Mesh (Path : String; Meshes : in out Mesh_List;
-                       Mesh_ID : out Integer) return Boolean;
+   function Load_Mesh (Path : String; Mesh_ID : out Integer) return Boolean;
    function To_Vector2_Array (Vec : Vector2_Package.Vector)
                               return Singles.Vector2_Array;
    function To_Vector3_Array (Vec : Vector3_Package.Vector)
@@ -154,7 +153,8 @@ package body Mesh_Loader is
       if not Found then
          Game_Utils.Game_Log("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading " &
                               Mesh_Name);
-         if not Load_Mesh (Mesh_Name, Loaded_Meshes, Mesh_ID) then
+--           if not Load_Mesh (Mesh_Name, Loaded_Meshes, Mesh_ID) then
+         if not Load_Mesh (Mesh_Name, Mesh_ID) then
             raise Mesh_Loader_Exception with
             "Mesh_Loader.Load_Managed_Mesh couldn't load " & Mesh_Name;
          end if ;
@@ -224,9 +224,8 @@ package body Mesh_Loader is
 
    --  ------------------------------------------------------------------------
 
-   function Load_Mesh (Path : String; Meshes : in out Mesh_List;
-                       Mesh_ID : out Integer)
-                       return Boolean is
+--     function Load_Mesh (Path : String; Meshes : in out Mesh_List;
+   function Load_Mesh (Path : String; Mesh_ID : out Integer) return Boolean is
       use Ada.Strings;
       use GL_Utils;
       VBS                  : Vector3_Package.Vector;
@@ -256,7 +255,7 @@ package body Mesh_Loader is
             Pos            : constant Natural := Fixed.Index (aLine, " ");
             Head           : constant String := aLine (2 .. Pos - 1);
             Tail           : constant String := aLine (Pos + 1 .. Last);
-            Pos2           : Natural := Fixed.Index (Tail, " ");
+            Pos2           : constant Natural := Fixed.Index (Tail, " ");
          begin
             --              Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh aLine " & aLine);
             if aLine (1) = '@' then

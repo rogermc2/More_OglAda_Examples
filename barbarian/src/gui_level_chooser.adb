@@ -224,17 +224,21 @@ package body GUI_Level_Chooser is
       Started_Loading_Map : Boolean := False;
       Current_Time        : Float;
       Delta_Time          : Float;
-      Last_Time           : Float := GL_Utils.Get_Elapsed_Seconds;
+      Last_Time           : Float := Float (Glfw.Time);
+--        Last_Time           : Float := GL_Utils.Get_Elapsed_Seconds;
       Continue            : Boolean := True;
       Restart             : Boolean := False;
       Result              : Boolean := False;
    begin
       Reset_GUI_Level_Selection (Custom_Maps);
       while not Window.Should_Close and Continue loop
-         Current_Time := GL_Utils.Get_Elapsed_Seconds;
+         Current_Time := Float (Glfw.Time);
+--           Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          if Menu_Open then
+            Game_Utils.Game_Log ("Start_Level_Chooser_Loop Delta_Time" &
+                                   Float'Image (Delta_Time));
             Menu_Quit := not MMenu.Update_Menu (Window, Delta_Time);
             if MMenu.Menu_Was_Closed then
                Menu_Open := False;

@@ -21,7 +21,7 @@ package GL_Utils is
                            return GL.Objects.Buffers.Buffer;
    function Current_Program return GL.Objects.Programs.Program;
    procedure Frame_Buffer_Resize (Window : in out Glfw.Windows.Window);
-   function Get_Elapsed_Seconds return Float;
+--     function Get_Elapsed_Seconds return Float;
    function Read_Vec2 (Vec : String) return GL.Types.Singles.Vector2;
    function Read_Vec3 (Vec : String) return GL.Types.Singles.Vector3;
    function Read_Vec4 (Vec : String) return GL.Types.Singles.Vector4;

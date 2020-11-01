@@ -31,7 +31,8 @@ package body Custom_Maps_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Custom_Map (Path            : String; Maps : in out Custom_Maps_List;
+   procedure Load_Custom_Map (Path            : String;
+                              Custom_Maps     : in out Custom_Maps_List;
                               Top_Margin_Cl, Left_Margin_Cl,
                               Text_Height     : Single;
                               Num_Custom_Maps : in out Integer) is
@@ -65,8 +66,9 @@ package body Custom_Maps_Manager is
                   25.0, 1.0, 1.0, 1.0, 1.0);
                Text.Set_Text_Visible (Data.Text_ID, False);
 
-               Maps.Replace_Element (Num_Custom_Maps, Data);
-               Num_Custom_Maps := Num_Custom_Maps + 1;
+--                 Custom_Maps.Replace_Element (Num_Custom_Maps, Data);
+               Custom_Maps.Append (Data);
+               Num_Custom_Maps := Custom_Maps.Last_Index;
             end if;
          end;  -- declare block
       end loop;

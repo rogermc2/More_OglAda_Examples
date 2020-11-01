@@ -28,7 +28,7 @@ package Menu_Support is
       Cursor_Pos          : GL.Types.Singles.Vector2;
       Cursor_Scale : GL.Types.Single;
       Cursor_Point_Count  : Integer; Elapsed : Float);
-   function General_Menu_Support (Window  : in out Glfw.Windows.Window;
+   procedure General_Menu_Support (Window  : in out Glfw.Windows.Window;
                                  Joystick_Detected_Text    : Integer;
                                  Joy_Name : String;
                                   Menu_Was_Closed, Graphics_Open, Audio_Open,
@@ -36,8 +36,8 @@ package Menu_Support is
                                   Credits_Open, New_Game, In_Custom_Map,
                                   Custom_Maps  : in out Boolean;
                                   Since_Last_Key  : in out Float;
-                                  Menu_Cursor_Item : in out Menu_Choice_Type)
-                                  return Boolean;
+                                  Menu_Cursor_Item : in out Menu_Choice_Type);
+--                                    return Boolean;
    procedure Process_Menu_Audio (Window                    : in out Glfw.Windows.Window;
                                  Audio_Value_Text          : GL_Maths.Integer_Array;
                                  Menu_Audio_Open           : in out Boolean;

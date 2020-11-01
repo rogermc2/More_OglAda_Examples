@@ -307,13 +307,10 @@ package body MMenu is
             end loop;
             Cursor_Pos (GL.Y) := 0.0;
          else
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu nothing Open, Menu_Cursor_Curr_Item "
-                                & Menu_Choice_Type'Image (Menu_Cursor_Curr_Item));
             for index in 1 .. Num_Menu_Entries loop
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu nothing Open, Menu_Text (index) "
-                                & Integer'Image (Menu_Text (index)));
                Text.Draw_Text (Menu_Text (index));
             end loop;
+
             Cursor_Scale := 120.0;
             Cursor_Pos (GL.X) := -312.0 / Single (Framebuffer_Width);
             Cursor_Pos (GL.Y) :=
@@ -322,6 +319,7 @@ package body MMenu is
               (Menu_Text_Y_Offset - Menu_Big_Text_Size * Cursor_Pos (GL.Y) - 40.0) /
                 Single (Framebuffer_Height);
          end if;
+
          Draw_Skull_Cursor (Menu_Cursor_Texture, Cursor_VAO,
                              Cursor_Shader_Program, Cursor_M, Cursor_V,
                              Cursor_Pos, Cursor_Scale, Cursor_Point_Count,
@@ -499,6 +497,7 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
+--     function Update_Menu (Window     : in out Glfw.Windows.Window;
    function Update_Menu (Window     : in out Glfw.Windows.Window;
                          Delta_Time : Float) return Boolean is
       use Glfw.Input.Keys;
@@ -506,8 +505,8 @@ package body MMenu is
       use Menu_Support;
       use Menu_Strings;
       use Settings;
-      Temp            : Unbounded_String := To_Unbounded_String ("");
-      Result          : Boolean := False;
+      Temp    : Unbounded_String := To_Unbounded_String ("");
+      Result  : Boolean := False;
    begin
       Since_Last_Key := Since_Last_Key + Delta_Time;
       Menu_Closed := False;
@@ -516,6 +515,9 @@ package body MMenu is
       --  Joystick processsing
       Result := Since_Last_Key < 0.15;
       if not Result then
+         --  Since_Last_Key > 0.15
+         Game_Utils.Game_Log ("Mmenu.Update_Menu Since_Last_Key: " &
+                                float'Image (Since_Last_Key));
          if Menu_Graphics_Open then
             Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Graphics_Open");
             Result := Process_Menu_Graphics
@@ -556,7 +558,8 @@ package body MMenu is
                                   Menu_End_Story_Open, Menu_Closed, Text_Timer);
          end if;
          Game_Utils.Game_Log ("Mmenu.Update_Menu General_Menu_Support");
-         Result := General_Menu_Support (Window, Joystick_Detected_Text,
+--           Result := General_Menu_Support (Window, Joystick_Detected_Text,
+         General_Menu_Support (Window, Joystick_Detected_Text,
                                          To_String (Joy_Name),
                                          Menu_Closed,  Menu_Graphics_Open,
                                          Menu_Audio_Open, Menu_Input_Open,
@@ -567,7 +570,7 @@ package body MMenu is
                                          Menu_Cursor_Curr_Item);
       end if; --  Since_Last_Key < 0.15
 
-      return Result;
+      return not Menu_Confirm_Quit_Open;
    end Update_Menu;
 
    --  ------------------------------------------------------------------------

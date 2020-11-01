@@ -53,7 +53,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --     Yellow         : constant GL.Types.Singles.Vector4 := (1.0, 1.0, 0.0, 0.5);
    White          : constant Colors.Color := (1.0, 1.0, 1.0, 0.0);
    Key_Pressed    : boolean := False;
-   Last_Time      : float := 0.0;
+   Last_Time      : float := Float (Glfw.Time);
    --      Title_Track    : constant String := "Warlock_Symphony.ogg";
    --      Is_Playing_Hammer_Track : Boolean := False;
 
@@ -134,7 +134,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use Glfw.Input.Keys;
       use Maths.Single_Math_Functions;
       use Input_Handler;
-      Current_Time  : Float := 0.0;
+      Current_Time  : Float;
       Elapsed_Time  : Float;
       b             : GL.Types.Single := 0.0;
       Back_Colour   : Colors.Color;
@@ -183,7 +183,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Main_Game_Loop (Current_Time : Float) is
-      Last_Time   : constant  Float := GL_Utils.Get_Elapsed_Seconds;
+--        Last_Time   : constant  Float := GL_Utils.Get_Elapsed_Seconds;
       --          Logic_Delta : Float := Current_Time - Last_Time;
    begin
       null;
@@ -195,7 +195,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Main_Setup (Window     : in out Glfw.Windows.Window;
                          Is_Running : in out Boolean) is
       use Glfw.Input;
-      Current_Time : Float := 0.0;
+      Current_Time : Float := Float (Glfw.Time);
       Delta_Time   : Float := 0.0;
       Flash_Timer  : Float := 0.0;
    begin
@@ -219,23 +219,23 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       --  initiate main menu loop
       MMenu.Start_Menu_Title_Bounce;
-      Game_Utils.Game_Log ("Main_Loop.Main_Setup Start_Menu_Title_Bounce done");
       Utilities.Clear_Background_Colour_And_Depth (Black);
 
       if not Skip_Intro then
          MMenu.Set_Menu_Open (True);
-         Game_Utils.Game_Log ("Main_Loop.Main_Setup Set_Menu_Open done");
       end if;
 
       Is_Running := True;
-      Last_Time := GL_Utils.Get_Elapsed_Seconds;
+--        Last_Time := GL_Utils.Get_Elapsed_Seconds;
+      Last_Time := Float (Glfw.Time);
 --        GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
 --                                Settings.Framebuffer_Height);
 
       while Mmenu.Menu_Open and Is_Running loop
          GL_Utils.Window_Resize (Window);
          GL_Utils.Frame_Buffer_Resize (Window);
-         Current_Time := GL_Utils.Get_Elapsed_Seconds;
+         Current_Time := Float (Glfw.Time);
+--           Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          Utilities.Clear_Background_Colour_And_Depth (Black);
