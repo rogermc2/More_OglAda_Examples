@@ -185,15 +185,15 @@ package body MMenu is
       use Settings;
       FB_Width       : constant Single := Single (Framebuffer_Width);
       FB_Height      : constant Single := Single (Framebuffer_Height);
-      Cursor_Scale : Single := 60.0;  -- 60.0
-      Cursor_Pos   : Singles.Vector2 :=
+      Cursor_Scale   : Single := 60.0;  -- 60.0
+      Cursor_Pos     : Singles.Vector2 :=
                          ((40.0 - 512.0) / Single (Framebuffer_Width), 0.0);
 
       function Cursor_Y (Val : Integer) return Single is
          Y : Single := 2.0 * Single (Val + 2);
       begin
          return 400.0 - 20.0 * (Cursor_Pos (GL.Y) - 1.0) /
-              Single (Framebuffer_Height);
+           Single (Framebuffer_Height);
       end Cursor_Y;
 
    begin
@@ -236,9 +236,9 @@ package body MMenu is
 
          GL_Utils.Bind_VAO (Menu_VAO);
          Texture_Manager.Bind_Texture (0, Text_Background_Texture);
---           GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+         --           GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
          Draw_Arrays (Triangles, 0, 6);
---           Draw_Arrays (Points, 0, 1);
+         --           Draw_Arrays (Points, 0, 1);
 
          Disable (Blend);
          Utilities.Clear_Depth;
@@ -321,9 +321,9 @@ package body MMenu is
          end if;
 
          Draw_Skull_Cursor (Menu_Cursor_Texture, Cursor_VAO,
-                             Cursor_Shader_Program, Cursor_M, Cursor_V,
-                             Cursor_Pos, Cursor_Scale, Cursor_Point_Count,
-                             Elapsed);
+                            Cursor_Shader_Program, Cursor_M, Cursor_V,
+                            Cursor_Pos, Cursor_Scale, Cursor_Point_Count,
+                            Elapsed);
          Do_Bounce (Title_Bounce_Timer, Elapsed, Title_V);
          Draw_Title;
       end if;
@@ -497,7 +497,7 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
---     function Update_Menu (Window     : in out Glfw.Windows.Window;
+   --     function Update_Menu (Window     : in out Glfw.Windows.Window;
    function Update_Menu (Window     : in out Glfw.Windows.Window;
                          Delta_Time : Float) return Boolean is
       use Glfw.Input.Keys;
@@ -516,8 +516,6 @@ package body MMenu is
       Result := Since_Last_Key < 0.15;
       if not Result then
          --  Since_Last_Key > 0.15
-         Game_Utils.Game_Log ("Mmenu.Update_Menu Since_Last_Key: " &
-                                float'Image (Since_Last_Key));
          if Menu_Graphics_Open then
             Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Graphics_Open");
             Result := Process_Menu_Graphics
@@ -558,16 +556,13 @@ package body MMenu is
                                   Menu_End_Story_Open, Menu_Closed, Text_Timer);
          end if;
          Game_Utils.Game_Log ("Mmenu.Update_Menu General_Menu_Support");
---           Result := General_Menu_Support (Window, Joystick_Detected_Text,
          General_Menu_Support (Window, Joystick_Detected_Text,
-                                         To_String (Joy_Name),
-                                         Menu_Closed,  Menu_Graphics_Open,
-                                         Menu_Audio_Open, Menu_Input_Open,
-                                         Menu_Confirm_Quit_Open,
-                                         Menu_Credits_Open, User_Chose_New_Game,
-                                         We_Are_In_Custom_Maps,
-                                         User_Chose_Custom_Maps, Since_Last_Key,
-                                         Menu_Cursor_Curr_Item);
+                               To_String (Joy_Name), Menu_Closed,
+                               Menu_Graphics_Open, Menu_Audio_Open,
+                               Menu_Input_Open, Menu_Confirm_Quit_Open,
+                               Menu_Credits_Open, User_Chose_New_Game,
+                               We_Are_In_Custom_Maps, User_Chose_Custom_Maps,
+                               Since_Last_Key, Menu_Cursor_Curr_Item);
       end if; --  Since_Last_Key < 0.15
 
       return not Menu_Confirm_Quit_Open;
