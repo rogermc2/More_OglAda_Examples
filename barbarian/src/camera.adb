@@ -26,7 +26,7 @@ package body Camera is
         G_Cam.Screen_Shake_Amplitude := 0.0;
         G_Cam.Screen_Shake_Frequency := 0.0;
         G_Cam.Wind_In_Angle := 0.0;
-        G_Cam.Field_Of_View_Y := 67.0;
+        G_Cam.FOY_Y := 67.0;
         G_Cam.Aspect := Single (Settings.Framebuffer_Height) /
           Single (Settings.Framebuffer_Width);
         G_Cam.Near := 0.1;
@@ -45,11 +45,11 @@ package body Camera is
         end if;
 
         G_Cam.Projection_Matrix := Perspective_Matrix
-          (G_Cam.Field_Of_View_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far);
+          (G_Cam.FOY_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far);
         G_Cam.GUI_Proj_Matrix := Perspective_Matrix
-          (G_Cam.Field_Of_View_Y, G_Cam.Aspect, 0.01, 1000.0);
+          (G_Cam.FOY_Y, G_Cam.Aspect, 0.01, 1000.0);
         G_Cam.Clip_Plane := Perspective_Matrix
-          (G_Cam.Field_Of_View_Y, G_Cam.Aspect, 0.1, 1000.0);
+          (G_Cam.FOY_Y, G_Cam.Aspect, 0.1, 1000.0);
         G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
         G_Cam.Is_Dirty  := True;
         G_Cam.Manual_Override := False;
@@ -171,7 +171,7 @@ package body Camera is
          G_Cam.PV := G_Cam.Projection_Matrix * G_Cam.View_Matrix;
          G_Cam.Is_Dirty := True;
          Frustum.Re_Extract_Frustum_Planes
-           (G_Cam.Field_Of_View_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far,
+           (G_Cam.FOY_Y, G_Cam.Aspect, G_Cam.Near, G_Cam.Far,
             G_Cam.World_Position, G_Cam.View_Matrix);
       end if;
     end Set_Camera_Position;

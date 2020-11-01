@@ -166,7 +166,6 @@ package body Menu_Support is
                                   Custom_Maps  : in out Boolean;
                                   Since_Last_Key  : in out Float;
                                   Menu_Cursor_Item : in out Menu_Choice_Type) is
---                                    return Boolean is
       use Glfw.Input.Keys;
       use Input_Handler;
       Result : Boolean := False;
