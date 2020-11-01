@@ -1,3 +1,4 @@
 *.vom filter=lfs diff=lfs merge=lfs -text
 “*.csv” filter=lfs diff=lfs merge=lfs -text
 “*.apg” filter=lfs diff=lfs merge=lfs -text
+“*.vom” filter=lfs diff=lfs merge=lfs -text
