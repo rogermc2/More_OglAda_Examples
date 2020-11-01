@@ -408,8 +408,8 @@ package body MMenu_Initialization is
            Single (Settings.Framebuffer_Height);
          Menu_Text (index) :=
            Text.Add_Text (Menu_Strings.Menu_String_Items (index),
-                          1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
---                            0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
+--                            1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
+                          0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
          Text.Centre_Text (Menu_Text (index), 0.0, Y);
          Text.Set_Text_Visible (Menu_Text (index), False);
       end loop;
@@ -521,7 +521,7 @@ package body MMenu_Initialization is
 
       Title_Buildstamp_Text := Text.Add_Text ("Ada v1.0 (alpha)",
                                               X, Y, 10.0, 0.5, 0.5, 0.5, 1.0);
-      --        Text.Centre_Text (Title_Buildstamp_Text, 0.0, 0.0);
+      Text.Centre_Text (Title_Buildstamp_Text, 0.0, 0.0);
       Text.Set_Text_Visible (Title_Buildstamp_Text, False);
 
       Title_Version_Text := Text.Add_Text ("pre-release demo",

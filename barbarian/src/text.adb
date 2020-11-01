@@ -112,8 +112,6 @@ package body Text is
       use GL.Types;
       use Shader_Attributes;
       R_Text : Renderable_Text;
-      BR_X   : Single := 0.0;
-      BR_Y   : Single := 0.0;
    begin
       R_Text.VAO.Initialize_Id;
       R_Text.VAO.Bind;
@@ -130,7 +128,8 @@ package body Text is
       R_Text.Point_Count := 0;
 
       Text_To_VBO (theText, Size_In_Pixels, R_Text.Points_VBO,
-                   R_Text.Tex_Coords_VBO, R_Text.Point_Count, BR_X, BR_Y);
+                   R_Text.Tex_Coords_VBO, R_Text.Point_Count,
+                   R_Text.Bottom_Right_X, R_Text.Bottom_Right_Y);
 
       Array_Buffer.Bind (R_Text.Points_VBO);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type,
@@ -162,7 +161,7 @@ package body Text is
    begin
       if ID <= Renderable_Texts.Last_Index then
          theText := Renderable_Texts.Element (ID);
-         Width := theText.Bottom_Right_X - theText.Top_Left_X;
+         Width := theText.Bottom_Right_X;
          Length := X - 0.5 * Width;
          Move_Text (theText, Length, Y);
          Renderable_Texts.Replace_Element (ID, theText);
@@ -284,9 +283,8 @@ package body Text is
       GL_Utils.Bind_VAO (theText.VAO);
 
       GL.Objects.Programs.Use_Program (Font_Shader);
-      Text_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.95,
-                                           theText.Top_Left_Y));
---        Text_Shader_Manager.Set_Position_ID ((-0.8, 0.8));
+      Text_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.025,
+                                           theText.Top_Left_Y + 0.025));
       Text_Shader_Manager.Set_Text_Colour_ID ((theText.Red, theText.Green,
                                                theText.Blue, theText.A));
 --        Text_Shader_Manager.Set_Text_Colour_ID ((1.0, 0.0, 0.0, 1.0));
