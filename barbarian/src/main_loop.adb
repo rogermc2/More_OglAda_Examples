@@ -43,7 +43,7 @@ with Sprite_Renderer;
 with Text;
 with Texture_Manager;
 
-procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
+procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
    Black          : constant Colors.Color := (0.0, 0.0, 0.0, 1.0);
    --     Red            : constant GL.Types.Singles.Vector4 := (1.0, 0.0, 0.0, 1.0);
@@ -87,7 +87,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Modules (Window : in out Glfw.Windows.Window) is
+   procedure Init_Modules (Window : in out Input_Callback.Barbarian_Window) is
    begin
       Input_Handler.Register_Input_Actions;
       Settings.Load_Settings;
@@ -128,11 +128,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Introduction (Window                 : in out Glfw.Windows.Window;
-                           Last_Time, Flash_Timer : in out Float;
-                           Is_Running             : in out Boolean) is
+   procedure Introduction
+     (Window : in out Input_Callback.Barbarian_Window;
+      Last_Time, Flash_Timer : in out Float; Is_Running : in out Boolean) is
       use Glfw.Input.Keys;
       use Maths.Single_Math_Functions;
+      use Input_Callback;
       use Input_Handler;
       Current_Time  : Float;
       Elapsed_Time  : Float;
@@ -192,7 +193,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Main_Setup (Window     : in out Glfw.Windows.Window;
+   procedure Main_Setup (Window     : in out Input_Callback.Barbarian_Window;
                          Is_Running : in out Boolean) is
       use Glfw.Input;
       Current_Time : Float := Float (Glfw.Time);
@@ -234,6 +235,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       while Mmenu.Menu_Open and Is_Running loop
          GL_Utils.Window_Resize (Window);
          GL_Utils.Frame_Buffer_Resize (Window);
+
          Current_Time := Float (Glfw.Time);
 --           Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
@@ -271,7 +273,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Run_Game (Window : in out Glfw.Windows.Window) is
+   procedure Run_Game (Window : in out Input_Callback.Barbarian_Window) is
       --          use GL.Objects.Buffers;
       --          use GL.Types.Colors;
       --          use GL.Types.Singles;     --  for matrix multiplication

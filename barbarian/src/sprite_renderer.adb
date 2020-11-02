@@ -163,9 +163,9 @@ package body Sprite_Renderer is
         use Maths;
         use Sprite_Shader_Manager;
         use Texture_Manager;
-        Opacity : Single := 1.0;
-	U    : Int := Sprites (Sprite_Index).Wmap_U;
-	V    : Int := Sprites (Sprite_Index).Wmap_V;
+        Opacity : constant Single := 1.0;
+	U       : constant Int := Sprites (Sprite_Index).Wmap_U;
+	V       : constant Int := Sprites (Sprite_Index).Wmap_V;
     begin
         if Sprites (Sprite_Index).Is_Visible and  Frustum.Is_Sphere_In_Frustum
           (Sprites (Sprite_Index).World_Position, 1.0) then

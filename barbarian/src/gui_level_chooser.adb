@@ -8,6 +8,7 @@ with Glfw.Input.Keys;
 with GL.Types; use GL.Types;
 with GL.Objects.Vertex_Arrays;
 
+with Input_Callback;
 with Maths;
 with Utilities;
 
@@ -131,9 +132,10 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-   procedure Process_Input (Window : in out Glfw.Windows.Window;
+   procedure Process_Input (Window : in out Input_Callback.Barbarian_Window;
                             Menu_Open, Started_Loading_Map, Cheat_Unlock : in out Boolean) is
-      use  Glfw.Input.Keys;
+      use Glfw.Input.Keys;
+      use Input_Callback;
       use Input_Handler;
       use Levels_Maps_Manager.Maps_Package;
       Selected_Map : constant Levels_Maps_Manager.Level_Map_Data :=
@@ -216,8 +218,9 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-   function Start_Level_Chooser_Loop (Window     : in out Glfw.Windows.Window;
-                                      Custom_Maps: Boolean) return Boolean is
+   function Start_Level_Chooser_Loop
+     (Window  : in out Input_Callback.Barbarian_Window; Custom_Maps: Boolean)
+      return Boolean is
       Menu_Open           : Boolean := MMenu.End_Story_Open;
       Menu_Quit           : Boolean := False;
       Cheat_Unlock        : Boolean := False;
@@ -283,6 +286,7 @@ package body GUI_Level_Chooser is
 
    procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean) is
       use Glfw.Input.Keys;
+      use Input_Callback;
       use Input_Handler;
       Old_Sel : constant Integer := Selected_Map_ID;
       Old_Map : Levels_Maps_Manager.Level_Map_Data;

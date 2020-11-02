@@ -48,7 +48,7 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   function Confirm_Quit_Open (Window            : in out Glfw.Windows.Window;
+   function Confirm_Quit_Open (Window            : in out Barbarian_Window;
                                Confirm_Quit_Open : in out Boolean)
                                return Boolean is
       use Glfw.Input.Keys;
@@ -85,7 +85,7 @@ package body Menu_Support is
    --  -------------------------------------------------------------------------
 
    procedure Do_Bounce (Title_Bounce_Timer : in out Float; Elapsed : Float;
-                        Title_V : in out GL.Types.Singles.Matrix4) is
+                        Title_V            : in out GL.Types.Singles.Matrix4) is
       use GL.Types;
       use GL.Types.Singles;
       use GL_Maths;
@@ -107,7 +107,7 @@ package body Menu_Support is
          end if;
       else
          Y := Decel_Bounce (Single (Title_Bounce_Timer), (0.0, End_Fall_At),
-                         (Fall_Dist, 0.0), Num_Bounces);
+                            (Fall_Dist, 0.0), Num_Bounces);
       end if;
       Bounce_Matrix := Maths.Translation_Matrix ((0.0, Y, 0.0));
 
@@ -142,7 +142,7 @@ package body Menu_Support is
       --  Skull cursor
       Texture_Manager.Bind_Texture (0, Menu_Cursor_Texture);
       GL_Utils.Bind_VAO (Cursor_VAO);
---        Game_Utils.Game_Log ("Menu_Support.Draw_3D_Menu_Items, Cursor_VAO bound");
+      --        Game_Utils.Game_Log ("Menu_Support.Draw_3D_Menu_Items, Cursor_VAO bound");
       Cursor_Degrees := Cursor_Degrees + Degree (Cursor_Rot_Speed * Elapsed);
       Rot_Matrix := Rotate_Y_Degree (Scale_Matrix, Cursor_Degrees);
       Cursor_M := Rot_Matrix;
@@ -157,19 +157,20 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure General_Menu_Support (Window  : in out Glfw.Windows.Window;
-                                 Joystick_Detected_Text    : Integer;
-                                 Joy_Name : String;
-                                  Menu_Was_Closed, Graphics_Open, Audio_Open,
-                                  Input_Open, Confirm_Quit_Open,
-                                  Credits_Open, New_Game, In_Custom_Map,
-                                  Custom_Maps  : in out Boolean;
-                                  Since_Last_Key  : in out Float;
-                                  Menu_Cursor_Item : in out Menu_Choice_Type) is
+   procedure General_Menu_Support (Window                    : in out Barbarian_Window;
+                                   Joystick_Detected_Text    : Integer;
+                                   Joy_Name                  : String;
+                                   Menu_Was_Closed, Graphics_Open, Audio_Open,
+                                   Input_Open, Confirm_Quit_Open,
+                                   Credits_Open, New_Game, In_Custom_Map,
+                                   Custom_Maps               : in out Boolean;
+                                   Since_Last_Key            : in out Float;
+                                   Menu_Cursor_Item          : in out Menu_Choice_Type) is
       use Glfw.Input.Keys;
       use Input_Handler;
       Result : Boolean := False;
    begin
+      Game_Utils.Game_Log ("Menu_Support.General_Menu_Support entered " );
       if Was_Key_Pressed (Window, Escape) or
         Was_Action_Pressed (Window, Open_Menu_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action) then
@@ -177,19 +178,28 @@ package body Menu_Support is
          if Result then
             Menu_Was_Closed := True;
          else
-            Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " &
-                                 "ERROR: could not save settings from Mmenu");
+            Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " );
          end if;
 
       elsif Is_Key_Down (Up) or
         Is_Action_Down (Up_Action) then
-         Menu_Cursor_Item := Menu_Choice_Type'Pred (Menu_Cursor_Item);
+         Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, Up key pressed");
+         if Menu_Cursor_Item = Menu_New_Game then
+            Menu_Cursor_Item := Menu_Quit;
+         else
+            Menu_Cursor_Item := Menu_Choice_Type'Pred (Menu_Cursor_Item);
+         end if;
          Since_Last_Key := 0.0;
          Audio.Play_Sound (Menu_Beep_Sound, True);
          Result := True;
       elsif Is_Key_Down (Down) or
         Is_Action_Down (Down_Action) then
-         Menu_Cursor_Item := Menu_Choice_Type'Succ (Menu_Cursor_Item);
+         if Menu_Cursor_Item = Menu_Quit then
+            Menu_Cursor_Item := Menu_New_Game;
+         else
+            Menu_Cursor_Item := Menu_Choice_Type'Succ (Menu_Cursor_Item);
+         end if;
+         Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, Down key pressed");
          Since_Last_Key := 0.0;
          Audio.Play_Sound (Menu_Beep_Sound, True);
          Result := True;
@@ -200,8 +210,8 @@ package body Menu_Support is
             Confirm_Quit_Open := True;
             Result := Settings.Save_Settings;
             if not Result then
-                Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " &
-                                 "ERROR: could not save settings from Mmenu");
+               Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " &
+                                      "ERROR: could not save settings from Mmenu");
             end if;
          elsif Menu_Cursor_Item = Menu_Graphics then
             Graphics_Open := True;
@@ -217,7 +227,7 @@ package body Menu_Support is
          elsif Menu_Cursor_Item = Menu_Credits then
             Credits_Open := True;
             Audio.Pause_Music (True);
---              Audio.Play_Credits_Music (Credits_Music);
+            --              Audio.Play_Credits_Music (Credits_Music);
             Result := True;
          elsif Menu_Cursor_Item = Menu_New_Game then
             New_Game := True;
@@ -225,7 +235,7 @@ package body Menu_Support is
             Result := Settings.Save_Settings;
             if not Result then
                Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " &
-                                    "ERROR: could not save settings from Mmenu");
+                                      "ERROR: could not save settings from Mmenu");
             end if;
          elsif Menu_Cursor_Item = Menu_Custom_Map then
             Custom_Maps := True;
@@ -233,14 +243,14 @@ package body Menu_Support is
             Result := Settings.Save_Settings;
             if not Result then
                Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " &
-                                    "ERROR: could not save settings from Mmenu");
+                                      "ERROR: could not save settings from Mmenu");
             end if;
          end if;
       end if;
 
---        Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, finished, Result: " &
---                                   Boolean'Image (Result));
---        return Result;
+      --        Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, finished, Result: " &
+      --                                   Boolean'Image (Result));
+      --        return Result;
    end General_Menu_Support;
 
    --  -------------------------------------------------------------------------
@@ -248,10 +258,10 @@ package body Menu_Support is
    procedure Process_Menu_Cal_GP is
       Pos_Index : Integer := 1;
       Tex_Index : Integer := 1;
---        Biggest_Diff   : Float := 0.0;
---        Biggest_Diff_I : Integer := -1;
---        Button_Pressed : Integer := -1;
---        Sign           : Character := '-';
+      --        Biggest_Diff   : Float := 0.0;
+      --        Biggest_Diff_I : Integer := -1;
+      --        Button_Pressed : Integer := -1;
+      --        Sign           : Character := '-';
    begin
       GUI.Show_Controller_Button_Overlay (Pos_Index, Tex_Index);
       Pos_Index := 2;
@@ -269,12 +279,12 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Cal_KB (Window                             : in out Glfw.Windows.Window;
+   procedure Process_Menu_Cal_KB (Window                             : in out Barbarian_Window;
                                   KB_Binding_Text                    : GL_Maths.Integer_Array;
                                   Greatest_Axis_Text                 : Integer;
                                   Already_Bound_Text                 : Integer;
                                   Modify_Binding_Mode,
-                                  Already_Bound, Menu_Cal_KB_Open  : in out Boolean;
+                                  Already_Bound, Menu_Cal_KB_Open    : in out Boolean;
                                   Since_Last_Key                     : in out Float) is
       use Glfw.Input.Keys;
       use Input_Handler;
@@ -355,11 +365,11 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Audio (Window                     : in out Glfw.Windows.Window;
+   procedure Process_Menu_Audio (Window                     : in out Barbarian_Window;
                                  Audio_Value_Text           : GL_Maths.Integer_Array;
                                  Menu_Audio_Open            : in out Boolean;
                                  Since_Last_Key             : in out Float;
-                                 Audio_Cursor_Item  : in out Integer) is
+                                 Audio_Cursor_Item          : in out Integer) is
       use Glfw.Input.Keys;
       use Input_Handler;
       use Menu_Support;
@@ -437,10 +447,10 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Credits (Window      : in out Glfw.Windows.Window;
+   procedure Process_Menu_Credits (Window      : in out Barbarian_Window;
                                    Credits_Open, End_Story_Open,
                                    Menu_Closed : in out Boolean;
-                                  Text_Timer : in out Float) is
+                                   Text_Timer  : in out Float) is
       use Glfw.Input.Keys;
       use Input_Handler;
    begin
@@ -460,7 +470,7 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   function Process_Menu_Graphics (Window                     : in out Glfw.Windows.Window;
+   function Process_Menu_Graphics (Window                     : in out Barbarian_Window;
                                    Graphic_Value_Text         : GL_Maths.Integer_Array;
                                    Menu_Gr_Open, Restart_Flag : in out Boolean;
                                    Since_Last_Key             : in out Float;
@@ -607,14 +617,14 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Input (Window                    : in out Glfw.Windows.Window;
+   procedure Process_Menu_Input (Window                    : in out Barbarian_Window;
                                  Joy_Name                  : String;
                                  Since_Last_Key            : in out Float;
                                  Menu_Input_Open, Menu_Cal_KB_Open,
                                  Menu_Cal_Gp_Axes_Open,
-                                 Menu_Cal_Gp_Butts_Open: in out Boolean;
+                                 Menu_Cal_Gp_Butts_Open    : in out Boolean;
                                  Joystick_Detected_Text    : Integer;
-                                 Input_Cursor_Item : in out Integer) is
+                                 Input_Cursor_Item         : in out Integer) is
       use Glfw.Input.Keys;
       use Input_Handler;
    begin

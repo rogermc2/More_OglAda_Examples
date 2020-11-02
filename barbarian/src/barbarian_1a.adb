@@ -7,18 +7,23 @@ with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw;
+with Glfw.Input.Keys;
 with Glfw.Windows;
 
-with Initialize;
+with Input_Callback;
+with Initialize_With_Callbacks;
 
 with Main_Loop;
 
 procedure Barbarian_1a is
-    Main_Window  : Glfw.Windows.Window;
-    Window_Title : constant String := "Barbarian 1a";
+   --  see http://flyx.github.io/OpenGLAda/glfw-v3.html for handling
+   --  Glfw callbacks
+   Main_Window  : Input_Callback.Barbarian_Window;
+   Window_Title : constant String := "Barbarian 1a";
+
 begin
     Glfw.Init;
-    Initialize (Main_Window, Window_Title);
+    Initialize_With_Callbacks (Main_Window, Window_Title);
     Main_Loop (Main_Window);
     Glfw.Shutdown;
 

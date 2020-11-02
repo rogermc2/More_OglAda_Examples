@@ -10,7 +10,7 @@ with Settings;
 package body Input_Handler is
 
    Input_Actions : Input_Actions_Data;
-   Input_State   : Input_State_Data;
+--     Input_State   : Input_State_Data;
 
    function Register_Key_Action (Name : String) return Integer;
 
@@ -142,12 +142,12 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init (Window  : in out Glfw.Windows.Window) is
+   procedure Init (Window  : in out Input_Callback.Barbarian_Window) is
       --          Hide_Cursor : Boolean := True;
    begin
       Game_Utils.Game_Log ("--- Init Input Handler ---");
       Window.Set_Cursor_Mode (Glfw.Input.Mouse.Hidden);
-      Input_State.Mouse_Cursor_Hidden := True;
+--        Input_State.Mouse_Cursor_Hidden := True;
    end Init;
 
    --  ------------------------------------------------------------------------
@@ -155,21 +155,8 @@ package body Input_Handler is
    function Is_Action_Down (Action : Integer) return Boolean is
    begin
       --  Joystick processing
-      return Is_Key_Down (Input_Actions.Key_Bindings (Action));
+      return Input_Callback.Is_Key_Down (Input_Actions.Key_Bindings (Action));
    end Is_Action_Down;
-
-   --  ------------------------------------------------------------------------
-
-   function Is_Key_Down (aKey : Key) return Boolean is
-      Key_Val : constant Integer := Key'Enum_Rep (aKey);
-   begin
-      if Key_Val < 0 or Key_Val >= Max_Keys then
-         raise Input_Handler_Exception with
-           "Input_Handler.Is_Key_Down, invalid key code " &
-           Integer'Image (Key_Val) & " detected.";
-      end if;
-      return Input_State.Keys_Down (Key_Val);
-   end Is_Key_Down;
 
    --  ------------------------------------------------------------------------
 
@@ -194,13 +181,6 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Joystick_Connected return Boolean is
-   begin
-      return Input_State.Joystick_Connected;
-   end Joystick_Connected;
-
-   --  ------------------------------------------------------------------------
-
    function Key_Binding (Index: Integer) return Integer is
    begin
       return Key'Enum_Rep (Input_Actions.Key_Bindings (Index));
@@ -208,42 +188,10 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Key_Name (Index: Integer) return Unbounded_String is
-   begin
-      return Input_State.Key_Names (Index);
-   end Key_Name;
-
-   --  ------------------------------------------------------------------------
-
-   function Key_Pressed return Boolean is
-   begin
-      return Input_State.Key_Pressed;
-   end Key_Pressed;
-
-   --  ------------------------------------------------------------------------
-
-   function Last_Key_Down return Key is
-   begin
-      return Input_State.Last_Key_Down;
-   end Last_Key_Down;
-
-   --  ------------------------------------------------------------------------
-
    function Left_Action return Integer is
    begin
       return Input_Actions.Left_Action;
    end Left_Action;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Lock_All_Keys is
-   begin
-      for index in Input_State.Keys_Down'Range loop
-         if Input_State.Keys_Down (index) then
-            Input_State.Keys_Locked (index) := True;
-         end if;
-      end loop;
-   end Lock_All_Keys;
 
    --  ------------------------------------------------------------------------
 
@@ -391,6 +339,7 @@ package body Input_Handler is
 
    function Set_Key_For_Action (Action_Name : String; Key_Code : Natural)
                                 return Integer is
+      use Input_Callback;
       Result : Integer := -1;
    begin
       if Action_Name'Length < 1 then
@@ -425,13 +374,6 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Key_Pressed (Pressed : Boolean) is
-   begin
-      Input_State.Key_Pressed := Pressed;
-   end Set_Key_Pressed;
-
-   --  ------------------------------------------------------------------------
-
    function Up_Action return Integer is
    begin
       return Input_Actions.Up_Action;
@@ -439,7 +381,7 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Was_Action_Pressed (Window : in out Glfw.Windows.Window;
+   function Was_Action_Pressed (Window : in out Input_Callback.Barbarian_Window;
                                 Action : Integer) return Boolean is
       Result : Boolean := False;
    begin
@@ -450,46 +392,10 @@ package body Input_Handler is
       end if;
 
       --  Joystick not implemented
-      Result := Was_Key_Pressed (Window, Input_Actions.Key_Bindings (Action));
+      Result := Input_Callback.Was_Key_Pressed
+        (Window, Input_Actions.Key_Bindings (Action));
       return Result;
    end Was_Action_Pressed;
-
-   --  ------------------------------------------------------------------------
-
-   function Was_Joy_Y_Pressed return Boolean is
-      Result : Boolean := False;
-   begin
-      Result := Input_State.Joystick_Connected and then
-        not Settings.Joystick_Disabled and then
-        Input_State.Joystick_Buttons (3) > 0 and then
-        not Input_State.Joystick_Buttons_Locked (3);
-
-      if Result then
-         Input_State.Joystick_Buttons_Locked (3) := True;
-      end if;
-
-      return Result;
-   end Was_Joy_Y_Pressed;
-
-   --  ------------------------------------------------------------------------
-   function Was_Key_Pressed (Window : in out Glfw.Windows.Window; aKey : Key)
-                             return Boolean is
-      use Glfw.Input;
-      Key_Val     : constant Integer := Key'Enum_Rep (aKey);
-      Key_Pressed : Boolean := False;
-   begin
-      if Key_Val < 32 or Key_Val > Max_Keys then
-         raise Input_Handler_Exception with
-           "Input_Handler.Was_Key_Pressed, invalid key code " &
-           Integer'Image (Key_Val) & " detected.";
-      end if;
-
-     Key_Pressed := Window'Access.Key_State (aKey) = Pressed;
-      if Key_Pressed then
-         Input_State.Keys_Locked (Key_Val) := True;
-      end if;
-      return Key_Pressed;
-   end Was_Key_Pressed;
 
    --  ------------------------------------------------------------------------
 

@@ -43,7 +43,7 @@ package body MMenu is
 
    Black              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
    Menu_Text_Y_Offset : constant Single := 350.0; --  orig 300 pixels above horizontal for text to start
-   Menu_Big_Text_Size : constant Single := 80.0;  --  height of subseq lines to offset below that
+   Menu_Big_Text_Size : constant Single := 94.0;  --  orig 80 height of subseq lines to offset below that
    Credit_Scroll_Rate : constant Float := 0.05;
 
    Title_VAO              : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -500,8 +500,7 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
-   --     function Update_Menu (Window     : in out Glfw.Windows.Window;
-   function Update_Menu (Window     : in out Glfw.Windows.Window;
+   function Update_Menu (Window     : in out Input_Callback.Barbarian_Window;
                          Delta_Time : Float) return Boolean is
       use Glfw.Input.Keys;
       use Input_Handler;

@@ -15,6 +15,7 @@ with Camera;
 with Cursor_Shader_Manager;
 with Game_Utils;
 with GL_Utils;
+with Input_Callback;
 with Input_Handler;
 with Menu_Credits_Shader_Manager;
 with Menu_Strings;
@@ -335,15 +336,15 @@ package body MMenu_Initialization is
          end if;
 
          K_Index := Input_Handler.Key_Binding (index);
-         if K_Index < 0 or K_Index >= Input_Handler.Max_Keys then
+         if K_Index < 0 or K_Index >= Input_Callback.Max_Keys then
             raise Mmenu_Exception with
               "Mmenu.Init_Input_Actions, invalid key code " &
               Integer'Image (K_Index) & " detected.";
          end if;
 
-         if To_String (Input_Handler.Key_Name (index)) /= "" then
+         if To_String (Input_Callback.Key_Name (index)) /= "" then
             KB_Binding_Text (index) :=
-              Text.Add_Text (To_String (Input_Handler.Key_Name (index)),
+              Text.Add_Text (To_String (Input_Callback.Key_Name (index)),
                              X2, Single (index + 1) * Y,
                              20.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (KB_Binding_Text (index), False);

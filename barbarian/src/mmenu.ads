@@ -1,5 +1,5 @@
 
-with Glfw.Windows;
+with Input_Callback;
 
 package MMenu is
 
@@ -18,7 +18,7 @@ package MMenu is
    procedure Set_Joystick_Name (Name : String);
    procedure Set_Menu_Open (State : Boolean);
    procedure Start_Menu_Title_Bounce;
-   function Update_Menu (Window     : in out Glfw.Windows.Window;
+   function Update_Menu (Window     : in out Input_Callback.Barbarian_Window;
                          Delta_Time : Float) return Boolean;
 
 end MMenu;
