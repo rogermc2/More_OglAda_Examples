@@ -200,6 +200,7 @@ package body MMenu_Initialization is
       elsif Framebuffer_Width < 2048 or Framebuffer_Height < 2048 then
          Scale := 1024.0;
       end if;
+
       Credits_S := (Scale / FB_Width, Scale / FB_Height);
       Use_Program (Credits_Shader_Program);
       Set_Scale (Credits_S);
@@ -217,14 +218,12 @@ package body MMenu_Initialization is
       Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Cursor_M, Cursor_V    : in out GL.Types.Singles.Matrix4;
       Cursor_Point_Count    : in out Integer) is
-      Camera_Position       : constant Singles.Vector3 := (0.0, 0.0, 10.0);
-      Camera_Target         : constant Singles.Vector3 := (0.0, 0.0, 0.0);
       Cursor_Mesh_ID        : Integer := -1;
    begin
-      Cursor_M := Singles.Identity4;
-      Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
-                                   (0.0, 1.0, 0.0), Cursor_V);
       Cursor_Shader_Manager.Init (Cursor_Shader_Program);
+      Cursor_M := Singles.Identity4;
+      Maths.Init_Lookat_Transform ((0.0, 0.0, 10.0), (0.0, 0.0, 0.0),
+                                   (0.0, 1.0, 0.0), Cursor_V);
       GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
       Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
       Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);

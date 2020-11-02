@@ -42,7 +42,7 @@ package body MMenu is
    use MMenu_Initialization;
 
    Black              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
-   Menu_Text_Y_Offset : constant Single := 300.0; --  pixels above horizontal for text to start
+   Menu_Text_Y_Offset : constant Single := 350.0; --  orig 300 pixels above horizontal for text to start
    Menu_Big_Text_Size : constant Single := 80.0;  --  height of subseq lines to offset below that
    Credit_Scroll_Rate : constant Float := 0.05;
 
@@ -310,6 +310,9 @@ package body MMenu is
             for index in 1 .. Num_Menu_Entries loop
                Text.Draw_Text (Menu_Text (index));
             end loop;
+            Game_Utils.Game_Log ("Mmenu.Draw_Menu default, Menu_Cursor_Curr_Item "
+                                 & Menu_Choice_Type'Image (Menu_Cursor_Curr_Item)
+                                & "  " & Integer'Image (Menu_Choice_Type'Enum_Rep (Menu_Cursor_Curr_Item)));
 
             Cursor_Scale := 120.0;
             Cursor_Pos (GL.X) := -312.0 / Single (Framebuffer_Width);
