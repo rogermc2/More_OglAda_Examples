@@ -165,7 +165,8 @@ package body Menu_Support is
                                    Credits_Open, New_Game, In_Custom_Map,
                                    Custom_Maps               : in out Boolean;
                                    Since_Last_Key            : in out Float;
-                                   Menu_Cursor_Item          : in out Menu_Strings.Menu_Choice_Type) is
+                                   Menu_Cursor_Item          : in out
+                                     Menu_Strings.Main_Choice_Type) is
       use Glfw.Input.Keys;
       use Input_Handler;
       use Menu_Strings;
@@ -185,20 +186,20 @@ package body Menu_Support is
       elsif Is_Key_Down (Up) or
         Is_Action_Down (Up_Action) then
          Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, Up key pressed");
-         if Menu_Cursor_Item = Menu_New_Game then
-            Menu_Cursor_Item := Menu_Quit;
+         if Menu_Cursor_Item = Main_New_Game then
+            Menu_Cursor_Item := Main_Quit;
          else
-            Menu_Cursor_Item := Menu_Choice_Type'Pred (Menu_Cursor_Item);
+            Menu_Cursor_Item := Main_Choice_Type'Pred (Menu_Cursor_Item);
          end if;
          Since_Last_Key := 0.0;
          Audio.Play_Sound (Menu_Beep_Sound, True);
          Result := True;
       elsif Is_Key_Down (Down) or
         Is_Action_Down (Down_Action) then
-         if Menu_Cursor_Item = Menu_Quit then
-            Menu_Cursor_Item := Menu_New_Game;
+         if Menu_Cursor_Item = Main_Quit then
+            Menu_Cursor_Item := Main_New_Game;
          else
-            Menu_Cursor_Item := Menu_Choice_Type'Succ (Menu_Cursor_Item);
+            Menu_Cursor_Item := Main_Choice_Type'Succ (Menu_Cursor_Item);
          end if;
          Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, Down key pressed");
          Since_Last_Key := 0.0;
@@ -207,30 +208,30 @@ package body Menu_Support is
       elsif Was_Key_Pressed (Window, Enter) or
         Was_Action_Pressed (Window, OK_Action) or
         Was_Action_Pressed (Window, Attack_Action) then
-         if Menu_Cursor_Item = Menu_Quit then
+         if Menu_Cursor_Item = Main_Quit then
             Confirm_Quit_Open := True;
             Result := Settings.Save_Settings;
             if not Result then
                Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " &
                                       "ERROR: could not save settings from Mmenu");
             end if;
-         elsif Menu_Cursor_Item = Menu_Graphics then
+         elsif Menu_Cursor_Item = Main_Graphics then
             Graphics_Open := True;
             Result := True;
-         elsif Menu_Cursor_Item = Menu_Audio then
+         elsif Menu_Cursor_Item = Main_Audio then
             Audio_Open := True;
             Result := True;
-         elsif Menu_Cursor_Item = Menu_Input then
+         elsif Menu_Cursor_Item = Main_Input then
             Input_Open := True;
             Text.Update_Text (Joystick_Detected_Text,
                               "joystick detected: " & Joy_Name);
             Result := True;
-         elsif Menu_Cursor_Item = Menu_Credits then
+         elsif Menu_Cursor_Item = Main_Credits then
             Credits_Open := True;
             Audio.Pause_Music (True);
             --              Audio.Play_Credits_Music (Credits_Music);
             Result := True;
-         elsif Menu_Cursor_Item = Menu_New_Game then
+         elsif Menu_Cursor_Item = Main_New_Game then
             New_Game := True;
             In_Custom_Map := False;
             Result := Settings.Save_Settings;
@@ -238,7 +239,7 @@ package body Menu_Support is
                Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " &
                                       "ERROR: could not save settings from Mmenu");
             end if;
-         elsif Menu_Cursor_Item = Menu_Custom_Map then
+         elsif Menu_Cursor_Item = Main_Custom_Map then
             Custom_Maps := True;
             In_Custom_Map := True;
             Result := Settings.Save_Settings;
@@ -366,11 +367,11 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Audio (Window                     : in out Barbarian_Window;
-                                 Audio_Value_Text           : GL_Maths.Integer_Array;
-                                 Menu_Audio_Open            : in out Boolean;
-                                 Since_Last_Key             : in out Float;
-                                 Audio_Cursor_Item          : in out Integer) is
+   procedure Process_Menu_Audio (Window             : in out Barbarian_Window;
+                                 Audio_Value_Text   : Audio_Text_Array;
+                                 Menu_Audio_Open    : in out Boolean;
+                                 Since_Last_Key     : in out Float;
+                                 Audio_Cursor_Item  : in out Audio_Choice_Type) is
       use Glfw.Input.Keys;
       use Input_Handler;
       use Menu_Support;
@@ -386,13 +387,13 @@ package body Menu_Support is
         Was_Action_Pressed (Window, OK_Action) or
         Was_Action_Pressed (Window, Attack_Action) then
          case Audio_Cursor_Item is
-            when 1 =>
+            when Audio_Strings_Master_Volume =>
                Set_Audio_Volume (Cycle_Up_PC (Audio_Volume));
                Audio.Set_Audio_Volume (Audio_Volume);
                Text.Update_Text (Audio_Value_Text (Audio_Cursor_Item),
                                  Integer'Image (10 * Audio_Volume));
                Audio.Play_Sound (Menu_Beep_Sound, True);
-            when 2 =>
+            when Audio_Strings_Music_Volume =>
                Set_Music_Volume (Cycle_Up_PC (Music_Volume));
                Audio.Set_Audio_Volume (Music_Volume);
                Text.Update_Text (Audio_Value_Text (Audio_Cursor_Item),
@@ -402,44 +403,46 @@ package body Menu_Support is
          end case;
 
          if Is_Key_Down (Up) or Is_Action_Down (Up_Action) then
-            Audio_Cursor_Item := Audio_Cursor_Item - 1;
-            if Audio_Cursor_Item < 0 then
-               Audio_Cursor_Item := Num_Audio_Entries - 1;
+            if Audio_Cursor_Item = Audio_Choice_Type'First then
+               Audio_Cursor_Item := Audio_Choice_Type'Last;
                Since_Last_Key := 0.0;
                Audio.Play_Sound (Menu_Beep_Sound, True);
+            else
+               Audio_Cursor_Item := Audio_Choice_Type'Pred (Audio_Cursor_Item);
             end if;
 
          elsif Is_Key_Down (Down) or Is_Action_Down (Down_Action) then
-            Audio_Cursor_Item := Audio_Cursor_Item + 1;
-            if Audio_Cursor_Item >= Num_Audio_Entries then
-               Audio_Cursor_Item := 0;
+            if Audio_Cursor_Item = Audio_Choice_Type'Last then
+               Audio_Cursor_Item := Audio_Choice_Type'First;
                Since_Last_Key := 0.0;
                Audio.Play_Sound (Menu_Beep_Sound, True);
+            else
+               Audio_Cursor_Item := Audio_Choice_Type'Succ (Audio_Cursor_Item);
             end if;
 
          elsif Is_Key_Down (Left) or Is_Action_Down (Left_Action) then
-            if Audio_Cursor_Item = 1 then
+            if Audio_Cursor_Item = Audio_Strings_Master_Volume then
                Set_Audio_Volume (Maths.Max_Integer (0, Audio_Volume - 1));
-               Text.Update_Text (Audio_Value_Text (1),
+               Text.Update_Text (Audio_Value_Text (Audio_Strings_Master_Volume),
                                  Integer'Image (10 * Audio_Volume));
                Audio.Play_Sound (Menu_Beep_Sound, True);
 
-            elsif Audio_Cursor_Item = 2 then
+            elsif Audio_Cursor_Item = Audio_Strings_Music_Volume then
                Set_Music_Volume (Maths.Max_Integer (0, Music_Volume - 1));
-               Text.Update_Text (Audio_Value_Text (2),
+               Text.Update_Text (Audio_Value_Text (Audio_Strings_Music_Volume),
                                  Integer'Image (10 * Music_Volume));
             end if;
 
          elsif Is_Key_Down (Right) or Is_Action_Down (Right_Action) then
-            if Audio_Cursor_Item = 1 then
+            if Audio_Cursor_Item = Audio_Strings_Master_Volume then
                Set_Audio_Volume (Maths.Min_Integer (10, Audio_Volume + 1));
-               Text.Update_Text (Audio_Value_Text (1),
+               Text.Update_Text (Audio_Value_Text (Audio_Strings_Master_Volume),
                                  Integer'Image (10 * Audio_Volume));
                Audio.Play_Sound (Menu_Beep_Sound, True);
 
-            elsif Audio_Cursor_Item = 2 then
+            elsif Audio_Cursor_Item = Audio_Strings_Music_Volume then
                Set_Music_Volume (Maths.Min_Integer (10, Music_Volume + 1));
-               Text.Update_Text (Audio_Value_Text (2),
+               Text.Update_Text (Audio_Value_Text (Audio_Strings_Music_Volume),
                                  Integer'Image (10 * Music_Volume));
             end if;
          end if;
@@ -473,7 +476,7 @@ package body Menu_Support is
 
    function Process_Menu_Graphics
      (Window                     : in out Barbarian_Window;
-      Graphic_Value_Text         : GL_Maths.Integer_Array;
+      Graphic_Value_Text         : Menu_Strings.Graphic_Value_Array;
       Menu_Gr_Open, Restart_Flag : in out Boolean;
       Since_Last_Key             : in out Float;
       Cursor_Item                : in out Menu_Strings.Graphic_Choice_Type;
@@ -518,14 +521,12 @@ package body Menu_Support is
          end if;
       elsif Is_Key_Down (Left) or Is_Action_Down (Left_Action) then
          if Cursor_Item = Graphic_Choice_Type'First then
-            Set_Graphic_Preset
-              (Gfx_Preset_Type'Enum_Val
-                 (Gfx_Preset_Type'Enum_Rep (Graphic_Preset) - 1));
+            Set_Graphic_Preset (Graphic_Preset_Choice_Type'Last);
             if Graphic_Preset < Gfx_Dire then
                Set_Graphic_Preset (Gfx_Ultra);
                Text.Update_Text (Graphic_Value_Text (Cursor_Item),
                                  Graphic_Preset_Strings
-                                   (Gfx_Preset_Type'Enum_Rep (Graphic_Preset)));
+                                   (Graphic_Preset_Choice_Type'Enum_Rep (Graphic_Preset)));
                Result := Set_Menu_Graphic_Presets;
             end if;
          elsif Cursor_Item = Graphic_Windowed_Size then
@@ -628,7 +629,7 @@ package body Menu_Support is
                                  Menu_Cal_Gp_Axes_Open,
                                  Menu_Cal_Gp_Butts_Open    : in out Boolean;
                                  Joystick_Detected_Text    : Integer;
-                                 Input_Cursor_Item         : in out Integer) is
+                                 Input_Cursor_Item         : in out Input_Choice_Type) is
       use Glfw.Input.Keys;
       use Input_Handler;
    begin
@@ -671,10 +672,12 @@ package body Menu_Support is
             when others => null;
          end case;
       elsif Is_Key_Down (Up) or Is_Action_Down (Up_Action) then
-         Input_Cursor_Item := Input_Cursor_Item - 1;
-         if Input_Cursor_Item < 0 then
-            Input_Cursor_Item := Menu_Strings.Num_Input_Entries - 1;
+         if Input_Cursor_Item = Input_Choice_Type'First then
+            Input_Cursor_Item := Input_Choice_Type'Last;
+         else
+            Input_Cursor_Item := Input_Choice_Type'Pred (Input_Cursor_Item);
          end if;
+
          Text.Update_Text (Joystick_Detected_Text,
                            "Joystick detected: " & Joy_Name);
          Since_Last_Key := 0.0;

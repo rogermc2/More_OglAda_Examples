@@ -179,6 +179,13 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Disable_Joystick (State : Boolean) is
+   begin
+      G_Settings.Disable_Joystick := State;
+   end Set_Disable_Joystick;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Framebuffer_Height (Height : GL.Types.Int) is
    begin
       G_Settings.GL_Framebuffer_Height := Height;

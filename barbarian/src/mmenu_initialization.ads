@@ -37,7 +37,8 @@ package MMenu_Initialization is
    procedure Init_Graphic_Text
      (Graphics_Text, Graphic_Value_Text : in out Graphic_Value_Array;
       Graphic_Value_Strings             : in out Menu_String_Array);
-   procedure Init_Input_Text (Input_Text : in out Input_Text_Array);
+   procedure Init_Input_Text (Input_Text, Input_Value_Text : in out Input_Text_Array;
+                             Enabled_Strings : Menu_String_Array);
    procedure Init_Input_Actions
      (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text, GP_Axis_Binding_Text,
       GP_Buttons_Binding_Text : in out GL_Maths.Integer_Array);

@@ -106,7 +106,7 @@ package body MMenu is
    Credits_Pos_Y              : constant Single := -1.0;
    Cal_Kb_Cursor_Curr_Item    : constant Integer := -1;
    Cal_GP_Cursor_Curr_Item    : constant Integer := -1;  -- GP: game pad
-   Input_Cursor_Current_Item  : Integer := -1;
+   Input_Cursor_Current_Item  : Input_Choice_Type;
    Text_Background_Pos        : constant GL.Types.Singles.Vector2 := (0.0, 0.0);
    Text_Background_Scale      : GL.Types.Singles.Vector2 := (1.0, 1.0);
    Text_Background_Texture    : GL.Objects.Textures.Texture;
@@ -143,7 +143,7 @@ package body MMenu is
    Cursor_Shader_Program       : GL.Objects.Programs.Program;
    Credits_Shader_Program      : GL.Objects.Programs.Program;
    Menu_Cursor_Texture         : GL.Objects.Textures.Texture;
-   Audio_Cursor_Current_Item   : Integer := -1;
+   Audio_Cursor_Current_Item   : Audio_Choice_Type;
    Title_Point_Count           : Integer := 0;
    Cursor_M                    : Singles.Matrix4 := GL.Types.Singles.Identity4;
    Cursor_V                    : Singles.Matrix4 := GL.Types.Singles.Identity4;
@@ -263,7 +263,10 @@ package body MMenu is
                Text.Draw_Text (Audio_Text (index));
                Text.Draw_Text (Audio_Value_Text (index));
             end loop;
-            Cursor_Pos (GL.Y) := Cursor_Y (Audio_Cursor_Current_Item);
+            Cursor_Pos (GL.Y) :=
+              2.0 + Single (Audio_Choice_Type'Enum_Rep (Audio_Cursor_Current_Item));
+            Cursor_Pos (GL.Y) := (400.0 - 20.0  * (Cursor_Pos (GL.Y) - 1.0)) /
+                                         Single (Framebuffer_Height);
          elsif Menu_Cal_KB_Open then
             Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Cal_KB_Open");
             for index in 1 .. Input_Handler.Num_Actions loop
@@ -302,7 +305,10 @@ package body MMenu is
                Text.Draw_Text (Input_Text (index));
             end loop;
             Text.Draw_Text (Input_Value_Text (Input_Choice_Type'First));
-            Cursor_Pos (GL.Y) := Cursor_Y (Cal_GP_Cursor_Curr_Item);
+            Cursor_Pos (GL.Y) :=
+              2.0 + Single (Input_Choice_Type'Enum_Rep (Input_Cursor_Current_Item));
+            Cursor_Pos (GL.Y) := (400.0 - 20.0  * (Cursor_Pos (GL.Y) - 1.0)) /
+                                         Single (Framebuffer_Height);
             Text.Draw_Text (Joystick_Detected_Text);
          elsif Menu_Confirm_Quit_Open then
             Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Confirm_Quit_Open");
@@ -454,7 +460,7 @@ package body MMenu is
       Init_Main_Menu_Text (Main_Text);
       Init_Menu_Strings (Enabled_Strings, Graphic_Value_Strings);
       Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
-      Init_Input_Text (Input_Text);
+      Init_Input_Text (Input_Text, Input_Value_Text);
       Init_Input_Actions (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text,
                           GP_Axis_Binding_Text, GP_Buttons_Binding_Text);
       Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
@@ -530,7 +536,7 @@ package body MMenu is
          if Menu_Audio_Open then
             Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Audio_Open");
             Process_Menu_Audio (Window, Audio_Value_Text, Menu_Audio_Open,
-                                Since_Last_Key, Audio_Cursor_Current_Item );
+                                Since_Last_Key, Audio_Cursor_Current_Item);
          end if;  --  Menu_Audio_Open
          if Menu_Cal_KB_Open then
             Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Cal_KB_Open");

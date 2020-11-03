@@ -23,7 +23,6 @@ package Settings is
    function Audio_Volume return Integer;
    function Auto_Blood_Wipe return Boolean;
    procedure Default_Settings;
-   procedure Disable_Joystick (State : Boolean);
    function Joystick_Disabled return Boolean;
    function Far_Clip return GL.Types.Single;
    function Fb_Effects_Enabled return Boolean;
@@ -39,6 +38,7 @@ package Settings is
    function Render_Distance return Integer;
    function Save_Settings return Boolean;
    procedure Set_Audio_Volume (Volume : Integer);
+   procedure Set_Disable_Joystick (State : Boolean);
    procedure Set_Framebuffer_Height (Height : GL.Types.Int);
    procedure Set_Framebuffer_Width (Width : GL.Types.Int);
    procedure Set_Graphic_Preset (Preset : Gfx_Preset_Type);

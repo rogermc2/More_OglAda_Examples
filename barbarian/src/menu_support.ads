@@ -8,7 +8,7 @@ with Input_Callback; use Input_Callback;
 
 with GL_Maths;
 
-with Menu_Strings;
+with Menu_Strings; use Menu_Strings;
 
 package Menu_Support is
 
@@ -35,13 +35,13 @@ package Menu_Support is
       Credits_Open, New_Game, In_Custom_Map,
       Custom_Maps               : in out Boolean;
       Since_Last_Key            : in out Float;
-      Menu_Cursor_Item          : in out Menu_Strings.Menu_Choice_Type);
+      Menu_Cursor_Item          : in out Menu_Strings.Main_Choice_Type);
    --                                    return Boolean;
    procedure Process_Menu_Audio (Window                    : in out Barbarian_Window;
-                                 Audio_Value_Text          : GL_Maths.Integer_Array;
+                                 Audio_Value_Text          : Audio_Text_Array;
                                  Menu_Audio_Open           : in out Boolean;
                                  Since_Last_Key            : in out Float;
-                                 Audio_Cursor_Item         : in out Integer);
+                                 Audio_Cursor_Item         : in out Audio_Choice_Type);
    procedure Process_Menu_Cal_GP;
    procedure Process_Menu_Cal_KB
      (Window                          : in out Barbarian_Window;
@@ -57,7 +57,7 @@ package Menu_Support is
                                    Text_Timer  : in out Float);
    function Process_Menu_Graphics
      (Window                     : in out Barbarian_Window;
-      Graphic_Value_Text         : GL_Maths.Integer_Array;
+      Graphic_Value_Text         : Menu_Strings.Graphic_Value_Array;
       Menu_Gr_Open, Restart_Flag : in out Boolean;
       Since_Last_Key             : in out Float;
       Cursor_Item                : in out Menu_Strings.Graphic_Choice_Type;
@@ -70,7 +70,7 @@ package Menu_Support is
                                  Menu_Cal_Gp_Axes_Open,
                                  Menu_Cal_Gp_Butts_Open  : in out Boolean;
                                  Joystick_Detected_Text  : Integer;
-                                 Input_Cursor_Item       : in out Integer);
+                                 Input_Cursor_Item       : in out Input_Choice_Type);
 
 end Menu_Support;
 

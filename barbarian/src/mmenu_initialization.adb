@@ -382,12 +382,14 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Input_Text (Input_Text : in out Input_Text_Array) is
-      X  : constant Single :=
+   procedure Init_Input_Text (Input_Text, Input_Value_Text : in out Input_Text_Array;
+                             Enabled_Strings : Menu_String_Array) is
+      X  : Single :=
              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
-      Y  : constant Single :=
+      Y  : Single :=
              760.0 / Single (Settings.Framebuffer_Height);
       Y_Step : Single := 0.0;
+      Enabled_String_Index : Integer;
    begin
       for index in Input_Choice_Type'Range loop
          Y_Step := Y_Step + 1.0;
@@ -396,7 +398,17 @@ package body MMenu_Initialization is
                           20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Input_Text (index), False);
       end loop;
-
+      X := (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
+      Y := 320.0 / Single (Settings.Framebuffer_Height);
+      if Settings.Joystick_Disabled then
+         Enabled_String_Index := 1;
+      else
+         Enabled_String_Index := 2;
+      end if;
+         Input_Value_Text (Input_Choice_Type'First) :=
+      Text.Add_Text (To_String (Enabled_Strings (Enabled_String_Index)),
+                       X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+      Text.Set_Text_Visible (Input_Value_Text (Input_Choice_Type'First), False);
    end Init_Input_Text;
 
    --  --------------------------- ---------------------------------------------
