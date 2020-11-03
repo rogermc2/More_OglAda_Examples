@@ -242,7 +242,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
          Last_Time := Current_Time;
          Utilities.Clear_Background_Colour_And_Depth (Black);
          MMenu.Draw_Menu (Delta_Time);
-         Game_Utils.Game_Log ("Main_Loop.Main_Setup Draw_Menu done");
 
          GUI.Draw_Controller_Button_Overlays (Delta_Time);
          Glfw.Input.Poll_Events;
@@ -383,7 +382,6 @@ begin
    Game_Utils.Restart_Game_Log;
    Main_Setup (Main_Window, Running);
    while Running loop
-      --  Swap_Buffers first to display background colour on start up.
       Glfw.Input.Poll_Events;
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Run_Game (Main_Window);

@@ -18,7 +18,6 @@ with GL_Utils;
 with Input_Callback;
 with Input_Handler;
 with Menu_Credits_Shader_Manager;
-with Menu_Strings;
 with Mesh_Loader;
 with Settings;
 with Shader_Attributes;
@@ -146,9 +145,11 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Audio_Value_Strings
-     (Audio_Text, Audio_Value_Text : in out GL_Maths.Integer_Array) is
+     (Audio_Text       : in out Audio_Text_Array;
+      Audio_Value_Text : in out Audio_Text_Array) is
       use Settings;
-      Audio_Value_Strings : array (1 .. Num_Audio_Entries) of Unbounded_String
+      use Menu_Strings;
+      Audio_Value_Strings : array (Audio_Choice_Type'Range) of Unbounded_String
         := (others => To_Unbounded_String (""));
       X1                  : constant Single :=
                               (-512.0 + 80.0) / Single (Framebuffer_Width);
@@ -156,22 +157,23 @@ package body MMenu_Initialization is
                               (512.0 - 330.0) / Single (Framebuffer_Width);
       Y                   : constant Single :=
                               760.0 / Single (Framebuffer_Height);
+      Y_Step              : Single := 0.0;
    begin
-      --        Audio_Value_Strings (1) := To_Unbounded_String (Get_Audio_Device_Name);
-      Audio_Value_Strings (2) := GL_Utils.To_UB_String (10 * Audio_Volume);
-      Audio_Value_Strings (3) := GL_Utils.To_UB_String (10 * Music_Volume);
+      --        Audio_Value_Strings (Audio_Strings_Audio_Device) := To_Unbounded_String (Get_Audio_Device_Name);
+      Audio_Value_Strings (Audio_Strings_Master_Volume) := GL_Utils.To_UB_String (10 * Audio_Volume);
+      Audio_Value_Strings (Audio_Strings_Music_Volume) := GL_Utils.To_UB_String (10 * Music_Volume);
 
-      for index in 1 .. Num_Audio_Entries loop
-         if Audio_Strings (index) /= "" and
-           Audio_Value_Strings (index) /= ""then
+      for index in Audio_Choice_Type'Range loop
+         Y_Step := Y_Step + 1.0;
+         if Audio_Value_Strings (index) /= "" then
             Audio_Text (index) :=
-              Text.Add_Text (Audio_Strings (index), X1, Single (index + 1) * Y,
+              Text.Add_Text (Audio_Strings (index), X1, Y_Step * Y,
                              20.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (Audio_Text (index), False);
 
             Audio_Value_Text (index) :=
               Text.Add_Text (To_String (Audio_Value_Strings (index)), X2,
-                             Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                             Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (Audio_Text (index), False);
          end if;
       end loop;
@@ -284,7 +286,7 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Graphic_Text
-     (Graphics_Text, Graphic_Value_Text : in out GL_Maths.Integer_Array;
+     (Graphics_Text, Graphic_Value_Text : in out Graphic_Value_Array;
       Graphic_Value_Strings             : in out Menu_String_Array) is
       X1  : constant Single :=
               (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
@@ -292,16 +294,18 @@ package body MMenu_Initialization is
               (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
       Y   : constant Single :=
               760.0 / Single (Settings.Framebuffer_Height);
+      Y_Step : Single := 0.0;
    begin
-      for index in 1 .. Num_Graphic_Entries loop
+      for index in Graphic_Choice_Type'Range loop
+         Y_Step := Y_Step + 1.0;
          Graphics_Text (index) :=
-           Text.Add_Text (Graphic_Strings (index), X1, Single (index + 1) * Y,
+           Text.Add_Text (Graphic_Strings (index), X1, Y_Step * Y,
                           20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Graphics_Text (index), False);
 
          Graphic_Value_Text (index) :=
-           Text.Add_Text (To_String (Graphic_Value_Strings (index)), X2,
-                          Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+           Text.Add_Text (To_String (Graphic_Value_Strings (Integer (Y_Step))),
+                           X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Graphic_Value_Text (index), False);
       end loop;
 
@@ -319,19 +323,19 @@ package body MMenu_Initialization is
       Y       : constant Single :=
                   760.0 / Single (Settings.Framebuffer_Height);
       K_Index : Integer;
+      Y_Step  : Single := 0.0;
    begin
       for index in 1 .. Input_Handler.Num_Actions loop
+         Y_Step := Y_Step + 1.0;
          if Input_Handler.Action_Name (index) /= "" then
             Cal_KB_Text (index) :=
               Text.Add_Text (Input_Handler.Action_Name (index),
-                             X1, Single (index + 1) * Y,
-                             20.0, 1.0, 1.0, 1.0, 1.0);
+                             X1, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (Cal_KB_Text (index), False);
 
             Cal_GP_Text (index) :=
               Text.Add_Text (Input_Handler.Action_Name (index),
-                             X1, Single (index + 1) * Y,
-                             20.0, 1.0, 1.0, 1.0, 1.0);
+                             X1, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (Cal_GP_Text (index), False);
          end if;
 
@@ -345,33 +349,30 @@ package body MMenu_Initialization is
          if To_String (Input_Callback.Key_Name (index)) /= "" then
             KB_Binding_Text (index) :=
               Text.Add_Text (To_String (Input_Callback.Key_Name (index)),
-                             X2, Single (index + 1) * Y,
-                             20.0, 1.0, 1.0, 1.0, 1.0);
+                             X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (KB_Binding_Text (index), False);
 
             if Input_Handler.Joy_Axis_Bindings (index) < 0 or
               Input_Handler.Joy_Axis_Bindings (index) >= 8 then
                GP_Axis_Binding_Text (index) :=
-                 Text.Add_Text ("none", X2, Single (index + 1) * Y,
-                                20.0, 1.0, 1.0, 1.0, 1.0);
+                 Text.Add_Text ("none", X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
             else
                GP_Axis_Binding_Text (index) :=
                  Text.Add_Text (Input_Handler.Joy_Axis_Sign (index) & "AXIS" &
                                   Integer'Image (Input_Handler.Joy_Axis_Bindings (index)),
-                                X2, Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                                X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
             end if;
             Text.Set_Text_Visible (GP_Axis_Binding_Text (index), False);
 
             if Input_Handler.Joy_Button_Bindings (index) < 0 or
               Input_Handler.Joy_Button_Bindings (index) >= 32 then
                GP_Buttons_Binding_Text (index) :=
-                 Text.Add_Text ("none", X2, Single (index + 1) * Y,
-                                20.0, 1.0, 1.0, 1.0, 1.0);
+                 Text.Add_Text ("none", X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
             else
                GP_Buttons_Binding_Text (index) :=
                  Text.Add_Text
                    ("B" & Integer'Image (Input_Handler.Joy_Button_Bindings (index)),
-                    X2, Single (index + 1) * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                    X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
             end if;
             Text.Set_Text_Visible (Input_Handler.Joy_Button_Bindings (index), False);
          end if;
@@ -381,15 +382,17 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Input_Text (Input_Text : in out GL_Maths.Integer_Array) is
+   procedure Init_Input_Text (Input_Text : in out Input_Text_Array) is
       X  : constant Single :=
              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       Y  : constant Single :=
              760.0 / Single (Settings.Framebuffer_Height);
+      Y_Step : Single := 0.0;
    begin
-      for index in 1 .. Num_Input_Entries loop
+      for index in Input_Choice_Type'Range loop
+         Y_Step := Y_Step + 1.0;
          Input_Text (index) :=
-           Text.Add_Text (Input_Strings (index), X, Single (index + 1) * Y,
+           Text.Add_Text (Input_Strings (index), X, Y_Step * Y,
                           20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Input_Text (index), False);
       end loop;
@@ -398,14 +401,16 @@ package body MMenu_Initialization is
 
    --  --------------------------- ---------------------------------------------
 
-   procedure Init_Menu_Text (Menu_Text : in out GL_Maths.Integer_Array) is
+   procedure Init_Main_Menu_Text (Menu_Text : in out Main_Text_Array) is
       use GL.Types;
       use GL.Types.Singles;
-      Y  : Single;
+      Y      : Single;
+      Y_Step : Single := 0.0;
    begin
-      for index in 1 .. Num_Menu_Entries loop
-         Y := (Menu_Text_Yoffs - Menu_Big_Text_Sz * Single (index - 1)) /
-           Single (Settings.Framebuffer_Height);
+      for index in Main_Choice_Type'Range loop
+         Y_Step := Y_Step + 1.0;
+         Y := (Menu_Text_Yoffs -
+                Y_Step * Menu_Big_Text_Sz / Single (Settings.Framebuffer_Height));
          Menu_Text (index) :=
            Text.Add_Text (Menu_Strings.Menu_String_Items (index),
 --                            1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
@@ -413,7 +418,7 @@ package body MMenu_Initialization is
          Text.Set_Text_Visible (Menu_Text (index), False);
          Text.Centre_Text (Menu_Text (index), 0.5, Y);  --  orig X: 0.0
       end loop;
-   end Init_Menu_Text;
+   end Init_Main_Menu_Text;
 
    --  ------------------------------------------------------------------------
 
@@ -457,29 +462,17 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Quit_Text
-     (Input_Value_Text, Confirm_Quit_Text : in out GL_Maths.Integer_Array;
-      Enabled_Strings                     : in out Menu_String_Array) is
+   procedure Init_Quit_Text (Confirm_Quit_Text : in out Quit_Text_Array) is
       X        : constant Single :=
                    (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
       Y1       : constant Single := 4.0 * 380.0 / Single (Settings.Framebuffer_Height);
       Y2       : constant Single := 40.0 / Single (Settings.Framebuffer_Height);
-      ES_Index : Integer;
+      Y_Step   : Single := 0.0;
    begin
-      if Settings.Joystick_Disabled then
-         ES_Index := 1;
-      else
-         ES_Index := 2;
-      end if;
-      --  only 1 input text in right hand column
-      Input_Value_Text (1) :=
-        Text.Add_Text (To_String (Enabled_Strings (ES_Index)), X, Y1,
-                       20.0, 1.0, 1.0, 1.0, 1.0);
-      Text.Set_Text_Visible (Input_Value_Text (1), False);
-
-      for index in 1 .. Num_Quit_Entries loop
+      for index in Quit_Choice_Type'Range loop
+         Y_Step := Y_Step + 1.0;
          Confirm_Quit_Text (index) :=
-           Text.Add_Text (Graphic_Strings (index), X, Single (index) * Y2,
+                 Text.Add_Text (Quit_Strings (index), X, Y_Step * Y2,
                           20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Confirm_Quit_Text (index), False);
          Text.Centre_Text (Confirm_Quit_Text (index), 0.0, Y2);
@@ -546,13 +539,14 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Various
-     (Input_Text : in out GL_Maths.Integer_Array; Joy_Name : String;
+     (Input_Text : in out Input_Text_Array; Joy_Name : String;
       Joystick_Detected_Text, Greatest_Axis_Text,
       Already_Bound_Text : in out Integer) is
       X  : constant Single :=
              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       Y  : Single :=
              (-512.0 + 1500.0) / Single (Settings.Framebuffer_Height);
+      Y_Step : Single := 0.0;
    begin
       Joystick_Detected_Text  :=
         Text.Add_Text ("joystick detected: " & Joy_Name & CRLF,
@@ -576,11 +570,12 @@ package body MMenu_Initialization is
                        20.0, 1.0, 1.0, 0.0, 1.0);
       Text.Set_Text_Visible (Already_Bound_Text, False);
 
-      for index in 1 .. Num_Input_Entries loop
+      for index in Input_Choice_Type'Range loop
          Input_Text (index) :=
-           Text.Add_Text (Input_Strings (index), X, Single (index + 1) * Y,
-                          20.0, 1.0, 1.0, 1.0, 1.0);
+                 Text.Add_Text (Input_Strings (index), X, Y_Step * Y,
+                                20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Input_Text (index), False);
+         Y_Step := Y_Step + 1.0;
       end loop;
 
    end Init_Various;

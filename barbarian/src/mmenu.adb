@@ -38,6 +38,7 @@ with Title_Shader_Manager;
 
 package body MMenu is
    use GL.Types;
+   use Menu_Strings;
    use Menu_Support;
    use MMenu_Initialization;
 
@@ -61,21 +62,19 @@ package body MMenu is
    Menu_Confirm_Quit_Open : Boolean := False;
    Menu_Cal_Gp_Butts_Open : Boolean := False;
    Menu_Cal_Gp_Axes_Open  : Boolean := False;
-   Menu_Choice            : Menu_Choice_Type := Menu_New_Game;
+   Menu_Choice            : Menu_Strings.Main_Choice_Type :=
+                              Menu_Strings.Main_New_Game;
 
    Enabled_Strings                         : Menu_String_Array (1 .. 2)
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
    Tex_Filter_Strings                      : Menu_String_Array (1 .. 3)
      := (To_Unbounded_String ("nearest"), To_Unbounded_String ("bilinear"),
          To_Unbounded_String ("trilinear"));
-   Menu_Text                               : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Menu_Entries) := (others => -1);
-   Graphics_Text                           : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
-   Graphic_Value_Strings                   : Menu_String_Array (1 .. Menu_Strings.Num_Graphic_Entries)
-     := (others => To_Unbounded_String (""));
-   Graphic_Value_Text                      : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Graphic_Entries) := (others => -1);
+   Main_Text                               : Main_Text_Array := (others => -1);
+   Graphics_Text                           : Graphic_Value_Array := (others => -1);
+   Graphic_Value_Strings                   : Menu_String_Array  (1 .. 3) :=
+                                               (others => To_Unbounded_String (""));
+   Graphic_Value_Text                      : Graphic_Value_Array := (others => -1);
    Cal_KB_Text                             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
    Cal_GP_Text                             : GL_Maths.Integer_Array
@@ -84,18 +83,12 @@ package body MMenu is
      (1 .. Input_Handler.Max_Actions) := (others => -1);
    GP_Buttons_Binding_Text                 : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Audio_Text                              : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Audio_Value_Text                        : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Audio_Entries) := (others => -1);
-   Input_Text                              : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Input_Value_Text                        : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Input_Entries) := (others => -1);
-   Quit_Text                               : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
-   Confirm_Quit_Text                       : GL_Maths.Integer_Array
-     (1 .. Menu_Strings.Num_Quit_Entries) := (others => -1);
+   Audio_Text                              : Audio_Text_Array := (others => -1);
+   Audio_Value_Text                        : Audio_Text_Array := (others => -1);
+   Input_Text                              : Input_Text_Array := (others => -1);
+   Input_Value_Text                        : Input_Text_Array := (others => -1);
+   Quit_Text                               : Quit_Text_Array := (others => -1);
+   Confirm_Quit_Text                       : Quit_Text_Array := (others => -1);
    KB_Binding_Text                         : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
 
@@ -132,10 +125,20 @@ package body MMenu is
    Modify_Binding_Mode        : Boolean := False;
    Already_Bound              : Boolean := False;
 
-   Position_Buffer             : GL.Objects.Buffers.Buffer;
-   Texture_Buffer              : GL.Objects.Buffers.Buffer;
-   Menu_Cursor_Curr_Item       : Menu_Choice_Type := Menu_New_Game;
-   Cursor_Current_Item         : Integer := -1;
+   Position_Buffer                 : GL.Objects.Buffers.Buffer;
+   Texture_Buffer                  : GL.Objects.Buffers.Buffer;
+   Menu_Cursor_Curr_Item           : Main_Choice_Type := Main_New_Game;
+   Graphic_Cursor_Curr_Item        : Graphic_Choice_Type :=
+                                       Graphic_Choice_Type'First;
+   Graphic_Preset_Cursor_Curr_Item : Graphic_Preset_Choice_Type :=
+                                       Graphic_Preset_Choice_Type'First;
+   Audio_Cursor_Curr_Item          : Audio_Choice_Type :=
+                                       Audio_Choice_Type'First;
+   Input_Cursor_Curr_Item          : Input_Choice_Type :=
+                                       Input_Choice_Type'First;
+   Quit_Cursor_Curr_Item          : Quit_Choice_Type :=
+                                       Quit_Choice_Type'First;
+--     Cursor_Current_Item         : Integer := -1;
    Cursor_Point_Count          : Integer := 0;
    Cursor_Shader_Program       : GL.Objects.Programs.Program;
    Credits_Shader_Program      : GL.Objects.Programs.Program;
@@ -244,18 +247,19 @@ package body MMenu is
          Utilities.Clear_Depth;
          if Menu_Graphics_Open then
             Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Graphics_Open");
-            for index in 1 .. Num_Graphic_Entries loop
+            for index in Graphic_Choice_Type'Range loop
                Text.Draw_Text (Graphics_Text (index));
                Text.Draw_Text (Graphic_Value_Text (index));
             end loop;
             if Graphics_Restart_Flag then
                Text.Draw_Text (Restart_Graphics_Text);
             end if;
-            Cursor_Pos (GL.Y) := Cursor_Y (Cursor_Current_Item);
+            Cursor_Pos (GL.Y) := Cursor_Y (Graphic_Choice_Type'Enum_Rep
+                                           (Graphic_Cursor_Curr_Item));
 
          elsif Menu_Audio_Open then
             Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Audio_Open");
-            for index in 1 .. Num_Audio_Entries loop
+            for index in Audio_Choice_Type'Range loop
                Text.Draw_Text (Audio_Text (index));
                Text.Draw_Text (Audio_Value_Text (index));
             end loop;
@@ -294,30 +298,27 @@ package body MMenu is
             end if;
          elsif Menu_Input_Open then
             Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Input_Open");
-            for index in 1 .. Num_Input_Entries loop
+            for index in Input_Choice_Type'Range loop
                Text.Draw_Text (Input_Text (index));
             end loop;
-            Text.Draw_Text (Input_Value_Text (1));
+            Text.Draw_Text (Input_Value_Text (Input_Choice_Type'First));
             Cursor_Pos (GL.Y) := Cursor_Y (Cal_GP_Cursor_Curr_Item);
             Text.Draw_Text (Joystick_Detected_Text);
          elsif Menu_Confirm_Quit_Open then
             Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Confirm_Quit_Open");
-            for index in 1 .. Num_Input_Entries loop
+            for index in Quit_Choice_Type'Range loop
                Text.Draw_Text (Confirm_Quit_Text (index));
             end loop;
             Cursor_Pos (GL.Y) := 0.0;
          else
-            for index in 1 .. Num_Menu_Entries loop
-               Text.Draw_Text (Menu_Text (index));
+            for index in Main_Choice_Type'Range loop
+               Text.Draw_Text (Main_Text (index));
             end loop;
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu default, Menu_Cursor_Curr_Item "
-                                 & Menu_Choice_Type'Image (Menu_Cursor_Curr_Item)
-                                & "  " & Integer'Image (Menu_Choice_Type'Enum_Rep (Menu_Cursor_Curr_Item)));
 
             Cursor_Scale := 120.0;
             Cursor_Pos (GL.X) := -312.0 / Single (Framebuffer_Width);
             Cursor_Pos (GL.Y) :=
-              Single (Menu_Choice_Type'Enum_Rep (Menu_Cursor_Curr_Item));
+              Single (Main_Choice_Type'Enum_Rep (Menu_Cursor_Curr_Item));
             Cursor_Pos (GL.Y) :=
               (Menu_Text_Y_Offset - Menu_Big_Text_Size * Cursor_Pos (GL.Y) - 40.0) /
                 Single (Framebuffer_Height);
@@ -450,14 +451,14 @@ package body MMenu is
                     Credits_Text_ID);
       Init1 (End_Story_Text, Text_Background_Texture,
              Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
-      Init_Menu_Text (Menu_Text);
+      Init_Main_Menu_Text (Main_Text);
       Init_Menu_Strings (Enabled_Strings, Graphic_Value_Strings);
       Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
       Init_Input_Text (Input_Text);
       Init_Input_Actions (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text,
                           GP_Axis_Binding_Text, GP_Buttons_Binding_Text);
       Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
-      Init_Quit_Text (Input_Value_Text, Confirm_Quit_Text, Enabled_Strings);
+      Init_Quit_Text (Confirm_Quit_Text);
       Init_Various (Input_Text, To_String (Joy_Name), Joystick_Detected_Text,
                     Greatest_Axis_Text, Already_Bound_Text);
 
@@ -522,7 +523,7 @@ package body MMenu is
             Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Graphics_Open");
             Result := Process_Menu_Graphics
               (Window, Graphic_Value_Text, Menu_Graphics_Open,
-               Graphics_Restart_Flag, Since_Last_Key, Cursor_Current_Item,
+               Graphics_Restart_Flag, Since_Last_Key, Graphic_Cursor_Curr_Item,
                Current_Video_Mode);
          end if;  --  Menu_Graphics_Open
 

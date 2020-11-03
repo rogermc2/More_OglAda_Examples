@@ -41,7 +41,7 @@ package body Menu_Support is
    Default_Axis_Values     : array (1 .. 16) of Float := (others => 0.0);
    Axis_Defaults_Mode      : Boolean := False;
 
-   procedure Process_Menu_Graphic_Cases (Cursor_Item : Integer := -1);
+   procedure Process_Menu_Graphic_Cases (Cursor_Item : Menu_Strings.Graphic_Choice_Type);
    procedure Process_Video_Modes
      (Current_Mode       : in out Integer; Cursor_Item : Integer;
       Graphic_Value_Text : GL_Maths.Integer_Array; Increment : Boolean);
@@ -165,9 +165,10 @@ package body Menu_Support is
                                    Credits_Open, New_Game, In_Custom_Map,
                                    Custom_Maps               : in out Boolean;
                                    Since_Last_Key            : in out Float;
-                                   Menu_Cursor_Item          : in out Menu_Choice_Type) is
+                                   Menu_Cursor_Item          : in out Menu_Strings.Menu_Choice_Type) is
       use Glfw.Input.Keys;
       use Input_Handler;
+      use Menu_Strings;
       Result : Boolean := False;
    begin
       Game_Utils.Game_Log ("Menu_Support.General_Menu_Support entered " );
@@ -470,11 +471,13 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   function Process_Menu_Graphics (Window                     : in out Barbarian_Window;
-                                   Graphic_Value_Text         : GL_Maths.Integer_Array;
-                                   Menu_Gr_Open, Restart_Flag : in out Boolean;
-                                   Since_Last_Key             : in out Float;
-                                   Cursor_Item, Video_Mode    : in out Integer) return Boolean is
+   function Process_Menu_Graphics
+     (Window                     : in out Barbarian_Window;
+      Graphic_Value_Text         : GL_Maths.Integer_Array;
+      Menu_Gr_Open, Restart_Flag : in out Boolean;
+      Since_Last_Key             : in out Float;
+      Cursor_Item                : in out Menu_Strings.Graphic_Choice_Type;
+      Video_Mode                 : in out Integer) return Boolean is
       use Glfw.Input.Keys;
       use Input_Handler;
       use Menu_Support;
@@ -496,23 +499,25 @@ package body Menu_Support is
          Result := True;
          --  return
       elsif Is_Key_Down (Up) or Is_Action_Down (Up_Action) then
-         Cursor_Item := Cursor_Item - 1;
-         if Cursor_Item < 0 then
-            Cursor_Item := Num_Graphic_Entries - 1;
+         if Cursor_Item = Graphic_Choice_Type'First then
+            Cursor_Item := Graphic_Choice_Type'Last;
             Since_Last_Key := 0.0;
             Audio.Play_Sound (Menu_Beep_Sound, True);
             Result := True;
+         else
+            Cursor_Item := Graphic_Choice_Type'Pred (Cursor_Item);
          end if;
       elsif Is_Key_Down (Down) or Is_Action_Down (Down_Action) then
-         Cursor_Item := Cursor_Item + 1;
-         if Cursor_Item >= Num_Graphic_Entries then
-            Cursor_Item := 0;
+         if Cursor_Item = Graphic_Choice_Type'Last then
+            Cursor_Item := Graphic_Choice_Type'First;
             Since_Last_Key := 0.0;
             Audio.Play_Sound (Menu_Beep_Sound, True);
             Result := True;
+         else
+            Cursor_Item := Graphic_Choice_Type'Succ (Cursor_Item);
          end if;
       elsif Is_Key_Down (Left) or Is_Action_Down (Left_Action) then
-         if Cursor_Item = 0 then
+         if Cursor_Item = Graphic_Choice_Type'First then
             Set_Graphic_Preset
               (Gfx_Preset_Type'Enum_Val
                  (Gfx_Preset_Type'Enum_Rep (Graphic_Preset) - 1));
@@ -523,7 +528,7 @@ package body Menu_Support is
                                    (Gfx_Preset_Type'Enum_Rep (Graphic_Preset)));
                Result := Set_Menu_Graphic_Presets;
             end if;
-         elsif Cursor_Item = 2 then
+         elsif Cursor_Item = Graphic_Windowed_Size then
             Process_Video_Modes (Video_Mode, Cursor_Item,
                                  Graphic_Value_Text, False);
             Restart_Flag := True;
@@ -531,7 +536,7 @@ package body Menu_Support is
          Audio.Play_Sound (Menu_Beep_Sound, True);
 
       elsif Is_Key_Down (Right) or Is_Action_Down (Right_Action) then
-         if Cursor_Item = 0 then
+         if Cursor_Item = Graphic_Choice_Type'First then
             Set_Graphic_Preset
               (Gfx_Preset_Type'Enum_Val
                  (Gfx_Preset_Type'Enum_Rep (Graphic_Preset) + 1));
@@ -542,7 +547,7 @@ package body Menu_Support is
                                    (Gfx_Preset_Type'Enum_Rep (Graphic_Preset)));
                Result := Set_Menu_Graphic_Presets;
             end if;
-         elsif Cursor_Item = 2 then
+         elsif Cursor_Item = Graphic_Windowed_Size then
             Process_Video_Modes (Video_Mode, Cursor_Item,
                                  Graphic_Value_Text, True);
             Restart_Flag := True;
@@ -554,37 +559,36 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Graphic_Cases (Cursor_Item : Integer := -1) is
+   procedure Process_Menu_Graphic_Cases (Cursor_Item : Graphic_Choice_Type) is
       use Glfw.Input.Keys;
       use Input_Handler;
    begin
       case Cursor_Item is
-         when 0 => null;
-         when 1 => null;
-         when 2 => null;
-         when 3 => null;
-         when 4 => null;
-         when 5 => null;
-         when 6 => null;
-         when 7 => null;
-         when 8 => null;
-         when 9 => null;
-         when 10 => null;
-         when 11 => null;
-         when 12 => null;
-         when 13 => null;
-         when 14 => null;
-         when 15 => null;
-         when 16 => null;
-         when others => null;
+         when Graphic_Presets => null;
+         when Graphic_Opengl_Version => null;
+         when Graphic_Windowed_Size => null;
+         when Graphic_Full_Screen => null;
+         when Graphic_Vsync => null;
+         when Graphic_Shadows => null;
+         when Graphic_Shadow_Size => null;
+         when Graphic_Outlines => null;
+         when Graphic_Framebuffer_Fx => null;
+         when Graphic_Texture_Filter => null;
+         when Graphic_Anisotropy => null;
+         when Graphic_Msaa => null;
+         when Graphic_Ssaam => null;
+         when Graphic_Render_Dist => null;
+         when Graphic_Far_Clip => null;
+         when Graphic_Auto_Blood_Wipe => null;
+         when Graphic_Show_Fps => null;
       end case;
-
    end Process_Menu_Graphic_Cases;
 
    --  -------------------------------------------------------------------------
 
    procedure Process_Video_Modes
-     (Current_Mode       : in out Integer; Cursor_Item : Integer;
+     (Current_Mode       : in out Integer;
+      Cursor_Item        : Menu_Strings.Graphic_Choice_Type;
       Graphic_Value_Text : GL_Maths.Integer_Array; Increment : Boolean) is
       use Settings;
       Width  : Integer;
