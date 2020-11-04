@@ -190,8 +190,8 @@ package body Tiles_Manager is
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single  is
       use Batch_Manager;
-      Col    : Int := Int (0.5 * (1.0 + X));
-      Row    : Int := Int (0.5 * (1.0 + Z));
+      Col    : constant Int := Int (0.5 * (1.0 + X));
+      Row    : constant Int := Int (0.5 * (1.0 + Z));
       aTile  : Tile_Data;
       S      : Single;
       T      : Single;

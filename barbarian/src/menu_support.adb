@@ -41,10 +41,12 @@ package body Menu_Support is
    Default_Axis_Values     : array (1 .. 16) of Float := (others => 0.0);
    Axis_Defaults_Mode      : Boolean := False;
 
-   procedure Process_Menu_Graphic_Cases (Cursor_Item : Menu_Strings.Graphic_Choice_Type);
+   procedure Process_Menu_Graphic_Cases
+     (Cursor_Item : Menu_Strings.Graphic_Choice_Type);
    procedure Process_Video_Modes
-     (Current_Mode       : in out Integer; Cursor_Item : Integer;
-      Graphic_Value_Text : GL_Maths.Integer_Array; Increment : Boolean);
+     (Current_Mode       : in out Integer;
+      Cursor_Item        : Menu_Strings.Graphic_Choice_Type;
+      Graphic_Value_Text : Graphic_Value_Array; Increment : Boolean);
 
    --  -------------------------------------------------------------------------
 
@@ -522,16 +524,15 @@ package body Menu_Support is
       elsif Is_Key_Down (Left) or Is_Action_Down (Left_Action) then
          if Cursor_Item = Graphic_Choice_Type'First then
             Set_Graphic_Preset (Graphic_Preset_Choice_Type'Last);
-            if Graphic_Preset < Gfx_Dire then
-               Set_Graphic_Preset (Gfx_Ultra);
+            if Graphic_Preset < Graphic_Preset_Dire then
+               Set_Graphic_Preset (Graphic_Preset_Ultra);
                Text.Update_Text (Graphic_Value_Text (Cursor_Item),
-                                 Graphic_Preset_Strings
-                                   (Graphic_Preset_Choice_Type'Enum_Rep (Graphic_Preset)));
-               Result := Set_Menu_Graphic_Presets;
+                                 Graphic_Preset_Strings(Graphic_Preset));
+               Set_Graphic_Preset (Graphic_Preset);
             end if;
          elsif Cursor_Item = Graphic_Windowed_Size then
-            Process_Video_Modes (Video_Mode, Cursor_Item,
-                                 Graphic_Value_Text, False);
+            Process_Video_Modes (Video_Mode, Cursor_Item, Graphic_Value_Text,
+                                 False);
             Restart_Flag := True;
          end if;
          Audio.Play_Sound (Menu_Beep_Sound, True);
@@ -539,14 +540,12 @@ package body Menu_Support is
       elsif Is_Key_Down (Right) or Is_Action_Down (Right_Action) then
          if Cursor_Item = Graphic_Choice_Type'First then
             Set_Graphic_Preset
-              (Gfx_Preset_Type'Enum_Val
-                 (Gfx_Preset_Type'Enum_Rep (Graphic_Preset) + 1));
-            if Graphic_Preset > Gfx_Ultra then
-               Set_Graphic_Preset (Gfx_Dire);
+              (Graphic_Preset_Choice_Type'Succ (Graphic_Preset));
+            if Graphic_Preset = Graphic_Preset_Choice_Type'Last then
+               Set_Graphic_Preset (Graphic_Preset_Choice_Type'First);
                Text.Update_Text (Graphic_Value_Text (Cursor_Item),
-                                 Graphic_Preset_Strings
-                                   (Gfx_Preset_Type'Enum_Rep (Graphic_Preset)));
-               Result := Set_Menu_Graphic_Presets;
+                                 Graphic_Preset_Strings (Graphic_Preset));
+               Set_Graphic_Preset (Graphic_Preset);
             end if;
          elsif Cursor_Item = Graphic_Windowed_Size then
             Process_Video_Modes (Video_Mode, Cursor_Item,
@@ -590,7 +589,7 @@ package body Menu_Support is
    procedure Process_Video_Modes
      (Current_Mode       : in out Integer;
       Cursor_Item        : Menu_Strings.Graphic_Choice_Type;
-      Graphic_Value_Text : GL_Maths.Integer_Array; Increment : Boolean) is
+      Graphic_Value_Text : Graphic_Value_Array; Increment : Boolean) is
       use Settings;
       Width  : Integer;
       Height : Integer;
@@ -643,9 +642,10 @@ package body Menu_Support is
         Was_Action_Pressed (Window, OK_Action) or
         Was_Action_Pressed (Window, Attack_Action) then
          case Input_Cursor_Item is
-            when 0 => Settings.Disable_Joystick (not Settings.Joystick_Disabled);
-            when 1 => Menu_Cal_KB_Open := True;
-            when 2 =>
+            when Input_Gamepad_Joystick =>
+               Settings.Set_Disable_Joystick (not Settings.Joystick_Disabled);
+            when Input_Calibrate_Keyboard => Menu_Cal_KB_Open := True;
+            when Input_Calibrate_Gamepad_Buttons =>
                if Joystick_Connected and not Settings.Joystick_Disabled then
                   Menu_Cal_Gp_Butts_Open := True;
                   Text.Update_Text (Joystick_Detected_Text,
@@ -657,7 +657,7 @@ package body Menu_Support is
                   Text.Update_Text (Joystick_Detected_Text,
                                     "Enable joystick first.");
                end if;
-            when 3 =>
+            when Input_Calibrate_Gamepad_Axes_Triggers =>
                if Joystick_Connected and not Settings.Joystick_Disabled then
                   Menu_Cal_Gp_Axes_Open := True;
                   Text.Update_Text (Joystick_Detected_Text,
@@ -683,9 +683,10 @@ package body Menu_Support is
          Since_Last_Key := 0.0;
          Audio.Play_Sound (Menu_Beep_Sound, True);
       elsif Is_Key_Down (Down) or Is_Action_Down (Down_Action) then
-         Input_Cursor_Item := Input_Cursor_Item + 1;
-         if Input_Cursor_Item >= Menu_Strings.Num_Input_Entries then
-            Input_Cursor_Item := 0;
+         if Input_Cursor_Item = Input_Choice_Type'Last then
+            Input_Cursor_Item := Input_Choice_Type'First;
+         else
+            Input_Cursor_Item := Input_Choice_Type'Succ (Input_Cursor_Item);
          end if;
          Text.Update_Text (Joystick_Detected_Text,
                            "Joystick detected: " & Joy_Name);

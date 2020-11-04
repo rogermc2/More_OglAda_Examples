@@ -1,17 +1,9 @@
 
 with GL.Types; use GL.Types;
 
-package Settings is
+with Menu_Strings;
 
-   type Gfx_Preset_Type is (Gfx_Dire, Gfx_Low, Gfx_Medium, Gfx_High,
-                            Gfx_Ultra, Gfx_Custom);
-   for Gfx_Preset_Type use (Gfx_Dire    => 0,
-                            Gfx_Low     => 1,
-                            Gfx_Medium  => 2,
-                            Gfx_High    => 3,
-                            Gfx_Ultra   => 4,
-                            Gfx_Custom  => 5);
-   pragma Ordered (Gfx_Preset_Type);
+package Settings is
 
    type V_GL is (V2_1, V3_2);
    for V_GL use (V2_1 => 0,
@@ -29,7 +21,7 @@ package Settings is
    function Framebuffer_Height return GL.Types.Int;
    function Framebuffer_Width return GL.Types.Int;
    function Full_Screen return Boolean;
-   function Graphic_Preset return Gfx_Preset_Type;
+   function Graphic_Preset return Menu_Strings.Graphic_Preset_Choice_Type;
    procedure Load_Settings;
    function Multi_Sample_Anti_Aliasing return Integer;
    function Music_Volume return Audio_Volume_Range;
@@ -41,20 +33,19 @@ package Settings is
    procedure Set_Disable_Joystick (State : Boolean);
    procedure Set_Framebuffer_Height (Height : GL.Types.Int);
    procedure Set_Framebuffer_Width (Width : GL.Types.Int);
-   procedure Set_Graphic_Preset (Preset : Gfx_Preset_Type);
+   procedure Set_Graphic_Preset (Preset : Menu_Strings.Graphic_Preset_Choice_Type);
    procedure Set_Music_Volume (Volume : Integer);
    procedure Set_SSAA (Val : Float);
    procedure Set_Window_Height (Height : Integer);
    procedure Set_Window_Height_To_Save (Height : Integer);
    procedure Set_Window_Width (Width : Integer);
    procedure Set_Window_Width_To_Save (Width : Integer);
-   function Set_Menu_Graphic_Presets return Boolean;
    function Shadows_Enabled return Boolean;
    function Show_FPS return Boolean;
    function Shadows_Size return Integer;
    function Super_Sample_Anti_Aliasing return Single;
-   function Texf return Integer;
    function Texture_Filter return Integer;
+   function Texture_Filtering return Integer;
    function Tile_Batch_Width return Integer;
    function V_Sync return Boolean;
    function Window_Height_To_Save return Integer;
@@ -63,7 +54,8 @@ private
 
    type Settings_Data is record
       Joy_Axis_Thresh              : Float := 0.5;
-      Gfx_Presets                  : Gfx_Preset_Type := Gfx_Medium;
+      Gfx_Presets                  : Menu_Strings.Graphic_Preset_Choice_Type :=
+                                       Menu_Strings.Graphic_Preset_Medium;
       GL_Version                   : V_GL := V3_2;
       GL_Version_To_Save           : V_GL := V3_2;
       Allow_Rand_Pitch             : Boolean := False;
@@ -94,7 +86,7 @@ private
       Disable_Joystick             : Boolean := True;
       Joy_Axis_Threshold           : Float := 0.0;
       Show_Fps                     : Boolean := False;
-      Vid_Rec_Mode                 : Boolean := False;
+      Video_Record_Mode            : Boolean := False;
       Render_OLS                   : Boolean := True;
       Shadows_Enabled              : Boolean := True;
       Fb_Effects_Enabled           : Boolean := False;
@@ -104,6 +96,5 @@ private
       V_Sync                       : Boolean := True;
       Hide_Gui                     : Boolean := False;
    end record;
-
 
 end Settings;

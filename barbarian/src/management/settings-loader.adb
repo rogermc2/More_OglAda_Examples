@@ -50,7 +50,8 @@ package body Settings.Loader is
                if Pos2 /= 0 then
                   if Tail (Pos2 + 1 .. Pos3 - 1) = "PRESETS" then
                      V1 := Integer'Value (Tail (Pos3 + 1 .. Last));
-                     theSettings.Gfx_Presets := Settings.Gfx_Preset_Type'Enum_Val (V1);
+                     theSettings.Gfx_Presets :=
+                       Menu_Strings.Graphic_Preset_Choice_Type'Enum_Val (V1);
                   elsif Tail (Pos2 + 1 .. Pos3 - 1) = "GL_V" then
                      V1 := Integer'Value (Tail (Pos3 + 1 .. Last));
                      theSettings.GL_Version := Settings.V_GL'Enum_Val (V1);
@@ -95,7 +96,7 @@ package body Settings.Loader is
                   elsif Tail (Pos2 + 1 .. Pos3 - 1) = "SHOW_FPS" then
                      theSettings.Show_Fps := Integer'Value (Tail (Pos3 + 1 .. Last)) /= 0;
                   elsif Tail (Pos2 + 1 .. Pos3 - 1) = "VID_REC_MODE" then
-                     theSettings.Vid_Rec_Mode := Integer'Value (Tail (Pos3 + 1 .. Last)) /= 0;
+                     theSettings.Video_Record_Mode := Integer'Value (Tail (Pos3 + 1 .. Last)) /= 0;
                   end if;
                else
                   Input_Handler.Read_Key_Config (aLine);

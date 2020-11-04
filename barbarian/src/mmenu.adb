@@ -72,7 +72,7 @@ package body MMenu is
          To_Unbounded_String ("trilinear"));
    Main_Text                               : Main_Text_Array := (others => -1);
    Graphics_Text                           : Graphic_Value_Array := (others => -1);
-   Graphic_Value_Strings                   : Menu_String_Array  (1 .. 3) :=
+   Graphic_Value_Strings                   : Graphic_Value_String_Array :=
                                                (others => To_Unbounded_String (""));
    Graphic_Value_Text                      : Graphic_Value_Array := (others => -1);
    Cal_KB_Text                             : GL_Maths.Integer_Array
@@ -458,12 +458,12 @@ package body MMenu is
       Init1 (End_Story_Text, Text_Background_Texture,
              Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
       Init_Main_Menu_Text (Main_Text);
-      Init_Menu_Strings (Enabled_Strings, Graphic_Value_Strings);
+      Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
+      Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
       Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
-      Init_Input_Text (Input_Text, Input_Value_Text);
+      Init_Input_Text (Input_Text, Input_Value_Text, Enabled_Strings);
       Init_Input_Actions (Cal_KB_Text, Cal_GP_Text, KB_Binding_Text,
                           GP_Axis_Binding_Text, GP_Buttons_Binding_Text);
-      Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
       Init_Quit_Text (Confirm_Quit_Text);
       Init_Various (Input_Text, To_String (Joy_Name), Joystick_Detected_Text,
                     Greatest_Axis_Text, Already_Bound_Text);

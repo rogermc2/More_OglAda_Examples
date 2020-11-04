@@ -1,4 +1,6 @@
 
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
 package Menu_Strings is
 
    type Main_Choice_Type is (Main_New_Game, Main_Custom_Map, Main_Graphics,
@@ -13,7 +15,7 @@ package Menu_Strings is
    pragma Ordered (Graphic_Choice_Type);
    type Graphic_Preset_Choice_Type is
      (Graphic_Preset_Dire, Graphic_Preset_Low, Graphic_Preset_Medium,
-      Graphic_Preset_High, Graphic_Preset_Ultra,Graphic_Preset_Custom);
+      Graphic_Preset_High, Graphic_Preset_Ultra, Graphic_Preset_Custom);
    pragma Ordered (Graphic_Preset_Choice_Type);
    type Audio_Choice_Type is
      (Audio_Strings_Audio_Device, Audio_Strings_Master_Volume,
@@ -44,6 +46,8 @@ package Menu_Strings is
 
    type Main_Text_Array is array (Main_Choice_Type'Range) of Integer;
    type Graphic_Value_Array is array (Graphic_Choice_Type'Range) of Integer;
+   type Graphic_Value_String_Array is array (Graphic_Choice_Type'Range) of
+     Unbounded_String;
    type Audio_Text_Array is array (Audio_Choice_Type'Range) of Integer;
    type Input_Text_Array is array (Input_Choice_Type'Range) of Integer;
    type Quit_Text_Array is array (Quit_Choice_Type'Range) of Integer;

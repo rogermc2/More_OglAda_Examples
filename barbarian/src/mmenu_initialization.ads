@@ -32,11 +32,11 @@ package MMenu_Initialization is
                           Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
                           Cursor_M, Cursor_V    : in out GL.Types.Singles.Matrix4;
                           Cursor_Point_Count    : in out Integer);
-   procedure Init_Menu_Strings (Enabled_Strings, Graphic_Value_Strings :
-                                in out Menu_String_Array);
+   procedure Init_Graphic_Value_Strings (Enabled_Strings       : in out Menu_String_Array;
+                                         Graphic_Value_Strings : in out Graphic_Value_String_Array);
    procedure Init_Graphic_Text
      (Graphics_Text, Graphic_Value_Text : in out Graphic_Value_Array;
-      Graphic_Value_Strings             : in out Menu_String_Array);
+      Graphic_Value_Strings             : Graphic_Value_String_Array);
    procedure Init_Input_Text (Input_Text, Input_Value_Text : in out Input_Text_Array;
                              Enabled_Strings : Menu_String_Array);
    procedure Init_Input_Actions

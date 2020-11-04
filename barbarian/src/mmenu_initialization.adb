@@ -248,46 +248,49 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Menu_Strings (Enabled_Strings, Graphic_Value_Strings :
-                                in out Menu_String_Array) is
-      Graphic_Int : Integer;
+   procedure Init_Graphic_Value_Strings (Enabled_Strings       : in out Menu_String_Array;
+                                         Graphic_Value_Strings : in out Graphic_Value_String_Array) is
+      use GL_Utils;
+      use Settings;
    begin
-      Graphic_Int := Settings.Gfx_Preset_Type'Enum_Rep (Settings.Graphic_Preset);
-      Append (Graphic_Value_Strings (1), Character'Val (Graphic_Int));
-      Graphic_Value_Strings (2) := To_Unbounded_String ("3.2");
-      Graphic_Value_Strings (3) := To_Unbounded_String
-        (Integer'Image (Settings.Window_Width_To_Save) & 'x' &
-           Integer'Image (Settings.Window_Height_To_Save));
-      Graphic_Value_Strings (4) := GL_Utils.To_UB_String (Settings.Full_Screen);
-      Graphic_Value_Strings (5) := GL_Utils.To_UB_String  (Settings.V_Sync);
-      Graphic_Value_Strings (6) := GL_Utils.To_UB_String  (Settings.Shadows_Enabled);
-      Graphic_Value_Strings (7) := To_Unbounded_String
-        (Integer'Image (Settings.Shadows_Size));
-      Graphic_Value_Strings (8) := GL_Utils.To_UB_String (Settings.Render_OLS);
-      Graphic_Value_Strings (9) := GL_Utils.To_UB_String (Settings.Fb_Effects_Enabled);
-      Graphic_Value_Strings (10) := To_Unbounded_String (Integer'Image (Settings.Texf));
-      Graphic_Value_Strings (11) := To_Unbounded_String
-        (Integer'Image (Settings.Anisotroic_Texturing_Factor));
-      Graphic_Value_Strings (12) := To_Unbounded_String
-        (Integer'Image (Settings.Multi_Sample_Anti_Aliasing));
-      Graphic_Value_Strings (13) := To_Unbounded_String
-        (Single'Image (Settings.Super_Sample_Anti_Aliasing));
-      Graphic_Value_Strings (14) := To_Unbounded_String
-        (Integer'Image (Settings.Render_Distance));
-      Graphic_Value_Strings (15) := To_Unbounded_String
-        (Single'Image (Settings.Far_Clip));
-      Graphic_Value_Strings (16) :=
-        (Enabled_Strings (GL_Utils.To_Integer (Settings.Auto_Blood_Wipe) + 1));
-      Graphic_Value_Strings (17) :=
-        (Enabled_Strings (GL_Utils.To_Integer (Settings.Show_FPS) + 1));
+      Graphic_Value_Strings (Graphic_Presets) :=
+        To_Unbounded_String (Graphic_Preset_Strings (Graphic_Preset_Dire));
+      Graphic_Value_Strings (Graphic_Opengl_Version) := To_Unbounded_String ("3.2");
+      Graphic_Value_Strings (Graphic_Windowed_Size) := To_Unbounded_String
+        (Integer'Image (Window_Width_To_Save) & 'x' &
+           Integer'Image (Window_Height_To_Save));
+      Graphic_Value_Strings (Graphic_Full_Screen) := To_UB_String (Full_Screen);
+      Graphic_Value_Strings (Graphic_Vsync) := To_UB_String (V_Sync);
+      Graphic_Value_Strings (Graphic_Shadows) := To_UB_String (Shadows_Enabled);
+      Graphic_Value_Strings (Graphic_Shadow_Size) := To_Unbounded_String
+        (Integer'Image (Shadows_Size));
+      Graphic_Value_Strings (Graphic_Outlines) := To_UB_String (Render_OLS);
+      Graphic_Value_Strings (Graphic_Framebuffer_Fx) :=
+        To_UB_String (Fb_Effects_Enabled);
+      Graphic_Value_Strings (Graphic_Texture_Filter) := To_Unbounded_String
+        (Integer'Image (Texture_Filter));
+      Graphic_Value_Strings (Graphic_Anisotropy) := To_Unbounded_String
+        (Integer'Image (Anisotroic_Texturing_Factor));
+      Graphic_Value_Strings (Graphic_Msaa) := To_Unbounded_String
+        (Integer'Image (Multi_Sample_Anti_Aliasing));
+      Graphic_Value_Strings (Graphic_Ssaam) := To_Unbounded_String
+        (Single'Image (Super_Sample_Anti_Aliasing));
+         Graphic_Value_Strings (Graphic_Render_Dist) := To_Unbounded_String
+             (Integer'Image (Render_Distance));
+      Graphic_Value_Strings (Graphic_Far_Clip) := To_Unbounded_String
+        (Single'Image (Far_Clip));
+      Graphic_Value_Strings (Graphic_Auto_Blood_Wipe) :=
+        Enabled_Strings (GL_Utils.To_Integer (Auto_Blood_Wipe) + 1);
+      Graphic_Value_Strings (Graphic_Show_Fps) :=
+        Enabled_Strings (GL_Utils.To_Integer (Show_FPS) + 1);
 
-   end Init_Menu_Strings;
+   end Init_Graphic_Value_Strings;
 
    --  ------------------------------------------------------------------------
 
    procedure Init_Graphic_Text
      (Graphics_Text, Graphic_Value_Text : in out Graphic_Value_Array;
-      Graphic_Value_Strings             : in out Menu_String_Array) is
+      Graphic_Value_Strings             : Graphic_Value_String_Array) is
       X1  : constant Single :=
               (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
       X2  : constant Single :=
@@ -304,7 +307,7 @@ package body MMenu_Initialization is
          Text.Set_Text_Visible (Graphics_Text (index), False);
 
          Graphic_Value_Text (index) :=
-           Text.Add_Text (To_String (Graphic_Value_Strings (Integer (Y_Step))),
+           Text.Add_Text (To_String (Graphic_Value_Strings (index)),
                            X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Graphic_Value_Text (index), False);
       end loop;
@@ -405,8 +408,8 @@ package body MMenu_Initialization is
       else
          Enabled_String_Index := 2;
       end if;
-         Input_Value_Text (Input_Choice_Type'First) :=
-      Text.Add_Text (To_String (Enabled_Strings (Enabled_String_Index)),
+      Input_Value_Text (Input_Choice_Type'First) :=
+        Text.Add_Text (To_String (Enabled_Strings (Enabled_String_Index)),
                        X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
       Text.Set_Text_Visible (Input_Value_Text (Input_Choice_Type'First), False);
    end Init_Input_Text;

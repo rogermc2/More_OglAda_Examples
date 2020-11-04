@@ -35,7 +35,7 @@ package body Settings is
    procedure Default_Settings is
    begin
       G_Settings.Joy_Axis_Thresh := 0.5;
-      G_Settings.Gfx_Presets := Gfx_Medium;
+      G_Settings.Gfx_Presets := Menu_Strings.Graphic_Preset_Medium;
       G_Settings.GL_Version := V3_2;
       G_Settings.GL_Version_To_Save := V3_2;
       G_Settings.Allow_Rand_Pitch := False;
@@ -116,7 +116,7 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   function Graphic_Preset return Gfx_Preset_Type is
+   function Graphic_Preset return Menu_Strings.Graphic_Preset_Choice_Type is
    begin
       return G_Settings.Gfx_Presets;
    end Graphic_Preset;
@@ -200,7 +200,8 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Graphic_Preset (Preset : Gfx_Preset_Type) is
+   procedure Set_Graphic_Preset
+     (Preset : Menu_Strings.Graphic_Preset_Choice_Type) is
    begin
       G_Settings.Gfx_Presets := Preset;
    end Set_Graphic_Preset;
@@ -249,11 +250,12 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   function Set_Menu_Graphic_Presets return Boolean is
-      OK : Boolean := True;
+   procedure Set_Menu_Graphic_Presets
+     (Preset : Menu_Strings.Graphic_Preset_Choice_Type) is
+      use Menu_Strings;
    begin
-      case Graphic_Preset is
-         when Gfx_Dire =>
+      case Preset is
+         when Graphic_Preset_Dire =>
             G_Settings.Multi_Sample_Anti_Aliasing := 1;
             G_Settings.Super_Sample_Anti_Aliasing := 0.5;
             G_Settings.Texf := 0;
@@ -265,7 +267,7 @@ package body Settings is
             G_Settings.Shadow_Size := 256;
             G_Settings.Fb_Effects_Enabled := True;
 
-         when Gfx_Low =>
+         when Graphic_Preset_Low =>
             G_Settings.Multi_Sample_Anti_Aliasing := 1;
             G_Settings.Super_Sample_Anti_Aliasing := 1.0;
             G_Settings.Texf := 2;
@@ -277,7 +279,7 @@ package body Settings is
             G_Settings.Shadow_Size := 256;
             G_Settings.Fb_Effects_Enabled := True;
 
-         when Gfx_Medium =>
+         when Graphic_Preset_Medium =>
             G_Settings.Multi_Sample_Anti_Aliasing := 4;
             G_Settings.Super_Sample_Anti_Aliasing := 2.0;
             G_Settings.Texf := 2;
@@ -289,7 +291,7 @@ package body Settings is
             G_Settings.Shadow_Size := 512;
             G_Settings.Fb_Effects_Enabled := True;
 
-         when Gfx_High =>
+         when Graphic_Preset_High =>
             G_Settings.Multi_Sample_Anti_Aliasing := 4;
             G_Settings.Super_Sample_Anti_Aliasing := 2.0;
             G_Settings.Texf := 2;
@@ -301,7 +303,7 @@ package body Settings is
             G_Settings.Shadow_Size := 1024;
             G_Settings.Fb_Effects_Enabled := True;
 
-         when Gfx_Ultra =>
+         when Graphic_Preset_Ultra =>
             G_Settings.Multi_Sample_Anti_Aliasing := 16;
             G_Settings.Super_Sample_Anti_Aliasing := 2.0;
             G_Settings.Texf := 2;
@@ -312,9 +314,8 @@ package body Settings is
             G_Settings.Shadows_Enabled := True;
             G_Settings.Shadow_Size := 2048;
             G_Settings.Fb_Effects_Enabled := True;
-         when others => OK := False;
+         when Graphic_Preset_Custom => null;
       end case;
-      return OK;
    end Set_Menu_Graphic_Presets;
 
    --  ------------------------------------------------------------------------
@@ -347,17 +348,17 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   function Texture_Filter return Integer is
+   function Texture_Filtering return Integer is
    begin
       return G_Settings.Texture_Filtering;
-   end Texture_Filter;
+   end Texture_Filtering;
 
    --  ------------------------------------------------------------------------
 
-   function Texf return Integer is
+   function Texture_Filter return Integer is
    begin
       return G_Settings.Texf;
-   end Texf;
+   end Texture_Filter;
 
    --  ------------------------------------------------------------------------
 
