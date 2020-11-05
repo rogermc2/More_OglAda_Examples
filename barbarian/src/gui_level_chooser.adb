@@ -142,13 +142,13 @@ package body GUI_Level_Chooser is
    begin
 --        Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));
 --        Game_Utils.Game_Log ("Process_Input Attack_Action: " & Natural'Image (Attack_Action));
-      if Was_Key_Pressed (Window, Enter) or Was_Action_Pressed (Window,OK_Action)
+      if Was_Key_Pressed (Window, Enter) or Was_Action_Pressed (Window, OK_Action)
         or Was_Action_Pressed (Window, Attack_Action) then
          if not Selected_Map.Locked or Cheat_Unlock then
             Started_Loading_Map := True;
          end if;
       elsif Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Open_Menu_Action) then
+        Was_Action_Pressed (Window, Menu_Open_Action) then
          Menu_Open := True;
       elsif Is_Key_Down (A) and Is_Key_Down (N)  and Is_Key_Down (D) then
          if not Cheat_Unlock then

@@ -242,6 +242,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
          Glfw.Input.Poll_Events;
 --           --  Poll_Joystick
          Glfw.Windows.Context.Swap_Buffers (Window'Access);
+
          if not MMenu.Update_Menu (Window, Delta_Time) then
             MMenu.Set_Menu_Open (False);
             Quit_Game := True;
@@ -391,8 +392,7 @@ begin
          Key_Pressed := Key_Now = Glfw.Input.Pressed;
       end if;
       --     Delay (3.0);
-      Running := Running and then not Quit_Game and then
-        not (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
+      Running := Running and then not Quit_Game;
       Running := Running and then not Main_Window.Should_Close;
    end loop;
    Game_Utils.Close_Game_Log;

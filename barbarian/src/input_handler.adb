@@ -209,18 +209,18 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Ok_Action return Integer is
+   function OK_Action return Integer is
    begin
       return Input_Actions.Ok_Action_ID;
-   end Ok_Action;
+   end OK_Action;
 
    --  ------------------------------------------------------------------------
 
-   function Open_Menu_Action return Integer is
+   function Menu_Open_Action return Integer is
    begin
       --  Joystick processing
       return Input_Actions.Open_Menu_Action_ID;
-   end Open_Menu_Action;
+   end Menu_Open_Action;
 
    --  ------------------------------------------------------------------------
 

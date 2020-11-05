@@ -30,7 +30,7 @@ package Input_Handler is
    function Left_Action return Integer;
    function Menu_Back_Action return Integer;
    function OK_Action return Integer;
-   function Open_Menu_Action return Integer;
+   function Menu_Open_Action return Integer;
    function Num_Actions return Integer;
    procedure Read_Key_Config (aLine : String);
    procedure Register_Input_Actions;

@@ -58,7 +58,7 @@ package body Menu_Support is
       Result : Boolean := False;
    begin
       Result := Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Open_Menu_Action) or
+        Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action);
       if Result then
          Confirm_Quit_Open := False;
@@ -159,29 +159,30 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure General_Menu_Support (Window                    : in out Barbarian_Window;
-                                   Joystick_Detected_Text    : Integer;
-                                   Joy_Name                  : String;
-                                   Menu_Was_Closed, Graphics_Open, Audio_Open,
-                                   Input_Open, Confirm_Quit_Open,
-                                   Credits_Open, New_Game, In_Custom_Map,
-                                   Custom_Maps               : in out Boolean;
-                                   Since_Last_Key            : in out Float;
-                                   Menu_Cursor_Item          : in out
-                                     Menu_Strings.Main_Choice_Type) is
+   procedure General_Menu_Support
+     (Window                                       : in out Barbarian_Window;
+      Joystick_Detected_Text                       : Integer;
+      Joy_Name                                     : String;
+      Menu_Was_Closed, Graphics_Open, Audio_Open,
+      Input_Open, Confirm_Quit_Open,
+      Credits_Open, New_Game, In_Custom_Map,
+      Custom_Maps                                  : in out Boolean;
+      Since_Last_Key                               : in out Float;
+      Menu_Cursor_Item                             : in out Menu_Strings.Main_Choice_Type) is
       use Glfw.Input.Keys;
       use Input_Handler;
       use Menu_Strings;
       Result : Boolean := False;
    begin
       if Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Open_Menu_Action) or
+        Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action) then
          Result := Settings.Save_Settings;
          if Result then
             Menu_Was_Closed := True;
          else
-            Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, could not save settings." );
+            Game_Utils.Game_Log
+              ("Menu_Support.General_Menu_Support, could not save settings." );
          end if;
 
       elsif Is_Key_Down (Up) or
@@ -331,7 +332,7 @@ package body Menu_Support is
             end if;
          end if;
       elsif Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Open_Menu_Action) or
+        Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action) then
          Menu_Cal_KB_Open := False;
       elsif Was_Key_Pressed (Window, Enter) or
@@ -380,7 +381,7 @@ package body Menu_Support is
       use Settings;
    begin
       if Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Open_Menu_Action) or
+        Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action) then
          Menu_Audio_Open := False;
          --  return
@@ -460,7 +461,7 @@ package body Menu_Support is
       use Input_Handler;
    begin
       if Was_Key_Pressed (Window, Space) or Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Open_Menu_Action) or
+        Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, OK_Action) then
          Credits_Open := False;
          if End_Story_Open then
@@ -490,7 +491,7 @@ package body Menu_Support is
       Result : Boolean;
    begin
       Result := Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Open_Menu_Action) or
+        Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action);
       if Result then
          Menu_Gr_Open := False;
@@ -632,7 +633,7 @@ package body Menu_Support is
       use Input_Handler;
    begin
       if Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Open_Menu_Action) or
+        Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action) then
          Menu_Input_Open := False;
          Text.Update_Text (Joystick_Detected_Text,

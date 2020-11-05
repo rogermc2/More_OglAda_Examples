@@ -3,6 +3,7 @@ with Input_Callback;
 
 package MMenu is
 
+   Credits_Text_ID           : Integer := -1;
    MMenu_Exception : Exception;
 
    function Are_We_In_Custom_Maps return Boolean;

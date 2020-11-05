@@ -99,7 +99,6 @@ package body MMenu is
    We_Are_In_Custom_Maps     : Boolean := False;
    Title_Author_Text         : Integer := -1;
    Title_Buildstamp_Text     : Integer := -1;
-   Credits_Text_ID           : Integer := -1;
    Credits_Text_X            : constant Single := 0.0;
    Credits_Text_Y            : constant Single := -1.0;
    Credits_X                 : constant Single := 0.0;
@@ -215,24 +214,22 @@ package body MMenu is
          Set_Scale ((Credits_X, Credits_Y));
          Set_Position ((Credits_Pos_X, Credits_Pos_Y));
          Texture_Manager.Bind_Texture (0, Menu_Credits_Texture);
-
-         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-         GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Shader_Attributes.Attrib_VP, 2, Single_Type, False, 0, 0);
-
          Draw_Arrays (Triangles, 0, 6);
+
          if End_Story_Open then
             Text.Move_Text (End_Story_Text, Credits_Text_X,
                             Credits_Text_Y + Single (Credit_Scroll_Rate * Text_Timer));
             Text.Draw_Text (End_Story_Text);
          else
+--              Game_Utils.Game_Log ("Mmenu.Draw_Menu Credits_Text_ID: " &
+--                                   Integer'Image (Credits_Text_ID));
             Text.Move_Text (Credits_Text_ID, Credits_Text_X,
                             Credits_Text_Y + Single (Credit_Scroll_Rate * Text_Timer));
             Text.Draw_Text (Credits_Text_ID);
          end if;
          Enable (Depth_Test);
       else  --  Menu_Credits not open
-         Game_Utils.Game_Log ("Mmenu.Draw_Menu not Menu_Credits_Open");
+--           Game_Utils.Game_Log ("Mmenu.Draw_Menu not Menu_Credits_Open");
          Enable (Blend);
          --  text background box
          GL.Objects.Programs.Use_Program (Credits_Shader_Program);
@@ -569,7 +566,7 @@ package body MMenu is
             Process_Menu_Credits (Window, Menu_Credits_Open,
                                   Menu_End_Story_Open, Menu_Closed, Text_Timer);
          end if;
-         Game_Utils.Game_Log ("Mmenu.Update_Menu General_Menu_Support");
+--           Game_Utils.Game_Log ("Mmenu.Update_Menu General_Menu_Support");
          General_Menu_Support (Window, Joystick_Detected_Text,
                                To_String (Joy_Name), Menu_Closed,
                                Menu_Graphics_Open, Menu_Audio_Open,

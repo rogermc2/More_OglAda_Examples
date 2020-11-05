@@ -142,7 +142,9 @@ package body Input_Callback is
    function Was_Key_Pressed (Window : in out Barbarian_Window;
                              aKey   : Key) return Boolean is
       use Glfw.Input;
-      Key_Pressed : constant Boolean := Window'Access.Key_State (aKey) = Pressed;
+      Key_Pressed : constant Boolean :=
+                      Window'Access.Key_State (aKey) = Pressed and
+                        not Input_State.Keys_Locked (aKey);
    begin
       if Key_Pressed then
          Input_State.Keys_Locked (aKey) := True;
