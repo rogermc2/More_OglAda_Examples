@@ -43,7 +43,7 @@ package Input_Handler is
                                 return Integer;
    function Up_Action return Integer;
    function Was_Action_Pressed (Window : in out Input_Callback.Barbarian_Window;
-                                Action : Integer) return Boolean;
+                                Action_ID : Integer) return Boolean;
 
 private
 
@@ -51,21 +51,21 @@ private
       -- Names of game's registered actions. "jump" "shoot" etc.
       Action_Names          : Input_Callback.Key_String (1 .. Max_Actions);
       Num_Actions           : Integer := 0;
-      Left_Action           : Integer := 0;
-      Right_Action          : Integer := 0;
-      Up_Action             : Integer := 0;
-      Down_Action           : Integer := 0;
-      Attack_Action         : Integer := 0;
-      Open_Door_Action      : Integer := 0;
-      Wipe_Screen_Action    : Integer := 0;
-      Sel_Sword_Action      : Integer := 0;
-      Sel_Javelin_Action    : Integer := 0;
-      Sel_Hammer_Action     : Integer := 0;
-      Cycle_Weapons_Action  : Integer := 0;
-      Open_Menu_Action      : Integer := 0;
-      Menu_Back_Action      : Integer := 0;
-      Ok_Action             : Integer := 0;
-      Clear_Binding_Action  : Integer := 0;
+      Left_Action_ID        : Integer := 0;
+      Right_Action_ID       : Integer := 0;
+      Up_Action_ID          : Integer := 0;
+      Down_Action_ID        : Integer := 0;
+      Attack_Action_ID      : Integer := 0;
+      Open_Door_Action_ID   : Integer := 0;
+      Wipe_Screen_Action_ID : Integer := 0;
+      Sel_Sword_Action_ID   : Integer := 0;
+      Sel_Javelin_Action_ID : Integer := 0;
+      Sel_Hammer_Action_ID  : Integer := 0;
+      Cycle_Weapons_Action_ID : Integer := 0;
+      Open_Menu_Action_ID    : Integer := 0;
+      Menu_Back_Action_ID   : Integer := 0;
+      Ok_Action_ID         : Integer := 0;
+      Clear_Binding_Action_ID : Integer := 0;
       -- Actual key code for each registered action ingame
       Key_Bindings          : Key_Binding_State;
       Joy_Button_Bindings   : GL_Maths.Integer_Array (1 .. Max_Actions) :=
