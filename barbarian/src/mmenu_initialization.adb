@@ -425,11 +425,12 @@ package body MMenu_Initialization is
       for index in Main_Choice_Type'Range loop
          Y_Step := Y_Step + 1.0;
          Y := (Menu_Text_Yoffs -
-                Y_Step * Menu_Big_Text_Sz / Single (Settings.Framebuffer_Height));
+               Y_Step * Menu_Big_Text_Sz) / Single (Settings.Framebuffer_Height);
+--           Game_Utils.Game_Log ("Init_Main_Menu_Text, Menu_String_Item " &
+--                                 Menu_Strings.Menu_String_Items (index));
          Menu_Text (index) :=
            Text.Add_Text (Menu_Strings.Menu_String_Items (index),
---                            1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
-                          0.0, Y, 40.0, 1.0, 1.0, 1.0, 1.0);
+                          1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Menu_Text (index), False);
          Text.Centre_Text (Menu_Text (index), 0.5, Y);  --  orig X: 0.0
       end loop;
@@ -444,10 +445,10 @@ package body MMenu_Initialization is
       use GL.Types;
       use GL.Types.Singles;
       Position_Array  : constant Vector2_Array (1 .. 6) :=
-                          ((-1.0, 1.0), (-1.0, -1.0),  (1.0, -1.0),
+                          ((-1.0, 1.0), (-1.0, -1.0), (1.0, -1.0),
                            (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0));
       Texture_Array   : constant Vector2_Array (1 .. 6) :=
-                          ((0.0, 1.0), (0.0, 0.0),  (1.0, 0.0),
+                          ((0.0, 1.0), (0.0, 0.0), (1.0, 0.0),
                            (1.0, 0.0), (1.0, 1.0), (0.0, 1.0));
    begin
       --  Each attribute stated in a Vertex Array Objects state vector may

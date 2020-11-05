@@ -174,7 +174,6 @@ package body Menu_Support is
       use Menu_Strings;
       Result : Boolean := False;
    begin
-      Game_Utils.Game_Log ("Menu_Support.General_Menu_Support entered " );
       if Was_Key_Pressed (Window, Escape) or
         Was_Action_Pressed (Window, Open_Menu_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action) then
@@ -182,7 +181,7 @@ package body Menu_Support is
          if Result then
             Menu_Was_Closed := True;
          else
-            Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, " );
+            Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, could not save settings." );
          end if;
 
       elsif Is_Key_Down (Up) or

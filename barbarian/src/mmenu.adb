@@ -43,13 +43,22 @@ package body MMenu is
    use MMenu_Initialization;
 
    Black              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
-   Menu_Text_Y_Offset : constant Single := 350.0; --  orig 300 pixels above horizontal for text to start
-   Menu_Big_Text_Size : constant Single := 94.0;  --  orig 80 height of subseq lines to offset below that
-   Credit_Scroll_Rate : constant Float := 0.05;
+   Menu_Text_Y_Offset : constant Single := 270.0; --  orig 300 pixels above horizontal for text to start
+   Menu_Big_Text_Size : constant Single := 92.0;  --  orig 80 height of subseq lines to offset below that
+   Credit_Scroll_Rate : constant Float := 0.5;
 
    Title_VAO              : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Cursor_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Menu_VAO               : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+
+   Main_Text              : Main_Text_Array := (others => -1);
+   Graphics_Text          : Graphic_Value_Array := (others => -1);
+   Audio_Text             : Audio_Text_Array := (others => -1);
+   Audio_Value_Text       : Audio_Text_Array := (others => -1);
+   Input_Text             : Input_Text_Array := (others => -1);
+   Input_Value_Text       : Input_Text_Array := (others => -1);
+   Quit_Text              : Quit_Text_Array := (others => -1);
+   Confirm_Quit_Text      : Quit_Text_Array := (others => -1);
 
    Menu_Is_Open           : Boolean := False;
    Menu_Closed            : Boolean := False;
@@ -65,65 +74,58 @@ package body MMenu is
    Menu_Choice            : Menu_Strings.Main_Choice_Type :=
                               Menu_Strings.Main_New_Game;
 
-   Enabled_Strings                         : Menu_String_Array (1 .. 2)
+   Enabled_Strings        : Menu_String_Array (1 .. 2)
      := (To_Unbounded_String ("disabled"), To_Unbounded_String ("enabled "));
-   Tex_Filter_Strings                      : Menu_String_Array (1 .. 3)
+   Tex_Filter_Strings     : Menu_String_Array (1 .. 3)
      := (To_Unbounded_String ("nearest"), To_Unbounded_String ("bilinear"),
          To_Unbounded_String ("trilinear"));
-   Main_Text                               : Main_Text_Array := (others => -1);
-   Graphics_Text                           : Graphic_Value_Array := (others => -1);
-   Graphic_Value_Strings                   : Graphic_Value_String_Array :=
+   Graphic_Value_Strings  : Graphic_Value_String_Array :=
                                                (others => To_Unbounded_String (""));
-   Graphic_Value_Text                      : Graphic_Value_Array := (others => -1);
-   Cal_KB_Text                             : GL_Maths.Integer_Array
+
+   Graphic_Value_Text      : Graphic_Value_Array := (others => -1);
+   Cal_KB_Text             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Cal_GP_Text                             : GL_Maths.Integer_Array
+   Cal_GP_Text             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Axis_Binding_Text                    : GL_Maths.Integer_Array
+   GP_Axis_Binding_Text    : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Buttons_Binding_Text                 : GL_Maths.Integer_Array
+   GP_Buttons_Binding_Text : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Audio_Text                              : Audio_Text_Array := (others => -1);
-   Audio_Value_Text                        : Audio_Text_Array := (others => -1);
-   Input_Text                              : Input_Text_Array := (others => -1);
-   Input_Value_Text                        : Input_Text_Array := (others => -1);
-   Quit_Text                               : Quit_Text_Array := (others => -1);
-   Confirm_Quit_Text                       : Quit_Text_Array := (others => -1);
-   KB_Binding_Text                         : GL_Maths.Integer_Array
+   KB_Binding_Text          : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
 
-   User_Chose_Custom_Maps     : Boolean := False;
-   User_Chose_New_Game        : Boolean := False;
-   We_Are_In_Custom_Maps      : Boolean := False;
-   Title_Author_Text          : Integer := -1;
-   Title_Buildstamp_Text      : Integer := -1;
-   Credits_Text_ID            : Integer := -1;
-   Credits_Text_X             : constant Single := 0.0;
-   Credits_Text_Y             : constant Single := -1.0;
-   Credits_X                  : constant Single := 0.0;
-   Credits_Y                  : constant Single := -1.0;
-   Credits_Pos_X              : constant Single := 0.0;
-   Credits_Pos_Y              : constant Single := -1.0;
-   Cal_Kb_Cursor_Curr_Item    : constant Integer := -1;
-   Cal_GP_Cursor_Curr_Item    : constant Integer := -1;  -- GP: game pad
-   Input_Cursor_Current_Item  : Input_Choice_Type;
-   Text_Background_Pos        : constant GL.Types.Singles.Vector2 := (0.0, 0.0);
-   Text_Background_Scale      : GL.Types.Singles.Vector2 := (1.0, 1.0);
-   Text_Background_Texture    : GL.Objects.Textures.Texture;
-   Menu_Credits_Texture       : GL.Objects.Textures.Texture;
-   Title_Version_Text         : Integer := -1;
-   End_Story_Text             : Integer := -1;
-   Joy_Name                   : Unbounded_String := To_Unbounded_String ("");
-   Joystick_Detected_Text     : Integer := -1;
-   Greatest_Text_Axis         : Integer := -1;
-   Restart_Graphics_Text      : constant Positive := 1;
-   Graphics_Restart_Flag      : Boolean := False;
-   Already_Bound_Text         : Integer := -1;
-   Title_Shader_Program       : GL.Objects.Programs.Program;
-   Title_Skull_Texture        : GL.Objects.Textures.Texture;
-   Greatest_Axis_Text         : Integer := -1;
-   Modify_Binding_Mode        : Boolean := False;
-   Already_Bound              : Boolean := False;
+   User_Chose_Custom_Maps    : Boolean := False;
+   User_Chose_New_Game       : Boolean := False;
+   We_Are_In_Custom_Maps     : Boolean := False;
+   Title_Author_Text         : Integer := -1;
+   Title_Buildstamp_Text     : Integer := -1;
+   Credits_Text_ID           : Integer := -1;
+   Credits_Text_X            : constant Single := 0.0;
+   Credits_Text_Y            : constant Single := -1.0;
+   Credits_X                 : constant Single := 0.0;
+   Credits_Y                 : constant Single := -1.0;
+   Credits_Pos_X             : constant Single := 0.0;
+   Credits_Pos_Y             : constant Single := -1.0;
+   Cal_Kb_Cursor_Curr_Item   : constant Integer := -1;
+   Cal_GP_Cursor_Curr_Item   : constant Integer := -1;  -- GP: game pad
+   Input_Cursor_Current_Item : Input_Choice_Type;
+   Text_Background_Pos       : constant GL.Types.Singles.Vector2 := (0.0, 0.0);
+   Text_Background_Scale     : GL.Types.Singles.Vector2 := (1.0, 1.0);
+   Text_Background_Texture   : GL.Objects.Textures.Texture;
+   Menu_Credits_Texture      : GL.Objects.Textures.Texture;
+   Title_Version_Text        : Integer := -1;
+   End_Story_Text            : Integer := -1;
+   Joy_Name                  : Unbounded_String := To_Unbounded_String ("");
+   Joystick_Detected_Text    : Integer := -1;
+   Greatest_Text_Axis        : Integer := -1;
+   Restart_Graphics_Text     : constant Positive := 1;
+   Graphics_Restart_Flag     : Boolean := False;
+   Already_Bound_Text        : Integer := -1;
+   Title_Shader_Program      : GL.Objects.Programs.Program;
+   Title_Skull_Texture       : GL.Objects.Textures.Texture;
+   Greatest_Axis_Text        : Integer := -1;
+   Modify_Binding_Mode       : Boolean := False;
+   Already_Bound             : Boolean := False;
 
    Position_Buffer                 : GL.Objects.Buffers.Buffer;
    Texture_Buffer                  : GL.Objects.Buffers.Buffer;
@@ -136,7 +138,7 @@ package body MMenu is
                                        Audio_Choice_Type'First;
    Input_Cursor_Curr_Item          : Input_Choice_Type :=
                                        Input_Choice_Type'First;
-   Quit_Cursor_Curr_Item          : Quit_Choice_Type :=
+   Quit_Cursor_Curr_Item           : Quit_Choice_Type :=
                                        Quit_Choice_Type'First;
 --     Cursor_Current_Item         : Integer := -1;
    Cursor_Point_Count          : Integer := 0;
@@ -318,9 +320,12 @@ package body MMenu is
             Cursor_Pos (GL.Y) := 0.0;
          else
             for index in Main_Choice_Type'Range loop
+--                 Game_Utils.Game_Log ("Mmenu.Draw_Menu Main_Text (index): " &
+--                                     Integer'Image (Main_Text (index)));
                Text.Draw_Text (Main_Text (index));
             end loop;
 
+            --  Set scale and position for drawing Skull_Cursor
             Cursor_Scale := 120.0;
             Cursor_Pos (GL.X) := -312.0 / Single (Framebuffer_Width);
             Cursor_Pos (GL.Y) :=

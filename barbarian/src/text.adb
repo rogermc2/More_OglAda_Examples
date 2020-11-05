@@ -246,6 +246,9 @@ package body Text is
       Enable (Blend);
 
       theText := Renderable_Texts.Element (Text_Index);
+--        Game_Utils.Game_Log ("Text.Draw_Text theText Top_Left: " &
+--                               Single'Image (theText.Top_Left_X)
+--                            & ", " & Single'Image (theText.Top_Left_Y));
       if not theText.Points_VBO.Initialized then
          raise Text_Exception with
          "Text.Draw_Text the Points_VBO is invalid.";
@@ -284,10 +287,9 @@ package body Text is
 
       GL.Objects.Programs.Use_Program (Font_Shader);
       Text_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.025,
-                                           theText.Top_Left_Y + 0.025));
+                                            theText.Top_Left_Y + 0.025));
       Text_Shader_Manager.Set_Text_Colour_ID ((theText.Red, theText.Green,
                                                theText.Blue, theText.A));
---        Text_Shader_Manager.Set_Text_Colour_ID ((1.0, 0.0, 0.0, 1.0));
       GL.Objects.Vertex_Arrays.Draw_Arrays
         (Triangles, 0, Int (theText.Point_Count));
 
@@ -521,7 +523,7 @@ package body Text is
                Tex_Coords_Tmp (Current_Index_6 + 4) := (S + Col_Recip, 1.0 - T + Row_Recip);
                Tex_Coords_Tmp (Current_Index_6 + 5) := (S, 1.0 - T + Row_Recip);
 
-               --  Update record of bottom-right corner of text area
+               --  Update values of bottom-right corner of text area
                if X_Pos + Font_Width > Br_X then
                   Br_X := X_Pos + Font_Width;
                end if;

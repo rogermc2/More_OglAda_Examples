@@ -70,13 +70,13 @@ package body Input_Callback is
       end if;
       if Action = Press then
          if not Input_State.Keys_Locked (Key) then
-			Input_State.Keys_Down (Key) := True;
-			Input_State.Key_Pressed := True;
-			Input_State.Last_Key_Down := Key;
+            Input_State.Keys_Down (Key) := True;
+            Input_State.Key_Pressed := True;
+            Input_State.Last_Key_Down := Key;
          end if;
       elsif Action = Release then
-			Input_State.Keys_Down (Key) := False;
-			Input_State.Keys_Locked (Key) := False;
+         Input_State.Keys_Down (Key) := False;
+         Input_State.Keys_Locked (Key) := False;
       end if;
 
    end Key_Changed;
@@ -104,7 +104,7 @@ package body Input_Callback is
 
    --  ------------------------------------------------------------------------
 
-  procedure Lock_All_Keys is
+   procedure Lock_All_Keys is
    begin
       for index in Input_State.Keys_Down'Range loop
          if Input_State.Keys_Down (index) then

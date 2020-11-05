@@ -184,7 +184,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Main_Game_Loop (Current_Time : Float) is
---        Last_Time   : constant  Float := GL_Utils.Get_Elapsed_Seconds;
       --          Logic_Delta : Float := Current_Time - Last_Time;
    begin
       null;
@@ -227,17 +226,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
       end if;
 
       Is_Running := True;
---        Last_Time := GL_Utils.Get_Elapsed_Seconds;
       Last_Time := Float (Glfw.Time);
---        GL.Window.Set_Viewport (0, 0, Settings.Framebuffer_Width,
---                                Settings.Framebuffer_Height);
 
       while Mmenu.Menu_Open and Is_Running loop
          GL_Utils.Window_Resize (Window);
          GL_Utils.Frame_Buffer_Resize (Window);
 
          Current_Time := Float (Glfw.Time);
---           Current_Time := GL_Utils.Get_Elapsed_Seconds;
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          Utilities.Clear_Background_Colour_And_Depth (Black);
