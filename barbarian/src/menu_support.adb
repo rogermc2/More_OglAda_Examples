@@ -50,6 +50,29 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
+   procedure Check_Close_Menu_Credits (Window      : in out Barbarian_Window;
+                                       Credits_Open, End_Story_Open,
+                                       Menu_Closed : in out Boolean;
+                                       Text_Timer  : in out Float) is
+      use Glfw.Input.Keys;
+      use Input_Handler;
+   begin
+      if Was_Key_Pressed (Window, Space) or Was_Key_Pressed (Window, Escape) or
+        Was_Action_Pressed (Window, Menu_Open_Action) or
+        Was_Action_Pressed (Window, OK_Action) then
+         Credits_Open := False;
+         if End_Story_Open then
+            End_Story_Open := False;
+            Menu_Closed := True;
+         end if;
+         Text_Timer := 0.0;
+         Audio.Stop_Credits_Music;
+         Audio.Pause_Music (False);
+      end if;
+   end Check_Close_Menu_Credits;
+
+   --  -------------------------------------------------------------------------
+
    function Confirm_Quit_Open (Window            : in out Barbarian_Window;
                                Confirm_Quit_Open : in out Boolean)
                                return Boolean is
@@ -187,7 +210,6 @@ package body Menu_Support is
 
       elsif Is_Key_Down (Up) or
         Is_Action_Down (Up_Action) then
-         Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, Up key pressed");
          if Menu_Cursor_Item = Main_New_Game then
             Menu_Cursor_Item := Main_Quit;
          else
@@ -203,10 +225,10 @@ package body Menu_Support is
          else
             Menu_Cursor_Item := Main_Choice_Type'Succ (Menu_Cursor_Item);
          end if;
-         Game_Utils.Game_Log ("Menu_Support.General_Menu_Support, Down key pressed");
          Since_Last_Key := 0.0;
          Audio.Play_Sound (Menu_Beep_Sound, True);
          Result := True;
+
       elsif Was_Key_Pressed (Window, Enter) or
         Was_Action_Pressed (Window, OK_Action) or
         Was_Action_Pressed (Window, Attack_Action) then
@@ -450,29 +472,6 @@ package body Menu_Support is
          end if;
       end if;
    end Process_Menu_Audio;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Process_Menu_Credits (Window      : in out Barbarian_Window;
-                                   Credits_Open, End_Story_Open,
-                                   Menu_Closed : in out Boolean;
-                                   Text_Timer  : in out Float) is
-      use Glfw.Input.Keys;
-      use Input_Handler;
-   begin
-      if Was_Key_Pressed (Window, Space) or Was_Key_Pressed (Window, Escape) or
-        Was_Action_Pressed (Window, Menu_Open_Action) or
-        Was_Action_Pressed (Window, OK_Action) then
-         Credits_Open := False;
-         if End_Story_Open then
-            End_Story_Open := False;
-            Menu_Closed := True;
-         end if;
-         Text_Timer := 0.0;
-         Audio.Stop_Credits_Music;
-         Audio.Pause_Music (False);
-      end if;
-   end Process_Menu_Credits;
 
    --  -------------------------------------------------------------------------
 

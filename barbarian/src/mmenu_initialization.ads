@@ -12,11 +12,17 @@ with Menu_Strings; use Menu_Strings;
 
 package MMenu_Initialization is
 
-   MMenu_Exception : Exception;
+   Num_Credits_Strings   : constant Integer := 47;
+   Num_End_Story_Strings : constant Integer := 18;
 
    type Menu_String_Array is array (Integer range <>) of Unbounded_String;
+   type End_Story_Array is array (1 .. Num_End_Story_Strings) of Integer;
+   type Credits_Text_Array is array (1 .. Num_Credits_Strings) of Integer;
 
-   procedure Init1 (End_Story_Text                           :in out Integer;
+   MMenu_Exception : Exception;
+
+   procedure Init1 (End_Story_Text :in out End_Story_Array;
+                    Credits_Text_Pos : GL.Types.Singles.Vector2;
                     Text_Background_Texture, Menu_Credits_Texture,
                     Title_Skull_Texture, Menu_Cursor_Texture :
                     in out GL.Objects.Textures.Texture);
@@ -27,7 +33,8 @@ package MMenu_Initialization is
    procedure Init_Credits
      (Credits_Shader_Program : in out GL.Objects.Programs.Program;
       Text_Background_Scale  : in out GL.Types.Singles.Vector2;
-      Credits_Text_ID        : in out Integer);
+      Credits_Text_ID        : in out Credits_Text_Array;
+      Credits_Scale, Credits_Pos, Credits_Text_Pos : in out GL.Types.Singles.Vector2);
    procedure Init_Cursor (Cursor_Shader_Program : in out GL.Objects.Programs.Program;
                           Cursor_VAO            : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
                           Cursor_M, Cursor_V    : in out GL.Types.Singles.Matrix4;

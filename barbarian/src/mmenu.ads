@@ -1,9 +1,10 @@
 
 with Input_Callback;
+with MMenu_Initialization;
 
 package MMenu is
 
-   Credits_Text_ID           : Integer := -1;
+   Credits_Text_ID : MMenu_Initialization.Credits_Text_Array;
    MMenu_Exception : Exception;
 
    function Are_We_In_Custom_Maps return Boolean;

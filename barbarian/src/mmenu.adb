@@ -45,7 +45,7 @@ package body MMenu is
    Black              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
    Menu_Text_Y_Offset : constant Single := 270.0; --  orig 300 pixels above horizontal for text to start
    Menu_Big_Text_Size : constant Single := 92.0;  --  orig 80 height of subseq lines to offset below that
-   Credit_Scroll_Rate : constant Float := 0.5;
+   Credit_Scroll_Rate : constant Float := 0.1;    --  orig 0.5
 
    Title_VAO              : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Cursor_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -80,18 +80,18 @@ package body MMenu is
      := (To_Unbounded_String ("nearest"), To_Unbounded_String ("bilinear"),
          To_Unbounded_String ("trilinear"));
    Graphic_Value_Strings  : Graphic_Value_String_Array :=
-                                               (others => To_Unbounded_String (""));
+                              (others => To_Unbounded_String (""));
 
-   Graphic_Value_Text      : Graphic_Value_Array := (others => -1);
-   Cal_KB_Text             : GL_Maths.Integer_Array
+   Graphic_Value_Text               : Graphic_Value_Array := (others => -1);
+   Cal_KB_Text                      : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   Cal_GP_Text             : GL_Maths.Integer_Array
+   Cal_GP_Text                      : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Axis_Binding_Text    : GL_Maths.Integer_Array
+   GP_Axis_Binding_Text             : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   GP_Buttons_Binding_Text : GL_Maths.Integer_Array
+   GP_Buttons_Binding_Text          : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
-   KB_Binding_Text          : GL_Maths.Integer_Array
+   KB_Binding_Text                  : GL_Maths.Integer_Array
      (1 .. Input_Handler.Max_Actions) := (others => -1);
 
    User_Chose_Custom_Maps    : Boolean := False;
@@ -99,12 +99,9 @@ package body MMenu is
    We_Are_In_Custom_Maps     : Boolean := False;
    Title_Author_Text         : Integer := -1;
    Title_Buildstamp_Text     : Integer := -1;
-   Credits_Text_X            : constant Single := 0.0;
-   Credits_Text_Y            : constant Single := -1.0;
-   Credits_X                 : constant Single := 0.0;
-   Credits_Y                 : constant Single := -1.0;
-   Credits_Pos_X             : constant Single := 0.0;
-   Credits_Pos_Y             : constant Single := -1.0;
+   Credits_Text_Pos          : Singles.Vector2 := (0.0, 0.0);
+   Credits_Scale             : Singles.Vector2 := (1.0, 1.0);
+   Credits_Pos               : Singles.Vector2 := (0.0, 0.0);
    Cal_Kb_Cursor_Curr_Item   : constant Integer := -1;
    Cal_GP_Cursor_Curr_Item   : constant Integer := -1;  -- GP: game pad
    Input_Cursor_Current_Item : Input_Choice_Type;
@@ -113,7 +110,7 @@ package body MMenu is
    Text_Background_Texture   : GL.Objects.Textures.Texture;
    Menu_Credits_Texture      : GL.Objects.Textures.Texture;
    Title_Version_Text        : Integer := -1;
-   End_Story_Text            : Integer := -1;
+   End_Story_Text            : End_Story_Array;
    Joy_Name                  : Unbounded_String := To_Unbounded_String ("");
    Joystick_Detected_Text    : Integer := -1;
    Greatest_Text_Axis        : Integer := -1;
@@ -139,21 +136,21 @@ package body MMenu is
                                        Input_Choice_Type'First;
    Quit_Cursor_Curr_Item           : Quit_Choice_Type :=
                                        Quit_Choice_Type'First;
---     Cursor_Current_Item         : Integer := -1;
-   Cursor_Point_Count          : Integer := 0;
-   Cursor_Shader_Program       : GL.Objects.Programs.Program;
-   Credits_Shader_Program      : GL.Objects.Programs.Program;
-   Menu_Cursor_Texture         : GL.Objects.Textures.Texture;
-   Audio_Cursor_Current_Item   : Audio_Choice_Type;
-   Title_Point_Count           : Integer := 0;
-   Cursor_M                    : Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Cursor_V                    : Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Title_M                     : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Title_V                     : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
-   Title_Bounce_Timer          : Float := 5.0;
-   Text_Timer                  : Float := 0.0;
-   Since_Last_Key              : Float := 0.0;
-   Current_Video_Mode          : Integer := -1;
+   --     Cursor_Current_Item         : Integer := -1;
+   Cursor_Point_Count              : Integer := 0;
+   Cursor_Shader_Program           : GL.Objects.Programs.Program;
+   Credits_Shader_Program          : GL.Objects.Programs.Program;
+   Menu_Cursor_Texture             : GL.Objects.Textures.Texture;
+   Audio_Cursor_Current_Item       : Audio_Choice_Type;
+   Title_Point_Count               : Integer := 0;
+   Cursor_M                        : Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Cursor_V                        : Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Title_M                         : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Title_V                         : GL.Types.Singles.Matrix4 := GL.Types.Singles.Identity4;
+   Title_Bounce_Timer              : Float := 5.0;
+   Text_Timer                      : Float := 0.0;
+   Since_Last_Key                  : Float := 0.0;
+   Current_Video_Mode              : Integer := -1;
 
    procedure Draw_Title;
 
@@ -205,31 +202,35 @@ package body MMenu is
       Text_Background_Scale := (512.0 / FB_Width, 400.0 / FB_Height);
       GL.Objects.Programs.Use_Program (Credits_Shader_Program);
       if Menu_Credits_Open then
-         Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Credits_Open");
+         --           Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Credits_Open");
          Utilities.Clear_Background_Colour_And_Depth (Black);
          Disable (Depth_Test);
          Text_Timer := Text_Timer + Elapsed;
 
          Menu_VAO.Bind;
-         Set_Scale ((Credits_X, Credits_Y));
-         Set_Position ((Credits_Pos_X, Credits_Pos_Y));
+         Set_Scale (Credits_Scale);
+         Set_Position (Credits_Pos);
          Texture_Manager.Bind_Texture (0, Menu_Credits_Texture);
          Draw_Arrays (Triangles, 0, 6);
 
          if End_Story_Open then
-            Text.Move_Text (End_Story_Text, Credits_Text_X,
-                            Credits_Text_Y + Single (Credit_Scroll_Rate * Text_Timer));
-            Text.Draw_Text (End_Story_Text);
+            for index in End_Story_Array'Range loop
+               Text.Move_Text (End_Story_Text (index), Credits_Text_Pos (GL.X),
+                               Credits_Text_Pos (GL.Y) - 0.2 * Single (index - 1)
+                                 + Single (Credit_Scroll_Rate * Text_Timer));
+               Text.Draw_Text (End_Story_Text (index));
+            end loop;
          else
---              Game_Utils.Game_Log ("Mmenu.Draw_Menu Credits_Text_ID: " &
---                                   Integer'Image (Credits_Text_ID));
-            Text.Move_Text (Credits_Text_ID, Credits_Text_X,
-                            Credits_Text_Y + Single (Credit_Scroll_Rate * Text_Timer));
-            Text.Draw_Text (Credits_Text_ID);
+            for index in Credits_Text_Array'Range loop
+               Text.Move_Text (Credits_Text_ID (index), Credits_Text_Pos (GL.X),
+                               Credits_Text_Pos (GL.Y) - 0.2 * Single (index - 1)
+                                  + Single (Credit_Scroll_Rate * Text_Timer));
+               Text.Draw_Text (Credits_Text_ID (index));
+            end loop;
          end if;
          Enable (Depth_Test);
       else  --  Menu_Credits not open
---           Game_Utils.Game_Log ("Mmenu.Draw_Menu not Menu_Credits_Open");
+         --           Game_Utils.Game_Log ("Mmenu.Draw_Menu not Menu_Credits_Open");
          Enable (Blend);
          --  text background box
          GL.Objects.Programs.Use_Program (Credits_Shader_Program);
@@ -265,7 +266,7 @@ package body MMenu is
             Cursor_Pos (GL.Y) :=
               2.0 + Single (Audio_Choice_Type'Enum_Rep (Audio_Cursor_Current_Item));
             Cursor_Pos (GL.Y) := (400.0 - 20.0  * (Cursor_Pos (GL.Y) - 1.0)) /
-                                         Single (Framebuffer_Height);
+              Single (Framebuffer_Height);
          elsif Menu_Cal_KB_Open then
             Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Cal_KB_Open");
             for index in 1 .. Input_Handler.Num_Actions loop
@@ -307,7 +308,7 @@ package body MMenu is
             Cursor_Pos (GL.Y) :=
               2.0 + Single (Input_Choice_Type'Enum_Rep (Input_Cursor_Current_Item));
             Cursor_Pos (GL.Y) := (400.0 - 20.0  * (Cursor_Pos (GL.Y) - 1.0)) /
-                                         Single (Framebuffer_Height);
+              Single (Framebuffer_Height);
             Text.Draw_Text (Joystick_Detected_Text);
          elsif Menu_Confirm_Quit_Open then
             Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Confirm_Quit_Open");
@@ -317,8 +318,6 @@ package body MMenu is
             Cursor_Pos (GL.Y) := 0.0;
          else
             for index in Main_Choice_Type'Range loop
---                 Game_Utils.Game_Log ("Mmenu.Draw_Menu Main_Text (index): " &
---                                     Integer'Image (Main_Text (index)));
                Text.Draw_Text (Main_Text (index));
             end loop;
 
@@ -456,8 +455,9 @@ package body MMenu is
       Init_Cursor (Cursor_Shader_Program, Cursor_VAO, Cursor_M, Cursor_V,
                    Cursor_Point_Count);
       Init_Credits (Credits_Shader_Program, Text_Background_Scale,
-                    Credits_Text_ID);
-      Init1 (End_Story_Text, Text_Background_Texture,
+                    Credits_Text_ID, Credits_Scale, Credits_Pos,
+                    Credits_Text_Pos);
+      Init1 (End_Story_Text, Credits_Text_Pos, Text_Background_Texture,
              Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
       Init_Main_Menu_Text (Main_Text);
       Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
@@ -562,11 +562,11 @@ package body MMenu is
             Result := Confirm_Quit_Open (Window, Menu_Confirm_Quit_Open);
          end if;
          if Menu_Credits_Open then
-            Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Credits_Open");
-            Process_Menu_Credits (Window, Menu_Credits_Open,
-                                  Menu_End_Story_Open, Menu_Closed, Text_Timer);
+            --              Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Credits_Open");
+            Check_Close_Menu_Credits (Window, Menu_Credits_Open,
+                                      Menu_End_Story_Open, Menu_Closed, Text_Timer);
          end if;
---           Game_Utils.Game_Log ("Mmenu.Update_Menu General_Menu_Support");
+         --           Game_Utils.Game_Log ("Mmenu.Update_Menu General_Menu_Support");
          General_Menu_Support (Window, Joystick_Detected_Text,
                                To_String (Joy_Name), Menu_Closed,
                                Menu_Graphics_Open, Menu_Audio_Open,

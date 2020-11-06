@@ -12,6 +12,10 @@ with Menu_Strings; use Menu_Strings;
 
 package Menu_Support is
 
+   procedure Check_Close_Menu_Credits (Window      : in out Barbarian_Window;
+                                       Credits_Open, End_Story_Open,
+                                       Menu_Closed : in out Boolean;
+                                       Text_Timer  : in out Float);
    function Confirm_Quit_Open (Window            : in out Barbarian_Window;
                                Confirm_Quit_Open : in out Boolean)
                                return Boolean;
@@ -51,10 +55,6 @@ package Menu_Support is
       Modify_Binding_Mode,
       Already_Bound, Menu_Cal_KB_Open : in out Boolean;
       Since_Last_Key                  : in out Float);
-   procedure Process_Menu_Credits (Window      : in out Barbarian_Window;
-                                   Credits_Open, End_Story_Open,
-                                   Menu_Closed : in out Boolean;
-                                   Text_Timer  : in out Float);
    function Process_Menu_Graphics
      (Window                     : in out Barbarian_Window;
       Graphic_Value_Text         : Menu_Strings.Graphic_Value_Array;

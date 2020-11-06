@@ -1,4 +1,6 @@
 
+with Ada.Text_IO;
+
 with Glfw.Input.Keys;
 
 with GL.Attributes;
@@ -33,83 +35,82 @@ package body MMenu_Initialization is
    --  for text to start
    Menu_Big_Text_Sz   : constant Single := 80.0;  -- height of subseq lines to
    --  offset below that
-   CRLF               : constant String := ASCII.LF & ASCII.CR;
-   CRLF2              : constant String := CRLF & CRLF;
-   CRLF3              : constant String := CRLF2 & CRLF;
-   CRLF4              : constant String := CRLF2 & CRLF2;
+   CRLF               : constant Character := Character'Val (13);
+--     CRLF2              : constant String := CRLF & CRLF;
+--     CRLF3              : constant String := CRLF2 & CRLF;
+--     CRLF4              : constant String := CRLF2 & CRLF2;
 
+   Credits_Strings    : constant array (1 .. Num_Credits_Strings) of
+     String (1 .. 36) :=
+                       ("ANTON GERDELAN                      ",
+                        "DAVID ERMAN                         ",
+                        "ANDREA DOMENICHINI                  ",
+                        "ROMEO DOMENICHINI                   ",
+                        "ERIK WADSTEIN                       ",
+                        "WARLOCK SYMPHONY                    ",
+                        "written and performed by            ",
+                        "HORNANVASARA                        ",
+                        "licenced courtesy of devil creations",
+                        "PROTAGONIST THROUGH PAIN            ",
+                        "written and performed by            ",
+                        "HORNANVASARA                        ",
+                        "Licenced courtesy of Devil Creations",
+                        "WAR DRUMS                           ",
+                        "licenced courtesy of                ",
+                        "Partners In Rhyme                   ",
+                        "crongdor the barbarian was          ",
+                        "originally programmed in c++ with   ",
+                        "OPENGL (graphics) and               ",
+                        "IRRKLANG (audio) libraries.         ",
+                        "all of the major program            ",
+                        "components were written by hand     ",
+                        "in ANTON's after-work hours         ",
+                        "over 4~6 years. No engine or        ",
+                        "framework was used because it's     ",
+                        "more fun to write it yourself!      ",
+                        "ERIK teaches technical artists      ",
+                        "in sweden, and painted concept      ",
+                        "art and made some game elements.    ",
+                        "ROMEO is a drama student and        ",
+                        "produced the promotional video.     ",
+                        "ANDREA has been supporting          ",
+                        "development and making some elements",
+                        "since the first prototype, 6 years  ",
+                        "ago.                                ",
+                        "DAVID ported the first version to   ",
+                        "OS X and recorded some of the sound ",
+                        "effects.                            ",
+                        "Special thanks to EMMA CARRIGAN     ",
+                        "for extensive pre-release testing   ",
+                        "BLENDER was used to build the       ",
+                        "3D models, and GIMP was used to     ",
+                        "draw all of the art with a          ",
+                        "WACOM tablet. AUDACITY was used     ",
+                        "for audio work.                     ",
+                        "UNIVERSAL SOUND EFFECTS library     ",
+                        "is used under licence.              ");
 
-   Credits_String   : constant String :=
-                        "ANTON GERDELAN" & CRLF2 &
-                        "       DAVID ERMAN" & CRLF2 &
-                        "       ANDREA DOMENICHINI" & CRLF2 &
-                        "     ROMEO DOMENICHINI" & CRLF2 &
-                        " ERIK WADSTEIN" & CRLF4 &
-                        "WARLOCK SYMPHONY" & CRLF &
-                        "written and performed by" & CRLF &
-                        "HORNANVASARA" & CRLF &
-                        "licenced courtesy of devil creations" & CRLF2 &
-                        "PROTAGONIST THROUGH PAIN" & CRLF &
-                        "written and performed by" & CRLF &
-                        "HORNANVASARA" & CRLF &
-                        "licenced courtesy of devil creations" & CRLF2 &
-                        "WAR DRUMS" & CRLF &
-                        "licenced courtesy of" & CRLF &
-                        "partners in rhyme" & CRLF4 &
-                        "crongdor the barbarian was" & CRLF &
-                        "originally programmed in c++ with" & CRLF &
-                        "OPENGL (graphics) and" & CRLF &
-                        "IRRKLANG (audio) libraries." & CRLF2 &
-                        "all of the major programme" & CRLF &
-                        "components were written by hand" & CRLF &
-                        "in ANTON's after-work hours" & CRLF &
-                        "over 4~6 years. no engine or" & CRLF &
-                        "framework was used because it's" & CRLF &
-                        "more fun to write it yourself!" & CRLF2 &
-                        "ERIK teaches technical artists" & CRLF &
-                        "in sweden, and painted concept" & CRLF &
-                        "art and made some game elements." & CRLF2 &
-                        "ROMEO is a drama student and" & CRLF &
-                        "produced the promotional video." & CRLF2 &
-                        "ANDREA has been supporting" & CRLF &
-                        "development and making some elements" & CRLF &
-                        "since the first prototype, 6 years" & CRLF &
-                        "ago." & CRLF2 &
-                        "DAVID ported the first version to" & CRLF &
-                        "OS X and recorded some of the sound" & CRLF &
-                        "effects." & CRLF2 &
-                        "Special thanks to EMMA CARRIGAN" & CRLF &
-                        "for extensive pre-release testing" & CRLF2 &
-                        "BLENDER was used to build the" & CRLF &
-                        "3D models, and GIMP was used to" & CRLF &
-                        "draw all of the art with a" & CRLF &
-                        "WACOM tablet. AUDACITY was used" & CRLF &
-                        "for audio work." & CRLF2 &
-                        "UNIVERSAL SOUND EFFECTS library" & CRLF &
-                        "is used under licence." & CRLF2;
+   type End_Story_String_Array is array (1 .. Num_End_Story_Strings) of String (1 .. 38);
+   End_Story_Strings : constant End_Story_String_Array :=
+                       ("Crongdor glanced back at the temple   ",
+                        "through the shadowy palm groves. a    ",
+                        "power, its time long gone, would not  ",
+                        "rise again. the place of his barbarian",
+                        "people assured for now.               ",
+                        "his friend the merchant was waiting   ",
+                        "with two camels. the merchant eyed    ",
+                        "the crown in crongdor's hand.         ",
+                        "you are rich! what will you do now?   ",
+                        "HAH! he said, running his fingers     ",
+                        "through his blood-matted mane.        ",
+                        "with this i will hire a company of    ",
+                        "men to PLUNDER THE WORLD!             ",
+                        "but first, there is a tavern i know   ",
+                        "nearby where the meat is good, and    ",
+                        "the drink is strong. gods know, I     ",
+                        "have earned it today!                 ",
+                        "COME!                                 ");
 
-   End_Story_String : constant String :=
-                        "crongdor glanced back at the temple" & CRLF2 &
-                        "through the shadowy palm groves. a" & CRLF2 &
-                        "power, its time long gone, would not" & CRLF2 &
-                        "rise again. the place of his barbarian" & CRLF2 &
-                        "people assured for now." & CRLF4 &
-                        "his friend the merchant was waiting\" & CRLF2 &
-                        "with two camels. the merchant eyed" & CRLF2 &
-                        "the crown in crongdor's hand." & CRLF4 &
-                        "you are rich! what will you do now?" & CRLF4 &
-                        "HAH! he said, running his fingers" & CRLF2 &
-                        "through his blood-matted mane." & CRLF4 &
-                        "with this i will hire a company of" & CRLF2 &
-                        "men to PLUNDER THE WORLD!" & CRLF2 &
-                        "but first, there is a tavern i know" & CRLF2 &
-                        "nearby where the meat is good, and" & CRLF2 &
-                        "the drink is strong. gods know, i" & CRLF2 &
-                        "have earned it today!" & CRLF3 &
-                        "COME!" & CRLF3;
-
-   Credits_Text_X             : constant Single := 0.0;
-   Credits_Text_Y             : constant Single := -1.0;
    Title_Version_Text         : Integer := -1;
    Restart_Graphics_Text      : Integer := -1;
 
@@ -118,7 +119,8 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init1 (End_Story_Text      :in out Integer;
+   procedure Init1 (End_Story_Text                           : in out End_Story_Array;
+                    Credits_Text_Pos                         : GL.Types.Singles.Vector2;
                     Text_Background_Texture, Menu_Credits_Texture,
                     Title_Skull_Texture, Menu_Cursor_Texture :
                     in out GL.Objects.Textures.Texture) is
@@ -128,9 +130,13 @@ package body MMenu_Initialization is
       Y               : Single := 19.0 / Single (Settings.Framebuffer_Height);
       Menu_Colour     : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
    begin
-      End_Story_Text := Text.Add_Text (End_Story_String, Credits_Text_X,
-                                       Credits_Text_Y, 30.0, 1.0, 1.0, 0.1, 1.0);
-      Text.Set_Text_Visible (End_Story_Text, False);
+      for index in End_Story_Array'Range loop
+         End_Story_Text (index) := Text.Add_Text (End_Story_Strings (index),
+                                       Credits_Text_Pos (GL.X),
+                                       Credits_Text_Pos (GL.Y) + 10.0 * Single (index - 1),
+                                       30.0, 1.0, 1.0, 0.1, 1.0);
+         Text.Set_Text_Visible (End_Story_Text (index), False);
+      end loop;
 
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/skull_small_helmet_painterv_shade.png", Menu_Cursor_Texture, False, True);
@@ -183,9 +189,11 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Credits
-     (Credits_Shader_Program : in out GL.Objects.Programs.Program;
-      Text_Background_Scale : in out Singles.Vector2;
-      Credits_Text_ID        : in out Integer) is
+     (Credits_Shader_Program                       : in out GL.Objects.Programs.Program;
+      Text_Background_Scale                        : in out Singles.Vector2;
+      Credits_Text_ID                              : in out Credits_Text_Array;
+      Credits_Scale, Credits_Pos, Credits_Text_Pos : in out
+        GL.Types.Singles.Vector2) is
       use GL.Objects.Programs;
       use GL.Types;
       use Menu_Credits_Shader_Manager;
@@ -193,9 +201,6 @@ package body MMenu_Initialization is
       FB_Width       : constant Single := Single (Settings.Framebuffer_Width);
       FB_Height      : constant Single := Single (Settings.Framebuffer_Height);
       Scale          : Single := 2048.0;
-      Credits_S      : Singles.Vector2;
-      Credits_P      : constant Singles.Vector2 := (0.0, 0.0);
-      Credits_Text_X : constant Single := -715.0 / FB_Width;
    begin
       Menu_Credits_Shader_Manager.Init (Credits_Shader_Program);
       if Framebuffer_Width < 1024 or Framebuffer_Height < 1024 then
@@ -204,14 +209,20 @@ package body MMenu_Initialization is
          Scale := 1024.0;
       end if;
 
-      Credits_S := (Scale / FB_Width, Scale / FB_Height);
+      Credits_Scale := (Scale / FB_Width, Scale / FB_Height);
+      Credits_Pos := (0.0, 0.2);
+      Credits_Text_Pos := (-0.9, -0.9);
       Use_Program (Credits_Shader_Program);
-      Set_Scale (Credits_S);
-      Set_Position (Credits_P);
+      Set_Scale (Credits_Scale);
+      Set_Position (Credits_Pos);
       Text_Background_Scale := (512.0 / FB_Width, 400.0 / FB_Height);
-      Credits_Text_ID := Text.Add_Text (Credits_String, Credits_Text_X,
-                                        Credits_Text_Y, 30.0, 1.0, 1.0, 1.0, 1.0);
-      Text.Set_Text_Visible (Credits_Text_ID, False);
+      for index in Credits_Strings'Range loop
+         Credits_Text_ID (index) :=
+           Text.Add_Text (Credits_Strings (index), Credits_Text_Pos (GL.X),
+                          Credits_Text_Pos (GL.Y),
+                          20.0, 1.0, 1.0, 1.0, 1.0);  --  orig pixels 30.0
+         Text.Set_Text_Visible (Credits_Text_ID (index), False);
+      end loop;
    end Init_Credits;
 
    --  --------------------------- ---------------------------------------------
@@ -275,8 +286,8 @@ package body MMenu_Initialization is
         (Integer'Image (Multi_Sample_Anti_Aliasing));
       Graphic_Value_Strings (Graphic_Ssaam) := To_Unbounded_String
         (Single'Image (Super_Sample_Anti_Aliasing));
-         Graphic_Value_Strings (Graphic_Render_Dist) := To_Unbounded_String
-             (Integer'Image (Render_Distance));
+      Graphic_Value_Strings (Graphic_Render_Dist) := To_Unbounded_String
+        (Integer'Image (Render_Distance));
       Graphic_Value_Strings (Graphic_Far_Clip) := To_Unbounded_String
         (Single'Image (Far_Clip));
       Graphic_Value_Strings (Graphic_Auto_Blood_Wipe) :=
@@ -291,12 +302,12 @@ package body MMenu_Initialization is
    procedure Init_Graphic_Text
      (Graphics_Text, Graphic_Value_Text : in out Graphic_Value_Array;
       Graphic_Value_Strings             : Graphic_Value_String_Array) is
-      X1  : constant Single :=
-              (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
-      X2  : constant Single :=
-              (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
-      Y   : constant Single :=
-              760.0 / Single (Settings.Framebuffer_Height);
+      X1     : constant Single :=
+                 (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
+      X2     : constant Single :=
+                 (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
+      Y      : constant Single :=
+                 760.0 / Single (Settings.Framebuffer_Height);
       Y_Step : Single := 0.0;
    begin
       for index in Graphic_Choice_Type'Range loop
@@ -308,7 +319,7 @@ package body MMenu_Initialization is
 
          Graphic_Value_Text (index) :=
            Text.Add_Text (To_String (Graphic_Value_Strings (index)),
-                           X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                          X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Graphic_Value_Text (index), False);
       end loop;
 
@@ -386,12 +397,12 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Input_Text (Input_Text, Input_Value_Text : in out Input_Text_Array;
-                             Enabled_Strings : Menu_String_Array) is
-      X  : Single :=
-             (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
-      Y  : Single :=
-             760.0 / Single (Settings.Framebuffer_Height);
-      Y_Step : Single := 0.0;
+                              Enabled_Strings              : Menu_String_Array) is
+      X                    : Single :=
+                               (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
+      Y                    : Single :=
+                               760.0 / Single (Settings.Framebuffer_Height);
+      Y_Step               : Single := 0.0;
       Enabled_String_Index : Integer;
    begin
       for index in Input_Choice_Type'Range loop
@@ -425,9 +436,9 @@ package body MMenu_Initialization is
       for index in Main_Choice_Type'Range loop
          Y_Step := Y_Step + 1.0;
          Y := (Menu_Text_Yoffs -
-               Y_Step * Menu_Big_Text_Sz) / Single (Settings.Framebuffer_Height);
---           Game_Utils.Game_Log ("Init_Main_Menu_Text, Menu_String_Item " &
---                                 Menu_Strings.Menu_String_Items (index));
+                 Y_Step * Menu_Big_Text_Sz) / Single (Settings.Framebuffer_Height);
+         --           Game_Utils.Game_Log ("Init_Main_Menu_Text, Menu_String_Item " &
+         --                                 Menu_Strings.Menu_String_Items (index));
          Menu_Text (index) :=
            Text.Add_Text (Menu_Strings.Menu_String_Items (index),
                           1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
@@ -488,7 +499,7 @@ package body MMenu_Initialization is
       for index in Quit_Choice_Type'Range loop
          Y_Step := Y_Step + 1.0;
          Confirm_Quit_Text (index) :=
-                 Text.Add_Text (Quit_Strings (index), X, Y_Step * Y2,
+           Text.Add_Text (Quit_Strings (index), X, Y_Step * Y2,
                           20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Confirm_Quit_Text (index), False);
          Text.Centre_Text (Confirm_Quit_Text (index), 0.0, Y2);
@@ -555,13 +566,13 @@ package body MMenu_Initialization is
    --  ------------------------------------------------------------------------
 
    procedure Init_Various
-     (Input_Text : in out Input_Text_Array; Joy_Name : String;
+     (Input_Text         : in out Input_Text_Array; Joy_Name : String;
       Joystick_Detected_Text, Greatest_Axis_Text,
       Already_Bound_Text : in out Integer) is
-      X  : constant Single :=
-             (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
-      Y  : Single :=
-             (-512.0 + 1500.0) / Single (Settings.Framebuffer_Height);
+      X      : constant Single :=
+                 (-512.0 + 80.0) / Single (Settings.Framebuffer_Width);
+      Y      : Single :=
+                 (-512.0 + 1500.0) / Single (Settings.Framebuffer_Height);
       Y_Step : Single := 0.0;
    begin
       Joystick_Detected_Text  :=
@@ -588,8 +599,8 @@ package body MMenu_Initialization is
 
       for index in Input_Choice_Type'Range loop
          Input_Text (index) :=
-                 Text.Add_Text (Input_Strings (index), X, Y_Step * Y,
-                                20.0, 1.0, 1.0, 1.0, 1.0);
+           Text.Add_Text (Input_Strings (index), X, Y_Step * Y,
+                          20.0, 1.0, 1.0, 1.0, 1.0);
          Text.Set_Text_Visible (Input_Text (index), False);
          Y_Step := Y_Step + 1.0;
       end loop;
