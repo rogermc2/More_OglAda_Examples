@@ -22,7 +22,7 @@ package body Splats_Shader_Manager is
         ((Src ("src/shaders_3_2/splats.vert", Vertex_Shader),
          Src ("src/shaders_3_2/splats.frag", Fragment_Shader)));
 
-      Render_Uniforms.Ambient_Colour_ID :=
+      Render_Uniforms.Ambient_Light_ID :=
           Uniform_Location (Shader_Program, "L_a");
       Render_Uniforms.Caster_Pos_ID :=
           Uniform_Location (Shader_Program, "caster_pos_wor");
@@ -46,7 +46,7 @@ package body Splats_Shader_Manager is
         Uniform_Location (Shader_Program, "V");
 
       Use_Program (Shader_Program);
-      GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Colour_ID, Vec3_0);
+      GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Vec3_0);
       GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
       GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Pos_ID, Vec3_0);
       GL.Uniforms.Set_Single (Render_Uniforms.Dyn_Light_Diff_ID, Vec3_0);
@@ -65,10 +65,10 @@ package body Splats_Shader_Manager is
 
   --  -------------------------------------------------------------------------
 
-   procedure Set_Ambient_Colour (Ambient : Singles.Vector3) is
+   procedure Set_Ambient_Light (Ambient : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Colour_ID, Ambient);
-   end Set_Ambient_Colour;
+      GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Ambient);
+   end Set_Ambient_Light;
 
    --  -------------------------------------------------------------------------
 

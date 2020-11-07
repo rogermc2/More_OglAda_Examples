@@ -5,6 +5,7 @@ with Game_Utils;
 with Manifold;
 with Particle_System;
 with Properties_Shader_Manager;
+with Properties_Skinned_Shader_Manager;
 
 package body Prop_Renderer is
 
@@ -98,6 +99,14 @@ package body Prop_Renderer is
 
       Game_Utils.Game_Log ("---PROPS INITIALIZED---");
    end Init;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Ambient_Light_Level (Level : Singles.Vector3) is
+   begin
+      Properties_Shader_Manager.Set_L_A (Level);
+      Properties_Skinned_Shader_Manager.Set_L_A (Level);
+   end Set_Ambient_Light_Level;
 
    --  -------------------------------------------------------------------------
 

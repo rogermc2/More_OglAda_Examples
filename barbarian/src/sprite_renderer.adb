@@ -184,6 +184,13 @@ package body Sprite_Renderer is
 
     --  -------------------------------------------------------------------------
 
+    procedure Set_Ambient_Light_Level (Rgb : Singles.Vector3) is
+    begin
+        Sprite_Shader_Manager.Set_L_A (Rgb);
+    end Set_Ambient_Light_Level;
+
+    --  -------------------------------------------------------------------------
+
     procedure Set_Sprite_Current_Sprite
       (Sprite_Index, Current_Sprite : Integer) is
     begin
@@ -254,13 +261,6 @@ package body Sprite_Renderer is
     begin
         Sprites (Sprite_Index).Is_Visible := Visible;
     end Set_Sprite_Visible;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Sr_Set_Ambient_Light_Level (Rgb : Singles.Vector3) is
-    begin
-        Sprite_Shader_Manager.Set_L_A (Rgb);
-    end Sr_Set_Ambient_Light_Level;
 
     --  -------------------------------------------------------------------------
     --  NOTE : assuming blend etc. already set

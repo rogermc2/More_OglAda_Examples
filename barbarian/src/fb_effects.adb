@@ -29,15 +29,20 @@ with FB_Green_Shader_Manager;
 
 package body FB_Effects is
 
+   type FB_Effect is (FB_Default, FB_Gold_Flash, FB_Red_Flash, FB_Fadein,
+                      FB_Fadeout, FB_Screw, FB_Grey, FB_White_Flash,
+                      FB_Green_Flash);
+
    Num_Shader_Effects   : constant Integer := 9;
-   B_Effect_Elapsed     : Float := 0.0;
+   Effect_Elapsed       : Float := 0.0;
    Ww_Fb_Effect_Elapsed : Float := 0.0;
-   Fb_Screw_Fac         : Float := 0.0;
+   Screw_Factor         : Float := 0.0;
    Curr_Ssaa            : Single := 1.0;
 
    FB_VAO               : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    FB_Texture           : GL.Objects.Textures.Texture;
    Special_FB           : GL.Objects.Framebuffers.Framebuffer;  --  g_fb
+   Current_Effect       : FB_Effect := FB_Default;
    FB_Shader_Programs   : array (1 .. Num_Shader_Effects) of
      GL.Objects.Programs.Program;
 
@@ -117,5 +122,25 @@ package body FB_Effects is
          Put_Line ("An exception occurred in FB_Effects.Init.");
          raise;
    end Init;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Fade_In is
+   begin
+      Current_Effect := FB_Fadein;
+      Effect_Elapsed := 0.0;
+   end Fade_In;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Fade_Out is
+   begin
+      if Current_Effect /= FB_Fadeout then
+         Current_Effect := FB_Fadeout;
+         Effect_Elapsed := 0.0;
+      end if;
+   end Fade_Out;
+
+   --  -------------------------------------------------------------------------
 
 end FB_Effects;

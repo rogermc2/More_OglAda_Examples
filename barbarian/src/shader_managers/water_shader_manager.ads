@@ -6,7 +6,7 @@ with GL.Uniforms;
 package Water_Shader_Manager is
 
     type Shader_Uniforms is record
-        Ambient_Light_Colour_ID : GL.Uniforms.Uniform := 0;
+        Ambient_Light_ID        : GL.Uniforms.Uniform := 0;
         Animation_Time_ID       : GL.Uniforms.Uniform := 0;
         Caster_Position_ID      : GL.Uniforms.Uniform := 0;
         Cube_Texture_ID         : GL.Uniforms.Uniform := 0;
@@ -31,7 +31,7 @@ package Water_Shader_Manager is
     end record;
 
     procedure Init (Shader_Program : in out GL.Objects.Programs.Program);
-    procedure Set_Ambient_Light_Colour (Colour : Singles.Vector3);
+    procedure Set_Ambient_Light (Level : Singles.Vector3);
     procedure Set_Animation_Time (theTime : Single);
     procedure Set_Caster_Position (Position : Singles.Vector3);
     procedure Set_Cube_Texture (Texture : Int);

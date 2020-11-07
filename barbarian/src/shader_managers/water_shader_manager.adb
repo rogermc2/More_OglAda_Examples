@@ -20,7 +20,7 @@ package body Water_Shader_Manager is
           ((Src ("src/shaders_3_2/water.vert", Vertex_Shader),
            Src ("src/shaders_3_2/water.frag", Fragment_Shader)));
 
-        Render_Uniforms.Ambient_Light_Colour_ID :=
+        Render_Uniforms.Ambient_Light_ID :=
           Uniform_Location (Shader_Program, "L_a");
         Render_Uniforms.Animation_Time_ID :=
           Uniform_Location (Shader_Program, "t");
@@ -59,7 +59,7 @@ package body Water_Shader_Manager is
 --          Game_Utils.Game_Log ("Render_Uniforms initialized");
 
         Use_Program (Shader_Program);
-        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_Colour_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Animation_Time_ID, 0.0);
         GL.Uniforms.Set_Single (Render_Uniforms.Caster_Position_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
@@ -85,10 +85,10 @@ package body Water_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Ambient_Light_Colour (Colour : Singles.Vector3) is
+    procedure Set_Ambient_Light (Level : Singles.Vector3) is
     begin
-        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_Colour_ID, Colour);
-    end Set_Ambient_Light_Colour;
+        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Level);
+    end Set_Ambient_Light;
 
     --  -------------------------------------------------------------------------
 

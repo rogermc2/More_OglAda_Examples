@@ -39,6 +39,7 @@ with Prop_Renderer;
 with Settings;
 with Shader_Manager;
 with Shadows;
+with Splats_Shader_Manager;
 with Sprite_Renderer;
 with Text;
 with Texture_Manager;
@@ -185,9 +186,16 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
    procedure Main_Game_Loop (Current_Time : Float) is
       --          Logic_Delta : Float := Current_Time - Last_Time;
+      Cheated_On_Map : Boolean := False;
+      Ambient_Light  : constant Singles.Vector3 := (0.025, 0.025, 0.025);
    begin
-      null;
-
+      Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
+      Game_Utils.Game_Log ("---LEVEL START---");
+      Sprite_Renderer.Set_Ambient_Light_Level (Ambient_Light);
+      Manifold.Set_Manifold_Ambient_Light (Ambient_Light);
+      Prop_Renderer.Set_Ambient_Light_Level (Ambient_Light);
+      Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
+      FB_Effects.Fade_In;
    end Main_Game_Loop;
 
    --  ------------------------------------------------------------------------
