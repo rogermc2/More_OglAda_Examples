@@ -160,14 +160,33 @@ package body Manifold is
    procedure Update_Manifold_Static_Lights_Uniforms  is
       use Batch_Manager;
       use Light_Indices_Package;
-      Index : Positive := Static_Lights.First_Index;
-      aLight : Static_Light_Data;
+      Index     : Positive := Static_Lights.First_Index;
+      aLight    : Static_Light_Data;
+      Positions : Singles.Vector3_Array
+        (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
+      Diffuse   : Singles.Vector3_Array
+        (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
+      Specular : Singles.Vector3_Array
+        (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
+      Ranges : Single_Array
+        (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
    begin
       while Index <= Static_Lights.Last_Index loop
          aLight := Element (Static_Lights, Index);
-         Manifold_Shader_Manager.Set_Light_Position (aLight.Position);
+         Positions (Int (Index)) := aLight.Position;
+         Diffuse (Int (Index)) := aLight.Diffuse;
+         Specular (Int (Index)) := aLight.Specular;
+         Ranges (Int (Index)) := aLight.Light_Range;
          Index := Index + 1;
       end loop;
+      Manifold_Shader_Manager.Set_Light_Positions (Positions);
+      Water_Shader_Manager.Set_Light_Position (Positions);
+      Manifold_Shader_Manager.Set_Lights_Diffuse (Diffuse);
+      Water_Shader_Manager.Set_Light_Diffuse (Diffuse);
+      Manifold_Shader_Manager.Set_Lights_Specular (Specular);
+      Water_Shader_Manager.Set_Light_Specular (Specular);
+      Manifold_Shader_Manager.Set_Light_Ranges (Ranges);
+      Water_Shader_Manager.Set_Light_Range (Ranges);
    end Update_Manifold_Static_Lights_Uniforms;
 
    --  ----------------------------------------------------------------------------

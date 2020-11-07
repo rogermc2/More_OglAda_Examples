@@ -23,7 +23,7 @@ package body Manifold_Shader_Manager is
           ((Src ("src/shaders_3_2/manifold.vert", Vertex_Shader),
            Src ("src/shaders_3_2/manifold.frag", Fragment_Shader)));
 
-        Render_Uniforms.Ambient_Light_Colour_ID :=
+        Render_Uniforms.Ambient_Light_ID :=
           Uniform_Location (Shader_Program, "L_a");
         Render_Uniforms.Caster_Position_ID :=
           Uniform_Location (Shader_Program, "caster_pos_wor");
@@ -58,7 +58,7 @@ package body Manifold_Shader_Manager is
 --          Game_Utils.Game_Log ("Manifold_Shader_Manager Render_Uniforms initialized.");
 
         Use_Program (Shader_Program);
-        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_Colour_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Caster_Position_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
         GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, 0);
@@ -83,10 +83,10 @@ package body Manifold_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Ambient_Light_Colour (Colour : Singles.Vector3) is
+    procedure Set_Ambient_Light (Level : Singles.Vector3) is
     begin
-        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_Colour_ID, Colour);
-    end Set_Ambient_Light_Colour;
+        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Level);
+    end Set_Ambient_Light;
 
     --  -------------------------------------------------------------------------
 
@@ -139,31 +139,31 @@ package body Manifold_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Light_Diffuse (Diffuse : Singles.Vector3_Array) is
+    procedure Set_Lights_Diffuse (Diffuse : Singles.Vector3_Array) is
     begin
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Diffuse_ID, Diffuse);
-    end Set_Light_Diffuse;
+    end Set_Lights_Diffuse;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Light_Position (Position : Singles.Vector3_Array) is
+    procedure Set_Light_Positions (Positions : Singles.Vector3_Array) is
     begin
-        GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Position);
-    end Set_Light_Position;
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Positions);
+    end Set_Light_Positions;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Light_Range (Light_Range : Single_Array) is
+    procedure Set_Light_Ranges (Light_Range : Single_Array) is
     begin
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Range_ID, Light_Range);
-    end Set_Light_Range;
+    end Set_Light_Ranges;
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Light_Specular (Specular : Singles.Vector3_Array) is
+    procedure Set_Lights_Specular (Specular : Singles.Vector3_Array) is
     begin
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Specular_ID, Specular);
-    end Set_Light_Specular;
+    end Set_Lights_Specular;
 
     --  -------------------------------------------------------------------------
 

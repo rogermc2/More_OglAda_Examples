@@ -6,7 +6,7 @@ with GL.Uniforms;
 package Manifold_Shader_Manager is
 
     type Shader_Uniforms is record
-        Ambient_Light_Colour_ID : GL.Uniforms.Uniform := 0;
+        Ambient_Light_ID : GL.Uniforms.Uniform := 0;
         Caster_Position_ID      : GL.Uniforms.Uniform := 0;
         Cube_Texture_ID         : GL.Uniforms.Uniform := 0;
         Diff_Map_ID             : GL.Uniforms.Uniform := 0;
@@ -29,7 +29,7 @@ package Manifold_Shader_Manager is
     end record;
 
     procedure Init (Shader_Program : in out GL.Objects.Programs.Program);
-    procedure Set_Ambient_Light_Colour (Colour : Singles.Vector3);
+    procedure Set_Ambient_Light (Level : Singles.Vector3);
     procedure Set_Caster_Position (Position : Singles.Vector3);
     procedure Set_Cube_Texture (Texture : Int);
     procedure Set_Diff_Map (Map : Int);
@@ -37,10 +37,10 @@ package Manifold_Shader_Manager is
     procedure Set_Dynamic_Light_Diff (Diff : Singles.Vector3);
     procedure Set_Dynamic_Light_Spec (Spec : Singles.Vector3);
     procedure Set_Dynamic_Light_Range (Light_Range : Single);
-    procedure Set_Light_Diffuse (Diffuse : Singles.Vector3_Array);
-    procedure Set_Light_Position (Position : Singles.Vector3_Array);
-    procedure Set_Light_Range (Light_Range : Single_Array);
-    procedure Set_Light_Specular (Specular : Singles.Vector3_Array);
+    procedure Set_Lights_Diffuse (Diffuse : Singles.Vector3_Array);
+    procedure Set_Light_Positions (Positions : Singles.Vector3_Array);
+    procedure Set_Light_Ranges (Light_Range : Single_Array);
+    procedure Set_Lights_Specular (Specular : Singles.Vector3_Array);
     procedure Set_Model_Matrix (Model_Matrix : Singles.Matrix4);
     procedure Set_Outline_Pass (Pass : Single);
     procedure Set_Projection_Matrix (Projection_Matrix : Singles.Matrix4);
