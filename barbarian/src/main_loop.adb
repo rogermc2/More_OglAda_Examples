@@ -28,6 +28,7 @@ with GL_Utils;
 with GUI;
 with GUI_Level_Chooser;
 with Input_Handler;
+with Main_Game_Loop_Support;
 with Manifold;
 with Maps_Manager;
 with Mesh_Loader;
@@ -192,12 +193,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Main_Game_Loop (Window : in out Input_Callback.Barbarian_Window) is
+      use Main_Game_Loop_Support;
       Is_Running       : Boolean := True;
       Main_Menu_Quit   : Boolean := False;
-      Current_Time     : Float := Float (Glfw.Time);
-      Last_Time        : Float := Current_Time;
+--        Current_Time     : Float := Float (Glfw.Time);
+      Last_Time        : Float := Float (Glfw.Time);
       Delta_Time       : Float := 0.0;
-      Delta_Time_Ms    : Float := 0.0;
       Video_Timer      : Float := 0.0;
       Video_Dump_Timer : Float := 0.0;
       Frame_Time       : Float := 0.04;
@@ -206,25 +207,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
       Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
       Game_Camera.Is_Dirty := True;
       while Is_Running loop
-         Current_Time := Float (Glfw.Time);
-         Delta_Time := Current_Time - Last_Time;
-         Delta_Time_Ms := 1000.0 * Delta_Time;
-         Last_Time := Current_Time;
-         if not Main_Menu_Open then
-            Level_Time := Level_Time + Delta_Time;
-         end if;
-         Avg_Frame_Time_Accum_Ms := Avg_Frame_Time_Accum_Ms + Delta_Time_Ms;
-         Curr_Frame_Time_Accum_Ms := Curr_Frame_Time_Accum_Ms + Delta_Time_Ms;
-         Avg_Frames_Count := Avg_Frames_Count + 1;
-         Curr_Frames_Count := Curr_Frames_Count + 1;
-         if Avg_Frames_Count > 999 then
-            Avg_Frames_Count := 0;
-            Avg_Frame_Time_Accum_Ms := 0.0;
-         end if;
-         if Curr_Frames_Count > 99 then
-            Curr_Frames_Count := 0;
-            Curr_Frame_Time_Accum_Ms := 0.0;
-         end if;
+         Update_Timers (Main_Menu_Open, Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
+                        Curr_Frame_Time_Accum_Ms, Level_Time, Avg_Frames_Count,
+                        Curr_Frames_Count);
 
          if Main_Menu_Open then
             Main_Menu_Quit := not MMenu.Update_Menu (Window, Delta_Time);
