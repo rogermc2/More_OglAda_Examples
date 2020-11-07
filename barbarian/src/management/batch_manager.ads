@@ -35,16 +35,16 @@ package Batch_Manager is
      Ada.Containers.Vectors (Positive, Static_Light_Data);
    type Static_Light_Vector is new Static_Light_Package.Vector with null record;
 
-   package Light_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
-     (Positive);
-   type Light_Indices_List is new Light_Indices_Package.List with null record;
+--     package Light_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
+--       (Positive);
+--     type Light_Indices_List is new Light_Indices_Package.List with null record;
 
-   package Tile_Indices_Package is new Ada.Containers.Vectors
-     (Positive, Positive);
-   type Tile_Indices is new Tile_Indices_Package.Vector with null record;
+   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
+     (Positive);
+   type Tile_Indices_List is new Tile_Indices_Package.List with null record;
 
    type Batch_Meta is record
-      Tiles                : Tile_Indices;
+      Tiles                : Tile_Indices_List;
 --        Tile_Count           : Integer := 0;
       AABB_Mins            : Singles.Vector3;
       AABB_Mixs            : Singles.Vector3;
@@ -69,7 +69,7 @@ package Batch_Manager is
       Points_VBO           : GL.Objects.Buffers.Buffer;
       Normals_VBO          : GL.Objects.Buffers.Buffer;
       Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
-      Static_Light_Indices : Light_Indices_List;
+      Static_Light_Indices : Tile_Indices_List;
 --        Static_Light_Count   : Integer := 0;
    end record;
 

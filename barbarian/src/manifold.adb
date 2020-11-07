@@ -27,6 +27,47 @@ package body Manifold is
    Water_Mesh_Texcoords     : GL_Maths.Vector2_List;
    Water_Mesh_Point_Count   : Integer := 0;
 
+   procedure Clear_Tile_Indices_Recursive (Indices : in out Batch_Manager.Tile_Indices_List;
+                                           Light_Cursor  : Batch_Manager.Tile_Indices_Package.Cursor);
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Clear_Manifold_Lights is
+      use Batch_Manager;
+      use Batches_Package;
+      use Tile_Indices_Package;
+      Batch_Cursor  : Batches_Package.Cursor := Batches.First;
+      Batch         : Batch_Manager.Batch_Meta;
+      Light_Indices : Batch_Manager.Tile_Indices_List;
+      Total_Batches : constant Integer := Batches_Across * Batches_Down;
+   begin
+      while Has_Element (Batch_Cursor) loop
+         Batch := Element (Batch_Cursor);
+         Light_Indices := Batch.Static_Light_Indices;
+         Clear_Tile_Indices_Recursive (Light_Indices, Light_Indices.First);
+         Next (Batch_Cursor);
+      end loop;
+   end Clear_Manifold_Lights;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Clear_Tile_Indices_Recursive (Indices : in out Batch_Manager.Tile_Indices_List;
+                                           Light_Cursor : Batch_Manager.Tile_Indices_Package.Cursor) is
+      use Ada.Containers;
+      use Batch_Manager;
+      use Tiles_Manager;
+      use Tile_Indices_Package;
+      Next_Cursor : Tile_Indices_Package.Cursor;
+   begin
+      if not Indices.Is_Empty then
+         if Light_Cursor /= Indices.Last then
+            Next_Cursor := Next (Light_Cursor);
+            Clear_Tile_Indices_Recursive (Indices, Next_Cursor);
+            Delete (Indices, Next_Cursor);
+         end if;
+      end if;
+   end Clear_Tile_Indices_Recursive;
+
    --  ----------------------------------------------------------------------------
 
    procedure Free_Manifold_Mesh_Data is
@@ -40,14 +81,14 @@ package body Manifold is
                              return Integer is
       use GL.Types;
       use Batch_Manager;
-      use Light_Indices_Package;
+      use Tile_Indices_Package;
       Batch_Index   : constant Positive :=
                         Get_Batch_Index (Column, Row);
       Batch         : Batch_Manager.Batch_Meta;
-      Light_Indices : Batch_Manager.Light_Indices_List;
+      Light_Indices : Batch_Manager.Tile_Indices_List;
       Light_Cursor  : Cursor;
---        Light_Index   : Positive;
---        theLight      : Batch_Manager.Static_Light_Data;
+      --        Light_Index   : Positive;
+      --        theLight      : Batch_Manager.Static_Light_Data;
       Found         : Boolean := False;
       Result        : Integer := -1;
    begin
@@ -71,8 +112,8 @@ package body Manifold is
          end loop;
       end if;
       if Found then
---           Light_Index := Element (Light_Cursor);
---           theLight := Static_Lights.Element (Light_Index);
+         --           Light_Index := Element (Light_Cursor);
+         --           theLight := Static_Lights.Element (Light_Index);
          Result := Element (Light_Cursor);
       end if;
       return Result;
@@ -159,16 +200,16 @@ package body Manifold is
 
    procedure Update_Static_Lights_Uniforms  is
       use Batch_Manager;
-      use Light_Indices_Package;
+      use Tile_Indices_Package;
       Index     : Positive := Static_Lights.First_Index;
       aLight    : Static_Light_Data;
       Positions : Singles.Vector3_Array
         (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
       Diffuse   : Singles.Vector3_Array
         (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
-      Specular : Singles.Vector3_Array
+      Specular  : Singles.Vector3_Array
         (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
-      Ranges : Single_Array
+      Ranges    : Single_Array
         (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
    begin
       while Index <= Static_Lights.Last_Index loop

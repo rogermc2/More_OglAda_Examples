@@ -218,10 +218,38 @@ procedure Init is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Boulder_Crushes (Value : Integer) is
+   begin
+      Boulder_Crushes := Value;
+   end Set_Boulder_Crushes;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Cheated_On_Map (State : Boolean) is
    begin
       Cheated := State;
    end Set_Cheated_On_Map;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Fall_Kills (Value : Integer) is
+   begin
+      Fall_Kills := Value;
+   end Set_Fall_Kills;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Hammer_Kills (Value : Integer) is
+   begin
+      Hammer_Kills := Value;
+   end Set_Hammer_Kills;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Pillar_Crushes (Value : Integer) is
+   begin
+      Pillar_Crushes := Value;
+   end Set_Pillar_Crushes;
 
    --  ------------------------------------------------------------------------
 

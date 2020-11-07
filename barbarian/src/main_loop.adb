@@ -194,6 +194,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
    procedure Main_Game_Loop (Window : in out Input_Callback.Barbarian_Window) is
       use Main_Game_Loop_Support;
+      use GUI_Level_Chooser;
       Is_Running       : Boolean := True;
       Main_Menu_Quit   : Boolean := False;
 --        Current_Time     : Float := Float (Glfw.Time);
@@ -207,15 +208,22 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
       Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
       Game_Camera.Is_Dirty := True;
       while Is_Running loop
-         Update_Timers (Main_Menu_Open, Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
-                        Curr_Frame_Time_Accum_Ms, Level_Time, Avg_Frames_Count,
+         Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
+                        Curr_Frame_Time_Accum_Ms, Avg_Frames_Count,
                         Curr_Frames_Count);
-
-         if Main_Menu_Open then
+         if not Main_Menu_Open then
+            Level_Time := Level_Time + Delta_Time;
+         else  --  Main_Menu_Open
             Main_Menu_Quit := not MMenu.Update_Menu (Window, Delta_Time);
             if MMenu.Menu_Was_Closed then
                Main_Menu_Open := False;
                FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
+            end if;
+            if MMenu.Did_User_Choose_New_Game or
+              MMenu.Did_User_Choose_Custom_Maps then
+               Main_Menu_Open := False;
+               Quit_Game := False;
+               Unload_Level (Camera_World_Pos);
             end if;
          end if;
 

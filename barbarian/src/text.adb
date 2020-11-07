@@ -549,6 +549,13 @@ package body Text is
 
    --  ------------------------------------------------------------------------
 
+   procedure Unload_Comic_Texts is
+   begin
+      null;
+   end Unload_Comic_Texts;
+
+   --  ----------------------------------------------------------------------------
+
    procedure Update_Text (ID : Positive; aString : String) is
       Item : Renderable_Text;
       use GL.Types;

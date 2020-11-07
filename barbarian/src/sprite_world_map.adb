@@ -2,73 +2,88 @@
 with Batch_Manager;
 package body Sprite_World_Map is
 
-    Max_Sprites_In_Tile : constant Integer := 64;
+   Max_Sprites_In_Tile : constant Integer := 64;
 
-    type Sprites_Int_Array is array
-      (1 .. Batch_Manager.Max_Rows, 1 .. Batch_Manager.Max_Cols,
-       1 .. Max_Sprites_In_Tile) of Integer;
-    type Sprites_Count_Array is array
-      (1 .. Int (Batch_Manager.Max_Rows), 1 .. Int (Batch_Manager.Max_Cols)) of Integer;
-    type Sprites_Single_Array is array
-      (1 .. Batch_Manager.Max_Rows, 1 .. Batch_Manager.Max_Cols,
-       1 .. Max_Sprites_In_Tile) of Single;
+   type Sprites_Int_Array is array
+     (1 .. Batch_Manager.Max_Rows, 1 .. Batch_Manager.Max_Cols,
+      1 .. Max_Sprites_In_Tile) of Integer;
+   type Sprites_Count_Array is array
+     (1 .. Int (Batch_Manager.Max_Rows), 1 .. Int (Batch_Manager.Max_Cols)) of Integer;
+   type Sprites_Single_Array is array
+     (1 .. Batch_Manager.Max_Rows, 1 .. Batch_Manager.Max_Cols,
+      1 .. Max_Sprites_In_Tile) of Single;
 
-    Index_Of_Sprites          : Sprites_Int_Array :=
-                                  (others => (others => (others => 0)));
-    Height_Of_Sprites         : Sprites_Single_Array :=
-                                  (others => (others => (others => (0.0))));
-    Count_Of_Sprites_In_Tiles : Sprites_Count_Array := (others => (others => 0));
+   Index_Of_Sprites          : Sprites_Int_Array :=
+                                 (others => (others => (others => 0)));
+   Height_Of_Sprites         : Sprites_Single_Array :=
+                                 (others => (others => (others => (0.0))));
+   Count_Of_Sprites_In_Tiles : Sprites_Count_Array := (others => (others => 0));
 
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
-    procedure Add_New_Sprite_To_World_Map (U, V : Int; Y : Single;
+   procedure Add_New_Sprite_To_World_Map (U, V      : Int; Y : Single;
+                                          Sprite_ID : Integer) is
+      Count : constant Integer := Count_Of_Sprites_In_Tiles (U, V) + 1;
+   begin
+      Index_Of_Sprites (U, V, Count) := Sprite_ID;
+      Height_Of_Sprites (U, V, Count) := Y;
+      Count_Of_Sprites_In_Tiles (U, V) := Count;
+   end Add_New_Sprite_To_World_Map;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Free_Sprite_World_Map is
+   begin
+      for row in 1 .. Batch_Manager.Max_Rows loop
+         for col in 1 .. Batch_Manager.Max_Cols loop
+            Count_Of_Sprites_In_Tiles (row, col) := 0;
+            for sprite in 1 .. Max_Sprites_In_Tile loop
+               Index_Of_Sprites (row, col, sprite) := 0;
+               Height_Of_Sprites (row, col, sprite) := 0.0;
+            end loop;
+         end loop;
+      end loop;
+   end Free_Sprite_World_Map;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Move_Sprite_In_World_Map (From_U, From_V, To_U, To_V : Int;
+                                       Y                          : Single; Sprite_ID      : Integer) is
+   begin
+      if From_U > 0 and From_V > 0 then
+         Remove_Sprite_From_World_Map (From_U, From_V, Sprite_ID);
+      end if;
+      Add_New_Sprite_To_World_Map (To_U, To_V, Y, Sprite_ID);
+   end Move_Sprite_In_World_Map;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Remove_Sprite_From_World_Map (U, V      : Int;
                                            Sprite_ID : Integer) is
-        Count : constant Integer := Count_Of_Sprites_In_Tiles (U, V) + 1;
-    begin
-        Index_Of_Sprites (U, V, Count) := Sprite_ID;
-        Height_Of_Sprites (U, V, Count) := Y;
-        Count_Of_Sprites_In_Tiles (U, V) := Count;
-    end Add_New_Sprite_To_World_Map;
+      Count : constant Integer := Count_Of_Sprites_In_Tiles (U, V);
+      Idx   : Integer := 0;
+   begin
+      for index in 1 .. Count loop
+         if Index_Of_Sprites (U, V, index) = Sprite_ID then
+            Index_Of_Sprites (U, V, index) := 0;
+            Height_Of_Sprites (U, V, index) := 0.0;
+            Idx := index;
+         end if;
+      end loop;
+      if Idx <= 0 then
+         raise Sprite_World_Map_Exception with
+           "Sprite_World_Map.Remove_Sprite_From_World_Map, Sprite ID " &
+           Integer'Image (Sprite_ID) & " was not found.";
+      end if;
 
-    --  ------------------------------------------------------------------------
+      for index in reverse Idx .. Count - 1 loop
+         Index_Of_Sprites (U, V, index) := Index_Of_Sprites (U, V, index + 1);
+         Height_Of_Sprites (U, V, index) := Height_Of_Sprites (U, V, index + 1);
+      end loop;
+      Count_Of_Sprites_In_Tiles (U, V) := Count_Of_Sprites_In_Tiles (U, V) - 1;
 
-    procedure Move_Sprite_In_World_Map (From_U, From_V, To_U, To_V : Int;
-                                        Y : Single; Sprite_ID : Integer) is
-    begin
-        if From_U > 0 and From_V > 0 then
-            Remove_Sprite_From_World_Map (From_U, From_V, Sprite_ID);
-        end if;
-        Add_New_Sprite_To_World_Map (To_U, To_V, Y, Sprite_ID);
-    end Move_Sprite_In_World_Map;
+   end Remove_Sprite_From_World_Map;
 
-    --  ------------------------------------------------------------------------
-
-    procedure Remove_Sprite_From_World_Map (U, V : Int;
-                                            Sprite_ID : Integer) is
-        Count : constant Integer := Count_Of_Sprites_In_Tiles (U, V);
-        Idx   : Integer := 0;
-    begin
-        for index in 1 .. Count loop
-            if Index_Of_Sprites (U, V, index) = Sprite_ID then
-                Index_Of_Sprites (U, V, index) := 0;
-                Height_Of_Sprites (U, V, index) := 0.0;
-                Idx := index;
-            end if;
-        end loop;
-        if Idx <= 0 then
-            raise Sprite_World_Map_Exception with
-              "Sprite_World_Map.Remove_Sprite_From_World_Map, Sprite ID " &
-              Integer'Image (Sprite_ID) & " was not found.";
-        end if;
-
-        for index in reverse Idx .. Count - 1 loop
-            Index_Of_Sprites (U, V, index) := Index_Of_Sprites (U, V, index + 1);
-            Height_Of_Sprites (U, V, index) := Height_Of_Sprites (U, V, index + 1);
-        end loop;
-        Count_Of_Sprites_In_Tiles (U, V) := Count_Of_Sprites_In_Tiles (U, V) - 1;
-
-    end Remove_Sprite_From_World_Map;
-
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
 end Sprite_World_Map;
