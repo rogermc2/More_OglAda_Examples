@@ -66,9 +66,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    Level_Name           : Unbounded_String :=
                             To_Unbounded_String ("anton2");
    Level_Time           : Float := 0.0;
+   Main_Menu_Open       : Boolean := False;
    Cheated_On_Map       : Boolean := False;
    Quit_Game            : Boolean := False;
    Skip_Intro           : Boolean := False;
+
+   Avg_Frame_Time_Accum_Ms  : Float := 0.0;
+   Curr_Frame_Time_Accum_Ms : Float := 0.0;
+   Avg_Frames_Count         : Integer := 0;
+   Curr_Frames_Count        : Integer := 0;
    --     Batching_Mode        : Boolean := True;
    --
    --     Reserve_video_Memory : Boolean := True;
@@ -185,12 +191,47 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Main_Game_Loop is
-      --          Logic_Delta : Float := Current_Time - Last_Time;
+   procedure Main_Game_Loop (Window : in out Input_Callback.Barbarian_Window) is
+      Is_Running       : Boolean := True;
+      Main_Menu_Quit   : Boolean := False;
+      Current_Time     : Float := Float (Glfw.Time);
+      Last_Time        : Float := Current_Time;
+      Delta_Time       : Float := 0.0;
+      Delta_Time_Ms    : Float := 0.0;
+      Video_Timer      : Float := 0.0;
+      Video_Dump_Timer : Float := 0.0;
+      Frame_Time       : Float := 0.04;
+      Save_Screenshot : Boolean := False;
    begin
       Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
+      Game_Camera.Is_Dirty := True;
+      while Is_Running loop
+         Current_Time := Float (Glfw.Time);
+         Delta_Time := Current_Time - Last_Time;
+         Delta_Time_Ms := 1000.0 * Delta_Time;
+         Last_Time := Current_Time;
+         if not Main_Menu_Open then
+            Level_Time := Level_Time + Delta_Time;
+         end if;
+         Avg_Frame_Time_Accum_Ms := Avg_Frame_Time_Accum_Ms + Delta_Time_Ms;
+         Curr_Frame_Time_Accum_Ms := Curr_Frame_Time_Accum_Ms + Delta_Time_Ms;
+         Avg_Frames_Count := Avg_Frames_Count + 1;
+         Curr_Frames_Count := Curr_Frames_Count + 1;
+         if Avg_Frames_Count > 999 then
+            Avg_Frames_Count := 0;
+            Avg_Frame_Time_Accum_Ms := 0.0;
+         end if;
+         if Curr_Frames_Count > 99 then
+            Curr_Frames_Count := 0;
+            Curr_Frame_Time_Accum_Ms := 0.0;
+         end if;
 
+         if Main_Menu_Open then
+            Main_Menu_Quit := not MMenu.Update_Menu (Window, Delta_Time);
+         end if;
 
+         Is_Running := not Window.Should_Close and not Main_Menu_Quit;
+      end loop;
    end Main_Game_Loop;
 
    --  ------------------------------------------------------------------------
@@ -272,15 +313,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Run_Game (Window : in out Input_Callback.Barbarian_Window) is
-      Width         : GL.Types.Single;
-      Height        : GL.Types.Single;
-      Map_Path      : Unbounded_String;
-      Flash_Timer   : Float := 0.0;
-      Curr_Time     : constant Float := Float (Glfw.Time);
-      Current_Time  : Float := 0.0;
-      Delta_Time    : Float := 0.0;
-      Last_Time     : Float := Float (Glfw.Time);
-      Ambient_Light : constant Singles.Vector3 := (0.025, 0.025, 0.025);
+      Width           : GL.Types.Single;
+      Height          : GL.Types.Single;
+      Map_Path        : Unbounded_String;
+      Ambient_Light   : constant Singles.Vector3 := (0.025, 0.025, 0.025);
    begin
       Game_Utils.Game_Log ("Main_Loop.Run_Game started");
       Put_Line ("Main_Loop.Run_Game started");
@@ -332,7 +368,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
          Audio.Play_Sound ("enter_portal.wav", False);
 
          Level_Time := 0.0;
-         Main_Game_Loop;
+         Main_Game_Loop (Window);
 
          if MMenu.End_Story_Open then
             MMenu.Play_End_Story_Music;
