@@ -10,6 +10,13 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+   procedure Cam_Wind_In is
+   begin
+      G_Cam.Wind_In_Countdown := 2.0;
+   end Cam_Wind_In;
+
+    --  ------------------------------------------------------------------------
+
     procedure Init is
         use Singles;
         use Maths;

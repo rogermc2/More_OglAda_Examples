@@ -29,6 +29,7 @@ package Camera is
       Manual_Override                 : Boolean := False;
    end record;
 
+   procedure Cam_Wind_In;
    function Default_Camera return Camera_Data;
    procedure Init;
    function Far return Single;

@@ -46,6 +46,7 @@ package body MMenu is
    Menu_Text_Y_Offset : constant Single := 270.0; --  orig 300 pixels above horizontal for text to start
    Menu_Big_Text_Size : constant Single := 92.0;  --  orig 80 height of subseq lines to offset below that
    Credit_Scroll_Rate : constant Float := 0.1;    --  orig 0.5
+   Credits_Music      : constant String := "Protagonist_through_Pain.ogg";
 
    Title_VAO              : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Cursor_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -485,6 +486,14 @@ package body MMenu is
    begin
       return Menu_Closed;
    end Menu_Was_Closed;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Play_End_Story_Music is
+   begin
+	Audio.Pause_Music (True);
+	Audio.Play_Credits_Music (Credits_Music);
+   end Play_End_Story_Music;
 
    --  ------------------------------------------------------------------------
 

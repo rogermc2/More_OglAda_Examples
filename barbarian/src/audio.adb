@@ -79,6 +79,20 @@ package body Audio is
 
    --  -------------------------------------------------------------------------
 
+   procedure Play_Credits_Music (File_Name : String) is
+   begin
+      null;
+   end Play_Credits_Music;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Play_Music (File_Name : String) is
+   begin
+      null;
+   end Play_Music;
+
+   --  -------------------------------------------------------------------------
+
    procedure Play_Sound (File_Name : String; Random_Pitch : Boolean) is
    begin
       null;

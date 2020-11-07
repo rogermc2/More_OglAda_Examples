@@ -31,6 +31,7 @@ package body GUI_Level_Chooser is
    Maps                      : Levels_Maps_Manager.Maps_List;
    Selected_Map_ID           : Positive := 1;
    Selected_Map              : Selected_Map_Manager.Selected_Map_Data;
+   Selected_Map_Track        : Unbounded_String := To_Unbounded_String ("");
    Map_Title_Text            : Integer := -1;
    Map_Story_Text            : Integer := -1;
    Left_Margin_Cl            : Single := 0.0;
@@ -63,7 +64,14 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-   function Get_Selected_Map_Name (Custom : Boolean) return String is
+   function Get_Selected_Map_Music return String is
+   begin
+      return To_String (Selected_Map_Track);
+   end Get_Selected_Map_Music;
+
+   --  ------------------------------------------------------------------------
+
+    function Get_Selected_Map_Name (Custom : Boolean) return String is
       Result      : String := "";
    begin
       if Custom then
@@ -79,7 +87,7 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init is
+procedure Init is
       use GL.Types;
       use Settings;
       Text_Height     : constant Single :=

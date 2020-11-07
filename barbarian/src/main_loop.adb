@@ -16,8 +16,7 @@ with Glfw.Windows.Context;
 with Maths;
 with Utilities;
 
---  with GL_Util;
-
+with Audio;
 with Audio_Manager;
 with Blood_Splats;
 with Camera;
@@ -52,11 +51,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    --     Blue           : constant GL.Types.Singles.Vector4  := (0.0, 0.0, 0.5, 1.0);
    --     Magenta        : constant GL.Types.Singles.Vector4 := (1.0, 0.0, 1.0, 1.0);
    --     Yellow         : constant GL.Types.Singles.Vector4 := (1.0, 1.0, 0.0, 0.5);
-   White          : constant Colors.Color := (1.0, 1.0, 1.0, 0.0);
-   Key_Pressed    : boolean := False;
-   Last_Time      : float := Float (Glfw.Time);
-   --      Title_Track    : constant String := "Warlock_Symphony.ogg";
-   --      Is_Playing_Hammer_Track : Boolean := False;
+   White                   : constant Colors.Color := (1.0, 1.0, 1.0, 0.0);
+   Title_Track             : constant String := "Warlock_Symphony.ogg";
+   Is_Playing_Hammer_Track : Boolean := False;
+   Key_Pressed             : boolean := False;
+   Last_Time               : float := Float (Glfw.Time);
 
    Logic_Step_Seconds   : constant Float := 0.01;
    --      Char_Map_Tell        : Integer;
@@ -66,6 +65,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    Game_Camera          : Camera.Camera_Data := Camera.Default_Camera;
    Level_Name           : Unbounded_String :=
                             To_Unbounded_String ("anton2");
+   Level_Time           : Float := 0.0;
+   Cheated_On_Map       : Boolean := False;
    Quit_Game            : Boolean := False;
    Skip_Intro           : Boolean := False;
    --     Batching_Mode        : Boolean := True;
@@ -118,7 +119,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
       Sprite_Renderer.Init;
       GUI.Init_GUIs;
       Blood_Splats.Init;
---        FB_Effects.Init (Integer (Window_Width), Integer (Window_Height));
+      --        FB_Effects.Init (Integer (Window_Width), Integer (Window_Height));
       Shadows.Init;
       Manifold.Init;
       MMenu.Init;
@@ -130,7 +131,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Introduction
-     (Window : in out Input_Callback.Barbarian_Window;
+     (Window                 : in out Input_Callback.Barbarian_Window;
       Last_Time, Flash_Timer : in out Float; Is_Running : in out Boolean) is
       use Glfw.Input.Keys;
       use Maths.Single_Math_Functions;
@@ -186,19 +187,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
    procedure Main_Game_Loop is
       --          Logic_Delta : Float := Current_Time - Last_Time;
-      Cheated_On_Map : Boolean := False;
-      Ambient_Light  : constant Singles.Vector3 := (0.025, 0.025, 0.025);
    begin
       Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
-      Game_Utils.Game_Log ("---LEVEL START---");
-      Sprite_Renderer.Set_Ambient_Light_Level (Ambient_Light);
-      Manifold.Set_Manifold_Ambient_Light (Ambient_Light);
-      Prop_Renderer.Set_Ambient_Light_Level (Ambient_Light);
-      Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
-      FB_Effects.Fade_In;
-      Manifold.Update_Static_Lights_Uniforms;
-      Prop_Renderer.Update_Static_Lights_Uniforms;
-      Sprite_Renderer.Update_Static_Lights_Uniforms;
+
+
    end Main_Game_Loop;
 
    --  ------------------------------------------------------------------------
@@ -206,15 +198,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    procedure Main_Setup (Window     : in out Input_Callback.Barbarian_Window;
                          Is_Running : in out Boolean) is
       use Glfw.Input;
-      Current_Time : Float := Float (Glfw.Time);
-      Delta_Time   : Float := 0.0;
-      Flash_Timer  : Float := 0.0;
+      Current_Time  : Float := Float (Glfw.Time);
+      Delta_Time    : Float := 0.0;
+      Flash_Timer   : Float := 0.0;
    begin
       Game_Utils.Game_Log ("Main_Loop.Main_Setup started");
       Window.Set_Input_Toggle (Glfw.Input.Sticky_Keys, True);
---        Utilities.Enable_Mouse_Callbacks (Window, True);
---        Window.Enable_Callback (Glfw.Windows.Callbacks.Char);
---        Window.Enable_Callback (Glfw.Windows.Callbacks.Position);
+      --        Utilities.Enable_Mouse_Callbacks (Window, True);
+      --        Window.Enable_Callback (Glfw.Windows.Callbacks.Char);
+      --        Window.Enable_Callback (Glfw.Windows.Callbacks.Position);
 
       Window.Enable_Callback (Glfw.Windows.Callbacks.Framebuffer_Size);
       Window.Enable_Callback (Glfw.Windows.Callbacks.Size);
@@ -251,7 +243,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
          GUI.Draw_Controller_Button_Overlays (Delta_Time);
          Glfw.Input.Poll_Events;
---           --  Poll_Joystick
+         --           --  Poll_Joystick
          Glfw.Windows.Context.Swap_Buffers (Window'Access);
 
          if not MMenu.Update_Menu (Window, Delta_Time) then
@@ -280,31 +272,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Run_Game (Window : in out Input_Callback.Barbarian_Window) is
-      --          use GL.Objects.Buffers;
-      --          use GL.Types.Colors;
-      --          use GL.Types.Singles;     --  for matrix multiplication
-      Width               : GL.Types.Single;
-      Height              : GL.Types.Single;
-      Map_Path            : Unbounded_String;
-      Flash_Timer         : Float := 0.0;
-      Curr_Time           : constant Float := Float (Glfw.Time);
-      Current_Time        : Float := 0.0;
-      Delta_Time          : Float := 0.0;
-      Last_Time           : Float := Float (Glfw.Time);
-      --        Model_Matrix        : constant Matrix4 := Identity4;
-      --          Translation_Matrix  : Matrix4 := Identity4;
-      --          Projection_Matrix   : Matrix4 := Identity4;
-      --          View_Matrix         : Matrix4 := Identity4;
-      --          View_Angle          : constant Maths.Degree := 50.0;
-      --          View_Matrix         : Matrix4 := Identity4;
-      --          Camera_Position     : constant Vector3 := (0.0, 0.0, 5.0);
-      --          Half_Pi             : constant Single := 0.5 * Ada.Numerics.Pi;
-      --          Horizontal_Angle    : constant Single := Ada.Numerics.Pi;
-      --          Vertical_Angle      : constant Single := 0.0;
-      --          Direction           : Vector3;
-      --          Right               : Vector3;
-      --          Up                  : Vector3;
-
+      Width         : GL.Types.Single;
+      Height        : GL.Types.Single;
+      Map_Path      : Unbounded_String;
+      Flash_Timer   : Float := 0.0;
+      Curr_Time     : constant Float := Float (Glfw.Time);
+      Current_Time  : Float := 0.0;
+      Delta_Time    : Float := 0.0;
+      Last_Time     : Float := Float (Glfw.Time);
+      Ambient_Light : constant Singles.Vector3 := (0.025, 0.025, 0.025);
    begin
       Game_Utils.Game_Log ("Main_Loop.Run_Game started");
       Put_Line ("Main_Loop.Run_Game started");
@@ -342,7 +318,29 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
          GL.Toggles.Enable (GL.Toggles.Cull_Face);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
 
+         Game_Utils.Game_Log ("---LEVEL START---");
+         Sprite_Renderer.Set_Ambient_Light_Level (Ambient_Light);
+         Manifold.Set_Manifold_Ambient_Light (Ambient_Light);
+         Prop_Renderer.Set_Ambient_Light_Level (Ambient_Light);
+         Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
+         FB_Effects.Fade_In;
+         Manifold.Update_Static_Lights_Uniforms;
+         Prop_Renderer.Update_Static_Lights_Uniforms;
+         Sprite_Renderer.Update_Static_Lights_Uniforms;
+
+         Camera.Cam_Wind_In;  --  Camera screw-in effect
+         Audio.Play_Sound ("enter_portal.wav", False);
+
+         Level_Time := 0.0;
          Main_Game_Loop;
+
+         if MMenu.End_Story_Open then
+            MMenu.Play_End_Story_Music;
+         else
+            Audio.Play_Music (Title_Track);
+         end if;
+         Is_Playing_Hammer_Track := False;
+         Quit_Game := Window.Should_Close;
       end loop;
 
    exception
