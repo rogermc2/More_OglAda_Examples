@@ -228,6 +228,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
          if Main_Menu_Open then
             Main_Menu_Quit := not MMenu.Update_Menu (Window, Delta_Time);
+            if MMenu.Menu_Was_Closed then
+               Main_Menu_Open := False;
+               FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
+            end if;
          end if;
 
          Is_Running := not Window.Should_Close and not Main_Menu_Quit;

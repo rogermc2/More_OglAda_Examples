@@ -29,10 +29,6 @@ with FB_Green_Shader_Manager;
 
 package body FB_Effects is
 
-   type FB_Effect is (FB_Default, FB_Gold_Flash, FB_Red_Flash, FB_Fadein,
-                      FB_Fadeout, FB_Screw, FB_Grey, FB_White_Flash,
-                      FB_Green_Flash);
-
    Num_Shader_Effects   : constant Integer := 9;
    Effect_Elapsed       : Float := 0.0;
    Ww_Fb_Effect_Elapsed : Float := 0.0;
@@ -140,6 +136,14 @@ package body FB_Effects is
          Effect_Elapsed := 0.0;
       end if;
    end Fade_Out;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Feedback_Effect (Effect : FB_Effect) is
+   begin
+      Current_Effect := Effect;
+      Effect_Elapsed := 0.0;
+   end Set_Feedback_Effect;
 
    --  -------------------------------------------------------------------------
 
