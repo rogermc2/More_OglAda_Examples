@@ -36,6 +36,7 @@ package Prop_Renderer is
    procedure Init;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
    function Update_Props (Seconds : Float) return Boolean;
+   procedure Update_Static_Lights_Uniforms;
 
 private
    Type Prop_Script is record

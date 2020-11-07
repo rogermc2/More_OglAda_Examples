@@ -184,7 +184,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Main_Game_Loop (Current_Time : Float) is
+   procedure Main_Game_Loop is
       --          Logic_Delta : Float := Current_Time - Last_Time;
       Cheated_On_Map : Boolean := False;
       Ambient_Light  : constant Singles.Vector3 := (0.025, 0.025, 0.025);
@@ -196,6 +196,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
       Prop_Renderer.Set_Ambient_Light_Level (Ambient_Light);
       Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
       FB_Effects.Fade_In;
+      Manifold.Update_Static_Lights_Uniforms;
+      Prop_Renderer.Update_Static_Lights_Uniforms;
+      Sprite_Renderer.Update_Static_Lights_Uniforms;
    end Main_Game_Loop;
 
    --  ------------------------------------------------------------------------
@@ -339,7 +342,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
          GL.Toggles.Enable (GL.Toggles.Cull_Face);
          GL.Culling.Set_Cull_Face (GL.Culling.Back);
 
-         Main_Game_Loop (Curr_Time);
+         Main_Game_Loop;
       end loop;
 
    exception

@@ -157,7 +157,7 @@ package body Manifold is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Update_Manifold_Static_Lights_Uniforms  is
+   procedure Update_Static_Lights_Uniforms  is
       use Batch_Manager;
       use Light_Indices_Package;
       Index     : Positive := Static_Lights.First_Index;
@@ -187,7 +187,7 @@ package body Manifold is
       Water_Shader_Manager.Set_Light_Specular (Specular);
       Manifold_Shader_Manager.Set_Light_Ranges (Ranges);
       Water_Shader_Manager.Set_Light_Range (Ranges);
-   end Update_Manifold_Static_Lights_Uniforms;
+   end Update_Static_Lights_Uniforms;
 
    --  ----------------------------------------------------------------------------
 

@@ -3,8 +3,8 @@ with GL.Types; use GL.Types;
 
 package Sprite_Shader_Manager is
 
-   type Light_Array is private;
-   type Light_Range_Array is private;
+    type Light_Array is new Singles.Vector3_Array (1 .. 32);
+    type Light_Range_Array is new Single_Array (1 .. 32);
 
     procedure Load_Sprite_Shaders;
     procedure Set_Caster_Position (Position : Singles.Vector3);
@@ -30,9 +30,5 @@ package Sprite_Shader_Manager is
     procedure Set_Static_Light_Indices (Indices : Ints.Vector2);
     procedure Set_View (View_Matrix : Singles.Matrix4);
     procedure Use_Sprite_Shader;
-
-    private
-       type Light_Array is new Singles.Vector3_Array (1 .. 32);
-       type Light_Range_Array is new Single_Array (1 .. 32);
 
 end Sprite_Shader_Manager;

@@ -290,22 +290,42 @@ package body Sprite_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    procedure Update_Sprites_Dynamic_Light (Pos_Wor, Diff, Spec : Singles.Vector3;
-                                            Light_Range : Float) is
+    procedure Update_Dynamic_Light (Pos_Wor, Diff, Spec : Singles.Vector3;
+                                    Light_Range : Float) is
     begin
         Sprite_Shader_Manager.Set_Dyn_Light_Pos (Pos_Wor);
         Sprite_Shader_Manager.Set_Dyn_Light_Diff (Diff);
         Sprite_Shader_Manager.Set_Dyn_Light_Spec (Spec);
         Sprite_Shader_Manager.Set_Dyn_Light_Range (Single (Light_Range));
-    end Update_Sprites_Dynamic_Light;
+    end Update_Dynamic_Light;
 
     --  -------------------------------------------------------------------------
 
-    procedure Update_Sprites_Static_Lights_Uniforms is
-    begin
-        null;
-    end Update_Sprites_Static_Lights_Uniforms;
+    procedure Update_Static_Lights_Uniforms is
+      use Batch_Manager;
+      use Light_Indices_Package;
+      use Sprite_Shader_Manager;
+      Index     : Positive := Static_Lights.First_Index;
+      aLight    : Static_Light_Data;
+      Positions : Light_Array;
+      Diffuse   : Light_Array;
+      Specular  : Light_Array;
+      Ranges    : Light_Range_Array;
+   begin
+      while Index <= Static_Lights.Last_Index loop
+         aLight := Element (Static_Lights, Index);
+         Positions (Int (Index)) := aLight.Position;
+         Diffuse (Int (Index)) := aLight.Diffuse;
+         Specular (Int (Index)) := aLight.Specular;
+         Ranges (Int (Index)) := aLight.Light_Range;
+         Index := Index + 1;
+      end loop;
+      Sprite_Shader_Manager.Set_Light_Pos (Positions);
+      Sprite_Shader_Manager.Set_Light_Diff (Diffuse);
+      Sprite_Shader_Manager.Set_Light_Spec (Specular);
+      Sprite_Shader_Manager.Set_Light_Range (Ranges);
+   end Update_Static_Lights_Uniforms;
 
-    --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
 end Sprite_Renderer;

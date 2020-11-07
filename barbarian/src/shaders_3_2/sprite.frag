@@ -1,9 +1,3 @@
-//
-// Crongdor the Barbarian
-// animated sprite shader
-// First version Anton Gerdelan, 31 Jan 2014
-// Latest code review 5 Feb 2015
-//
 
 #version 410 core
 out vec4 frag_colour;

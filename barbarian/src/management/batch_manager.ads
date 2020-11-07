@@ -82,9 +82,9 @@ package Batch_Manager is
 
    Batch_Manager_Exception : Exception;
 
-   procedure Add_Static_Light (Col, Row                  : Int; Tile_Height_Offset : Integer;
-                               Offset, Diffuse, Specular : Singles.Vector3;
-                               Light_Range               : Single);
+   procedure Add_Static_Light (Row, Col : Int; Tile_Height_Offset : Integer;
+                               Offset_Pos, Diffuse, Specular  : Singles.Vector3;
+                               Light_Range                    : Single);
    function Batch_Split_Size return Integer;
    function Get_Batch_Index (Column, Row : Int) return Integer;
    procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_List;

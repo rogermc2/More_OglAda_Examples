@@ -13,5 +13,5 @@ package Manifold is
    procedure Init;
    procedure Reset_Manifold_Vars;
    procedure Set_Manifold_Ambient_Light (Level : GL.Types.Singles.Vector3);
-   procedure Update_Manifold_Static_Lights_Uniforms;
+   procedure Update_Static_Lights_Uniforms;
 end Manifold;

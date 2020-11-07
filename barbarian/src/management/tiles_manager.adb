@@ -131,10 +131,8 @@ package body Tiles_Manager is
             if Has_Element (Batches.To_Cursor (Batch_Index)) then
                Batch := Batches.Element (Batch_Index);
                Add_Tile_Index (Batch, Tile_Index);
-               Batch.Tile_Count := Batch.Tile_Count + 1;
                Batches.Replace_Element (Batch_Index, Batch);
             else
-               Batch.Tile_Count := 1;
                Batches.Append (Batch);
             end if;
          end loop;

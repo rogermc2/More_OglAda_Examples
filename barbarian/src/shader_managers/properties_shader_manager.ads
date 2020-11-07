@@ -3,8 +3,8 @@ with GL.Types; use GL.Types;
 
 package Properties_Shader_Manager is
 
-   type Light_Array is private;
-   type Light_Range_Array is private;
+    type Light_Array is new Singles.Vector3_Array (1 .. 32);
+    type Light_Range_Array is new Single_Array (1 .. 32);
 
     procedure Load_Prop_Shaders;
     procedure Set_Camera_Position (Position : Singles.Vector3);
@@ -29,9 +29,5 @@ package Properties_Shader_Manager is
     procedure Set_Spec_Map (Spec_Map : Int);
     procedure Set_Static_Light_Indices (Indices : Ints.Vector2);
     procedure Set_View (View_Matrix : Singles.Matrix4);
-
-    private
-       type Light_Array is new Singles.Vector3_Array (1 .. 32);
-       type Light_Range_Array is new Single_Array (1 .. 32);
 
 end Properties_Shader_Manager;

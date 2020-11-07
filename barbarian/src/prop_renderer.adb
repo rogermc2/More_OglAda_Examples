@@ -1,6 +1,7 @@
 
 with Ada.Containers.Vectors;
 
+with Batch_Manager;
 with Game_Utils;
 with Manifold;
 with Particle_System;
@@ -116,5 +117,36 @@ package body Prop_Renderer is
    end Update_Props;
 
    --  -------------------------------------------------------------------------
+
+   procedure Update_Static_Lights_Uniforms is
+      use Batch_Manager;
+      use Light_Indices_Package;
+      use Properties_Shader_Manager;
+      Index     : Positive := Static_Lights.First_Index;
+      aLight    : Static_Light_Data;
+      Positions : Light_Array;
+      Diffuse   : Light_Array;
+      Specular  : Light_Array;
+      Ranges    : Light_Range_Array;
+   begin
+      while Index <= Static_Lights.Last_Index loop
+         aLight := Element (Static_Lights, Index);
+         Positions (Int (Index)) := aLight.Position;
+         Diffuse (Int (Index)) := aLight.Diffuse;
+         Specular (Int (Index)) := aLight.Specular;
+         Ranges (Int (Index)) := aLight.Light_Range;
+         Index := Index + 1;
+      end loop;
+      Properties_Shader_Manager.Set_Light_Pos (Positions);
+      Properties_Skinned_Shader_Manager.Set_Light_Pos (Positions);
+      Properties_Shader_Manager.Set_Light_Diff (Diffuse);
+      Properties_Skinned_Shader_Manager.Set_Light_Diff (Diffuse);
+      Properties_Shader_Manager.Set_Light_Spec (Specular);
+      Properties_Skinned_Shader_Manager.Set_Light_Spec (Specular);
+      Properties_Shader_Manager.Set_Light_Range (Ranges);
+      Properties_Skinned_Shader_Manager.Set_Light_Range (Ranges);
+   end Update_Static_Lights_Uniforms;
+
+   --  ----------------------------------------------------------------------------
 
 end Prop_Renderer;
