@@ -69,7 +69,7 @@ package body Batch_Manager is
 
    function Check_For_OOO (Batch_Index : Positive) return Boolean is
       use Maths.Single_Math_Functions;
-      use Light_Indices_Package;
+      use Tile_Indices_Package;
       Half_Batch_Width     : constant Int := Int (Settings.Tile_Batch_Width / 2);
       This_Batch           : Batch_Meta := Batches.Element (Batch_Index);
       Batches_Dn           : constant Int := Int (Batch_Index) / Int (Batches_Across);
@@ -81,7 +81,7 @@ package body Batch_Manager is
       Batch_Centre_Col     : constant Int :=
                                Batches_Ac * Int (Settings.Tile_Batch_Width) +
                                Half_Batch_Width;
-      Light_Indices        : Light_Indices_List := This_Batch.Static_Light_Indices;
+      Light_Indices        : Tile_Indices_List := This_Batch.Static_Light_Indices;
       Current_Light_Cursor : Cursor := Light_Indices.First;
       Current_Light_Index  : Positive := Element (Current_Light_Cursor);
       Current_Light        : Static_Light_Data :=
@@ -280,9 +280,13 @@ package body Batch_Manager is
    procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_List;
                                Batch_Index : Positive) is
       use Tiles_Manager;
+      use Batches_Package;
+      use Tile_Indices_Package;
       theBatch    : Batch_Meta := Batches.Element (Batch_Index);
       aTile       : Tile_Data;
-      Batch_Tiles : constant Tile_Indices := theBatch.Tiles;
+      Batch_Tiles : constant Tile_Indices_List := theBatch.Tiles;
+      Curs        : Tile_Indices_Package.Cursor := Batch_Tiles.First;
+      Tile_Index  : Positive;
       Row         : Int := 0;
       Column      : Int := 0;
       Height      : Integer := 0;
@@ -308,10 +312,12 @@ package body Batch_Manager is
          raise Batch_Manager_Exception with
            "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
       else
-         for Tile_Index in Batch_Tiles.First_Index .. Batch_Tiles.Last_Index loop
+         while Has_Element (Curs) loop
             --              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Tile_Index, last index "
             --                                   & Integer'Image (Tile_Index)
             --                                   & Integer'Image (Batch_Tiles.Last_Index));
+
+            Tile_Index  := Element (Curs);
             aTile := Tiles.Element (Tile_Index);
             Row := Int (Tile_Index) / Max_Cols + 1;
             Column :=  Int (Tile_Index) - Row * Max_Cols;
@@ -412,6 +418,7 @@ package body Batch_Manager is
                --                                   Integer'Image (N_Height));
                Add_Point_Count (Diff);
             end if;
+            Next (Curs);
          end loop;  -- over tiles
       end if;  --  not Tiles not empty
 

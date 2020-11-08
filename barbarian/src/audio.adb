@@ -138,7 +138,7 @@ package body Audio is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Boulder_Sounds;
+   procedure Update_Boulder_Sounds is
    begin
          null;
    end Update_Boulder_Sounds;

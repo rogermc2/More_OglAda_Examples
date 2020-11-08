@@ -556,6 +556,20 @@ package body Text is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Update_Comic_Texts (Seconds : Float) is
+   begin
+      null;
+   end Update_Comic_Texts;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Update_Particle_Texts (Seconds : Float) is
+   begin
+      null;
+   end Update_Particle_Texts;
+
+   --  ----------------------------------------------------------------------------
+
    procedure Update_Text (ID : Positive; aString : String) is
       Item : Renderable_Text;
       use GL.Types;

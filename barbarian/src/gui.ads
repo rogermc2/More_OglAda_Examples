@@ -10,5 +10,8 @@ package GUI is
    --      procedure Set_GUI_Kills (Amount : Integer);
    procedure Show_Controller_Button_Overlay
      (Pos_Index, Tex_Index : in out Integer);
+   function Show_Defeated return Boolean;
+   function Show_Victory return Boolean;
+   procedure Update_GUIs (Seconds : Float);
 
 end GUI;

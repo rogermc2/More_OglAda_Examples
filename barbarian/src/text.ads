@@ -26,6 +26,8 @@ package Text is
    function Number_Render_Strings return Integer;
    procedure Set_Text_Visible (ID : Positive; Visible : Boolean);
    procedure Unload_Comic_Texts;
+   procedure Update_Comic_Texts (Seconds : Float);
+   procedure Update_Particle_Texts (Seconds : Float);
    procedure Update_Text (ID : Positive; aString : String);
 
 end Text;

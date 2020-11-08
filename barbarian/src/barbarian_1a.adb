@@ -24,7 +24,7 @@ procedure Barbarian_1a is
 begin
     Glfw.Init;
     Initialize_With_Callbacks (Main_Window, Window_Title);
-    Main_Loop (Main_Window);
+    Main_Loop.Main_Loop (Main_Window);
     Glfw.Shutdown;
 
 exception

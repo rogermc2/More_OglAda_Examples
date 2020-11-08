@@ -2,12 +2,18 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
+with GL.Buffers;
 with GL.Objects.Buffers;
+with GL.Objects.Framebuffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures;
+with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
+with GL.Types.Colors;
+with GL.Window;
 
 with Maths;
+with Utilities;
 
 with Debug_Quad_Shader_Manager;
 with Depth_Shader_Manager;
@@ -37,11 +43,12 @@ package body Shadows is
       --  Debug
       Debug_Quad_Sp    : GL.Objects.Programs.Program;
       Debug_Quad_Vao   : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Cube_Fb          : GL.Objects.Buffers.Buffer;
+      Cube_Framebuffer : GL.Objects.Framebuffers.Framebuffer;
       Cube_Colour_Tex  : GL.Objects.Textures.Texture;
       Render_Buffer    : GL.Objects.Buffers.Buffer;
    end record;
 
+   Black     : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
    G_Shadows : Shadow_Data;
 
    procedure Reset_Shadows;
@@ -54,6 +61,36 @@ package body Shadows is
          Texture_Manager.Bind_Cube_Texture (Slot, G_Shadows.Cube_Colour_Tex);
       end if;
    end Bind_Cube_Shadow_Texture;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Bind_Shadow_FB (Dir : Shadow_Direction) is
+      use GL.Objects.Framebuffers;
+      use GL.Objects.Textures.Targets;
+   begin
+      if Settings.Shadows_Enabled then
+         Read_And_Draw_Target.Bind (G_Shadows.Cube_Framebuffer);
+         --  Stuff like water has no depth render, but the bottom should appear
+         --  as if maximally far away which == white.
+         --  If it's cleared to black we see odd artifacts appear on these
+         --  surfaces because they are picked up as minimally close instead of
+         --  maximally far.
+         GL.Buffers.Set_Color_Clear_Value ((1.0, 1.0, 1.0, 1.0));
+         GL.Window.Set_Viewport (0, 0, Int (Settings.Shadows_Size),
+                                 Int (Settings.Shadows_Size));
+         Read_And_Draw_Target.Attach_Texture
+           (Color_Attachment_0, G_Shadows.Cube_Colour_Tex, 0);
+         Utilities.Clear_Colour_Buffer_And_Depth;
+
+         GL.Objects.Programs.Use_Program (G_Shadows.Depth_Sp);
+         Depth_Shader_Manager.Set_View_Matrix
+           (G_Shadows.Caster_Vs (Shadow_Direction'Enum_Rep (Dir)));
+         GL.Objects.Programs.Use_Program (G_Shadows.Depth_Skinned_Sp);
+         Depth_Skinned_Shader_Manager.Set_View_Matrix
+           (G_Shadows.Caster_Vs (Shadow_Direction'Enum_Rep (Dir)));
+         Utilities.Clear_Background_Colour (Black);
+      end if;
+   end Bind_Shadow_FB;
 
    --  ----------------------------------------------------------------------------
 

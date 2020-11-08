@@ -93,6 +93,13 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+   function Is_Dirty return Boolean is
+    begin
+        return G_Cam.Is_Dirty;
+    end Is_Dirty;
+
+    --  ------------------------------------------------------------------------
+
     function Near return Single is
     begin
         return G_Cam.Near;

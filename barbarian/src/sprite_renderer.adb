@@ -303,7 +303,7 @@ package body Sprite_Renderer is
 
     procedure Update_Static_Lights_Uniforms is
       use Batch_Manager;
-      use Light_Indices_Package;
+      use Tile_Indices_Package;
       use Sprite_Shader_Manager;
       Index     : Positive := Static_Lights.First_Index;
       aLight    : Static_Light_Data;

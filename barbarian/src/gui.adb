@@ -134,13 +134,14 @@ package body GUI is
 
    Screen_Splats            : array (1 .. Max_Screen_Splats) of Screen_Splat_Data;
    Num_Active_Screen_Splats : Natural := 0;
-   Show_Defeated            : Boolean := False;
-   Show_Victory             : Boolean := False;
+   Show_Defeated_State      : Boolean := False;
+   Show_Victory_State       : Boolean := False;
 
    procedure Init_Crong_Head;
    procedure Init_Fist;
    procedure Init_Health_Bar;
    procedure Init_Screen_Splat;
+   procedure Update_Screen_Splats (Seconds : Float);
 
    --  ----------------------------------------------------------------------------
 
@@ -415,8 +416,8 @@ package body GUI is
          Screen_Splats (index).Is_Active := False;
       end loop;
       Num_Active_Screen_Splats := 0;
-      Show_Defeated := False;
-      Show_Victory := False;
+      Show_Defeated_State := False;
+      Show_Victory_State := False;
       Hide_Finish_Stats;
    end Reset_GUIs;
 
@@ -470,5 +471,50 @@ package body GUI is
    end Show_Controller_Button_Overlay;
 
    --  ----------------------------------------------------------------------------
+
+   function Show_Defeated return Boolean is
+   begin
+      return Show_Defeated_State;
+   end Show_Defeated;
+
+   --  ----------------------------------------------------------------------------
+
+   function Show_Victory return Boolean is
+   begin
+      return Show_Victory_State;
+   end Show_Victory;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Update_Fist (Seconds : Float) is
+   begin
+      null;
+   end Update_Fist;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Update_Gold_Bar (Seconds : Float) is
+   begin
+      null;
+   end Update_Gold_Bar;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Update_GUIs (Seconds : Float) is
+   begin
+      Update_Fist (Seconds);
+      Update_Screen_Splats (Seconds);
+      Update_Gold_Bar (Seconds);
+   end Update_GUIs;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Update_Screen_Splats (Seconds : Float) is
+   begin
+      null;
+   end Update_Screen_Splats;
+
+   --  ----------------------------------------------------------------------------
+
 
 end GUI;

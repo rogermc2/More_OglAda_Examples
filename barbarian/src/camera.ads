@@ -35,6 +35,7 @@ package Camera is
    function Far return Single;
    function Field_Of_View_Y return Maths.Degree;
    function GUI_Proj_Matrix return Singles.Matrix4;
+   function Is_Dirty return Boolean;
    function Near return Single;
    function Projection_Matrix return Singles.Matrix4;
    function PV_Matrix return Singles.Matrix4;
