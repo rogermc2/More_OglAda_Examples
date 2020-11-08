@@ -34,6 +34,7 @@ package Prop_Renderer is
    Prop_Renderer_Exception : Exception;
 
    procedure Init;
+   procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
    function Update_Props (Seconds : Float) return Boolean;
    procedure Update_Static_Lights_Uniforms;

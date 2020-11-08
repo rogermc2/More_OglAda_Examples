@@ -8,6 +8,7 @@ with GUI;
 with GUI_Level_Chooser;
 with Manifold;
 with Particle_System;
+with Prop_Renderer;
 with Sprite_Renderer;
 with Sprite_World_Map;
 with Text;
@@ -30,6 +31,8 @@ package body Main_Game_Loop_Support is
       Manifold.Clear_Manifold_Lights;
       Particle_System.Stop_Particle_Systems;
       GUI.Reset_GUIs;
+      Prop_Renderer.Reset_Properties;
+
    end  Unload_Level;
 
    --  -------------------------------------------------------------------------

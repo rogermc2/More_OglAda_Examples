@@ -10,6 +10,12 @@ with Properties_Skinned_Shader_Manager;
 
 package body Prop_Renderer is
 
+   Head_Particles_File   : constant String := "blood_artery_jet.particles";
+   Splash_Particles_File : constant String := "splash.particles";
+   Dust_Particles_File   : constant String := "dust.particles";
+   Pot_Particles_File    : constant String := "pot.particles";
+   Mirror_Particles_File : constant String := "mirror.particles";
+
    Max_Scene_Lamp_Locs        : constant integer := 3;
    --  Up To 32 Types, With 8 Active Ones Of Each Type
    Max_Decap_Types            : constant integer :=  32;
@@ -51,10 +57,6 @@ package body Prop_Renderer is
    Portal_Props_Render_List    : Indicies_List;
    Treasure_Props_Render_List  : Indicies_List;
    Props_In_Tiles              : Tile_Data_Array := (others => (others => 0));
-   -- Particle Systems
-   Start_Now                   : Boolean := False;
-   Always_Update               : Boolean := True;
-   Always_Draw                 : Boolean := False;
    Head_Particles              : Int_Array (1 .. Max_Decap_Particles);
    Dust_Particles              : Int := -1;
    Dust_Particlesb             : Int := -1;
@@ -63,9 +65,18 @@ package body Prop_Renderer is
    Mirror_Particles            : Int := -1;
    Splash_Particles            : Int := -1;
 
+   Prop_Count                  : Int := 0;
+   Mirror_Count                : Int := 0;
+   Live_Mirror_Count           : Int := 0;
+   Num_Types_Decap_Heads       : Int := 0;
+   Last_Head_Particles_Used    : Int := 0;
+
    --  -------------------------------------------------------------------------
 
    procedure Init is
+      Start_Now      : constant Boolean := False;
+      Always_Update  : constant Boolean := True;
+      Always_Draw    : constant Boolean := False;
    begin
       Game_Utils.Game_Log ("---INIT PROPS---");
       Scripts.Clear;
@@ -83,23 +94,70 @@ package body Prop_Renderer is
 
       for index in Int range 1 .. Max_Decap_Particles loop
          Head_Particles (index) := Particle_System.Create_Particle_System
-           ("blood_artery_jet.particles", Start_Now, Always_Update, Always_Draw);
+           (Head_Particles_File, Start_Now, Always_Update, Always_Draw);
       end loop;
       Pot_Particles := Particle_System.Create_Particle_System
-           ("pot.particles", Start_Now, Always_Update, Always_Draw);
+           (Pot_Particles_File, Start_Now, Always_Update, Always_Draw);
       Mirror_Particles := Particle_System.Create_Particle_System
-           ("mirror.particles", Start_Now, Always_Update, Always_Draw);
+           (Mirror_Particles_File, Start_Now, Always_Update, Always_Draw);
       Dust_Particles := Particle_System.Create_Particle_System
-           ("dust.particles", Start_Now, Always_Update, Always_Draw);
+           (Dust_Particles_File, Start_Now, Always_Update, Always_Draw);
       Dust_Particlesb := Particle_System.Create_Particle_System
-           ("dust.particles", Start_Now, Always_Update, Always_Draw);
+           (Dust_Particles_File, Start_Now, Always_Update, Always_Draw);
       Dust_Particlesc := Particle_System.Create_Particle_System
-           ("dust.particles", Start_Now, Always_Update, Always_Draw);
+           (Dust_Particles_File, Start_Now, Always_Update, Always_Draw);
       Splash_Particles := Particle_System.Create_Particle_System
-           ("splash.particles", Start_Now, Always_Update, Always_Draw);
+           (Splash_Particles_File, Start_Now, Always_Update, Always_Draw);
 
       Game_Utils.Game_Log ("---PROPS INITIALIZED---");
    end Init;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Reset_Properties is
+      -- Particle Systems
+      Start_Now      : constant Boolean := False;
+      Always_Update  : constant Boolean := True;
+      Always_Draw    : constant Boolean := False;
+   begin
+      for row in Tile_Data_Array'Range loop
+         for col in Tile_Data_Array'Range (2) loop
+            Props_In_Tiles (row, col) := 0;
+         end loop;
+      end loop;
+      Active_Properties_A.Clear;
+      Active_Properties_B.Clear;
+      Basic_Props_Render_List.Clear;
+      Skinned_Props_Render_List.Clear;
+      Jav_Stand_Props_Render_List.Clear;
+      Portal_Props_Render_List.Clear;
+      Treasure_Props_Render_List.Clear;
+
+      Prop_Count := 0;
+      Num_Types_Decap_Heads := 0;
+      Last_Head_Particles_Used := 0;
+      Mirror_Count := 0;
+      Live_Mirror_Count := 0;
+
+      for index in Int range 1 .. Max_Decap_Particles loop
+         Head_Particles (index) := Particle_System.Create_Particle_System
+           (Head_Particles_File, Start_Now, Always_Update, Always_Draw);
+      end loop;
+
+      Pot_Particles := Particle_System.Create_Particle_System
+           (Pot_Particles_File, Start_Now, Always_Update, Always_Draw);
+      Mirror_Particles := Particle_System.Create_Particle_System
+           (Mirror_Particles_File, Start_Now, Always_Update, Always_Draw);
+      Dust_Particles := Particle_System.Create_Particle_System
+           (Dust_Particles_File, Start_Now, Always_Update, Always_Draw);
+      Dust_Particlesb := Particle_System.Create_Particle_System
+           (Dust_Particles_File, Start_Now, Always_Update, Always_Draw);
+      Dust_Particlesc := Particle_System.Create_Particle_System
+           (Dust_Particles_File, Start_Now, Always_Update, Always_Draw);
+      Splash_Particles := Particle_System.Create_Particle_System
+           (Splash_Particles_File, Start_Now, Always_Update, Always_Draw);
+
+   end Reset_Properties;
 
    --  -------------------------------------------------------------------------
 
@@ -120,7 +178,7 @@ package body Prop_Renderer is
 
    procedure Update_Static_Lights_Uniforms is
       use Batch_Manager;
-      use Light_Indices_Package;
+      use Tile_Indices_Package;
       use Properties_Shader_Manager;
       Index     : Positive := Static_Lights.First_Index;
       aLight    : Static_Light_Data;
