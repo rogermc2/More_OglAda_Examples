@@ -65,8 +65,11 @@ package body Manifold is
    --  ----------------------------------------------------------------------------
 
    procedure Free_Manifold_Mesh_Data is
+      use Batch_Manager;
    begin
-      null;
+      Batches.Clear;
+      Batch_Split_Count := 0;
+      Total_Points := 0;
    end Free_Manifold_Mesh_Data;
 
    --  ----------------------------------------------------------------------------

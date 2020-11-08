@@ -9,6 +9,7 @@ package Manifold is
    Manifold_Parsing_Exception : Exception;
 
    procedure Clear_Manifold_Lights;
+   procedure Free_Manifold_Mesh_Data;
    function Get_Light_Index (Column, Row  : GL.Types.Int;
                              Light_Number : Integer) return Integer;
    procedure Init;

@@ -111,6 +111,15 @@ package body Audio is
 
    --  -------------------------------------------------------------------------
 
+   procedure Stop_All_Sounds is
+   begin
+      if G_Audio.Was_Init then
+         null;
+      end if;
+   end Stop_All_Sounds;
+
+   --  -------------------------------------------------------------------------
+
    procedure Stop_Credits_Music is
    begin
       if G_Audio.Was_Init then

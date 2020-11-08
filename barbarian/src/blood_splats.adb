@@ -15,7 +15,6 @@ with Texture_Manager;
 package body Blood_Splats is
    use GL.Types;
    Num_Splats_In_Play   : Integer := 0;
-   Next_Splat_Mem_Index : Integer := 0;
    Max_Splats           : constant Int := 256;
    Splat_Vao            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Splat_Buffer         : GL.Objects.Buffers.Buffer;
@@ -26,6 +25,15 @@ package body Blood_Splats is
    Bsb_Sz   : Single_Array (1 .. 18 * Max_Splats) := (others => 0.0);
    Bsbn_Sz  : Single_Array (1 .. 18 * Max_Splats) := (others => 0.0);
    Bsbt_Sz  : Single_Array (1 .. 12 * Max_Splats) := (others => 0.0);
+
+   --  -------------------------------------------------------------------------
+
+   procedure Clear_Splats is
+   begin
+	Num_splats_in_play := 0;
+   end Clear_Splats;
+
+   --  -------------------------------------------------------------------------
 
    procedure Init is
       use GL.Attributes;
@@ -76,5 +84,7 @@ package body Blood_Splats is
       Game_Utils.Game_Log ("----BLOOD SPLATS INITIALIZED---");
 
     end Init;
+
+   --  -------------------------------------------------------------------------
 
 end Blood_Splats;

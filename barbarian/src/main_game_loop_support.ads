@@ -1,6 +1,8 @@
 
 with GL.Types;
 
+with Camera;
+
 package Main_Game_Loop_Support is
 
    procedure Unload_Level;

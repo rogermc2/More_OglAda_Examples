@@ -194,6 +194,12 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+   procedure Set_Screen_Shake_Countdown (Countdown : Float) is
+    begin
+      G_Cam.Screen_Shake_Countdown_Secs := Countdown;
+    end Set_Screen_Shake_Countdown;
+
+    --  ------------------------------------------------------------------------
     function World_Position return Singles.Vector3 is
     begin
         return G_Cam.World_Position;

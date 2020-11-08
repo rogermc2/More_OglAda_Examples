@@ -1,7 +1,9 @@
 
 with Glfw;
 
-with Camera;
+with Audio;
+with Blood_Splats;
+with Character_Map;
 with Event_Controller;
 with FB_Effects;
 with GUI;
@@ -32,7 +34,12 @@ package body Main_Game_Loop_Support is
       Particle_System.Stop_Particle_Systems;
       GUI.Reset_GUIs;
       Prop_Renderer.Reset_Properties;
-
+      Character_Map.Free_Character_Map;
+      Blood_Splats.Clear_Splats;
+      Manifold.Free_Manifold_Mesh_Data;
+      Manifold.Reset_Manifold_Vars;
+      Audio.Stop_All_Sounds;
+      Camera.Set_Screen_Shake_Countdown (0.0);
    end  Unload_Level;
 
    --  -------------------------------------------------------------------------

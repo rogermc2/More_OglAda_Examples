@@ -10,6 +10,7 @@ package Character_Map is
       Ada.Containers.Doubly_Linked_Lists (Vector2);
     type Character_Map_List is private;
 
+    procedure Free_Character_Map;
     procedure Init;
 
 private

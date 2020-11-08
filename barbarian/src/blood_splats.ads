@@ -1,6 +1,7 @@
 
 package Blood_Splats is
 
-    procedure Init;
+   procedure Clear_Splats;
+   procedure Init;
 
 end Blood_Splats;
