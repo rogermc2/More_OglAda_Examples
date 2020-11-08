@@ -4,6 +4,7 @@ with Glfw;
 with Camera;
 with Event_Controller;
 with FB_Effects;
+with GUI;
 with GUI_Level_Chooser;
 with Manifold;
 with Particle_System;
@@ -28,6 +29,7 @@ package body Main_Game_Loop_Support is
       Sprite_Renderer.Clear_Sprites;
       Manifold.Clear_Manifold_Lights;
       Particle_System.Stop_Particle_Systems;
+      GUI.Reset_GUIs;
    end  Unload_Level;
 
    --  -------------------------------------------------------------------------

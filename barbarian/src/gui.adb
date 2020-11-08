@@ -48,6 +48,15 @@ package body GUI is
         (1 .. Controller_Textures_Manager.Num_Steam_Controller_Images);
    end record;
 
+   type Screen_Splat_Data is record
+      Position     : Singles.Vector2  := (0.0, 0.0);
+      Alpha        : Single := 0.0;
+      Speed        : Single := 0.0;
+      Model_Matrix : Singles.Matrix4 := Singles.Identity4;
+      Sprite_Index : Positive := 1;
+      Is_Active    : Boolean := False;
+   end record;
+
    --   Absolute pixel sizes of gui elements
    Seconds_To_Show_Controller_Glyphs : constant Single := 1.5;
    Health_Bar_Width_Px               : constant Int := 256;
@@ -60,7 +69,7 @@ package body GUI is
    Screen_Splat_Scale                : constant Single := 0.27;
 
    --  player and enemy health bars
-   Health_Bar_Factor  : Single_Array (1.. 2) := (1.0, 0.0);
+   Health_Bar_Factor  : Single_Array (1 .. 2) := (1.0, 0.0);
    Player_Hb_Mat      : Singles.Matrix4 := Singles.Identity4;
    Enemy_Hb_Mat       : Singles.Matrix4 := Singles.Identity4;
    Fist_Mat           : Singles.Matrix4 := Singles.Identity4;
@@ -120,6 +129,13 @@ package body GUI is
    Control_Button_Overlays  : Controller_Button_Overlays_Data;
    GUI_Icons                : GUI_Icon_Data;
    GUIs_Initialized         : Boolean := False;
+   Fist_Activated           : Boolean := False;
+   Crong_Head_Sprite_Index  : Positive := 6;
+
+   Screen_Splats            : array (1 .. Max_Screen_Splats) of Screen_Splat_Data;
+   Num_Active_Screen_Splats : Natural := 0;
+   Show_Defeated            : Boolean := False;
+   Show_Victory             : Boolean := False;
 
    procedure Init_Crong_Head;
    procedure Init_Fist;
@@ -127,6 +143,55 @@ package body GUI is
    procedure Init_Screen_Splat;
 
    --  ----------------------------------------------------------------------------
+
+   procedure Change_Crong_Head (Health_Factor : Single) is
+      Health_Sprite_Index : Positive := 6;
+   begin
+      if Health_Factor > 0.8 then
+         Health_Sprite_Index := 1;
+      elsif Health_Factor > 0.6 then
+         Health_Sprite_Index := 2;
+      elsif Health_Factor > 0.4 then
+         Health_Sprite_Index := 3;
+      elsif Health_Factor > 0.2 then
+         Health_Sprite_Index := 4;
+      elsif Health_Factor > 0.0 then
+         Health_Sprite_Index := 5;
+      end if;
+      Crong_Head_Sprite_Index := Health_Sprite_Index;
+   end Change_Crong_Head;
+
+   --  --------------------------------------------------------------------------
+
+   procedure Change_Health_Bar (Index : Int; Health_Factor : Single;
+                                Name  : String) is
+      S_FB_Width    : constant Single := Single (Settings.Framebuffer_Width);
+      S_FB_Height   : constant Single := Single (Settings.Framebuffer_Height);
+      S_HBar_Width  : constant Single := Single (Health_Bar_Width_Px);
+      S_HBar_Height : constant Single := Single (Health_Bar_Height_Px);
+   begin
+      Health_Bar_Factor (Index) := Health_Factor;
+      if Index = 1 then
+         if Name /= Bottom_Health_Name then
+            Bottom_Health_Name := To_Unbounded_String (Name);
+            Text.Update_Text (Bottom_Health_Text_Index, Name);
+            Text.Centre_Text (Bottom_Health_Text_Index,
+                              S_HBar_Width / S_FB_Width - 1.0,
+                              S_HBar_Height / S_FB_Height - 1.0);
+         else
+            if Name /= Top_Health_Name then
+               Top_Health_Name := To_Unbounded_String (Name);
+               Text.Update_Text (Top_Health_Text_Index, Name);
+               Text.Centre_Text (Top_Health_Text_Index,
+                                 S_HBar_Width / S_FB_Width - 1.0,
+                                 (S_HBar_Height + 32.0) / S_FB_Height - 1.0);
+            end if;
+         end if;
+      end if;
+
+   end Change_Health_Bar;
+
+   --  --------------------------------------------------------------------------
 
    procedure Draw_Controller_Button_Overlays (Elapsed : Float) is
       use  GL.Toggles;
@@ -144,7 +209,7 @@ package body GUI is
       GL.Culling.Set_Front_Face (GL.Types.Clockwise);
       Enable (Blend);
       Disable (Depth_Test);
---        GL.Objects.Vertex_Arrays.Bind (VAO_Quad_Tristrip);
+      --        GL.Objects.Vertex_Arrays.Bind (VAO_Quad_Tristrip);
       GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
       GL.Objects.Textures.Set_Active_Unit (0);
 
@@ -159,7 +224,7 @@ package body GUI is
             else
                M_Matrix := Maths.Translation_Matrix
                  ((X (X_GL_Index (Int (index))), Y, 0.0)) *
-                   Maths.Scaling_Matrix ((Scale_X, Scale_Y, 1.0));
+                 Maths.Scaling_Matrix ((Scale_X, Scale_Y, 1.0));
                Image_Panel_Shader_Manager.Set_Model_Matrix (M_Matrix);
                GL.Objects.Textures.Targets.Texture_2D.Bind
                  (Control_Button_Overlays.Textures (index));
@@ -178,6 +243,13 @@ package body GUI is
    end Draw_Controller_Button_Overlays;
 
    --  -------------------------------------------------------------------------
+
+   procedure Hide_Finish_Stats is
+   begin
+      Text.Set_Text_Visible (Finish_Stats_Text_Index, True);
+   end Hide_Finish_Stats;
+
+   --  --------------------------------------------------------------------------
 
    procedure Init_Crong_Head is
       use GL.Types;
@@ -333,6 +405,23 @@ package body GUI is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Reset_GUIs is
+   begin
+      Change_Health_Bar (1, 1.0, "crongdor");
+      Change_Health_Bar (2, 1.0, "name");
+      Change_Crong_Head (1.0);
+      Fist_Activated := False;
+      for index in 1 .. Max_Screen_Splats loop
+         Screen_Splats (index).Is_Active := False;
+      end loop;
+      Num_Active_Screen_Splats := 0;
+      Show_Defeated := False;
+      Show_Victory := False;
+      Hide_Finish_Stats;
+   end Reset_GUIs;
+
+   --  ----------------------------------------------------------------------------
+
    --      procedure Set_GUI_Gold (Amount : Integer) is
    --      begin
    --          Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
@@ -361,7 +450,7 @@ package body GUI is
    begin
       if Pos_Index < 1 or Pos_Index > 3 then
          Game_Utils.Game_Log ("GUI.Show_Controller_Button_Overlay, WARNING: " &
-                              "gui overlay pos_idx " & Integer'Image (Pos_Index)
+                                "gui overlay pos_idx " & Integer'Image (Pos_Index)
                               & " is invalid.");
          Pos_Index := 2;
       end if;
@@ -369,14 +458,14 @@ package body GUI is
         Tex_Index > Controller_Textures_Manager.Num_Steam_Controller_Images then
          Game_Utils.Game_Log
            ("GUI.Show_Controller_Button_Overlay, WARNING: controller glyph texture index "
-              & Integer'Image (Tex_Index) & " is invalid.");
+            & Integer'Image (Tex_Index) & " is invalid.");
          Tex_Index := 1;
       end if;
 
       Control_Button_Overlays.In_Use (Pos_Index) := True;
       Control_Button_Overlays.Life_Time (Int (Pos_Index)) := 0.0;
       Control_Button_Overlays.Textures (Pos_Index) :=
-      Control_Button_Overlays.Loaded_Glyphs_IDs (Tex_Index);
+        Control_Button_Overlays.Loaded_Glyphs_IDs (Tex_Index);
 
    end Show_Controller_Button_Overlay;
 
