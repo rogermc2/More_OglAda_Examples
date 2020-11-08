@@ -1,5 +1,6 @@
 
 with Glfw;
+with Glfw.Input.Keys;
 
 with Audio;
 with Blood_Splats;
@@ -8,14 +9,65 @@ with Event_Controller;
 with FB_Effects;
 with GUI;
 with GUI_Level_Chooser;
+with Input_Callback;
 with Manifold;
 with Particle_System;
 with Prop_Renderer;
+with Settings;
 with Sprite_Renderer;
 with Sprite_World_Map;
 with Text;
 
-package body Main_Game_Loop_Support is
+package body Main_Loop.Game_Support is
+
+   function Cheat_Check_1 return Boolean is
+      use Glfw.Input.Keys;
+      Cheating : Boolean := False;
+   begin
+      if Input_Callback.Is_Key_Down (M) and
+        Input_Callback.Is_Key_Down (L) and
+        Input_Callback.Is_Key_Down (I) then
+         Cheating := True;
+
+      elsif Input_Callback.Is_Key_Down (A) and
+        Input_Callback.Is_Key_Down (N) and
+        Input_Callback.Is_Key_Down (T) then
+         Cheating := True;
+      elsif Input_Callback.Is_Key_Down (R) and
+        Input_Callback.Is_Key_Down (O) and
+        Input_Callback.Is_Key_Down (M) then
+         Cheating := True;
+      elsif Input_Callback.Is_Key_Down (D) and
+        Input_Callback.Is_Key_Down (A) and
+        Input_Callback.Is_Key_Down (V) then
+         Cheating := True;
+      end if;
+      return Cheating;
+   end Cheat_Check_1;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Check_Victory_Defeat is
+   begin
+       null;
+   end Check_Victory_Defeat;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Player_1_View is
+      use GL.Types;
+      Camera_Position : Singles.Vector3 := Camera.World_Position;
+      Centre_X        : Int := Int ((1.0 + Camera_Position (GL.X)) / 2.0);
+      Centre_Z        : Int := Int ((1.0 + Camera_Position (GL.Z)) / 2.0);
+   begin
+      if Settings.Shadows_Enabled and Camera.Is_Dirty then
+         for index in 1 .. 6 loop
+            Bind_Shadow_FB (index);
+         end loop;
+      end if;
+   end Player_1_View;
+
+   --  -------------------------------------------------------------------------
 
    procedure Unload_Level is
       use GUI_Level_Chooser;
@@ -45,7 +97,7 @@ package body Main_Game_Loop_Support is
    --  -------------------------------------------------------------------------
 
    procedure Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
-                            Curr_Frame_Time_Accum_Ms : in out Float;
+                            Curr_Frame_Time_Accum_Ms            : in out Float;
                             Avg_Frames_Count, Curr_Frames_Count : in out Integer) is
       Current_Time     : constant Float := Float (Glfw.Time);
       Delta_Time_Ms    : Float := 0.0;
@@ -68,4 +120,4 @@ package body Main_Game_Loop_Support is
 
    end Update_Timers;
 
-end Main_Game_Loop_Support;
+end Main_Loop.Game_Support;
