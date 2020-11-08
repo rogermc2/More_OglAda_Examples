@@ -130,4 +130,31 @@ package body Particle_System is
 
    --  ------------------------------------------------------------------------
 
+   procedure Stop_Particle_System (System_ID : Positive) is
+      theSystem : Particle_System;
+   begin
+      if Particles_Initialised then
+         theSystem := Particle_Systems.Element (System_ID);
+         theSystem.Is_Running := False;
+         Particle_Systems.Replace_Element (System_ID, theSystem);
+      end if;
+   end Stop_Particle_System;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Stop_Particle_Systems is
+      use Systems_Package;
+      Curs      : Cursor := Particle_Systems.First;
+      theSystem : Particle_System;
+   begin
+      if Particles_Initialised then
+         while Has_Element (Curs) loop
+            Stop_Particle_System (To_Index (Curs));
+            Next (Curs);
+         end loop;
+      end if;
+   end Stop_Particle_Systems;
+
+   --  ------------------------------------------------------------------------
+
 end Particle_System;

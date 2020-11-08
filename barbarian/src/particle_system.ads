@@ -20,6 +20,8 @@ package Particle_System is
      (Script_Name : String; Start_Now, Always_Update, Always_Draw : Boolean)
       return Int;
    procedure Init;
+   procedure Stop_Particle_System (System_ID : Positive);
+   procedure Stop_Particle_Systems;
 
 private
    package Ages_Package is new

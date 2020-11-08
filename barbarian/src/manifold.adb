@@ -27,9 +27,6 @@ package body Manifold is
    Water_Mesh_Texcoords     : GL_Maths.Vector2_List;
    Water_Mesh_Point_Count   : Integer := 0;
 
-   procedure Clear_Tile_Indices_Recursive (Indices : in out Batch_Manager.Tile_Indices_List;
-                                           Light_Cursor  : Batch_Manager.Tile_Indices_Package.Cursor);
-
    --  ----------------------------------------------------------------------------
 
    procedure Clear_Manifold_Lights is
@@ -38,35 +35,32 @@ package body Manifold is
       use Tile_Indices_Package;
       Batch_Cursor  : Batches_Package.Cursor := Batches.First;
       Batch         : Batch_Manager.Batch_Meta;
-      Light_Indices : Batch_Manager.Tile_Indices_List;
-      Total_Batches : constant Integer := Batches_Across * Batches_Down;
    begin
       while Has_Element (Batch_Cursor) loop
          Batch := Element (Batch_Cursor);
-         Light_Indices := Batch.Static_Light_Indices;
-         Clear_Tile_Indices_Recursive (Light_Indices, Light_Indices.First);
+         Clear (Batch.Static_Light_Indices);
          Next (Batch_Cursor);
       end loop;
    end Clear_Manifold_Lights;
 
    --  ----------------------------------------------------------------------------
 
-   procedure Clear_Tile_Indices_Recursive (Indices : in out Batch_Manager.Tile_Indices_List;
-                                           Light_Cursor : Batch_Manager.Tile_Indices_Package.Cursor) is
-      use Ada.Containers;
-      use Batch_Manager;
-      use Tiles_Manager;
-      use Tile_Indices_Package;
-      Next_Cursor : Tile_Indices_Package.Cursor;
-   begin
-      if not Indices.Is_Empty then
-         if Light_Cursor /= Indices.Last then
-            Next_Cursor := Next (Light_Cursor);
-            Clear_Tile_Indices_Recursive (Indices, Next_Cursor);
-            Delete (Indices, Next_Cursor);
-         end if;
-      end if;
-   end Clear_Tile_Indices_Recursive;
+--     procedure Clear_Tile_Indices_Recursive (Indices : in out Batch_Manager.Tile_Indices_List;
+--                                             Light_Cursor : Batch_Manager.Tile_Indices_Package.Cursor) is
+--        use Ada.Containers;
+--        use Batch_Manager;
+--        use Tiles_Manager;
+--        use Tile_Indices_Package;
+--        Next_Cursor : Tile_Indices_Package.Cursor;
+--     begin
+--        if not Indices.Is_Empty then
+--           if Light_Cursor /= Indices.Last then
+--              Next_Cursor := Next (Light_Cursor);
+--              Clear_Tile_Indices_Recursive (Indices, Next_Cursor);
+--              Delete (Indices, Next_Cursor);
+--           end if;
+--        end if;
+--     end Clear_Tile_Indices_Recursive;
 
    --  ----------------------------------------------------------------------------
 

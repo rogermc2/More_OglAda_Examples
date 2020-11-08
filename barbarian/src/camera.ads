@@ -43,5 +43,6 @@ package Camera is
    procedure Set_Camera_Height (Height : Single);
    procedure Set_Camera_Position (World_Position : Singles.Vector3);
    procedure Set_First_Person (State : Boolean);
+   function World_Position return Singles.Vector3;
 
 end Camera;

@@ -194,4 +194,11 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+    function World_Position return Singles.Vector3 is
+    begin
+        return G_Cam.World_Position;
+    end World_Position;
+
+    --  ------------------------------------------------------------------------
+
 end Camera;

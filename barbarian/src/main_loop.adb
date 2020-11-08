@@ -223,7 +223,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
               MMenu.Did_User_Choose_Custom_Maps then
                Main_Menu_Open := False;
                Quit_Game := False;
-               Unload_Level (Camera_World_Pos);
+               Unload_Level;
             end if;
          end if;
 

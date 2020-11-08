@@ -1,30 +1,33 @@
 
 with Glfw;
 
+with Camera;
 with Event_Controller;
 with FB_Effects;
 with GUI_Level_Chooser;
 with Manifold;
+with Particle_System;
 with Sprite_Renderer;
 with Sprite_World_Map;
 with Text;
 
 package body Main_Game_Loop_Support is
 
-   procedure Unload_Level (Camera_World_Pos : in out GL.Types.Singles.Vector3) is
+   procedure Unload_Level is
       use GUI_Level_Chooser;
    begin
       Set_Cheated_On_Map (False);
       Set_Boulder_Crushes (0);
       Set_Hammer_Kills (0);
       Set_Fall_Kills (0);
-      Camera_World_Pos := (2.0, 10.0, 2.0);
+      Camera.Set_Camera_Position ((2.0, 10.0, 2.0));
       FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
       Event_Controller.Reset;
       Text.Unload_Comic_Texts;
       Sprite_World_Map.Free_Sprite_World_Map;
       Sprite_Renderer.Clear_Sprites;
-
+      Manifold.Clear_Manifold_Lights;
+      Particle_System.Stop_Particle_Systems;
    end  Unload_Level;
 
    --  -------------------------------------------------------------------------
