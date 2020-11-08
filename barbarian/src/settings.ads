@@ -47,6 +47,7 @@ package Settings is
    function Texture_Filter return Integer;
    function Texture_Filtering return Integer;
    function Tile_Batch_Width return Integer;
+   function Video_Record_Mode return Boolean;
    function V_Sync return Boolean;
    function Window_Height_To_Save return Integer;
    function Window_Width_To_Save return Integer;

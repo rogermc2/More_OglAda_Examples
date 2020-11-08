@@ -369,6 +369,13 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   function Video_Record_Mode return Boolean is
+   begin
+      return G_Settings.Video_Record_Mode;
+   end Video_Record_Mode;
+
+   --  ------------------------------------------------------------------------
+
    function V_Sync return Boolean is
    begin
       return G_Settings.V_Sync;

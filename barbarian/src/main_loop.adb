@@ -193,6 +193,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Main_Game_Loop (Window : in out Input_Callback.Barbarian_Window) is
+      use Glfw.Input.Keys;
       use Main_Game_Loop_Support;
       use GUI_Level_Chooser;
       Is_Running       : Boolean := True;
@@ -203,7 +204,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
       Video_Timer      : Float := 0.0;
       Video_Dump_Timer : Float := 0.0;
       Frame_Time       : Float := 0.04;
-      Save_Screenshot : Boolean := False;
+      Save_Screenshot  : Boolean := False;
+      Dump_Video       : Boolean := False;
+      Continue         : Boolean := True;
    begin
       Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
       Game_Camera.Is_Dirty := True;
@@ -224,6 +227,21 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
                Main_Menu_Open := False;
                Quit_Game := False;
                Unload_Level;
+            else -- continue
+               if Settings.Video_Record_Mode and Dump_Video then
+                  Video_Timer := Video_Timer + Delta_Time;
+                  Video_Dump_Timer := Video_Dump_Timer + Delta_Time;
+                  if Video_Timer < Float (GL_Utils.Video_Seconds_Total) then
+                     Audio.Update_Ambient_Sounds;
+                     Audio.Update_Boulder_Sounds;
+                     Save_Screenshot :=
+                       Input_Callback.Was_Key_Pressed (Window, F11);
+                  elsif Settings.Video_Record_Mode and
+                    Input_Callback.Was_Key_Pressed (Window, Backspace) then
+                     Dump_Video := not Dump_Video;
+                     Video_Timer := 0.0;
+                  end if;
+               end if;
             end if;
          end if;
 

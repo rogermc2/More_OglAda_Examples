@@ -8,5 +8,7 @@ package Audio is
    procedure Set_Audio_Volume (Volume : Integer);
    procedure Stop_All_Sounds;
    procedure Stop_Credits_Music;
+   procedure Update_Ambient_Sounds;
+   procedure Update_Boulder_Sounds;
 
 end Audio;

@@ -129,4 +129,20 @@ package body Audio is
 
    --  -------------------------------------------------------------------------
 
+   procedure Update_Ambient_Sounds is
+   begin
+      if G_Audio.Was_Init then
+         null;
+      end if;
+   end Update_Ambient_Sounds;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Update_Boulder_Sounds;
+   begin
+         null;
+   end Update_Boulder_Sounds;
+
+   --  -------------------------------------------------------------------------
+
 end Audio;

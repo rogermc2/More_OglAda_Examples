@@ -18,11 +18,12 @@ with Settings;
 
 package body GL_Utils is
 
-   G_Current_Program  : GL.Objects.Programs.Program;
-   Bound_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Statistics         : Gfx_Stats;
-   Previous_Seconds   : Float := 0.0;
-   G_Resized_View     : Boolean := False;
+   G_Current_Program   : GL.Objects.Programs.Program;
+   Bound_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Statistics          : Gfx_Stats;
+   Previous_Seconds    : Float := 0.0;
+   Total_Video_Seconds : constant Integer := 10;
+   G_Resized_View      : Boolean := False;
 
    --  ------------------------------------------------------------------------
 
@@ -280,6 +281,13 @@ package body GL_Utils is
       return OK;
 
    end Verify_Bound_Framebuffer;
+
+   --  ------------------------------------------------------------------------
+
+   function Video_Seconds_Total return Integer is
+   begin
+      return Total_Video_Seconds;
+   end Video_Seconds_Total;
 
    --  ------------------------------------------------------------------------
 

@@ -37,6 +37,7 @@ package GL_Utils is
    procedure Update_Batch_Count (Change : Integer);
    procedure Update_Vertex_Count (Change : Integer);
    function Verify_Bound_Framebuffer return Boolean;
+   function Video_Seconds_Total return Integer;
    procedure Window_Resize (Window : in out Input_Callback.Barbarian_Window);
 
 private
