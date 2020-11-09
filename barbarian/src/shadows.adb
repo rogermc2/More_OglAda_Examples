@@ -184,4 +184,15 @@ package body Shadows is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Set_Depth_Model_Matrix (Mat : Singles.Matrix4) is
+    begin
+      if Settings.Shadows_Enabled then
+         GL.Objects.Programs.Use_Program (G_Shadows.Depth_Sp);
+         Depth_Shader_Manager.Set_Model_Matrix (Mat);
+        end if;
+
+   end Set_Depth_Model_Matrix;
+
+   --  ----------------------------------------------------------------------------
+
 end Shadows;

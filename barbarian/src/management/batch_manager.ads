@@ -17,7 +17,7 @@ package Batch_Manager is
    Max_Rows               : Int := 0;  --  Set by map file
    Batches_Across         : Integer := 0;
    Batches_Down           : Integer := 0;
-   Batch_Split_Count      : Integer := 0;
+--     Batch_Split_Count      : Integer := 0;  --  used for memory allocation
    Ramp_Mesh_Point_Count  : Integer := 0;
    Water_Mesh_Point_Count : Integer := 0;
    Total_Points           : Integer := 0;
@@ -47,7 +47,7 @@ package Batch_Manager is
       Tiles                : Tile_Indices_List;
 --        Tile_Count           : Integer := 0;
       AABB_Mins            : Singles.Vector3;
-      AABB_Mixs            : Singles.Vector3;
+      AABB_Maxs            : Singles.Vector3;
       Points               : GL_Maths.Vector3_List;
 --        Point_Count          : Integer := 0;
       Ramp_Points          : GL_Maths.Vector3_List;

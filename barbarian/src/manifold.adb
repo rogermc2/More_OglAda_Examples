@@ -1,14 +1,20 @@
 
 with Ada.Containers.Vectors;
+
 with GL.Objects.Programs;
+with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 
 with Maths;
 
 with Batch_Manager;
+with Frustum;
 with Game_Utils;
 with GL_Maths;
+with GL_Utils;
 with Manifold_Shader_Manager;
 with Mesh_Loader;
+WITH Shadows;
 with Tiles_Manager;
 with Water_Shader_Manager;
 
@@ -45,22 +51,29 @@ package body Manifold is
 
    --  ----------------------------------------------------------------------------
 
---     procedure Clear_Tile_Indices_Recursive (Indices : in out Batch_Manager.Tile_Indices_List;
---                                             Light_Cursor : Batch_Manager.Tile_Indices_Package.Cursor) is
---        use Ada.Containers;
---        use Batch_Manager;
---        use Tiles_Manager;
---        use Tile_Indices_Package;
---        Next_Cursor : Tile_Indices_Package.Cursor;
---     begin
---        if not Indices.Is_Empty then
---           if Light_Cursor /= Indices.Last then
---              Next_Cursor := Next (Light_Cursor);
---              Clear_Tile_Indices_Recursive (Indices, Next_Cursor);
---              Delete (Indices, Next_Cursor);
---           end if;
---        end if;
---     end Clear_Tile_Indices_Recursive;
+   procedure  Draw_Manifold_Around_Depth_Only is
+      use GL.Toggles;
+      use GL.Objects.Vertex_Arrays;
+      use Batch_Manager;
+      use Batches_Package;
+      Curs   : Cursor := Batches.First;
+      aBatch : Batch_Meta;
+   begin
+      Enable (Depth_Test);
+      Shadows.Set_Depth_Model_Matrix (Singles.Identity4);
+      while Has_Element (Curs) loop
+         aBatch := Element (Curs);
+         if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
+
+           --  Flat Tiles
+         GL_Utils.Bind_Vao (aBatch.Vao);
+         Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+         GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+         Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+         end if;
+         Next (Curs);
+      end loop;
+   end  Draw_Manifold_Around_Depth_Only;
 
    --  ----------------------------------------------------------------------------
 
@@ -68,7 +81,7 @@ package body Manifold is
       use Batch_Manager;
    begin
       Batches.Clear;
-      Batch_Split_Count := 0;
+--        Batch_Split_Count := 0;
       Total_Points := 0;
    end Free_Manifold_Mesh_Data;
 
@@ -179,7 +192,7 @@ package body Manifold is
    begin
       Batches_Across := 0;
       Batches_Down := 0;
-      Batch_Split_Count := 0;
+--        Batch_Split_Count := 0;
       Batch_Manager.Max_Cols := 0;
       Batch_Manager.Max_Rows := 0;
       Tiles_Manager.Reset_Vars;

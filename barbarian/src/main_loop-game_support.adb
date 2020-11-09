@@ -14,11 +14,14 @@ with Manifold;
 with Particle_System;
 with Prop_Renderer;
 with Settings;
+with Shadows;
 with Sprite_Renderer;
 with Sprite_World_Map;
 with Text;
 
 package body Main_Loop.Game_Support is
+
+   Shadow_Caster_Max_Tiles_Away : constant GL.Types.Int := 10;
 
    function Cheat_Check_1 return Boolean is
       use Glfw.Input.Keys;
@@ -56,13 +59,17 @@ package body Main_Loop.Game_Support is
 
    procedure Player_1_View is
       use GL.Types;
-      Camera_Position : Singles.Vector3 := Camera.World_Position;
-      Centre_X        : Int := Int ((1.0 + Camera_Position (GL.X)) / 2.0);
-      Centre_Z        : Int := Int ((1.0 + Camera_Position (GL.Z)) / 2.0);
+      use Shadows;
+      Camera_Position : constant Singles.Vector3 := Camera.World_Position;
+      Centre_X        : constant Int := Int ((1.0 + Camera_Position (GL.X)) / 2.0);
+      Centre_Z        : constant Int := Int ((1.0 + Camera_Position (GL.Z)) / 2.0);
    begin
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
-         for index in 1 .. 6 loop
+         for index in Shadow_Direction'Range loop
             Bind_Shadow_FB (index);
+            Manifold.Draw_Manifold_Around_Depth_Only;
+            Prop_Renderer.Render_Props_Around_Depth_Only
+              (Centre_X, Centre_Z, Shadow_Caster_Max_Tiles_Away);
          end loop;
       end if;
    end Player_1_View;

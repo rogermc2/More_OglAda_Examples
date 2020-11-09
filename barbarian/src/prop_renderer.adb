@@ -114,6 +114,13 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
+   procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int) is
+   begin
+      null;
+   end Render_Props_Around_Depth_Only;
+
+   --  -------------------------------------------------------------------------
+
    procedure Reset_Properties is
       -- Particle Systems
       Start_Now      : constant Boolean := False;
