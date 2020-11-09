@@ -13,5 +13,7 @@ package Shadows is
    function Caster_Position return Singles.Vector3;
    procedure Init;
    procedure Set_Depth_Model_Matrix (Mat : Singles.Matrix4);
+   procedure Set_Depth_Skinned_Bone_Matrices (Mats : Singles.Matrix4_Array);
+   procedure Set_Depth_Skinned_Model_Matrix (Mat : Singles.Matrix4);
 
 end Shadows;

@@ -51,7 +51,7 @@ package body Manifold is
 
    --  ----------------------------------------------------------------------------
 
-   procedure  Draw_Manifold_Around_Depth_Only is
+   procedure Draw_Manifold_Around_Depth_Only is
       use GL.Toggles;
       use GL.Objects.Vertex_Arrays;
       use Batch_Manager;
@@ -184,6 +184,15 @@ package body Manifold is
       Game_Utils.Game_Log ("Manifold initialized.");
 
    end Init;
+
+   --  ----------------------------------------------------------------------------
+
+   function Is_Ramp (Row, Col : GL.Types.Int) return Boolean is
+      use Tiles_Manager;
+      aTile : constant Tile_Data := Get_Tile (Row, Col);
+   begin
+      return aTile.Tile_Type = '/';
+   end Is_Ramp;
 
    --  ----------------------------------------------------------------------------
 

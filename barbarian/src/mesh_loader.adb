@@ -80,6 +80,26 @@ package body Mesh_Loader is
 
    --  ------------------------------------------------------------------------
 
+   function Bone_Count (Index : Integer) return Integer is
+      use Meshes_Package;
+      Curs  : Cursor := Loaded_Meshes.First;
+      Found : Boolean := False;
+      Count : Integer := 0;
+   begin
+      while Has_Element (Curs) and not Found loop
+         Found := To_Index (Curs) = Index;
+         if Found then
+            Count := Element (Curs).Bone_Count;
+         else
+            Next (Curs);
+         end if;
+      end loop;
+
+      return Count;
+   end Bone_Count;
+
+   --  ------------------------------------------------------------------------
+
    procedure Init is
    begin
       Loaded_Meshes.Clear;

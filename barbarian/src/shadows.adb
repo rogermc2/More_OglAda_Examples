@@ -190,8 +190,27 @@ package body Shadows is
          GL.Objects.Programs.Use_Program (G_Shadows.Depth_Sp);
          Depth_Shader_Manager.Set_Model_Matrix (Mat);
         end if;
-
    end Set_Depth_Model_Matrix;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Set_Depth_Skinned_Bone_Matrices (Mats : Singles.Matrix4_Array) is
+    begin
+      if Settings.Shadows_Enabled then
+         GL.Objects.Programs.Use_Program (G_Shadows.Depth_Skinned_Sp);
+         Depth_Skinned_Shader_Manager.Set_Bone_Matrices (Mats);
+      end if;
+   end Set_Depth_Skinned_Bone_Matrices;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Set_Depth_Skinned_Model_Matrix (Mat : Singles.Matrix4) is
+    begin
+      if Settings.Shadows_Enabled then
+         GL.Objects.Programs.Use_Program (G_Shadows.Depth_Skinned_Sp);
+         Depth_Skinned_Shader_Manager.Set_Model_Matrix (Mat);
+      end if;
+   end Set_Depth_Skinned_Model_Matrix;
 
    --  ----------------------------------------------------------------------------
 

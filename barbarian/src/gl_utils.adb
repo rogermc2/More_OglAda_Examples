@@ -24,6 +24,7 @@ package body GL_Utils is
    Previous_Seconds    : Float := 0.0;
    Total_Video_Seconds : constant Integer := 10;
    G_Resized_View      : Boolean := False;
+   Edit_Mode           : Boolean := False;
 
    --  ------------------------------------------------------------------------
 
@@ -117,6 +118,13 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
+   function Is_Edit_Mode return Boolean is
+   begin
+       return Edit_Mode;
+   end Is_Edit_Mode;
+
+   --  ------------------------------------------------------------------------
+
    function Read_Vec2 (Vec : String) return GL.Types.Singles.Vector2 is
       use Ada.Strings;
       use GL.Types;
@@ -174,6 +182,13 @@ package body GL_Utils is
    begin
       G_Current_Program := Current_Prog;
    end Set_Current_Program;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Is_Edit_Mode (Mode : Boolean) is
+   begin
+       Edit_Mode := Mode;
+   end Set_Is_Edit_Mode;
 
    --  ------------------------------------------------------------------------
 

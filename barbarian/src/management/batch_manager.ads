@@ -35,10 +35,6 @@ package Batch_Manager is
      Ada.Containers.Vectors (Positive, Static_Light_Data);
    type Static_Light_Vector is new Static_Light_Package.Vector with null record;
 
---     package Light_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
---       (Positive);
---     type Light_Indices_List is new Light_Indices_Package.List with null record;
-
    package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
      (Positive);
    type Tile_Indices_List is new Tile_Indices_Package.List with null record;

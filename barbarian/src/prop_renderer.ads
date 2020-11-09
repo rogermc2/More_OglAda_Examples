@@ -37,7 +37,7 @@ package Prop_Renderer is
    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
    procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
-   function Update_Props (Seconds : Float) return Boolean;
+   procedure Update_Properties (Seconds : Float);
    procedure Update_Static_Lights_Uniforms;
 
 private
@@ -57,11 +57,11 @@ private
       -- Opengl Outline Mesh Vao
       Outlines_Vao          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       -- # Vertices In Mesh
-      Vertex_Count          : Integer := 0;
+      Vertex_Count          : Int := 0;
       -- # Vertices In Outlines Mesh
-      Outlines_Vertex_Count : Integer := 0;
+      Outlines_Vertex_Count : Int := 0;
       -- Radius Of Visibility Sphere - Defined In Mesh File
-      Bounding_Radius       : Float := 0.0;
+      Bounding_Radius       : Single := 0.0;
 
       -- Sprite
       -- ------
@@ -86,20 +86,20 @@ private
 
       -- General Stuff
       -- -------------
-      Prop_Type             : Property_Type;
+      Script_Type           : Property_Type;
       Scale                 : Singles.Vector3 := Maths.Vec3_0;
 
       -- Collision Shape
       -- ---------------
       -- Height Of Bounding Cylinder Or Box
-      Height                 : Float := 0.0;
+      Height                 : Single := 0.0;
       -- Radius Of Bounding Cylinder Or Sphere
-      Radius                 : Float := 0.0;
+      Radius                 : Single := 0.0;
       -- Define 4 Of These X,Z Points As Alternative To Bounding Cylinder
       Box_Points             : Singles.Vector2_Array (1 .. 4);
       -- Used To Offset Origin Of Bounding Cylinder Shape And Visibility Sphere
       Origin                 : Singles.Vector3 := Maths.Vec3_0;
-      Hole_Height            : Float := 0.0;
+      Hole_Height            : Single := 0.0;
       Hole_Points            : Singles.Vector2_Array (1 .. 4);
       Has_Hole               : Boolean := False;
 
@@ -176,7 +176,7 @@ private
       -- -----------------------------------------
       World_Pos           : Singles.Vector3 := Maths.Vec3_0;
       Quat                : Singles.Vector4 := Maths.Vec4_0;  --  Versor
-      Heading_Deg         : Float := 0.0;
+      Heading_Deg         : Maths.Degree := 0.0;
       Velocity            : Singles.Vector3 := Maths.Vec3_0;
       Origin_World        : Singles.Vector3 := Maths.Vec3_0;
 
