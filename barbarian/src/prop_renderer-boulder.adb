@@ -1,18 +1,24 @@
 
+with Ada.Numerics;
 with Game_Utils;
 with Manifold;
 with Tiles_Manager;
 
 package body Prop_Renderer.Boulder is
 
+   procedure Max_Min_XZ (Rp                         : Singles.Vector4; index : Int;
+                         Max_X, Min_X, Max_Z, Min_Z : in out Single);
+
    --  -------------------------------------------------------------------------
 
    function Get_Prop_Height (Prop_Index         : Positive;
                              NW_World, SE_World : Singles.Vector3)
                              return Single is
+      use Ada.Numerics;
       use GL.Types;
       use Singles;
       use Maths;
+      use Single_Math_Functions;
       aProperty    : constant Prop_Renderer.Property_Data :=
                        Get_Property_Data (Prop_Index);
       S_I          : Positive := aProperty.Script_Index;
@@ -24,7 +30,8 @@ package body Prop_Renderer.Boulder is
       Dist         : Vector3;
       Sqdist       : Single;
       Radius       : Single;
-      Rp           : array (Int range 1 .. 4) of Singles.Vector4;
+      F            : Single;
+      Rp           : Singles.Vector4_Array (1 .. 4);
       P            : Singles.Vector4;
       Hole_Point   : Vector2;
       GL_Index     : constant array (Int range 1 .. 4) of GL.Index_Homogeneous
@@ -35,6 +42,7 @@ package body Prop_Renderer.Boulder is
       Min_Z        : Single := 0.0;
       Max_Z        : Single := 0.0;
       Min_Height   : constant Single := -100.0;
+      Continue     : Boolean := True;
       Height       : Single := Min_Height;
    begin
       if aProperty.Was_Smashed and SS_I > 0 then
@@ -56,22 +64,53 @@ package body Prop_Renderer.Boulder is
             Hole_Point := aScript.Hole_Points (index);
             P := (Hole_Point (GL.X), 0.0, Hole_Point (GL.Y), 1.0);
             Rp (index) := aProperty.Model_Mat * P;
-            if index = 1 then
-               Min_X := rp (1) (GL.X);
-               Max_X := rp (1) (GL.X);
-               Min_Z := rp (1) (GL.Z);
-               Max_Z := rp (1) (GL.Z);
-            else
-               Min_X := Min (rp (1) (GL.X), Min_X);
-               Max_X := Max (rp (1) (GL.X), Max_X);
-               Min_Z := Min (rp (1) (GL.Z), Min_Z);
-               Max_Z := Max (rp (1) (GL.Z), Max_Z);
-            end if;
+            Max_Min_XZ (Rp (index), index, Max_X, Min_X, Max_Z, Min_Z);
          end loop;
+
          Max_Y := aScript.Hole_Height + Prop_Centre (GL.Y);
-      else
-         null;
+         Continue := NW_World (GL.X) < Min_X or SE_World (GL.X) > Max_X or
+           NW_World (GL.Y) > Max_Y or NW_World (GL.Z) < Min_Z or
+           SE_World (GL.Z) > Max_Z;
+         if not Continue then
+            Height := Min_Height;
+         end if;
+      end if; --  has hole
+
+      if Continue then
+         case Prop_Type is
+            when Boulder_Prop =>
+               F := 0.5 * Pi * Sqdist / Radius ** 2;
+               Height := Prop_Centre (GL.Y) + Radius * Cos (F);
+               Continue := False;
+            when Pillar_Prop =>
+               Continue := False;
+            when Door_Prop | Elevator_Prop | Box_Prop |
+                 Mirror_Prop | Windlass_Prop | Big_Box_Prop =>
+               if Prop_Type = Door_Prop and then
+                 aProperty.Door = Open_State then
+                  Height := Min_Height;
+                  Continue := False;
+               else
+                  null;
+               end if;
+            when Bridge_Prop =>
+               Height := aProperty.World_Pos (GL.Y);
+               Continue := False;
+            when Decap_Head_Prop | Tavern_Prop |Jav_Stand_Prop  =>
+               Height := Min_Height;
+               Continue := False;
+            when others => null;
+         end case;
+
+         if Continue then
+            if Radius <= 0.0 then
+               Height := Min_Height;
+            else
+               Height := Prop_Centre (GL.Y) + aScript.Height;
+            end if;
+         end if;
       end if;
+
       return Height;
 
    end Get_Prop_Height;
@@ -167,6 +206,25 @@ package body Prop_Renderer.Boulder is
       return Height;
 
    end Get_Prop_Height_Between_Bouldering;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Max_Min_XZ (Rp                         : Singles.Vector4; Index : Int;
+                         Max_X, Min_X, Max_Z, Min_Z : in out Single) is
+      use Maths;
+   begin
+      if Index = 1 then
+         Min_X := Rp (GL.X);
+         Max_X := Min_X;
+         Min_Z := Rp (GL.Z);
+         Max_Z := Min_Z;
+      else
+         Min_X := Min (Rp (GL.X), Min_X);
+         Max_X := Max (Rp (GL.X), Max_X);
+         Min_Z := Min (Rp (GL.Z), Min_Z);
+         Max_Z := Max (Rp (GL.Z), Max_Z);
+      end if;
+   end Max_Min_XZ;
 
    --  -------------------------------------------------------------------------
 
