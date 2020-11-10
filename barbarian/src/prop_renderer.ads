@@ -1,4 +1,5 @@
 
+with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with GL.Objects.Vertex_Arrays;
@@ -7,6 +8,7 @@ with GL.Types; use GL.Types;
 with Maths;
 
 with Depth_Skinned_Shader_Manager;
+with Manifold;
 with Mesh_Loader;
 
 package Prop_Renderer is
@@ -201,9 +203,20 @@ package Prop_Renderer is
       Was_Smashed             : Boolean := False;
    End Record;
 
+   type Tile_Data_Array is array (1 .. Manifold.Max_Tile_Cols,
+                                  1 .. Manifold.Max_Tile_Cols) of Integer;
+
+   package Props_Data_Package is new Ada.Containers.Vectors
+     (Positive, Tile_Data_Array);
+   type Props_Data_Array is new Props_Data_Package.Vector with null Record;
+
    Prop_Renderer_Exception : Exception;
 
    procedure Init;
+   function Get_Properties (U, V : Positive) return Tile_Data_Array;
+   function Get_Property_Data (Prop_Index : Positive) return Property_Data;
+   function Get_Script_Data (Script_Index : Positive) return Prop_Script;
+   function Get_Script_Index (Prop_Index : Positive) return Positive;
    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
    procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);

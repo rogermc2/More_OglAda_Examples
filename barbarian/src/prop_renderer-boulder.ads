@@ -5,7 +5,7 @@ package Prop_Renderer.Boulder is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Boulder (Property : Prop_Renderer.Property_Data;
+   procedure Update_Boulder (Prop_Index : Positive;
                              Script  : Prop_Renderer.Prop_Script;
                              Seconds : Float);
 

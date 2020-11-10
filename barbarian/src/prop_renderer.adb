@@ -1,6 +1,4 @@
 
-with Ada.Containers.Vectors;
-
 with Glfw;
 
 with GL.Toggles;
@@ -9,7 +7,6 @@ with Batch_Manager;
 with Frustum;
 with Game_Utils;
 with GL_Utils;
-with Manifold;
 with Particle_System;
 with Properties_Shader_Manager;
 with Properties_Skinned_Shader_Manager;
@@ -42,12 +39,6 @@ package body Prop_Renderer is
 
    package Indicies_Package is new Ada.Containers.Vectors (Positive, Positive);
    type Indicies_List is new Indicies_Package.Vector with null Record;
-
-   type Tile_Data_Array is array (1 .. Manifold.Max_Tile_Cols,
-                                  1 .. Manifold.Max_Tile_Cols) of Integer;
-   package Props_Data_Package is new Ada.Containers.Vectors
-     (Positive, Tile_Data_Array);
-   type Props_Data_Array is new Props_Data_Package.Vector with null Record;
 
    --  Animation and rendering
    Model_Matrix                : Singles.Matrix4 := (others => (others => 0.0));
@@ -83,6 +74,35 @@ package body Prop_Renderer is
    Num_Types_Decap_Heads       : Int := 0;
    Last_Head_Particles_Used    : Int := 0;
    Prev_Time                   : Single := Single (Glfw.Time);
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Properties (U, V : Positive) return Tile_Data_Array is
+   begin
+      return Props_In_Tiles.Element ((U - 1) * Manifold.Max_Tile_Cols + V);
+   end Get_Properties;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Property_Data (Prop_Index : Positive) return Property_Data is
+   begin
+      return Properties.Element (Prop_Index);
+   end Get_Property_Data;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Script_Data (Script_Index : Positive) return Prop_Script is
+   begin
+      return Scripts.Element (Script_Index);
+   end Get_Script_Data;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Script_Index (Prop_Index : Positive) return Positive is
+      Property : constant Property_Data := Properties.Element (Prop_Index);
+   begin
+      return Property.Script_Index;
+   end Get_Script_Index;
 
    --  -------------------------------------------------------------------------
 
@@ -336,7 +356,7 @@ package body Prop_Renderer is
 
             case aScript.Script_Type is
                when Boulder_Prop => Prop_Renderer.Boulder.Update_Boulder
-                    (Property, aScript, Seconds);
+                    (P_Index, aScript, Seconds);
                when Dart_Trap_Prop => Update_Dart_Trap (P_Index, Seconds);
                when Door_Prop => Update_Door (P_Index, Seconds);
                when Elevator_Prop => Update_Elevator (P_Index, Seconds);
