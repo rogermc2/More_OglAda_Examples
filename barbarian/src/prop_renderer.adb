@@ -171,41 +171,37 @@ package body Prop_Renderer is
                if Property.Was_Smashed and Ssi >= 0 then
                   Script_Index := Ssi;
                end if;
-               if Property.Is_Visible or GL_Utils.Is_Edit_Mode then
-                  Script_Index := Ssi;
-                  if aScript.Casts_Shadow then
-                     if not aScript.Uses_Sprite then
-                        if not aScript.Transparent then
-                           if Frustum.Is_Sphere_In_Frustum
-                             (Property.Origin_World, aScript.Bounding_Radius) then
-                              GL_Utils.Bind_VAO (aScript.Vao);
-                              Script_Type := aScript.Script_Type;
-                              if Script_Type = Door_Prop or
-                                Script_Type = Pillar_Prop or
-                                Script_Type = Anim_Loop_Prop or
-                                Script_Type = Windlass_Prop then
-                                 Shadows.Set_Depth_Skinned_Model_Matrix
-                                   (Property.Model_Mat);
-                                 Mesh_Index := aScript.Mesh_Index;
-                                 Bone_Count := Mesh_Loader.Bone_Count (Mesh_Index);
-                                 Shadows.Set_Depth_Skinned_Bone_Matrices
-                                   (Property.Current_Bone_Transforms);
-                              elsif Script_Type = Diamond_Trigger_Prop then
-                                 Rot_Dia := Rotate_Y_Degree
-                                   (Singles.Identity4, Degree (Hdg_Dia) +
-                                        Property.Heading_Deg);
-                                 Trans := Property.World_Pos;
-                                 Trans (GL.Y) := Trans (GL.Y)  + Hdg_Dia;
-                                 Trans_Dia := Translation_Matrix (Trans);
-                                 Shadows.Set_Depth_Model_Matrix (Trans_Dia * Rot_Dia);
-                              else
-                                 Shadows.Set_Depth_Model_Matrix (Property.Model_Mat);
-                              end if;
-                              Draw_Arrays (Triangles, 0, aScript.Vertex_Count);
-                           end if;
-                        end if;
-                     end if;
+
+               if Property.Is_Visible or GL_Utils.Is_Edit_Mode or else
+                 aScript.Casts_Shadow or else
+                 not aScript.Uses_Sprite or else
+                 not aScript.Transparent or else
+                 Frustum.Is_Sphere_In_Frustum
+                   (Property.Origin_World, aScript.Bounding_Radius) then
+                  GL_Utils.Bind_VAO (aScript.Vao);
+                  Script_Type := aScript.Script_Type;
+                  if Script_Type = Door_Prop or
+                    Script_Type = Pillar_Prop or
+                    Script_Type = Anim_Loop_Prop or
+                    Script_Type = Windlass_Prop then
+                     Shadows.Set_Depth_Skinned_Model_Matrix
+                       (Property.Model_Mat);
+                     Mesh_Index := aScript.Mesh_Index;
+                     Bone_Count := Mesh_Loader.Bone_Count (Mesh_Index);
+                     Shadows.Set_Depth_Skinned_Bone_Matrices
+                       (Property.Current_Bone_Transforms);
+                  elsif Script_Type = Diamond_Trigger_Prop then
+                     Rot_Dia := Rotate_Y_Degree
+                       (Singles.Identity4, Degree (Hdg_Dia) +
+                            Property.Heading_Deg);
+                     Trans := Property.World_Pos;
+                     Trans (GL.Y) := Trans (GL.Y)  + Hdg_Dia;
+                     Trans_Dia := Translation_Matrix (Trans);
+                     Shadows.Set_Depth_Model_Matrix (Trans_Dia * Rot_Dia);
+                  else
+                     Shadows.Set_Depth_Model_Matrix (Property.Model_Mat);
                   end if;
+                  Draw_Arrays (Triangles, 0, aScript.Vertex_Count);
                end if;
             end loop;
          end loop;
