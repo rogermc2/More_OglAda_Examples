@@ -31,19 +31,20 @@ package body Prop_Renderer.Boulder is
       Sqdist       : Single;
       Radius       : Single;
       F            : Single;
-      Rp           : Singles.Vector4_Array (1 .. 4);
+      Rp           : Singles.Vector4;
       P            : Singles.Vector4;
+      Box_Point    : Vector2;
       Hole_Point   : Vector2;
-      GL_Index     : constant array (Int range 1 .. 4) of GL.Index_Homogeneous
-        := (GL.X, GL.Y, GL.Z, GL.W);
+--        GL_Index     : constant array (Int range 1 .. 4) of GL.Index_Homogeneous
+--          := (GL.X, GL.Y, GL.Z, GL.W);
       Min_X        : Single := 0.0;
       Max_X        : Single := 0.0;
       Max_Y        : Single := 0.0;
       Min_Z        : Single := 0.0;
       Max_Z        : Single := 0.0;
       Min_Height   : constant Single := -100.0;
-      Continue     : Boolean := True;
       Height       : Single := Min_Height;
+      Continue     : Boolean := True;
    begin
       if aProperty.Was_Smashed and SS_I > 0 then
          S_I := SS_I;
@@ -57,20 +58,22 @@ package body Prop_Renderer.Boulder is
       Sqdist := Dist (GL.X) ** 2 + Dist (GL.Z) ** 2;
       Radius := aScript.Radius;
       Height := aScript.Height;
+
       if Radius > 0.0 and Sqdist > Radius ** 2 then
          Height := Min_Height;
       elsif aScript.Has_Hole then
          for index in Int range 1 .. 4 loop
             Hole_Point := aScript.Hole_Points (index);
             P := (Hole_Point (GL.X), 0.0, Hole_Point (GL.Y), 1.0);
-            Rp (index) := aProperty.Model_Mat * P;
-            Max_Min_XZ (Rp (index), index, Max_X, Min_X, Max_Z, Min_Z);
+            Rp := aProperty.Model_Mat * P;
+            Max_Min_XZ (Rp, index, Max_X, Min_X, Max_Z, Min_Z);
          end loop;
 
          Max_Y := aScript.Hole_Height + Prop_Centre (GL.Y);
          Continue := NW_World (GL.X) < Min_X or SE_World (GL.X) > Max_X or
            NW_World (GL.Y) > Max_Y or NW_World (GL.Z) < Min_Z or
            SE_World (GL.Z) > Max_Z;
+
          if not Continue then
             Height := Min_Height;
          end if;
@@ -83,16 +86,40 @@ package body Prop_Renderer.Boulder is
                Height := Prop_Centre (GL.Y) + Radius * Cos (F);
                Continue := False;
             when Pillar_Prop =>
+               if aProperty.Door = Closed_State then
+                   Height := Height + Prop_Centre (GL.Y);
+               else
+                   Height := Prop_Centre (GL.Y);
+               end if;
                Continue := False;
             when Door_Prop | Elevator_Prop | Box_Prop |
                  Mirror_Prop | Windlass_Prop | Big_Box_Prop =>
                if Prop_Type = Door_Prop and then
                  aProperty.Door = Open_State then
                   Height := Min_Height;
-                  Continue := False;
                else
-                  null;
+                  Min_X := 0.0;
+                  Max_X := 0.0;
+                  Min_Z := 0.0;
+                  Max_Z := 0.0;
+                  for index in Int range 1 .. 4 loop
+                     Box_Point := aScript.Box_Points (index);
+                     P := (Box_Point (GL.X), 0.0, Box_Point (GL.Y), 1.0);
+                     Rp := aProperty.Model_Mat * P;
+                     Max_Min_XZ (Rp, index, Max_X, Min_X, Max_Z, Min_Z);
+                  end loop;
                end if;
+
+               if Min_X > Max (NW_World (GL.X), SE_World (GL.X)) or
+                 Max_X < Min (NW_World (GL.X), SE_World (GL.X)) or
+                 Min_Z > Max (NW_World (GL.Z), SE_World (GL.Z)) or
+                 Max_Z < Min (NW_World (GL.Z), SE_World (GL.Z))then
+                  Height := Min_Height;
+               else
+                  Height := Height + Prop_Centre (GL.Y);
+               end if;
+               Continue := False;
+
             when Bridge_Prop =>
                Height := aProperty.World_Pos (GL.Y);
                Continue := False;
