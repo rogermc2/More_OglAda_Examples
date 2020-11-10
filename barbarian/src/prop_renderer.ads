@@ -203,17 +203,19 @@ package Prop_Renderer is
       Was_Smashed             : Boolean := False;
    End Record;
 
-   type Tile_Data_Array is array (1 .. Manifold.Max_Tile_Cols,
-                                  1 .. Manifold.Max_Tile_Cols) of Integer;
+   package Prop_Indices_Package is new Ada.Containers.Vectors
+     (Positive, Positive);
+   type Prop_Indices_List is new Prop_Indices_Package.Vector with null Record;
 
-   package Props_Data_Package is new Ada.Containers.Vectors
-     (Positive, Tile_Data_Array);
-   type Props_Data_Array is new Props_Data_Package.Vector with null Record;
+   type Props_In_Tiles_Array is array
+     (1 .. Manifold.Max_Tile_Cols, 1 .. Manifold.Max_Tile_Cols) of
+     Prop_Indices_List;
 
    Prop_Renderer_Exception : Exception;
 
    procedure Init;
-   function Get_Properties (U, V : Positive) return Tile_Data_Array;
+   function Get_Property_Indices (U, V : Positive) return Prop_Indices_List;
+   function Get_Property_Index (U, V, Index : Positive) return Positive;
    function Get_Property_Data (Prop_Index : Positive) return Property_Data;
    function Get_Script_Data (Script_Index : Positive) return Prop_Script;
    function Get_Script_Index (Prop_Index : Positive) return Positive;

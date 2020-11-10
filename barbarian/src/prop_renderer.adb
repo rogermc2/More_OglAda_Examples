@@ -59,7 +59,7 @@ package body Prop_Renderer is
    Jav_Stand_Props_Render_List : Indicies_List;
    Portal_Props_Render_List    : Indicies_List;
    Treasure_Props_Render_List  : Indicies_List;
-   Props_In_Tiles              : Props_Data_Array;
+   Props_In_Tiles              : Props_In_Tiles_Array;
    Head_Particles              : Int_Array (1 .. Max_Decap_Particles);
    Dust_Particles              : Int := -1;
    Dust_Particlesb             : Int := -1;
@@ -77,10 +77,19 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Properties (U, V : Positive) return Tile_Data_Array is
+   function Get_Property_Indices (U, V : Positive) return Prop_Indices_List is
    begin
-      return Props_In_Tiles.Element ((U - 1) * Manifold.Max_Tile_Cols + V);
-   end Get_Properties;
+      return Props_In_Tiles (U, V);
+   end Get_Property_Indices;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Property_Index (U, V, Index : Positive) return Positive is
+      use Prop_Indices_Package;
+      Prop : constant Prop_Indices_List := Props_In_Tiles (U, V);
+   begin
+      return Prop.Element (Index);
+   end Get_Property_Index;
 
    --  -------------------------------------------------------------------------
 
@@ -148,7 +157,7 @@ package body Prop_Renderer is
    --  -------------------------------------------------------------------------
 
    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int) is
-      use Props_Data_Package;
+      use Prop_Indices_Package;
       use GL.Objects.Vertex_Arrays;
       use GL.Toggles;
       use Maths;
@@ -163,10 +172,10 @@ package body Prop_Renderer is
       Elapsed      : constant Single := Curr_Time - Prev_Time;
       Hdg_Dia      : constant Single := 20.0 * Elapsed;
       Hgt_Dia      : constant Single := 0.5 * Sin (2.0 * Curr_Time);
-      Tile_Data    : Tile_Data_Array;
+      Tile_Data    : Props_In_Tiles_Array;
+      Prop_Indices : Prop_Indices_List;
       Property     : Property_Data;
       --        Props_Size   : Integer;
-      Index        : Integer;
       Script_Index : Integer;
       Script_Type  : Property_Type;
       aScript      : Prop_Script;
@@ -179,13 +188,12 @@ package body Prop_Renderer is
    begin
       Prev_Time := Curr_Time;
       Enable (Depth_Test);
-      for Props_Index in Props_In_Tiles.First_Index .. Props_In_Tiles.Last_Index loop
-         Tile_Data := Element (Props_In_Tiles.To_Cursor (Props_Index));
-         for vi in Left .. Right loop
+      for vi in Left .. Right loop
             for ui in Up .. Down loop
                --                 Props_Size := Tile_Data'Size;
-               Index := Tile_Data (Integer (ui), Integer (vi));
-               Property := Properties.Element (Index);
+            Prop_Indices := Tile_Data (Integer (ui), Integer (vi));
+            for Props_Index in Prop_Indices.First_Index .. Prop_Indices.Last_Index loop
+               Property := Properties.Element (Props_Index);
                Script_Index := Property.Script_Index;
                aScript := Scripts.Element (Script_Index);
                Ssi := aScript.Smashed_Script_Index;
@@ -232,20 +240,17 @@ package body Prop_Renderer is
    --  -------------------------------------------------------------------------
 
    procedure Reset_Properties is
-      use Props_Data_Package;
+      use Prop_Indices_Package;
       -- Particle Systems
       Start_Now      : constant Boolean := False;
       Always_Update  : constant Boolean := True;
       Always_Draw    : constant Boolean := False;
-      Tile_Data      : Tile_Data_Array;
+      Prop_Indices   : Prop_Indices_List;
       Property       : Property_Data;
    begin
-      for Props_Index in Props_In_Tiles.First_Index .. Props_In_Tiles.Last_Index loop
-         Tile_Data := Element (Props_In_Tiles.To_Cursor (Props_Index));
-         for row in Tile_Data_Array'Range loop
-            for col in Tile_Data_Array'Range (2) loop
-               Tile_Data (row, col) := 0;
-            end loop;
+       for row in Props_In_Tiles'Range loop
+         for col in Props_In_Tiles'Range (2) loop
+            Props_In_Tiles (Integer (row), Integer (col)).Clear;
          end loop;
       end loop;
 

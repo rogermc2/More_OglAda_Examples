@@ -147,13 +147,13 @@ package body Prop_Renderer.Boulder is
    function  Get_Prop_Height_Between_Bouldering
      (NW_World, SE_World : Singles.Vector3;
       Excluded_Property  : Positive) return Single is
-      use Props_Data_Package;
+      use Prop_Indices_Package;
       use Singles;
       use Maths;
-      Properties         : Prop_Renderer.Props_Data_Array;
+      Prop_Indices      : Prop_Indices_List;
       Prop_Index         : Positive;
       aProperty          : Prop_Renderer.Property_Data;
-      Prop_Type          : Prop_Renderer.Property_Type;
+--        Prop_Type          : Prop_Renderer.Property_Type;
       aScript            : Prop_Renderer.Prop_Script;
       Nw_Map_U           : constant Int := Int (0.5 * (NW_World (GL.X) + 1.0));
       Nw_Map_V           : constant Int := Int (0.5 * (NW_World (GL.Z) + 1.0));
@@ -175,24 +175,25 @@ package body Prop_Renderer.Boulder is
                                                     Int (Manifold.Max_Tile_Cols - 1));
       Height             : Single := -100.0;
       New_Height         : Single;
-      Prop_Radius        : Single;
-      Tile_Data          : Tile_Data_Array;
+--        Prop_Radius        : Single;
       S_I                : Positive;
       SS_I               : Positive;
-      Result             : Single := 0.0;
-      Centre_Point       : Vector3;
-      Dist               : Vector3;
-      Sqdist             : Single;
-      Prop_Sqrad         : Single;
-      Zone_Rad           : Single;
-      Zone_Sqrad         : Single;
+--        Centre_Point       : Vector3;
+--        Dist               : Vector3;
+--        Sqdist             : Single;
+--        Prop_Sqrad         : Single;
+--        Zone_Rad           : Single;
+--        Zone_Sqrad         : Single;
    begin
       for v_index in Up_Bound .. Down_Bound loop
          for h_index in Left_Bound .. Right_Bound loop
             --  Check if radius and or centre is inside height range params
-            Tile_Data := Prop_Renderer.Get_Properties
+            Prop_Indices := Prop_Renderer.Get_Property_Indices
               (Integer (v_index), Integer (h_index));
-            Prop_Index := Tile_Data (Integer (v_index), Integer (h_index));
+            for index in Prop_Indices.First_Index ..
+              Prop_Indices.Last_Index loop
+               Prop_Index := Prop_Renderer.Get_Property_Index
+                 (Integer (v_index), Integer (h_index), index);
             if Prop_Index /= Excluded_Property then
                aProperty := Get_Property_Data (Prop_Index);
                S_I := aProperty.Script_Index;
@@ -201,30 +202,32 @@ package body Prop_Renderer.Boulder is
                if aProperty.Was_Smashed and SS_I > 0 then
                   S_I := SS_I;
                   aScript := Get_Script_Data (S_I);
-                  Prop_Type := aScript.Script_Type;
-                  if Prop_Type /= Pot_Prop and Prop_Type /= Door_Prop and
-                    Prop_Type /= Pillar_Prop then
-                     if Prop_Type /= Big_Box_Prop then
-                        if v_index <= Top and v_index >= Bottom and
-                          h_index <= Right_Bound and h_index >= Left_Bound then
-
-                           if Head >= aProperty.World_Pos (GL.Y) then
-                              Prop_Radius := aScript.Radius;
-                              if Prop_Radius > 0.0 then
-                                 Centre_Point := 0.5 * (NW_World + SE_World);
-                                 Dist := Centre_Point - aProperty.Origin_World;
-                                 Sqdist := Dist (Gl.X) ** 2 + Dist (Gl.Z) ** 2;
-                                 Prop_Sqrad := Prop_Radius * Prop_Radius;
-                                 -- also approximate box to a cylinder (circle)
-                                 Zone_Rad := Centre_Point (Gl.X) - SE_World (Gl.X);
-                                 Zone_Sqrad := Zone_Rad * Zone_Rad;
-                              end if;
-                           end if;
-                        end if;
-                     end if;
-                  end if;
+                  --  Based on comment below THE REMAINDER OF THIS FOR LOOP DOESN'T SEEM TO DO ANYTHING!
+--                    Prop_Type := aScript.Script_Type;
+--                    if Prop_Type /= Pot_Prop and Prop_Type /= Door_Prop and
+--                      Prop_Type /= Pillar_Prop then
+--                       if Prop_Type /= Big_Box_Prop then
+--                          if v_index <= Top and v_index >= Bottom and
+--                            h_index <= Right_Bound and h_index >= Left_Bound then
+                           --   THE REMAINDER OF THIS FOR LOOP DOESN'T SEEM TO DO ANYTHING!
+--                             if Head >= aProperty.World_Pos (GL.Y) then
+--                                Prop_Radius := aScript.Radius;
+--                                if Prop_Radius > 0.0 then
+--                                   Centre_Point := 0.5 * (NW_World + SE_World);
+--                                   Dist := Centre_Point - aProperty.Origin_World;
+--                                   Sqdist := Dist (Gl.X) ** 2 + Dist (Gl.Z) ** 2;
+--                                   Prop_Sqrad := Prop_Radius * Prop_Radius;
+--                                   -- also approximate box to a cylinder (circle)
+--                                   Zone_Rad := Centre_Point (Gl.X) - SE_World (Gl.X);
+--                                   Zone_Sqrad := Zone_Rad * Zone_Rad;
+--                                end if;
+--                             end if;
+--                          end if;
+--                       end if;
+--                    end if;
                end if;
             end if;
+         end loop;
          end loop;
          New_Height := Get_Prop_Height (Prop_Index, NW_World, SE_World);
          Height := Max (Height, New_Height);
