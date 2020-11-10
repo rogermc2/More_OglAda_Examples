@@ -169,6 +169,7 @@ package body Batch_Manager is
       begin
          aBatch.Tex_Coords.Append ((S - ST_Offset, T - ST_Offset));
       end Add_Tex_Coords;
+
    begin
       if not Is_Empty (Tiles) then
          for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
@@ -240,9 +241,6 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      --        Game_Utils.Game_Log ("Batch_Manager.North_Check, Tile_Index, N_Index "
-      --                                   & Integer'Image (Tile_Index) & ",  "
-      --                                   & Integer'Image (N_Index));
       aTile := Tiles.Element (N_Index);
       N_Height := aTile.Height;
       if aTile.Tile_Type = '~' then
@@ -298,10 +296,7 @@ package body Batch_Manager is
       procedure Add_Point_Count (Diff : Integer) is
       begin
          if Diff > 0 then
-            --              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Diff, theBatch.Point_Count"
-            --                                   & Integer'Image (Diff) & ", " &
-            --                                   Integer'Image (theBatch.Point_Count));
-            Total_Points := Total_Points + 6 * Diff;
+             Total_Points := Total_Points + 6 * Diff;
          end if;
       end Add_Point_Count;
 
@@ -313,10 +308,6 @@ package body Batch_Manager is
            "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
       else
          while Has_Element (Curs) loop
-            --              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Tile_Index, last index "
-            --                                   & Integer'Image (Tile_Index)
-            --                                   & Integer'Image (Batch_Tiles.Last_Index));
-
             Tile_Index  := Element (Curs);
             aTile := Tiles.Element (Tile_Index);
             Row := Int (Tile_Index) / Max_Cols + 1;
@@ -346,11 +337,8 @@ package body Batch_Manager is
                   N_Height := N_Height - 1;
                end if;
                Diff := Height - N_Height;
-               --                 Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Height, N_Height "
-               --                                      & Integer'Image (Height) & ", " &
-               --                                        Integer'Image (N_Height));
-               --  Remove bit behind stairs from construction list
 
+               --  Remove bit behind stairs from construction list
                if N_Tile.Tile_Type = '/' and then
                  N_Tile.Facing = 'S' then
                   Diff := Diff - 1;
@@ -366,9 +354,6 @@ package body Batch_Manager is
                   N_Height := N_Height - 1;
                end if;
                Diff := Height - N_Height;
-               --              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Row < Max_Rows, Height, N_Height "
-               --                                   & Integer'Image (Height) & ", " &
-               --                                   Integer'Image (N_Height));
 
                if N_Tile.Tile_Type = '/' and then
                  N_Tile.Facing = 'N' then
@@ -385,18 +370,11 @@ package body Batch_Manager is
                   N_Height := N_Height - 1;
                end if;
                Diff := Height - N_Height;
-               --              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Column > 1, Height, N_Height "
-               --                                   & Integer'Image (Diff) & ", " &
-               --                                   Integer'Image (Height) & ", " &
-               --                                   Integer'Image (N_Height));
 
                if N_Tile.Tile_Type = '/' and then
                  N_Tile.Facing = 'E' then
                   Diff := Diff - 1;
                end if;
-               --              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Tile_Type = '/', Height, N_Height "
-               --                                   & Integer'Image (Height) & ", " &
-               --                                   Integer'Image (N_Height));
                Add_Point_Count (Diff);
             end if;
 
@@ -413,9 +391,6 @@ package body Batch_Manager is
                  N_Tile.Facing = 'W' then
                   Diff := Diff - 1;
                end if;
-               --              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch, Tile_Type = '/' 2, Height, N_Height "
-               --                                   & Integer'Image (Height) & ", " &
-               --                                   Integer'Image (N_Height));
                Add_Point_Count (Diff);
             end if;
             Next (Curs);
@@ -429,8 +404,6 @@ package body Batch_Manager is
 
       Generate_Points (theBatch, Tiles);
       Batches.Replace_Element (Batch_Index, theBatch);
-      --        Game_Utils.Game_Log ("Regenerate_Batch,Total_Points " &
-      --                               Integer'Image (Total_Points));
 
    end Regenerate_Batch;
 

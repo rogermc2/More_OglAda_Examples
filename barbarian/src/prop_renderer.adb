@@ -13,6 +13,7 @@ with Manifold;
 with Particle_System;
 with Properties_Shader_Manager;
 with Properties_Skinned_Shader_Manager;
+with Prop_Renderer.Boulder;
 with Shadows;
 with Tiles_Manager;
 
@@ -272,74 +273,6 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Boulder (Prop_Index : Positive; Seconds : Float) is
-      use Maths;
-      Bounce_Factor  : constant Single := 0.5;
-      Thresh         : constant Single := 0.1;
-      Coeff_Fric     : constant Single := 0.2;
-      Min_Speed      : constant Single := 0.05;
-      theProperty    : constant Property_Data := Properties (Prop_Index);
-      S_I            : constant Positive := theProperty.Script_Index;
-      Radius         : Single  := Scripts (S_I).Radius;
-      --   if something (a wall/door/etc) was banged and should play sound etc
-      Banged         : Boolean := False;
-      --   update velocity in same way as characters
-      Desired_Vel    : Singles.Vector3 := theProperty.Velocity;
-      Speed_Increase : Single;
-      Speed_Decrease : Single;
-      V_Sum          : Single;
-      --   work out if can increase linear speed due to a ramp
-      Current_U      : constant Int :=
-                         Int (0.5 * (theProperty.World_Pos (GL.X) + 1.0));
-      Current_V      : constant Int :=
-                         Int (0.5 * (theProperty.World_Pos (GL.Z) + 1.0));
-      Facing         : constant Character :=
-                         Tiles_Manager.Get_Facing (Current_U, Current_V);
-
-   begin
-      if theProperty.Is_On_Ground then
-         if Manifold.Is_Ramp (Current_U, Current_V) then
-            Speed_Increase := Single (7.5 * Seconds);  --  due to gravity
-            Desired_Vel (GL.Y) := Desired_Vel (GL.Y) - Speed_Increase;
-            if Facing = 'N' then
-               Desired_Vel (GL.Z) := Desired_Vel (GL.Z) + Speed_Increase;
-            elsif Facing = 'S' then
-               Desired_Vel (GL.Z) := Desired_Vel (GL.Z) - Speed_Increase;
-            elsif Facing = 'W' then
-               Desired_Vel (GL.X) := Desired_Vel (GL.X) + Speed_Increase;
-            else
-               Desired_Vel (GL.X) := Desired_Vel (GL.X) - Speed_Increase;
-            end if;
-         end if;
-         --  Acccount for friction
-         Speed_Decrease := Coeff_Fric * Single (Seconds);
-         if Desired_Vel (GL.X) > 0.0 then
-            Desired_Vel (GL.X) := Max (Desired_Vel (GL.X) - Speed_Decrease , 0.0);
-         else
-            Desired_Vel (GL.X) := Min (Desired_Vel (GL.X) + Speed_Decrease , 0.0);
-         end if;
-         if Desired_Vel (GL.Z) > 0.0 then
-            Desired_Vel (GL.Z) := Max (Desired_Vel (GL.Z) - Speed_Decrease , 0.0);
-         else
-            Desired_Vel (GL.Z) := Min (Desired_Vel (GL.Z) + Speed_Decrease , 0.0);
-         end if;
-      else
-         Desired_Vel (GL.Y) := Desired_Vel (GL.Y) - Single (10.0 * Seconds);
-      end if;
-
-      --  If stopped here, deactivate
-      if theProperty.Is_On_Ground and not
-        Manifold.Is_Ramp (Current_U, Current_V) then
-         V_Sum := abs (Desired_Vel (GL.X)) + abs (Desired_Vel (GL.Z));
-         if V_Sum < Min_Speed then
-            Desired_Vel := (0.0, 0.0, 0.0);
-         end if;
-      end if;
-
-   end Update_Boulder;
-
-   --  -------------------------------------------------------------------------
-
    procedure Update_Dart_Trap (Prop_Index : Positive; Seconds : Float) is
    begin
       null;
@@ -402,7 +335,8 @@ package body Prop_Renderer is
             end if;
 
             case aScript.Script_Type is
-               when Boulder_Prop => Update_Boulder (P_Index, Seconds);
+               when Boulder_Prop => Prop_Renderer.Boulder.Update_Boulder
+                    (Property, aScript, Seconds);
                when Dart_Trap_Prop => Update_Dart_Trap (P_Index, Seconds);
                when Door_Prop => Update_Door (P_Index, Seconds);
                when Elevator_Prop => Update_Elevator (P_Index, Seconds);

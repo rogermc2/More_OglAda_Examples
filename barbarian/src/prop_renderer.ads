@@ -31,16 +31,6 @@ package Prop_Renderer is
    type Activator_Type is (Prop_Activator_Player_State, Prop_Activator_Npc_State,
                            Prop_Activator_Prop_State);
 
-   Prop_Renderer_Exception : Exception;
-
-   procedure Init;
-   procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
-   procedure Reset_Properties;
-   procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
-   procedure Update_Properties (Seconds : Float);
-   procedure Update_Static_Lights_Uniforms;
-
-private
    Type Prop_Script is record
       -- Mesh/File Stuff
       File_Name             : Unbounded_String := To_Unbounded_String ("");
@@ -210,5 +200,14 @@ private
       -- Pot
       Was_Smashed             : Boolean := False;
    End Record;
+
+   Prop_Renderer_Exception : Exception;
+
+   procedure Init;
+   procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
+   procedure Reset_Properties;
+   procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
+   procedure Update_Properties (Seconds : Float);
+   procedure Update_Static_Lights_Uniforms;
 
 end Prop_Renderer;
