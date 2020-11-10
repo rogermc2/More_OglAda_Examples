@@ -60,10 +60,10 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   function Batch_Split_Size return Integer is
-   begin
-      return Batch_Split_Count;
-   end Batch_Split_Size;
+--     function Batch_Split_Size return Integer is
+--     begin
+--        return Batch_Split_Count;
+--     end Batch_Split_Size;
 
    --  ----------------------------------------------------------------------------
 

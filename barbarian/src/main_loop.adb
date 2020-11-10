@@ -426,11 +426,7 @@ package body Main_Loop is
                raise Update_Exception with
                  "Update_Logic_Steps, error updating characters";
             end if;
-            OK := Prop_Renderer.Update_Props (Logic_Step_Seconds);
-            if not OK then
-               raise Update_Exception with
-                 "Update_Logic_Steps, error updating props";
-            end if;
+            Prop_Renderer.Update_Properties (Logic_Step_Seconds);
 
             Projectile_Manager.Update_Projectiles (Logic_Step_Seconds);
             Time_Step := Time_Step + 1;

@@ -116,18 +116,12 @@ package body Tiles_Manager is
       --          for index in 1 .. Total_Tiles loop
       for Row in 1 .. Max_Rows loop
          --              Row := index / Max_Cols + 1;
-         --              Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Row" &
-         --                                     Integer'Image (Row));
          Batch_Down  := Integer (Row - 1) / Settings.Tile_Batch_Width;
          for Col in 1 .. Max_Cols loop
             --              Col := index - (Row - 1) * Max_Cols;
-            --                  Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Col" &
-            --                                         Integer'Image (Col));
             Tile_Index := Integer ((Row - 1) * Max_Cols + Col);
             Batch_Across := Integer (Col - 1) / Settings.Tile_Batch_Width;
             Batch_Index := Batches_Across * Batch_Down + Batch_Across + 1;
-            --                  Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Batch_Index" &
-            --                                         Integer'Image (Batch_Index));
             if Has_Element (Batches.To_Cursor (Batch_Index)) then
                Batch := Batches.Element (Batch_Index);
                Add_Tile_Index (Batch, Tile_Index);
@@ -137,12 +131,8 @@ package body Tiles_Manager is
             end if;
          end loop;
       end loop;
-      --          Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch, Batches.Length " &
-      --                                Ada.Containers.Count_Type'Image (Batches.Length));
-      --          Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch_Split_Count, total tiles " &
-      --                              Integer'Image (Batch_Split_Count) & ", " &
-      --                              Integer'Image (Total_Tiles));
-      for index in 1 .. Batch_Split_Count loop
+     --        for index in 1 .. Batch_Split_Count loop
+      for index in Batches.First_Index .. Batches.Last_Index loop
          Regenerate_Batch (Tiles, index);
          --              Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch " &
          --                                Integer'Image (index) & " regenerated");
@@ -488,7 +478,7 @@ package body Tiles_Manager is
         Integer (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
       Batches_Down :=
         Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
-      Batch_Split_Count := Integer (Batches_Across * Batches_Down);
+--        Batch_Split_Count := Integer (Batches_Across * Batches_Down);
 
       Parse_Facings_By_Row (File, Max_Rows, Max_Cols, Tiles);
 
