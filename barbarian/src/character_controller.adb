@@ -6,6 +6,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Maths;
 
 with Batch_Manager;
+with Character_Map;
 with Game_Utils;
 with Tiles_Manager;
 
@@ -25,6 +26,7 @@ package body Character_Controller is
    end record;
 
    Characters : Character_List;
+   Specs      : Specs_List;
 
    --      Portal_Fadeout_Started  : Boolean := False;
    Characters_To_Reserve   : constant Integer := 256;
@@ -72,21 +74,44 @@ package body Character_Controller is
    --  -------------------------------------------------------------------------
 
    function Damage_All_Near
-     (Self_Id        : Positive; World_Pos : Singles.Vector3; Damage_Range : Single;
-      Damage         : Int;
-      Throw_Back_Mps : Single;  Exclude_Id : Positive; Weapon : Weapon_Type) return Natural is
+     (Self_Id        : Positive; World_Pos : Singles.Vector3;
+      Damage_Range   : Single; Damage         : Int;
+      Throw_Back_Mps : Single;  Exclude_Id : Positive;
+      Weapon         : Weapon_Type) return Natural is
       use Maths;
-      Map_U               : Int := Int (0.5 * (World_Pos (Gl.X) + 1.0));
-      Map_V               : Int := Int (0.5 * (World_Pos (Gl.Z) + 1.0));
-      Left                : Int := Maths.Max_Int (0, Map_U - 1);
-      Right               : Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1, Map_U + 1);
-      Up                  : Int := Maths.Max_Int (0, Map_V - 1);
-      Down                : Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1, Map_V + 1);
+      use Character_Map;
+      use Character_Map_Package;
+      Map_U               : constant Int := Int (0.5 * (World_Pos (Gl.X) + 1.0));
+      Map_V               : constant Int := Int (0.5 * (World_Pos (Gl.Z) + 1.0));
+      Left                : constant Int := Maths.Max_Int (0, Map_U - 1);
+      Right               : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1, Map_U + 1);
+      Up                  : constant Int := Maths.Max_Int (0, Map_V - 1);
+      Down                : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1, Map_V + 1);
       Last_Character_Hit  : Int := -1;
-
+      Character_IDs       : Character_Map_List;
+      Curs                : Cursor;
+      Char_ID             : Positive;
+      Character           : Barbarian_Character;
+      Spec_ID             : Positive;
    begin
-      return 0;
+      for index_v in Up .. Down loop
+         for index_h in Left .. Right loop
+            Character_IDs := Get_Characters_In (index_v, index_h);
+            Curs := Character_IDs.First;
+            while Has_Element (Curs) loop
+               Char_ID := Element (Curs);
+               if Char_ID /= Self_Id and Char_ID /= Exclude_Id then
+                  Character := Characters.Element (Char_ID);
+                  if Character.Is_Alive then
+                     Spec_ID := Character.Specs_Index;
+                  end if;
+               end if;
+               Next (Curs);
+            end loop;
+         end loop;
+      end loop;
 
+      return 0;
    end Damage_All_Near;
 
    --  -------------------------------------------------------------------------

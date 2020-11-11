@@ -10,7 +10,7 @@ package Character_Map is
 
     package Character_Map_Package is new
      Ada.Containers.Doubly_Linked_Lists (Positive);
-    type Character_Map_List is private;
+    type Character_Map_List is new Character_Map_Package.List with null record;
 
    Character_Map_Exception : Exception;
 
@@ -19,8 +19,5 @@ package Character_Map is
    procedure Free_Character_Map;
    function Get_Characters_In (U, V : GL.Types.Int) return Character_Map_List;
    procedure Init;
-
-private
-    type Character_Map_List is new Character_Map_Package.List with null record;
 
 end Character_Map;

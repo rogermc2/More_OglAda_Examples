@@ -12,8 +12,6 @@ with Game_Utils;
 
 package body Specs_Manager is
 
-   --      Max_Anim_Frames   : constant GL.Types.Int := 32;
-
    Specs                   : Specs_List;
    Use_Character_Mipmaps   : constant Boolean := True;
 

@@ -13,6 +13,7 @@ package Specs_Manager is
     Max_Weapons       : constant GL.Types.Int := 9;
     Max_Animations    : constant GL.Types.Int := 32;
     Max_Attack_Events : constant GL.Types.Int := 32;
+    Max_Anim_Frames   : constant GL.Types.Int := 32;
     Max_Particle_Systems_Attached_To_Character : constant GL.Types.Int :=  8;
 
     type Unbounded_String_Array is array (GL.Types.Int range <>)
