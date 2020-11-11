@@ -83,6 +83,8 @@ package Maths is
                                 return Singles.Matrix4;
    function Perspective_Matrix (Top, Bottom, Left, Right, Near, Far : Single)
                                 return GL.Types.Singles.Matrix4;
+   function Quaternion_To_Matrix4 (Quat : Single_Quaternion.Quaternion)
+                                   return Singles.Matrix4;
    function Random_Float return Single;
    function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
                            return Singles.Vector3;

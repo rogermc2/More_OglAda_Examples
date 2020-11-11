@@ -10,22 +10,22 @@ package body Maths is
 
    Zero_Matrix4 : constant GL.Types.Singles.Matrix4 :=
                     (others => (others => 0.0));
-   Gen : Ada.Numerics.Float_Random.Generator;
+   Gen          : Ada.Numerics.Float_Random.Generator;
 
    --  ------------------------------------------------------------------------
 
-    function "=" (Left, Right : Maths.Vector8) return Boolean is
-    begin
-        return Left (X) = Right (X) and Left (Y) = Right (Y) and Left (Z) = Right (Z)
+   function "=" (Left, Right : Maths.Vector8) return Boolean is
+   begin
+      return Left (X) = Right (X) and Left (Y) = Right (Y) and Left (Z) = Right (Z)
         and Left (NX) = Right (NX) and Left (NY) = Right (NY) and Left (NZ) = Right (NZ)
         and Left (U) = Right (U) and Left (V) = Right (V);
-    end "=";
+   end "=";
 
-    --   ----------------------------------------------------------------------
-    generic
+   --   ----------------------------------------------------------------------
+   generic
       type Index_Type is (<>);
       type Vector_Type is array (Index_Type) of aliased GL.Types.Single;
-    function Stride return Int;
+   function Stride return Int;
 
    function Stride return Int is
    begin
@@ -35,33 +35,33 @@ package body Maths is
    function Stride_4 is new Stride (Index_4, Vector4);
    function Stride4 return Int is
    begin
-        return Stride_4;
+      return Stride_4;
    end Stride4;
 
    function Stride_5 is new Stride (Index_5, Vector5);
    function Stride5 return Int is
    begin
-        return Stride_5;
+      return Stride_5;
    end Stride5;
 
    function Stride_6 is new Stride (Index_8, Vector8);
    function Stride6 return Int is
    begin
-        return Stride_6;
+      return Stride_6;
    end Stride6;
 
    function Stride_8 is new Stride (Index_8, Vector8);
    function Stride8 return Int is
    begin
-        return Stride_8;
+      return Stride_8;
    end Stride8;
 
---  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
    function Cube_Root (Value : Single) return Single is
    begin
       return Maths.Single_Math_Functions.Exp
-          (Maths.Single_Math_Functions.Log (Value) / 3.0);
+        (Maths.Single_Math_Functions.Log (Value) / 3.0);
    end Cube_Root;
 
    --  ------------------------------------------------------------------------
@@ -383,15 +383,42 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+   function Quaternion_To_Matrix4 (Quat : Single_Quaternion.Quaternion)
+                                   return Singles.Matrix4 is
+      Norm_Quat : constant Single_Quaternion.Quaternion :=
+                    Single_Quaternion.Normalized (Quat);
+      W         : constant Single := Norm_Quat.A;
+      X         : constant Single := Norm_Quat.B;
+      Y         : constant Single := Norm_Quat.C;
+      Z         : constant Single := Norm_Quat.D;
+      Result    : Singles.Matrix4 := Singles.Identity4;
+   begin
+      Result (GL.X, GL.X) := 1.0 - 2.0 * (Y ** 2 + Z ** 2);
+      Result (GL.X, GL.Y) := 2.0 * (X * Y + W * Z);
+      Result (GL.X, GL.Z) := 2.0 * (X * Z - W * Y);
+
+      Result (GL.Y, GL.X) := 2.0 * (X * Y - W * Z);
+      Result (GL.Y, GL.Y) := 1.0 - 2.0 * (X ** 2 + Z ** 2);
+      Result (GL.Y, GL.Z) := 2.0 * (X * W + Y * Z);
+
+      Result (GL.Z, GL.X) := 2.0 * (X * Z + W * Y);
+      Result (GL.Z, GL.Y) := 2.0 * (X * Z - W * X);
+      Result (GL.Z, GL.Z) := 1.0 - 2.0 * (X ** 2 + Y ** 2);
+
+      return Result;
+   end Quaternion_To_Matrix4;
+
+   --  ------------------------------------------------------------------------
+
    function Random_Float return Single is
-        use Ada.Numerics.Float_Random;
-    begin
-        return 2.0 * Single (Random (Gen)) - 1.0;
-    end Random_Float;
+      use Ada.Numerics.Float_Random;
+   begin
+      return 2.0 * Single (Random (Gen)) - 1.0;
+   end Random_Float;
 
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
-    function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
+   function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
                             return Singles.Vector3 is
       use Ada.Numerics.Float_Random;
       use GL.Types.Singles;
@@ -407,7 +434,7 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
-   function Rotate_X_Degree (M : GL.Types.Singles.Matrix4;
+   function Rotate_X_Degree (M     : GL.Types.Singles.Matrix4;
                              Angle : Degree) return GL.Types.Singles.Matrix4 is
       use GL.Types.Singles;
    begin
@@ -416,7 +443,7 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
-   function Rotate_Y_Degree (M : GL.Types.Singles.Matrix4;
+   function Rotate_Y_Degree (M     : GL.Types.Singles.Matrix4;
                              Angle : Degree) return GL.Types.Singles.Matrix4 is
       use GL.Types.Singles;
    begin
@@ -425,7 +452,7 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
-   function Rotate_Z_Degree (M : GL.Types.Singles.Matrix4;
+   function Rotate_Z_Degree (M     : GL.Types.Singles.Matrix4;
                              Angle : Degree) return GL.Types.Singles.Matrix4 is
       use GL.Types.Singles;
    begin
@@ -514,7 +541,7 @@ package body Maths is
                      Angle : Degree; Axis : GL.Types.Singles.Vector3) is
       use Single_Quaternion;
       Rotation_Q  : constant Quaternion :=
-                        New_Quaternion (To_Radians (Angle), Axis);
+                      New_Quaternion (To_Radians (Angle), Axis);
       Conjugate_Q : constant Quaternion := Single_Quaternion.Conj (Rotation_Q);
       W           : constant Quaternion := Rotation_Q * Vec * Conjugate_Q;
       W_Vec       : GL.Types.Singles.Vector4;
