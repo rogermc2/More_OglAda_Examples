@@ -3,10 +3,18 @@ with Ada.Exceptions;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with Maths;
+
+with Batch_Manager;
 with Game_Utils;
 with Tiles_Manager;
 
 package body Character_Controller is
+
+   type Weapon_Type is (Sword_Wt, Missile_Wt, --  used for javelin, arrow, green fireballs
+                        Hammer_Wt, Skull_Wt, Teleport_Wt, Pillar_Wt, Boulder_Wt,
+                        Fall_Wt, Na_Wt); --  everything else, n/a.
+   pragma Ordered (Weapon_Type);
 
    --      type Integer_Array is array (Integer range <>) of Integer;
    type Character_Data is record
@@ -60,6 +68,26 @@ package body Character_Controller is
            Int'Image (Source.U) & "x" & Int'Image (Source.V);
       end if;
    end Create_Character;
+
+   --  -------------------------------------------------------------------------
+
+   function Damage_All_Near
+     (Self_Id        : Positive; World_Pos : Singles.Vector3; Damage_Range : Single;
+      Damage         : Int;
+      Throw_Back_Mps : Single;  Exclude_Id : Positive; Weapon : Weapon_Type) return Natural is
+      use Maths;
+      Map_U               : Int := Int (0.5 * (World_Pos (Gl.X) + 1.0));
+      Map_V               : Int := Int (0.5 * (World_Pos (Gl.Z) + 1.0));
+      Left                : Int := Maths.Max_Int (0, Map_U - 1);
+      Right               : Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1, Map_U + 1);
+      Up                  : Int := Maths.Max_Int (0, Map_V - 1);
+      Down                : Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1, Map_V + 1);
+      Last_Character_Hit  : Int := -1;
+
+   begin
+      return 0;
+
+   end Damage_All_Near;
 
    --  -------------------------------------------------------------------------
 

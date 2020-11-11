@@ -11,9 +11,112 @@ package body Prop_Renderer.Boulder is
 
    --  -------------------------------------------------------------------------
 
+   procedure Bounce_Back_From_Wall
+     (Properties              : in out Prop_Renderer.Property_Data;
+      Gap_To_Floor            : Single; Radius : Single;
+      Next_U, Next_V          : out Int;
+      Direction, Desired_Vel  : in out Singles.Vector3) is
+      use Singles;
+      Use Maths;
+      use Maths.Single_Quaternion;
+      use Tiles_Manager;
+--        type Versor is new Maths.Single_Quaternion.Quaternion;
+      R              : Quaternion;
+      Bounce_Factor  : constant Single := 0.5;
+      Threshold      : constant Single := 0.1;
+      Next_Pos       : Singles.Vector3 := Properties.World_Pos;
+      Next_Pos_4     : Singles.Vector4;
+      South_H        : Single;
+      North_H        : Single;
+      S_Gap_To_Floor : Single;
+      N_Gap_To_Floor : Single;
+      West_H         : Single;
+      East_H         : Single;
+      W_Gap_To_Floor : Single;
+      E_Gap_To_Floor : Single;
+      Axis           : Singles.Vector3;
+      Translate      : Singles.Vector3;
+      Translate_4    : Singles.Vector4;
+      Dist           : Single;
+      --        Sq_Dist        : Single;
+      Rot_Matrix     : Singles.Matrix4;
+      Banged         : Boolean := False;
+   begin
+      if Gap_To_Floor < -0.8 then
+         Banged := abs (Desired_Vel (GL.X)) > abs (Desired_Vel (GL.Z));
+         if Banged then
+            --  Try to turn if in corner
+            South_H := Get_Tile_Height (Properties.World_Pos (GL.X),
+                                        Properties.World_Pos (GL.Z) + 2.0, True, True);
+            North_H := Get_Tile_Height (Properties.World_Pos (GL.X),
+                                        Properties.World_Pos (GL.Z) - 2.0, True, True);
+            S_Gap_To_Floor := Properties.World_Pos (GL.Y) - Radius - South_H;
+            N_Gap_To_Floor := Properties.World_Pos (GL.Y) - Radius - North_H;
+            if S_Gap_To_Floor < -1.0 and N_Gap_To_Floor >= -1.0 then
+               --  Turn North
+               Desired_Vel (Gl.Z) := -abs (Bounce_Factor * Desired_Vel (Gl.X));
+               Desired_Vel (Gl.X) := 0.0;
+            elsif S_Gap_To_Floor >= -1.0 and N_Gap_To_Floor < -1.0 then
+               --  Turn South
+               Desired_Vel (Gl.Z) := abs (Bounce_Factor * Desired_Vel (Gl.X));
+               Desired_Vel (Gl.X) := 0.0;
+            else
+               Desired_Vel (Gl.X) := -Bounce_Factor * Desired_Vel (Gl.X);
+            end if;
+         else  --  try to turn if in corner
+            West_H := Get_Tile_Height (Properties.World_Pos (Gl.X) - 2.0,
+                                       Properties.World_Pos (Gl.Z), True, True);
+            East_H := Get_Tile_Height (Properties.World_Pos (Gl.X) + 2.0,
+                                       Properties.World_Pos (Gl.Z), True, True);
+            W_Gap_To_Floor := Properties.World_Pos(Gl.Y) - Radius - West_H;
+            E_Gap_To_Floor := Properties.World_Pos(Gl.Y) - Radius - East_H;
+            if W_Gap_To_Floor < 1.0 and E_Gap_To_Floor >= 1.0 then
+               --  Turn East
+               Desired_Vel (Gl.X) := abs (Bounce_Factor * Desired_Vel (Gl.Z));
+               Desired_Vel (Gl.Z) := 0.0;
+            elsif W_Gap_To_Floor >= -1.0 and E_Gap_To_Floor < -1.0 then
+               --  Turn West
+               Desired_Vel (Gl.X) := -abs (Bounce_Factor * Desired_Vel (Gl.Z));
+               Desired_Vel (Gl.Z) := 0.0;
+            else
+               Desired_Vel (Gl.Z) := -Bounce_Factor * Desired_Vel (Gl.Z);
+            end if;
+         end if;
+
+      elsif Gap_To_Floor < 0.0 then
+         --  don't fall through floor
+         Desired_Vel (Gl.Y) := 0.0;
+         Next_Pos (Gl.Y) := Next_Pos (Gl.Y) - Gap_To_Floor;
+         Properties.Is_On_Ground := True;
+
+      elsif Gap_To_Floor > Threshold then
+         Properties.Is_On_Ground := False;
+      end if;
+
+      Next_U := Int (0.5 * (1.0 + Next_Pos (Gl.X)));
+      Next_V := Int (0.5 * (1.0 + Next_Pos (Gl.Z)));
+      Direction := Maths.Normalized (Next_Pos - Properties.World_Pos);
+      Dist := Maths.Length (Properties.World_Pos - Next_Pos);
+      Axis := Cross_Product ((0.0, 1.0, 0.0), Direction);
+
+      --  Radius is 1.0 so no need to divide by radius to get num radians
+      R := Maths.New_Quaternion (Maths.Radian (Dist), Axis);
+      Properties.Quat := R * Properties.Quat;
+      Rot_Matrix := Maths.Quaternion_To_Matrix4 (Properties.Quat);
+      Properties.Velocity := Desired_Vel;
+      Properties.World_Pos := Next_Pos;
+      Next_Pos_4 := (Next_Pos (Gl.X), Next_Pos (Gl.Y), Next_Pos (Gl.Z), 1.0);
+      Translate_4 := Rot_Matrix * Next_Pos_4;
+      Translate := (Translate_4 (GL.X), Translate_4 (Gl.Y), Translate_4 (Gl.Z));
+      Properties.Model_Mat := Maths.Translation_Matrix (Translate);
+   end Bounce_Back_From_Wall;
+
+
+   --  -------------------------------------------------------------------------
+
    function Get_Prop_Height (Prop_Index         : Positive;
                              NW_World, SE_World : Singles.Vector3)
-                             return Single is
+                                return Single is
       use Ada.Numerics;
       use GL.Types;
       use Singles;
@@ -258,6 +361,14 @@ package body Prop_Renderer.Boulder is
 
    --  -------------------------------------------------------------------------
 
+   procedure Splat_Characters (Pos : in out Singles.Vector3) is
+      Dam_Radius : constant Single := 1.0;
+   begin
+      Pos (GL.Y) := Pos (GL.Y) - 0.5;
+   end Splat_Characters;
+
+   --  -------------------------------------------------------------------------
+
    procedure Update_Boulder (Prop_Index : Positive;
                              Script     : Prop_Renderer.Prop_Script;
                              Seconds    : Float) is
@@ -265,8 +376,12 @@ package body Prop_Renderer.Boulder is
       use Singles;
       use Maths;
       use Tiles_Manager;
-      Properties      : constant Prop_Renderer.Property_Data :=
+      Properties      : Prop_Renderer.Property_Data :=
                           Prop_Renderer.Get_Property_Data (Prop_Index);
+      S_I             : constant Positive := Properties.Script_Index;
+      Script_Data     : constant Prop_Script := Get_Script_Data (S_I);
+      Prop_Indices    : Prop_Indices_List;
+      Property_Index  : Positive;
       S_Seconds       : constant Single := Single (Seconds);
       Bounce_Factor   : constant Single := 0.5;
       Thresh          : constant Single := 0.1;
@@ -280,6 +395,8 @@ package body Prop_Renderer.Boulder is
       Speed_Increase  : Single;
       Speed_Decrease  : Single;
       Next_Pos        : Vector3;
+      Origin          : Vector3;
+      Origin_4        : Singles.Vector4;
       Next_X          : Single;
       Next_Z          : Single;
       V_Sum           : Single;
@@ -300,6 +417,14 @@ package body Prop_Renderer.Boulder is
       P_Height        : Single;
       Ultimate_Height : Single;
       Gap_To_Floor    : Single;
+      Found_At        : Natural := 0;
+      M_U             : Integer;
+      M_V             : Integer;
+      Next_U          : Int;
+      Next_V          : Int;
+      Direction       : Singles.Vector3;
+      Index           : Positive;
+      Props_In_Tiles_Size : constant Int := Int (Manifold.Max_Tile_Cols ** 2);
    begin
       if Properties.Is_On_Ground then
          if Manifold.Is_Ramp (Current_U, Current_V) then
@@ -364,6 +489,35 @@ package body Prop_Renderer.Boulder is
             Gap_To_Floor := Min (Gap_To_Floor, Next_Pos (GL.Y) - W);
             Gap_To_Floor := Min (Gap_To_Floor, Next_Pos (GL.Y) - S);
             Gap_To_Floor := Min (Gap_To_Floor, Next_Pos (GL.Y) - E);
+            Bounce_Back_From_Wall (Properties, Gap_To_Floor, Radius,
+                                   Next_U, Next_V, Direction, Desired_Vel);
+            Origin := Script_Data.Origin;
+            Origin_4 := Properties.Model_Mat *
+              (Origin (GL.X), Origin (GL.Y), Origin (GL.Z), 1.0);
+            Properties.Origin_World := (Origin_4 (GL.X), Origin_4 (GL.Y),
+                                        Origin_4 (GL.Z));
+            Found_At := 0;
+            M_U := Integer (Properties.Map_U);
+            M_V := Integer (Properties.Map_V);
+            Index := Prop_Indices.First_Index;
+            while Index <= Prop_Indices.Last_Index and Found_At <= 0 loop
+               Property_Index := Get_Property_Index (M_U, M_V, index);
+               if Prop_Index = Property_Index then
+                  Found_At := Index;
+               else
+                  Index := Index + 1;
+               end if;
+            end loop;
+            if Found_At <= 0 then
+               raise Boulder_Exception with
+               "Boulder.Update_Boulder, a boulder tile is lost!";
+            end if;
+            Delete_Script_Data (Found_At);
+            Properties.Map_U := Next_U;
+            Properties.Map_V := Next_V;
+
+            Origin := Properties.World_Pos + 0.5 * Direction;
+            Splat_Characters (Origin);
          end if;
       end if;
 

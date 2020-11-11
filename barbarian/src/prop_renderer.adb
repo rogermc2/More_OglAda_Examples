@@ -77,6 +77,13 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
+   procedure Delete_Script_Data (Script_Index : Positive) is
+   begin
+      Scripts.Delete (Script_Index);
+   end Delete_Script_Data;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Property_Indices (U, V : Positive) return Prop_Indices_List is
    begin
       return Props_In_Tiles (U, V);
@@ -246,7 +253,6 @@ package body Prop_Renderer is
       Always_Update  : constant Boolean := True;
       Always_Draw    : constant Boolean := False;
       Prop_Indices   : Prop_Indices_List;
-      Property       : Property_Data;
    begin
        for row in Props_In_Tiles'Range loop
          for col in Props_In_Tiles'Range (2) loop

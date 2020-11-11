@@ -167,7 +167,7 @@ package Prop_Renderer is
       -- Position And Facing In Meters And Degrees
       -- -----------------------------------------
       World_Pos           : Singles.Vector3 := Maths.Vec3_0;
-      Quat                : Singles.Vector4 := Maths.Vec4_0;  --  Versor
+      Quat                : Maths.Single_Quaternion.Quaternion;  --  Versor
       Heading_Deg         : Maths.Degree := 0.0;
       Velocity            : Singles.Vector3 := Maths.Vec3_0;
       Origin_World        : Singles.Vector3 := Maths.Vec3_0;
@@ -213,6 +213,7 @@ package Prop_Renderer is
 
    Prop_Renderer_Exception : Exception;
 
+   procedure Delete_Script_Data (Script_Index : Positive);
    procedure Init;
    function Get_Property_Indices (U, V : Positive) return Prop_Indices_List;
    function Get_Property_Index (U, V, Index : Positive) return Positive;
