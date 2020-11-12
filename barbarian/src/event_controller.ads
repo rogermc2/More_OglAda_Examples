@@ -11,11 +11,4 @@ package Event_Controller is
    procedure Add_Receiver (Code  : Natural; RX_Kind : RX_Type; Index : Natural);
    procedure Reset;
 
-private
-   type Code_Received_Data is record
-      Receiver_Type : RX_Type := Rx_Invalid;
-      Code          : Natural := 0;
-      Index         : Natural := 0;
-   end record;
-
 end Event_Controller;

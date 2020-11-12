@@ -215,6 +215,7 @@ package Prop_Renderer is
 
    procedure Delete_Script_Data (Script_Index : Positive);
    procedure Init;
+   function Get_Num_Live_Mirrors return Int;
    function Get_Property_Indices (U, V : Positive) return Prop_Indices_List;
    function Get_Property_Index (U, V, Index : Positive) return Positive;
    function Get_Property_Data (Prop_Index : Positive) return Property_Data;

@@ -9,6 +9,7 @@ with Projectile_Manager;
 with Specs_Manager;
 
 package Character_Controller is
+   use GL.Types;
 
    type Barbarian_Character is private;
 
@@ -22,6 +23,11 @@ package Character_Controller is
 
    Character_Controller_Exception : Exception;
 
+   function Damage_All_Near
+     (Self_Id        : Positive; World_Pos : Singles.Vector3;
+      Damage_Range   : Single; Damage         : Int;
+      Throw_Back_Mps : Single;  Exclude_Id : Positive;
+      Weapon         : Specs_Manager.Weapon_Type) return Natural;
    procedure Init;
    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);
    function Update_Characters (Seconds : Float) return Boolean;
@@ -94,38 +100,5 @@ private
    type Anim_Count_Array is array (1 .. Max_Animations) of Integer;
    type Weapon_Param_Array is array (1 .. Max_Weapons) of Float;
    type Unbounded_String_Array is array (Integer range <>) of Unbounded_String;
-
-   type Specs is record
-      Attack_Events                : Attack_Events_Array;
-      Attack_Event_Count           : Event_Count_Array := (others => 0);
-      Animations                   : Animations_Array;
-      Anim_Frame_Count             : Anim_Count_Array := (others => 0);
-      Name                         : Unbounded_String := To_Unbounded_String ("");
-      Weapon_Attack_Time           : Weapon_Param_Array;
-      Attack_Range_M               : Weapon_Param_Array;
-      Move_Speed_Mps               : Float := 0.0;
-      Height                       : Float := 0.0;  -- Metres
-      Width_Radius                 : Float := 1.0;
-      Sprite_Offset_Adj            : Float := 0.0;
-      Atlas_Rows                   : Int := 0;
-      Atlas_Cols                   : Int := 0;
-      Sight_Range_Tiles            : Integer := 0;
-      Initial_Health               : Integer := 0;
-      Default_Weapon               : Weapon_Type := Na_Wt;
-      Projectile                   : Projectile_Manager.Projectile_Type :=
-                                       Projectile_Manager.Na_Proj_Type;
-      Decapitated_Head_Prop_Script : Positive := 1;
-      Team_Id                      : Positive := 1;
-      Tx_On_Death                  : Integer := -1;
-      Land_Move                    : Boolean := False; --  False for Sewerman
-      Uatlas_Diffuse_Id            : Positive := 1;
-      Atlas_Specular_Id            : Positive := 1;
-      --  Sounds
-      Alert_Sound_File_Name        : Unbounded_String := To_Unbounded_String ("");
-      Attack_Sound_File_Name           : Unbounded_String_Array
-        (1 .. Integer (Max_Weapons)) := (others => To_Unbounded_String (""));
-      Hurt_Sound_File_Name         : Unbounded_String := To_Unbounded_String ("");
-      Death_Sound_File_Name        : Unbounded_String := To_Unbounded_String ("");
-   end record;
 
 end Character_Controller;

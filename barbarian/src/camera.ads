@@ -41,6 +41,7 @@ package Camera is
    function PV_Matrix return Singles.Matrix4;
    procedure Recalculate_Perspective (FOV_Y                    : Maths.Degree;
                                       Width, Height, Near, Far : Single);
+   procedure Screen_Shake (Seconds, Amplitude, Hz : Float);
    procedure Set_Camera_Height (Height : Single);
    procedure Set_Camera_Position (World_Position : Singles.Vector3);
    procedure Set_First_Person (State : Boolean);

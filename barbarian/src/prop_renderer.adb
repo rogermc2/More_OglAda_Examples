@@ -68,6 +68,7 @@ package body Prop_Renderer is
    Mirror_Particles            : Int := -1;
    Splash_Particles            : Int := -1;
 
+   Mirror_Indices              : array (1 .. Max_Mirrors) of Positive;
    Prop_Count                  : Int := 0;
    Mirror_Count                : Int := 0;
    Live_Mirror_Count           : Int := 0;
@@ -81,6 +82,13 @@ package body Prop_Renderer is
    begin
       Scripts.Delete (Script_Index);
    end Delete_Script_Data;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Num_Live_Mirrors return Int is
+   begin
+      return Live_Mirror_Count;
+   end Get_Num_Live_Mirrors;
 
    --  -------------------------------------------------------------------------
 

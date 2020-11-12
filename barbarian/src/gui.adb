@@ -10,7 +10,6 @@ with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
-with GL.Types; use GL.Types;
 
 with Maths;
 
@@ -28,7 +27,7 @@ with Text;
 with Texture_Manager;
 
 package body GUI is
-
+   use GL.Types;
    type Boolean_Array is array (Integer range <>) of Boolean;
    type Texture_Array is array (Integer range <>) of
      GL.Objects.Textures.Texture;

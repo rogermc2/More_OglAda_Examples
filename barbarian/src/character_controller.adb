@@ -5,9 +5,15 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Maths;
 
+with Audio;
 with Batch_Manager;
+with Camera;
 with Character_Map;
+with FB_Effects;
 with Game_Utils;
+with GUI;
+with GUI_Level_Chooser;
+with Prop_Renderer;
 with Tiles_Manager;
 
 package body Character_Controller is
@@ -25,8 +31,12 @@ package body Character_Controller is
       H             : Float := 0.0;
    end record;
 
-   Characters : Character_List;
-   Specs      : Specs_List;
+   Hammer_Hit_Armour_Sound : constant String :=
+                              "SWORD_Hit_Metal_Armor_RR3_mono.wav";
+   Sword_Hit_Armour_Sound : constant String :=
+                              "HAMMER_Hit_Metal_Armor_stereo.wav";
+   Characters      : Character_List;
+   Character_Specs : Specs_List;
 
    --      Portal_Fadeout_Started  : Boolean := False;
    Characters_To_Reserve   : constant Integer := 256;
@@ -39,6 +49,9 @@ package body Character_Controller is
    --      Kills_Max               : Integer := 0;
 
    --      function Is_Character_Valid (Char_Index : Integer) return Boolean;
+   function Is_Close_Enough (Character    : Barbarian_Character;
+                             World_Pos    : Singles.Vector3;
+                             Height, Dist : Single) return Boolean;
    --      function Is_Spec_Valid (Spec_Index : Integer) return Boolean;
    procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character);
 
@@ -77,7 +90,7 @@ package body Character_Controller is
      (Self_Id        : Positive; World_Pos : Singles.Vector3;
       Damage_Range   : Single; Damage         : Int;
       Throw_Back_Mps : Single;  Exclude_Id : Positive;
-      Weapon         : Weapon_Type) return Natural is
+      Weapon         : Specs_Manager.Weapon_Type) return Natural is
       use Maths;
       use Character_Map;
       use Character_Map_Package;
@@ -87,12 +100,14 @@ package body Character_Controller is
       Right               : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1, Map_U + 1);
       Up                  : constant Int := Maths.Max_Int (0, Map_V - 1);
       Down                : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1, Map_V + 1);
-      Last_Character_Hit  : Int := -1;
+      Last_Character_Hit  : Integer := -1;
       Character_IDs       : Character_Map_List;
       Curs                : Cursor;
       Char_ID             : Positive;
       Character           : Barbarian_Character;
       Spec_ID             : Positive;
+      aSpec               : Spec_Data;
+      Height              : Single;
    begin
       for index_v in Up .. Down loop
          for index_h in Left .. Right loop
@@ -104,6 +119,14 @@ package body Character_Controller is
                   Character := Characters.Element (Char_ID);
                   if Character.Is_Alive then
                      Spec_ID := Character.Specs_Index;
+                     aSpec := Character_Specs.Element (Spec_ID);
+                     if  aSpec.Initial_Health > 0 then
+                        Height := Single (aSpec.Height_Metre);
+                        if Is_Close_Enough
+                          (Character, World_Pos, Height, Damage_Range) then
+                           Last_Character_Hit := Char_ID;
+                        end if;
+                     end if;
                   end if;
                end if;
                Next (Curs);
@@ -116,10 +139,81 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
+   function Damage_Character (Char_ID, Doer_ID  : Positive; Angle : Maths.Degree;
+                              Damage    : Int; Weapon : Weapon_Type) return Boolean is
+      use Projectile_Manager;
+      Character   : Barbarian_Character := Characters.Element (Char_ID);
+      Is_Sorcerer : Boolean := False;
+      S_I         : constant Positive := Character.Specs_Index;
+      aSpec       : constant Spec_Data := Character_Specs.Element (S_I);
+      Max_Health  : Integer;
+      H_Fac       : Single := 0.0;
+      Result      : Boolean := False;
+   begin
+      Is_Sorcerer := aSpec.Projectile = Skull_Proj_Type;
+      --  Sorcerer is invulnerable until all mirrors gone
+      Result := not Is_Sorcerer or Prop_Renderer.Get_Num_Live_Mirrors <= 0;
+      if Result then
+         Character.Current_Health := Character.Current_Health - 1;
+         Max_Health := aSpec.Initial_Health;
+         Result := Max_Health > 0;
+         if Result then
+            H_Fac := Single (Character.Current_Health / Max_Health);
+            if Char_ID = 1 then
+               GUI.Change_Health_Bar (0, H_Fac, To_String (aSpec.Name));
+               GUI.Change_Crong_Head (H_Fac);
+               FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Red_Flash);
+            else
+               GUI.Change_Health_Bar (1, H_Fac, To_String (aSpec.Name));
+            end if;
+            if Doer_ID = 1 then
+               if Character.Current_Weapon = Sword_Wt then
+                  Camera.Screen_Shake (0.2, 0.5, 50.0);
+                  Audio.Play_Sound (Sword_Hit_Armour_Sound, True);
+               end if;
+               if Character.Current_Health <= 0 then
+                  if Weapon = Hammer_Wt then
+                     GUI_Level_Chooser.Increment_Hammer_Kills;
+                  end if;
+                  Character.Is_Alive := False;
+                  if aSpec.Tx_On_Death >= 0 then
+
+                  end if;
+               end if;
+            end if;
+         end if;
+      end if;
+
+      return Result;
+   end Damage_Character;
+
+   --  -------------------------------------------------------------------------
+
    procedure Init is
    begin
       null;  --  Nothing to do
    end Init;
+
+   --  -------------------------------------------------------------------------
+
+   function Is_Close_Enough (Character    : Barbarian_Character;
+                             World_Pos    : Singles.Vector3;
+                             Height, Dist : Single) return Boolean is
+      use Singles;
+      use Maths;
+      C_P             : Singles.Vector3 := Character.World_Pos;
+      Distance_Top    : Singles.Vector3 :=
+                          World_Pos - (C_P (Gl.X), (C_P (Gl.Y) + Height),
+                                       C_P (Gl.Z));
+      Distance_Middle : Singles.Vector3 := World_Pos - (C_P (Gl.X), C_P (Gl.Y) + Height * 0.5, C_P (Gl.Z));
+      Distance_Bottom : Singles.Vector3 := World_Pos - (C_P (Gl.X), C_P (Gl.Y), C_P (Gl.Z));
+      Sq_Dist_Top     : Single := Length_Sq (Distance_Top);
+      Sq_Dist_Middle  : Single := Length_Sq (Distance_Middle);
+      Sq_Dist_Bottom  : Single := Length_Sq (Distance_Bottom);
+   begin
+      return Dist ** 2 >=  Min (Min (Sq_Dist_Top, Sq_Dist_Bottom),
+                                Sq_Dist_Middle);
+   end Is_Close_Enough;
 
    --  -------------------------------------------------------------------------
 
@@ -134,6 +228,27 @@ package body Character_Controller is
    --      begin
    --          return Spec_Index >= 0 and Spec_Index < Specs_Allocd_Count;
    --      end Is_Spec_Valid;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Knock_Back (Character : Barbarian_Character;
+                         Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
+                         World_Pos      : Singles.Vector3;
+                         Throw_Back_Mps : Single; Damage : Int) is
+      use GL.Types.Singles;
+      use Maths;
+      Distance       : Vector3 := Character.World_Pos - World_Pos;
+      Direction      : Vector3 := Maths.Normalized (Distance);
+      Momentum       : Vector3 := Direction * Throw_Back_Mps;
+      Y              : Single := Character.Velocity (GL.Y);
+      Dir_Deg        : Degree := -Direction_To_Heading ((Direction (Gl.X), 0.0,
+                                                        -Direction (Gl.Z)));
+      Did_Damage     : Boolean := Damage_Character (Char_ID, Self_Id, Dir_Deg,
+                                                    Damage, Weapon);
+
+   begin
+      null;
+   end Knock_Back;
 
    --  -------------------------------------------------------------------------
    --  read characters from an already open file stream

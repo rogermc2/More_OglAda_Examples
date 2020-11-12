@@ -7,8 +7,10 @@ package GUI_Level_Chooser is
 
    function Cheated_On_Map return Boolean;
    procedure Init;
+   function Get_Hammer_Kills return Integer;
    function Get_Selected_Map_Music return String;
    function Get_Selected_Map_Name (Custom : Boolean) return String;
+   procedure Increment_Hammer_Kills;
    procedure Set_Boulder_Crushes (Value : Integer);
    procedure Set_Cheated_On_Map (State : Boolean);
    procedure Set_Fall_Kills (Value : Integer);

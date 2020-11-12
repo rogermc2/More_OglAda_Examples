@@ -142,6 +142,22 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+   procedure Screen_Shake (Seconds, Amplitude, Hz : Float) is
+    begin
+      if Seconds > 0.0 then
+         if G_Cam.Screen_Shake_Countdown_Secs <= 0.0 or
+           Amplitude >= G_Cam.Original_Screen_Shake_Amplitude then
+            G_Cam.Screen_Shake_Countdown_Secs := Seconds;
+            G_Cam.Screen_Shake_Amplitude := Amplitude;
+            G_Cam.Original_Screen_Shake_Amplitude := Amplitude;
+            G_Cam.Screen_Shake_Frequency := Hz;
+            G_Cam.Original_Screen_Shake_Time := Seconds;
+         end if;
+      end if;
+    end Screen_Shake;
+
+    --  ------------------------------------------------------------------------
+
     procedure Set_Camera_Height (Height : Single) is
     begin
         G_Cam.Height := Height;
@@ -207,7 +223,8 @@ package body Camera is
     end Set_Screen_Shake_Countdown;
 
     --  ------------------------------------------------------------------------
-    function World_Position return Singles.Vector3 is
+
+   function World_Position return Singles.Vector3 is
     begin
         return G_Cam.World_Position;
     end World_Position;

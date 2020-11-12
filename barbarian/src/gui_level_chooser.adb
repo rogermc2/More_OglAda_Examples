@@ -64,6 +64,13 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
+   function Get_Hammer_Kills return Integer is
+   begin
+      return Hammer_Kills;
+   end Get_Hammer_Kills;
+
+   --  ------------------------------------------------------------------------
+
    function Get_Selected_Map_Music return String is
    begin
       return To_String (Selected_Map_Track);
@@ -215,6 +222,12 @@ procedure Init is
          end loop;
       end if;
    end Reset_GUI_Level_Selection;
+
+   --  ------------------------------------------------------------------------
+   procedure Increment_Hammer_Kills is
+   begin
+      Hammer_Kills := Hammer_Kills + 1;
+   end Increment_Hammer_Kills;
 
    --  ------------------------------------------------------------------------
 

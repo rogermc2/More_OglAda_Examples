@@ -1,6 +1,12 @@
 
+with GL.Types;
+
 package GUI is
 
+   procedure Change_Crong_Head (Health_Factor : GL.Types.Single);
+   procedure Change_Health_Bar (Index         : GL.Types.Int;
+                                Health_Factor : GL.Types.Single;
+                                Name  : String);
    procedure Draw_Controller_Button_Overlays (Elapsed : Float);
    procedure Init_GUIs;
    procedure Load_Gui_Shaders;

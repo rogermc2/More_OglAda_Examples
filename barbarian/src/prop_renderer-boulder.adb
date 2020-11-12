@@ -1,5 +1,7 @@
 
 with Ada.Numerics;
+
+with Character_Controller;
 with Game_Utils;
 with Manifold;
 with Tiles_Manager;
@@ -362,6 +364,7 @@ package body Prop_Renderer.Boulder is
    --  -------------------------------------------------------------------------
 
    procedure Splat_Characters (Pos : in out Singles.Vector3) is
+      use Character_Controller;
       Dam_Radius : constant Single := 1.0;
    begin
       Pos (GL.Y) := Pos (GL.Y) - 0.5;

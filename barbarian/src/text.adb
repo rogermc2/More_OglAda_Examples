@@ -1,4 +1,5 @@
 
+with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use  Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
@@ -20,6 +21,7 @@ with Utilities;
 
 with Game_Utils;
 with GL_Utils;
+with GUI;
 with Font_Metadata_Manager;
 with Shader_Attributes;
 with Text_Box_Shader_Manager;
@@ -27,6 +29,13 @@ with Text_Shader_Manager;
 with Texture_Manager;
 
 package body Text is
+   use Colors;
+
+   type Active_Comic_Text_Data  is record
+      Countdown      : Float := 0.0;
+      Original_Alpha : Float := 1.0;
+      Is_Active      : Boolean := False;
+   end record;
 
    type Particle_Text_Data is record
       Countdown : Float := 0.0;
@@ -59,11 +68,26 @@ package body Text is
      (Positive, Renderable_Text);
    type Renderable_Text_List is new Renderable_Texts_Package.Vector with null record;
 
-   Max_Particle_Texts : constant Integer := 8;
-   Atlas_Cols         : constant Integer := 16;
-   Atlas_Rows         : constant Integer := 16;
-   Comic_Texts        : array (1 .. 8) of Integer;
-   Particle_Texts     : array (1 .. Max_Particle_Texts) of Particle_Text_Data;
+   package Unbounded_Strings_Package is new Ada.Containers.Vectors
+     (Positive, Unbounded_String);
+   type Preloaded_Comic_Texts_List is new Unbounded_Strings_Package.Vector with null record;
+
+   package Boolean_Package is new Ada.Containers.Vectors (Natural, Boolean);
+   type Boolean_List is new Boolean_Package.Vector with null record;
+
+   package Colour_Package is new Ada.Containers.Vectors (Natural, Colors.Color);
+   type Colour_List is new Colour_Package.Vector with null record;
+
+   Max_Particle_Texts          : constant Integer := 8;
+   Atlas_Cols                  : constant Integer := 16;
+   Atlas_Rows                  : constant Integer := 16;
+   Comic_Text_Full_Colour_Time : constant Float := 3.0;
+   Comic_Text_Time             : constant Float := 6.0;
+
+   Comic_Texts          : array (1 .. 8) of Integer;
+   Active_Comic_Texts   : array (1 .. 8) of Active_Comic_Text_Data;
+   Last_Comic_Text_Used : Integer := -1;
+   Particle_Texts       : array (1 .. Max_Particle_Texts) of Particle_Text_Data;
 
    --     Max_Strings          : constant Integer := 256;
    --      MAX_POPUP_TEXTS                 : constant Integer := 128;
@@ -83,13 +107,20 @@ package body Text is
                              (0.0, -1.0),
                              (1.0,  0.0),
                              (1.0, -1.0));
+   Text_Box_Colour      : Colour_List;
    Renderable_Texts     : Renderable_Text_List;
    Font_Viewport_Width  : Int := 0;
    Font_Viewport_Height : Int := 0;
    Num_Render_Strings   : Integer := 0;
 
-   Glyphs               : Font_Metadata_Manager.Glyph_Array;
+   Glyphs                : Font_Metadata_Manager.Glyph_Array;
+   Preloaded_Comic_Texts : Preloaded_Comic_Texts_List;
+   Preloaded_Comic_Colours : Colour_List;
+   Text_Was_Triggered    : Boolean_List;
+   Active_Text_Count     : Integer := 0;
 
+   procedure Change_Text_Box (Text_ID : Positive; theString : String;
+                              Box_Colour : Colors.Color);
    procedure Load_Font (Atlas_Image, Atlas_Metadata : String);
    procedure Move_Text (Text : in out Renderable_Text; X, Y : Single);
    procedure Text_To_VBO (theText        : String;
@@ -99,6 +130,53 @@ package body Text is
                           Point_Count    : in out Int;
                           Br_X, Br_Y     : in out Single);
    procedure Validate_Text_ID (Text_Index : Positive);
+
+   --  ------------------------------------------------------------------------
+
+   procedure Add_Comic_Text (theText : String; Colour : Colors.Color) is
+      T_I       : Integer;
+      Pos_Index :  Integer;
+      Text_ID   : Integer;
+      R_Text    : Renderable_Text;
+   begin
+      Last_Comic_Text_Used := (Last_Comic_Text_Used + 1) mod 8;
+      if not Active_Comic_Texts (Last_Comic_Text_Used).Is_Active then
+         Active_Text_Count := Active_Text_Count + 1;
+      end if;
+      Active_Comic_Texts (Last_Comic_Text_Used).Is_Active := True;
+      Active_Comic_Texts (Last_Comic_Text_Used).Countdown :=
+        Comic_Text_Full_Colour_Time + Comic_Text_Time;
+      Active_Comic_Texts (Last_Comic_Text_Used).Original_Alpha := 1.0;
+      T_I := Comic_Texts (Last_Comic_Text_Used);
+      R_Text := Renderable_Texts.Element (T_I);
+      R_Text.A := 1.0;
+      Renderable_Texts.Replace_Element (T_I, R_Text);
+      if theText = "open doors" or theText = "crongdor's" or
+        theText = "buy with b" then
+         Pos_Index := 1;
+         Text_ID := 1;
+         GUI.Show_Controller_Button_Overlay (Text_ID, Pos_Index);
+      elsif theText = "and to SLA" then
+         Pos_Index := 1;
+         Text_ID := 0;
+         GUI.Show_Controller_Button_Overlay (Text_ID, Pos_Index);
+      elsif theText = "if the cam" then
+         Pos_Index := 1;
+         Text_ID := 2;
+         GUI.Show_Controller_Button_Overlay (Text_ID, Pos_Index);
+      elsif theText = "switch wea" then
+         Pos_Index := 1;
+         Text_ID := 3;
+         GUI.Show_Controller_Button_Overlay (Text_ID, Pos_Index);
+      end if;
+      Change_Text_Box (T_I, theText, Colour);
+      Set_Text_Visible (T_I, True);
+
+   exception
+      when others =>
+         Put_Line ("An exception occurred in Text.Add_Comic_Text.");
+         raise;
+   end Add_Comic_Text;
 
    --  ------------------------------------------------------------------------
    --  Add_Text adds a string of text to render on-screen
@@ -170,6 +248,19 @@ package body Text is
            Integer'Image (ID);
       end if;
    end Centre_Text;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Change_Text_Box (Text_ID : Positive; theString : String;
+                              Box_Colour : Colors.Color) is
+      use Renderable_Texts_Package;
+      Curs     : Cursor := Renderable_Texts.First;
+      Valid_ID : Boolean := False;
+      theText  : Renderable_Text;
+   begin
+      Update_Text (Text_ID, theString);
+      Text_Box_Colour.Replace_Element (Text_ID, Box_Colour);
+   end Change_Text_Box;
 
    --  ------------------------------------------------------------------------
 
@@ -546,6 +637,26 @@ package body Text is
          Put_Line ("An exception occurred in Text.Text_To_VBO.");
          raise;
    end Text_To_VBO;
+
+   --  ------------------------------------------------------------------------
+
+   function Trigger_Comic_Text (Index : Natural) return Boolean is
+      Result   : Boolean := False;
+   begin
+      if Index > Natural (Preloaded_Comic_Texts.Length) then
+         raise Text_Exception with
+         "Text.Draw_Text, theText.VAO is not intialized";
+      end if;
+      Result := not Text_Was_Triggered.Is_Empty;
+      if Result then
+         Text_Was_Triggered.Replace_Element (Index, True);
+         Add_Comic_Text (To_String (Preloaded_Comic_Texts.Element (Index)),
+                                   Preloaded_Comic_Colours.Element (Index));
+      end if;
+
+      return Result;
+
+   end Trigger_Comic_Text;
 
    --  ------------------------------------------------------------------------
 
