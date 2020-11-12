@@ -53,6 +53,7 @@ package Maths is
 
    function "=" (Left, Right : Maths.Vector8) return Boolean;
    function Cube_Root (Value : Single) return Single;
+   function Direction_To_Heading (Dir : Singles.Vector3) return Degree;
    function Factorial (Num : Natural) return Positive;
    function Frustum_Matrix (Left, Right, Bottom, Top, Near, Far : GL.Types.Single)
                             return GL.Types.Singles.Matrix4;
@@ -69,6 +70,7 @@ package Maths is
    procedure Init_Rotation_Transform
      (Rotation_Vec : Singles.Vector3; Transform : out Singles.Matrix4);
    function Length (V : Singles.Vector3) return Single;
+   function Length_Sq (V : GL.Types.Singles.Vector3) return GL.Types.Single;
    function Min_Int (L, R : GL.Types.Int) return GL.Types.Int;
    function Min_Integer (L, R : Integer) return Integer;
    function Min (L, R : GL.Types.Single) return GL.Types.Single;

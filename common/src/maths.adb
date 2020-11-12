@@ -60,9 +60,18 @@ package body Maths is
 
    function Cube_Root (Value : Single) return Single is
    begin
-      return Maths.Single_Math_Functions.Exp
-        (Maths.Single_Math_Functions.Log (Value) / 3.0);
+      return Single_Math_Functions.Exp
+        (Single_Math_Functions.Log (Value) / 3.0);
    end Cube_Root;
+
+   --  ------------------------------------------------------------------------
+   --  Direction_To_Heading converts an un-normalised direction vector's X,Z
+   --  components into a heading in degrees
+   function Direction_To_Heading (Dir : Singles.Vector3) return Degree is
+   begin
+      return To_Degrees (Radian ((Single_Math_Functions.Arctan
+                         (-Dir (GL.X), -Dir (GL.Z)))));
+   end Direction_To_Heading;
 
    --  ------------------------------------------------------------------------
 
@@ -218,10 +227,17 @@ package body Maths is
 
    function Length (V : GL.Types.Singles.Vector3) return GL.Types.Single is
       use Single_Math_Functions;
+   begin
+      return Sqrt (Length_Sq (V));
+   end Length;
+
+   --  ------------------------------------------------------------------------
+
+   function Length_Sq (V : GL.Types.Singles.Vector3) return GL.Types.Single is
       use GL;
    begin
-      return Sqrt (V (X) * V (X) + V (Y) * V (Y) + V (Z) * V (Z));
-   end Length;
+      return V (X) * V (X) + V (Y) * V (Y) + V (Z) * V (Z);
+   end Length_Sq;
 
    --  ------------------------------------------------------------------------
 
