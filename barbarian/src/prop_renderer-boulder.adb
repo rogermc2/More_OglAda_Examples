@@ -113,7 +113,6 @@ package body Prop_Renderer.Boulder is
       Properties.Model_Mat := Maths.Translation_Matrix (Translate);
    end Bounce_Back_From_Wall;
 
-
    --  -------------------------------------------------------------------------
 
    function Get_Prop_Height (Prop_Index         : Positive;

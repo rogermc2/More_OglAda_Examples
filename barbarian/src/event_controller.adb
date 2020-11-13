@@ -2,6 +2,7 @@
 with Ada.Containers.Doubly_Linked_Lists;
 
 with Game_Utils;
+with Text;
 
 package body Event_Controller is
 
@@ -66,7 +67,12 @@ package body Event_Controller is
          Code_Data := Element (Curs);
          case Code_Data.Receiver_Type is
             when Rx_Story =>
-               if not Text.tr
+               if not Text.Trigger_Comic_Text (Code_Data.Index) then
+                  raise Event_Controller_Exception with
+                  "Event_Controller.Transmit_Code, Trigger_Comic_Text failed.";
+               end if;
+            when Rx_Door =>
+               Activate_Door (Code_Data.Index);
             when others => null;
          end case;
          Next (Curs);

@@ -25,6 +25,7 @@ package Text is
    procedure Move_Text (ID : Positive; X, Y : Single);
    function Number_Render_Strings return Integer;
    procedure Set_Text_Visible (ID : Positive; Visible : Boolean);
+   function Trigger_Comic_Text (Index : Natural) return Boolean;
    procedure Unload_Comic_Texts;
    procedure Update_Comic_Texts (Seconds : Float);
    procedure Update_Particle_Texts (Seconds : Float);

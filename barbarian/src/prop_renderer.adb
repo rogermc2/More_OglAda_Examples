@@ -4,6 +4,7 @@ with Glfw;
 with GL.Toggles;
 
 with Batch_Manager;
+with Event_Controller;
 with Frustum;
 with Game_Utils;
 with GL_Utils;
@@ -75,6 +76,26 @@ package body Prop_Renderer is
    Num_Types_Decap_Heads       : Int := 0;
    Last_Head_Particles_Used    : Int := 0;
    Prev_Time                   : Single := Single (Glfw.Time);
+
+   --  -------------------------------------------------------------------------
+
+   procedure Activate_Door (Property_Index : Positive) is
+      Property       : Property_Data := Properties.Element (Property_Index);
+      Script_Index   : constant Positive := Property.Script_Index;
+      Mesh_Index   :  Positive;
+      aScript        : constant Prop_Script := Scripts.Element (Script_Index);
+   begin
+      if aScript.Initial_Door_State = Property.Door then
+         if aScript.Initial_Door_State = Open_State then
+         Property.Door := Closing_State;
+         else
+         Property.Door := Opening_State;
+         end if;
+         Property.Is_Visible := True;
+         Mesh_Index := aScript.Mesh_Index;
+         Property.Anim_Duration := Mesh_Loader.Animation_Duration (Mesh_Index, 1);
+      end if;
+   end Activate_Door;
 
    --  -------------------------------------------------------------------------
 
