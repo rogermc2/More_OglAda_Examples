@@ -23,12 +23,12 @@ package body Particle_System is
 
    function Create_Particle_System
      (Script_Name : String; Start_Now, Always_Update, Always_Draw : Boolean)
-      return Int is
+      return Positive is
       Particle_Count : Integer;
       Script_Num     : Natural := 0;
       Script         : Particle_System_Manager.Particle_Script;
       P_System       : Particle_System;
-      Last_Index     : Int := -1;
+      Last_Index     : Positive := 1;
    begin
       if Script_Name'Length < 1 then
          raise Particle_System_Exception with
@@ -50,18 +50,12 @@ package body Particle_System is
             P_System.Always_Update := Always_Update;
             P_System.Always_Draw := Always_Draw;
             Particle_Systems.Append (P_System);
-            Last_Index := Int (Particle_Systems.Last_Index);
+            Last_Index := Particle_Systems.Last_Index;
          else
             raise Particle_System_Exception with
               " Particle_System.Create_Particle_System Particles invalid script number: "
               & Positive'Image (Script_Num);
          end if;
-      end if;
-
-      if Last_Index < 1 then
-         raise Particle_System_Exception with
-           " Particle_System.Create_Particle_System failed, Last_Index: " &
-           Int'Image (Last_Index);
       end if;
 
       return Last_Index;

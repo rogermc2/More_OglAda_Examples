@@ -290,10 +290,9 @@ package body Prop_Renderer is
                   Script_Index := Ssi;
                end if;
 
-               if (Property.Is_Visible or GL_Utils.Is_Edit_Mode) or else
-                 aScript.Casts_Shadow or else
-                 not aScript.Uses_Sprite or else
-                 not aScript.Transparent or else
+               if (Property.Is_Visible or GL_Utils.Is_Edit_Mode) and
+                 aScript.Casts_Shadow and not aScript.Uses_Sprite and
+                 not aScript.Transparent and
                  Frustum.Is_Sphere_In_Frustum
                    (Property.Origin_World, aScript.Bounding_Radius) then
                   GL_Utils.Bind_VAO (aScript.Vao);

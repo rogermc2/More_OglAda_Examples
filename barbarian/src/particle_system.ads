@@ -18,7 +18,7 @@ package Particle_System is
 
    function Create_Particle_System
      (Script_Name : String; Start_Now, Always_Update, Always_Draw : Boolean)
-      return Int;
+      return Positive;
    procedure Init;
    procedure Stop_Particle_System (System_ID : Positive);
    procedure Stop_Particle_Systems;

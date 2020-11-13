@@ -15,10 +15,13 @@ with Game_Utils;
 with GUI;
 with GUI_Level_Chooser;
 with Particle_System;
+with Particle_System_Manager;
 with Prop_Renderer;
 with Tiles_Manager;
 
 package body Character_Controller is
+   Max_Blood_Fountains       : constant Integer := 5;
+   Max_Blood_Damage_Emitters : constant Integer := 5;
 
    type Weapon_Type is (Sword_Wt, Missile_Wt, --  used for javelin, arrow, green fireballs
                         Hammer_Wt, Skull_Wt, Teleport_Wt, Pillar_Wt, Boulder_Wt,
@@ -32,15 +35,16 @@ package body Character_Controller is
       V             : GL.Types.Int := 0;
       H             : Float := 0.0;
    end record;
-
+   Current_Blood_Fountain       : Integer;
+   Current_Blood_Damage_Emitter : Integer;
    Hammer_Hit_Armour_Sound : constant String :=
                               "SWORD_Hit_Metal_Armor_RR3_mono.wav";
    Sword_Hit_Armour_Sound  : constant String :=
                               "HAMMER_Hit_Metal_Armor_stereo.wav";
    Characters              : Character_List;
    Character_Specs         : Specs_List;
-   Torch_Light_Index       : array (1 .. 2) of Integer := (-1, -1);
-   Torch_Particles_Index   : array (1 .. 2) of Integer := (-1, -1);
+   Torch_Light_Index       : array (1 .. 2) of Positive := (1, 1);
+   Torch_Particles_Index   : array (1 .. 2) of Positive := (1, 1);
 
    --      Portal_Fadeout_Started  : Boolean := False;
    Characters_To_Reserve   : constant Integer := 256;
@@ -51,6 +55,13 @@ package body Character_Controller is
    --      Gold_Current            : constant Integer := 0;
     Kills_Current           : Integer := 0;
    --      Kills_Max               : Integer := 0;
+
+   Teleport_From_Particles_Index  : Integer := 1;
+   Teleport_To_Particles_Index    : Integer := 1;
+   Blood_Fountain_Particles_Index : array (1 ..Max_Blood_Fountains) of Integer := (others => -1);
+   Blood_Damage_Particles_Index   : array (1 ..Max_Blood_Damage_Emitters) of Integer := (others => -1);
+   Bfparts_Last_Attached_To : array (1 .. Max_Blood_Fountains) of Integer := (others => -1);
+   Bdparts_Last_Attached_To : array (1 .. Max_Blood_Damage_Emitters) of Integer := (others => -1);
 
    function Damage_Character (Char_ID, Doer_ID  : Positive; Angle : Maths.Degree;
                               Damage            : Int; Weapon : Weapon_Type) return Boolean;
@@ -197,7 +208,8 @@ package body Character_Controller is
 
                   if Char_ID = 1 then
                      Camera.Screen_Shake (3.0, 1.0, 50.0);
-                     Particle_System.Stop_Particle_System (Torch_Particles_Index (1));
+                     Particle_System.Stop_Particle_System
+                       (Positive (Torch_Particles_Index (1)));
                      Audio.Stop_All_Boulder_Sounds;
                      GUI.Show_Defeated_Screen (True);
                   else  --  Char_ID > 1
@@ -213,7 +225,9 @@ package body Character_Controller is
                   --  stop zombified movement
                   Character.Desired_Direction := (0.0, 0.0, 0.0);
                   --  splatter_all_tiles_near (g_characters[char_idx].world_pos);
-                  Detach_Particle_System_From_Character (Char_Idx, Partsys_Idx);
+                  Detach_Particle_System_From_Character
+                    (Bfparts_Last_Attached_To (Current_Blood_Fountain),
+                     Blood_Fountain_Particles_Index (Current_Blood_Fountain));
                end if;  --  Current_Health <= 0
             end if;  --  Doer_ID = 1
          end if;
@@ -233,7 +247,29 @@ package body Character_Controller is
 
    procedure Init is
    begin
-      null;  --  Nothing to do
+      Character_Map.Init;
+      Torch_Particles_Index (1) := Particle_System.Create_Particle_System
+        ("torch_smoke.particles", True, True, True);
+      Torch_Particles_Index (2) :=  Torch_Particles_Index (1);
+
+      Blood_Fountain_Particles_Index (1) := Particle_System.Create_Particle_System
+        ("blood_fountain.particles", False, True, False);
+      for index in 2 .. Blood_Fountain_Particles_Index'Last loop
+         Blood_Fountain_Particles_Index (index) :=
+           Blood_Fountain_Particles_Index (1);
+      end loop;
+
+      Blood_Damage_Particles_Index (1) := Particle_System.Create_Particle_System
+        ("blood_damage.particles", False, True, False);
+      for index in 2 .. Blood_Damage_Particles_Index'Last loop
+         Blood_Damage_Particles_Index (index) :=
+           Blood_Damage_Particles_Index (1);
+      end loop;
+
+      Teleport_From_Particles_Index := Particle_System.Create_Particle_System
+        ("teleport_from.particles", False, True, False);
+      Teleport_To_Particles_Index  := Particle_System.Create_Particle_System
+        ("teleport_to.particles", False, True, False);
    end Init;
 
    --  -------------------------------------------------------------------------
