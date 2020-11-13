@@ -9,10 +9,12 @@ with Audio;
 with Batch_Manager;
 with Camera;
 with Character_Map;
+with Event_Controller;
 with FB_Effects;
 with Game_Utils;
 with GUI;
 with GUI_Level_Chooser;
+with Particle_System;
 with Prop_Renderer;
 with Tiles_Manager;
 
@@ -33,10 +35,12 @@ package body Character_Controller is
 
    Hammer_Hit_Armour_Sound : constant String :=
                               "SWORD_Hit_Metal_Armor_RR3_mono.wav";
-   Sword_Hit_Armour_Sound : constant String :=
+   Sword_Hit_Armour_Sound  : constant String :=
                               "HAMMER_Hit_Metal_Armor_stereo.wav";
-   Characters      : Character_List;
-   Character_Specs : Specs_List;
+   Characters              : Character_List;
+   Character_Specs         : Specs_List;
+   Torch_Light_Index       : array (1 .. 2) of Integer := (-1, -1);
+   Torch_Particles_Index   : array (1 .. 2) of Integer := (-1, -1);
 
    --      Portal_Fadeout_Started  : Boolean := False;
    Characters_To_Reserve   : constant Integer := 256;
@@ -177,7 +181,13 @@ package body Character_Controller is
                   end if;
                   Character.Is_Alive := False;
                   if aSpec.Tx_On_Death >= 0 then
-
+                     Event_Controller.Transmit_Code (aSpec.Tx_On_Death);
+                  end if;
+                  Audio.Play_Sound (To_String (aSpec.Death_Sound_File_Name), True);
+                  if Char_ID = 1 then
+                     Camera.Screen_Shake (3.0, 1.0, 50.0);
+                     Particle_System.Stop_Particle_System (Torch_Particles_Index (1));
+                     Audio.Stop_All_Boulder_Sounds;
                   end if;
                end if;
             end if;

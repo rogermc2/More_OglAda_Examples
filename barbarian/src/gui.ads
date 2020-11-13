@@ -17,6 +17,9 @@ package GUI is
    procedure Show_Controller_Button_Overlay
      (Pos_Index, Tex_Index : in out Integer);
    function Show_Defeated return Boolean;
+   procedure Show_Finished_Stats (Won : Boolean;
+                                  Kills, Kills_Max, Gold, Gold_Max : Integer;
+                                  Time  : Float; Par : String);
    function Show_Victory return Boolean;
    procedure Update_GUIs (Seconds : Float);
 

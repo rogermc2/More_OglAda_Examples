@@ -10,5 +10,6 @@ package Event_Controller is
 
    procedure Add_Receiver (Code  : Natural; RX_Kind : RX_Type; Index : Natural);
    procedure Reset;
+   procedure Transmit_Code (Code : Natural);
 
 end Event_Controller;

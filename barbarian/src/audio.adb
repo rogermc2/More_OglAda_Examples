@@ -118,12 +118,28 @@ package body Audio is
 
    --  -------------------------------------------------------------------------
 
+   procedure Stop_All_Boulder_Sounds is
+   begin
+      for index in 1 .. G_Audio.Boulder_Sound_Count loop
+         Stop_Boulder_Sound (index);
+      end loop;
+   end Stop_All_Boulder_Sounds;
+
+   --  -------------------------------------------------------------------------
+
    procedure Stop_All_Sounds is
    begin
       if G_Audio.Was_Init then
          null;
       end if;
    end Stop_All_Sounds;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Stop_Boulder_Sound (Index : Integer) is
+   begin
+         null;
+   end Stop_Boulder_Sound;
 
    --  -------------------------------------------------------------------------
 

@@ -14,6 +14,8 @@ with GL.Toggles;
 with Maths;
 
 --  with Attributes;
+with Audio;
+with Character_Controller;
 with Controller_Textures_Manager;
 with Game_Utils;
 with GL_Maths;
@@ -109,7 +111,7 @@ package body GUI is
    --      FIST_SOUND_FILE : constant String := "squeak_short.ogg";
    --      SCREEN_SPLAT_SOUND_FILE : constant String := "GORE_Splat_Hit_Bubbles_mono.wav";
    --      WIN_SOUND : constant String := "MUSIC_EFFECT_Orchestral_Battle_Neutral_stereo.wav";
-   --      LOSE_SOUND : constant String := "MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav";
+   Lose_Sound   : constant String := "MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav";
 
    --  Text
    Gold_Text_Index          : Integer := 0;
@@ -475,6 +477,50 @@ package body GUI is
    begin
       return Show_Defeated_State;
    end Show_Defeated;
+
+   --  ----------------------------------------------------------------------------
+
+   function Show_Defeated_Screen (Show : Boolean) return Boolean is
+      use Character_Controller;
+   begin
+      if Show then
+         Audio.Play_Sound (Lose_Sound, False);
+         Show_Finished_Stats (False, Kills_Current, Kills_Max,
+                             Total_Treasure_Found, Gold_Max, 0.0, "n/a");
+      else
+         Hide_Finish_Stats;
+      end if;
+      return Show_Defeated_State;
+   end Show_Defeated_Screen;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Show_Finished_Stats (Won : Boolean;
+                                  Kills, Kills_Max, Gold, Gold_Max : Integer;
+                                  Time  : Float; Par : String) is
+      Mins  : Integer;
+      Secs  : Integer;
+      Stats : Unbounded_String;
+   begin
+      if Won then
+         Mins := Integer (Float'Floor (Time / 60.0));
+         Secs := Integer (Time - Float (60 * Mins));
+         Stats := To_Unbounded_String
+           ("VICTORY! kills   " & Integer'Image (kills) & " / " &
+            Integer'Image (kills_max) & "gold    " & Integer'Image (gold) &
+            "  / " & Integer'Image (gold_max) & " time    " &
+            Integer'Image (Mins) & ":" & Integer'Image (Secs) & "par " & Par);
+      else
+         Stats := To_Unbounded_String
+           ("DEFEAT! kills   " & Integer'Image (kills) & " / " &
+            Integer'Image (kills_max) & "gold    " & Integer'Image (gold) &
+            "  / " & Integer'Image (gold_max));
+      end if;
+      Text.Update_Text (Finish_Stats_Text_Index, To_String (Stats));
+      Text.Centre_Text (Finish_Stats_Text_Index,
+                        0.0, 256.0 / Single (Settings.Framebuffer_Height));
+      Text.Set_Text_Visible (Finish_Stats_Text_Index, True);
+   end Show_Finished_Stats;
 
    --  ----------------------------------------------------------------------------
 
