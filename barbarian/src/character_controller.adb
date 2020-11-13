@@ -49,9 +49,12 @@ package body Character_Controller is
    --      Specs_Allocd_Count      : Integer := 0;
    --      Specs_Count             : Integer := 0;
    --      Gold_Current            : constant Integer := 0;
-   --      Kills_Current           : Integer := 0;
+    Kills_Current           : Integer := 0;
    --      Kills_Max               : Integer := 0;
 
+   function Damage_Character (Char_ID, Doer_ID  : Positive; Angle : Maths.Degree;
+                              Damage            : Int; Weapon : Weapon_Type) return Boolean;
+   procedure Detach_Particle_System_From_Character (Char_Idx, Partsys_Idx : Positive);
    --      function Is_Character_Valid (Char_Index : Integer) return Boolean;
    function Is_Close_Enough (Character    : Barbarian_Character;
                              World_Pos    : Singles.Vector3;
@@ -147,6 +150,7 @@ package body Character_Controller is
                               Damage    : Int; Weapon : Weapon_Type) return Boolean is
       use Projectile_Manager;
       Character   : Barbarian_Character := Characters.Element (Char_ID);
+      Character_1 : constant Barbarian_Character := Characters.First_Element;
       Is_Sorcerer : Boolean := False;
       S_I         : constant Positive := Character.Specs_Index;
       aSpec       : constant Spec_Data := Character_Specs.Element (S_I);
@@ -170,32 +174,60 @@ package body Character_Controller is
             else
                GUI.Change_Health_Bar (1, H_Fac, To_String (aSpec.Name));
             end if;
+
             if Doer_ID = 1 then
                if Character.Current_Weapon = Sword_Wt then
                   Camera.Screen_Shake (0.2, 0.5, 50.0);
                   Audio.Play_Sound (Sword_Hit_Armour_Sound, True);
+               elsif Character_1.Current_Weapon = Hammer_Wt then
+                  Camera.Screen_Shake (0.2, 0.5, 50.0);
+                  Audio.Play_Sound (Hammer_Hit_Armour_Sound, True);
                end if;
+
                if Character.Current_Health <= 0 then
                   if Weapon = Hammer_Wt then
                      GUI_Level_Chooser.Increment_Hammer_Kills;
                   end if;
                   Character.Is_Alive := False;
+
                   if aSpec.Tx_On_Death >= 0 then
                      Event_Controller.Transmit_Code (aSpec.Tx_On_Death);
                   end if;
                   Audio.Play_Sound (To_String (aSpec.Death_Sound_File_Name), True);
+
                   if Char_ID = 1 then
                      Camera.Screen_Shake (3.0, 1.0, 50.0);
                      Particle_System.Stop_Particle_System (Torch_Particles_Index (1));
                      Audio.Stop_All_Boulder_Sounds;
+                     GUI.Show_Defeated_Screen (True);
+                  else  --  Char_ID > 1
+                     if not Character.Death_Was_Counted then
+                        Character.Death_Was_Counted := True;
+                        if aSpec.Team_ID = 2 then
+                           Kills_Current := Kills_Current + 1;
+                           GUI.Set_GUI_Kills (Kills_Current);
+                        end if;
+                     end if;
                   end if;
-               end if;
-            end if;
+
+                  --  stop zombified movement
+                  Character.Desired_Direction := (0.0, 0.0, 0.0);
+                  --  splatter_all_tiles_near (g_characters[char_idx].world_pos);
+                  Detach_Particle_System_From_Character (Char_Idx, Partsys_Idx);
+               end if;  --  Current_Health <= 0
+            end if;  --  Doer_ID = 1
          end if;
       end if;
 
       return Result;
    end Damage_Character;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Detach_Particle_System_From_Character (Char_Idx, Partsys_Idx : Positive) is
+   begin
+      null;
+   end Detach_Particle_System_From_Character;
 
    --  -------------------------------------------------------------------------
 

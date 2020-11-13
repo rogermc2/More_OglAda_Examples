@@ -304,6 +304,40 @@ package body GUI is
 
    --  --------------------------------------------------------------------------
 
+   procedure Init_Gold_Counter is
+      use GL.Types.Singles;
+      use Maths;
+      FB_Width  : constant Single := Single (Settings.Framebuffer_Width);
+      FB_Height : constant Single := Single (Settings.Framebuffer_Height);
+      X_Ref    : constant Single := -1023.0 / FB_Width;
+      Y        : constant Single := 63.0 / FB_Height;
+      X        : Single;
+   begin
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/gui_icon_javs.png", GUI_Icons.Textures (1), False, True);
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/gui_icon_coin.png", GUI_Icons.Textures (2), False, True);
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/gui_icon_javs.png", GUI_Icons.Textures (3), False, True);
+
+      X := X_Ref + 384.0 / FB_Width;
+      Javelin_Ammo_Text_Index := Text.Add_Text
+        ("0", X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+      Text.Set_Text_Visible (Javelin_Ammo_Text_Index, False);
+
+      X := X_Ref + 640.0 / FB_Width;
+      Gold_Text_Index := Text.Add_Text
+        ("0", X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+      Text.Set_Text_Visible (Gold_Text_Index, False);
+
+      X := X_Ref + 896.0 / FB_Width;
+      Kills_Text_Index := Text.Add_Text
+        ("0", X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+      Text.Set_Text_Visible (Kills_Text_Index, False);
+   end Init_Gold_Counter;
+
+   --  --------------------------------------------------------------------------
+
    procedure Init_GUIs is
       use GL.Types;
       Quad_Tristrip : constant Singles.Vector2_Array (1 .. 4) :=
@@ -424,27 +458,27 @@ package body GUI is
 
    --  ----------------------------------------------------------------------------
 
-   --      procedure Set_GUI_Gold (Amount : Integer) is
-   --      begin
-   --          Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
-   --          GUI_Icons.Anim_Countdowns (2) := 1.0;
-   --      end Set_GUI_Gold;
+       procedure Set_GUI_Gold (Amount : Integer) is
+       begin
+           Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
+           GUI_Icons.Anim_Countdowns (2) := 1.0;
+       end Set_GUI_Gold;
 
    --  ----------------------------------------------------------------------------
 
-   --      procedure Set_GUI_Javalin_Ammo (Amount : Integer) is
-   --      begin
-   --          Text.Update_Text (Javelin_Ammo_Text_Index, Integer'Image (Amount));
-   --          GUI_Icons.Anim_Countdowns (1) := 1.0;
-   --      end Set_GUI_Javalin_Ammo;
+       procedure Set_GUI_Javalin_Ammo (Amount : Integer) is
+       begin
+           Text.Update_Text (Javelin_Ammo_Text_Index, Integer'Image (Amount));
+           GUI_Icons.Anim_Countdowns (1) := 1.0;
+       end Set_GUI_Javalin_Ammo;
 
    --  ------------------------------------------------------------------------
 
-   --      procedure Set_GUI_Kills (Amount : Integer) is
-   --      begin
-   --          Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
-   --          GUI_Icons.Anim_Countdowns (3) := 1.0;
-   --      end Set_GUI_Kills;
+       procedure Set_GUI_Kills (Amount : Integer) is
+       begin
+           Text.Update_Text (Kills_Text_Index, Integer'Image (Amount));
+           GUI_Icons.Anim_Countdowns (3) := 1.0;
+       end Set_GUI_Kills;
 
    --  ----------------------------------------------------------------------------
 
@@ -480,7 +514,7 @@ package body GUI is
 
    --  ----------------------------------------------------------------------------
 
-   function Show_Defeated_Screen (Show : Boolean) return Boolean is
+   procedure Show_Defeated_Screen (Show : Boolean) is
       use Character_Controller;
    begin
       if Show then
@@ -490,7 +524,7 @@ package body GUI is
       else
          Hide_Finish_Stats;
       end if;
-      return Show_Defeated_State;
+      Show_Defeated_State := True;
    end Show_Defeated_Screen;
 
    --  ----------------------------------------------------------------------------

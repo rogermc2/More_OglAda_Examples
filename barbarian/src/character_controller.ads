@@ -18,8 +18,6 @@ package Character_Controller is
    Gold_Current               : Integer := 0;
    Gold_Max                   : Integer := 0;
    Total_Treasure_Found       : Integer := 0;
-   Kills_Current              : Integer := 0;
-   Kills_Max                  : Integer := 0;
 
    Character_Controller_Exception : Exception;
 
