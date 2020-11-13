@@ -111,6 +111,13 @@ package body Audio is
 
    --  -------------------------------------------------------------------------
 
+   function Start_Boulder_Sound (Index : Positive) return Boolean is
+   begin
+      return False;
+   end Start_Boulder_Sound;
+
+   --  -------------------------------------------------------------------------
+
    procedure Stop_All_Sounds is
    begin
       if G_Audio.Was_Init then

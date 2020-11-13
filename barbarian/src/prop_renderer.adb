@@ -3,6 +3,7 @@ with Glfw;
 
 with GL.Toggles;
 
+with Audio;
 with Batch_Manager;
 with Event_Controller;
 with Frustum;
@@ -77,25 +78,77 @@ package body Prop_Renderer is
    Last_Head_Particles_Used    : Int := 0;
    Prev_Time                   : Single := Single (Glfw.Time);
 
+   procedure Activate_Property (Property_Index : Positive;
+                                Reactivating   : Boolean);
+
    --  -------------------------------------------------------------------------
 
    procedure Activate_Door (Property_Index : Positive) is
       Property       : Property_Data := Properties.Element (Property_Index);
       Script_Index   : constant Positive := Property.Script_Index;
-      Mesh_Index   :  Positive;
+      Mesh_Index     :  Positive;
       aScript        : constant Prop_Script := Scripts.Element (Script_Index);
    begin
       if aScript.Initial_Door_State = Property.Door then
          if aScript.Initial_Door_State = Open_State then
-         Property.Door := Closing_State;
+            Property.Door := Closing_State;
          else
-         Property.Door := Opening_State;
+            Property.Door := Opening_State;
          end if;
          Property.Is_Visible := True;
          Mesh_Index := aScript.Mesh_Index;
          Property.Anim_Duration := Mesh_Loader.Animation_Duration (Mesh_Index, 1);
+         Property.Anim_Elapsed_Time := 0.0;
+         Property.Is_Animating := True;
+         Activate_Property (Property_Index, False);
+         Audio.Play_Sound
+           (To_String (aScript.Sound_Activate_File_Name), True);
       end if;
    end Activate_Door;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Activate_Property (Property_Index : Positive;
+                                Reactivating   : Boolean) is
+      use Indicies_Package;
+      Property       : Property_Data := Properties.Element (Property_Index);
+      Script_Index   : constant Positive := Property.Script_Index;
+      aScript        : constant Prop_Script := Scripts.Element (Script_Index);
+      Prop_Type      : constant Property_Type := aScript.Script_Type;
+      Double_Up      : Boolean := False;
+      Active_Curs    : Cursor;
+      Break          : Boolean := False;
+   begin
+      if not Property.Was_Triggered or Reactivating then
+         if Prop_Type = Boulder_Prop then
+            if not Audio.Start_Boulder_Sound (Property.Boulder_Snd_Idx) then
+               raise Prop_Renderer_Exception with
+                 "Prop_Renderer.Activate_Property, push boulder in tile-audio.";
+            end if;
+         end if;
+         Property.Was_Triggered := True;
+         if Curr_Active_Props_A then
+            Active_Curs := Active_Properties_B.First;
+            while Has_Element (Active_Curs) and not Double_Up loop
+               Double_Up := Element (Active_Curs) = Property_Index;
+               Next (Active_Curs);
+            end loop;
+            if not Double_Up then
+               Active_Properties_B.Append (Property_Index);
+            end if;
+
+         else --  Active_Properties_B is current
+            Active_Curs := Active_Properties_A.First;
+            while Has_Element (Active_Curs) and not Double_Up loop
+               Double_Up := Element (Active_Curs) = Property_Index;
+               Next (Active_Curs);
+            end loop;
+            if not Double_Up then
+               Active_Properties_A.Append (Property_Index);
+            end if;
+         end if;
+      end if;
+   end Activate_Property;
 
    --  -------------------------------------------------------------------------
 
@@ -225,8 +278,8 @@ package body Prop_Renderer is
       Prev_Time := Curr_Time;
       Enable (Depth_Test);
       for vi in Left .. Right loop
-            for ui in Up .. Down loop
-               --                 Props_Size := Tile_Data'Size;
+         for ui in Up .. Down loop
+            --                 Props_Size := Tile_Data'Size;
             Prop_Indices := Tile_Data (Integer (ui), Integer (vi));
             for Props_Index in Prop_Indices.First_Index .. Prop_Indices.Last_Index loop
                Property := Properties.Element (Props_Index);
@@ -283,7 +336,7 @@ package body Prop_Renderer is
       Always_Draw    : constant Boolean := False;
       Prop_Indices   : Prop_Indices_List;
    begin
-       for row in Props_In_Tiles'Range loop
+      for row in Props_In_Tiles'Range loop
          for col in Props_In_Tiles'Range (2) loop
             Props_In_Tiles (Integer (row), Integer (col)).Clear;
          end loop;
