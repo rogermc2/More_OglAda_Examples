@@ -14,12 +14,47 @@ with GL_Utils;
 package body Mesh_Loader is
    use GL.Objects.Vertex_Arrays;
    use GL.Types.Singles;
-   type Animation is record
-      null;
+
+   type Tra_Anim_Key is record
+	Tra  : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
+	Time : Float := 0.0;
    end record;
 
-   package Animations_Package is new Ada.Containers.Doubly_Linked_Lists (Animation);
-   type Animations_List is new Animations_Package.List with null record;
+   type Sca_Anim_Key is record
+	Sca  : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
+	Time : Float := 0.0;
+   end record;
+
+   type Rot_Anim_Key is record
+	Rot  : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
+	Time : Float := 0.0;
+   end record;
+   --  Channel_Data defines a channel of keys within an animation.
+   --  All the keys in anim for a particular animation node,
+   --  where an 'animation node' is a bone in the skeleton but doesn't
+   --  necessarily have any vertices weighted to it
+   --  i.e. can be an in-between joint
+   type Channel_Data is record
+	Tra_Keys       : Tra_Anim_Key;
+	Tra_Keys_Count : Integer := 0;
+	Sca_Keys       : Sca_Anim_Key;
+	Sca_Keys_Count : Integer := 0;
+	Rot_Keys       : Rot_Anim_Key;
+        Rot_Keys_Count : Integer := 0;
+   end record;
+
+   package Channels_Package is new Ada.Containers.Vectors (Positive, Channel_Data);
+   type Channel_List is new Channels_Package.Vector with null record;
+
+   type Animation is record
+      Name  : Unbounded_String := To_Unbounded_String ("");
+      Duration : Float := 0.0;
+      --  Order of channels corresponds to anim nodes in hierarchy
+      Channels : Channel_List;
+   end record;
+
+   package Animations_Package is new Ada.Containers.Vectors (Positive, Animation);
+   type Animations_List is new Animations_Package.Vector with null record;
 
    package Matrix4_Package is new Ada.Containers.Doubly_Linked_Lists (Singles.Matrix4);
    type Matrix4_List is new Matrix4_Package.List with null record;
@@ -70,6 +105,8 @@ package body Mesh_Loader is
 
    Loaded_Meshes : Mesh_List;
 
+   function Loaded_Mesh_Animation (Mesh_ID : Integer; Anim_ID : Positive)
+                                   return Animation;
    function Load_Mesh (Path : String; Mesh_ID : out Integer) return Boolean;
    function To_Vector2_Array (Vec : Vector2_Package.Vector)
                               return Singles.Vector2_Array;
@@ -77,6 +114,14 @@ package body Mesh_Loader is
                               return Singles.Vector3_Array;
    function To_Vector4_Array (Vec : Vector4_Package.Vector)
                               return Singles.Vector4_Array;
+
+   --  ------------------------------------------------------------------------
+
+   function Animation_Duration (Mesh_ID : Integer; Anim_ID : Positive)
+                                return Float is
+   begin
+      return  Loaded_Mesh_Animation (Mesh_ID, Anim_ID).Duration;
+   end Animation_Duration;
 
    --  ------------------------------------------------------------------------
 
@@ -475,6 +520,44 @@ package body Mesh_Loader is
       return Found;
 
    end Loaded_Mesh_VAO;
+
+   --  ------------------------------------------------------------------------
+
+   function Loaded_Mesh_Animation (Mesh_ID : Integer; Anim_ID : Positive)
+                                   return Animation is
+      use Meshes_Package;
+      use Animations_Package;
+      Mesh_Curs  : Meshes_Package.Cursor := Loaded_Meshes.First;
+      Anim_List  : Animations_List;
+      Anim_Curs  : Animations_Package.Cursor;
+      Mesh_Found : Boolean := False;
+      Anim_Found : Boolean := False;
+      theAnim    : Animation;
+   begin
+      while Has_Element (Mesh_Curs) and not Mesh_Found loop
+         Mesh_Found := To_Index (Mesh_Curs) = Mesh_ID;
+         if Mesh_Found then
+            Anim_List := Element (Mesh_Curs).Animations;
+            if Is_Empty (Anim_List) then
+               raise Mesh_Loader_Exception with
+                 "Mesh_Loader.Loaded_Mesh_Animation, the Animation List is empty";
+            end if;
+            Anim_Curs := Anim_List.First;
+            while Has_Element (Mesh_Curs) and not Anim_Found loop
+               Anim_Found := To_Index (Anim_Curs) = Anim_ID;
+               if Anim_Found then
+                  theAnim := Element (Anim_Curs);
+               else
+                  Next (Anim_Curs);
+               end if;
+            end loop;
+         else
+            Next (Mesh_Curs);
+         end if;
+      end loop;
+      return theAnim;
+
+   end Loaded_Mesh_Animation;
 
    --  ------------------------------------------------------------------------
 

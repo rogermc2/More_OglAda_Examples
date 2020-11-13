@@ -9,6 +9,8 @@ package Mesh_Loader is
    Max_Bones             : constant  Int := 32;
    Mesh_Loader_Exception : Exception;
 
+   function Animation_Duration (Mesh_ID : Integer; Anim_ID : Positive)
+                                return Float;
    function Bone_Count (Index : Integer) return Integer;
    procedure Init;
    function Load_Managed_Mesh (Mesh_Name               : String; Has_Vp, Has_Vn, Has_Vt,
