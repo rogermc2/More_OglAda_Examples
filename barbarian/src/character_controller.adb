@@ -228,6 +228,10 @@ package body Character_Controller is
                   Detach_Particle_System_From_Character
                     (Bfparts_Last_Attached_To (Current_Blood_Fountain),
                      Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+                  Particle_System.Set_Particle_System_Position
+                    (Blood_Fountain_Particles_Index (Current_Blood_Fountain),
+                     Character.World_Pos);
+                  start
                end if;  --  Current_Health <= 0
             end if;  --  Doer_ID = 1
          end if;
@@ -273,21 +277,21 @@ package body Character_Controller is
    end Init;
 
    --  -------------------------------------------------------------------------
-
+   -- derived from _damage_all_near part // work out if close enough
    function Is_Close_Enough (Character    : Barbarian_Character;
                              World_Pos    : Singles.Vector3;
                              Height, Dist : Single) return Boolean is
       use Singles;
       use Maths;
-      C_P             : Singles.Vector3 := Character.World_Pos;
-      Distance_Top    : Singles.Vector3 :=
+      C_P             : constant Singles.Vector3 := Character.World_Pos;
+      Distance_Top    : constant Singles.Vector3 :=
                           World_Pos - (C_P (Gl.X), (C_P (Gl.Y) + Height),
                                        C_P (Gl.Z));
-      Distance_Middle : Singles.Vector3 := World_Pos - (C_P (Gl.X), C_P (Gl.Y) + Height * 0.5, C_P (Gl.Z));
-      Distance_Bottom : Singles.Vector3 := World_Pos - (C_P (Gl.X), C_P (Gl.Y), C_P (Gl.Z));
-      Sq_Dist_Top     : Single := Length_Sq (Distance_Top);
-      Sq_Dist_Middle  : Single := Length_Sq (Distance_Middle);
-      Sq_Dist_Bottom  : Single := Length_Sq (Distance_Bottom);
+      Distance_Middle : constant Singles.Vector3 := World_Pos - (C_P (Gl.X), C_P (Gl.Y) + Height * 0.5, C_P (Gl.Z));
+      Distance_Bottom : constant Singles.Vector3 := World_Pos - (C_P (Gl.X), C_P (Gl.Y), C_P (Gl.Z));
+      Sq_Dist_Top     : constant Single := Length_Sq (Distance_Top);
+      Sq_Dist_Middle  : constant Single := Length_Sq (Distance_Middle);
+      Sq_Dist_Bottom  : constant Single := Length_Sq (Distance_Bottom);
    begin
       return Dist ** 2 >=  Min (Min (Sq_Dist_Top, Sq_Dist_Bottom),
                                 Sq_Dist_Middle);

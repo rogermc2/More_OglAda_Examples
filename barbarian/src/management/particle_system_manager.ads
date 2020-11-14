@@ -11,16 +11,14 @@ with GL.Types; use GL.Types;
 
 with Maths;
 
+with GL_Maths;
+
 package Particle_System_Manager is
     use Singles;
 
-    package Vec3_Package is new
-      Ada.Containers.Doubly_Linked_Lists (Singles.Vector3);
-    type Vec3_List is new Vec3_Package.List with null record;
-
     type Particle_Script is record
         Particle_Count                   : Int := 0;
-        Particle_Initial_Velocity        : Vec3_List;
+        Particle_Initial_Velocity        : GL_Maths.Vector3_List;
         Acceleration                     : Singles.Vector3 := Maths.Vec3_0;
         Initial_Colour                   : Singles.Vector4 := Maths.Vec4_0;
         Final_Colour                     : Singles.Vector4 := Maths.Vec4_0;

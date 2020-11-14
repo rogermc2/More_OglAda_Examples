@@ -43,7 +43,7 @@ package body Particle_System is
             for index in 1 .. Particle_Count loop
                P_System.Particle_Positions.Append (Maths.Vec3_0);
                P_System.Particle_Ages.Append
-                 (Float (index) * Float (Script.Seconds_Between));
+                 (Single (index) * Script.Seconds_Between);
             end loop;
             P_System.Script_Index := Script_Num;
             P_System.Is_Running := Start_Now;
@@ -121,6 +121,72 @@ package body Particle_System is
       Game_Utils.Game_Log ("---- Particle Systems Initialized ----");
       Particles_Initialised := True;
    end Init;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Particle_System_Heading (System_ID : Positive;
+                                          Heading : Maths.Degree) is
+      theSystem : Particle_System;
+   begin
+      if Particles_Initialised then
+         theSystem := Particle_Systems.Element (System_ID);
+         theSystem.Rot_Mat := Maths.Rotate_Y_Degree (Singles.Identity4, Heading);
+         Particle_Systems.Replace_Element (System_ID, theSystem);
+      end if;
+   end Set_Particle_System_Heading;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Particle_System_Position (System_ID : Positive;
+                                          Emitter_World_Pos : Singles.Vector3) is
+      theSystem : Particle_System;
+   begin
+      if Particles_Initialised then
+         theSystem := Particle_Systems.Element (System_ID);
+         theSystem.Emitter_World_Pos := Emitter_World_Pos;
+         Particle_Systems.Replace_Element (System_ID, theSystem);
+      end if;
+   end Set_Particle_System_Position;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Start_Particle_System (System_ID : Positive) is
+      use Particle_System_Manager;
+      use Singles_Package;
+      theSystem    : Particle_System;
+      Script_Index : Positive;
+      Script       : Particle_System_Manager.Particle_Script;
+      Ages         : Ages_List := theSystem.Particle_Ages;
+      Positions    : Positions_List := theSystem.Particle_Positions;
+      Age_Scale    : Single;
+
+      procedure Update_Particle_Age (Age : in out Single) is
+      begin
+         Age := - Age_Scale * Script.Seconds_Between;
+      end Update_Particle_Age;
+
+      procedure Update_Particle_Position (Pos : in out Singles.Vector3) is
+      begin
+         Pos := theSystem.Emitter_World_Pos;
+      end Update_Particle_Position;
+
+   begin
+      if Particles_Initialised then
+         theSystem := Particle_Systems.Element (System_ID);
+         Script_Index := theSystem.Script_Index;
+         theSystem.Is_Running := True;
+         theSystem.System_Age := 0.0;
+         Script := Scripts.Element (Script_Index);
+         for index in Ages.First_Index .. Ages.Last_Index loop
+            Age_Scale:= Single (index -1);
+            Ages.Update_Element (index, Update_Particle_Age'Access);
+         end loop;
+
+         for index in Positions.First_Index .. Ages.Last_Index loop
+            Positions.Update_Element (Index, Update_Particle_Position'Access);
+         end loop;
+      end if;
+   end Start_Particle_System;
 
    --  ------------------------------------------------------------------------
 

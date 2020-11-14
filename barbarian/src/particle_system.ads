@@ -6,6 +6,7 @@ with GL.Types; use GL.Types;
 
 with Maths;
 
+with GL_Maths;
 with Particle_System_Manager;
 
 package Particle_System is
@@ -20,22 +21,30 @@ package Particle_System is
      (Script_Name : String; Start_Now, Always_Update, Always_Draw : Boolean)
       return Positive;
    procedure Init;
+   procedure Set_Particle_System_Heading (System_ID : Positive;
+                                          Heading : Maths.Degree);
+   procedure Set_Particle_System_Position (System_ID : Positive;
+                                           Emitter_World_Pos : Singles.Vector3);
    procedure Stop_Particle_System (System_ID : Positive);
    procedure Stop_Particle_Systems;
 
 private
-   package Ages_Package is new
-     Ada.Containers.Doubly_Linked_Lists (Float);
-   type Ages_List is new Ages_Package.List with null record;
+   package Singles_Package is new
+     Ada.Containers.Vectors (Positive, Single);
+   type Ages_List is new Singles_Package.Vector with null record;
+
+   package Singles_Vector3_Package is new
+     Ada.Containers.Vectors (Positive, Singles.Vector3);
+   type Positions_List is new Singles_Vector3_Package.Vector with null record;
 
    type Particle_System is record
       -- For transforms on cpu
-      Particle_Positions : Particle_System_Manager.Vec3_List;
+      Particle_Positions : Positions_List;
       Particle_Ages      : Ages_List;
       -- Used to rotate emitter
-      Rot_Mat            : Singles.Vector4 := Maths.Vec4_0;
+      Rot_Mat            : Singles.Matrix4 := Singles.Identity4;
       Emitter_World_Pos  : Singles.Vector3 := Maths.Vec3_0;
-      System_Age         : Integer := 0;
+      System_Age         : Float := 0.0;
       Script_Index       : Integer := 0;
       Is_Running         : Boolean := False;
       -- If it should skip visibility test
