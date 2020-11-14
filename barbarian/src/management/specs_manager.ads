@@ -93,7 +93,7 @@ package Specs_Manager is
         Default_Weapon          : Weapon_Type := Na_Wt;
         Projectile              : Projectile_Manager.Projectile_Type :=
                                     Projectile_Manager.Na_Proj_Type;
-        Decapitated_Head_Script : Unbounded_String := To_Unbounded_String ("");
+        Decapitated_Head_Script : Positive := 1;
         Team_ID                 : Integer := 0;
         Tx_On_Death             : Integer := 0;
         Land_Move               : Boolean;  --  False for sewerman

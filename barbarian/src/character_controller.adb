@@ -38,9 +38,9 @@ package body Character_Controller is
    Current_Blood_Fountain       : Integer;
    Current_Blood_Damage_Emitter : Integer;
    Hammer_Hit_Armour_Sound : constant String :=
-                              "SWORD_Hit_Metal_Armor_RR3_mono.wav";
+                               "SWORD_Hit_Metal_Armor_RR3_mono.wav";
    Sword_Hit_Armour_Sound  : constant String :=
-                              "HAMMER_Hit_Metal_Armor_stereo.wav";
+                               "HAMMER_Hit_Metal_Armor_stereo.wav";
    Characters              : Character_List;
    Character_Specs         : Specs_List;
    Torch_Light_Index       : array (1 .. 2) of Positive := (1, 1);
@@ -53,7 +53,7 @@ package body Character_Controller is
    --      Specs_Allocd_Count      : Integer := 0;
    --      Specs_Count             : Integer := 0;
    --      Gold_Current            : constant Integer := 0;
-    Kills_Current           : Integer := 0;
+   Kills_Current           : Integer := 0;
    --      Kills_Max               : Integer := 0;
 
    Teleport_From_Particles_Index  : Integer := 1;
@@ -63,7 +63,7 @@ package body Character_Controller is
    Bfparts_Last_Attached_To : array (1 .. Max_Blood_Fountains) of Integer := (others => -1);
    Bdparts_Last_Attached_To : array (1 .. Max_Blood_Damage_Emitters) of Integer := (others => -1);
 
-   function Damage_Character (Char_ID  : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
+   function Damage_Character (Char_ID           : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
                               Damage            : Int; Weapon : Weapon_Type) return Boolean;
    procedure Detach_Particle_System_From_Character (Char_Idx, Partsys_Idx : Positive);
    --      function Is_Character_Valid (Char_Index : Integer) return Boolean;
@@ -74,6 +74,8 @@ package body Character_Controller is
    procedure Launch_Decapitated_Head (Character : Barbarian_Character;
                                       WT        : Weapon_Type);
    procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character);
+   procedure Spray_Screen_Check (Character : Barbarian_Character;
+                                 World_Pos : Singles.Vector3);
 
    --  -------------------------------------------------------------------------
 
@@ -108,9 +110,9 @@ package body Character_Controller is
 
       if not Found_Free_Slot then
          Game_Utils.Game_Log (
-           "Character_Controller.Attach_Particle_System_To_Character " &
-           "WARNING: no free particle slot found in character - all in use. " &
-             "overwriting... Char_ID: " & Integer'Image (Char_ID));
+                              "Character_Controller.Attach_Particle_System_To_Character " &
+                                "WARNING: no free particle slot found in character - all in use. " &
+                                "overwriting... Char_ID: " & Integer'Image (Char_ID));
       end if;
 
       Character.Particle_System_Ids (Looping_Index) := Particle_System_ID;
@@ -202,7 +204,7 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   function Damage_Character (Char_ID  : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
+   function Damage_Character (Char_ID   : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
                               Damage    : Int; Weapon : Weapon_Type) return Boolean is
       use Projectile_Manager;
       Character   : Barbarian_Character := Characters.Element (Char_ID);
@@ -366,10 +368,10 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   procedure Knock_Back (Character : Barbarian_Character;
+   procedure Knock_Back (Character         : Barbarian_Character;
                          Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
-                         World_Pos      : Singles.Vector3;
-                         Throw_Back_Mps : Single; Damage : Int) is
+                         World_Pos         : Singles.Vector3;
+                         Throw_Back_Mps    : Single; Damage : Int) is
       use GL.Types.Singles;
       use Maths;
       Distance       : Vector3 := Character.World_Pos - World_Pos;
@@ -404,12 +406,16 @@ package body Character_Controller is
          when Sword_Wt =>
             if Chance < 25 then
                Proj_Type := aSpec.Projectile;
---                 if Proj_Type = Fireball_Proj_Type and Is_Map_Warlock and
---                 not Cheated_On_Map and Map_Is_Unmodified then
---                    null;
---                 end if;
+               --                 if Proj_Type = Fireball_Proj_Type and Is_Map_Warlock and
+               --                 not Cheated_On_Map and Map_Is_Unmodified then
+               --                    null;
+               --                 end if;
                Pos (GL.Y) := Pos (GL.Y) + 2.0;
+               Prop_Renderer.Launch_Decap_Head (DH_S_I, Pos);
+               Decap := True;
             end if;
+         when Hammer_Wt =>
+            Spray_Screen_Check (Character, Pos);
          when others => null;
       end case;
 
@@ -495,6 +501,36 @@ package body Character_Controller is
       aCharacter.Is_Alive := True;
       aCharacter.Is_On_Ground := True;
    end Set_Character_Defaults;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Spray_Screen_Check (Character : Barbarian_Character;
+                                 World_Pos : Singles.Vector3) is
+      Cam_Y       : constant Single := Character.World_Pos (Gl.Y) + 13.0;
+      Emi_Y       : constant Single := World_Pos (Gl.Y);
+      --   check right height range
+      Y_Above     : constant Single := Cam_Y - Emi_Y - 0.5;
+      Yfac        : constant Single := Y_Above / 15.0;
+      --   now check xz distance
+      Cam_X       : constant Single := Character.World_Pos (Gl.X);
+      Cam_Z       : constant Single := Character.World_Pos (Gl.Z);
+      Emi_X       : constant Single := World_Pos (Gl.X);
+      Emi_Z       : constant Single := World_Pos (Gl.Z);
+      Xdist       : constant Single := Cam_X - Emi_X;
+      Zdist       : constant Single := Cam_Z - Emi_Z;
+      Sqxzdist    : constant Single := Xdist ** 2 + Zdist ** 2;
+      --   max xz dist is a funnel shape 0.5 at bottom of height range, 4.0 at top
+      Maxxzdist   : constant Single := 0.5 + Yfac * 4.0;
+      Sqmaxxzdist : constant Single := Maxxzdist ** 2;
+      Nearfac     : constant Single :=  Sqxzdist / Sqmaxxzdist;
+      Num_Splats  : constant Int := 3 + Int (40.0 * Nearfac);
+   begin
+
+      if Y_Above >= 0.0 and Y_Above <= 15.0 and
+        Sqxzdist <= Sqmaxxzdist then
+         Add_Screen_Splats (Num_Splats);
+      end if;
+   end Spray_Screen_Check;
 
    --  -------------------------------------------------------------------------
 
