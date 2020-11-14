@@ -75,6 +75,49 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
+   procedure Attach_Particle_System_To_Character
+     (Char_ID, Particle_System_ID  : Positive) is
+      use Particle_System;
+      Character        : Barbarian_Character := Characters.Element (Char_ID);
+      Particle_Systems : Particle_Systems_List;
+      System           : Particle_System.Particle_System;
+      Found_Free_Slot  : Boolean := False;
+      Index            : Positive := 1;
+      Looping_Index    : Positive := 1;
+      Script           : Particle_System_Manager.Particle_Script;
+
+   begin
+      while Index <= Character.Particle_System_Ids'Last and
+        not Found_Free_Slot loop
+         if Get_Particle_System (Index, System) then
+            Found_Free_Slot := not Is_Running (Index);
+            if not Found_Free_Slot then
+               Script := Particle_System.Get_Particle_Script
+                 (Script_Index (Index));
+               if Script.Is_Looping then
+                  Looping_Index := Index;
+               end if;
+            end if;
+         else
+            raise Character_Controller_Exception;
+         end if;
+         Index := Index + 1;
+      end loop;
+
+      if not Found_Free_Slot then
+         Game_Utils.Game_Log (
+           "Character_Controller.Attach_Particle_System_To_Character " &
+           "WARNING: no free particle slot found in character - all in use. " &
+             "overwriting... Char_ID: " & Integer'Image (Char_ID));
+      end if;
+
+      Character.Particle_System_Ids (Looping_Index) := Particle_System_ID;
+      Characters.Replace_Element (Char_ID, Character);
+
+   end Attach_Particle_System_To_Character;
+
+   --  -------------------------------------------------------------------------
+
    procedure Create_Character (Source       : Character_Data;
                                theCharacter : in out Barbarian_Character) is
    begin
@@ -231,7 +274,9 @@ package body Character_Controller is
                   Particle_System.Set_Particle_System_Position
                     (Blood_Fountain_Particles_Index (Current_Blood_Fountain),
                      Character.World_Pos);
-                  start
+                  Particle_System.Start_Particle_System
+                    (Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+                  Att
                end if;  --  Current_Health <= 0
             end if;  --  Doer_ID = 1
          end if;

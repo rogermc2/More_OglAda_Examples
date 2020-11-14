@@ -20,11 +20,20 @@ package Particle_System is
    function Create_Particle_System
      (Script_Name : String; Start_Now, Always_Update, Always_Draw : Boolean)
       return Positive;
+   function Get_Particle_Script (Script_Index : Positive)
+                                  return Particle_System_Manager.Particle_Script;
+   function Get_Particle_System
+     (System_ID : Positive; theSystem : in out Particle_System) return Boolean;
+   function Has_Particle_System (System_ID : Positive) return Boolean;
    procedure Init;
+   function Is_Running (System_ID : Positive) return Boolean;
+   function Length return Positive;
+   function Script_Index (System_ID : Positive) return Positive;
    procedure Set_Particle_System_Heading (System_ID : Positive;
                                           Heading : Maths.Degree);
    procedure Set_Particle_System_Position (System_ID : Positive;
                                            Emitter_World_Pos : Singles.Vector3);
+   procedure Start_Particle_System (System_ID : Positive);
    procedure Stop_Particle_System (System_ID : Positive);
    procedure Stop_Particle_Systems;
 

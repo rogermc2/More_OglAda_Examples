@@ -64,6 +64,14 @@ package body Particle_System is
 
    --  ------------------------------------------------------------------------
 
+   function Get_Particle_Script (Script_Index : Positive)
+                                 return Particle_System_Manager.Particle_Script is
+   begin
+      return Scripts.Element (Script_Index);
+   end Get_Particle_Script;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Particle_Script_Number
      (Name : String; Script_Number : out Positive) return Boolean is
       use Ada.Strings.Unbounded;
@@ -105,6 +113,25 @@ package body Particle_System is
 
    --  ------------------------------------------------------------------------
 
+   function Get_Particle_System
+     (System_ID : Positive; theSystem : in out Particle_System) return Boolean is
+      Found : constant Boolean := System_ID <= Particle_Systems.Last_Index;
+   begin
+      if Found then
+         theSystem := Particle_Systems.Element (System_ID);
+      end if;
+      return Found;
+   end Get_Particle_System;
+
+   --  ------------------------------------------------------------------------
+
+   function Has_Particle_System (System_ID : Positive) return Boolean is
+   begin
+      return System_ID <= Particle_Systems.Last_Index;
+   end Has_Particle_System;
+
+   --  ------------------------------------------------------------------------
+
    procedure Init is
       use Particle_System_Manager;
    begin
@@ -121,6 +148,29 @@ package body Particle_System is
       Game_Utils.Game_Log ("---- Particle Systems Initialized ----");
       Particles_Initialised := True;
    end Init;
+
+   --  ------------------------------------------------------------------------
+
+   function Is_Running (System_ID : Positive) return Boolean is
+      System : constant Particle_System := Particle_Systems.Element (System_ID);
+   begin
+      return System.Is_Running;
+   end Is_Running;
+
+   --  ------------------------------------------------------------------------
+
+   function Length return Positive is
+   begin
+      return Particle_Systems.Last_Index;
+   end Length;
+
+   --  ------------------------------------------------------------------------
+
+   function Script_Index (System_ID : Positive) return Positive is
+      System : constant Particle_System := Particle_Systems.Element (System_ID);
+   begin
+      return System.Script_Index;
+   end Script_Index;
 
    --  ------------------------------------------------------------------------
 
@@ -185,6 +235,7 @@ package body Particle_System is
          for index in Positions.First_Index .. Ages.Last_Index loop
             Positions.Update_Element (Index, Update_Particle_Position'Access);
          end loop;
+         Particle_Systems.Replace_Element (System_ID, theSystem);
       end if;
    end Start_Particle_System;
 

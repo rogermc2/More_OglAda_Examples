@@ -6,6 +6,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with GL.Objects.Textures;
 with GL.Types; use GL.Types;
 
+with GL_Maths;
 with Projectile_Manager;
 
 package Specs_Manager is
@@ -14,7 +15,7 @@ package Specs_Manager is
     Max_Animations    : constant GL.Types.Int := 32;
     Max_Attack_Events : constant GL.Types.Int := 32;
     Max_Anim_Frames   : constant GL.Types.Int := 32;
-    Max_Particle_Systems_Attached_To_Character : constant GL.Types.Int :=  8;
+    Max_Particle_Systems_Attached_To_Character : constant Integer := 8;
 
     type Unbounded_String_Array is array (GL.Types.Int range <>)
       of Unbounded_String;
@@ -103,7 +104,7 @@ package Specs_Manager is
                                     (others => To_Unbounded_String (""));
         Hurt_Sound_File_Name    : Unbounded_String := To_Unbounded_String ("");
         Death_Sound_File_Name   : Unbounded_String := To_Unbounded_String ("");
-        particle_system_ids     : GL.Types.Int_Array
+        Particle_System_IDs     : GL_Maths.Integer_Array
           (1 .. Max_Particle_Systems_Attached_To_Character) := (others => 0);
         Map_X                   : Integer := 0;
         Map_Y                   : Integer := 0;

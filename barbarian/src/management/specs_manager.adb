@@ -94,7 +94,7 @@ package body Specs_Manager is
       theFloat  : Float := 0.0;
       L_Length  : constant Integer := aLine'Length;
       Pos1      : Integer := Fixed.Index (aLine, ":");
-      Pos2      : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
+      Pos2      : constant Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
    begin
       Weapon_ID := Weapon_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
       if not Weapon_ID'Valid then
@@ -186,8 +186,8 @@ package body Specs_Manager is
       use Ada.Strings;
       Weapon_ID : Weapon_Type := Na_Wt;
       L_Length  : constant Integer := aLine'Length;
-      Pos1      : Integer := Fixed.Index (aLine, ":");
-      Pos2      : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
+      Pos1      : constant Integer := Fixed.Index (aLine, ":");
+      Pos2      : constant Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
    begin
       Weapon_ID := Weapon_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
       if Weapon_ID'Valid then
@@ -210,8 +210,8 @@ package body Specs_Manager is
       use Projectile_Manager;
       Projectile : Projectile_Type := Na_Proj_Type;
       L_Length   : constant Integer := aLine'Length;
-      Pos1       : Integer := Fixed.Index (aLine, ":");
-      Pos2       : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
+      Pos1       : constant Integer := Fixed.Index (aLine, ":");
+      Pos2       : constant Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
    begin
       Projectile := Projectile_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
       if Projectile'Valid then
