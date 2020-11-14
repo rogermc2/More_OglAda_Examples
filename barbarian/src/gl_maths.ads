@@ -4,6 +4,8 @@ with Ada.Containers.Vectors;
 with Ada.Numerics.Generic_Real_Arrays;
 with GL.Types;
 
+with Maths;
+
 package GL_Maths is
     use GL.Types;
     use Singles;
@@ -44,6 +46,10 @@ package GL_Maths is
    function From_Real_Matrix4 (R_Matrix : Single_Matrix) return Singles.Matrix4;
    function From_Real_Vector3 (R_Vec : Single_Vector) return Singles.Vector3;
    function From_Real_Vector4 (R_Vec : Single_Vector) return Singles.Vector4;
+   function Quat_From_Axis_Degree (Angle : Maths.Degree; X, Y, Z : Single)
+                                   return Maths.Single_Quaternion.Quaternion;
+   function Quat_From_Axis_Radian (Angle : Maths.Radian; X, Y, Z : Single)
+                                   return Maths.Single_Quaternion.Quaternion;
    function To_Real_Matrix4 (GL_Matrix : Singles.Matrix4) return Single_Matrix;
    function To_Real_Vector3 (GL_Vec : Singles.Vector3) return Single_Vector;
    function To_Real_Vector4 (GL_Vec : Singles.Vector4) return Single_Vector;

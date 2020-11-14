@@ -68,6 +68,31 @@ package body GL_Maths is
       return GL_Vec;
    end From_Real_Vector4;
 
+   --  -------------------------------------------------------------------------
+
+   function Quat_From_Axis_Degree (Angle : Maths.Degree; X, Y, Z : Single)
+                                   return Maths.Single_Quaternion.Quaternion is
+   begin
+      return Quat_From_Axis_Radian (Maths.To_Radians (Angle), X, Y, Z);
+   end Quat_From_Axis_Degree;
+
+   --  -------------------------------------------------------------------------
+
+   function Quat_From_Axis_Radian (Angle : Maths.Radian; X, Y, Z : Single)
+                                   return Maths.Single_Quaternion.Quaternion is
+      use GL.Types;
+      use Maths;
+      use Single_Math_Functions;
+      Half_Angle : constant Single := Single (Angle / 2.0);
+      Quat : Single_Quaternion.Quaternion;
+   begin
+      Quat.A := Cos (Half_Angle);
+      Quat.B := Sin (Half_Angle) * X;
+      Quat.C := Sin (Half_Angle) * Y;
+      Quat.D := Sin (Half_Angle) * Z;
+      return Quat;
+   end Quat_From_Axis_Radian;
+
    --  -----------------------------------------------------------
 
    function To_Real_Matrix4 (GL_Matrix : Singles.Matrix4) return Single_Matrix is
