@@ -63,7 +63,7 @@ package body Character_Controller is
    Bfparts_Last_Attached_To : array (1 .. Max_Blood_Fountains) of Integer := (others => -1);
    Bdparts_Last_Attached_To : array (1 .. Max_Blood_Damage_Emitters) of Integer := (others => -1);
 
-   function Damage_Character (Char_ID, Doer_ID  : Positive; Angle : Maths.Degree;
+   function Damage_Character (Char_ID  : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
                               Damage            : Int; Weapon : Weapon_Type) return Boolean;
    procedure Detach_Particle_System_From_Character (Char_Idx, Partsys_Idx : Positive);
    --      function Is_Character_Valid (Char_Index : Integer) return Boolean;
@@ -71,6 +71,8 @@ package body Character_Controller is
                              World_Pos    : Singles.Vector3;
                              Height, Dist : Single) return Boolean;
    --      function Is_Spec_Valid (Spec_Index : Integer) return Boolean;
+   procedure Launch_Decapitated_Head (Character : Barbarian_Character;
+                                      WT        : Weapon_Type);
    procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character);
 
    --  -------------------------------------------------------------------------
@@ -200,7 +202,7 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   function Damage_Character (Char_ID, Doer_ID  : Positive; Angle : Maths.Degree;
+   function Damage_Character (Char_ID  : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
                               Damage    : Int; Weapon : Weapon_Type) return Boolean is
       use Projectile_Manager;
       Character   : Barbarian_Character := Characters.Element (Char_ID);
@@ -276,7 +278,13 @@ package body Character_Controller is
                      Character.World_Pos);
                   Particle_System.Start_Particle_System
                     (Blood_Fountain_Particles_Index (Current_Blood_Fountain));
-                  Att
+                  Attach_Particle_System_To_Character
+                    (Char_ID, Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+                  Bfparts_Last_Attached_To (Current_Blood_Fountain) := Char_ID;
+                  Current_Blood_Fountain := (Current_Blood_Fountain + 1) * Max_Blood_Fountains;
+                  if Doer_ID > 0 then
+                     Launch_Decapitated_Head (Character, Weapon);
+                  end if;
                end if;  --  Current_Health <= 0
             end if;  --  Doer_ID = 1
          end if;
@@ -376,6 +384,31 @@ package body Character_Controller is
    begin
       null;
    end Knock_Back;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Launch_Decapitated_Head (Character : Barbarian_Character;
+                                      WT        : Weapon_Type) is
+      use Maths;
+      use Projectile_Manager;
+      Chance    : constant Integer := Integer (100.0 * Abs (Random_Float));
+      S_I       : constant Positive := Character.Specs_Index;
+      aSpec     : constant Spec_Data := Character_Specs.Element (S_I);
+      Proj_Type : Projectile_Type;
+      Decap     : Boolean := False;
+   begin
+      case WT is
+         when Sword_Wt =>
+            if Chance < 25 then
+               Proj_Type := aSpec.Projectile;
+               if Proj_Type = Fireball_Proj_Type then
+                  null;
+               end if;
+            end if;
+         when others => null;
+      end case;
+
+   end Launch_Decapitated_Head;
 
    --  -------------------------------------------------------------------------
    --  read characters from an already open file stream
