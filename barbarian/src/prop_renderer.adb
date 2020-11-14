@@ -19,6 +19,18 @@ with Tiles_Manager;
 
 package body Prop_Renderer is
 
+   Boulder_Bounce_Sound_File : constant String
+     := "EXPLOSION_Medium_Little_Debris_Burning_Tail_stereo.wav";
+   Decap_Sound_File          : constant String := "GORE_Blade_Chop_mono.wav";
+   Decap_Bounce_Sound_File   : constant String := "GORE_Stab_Splat_Only_mono.wav";
+   Splash_Sound_File         : constant String := "SPLASH_Small_03_mono.wav";
+   Pot_Smash_Sound           : constant String
+     := "SHATTER_Glass_Medium_01_mono.wav";
+   Mirror_Smash_Magic_Sound  : constant String
+     := "MAGIC_SPELL_Scary_Raising_Reverse_Rain_Subtle_stereo.wav";  --  MAGIC_SPELL_Short_Fast_Burst_Quick_Fade_stereo.wav"
+   All_Mirrors_Smashed_Sound : constant String
+     := "MAGIC_SPELL_Passing_Tunnel_Sci-Fi_Fast_Rapid_Echo_stereo.wav";
+
    Head_Particles_File   : constant String := "blood_artery_jet.particles";
    Splash_Particles_File : constant String := "splash.particles";
    Dust_Particles_File   : constant String := "dust.particles";
@@ -80,7 +92,7 @@ package body Prop_Renderer is
    Mirror_Count                : Int := 0;
    Live_Mirror_Count           : Int := 0;
    Num_Types_Decap_Heads       : Int := 0;
-   Last_Head_Particles_Used    : Int := 0;
+   Last_Head_Particles_Used    : Integer := 0;
    Prev_Time                   : Single := Single (Glfw.Time);
 
    procedure Activate_Property (Property_Index : Positive;
@@ -257,6 +269,11 @@ package body Prop_Renderer is
         Max_Active_Decaps_Per_Type;
       Prop_Index : Positive;
       Prop       : Property_Data;
+      Sys_Index  : Positive;
+      Vel_X      : constant Single := Abs (Maths.Random_Float) * 7.0 - 3.5;
+      Vel_Z      : constant Single := Abs (Maths.Random_Float) * 7.0 - 3.5;
+      U          : Int;
+      V          : Int;
    begin
       Last_Head_Launched (LHL_Type) := T_Index;
       Prop_Index := Decap_Heads_Prop_Index (LHL_Type, T_Index);
@@ -266,8 +283,26 @@ package body Prop_Renderer is
       Prop.Bounce_Count := 0;
       Prop.Model_Mat := Maths.Translation_Matrix (World_Pos);
       Prop.Quat := GL_Maths.Quat_From_Axis_Radian (0.0, 0.0, 1.0, 0.0);
+      Prop.Velocity := (Vel_X, 10.0, Vel_Z);
+      U := Int (0.5 * (World_Pos (GL.X) + 1.0));
+      V := Int (0.5 * (World_Pos (GL.Z) + 1.0));
+      Prop.Map_U := U;
+      Prop.Map_V := V;
+      Last_Head_Particles_Used := (Last_Head_Particles_Used + 1) mod
+        Max_Decap_Particles + 1;
+      Sys_Index := Head_Particles (Last_Head_Particles_Used);
+      Particle_System.Set_Particle_System_Position (Sys_Index, World_Pos);
+      Particle_System.Set_Particle_System_Heading (Sys_Index, 0.0);
+      Particle_System.Start_Particle_System (Sys_Index);
+      Prop.Particle_System_Index := Sys_Index;
+      Prop.Was_Triggered := False;
+      Prop.Is_On_Ground := False;
+      Prop.Is_Visible := True;
+      Props_In_Tiles (Integer (U), Integer (V)).Append (Prop_Index);
 
       Properties.Replace_Element (Prop_Index, Prop);
+      Activate_Property (Prop_Index, True);
+      Audio.Play_Sound (Decap_Sound_File, True);
 
    end Launch_Decap_Head;
 
