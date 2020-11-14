@@ -390,20 +390,25 @@ package body Character_Controller is
    procedure Launch_Decapitated_Head (Character : Barbarian_Character;
                                       WT        : Weapon_Type) is
       use Maths;
+      use GUI_Level_Chooser;
       use Projectile_Manager;
       Chance    : constant Integer := Integer (100.0 * Abs (Random_Float));
       S_I       : constant Positive := Character.Specs_Index;
       aSpec     : constant Spec_Data := Character_Specs.Element (S_I);
+      DH_S_I    : constant Positive := aSpec.Decapitated_Head_Script;
       Proj_Type : Projectile_Type;
+      Pos       : Singles.Vector3 := Character.World_Pos;
       Decap     : Boolean := False;
    begin
       case WT is
          when Sword_Wt =>
             if Chance < 25 then
                Proj_Type := aSpec.Projectile;
-               if Proj_Type = Fireball_Proj_Type then
-                  null;
-               end if;
+--                 if Proj_Type = Fireball_Proj_Type and Is_Map_Warlock and
+--                 not Cheated_On_Map and Map_Is_Unmodified then
+--                    null;
+--                 end if;
+               Pos (GL.Y) := Pos (GL.Y) + 2.0;
             end if;
          when others => null;
       end case;

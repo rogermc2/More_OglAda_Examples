@@ -8,6 +8,7 @@ with Batch_Manager;
 with Event_Controller;
 with Frustum;
 with Game_Utils;
+with GL_Maths;
 with GL_Utils;
 with Particle_System;
 with Properties_Shader_Manager;
@@ -26,10 +27,10 @@ package body Prop_Renderer is
 
    Max_Scene_Lamp_Locs        : constant integer := 3;
    --  Up To 32 Types, With 8 Active Ones Of Each Type
-   Max_Decap_Types            : constant integer :=  32;
-   Max_Active_Decaps_Per_Type : constant integer := 8;
-   Max_Decap_Particles        : constant Int := 4;
-   Max_Mirrors                : constant integer := 16;
+   Max_Decap_Types            : constant Integer :=  32;
+   Max_Active_Decaps_Per_Type : constant Integer := 8;
+   Max_Decap_Particles        : constant Integer := 4;
+   Max_Mirrors                : constant Integer := 16;
 
    package Property_Scripts_Package is new Ada.Containers.Vectors
      (Positive, Prop_Script);
@@ -61,17 +62,21 @@ package body Prop_Renderer is
    Jav_Stand_Props_Render_List : Indicies_List;
    Portal_Props_Render_List    : Indicies_List;
    Treasure_Props_Render_List  : Indicies_List;
+   Last_Head_Launched          : GL_Maths.Integer_Array (1 .. Max_Decap_Types);
    Props_In_Tiles              : Props_In_Tiles_Array;
-   Head_Particles              : Int_Array (1 .. Max_Decap_Particles);
-   Dust_Particles              : Int := -1;
-   Dust_Particlesb             : Int := -1;
-   Dust_Particlesc             : Int := -1;
-   Pot_Particles               : Int := -1;
-   Mirror_Particles            : Int := -1;
-   Splash_Particles            : Int := -1;
+   Head_Particles              : GL_Maths.Integer_Array (1 .. Max_Decap_Particles);
+   Decap_Heads_Prop_Index      : array
+     (1 .. Max_Decap_Types, 1 .. Max_Active_Decaps_Per_Type) of Integer :=
+       (others => (others => 0));
+   Dust_Particles              : Integer := -1;
+   Dust_Particlesb             : Integer := -1;
+   Dust_Particlesc             : Integer := -1;
+   Pot_Particles               : Integer := -1;
+   Mirror_Particles            : Integer := -1;
+   Splash_Particles            : Integer := -1;
 
    Mirror_Indices              : array (1 .. Max_Mirrors) of Positive;
-   Prop_Count                  : Int := 0;
+   Prop_Count                  : Natural := 0;
    Mirror_Count                : Int := 0;
    Live_Mirror_Count           : Int := 0;
    Num_Types_Decap_Heads       : Int := 0;
@@ -223,10 +228,11 @@ package body Prop_Renderer is
       Properties_Shader_Manager.Load_Prop_Shaders;
       Game_Utils.Game_Log ("Prop_Shaders loaded");
 
-      for index in Int range 1 .. Max_Decap_Particles loop
+      for index in 1 .. Max_Decap_Particles loop
          Head_Particles (index) := Particle_System.Create_Particle_System
            (Head_Particles_File, Start_Now, Always_Update, Always_Draw);
       end loop;
+
       Pot_Particles := Particle_System.Create_Particle_System
         (Pot_Particles_File, Start_Now, Always_Update, Always_Draw);
       Mirror_Particles := Particle_System.Create_Particle_System
@@ -242,6 +248,28 @@ package body Prop_Renderer is
 
       Game_Utils.Game_Log ("---PROPS INITIALIZED---");
    end Init;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Launch_Decap_Head (LHL_Type  : Positive;
+                                World_Pos : Singles.Vector3) is
+      T_Index    : constant Positive := Last_Head_Launched (LHL_Type + 1) mod
+        Max_Active_Decaps_Per_Type;
+      Prop_Index : Positive;
+      Prop       : Property_Data;
+   begin
+      Last_Head_Launched (LHL_Type) := T_Index;
+      Prop_Index := Decap_Heads_Prop_Index (LHL_Type, T_Index);
+      if Prop_Index > Prop_Count then
+         raise Prop_Renderer_Exception;
+      end if;
+      Prop.Bounce_Count := 0;
+      Prop.Model_Mat := Maths.Translation_Matrix (World_Pos);
+      Prop.Quat := GL_Maths.Quat_From_Axis_Radian (0.0, 0.0, 1.0, 0.0);
+
+      Properties.Replace_Element (Prop_Index, Prop);
+
+   end Launch_Decap_Head;
 
    --  -------------------------------------------------------------------------
 
@@ -355,7 +383,7 @@ package body Prop_Renderer is
       Mirror_Count := 0;
       Live_Mirror_Count := 0;
 
-      for index in Int range 1 .. Max_Decap_Particles loop
+      for index in 1 .. Max_Decap_Particles loop
          Head_Particles (index) := Particle_System.Create_Particle_System
            (Head_Particles_File, Start_Now, Always_Update, Always_Draw);
       end loop;
