@@ -226,6 +226,7 @@ package Prop_Renderer is
    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
    procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
+   procedure Splash_Particles_At (Pos : Singles.Vector3);
    procedure Update_Properties (Seconds : Float);
    procedure Update_Static_Lights_Uniforms;
 

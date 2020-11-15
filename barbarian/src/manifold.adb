@@ -196,6 +196,15 @@ package body Manifold is
 
    --  ----------------------------------------------------------------------------
 
+   function Is_Water (Row, Col : GL.Types.Int) return Boolean is
+      use Tiles_Manager;
+      aTile : constant Tile_Data := Get_Tile (Row, Col);
+   begin
+      return aTile.Tile_Type = '~';
+   end Is_Water;
+
+   --  ----------------------------------------------------------------------------
+
    procedure Reset_Manifold_Vars is
       use Batch_Manager;
    begin

@@ -55,7 +55,7 @@ package body Specs_Manager is
 --                            & Int'Image (AFC));
 
          if AFC <= Max_Animations then
-            anAnim := (Int (Atlas_Index), Single (Seconds));
+            anAnim := (Atlas_Index, Single (Seconds));
             if Int (Anim_1D.Last_Index) < Anim_Num then
                Anim_1D.Append (anAnim);
             else
@@ -229,6 +229,17 @@ package body Specs_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Animation_Index (Spec_Index, Anim_Num : Positive) return Positive is
+      theSpec    : constant Spec_Data := Specs.Element (Spec_Index);
+      Animations : constant Anim_Frame_Array := theSpec.Animations;
+      Anim_List  : constant Anim_Frame_List := Animations.Element (Anim_Num);
+      Frame      : constant Anim_Frame := Anim_List.Element (Anim_Num);
+   begin
+        return Frame.Atlas_Index;
+   end Animation_Index;
+
+   --  -------------------------------------------------------------------------
+
    procedure Clear_Specs is
    begin
       Specs.Clear;
@@ -269,7 +280,6 @@ package body Specs_Manager is
    end Get_Script_Index;
 
    --  -------------------------------------------------------------------------
-
 
    procedure Load_Specs_File (File_Name : String) is
       use Ada.Strings;

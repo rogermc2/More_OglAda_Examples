@@ -14,19 +14,16 @@ with FB_Effects;
 with Game_Utils;
 with GUI;
 with GUI_Level_Chooser;
+with Manifold;
 with Particle_System;
 with Particle_System_Manager;
 with Prop_Renderer;
+with Sprite_Renderer;
 with Tiles_Manager;
 
 package body Character_Controller is
    Max_Blood_Fountains       : constant Integer := 5;
    Max_Blood_Damage_Emitters : constant Integer := 5;
-
-   type Weapon_Type is (Sword_Wt, Missile_Wt, --  used for javelin, arrow, green fireballs
-                        Hammer_Wt, Skull_Wt, Teleport_Wt, Pillar_Wt, Boulder_Wt,
-                        Fall_Wt, Na_Wt); --  everything else, n/a.
-   pragma Ordered (Weapon_Type);
 
    --      type Integer_Array is array (Integer range <>) of Integer;
    type Character_Data is record
@@ -35,8 +32,9 @@ package body Character_Controller is
       V             : GL.Types.Int := 0;
       H             : Float := 0.0;
    end record;
-   Current_Blood_Fountain       : Integer;
-   Current_Blood_Damage_Emitter : Integer;
+
+   Current_Blood_Fountain       : Positive := 1;
+   Current_Blood_Damage_Emitter : Positive := 1;
    Hammer_Hit_Armour_Sound : constant String :=
                                "SWORD_Hit_Metal_Armor_RR3_mono.wav";
    Sword_Hit_Armour_Sound  : constant String :=
@@ -65,17 +63,25 @@ package body Character_Controller is
 
    function Damage_Character (Char_ID           : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
                               Damage            : Int; Weapon : Weapon_Type) return Boolean;
-   procedure Detach_Particle_System_From_Character (Char_Idx, Partsys_Idx : Positive);
+
+   procedure Detach_Particle_System (Char_ID, Partsys_ID : Positive);
+   procedure Detach_Particle_System_From_Character (Char_ID, Partsys_ID : Positive);
    --      function Is_Character_Valid (Char_Index : Integer) return Boolean;
    function Is_Close_Enough (Character    : Barbarian_Character;
                              World_Pos    : Singles.Vector3;
                              Height, Dist : Single) return Boolean;
    --      function Is_Spec_Valid (Spec_Index : Integer) return Boolean;
+   procedure Knock_Back (Character         : Barbarian_Character;
+                         Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
+                         World_Pos         : Singles.Vector3;
+                         Throw_Back_Mps    : Single; Damage : Int);
    procedure Launch_Decapitated_Head (Character : Barbarian_Character;
                                       WT        : Weapon_Type);
    procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character);
    procedure Spray_Screen_Check (Character : Barbarian_Character;
                                  World_Pos : Singles.Vector3);
+   procedure Switch_Animation (Character : in out Barbarian_Character;
+                               Anim_Num  : Natural);
 
    --  -------------------------------------------------------------------------
 
@@ -197,6 +203,8 @@ package body Character_Controller is
                         if Is_Close_Enough
                           (Character, World_Pos, Height, Damage_Range) then
                            Last_Character_Hit := Char_ID;
+                           Knock_Back (Character, Self_Id, Char_ID, Weapon,
+                                       World_Pos, Throw_Back_Mps, Damage);
                         end if;
                      end if;
                   end if;
@@ -213,14 +221,18 @@ package body Character_Controller is
 
    function Damage_Character (Char_ID   : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
                               Damage    : Int; Weapon : Weapon_Type) return Boolean is
+      use Singles;
       use Projectile_Manager;
       Character   : Barbarian_Character := Characters.Element (Char_ID);
       Character_1 : constant Barbarian_Character := Characters.First_Element;
+      Partsys_ID  : Positive;
       Is_Sorcerer : Boolean := False;
       S_I         : constant Positive := Character.Specs_Index;
       aSpec       : constant Spec_Data := Character_Specs.Element (S_I);
       Max_Health  : Integer;
+      Decap       : Boolean := False;
       H_Fac       : Single := 0.0;
+      Tile_Height : Single := 0.0;
       Result      : Boolean := False;
    begin
       Is_Sorcerer := aSpec.Projectile = Skull_Proj_Type;
@@ -293,18 +305,52 @@ package body Character_Controller is
                   Current_Blood_Fountain := (Current_Blood_Fountain + 1) * Max_Blood_Fountains;
                   if Doer_ID > 0 then
                      Launch_Decapitated_Head (Character, Weapon);
+                     Decap := True;
+                     --  if on water splash and make invisible
+                     if Manifold.Is_Water (Character.Map_X, Character.Map_Y) then
+                        Tile_Height := Tiles_Manager.Get_Tile_Height
+                          (Character.World_Pos (GL.X), Character.World_Pos (GL.Z),
+                           True, True);
+                        if Character.World_Pos (GL.Y) - Tile_Height <= 0.0 then
+                           Prop_Renderer.Splash_Particles_At (Character.World_Pos);
+                           Sprite_Renderer.Set_Sprite_Visible (Character.Sprite_Index, False);
+                        end if;
+                     else  --  change sprite and make it closer to ground
+                        Sprite_Renderer.Set_Sprite_Position (Character.Sprite_Index,
+                                                             Character.World_Pos  + (0.0, 0.15, 0.0));
+                     end if;
+                     if Decap then
+                        Switch_Animation (Character, 16);
+                     else
+                        Switch_Animation (Character, 15);
+                     end if;
                   end if;
                end if;  --  Current_Health <= 0
             end if;  --  Doer_ID = 1
          end if;
       end if;
 
+
+      Detach_Particle_System
+        (BDparts_Last_Attached_To (Current_Blood_Damage_Emitter),
+         Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
       return Result;
    end Damage_Character;
 
    --  -------------------------------------------------------------------------
 
-   procedure Detach_Particle_System_From_Character (Char_Idx, Partsys_Idx : Positive) is
+   procedure Detach_Particle_System (Char_ID, Partsys_ID : Positive) is
+   begin
+      Detach_Particle_System_From_Character (Char_ID, Partsys_ID);
+
+      Bdparts_Last_Attached_To (Current_Blood_Damage_Emitter) := Char_ID;
+      Current_Blood_Damage_Emitter :=
+        (Current_Blood_Damage_Emitter + 1) mod Max_Blood_Damage_Emitters + 1;
+   end Detach_Particle_System;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Detach_Particle_System_From_Character (Char_ID, Partsys_ID : Positive) is
    begin
       null;
    end Detach_Particle_System_From_Character;
@@ -395,7 +441,8 @@ package body Character_Controller is
    end Knock_Back;
 
    --  -------------------------------------------------------------------------
-
+   --  Derived from approx line 1105 // launch decapitated head if died by slashing weapon
+   --  through approx line 1226
    procedure Launch_Decapitated_Head (Character : Barbarian_Character;
                                       WT        : Weapon_Type) is
       use Maths;
@@ -404,7 +451,7 @@ package body Character_Controller is
       Chance    : constant Integer := Integer (100.0 * Abs (Random_Float));
       S_I       : constant Positive := Character.Specs_Index;
       aSpec     : constant Spec_Data := Character_Specs.Element (S_I);
-      DH_S_I    : constant Positive := aSpec.Decapitated_Head_Script;
+      DH_S_I    : constant Positive := aSpec.Decapitated_Head_Prop_Script_ID;
       Proj_Type : Projectile_Type;
       Pos       : Singles.Vector3 := Character.World_Pos;
       Decap     : Boolean := False;
@@ -423,6 +470,9 @@ package body Character_Controller is
             end if;
          when Hammer_Wt =>
             Spray_Screen_Check (Character, Pos);
+         when Pillar_Wt => null;
+         when Boulder_Wt => null;
+         when Fall_Wt => null;
          when others => null;
       end case;
 
@@ -545,6 +595,26 @@ package body Character_Controller is
         GUI.Add_Screen_Splats (Num_Splats);
       end if;
    end Spray_Screen_Check;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Switch_Animation (Character : in out Barbarian_Character;
+                               Anim_Num  : Natural) is
+      Spec_Index  : constant Positive := Character.Specs_Index;
+      Spec        : constant Spec_Data := Character_Specs.Element (Spec_Index);
+      Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num);
+   begin
+      if Character.Current_Anim /= Anim_Num then
+         if Anim_Num > Natural (Max_Animations) then
+            raise Character_Controller_Exception;
+         end if;
+         Character.Current_Anim := Anim_Num;
+         Character.Current_Anim_Frame_Time := 0;
+         Character.Current_Anim_Frame := 0;
+         Sprite_Renderer.Set_Sprite_Current_Sprite
+           (Character.Sprite_Index, Atlas_Index);
+      end if;
+   end Switch_Animation;
 
    --  -------------------------------------------------------------------------
 

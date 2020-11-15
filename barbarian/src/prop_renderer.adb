@@ -448,6 +448,15 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
+   procedure Splash_Particles_At (Pos : Singles.Vector3) is
+   begin
+      Audio.Play_Sound (Splash_Sound_File, True);
+      Particle_System.Set_Particle_System_Position (Splash_Particles, Pos);
+      Particle_System.Start_Particle_System (Splash_Particles);
+   end Splash_Particles_At;
+
+   --  -------------------------------------------------------------------------
+
    procedure Update_Dart_Trap (Prop_Index : Positive; Seconds : Float) is
    begin
       null;

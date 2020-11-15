@@ -15,6 +15,7 @@ package Manifold is
                              Light_Number : Integer) return Integer;
    procedure Init;
    function Is_Ramp (Row, Col : GL.Types.Int) return Boolean;
+   function Is_Water (Row, Col : GL.Types.Int) return Boolean;
    procedure Reset_Manifold_Vars;
    procedure Set_Manifold_Ambient_Light (Level : GL.Types.Singles.Vector3);
    procedure Update_Static_Lights_Uniforms;
