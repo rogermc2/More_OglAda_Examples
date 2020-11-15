@@ -2,6 +2,7 @@
 with Ada.Containers.Doubly_Linked_Lists;
 
 with Game_Utils;
+with Prop_Renderer;
 with Text;
 
 package body Event_Controller is
@@ -72,7 +73,7 @@ package body Event_Controller is
                   "Event_Controller.Transmit_Code, Trigger_Comic_Text failed.";
                end if;
             when Rx_Door =>
-               Activate_Door (Code_Data.Index);
+               Prop_Renderer.Activate_Door (Code_Data.Index);
             when others => null;
          end case;
          Next (Curs);

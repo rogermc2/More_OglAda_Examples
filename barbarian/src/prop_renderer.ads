@@ -213,6 +213,7 @@ package Prop_Renderer is
 
    Prop_Renderer_Exception : Exception;
 
+   procedure Activate_Door (Property_Index : Positive);
    procedure Delete_Script_Data (Script_Index : Positive);
    procedure Init;
    procedure Launch_Decap_Head (LHL_Type  : Positive;

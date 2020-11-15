@@ -78,8 +78,8 @@ package body GUI is
    Ch_Model_Mat       : Singles.Matrix4 := Singles.Identity4;
 
    --  misc effect settings
-   Blood_Overlay_Alpha      : Float := 1.0;
---     Cronhead_Sprite_Index    : Float;
+   Blood_Overlay_Alpha      : Single := 1.0;
+   --     Cronhead_Sprite_Index    : Float;
    Num_Active_Screen_Splats : Natural := 0;
 
    --  gui flag
@@ -90,7 +90,7 @@ package body GUI is
 
    --  Effect settings
    Max_Screen_Splats  : constant Integer := 32;
-   Fist_Time          : constant Float := 0.75;
+   Fist_Time          : constant Single := 0.75;
    Javelin_X_Offset   : constant Float := 1.25;
 
    -- textures
@@ -125,17 +125,17 @@ package body GUI is
    Lose_Sound      : constant String := "MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav";
 
    --  timers
-   Fist_Countdown           : Float := 0.0;
+   Fist_Countdown           : Single := 0.0;
 
    --  Text
    Gold_Text_Index          : Integer := 0;
    Javelin_Ammo_Text_Index  : Integer := 0;
    Kills_Text_Index         : Integer := 0;
-   Bottom_Health_Text_Index          : Integer := 0;
-   Top_Health_Text_Index             : Integer := 0;
-   Finish_Stats_Text_Index           : Integer := 0;
-   Bottom_Health_Name                : Unbounded_String := To_Unbounded_String ("");
-   Top_Health_Name                   : Unbounded_String := To_Unbounded_String ("");
+   Bottom_Health_Text_Index : Integer := 0;
+   Top_Health_Text_Index    : Integer := 0;
+   Finish_Stats_Text_Index  : Integer := 0;
+   Bottom_Health_Name       : Unbounded_String := To_Unbounded_String ("");
+   Top_Health_Name          : Unbounded_String := To_Unbounded_String ("");
 
    VAO_Quad_Tristrip        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    HB_SP                    : GL.Objects.Programs.Program;
@@ -366,9 +366,9 @@ package body GUI is
       use Maths;
       FB_Width  : constant Single := Single (Settings.Framebuffer_Width);
       FB_Height : constant Single := Single (Settings.Framebuffer_Height);
-      X_Ref    : constant Single := -1023.0 / FB_Width;
-      Y        : constant Single := 63.0 / FB_Height;
-      X        : Single;
+      X_Ref     : constant Single := -1023.0 / FB_Width;
+      Y         : constant Single := 63.0 / FB_Height;
+      X         : Single;
    begin
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/gui_icon_javs.png", GUI_Icons.Textures (1), False, True);
@@ -515,27 +515,27 @@ package body GUI is
 
    --  ----------------------------------------------------------------------------
 
-       procedure Set_GUI_Gold (Amount : Integer) is
-       begin
-           Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
-           GUI_Icons.Anim_Countdowns (2) := 1.0;
-       end Set_GUI_Gold;
+   procedure Set_GUI_Gold (Amount : Integer) is
+   begin
+      Text.Update_Text (Gold_Text_Index, Integer'Image (Amount));
+      GUI_Icons.Anim_Countdowns (2) := 1.0;
+   end Set_GUI_Gold;
 
    --  ----------------------------------------------------------------------------
 
-       procedure Set_GUI_Javalin_Ammo (Amount : Integer) is
-       begin
-           Text.Update_Text (Javelin_Ammo_Text_Index, Integer'Image (Amount));
-           GUI_Icons.Anim_Countdowns (1) := 1.0;
-       end Set_GUI_Javalin_Ammo;
+   procedure Set_GUI_Javalin_Ammo (Amount : Integer) is
+   begin
+      Text.Update_Text (Javelin_Ammo_Text_Index, Integer'Image (Amount));
+      GUI_Icons.Anim_Countdowns (1) := 1.0;
+   end Set_GUI_Javalin_Ammo;
 
    --  ------------------------------------------------------------------------
 
-       procedure Set_GUI_Kills (Amount : Integer) is
-       begin
-           Text.Update_Text (Kills_Text_Index, Integer'Image (Amount));
-           GUI_Icons.Anim_Countdowns (3) := 1.0;
-       end Set_GUI_Kills;
+   procedure Set_GUI_Kills (Amount : Integer) is
+   begin
+      Text.Update_Text (Kills_Text_Index, Integer'Image (Amount));
+      GUI_Icons.Anim_Countdowns (3) := 1.0;
+   end Set_GUI_Kills;
 
    --  ----------------------------------------------------------------------------
 
@@ -577,7 +577,7 @@ package body GUI is
       if Show then
          Audio.Play_Sound (Lose_Sound, False);
          Show_Finished_Stats (False, Current_Kills, Max_Kills,
-                             Total_Treasure_Found, Gold_Max, 0.0, "n/a");
+                              Total_Treasure_Found, Gold_Max, 0.0, "n/a");
       else
          Hide_Finish_Stats;
       end if;
@@ -586,9 +586,9 @@ package body GUI is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Show_Finished_Stats (Won : Boolean;
+   procedure Show_Finished_Stats (Won                              : Boolean;
                                   Kills, Kills_Max, Gold, Gold_Max : Integer;
-                                  Time  : Float; Par : String) is
+                                  Time                             : Float; Par               : String) is
       Mins  : Integer;
       Secs  : Integer;
       Stats : Unbounded_String;
@@ -598,14 +598,14 @@ package body GUI is
          Secs := Integer (Time - Float (60 * Mins));
          Stats := To_Unbounded_String
            ("VICTORY! kills   " & Integer'Image (kills) & " / " &
-            Integer'Image (kills_max) & "gold    " & Integer'Image (gold) &
-            "  / " & Integer'Image (gold_max) & " time    " &
-            Integer'Image (Mins) & ":" & Integer'Image (Secs) & "par " & Par);
+              Integer'Image (kills_max) & "gold    " & Integer'Image (gold) &
+              "  / " & Integer'Image (gold_max) & " time    " &
+              Integer'Image (Mins) & ":" & Integer'Image (Secs) & "par " & Par);
       else
          Stats := To_Unbounded_String
            ("DEFEAT! kills   " & Integer'Image (kills) & " / " &
-            Integer'Image (kills_max) & "gold    " & Integer'Image (gold) &
-            "  / " & Integer'Image (gold_max));
+              Integer'Image (kills_max) & "gold    " & Integer'Image (gold) &
+              "  / " & Integer'Image (gold_max));
       end if;
       Text.Update_Text (Finish_Stats_Text_Index, To_String (Stats));
       Text.Centre_Text (Finish_Stats_Text_Index,
@@ -640,8 +640,48 @@ package body GUI is
    --  ----------------------------------------------------------------------------
 
    procedure Update_Fist (Seconds : Float) is
+      use Maths;
+      use Single_Math_Functions;
+      use GL.Types.Singles;
+      Frequ   : constant Single := 17.0;
+      Amp     : Single := 1.0;
+      Offs    : Single := 0.0;
+      Move_X  : Single := 0.0;
+      Move_Y  : Single := 0.0;
+      Scale_X : Single := Fist_Scale;
+      Scale_Y : Single := Fist_Scale;
+      Aspect  : constant Single := Single (Settings.Framebuffer_Width) /
+                  Single (Settings.Framebuffer_Height);
+      X       : Single := 0.0;
+      Y       : Single := 0.0;
    begin
-      null;
+      if Fist_Activated then
+         Fist_Countdown := Fist_Countdown - Single (Seconds);
+         Fist_Activated := Fist_Countdown >= 0.0;
+         if not Fist_Activated then
+            for index in 1 .. Max_Screen_Splats loop
+               Screen_Splats (index).Is_Active := False;
+            end loop;
+            Num_Active_Screen_Splats := 0;
+         else
+            Blood_Overlay_Alpha := Fist_Countdown / Fist_Time;
+            if not Settings.Auto_Blood_Wipe then
+               Amp := 0.2 + 0.4 * Blood_Overlay_Alpha;
+               Offs := -0.2 - 0.4 * Blood_Overlay_Alpha;
+               Move_X := Sin (Fist_Countdown * Frequ) * Amp - Offs;
+               Move_Y := Cos (Fist_Countdown * Frequ) * Amp + Offs;
+               if Settings.Framebuffer_Width > Settings.Framebuffer_Height then
+                  Scale_X := Fist_Scale / Aspect;
+               else
+                  Scale_Y := Aspect * Fist_Scale;
+               end if;
+               X := 1.0 - Scale_X + Move_X;
+               Y := Scale_Y + Move_Y - 1.0;
+               Fist_Mat := Translation_Matrix ((X, Y, 0.0)) *
+                 Scaling_Matrix ((Scale_X, Scale_Y, 1.0));
+            end if;
+         end if;
+      end if;
    end Update_Fist;
 
    --  ----------------------------------------------------------------------------

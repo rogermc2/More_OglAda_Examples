@@ -234,7 +234,8 @@ package body Main_Loop is
                   if Settings.Video_Record_Mode and Dump_Video then
                      Video_Timer := Video_Timer + Delta_Time;
                      Video_Dump_Timer := Video_Dump_Timer + Delta_Time;
-                     if Video_Timer < Float (GL_Utils.Video_Seconds_Total) then
+                     Is_Running := Video_Timer < Float (GL_Utils.Video_Seconds_Total);
+                     if Is_Running then
                         Audio.Update_Ambient_Sounds;
                         Audio.Update_Boulder_Sounds;
                         Save_Screenshot :=
@@ -245,15 +246,16 @@ package body Main_Loop is
                         Video_Timer := 0.0;
                      end if;
                   end if;
-
-                  Cheating := Cheat_Check_1;
-                  if not MMenu.Menu_Open then
-                     GUI.Update_GUIs (Delta_Time);
-                     Text.Update_Comic_Texts (Delta_Time);
-                     Text.Update_Particle_Texts (Delta_Time);
-                     Check_Victory_Defeat;
+                  if Is_Running then
+                     Cheating := Cheat_Check_1;
+                     if not MMenu.Menu_Open then
+                        GUI.Update_GUIs (Delta_Time);
+                        Text.Update_Comic_Texts (Delta_Time);
+                        Text.Update_Particle_Texts (Delta_Time);
+                        Check_Victory_Defeat;
+                     end if;
+                     Player_1_View;
                   end if;
-                  Player_1_View;
                end if;
             end if;
 
