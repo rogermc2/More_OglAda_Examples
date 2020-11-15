@@ -35,14 +35,14 @@ package body Character_Controller is
 
    Current_Blood_Fountain       : Positive := 1;
    Current_Blood_Damage_Emitter : Positive := 1;
-   Hammer_Hit_Armour_Sound : constant String :=
-                               "SWORD_Hit_Metal_Armor_RR3_mono.wav";
-   Sword_Hit_Armour_Sound  : constant String :=
-                               "HAMMER_Hit_Metal_Armor_stereo.wav";
-   Characters              : Character_List;
-   Character_Specs         : Specs_List;
-   Torch_Light_Index       : array (1 .. 2) of Positive := (1, 1);
-   Torch_Particles_Index   : array (1 .. 2) of Positive := (1, 1);
+   Hammer_Hit_Armour_Sound      : constant String :=
+                                    "SWORD_Hit_Metal_Armor_RR3_mono.wav";
+   Sword_Hit_Armour_Sound       : constant String :=
+                                    "HAMMER_Hit_Metal_Armor_stereo.wav";
+   Characters                   : Character_List;
+   Character_Specs              : Specs_List;
+   Torch_Light_Index            : array (1 .. 2) of Positive := (1, 1);
+   Torch_Particles_Index        : array (1 .. 2) of Positive := (1, 1);
 
    --      Portal_Fadeout_Started  : Boolean := False;
    Characters_To_Reserve   : constant Integer := 256;
@@ -58,8 +58,8 @@ package body Character_Controller is
    Teleport_To_Particles_Index    : Integer := 1;
    Blood_Fountain_Particles_Index : array (1 ..Max_Blood_Fountains) of Integer := (others => -1);
    Blood_Damage_Particles_Index   : array (1 ..Max_Blood_Damage_Emitters) of Integer := (others => -1);
-   Bfparts_Last_Attached_To : array (1 .. Max_Blood_Fountains) of Integer := (others => -1);
-   Bdparts_Last_Attached_To : array (1 .. Max_Blood_Damage_Emitters) of Integer := (others => -1);
+   Bfparts_Last_Attached_To       : array (1 .. Max_Blood_Fountains) of Integer := (others => -1);
+   Bdparts_Last_Attached_To       : array (1 .. Max_Blood_Damage_Emitters) of Integer := (others => -1);
 
    function Damage_Character (Char_ID           : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
                               Damage            : Int; Weapon : Weapon_Type) return Boolean;
@@ -222,6 +222,7 @@ package body Character_Controller is
    function Damage_Character (Char_ID   : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
                               Damage    : Int; Weapon : Weapon_Type) return Boolean is
       use Singles;
+      use Particle_System;
       use Projectile_Manager;
       Character   : Barbarian_Character := Characters.Element (Char_ID);
       Character_1 : constant Barbarian_Character := Characters.First_Element;
@@ -274,8 +275,7 @@ package body Character_Controller is
 
                   if Char_ID = 1 then
                      Camera.Screen_Shake (3.0, 1.0, 50.0);
-                     Particle_System.Stop_Particle_System
-                       (Positive (Torch_Particles_Index (1)));
+                     Stop_Particle_System (Positive (Torch_Particles_Index (1)));
                      Audio.Stop_All_Boulder_Sounds;
                      GUI.Show_Defeated_Screen (True);
                   else  --  Char_ID > 1
@@ -291,49 +291,76 @@ package body Character_Controller is
                   --  stop zombified movement
                   Character.Desired_Direction := (0.0, 0.0, 0.0);
                   --  splatter_all_tiles_near (g_characters[char_idx].world_pos);
-                  Detach_Particle_System_From_Character
-                    (Bfparts_Last_Attached_To (Current_Blood_Fountain),
-                     Blood_Fountain_Particles_Index (Current_Blood_Fountain));
-                  Particle_System.Set_Particle_System_Position
-                    (Blood_Fountain_Particles_Index (Current_Blood_Fountain),
-                     Character.World_Pos);
-                  Particle_System.Start_Particle_System
-                    (Blood_Fountain_Particles_Index (Current_Blood_Fountain));
-                  Attach_Particle_System_To_Character
-                    (Char_ID, Blood_Fountain_Particles_Index (Current_Blood_Fountain));
-                  Bfparts_Last_Attached_To (Current_Blood_Fountain) := Char_ID;
-                  Current_Blood_Fountain := (Current_Blood_Fountain + 1) * Max_Blood_Fountains;
-                  if Doer_ID > 0 then
-                     Launch_Decapitated_Head (Character, Weapon);
-                     Decap := True;
-                     --  if on water splash and make invisible
-                     if Manifold.Is_Water (Character.Map_X, Character.Map_Y) then
-                        Tile_Height := Tiles_Manager.Get_Tile_Height
-                          (Character.World_Pos (GL.X), Character.World_Pos (GL.Z),
-                           True, True);
-                        if Character.World_Pos (GL.Y) - Tile_Height <= 0.0 then
-                           Prop_Renderer.Splash_Particles_At (Character.World_Pos);
-                           Sprite_Renderer.Set_Sprite_Visible (Character.Sprite_Index, False);
-                        end if;
-                     else  --  change sprite and make it closer to ground
-                        Sprite_Renderer.Set_Sprite_Position (Character.Sprite_Index,
-                                                             Character.World_Pos  + (0.0, 0.15, 0.0));
-                     end if;
-                     if Decap then
-                        Switch_Animation (Character, 16);
-                     else
-                        Switch_Animation (Character, 15);
-                     end if;
+               end if;  --  Doer_ID = 1
+            end if;
+            end if;
+
+         else
+            Audio.Play_Sound (To_String (aSpec.Hurt_Sound_File_Name), True);
+
+            if Char_ID = 1 then
+               Camera.Screen_Shake (0.4, 0.15, 50.0);
+            end if;
+            Detach_Particle_System_From_Character
+              (Bfparts_Last_Attached_To (Current_Blood_Fountain),
+               Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+            Set_Particle_System_Position
+              (Blood_Fountain_Particles_Index (Current_Blood_Fountain),
+               Character.World_Pos);
+            Start_Particle_System
+              (Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+            Attach_Particle_System_To_Character
+              (Char_ID, Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+            Bfparts_Last_Attached_To (Current_Blood_Fountain) := Char_ID;
+            Current_Blood_Fountain := (Current_Blood_Fountain + 1) * Max_Blood_Fountains;
+            if Doer_ID > 0 then
+               Launch_Decapitated_Head (Character, Weapon);
+               Decap := True;
+               --  if on water splash and make invisible
+               if Manifold.Is_Water (Character.Map_X, Character.Map_Y) then
+                  Tile_Height := Tiles_Manager.Get_Tile_Height
+                    (Character.World_Pos (GL.X), Character.World_Pos (GL.Z),
+                     True, True);
+                  if Character.World_Pos (GL.Y) - Tile_Height <= 0.0 then
+                     Prop_Renderer.Splash_Particles_At (Character.World_Pos);
+                     Sprite_Renderer.Set_Sprite_Visible (Character.Sprite_Index, False);
                   end if;
-               end if;  --  Current_Health <= 0
-            end if;  --  Doer_ID = 1
+               else  --  change sprite and make it closer to ground
+                  Sprite_Renderer.Set_Sprite_Position (Character.Sprite_Index,
+                                                       Character.World_Pos  + (0.0, 0.15, 0.0));
+               end if;
+               if Decap then
+                  Switch_Animation (Character, 16);
+               else
+                  Switch_Animation (Character, 15);
+            end if;  --  Current_Health <= 0 ???
+
+         else
+            Audio.Play_Sound (To_String (aSpec.Hurt_Sound_File_Name), True);
+            if Char_ID = 1 then
+               Camera.Screen_Shake (0.4, 0.15, 50.0);
+            end if;
+            Detach_Particle_System_From_Character
+              (Bdparts_Last_Attached_To (Current_Blood_Damage_Emitter),
+               Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
+            Set_Particle_System_Position
+              (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter),
+               Character.World_Pos);
+            Set_Particle_System_Heading
+              (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter),
+               Angle);
+            Start_Particle_System
+              (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
          end if;
+
+         Attach_Particle_System_To_Character
+           (Char_ID, Blood_Damage_Particles_Index
+              (Current_Blood_Damage_Emitter));
+         BDparts_Last_Attached_To (Current_Blood_Damage_Emitter) := Char_ID;
+         Current_Blood_Damage_Emitter := (Current_Blood_Damage_Emitter + 1) mod
+           Max_Blood_Damage_Emitters + 1;
       end if;
 
-
-      Detach_Particle_System
-        (BDparts_Last_Attached_To (Current_Blood_Damage_Emitter),
-         Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
       return Result;
    end Damage_Character;
 
@@ -592,7 +619,7 @@ package body Character_Controller is
 
       if Y_Above >= 0.0 and Y_Above <= 15.0 and
         Sqxzdist <= Sqmaxxzdist then
-        GUI.Add_Screen_Splats (Num_Splats);
+         GUI.Add_Screen_Splats (Num_Splats);
       end if;
    end Spray_Screen_Check;
 
