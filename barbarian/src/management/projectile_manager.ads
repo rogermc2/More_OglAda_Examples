@@ -11,7 +11,7 @@ package Projectile_Manager is
 
     procedure Init;
     procedure Reset_Projectiles;
-    procedure Update_Projectiles (Step_Time : Float);
+    procedure Update_Projectiles (Seconds : Float);
 
 private
     type Characters_Hit_Array is  array (1 .. 10) of Int;

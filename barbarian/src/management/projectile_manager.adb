@@ -3,6 +3,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures;
 
+with Maths;
+
 with Particle_System;
 with Sprite_Renderer;
 with Texture_Manager;
@@ -43,8 +45,8 @@ package body Projectile_Manager is
    Fireball_Count       : Integer := 0;
    Next_skull_Ball      : Integer := 0;
    Skull_Ball_Count     : Integer := 0;
-   Blue_Spec_Particles  : Int := 0;
-   Green_Spec_Particles : Int := 0;
+   Blue_Spec_Particles  : Integer := 0;
+   Green_Spec_Particles : Integer := 0;
 
    --  ------------------------------------------------------------------------
 
@@ -52,7 +54,7 @@ package body Projectile_Manager is
       use Texture_Manager;
       Create_Mips : constant Boolean := True;
       SRGB        : constant Boolean := True;
-      Always_Draw : Boolean := False;
+      Always_Draw : constant Boolean := False;
    begin
       Load_Image_To_Texture ("src/textures/javelin_diff.png",
                              Jav_Diff_Texture, Create_Mips, SRGB);
@@ -112,18 +114,36 @@ package body Projectile_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Update_Projectiles (Step_Time : Float) is
+   procedure Update_Projectile (Pojectile : Projectile_Status; Seconds : Float) is
    begin
-      Next_Javelin := 0;
-      Javelin_Count := 0;
-      Next_Dart := 0;
-      Dart_Count := 0;
-      Next_Arrow := 0;
-      Arrow_Count := 0;
-      Next_Fireball := 0;
-      Fireball_Count := 0;
-      Next_skull_Ball := 0;
-      Skull_Ball_Count := 0;
+     null;
+   end Update_Projectile;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Update_Projectiles (Seconds : Float) is
+      use Maths;
+      Up_To : Integer := Min_Integer (Javelin_Count, Max_Javelin_Projectiles);
+   begin
+      for index in 1 .. Up_To loop
+         Update_Projectile (Javelins (index), Seconds);
+      end loop;
+      Up_To := Min_Integer (Dart_Count, Max_Javelin_Projectiles);
+      for index in 1 .. Up_To loop
+         Update_Projectile (Darts (index), Seconds);
+      end loop;
+      Up_To := Min_Integer (Arrow_Count, Max_Javelin_Projectiles);
+      for index in 1 .. Up_To loop
+         Update_Projectile (Arrows (index), Seconds);
+      end loop;
+      Up_To := Min_Integer (Fireball_Count, Max_Javelin_Projectiles);
+      for index in 1 .. Up_To loop
+         Update_Projectile (Fireballs (index), Seconds);
+      end loop;
+      Up_To := Min_Integer (Skull_Ball_Count, Max_Javelin_Projectiles);
+      for index in 1 .. Up_To loop
+         Update_Projectile (Skull_Balls (index), Seconds);
+      end loop;
    end Update_Projectiles;
 
    --  ------------------------------------------------------------------------

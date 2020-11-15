@@ -79,7 +79,7 @@ package body GUI is
 
    --  misc effect settings
    Blood_Overlay_Alpha      : Float := 1.0;
-   Cronhead_Sprite_Index    : Float;
+--     Cronhead_Sprite_Index    : Float;
    Num_Active_Screen_Splats : Natural := 0;
 
    --  gui flag
@@ -623,7 +623,7 @@ package body GUI is
    --  ----------------------------------------------------------------------------
 
    procedure Start_Fist is
-      Activated : Boolean := Fist_Activated;
+      Activated : constant Boolean := Fist_Activated;
    begin
       if not Activated then
          Blood_Overlay_Alpha := 1.0;
