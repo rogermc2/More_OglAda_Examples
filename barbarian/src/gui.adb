@@ -77,6 +77,17 @@ package body GUI is
    Defeated_Model_Mat : Singles.Matrix4 := Singles.Identity4;
    Ch_Model_Mat       : Singles.Matrix4 := Singles.Identity4;
 
+   --  misc effect settings
+   Blood_Overlay_Alpha      : Float := 1.0;
+   Cronhead_Sprite_Index    : Float;
+   Num_Active_Screen_Splats : Natural := 0;
+
+   --  gui flag
+   Guis_Initialized    : Boolean := False;
+   Fist_Activated      : Boolean := False;
+   Show_Defeated_State : Boolean := False;
+   Show_Victory_State  : Boolean := False;
+
    --  Effect settings
    Max_Screen_Splats  : constant Integer := 32;
    Fist_Time          : constant Float := 0.75;
@@ -108,10 +119,13 @@ package body GUI is
    --      FS_IMAGE_PANEL : constant String := "image_panel.frag";
 
    -- audio paths
-   --      FIST_SOUND_FILE : constant String := "squeak_short.ogg";
-   --      SCREEN_SPLAT_SOUND_FILE : constant String := "GORE_Splat_Hit_Bubbles_mono.wav";
+   Fist_Sound_File : constant String := "squeak_short.ogg";
+   Screen_Splat_Sound_File : constant String := "GORE_Splat_Hit_Bubbles_mono.wav";
    --      WIN_SOUND : constant String := "MUSIC_EFFECT_Orchestral_Battle_Neutral_stereo.wav";
-   Lose_Sound   : constant String := "MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav";
+   Lose_Sound      : constant String := "MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav";
+
+   --  timers
+   Fist_Countdown           : Float := 0.0;
 
    --  Text
    Gold_Text_Index          : Integer := 0;
@@ -129,22 +143,65 @@ package body GUI is
    Image_Panel_SP           : GL.Objects.Programs.Program;
    Control_Button_Overlays  : Controller_Button_Overlays_Data;
    GUI_Icons                : GUI_Icon_Data;
-   GUIs_Initialized         : Boolean := False;
-   Fist_Activated           : Boolean := False;
    Crong_Head_Sprite_Index  : Positive := 6;
 
    Screen_Splats            : array (1 .. Max_Screen_Splats) of Screen_Splat_Data;
-   Num_Active_Screen_Splats : Natural := 0;
-   Show_Defeated_State      : Boolean := False;
-   Show_Victory_State       : Boolean := False;
+   Next_Splat_Index         : Natural := 0;
 
    procedure Init_Crong_Head;
    procedure Init_Fist;
    procedure Init_Health_Bar;
    procedure Init_Screen_Splat;
+   procedure Start_Fist;
    procedure Update_Screen_Splats (Seconds : Float);
 
    --  ----------------------------------------------------------------------------
+
+   procedure Add_Screen_Splats (Number : Integer) is
+      use GL.Types.Singles;
+      use Settings;
+      Aspect    : Single;
+      Scale_X   : Single;
+      Scale_Y   : Single;
+      X         : Single;
+      Y         : Single;
+      Scale_Mat : Singles.Matrix4;
+      Trans_Mat : Singles.Matrix4;
+   begin
+      Blood_Overlay_Alpha := 1.0;
+      for index in 1 .. Number loop
+         if Screen_Splats (Next_Splat_Index).Is_Active then
+            Num_Active_Screen_Splats := Num_Active_Screen_Splats - 1;
+         end if;
+         Screen_Splats (Next_Splat_Index).Is_Active := True;
+         Screen_Splats (Next_Splat_Index).Alpha := 1.0;
+         Scale_X := Screen_Splat_Scale;
+         Scale_Y := Scale_X;
+         Aspect := Single (Framebuffer_Width) / Single (Framebuffer_Height);
+         if Framebuffer_Width > Framebuffer_Height then
+            Scale_X := Scale_X / Aspect;
+         else
+            Scale_Y := Aspect * Scale_Y;
+         end if;
+
+         X := 2.0 * Abs (Maths.Random_Float) - 1.0 - Scale_X;
+         Y := 2.0 * Abs (Maths.Random_Float) - 1.0 + Scale_Y;
+         Screen_Splats (Next_Splat_Index).Position := (X, Y);
+         Scale_Mat := Maths.Scaling_Matrix ((Scale_X, Scale_Y, 1.0));
+         Trans_Mat := Maths.Translation_Matrix ((X, Y, 0.0));
+         Screen_Splats (Next_Splat_Index).Model_Matrix := Trans_Mat * Scale_Mat;
+         --  between 0 and 0.5 (max 2 seconds to clear whole screen)
+         Screen_Splats (Next_Splat_Index).Speed := 0.25 * Abs (Maths.Random_Float);
+         Next_Splat_Index := (Next_Splat_Index + 1) mod Max_Screen_Splats + 1;
+         Num_Active_Screen_Splats := Num_Active_Screen_Splats + 1;
+      end loop;
+      Audio.Play_Sound (Screen_Splat_Sound_File, True);
+      if Auto_Blood_Wipe then
+         Start_Fist;
+      end if;
+   end Add_Screen_Splats;
+
+   --  --------------------------------------------------------------------------
 
    procedure Change_Crong_Head (Health_Factor : Single) is
       Health_Sprite_Index : Positive := 6;
@@ -519,7 +576,7 @@ package body GUI is
    begin
       if Show then
          Audio.Play_Sound (Lose_Sound, False);
-         Show_Finished_Stats (False, Kills_Current, Kills_Max,
+         Show_Finished_Stats (False, Current_Kills, Max_Kills,
                              Total_Treasure_Found, Gold_Max, 0.0, "n/a");
       else
          Hide_Finish_Stats;
@@ -562,6 +619,23 @@ package body GUI is
    begin
       return Show_Victory_State;
    end Show_Victory;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Start_Fist is
+      Activated : Boolean := Fist_Activated;
+   begin
+      if not Activated then
+         Blood_Overlay_Alpha := 1.0;
+         if Settings.Auto_Blood_Wipe then
+            Fist_Countdown := 2.0 * Fist_Time;
+         else
+            Fist_Countdown := Fist_Time;
+            Audio.Play_Sound (Fist_Sound_File, True);
+         end if;
+         Fist_Activated := True;
+      end if;
+   end Start_Fist;
 
    --  ----------------------------------------------------------------------------
 

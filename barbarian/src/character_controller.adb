@@ -54,7 +54,7 @@ package body Character_Controller is
    --      Specs_Count             : Integer := 0;
    --      Gold_Current            : constant Integer := 0;
    Kills_Current           : Integer := 0;
-   --      Kills_Max               : Integer := 0;
+   Kills_Max               : Integer := 0;
 
    Teleport_From_Particles_Index  : Integer := 1;
    Teleport_To_Particles_Index    : Integer := 1;
@@ -148,6 +148,13 @@ package body Character_Controller is
            Int'Image (Source.U) & "x" & Int'Image (Source.V);
       end if;
    end Create_Character;
+
+   --  -------------------------------------------------------------------------
+
+   function Current_Kills return Integer is
+   begin
+      return Kills_Current;
+   end Current_Kills;
 
    --  -------------------------------------------------------------------------
 
@@ -445,8 +452,8 @@ package body Character_Controller is
               Integer'Image (Characters_To_Reserve) & "were used last time.");
       end if;
       Characters.Clear;
-      --          Kills_Current := 0;
-      --          Kills_Max := 0;
+      Kills_Current := 0;
+      Kills_Max := 0;
 
       if not Editor_Mode then
          Put_Line ("not Editor_Mode");
@@ -494,6 +501,13 @@ package body Character_Controller is
 
    --  ----------------------------------------------------------------------------
 
+   function Max_Kills return Integer is
+   begin
+      return Kills_Max;
+   end Max_Kills;
+
+   --  -------------------------------------------------------------------------
+
    procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character) is
    begin
       aCharacter.Destination_Tile_X := -1;
@@ -523,12 +537,12 @@ package body Character_Controller is
       Maxxzdist   : constant Single := 0.5 + Yfac * 4.0;
       Sqmaxxzdist : constant Single := Maxxzdist ** 2;
       Nearfac     : constant Single :=  Sqxzdist / Sqmaxxzdist;
-      Num_Splats  : constant Int := 3 + Int (40.0 * Nearfac);
+      Num_Splats  : constant Integer := Integer (40.0 * Nearfac) + 3;
    begin
 
       if Y_Above >= 0.0 and Y_Above <= 15.0 and
         Sqxzdist <= Sqmaxxzdist then
-         Add_Screen_Splats (Num_Splats);
+        GUI.Add_Screen_Splats (Num_Splats);
       end if;
    end Spray_Screen_Check;
 

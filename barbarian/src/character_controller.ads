@@ -21,6 +21,7 @@ package Character_Controller is
 
    Character_Controller_Exception : Exception;
 
+   function Current_Kills return Integer;
    function Damage_All_Near
      (Self_Id        : Positive; World_Pos : Singles.Vector3;
       Damage_Range   : Single; Damage         : Int;
@@ -28,6 +29,7 @@ package Character_Controller is
       Weapon         : Specs_Manager.Weapon_Type) return Natural;
    procedure Init;
    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);
+   function Max_Kills return Integer;
    function Update_Characters (Seconds : Float) return Boolean;
 
 private

@@ -3,6 +3,7 @@ with GL.Types;
 
 package GUI is
 
+   procedure Add_Screen_Splats (Number : Integer);
    procedure Change_Crong_Head (Health_Factor : GL.Types.Single);
    procedure Change_Health_Bar (Index         : GL.Types.Int;
                                 Health_Factor : GL.Types.Single;
@@ -16,7 +17,7 @@ package GUI is
    procedure Set_GUI_Kills (Amount : Integer);
    procedure Show_Controller_Button_Overlay (Pos_Index,
                                              Tex_Index : in out Integer);
-   function Show_Defeated return Boolean;
+   function  Show_Defeated return Boolean;
    procedure Show_Defeated_Screen (Show : Boolean);
    procedure Show_Finished_Stats (Won                              : Boolean;
                                   Kills, Kills_Max, Gold, Gold_Max : Integer;
