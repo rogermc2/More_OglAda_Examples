@@ -652,6 +652,8 @@ package body GUI is
       Scale_Y : Single := Fist_Scale;
       Aspect  : constant Single := Single (Settings.Framebuffer_Width) /
                   Single (Settings.Framebuffer_Height);
+      FB_Width_GT_Height : constant Boolean := Settings.Framebuffer_Width >
+                             Settings.Framebuffer_Height;
       X       : Single := 0.0;
       Y       : Single := 0.0;
    begin
@@ -670,9 +672,11 @@ package body GUI is
                Offs := -0.2 - 0.4 * Blood_Overlay_Alpha;
                Move_X := Sin (Fist_Countdown * Frequ) * Amp - Offs;
                Move_Y := Cos (Fist_Countdown * Frequ) * Amp + Offs;
-               if Settings.Framebuffer_Width > Settings.Framebuffer_Height then
+               if FB_Width_GT_Height then
                   Scale_X := Fist_Scale / Aspect;
+                  Scale_Y := Fist_Scale;
                else
+                  Scale_X := Fist_Scale;
                   Scale_Y := Aspect * Fist_Scale;
                end if;
                X := 1.0 - Scale_X + Move_X;
@@ -708,12 +712,53 @@ package body GUI is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Update_Screen_Splats (Seconds : Float) is
+   procedure Update_Screen_Splats (Seconds : Float) is   use Maths;
+      use Single_Math_Functions;
+      use GL.Types.Singles;
+      Aspect  : constant Single := Single (Settings.Framebuffer_Width) /
+                  Single (Settings.Framebuffer_Height);
+      FB_Width_GT_Height : constant Boolean := Settings.Framebuffer_Width >
+                             Settings.Framebuffer_Height;
+      Scale_X : Single := Screen_Splat_Scale;
+      Scale_Y : Single := Screen_Splat_Scale;
+      X       : Single := 0.0;
+      Y       : Single := 0.0;
+      S_Mat   : Singles.Matrix4;
+      T_Mat   : Singles.Matrix4;
    begin
-      null;
+      if Num_Active_Screen_Splats > 0 then
+         for index in 1 ..Max_Screen_Splats loop
+            if Screen_Splats (index).Is_Active then
+
+               Screen_Splats (index).Position (GL.Y) :=
+                 Screen_Splats (index).Position (GL.Y) -
+                 Screen_Splats (index).Speed * Single (Seconds);
+
+               Scale_X := Screen_Splat_Scale;
+               if FB_Width_GT_Height then
+                  Scale_X := Screen_Splat_Scale / Aspect;
+                  Scale_Y := Screen_Splat_Scale;
+               else
+                  Scale_X := Screen_Splat_Scale;
+                  Scale_Y := Aspect * Screen_Splat_Scale;
+               end if;
+               Screen_Splats (index).Is_Active :=
+                 Screen_Splats (index).Position (GL.Y) >=
+                 - (2.0 * Scale_Y + 1.0);
+               if Screen_Splats (index).Is_Active then
+                  X := Screen_Splats (index).Position (GL.X);
+                  Y := Screen_Splats (index).Position (GL.Y);
+                  T_Mat := Translation_Matrix ((X, Y, 0.0));
+                  S_Mat := Scaling_Matrix ((Scale_X, Scale_Y, 1.0));
+                  Screen_Splats (index).Model_Matrix := T_Mat * S_Mat;
+               else
+                  Num_Active_Screen_Splats := Num_Active_Screen_Splats - 1;
+               end if;
+            end if;
+         end loop;
+      end if;
    end Update_Screen_Splats;
 
    --  ----------------------------------------------------------------------------
-
 
 end GUI;
