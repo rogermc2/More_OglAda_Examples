@@ -224,6 +224,13 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+   function View_Matrix return Singles.Matrix4 is
+    begin
+        return G_Cam.View_Matrix;
+    end View_Matrix;
+
+    --  ------------------------------------------------------------------------
+
    function World_Position return Singles.Vector3 is
     begin
         return G_Cam.World_Position;

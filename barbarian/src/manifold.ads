@@ -9,6 +9,8 @@ package Manifold is
    Manifold_Parsing_Exception : Exception;
 
    procedure Clear_Manifold_Lights;
+   procedure Draw_Manifold_Around (Camera_Pos : GL.Types.Singles.Vector3;
+                                   Radius : GL.Types.Single);
    procedure Draw_Manifold_Around_Depth_Only;
    procedure Free_Manifold_Mesh_Data;
    function Get_Light_Index (Column, Row  : GL.Types.Int;

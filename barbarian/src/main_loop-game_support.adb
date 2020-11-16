@@ -2,6 +2,8 @@
 with Glfw;
 with Glfw.Input.Keys;
 
+with Utilities;
+
 with Audio;
 with Blood_Splats;
 with Character_Map;
@@ -18,6 +20,7 @@ with Shadows;
 with Sprite_Renderer;
 with Sprite_World_Map;
 with Text;
+with Transparency;
 
 package body Main_Loop.Game_Support is
 
@@ -75,7 +78,8 @@ package body Main_Loop.Game_Support is
 
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Res
+      Transparency.Reset_TR_List (Camera_Position);
+      Manifold.d
    end Player_1_View;
 
    --  -------------------------------------------------------------------------

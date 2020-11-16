@@ -1,20 +1,27 @@
 
 with Ada.Containers.Vectors;
 
+with GL.Culling;
 with GL.Objects.Programs;
+with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
+
+with Glfw;
 
 with Maths;
 
 with Batch_Manager;
+with Camera;
 with Frustum;
 with Game_Utils;
 with GL_Maths;
 with GL_Utils;
 with Manifold_Shader_Manager;
 with Mesh_Loader;
+with Settings;
 WITH Shadows;
+with Texture_Manager;
 with Tiles_Manager;
 with Water_Shader_Manager;
 
@@ -32,6 +39,17 @@ package body Manifold is
    Water_Mesh_Normals       : GL_Maths.Vector3_List;
    Water_Mesh_Texcoords     : GL_Maths.Vector2_List;
    Water_Mesh_Point_Count   : Integer := 0;
+   Manifold_Dyn_Light_Dirty : Boolean := True;
+   Manifold_Dyn_Light_Pos   : Singles.Vector3 := Maths.Vec3_0;
+   Manifold_Dyn_Light_Diff  : Singles.Vector3 := Maths.Vec3_0;
+   Manifold_Dyn_Light_Spec  : Singles.Vector3 := Maths.Vec3_0;
+   Manifold_Dyn_Light_Range : Single := 1.0;
+   Tile_Tex                 : GL.Objects.Textures.Texture;
+   Tile_Spec_Tex            : GL.Objects.Textures.Texture;
+   Ramp_Diff_Tex            : GL.Objects.Textures.Texture;
+   Ramp_Spec_Tex            : GL.Objects.Textures.Texture;
+
+   procedure Draw_Water_Manifold_Around;
 
    --  ----------------------------------------------------------------------------
 
@@ -51,13 +69,186 @@ package body Manifold is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Draw_Manifold_Around (Camera_Pos : GL.Types.Singles.Vector3;
+                                   Radius     : GL.Types.Single) is
+      use GL.Culling;
+      use GL.Toggles;
+      use GL.Objects.Programs;
+      use GL.Objects.Vertex_Arrays;
+      use Maths;
+      use Batch_Manager;
+      use Batches_Package;
+      use Tile_Indices_Package;
+      use GL_Maths;
+      use Vec3_Package;
+      use Manifold_Shader_Manager;
+      Curs          : Batches_Package.Cursor := Batches.First;
+      aBatch        : Batch_Meta;
+      Rad_Dist      : Single;
+      Light_Indices : Tile_Indices_List;
+      Light_Cursor  : Tile_Indices_Package.Cursor;
+      Tile_Index1   : Single;
+      Tile_Index2   : Single;
+   begin
+      Use_Program (Manifold_Program);
+      if Camera.Is_Dirty then
+         Set_View_Matrix (Camera.View_Matrix);
+         Set_Projection_Matrix (Camera.Projection_Matrix);
+      end if;
+
+      if Manifold_Dyn_Light_Dirty then
+         Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
+         Set_Dynamic_Light_Diff (Manifold_Dyn_Light_Diff);
+         Set_Dynamic_Light_Spec (Manifold_Dyn_Light_Spec);
+         Set_Dynamic_Light_Range (Manifold_Dyn_Light_Range);
+      end if;
+
+      if Settings.Shadows_Enabled then
+         Set_Shadow_Enabled (1.0);
+         Set_Caster_Position (Shadows.Caster_Position);
+         Shadows.Bind_Cube_Shadow_Texture (3);
+      else
+         Set_Shadow_Enabled (0.0);
+      end if;
+
+      Set_Model_Matrix (Singles.Identity4);
+
+      while Has_Element (Curs) loop
+         aBatch := Element (Curs);
+         Rad_Dist := Min (abs(Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
+                          abs(Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
+         if Rad_Dist <= 2.0 * Radius then
+            Rad_Dist := Min (abs(Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
+                             abs(Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
+            if Rad_Dist <= 2.0 * Radius then
+               if Frustum.Is_Aabb_In_Frustum
+                 (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
+                 not (aBatch.Static_Light_Indices.Is_Empty) then
+                  Light_Indices := aBatch.Static_Light_Indices;
+                  Light_Cursor := Light_Indices.First;
+                  Tile_Index1 := Single (Element (Light_Cursor));
+                  Tile_Index2 := Single (Element (Next (Light_Cursor)));
+                  Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
+
+                  if not Is_Empty (aBatch.Points) then
+                     --  flat tiles
+                     Texture_Manager.Bind_Texture (0, Tile_Tex);
+                     Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+                     GL_Utils.Bind_Vao (aBatch.Vao);
+                     Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+                  end if;
+                  if not Is_Empty (aBatch.Ramp_Points) then
+                     --  ramps
+                     GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+                     if Settings.Render_OLS then
+                        Set_Cull_Face (Front);
+                        Set_Front_Face (Clockwise);
+                        Set_Outline_Pass (1.0);
+                        Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+                        Set_Outline_Pass (0.0);
+                        Set_Front_Face (Counter_Clockwise);
+                     end if;
+                     --  regular pass
+                     Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
+                     Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+                     Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+                  end if;
+               end if;
+            end if;
+         end if;
+         Next (Curs);
+      end loop;
+
+      Draw_Water_Manifold_Around;
+      Manifold_Dyn_Light_Dirty := False;
+
+   end  Draw_Manifold_Around;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Draw_Water_Manifold_Around is
+      use GL.Culling;
+      use GL.Toggles;
+      use GL.Objects.Programs;
+      use GL.Objects.Vertex_Arrays;
+      use Maths;
+      use Batch_Manager;
+      use Batches_Package;
+      use Tile_Indices_Package;
+      use GL_Maths;
+      use Vec3_Package;
+      use Water_Shader_Manager;
+      Curs          : Batches_Package.Cursor := Batches.First;
+      aBatch        : Batch_Meta;
+      Light_Indices : Tile_Indices_List;
+      Light_Cursor  : Tile_Indices_Package.Cursor;
+      Tile_Index1   : Single;
+      Tile_Index2   : Single;
+   begin
+
+      Use_Program (Water_Program);
+      if Camera.Is_Dirty then
+         Set_View_Matrix (Camera.View_Matrix);
+         Set_Projection_Matrix (Camera.Projection_Matrix);
+      end if;
+
+      if Manifold_Dyn_Light_Dirty then
+         Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
+         Set_Dynamic_Light_Diff (Manifold_Dyn_Light_Diff);
+         Set_Dynamic_Light_Spec (Manifold_Dyn_Light_Spec);
+         Set_Dynamic_Light_Range (Manifold_Dyn_Light_Range);
+      end if;
+      if Settings.Shadows_Enabled then
+         Set_Shadow_Enabled (1.0);
+         Set_Caster_Position (Shadows.Caster_Position);
+         Shadows.Bind_Cube_Shadow_Texture (3);
+      else
+         Set_Shadow_Enabled (0.0);
+      end if;
+      Set_Model_Matrix (Singles.Identity4);
+      Set_Animation_Time (Single (Glfw.Time));
+
+      Enable (Blend);
+      while Has_Element (Curs) loop
+         aBatch := Element (Curs);
+         if Frustum.Is_Aabb_In_Frustum
+           (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
+           not (aBatch.Static_Light_Indices.Is_Empty) then
+
+            if not Is_Empty (aBatch.Water_Points) then
+               --  flat tiles
+               Texture_Manager.Bind_Texture (0, Tile_Tex);
+               Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+               GL_Utils.Bind_Vao (aBatch.Vao);
+               Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+            end if;
+            if not Is_Empty (aBatch.Ramp_Points) then
+               Light_Indices := aBatch.Static_Light_Indices;
+               Light_Cursor := Light_Indices.First;
+               Tile_Index1 := Single (Element (Light_Cursor));
+               Tile_Index2 := Single (Element (Next (Light_Cursor)));
+               Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
+
+               GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+               Draw_Arrays (Triangles, 0, Int (aBatch.Water_Points.Length));
+            end if;
+         end if;
+         Next (Curs);
+      end loop;
+      Disable (Blend);
+
+   end  Draw_Water_Manifold_Around;
+
+   --  ----------------------------------------------------------------------------
+
    procedure Draw_Manifold_Around_Depth_Only is
       use GL.Toggles;
       use GL.Objects.Vertex_Arrays;
       use Batch_Manager;
       use Batches_Package;
-      Curs   : Cursor := Batches.First;
-      aBatch : Batch_Meta;
+      Curs          : Cursor := Batches.First;
+      aBatch        : Batch_Meta;
+      Light_Indices : Tile_Indices_List;
    begin
       Enable (Depth_Test);
       Shadows.Set_Depth_Model_Matrix (Singles.Identity4);
@@ -65,11 +256,11 @@ package body Manifold is
          aBatch := Element (Curs);
          if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
 
-           --  Flat Tiles
-         GL_Utils.Bind_Vao (aBatch.Vao);
-         Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
-         GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
-         Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+            --  Flat Tiles
+            GL_Utils.Bind_Vao (aBatch.Vao);
+            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+            GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
          end if;
          Next (Curs);
       end loop;
@@ -81,7 +272,7 @@ package body Manifold is
       use Batch_Manager;
    begin
       Batches.Clear;
---        Batch_Split_Count := 0;
+      --        Batch_Split_Count := 0;
       Total_Points := 0;
    end Free_Manifold_Mesh_Data;
 
@@ -94,8 +285,8 @@ package body Manifold is
       use Tile_Indices_Package;
       Batch_Index   : constant Positive :=
                         Get_Batch_Index (Column, Row);
-      Batch         : Batch_Manager.Batch_Meta;
-      Light_Indices : Batch_Manager.Tile_Indices_List;
+      Batch         : Batch_Meta;
+      Light_Indices : Tile_Indices_List;
       Light_Cursor  : Cursor;
       --        Light_Index   : Positive;
       --        theLight      : Batch_Manager.Static_Light_Data;
@@ -210,7 +401,7 @@ package body Manifold is
    begin
       Batches_Across := 0;
       Batches_Down := 0;
---        Batch_Split_Count := 0;
+      --        Batch_Split_Count := 0;
       Batch_Manager.Max_Cols := 0;
       Batch_Manager.Max_Rows := 0;
       Tiles_Manager.Reset_Vars;
