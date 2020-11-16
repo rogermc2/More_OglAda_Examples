@@ -74,6 +74,8 @@ package body Main_Loop.Game_Support is
       end if;   --  end of shadow mapping pass
 
       FB_Effects.Bind_Main_Scene_FB;
+      Utilities.Clear_Colour_Buffer_And_Depth;
+      Res
    end Player_1_View;
 
    --  -------------------------------------------------------------------------
