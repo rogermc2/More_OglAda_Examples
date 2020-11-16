@@ -1,14 +1,19 @@
 
 with GL.Attributes;
+with GL.Buffers;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 with GL.Types;
 
+with Camera;
 with Game_Utils;
+with GL_Utils;
 with Settings;
 with Shader_Attributes;
+with Shadows;
 with Splats_Shader_Manager;
 with Texture_Manager;
 
@@ -30,7 +35,7 @@ package body Blood_Splats is
 
    procedure Clear_Splats is
    begin
-	Num_splats_in_play := 0;
+	Num_Splats_In_Play := 0;
    end Clear_Splats;
 
    --  -------------------------------------------------------------------------
@@ -84,6 +89,38 @@ package body Blood_Splats is
       Game_Utils.Game_Log ("----BLOOD SPLATS INITIALIZED---");
 
     end Init;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Render_Splats is
+      use Splats_Shader_Manager;
+      use GL.Objects.Programs;
+      use GL.Objects.Vertex_Arrays;
+      use GL.Toggles;
+   begin
+      if Num_Splats_In_Play > 0 then
+         GL.Buffers.Depth_Mask (False);
+         Enable (Blend);
+         Texture_Manager.Bind_Texture (0, Blood_Splats_Tex);
+         Use_Program (Splat_Sp);
+         if Camera.Is_Dirty then
+            Set_View_Matrix (Camera.View_Matrix);
+            Set_Projection_Matrix (Camera.Projection_Matrix);
+         end if;
+         if Settings.Shadows_Enabled then
+            Set_Shadow_Enabled (1.0);
+            Set_Caster_Position (Shadows.Caster_Position);
+            Shadows.Bind_Cube_Shadow_Texture (1);
+         else
+            Set_Shadow_Enabled (0.0);
+         end if;
+
+         GL_Utils.Bind_VAO (Splat_Vao);
+         Draw_Arrays (Triangles, 0, Int (6 * Num_Splats_In_Play));
+         GL.Buffers.Depth_Mask (True);
+         Disable (Blend);
+      end if;
+   end Render_Splats;
 
    --  -------------------------------------------------------------------------
 

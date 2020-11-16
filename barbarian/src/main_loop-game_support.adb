@@ -79,7 +79,10 @@ package body Main_Loop.Game_Support is
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;
       Transparency.Reset_TR_List (Camera_Position);
-      Manifold.d
+      Manifold.Draw_Manifold_Around (Camera_Position,
+                                     Single (Settings.Render_Distance));
+      Blood_Splats.Render_Splats;
+
    end Player_1_View;
 
    --  -------------------------------------------------------------------------

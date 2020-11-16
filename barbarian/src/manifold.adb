@@ -166,6 +166,33 @@ package body Manifold is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Draw_Manifold_Around_Depth_Only is
+      use GL.Toggles;
+      use GL.Objects.Vertex_Arrays;
+      use Batch_Manager;
+      use Batches_Package;
+      Curs          : Cursor := Batches.First;
+      aBatch        : Batch_Meta;
+      Light_Indices : Tile_Indices_List;
+   begin
+      Enable (Depth_Test);
+      Shadows.Set_Depth_Model_Matrix (Singles.Identity4);
+      while Has_Element (Curs) loop
+         aBatch := Element (Curs);
+         if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
+
+            --  Flat Tiles
+            GL_Utils.Bind_Vao (aBatch.Vao);
+            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+            GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+         end if;
+         Next (Curs);
+      end loop;
+   end  Draw_Manifold_Around_Depth_Only;
+
+   --  ----------------------------------------------------------------------------
+
    procedure Draw_Water_Manifold_Around is
       use GL.Culling;
       use GL.Toggles;
@@ -238,33 +265,6 @@ package body Manifold is
       Disable (Blend);
 
    end  Draw_Water_Manifold_Around;
-
-   --  ----------------------------------------------------------------------------
-
-   procedure Draw_Manifold_Around_Depth_Only is
-      use GL.Toggles;
-      use GL.Objects.Vertex_Arrays;
-      use Batch_Manager;
-      use Batches_Package;
-      Curs          : Cursor := Batches.First;
-      aBatch        : Batch_Meta;
-      Light_Indices : Tile_Indices_List;
-   begin
-      Enable (Depth_Test);
-      Shadows.Set_Depth_Model_Matrix (Singles.Identity4);
-      while Has_Element (Curs) loop
-         aBatch := Element (Curs);
-         if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
-
-            --  Flat Tiles
-            GL_Utils.Bind_Vao (aBatch.Vao);
-            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
-            GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
-            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
-         end if;
-         Next (Curs);
-      end loop;
-   end  Draw_Manifold_Around_Depth_Only;
 
    --  ----------------------------------------------------------------------------
 
