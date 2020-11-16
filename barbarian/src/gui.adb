@@ -687,8 +687,14 @@ package body GUI is
    --  ----------------------------------------------------------------------------
 
    procedure Update_Gold_Bar (Seconds : Float) is
+      use Maths;
    begin
-      null;
+      for index in Int range 1 .. 3 loop
+         if GUI_Icons.Anim_Countdowns (index) > 0.0 then
+            GUI_Icons.Anim_Countdowns (index) :=
+              Max (GUI_Icons.Anim_Countdowns (index) - Single (Seconds), 0.0);
+         end if;
+      end loop;
    end Update_Gold_Bar;
 
    --  ----------------------------------------------------------------------------
