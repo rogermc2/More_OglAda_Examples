@@ -12,6 +12,7 @@ with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Pixels;
 with GL.Types; use GL.Types;
+with GL.Window;
 
 with Game_Utils;
 with GL_Utils;
@@ -37,10 +38,32 @@ package body FB_Effects is
 
    FB_VAO               : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    FB_Texture           : GL.Objects.Textures.Texture;
-   Special_FB           : GL.Objects.Framebuffers.Framebuffer;  --  g_fb
+     --  g_fb:
+   Special_FB           : GL.Objects.Framebuffers.Framebuffer;
    Current_Effect       : FB_Effect := FB_Default;
    FB_Shader_Programs   : array (1 .. Num_Shader_Effects) of
      GL.Objects.Programs.Program;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Bind_Main_Scene_FB is
+      use GL.Types;
+      use GL.Objects.Framebuffers;
+   begin
+      if Settings.Fb_Effects_Enabled then
+         Read_And_Draw_Target.Bind  (Special_FB);
+         GL.Window.Set_Viewport
+           (0, 0, Int (Single (Settings.Framebuffer_Width) * Curr_Ssaa),
+            Int (Single (Settings.Framebuffer_Height) * Curr_Ssaa));
+      else
+         Read_And_Draw_Target.Bind (Default_Framebuffer);
+         GL.Window.Set_Viewport
+           (0, 0, Int (Single (Settings.Framebuffer_Width)),
+            Int (Single (Settings.Framebuffer_Height)));
+      end if;
+   end Bind_Main_Scene_FB;
+
+   --  -------------------------------------------------------------------------
 
    procedure Init (Width, Height : Integer) is
       use GL.Attributes;

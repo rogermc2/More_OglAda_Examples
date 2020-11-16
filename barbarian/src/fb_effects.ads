@@ -7,6 +7,7 @@ package FB_Effects is
 
    FB_Effects_Exception : Exception;
 
+   procedure Bind_Main_Scene_FB;
    procedure Init (Width, Height : Integer);
    procedure Fade_In;
    procedure Fade_Out;

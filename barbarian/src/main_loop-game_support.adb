@@ -71,7 +71,9 @@ package body Main_Loop.Game_Support is
             Prop_Renderer.Render_Props_Around_Depth_Only
               (Centre_X, Centre_Z, Shadow_Caster_Max_Tiles_Away);
          end loop;
-      end if;
+      end if;   --  end of shadow mapping pass
+
+      FB_Effects.Bind_Main_Scene_FB;
    end Player_1_View;
 
    --  -------------------------------------------------------------------------
