@@ -323,8 +323,8 @@ package body Prop_Renderer is
    --  -------------------------------------------------------------------------
 
    procedure Render_Property (Prop_ID : Positive) is
-      use Properties_Shader_Manager;
       use Prop_Indices_Package;
+      use Properties_Shader_Manager;
       Curr_Time    : Single;
       Elapsed_Time : Single;
       Property     : constant Property_Data := Properties.Element (Prop_ID);
@@ -367,7 +367,7 @@ package body Prop_Renderer is
             Properties_Skinned_Shader_Manager.Set_Caster_Position (Shadows.Caster_Position);
             Shadows.Bind_Cube_Shadow_Texture (3);
          else
-            Set_Shadow_Enabled (0.0);
+             Properties_Skinned_Shader_Manager.Set_Shadow_Enabled (0.0);
          end if;
          Properties_Skinned_Shader_Manager.Set_Bone_Matrices (Property.Current_Bone_Transforms);
          Properties_Skinned_Shader_Manager.Set_Model (Property.Model_Mat);
@@ -409,15 +409,15 @@ package body Prop_Renderer is
       else
          GL.Objects.Programs.Use_Program (Prop_Shader);
          if Camera.Is_Dirty then
-            Set_View (Camera.View_Matrix);
-            Set_Perspective (Camera.Projection_Matrix);
+            Properties_Shader_Manager.Set_View (Camera.View_Matrix);
+            Properties_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
          end if;
          if Settings.Shadows_Enabled then
-            Set_Shadow_Enabled (1.0);
-            Set_Caster_Position (Shadows.Caster_Position);
+            Properties_Shader_Manager.Set_Shadow_Enabled (1.0);
+            Properties_Shader_Manager.Set_Caster_Position (Shadows.Caster_Position);
             Shadows.Bind_Cube_Shadow_Texture (3);
          else
-            Set_Shadow_Enabled (0.0);
+            Properties_Shader_Manager.Set_Shadow_Enabled (0.0);
          end if;
       end if;
 
