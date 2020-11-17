@@ -28,6 +28,7 @@ with Tiles_Manager;
 with Transparency;
 
 package body Prop_Renderer is
+   use Prop_Renderer_Support;
 
    Boulder_Bounce_Sound_File : constant String
      := "EXPLOSION_Medium_Little_Debris_Burning_Tail_stereo.wav";
@@ -59,7 +60,7 @@ package body Prop_Renderer is
    type Script_List is new Property_Scripts_Package.Vector with null Record;
 
    package Properties_Package is new Ada.Containers.Vectors
-     (Positive, Property_Data);
+     (Positive, Prop_Renderer_Support.Property_Data);
    type Properties_List is new Properties_Package.Vector with null Record;
 
    package Indicies_Package is new Ada.Containers.Vectors (Positive, Positive);
@@ -213,7 +214,8 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Property_Data (Prop_Index : Positive) return Property_Data is
+   function Get_Property_Data (Prop_Index : Positive)
+                               return Prop_Renderer_Support.Property_Data is
    begin
       return Properties.Element (Prop_Index);
    end Get_Property_Data;
@@ -355,71 +357,7 @@ package body Prop_Renderer is
       Texture_Manager.Bind_Texture (1, aScript.Specular_Map_Id);
       Texture_Manager.Bind_Texture (2, aScript.Normal_Map_Id);
 
-      if Prop_Type = Door_Prop or Prop_Type = Pillar_Prop or
-        Prop_Type = Anim_Loop_Prop or Prop_Type = Windlass_Prop then
-         GL.Objects.Programs.Use_Program (Prop_Skinned_Shader);
-         if Camera.Is_Dirty then
-            Properties_Skinned_Shader_Manager.Set_View (Camera.View_Matrix);
-            Properties_Skinned_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
-         end if;
-         if Settings.Shadows_Enabled then
-            Properties_Skinned_Shader_Manager.Set_Shadow_Enabled (1.0);
-            Properties_Skinned_Shader_Manager.Set_Caster_Position (Shadows.Caster_Position);
-            Shadows.Bind_Cube_Shadow_Texture (3);
-         else
-             Properties_Skinned_Shader_Manager.Set_Shadow_Enabled (0.0);
-         end if;
-         Properties_Skinned_Shader_Manager.Set_Bone_Matrices (Property.Current_Bone_Transforms);
-         Properties_Skinned_Shader_Manager.Set_Model (Property.Model_Mat);
-         Properties_Skinned_Shader_Manager.Set_Static_Light_Indices
-           ((Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 0),
-             Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 1)));
-
-      elsif Prop_Type = Treasure_Prop or Prop_Type = Hammer_Prop or
-        Prop_Type = Food_Prop then
-         GL.Objects.Programs.Use_Program (Coins_Shader);
-         if Camera.Is_Dirty then
-            Coins_Shader_Manager.Set_View (Camera.View_Matrix);
-            Coins_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
-         end if;
-         if Settings.Shadows_Enabled then
-            Coins_Shader_Manager.Set_Shadow_Enabled (1.0);
-            Coins_Shader_Manager.Set_Caster_Pos_World (Shadows.Caster_Position);
-            Shadows.Bind_Cube_Shadow_Texture (3);
-         else
-            Set_Shadow_Enabled (0.0);
-         end if;
-         Coins_Shader_Manager.Set_Model (Property.Model_Mat);
-         Coins_Shader_Manager.Set_Time (Single (Glfw.Time));
-
-      elsif Prop_Type = Jav_Stand_Prop or Prop_Type = Diamond_Trigger_Prop or
-        Prop_Type = Tavern_Prop then
-         GL.Objects.Programs.Use_Program (Jav_Stand_Shader);
-         if Camera.Is_Dirty then
-            Jav_Stand_Shader_Manager.Set_View (Camera.View_Matrix);
-            Jav_Stand_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
-         end if;
-
-      elsif Prop_Type = Portal_Prop then
-         GL.Objects.Programs.Use_Program (Portal_Shader);
-         if Camera.Is_Dirty then
-            Portal_Shader_Manager.Set_View (Camera.View_Matrix);
-            Portal_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
-         end if;
-      else
-         GL.Objects.Programs.Use_Program (Prop_Shader);
-         if Camera.Is_Dirty then
-            Properties_Shader_Manager.Set_View (Camera.View_Matrix);
-            Properties_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
-         end if;
-         if Settings.Shadows_Enabled then
-            Properties_Shader_Manager.Set_Shadow_Enabled (1.0);
-            Properties_Shader_Manager.Set_Caster_Position (Shadows.Caster_Position);
-            Shadows.Bind_Cube_Shadow_Texture (3);
-         else
-            Properties_Shader_Manager.Set_Shadow_Enabled (0.0);
-         end if;
-      end if;
+      Set_Shaders (Property, Prop_Type);
 
 
    end Render_Property;
