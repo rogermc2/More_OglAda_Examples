@@ -233,6 +233,13 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
+   function Get_Tiles_Across return Int is
+   begin
+      return Batch_Manager.Max_Cols;
+   end Get_Tiles_Across;
+
+   --  ----------------------------------------------------------------------------
+
    function Is_Tile_Valid (Row, Col : GL.Types.Int) return Boolean is
       use Batch_Manager;
    begin

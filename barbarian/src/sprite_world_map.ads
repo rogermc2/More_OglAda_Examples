@@ -16,6 +16,7 @@ package Sprite_World_Map is
 
     procedure Add_New_Sprite_To_World_Map (U, V : Int; Y : Single;
                                            Sprite_ID : Integer);
+    procedure Cache_Sprites_Around (U, V, Tile_Range : Int);
     procedure Free_Sprite_World_Map;
     procedure Move_Sprite_In_World_Map (From_U, From_V, To_U, To_V : Int;
                                         Y : Single; Sprite_ID : Integer);
