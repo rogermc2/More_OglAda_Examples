@@ -16,6 +16,7 @@ with Properties_Skinned_Shader_Manager;
 with Prop_Renderer.Boulder;
 with Shadows;
 with Tiles_Manager;
+with Transparency;
 
 package body Prop_Renderer is
 
@@ -77,7 +78,7 @@ package body Prop_Renderer is
    Last_Head_Launched          : GL_Maths.Integer_Array (1 .. Max_Decap_Types);
    Props_In_Tiles              : Props_In_Tiles_Array;
    Head_Particles              : GL_Maths.Integer_Array (1 .. Max_Decap_Particles);
-   Decap_Heads_Prop_Index      : array
+   Decap_Heads_Prop_Index      : constant array
      (1 .. Max_Decap_Types, 1 .. Max_Active_Decaps_Per_Type) of Integer :=
        (others => (others => 0));
    Dust_Particles              : Integer := -1;
@@ -87,7 +88,7 @@ package body Prop_Renderer is
    Mirror_Particles            : Integer := -1;
    Splash_Particles            : Integer := -1;
 
-   Mirror_Indices              : array (1 .. Max_Mirrors) of Positive;
+--     Mirror_Indices              : array (1 .. Max_Mirrors) of Positive;
    Prop_Count                  : Natural := 0;
    Mirror_Count                : Int := 0;
    Live_Mirror_Count           : Int := 0;
@@ -387,6 +388,98 @@ package body Prop_Renderer is
          end loop;
       end loop;
    end Render_Props_Around_Depth_Only;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int) is
+      use Prop_Indices_Package;
+      use GL.Objects.Vertex_Arrays;
+      use GL.Toggles;
+      use Maths;
+      use Single_Math_Functions;
+      use Singles;
+      use Transparency;
+      Left         : constant Int := Maths.Max_Int (0, V - Tiles_Distance);
+      Right        : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1, V + Tiles_Distance);
+      Up           : constant Int := Maths.Max_Int (0, U - Tiles_Distance);
+      Down         : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1, U + Tiles_Distance);
+      --  Diamond Bob
+      Curr_Time    : constant Single := Single (Glfw.Time);
+      Elapsed      : constant Single := Curr_Time - Prev_Time;
+      Hdg_Dia      : constant Single := 20.0 * Elapsed;
+      Hgt_Dia      : constant Single := 0.5 * Sin (2.0 * Curr_Time);
+      Tile_Data    : Props_In_Tiles_Array;
+      Prop_Indices : Prop_Indices_List;
+      Property     : Property_Data;
+      --        Props_Size   : Integer;
+      Script_Index : Integer;
+      Script_Type  : Property_Type;
+      aScript      : Prop_Script;
+      Ssi          : Integer;
+      Mesh_Index   : Integer;
+      Bone_Count   : Integer;
+      Rot_Dia      : Singles.Matrix4;
+      Trans_Dia    : Singles.Matrix4;
+      Trans        : Singles.Vector3;
+   begin
+      Basic_Props_Render_List.Clear;
+      Skinned_Props_Render_List.Clear;
+      Jav_Stand_Props_Render_List.Clear;
+      Portal_Props_Render_List.Clear;
+      Treasure_Props_Render_List.Clear;
+
+      Prev_Time := Curr_Time;
+      Enable (Depth_Test);
+      for vi in Left .. Right loop
+         for ui in Up .. Down loop
+            Prop_Indices := Tile_Data (Integer (ui), Integer (vi));
+            for Props_Index in Prop_Indices.First_Index .. Prop_Indices.Last_Index loop
+               Property := Properties.Element (Props_Index);
+               Script_Index := Property.Script_Index;
+               aScript := Scripts.Element (Script_Index);
+               Ssi := aScript.Smashed_Script_Index;
+               if Property.Was_Smashed and Ssi >= 0 then
+                  Script_Index := Ssi;
+               end if;
+
+               if (Property.Is_Visible or GL_Utils.Is_Edit_Mode) and
+                 aScript.Casts_Shadow and not aScript.Uses_Sprite then
+                  null;
+               elsif Frustum.Is_Sphere_In_Frustum
+                   (Property.Origin_World, aScript.Bounding_Radius) and
+                 aScript.Transparent then
+                  Add_Transparency_Item
+                    (Tr_Prop, Props_Index, Property.Origin_World,
+                     aScript.Bounding_Radius);
+                  GL_Utils.Bind_VAO (aScript.Vao);
+                  Script_Type := aScript.Script_Type;
+                  if Script_Type = Door_Prop or
+                    Script_Type = Pillar_Prop or
+                    Script_Type = Anim_Loop_Prop or
+                    Script_Type = Windlass_Prop then
+                     Shadows.Set_Depth_Skinned_Model_Matrix
+                       (Property.Model_Mat);
+                     Mesh_Index := aScript.Mesh_Index;
+                     Bone_Count := Mesh_Loader.Bone_Count (Mesh_Index);
+                     Shadows.Set_Depth_Skinned_Bone_Matrices
+                       (Property.Current_Bone_Transforms);
+                  elsif Script_Type = Diamond_Trigger_Prop then
+                     Rot_Dia := Rotate_Y_Degree
+                       (Singles.Identity4, Degree (Hdg_Dia) +
+                            Property.Heading_Deg);
+                     Trans := Property.World_Pos;
+                     Trans (GL.Y) := Trans (GL.Y)  + Hdg_Dia;
+                     Trans_Dia := Translation_Matrix (Trans);
+                     Shadows.Set_Depth_Model_Matrix (Trans_Dia * Rot_Dia);
+                  else
+                     Shadows.Set_Depth_Model_Matrix (Property.Model_Mat);
+                  end if;
+                  Draw_Arrays (Triangles, 0, aScript.Vertex_Count);
+               end if;
+            end loop;
+         end loop;
+      end loop;
+   end Render_Props_Around_Split;
 
    --  -------------------------------------------------------------------------
 

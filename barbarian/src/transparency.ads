@@ -3,8 +3,12 @@ with GL.Types;
 
 package Transparency is
 
-   type Tr_Item_Type is (Tr_Undef, Tr_Sprite, Tr_Prop);
+   type Transparency_Type is (Tr_Undef, Tr_Sprite, Tr_Prop);
 
-   procedure Reset_TR_List (Camera_Position : GL.Types.Singles.Vector3);
+   procedure Add_Transparency_Item (Item_Type : Transparency_Type;
+                                    Render_ID : Positive;
+                                    Position  : GL.Types.Singles.Vector3;
+                                    Brad      : GL.Types.Single);
+   procedure Reset_Transparency_List (Camera_Position : GL.Types.Singles.Vector3);
 
 end Transparency;

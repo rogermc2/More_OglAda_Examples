@@ -232,7 +232,7 @@ package body Particle_System is
             Ages.Update_Element (index, Update_Particle_Age'Access);
          end loop;
 
-         for index in Positions.First_Index .. Ages.Last_Index loop
+         for index in Positions.First_Index .. Positions.Last_Index loop
             Positions.Update_Element (Index, Update_Particle_Position'Access);
          end loop;
          Particle_Systems.Replace_Element (System_ID, theSystem);
