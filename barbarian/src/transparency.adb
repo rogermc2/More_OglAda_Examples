@@ -7,6 +7,7 @@ with GL.Toggles;
 
 with Maths;
 
+with Prop_Renderer;
 with Sprite_Renderer;
 
 package body Transparency is
@@ -55,7 +56,7 @@ package body Transparency is
          if Item_Type = Tr_Sprite then
             Sprite_Renderer.Render_Sprite (Node.Render_Id);
          else
-            Prop_Renderer.re
+            Prop_Renderer.Render_Property (Node.Render_Id);
          end if;
       end loop;
 

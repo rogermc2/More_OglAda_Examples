@@ -281,6 +281,14 @@ package body Specs_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Initial_Health (Spec_Index : Positive) return Integer is
+      theSpec : constant Spec_Data := Specs.Element (Spec_Index);
+   begin
+        return theSpec.Initial_Health;
+   end Initial_Health;
+
+   --  -------------------------------------------------------------------------
+
    procedure Load_Specs_File (File_Name : String) is
       use Ada.Strings;
       Path          : constant String := "src/characters/" & File_Name;

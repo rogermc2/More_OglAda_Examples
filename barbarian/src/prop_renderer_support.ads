@@ -89,6 +89,7 @@ package Prop_Renderer_Support is
       Was_Smashed             : Boolean := False;
    End Record;
 
-   procedure Set_Shaders (Property : Property_Data; Prop_Type : Property_Type);
+   procedure Set_Shaders (Property : Property_Data; Prop_Type : Property_Type;
+                          Gold_Current : Integer);
 
 end Prop_Renderer_Support;

@@ -138,6 +138,7 @@ package Specs_Manager is
    function Animation_Index (Spec_Index, Anim_Num : Positive) return Positive;
    procedure Clear_Specs;
    function Get_Script_Index (File_Name : String) return Integer;
+   function Initial_Health (Spec_Index : Positive) return Integer;
    procedure Load_Specs_File (File_Name : String);
 
 

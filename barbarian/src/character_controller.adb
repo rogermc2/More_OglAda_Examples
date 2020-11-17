@@ -157,6 +157,14 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
+   function Current_Health (Character_ID : Positive) return Integer is
+      aCharacter : constant Barbarian_Character := Characters.Element (Character_ID);
+   begin
+      return aCharacter.Current_Health;
+   end Current_Health;
+
+   --  -------------------------------------------------------------------------
+
    function Current_Kills return Integer is
    begin
       return Kills_Current;
@@ -384,6 +392,13 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Character (Character_ID : Positive) return Barbarian_Character is
+   begin
+      return Characters.Element (Character_ID);
+   end Get_Character;
+
+   --  -------------------------------------------------------------------------
+
    procedure Init is
    begin
       Character_Map.Init;
@@ -504,6 +519,14 @@ package body Character_Controller is
       end case;
 
    end Launch_Decapitated_Head;
+
+   --  ------------------------------------------------------------------------
+
+   function Javelin_Count (Character_ID : Positive) return Integer is
+      aCharacter : constant Barbarian_Character := Characters.Element (Character_ID);
+   begin
+      return aCharacter.Javelin_Count;
+   end Javelin_Count;
 
    --  -------------------------------------------------------------------------
    --  read characters from an already open file stream
@@ -645,6 +668,13 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
+   function Spec_Index (Character_ID : Positive) return Positive is
+      aCharacter : constant Barbarian_Character := Characters.Element (Character_ID);
+   begin
+      return aCharacter.Specs_Index;
+   end Spec_Index;
+
+   --  -------------------------------------------------------------------------
    function Update_Characters (Seconds : Float) return Boolean is
    begin
       return False;

@@ -21,15 +21,19 @@ package Character_Controller is
 
    Character_Controller_Exception : Exception;
 
+   function Current_Health (Character_ID : Positive) return Integer;
    function Current_Kills return Integer;
    function Damage_All_Near
      (Self_Id        : Positive; World_Pos : Singles.Vector3;
       Damage_Range   : Single; Damage         : Int;
       Throw_Back_Mps : Single;  Exclude_Id : Positive;
       Weapon         : Specs_Manager.Weapon_Type) return Natural;
+   function Get_Character (Character_ID : Positive) return Barbarian_Character;
    procedure Init;
+   function Javelin_Count (Character_ID : Positive) return Integer;
    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);
    function Max_Kills return Integer;
+   function Spec_Index (Character_ID : Positive) return Positive;
    function Update_Characters (Seconds : Float) return Boolean;
 
 private
