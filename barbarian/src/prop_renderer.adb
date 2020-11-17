@@ -15,6 +15,7 @@ with Properties_Shader_Manager;
 with Properties_Skinned_Shader_Manager;
 with Prop_Renderer.Boulder;
 with Shadows;
+with Sprite_Renderer;
 with Tiles_Manager;
 with Transparency;
 
@@ -57,47 +58,51 @@ package body Prop_Renderer is
    type Indicies_List is new Indicies_Package.Vector with null Record;
 
    --  Animation and rendering
-   Model_Matrix                : Singles.Matrix4 := (others => (others => 0.0));
+   Model_Matrix                  : Singles.Matrix4 := (others => (others => 0.0));
    --     Current_Bone_Transforms : Singles.Matrix4_Array (1 .. Mesh_Loader.Max_Bones);
-   Anim_Duration               : Integer := 0;
-   Anim_Elapsed_Time           : Integer := 0;
-   Sprite_Duration             : Integer := 0;
-   Delay_Countdown             : Integer := 0;
+   Anim_Duration                 : Integer := 0;
+   Anim_Elapsed_Time             : Integer := 0;
+   Sprite_Duration               : Integer := 0;
+   Delay_Countdown               : Integer := 0;
    --  Hack to stop decap head bouncing when stuck
-   Bounce_Count                : Integer := 0;
-   Scripts                     : Script_List;
-   Properties                  : Properties_List;
-   Active_Properties_A         : Indicies_List;
-   Active_Properties_B         : Indicies_List;
-   Curr_Active_Props_A         : Boolean := True;
-   Basic_Props_Render_List     : Indicies_List;
-   Skinned_Props_Render_List   : Indicies_List;
-   Jav_Stand_Props_Render_List : Indicies_List;
-   Portal_Props_Render_List    : Indicies_List;
-   Treasure_Props_Render_List  : Indicies_List;
-   Last_Head_Launched          : GL_Maths.Integer_Array (1 .. Max_Decap_Types);
-   Props_In_Tiles              : Props_In_Tiles_Array;
-   Head_Particles              : GL_Maths.Integer_Array (1 .. Max_Decap_Particles);
-   Decap_Heads_Prop_Index      : constant array
-     (1 .. Max_Decap_Types, 1 .. Max_Active_Decaps_Per_Type) of Integer :=
-       (others => (others => 0));
-   Dust_Particles              : Integer := -1;
-   Dust_Particlesb             : Integer := -1;
-   Dust_Particlesc             : Integer := -1;
-   Pot_Particles               : Integer := -1;
-   Mirror_Particles            : Integer := -1;
-   Splash_Particles            : Integer := -1;
+   Bounce_Count                  : Integer := 0;
+   Scripts                       : Script_List;
+   Properties                    : Properties_List;
+   Active_Properties_A           : Indicies_List;
+   Active_Properties_B           : Indicies_List;
+   Curr_Active_Props_A           : Boolean := True;
+   Basic_Props_Render_List       : Indicies_List;
+   Skinned_Props_Render_List     : Indicies_List;
+   Jav_Stand_Props_Render_List   : Indicies_List;
+   Portal_Props_Render_List      : Indicies_List;
+   Treasure_Props_Render_List    : Indicies_List;
+   Last_Head_Launched            : GL_Maths.Integer_Array (1 .. Max_Decap_Types);
+   Props_In_Tiles                : Props_In_Tiles_Array;
+   Head_Particles                : GL_Maths.Integer_Array (1 .. Max_Decap_Particles);
+   Decap_Heads_Prop_Index        : constant array
+     (1 .. Max_Decap_Types, 1 .. Max_Active_Decaps_Per_Type) of Integer
+     := (others => (others => 0));
+   Dust_Particles                : Integer := -1;
+   Dust_Particlesb               : Integer := -1;
+   Dust_Particlesc               : Integer := -1;
+   Pot_Particles                 : Integer := -1;
+   Mirror_Particles              : Integer := -1;
+   Splash_Particles              : Integer := -1;
 
---     Mirror_Indices              : array (1 .. Max_Mirrors) of Positive;
-   Prop_Count                  : Natural := 0;
-   Mirror_Count                : Int := 0;
-   Live_Mirror_Count           : Int := 0;
-   Num_Types_Decap_Heads       : Int := 0;
-   Last_Head_Particles_Used    : Integer := 0;
-   Prev_Time                   : Single := Single (Glfw.Time);
+   --     Mirror_Indices              : array (1 .. Max_Mirrors) of Positive;
+   Prop_Count                    : Natural := 0;
+   Mirror_Count                  : Int := 0;
+   Live_Mirror_Count             : Int := 0;
+   Num_Types_Decap_Heads         : Int := 0;
+   Last_Head_Particles_Used      : Integer := 0;
+   Prop_Dyn_Light_Dirty          : Boolean := True;
+   Prev_Time                     : Single := Single (Glfw.Time);
 
    procedure Activate_Property (Property_Index : Positive;
                                 Reactivating   : Boolean);
+
+   procedure Update_Anim_Looped_Prop (Prop_Index : Positive; Seconds : Single);
+
 
    --  -------------------------------------------------------------------------
 
@@ -403,7 +408,6 @@ package body Prop_Renderer is
       Right        : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1, V + Tiles_Distance);
       Up           : constant Int := Maths.Max_Int (0, U - Tiles_Distance);
       Down         : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1, U + Tiles_Distance);
-      --  Diamond Bob
       Curr_Time    : constant Single := Single (Glfw.Time);
       Elapsed      : constant Single := Curr_Time - Prev_Time;
       Hdg_Dia      : constant Single := 20.0 * Elapsed;
@@ -411,16 +415,13 @@ package body Prop_Renderer is
       Tile_Data    : Props_In_Tiles_Array;
       Prop_Indices : Prop_Indices_List;
       Property     : Property_Data;
-      --        Props_Size   : Integer;
       Script_Index : Integer;
-      Script_Type  : Property_Type;
+      Prop_Type    : Property_Type;
       aScript      : Prop_Script;
       Ssi          : Integer;
-      Mesh_Index   : Integer;
-      Bone_Count   : Integer;
-      Rot_Dia      : Singles.Matrix4;
-      Trans_Dia    : Singles.Matrix4;
-      Trans        : Singles.Vector3;
+      Prop_Size    : Integer;
+      Sprite_Time  : Float;
+      Curr_Sprite  : Positive;
    begin
       Basic_Props_Render_List.Clear;
       Skinned_Props_Render_List.Clear;
@@ -441,44 +442,59 @@ package body Prop_Renderer is
                if Property.Was_Smashed and Ssi >= 0 then
                   Script_Index := Ssi;
                end if;
+               Prop_Type := aScript.Script_Type;
 
-               if (Property.Is_Visible or GL_Utils.Is_Edit_Mode) and
-                 aScript.Casts_Shadow and not aScript.Uses_Sprite then
-                  null;
-               elsif Frustum.Is_Sphere_In_Frustum
-                   (Property.Origin_World, aScript.Bounding_Radius) and
-                 aScript.Transparent then
-                  Add_Transparency_Item
-                    (Tr_Prop, Props_Index, Property.Origin_World,
-                     aScript.Bounding_Radius);
-                  GL_Utils.Bind_VAO (aScript.Vao);
-                  Script_Type := aScript.Script_Type;
-                  if Script_Type = Door_Prop or
-                    Script_Type = Pillar_Prop or
-                    Script_Type = Anim_Loop_Prop or
-                    Script_Type = Windlass_Prop then
-                     Shadows.Set_Depth_Skinned_Model_Matrix
-                       (Property.Model_Mat);
-                     Mesh_Index := aScript.Mesh_Index;
-                     Bone_Count := Mesh_Loader.Bone_Count (Mesh_Index);
-                     Shadows.Set_Depth_Skinned_Bone_Matrices
-                       (Property.Current_Bone_Transforms);
-                  elsif Script_Type = Diamond_Trigger_Prop then
-                     Rot_Dia := Rotate_Y_Degree
-                       (Singles.Identity4, Degree (Hdg_Dia) +
-                            Property.Heading_Deg);
-                     Trans := Property.World_Pos;
-                     Trans (GL.Y) := Trans (GL.Y)  + Hdg_Dia;
-                     Trans_Dia := Translation_Matrix (Trans);
-                     Shadows.Set_Depth_Model_Matrix (Trans_Dia * Rot_Dia);
+               if Property.Is_Visible or GL_Utils.Is_Edit_Mode then
+                  if aScript.Uses_Sprite then
+                     Prop_Size := aScript.Sprite_Map_Rows *
+                       aScript.Sprite_Map_Cols;
+                     Sprite_Time := aScript.Sprite_Timer * Float (Prop_Size);
+                     Property.Sprite_Duration := Property.Sprite_Duration +
+                       Float (Elapsed);
+                     if Property.Sprite_Duration > Sprite_Time then
+                        Property.Sprite_Duration := Property.Sprite_Duration -
+                          Sprite_Time;
+                     end if;
+
+                     Curr_Sprite := Positive (Property.Sprite_Duration /
+                                                aScript.Sprite_Timer);
+                     Sprite_Renderer.Set_Sprite_Current_Sprite
+                       (Property.Sprite_Index, Curr_Sprite);
+                     Properties.Replace_Element (Props_Index, Property);
+
+                  elsif Frustum.Is_Sphere_In_Frustum
+                    (Property.Origin_World, aScript.Bounding_Radius) and
+                    aScript.Transparent then
+                     Add_Transparency_Item
+                       (Tr_Prop, Props_Index, Property.Origin_World,
+                        aScript.Bounding_Radius);
                   else
-                     Shadows.Set_Depth_Model_Matrix (Property.Model_Mat);
+                     if Prop_Type = Anim_Loop_Prop then
+                        Update_Anim_Looped_Prop (Props_Index, Elapsed);
+                     end if;
+                     case Prop_Type is
+                        when Door_Prop | Pillar_Prop| Anim_Loop_Prop |
+                           Windlass_Prop =>
+                           Skinned_Props_Render_List.Append (Props_Index);
+                        when Elevator_Prop =>
+                           Basic_Props_Render_List.Append (Props_Index);
+                        when Jav_Stand_Prop | Tavern_Prop |
+                             Diamond_Trigger_Prop =>
+                           Jav_Stand_Props_Render_List.Append (Props_Index);
+                        when Portal_Prop =>
+                           Portal_Props_Render_List.Append (Props_Index);
+                        when Treasure_Prop | Hammer_Prop | Food_Prop =>
+                           Treasure_Props_Render_List.Append (Props_Index);
+                        when others =>
+                           Basic_Props_Render_List.Append (Props_Index);
+                     end case;
                   end if;
-                  Draw_Arrays (Triangles, 0, aScript.Vertex_Count);
                end if;
             end loop;
          end loop;
       end loop;
+
+      Prop_Dyn_Light_Dirty := False;
    end Render_Props_Around_Split;
 
    --  -------------------------------------------------------------------------
@@ -547,6 +563,13 @@ package body Prop_Renderer is
       Particle_System.Set_Particle_System_Position (Splash_Particles, Pos);
       Particle_System.Start_Particle_System (Splash_Particles);
    end Splash_Particles_At;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Update_Anim_Looped_Prop (Prop_Index : Positive; Seconds : Single) is
+   begin
+      null;
+   end Update_Anim_Looped_Prop;
 
    --  -------------------------------------------------------------------------
 
