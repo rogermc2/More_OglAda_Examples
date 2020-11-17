@@ -13,6 +13,7 @@ package Coins_Shader_Manager is
     procedure Set_Ol_Pass (Ol_Pass : Single);
     procedure Set_Perspective (Perspective_Matrix : Singles.Matrix4);
     procedure Set_Shadow_Enabled (Enable : Single);
+    procedure Set_Time (Val : Single);
     procedure Set_View (View_Matrix : Singles.Matrix4);
 
 end Coins_Shader_Manager;

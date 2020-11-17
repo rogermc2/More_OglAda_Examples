@@ -9,6 +9,7 @@ package Transparency is
                                     Render_ID : Positive;
                                     Position  : GL.Types.Singles.Vector3;
                                     Brad      : GL.Types.Single);
+   procedure Draw_Transparency_List;
    procedure Reset_Transparency_List (Camera_Position : GL.Types.Singles.Vector3);
 
 end Transparency;

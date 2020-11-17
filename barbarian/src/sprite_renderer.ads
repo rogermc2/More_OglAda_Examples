@@ -25,7 +25,7 @@ package Sprite_Renderer is
                                    World_Pos : Singles.Vector3);
     procedure Set_Sprite_Scale (Sprite_Index : Integer; Scale : Singles.Vector3);
     procedure Set_Sprite_Visible (Sprite_Index : Integer; Visible : Boolean);
-    procedure Start_Sprite_Rendering (G_Camera : Camera.Camera_Data);
+    procedure Start_Sprite_Rendering;
     procedure Update_Dynamic_Light (Pos_Wor, Diff, Spec : Singles.Vector3;
                                             Light_Range : Float);
     procedure Update_Static_Lights_Uniforms;

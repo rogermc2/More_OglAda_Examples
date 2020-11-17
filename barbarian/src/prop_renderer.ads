@@ -2,6 +2,7 @@
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Types; use GL.Types;
 
@@ -65,9 +66,9 @@ package Prop_Renderer is
 
       -- Textures
       -- --------
-      Diffuse_Map_Id        : Int := 0;
-      Specular_Map_Id       : Int := 0;
-      Normal_Map_Id         : Int := 0;
+      Diffuse_Map_Id        : GL.Objects.Textures.Texture;
+      Specular_Map_Id       : GL.Objects.Textures.Texture;
+      Normal_Map_Id         : GL.Objects.Textures.Texture;
       Uses_Normal_Map       : Boolean := False;
 
       -- Special Rendering Modes
@@ -224,6 +225,7 @@ package Prop_Renderer is
    function Get_Property_Data (Prop_Index : Positive) return Property_Data;
    function Get_Script_Data (Script_Index : Positive) return Prop_Script;
    function Get_Script_Index (Prop_Index : Positive) return Positive;
+   procedure Render_Property (Prop_ID : Positive);
    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
    procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int);
    procedure Reset_Properties;

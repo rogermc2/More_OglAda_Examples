@@ -100,6 +100,13 @@ package body Coins_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
+   procedure Set_Ol_Pass (Ol_Pass : Single) is
+   begin
+      GL.Uniforms.Set_Single (Property_Uniforms.Ol_Pass_ID, Ol_Pass);
+   end Set_Ol_Pass;
+
+   --  -------------------------------------------------------------------------
+
    procedure Set_Perspective (Perspective_Matrix : Singles.Matrix4) is
    begin
       GL.Uniforms.Set_Single (Property_Uniforms.Perspective_ID,
@@ -108,17 +115,17 @@ package body Coins_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Ol_Pass (Ol_Pass : Single) is
-   begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Ol_Pass_ID, Ol_Pass);
-   end Set_Ol_Pass;
-
-   --  -------------------------------------------------------------------------
-
    procedure Set_Shadow_Enabled (Enable : Single) is
    begin
       GL.Uniforms.Set_Single (Property_Uniforms.Shadow_Enabled_ID, Enable);
    end Set_Shadow_Enabled;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Time (Val : Single) is
+   begin
+      GL.Uniforms.Set_Single (Property_Uniforms.Time_ID, Val);
+   end Set_Time;
 
    --  -------------------------------------------------------------------------
 

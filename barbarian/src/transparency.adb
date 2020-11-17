@@ -1,7 +1,13 @@
 
 with Ada.Containers.Vectors;
 
+with GL.Blending;
+with GL.Buffers;
+with GL.Toggles;
+
 with Maths;
+
+with Sprite_Renderer;
 
 package body Transparency is
 
@@ -24,6 +30,36 @@ package body Transparency is
    TR_Closest_Node    : Natural := 0;
    TR_Farthest_Node   : Natural := 0;
    TR_Camera_Position : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Draw_Transparency_List is
+      use GL.Blending;
+      use GL.Toggles;
+      Curr_Type : Transparency_Type := Tr_Undef;
+      Inspect   : Natural := TR_Farthest_Node;
+      Item_Type : Transparency_Type;
+      Node      : TR_Node;
+   begin
+      Enable (Blend);
+      Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
+      GL.Buffers.Depth_Mask (False);
+      Enable (Depth_Test);
+
+      while Inspect /= 0 loop
+         Node := TR_Nodes.Element (Inspect);
+         Item_Type := Node.Tr_Type;
+         if Item_Type /= Curr_Type and Item_Type = Tr_Sprite then
+            Sprite_Renderer.Start_Sprite_Rendering;
+         end if;
+         if Item_Type = Tr_Sprite then
+            Sprite_Renderer.Render_Sprite (Node.Render_Id);
+         else
+            Prop_Renderer.re
+         end if;
+      end loop;
+
+   end Draw_Transparency_List;
 
    --  ----------------------------------------------------------------------------
 

@@ -1,7 +1,6 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
 with GL.Uniforms;
@@ -45,14 +44,7 @@ package body Properties_Shader_Manager is
         Caster_Pos_World_ID     : GL.Uniforms.Uniform := 0;
     end record;
 
-    Property_Uniforms      : Properties_Uniforms;
-    Prop_Shader            : Program;  --  Basic shader
-    Prop_Skinned_Shader    : Program;  --  Skinned shader
-    Coins_Shader           : Program;  --  Shiny treasure shader
-    Jav_Stand_Shader       : Program;  --  Pulsing 'look at me' lighting shader
-    Portal_Shader          : Program;  --  Wobbly portal shader
-    Bounding_Sphere_Shader : Program;  --  Bounding sphere shader
-
+    Property_Uniforms           : Properties_Uniforms;
     Sphere_Mesh_Index           : Integer := 0;
     Bounding_Sphere_VAO         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Bounding_Sphere_Point_Count : Integer := 0;

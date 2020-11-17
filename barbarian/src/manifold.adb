@@ -279,7 +279,7 @@ package body Manifold is
    --  ----------------------------------------------------------------------------
 
    function Get_Light_Index (Column, Row : GL.Types.Int; Light_Number : Integer)
-                             return Integer is
+                             return GL.Types.Int is
       use GL.Types;
       use Batch_Manager;
       use Tile_Indices_Package;
@@ -291,7 +291,7 @@ package body Manifold is
       --        Light_Index   : Positive;
       --        theLight      : Batch_Manager.Static_Light_Data;
       Found         : Boolean := False;
-      Result        : Integer := -1;
+      Result        : Int := -1;
    begin
       if not Batches.Is_Empty then
          Batch := Batches.Element (Batch_Index);
@@ -315,7 +315,7 @@ package body Manifold is
       if Found then
          --           Light_Index := Element (Light_Cursor);
          --           theLight := Static_Lights.Element (Light_Index);
-         Result := Element (Light_Cursor);
+         Result := Int (Element (Light_Cursor));
       end if;
       return Result;
    end Get_Light_Index;

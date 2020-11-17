@@ -14,7 +14,7 @@ package Manifold is
    procedure Draw_Manifold_Around_Depth_Only;
    procedure Free_Manifold_Mesh_Data;
    function Get_Light_Index (Column, Row  : GL.Types.Int;
-                             Light_Number : Integer) return Integer;
+                             Light_Number : Integer) return GL.Types.Int;
    procedure Init;
    function Is_Ramp (Row, Col : GL.Types.Int) return Boolean;
    function Is_Water (Row, Col : GL.Types.Int) return Boolean;

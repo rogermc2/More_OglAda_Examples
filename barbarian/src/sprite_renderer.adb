@@ -269,13 +269,13 @@ package body Sprite_Renderer is
     --  disable writing to depth buffer but still allow testing it
     --  for 3d transparency.
     --  glDepthMask (GL_FALSE);
-    procedure Start_Sprite_Rendering (G_Camera : Camera.Camera_Data) is
+    procedure Start_Sprite_Rendering is
     begin
         GL_Utils.Bind_VAO (Sprite_VAO);
         Sprite_Shader_Manager.Use_Sprite_Shader;
-        if G_Camera.Is_Dirty then
-            Sprite_Shader_Manager.Set_View (G_Camera.View_Matrix);
-            Sprite_Shader_Manager.Set_Perspective (G_Camera.Projection_Matrix);
+        if Camera.Is_Dirty then
+            Sprite_Shader_Manager.Set_View (Camera.View_Matrix);
+            Sprite_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
         end if;
 
         if Settings.Shadows_Enabled then
