@@ -7,6 +7,7 @@ with GL.Toggles;
 with Audio;
 with Batch_Manager;
 with Camera;
+with Character_Controller;
 with Coins_Shader_Manager;
 with Depth_Skinned_Shader_Manager;
 with Event_Controller;
@@ -222,7 +223,8 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Script_Data (Script_Index : Positive) return Prop_Script is
+   function Get_Script_Data (Script_Index : Positive)
+                             return Prop_Renderer_Support.Prop_Script is
    begin
       return Scripts.Element (Script_Index);
    end Get_Script_Data;
@@ -329,7 +331,7 @@ package body Prop_Renderer is
       use Properties_Shader_Manager;
       Curr_Time    : Single;
       Elapsed_Time : Single;
-      Property     : constant Property_Data := Properties.Element (Prop_ID);
+      Property     : Property_Data := Properties.Element (Prop_ID);
       Script_ID    : Positive := Property.Script_Index;
       aScript      : Prop_Script := Scripts.Element (Script_ID);
       SSI          : constant Natural := aScript.Smashed_Script_Index;
@@ -357,8 +359,9 @@ package body Prop_Renderer is
       Texture_Manager.Bind_Texture (1, aScript.Specular_Map_Id);
       Texture_Manager.Bind_Texture (2, aScript.Normal_Map_Id);
 
-      Set_Shaders (Property, Prop_Type);
-
+      Set_Shaders (Property, Prop_Type, aScript,
+                   Character_Controller.Gold_Current, Elapsed_Time);
+      Properties.Replace_Element (Prop_ID, Property);
 
    end Render_Property;
 
