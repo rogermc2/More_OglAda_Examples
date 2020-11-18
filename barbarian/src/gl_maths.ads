@@ -46,6 +46,8 @@ package GL_Maths is
    function From_Real_Matrix4 (R_Matrix : Single_Matrix) return Singles.Matrix4;
    function From_Real_Vector3 (R_Vec : Single_Vector) return Singles.Vector3;
    function From_Real_Vector4 (R_Vec : Single_Vector) return Singles.Vector4;
+   function Lerp (Vec_A, Vec_B : Singles.Vector3; T : Single)
+                  return Singles.Vector3;
    function Quat_From_Axis_Degree (Angle : Maths.Degree; X, Y, Z : Single)
                                    return Maths.Single_Quaternion.Quaternion;
    function Quat_From_Axis_Radian (Angle : Maths.Radian; X, Y, Z : Single)

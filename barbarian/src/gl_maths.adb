@@ -70,6 +70,15 @@ package body GL_Maths is
 
    --  -------------------------------------------------------------------------
 
+   function Lerp (Vec_A, Vec_B : Singles.Vector3; T : Single)
+                  return Singles.Vector3 is
+      use Singles;
+   begin
+      return Vec_A * T + Vec_B * (1.0 - T);
+   end Lerp;
+
+   --  -------------------------------------------------------------------------
+
    function Quat_From_Axis_Degree (Angle : Maths.Degree; X, Y, Z : Single)
                                    return Maths.Single_Quaternion.Quaternion is
    begin
