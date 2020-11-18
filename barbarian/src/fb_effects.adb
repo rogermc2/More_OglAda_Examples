@@ -11,7 +11,6 @@ with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Pixels;
-with GL.Types; use GL.Types;
 with GL.Window;
 
 with Game_Utils;
@@ -29,6 +28,7 @@ with FB_White_Shader_Manager;
 with FB_Green_Shader_Manager;
 
 package body FB_Effects is
+   use GL.Types;
 
    Num_Shader_Effects   : constant Integer := 9;
    Effect_Elapsed       : Float := 0.0;
@@ -62,6 +62,13 @@ package body FB_Effects is
             Int (Single (Settings.Framebuffer_Height)));
       end if;
    end Bind_Main_Scene_FB;
+
+   --  -------------------------------------------------------------------------
+
+   function Current_SSAA return GL.Types.Single is
+   begin
+      return Curr_Ssaa;
+   end Current_SSAA;
 
    --  -------------------------------------------------------------------------
 

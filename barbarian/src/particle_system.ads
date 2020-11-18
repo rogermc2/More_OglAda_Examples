@@ -28,6 +28,8 @@ package Particle_System is
    procedure Init;
    function Is_Running (System_ID : Positive) return Boolean;
    function Length return Positive;
+
+   procedure Render_Particle_Systems (Seconds : Single);
    function Script_Index (System_ID : Positive) return Positive;
    procedure Set_Particle_System_Heading (System_ID : Positive;
                                           Heading : Maths.Degree);
@@ -36,6 +38,8 @@ package Particle_System is
    procedure Start_Particle_System (System_ID : Positive);
    procedure Stop_Particle_System (System_ID : Positive);
    procedure Stop_Particle_Systems;
+   procedure Update_Particle_System (System_ID : Positive;
+                                     Seconds : Single);
 
 private
    package Singles_Package is new

@@ -3,10 +3,22 @@ with Ada.Exceptions;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Blending;
+with GL.Buffers;
 with GL.Objects.Programs;
+with GL.Objects.Textures.Targets;
+with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 
+with Camera;
+with FB_Effects;
+with Frustum;
 with Game_Utils;
+with GL_Utils;
 with Particle_System_Shader_Manager;
+with Prop_Renderer;
+with Prop_Renderer_Support;
+with Settings;
 
 package body Particle_System is
 
@@ -14,6 +26,7 @@ package body Particle_System is
    Particle_Systems      : Particle_Systems_List;
 
    Basic_Particles_SP    : GL.Objects.Programs.Program;
+   Last_Script_ID        : Natural := 0;
    Particles_Initialised : Boolean := False;
 
    function Get_Particle_Script_Number
@@ -166,6 +179,70 @@ package body Particle_System is
 
    --  ------------------------------------------------------------------------
 
+   procedure Render_Particle_Systems (Seconds : Single) is
+      use GL.Blending;
+      use GL.Objects.Textures;
+      use GL.Toggles;
+      use Particle_System_Shader_Manager;
+      aSystem          : Particle_System;
+      Script_ID        : Positive;
+      aScript          : Particle_System_Manager.Particle_Script;
+      On_Screen        : Boolean := False;
+   begin
+      if Particles_Initialised and Settings.Particles_Enabled then
+         Enable (Blend);
+         Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
+         GL.Buffers.Depth_Mask (False);
+         Enable (Vertex_Program_Point_Size);
+         Last_Script_ID := 0;
+
+         for index in Particle_Systems.First_Index ..
+           Particle_Systems.Last_Index loop
+            aSystem := Particle_Systems (index);
+            if aSystem.Is_Running then
+               Script_ID := aSystem.Script_Index;
+               aScript := Scripts.Element (Script_ID);
+               On_Screen := True;
+               if aSystem.Always_Draw then
+                  On_Screen := Frustum.Is_Sphere_In_Frustum
+                    (aSystem.Emitter_World_Pos, aScript.Bounding_Radius);
+               end if;
+               if On_Screen or aSystem.Always_Update then
+                  Update_Particle_System (index, Seconds);
+               end if;
+               if On_Screen then
+                  GL_Utils.Bind_VAO (aScript.VAO);
+                  if Script_ID /= Scripts.Last_Index then
+                     Set_Active_Unit (0);
+                     Targets.Texture_2D.Bind (aScript.Texture);
+                     GL.Objects.Programs.Use_Program (Basic_Particles_SP);
+                     if Camera.Is_Dirty then
+                        Set_Perspective_View
+                          (Camera.View_Matrix);
+                     end if;
+                     Set_Initial_Colour (aScript.Initial_Colour);
+                     Set_Final_Colour (aScript.Final_Colour);
+                     Set_Initial_Scale (aScript.Initial_Scale);
+                     Set_Final_Scale (aScript.Final_Scale);
+                     Set_Degrees (aScript.Degrees_Per_Second);
+                     Set_Lifetime (aScript.Particle_Lifetime);
+                     Set_Pixel_Width (Single (Settings.Framebuffer_Width) *
+                                      FB_Effects.Current_SSAA);
+                  end if;
+                  GL.Objects.Vertex_Arrays.Draw_Arrays
+                    (Points, 0, aScript.Particle_Count);
+               end if;
+            end if;
+         end loop;
+
+         Disable (Vertex_Program_Point_Size);
+         GL.Buffers.Depth_Mask (True);
+         Disable (Blend);
+      end if;
+   end Render_Particle_Systems;
+
+   --  ------------------------------------------------------------------------
+
    function Script_Index (System_ID : Positive) return Positive is
       System : constant Particle_System := Particle_Systems.Element (System_ID);
    begin
@@ -265,6 +342,14 @@ package body Particle_System is
          end loop;
       end if;
    end Stop_Particle_Systems;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Update_Particle_System (System_ID : Positive;
+                                    Seconds : Single) is
+   begin
+      null;
+   end Update_Particle_System;
 
    --  ------------------------------------------------------------------------
 

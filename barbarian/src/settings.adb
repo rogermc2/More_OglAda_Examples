@@ -158,6 +158,13 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   function Particles_Enabled return Boolean is
+   begin
+      return G_Settings.Particles_Enabled;
+   end Particles_Enabled;
+
+   --  ------------------------------------------------------------------------
+
    function Render_OLS return Boolean is
    begin
       return G_Settings.Render_OLS;

@@ -26,6 +26,7 @@ package Settings is
    function Multi_Sample_Anti_Aliasing return Integer;
    function Music_Volume return Audio_Volume_Range;
    function Particle_Mipmaps_Enabled return Boolean;
+   function Particles_Enabled return Boolean;
    function Render_OLS return Boolean;
    function Render_Distance return Integer;
    function Save_Settings return Boolean;

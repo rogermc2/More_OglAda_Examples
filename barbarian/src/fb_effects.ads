@@ -1,4 +1,6 @@
 
+with GL.Types;
+
 package FB_Effects is
 
    type FB_Effect is (FB_Default, FB_Gold_Flash, FB_Red_Flash, FB_Fadein,
@@ -8,6 +10,7 @@ package FB_Effects is
    FB_Effects_Exception : Exception;
 
    procedure Bind_Main_Scene_FB;
+   function Current_SSAA return GL.Types.Single;
    procedure Init (Width, Height : Integer);
    procedure Fade_In;
    procedure Fade_Out;

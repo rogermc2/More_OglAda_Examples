@@ -86,6 +86,8 @@ package body Main_Loop.Game_Support is
                                                Int (Settings.Render_Distance));
       Sprite_World_Map.Cache_Sprites_Around (Centre_X, Centre_Z,
                                              Int (Settings.Render_Distance));
+      Transparency.Draw_Transparency_List;
+
    end Player_1_View;
 
    --  -------------------------------------------------------------------------
