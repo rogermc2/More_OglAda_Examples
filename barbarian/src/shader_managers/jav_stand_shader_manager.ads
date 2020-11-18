@@ -8,7 +8,7 @@ package Jav_Stand_Shader_Manager is
      (Jav_Stand_Shader : out GL.Objects.Programs.Program);
    procedure Set_DM (DM : Int);
    procedure Set_Model (Model_Matrix : Singles.Matrix4);
-   procedure Set_Ol_Pass (Ol_Pass : Single);
+   procedure Set_Outline_Pass (Ol_Pass : Single);
    procedure Set_Perspective (Perspective_Matrix : Singles.Matrix4);
    procedure Set_Time (Time : Single);
    procedure Set_View (View_Matrix : Singles.Matrix4);

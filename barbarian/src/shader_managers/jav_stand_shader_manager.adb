@@ -15,7 +15,7 @@ package body Jav_Stand_Shader_Manager is
         Perspective_ID          : GL.Uniforms.Uniform := 0;
         View_ID                 : GL.Uniforms.Uniform := 0;
         Model_ID                : GL.Uniforms.Uniform := 0;
-        Ol_Pass_ID              : GL.Uniforms.Uniform := 0;
+        Outline_Pass_ID         : GL.Uniforms.Uniform := 0;
         Time_ID                 : GL.Uniforms.Uniform := 0;
         DM_ID                   : GL.Uniforms.Uniform := 0;
     end record;
@@ -37,14 +37,14 @@ package body Jav_Stand_Shader_Manager is
         Jav_Stand_Uniforms.Perspective_ID := Uniform_Location (Jav_Stand_Shader, "P");
         Jav_Stand_Uniforms.View_ID := Uniform_Location (Jav_Stand_Shader, "V");
         Jav_Stand_Uniforms.Model_ID :=  Uniform_Location (Jav_Stand_Shader, "M");
-        Jav_Stand_Uniforms.Ol_Pass_ID :=  Uniform_Location (Jav_Stand_Shader, "ol_pass");
+        Jav_Stand_Uniforms.Outline_Pass_ID :=  Uniform_Location (Jav_Stand_Shader, "ol_pass");
         Jav_Stand_Uniforms.DM_ID :=  Uniform_Location (Jav_Stand_Shader, "dm");
         Jav_Stand_Uniforms.Time_ID :=  Uniform_Location (Jav_Stand_Shader, "time");
 
         Use_Program (Jav_Stand_Shader);
         GL.Uniforms.Set_Int (Jav_Stand_Uniforms.DM_ID, 0);
         GL.Uniforms.Set_Single (Jav_Stand_Uniforms.Model_ID, Identity4);
-        GL.Uniforms.Set_Single (Jav_Stand_Uniforms.Ol_Pass_ID, 0.0);
+        GL.Uniforms.Set_Single (Jav_Stand_Uniforms.Outline_Pass_ID, 0.0);
         GL.Uniforms.Set_Single (Jav_Stand_Uniforms.Perspective_ID, Identity4);
         GL.Uniforms.Set_Single (Jav_Stand_Uniforms.Time_ID, 0.0);
         GL.Uniforms.Set_Single (Jav_Stand_Uniforms.View_ID, Identity4);
@@ -79,10 +79,10 @@ package body Jav_Stand_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Ol_Pass (Ol_Pass : Single) is
+    procedure Set_Outline_Pass (Ol_Pass : Single) is
     begin
-        GL.Uniforms.Set_Single (Jav_Stand_Uniforms.Ol_Pass_ID, Ol_Pass);
-    end Set_Ol_Pass;
+        GL.Uniforms.Set_Single (Jav_Stand_Uniforms.Outline_Pass_ID, Ol_Pass);
+    end Set_Outline_Pass;
 
     --  -------------------------------------------------------------------------
 

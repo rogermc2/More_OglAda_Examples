@@ -1,6 +1,7 @@
 
 with Glfw;
 
+with GL.Culling;
 with GL.Objects.Programs;
 with GL.Toggles;
 
@@ -327,6 +328,7 @@ package body Prop_Renderer is
    --  -------------------------------------------------------------------------
 
    procedure Render_Property (Prop_ID : Positive) is
+      use GL.Culling;
       use Prop_Indices_Package;
       use Properties_Shader_Manager;
       Curr_Time    : Single;
@@ -362,6 +364,11 @@ package body Prop_Renderer is
       Set_Shaders (Property, Prop_Type, aScript,
                    Character_Controller.Gold_Current, Elapsed_Time);
       Properties.Replace_Element (Prop_ID, Property);
+
+      if Settings.Render_OLS and aScript.Draw_Outlines then
+         Set_Outline_Shaders (Prop_Type, aScript);
+      end if;
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, aScript.Vertex_Count);
 
    end Render_Property;
 

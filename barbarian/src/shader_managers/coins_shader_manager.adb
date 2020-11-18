@@ -17,7 +17,7 @@ package body Coins_Shader_Manager is
       Perspective_ID          : GL.Uniforms.Uniform := 0;
       View_ID                 : GL.Uniforms.Uniform := 0;
       Model_ID                : GL.Uniforms.Uniform := 0;
-      Ol_Pass_ID              : GL.Uniforms.Uniform := 0;
+      Outline_Pass_ID         : GL.Uniforms.Uniform := 0;
       Time_ID                 : GL.Uniforms.Uniform := 0;
       DM_ID                   : GL.Uniforms.Uniform := 0;
       Shadow_Enabled_ID       : GL.Uniforms.Uniform := 0;
@@ -43,7 +43,7 @@ package body Coins_Shader_Manager is
       Property_Uniforms.View_ID := Uniform_Location (Coins_Shader, "V");
       Property_Uniforms.Model_ID :=  Uniform_Location (Coins_Shader, "M");
       Property_Uniforms.DM_ID :=  Uniform_Location (Coins_Shader, "dm");
-      Property_Uniforms.Ol_Pass_ID :=  Uniform_Location (Coins_Shader, "ol_pass");
+      Property_Uniforms.Outline_Pass_ID :=  Uniform_Location (Coins_Shader, "ol_pass");
       Property_Uniforms.Shadow_Enabled_ID :=
         Uniform_Location (Coins_Shader, "shadow_enabled");
       Property_Uniforms.Time_ID :=  Uniform_Location (Coins_Shader, "time");
@@ -57,7 +57,7 @@ package body Coins_Shader_Manager is
       GL.Uniforms.Set_Int (Property_Uniforms.Cube_Texture_ID, 1);
       GL.Uniforms.Set_Int (Property_Uniforms.DM_ID, 0);
       GL.Uniforms.Set_Single (Property_Uniforms.Model_ID, Identity4);
-      GL.Uniforms.Set_Single (Property_Uniforms.Ol_Pass_ID, 0.0);
+      GL.Uniforms.Set_Single (Property_Uniforms.Outline_Pass_ID, 0.0);
       GL.Uniforms.Set_Single (Property_Uniforms.Perspective_ID, Identity4);
       GL.Uniforms.Set_Single (Property_Uniforms.Shadow_Enabled_ID, 0.0);
       GL.Uniforms.Set_Single (Property_Uniforms.Time_ID, 0.0);
@@ -100,10 +100,10 @@ package body Coins_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Ol_Pass (Ol_Pass : Single) is
+   procedure Set_Outline_Pass (Ol_Pass : Single) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Ol_Pass_ID, Ol_Pass);
-   end Set_Ol_Pass;
+      GL.Uniforms.Set_Single (Property_Uniforms.Outline_Pass_ID, Ol_Pass);
+   end Set_Outline_Pass;
 
    --  -------------------------------------------------------------------------
 

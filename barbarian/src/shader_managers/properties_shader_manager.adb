@@ -23,7 +23,7 @@ package body Properties_Shader_Manager is
         Perspective_ID          : GL.Uniforms.Uniform := 0;
         View_ID                 : GL.Uniforms.Uniform := 0;
         Model_ID                : GL.Uniforms.Uniform := 0;
-        Ol_Pass_ID              : GL.Uniforms.Uniform := 0;
+        Outline_Pass_ID         : GL.Uniforms.Uniform := 0;
         Dyn_Light_Pos_World_ID  : GL.Uniforms.Uniform := 0;
         Dyn_Light_Diff_ID       : GL.Uniforms.Uniform := 0;
         Dyn_Light_Spec_ID       : GL.Uniforms.Uniform := 0;
@@ -72,7 +72,8 @@ package body Properties_Shader_Manager is
         Property_Uniforms.View_ID := Uniform_Location (Prop_Shader, "V");
         Property_Uniforms.Model_ID :=
           Uniform_Location (Prop_Shader, "M");
-        Property_Uniforms.Ol_Pass_ID := Uniform_Location (Prop_Shader, "ol_pass");
+      Property_Uniforms.Outline_Pass_ID :=
+        Uniform_Location (Prop_Shader, "ol_pass");
         Property_Uniforms.Dyn_Light_Pos_World_ID :=
           Uniform_Location (Prop_Shader, "dyn_light_pos_wor");
         Property_Uniforms.Dyn_Light_Diff_ID :=
@@ -126,7 +127,7 @@ package body Properties_Shader_Manager is
         GL.Uniforms.Set_Single (Property_Uniforms.Light_Range_ID, Range_Init);
         GL.Uniforms.Set_Single (Property_Uniforms.Model_ID, Identity4);
         GL.Uniforms.Set_Int (Property_Uniforms.Norm_Map_ID, 0);
-        GL.Uniforms.Set_Single (Property_Uniforms.Ol_Pass_ID, 0.0);
+        GL.Uniforms.Set_Single (Property_Uniforms.Outline_Pass_ID, 0.0);
         GL.Uniforms.Set_Single (Property_Uniforms.Perspective_ID, Identity4);
         GL.Uniforms.Set_Single (Property_Uniforms.Shadow_Enabled_ID, 0.0);
         GL.Uniforms.Set_Int (Property_Uniforms.Spec_Map_ID, 0);
@@ -312,10 +313,10 @@ package body Properties_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Ol_Pass (Ol_Pass : Single) is
+    procedure Set_Outline_Pass (Ol_Pass : Single) is
     begin
-        GL.Uniforms.Set_Single (Property_Uniforms.Ol_Pass_ID, Ol_Pass);
-    end Set_Ol_Pass;
+        GL.Uniforms.Set_Single (Property_Uniforms.Outline_Pass_ID, Ol_Pass);
+    end Set_Outline_Pass;
 
     --  -------------------------------------------------------------------------
 

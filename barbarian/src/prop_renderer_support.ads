@@ -165,9 +165,9 @@ package Prop_Renderer_Support is
 
       -- Particle Emitters Attached To Prop
       -- ----------------------------------
-      Particles_Offset       : Singles.Vector3 := Maths.Vec3_0;
+      Particles_Offset          : Singles.Vector3 := Maths.Vec3_0;
       Particle_Script_File_Name : Unbounded_String := To_Unbounded_String ("");
-      Has_Particles           : Boolean := False;
+      Has_Particles             : Boolean := False;
 
       -- Triggers
       Character_Activated     : Boolean := False;
@@ -200,8 +200,10 @@ package Prop_Renderer_Support is
       Sound_Activate_File_Name : Unbounded_String := To_Unbounded_String ("");
    end record;
 
-   procedure Set_Shaders (Property  : in out Property_Data;
-                          Prop_Type : Property_Type;
+   procedure Set_Outline_Shaders (Prop_Type : Property_Type;
+                                  aScript   : in out Prop_Script);
+   procedure Set_Shaders (Property     : in out Property_Data;
+                          Prop_Type    : Property_Type;
                           aScript      : Prop_Script;
                           Gold_Current : Integer;
                           Elapsed      : Single);

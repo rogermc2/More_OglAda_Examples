@@ -32,7 +32,7 @@ package Properties_Shader_Manager is
     procedure Set_Light_Range (Light_Range : Light_Range_Array);
     procedure Set_Model (Model_Matrix : Singles.Matrix4);
     procedure Set_Norm_Map (Norm_Map : Int);
-    procedure Set_Ol_Pass (Ol_Pass : Single);
+    procedure Set_Outline_Pass (Ol_Pass : Single);
     procedure Set_Perspective (Perspective_Matrix : Singles.Matrix4);
     procedure Set_Shadow_Enabled (Enable : Single);
     procedure Set_Spec_Map (Spec_Map : Int);

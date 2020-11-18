@@ -1,6 +1,7 @@
 
 with Glfw;
 
+with  GL.Culling;
 with GL.Objects.Programs;
 
 with Camera;
@@ -8,6 +9,7 @@ with Character_Controller;
 with Coins_Shader_Manager;
 with Depth_Skinned_Shader_Manager;
 with GL_Maths;
+with GL_Utils;
 with Jav_Stand_Shader_Manager;
 with Manifold;
 with Portal_Shader_Manager;
@@ -99,6 +101,66 @@ package body Prop_Renderer_Support is
 
    --  -------------------------------------------------------------------------
 
+   procedure Draw_Outline (aScript : in out Prop_Script) is
+
+   begin
+      if aScript.Outlines_Vertex_Count > 0 then
+         GL_Utils.Bind_VAO (aScript.Outlines_Vao);
+         GL.Objects.Vertex_Arrays.Draw_Arrays
+           (Triangles, 0, aScript.Outlines_Vertex_Count);
+         GL_Utils.Bind_VAO (aScript.Vao);
+      else
+         GL.Objects.Vertex_Arrays.Draw_Arrays
+           (Triangles, 0, aScript.Vertex_Count);
+      end if;
+   end Draw_Outline;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Outline_Shaders (Prop_Type    : Property_Type;
+                                  aScript      : in out Prop_Script) is
+      use GL.Culling;
+      use Properties_Shader_Manager;
+      use Singles;
+      use Maths;
+      use GL_Maths;
+      use Singles_Array_Package;
+      aCharacter   : Character_Controller.Barbarian_Character;
+   begin
+      Set_Front_Face (Clockwise);
+      if Prop_Type = Door_Prop or Prop_Type = Pillar_Prop or
+        Prop_Type = Anim_Loop_Prop or Prop_Type = Windlass_Prop then
+         Properties_Skinned_Shader_Manager.Set_Outline_Pass (1.0);
+         Draw_Outline (aScript);
+         Properties_Skinned_Shader_Manager.Set_Outline_Pass (0.0);
+
+      elsif Prop_Type = Treasure_Prop or Prop_Type = Hammer_Prop or
+        Prop_Type = Food_Prop then
+         Coins_Shader_Manager.Set_Outline_Pass (1.0);
+         Draw_Outline (aScript);
+         Coins_Shader_Manager.Set_Outline_Pass (0.0);
+
+      elsif Prop_Type = Jav_Stand_Prop or Prop_Type = Diamond_Trigger_Prop or
+        Prop_Type = Tavern_Prop then
+         Jav_Stand_Shader_Manager.Set_Outline_Pass (1.0);
+         Draw_Outline (aScript);
+         Jav_Stand_Shader_Manager.Set_Outline_Pass (0.0);
+
+      elsif Prop_Type = Portal_Prop then
+         GL.Objects.Vertex_Arrays.Draw_Arrays
+           (Triangles, 0, aScript.Vertex_Count);
+
+      else
+         Properties_Shader_Manager.Set_Outline_Pass (1.0);
+         Draw_Outline (aScript);
+         Properties_Shader_Manager.Set_Outline_Pass (0.0);
+      end if;
+
+      Set_Front_Face (Counter_Clockwise);
+   end Set_Outline_Shaders;
+
+   --  -------------------------------------------------------------------------
+
    procedure Set_Shaders (Property     : in out  Property_Data;
                           Prop_Type    : Property_Type;
                           aScript      : Prop_Script;
@@ -173,10 +235,10 @@ package body Prop_Renderer_Support is
          end if;
          Properties_Shader_Manager.Set_Model (Property.Model_Mat);
          Properties_Shader_Manager.Set_Inverse_Map
-          (From_Real_Matrix4 (Inverse (To_Real_Matrix4 (Property.Model_Mat))));
+           (From_Real_Matrix4 (Inverse (To_Real_Matrix4 (Property.Model_Mat))));
          Properties_Shader_Manager.Set_Static_Light_Indices
            ((Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 0),
-             Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 1)));
+            Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 1)));
       end if;
 
    end Set_Shaders;
