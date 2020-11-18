@@ -1,5 +1,4 @@
 
-with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
@@ -11,14 +10,16 @@ with GL.Types; use GL.Types;
 
 with Maths;
 
-with GL_Maths;
-
 package Particle_System_Manager is
-    use Singles;
+   use Singles;
+
+    package Velocity_Package is new Ada.Containers.Vectors
+      (Positive, Singles.Vector3);
+    type Velocity_List is new Velocity_Package.Vector with null record;
 
     type Particle_Script is record
-        Particle_Count                   : Int := 0;
-        Particle_Initial_Velocity        : GL_Maths.Vector3_List;
+        Particle_Count                   : Integer := 0;
+        Particle_Initial_Velocity        : Velocity_List;
         Acceleration                     : Singles.Vector3 := Maths.Vec3_0;
         Initial_Colour                   : Singles.Vector4 := Maths.Vec4_0;
         Final_Colour                     : Singles.Vector4 := Maths.Vec4_0;
@@ -30,7 +31,7 @@ package Particle_System_Manager is
         Total_System_Seconds             : Single := 0.0;
         Particle_Lifetime                : Single := 0.0;
         Seconds_Between                  : Single := 0.0;
-        Rotate_Emitter_Around_Degs_Per_S : Single := 0.0;
+        Rotate_Emitter_Around_Degs_Per_S : Maths.Degree := 0.0;
         Initial_Scale                    : Single := 0.0;
         Final_Scale                      : Single := 0.0;
         Degrees_Per_Second               : Single := 0.0;

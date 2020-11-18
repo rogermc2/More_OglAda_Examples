@@ -100,8 +100,8 @@ package body Particle_System is
            " Particle_System.Get_Particle_Script_Number Particles not initialised.";
       else
          while Has_Element (Curs) and not Found loop
---              Game_Utils.Game_Log (" Particle_System.Get_Particle_Script_Number" &
---                                  " existing Script_Name: " & To_String (Element (Curs).Script_Name));
+            --              Game_Utils.Game_Log (" Particle_System.Get_Particle_Script_Number" &
+            --                                  " existing Script_Name: " & To_String (Element (Curs).Script_Name));
             Found := To_String (Element (Curs).Script_Name) = Name;
             if Found then
                Script_Number := To_Index (Curs);
@@ -227,10 +227,10 @@ package body Particle_System is
                      Set_Degrees (aScript.Degrees_Per_Second);
                      Set_Lifetime (aScript.Particle_Lifetime);
                      Set_Pixel_Width (Single (Settings.Framebuffer_Width) *
-                                      FB_Effects.Current_SSAA);
+                                        FB_Effects.Current_SSAA);
                   end if;
                   GL.Objects.Vertex_Arrays.Draw_Arrays
-                    (Points, 0, aScript.Particle_Count);
+                    (Points, 0, Int (aScript.Particle_Count));
                end if;
             end if;
          end loop;
@@ -252,7 +252,7 @@ package body Particle_System is
    --  ------------------------------------------------------------------------
 
    procedure Set_Particle_System_Heading (System_ID : Positive;
-                                          Heading : Maths.Degree) is
+                                          Heading   : Maths.Degree) is
       theSystem : Particle_System;
    begin
       if Particles_Initialised then
@@ -264,8 +264,8 @@ package body Particle_System is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Particle_System_Position (System_ID : Positive;
-                                          Emitter_World_Pos : Singles.Vector3) is
+   procedure Set_Particle_System_Position (System_ID         : Positive;
+                                           Emitter_World_Pos : Singles.Vector3) is
       theSystem : Particle_System;
    begin
       if Particles_Initialised then
@@ -345,10 +345,78 @@ package body Particle_System is
 
    --  ------------------------------------------------------------------------
 
-   procedure Update_Particle_System (System_ID : Positive;
-                                    Seconds : Single) is
+   procedure Update_Dynamic_Buffers
+     (aSystem: Particle_System; aScript : Particle_System_Manager.Particle_Script) is
    begin
       null;
+
+   end Update_Dynamic_Buffers;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Update_Particle_System (System_ID : Positive;
+                                     Seconds   : Single) is
+      use Maths;
+      use GL_Maths;
+      use Vec3_Package;
+      theSystem      : Particle_System;
+      theScript      : Particle_System_Manager.Particle_Script;
+      Emmiter_Offs   : Singles.Vector3;
+      Curr_Vec       : Singles.Vector3;
+      Deg            : Degree;
+      Tel_Rot        : Singles.Matrix4;
+      Offset         : Singles.Vector4;
+      F              : Single;
+      Age            : Single;
+   begin
+      if (Particles_Initialised or Settings.Particles_Enabled) then
+         theSystem := Particle_Systems.Element (System_ID);
+         if theSystem.Is_Running then
+            theSystem.System_Age := theSystem.System_Age + Float (Seconds);
+            theScript := Scripts (theSystem.Script_Index);
+            theSystem.Is_Running := theScript.Is_Looping or
+              theSystem.System_Age < Float (theScript.Total_System_Seconds);
+            if theSystem.Is_Running then
+               Emmiter_Offs := theSystem.Emitter_World_Pos;
+            end if;
+            Particle_Systems.Replace_Element (System_ID, theSystem);
+            if theScript.Rotate_Emitter_Around then
+               Deg := Degree (theSystem.System_Age) *
+                 theScript.Rotate_Emitter_Around_Degs_Per_S;
+               Tel_Rot := Rotate_Y_Degree (Identity4, Deg);
+               Offset := Tel_Rot * To_Vector4 (theScript.Rotate_Emitter_Around_Offs);
+               Emmiter_Offs := Emmiter_Offs + To_Vector3 (Offset);
+            end if;
+            if theScript.Anim_Move_Emitter then
+               F := 1.0 - Single (theSystem.System_Age) /
+                 theScript.Total_System_Seconds;
+                 Emmiter_Offs := Emmiter_Offs +
+                   GL_Maths.Lerp (theScript.Anim_Move_Emitter_From,
+                                    theScript.Anim_Move_Emitter_To, F);
+            end if;
+
+            for index in 1 .. theScript.Particle_Count loop
+               Age := theSystem.Particle_Ages.Element (index) + Seconds;
+               theSystem.Particle_Ages.Replace_Element (index, Age);
+               if Age < 0.00001 then
+                  theSystem.Particle_Positions.Replace_Element (index, Emmiter_Offs);
+               else
+                  if Age >= theScript.Particle_Lifetime then
+                     theSystem.Particle_Ages.Replace_Element
+                       (index, Single (index) * theScript.Seconds_Between);
+                     theSystem.Particle_Positions.Replace_Element (index, Emmiter_Offs);
+                  end if;
+                  Curr_Vec := theScript.Particle_Initial_Velocity.Element (index) +
+                    theScript.Acceleration * theSystem.Particle_Ages.Element (index);
+                  Curr_Vec := To_Vector3 (theSystem.Rot_Mat * To_Vector4 (Curr_Vec));
+                  Curr_Vec := Seconds * Curr_Vec +
+                    theSystem.Particle_Positions.Element (index);
+                  theSystem.Particle_Positions.Replace_Element (index, Curr_Vec);
+               end if;
+            end loop;
+            Update_Dynamic_Buffers (theSystem, theScript);
+         end  if;
+      end if;
    end Update_Particle_System;
 
    --  ------------------------------------------------------------------------

@@ -6,6 +6,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Utilities;
 
 with Game_Utils;
+with GL_Maths;
 with Settings;
 with Texture_Manager;
 
@@ -74,7 +75,7 @@ package body Particle_System_Manager is
             if aLine (1 .. 1) = "#" then
                null;
             elsif Head = "total_particles" then
-               Script.Particle_Count := Int'Value (Tail);
+               Script.Particle_Count := Integer'Value (Tail);
             elsif Head = "max_initial_velocity" then
                Max_Velocity := Read_Vec3 (Tail);
             elsif Head = "min_initial_velocity" then
@@ -139,9 +140,10 @@ package body Particle_System_Manager is
                                   Min_Velocity, Max_Velocity : Singles.Vector3) is
       use GL;
       use GL.Objects.Buffers;
-      Initial_Positions : constant Vector3_Array (1 .. PS.Particle_Count) :=
+      use GL_Maths;
+      Initial_Positions : constant Vector3_Array (1 .. Int (PS.Particle_Count)) :=
                             (others => Maths.Vec3_0);
-      Age_Offset        : Single_Array (1 .. PS.Particle_Count);
+      Age_Offset        : Single_Array (1 .. Int (PS.Particle_Count));
       Delta_V           : constant Vector3 := Max_Velocity - Min_Velocity;
       Velocity          : Vector3;
    begin
@@ -149,7 +151,7 @@ package body Particle_System_Manager is
          Velocity (X) := Min_Velocity (X) + Maths.Random_Float / Delta_V (X);
          Velocity (Y) := Min_Velocity (Y) + Maths.Random_Float / Delta_V (Y);
          Velocity (Z) := Min_Velocity (Z) + Maths.Random_Float / Delta_V (Z);
-         Age_Offset (index) := -Single (index) * PS.Seconds_Between;
+         Age_Offset (Int (index)) := -Single (index) * PS.Seconds_Between;
          PS.Particle_Initial_Velocity.Append (Velocity);
       end loop;
 
