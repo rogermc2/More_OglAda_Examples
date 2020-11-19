@@ -16,7 +16,7 @@ with GUI_Level_Chooser;
 with Input_Callback;
 with Input_Handler;
 with Manifold;
-with Mmenu;
+with Main_Menu;
 with Particle_System;
 with Prop_Renderer;
 with Settings;
@@ -109,8 +109,8 @@ package body Main_Loop.Game_Support is
 --        if Settings.Show_FPS then
 --           Update_FPS_Box;
 --        end if;
-      if Mmenu.Menu_Open then
-         Mmenu.Draw_Menu (Delta_Time);
+      if Main_Menu.Menu_Open then
+         Main_Menu.Draw_Menu (Delta_Time);
       elsif not Settings.Hide_GUI then
          GUI.Render_GUIs;
       end if;
@@ -132,11 +132,11 @@ package body Main_Loop.Game_Support is
       end if;
       Glfw.Windows.Context.Swap_Buffers (Window'Access);
       Camera.Set_Is_Dirty (False);
-      if not MMenu.Menu_Open and then
+      if not Main_Menu.Menu_Open and then
         (Input_Callback.Was_Key_Pressed (Window, Escape) or
              Input_Handler.Was_Action_Pressed
            (Window, Input_Handler.Menu_Open_Action)) then
-         MMenu.Set_Menu_Open (True);
+         Main_Menu.Set_Menu_Open (True);
          FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Grey);
       end if;
    end Player_1_View;

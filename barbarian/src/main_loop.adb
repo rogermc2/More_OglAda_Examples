@@ -33,7 +33,7 @@ with Main_Loop.Game_Support;
 with Manifold;
 with Maps_Manager;
 with Mesh_Loader;
-with MMenu;
+with Main_Menu;
 with Particle_System;
 with Projectile_Manager;
 with Prop_Renderer;
@@ -132,7 +132,7 @@ package body Main_Loop is
          --        FB_Effects.Init (Integer (Window_Width), Integer (Window_Height));
          Shadows.Init;
          Manifold.Init;
-         MMenu.Init;
+         Main_Menu.Init;
          Input_Handler.Init (Window);
          Game_Utils.Game_Log ("----MODULES INITIALIZED----");
 
@@ -169,7 +169,7 @@ package body Main_Loop is
                b := 0.0;
                Back_Colour := (b, b, b, 1.0);
                Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
-               MMenu.Draw_Title_Only;
+               Main_Menu.Draw_Title_Only;
             end if;
             GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
             Glfw.Input.Poll_Events;
@@ -220,13 +220,13 @@ package body Main_Loop is
             if not Main_Menu_Open then
                Level_Time := Level_Time + Delta_Time;
             else  --  Main_Menu_Open
-               Main_Menu_Quit := not MMenu.Update_Menu (Window, Delta_Time);
-               if MMenu.Menu_Was_Closed then
+               Main_Menu_Quit := not Main_Menu.Update_Menu (Window, Delta_Time);
+               if Main_Menu.Menu_Was_Closed then
                   Main_Menu_Open := False;
                   FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
                end if;
-               if MMenu.Did_User_Choose_New_Game or
-                 MMenu.Did_User_Choose_Custom_Maps then
+               if Main_Menu.Did_User_Choose_New_Game or
+                 Main_Menu.Did_User_Choose_Custom_Maps then
                   Main_Menu_Open := False;
                   Quit_Game := False;
                   Unload_Level;
@@ -249,7 +249,7 @@ package body Main_Loop is
                   end if;
                   if Is_Running then
                      Cheating := Cheat_Check_1;
-                     if not MMenu.Menu_Open then
+                     if not Main_Menu.Menu_Open then
                         GUI.Update_GUIs (Delta_Time);
                         Text.Update_Comic_Texts (Delta_Time);
                         Text.Update_Particle_Texts (Delta_Time);
@@ -297,17 +297,17 @@ package body Main_Loop is
          end if;
 
          --  initiate main menu loop
-         MMenu.Start_Menu_Title_Bounce;
+         Main_Menu.Start_Menu_Title_Bounce;
          Utilities.Clear_Background_Colour_And_Depth (Black);
 
-         if not Skip_Intro then
-            MMenu.Set_Menu_Open (True);
-         end if;
+--           if not Skip_Intro then
+            Main_Menu.Set_Menu_Open (True);
+--           end if;
 
          Is_Running := True;
          Last_Time := Float (Glfw.Time);
 
-         while Mmenu.Menu_Open and Is_Running loop
+         while Main_Menu.Menu_Open and Is_Running loop
             GL_Utils.Window_Resize (Window);
             GL_Utils.Frame_Buffer_Resize (Window);
 
@@ -315,21 +315,21 @@ package body Main_Loop is
             Delta_Time := Current_Time - Last_Time;
             Last_Time := Current_Time;
             Utilities.Clear_Background_Colour_And_Depth (Black);
-            MMenu.Draw_Menu (Delta_Time);
+            Main_Menu.Draw_Menu (Delta_Time);
 
             GUI.Draw_Controller_Button_Overlays (Delta_Time);
             Glfw.Input.Poll_Events;
             --           --  Poll_Joystick
             Glfw.Windows.Context.Swap_Buffers (Window'Access);
 
-            if not MMenu.Update_Menu (Window, Delta_Time) then
-               MMenu.Set_Menu_Open (False);
+            if not Main_Menu.Update_Menu (Window, Delta_Time) then
+               Main_Menu.Set_Menu_Open (False);
                Quit_Game := True;
             end if;
 
-            if MMenu.Did_User_Choose_New_Game or
-              MMenu.Did_User_Choose_Custom_Maps then
-               MMenu.Set_Menu_Open (False);
+            if Main_Menu.Did_User_Choose_New_Game or
+              Main_Menu.Did_User_Choose_Custom_Maps then
+               Main_Menu.Set_Menu_Open (False);
             end if;
             Is_Running := not Window.Should_Close;
          end loop;
@@ -365,10 +365,10 @@ package body Main_Loop is
             Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
                                    To_String (Level_Name));
             Continue := GUI_Level_Chooser.Start_Level_Chooser_Loop
-              (Window, MMenu.Credits_Program, MMenu.Are_We_In_Custom_Maps);
+              (Window, Main_Menu.Credits_Program, Main_Menu.Are_We_In_Custom_Maps);
             if Continue then
                Level_Name := To_Unbounded_String
-                 (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
+                 (GUI_Level_Chooser.Get_Selected_Map_Name (Main_Menu.Are_We_In_Custom_Maps));
                Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
                                     & To_String (Level_Name));
 
@@ -406,8 +406,8 @@ package body Main_Loop is
                Level_Time := 0.0;
                Main_Game_Loop (Window);
 
-               if MMenu.End_Story_Open then
-                  MMenu.Play_End_Story_Music;
+               if Main_Menu.End_Story_Open then
+                  Main_Menu.Play_End_Story_Music;
                else
                   Audio.Play_Music (Title_Track);
                end if;
@@ -450,29 +450,13 @@ package body Main_Loop is
 
       use Glfw.Input;
       Running : Boolean := True;
-      Key_Now : Button_State;
    begin
       Main_Window.Set_Input_Toggle (Sticky_Keys, True);
       Game_Utils.Restart_Game_Log;
       Main_Setup (Main_Window, Running);
-      while Running loop
-         Glfw.Input.Poll_Events;
-         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
+      if Running then
          Run_Game (Main_Window);
-         --        Delay (0.2);
-         Glfw.Input.Poll_Events;
-         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
-
-         Key_Now := Main_Window.Key_State (Glfw.Input.Keys.Space);
-         if not Key_Pressed and Key_Now = Glfw.Input.Pressed then
-            Key_Pressed := True;
-         else
-            Key_Pressed := Key_Now = Glfw.Input.Pressed;
-         end if;
-         --     Delay (3.0);
-         Running := Running and then not Quit_Game;
-         Running := Running and then not Main_Window.Should_Close;
-      end loop;
+      end if;
       Game_Utils.Close_Game_Log;
 
    end Main_Loop;

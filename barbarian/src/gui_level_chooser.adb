@@ -22,7 +22,7 @@ with GL_Utils;
 with Input_Handler;
 with Levels_Maps_Manager;
 with Menu_Credits_Shader_Manager;
-with MMenu;
+with Main_Menu;
 with Selected_Map_Manager;
 with Settings;
 with Text;
@@ -179,14 +179,14 @@ procedure Init is
 
    function Is_Map_Introduction return Boolean is
    begin
-      return not MMenu.Are_We_In_Custom_Maps and Selected_Map = Map_Introduction;
+      return not Main_Menu.Are_We_In_Custom_Maps and Selected_Map = Map_Introduction;
    end Is_Map_Introduction;
 
    --  ------------------------------------------------------------------------
 
    function Is_Map_Warlock return Boolean is
    begin
-      return not MMenu.Are_We_In_Custom_Maps and Selected_Map = Map_Warlock;
+      return not Main_Menu.Are_We_In_Custom_Maps and Selected_Map = Map_Warlock;
    end Is_Map_Warlock;
 
    --  ------------------------------------------------------------------------
@@ -331,7 +331,7 @@ procedure Init is
       Credits_Shader_Program : GL.Objects.Programs.Program;
       Custom_Maps            : Boolean)
       return Boolean is
-      Menu_Open           : Boolean := MMenu.End_Story_Open;
+      Menu_Open           : Boolean := Main_Menu.End_Story_Open;
       Menu_Quit           : Boolean := False;
       Cheat_Unlock        : Boolean := False;
       Started_Loading_Map : Boolean := False;
@@ -350,12 +350,12 @@ procedure Init is
          if Menu_Open then
 --              Game_Utils.Game_Log ("Start_Level_Chooser_Loop Delta_Time" &
 --                                     Float'Image (Delta_Time));
-            Menu_Quit := not MMenu.Update_Menu (Window, Delta_Time);
-            if MMenu.Menu_Was_Closed then
+            Menu_Quit := not Main_Menu.Update_Menu (Window, Delta_Time);
+            if Main_Menu.Menu_Was_Closed then
                Menu_Open := False;
             end if;
-            if MMenu.Did_User_Choose_New_Game or
-              MMenu.Did_User_Choose_Custom_Maps then
+            if Main_Menu.Did_User_Choose_New_Game or
+              Main_Menu.Did_User_Choose_Custom_Maps then
                Menu_Open := False;
                Continue := False;
                Restart := True;

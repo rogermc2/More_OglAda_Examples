@@ -10,7 +10,7 @@ package Levels_Maps_Manager is
 
    type Level_Map_Data is record
       Map_Name         : Unbounded_String := To_Unbounded_String ("");
-      Map_Name_Text_ID : Integer := 0;
+      Map_Name_Text_ID : Positive := 1;
       Par_Time         : Unbounded_String := To_Unbounded_String ("");
       Level_Map        : Maps_Manager.Map;
       Music_Track      : Unbounded_String := To_Unbounded_String ("");
