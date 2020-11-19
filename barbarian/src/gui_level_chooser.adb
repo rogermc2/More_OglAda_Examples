@@ -6,6 +6,7 @@ with Glfw;
 with Glfw.Input.Keys;
 
 with GL.Types; use GL.Types;
+with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
 
 with Input_Callback;
@@ -201,7 +202,7 @@ procedure Init is
 
    --  ------------------------------------------------------------------------
 
-   procedure Render is
+   procedure Render (Credits_Shader_Program : GL.Objects.Programs.Program) is
       use GL.Types;
       use Maths.Single_Math_Functions;
       Aspect : constant Single := Single (Settings.Framebuffer_Width) /
@@ -213,6 +214,7 @@ procedure Init is
       Py     :constant  Single := -1.5 * Cos (0.09 * Now);
    begin
       Utilities.Clear_Colour;
+      GL.Objects.Programs.Use_Program (Credits_Shader_Program);
       Menu_Credits_Shader_Manager.Set_Scale ((Sx, Sy));
       Menu_Credits_Shader_Manager.Set_Position ((Px, Py));
 
@@ -292,7 +294,9 @@ procedure Init is
    --  ------------------------------------------------------------------------
 
    function Start_Level_Chooser_Loop
-     (Window  : in out Input_Callback.Barbarian_Window; Custom_Maps: Boolean)
+     (Window     : in out Input_Callback.Barbarian_Window;
+      Credits_Shader_Program : GL.Objects.Programs.Program;
+      Custom_Maps            : Boolean)
       return Boolean is
       Menu_Open           : Boolean := MMenu.End_Story_Open;
       Menu_Quit           : Boolean := False;
@@ -326,21 +330,21 @@ procedure Init is
                Continue := False;
             end if;
          else
---              Game_Utils.Game_Log ("Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
+--              Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
             Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
          end if;
 
          if Continue then
             if not Menu_Open then
-               Game_Utils.Game_Log ("Start_Level_Chooser_Loop Menu not Open");
+               Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
                Process_Input (Window, Menu_Open, Started_Loading_Map, Cheat_Unlock);
             end if;
-            Render;
+            Render (Credits_Shader_Program);
          end if;
       end loop;
 
       if Restart then
-         Result := Start_Level_Chooser_Loop (Window, False);
+         Result := Start_Level_Chooser_Loop (Window, Credits_Shader_Program, False);
       end if;
       return Result;
 

@@ -1,4 +1,5 @@
 
+with GL.Objects.Programs;
 with Input_Callback;
 
 package GUI_Level_Chooser is
@@ -21,6 +22,7 @@ package GUI_Level_Chooser is
    procedure Set_Pillar_Crushes (Value : Integer);
    function Start_Level_Chooser_Loop
      (Window : in out Input_Callback.Barbarian_Window;
+      Credits_Shader_Program : GL.Objects.Programs.Program;
       Custom_Maps : Boolean) return Boolean;
 
 end GUI_Level_Chooser;

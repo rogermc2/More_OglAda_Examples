@@ -3,6 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Culling;
+with GL.Objects.Programs;
 with GL.Toggles;
 with GL.Types; use GL.Types;
 with GL.Types.Colors;
@@ -256,6 +257,8 @@ package body Main_Loop is
                      end if;
                      Player_1_View (Window, Delta_Time, Dump_Video,
                                     Save_Screenshot);
+                     Is_Running := Is_Running and then not Main_Menu_Quit;
+                     Is_Running := Is_Running and then not Main_Window.Should_Close;
                   end if;
                end if;
             end if;
@@ -263,6 +266,7 @@ package body Main_Loop is
             Is_Running := Is_Running and
               not Window.Should_Close and not Main_Menu_Quit;
          end loop;
+         Quit_Game := True;
       end Main_Game_Loop;
 
       --  ------------------------------------------------------------------------
@@ -360,7 +364,7 @@ package body Main_Loop is
             Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
                                    To_String (Level_Name));
             if GUI_Level_Chooser.Start_Level_Chooser_Loop
-              (Window, MMenu.Are_We_In_Custom_Maps) then
+              (Window, MMenu.Credits_Program, MMenu.Are_We_In_Custom_Maps) then
                Level_Name := To_Unbounded_String
                  (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
                Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
