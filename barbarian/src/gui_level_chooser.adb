@@ -4,12 +4,15 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw;
 with Glfw.Input.Keys;
+with Glfw.Windows.Context;
 
 with GL.Attributes;
+with GL.Culling;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 with GL.Types; use GL.Types;
 
 with Input_Callback;
@@ -19,6 +22,7 @@ with Utilities;
 with Custom_Maps_Manager;
 with Game_Utils;
 with GL_Utils;
+with GUI;
 with Input_Handler;
 with Levels_Maps_Manager;
 with Menu_Credits_Shader_Manager;
@@ -40,17 +44,15 @@ package body GUI_Level_Chooser is
    Selected_Map_ID           : Positive := 1;
    Selected_Map              : Selected_Map_Data;
    Selected_Map_Track        : Unbounded_String := To_Unbounded_String ("");
-   Map_Title_Text            : Integer := -1;
-   Map_Story_Text            : Integer := -1;
    Left_Margin_Cl            : Single := 0.0;
    Top_Margin_Cl             : Single := 0.0;
    Level_GUI_Width           : Single := 1024.0;
    Level_GUI_Height          : Single := 768.0;
 
-   Choose_Map_Txt            : Integer := -1;
-   Map_Title_Txt             : Integer := -1;
-   Map_Story_Txt             : Integer := -1;
-   Loading_Map_Txt           : Integer := -1;
+   Choose_Map_Text_ID        : Integer := -1;
+   Map_Title_Text_ID         : Integer := -1;
+   Map_Story_Text_ID         : Integer := -1;
+   Loading_Map_Text_ID       : Integer := -1;
 
    Cheated                   : Boolean := False;
    Map_Unmodified            : Boolean := True;
@@ -102,12 +104,18 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-procedure Init is
+   procedure Increment_Hammer_Kills is
+   begin
+      Hammer_Kills := Hammer_Kills + 1;
+   end Increment_Hammer_Kills;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Init is
       use GL.Types;
       use Settings;
       Text_Height     : constant Single :=
                           50.0 / Single (Settings.Framebuffer_Height);
-      Choose_Map_Text : Integer;
       Quad_Points     : constant Singles.Vector2_Array (1 .. 4) :=
                           ((-1.0, -1.0), (-1.0, 1.0), (1.0, -1.0), (1.0, 1.0));
       Quad_VBO        : GL.Objects.Buffers.Buffer;
@@ -140,19 +148,19 @@ procedure Init is
       Levels_Maps_Manager.Init_Maps (Maps, Selected_Map_ID,
                                      Left_Margin_Cl, Top_Margin_Cl);
       Update_Selected_Entry_Dot_Map (True, False);
-      Choose_Map_Text :=
+      Choose_Map_Text_ID :=
         Text.Add_Text ("choose thy battle!", 0.0, Single (Top_Margin_Cl),
                        30.0, 1.0, 1.0, 0.0, 0.8);
-      Text.Centre_Text (Choose_Map_Text, 0.0, Single (Top_Margin_Cl));
-      Text.Set_Text_Visible (Choose_Map_Text, False);
+      Text.Centre_Text (Choose_Map_Text_ID, 0.0, Single (Top_Margin_Cl));
+      Text.Set_Text_Visible (Choose_Map_Text_ID, False);
 
       Custom_Maps_Manager.Load_Custom_Map
         ("src/editor/maps.txt", Custom_Maps, Top_Margin_Cl,
          Left_Margin_Cl, Text_Height, Num_Custom_Maps);
-      Loading_Map_Txt := Text.Create_Text_Box
+      Loading_Map_Text_ID := Text.Create_Text_Box
         ("loading map...", -0.1, 0.0, 25.0,
          (0.0, 0.0, 0.0, 1.0),  (0.800, 0.795, 0.696, 1.0));
-      Text.Set_Text_Visible (Loading_Map_Txt, False);
+      Text.Set_Text_Visible (Loading_Map_Text_ID, False);
 
       Quad_VAO.Initialize_Id;
       Quad_VAO.Bind;
@@ -227,10 +235,16 @@ procedure Init is
 
    --  ------------------------------------------------------------------------
 
-   procedure Render (Credits_Shader_Program : GL.Objects.Programs.Program;
-                    Custom_Maps : Boolean) is
+   procedure Render (Window     : in out Input_Callback.Barbarian_Window;
+                     Credits_Shader_Program : GL.Objects.Programs.Program;
+                     Delta_Time : Float;
+                     Use_Custom_Maps, Started_Loading_Map, Menu_Open : Boolean) is
+      use GL.Culling;
+      use GL.Toggles;
       use GL.Types;
       use Maths.Single_Math_Functions;
+      use Levels_Maps_Manager.Maps_Package;
+      use Custom_Maps_Manager.Custom_Maps_Package;
       Aspect : constant Single := Single (Settings.Framebuffer_Width) /
                  Single (Settings.Framebuffer_Height);
       Now    : constant Single := Single (Glfw.Time);
@@ -238,17 +252,51 @@ procedure Init is
       Sy     : constant Single := 2.0 * Aspect;
       Px     : constant Single := Sin (0.15 * Now);
       Py     :constant  Single := -1.5 * Cos (0.09 * Now);
+      Map        : Levels_Maps_Manager.Level_Map_Data;
+      Custom_Map : Custom_Maps_Manager.Custom_Data;
    begin
       Utilities.Clear_Colour;
       GL.Objects.Programs.Use_Program (Credits_Shader_Program);
       Menu_Credits_Shader_Manager.Set_Scale ((Sx, Sy));
       Menu_Credits_Shader_Manager.Set_Position ((Px, Py));
       GL_Utils.Bind_VAO (Quad_VAO);
-      if Custom_Maps then
+      if Use_Custom_Maps then
          Texture_Manager.Bind_Texture (0, Back_Texture);
       else
          Texture_Manager.Bind_Texture (0, Back_Custom_Texture);
       end if;
+      Disable (Cull_Face);
+      Disable (Depth_Test);
+
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangle_Strip, 0, 4);
+      Enable (Cull_Face);
+
+      if Use_Custom_Maps then
+         for index in Custom_Maps.First_Index .. Custom_Maps.Last_Index loop
+            Custom_Map := Custom_Maps.Element (index);
+            Text.Draw_Text (Custom_Map.Text_ID);
+         end loop;
+      else
+         for index in Maps.First_Index .. Maps.Last_Index loop
+            Map := Maps.Element (index);
+            Text.Draw_Text (Map.Map_Name_Text_ID);
+         end loop;
+      end if;
+
+      Text.Draw_Text (Choose_Map_Text_ID);
+      Text.Draw_Text (Map_Title_Text_ID);
+      Text.Draw_Text (Map_Story_Text_ID);
+      Text.Draw_Text (Choose_Map_Text_ID);
+      if Started_Loading_Map then
+         Text.Draw_Text (Loading_Map_Text_ID);
+      end if;
+
+      if Menu_Open then
+         Main_Menu.Draw_Menu (Delta_Time);
+      end if;
+
+      GUI.Draw_Controller_Button_Overlays (Delta_Time);
+      Glfw.Windows.Context.Swap_Buffers (Window'Access);
 
    end Render;
 
@@ -281,13 +329,6 @@ procedure Init is
          end loop;
       end if;
    end Reset_GUI_Level_Selection;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Increment_Hammer_Kills is
-   begin
-      Hammer_Kills := Hammer_Kills + 1;
-   end Increment_Hammer_Kills;
 
    --  ------------------------------------------------------------------------
 
@@ -331,6 +372,7 @@ procedure Init is
       Credits_Shader_Program : GL.Objects.Programs.Program;
       Custom_Maps            : Boolean)
       return Boolean is
+      use GL.Toggles;
       Menu_Open           : Boolean := Main_Menu.End_Story_Open;
       Menu_Quit           : Boolean := False;
       Cheat_Unlock        : Boolean := False;
@@ -373,9 +415,23 @@ procedure Init is
 --                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
                Process_Input (Window, Menu_Open, Started_Loading_Map, Cheat_Unlock);
             end if;
-            Render (Credits_Shader_Program, Custom_Maps);
+            Render (Window, Credits_Shader_Program, Delta_Time, Custom_Maps,
+                    Started_Loading_Map, Menu_Open);
+            Continue := not Started_Loading_Map;
+            if Continue then
+--                 Poll_Joystick;
+               Glfw.Input.Poll_Events;
+               Continue := not Window.Should_Close;
+            end if;
+
          end if;
       end loop;
+
+      Enable (Depth_Test);
+
+      if not Custom_Maps then
+         null;
+      end if;
 
       if Restart then
          Result := Start_Level_Chooser_Loop (Window, Credits_Shader_Program, False);
@@ -391,7 +447,8 @@ procedure Init is
 
    --  ------------------------------------------------------------------------
 
-   procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean) is
+   procedure Update_GUI_Level_Chooser (Delta_Time  : Float;
+                                       Custom_Maps : Boolean) is
       use Glfw.Input.Keys;
       use Input_Callback;
       use Input_Handler;
@@ -488,24 +545,24 @@ procedure Init is
 --           Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first: '" &
 --                       To_String (Selected_Map.Map_Title) &
 --                     "'");
-         Map_Title_Text :=
+         Map_Title_Text_ID :=
            Text.Add_Text (To_String (Selected_Map.Map_Title),
                           Left_Margin_Cl + Lt_Margin_Cl,
                           Top_Margin_Cl - 180.0 / Single (Settings.Framebuffer_Height),
                           30.0, 0.9, 0.9, 0.0, 0.8);
-         Text.Set_Text_Visible (Map_Title_Text, False);
+         Text.Set_Text_Visible (Map_Title_Text_ID, False);
 
-         Map_Story_Text :=
+         Map_Story_Text_ID :=
            Text.Add_Text (To_String (Selected_Map.Map_Intro_Text),
                           Left_Margin_Cl + Lt_Margin_Cl,
                           Top_Margin_Cl - 300.0 / Single (Settings.Framebuffer_Height),
                           20.0, 0.75, 0.75, 0.75, 1.0);
-         Text.Set_Text_Visible (Map_Story_Text, False);
+         Text.Set_Text_Visible (Map_Story_Text_ID, False);
       else
 
 --         Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map not first.");
-         Text.Update_Text (Map_Title_Text, To_String (Selected_Map.Map_Title));
-         Text.Update_Text (Map_Story_Text, To_String (Selected_Map.Map_Intro_Text));
+         Text.Update_Text (Map_Title_Text_ID, To_String (Selected_Map.Map_Title));
+         Text.Update_Text (Map_Story_Text_ID, To_String (Selected_Map.Map_Intro_Text));
       end if;
 --        Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map finished.");
 
