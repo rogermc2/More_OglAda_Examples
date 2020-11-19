@@ -4,31 +4,10 @@ with Ada.Streams.Stream_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Game_Utils;
---  with Settings;
---  with Text;
 
 package body Selected_Map_Manager is
 
    -- -------------------------------------------------------------------------
-
-   function Get_Map_Name (Maps : Selected_Maps_List; Selected_Map_ID : Positive)
-                          return String is
-      aMap    : Selected_Map_Data;
-      Result  : String := "";
-   begin
-      if not Maps.Is_Empty and then Selected_Map_ID <= Maps.Last_Index then
-         aMap := Maps.Element (Selected_Map_ID);
-         Result := To_String (aMap.Map_Title);
-      else
-         Game_Utils.Game_Log
-           ("Selected_Map_Manager.Get_Map_Name " &
-              "encountered an invalid Map ID: " & Positive'Image (Selected_Map_ID));
-      end if;
-
-      return Result;
-   end Get_Map_Name;
-
-   --  ------------------------------------------------------------------------
 
    procedure Load_Map (Path             : String; theMap : in out Selected_Map_Data;
                        Has_Hammer_Track : out Boolean) is

@@ -29,9 +29,7 @@ with Text;
 with Texture_Manager;
 
 package body GUI_Level_Chooser is
-   type Selected_Map_Type is (Map_Introduction, Map_Threedoors, Map_Warlock,
-                              Map_Winder, Map_Under, Map_Sky_Temple, Map_Hall,
-                              Map_Attercoppe, Map_None);
+   use Selected_Map_Manager;
 
    Quad_VAO                  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Back_Texture              : GL.Objects.Textures.Texture;
@@ -39,9 +37,8 @@ package body GUI_Level_Chooser is
    Custom_Maps               : Custom_Maps_Manager.Custom_Maps_List;
    Num_Custom_Maps           : Natural := 0;
    Maps                      : Levels_Maps_Manager.Maps_List;
-   Selected_Map              : Selected_Map_Type := Map_None;
    Selected_Map_ID           : Positive := 1;
-   Selected_Map_Info         : Selected_Map_Manager.Selected_Map_Data;
+   Selected_Map              : Selected_Map_Data;
    Selected_Map_Track        : Unbounded_String := To_Unbounded_String ("");
    Map_Title_Text            : Integer := -1;
    Map_Story_Text            : Integer := -1;
@@ -179,14 +176,16 @@ procedure Init is
 
    function Is_Map_Introduction return Boolean is
    begin
-      return not Main_Menu.Are_We_In_Custom_Maps and Selected_Map = Map_Introduction;
+      return not Main_Menu.Are_We_In_Custom_Maps and
+        Selected_Map.Map_Type = Map_Introduction;
    end Is_Map_Introduction;
 
    --  ------------------------------------------------------------------------
 
    function Is_Map_Warlock return Boolean is
    begin
-      return not Main_Menu.Are_We_In_Custom_Maps and Selected_Map = Map_Warlock;
+      return not Main_Menu.Are_We_In_Custom_Maps and
+        Selected_Map.Map_Type = Map_Warlock;
    end Is_Map_Warlock;
 
    --  ------------------------------------------------------------------------
@@ -284,6 +283,7 @@ procedure Init is
    end Reset_GUI_Level_Selection;
 
    --  ------------------------------------------------------------------------
+
    procedure Increment_Hammer_Kills is
    begin
       Hammer_Kills := Hammer_Kills + 1;
@@ -456,16 +456,16 @@ procedure Init is
    procedure Update_Selected_Entry_Dot_Map (First, Custom : Boolean) is
       use Custom_Maps_Manager;
       Map_Path     : Unbounded_String;
-      Peek_Map     : Selected_Map_Manager.Selected_Map_Data;
+--        Peek_Map     : Selected_Map_Manager.Selected_Map_Data;
       Lt_Margin_Px : constant Single := 650.0;
       Lt_Margin_Cl : constant Single :=
                        Lt_Margin_Px / Single (Settings.Framebuffer_Width);
       Has_Hammer_Track : Boolean := False;
       Title_Length : Integer := 0;
    begin
-      if Selected_Map_Info.Locked and not Custom then
-         Selected_Map_Info.Map_Title := To_Unbounded_String ("locked");
-         Selected_Map_Info.Map_Intro_Text := To_Unbounded_String
+      if Selected_Map.Locked and not Custom then
+         Selected_Map.Map_Title := To_Unbounded_String ("locked");
+         Selected_Map.Map_Intro_Text := To_Unbounded_String
            ("clear previous temples to unlock" &
               ASCII.CR & ASCII.LF & "the portal to this map");
       else
@@ -479,24 +479,24 @@ procedure Init is
                  (Maps, Selected_Map_ID));
             Game_Utils.Game_Log ("level chooser is peeking in map " &
                                    To_String (Map_Path));
-            Selected_Map_Manager.Load_Map (To_String (Map_Path), Selected_Map_Info,
+            Selected_Map_Manager.Load_Map (To_String (Map_Path), Selected_Map,
                                            Has_Hammer_Track);
          end if;
       end if;
 
       if First then
 --           Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first: '" &
---                       To_String (Selected_Map_Info.Map_Title) &
+--                       To_String (Selected_Map.Map_Title) &
 --                     "'");
          Map_Title_Text :=
-           Text.Add_Text (To_String (Selected_Map_Info.Map_Title),
+           Text.Add_Text (To_String (Selected_Map.Map_Title),
                           Left_Margin_Cl + Lt_Margin_Cl,
                           Top_Margin_Cl - 180.0 / Single (Settings.Framebuffer_Height),
                           30.0, 0.9, 0.9, 0.0, 0.8);
          Text.Set_Text_Visible (Map_Title_Text, False);
 
          Map_Story_Text :=
-           Text.Add_Text (To_String (Selected_Map_Info.Map_Intro_Text),
+           Text.Add_Text (To_String (Selected_Map.Map_Intro_Text),
                           Left_Margin_Cl + Lt_Margin_Cl,
                           Top_Margin_Cl - 300.0 / Single (Settings.Framebuffer_Height),
                           20.0, 0.75, 0.75, 0.75, 1.0);
@@ -504,8 +504,8 @@ procedure Init is
       else
 
 --         Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map not first.");
-         Text.Update_Text (Map_Title_Text, To_String (Selected_Map_Info.Map_Title));
-         Text.Update_Text (Map_Story_Text, To_String (Selected_Map_Info.Map_Intro_Text));
+         Text.Update_Text (Map_Title_Text, To_String (Selected_Map.Map_Title));
+         Text.Update_Text (Map_Story_Text, To_String (Selected_Map.Map_Intro_Text));
       end if;
 --        Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map finished.");
 
