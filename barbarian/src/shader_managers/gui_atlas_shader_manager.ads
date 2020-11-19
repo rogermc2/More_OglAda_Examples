@@ -18,6 +18,6 @@ package GUI_Atlas_Shader_Manager is
     procedure Set_Atlas (Atlas : Int);
     procedure Set_Model_Matrix (Model_Matrix : Singles.Matrix4);
     procedure Set_Columns (Columns : Single);
-    procedure Set_Current_Sprite (Current_Sprite : Single);
+    procedure Set_Current_Sprite (Sprite_ID : Single);
 
 end GUI_Atlas_Shader_Manager;

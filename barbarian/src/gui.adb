@@ -70,12 +70,12 @@ package body GUI is
    Screen_Splat_Scale                : constant Single := 0.27;
 
    --  player and enemy health bars
-   Health_Bar_Factor  : Single_Array (1 .. 2) := (1.0, 0.0);
-   Player_Hb_Mat      : Singles.Matrix4 := Singles.Identity4;
-   Enemy_Hb_Mat       : Singles.Matrix4 := Singles.Identity4;
-   Fist_Mat           : Singles.Matrix4 := Singles.Identity4;
-   Defeated_Model_Mat : Singles.Matrix4 := Singles.Identity4;
-   Ch_Model_Mat       : Singles.Matrix4 := Singles.Identity4;
+   Health_Bar_Factor     : Single_Array (1 .. 2) := (1.0, 0.0);
+   Player_Health_Bar_Mat : Singles.Matrix4 := Singles.Identity4;
+   Enemy_Health_Bar_Mat  : Singles.Matrix4 := Singles.Identity4;
+   Fist_Mat              : Singles.Matrix4 := Singles.Identity4;
+   Defeated_Model_Mat    : Singles.Matrix4 := Singles.Identity4;
+   Ch_Model_Mat          : Singles.Matrix4 := Singles.Identity4;
 
    --  misc effect settings
    Blood_Overlay_Alpha      : Single := 1.0;
@@ -138,7 +138,7 @@ package body GUI is
    Top_Health_Name          : Unbounded_String := To_Unbounded_String ("");
 
    VAO_Quad_Tristrip        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   HB_SP                    : GL.Objects.Programs.Program;
+   Health_Bar_SP                    : GL.Objects.Programs.Program;
    Crong_Head_SP            : GL.Objects.Programs.Program;
    Image_Panel_SP           : GL.Objects.Programs.Program;
    Control_Button_Overlays  : Controller_Button_Overlays_Data;
@@ -470,14 +470,14 @@ package body GUI is
         ("src/textures/hbar_red_dragon.png", Health_Texture_Red, False, True);
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/hbar_black_dragon.png", Health_Texture_Base, False, True);
-      Health_Shader_Manager.Init (HB_SP);
+      Health_Shader_Manager.Init (Health_Bar_SP);
       Health_Shader_Manager.Set_Red_Texture (0);
       Health_Shader_Manager.Set_Red_Texture (1);
-      Enemy_Hb_Mat := Translation_Matrix ((X, Y, 0.0)) * Scale_XY;
+      Enemy_Health_Bar_Mat := Translation_Matrix ((X, Y, 0.0)) * Scale_XY;
       X := -1.0 + Scale_X + Single (2 * Crong_Head_Width_Px + 5) /
         Single (Settings.Framebuffer_Width);
       Y  := -1.0 + Scale_Y;
-      Player_Hb_Mat := Translation_Matrix ((X, Y, 0.0)) * Scale_XY;
+      Player_Health_Bar_Mat := Translation_Matrix ((X, Y, 0.0)) * Scale_XY;
    end Init_Health_Bar;
 
    --  --------------------------------------------------------------------------
@@ -492,10 +492,104 @@ package body GUI is
 
    procedure Load_Gui_Shaders is
    begin
-      Health_Shader_Manager.Init (HB_SP);
+      Health_Shader_Manager.Init (Health_Bar_SP);
       Image_Panel_Shader_Manager.Init (Image_Panel_SP);
       GUI_Atlas_Shader_Manager.Init (Crong_Head_SP);
    end Load_Gui_Shaders;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Render_Crong_Head is
+      use GL.Objects.Textures.Targets;
+      use GL.Objects.Vertex_Arrays;
+      use GUI_Atlas_Shader_Manager;
+   begin
+      GL.Objects.Programs.Use_Program (Crong_Head_SP);
+      Set_Current_Sprite (Single (Crong_Head_Sprite_Index));
+      Set_Model_Matrix (Ch_Model_Mat);
+      Set_Columns (4.0);
+      Set_Alpha (1.0);
+      GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
+      GL.Objects.Textures.Set_Active_Unit (0);
+      Texture_2D.Bind (Crong_Head_Texture);
+      Draw_Arrays (Triangle_Strip, 0, 4);
+   end Render_Crong_Head;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Render_Fist is
+      use GL.Objects.Textures.Targets;
+      use GL.Objects.Vertex_Arrays;
+      use Image_Panel_Shader_Manager;
+   begin
+      GL.Objects.Programs.Use_Program (Image_Panel_SP);
+      Set_Model_Matrix (Fist_Mat);
+      GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
+      GL.Objects.Textures.Set_Active_Unit (0);
+      Texture_2D.Bind (Fist_Texture);
+      Draw_Arrays (Triangle_Strip, 0, 4);
+   end Render_Fist;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Render_Gold_Panel is
+      use GL.Objects.Textures.Targets;
+      use GL.Objects.Vertex_Arrays;
+      use Singles;
+      use Maths;
+      use Image_Panel_Shader_Manager;
+      FB_Height : constant Single := Single (Settings.Framebuffer_Height);
+      FB_Width  : constant Single := Single (Settings.Framebuffer_Width);
+      T         : Single;
+      Y         : Single;
+      Amp       : constant Single := 32.0 / FB_Height;
+      Screen_X  : Single;
+      Screen_Y  : Single;
+      Scale_Mat : constant Singles.Matrix4 := Scaling_Matrix
+        ((64.0 / FB_Width, 64.0 / FB_Height, 1.0));
+      Model_Mat : Singles.Matrix4;
+   begin
+      GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
+      GL.Objects.Programs.Use_Program (Image_Panel_SP);
+      GL.Objects.Textures.Set_Active_Unit (0);
+      for index in Int range 1 .. 3 loop
+         T := Max (0.0, 1.0 - Single (GUI_Icons.Anim_Countdowns (index)));
+         Y := GL_Maths.Decel_Elastic (T, (0.0, 1.0), (0.0, 1.0), 6);
+         Screen_X := GUI_Icons.XY_Position (2 * index);
+         Screen_Y := GUI_Icons.XY_Position (2 * index + 1) * Y * Amp;
+         Model_Mat := Translation_Matrix ((Screen_X, Screen_Y, 0.0)) * Scale_Mat;
+         Set_Model_Matrix (Model_Mat);
+         Texture_2D.Bind (GUI_Icons.Textures (Integer (index)));
+         Draw_Arrays (Triangle_Strip, 0, 4);
+      end loop;
+
+   end Render_Gold_Panel;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Render_Health_Bars is
+      use GL.Objects.Textures.Targets;
+      use GL.Objects.Vertex_Arrays;
+      use Health_Shader_Manager;
+   begin
+      GL.Objects.Programs.Use_Program (Health_Bar_SP);
+      Set_Model_Matrix (Player_Health_Bar_Mat);
+      Set_Health_Factor (Health_Bar_Factor (1));
+      GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
+      GL.Objects.Textures.Set_Active_Unit (0);
+      Texture_2D.Bind (Health_Texture_Red);
+      GL.Objects.Textures.Set_Active_Unit (1);
+      Texture_2D.Bind (Health_Texture_Base);
+      Draw_Arrays (Triangle_Strip, 0, 4);
+
+      if Health_Bar_Factor (1) > 0.0 then
+        Text.Set_Text_Visible (Top_Health_Text_Index, True);
+         Set_Model_Matrix (Enemy_Health_Bar_Mat);
+         Set_Health_Factor (Health_Bar_Factor (2));
+      else
+        Text.Set_Text_Visible (Top_Health_Text_Index, False);
+      end if;
+   end Render_Health_Bars;
 
    --  ----------------------------------------------------------------------------
 
@@ -509,10 +603,21 @@ package body GUI is
       if Num_Active_Screen_Splats > 0 then
          Render_Screen_Splats;
       end if;
+      if not Settings.Auto_Blood_Wipe and then
+      Fist_Activated then
+         Render_Fist;
+      end if;
+      Render_Health_Bars;
+      Render_Crong_Head;
+      Render_Gold_Panel;
 
       Enable (Depth_Test);
       Disable (Blend);
       Set_Front_Face (Counter_Clockwise);
+
+      Text.Set_Text_Visible (Gold_Text_Index, True);
+      Text.Set_Text_Visible (Kills_Text_Index, True);
+      Text.Set_Text_Visible (Javelin_Ammo_Text_Index, True);
 
    end Render_GUIs;
 

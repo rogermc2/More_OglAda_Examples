@@ -72,9 +72,9 @@ package body GUI_Atlas_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Current_Sprite (Current_Sprite  : Single) is
+   procedure Set_Current_Sprite (Sprite_ID  : Single) is
    begin
-      GL.Uniforms.Set_Single (Render_Uniforms.Current_Sprite_ID, Current_Sprite);
+      GL.Uniforms.Set_Single (Render_Uniforms.Current_Sprite_ID, Sprite_ID);
    end Set_Current_Sprite;
 
    --  -------------------------------------------------------------------------
