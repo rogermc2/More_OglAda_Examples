@@ -209,6 +209,13 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------
 
+   procedure Set_Resized_View  (Bool : Boolean) is
+   begin
+      G_Resized_View := Bool;
+   end Set_Resized_View;
+
+   --  ------------------------------------------------------------
+
    function To_Integer (Bool : Boolean) return Integer is
    begin
       if Bool then

@@ -49,6 +49,7 @@ package GL_Utils is
    procedure Set_Render_Defaults;
    procedure Set_Current_Program (Current_Prog :
                                   GL.Objects.Programs.Program);
+   procedure Set_Resized_View  (Bool : Boolean);
    function To_Integer (Bool : Boolean) return Integer;
    function To_String (Bool : Boolean) return String;
    function To_UB_String (Val : Integer) return

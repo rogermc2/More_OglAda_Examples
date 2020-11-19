@@ -72,6 +72,13 @@ package body FB_Effects is
 
    --  -------------------------------------------------------------------------
 
+   procedure Draw_FB_Effects (Delta_Time : GL.Types.Single) is
+   begin
+      null;
+   end Draw_FB_Effects;
+
+   --  -------------------------------------------------------------------------
+
    procedure Init (Width, Height : Integer) is
       use GL.Attributes;
       use GL.Buffers;

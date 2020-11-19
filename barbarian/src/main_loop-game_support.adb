@@ -9,6 +9,7 @@ with Blood_Splats;
 with Character_Map;
 with Event_Controller;
 with FB_Effects;
+with GL_Utils;
 with GUI;
 with GUI_Level_Chooser;
 with Input_Callback;
@@ -88,6 +89,11 @@ package body Main_Loop.Game_Support is
                                              Int (Settings.Render_Distance));
       Transparency.Draw_Transparency_List;
       Particle_System.Render_Particle_Systems (Single (Delta_Time));
+      GL_Utils.Set_Resized_View (False);
+      --  if Draw_Debug_Quads then
+      --    Draw_Shadow_Debug;
+      --  end if;
+      FB_Effects.Draw_FB_Effects (Single (Delta_Time));
    end Player_1_View;
 
    --  -------------------------------------------------------------------------

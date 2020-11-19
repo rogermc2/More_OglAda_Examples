@@ -11,6 +11,7 @@ package FB_Effects is
 
    procedure Bind_Main_Scene_FB;
    function Current_SSAA return GL.Types.Single;
+   procedure Draw_FB_Effects (Delta_Time : GL.Types.Single);
    procedure Init (Width, Height : Integer);
    procedure Fade_In;
    procedure Fade_Out;
