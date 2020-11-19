@@ -82,7 +82,7 @@ package body Main_Loop is
       --     Batching_Mode        : Boolean := True;
       --
       --     Reserve_video_Memory : Boolean := True;
-       Dump_Video              : Boolean := False;
+      Dump_Video               : Boolean := False;
       --     Draw_Debug_Quads     : Boolean;
 
       Window_Width             : Glfw.Size;
@@ -352,10 +352,11 @@ package body Main_Loop is
          Height          : GL.Types.Single;
          Map_Path        : Unbounded_String;
          Ambient_Light   : constant Singles.Vector3 := (0.025, 0.025, 0.025);
+         Continue        : Boolean := True;
       begin
          Game_Utils.Game_Log ("Main_Loop.Run_Game started");
          Put_Line ("Main_Loop.Run_Game started");
-         while not Quit_Game loop
+         while Continue and not Quit_Game loop
             Window.Get_Framebuffer_Size (Window_Width, Window_Height);
             Width := Single (Window_Width);
             Height := Single (Window_Height);
@@ -363,55 +364,56 @@ package body Main_Loop is
 
             Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
                                    To_String (Level_Name));
-            if GUI_Level_Chooser.Start_Level_Chooser_Loop
-              (Window, MMenu.Credits_Program, MMenu.Are_We_In_Custom_Maps) then
+            Continue := GUI_Level_Chooser.Start_Level_Chooser_Loop
+              (Window, MMenu.Credits_Program, MMenu.Are_We_In_Custom_Maps);
+            if Continue then
                Level_Name := To_Unbounded_String
                  (GUI_Level_Chooser.Get_Selected_Map_Name (MMenu.Are_We_In_Custom_Maps));
                Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
                                     & To_String (Level_Name));
+
+               --   Even if flagged to skip initial intro this means that the level
+               --  chooser can be accessed if the player selects "new game" in the main menu.
+               Skip_Intro := False;
+               --  Level has been selected, start creating level
+               Map_Path := To_Unbounded_String ("src/maps/") & Level_Name &
+                 To_Unbounded_String (".map");
+               --  Name line
+               Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
+                                      To_String (Map_Path));
+               Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map);
+               --  Properties and characters are loaded by Load_Maps
+               Projectile_Manager.Init;
+
+               Utilities.Clear_Background_Colour_And_Depth (White);
+               GL.Toggles.Enable (GL.Toggles.Depth_Test);
+               GL.Toggles.Enable (GL.Toggles.Cull_Face);
+               GL.Culling.Set_Cull_Face (GL.Culling.Back);
+
+               Game_Utils.Game_Log ("---LEVEL START---");
+               Sprite_Renderer.Set_Ambient_Light_Level (Ambient_Light);
+               Manifold.Set_Manifold_Ambient_Light (Ambient_Light);
+               Prop_Renderer.Set_Ambient_Light_Level (Ambient_Light);
+               Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
+               FB_Effects.Fade_In;
+               Manifold.Update_Static_Lights_Uniforms;
+               Prop_Renderer.Update_Static_Lights_Uniforms;
+               Sprite_Renderer.Update_Static_Lights_Uniforms;
+
+               Camera.Cam_Wind_In;  --  Camera screw-in effect
+               Audio.Play_Sound ("enter_portal.wav", False);
+
+               Level_Time := 0.0;
+               Main_Game_Loop (Window);
+
+               if MMenu.End_Story_Open then
+                  MMenu.Play_End_Story_Music;
+               else
+                  Audio.Play_Music (Title_Track);
+               end if;
+               Is_Playing_Hammer_Track := False;
+               Quit_Game := Window.Should_Close;
             end if;
-
-            --   Even if flagged to skip initial intro this means that the level
-            --  chooser can be accessed if the player selects "new game" in the main menu.
-            Skip_Intro := False;
-            --  Level has been selected, start creating level
-            Map_Path := To_Unbounded_String ("src/maps/") & Level_Name &
-              To_Unbounded_String (".map");
-            --  Name line
-            Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
-                                   To_String (Map_Path));
-            Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map);
-            --  Properties and characters are loaded by Load_Maps
-            Projectile_Manager.Init;
-
-            Utilities.Clear_Background_Colour_And_Depth (White);
-            GL.Toggles.Enable (GL.Toggles.Depth_Test);
-            GL.Toggles.Enable (GL.Toggles.Cull_Face);
-            GL.Culling.Set_Cull_Face (GL.Culling.Back);
-
-            Game_Utils.Game_Log ("---LEVEL START---");
-            Sprite_Renderer.Set_Ambient_Light_Level (Ambient_Light);
-            Manifold.Set_Manifold_Ambient_Light (Ambient_Light);
-            Prop_Renderer.Set_Ambient_Light_Level (Ambient_Light);
-            Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
-            FB_Effects.Fade_In;
-            Manifold.Update_Static_Lights_Uniforms;
-            Prop_Renderer.Update_Static_Lights_Uniforms;
-            Sprite_Renderer.Update_Static_Lights_Uniforms;
-
-            Camera.Cam_Wind_In;  --  Camera screw-in effect
-            Audio.Play_Sound ("enter_portal.wav", False);
-
-            Level_Time := 0.0;
-            Main_Game_Loop (Window);
-
-            if MMenu.End_Story_Open then
-               MMenu.Play_End_Story_Music;
-            else
-               Audio.Play_Music (Title_Track);
-            end if;
-            Is_Playing_Hammer_Track := False;
-            Quit_Game := Window.Should_Close;
          end loop;
 
       exception

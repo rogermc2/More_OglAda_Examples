@@ -5,9 +5,12 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Glfw;
 with Glfw.Input.Keys;
 
-with GL.Types; use GL.Types;
+with GL.Attributes;
+with GL.Objects.Buffers;
 with GL.Objects.Programs;
+with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
+with GL.Types; use GL.Types;
 
 with Input_Callback;
 with Maths;
@@ -23,6 +26,7 @@ with MMenu;
 with Selected_Map_Manager;
 with Settings;
 with Text;
+with Texture_Manager;
 
 package body GUI_Level_Chooser is
    type Selected_Map_Type is (Map_Introduction, Map_Threedoors, Map_Warlock,
@@ -30,6 +34,8 @@ package body GUI_Level_Chooser is
                               Map_Attercoppe, Map_None);
 
    Quad_VAO                  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Back_Texture              : GL.Objects.Textures.Texture;
+   Back_Custom_Texture       : GL.Objects.Textures.Texture;
    Custom_Maps               : Custom_Maps_Manager.Custom_Maps_List;
    Num_Custom_Maps           : Natural := 0;
    Maps                      : Levels_Maps_Manager.Maps_List;
@@ -105,6 +111,9 @@ procedure Init is
       Text_Height     : constant Single :=
                           50.0 / Single (Settings.Framebuffer_Height);
       Choose_Map_Text : Integer;
+      Quad_Points     : constant Singles.Vector2_Array (1 .. 4) :=
+                          ((-1.0, -1.0), (-1.0, 1.0), (1.0, -1.0), (1.0, 1.0));
+      Quad_VBO        : GL.Objects.Buffers.Buffer;
    begin
       Game_Utils.Game_Log ("GUI_Level_Chooser.Init ...");
       if Framebuffer_Width < 800 or Framebuffer_Height < 600 then
@@ -143,6 +152,23 @@ procedure Init is
       Custom_Maps_Manager.Load_Custom_Map
         ("src/editor/maps.txt", Custom_Maps, Top_Margin_Cl,
          Left_Margin_Cl, Text_Height, Num_Custom_Maps);
+      Loading_Map_Txt := Text.Create_Text_Box
+        ("loading map...", -0.1, 0.0, 25.0,
+         (0.0, 0.0, 0.0, 1.0),  (0.800, 0.795, 0.696, 1.0));
+      Text.Set_Text_Visible (Loading_Map_Txt, False);
+
+      Quad_VAO.Initialize_Id;
+      Quad_VAO.Bind;
+      Quad_VBO := GL_Utils.Create_2D_VBO (Quad_Points);
+      GL.Objects.Buffers.Array_Buffer.Bind (Quad_VBO);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (0);
+
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/gui_level_chooser_back.png", Back_Texture, False, True);
+      Texture_Manager.Load_Image_To_Texture
+        ("src/textures/map_2048.png", Back_Custom_Texture, False, True);
+      Game_Utils.Game_Log ("GUI_Level_Chooser initialized");
    exception
       when others =>
          Put_Line ("An exception occurred in GUI_Level_Chooser.Init.");
@@ -202,7 +228,8 @@ procedure Init is
 
    --  ------------------------------------------------------------------------
 
-   procedure Render (Credits_Shader_Program : GL.Objects.Programs.Program) is
+   procedure Render (Credits_Shader_Program : GL.Objects.Programs.Program;
+                    Custom_Maps : Boolean) is
       use GL.Types;
       use Maths.Single_Math_Functions;
       Aspect : constant Single := Single (Settings.Framebuffer_Width) /
@@ -217,6 +244,12 @@ procedure Init is
       GL.Objects.Programs.Use_Program (Credits_Shader_Program);
       Menu_Credits_Shader_Manager.Set_Scale ((Sx, Sy));
       Menu_Credits_Shader_Manager.Set_Position ((Px, Py));
+      GL_Utils.Bind_VAO (Quad_VAO);
+      if Custom_Maps then
+         Texture_Manager.Bind_Texture (0, Back_Texture);
+      else
+         Texture_Manager.Bind_Texture (0, Back_Custom_Texture);
+      end if;
 
    end Render;
 
@@ -335,11 +368,12 @@ procedure Init is
          end if;
 
          if Continue then
+            Started_Loading_Map := False;
             if not Menu_Open then
-               Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
+--                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
                Process_Input (Window, Menu_Open, Started_Loading_Map, Cheat_Unlock);
             end if;
-            Render (Credits_Shader_Program);
+            Render (Credits_Shader_Program, Custom_Maps);
          end if;
       end loop;
 
@@ -413,7 +447,7 @@ procedure Init is
                Update_Selected_Entry_Dot_Map (False, Custom_Maps);
          end if;
       end if;
-      Game_Utils.Game_Log  ("Update_GUI_Level_Chooser finished");
+--        Game_Utils.Game_Log  ("GUI_Level_Chooser.Update_GUI_Level_Chooser finished");
 
    end Update_GUI_Level_Chooser;
 
