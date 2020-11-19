@@ -11,10 +11,15 @@ with GL.Types;
 with Input_Callback;
 
 package GL_Utils is
-   use GL.Types.Singles;
+   use GL.Types;
+   use Singles;
 
    package Matrix4_Package is new Ada.Containers.Doubly_Linked_Lists (Matrix4);
    type Matrix4_List is new Matrix4_Package.List with null record;
+
+   package Singles_Package is new
+     Ada.Containers.Vectors (Positive, Single);
+   type Singles_List is new Singles_Package.Vector with null record;
 
    package Vector2_Package is new Ada.Containers.Vectors (Positive, Vector2);
    type Vector2_List is new Vector2_Package.Vector with null record;
@@ -50,6 +55,8 @@ package GL_Utils is
      Ada.Strings.Unbounded.Unbounded_String;
    function To_UB_String (Bool : Boolean) return
      Ada.Strings.Unbounded.Unbounded_String;
+   function To_Single_Array (Vec : Singles_Package.Vector)
+                              return Single_Array;
    function To_Vector2_Array (Vec : Vector2_Package.Vector)
                               return Vector2_Array;
    function To_Vector3_Array (Vec : Vector3_Package.Vector)

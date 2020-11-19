@@ -7,6 +7,7 @@ with GL.Types; use GL.Types;
 with Maths;
 
 with GL_Maths;
+with GL_Utils;
 with Particle_System_Manager;
 
 package Particle_System is
@@ -42,18 +43,11 @@ package Particle_System is
                                      Seconds : Single);
 
 private
-   package Singles_Package is new
-     Ada.Containers.Vectors (Positive, Single);
-   type Ages_List is new Singles_Package.Vector with null record;
-
-   package Singles_Vector3_Package is new
-     Ada.Containers.Vectors (Positive, Singles.Vector3);
-   type Positions_List is new Singles_Vector3_Package.Vector with null record;
 
    type Particle_System is record
       -- For transforms on cpu
-      Particle_Positions : Positions_List;
-      Particle_Ages      : Ages_List;
+      Particle_Positions : GL_Utils.Vector3_Package.Vector;
+      Particle_Ages      : GL_Utils.Singles_Package.Vector;
       -- Used to rotate emitter
       Rot_Mat            : Singles.Matrix4 := Singles.Identity4;
       Emitter_World_Pos  : Singles.Vector3 := Maths.Vec3_0;

@@ -5,10 +5,13 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Blending;
 with GL.Buffers;
+with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
+
+with Utilities;
 
 with Camera;
 with FB_Effects;
@@ -279,12 +282,15 @@ package body Particle_System is
 
    procedure Start_Particle_System (System_ID : Positive) is
       use Particle_System_Manager;
+      use GL_Utils;
       use Singles_Package;
+      use Vector3_Package;
       theSystem    : Particle_System;
       Script_Index : Positive;
       Script       : Particle_System_Manager.Particle_Script;
-      Ages         : Ages_List := theSystem.Particle_Ages;
-      Positions    : Positions_List := theSystem.Particle_Positions;
+      Ages         : Singles_Package.Vector := theSystem.Particle_Ages;
+      Positions    : GL_Utils.Vector3_Package.Vector :=
+                       theSystem.Particle_Positions;
       Age_Scale    : Single;
 
       procedure Update_Particle_Age (Age : in out Single) is
@@ -346,10 +352,21 @@ package body Particle_System is
    --  ------------------------------------------------------------------------
 
    procedure Update_Dynamic_Buffers
-     (aSystem: Particle_System; aScript : Particle_System_Manager.Particle_Script) is
+     (aSystem : Particle_System;
+      aScript : Particle_System_Manager.Particle_Script) is
+      use GL_Utils;
+      use Singles_Package;
+      use Vector3_Package;
+      use GL.Objects.Buffers;
+      Vertices : constant Singles.Vector3_Array := GL_Utils.To_Vector3_Array
+        (aSystem.Particle_Positions);
+      Ages : constant Single_Array := GL_Utils.To_Single_Array
+        (aSystem.Particle_Ages);
    begin
-      null;
-
+      Array_Buffer.Bind (aScript.Particle_World_Positions_VBO);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices, Dynamic_Draw);
+      Array_Buffer.Bind (aScript.Particle_Ages_VBO);
+      Utilities.Load_Singles_Buffer (Array_Buffer, Ages, Dynamic_Draw);
    end Update_Dynamic_Buffers;
 
    --  ------------------------------------------------------------------------

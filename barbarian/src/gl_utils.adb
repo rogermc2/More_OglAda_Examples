@@ -220,6 +220,23 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
+   function To_Single_Array (Vec : Singles_Package.Vector)
+                              return Single_Array is
+      use GL.Types;
+      use Singles_Package;
+      Curs          : Cursor := Vec.First;
+      Singles_Array : Single_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Singles_Array'Range loop
+         Singles_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Singles_Array;
+
+   end To_Single_Array;
+
+   --  ------------------------------------------------------------------------
+
    function To_String (Bool : Boolean) return String is
    begin
       if Bool then
