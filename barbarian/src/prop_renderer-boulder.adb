@@ -14,7 +14,7 @@ package body Prop_Renderer.Boulder is
    --  -------------------------------------------------------------------------
 
    procedure Bounce_Back_From_Wall
-     (Properties              : in out Prop_Renderer.Property_Data;
+     (Properties              : in out Prop_Renderer_Support.Property_Data;
       Gap_To_Floor            : Single; Radius : Single;
       Next_U, Next_V          : out Int;
       Direction, Desired_Vel  : in out Singles.Vector3) is
@@ -123,11 +123,11 @@ package body Prop_Renderer.Boulder is
       use Singles;
       use Maths;
       use Single_Math_Functions;
-      aProperty    : constant Prop_Renderer.Property_Data :=
-                       Get_Property_Data (Prop_Index);
+      use Prop_Renderer_Support;
+      aProperty    : constant Property_Data := Get_Property_Data (Prop_Index);
       S_I          : Positive := aProperty.Script_Index;
-      aScript      : Prop_Renderer.Prop_Script := Get_Script_Data (S_I);
-      Prop_Type    : constant Prop_Renderer.Property_Type := aScript.Script_Type;
+      aScript      : Prop_Script := Get_Script_Data (S_I);
+      Prop_Type    : constant Property_Type := aScript.Script_Type;
       SS_I         : constant Positive := aScript.Smashed_Script_Index;
       Prop_Centre  : Vector3;
       Query_Centre : Vector3;
@@ -252,13 +252,14 @@ package body Prop_Renderer.Boulder is
      (NW_World, SE_World : Singles.Vector3;
       Excluded_Property  : Positive) return Single is
       use Prop_Indices_Package;
+      use Prop_Renderer_Support;
       use Singles;
       use Maths;
       Prop_Indices       : Prop_Indices_List;
       Prop_Index         : Positive;
-      aProperty          : Prop_Renderer.Property_Data;
-      Prop_Type          : Prop_Renderer.Property_Type;
-      aScript            : Prop_Renderer.Prop_Script;
+      aProperty          : Property_Data;
+      Prop_Type          : Property_Type;
+      aScript            : Prop_Script;
       Nw_Map_U           : constant Int := Int (0.5 * (NW_World (GL.X) + 1.0));
       Nw_Map_V           : constant Int := Int (0.5 * (NW_World (GL.Z) + 1.0));
       Se_Map_U           : constant Int := Int (0.5 * (SE_World (GL.X) + 1.0));
@@ -372,13 +373,13 @@ package body Prop_Renderer.Boulder is
    --  -------------------------------------------------------------------------
 
    procedure Update_Boulder (Prop_Index : Positive;
-                             Script     : Prop_Renderer.Prop_Script;
+                             Script     : Prop_Renderer_Support.Prop_Script;
                              Seconds    : Float) is
-
       use Singles;
       use Maths;
+      use Prop_Renderer_Support;
       use Tiles_Manager;
-      Properties      : Prop_Renderer.Property_Data :=
+      Properties      : Property_Data :=
                           Prop_Renderer.Get_Property_Data (Prop_Index);
       S_I             : constant Positive := Properties.Script_Index;
       Script_Data     : constant Prop_Script := Get_Script_Data (S_I);

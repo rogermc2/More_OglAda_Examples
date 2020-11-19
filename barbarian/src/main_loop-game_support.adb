@@ -60,7 +60,7 @@ package body Main_Loop.Game_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Player_1_View is
+   procedure Player_1_View (Delta_Time : Float) is
       use GL.Types;
       use Shadows;
       Camera_Position : constant Singles.Vector3 := Camera.World_Position;
@@ -87,7 +87,7 @@ package body Main_Loop.Game_Support is
       Sprite_World_Map.Cache_Sprites_Around (Centre_X, Centre_Z,
                                              Int (Settings.Render_Distance));
       Transparency.Draw_Transparency_List;
-
+      Particle_System.Render_Particle_Systems (Single (Delta_Time));
    end Player_1_View;
 
    --  -------------------------------------------------------------------------

@@ -254,7 +254,7 @@ package body Main_Loop is
                         Text.Update_Particle_Texts (Delta_Time);
                         Check_Victory_Defeat;
                      end if;
-                     Player_1_View;
+                     Player_1_View (Delta_Time);
                   end if;
                end if;
             end if;
