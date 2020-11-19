@@ -7,7 +7,9 @@ package Main_Loop.Game_Support is
 
    function Cheat_Check_1 return Boolean;
    procedure Check_Victory_Defeat;
-   procedure Player_1_View (Delta_Time : Float);
+   procedure Player_1_View (Window     : in out Input_Callback.Barbarian_Window;
+                            Delta_Time : Float; Dump_Video : Boolean;
+                            Save_Screenshot : Boolean);
    procedure Unload_Level;
    procedure Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
                             Curr_Frame_Time_Accum_Ms : in out Float;

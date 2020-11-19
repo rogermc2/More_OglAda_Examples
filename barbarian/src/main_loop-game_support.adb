@@ -1,6 +1,7 @@
 
 with Glfw;
 with Glfw.Input.Keys;
+with Glfw.Windows.Context;
 
 with Utilities;
 
@@ -13,6 +14,7 @@ with GL_Utils;
 with GUI;
 with GUI_Level_Chooser;
 with Input_Callback;
+with Input_Handler;
 with Manifold;
 with Mmenu;
 with Particle_System;
@@ -67,8 +69,11 @@ package body Main_Loop.Game_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Player_1_View (Delta_Time : Float) is
+   procedure Player_1_View (Window     : in out Input_Callback.Barbarian_Window;
+                            Delta_Time : Float; Dump_Video : Boolean;
+                            Save_Screenshot : Boolean) is
       use GL.Types;
+      use Glfw.Input.Keys;
       use Shadows;
       Camera_Position : constant Singles.Vector3 := Camera.World_Position;
       Centre_X        : constant Int := Int ((1.0 + Camera_Position (GL.X)) / 2.0);
@@ -107,7 +112,32 @@ package body Main_Loop.Game_Support is
       if Mmenu.Menu_Open then
          Mmenu.Draw_Menu (Delta_Time);
       elsif not Settings.Hide_GUI then
-         GUI.re
+         GUI.Render_GUIs;
+      end if;
+      GUI.Draw_Controller_Button_Overlays (Delta_Time);
+      -- Debug:
+--        if Settings.Show_FPS then
+--           Text.Draw_Text (FPS_Text);
+--        end if;
+      Glfw.Input.Poll_Events;
+      --        Poll_Joystick;
+      --  ANTON moved this BEFORE swap buffers to avoid weird draw
+      --  artifacts in output images
+      if Settings.Video_Record_Mode and Dump_Video then
+         null;
+      end if;
+      if Save_Screenshot then
+         null;
+--           Screenshot;
+      end if;
+      Glfw.Windows.Context.Swap_Buffers (Window'Access);
+      Camera.Set_Is_Dirty (False);
+      if not MMenu.Menu_Open and then
+        (Input_Callback.Was_Key_Pressed (Window, Escape) or
+             Input_Handler.Was_Action_Pressed
+           (Window, Input_Handler.Menu_Open_Action)) then
+         MMenu.Set_Menu_Open (True);
+         FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Grey);
       end if;
    end Player_1_View;
 

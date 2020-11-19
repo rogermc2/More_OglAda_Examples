@@ -217,6 +217,13 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+    procedure Set_Is_Dirty (State : Boolean) is
+    begin
+        G_Cam.Is_Dirty := State;
+    end Set_Is_Dirty;
+
+    --  ------------------------------------------------------------------------
+
    procedure Set_Screen_Shake_Countdown (Countdown : Float) is
     begin
       G_Cam.Screen_Shake_Countdown_Secs := Countdown;

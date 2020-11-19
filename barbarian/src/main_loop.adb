@@ -81,7 +81,7 @@ package body Main_Loop is
       --     Batching_Mode        : Boolean := True;
       --
       --     Reserve_video_Memory : Boolean := True;
-      --     Dump_Video           : Boolean;
+       Dump_Video              : Boolean := False;
       --     Draw_Debug_Quads     : Boolean;
 
       Window_Width             : Glfw.Size;
@@ -254,7 +254,8 @@ package body Main_Loop is
                         Text.Update_Particle_Texts (Delta_Time);
                         Check_Victory_Defeat;
                      end if;
-                     Player_1_View (Delta_Time);
+                     Player_1_View (Window, Delta_Time, Dump_Video,
+                                    Save_Screenshot);
                   end if;
                end if;
             end if;
