@@ -25,7 +25,7 @@ with GL_Maths;
 with GL_Utils;
 with Input_Handler;
 with Menu_Credits_Shader_Manager;
-with MMenu_Initialization;
+with Main_Menu_Initialization;
 with Menu_Strings;
 with Menu_Support;
 with Mesh_Loader;
@@ -35,11 +35,11 @@ with Text;
 with Texture_Manager;
 with Title_Shader_Manager;
 
-package body MMenu is
+package body Main_Menu is
    use GL.Types;
    use Menu_Strings;
    use Menu_Support;
-   use MMenu_Initialization;
+   use Main_Menu_Initialization;
 
    Black              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
    Menu_Text_Y_Offset : constant Single := 270.0; --  orig 300 pixels above horizontal for text to start
@@ -209,7 +209,7 @@ package body MMenu is
       Text_Background_Scale := (512.0 / FB_Width, 400.0 / FB_Height);
       GL.Objects.Programs.Use_Program (Credits_Shader_Program);
       if Menu_Credits_Open then
-         --           Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Credits_Open");
+         --           Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Credits_Open");
          Utilities.Clear_Background_Colour_And_Depth (Black);
          Disable (Depth_Test);
          Text_Timer := Text_Timer + Elapsed;
@@ -237,7 +237,7 @@ package body MMenu is
          end if;
          Enable (Depth_Test);
       else  --  Menu_Credits not open
-         --           Game_Utils.Game_Log ("Mmenu.Draw_Menu not Menu_Credits_Open");
+         --           Game_Utils.Game_Log ("Main_Menu.Draw_Menu not Menu_Credits_Open");
          Enable (Blend);
          --  text background box
          GL.Objects.Programs.Use_Program (Credits_Shader_Program);
@@ -253,7 +253,7 @@ package body MMenu is
          Disable (Blend);
          Utilities.Clear_Depth;
          if Menu_Graphics_Open then
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Graphics_Open");
+            Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Graphics_Open");
             for index in Graphic_Choice_Type'Range loop
                Text.Draw_Text (Graphics_Text (index));
                Text.Draw_Text (Graphic_Value_Text (index));
@@ -265,7 +265,7 @@ package body MMenu is
                                            (Graphic_Cursor_Curr_Item));
 
          elsif Menu_Audio_Open then
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Audio_Open");
+            Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Audio_Open");
             for index in Audio_Choice_Type'Range loop
                Text.Draw_Text (Audio_Text (index));
                Text.Draw_Text (Audio_Value_Text (index));
@@ -275,7 +275,7 @@ package body MMenu is
             Cursor_Pos (GL.Y) := (400.0 - 20.0  * (Cursor_Pos (GL.Y) - 1.0)) /
               Single (Framebuffer_Height);
          elsif Menu_Cal_KB_Open then
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Cal_KB_Open");
+            Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Cal_KB_Open");
             for index in 1 .. Input_Handler.Num_Actions loop
                Text.Draw_Text (Cal_KB_Text (index));
                Text.Draw_Text (KB_Binding_Text (index));
@@ -285,7 +285,7 @@ package body MMenu is
             end if;
             Cursor_Pos (GL.Y) := Cursor_Y (Cal_Kb_Cursor_Curr_Item);
          elsif Menu_Cal_Gp_Butts_Open then
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Cal_Gp_Butts_Open");
+            Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Cal_Gp_Butts_Open");
             for index in 1 .. Input_Handler.Num_Actions loop
                Text.Draw_Text (Cal_GP_Text (index));
                Text.Draw_Text (GP_Buttons_Binding_Text (index));
@@ -296,7 +296,7 @@ package body MMenu is
                Text.Draw_Text (Already_Bound_Text);
             end if;
          elsif Menu_Cal_Gp_Axes_Open then
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Cal_Gp_Axes_Open");
+            Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Cal_Gp_Axes_Open");
             for index in 1 .. Input_Handler.Num_Actions loop
                Text.Draw_Text (Cal_GP_Text (index));
                Text.Draw_Text (GP_Axis_Binding_Text (index));
@@ -307,7 +307,7 @@ package body MMenu is
                Text.Draw_Text (Already_Bound_Text);
             end if;
          elsif Menu_Input_Open then
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Input_Open");
+            Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Input_Open");
             for index in Input_Choice_Type'Range loop
                Text.Draw_Text (Input_Text (index));
             end loop;
@@ -318,7 +318,7 @@ package body MMenu is
               Single (Framebuffer_Height);
             Text.Draw_Text (Joystick_Detected_Text);
          elsif Menu_Confirm_Quit_Open then
-            Game_Utils.Game_Log ("Mmenu.Draw_Menu Menu_Confirm_Quit_Open");
+            Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Confirm_Quit_Open");
             for index in Quit_Choice_Type'Range loop
                Text.Draw_Text (Confirm_Quit_Text (index));
             end loop;
@@ -371,7 +371,7 @@ package body MMenu is
       Title_Shader_Manager.Set_Time (Current_Time);
 
       if not Title_VAO.Initialized then
-         raise MMenu_Exception with
+         raise Main_Menu_Exception with
            "MMen.Draw_Title_Only, Title_VAO has not been initialized";
       end if;
       GL_Utils.Bind_VAO (Title_VAO);
@@ -400,10 +400,10 @@ package body MMenu is
       --  Draw cursor skull in background
       Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
       if not Title_Skull_Texture.Initialized then
-         raise MMenu_Exception with
+         raise Main_Menu_Exception with
            "MMen.Draw_Title_Only, Title_Skull_Texture has not been initialized";
       elsif not Cursor_VAO.Initialized then
-         raise MMenu_Exception with
+         raise Main_Menu_Exception with
            "MMen.Draw_Title_Only, Cursor_VAO has not been initialized";
       end if;
       GL_Utils.Bind_VAO (Cursor_VAO);
@@ -422,7 +422,7 @@ package body MMenu is
       Title_Shader_Manager.Set_Time (Current_Time);
 
       if not Title_VAO.Initialized then
-         raise MMenu_Exception with
+         raise Main_Menu_Exception with
            "MMen.Draw_Title_Only, Title_VAO has not been initialized";
       end if;
       GL_Utils.Bind_VAO (Title_VAO);
@@ -452,7 +452,7 @@ package body MMenu is
    --  ------------------------------------------------------------------------
 
    procedure Init is
-      use MMenu_Initialization;
+      use Main_Menu_Initialization;
    begin
       Game_Utils.Game_Log ("---MAIN MENU---");
       Init_Position_And_Texture_Buffers (Menu_VAO, Position_Buffer, Texture_Buffer);
@@ -543,7 +543,7 @@ package body MMenu is
       if not Result then
          --  Since_Last_Key > 0.15
          if Menu_Graphics_Open then
-            Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Graphics_Open");
+            Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Graphics_Open");
             Result := Process_Menu_Graphics
               (Window, Graphic_Value_Text, Menu_Graphics_Open,
                Graphics_Restart_Flag, Since_Last_Key, Graphic_Cursor_Curr_Item,
@@ -551,37 +551,37 @@ package body MMenu is
          end if;  --  Menu_Graphics_Open
 
          if Menu_Audio_Open then
-            Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Audio_Open");
+            Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Audio_Open");
             Process_Menu_Audio (Window, Audio_Value_Text, Menu_Audio_Open,
                                 Since_Last_Key, Audio_Cursor_Current_Item);
          end if;  --  Menu_Audio_Open
          if Menu_Cal_KB_Open then
-            Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Cal_KB_Open");
+            Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Cal_KB_Open");
             Process_Menu_Cal_KB (Window, KB_Binding_Text, Greatest_Axis_Text,
                                  Already_Bound_Text, Modify_Binding_Mode,
                                  Already_Bound, Menu_Cal_KB_Open, Since_Last_Key);
          end if;  --  Menu_Audio_Open
          if Menu_Cal_Gp_Butts_Open or Menu_Cal_Gp_Axes_Open then
-            Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Cal_Gp_Butts_Open");
+            Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Cal_Gp_Butts_Open");
             Process_Menu_Cal_GP;
          end if;
          if Menu_Input_Open then
-            Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Input_Open");
+            Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Input_Open");
             Process_Menu_Input (Window, To_String (Joy_Name), Since_Last_Key,
                                 Menu_Input_Open, Menu_Cal_KB_Open,
                                 Menu_Cal_Gp_Axes_Open, Menu_Cal_Gp_Butts_Open,
                                 Joystick_Detected_Text, Input_Cursor_Current_Item);
          end if;
          if Menu_Confirm_Quit_Open then
-            Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Confirm_Quit_Open");
+            Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Confirm_Quit_Open");
             Result := Confirm_Quit_Open (Window, Menu_Confirm_Quit_Open);
          end if;
          if Menu_Credits_Open then
-            --              Game_Utils.Game_Log ("Mmenu.Update_Menu Menu_Credits_Open");
+            --              Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Credits_Open");
             Check_Close_Menu_Credits (Window, Menu_Credits_Open,
                                       Menu_End_Story_Open, Menu_Closed, Text_Timer);
          end if;
-         --           Game_Utils.Game_Log ("Mmenu.Update_Menu General_Menu_Support");
+         --           Game_Utils.Game_Log ("Main_Menu.Update_Menu General_Menu_Support");
          General_Menu_Support (Window, Joystick_Detected_Text,
                                To_String (Joy_Name), Menu_Closed,
                                Menu_Graphics_Open, Menu_Audio_Open,
@@ -596,4 +596,4 @@ package body MMenu is
 
    --  ------------------------------------------------------------------------
 
-end MMenu;
+end Main_Menu;

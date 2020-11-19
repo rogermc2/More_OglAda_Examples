@@ -27,7 +27,7 @@ with Text;
 with Texture_Manager;
 with Title_Shader_Manager;
 
-package body MMenu_Initialization is
+package body Main_Menu_Initialization is
    use GL.Types;
    use Menu_Strings;
 
@@ -609,4 +609,4 @@ package body MMenu_Initialization is
 
    --  ------------------------------------------------------------------------
 
-end MMenu_Initialization;
+end Main_Menu_Initialization;

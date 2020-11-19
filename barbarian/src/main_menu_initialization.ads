@@ -10,7 +10,7 @@ with GL.Types;
 with GL_Maths;
 with Menu_Strings; use Menu_Strings;
 
-package MMenu_Initialization is
+package Main_Menu_Initialization is
 
    Num_Credits_Strings   : constant Integer := 47;
    Num_End_Story_Strings : constant Integer := 18;
@@ -64,4 +64,4 @@ package MMenu_Initialization is
                            Joy_Name                               : String; Joystick_Detected_Text,
                            Greatest_Axis_Text, Already_Bound_Text : in out Integer);
 
-end MMenu_Initialization;
+end Main_Menu_Initialization;

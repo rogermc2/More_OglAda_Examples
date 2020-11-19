@@ -2,12 +2,12 @@
 with GL.Objects.Programs;
 
 with Input_Callback;
-with MMenu_Initialization;
+with Main_Menu_Initialization;
 
-package MMenu is
+package Main_Menu is
 
-   Credits_Text_ID : MMenu_Initialization.Credits_Text_Array;
-   MMenu_Exception : Exception;
+   Credits_Text_ID : Main_Menu_Initialization.Credits_Text_Array;
+   Main_Menu_Exception : Exception;
 
    function Are_We_In_Custom_Maps return Boolean;
    function Credits_Program return GL.Objects.Programs.Program;
@@ -27,4 +27,4 @@ package MMenu is
    function Update_Menu (Window     : in out Input_Callback.Barbarian_Window;
                          Delta_Time : Float) return Boolean;
 
-end MMenu;
+end Main_Menu;
