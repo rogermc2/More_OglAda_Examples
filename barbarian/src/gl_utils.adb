@@ -253,6 +253,57 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
+   function To_Vector2_Array (Vec : Vector2_Package.Vector)
+                              return Vector2_Array is
+      use GL.Types;
+      use Vector2_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Vector2_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector2_Array;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Vector3_Array (Vec : Vector3_Package.Vector)
+                              return Vector3_Array is
+      use GL.Types;
+      use Vector3_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Vector3_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector3_Array;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Vector4_Array (Vec : Vector4_Package.Vector)
+                              return Vector4_Array is
+      use GL.Types;
+      use Vector4_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Vector4_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector4_Array;
+
+   --  ------------------------------------------------------------------------
+
    procedure Update_Batch_Count (Change : Integer) is
    begin
       Statistics.Batch_Count := Statistics.Batch_Count + Change;

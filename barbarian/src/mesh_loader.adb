@@ -56,18 +56,6 @@ package body Mesh_Loader is
    package Animations_Package is new Ada.Containers.Vectors (Positive, Animation);
    type Animations_List is new Animations_Package.Vector with null record;
 
-   package Matrix4_Package is new Ada.Containers.Doubly_Linked_Lists (Singles.Matrix4);
-   type Matrix4_List is new Matrix4_Package.List with null record;
-
-   package Vector2_Package is new Ada.Containers.Vectors (Positive, Singles.Vector2);
-   type Vector2_List is new Vector2_Package.Vector with null record;
-
-   package Vector3_Package is new Ada.Containers.Vectors (Positive, Singles.Vector3);
-   type Vector3_List is new Vector3_Package.Vector with null record;
-
-   package Vector4_Package is new Ada.Containers.Vectors (Positive, Singles.Vector4);
-   type Vector4_List is new Vector4_Package.Vector with null record;
-
    type Node_Children_Array is array (1 .. Max_Bones, 1 .. Max_Bones) of Integer;
 
    type Mesh is record
@@ -83,9 +71,9 @@ package body Mesh_Loader is
       Bounding_Radius        : Float := 1.0;
       --  the skeleton hierarchy
       Root_Transform_Matrix  : Singles.Matrix4 := Singles.Identity4;
-      Offset_Matrices        : Matrix4_List;
-      Current_Bone_Matrices  : Matrix4_List;
-      Anim_Node_Parents      : Matrix4_List;
+      Offset_Matrices        : GL_Utils.Matrix4_List;
+      Current_Bone_Matrices  : GL_Utils.Matrix4_List;
+      Anim_Node_Parents      : GL_Utils.Matrix4_List;
       Anim_Node_Children     : Node_Children_Array := (others => (others => 0));
       Anim_Node_Num_Children : Int_Array (1 .. Max_Bones) := (others => 0);
       Anim_Node_Bone_Ids     : GL_Maths.Ints_List;
@@ -108,12 +96,6 @@ package body Mesh_Loader is
    function Loaded_Mesh_Animation (Mesh_ID : Integer; Anim_ID : Positive)
                                    return Animation;
    function Load_Mesh (Path : String; Mesh_ID : out Integer) return Boolean;
-   function To_Vector2_Array (Vec : Vector2_Package.Vector)
-                              return Singles.Vector2_Array;
-   function To_Vector3_Array (Vec : Vector3_Package.Vector)
-                              return Singles.Vector3_Array;
-   function To_Vector4_Array (Vec : Vector4_Package.Vector)
-                              return Singles.Vector4_Array;
 
    --  ------------------------------------------------------------------------
 
@@ -578,54 +560,6 @@ package body Mesh_Loader is
 
       return Count;
    end Point_Count;
-
-   --  ------------------------------------------------------------------------
-
-   function To_Vector2_Array (Vec : Vector2_Package.Vector)
-                              return Singles.Vector2_Array is
-      use Vector2_Package;
-      Curs      : Cursor := Vec.First;
-      Vec_Array : Singles.Vector2_Array (1 .. Int (Vec.Length));
-   begin
-      for index in Int range Vec_Array'Range loop
-         Vec_Array (index) := Vec (Curs);
-         Next  (Curs);
-      end loop;
-      return Vec_Array;
-
-   end To_Vector2_Array;
-
-   --  ------------------------------------------------------------------------
-
-   function To_Vector3_Array (Vec : Vector3_Package.Vector)
-                              return Singles.Vector3_Array is
-      use Vector3_Package;
-      Curs      : Cursor := Vec.First;
-      Vec_Array : Singles.Vector3_Array (1 .. Int (Vec.Length));
-   begin
-      for index in Int range Vec_Array'Range loop
-         Vec_Array (index) := Vec (Curs);
-         Next  (Curs);
-      end loop;
-      return Vec_Array;
-
-   end To_Vector3_Array;
-
-   --  ------------------------------------------------------------------------
-
-   function To_Vector4_Array (Vec : Vector4_Package.Vector)
-                              return Singles.Vector4_Array is
-      use Vector4_Package;
-      Curs      : Cursor := Vec.First;
-      Vec_Array : Singles.Vector4_Array (1 .. Int (Vec.Length));
-   begin
-      for index in Int range Vec_Array'Range loop
-         Vec_Array (index) := Vec (Curs);
-         Next  (Curs);
-      end loop;
-      return Vec_Array;
-
-   end To_Vector4_Array;
 
    --  ------------------------------------------------------------------------
 

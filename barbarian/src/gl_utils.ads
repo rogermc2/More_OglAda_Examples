@@ -1,4 +1,6 @@
 
+with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 
 with GL.Objects.Buffers;
@@ -9,19 +11,31 @@ with GL.Types;
 with Input_Callback;
 
 package GL_Utils is
+   use GL.Types.Singles;
+
+   package Matrix4_Package is new Ada.Containers.Doubly_Linked_Lists (Matrix4);
+   type Matrix4_List is new Matrix4_Package.List with null record;
+
+   package Vector2_Package is new Ada.Containers.Vectors (Positive, Vector2);
+   type Vector2_List is new Vector2_Package.Vector with null record;
+
+   package Vector3_Package is new Ada.Containers.Vectors (Positive, Vector3);
+   type Vector3_List is new Vector3_Package.Vector with null record;
+
+   package Vector4_Package is new Ada.Containers.Vectors (Positive, Vector4);
+   type Vector4_List is new Vector4_Package.Vector with null record;
 
    type Gfx_Stats is private;
 
    procedure Bind_VAO (VAO : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object);
-   function Create_2D_VBO (Data : GL.Types.Singles.Vector2_Array)
+   function Create_2D_VBO (Data : Vector2_Array)
                             return GL.Objects.Buffers.Buffer;
-   function Create_3D_VBO (Data : GL.Types.Singles.Vector3_Array)
+   function Create_3D_VBO (Data : Vector3_Array)
                             return GL.Objects.Buffers.Buffer;
-   function Create_4D_VBO (Data : GL.Types.Singles.Vector4_Array)
+   function Create_4D_VBO (Data : Vector4_Array)
                            return GL.Objects.Buffers.Buffer;
    function Current_Program return GL.Objects.Programs.Program;
    procedure Frame_Buffer_Resize (Window : in out Input_Callback.Barbarian_Window);
---     function Get_Elapsed_Seconds return Float;
    function Is_Edit_Mode return Boolean;
    function Read_Vec2 (Vec : String) return GL.Types.Singles.Vector2;
    function Read_Vec3 (Vec : String) return GL.Types.Singles.Vector3;
@@ -36,6 +50,12 @@ package GL_Utils is
      Ada.Strings.Unbounded.Unbounded_String;
    function To_UB_String (Bool : Boolean) return
      Ada.Strings.Unbounded.Unbounded_String;
+   function To_Vector2_Array (Vec : Vector2_Package.Vector)
+                              return Vector2_Array;
+   function To_Vector3_Array (Vec : Vector3_Package.Vector)
+                              return Vector3_Array;
+   function To_Vector4_Array (Vec : Vector4_Package.Vector)
+                              return Vector4_Array;
    procedure Update_Batch_Count (Change : Integer);
    procedure Update_Vertex_Count (Change : Integer);
    function Verify_Bound_Framebuffer return Boolean;
