@@ -15,13 +15,14 @@ package Settings is
    function Audio_Volume return Integer;
    function Auto_Blood_Wipe return Boolean;
    procedure Default_Settings;
-   function Joystick_Disabled return Boolean;
    function Far_Clip return GL.Types.Single;
    function Fb_Effects_Enabled return Boolean;
    function Framebuffer_Height return GL.Types.Int;
    function Framebuffer_Width return GL.Types.Int;
    function Full_Screen return Boolean;
    function Graphic_Preset return Menu_Strings.Graphic_Preset_Choice_Type;
+   function Hide_GUI return Boolean;
+   function Joystick_Disabled return Boolean;
    procedure Load_Settings;
    function Multi_Sample_Anti_Aliasing return Integer;
    function Music_Volume return Audio_Volume_Range;

@@ -14,6 +14,7 @@ with GUI;
 with GUI_Level_Chooser;
 with Input_Callback;
 with Manifold;
+with Mmenu;
 with Particle_System;
 with Prop_Renderer;
 with Settings;
@@ -26,6 +27,11 @@ with Transparency;
 package body Main_Loop.Game_Support is
 
    Shadow_Caster_Max_Tiles_Away : constant GL.Types.Int := 10;
+   FPS_Counter                  : Integer := 0;
+
+   procedure Update_FPS_Box;
+
+   --  -------------------------------------------------------------------------
 
    function Cheat_Check_1 return Boolean is
       use Glfw.Input.Keys;
@@ -94,6 +100,15 @@ package body Main_Loop.Game_Support is
       --    Draw_Shadow_Debug;
       --  end if;
       FB_Effects.Draw_FB_Effects (Single (Delta_Time));
+      -- Debug:
+--        if Settings.Show_FPS then
+--           Update_FPS_Box;
+--        end if;
+      if Mmenu.Menu_Open then
+         Mmenu.Draw_Menu (Delta_Time);
+      elsif not Settings.Hide_GUI then
+         GUI.re
+      end if;
    end Player_1_View;
 
    --  -------------------------------------------------------------------------
@@ -122,6 +137,17 @@ package body Main_Loop.Game_Support is
       Audio.Stop_All_Sounds;
       Camera.Set_Screen_Shake_Countdown (0.0);
    end  Unload_Level;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Update_FPS_Box is
+      FPS : Float := 0.0;
+   begin
+      FPS_Counter := FPS_Counter + 1;
+      if FPS_Counter >= 30 then
+        FPS_Counter := 0;
+      end if;
+   end  Update_FPS_Box;
 
    --  -------------------------------------------------------------------------
 

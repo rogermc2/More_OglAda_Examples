@@ -74,13 +74,6 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
-   function Joystick_Disabled return Boolean is
-   begin
-      return G_Settings.Disable_Joystick;
-   end Joystick_Disabled;
-
-   --  ------------------------------------------------------------------------
-
    function Far_Clip return GL.Types.Single is
    begin
       return G_Settings.Far_Clip;
@@ -120,6 +113,20 @@ package body Settings is
    begin
       return G_Settings.Gfx_Presets;
    end Graphic_Preset;
+
+   --  ------------------------------------------------------------------------
+
+   function Hide_GUI return Boolean is
+   begin
+      return G_Settings.Hide_Gui;
+   end Hide_GUI;
+
+   --  ------------------------------------------------------------------------
+
+   function Joystick_Disabled return Boolean is
+   begin
+      return G_Settings.Disable_Joystick;
+   end Joystick_Disabled;
 
    --  ------------------------------------------------------------------------
 

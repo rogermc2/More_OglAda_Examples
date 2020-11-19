@@ -152,6 +152,7 @@ package body GUI is
    procedure Init_Fist;
    procedure Init_Health_Bar;
    procedure Init_Screen_Splat;
+   procedure Render_Screen_Splats;
    procedure Start_Fist;
    procedure Update_Screen_Splats (Seconds : Float);
 
@@ -495,6 +496,49 @@ package body GUI is
       Image_Panel_Shader_Manager.Init (Image_Panel_SP);
       GUI_Atlas_Shader_Manager.Init (Crong_Head_SP);
    end Load_Gui_Shaders;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Render_GUIs is
+      use GL.Culling;
+      use GL.Toggles;
+   begin
+      Set_Front_Face (Clockwise);
+      Enable (Blend);
+      Disable (Depth_Test);
+      if Num_Active_Screen_Splats > 0 then
+         Render_Screen_Splats;
+      end if;
+
+      Enable (Depth_Test);
+      Disable (Blend);
+      Set_Front_Face (Counter_Clockwise);
+
+   end Render_GUIs;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Render_Screen_Splats is
+      use GL.Objects.Textures.Targets;
+      use GL.Objects.Vertex_Arrays;
+      use GUI_Atlas_Shader_Manager;
+      Current_Splat : Screen_Splat_Data;
+   begin
+      GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
+      GL.Objects.Textures.Set_Active_Unit (0);
+      Texture_2D.Bind (Screen_Splat_Texture);
+      GL.Objects.Programs.Use_Program (Crong_Head_SP);
+      Set_Columns (4.0);
+      Set_Alpha (Blood_Overlay_Alpha);
+      for index in Screen_Splats'Range loop
+         if Screen_Splats (index).Is_Active then
+            Current_Splat := Screen_Splats (index);
+            Set_Current_Sprite (Single (Current_Splat.Sprite_Index));
+            Set_Model_Matrix (Current_Splat.Model_Matrix);
+            Draw_Arrays (Triangle_Strip, 0, 4);
+         end if;
+      end loop;
+   end Render_Screen_Splats;
 
    --  ----------------------------------------------------------------------------
 
