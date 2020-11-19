@@ -1,4 +1,6 @@
 
+with GL.Objects.Programs;
+
 with Input_Callback;
 with MMenu_Initialization;
 
@@ -8,6 +10,7 @@ package MMenu is
    MMenu_Exception : Exception;
 
    function Are_We_In_Custom_Maps return Boolean;
+   function Credits_Program return GL.Objects.Programs.Program;
    function Did_User_Choose_Custom_Maps return Boolean;
    function Did_User_Choose_New_Game return Boolean;
    procedure Draw_Menu (Elapsed : Float);

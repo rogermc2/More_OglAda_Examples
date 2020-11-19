@@ -5,7 +5,6 @@ with Glfw.Input.Keys;
 
 with GL.Attributes;
 with GL.Objects.Buffers;
-with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
@@ -161,6 +160,13 @@ package body MMenu is
    begin
       return We_Are_In_Custom_Maps;
    end Are_We_In_Custom_Maps;
+
+   --  ------------------------------------------------------------------------
+
+   function Credits_Program return GL.Objects.Programs.Program is
+   begin
+      return Credits_Shader_Program;
+   end Credits_Program;
 
    --  ------------------------------------------------------------------------
 
