@@ -90,60 +90,66 @@ package body Levels_Maps_Manager is
 
    procedure Load_Map (Path             : String; theMap : in out Level_Map_Data;
                        Has_Hammer_Track : out Boolean) is
-      use Ada.Streams;
       use Maps_Manager;
-      Input_File       : Stream_IO.File_Type;
-      Input_Stream     : Stream_IO.Stream_Access;
-      aLine            : Unbounded_String;
-      Line_Length      : Integer;
+      Input_File       : File_Type;
       Num_Story_Lines  : Natural;
       Story_Lines      : Maps_Manager.Story_Lines_List;
    begin
-      --        Put_Line ("Levels_Maps_Manager.Load_Map loading " & Path);
-      Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
-      Input_Stream := Stream_IO.Stream (Input_File);
-      Unbounded_String'Read (Input_Stream, theMap.Map_Name);
-      Line_Length := Length (theMap.Map_Name) - 1;
-      for index in 1 .. Line_Length loop
-         if Slice (theMap.Map_Name, index, index + 1) = "\r" or
-           Slice (theMap.Map_Name, index, index + 1) = "\n" then
-            Delete  (theMap.Map_Name, index, index + 1);
-            Line_Length := Line_Length - 2;
-         end if;
-      end loop;
-
-      Unbounded_String'Read (Input_Stream, theMap.Par_Time);
-
+      Put_Line ("Levels_Maps_Manager.Load_Map loading " & Path);
+      Open (Input_File, In_File, Path);
+      theMap.Map_Name := To_Unbounded_String (Get_Line (Input_File));
+      theMap.Par_Time := To_Unbounded_String (Get_Line (Input_File));
       --  Story
-      Unbounded_String'Read (Input_Stream, aLine);
       declare
-         aString  : constant String := To_String (aLine);
+         aString  : constant String := Get_Line (Input_File);
          Num_Part : constant String := aString (13 .. aString'Length);
       begin
          Num_Story_Lines := Integer'Value (Num_Part);
-         for line_num in 1 .. Num_Story_Lines loop
-            Unbounded_String'Read (Input_Stream, aLine);
-            Story_Lines.Append (aLine);
-         end loop;
       end;  --  declare block
 
-      Unbounded_String'Read (Input_Stream, aLine);
-      for index in 1 .. Length (aLine) loop
-         if Element (aLine, index) < Character'val (32) then
-            Replace_Element (aLine, index, ASCII.NUL);
-         end if;
+      for line_num in 1 .. Num_Story_Lines loop
+         declare
+            aLine  : constant String := Get_Line (Input_File);
+         begin
+            Story_Lines.Append (To_Unbounded_String (aLine));
+         end;  --  declare block
       end loop;
-      theMap.Music_Track := aLine;
 
-      Unbounded_String'Read (Input_Stream, aLine);
-      for index in 1 .. Length (aLine) loop
-         if Element (aLine, index) < Character'val (32) then
-            Replace_Element (aLine, index, ASCII.NUL);
-         end if;
-      end loop;
-      theMap.Hammer_Track := aLine;
-      Has_Hammer_Track := Length (aLine) > 3;
-      Stream_IO.Close (Input_File);
+      declare
+         aLine  : String := Get_Line (Input_File);
+         Length : Integer := aLine'Length;
+         Index  : Integer := 0;
+      begin
+         while index <= Length loop
+            Index := Index + 1;
+            if aLine (index) < Character'Val (32) then
+               Length := Length - 1;
+               for index2 in index .. Length loop
+                  aLine (index) := aLine (index + 1);
+               end loop;
+            end if;
+         end loop;
+         theMap.Music_Track := To_Unbounded_String (aLine (1 .. Length));
+      end;  --  declare block
+
+      declare
+         aLine  : String := Get_Line (Input_File);
+         Length : Integer := aLine'Length;
+         Index  : Integer := 0;
+      begin
+         while index <= Length loop
+            Index := Index + 1;
+            if aLine (index) < Character'Val (32) then
+               Length := Length - 1;
+               for index2 in index .. Length loop
+                  aLine (index) := aLine (index + 1);
+               end loop;
+            end if;
+         end loop;
+         theMap.Hammer_Track := To_Unbounded_String (aLine (1 .. Length));
+         Has_Hammer_Track := aLine'Length > 3;
+      end;  --  declare block
+      Close (Input_File);
 
    exception
       when anError : others =>
