@@ -88,8 +88,8 @@ package body Levels_Maps_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Load_Map (Path             : String; theMap : in out Level_Map_Data;
-                       Has_Hammer_Track : out Boolean) is
+   procedure Reload_Story_Map (Path             : String; theMap : in out Level_Map_Data;
+                               Has_Hammer_Track : out Boolean) is
       use Maps_Manager;
       Input_File       : File_Type;
       Num_Story_Lines  : Natural;
@@ -153,13 +153,13 @@ package body Levels_Maps_Manager is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Levels_Maps_Manager.Load_Map!");
+         Put_Line ("An exception occurred in Levels_Maps_Manager.Reload_Story_Map!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
-   end Load_Map;
+   end Reload_Story_Map;
 
    --  ----------------------------------------------------------------------------
 
-   procedure Load_Names (Path : String; Names : in out Maps_List) is
+   procedure Load_Story_Names (Path : String; Names : in out Maps_List) is
       Input_File : File_Type;
       Line_Count : Integer := 0;
 
@@ -172,11 +172,11 @@ package body Levels_Maps_Manager is
       end Append_Data;
 
    begin
-      --        Put_Line ("Levels_Maps_Manager.Load_Names loading " & Path);
+      --        Put_Line ("Levels_Maps_Manager.Load_Story_Names loading " & Path);
       Open (Input_File, In_File, Path);
       if not Is_Open (Input_File) then
          Names.Clear;
-         Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Names, no file " &
+         Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Story_Names, no file " &
                                 Path & " found -- locking all but first.");
          Append_Data ("introduction", False);
          Append_Data ("three_doors");
@@ -193,11 +193,11 @@ package body Levels_Maps_Manager is
                aLine : constant String := Get_Line (Input_File);
             begin
                if aLine'Length < 2 then
-                  Game_Utils.Game_Log ("WARNING: Load_Names skipping short line " &
+                  Game_Utils.Game_Log ("WARNING: Load_Story_Names skipping short line " &
                                          aLine & " in maps list.");
                else
-                  Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Names, level name: " &
-                                         aLine);
+                  Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Story_Names, level name: " &
+                                        aLine);
                   Append_Data (aLine, true);
                   Num_Maps := Num_Maps + 1;
                end if;
@@ -208,9 +208,9 @@ package body Levels_Maps_Manager is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Levels_Maps_Manager.Load_Names!");
+         Put_Line ("An exception occurred in Levels_Maps_Manager.Load_Story_Names!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
-   end Load_Names;
+   end Load_Story_Names;
 
    --  ----------------------------------------------------------------------------
 

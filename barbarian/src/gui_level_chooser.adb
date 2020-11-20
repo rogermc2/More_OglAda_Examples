@@ -200,7 +200,7 @@ package body GUI_Level_Chooser is
       --      end if;
       --        Game_Utils.Game_Log ("GUI_Level_Chooser loading maps from " &
       --                               "src/save/maps.dat");
-      Levels_Maps_Manager.Load_Names ("src/save/maps.dat", Maps);
+      Levels_Maps_Manager.Load_Story_Names ("src/save/maps.dat", Maps);
       Levels_Maps_Manager.Init_Maps (Maps, Selected_Map_ID,
                                      Left_Margin_Cl, Top_Margin_Cl);
       Update_Selected_Entry_Dot_Map (True, False);
@@ -628,7 +628,7 @@ package body GUI_Level_Chooser is
 
          Game_Utils.Game_Log
            ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Map_Intro_Text: '" &
-        To_String (Selected_Map.Map_Intro_Text) & "'");
+              To_String (Selected_Map.Map_Intro_Text) & "'");
          Map_Story_Text_ID :=
            Text.Add_Text (To_String (Selected_Map.Map_Intro_Text),
                           Left_Margin_Cl + Lt_Margin_Cl,
