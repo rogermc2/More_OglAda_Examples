@@ -1,4 +1,5 @@
 
+
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -114,24 +115,23 @@ package body GUI_Level_Chooser is
    --  ------------------------------------------------------------------------
 
    function Get_Map_Checksum (Map_Name : String) return Int is
-      With_Path   : constant String := "src/maps/" & Map_Name & ".map";
+      With_Path   : constant String := "src/maps/" & Map_Name;
       Map_File    : File_Type;
-      Sum         : Int := 0;
+      Sum         : Integer := 0;
    begin
       Open (Map_File, In_File, With_Path);
-
       while not End_Of_File (Map_File) loop
          declare
             aLine    : constant String := Get_Line (Map_File);
             S_Length : constant Integer := aLine'Length;
          begin
             for index in 1 .. S_Length loop
-               Sum := Sum + Int'Value ((1 => aLine (index)));
+               Sum := Sum + Character'Pos (aLine (index));
             end loop;
          end;  --  declare block
       end loop;
       Close (Map_File);
-      return Sum;
+      return Int (Sum);
    end Get_Map_Checksum;
 
    --  ------------------------------------------------------------------------
@@ -190,7 +190,7 @@ package body GUI_Level_Chooser is
       end if;
 
       Left_Margin_Cl := -Level_GUI_Width / Single (Framebuffer_Width);
-      Top_Margin_Cl := Level_GUI_Height / Single (Framebuffer_Height);
+      Top_Margin_Cl := (Level_GUI_Height - 40.0) / Single (Framebuffer_Height);
 
       --      if not Game_Utils.Is_Little_Endian then
       --              Put_Line ("GUI_Level_Chooser.Init!");
@@ -624,13 +624,16 @@ package body GUI_Level_Chooser is
                           Left_Margin_Cl + Lt_Margin_Cl,
                           Top_Margin_Cl - 180.0 / Single (Settings.Framebuffer_Height),
                           30.0, 0.9, 0.9, 0.0, 0.8);
+--           Text.Centre_Text (Map_Title_Text_ID, 0.0, Top_Margin_Cl - 180.0 / Single (Settings.Framebuffer_Height));
          Text.Set_Text_Visible (Map_Title_Text_ID, False);
 
          Map_Story_Text_ID :=
            Text.Add_Text (To_String (Selected_Map.Map_Intro_Text),
                           Left_Margin_Cl + Lt_Margin_Cl,
-                          Top_Margin_Cl - 300.0 / Single (Settings.Framebuffer_Height),
+                          Top_Margin_Cl - 300.0 / Single
+                            (Settings.Framebuffer_Height),
                           20.0, 0.75, 0.75, 0.75, 1.0);
+--           Text.Centre_Text (Map_Story_Text_ID, 0.0, Top_Margin_Cl - 300.0 / Single (Settings.Framebuffer_Height));
          Text.Set_Text_Visible (Map_Story_Text_ID, False);
       else
 
