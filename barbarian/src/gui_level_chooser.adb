@@ -146,8 +146,8 @@ package body GUI_Level_Chooser is
    function Get_Selected_Map_Name (Custom : Boolean) return String is
       Result      : Unbounded_String := To_Unbounded_String ("");
    begin
-      Put_Line ("GUI_Level_Chooser.Get_Selected_Map_Name, Selected_Map_ID: " &
-               Integer'Image (Selected_Map_ID));
+--        Put_Line ("GUI_Level_Chooser.Get_Selected_Map_Name, Selected_Map_ID: " &
+--                 Integer'Image (Selected_Map_ID));
       if Custom then
          Result := To_Unbounded_String (Custom_Maps_Manager.Get_Custom_Map_Name
            (Custom_Maps, Selected_Map_ID));
@@ -480,7 +480,7 @@ package body GUI_Level_Chooser is
          if Continue then
             Started_Loading_Map := False;
             if not Menu_Open then
-               Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
+--                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
                Process_Input (Window, Menu_Open, Started_Loading_Map, Cheat_Unlock);
             end if;
 
@@ -584,7 +584,7 @@ package body GUI_Level_Chooser is
       use Custom_Maps_Manager;
       Map_Path         : Unbounded_String;
       --        Peek_Map     : Selected_Map_Manager.Selected_Map_Data;
-      Lt_Margin_Px     : constant Single := 650.0;
+      Lt_Margin_Px     : constant Single := 700.0;  --  650.0
       Lt_Margin_Cl     : constant Single :=
                            Lt_Margin_Px / Single (Settings.Framebuffer_Width);
       Has_Hammer_Track : Boolean := False;
@@ -616,24 +616,25 @@ package body GUI_Level_Chooser is
       end if;
 
       if First then
---           Game_Utils.Game_Log
---             ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first: '" &
---          To_String (Selected_Map.Map_Title) & "'");
+         Game_Utils.Game_Log
+           ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Map_Title: '" &
+        To_String (Selected_Map.Map_Title) & "'");
          Map_Title_Text_ID :=
            Text.Add_Text (To_String (Selected_Map.Map_Title),
                           Left_Margin_Cl + Lt_Margin_Cl,
                           Top_Margin_Cl - 180.0 / Single (Settings.Framebuffer_Height),
                           30.0, 0.9, 0.9, 0.0, 0.8);
---           Text.Centre_Text (Map_Title_Text_ID, 0.0, Top_Margin_Cl - 180.0 / Single (Settings.Framebuffer_Height));
          Text.Set_Text_Visible (Map_Title_Text_ID, False);
 
+         Game_Utils.Game_Log
+           ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Map_Intro_Text: '" &
+        To_String (Selected_Map.Map_Intro_Text) & "'");
          Map_Story_Text_ID :=
            Text.Add_Text (To_String (Selected_Map.Map_Intro_Text),
                           Left_Margin_Cl + Lt_Margin_Cl,
                           Top_Margin_Cl - 300.0 / Single
                             (Settings.Framebuffer_Height),
                           20.0, 0.75, 0.75, 0.75, 1.0);
---           Text.Centre_Text (Map_Story_Text_ID, 0.0, Top_Margin_Cl - 300.0 / Single (Settings.Framebuffer_Height));
          Text.Set_Text_Visible (Map_Story_Text_ID, False);
       else
 

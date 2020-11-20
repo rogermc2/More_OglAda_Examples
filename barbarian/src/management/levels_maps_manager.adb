@@ -30,19 +30,18 @@ package body Levels_Maps_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Maps (Maps  : in out Maps_List; Selected_Map_ID : Positive;
+   procedure Init_Maps (Maps                          : in out Maps_List; Selected_Map_ID : Positive;
                         Left_Margin_Cl, Top_Margin_Cl : Single) is
       use Settings;
       use Maps_Package;
       In_Cursor          : Cursor := Maps.First;
-      --          Out_Cursor         : Cursor;
       Text_Height        : constant Single := 50.0 / Single (Framebuffer_Height);
       Text_Offset_Height : constant Single := 220.0 / Single (Framebuffer_Height);
       Name_Y             : Single;
       Out_Data           : Level_Map_Data;
       Count              : Single := 0.0;
    begin
---        Put_Line ("Levels_Maps_Manager.Init_Maps initalizing Maps");
+      --        Put_Line ("Levels_Maps_Manager.Init_Maps initalizing Maps");
       Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Maps initalizing Maps---");
       if Maps.Is_Empty then
          raise Levels_Maps_Manager_Exception with
@@ -54,33 +53,32 @@ package body Levels_Maps_Manager is
          Name_Y := Top_Margin_Cl - 2.0 * Count * Text_Height - Text_Offset_Height;
          Count := Count + 1.0;
          declare
-            Map_Index : Positive;
-            Name      : String := To_String (Out_Data.Map_Name);
+            Name      : constant String := To_String (Out_Data.Map_Name);
+            Out_Name  : String := Name (1 .. Name'Length - 4);
          begin
-            Map_Index := To_Index (In_Cursor);
-            for index in Positive range 1 .. Name'Length loop
-               if index = Map_Index and Name (index) = '_' then
-                  Name (index) := ' ';
+            for index in Positive range 1 .. Out_Name'Length loop
+               if (Out_Name (index) = '_' or Out_Name (index) = '-') then
+                  Out_Name (index) := ' ';
                end if;
             end loop;
 
-            Out_Data.Map_Name := To_Unbounded_String (Name);
+--              Out_Data.Map_Name := To_Unbounded_String (Out_Name);
             if Out_Data.Locked then
                Out_Data.Map_Name_Text_ID :=
-                 Text.Add_Text (Name, Left_Margin_Cl, Name_Y,
+                 Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
                                 25.0, 1.0, 1.0, 1.0, 1.0);
             else
                Out_Data.Map_Name_Text_ID :=
-                 Text.Add_Text (Name, Left_Margin_Cl, Name_Y,
+                 Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
                                 25.0, 0.25, 0.25, 0.25, 1.0);
             end if;
             Text.Set_Text_Visible (Out_Data.Map_Name_Text_ID, False);
-            Maps.Replace_Element (Map_Index, Out_Data);
+            Maps.Replace_Element (In_Cursor, Out_Data);
          end;  --  declare block
          Next (In_Cursor);
       end loop;
---        Put_Line ("Levels_Maps_Manager.Init_Maps Maps size : " &
---                 Ada.Containers.Count_Type'Image (Maps.Length));
+      --        Put_Line ("Levels_Maps_Manager.Init_Maps Maps size : " &
+      --                 Ada.Containers.Count_Type'Image (Maps.Length));
 
       Text.Change_Text_Colour
         (Maps.Element (Selected_Map_ID).Map_Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
@@ -101,7 +99,7 @@ package body Levels_Maps_Manager is
       Num_Story_Lines  : Natural;
       Story_Lines      : Maps_Manager.Story_Lines_List;
    begin
---        Put_Line ("Levels_Maps_Manager.Load_Map loading " & Path);
+      --        Put_Line ("Levels_Maps_Manager.Load_Map loading " & Path);
       Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
       Input_Stream := Stream_IO.Stream (Input_File);
       Unbounded_String'Read (Input_Stream, theMap.Map_Name);
@@ -168,18 +166,20 @@ package body Levels_Maps_Manager is
       end Append_Data;
 
    begin
---        Put_Line ("Levels_Maps_Manager.Load_Names loading " & Path);
+      --        Put_Line ("Levels_Maps_Manager.Load_Names loading " & Path);
       Open (Input_File, In_File, Path);
       if not Is_Open (Input_File) then
          Names.Clear;
+         Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Names, no file " &
+                                Path & " found -- locking all but first.");
          Append_Data ("introduction", False);
          Append_Data ("three_doors");
-         Append_Data  ("warlock");
-         Append_Data  ("winder");
+         Append_Data ("warlock");
+         Append_Data ("winder");
          Append_Data ("under");
          Append_Data ("sky_temple");
-         Append_Data  ("hall");
-         Append_Data  ("attercoppe");
+         Append_Data ("hall");
+         Append_Data ("attercoppe");
          Num_Maps := Integer (Length (Names));
       else
          while not End_Of_File (Input_File) loop
@@ -190,6 +190,8 @@ package body Levels_Maps_Manager is
                   Game_Utils.Game_Log ("WARNING: Load_Names skipping short line " &
                                          aLine & " in maps list.");
                else
+                  Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Names, level name: " &
+                                         aLine);
                   Append_Data (aLine, true);
                   Num_Maps := Num_Maps + 1;
                end if;
