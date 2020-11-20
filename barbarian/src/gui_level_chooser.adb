@@ -592,6 +592,7 @@ package body GUI_Level_Chooser is
 --                                     To_String (Map_Path));
             Selected_Map_Manager.Load_Map (To_String (Map_Path), Selected_Map,
                                            Has_Hammer_Track);
+            Selected_Map_Track := Selected_Map.Music_Track;
          end if;
       end if;
 
