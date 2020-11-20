@@ -36,6 +36,7 @@ package body GUI_Level_Chooser is
    use Selected_Map_Manager;
 
    Quad_VAO                  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Quad_VBO               : GL.Objects.Buffers.Buffer;
    Back_Texture              : GL.Objects.Textures.Texture;
    Back_Custom_Texture       : GL.Objects.Textures.Texture;
    Custom_Maps               : Custom_Maps_Manager.Custom_Maps_List;
@@ -63,6 +64,9 @@ package body GUI_Level_Chooser is
    Since_Last_Key            : Float := 0.0;
 
    function Get_Map_Checksum (Map_Name : String) return Int;
+   procedure Set_Background_Pane
+     (Credits_Shader_Program : GL.Objects.Programs.Program;
+      Use_Custom_Maps : Boolean);
    procedure Update_GUI_Level_Chooser (Delta_Time : Float; Custom_Maps : Boolean);
    procedure Update_Selected_Entry_Dot_Map (First, Custom : Boolean);
 
@@ -171,7 +175,6 @@ package body GUI_Level_Chooser is
                           50.0 / Single (Settings.Framebuffer_Height);
       Quad_Points     : constant Singles.Vector2_Array (1 .. 4) :=
                           ((-1.0, -1.0), (-1.0, 1.0), (1.0, -1.0), (1.0, 1.0));
-      Quad_VBO        : GL.Objects.Buffers.Buffer;
    begin
       Game_Utils.Game_Log ("GUI_Level_Chooser.Init ...");
       if Framebuffer_Width < 800 or Framebuffer_Height < 600 then
@@ -201,6 +204,7 @@ package body GUI_Level_Chooser is
       Levels_Maps_Manager.Init_Maps (Maps, Selected_Map_ID,
                                      Left_Margin_Cl, Top_Margin_Cl);
       Update_Selected_Entry_Dot_Map (True, False);
+
       Choose_Map_Text_ID :=
         Text.Add_Text ("choose thy battle!", 0.0, Single (Top_Margin_Cl),
                        30.0, 1.0, 1.0, 0.0, 0.8);
@@ -292,37 +296,13 @@ package body GUI_Level_Chooser is
                      Credits_Shader_Program                          : GL.Objects.Programs.Program;
                      Delta_Time                                      : Float;
                      Use_Custom_Maps, Started_Loading_Map, Menu_Open : Boolean) is
-      use GL.Culling;
-      use GL.Toggles;
-      use GL.Types;
-      use Maths.Single_Math_Functions;
       use Levels_Maps_Manager.Maps_Package;
       use Custom_Maps_Manager.Custom_Maps_Package;
-      Aspect     : constant Single := Single (Settings.Framebuffer_Width) /
-                     Single (Settings.Framebuffer_Height);
-      Now        : constant Single := Single (Glfw.Time);
-      Sx         : constant Single := 2.0;
-      Sy         : constant Single := 2.0 * Aspect;
-      Px         : constant Single := Sin (0.15 * Now);
-      Py         :constant  Single := -1.5 * Cos (0.09 * Now);
       Map        : Levels_Maps_Manager.Level_Map_Data;
       Custom_Map : Custom_Maps_Manager.Custom_Data;
    begin
       Utilities.Clear_Colour;
-      GL.Objects.Programs.Use_Program (Credits_Shader_Program);
-      Menu_Credits_Shader_Manager.Set_Scale ((Sx, Sy));
-      Menu_Credits_Shader_Manager.Set_Position ((Px, Py));
-      GL_Utils.Bind_VAO (Quad_VAO);
-      if Use_Custom_Maps then
-         Texture_Manager.Bind_Texture (0, Back_Texture);
-      else
-         Texture_Manager.Bind_Texture (0, Back_Custom_Texture);
-      end if;
-      Disable (Cull_Face);
-      Disable (Depth_Test);
-
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangle_Strip, 0, 4);
-      Enable (Cull_Face);
+      Set_Background_Pane (Credits_Shader_Program, Use_Custom_Maps);
 
       if Use_Custom_Maps then
          for index in Custom_Maps.First_Index .. Custom_Maps.Last_Index loop
@@ -381,7 +361,42 @@ package body GUI_Level_Chooser is
             Next (Map_Cursor);
          end loop;
       end if;
+      Update_Selected_Entry_Dot_Map (False, Custom);
+
    end Reset_GUI_Level_Selection;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Background_Pane
+     (Credits_Shader_Program : GL.Objects.Programs.Program;
+     Use_Custom_Maps : Boolean) is
+      use GL.Culling;
+      use GL.Toggles;
+      use GL.Types;
+      use Maths.Single_Math_Functions;
+      Aspect     : constant Single := Single (Settings.Framebuffer_Width) /
+                     Single (Settings.Framebuffer_Height);
+      Now        : constant Single := Single (Glfw.Time);
+      Sx         : constant Single := 2.0;
+      Sy         : constant Single := 2.0 * Aspect;
+      Px         : constant Single := Sin (0.15 * Now);
+      Py         :constant  Single := -1.5 * Cos (0.09 * Now);
+   begin
+      GL.Objects.Programs.Use_Program (Credits_Shader_Program);
+      Menu_Credits_Shader_Manager.Set_Scale ((Sx, Sy));
+      Menu_Credits_Shader_Manager.Set_Position ((Px, Py));
+      GL_Utils.Bind_VAO (Quad_VAO);
+      if Use_Custom_Maps then
+         Texture_Manager.Bind_Texture (0, Back_Texture);
+      else
+         Texture_Manager.Bind_Texture (0, Back_Custom_Texture);
+      end if;
+      Disable (Cull_Face);
+      Disable (Depth_Test);
+
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangle_Strip, 0, 4);
+      Enable (Cull_Face);
+   end Set_Background_Pane;
 
    --  ------------------------------------------------------------------------
 
@@ -423,8 +438,7 @@ package body GUI_Level_Chooser is
    function Start_Level_Chooser_Loop
      (Window                 : in out Input_Callback.Barbarian_Window;
       Credits_Shader_Program : GL.Objects.Programs.Program;
-      Custom_Maps            : Boolean)
-      return Boolean is
+      Custom_Maps            : Boolean) return Boolean is
       use GL.Toggles;
       Menu_Open           : Boolean := Main_Menu.End_Story_Open;
       Menu_Quit           : Boolean := False;
@@ -443,12 +457,13 @@ package body GUI_Level_Chooser is
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          if Menu_Open then
-            --              Game_Utils.Game_Log ("Start_Level_Chooser_Loop Delta_Time" &
-            --                                     Float'Image (Delta_Time));
+--             Game_Utils.Game_Log ("Start_Level_Chooser_Loop Delta_Time" &
+--                                   Float'Image (Delta_Time));
             Menu_Quit := not Main_Menu.Update_Menu (Window, Delta_Time);
             if Main_Menu.Menu_Was_Closed then
                Menu_Open := False;
             end if;
+
             if Main_Menu.Did_User_Choose_New_Game or
               Main_Menu.Did_User_Choose_Custom_Maps then
                Menu_Open := False;
@@ -458,16 +473,17 @@ package body GUI_Level_Chooser is
                Continue := False;
             end if;
          else
-            --              Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
+--              Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
             Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
          end if;
 
          if Continue then
             Started_Loading_Map := False;
             if not Menu_Open then
-               --                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
+               Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
                Process_Input (Window, Menu_Open, Started_Loading_Map, Cheat_Unlock);
             end if;
+
             Render (Window, Credits_Shader_Program, Delta_Time, Custom_Maps,
                     Started_Loading_Map, Menu_Open);
             Continue := not Started_Loading_Map;
@@ -541,6 +557,7 @@ package body GUI_Level_Chooser is
             if Selected_Map_ID >= Num_Custom_Maps then
                Selected_Map_ID := Selected_Map_ID - Num_Custom_Maps + 1;
             end if;
+
             if Selected_Map_ID /= Old_Sel then
                Text.Change_Text_Colour (Selected_Map_ID, 1.0, 0.0, 1.0, 1.0);
                Text.Change_Text_Colour (Old_Sel, 1.0, 1.0, 1.0, 1.0);
@@ -558,7 +575,6 @@ package body GUI_Level_Chooser is
             Update_Selected_Entry_Dot_Map (False, Custom_Maps);
          end if;
       end if;
-      --        Game_Utils.Game_Log  ("GUI_Level_Chooser.Update_GUI_Level_Chooser finished");
 
    end Update_GUI_Level_Chooser;
 
@@ -574,6 +590,9 @@ package body GUI_Level_Chooser is
       Has_Hammer_Track : Boolean := False;
       Title_Length     : Integer := 0;
    begin
+--        Game_Utils.Game_Log
+--             ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map: '" &
+--          To_String (Selected_Map.Map_Title) & "'");
       if Selected_Map.Locked and not Custom then
          Selected_Map.Map_Title := To_Unbounded_String ("locked");
          Selected_Map.Map_Intro_Text := To_Unbounded_String
@@ -597,9 +616,9 @@ package body GUI_Level_Chooser is
       end if;
 
       if First then
-         --           Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first: '" &
-         --                       To_String (Selected_Map.Map_Title) &
-         --                     "'");
+--           Game_Utils.Game_Log
+--             ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first: '" &
+--          To_String (Selected_Map.Map_Title) & "'");
          Map_Title_Text_ID :=
            Text.Add_Text (To_String (Selected_Map.Map_Title),
                           Left_Margin_Cl + Lt_Margin_Cl,
@@ -619,7 +638,6 @@ package body GUI_Level_Chooser is
          Text.Update_Text (Map_Title_Text_ID, To_String (Selected_Map.Map_Title));
          Text.Update_Text (Map_Story_Text_ID, To_String (Selected_Map.Map_Intro_Text));
       end if;
-      --        Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map finished.");
 
    exception
       when others =>

@@ -364,17 +364,20 @@ package body Main_Loop is
 
             Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
                                    To_String (Level_Name));
-            Continue := GUI_Level_Chooser.Start_Level_Chooser_Loop
-              (Window, Main_Menu.Credits_Program, Main_Menu.Are_We_In_Custom_Maps);
+            if not Skip_Intro then
+               Continue := GUI_Level_Chooser.Start_Level_Chooser_Loop
+                 (Window, Main_Menu.Credits_Program, Main_Menu.Are_We_In_Custom_Maps);
+            end if;
+
             if Continue then
+               --   Even if flagged to skip initial intro this means that the level
+               --  chooser can be accessed if the player selects "new game" in the main menu.
+               Skip_Intro := False;
                Level_Name := To_Unbounded_String
                  (GUI_Level_Chooser.Get_Selected_Map_Name (Main_Menu.Are_We_In_Custom_Maps));
                Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
                                     & To_String (Level_Name));
 
-               --   Even if flagged to skip initial intro this means that the level
-               --  chooser can be accessed if the player selects "new game" in the main menu.
-               Skip_Intro := False;
                --  Level has been selected, start creating level
                Map_Path := To_Unbounded_String ("src/maps/") & Level_Name &
                  To_Unbounded_String (".map");
