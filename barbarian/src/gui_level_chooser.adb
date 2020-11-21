@@ -25,7 +25,7 @@ with Game_Utils;
 with GL_Utils;
 with GUI;
 with Input_Handler;
-with Levels_Maps_Manager;
+with Level_Menu_Manager;
 with Maps_Manager;
 with Menu_Credits_Shader_Manager;
 with Main_Menu;
@@ -43,7 +43,7 @@ package body GUI_Level_Chooser is
    Back_Custom_Texture       : GL.Objects.Textures.Texture;
    Custom_Maps               : Custom_Maps_Manager.Custom_Maps_List;
    Num_Custom_Maps           : Natural := 0;
-   Maps                      : Levels_Maps_Manager.Maps_List;
+   Maps                      : Level_Menu_Manager.Maps_List;
    Selected_Map_ID           : Positive := 1;
    Selected_Map              : Selected_Map_Data;
    Selected_Map_Track        : Unbounded_String := To_Unbounded_String ("");
@@ -153,7 +153,7 @@ package body GUI_Level_Chooser is
          Result := To_Unbounded_String (Custom_Maps_Manager.Get_Custom_Map_Name
                                         (Custom_Maps, Selected_Map_ID));
       else
-         Result := To_Unbounded_String (Levels_Maps_Manager.Get_Map_Name
+         Result := To_Unbounded_String (Level_Menu_Manager.Get_Map_Name
                                         (Maps, Selected_Map_ID));
       end if;
 
@@ -201,9 +201,9 @@ package body GUI_Level_Chooser is
       --      end if;
       --        Game_Utils.Game_Log ("GUI_Level_Chooser loading maps from " &
       --                               "src/save/maps.dat");
-      Levels_Maps_Manager.Load_Story_Names ("src/save/maps.dat", Maps);
-      Levels_Maps_Manager.Init_Level_Maps (Maps, Selected_Map_ID,
-                                           Left_Margin_Cl, Top_Margin_Cl);
+      Level_Menu_Manager.Load_Story_Names ("src/save/maps.dat", Maps);
+      Level_Menu_Manager.Init_Level_Maps (Maps, Selected_Map_ID,
+                                          Left_Margin_Cl, Top_Margin_Cl);
       Update_Selected_Entry_Dot_Map (True, False);
 
       Choose_Map_Text_ID :=
@@ -268,8 +268,8 @@ package body GUI_Level_Chooser is
       use Glfw.Input.Keys;
       use Input_Callback;
       use Input_Handler;
-      use Levels_Maps_Manager.Maps_Package;
-      Selected_Map : constant Levels_Maps_Manager.Level_Map_Data :=
+      use Level_Menu_Manager.Maps_Package;
+      Selected_Map : constant Level_Menu_Manager.Level_Map_Data :=
                        Maps.Element (Selected_Map_ID);
    begin
       --        Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));
@@ -297,9 +297,9 @@ package body GUI_Level_Chooser is
                      Credits_Shader_Program                          : GL.Objects.Programs.Program;
                      Delta_Time                                      : Float;
                      Use_Custom_Maps, Started_Loading_Map, Menu_Open : Boolean) is
-      use Levels_Maps_Manager.Maps_Package;
+      use Level_Menu_Manager.Maps_Package;
       use Custom_Maps_Manager.Custom_Maps_Package;
-      Map        : Levels_Maps_Manager.Level_Map_Data;
+      LeveL_Menu  : Level_Menu_Manager.Level_Map_Data;
       Custom_Map : Custom_Maps_Manager.Custom_Data;
    begin
       Utilities.Clear_Colour;
@@ -312,8 +312,8 @@ package body GUI_Level_Chooser is
          end loop;
       else
          for index in Maps.First_Index .. Maps.Last_Index loop
-            Map := Maps.Element (index);
-            Text.Draw_Text (Map.Map_Name_Text_ID);
+            LeveL_Menu := Maps.Element (index);
+            Text.Draw_Text (LeveL_Menu.Map_Name_Text_ID);
          end loop;
       end if;
 
@@ -339,20 +339,21 @@ package body GUI_Level_Chooser is
    --  ------------------------------------------------------------------------
 
    procedure Reset_GUI_Level_Selection (Custom : Boolean) is
-      use Levels_Maps_Manager.Maps_Package;
+      use Level_Menu_Manager.Maps_Package;
       use Custom_Maps_Manager.Custom_Maps_Package;
-      Map_Cursor        : Levels_Maps_Manager.Maps_Package.Cursor :=
+      Map_Cursor        : Level_Menu_Manager.Maps_Package.Cursor :=
                             Maps.First;
       Custom_Map_Cursor : Custom_Maps_Manager.Custom_Maps_Package.Cursor :=
                             Custom_Maps.First;
-      aMap              : Levels_Maps_Manager.Level_Map_Data;
+      aMap              : Level_Menu_Manager.Level_Map_Data;
       Custom_Map        : Custom_Maps_Manager.Custom_Data;
    begin
       Selected_Map_ID := 1;
+      --  Set map colour to white
       if Custom then
          while Has_Element (Custom_Map_Cursor) loop
             Custom_Map := Element (Custom_Map_Cursor);
-            Text.Change_Text_Colour (aMap.Map_Name_Text_ID, 1.0, 1.0, 1.0, 1.0);
+            Text.Change_Text_Colour (Custom_Map.Text_ID, 1.0, 1.0, 1.0, 1.0);
             Custom_Maps.Replace_Element (Custom_Map_Cursor, Custom_Map);
             Next (Custom_Map_Cursor);
          end loop;
@@ -526,7 +527,7 @@ package body GUI_Level_Chooser is
       use Input_Callback;
       use Input_Handler;
       Old_Sel : constant Integer := Selected_Map_ID;
-      Old_Map : Levels_Maps_Manager.Level_Map_Data;
+      Old_Map : Level_Menu_Manager.Level_Map_Data;
    begin
       New_Line;
       Since_Last_Key := Since_Last_Key + Delta_Time;
@@ -534,6 +535,7 @@ package body GUI_Level_Chooser is
       if Maps.Is_Empty then
          raise GUI_Level_Chooser_Exception with "Maps.Is_Empty ";
       end if;
+
       if Selected_Map_ID < Maps.First_Index or
         Selected_Map_ID > Maps.Last_Index then
          raise GUI_Level_Chooser_Exception with
@@ -603,21 +605,19 @@ package body GUI_Level_Chooser is
          Selected_Map.Map_Intro_Text.Append (To_Unbounded_String
                                              ("clear previous temples to unlock" &
                                                   ASCII.CR & ASCII.LF & "the portal to this map"));
+      elsif Custom then Map_Path := To_Unbounded_String
+           ("src/maps/" & Get_Custom_Map_Name (Custom_Maps, Selected_Map_ID));
+--           Game_Utils.Game_Log ("level chooser is peeking in map " &
+--                                  To_String (Map_Path));
       else
-         if Custom then Map_Path := To_Unbounded_String
-              ("src/maps/" & Get_Custom_Map_Name (Custom_Maps, Selected_Map_ID));
-            Game_Utils.Game_Log ("level chooser is peeking in map " &
-                                   To_String (Map_Path));
-         else
-            Map_Path := To_Unbounded_String
-              ("src/maps/" & Levels_Maps_Manager.Get_Map_Name
-                 (Maps, Selected_Map_ID));
-            Game_Utils.Game_Log ("level chooser is peeking in map " &
-                                   To_String (Map_Path));
-            Selected_Map_Manager.Load_Map (To_String (Map_Path), Selected_Map,
-                                           Has_Hammer_Track);
-            Selected_Map_Track := Selected_Map.Music_Track;
-         end if;
+         Map_Path := To_Unbounded_String
+           ("src/maps/" & Level_Menu_Manager.Get_Map_Name
+              (Maps, Selected_Map_ID));
+--           Game_Utils.Game_Log ("level chooser is peeking in map " &
+--                                  To_String (Map_Path));
+         Selected_Map_Manager.Load_Map (To_String (Map_Path), Selected_Map,
+                                        Has_Hammer_Track);
+         Selected_Map_Track := Selected_Map.Music_Track;
       end if;
 
       if First then
@@ -631,16 +631,16 @@ package body GUI_Level_Chooser is
                           30.0, 0.9, 0.9, 0.0, 0.8);
          Text.Set_Text_Visible (Map_Title_Text_ID, False);
 
---           Game_Utils.Game_Log
---                ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Last_Index: " &
---                   Integer'Image (Selected_Map.Map_Intro_Text.Last_Index));
+         --           Game_Utils.Game_Log
+         --                ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Last_Index: " &
+         --                   Integer'Image (Selected_Map.Map_Intro_Text.Last_Index));
          Map_Story_Text_ID.Clear;
          for index in Selected_Map.Map_Intro_Text.First_Index ..
            Selected_Map.Map_Intro_Text.Last_Index loop
---              Game_Utils.Game_Log
---                ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first index: "
---                  & Integer'Image (index) & "  '" &
---                To_String (Selected_Map.Map_Intro_Text.Element (index)) & "'");
+            --              Game_Utils.Game_Log
+            --                ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first index: "
+            --                  & Integer'Image (index) & "  '" &
+            --                To_String (Selected_Map.Map_Intro_Text.Element (index)) & "'");
             Story_Line := Selected_Map.Map_Intro_Text.Element (index);
             if Length (Story_Line) < 1 then
                Story_Line := To_Unbounded_String (" ");
@@ -649,20 +649,20 @@ package body GUI_Level_Chooser is
               (Text.Add_Text (To_String (Story_Line),
                Left_Margin_Cl + Lt_Margin_Cl,
                Top_Margin_Cl - (1.0 + 0.25 * Single (index - 1)) * 300.0 / Single
-                 (Settings.Framebuffer_Height),
+               (Settings.Framebuffer_Height),
                20.0, 0.75, 0.75, 0.75, 1.0));
             Text.Set_Text_Visible (Map_Story_Text_ID.Element (index), False);
          end loop;
       else
-         Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map not first.");
+--           Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map not first.");
          Text.Update_Text (Map_Title_Text_ID, To_String (Selected_Map.Map_Title));
          for index in Map_Story_Text_ID.First_Index ..
            Map_Story_Text_ID.Last_Index loop
---              Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map index: "
---                                  & integer'Image (index));
+            --              Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map index: "
+            --                                  & integer'Image (index));
             Story_Line := Selected_Map.Map_Intro_Text.Element (index);
---              Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map line: "
---                                  & To_String (Story_Line));
+            --              Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map line: "
+            --                                  & To_String (Story_Line));
             if Length (Story_Line) < 1 then
                Story_Line := To_Unbounded_String (" ");
             end if;
@@ -670,7 +670,6 @@ package body GUI_Level_Chooser is
                               To_String (Story_Line));
          end loop;
       end if;
-      Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map finished.");
 
    exception
       when others =>

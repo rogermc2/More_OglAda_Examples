@@ -16,8 +16,8 @@ package body Selected_Map_Manager is
       Line_Length      : Integer;
       Num_Story_Lines  : Natural;
    begin
-      Game_Utils.Game_Log ("Selected_Map_Manager.Load_Map loading map " &
-                           Path);
+--        Game_Utils.Game_Log ("Selected_Map_Manager.Load_Map loading map " &
+--                             Path);
       Open (Input_File, In_File, Path);
       theMap.Map_Title := To_Unbounded_String (Get_Line (Input_File));
       Line_Length := Length (theMap.Map_Title);

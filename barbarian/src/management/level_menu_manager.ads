@@ -6,7 +6,7 @@ with GL.Types; use GL.Types;
 
 with Maps_Manager;
 
-package Levels_Maps_Manager is
+package Level_Menu_Manager is
 
    type Level_Map_Data is record
       Map_Name         : Unbounded_String := To_Unbounded_String ("");
@@ -34,4 +34,4 @@ package Levels_Maps_Manager is
    procedure Load_Story_Names (Path : String; Names : in out Maps_List);
    function Number_Of_Maps return Integer;
 
-end Levels_Maps_Manager;
+end Level_Menu_Manager;
