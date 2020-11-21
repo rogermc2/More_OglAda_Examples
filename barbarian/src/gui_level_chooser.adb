@@ -627,7 +627,7 @@ package body GUI_Level_Chooser is
          Map_Title_Text_ID :=
            Text.Add_Text (To_String (Selected_Map.Map_Title),
                           Left_Margin_Cl + Lt_Margin_Cl,
-                          Top_Margin_Cl - 180.0 / Single (Settings.Framebuffer_Height),
+                          Top_Margin_Cl - 100.0 / Single (Settings.Framebuffer_Height),  --  180
                           30.0, 0.9, 0.9, 0.0, 0.8);
          Text.Set_Text_Visible (Map_Title_Text_ID, False);
 
@@ -648,7 +648,7 @@ package body GUI_Level_Chooser is
             Map_Story_Text_ID.Append
               (Text.Add_Text (To_String (Story_Line),
                Left_Margin_Cl + Lt_Margin_Cl,
-               Top_Margin_Cl - 300.0 / Single
+               Top_Margin_Cl - (1.0 + 0.25 * Single (index - 1)) * 300.0 / Single
                  (Settings.Framebuffer_Height),
                20.0, 0.75, 0.75, 0.75, 1.0));
             Text.Set_Text_Visible (Map_Story_Text_ID.Element (index), False);
