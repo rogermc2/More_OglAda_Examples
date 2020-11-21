@@ -190,7 +190,7 @@ package body GUI_Level_Chooser is
            ("Level gui menu size reduced to medium (width < 1024px).");
       end if;
 
-      Left_Margin_Cl := -Level_GUI_Width / Single (Framebuffer_Width);
+      Left_Margin_Cl := -(Level_GUI_Width - 40.0) / Single (Framebuffer_Width);
       Top_Margin_Cl := (Level_GUI_Height - 40.0) / Single (Framebuffer_Height);
 
       --      if not Game_Utils.Is_Little_Endian then
@@ -588,10 +588,9 @@ package body GUI_Level_Chooser is
    procedure Update_Selected_Entry_Dot_Map (First, Custom : Boolean) is
       use Custom_Maps_Manager;
       Map_Path         : Unbounded_String;
-      --        Peek_Map     : Selected_Map_Manager.Selected_Map_Data;
-      Lt_Margin_Px     : constant Single := 700.0;  --  650.0
+      Left_Margin_Px   : constant Single := 700.0;  --  650.0
       Lt_Margin_Cl     : constant Single :=
-                           Lt_Margin_Px / Single (Settings.Framebuffer_Width);
+                           Left_Margin_Px / Single (Settings.Framebuffer_Width);
       Has_Hammer_Track : Boolean := False;
       Title_Length     : Integer := 0;
       Story_Line       : Unbounded_String;
