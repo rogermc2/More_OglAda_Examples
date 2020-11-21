@@ -64,11 +64,11 @@ package body Level_Menu_Manager is
             if Out_Data.Locked then
                Out_Data.Map_Name_Text_ID :=
                  Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
-                                25.0, 1.0, 1.0, 1.0, 1.0);
+                                20.0, 1.0, 1.0, 1.0, 1.0);
             else
                Out_Data.Map_Name_Text_ID :=
                  Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
-                                25.0, 0.25, 0.25, 0.25, 1.0);
+                                20.0, 0.25, 0.25, 0.25, 1.0);
             end if;
             Text.Set_Text_Visible (Out_Data.Map_Name_Text_ID, False);
             Maps.Replace_Element (In_Cursor, Out_Data);

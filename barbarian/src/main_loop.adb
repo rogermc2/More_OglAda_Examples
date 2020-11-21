@@ -379,8 +379,7 @@ package body Main_Loop is
                                     & To_String (Level_Name));
 
                --  Level has been selected, start creating level
-               Map_Path := To_Unbounded_String ("src/maps/") & Level_Name &
-                 To_Unbounded_String (".map");
+               Map_Path := To_Unbounded_String ("src/maps/") & Level_Name;
                --  Name line
                Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
                                       To_String (Map_Path));
