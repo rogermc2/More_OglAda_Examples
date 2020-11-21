@@ -17,6 +17,10 @@ package GL_Utils is
    package Matrix4_Package is new Ada.Containers.Doubly_Linked_Lists (Matrix4);
    type Matrix4_List is new Matrix4_Package.List with null record;
 
+   package Integer_Package is new
+     Ada.Containers.Vectors (Positive, Integer);
+   type Integer_List is new Integer_Package.Vector with null record;
+
    package Singles_Package is new
      Ada.Containers.Vectors (Positive, Single);
    type Singles_List is new Singles_Package.Vector with null record;

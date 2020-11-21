@@ -1,6 +1,7 @@
 
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Maps_Manager;
 
 package Selected_Map_Manager is
 
@@ -11,7 +12,7 @@ package Selected_Map_Manager is
    type Selected_Map_Data is record
       Map_Title        : Unbounded_String := To_Unbounded_String ("");
       Map_Type         : Selected_Map_Type;
-      Map_Intro_Text   : Unbounded_String := To_Unbounded_String ("");
+      Map_Intro_Text   : Maps_Manager.Story_Lines_List;
       Par_Time         : Unbounded_String := To_Unbounded_String ("");
       Music_Track      : Unbounded_String := To_Unbounded_String ("");
       Hammer_Track     : Unbounded_String := To_Unbounded_String ("");

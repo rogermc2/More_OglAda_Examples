@@ -27,11 +27,11 @@ package Levels_Maps_Manager is
 
    function Get_Map_Name (Maps : Maps_List; Selected_Map_ID : Positive)
                            return String;
-   procedure Init_Maps (Maps : in out Maps_List; Selected_Map_ID : Positive;
-                        Left_Margin_Cl, Top_Margin_Cl : Single);
-   procedure Load_Story_Names (Path : String; Names : in out Maps_List);
-   procedure Reload_Story_Map (Path     : String; theMap : in out Level_Map_Data;
+   procedure Init_Level_Maps (Maps : in out Maps_List; Selected_Map_ID : Positive;
+                              Left_Margin_Cl, Top_Margin_Cl : Single);
+   procedure Load_Story (Path     : String; theMap : in out Level_Map_Data;
                        Has_Hammer_Track : out Boolean);
+   procedure Load_Story_Names (Path : String; Names : in out Maps_List);
    function Number_Of_Maps return Integer;
 
 end Levels_Maps_Manager;

@@ -1,12 +1,12 @@
 
-with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Maps_Manager is
 
-    package Story_Lines_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Unbounded_String);
-    type Story_Lines_List is new Story_Lines_Package.List with null record;
+    package Story_Lines_Package is new Ada.Containers.Vectors
+      (Positive, Unbounded_String);
+    type Story_Lines_List is new Story_Lines_Package.Vector with null record;
 
     type Map is private;
 

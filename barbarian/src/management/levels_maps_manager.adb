@@ -30,7 +30,7 @@ package body Levels_Maps_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Maps (Maps                          : in out Maps_List; Selected_Map_ID : Positive;
+   procedure Init_Level_Maps (Maps                    : in out Maps_List; Selected_Map_ID : Positive;
                         Left_Margin_Cl, Top_Margin_Cl : Single) is
       use Settings;
       use Maps_Package;
@@ -41,11 +41,11 @@ package body Levels_Maps_Manager is
       Out_Data           : Level_Map_Data;
       Count              : Single := 0.0;
    begin
-      --        Put_Line ("Levels_Maps_Manager.Init_Maps initalizing Maps");
-      Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Maps initalizing Maps---");
+      --        Put_Line ("Levels_Maps_Manager.Init_Level_Maps initalizing Maps");
+      Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Level_Maps initalizing Maps---");
       if Maps.Is_Empty then
          raise Levels_Maps_Manager_Exception with
-           "Levels_Maps_Manager.Init_Maps Maps List is empty.";
+           "Levels_Maps_Manager.Init_Level_Maps Maps List is empty.";
       end if;
 
       while Has_Element (In_Cursor) loop
@@ -62,7 +62,6 @@ package body Levels_Maps_Manager is
                end if;
             end loop;
 
---              Out_Data.Map_Name := To_Unbounded_String (Out_Name);
             if Out_Data.Locked then
                Out_Data.Map_Name_Text_ID :=
                  Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
@@ -77,25 +76,25 @@ package body Levels_Maps_Manager is
          end;  --  declare block
          Next (In_Cursor);
       end loop;
-      --        Put_Line ("Levels_Maps_Manager.Init_Maps Maps size : " &
+      --        Put_Line ("Levels_Maps_Manager.Init_Level_Maps Maps size : " &
       --                 Ada.Containers.Count_Type'Image (Maps.Length));
 
       Text.Change_Text_Colour
         (Maps.Element (Selected_Map_ID).Map_Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
-      Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Maps Maps Initialized---");
+      Game_Utils.Game_Log ("---Levels_Maps_Manager.Init_Level_Maps Maps Initialized---");
 
-   end Init_Maps;
+   end Init_Level_Maps;
 
    --  ----------------------------------------------------------------------------
 
-   procedure Reload_Story_Map (Path             : String; theMap : in out Level_Map_Data;
+   procedure Load_Story (Path             : String; theMap : in out Level_Map_Data;
                                Has_Hammer_Track : out Boolean) is
       use Maps_Manager;
       Input_File       : File_Type;
       Num_Story_Lines  : Natural;
       Story_Lines      : Maps_Manager.Story_Lines_List;
    begin
-      Put_Line ("Levels_Maps_Manager.Load_Map loading " & Path);
+      Put_Line ("Levels_Maps_Manager.Load_Story loading " & Path);
       Open (Input_File, In_File, Path);
       theMap.Map_Name := To_Unbounded_String (Get_Line (Input_File));
       theMap.Par_Time := To_Unbounded_String (Get_Line (Input_File));
@@ -153,9 +152,9 @@ package body Levels_Maps_Manager is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Levels_Maps_Manager.Reload_Story_Map!");
+         Put_Line ("An exception occurred in Levels_Maps_Manager.Load_Story!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
-   end Reload_Story_Map;
+   end Load_Story;
 
    --  ----------------------------------------------------------------------------
 
@@ -176,8 +175,8 @@ package body Levels_Maps_Manager is
       Open (Input_File, In_File, Path);
       if not Is_Open (Input_File) then
          Names.Clear;
-         Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Story_Names, no file " &
-                                Path & " found -- locking all but first.");
+--           Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Story_Names, no file " &
+--                                  Path & " found -- locking all but first.");
          Append_Data ("introduction", False);
          Append_Data ("three_doors");
          Append_Data ("warlock");

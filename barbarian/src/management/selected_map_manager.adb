@@ -16,6 +16,8 @@ package body Selected_Map_Manager is
       Line_Length      : Integer;
       Num_Story_Lines  : Natural;
    begin
+      Game_Utils.Game_Log ("Selected_Map_Manager.Load_Map loading map " &
+                           Path);
       Open (Input_File, In_File, Path);
       theMap.Map_Title := To_Unbounded_String (Get_Line (Input_File));
       Line_Length := Length (theMap.Map_Title);
@@ -36,11 +38,8 @@ package body Selected_Map_Manager is
       begin
          Num_Story_Lines := Integer'Value (Num_Part);
          for line_num in 1 .. Num_Story_Lines loop
-            declare
-               Story_Line  : constant String := Get_Line (Input_File);
-            begin
-               theMap.Map_Intro_Text := theMap.Map_Intro_Text & " " & Story_Line;
-            end;  --  declare block
+            theMap.Map_Intro_Text.Append
+              (To_Unbounded_String (Get_Line (Input_File)));
          end loop;
       end;  --  declare block
 
