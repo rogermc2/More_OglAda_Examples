@@ -13,7 +13,6 @@ with GL.Toggles;
 
 with Maths;
 
---  with Attributes;
 with Audio;
 with Character_Controller;
 with Controller_Textures_Manager;
@@ -504,6 +503,7 @@ package body GUI is
       use GL.Objects.Vertex_Arrays;
       use GUI_Atlas_Shader_Manager;
    begin
+      Game_Utils.Game_Log ("GUI.Render_Crong_Head");
       GL.Objects.Programs.Use_Program (Crong_Head_SP);
       Set_Current_Sprite (Single (Crong_Head_Sprite_Index));
       Set_Model_Matrix (Ch_Model_Mat);
@@ -597,6 +597,7 @@ package body GUI is
       use GL.Culling;
       use GL.Toggles;
    begin
+      Game_Utils.Game_Log ("GUI.Render_GUIs");
       Set_Front_Face (Clockwise);
       Enable (Blend);
       Disable (Depth_Test);

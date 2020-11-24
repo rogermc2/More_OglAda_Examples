@@ -10,6 +10,7 @@ with Blood_Splats;
 with Character_Map;
 with Event_Controller;
 with FB_Effects;
+with Game_Utils;
 with GL_Utils;
 with GUI;
 with GUI_Level_Chooser;
@@ -110,8 +111,10 @@ package body Main_Loop.Game_Support is
 --           Update_FPS_Box;
 --        end if;
       if Main_Menu.Menu_Open then
+         Game_Utils.Game_Log ("Game_Supprt.Player_1_View, Menu_Open");
          Main_Menu.Draw_Menu (Delta_Time);
       elsif not Settings.Hide_GUI then
+         Game_Utils.Game_Log ("Game_Supprt.Player_1_View, Render_GUIs");
          GUI.Render_GUIs;
       end if;
       GUI.Draw_Controller_Button_Overlays (Delta_Time);

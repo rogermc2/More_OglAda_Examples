@@ -16,7 +16,7 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_Static_Light (Row, Col : Int; Tile_Height_Offset : Integer;
+   procedure Add_Static_Light (Row, Col                       : Int; Tile_Height_Offset : Integer;
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single) is
       use Batches_Package;
@@ -57,13 +57,6 @@ package body Batch_Manager is
 
       Batches.Iterate (Process_Batch'Access);
    end Add_Static_Light;
-
-   --  ----------------------------------------------------------------------------
-
---     function Batch_Split_Size return Integer is
---     begin
---        return Batch_Split_Count;
---     end Batch_Split_Size;
 
    --  ----------------------------------------------------------------------------
 
@@ -122,8 +115,8 @@ package body Batch_Manager is
             Light_Indices.Swap (Next_Light_Cursor, Current_Light_Cursor);
             if Prev_Light_Cursor /= Light_Indices.First then
                Prev_Light_Cursor:= Next_Light_Cursor;
---              else
---                 Light_Indices.First_Element := Next_Light_Cursor;
+               --              else
+               --                 Light_Indices.First_Element := Next_Light_Cursor;
             end if;
          end if;
          Prev_Light_Index := Current_Light_Index;
@@ -281,10 +274,10 @@ package body Batch_Manager is
       use Batches_Package;
       use Tile_Indices_Package;
       theBatch    : Batch_Meta := Batches.Element (Batch_Index);
-      aTile       : Tile_Data;
       Batch_Tiles : constant Tile_Indices_List := theBatch.Tiles;
       Curs        : Tile_Indices_Package.Cursor := Batch_Tiles.First;
       Tile_Index  : Positive;
+      aTile       : Tile_Data;
       Row         : Int := 0;
       Column      : Int := 0;
       Height      : Integer := 0;
@@ -296,7 +289,7 @@ package body Batch_Manager is
       procedure Add_Point_Count (Diff : Integer) is
       begin
          if Diff > 0 then
-             Total_Points := Total_Points + 6 * Diff;
+            Total_Points := Total_Points + 6 * Diff;
          end if;
       end Add_Point_Count;
 
@@ -307,11 +300,31 @@ package body Batch_Manager is
          raise Batch_Manager_Exception with
            "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
       else
+--           Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Max_Cols " &
+--                                  Int'Image (Max_Cols));
          while Has_Element (Curs) loop
             Tile_Index  := Element (Curs);
             aTile := Tiles.Element (Tile_Index);
-            Row := Int (Tile_Index) / Max_Cols + 1;
-            Column :=  Int (Tile_Index) - Row * Max_Cols;
+            Row := (Int (Tile_Index) + Max_Cols - 1) / Max_Cols;
+            if Int (Tile_Index) <= Max_Cols then
+               Column := Int (Tile_Index);
+            else
+               Column := Int (Tile_Index - 1) mod (Max_Cols) + 1;
+            end if;
+
+--              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Index, row, col " &
+--                                     Integer'Image (Tile_Index) & ", " &
+--                                     Int'Image (Row) & ", " &
+--                                     Int'Image (Column));
+            if Row < 1 or Row > Max_Rows or
+              Column < 1 or Column > Max_Cols then
+               raise Batch_Manager_Exception with
+                 "Batch_Manager.Regenerate_Batch Tile_Index, " &
+                 "Tile_Index with invalid row or col "
+                 & Integer'Image (Tile_Index) & ", " &
+                 Int'Image (Row) & ", " & Int'Image (Column);
+            end if;
+
             Height := aTile.Height;
             if aTile.Tile_Type = '~' then
                Height := Height - 1;

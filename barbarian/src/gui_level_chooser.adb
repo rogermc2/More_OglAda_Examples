@@ -530,7 +530,6 @@ package body GUI_Level_Chooser is
       Old_Sel : constant Integer := Selected_Map_ID;
       Old_Map : Level_Menu_Manager.Level_Map_Data;
    begin
-      New_Line;
       Since_Last_Key := Since_Last_Key + Delta_Time;
       --        Game_Utils.Game_Log  ("Update_GUI_Level_Chooser Selected_Map_ID:" & Integer'Image (Selected_Map_ID));
       if Maps.Is_Empty then

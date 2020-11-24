@@ -92,6 +92,8 @@ package body Tiles_Manager is
    procedure Add_Tile_Index (Batch      : in out Batch_Manager.Batch_Meta;
                              Tile_Index : Positive) is
    begin
+--        Game_Utils.Game_Log ("Tiles_Manager.Add_Tile_Index Tile_Index " &
+--                                 Integer'Image (Tile_Index));
       Batch.Tiles.Append (Tile_Index);
    end Add_Tile_Index;
 
@@ -106,14 +108,13 @@ package body Tiles_Manager is
       Batch_Index   : Positive;
       Tile_Index    : Positive;
    begin
-      --          Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Total_Tiles, Max_Rows, Max_Cols " &
-      --                                 Integer'Image (Total_Tiles) & ", " &
-      --                                 Integer'Image (Max_Rows) & ", " &
-      --                                 Integer'Image (Max_Cols));
-      --
-      --          Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
-      --                                 Integer'Image (Settings.Tile_Batch_Width));
-      --          for index in 1 .. Total_Tiles loop
+--                Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Max_Rows, Max_Cols " &
+--                                       Int'Image (Max_Rows) & ", " &
+--                                       Int'Image (Max_Cols));
+
+      Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
+                            Integer'Image (Settings.Tile_Batch_Width));
+
       for Row in 1 .. Max_Rows loop
          --              Row := index / Max_Cols + 1;
          Batch_Down  := Integer (Row - 1) / Settings.Tile_Batch_Width;
@@ -127,16 +128,23 @@ package body Tiles_Manager is
                Add_Tile_Index (Batch, Tile_Index);
                Batches.Replace_Element (Batch_Index, Batch);
             else
+               Add_Tile_Index (Batch, Tile_Index);
                Batches.Append (Batch);
             end if;
          end loop;
       end loop;
-     --        for index in 1 .. Batch_Split_Count loop
+--              Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Tile_Index, Batch_Index " &
+--                                     Integer'Image (Tile_Index) & ", " &
+--                                     Integer'Image (Batch_Index));
+
+        Game_Utils.Game_Log ("Add_Tiles_To_Batches Batches.Last_Index " &
+                              Integer'Image (Batches.Last_Index));
       for index in Batches.First_Index .. Batches.Last_Index loop
          Regenerate_Batch (Tiles, index);
-         --              Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch " &
-         --                                Integer'Image (index) & " regenerated");
+        Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch " &
+                              Integer'Image (index) & " regenerated");
       end loop;
+      Put_Line ("Tiles_Manager.Add_Tiles_To_Batches done.");
 
    exception
       when anError : others =>
@@ -494,7 +502,7 @@ package body Tiles_Manager is
       Load_Int_Rows (File, "heights", Tiles);
 
       Load_Palette_File_Names (File);
-      Game_Utils.Game_Log ("Palette file names: " &
+      Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Palette file names: " &
                              To_String (Diff_Palette_Name)
                            & ", " & To_String (Spec_Palette_Name));
       Load_Textures;
