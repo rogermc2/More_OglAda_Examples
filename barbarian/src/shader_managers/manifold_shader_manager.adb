@@ -6,7 +6,6 @@ with GL.Objects.Shaders;
 with Maths;
 with Program_Loader;
 
---  with Game_Utils;
 with Shader_Attributes;
 
 package body Manifold_Shader_Manager is

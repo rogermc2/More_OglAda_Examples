@@ -611,6 +611,7 @@ package body Prop_Renderer is
 
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3) is
    begin
+      GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
       Properties_Shader_Manager.Set_L_A (Level);
       Properties_Skinned_Shader_Manager.Set_L_A (Level);
    end Set_Ambient_Light_Level;
@@ -737,6 +738,7 @@ package body Prop_Renderer is
       Specular  : Light_Array;
       Ranges    : Light_Range_Array;
    begin
+      GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
       while Index <= Static_Lights.Last_Index loop
          aLight := Element (Static_Lights, Index);
          Positions (Int (Index)) := aLight.Position;

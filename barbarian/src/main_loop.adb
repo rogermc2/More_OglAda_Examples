@@ -41,6 +41,7 @@ with Settings;
 with Shader_Manager;
 with Shadows;
 with Splats_Shader_Manager;
+with Sprite_Shader_Manager;
 with Sprite_Renderer;
 with Text;
 with Texture_Manager;
@@ -393,10 +394,14 @@ package body Main_Loop is
                GL.Culling.Set_Cull_Face (GL.Culling.Back);
 
                Game_Utils.Game_Log ("---LEVEL START---");
+               Sprite_Shader_Manager.Use_Sprite_Shader;
                Sprite_Renderer.Set_Ambient_Light_Level (Ambient_Light);
                Manifold.Set_Manifold_Ambient_Light (Ambient_Light);
                Prop_Renderer.Set_Ambient_Light_Level (Ambient_Light);
+               Blood_Splats.Use_Splats_Shader;
                Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
+
+               Put_Line ("Ambient_Light set");
                FB_Effects.Fade_In;
                Manifold.Update_Static_Lights_Uniforms;
                Prop_Renderer.Update_Static_Lights_Uniforms;

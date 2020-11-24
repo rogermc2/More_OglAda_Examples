@@ -24,7 +24,7 @@ package body Blood_Splats is
    Splat_Vao            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Splat_Buffer         : GL.Objects.Buffers.Buffer;
    Splat_Normals_Vbo    : GL.Objects.Buffers.Buffer;
-   Splat_Sp             : GL.Objects.Programs.Program;
+   Splat_Shader_Program : GL.Objects.Programs.Program;
    Blood_Splats_Tex     : GL.Objects.Textures.Texture;
 
    Bsb_Sz   : Single_Array (1 .. 18 * Max_Splats) := (others => 0.0);
@@ -35,7 +35,7 @@ package body Blood_Splats is
 
    procedure Clear_Splats is
    begin
-	Num_Splats_In_Play := 0;
+      Num_Splats_In_Play := 0;
    end Clear_Splats;
 
    --  -------------------------------------------------------------------------
@@ -53,7 +53,7 @@ package body Blood_Splats is
       Mipmaps : constant Boolean := True;
       SRGB    : constant Boolean := True;
       Index   : Int := 0;
-    begin
+   begin
       Game_Utils.Game_Log ("----INIT BLOOD SPLATS---");
       Texture_Manager.Load_Image_To_Texture
         ("src/textures/splat.png", Blood_Splats_Tex, Mipmaps, SRGB);
@@ -79,7 +79,7 @@ package body Blood_Splats is
       Enable_Vertex_Attrib_Array (Attrib_VN);
       Set_Vertex_Attrib_Pointer (Attrib_VN, 3, Single_Type, False, 0, 0);
 
-      Splats_Shader_Manager.Init (Splat_Sp);
+      Splats_Shader_Manager.Init (Splat_Shader_Program);
       Splats_Shader_Manager.Set_Cube_Texture (1);
       if Settings.Shadows_Enabled then
          Splats_Shader_Manager.Set_Shadow_Enabled (1.0);
@@ -88,7 +88,7 @@ package body Blood_Splats is
       end if;
       Game_Utils.Game_Log ("----BLOOD SPLATS INITIALIZED---");
 
-    end Init;
+   end Init;
 
    --  -------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ package body Blood_Splats is
          GL.Buffers.Depth_Mask (False);
          Enable (Blend);
          Texture_Manager.Bind_Texture (0, Blood_Splats_Tex);
-         Use_Program (Splat_Sp);
+         Use_Program (Splat_Shader_Program);
          if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
@@ -121,6 +121,13 @@ package body Blood_Splats is
          Disable (Blend);
       end if;
    end Render_Splats;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Use_Splats_Shader is
+   begin
+      GL.Objects.Programs.Use_Program (Splat_Shader_Program);
+   end Use_Splats_Shader;
 
    --  -------------------------------------------------------------------------
 

@@ -411,6 +411,7 @@ package body Manifold is
 
    procedure Set_Manifold_Ambient_Light (Level : GL.Types.Singles.Vector3) is
    begin
+      GL.Objects.Programs.Use_Program (Manifold_Program);
       Manifold_Shader_Manager.Set_Ambient_Light (Level);
       Water_Shader_Manager.Set_Ambient_Light (Level);
    end Set_Manifold_Ambient_Light;
@@ -431,6 +432,7 @@ package body Manifold is
       Ranges    : Single_Array
         (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
    begin
+      GL.Objects.Programs.Use_Program (Manifold_Program);
       while Index <= Static_Lights.Last_Index loop
          aLight := Element (Static_Lights, Index);
          Positions (Int (Index)) := aLight.Position;
