@@ -300,7 +300,8 @@ package body GUI_Level_Chooser is
       use Level_Menu_Manager.Maps_Package;
       use Custom_Maps_Manager.Custom_Maps_Package;
       LeveL_Menu  : Level_Menu_Manager.Level_Map_Data;
-      Custom_Map : Custom_Maps_Manager.Custom_Data;
+      Custom_Map  : Custom_Maps_Manager.Custom_Data;
+      Last_Index  : Positive := Maps.Last_Index;
    begin
       Utilities.Clear_Colour;
       Set_Background_Pane (Credits_Shader_Program, Use_Custom_Maps);
@@ -311,7 +312,10 @@ package body GUI_Level_Chooser is
             Text.Draw_Text (Custom_Map.Text_ID);
          end loop;
       else
-         for index in Maps.First_Index .. Maps.Last_Index loop
+         if Last_Index > 8 then
+            Last_Index := 8;
+         end if;
+         for index in Maps.First_Index .. Last_Index loop
             LeveL_Menu := Maps.Element (index);
             Text.Draw_Text (LeveL_Menu.Map_Name_Text_ID);
          end loop;
@@ -359,7 +363,7 @@ package body GUI_Level_Chooser is
             Next (Custom_Map_Cursor);
          end loop;
       else
-         while Has_Element (Map_Cursor) loop
+         while Has_Element (Map_Cursor) and then To_Index (Map_Cursor) < 9 loop
             aMap := Element (Map_Cursor);
             Text.Change_Text_Colour (aMap.Map_Name_Text_ID, 1.0, 1.0, 1.0, 1.0);
             Maps.Replace_Element (Map_Cursor, aMap);
@@ -462,8 +466,8 @@ package body GUI_Level_Chooser is
          Delta_Time := Current_Time - Last_Time;
          Last_Time := Current_Time;
          if Menu_Open then
-            --             Game_Utils.Game_Log ("Start_Level_Chooser_Loop Delta_Time" &
-            --                                   Float'Image (Delta_Time));
+            --              Game_Utils.Game_Log ("Start_Level_Chooser_Loop Delta_Time" &
+            --                                    Float'Image (Delta_Time));
             Menu_Quit := not Main_Menu.Update_Menu (Window, Delta_Time);
             if Main_Menu.Menu_Was_Closed then
                Menu_Open := False;
@@ -542,17 +546,25 @@ package body GUI_Level_Chooser is
            "Invalid Selected_Map_ID: " & Integer'Image (Selected_Map_ID);
       end if;
 
-      --        Game_Utils.Game_Log  ("Update_GUI_Level_Chooser get old map Old_Sel: " &
-      --                 Integer'Image (Old_Sel));
+      --         Game_Utils.Game_Log  ("Update_GUI_Level_Chooser get old map Old_Sel: " &
+      --                       Integer'Image (Old_Sel));
       Old_Map := Maps.Element (Old_Sel);
 
       if Since_Last_Key > 0.15 then
          if Is_Key_Down (Down) or Is_Action_Down (Down_Action) then
-            Selected_Map_ID := Selected_Map_ID + 1;
+            if Selected_Map_ID >= 8 then   --  Last wanted map
+               Selected_Map_ID := Maps.First_Index;
+            else
+               Selected_Map_ID := Selected_Map_ID + 1;
+            end if;
             --              Play_Sound (LEVEL_BEEP_SOUND, true);
             Since_Last_Key := 0.0;
          elsif Is_Key_Down (Up) or Is_Action_Down (Up_Action) then
-            Selected_Map_ID := Selected_Map_ID - 1;
+            if Selected_Map_ID = Maps.First_Index then
+               Selected_Map_ID := 8;   --  Last wanted map
+            else
+               Selected_Map_ID := Selected_Map_ID - 1;
+            end if;
             --              Play_Sound (LEVEL_BEEP_SOUND, true);
             Since_Last_Key := 0.0;
          end if;
@@ -560,7 +572,7 @@ package body GUI_Level_Chooser is
          --           Game_Utils.Game_Log  ("Update_GUI_Level_Chooser check Custom_Maps ");
          if Custom_Maps then
             if Selected_Map_ID >= Num_Custom_Maps then
-               Selected_Map_ID := Selected_Map_ID - Num_Custom_Maps + 1;
+               Selected_Map_ID := Num_Custom_Maps - 1;
             end if;
 
             if Selected_Map_ID /= Old_Sel then
@@ -569,9 +581,6 @@ package body GUI_Level_Chooser is
                Update_Selected_Entry_Dot_Map (False, Custom_Maps);
             end if;
          else
-            if Selected_Map_ID >= Maps.Last_Index then
-               Selected_Map_ID := Selected_Map_ID - Maps.Last_Index + 1;
-            end if;
             if not Old_Map.Locked then
                Text.Change_Text_Colour (Old_Sel, 1.0, 1.0, 1.0, 1.0);
             else
@@ -606,14 +615,14 @@ package body GUI_Level_Chooser is
                                                   ASCII.CR & ASCII.LF & "the portal to this map"));
       elsif Custom then Map_Path := To_Unbounded_String
            ("src/maps/" & Get_Custom_Map_Name (Custom_Maps, Selected_Map_ID));
---           Game_Utils.Game_Log ("level chooser is peeking in map " &
---                                  To_String (Map_Path));
+         --           Game_Utils.Game_Log ("level chooser is peeking in map " &
+         --                                  To_String (Map_Path));
       else
          Map_Path := To_Unbounded_String
            ("src/maps/" & Level_Menu_Manager.Get_Map_Name
               (Maps, Selected_Map_ID));
---           Game_Utils.Game_Log ("level chooser is peeking in map " &
---                                  To_String (Map_Path));
+         --           Game_Utils.Game_Log ("level chooser is peeking in map " &
+         --                                  To_String (Map_Path));
          Selected_Map_Manager.Load_Map (To_String (Map_Path), Selected_Map,
                                         Has_Hammer_Track);
          Selected_Map_Track := Selected_Map.Music_Track;
@@ -630,9 +639,9 @@ package body GUI_Level_Chooser is
                           30.0, 0.9, 0.9, 0.0, 0.8);
          Text.Set_Text_Visible (Level_Title_Text_ID, False);
 
-         --           Game_Utils.Game_Log
-         --                ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Last_Index: " &
-         --                   Integer'Image (Selected_Map.Map_Intro_Text.Last_Index));
+         Game_Utils.Game_Log
+           ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Last_Index: " &
+              Integer'Image (Selected_Map.Map_Intro_Text.Last_Index));
          Level_Story_Text_ID.Clear;
          for index in Selected_Map.Map_Intro_Text.First_Index ..
            Selected_Map.Map_Intro_Text.Last_Index loop
@@ -653,10 +662,11 @@ package body GUI_Level_Chooser is
             Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
          end loop;
       else
---           Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map not first.");
+         --           Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map not first.");
          Text.Update_Text (Level_Title_Text_ID, To_String (Selected_Map.Map_Title));
-         for index in Level_Story_Text_ID.First_Index ..
-           Level_Story_Text_ID.Last_Index loop
+         Level_Story_Text_ID.Clear;
+         for index in Selected_Map.Map_Intro_Text.First_Index ..
+           Selected_Map.Map_Intro_Text.Last_Index loop
             --              Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map index: "
             --                                  & integer'Image (index));
             Story_Line := Selected_Map.Map_Intro_Text.Element (index);
@@ -665,8 +675,18 @@ package body GUI_Level_Chooser is
             if Length (Story_Line) < 1 then
                Story_Line := To_Unbounded_String (" ");
             end if;
-            Text.Update_Text (Level_Story_Text_ID.Element (index),
-                              To_String (Story_Line));
+--              if index <= Level_Story_Text_ID.Last_Index then
+--                 Text.Update_Text (Level_Story_Text_ID.Element (index),
+--                                   To_String (Story_Line));
+--              else
+               Level_Story_Text_ID.Append
+                 (Text.Add_Text (To_String (Story_Line),
+                  Left_Margin_Cl + Lt_Margin_Cl,
+                  Top_Margin_Cl - (1.0 + 0.2 * Single (index - 1)) * 240.0 / Single
+                  (Settings.Framebuffer_Height),
+                  14.0, 0.75, 0.75, 0.75, 1.0));
+               Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
+--              end if;
          end loop;
       end if;
 

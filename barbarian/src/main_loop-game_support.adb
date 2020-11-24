@@ -89,6 +89,7 @@ package body Main_Loop.Game_Support is
          end loop;
       end if;   --  end of shadow mapping pass
 
+      Game_Utils.Game_Log ("Game_Support.Player_1_View, Bind_Main_Scene_FB");
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;
       Transparency.Reset_Transparency_List (Camera_Position);

@@ -14,8 +14,9 @@ package body Selected_Map_Manager is
       use Ada.Streams;
       Input_File       : File_Type;
       Line_Length      : Integer;
-      Num_Story_Lines  : Natural;
+      Num_Story_Lines  : Natural := 0;
    begin
+      theMap.Map_Intro_Text.Clear;
 --        Game_Utils.Game_Log ("Selected_Map_Manager.Load_Map loading map " &
 --                             Path);
       Open (Input_File, In_File, Path);
@@ -37,6 +38,8 @@ package body Selected_Map_Manager is
          Num_Part : constant String := aString (13 .. aString'Length);
       begin
          Num_Story_Lines := Integer'Value (Num_Part);
+--           Put_Line ("Selected_Map_Manager.Load_Map, Num_Story_Lines: " &
+--                    Integer'Image (Num_Story_Lines));
          for line_num in 1 .. Num_Story_Lines loop
             theMap.Map_Intro_Text.Append
               (To_Unbounded_String (Get_Line (Input_File)));
