@@ -738,7 +738,6 @@ package body Prop_Renderer is
       Specular  : Light_Array;
       Ranges    : Light_Range_Array;
    begin
-      GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
       while Index <= Static_Lights.Last_Index loop
          aLight := Element (Static_Lights, Index);
          Positions (Int (Index)) := aLight.Position;
@@ -747,13 +746,17 @@ package body Prop_Renderer is
          Ranges (Int (Index)) := aLight.Light_Range;
          Index := Index + 1;
       end loop;
+
+      GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
       Properties_Shader_Manager.Set_Light_Pos (Positions);
-      Properties_Skinned_Shader_Manager.Set_Light_Pos (Positions);
       Properties_Shader_Manager.Set_Light_Diff (Diffuse);
-      Properties_Skinned_Shader_Manager.Set_Light_Diff (Diffuse);
       Properties_Shader_Manager.Set_Light_Spec (Specular);
-      Properties_Skinned_Shader_Manager.Set_Light_Spec (Specular);
       Properties_Shader_Manager.Set_Light_Range (Ranges);
+      GL.Objects.Programs.Use_Program
+        (Properties_Shader_Manager.Prop_Skinned_Shader);
+      Properties_Skinned_Shader_Manager.Set_Light_Diff (Diffuse);
+      Properties_Skinned_Shader_Manager.Set_Light_Pos (Positions);
+      Properties_Skinned_Shader_Manager.Set_Light_Spec (Specular);
       Properties_Skinned_Shader_Manager.Set_Light_Range (Ranges);
    end Update_Static_Lights_Uniforms;
 

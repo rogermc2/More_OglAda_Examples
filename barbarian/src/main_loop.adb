@@ -404,8 +404,11 @@ package body Main_Loop is
                Put_Line ("Ambient_Light set");
                FB_Effects.Fade_In;
                Manifold.Update_Static_Lights_Uniforms;
+               Put_Line ("Manifold Static_Lights updated");
                Prop_Renderer.Update_Static_Lights_Uniforms;
+               Put_Line ("Prop_Renderer Static_Lights updated");
                Sprite_Renderer.Update_Static_Lights_Uniforms;
+               Put_Line ("Static_Lights updated");
 
                Camera.Cam_Wind_In;  --  Camera screw-in effect
                Audio.Play_Sound ("enter_portal.wav", False);
