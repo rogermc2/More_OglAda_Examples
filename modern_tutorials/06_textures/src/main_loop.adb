@@ -24,25 +24,23 @@ with Program_Loader;
 with Utilities;
 
 with Buffers;
-with Graph_Data;
+with Cube_Data;
 with Textures;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
 
-   Vertex_Array_Size  : GL.Types.Int;
-
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Elements_Buffer    : GL.Objects.Buffers.Buffer;
+   Tex_Coords_Buffer  : GL.Objects.Buffers.Buffer;
+   Vertices_Buffer    : GL.Objects.Buffers.Buffer;
    Shader_Program     : GL.Objects.Programs.Program;
    Coord_Attribute    : GL.Attributes.Attribute;
    Offset_X_ID        : GL.Uniforms.Uniform;
    Scale_X_ID         : GL.Uniforms.Uniform;
    Sprite_ID          : GL.Uniforms.Uniform;
    Texture_ID         : GL.Uniforms.Uniform;
-   theTexture         : GL.Objects.Textures.Texture
-   Vertices_Buffer    : GL.Objects.Buffers.Buffer;
-
-   Vertices           : Graph_Data.Point_Data;
+   theTexture         : GL.Objects.Textures.Texture;
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
@@ -162,8 +160,10 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Initialize_Id;
          VAO.Bind;
 
-         Buffers.Create_Vertex_Buffer (Vertices_Buffer, Vertices);
-         Textures.Load_Texture (theTexture,
+         Buffers.Create_Vertex_Buffer (Vertices_Buffer, Cube_Data.Vertices);
+         Buffers.Create_Tex_Coords_Buffer (Tex_Coords_Buffer, Cube_Data.Texture_Coords);
+         Buffers.Create_Elements_Buffer (Elements_Buffer, Cube_Data.Elements);
+
       end if;
       return Result;
 
