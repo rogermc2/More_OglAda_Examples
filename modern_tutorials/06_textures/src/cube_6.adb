@@ -1,5 +1,5 @@
 --  Author Roger Mc Murtrie
---  Based on OpenGL Programming/Scientific OpenGL Tutorial 06
+--  Based on OpenGL Programming/Scientific OpenGL Tutorial tut06_textures-sdl2
 --  25 November 2020
 
 with Ada.Exceptions; use Ada.Exceptions;
@@ -13,7 +13,7 @@ with Main_Loop;
 
 procedure Cube_6 is
     Main_Window  : Glfw.Windows.Window;
-    Window_Title : constant String := "Modern Tutorial 6 Textures";
+    Window_Title : constant String := "Modern Tutorial 6 Textures SDL";
 begin
     Glfw.Init;
     Initialize (Main_Window, Window_Title);
