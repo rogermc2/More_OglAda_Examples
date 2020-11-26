@@ -19,6 +19,6 @@ package MGL_Common is
       Data             : Unbounded_Vector;
    end record;
 
-   procedure Read_SDL_File (File_Name : String; Data : SDL_Data);
+   procedure Read_SDL_File (File_Name : String; Data : in out SDL_Data);
 
 end MGL_Common;
