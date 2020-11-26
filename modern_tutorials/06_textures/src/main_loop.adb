@@ -58,8 +58,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       OK : Boolean := False;
    begin
       Shader_Program := Program_From
-        ((Src ("src/shaders/graph_1.vert", Vertex_Shader),
-         Src ("src/shaders/graph_1.frag", Fragment_Shader)));
+        ((Src ("src/shaders/cube.vert", Vertex_Shader),
+         Src ("src/shaders/cube.frag", Fragment_Shader)));
 
       OK := GL.Objects.Programs.Link_Status (Shader_Program);
       if not OK then
@@ -71,19 +71,26 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
            (Shader_Program, "coord3d");
          Tex_Coord_Attribute := GL.Objects.Programs.Attrib_Location
            (Shader_Program, "texcoord");
-         OK := Coord_3D_Attribute > -1 and Tex_Coord_Attribute > -1;
+         OK := Integer (Coord_3D_Attribute) > -1 and Integer (Tex_Coord_Attribute) > -1;
          if OK then
             MVP_ID :=
               GL.Objects.Programs.Uniform_Location (Shader_Program, "mvp");
             Texture_ID :=
               GL.Objects.Programs.Uniform_Location (Shader_Program, "mytexture");
-            OK := MVP_ID > -1 and Texture_ID > -1;
+            OK := Integer (MVP_ID) > -1 and Integer (Texture_ID) > -1;
+            if not OK then
+               Put_Line ("MVP_ID: " & GL.Uniforms.Uniform'Image (MVP_ID));
+               Put_Line ("Texture_ID: " & GL.Uniforms.Uniform'Image (Texture_ID));
+               Put_Line ("Build_Shader_Program, Uniforms initialization failed");
+            end if;
+         else
+            Put_Line ("Coord_3D_Attribute: " & GL.Attributes.Attribute'Image (Coord_3D_Attribute));
+            Put_Line ("Tex_Coord_Attribute: " & GL.Attributes.Attribute'Image (Tex_Coord_Attribute));
+            Put_Line ("Build_Shader_Program, Attributes initialization failed");
          end if;
+
       end if;
 
-      if not OK then
-         Put_Line ("Build_Shader_Program, Attributes initialization failed");
-      end if;
       return OK;
 
    exception
@@ -112,12 +119,24 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Uniforms.Set_Int (Texture_ID, 0);
       Texture_2D.Bind (Cube_Texture);
 
-      GL.Attributes.Enable_Vertex_Attrib_Array (Coord_3D_Attribute);
+      GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_3D_Attribute, 3,
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3,
                                                Single_Type, False, 0, 0);
 
-      GL.Attributes.Disable_Vertex_Attrib_Array (Coord_3D_Attribute);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Tex_Coord_Attribute);
+      GL.Objects.Buffers.Array_Buffer.Bind (Tex_Coords_Buffer);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Tex_Coord_Attribute, 2,
+                                               Single_Type, False, 0, 0);
+
+      GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
+--        GL.Objects.Buffers.Draw_Elements (Triangles, 3, UShort_Type, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 1,
+                                               Single_Type, False, 0, 0);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+
+      GL.Attributes.Disable_Vertex_Attrib_Array (0);
+      GL.Attributes.Disable_Vertex_Attrib_Array (Tex_Coord_Attribute);
 
    exception
       when others =>
@@ -143,13 +162,14 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Enable (Blend);
          Enable (Depth_Test);
          Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
+         Enable (Vertex_Program_Point_Size);
 
          VAO.Initialize_Id;
          VAO.Bind;
 
-         Buffers.Create_Vertex_Buffer (Vertices_Buffer, Cube_Data.Vertices);
-         Buffers.Create_Tex_Coords_Buffer (Tex_Coords_Buffer, Cube_Data.Texture_Coords);
-         Buffers.Create_Elements_Buffer (Elements_Buffer, Cube_Data.Elements);
+         Buffers.Create_Vertex_Buffer (Vertices_Buffer);
+         Buffers.Create_Tex_Coords_Buffer (Tex_Coords_Buffer);
+         Buffers.Create_Elements_Buffer (Elements_Buffer);
          Textures.Load_Texture (Cube_Texture, "src/res_texture.png");
          Logic;
       end if;

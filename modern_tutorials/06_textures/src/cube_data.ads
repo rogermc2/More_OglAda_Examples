@@ -3,14 +3,9 @@ with GL.Types; use GL.Types;
 
 package Cube_Data is
 
-   type Point is new Singles.Vector3;
-
-   type Vertices_Data is new Singles.Vector3_Array (1 .. 24);
-   type Tex_Coords is new Singles.Vector2_Array (1 .. 4);
-
-   Vertices : constant Vertices_Data :=
-                ( --  front
-                    (-1.0, -1.0,  1.0),
+   Vertices : constant Singles.Vector3_Array (1 .. 24) :=
+              ( --  front
+                  (-1.0, -1.0,  1.0),
                   (1.0, -1.0,  1.0),
                   (1.0,  1.0,  1.0),
                   (-1.0,  1.0,  1.0),
@@ -40,7 +35,7 @@ package Cube_Data is
                   (1.0,  1.0, -1.0),
                   (1.0,  1.0,  1.0));
 
-   Texture_Coords : constant Tex_Coords :=
+   Texture_Coords : constant Singles.Vector2_Array (1 .. 4) :=
                       ((0.0, 0.0),
                        (1.0, 0.0),
                        (1.0, 1.0),
