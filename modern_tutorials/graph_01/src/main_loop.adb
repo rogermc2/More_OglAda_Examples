@@ -24,9 +24,10 @@ with Program_Loader;
 with Utilities;
 
 with Buffers;
+with Input_Callback;
 with Textures;
 
-procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
+procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    use GL.Types;
    use GL.Uniforms;
 
@@ -95,7 +96,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Display (Window : in out Glfw.Windows.Window) is
+   procedure Display (Window : in out Input_Callback.Callback_Window) is
       use GL.Objects.Vertex_Arrays;
       use GL.Types.Singles;
       use Maths;
@@ -140,7 +141,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
 
-   function  Init (Window : in out Glfw.Windows.Window) return Boolean is
+   function  Init (Window : in out Input_Callback.Callback_Window) return Boolean is
       use GL.Blending;
       use GL.Toggles;
       Position         : constant GL.Types.Singles.Vector4 := (-6.0, -3.0, 3.0, 0.0);
