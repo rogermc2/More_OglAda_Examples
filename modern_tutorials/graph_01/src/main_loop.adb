@@ -101,29 +101,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Maths;
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
---        Current_Time  : constant Glfw.Seconds := Glfw.Time;
---        Angle         : Radian := 0.1 * Radian (Current_Time);  --  approx 15 degree per second
---        Animation     : Singles.Matrix4 := Singles.Identity4;
---        View          : Singles.Matrix4 := Singles.Identity4;
---        Model         : Singles.Matrix4 := Singles.Identity4;
---        Scale_Matrix  : Singles.Matrix4 := Singles.Identity4;
---        Projection    : Singles.Matrix4 := Singles.Identity4;
---        MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
    begin
-      Put_Line ("Main_Loop.Display entered.");
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Background_Colour (Background);
---        Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
---        Animation := Translation_Matrix ((-0.5, 0.0, -1.5))  *
---          Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
---            Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
---              Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
---        Projection := Perspective_Matrix (Degree (45.0),
---                                          Single (Window_Width) / Single (Window_Height),
---                                          0.1, 10.0);
---        MVP_Matrix := Projection * View * Model * Animation;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Int (Texture_ID, 0);
@@ -137,13 +119,13 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                                Single_Type, False, 0, 0);
       case Mode is
          when 0 =>
-            GL.Uniforms.Set_Int (Sprite_ID, 0);
+            GL.Uniforms.Set_Single (Sprite_ID, 0.0);
             Draw_Arrays (Line_Strip, 0, 2000);
          when 1 =>
-            GL.Uniforms.Set_Int (Sprite_ID, 1);
+            GL.Uniforms.Set_Single (Sprite_ID, 1.0);
             Draw_Arrays (Points, 0, 2000);
          when 2 =>
-            GL.Uniforms.Set_Int (Sprite_ID, Res_Tex_Width);
+            GL.Uniforms.Set_Single (Sprite_ID, Single (Res_Tex_Width));
             Draw_Arrays (Points, 0, 2000);
       end case;
 
@@ -172,7 +154,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour (Background);
 
       Result := Build_Shader_Program;
-      Put_Line ("Main_Loop.Init Shader_Program built.");
       if Result then
          Enable (Blend);
          Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
@@ -184,10 +165,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
          VAO.Initialize_Id;
          VAO.Bind;
-         Put_Line ("Main_Loop.Init VAO bound.");
 
          Buffers.Create_Vertex_Buffer (Vertices_Buffer);
-         Put_Line ("Main_Loop.Init Load_Texture.");
          Textures.Load_Texture (theTexture);
       end if;
       return Result;

@@ -23,11 +23,11 @@ package body Textures is
       aTexture.Initialize_Id;
       Texture_2D.Bind (aTexture);
 
-      Put_Line ("Textures.Load_Texture reading file");
       MGL_Common.Read_SDL_File ("src/res_texture.tex", Texture_Data);
       Put_Line ("Textures.Load_Texture file read.");
       declare
-         Image : Image_Data (1 .. Texture_Data.Width * Texture_Data.Height);
+         Image : Image_Data
+           (1 .. Texture_Data.Width * Texture_Data.Height * Texture_Data.Pitch);
       begin
          for index in Texture_Data.Data.First_Index ..
            Texture_Data.Data.Last_Index loop
@@ -37,9 +37,11 @@ package body Textures is
             begin
                for char_pos in aLine'Range loop
                   aChar := aLine (char_pos);
+                  Put (aChar);
                   Image (Int (index + char_pos - 1)) :=
                     UByte (Character'Pos (aLine (char_pos)));
                end loop;
+               New_Line;
             end;
          end loop;
 

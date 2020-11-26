@@ -11,8 +11,6 @@ package body MGL_Common is
       Pos1        : Natural := 0;
       Pos2        : Natural := 0;
       Line_Length : Integer;
---        Longest     : Integer := 0;
---        Shortest    : Integer := 100;
       EOD         : Boolean := False;
    begin
       Open (Input_File, In_File, File_Name);
@@ -33,15 +31,15 @@ package body MGL_Common is
          Pos2 := Fixed.Index (aString (Pos1 + 1 .. Line_Length), ",");
          Data.Height := GL.Types.Int'Value (aString (Pos1 + 2 .. Pos2 - 1));
          Pos1 := Fixed.Index (aString (Pos2 + 1 .. Line_Length), ",");
-         Data.Pixels_Per_Byte := GL.Types.Int'Value (aString (Pos2 + 2 .. Pos1 - 1));
+         Data.Pitch := GL.Types.Int'Value (aString (Pos2 + 2 .. Pos1 - 1));
       end;
 
       while not End_Of_File (Input_File) and not EOD loop
          declare
-            aLine   : constant String := Get_Line (Input_File);
-            Last    : constant Integer := aLine'Length;
-            D_Start : Natural;
-            D_End   : Natural;
+            aLine        : constant String := Get_Line (Input_File);
+            Last         : constant Integer := aLine'Length;
+            D_Start      : Natural;
+            D_End        : Natural;
             Double_Quote : Natural;
          begin
             D_Start := Fixed.Index (aLine, """");
@@ -52,27 +50,16 @@ package body MGL_Common is
                else
                   D_End := Fixed.Index (aLine (Double_Quote + 2 .. Last), """");
                end if;
-               if D_End > 0 then
---                    if Last > Longest then
---                       Longest := Last;
---                    end if;
---                    if Last < Shortest then
---                       Shortest := Last;
---                    end if;
-                  EOD := aLine (D_Start + 1 .. D_End - 1) = "\0";
-                  if not EOD then
-                     Data.Data.Append
-                       (To_Unbounded_String (aLine (D_Start + 1 .. D_End - 1)));
-                     Put_Line (aLine (D_Start + 1 .. D_End - 1));
-                  end if;
+               EOD := aLine (D_Start + 1 .. D_End - 1) = "\0";
+               if not EOD then
+                  Data.Data.Append
+                    (To_Unbounded_String (aLine (D_Start + 1 .. D_End - 1)));
                end if;
             end if;
          end;
       end loop;
       Close (Input_File);
 
---        Put_Line ("MGL_Common.Read_SDL_File, Shortest and longest line lengths: " &
---                    Integer'Image(Shortest) & ", " & Integer'Image(Longest));
       Put_Line ("MGL_Common.Read_SDL_File, number of lines: " &
                   Positive'Image(Data.Data.Last_Index));
    exception
