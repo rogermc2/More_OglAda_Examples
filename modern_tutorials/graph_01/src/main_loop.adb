@@ -24,14 +24,12 @@ with Program_Loader;
 with Utilities;
 
 with Buffers;
-with Input_Callback;
+with Keyboard_Handler;
 with Textures;
 
 procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    use GL.Types;
    use GL.Uniforms;
-
-   type Mode_Range is new Int range 0 .. 2;
 
    VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program  : GL.Objects.Programs.Program;
@@ -45,7 +43,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Vertices_Buffer : GL.Objects.Buffers.Buffer;
    Offset_X        : Single := 0.0;
    Scale_X         : Single := 1.0;
-   Mode            : Mode_Range := 0;
+   Mode            : Keyboard_Handler.Mode_Range := 0;
 
    Background      : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
 

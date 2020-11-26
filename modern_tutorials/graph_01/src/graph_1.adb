@@ -8,19 +8,16 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Glfw;
 with Glfw.Windows;
 
---  with Initialize;
 with Main_Loop;
 with Initialize_With_Callbacks;
 with Input_Callback;
 
 procedure Graph_1 is
---      Main_Window  : Glfw.Windows.Window;
     Main_Window  : Input_Callback.Callback_Window;
     Window_Title : constant String := "Modern Tutorial Graph 1";
 begin
     Glfw.Init;
     Initialize_With_Callbacks (Main_Window, Window_Title);
---      Initialize (Main_Window, Window_Title);
     Main_Loop (Main_Window);
     Glfw.Shutdown;
 
