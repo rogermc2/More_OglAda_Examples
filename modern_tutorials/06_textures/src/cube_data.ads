@@ -41,7 +41,7 @@ package Cube_Data is
                        (1.0, 1.0),
                        (0.0, 1.0));
 
-   Elements       : constant GL.Types.Int_Array :=
+   Elements       : constant GL.Types.UInt_Array (1 .. 12 * 3) :=
                       (--  front
                        0,  1,  2,
                        2,  3,  0,

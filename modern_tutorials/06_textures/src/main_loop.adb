@@ -113,15 +113,16 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Colour_Buffer_And_Depth;
+      Logic;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       Set_Active_Unit (0);
       GL.Uniforms.Set_Int (Texture_ID, 0);
       Texture_2D.Bind (Cube_Texture);
 
-      GL.Attributes.Enable_Vertex_Attrib_Array (0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Coord_3D_Attribute);
       GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3,
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_3D_Attribute, 3,
                                                Single_Type, False, 0, 0);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Tex_Coord_Attribute);
@@ -130,12 +131,9 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                                                Single_Type, False, 0, 0);
 
       GL.Objects.Buffers.Element_Array_Buffer.Bind (Elements_Buffer);
---        GL.Objects.Buffers.Draw_Elements (Triangles, 3, UShort_Type, 0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 1,
-                                               Single_Type, False, 0, 0);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+      GL.Objects.Buffers.Draw_Elements (Triangles, 12 * 3, UInt_Type);
 
-      GL.Attributes.Disable_Vertex_Attrib_Array (0);
+      GL.Attributes.Disable_Vertex_Attrib_Array (Coord_3D_Attribute);
       GL.Attributes.Disable_Vertex_Attrib_Array (Tex_Coord_Attribute);
 
    exception
@@ -162,7 +160,6 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          Enable (Blend);
          Enable (Depth_Test);
          Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
-         Enable (Vertex_Program_Point_Size);
 
          VAO.Initialize_Id;
          VAO.Bind;
@@ -187,7 +184,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       use Maths;
 
       use Singles;
-      Angle      : constant Degree := Degree (Glfw.Time) / 1000.0 * Degree (15.0);
+      Angle      : constant Degree := Degree (Glfw.Time) / 2.0 * Degree (15.0);
       Anim       : constant Matrix4 :=
                      Rotation_Matrix (3.0 * Angle, (1.0, 0.0, 0.0)) *
                      Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
