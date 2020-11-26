@@ -28,18 +28,25 @@ with Textures;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
+   use GL.Uniforms;
 
-   VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Shader_Program     : GL.Objects.Programs.Program;
-   Coord_Attribute    : GL.Attributes.Attribute;
-   Offset_X_ID        : GL.Uniforms.Uniform;
-   Scale_X_ID         : GL.Uniforms.Uniform;
-   Sprite_ID          : GL.Uniforms.Uniform;
-   Texture_ID         : GL.Uniforms.Uniform;
-   theTexture         : GL.Objects.Textures.Texture;
-   Vertices_Buffer    : GL.Objects.Buffers.Buffer;
+   type Mode_Range is new Int range 0 .. 2;
 
-   Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
+   VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Shader_Program  : GL.Objects.Programs.Program;
+   Coord_Attribute : GL.Attributes.Attribute;
+   Offset_X_ID     : Uniform := -1;
+   Scale_X_ID      : Uniform := -1;
+   Sprite_ID       : Uniform := -1;
+   Texture_ID      : Uniform := -1;
+   theTexture      : GL.Objects.Textures.Texture;
+   Res_Tex_Width   : Int := 15;
+   Vertices_Buffer : GL.Objects.Buffers.Buffer;
+   Offset_X        : Single := 0.0;
+   Scale_X         : Single := 1.0;
+   Mode            : Mode_Range := 0;
+
+   Background      : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
 
    --  ------------------------------------------------------------------------
 
@@ -61,7 +68,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       else
          GL.Objects.Programs.Use_Program (Shader_Program);
          Coord_Attribute := GL.Objects.Programs.Attrib_Location (Shader_Program, "coord2d");
-         OK := Coord_Attribute > -1;
+         OK := Integer (Coord_Attribute) > -1;
          if OK then
             Offset_X_ID :=
               GL.Objects.Programs.Uniform_Location (Shader_Program, "offset_x");
@@ -71,7 +78,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
               GL.Objects.Programs.Uniform_Location (Shader_Program, "sprite");
             Texture_ID :=
               GL.Objects.Programs.Uniform_Location (Shader_Program, "mytexture");
-            OK := Offset_X_ID > -1 and Scale_X_ID > -1 and Sprite_ID > -1 and Texture_ID > -1;
+            OK := Integer (Offset_X_ID) > -1 and Integer (Scale_X_ID) > -1 and
+              Integer (Sprite_ID) > -1 and Integer (Texture_ID) > -1;
          end if;
       end if;
       if not OK then
@@ -88,41 +96,56 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Display (Window : in out Glfw.Windows.Window) is
+      use GL.Objects.Vertex_Arrays;
       use GL.Types.Singles;
       use Maths;
       Window_Width  : Glfw.Size;
       Window_Height : Glfw.Size;
-      Current_Time  : constant Glfw.Seconds := Glfw.Time;
-      Angle         : Radian := 0.1 * Radian (Current_Time);  --  approx 15 degree per second
-      Animation     : Singles.Matrix4 := Singles.Identity4;
-      View          : Singles.Matrix4 := Singles.Identity4;
-      Model         : Singles.Matrix4 := Singles.Identity4;
-      Scale_Matrix  : Singles.Matrix4 := Singles.Identity4;
-      Projection    : Singles.Matrix4 := Singles.Identity4;
-      MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
-      Offset        : Natural := 0;
+--        Current_Time  : constant Glfw.Seconds := Glfw.Time;
+--        Angle         : Radian := 0.1 * Radian (Current_Time);  --  approx 15 degree per second
+--        Animation     : Singles.Matrix4 := Singles.Identity4;
+--        View          : Singles.Matrix4 := Singles.Identity4;
+--        Model         : Singles.Matrix4 := Singles.Identity4;
+--        Scale_Matrix  : Singles.Matrix4 := Singles.Identity4;
+--        Projection    : Singles.Matrix4 := Singles.Identity4;
+--        MVP_Matrix    : Singles.Matrix4 := Singles.Identity4;
    begin
+      Put_Line ("Main_Loop.Display entered.");
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
-      Utilities.Clear_Colour_Buffer_And_Depth;
-      Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
-      Animation := Translation_Matrix ((-0.5, 0.0, -1.5))  *
-        Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
-          Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
-            Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
-      Projection := Perspective_Matrix (Degree (45.0),
-                                        Single (Window_Width) / Single (Window_Height),
-                                        0.1, 10.0);
-      MVP_Matrix := Projection * View * Model * Animation;
+      Utilities.Clear_Background_Colour (Background);
+--        Maths.Init_Lookat_Transform ((0.0, 0.0, 8.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), View);
+--        Animation := Translation_Matrix ((-0.5, 0.0, -1.5))  *
+--          Rotation_Matrix (Angle, (1.0, 0.0, 0.0)) *
+--            Rotation_Matrix (2.0 * Angle, (0.0, 1.0, 0.0)) *
+--              Rotation_Matrix (3.0 * Angle, (0.0, 0.0, 1.0)) * Animation;
+--        Projection := Perspective_Matrix (Degree (45.0),
+--                                          Single (Window_Width) / Single (Window_Height),
+--                                          0.1, 10.0);
+--        MVP_Matrix := Projection * View * Model * Animation;
 
       GL.Objects.Programs.Use_Program (Shader_Program);
-      --          GL.Uniforms.Set_Single (MVP_Location, MVP_Matrix);
+      GL.Uniforms.Set_Int (Texture_ID, 0);
+      GL.Uniforms.Set_Single (Offset_X_ID, Offset_X);
+      GL.Uniforms.Set_Single (Scale_X_ID, Scale_X);
+
+      GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
-      GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 3,
-                                               Single_Type, 0, 0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 2,
+                                               Single_Type, False, 0, 0);
+      case Mode is
+         when 0 =>
+            GL.Uniforms.Set_Int (Sprite_ID, 0);
+            Draw_Arrays (Line_Strip, 0, 2000);
+         when 1 =>
+            GL.Uniforms.Set_Int (Sprite_ID, 1);
+            Draw_Arrays (Points, 0, 2000);
+         when 2 =>
+            GL.Uniforms.Set_Int (Sprite_ID, Res_Tex_Width);
+            Draw_Arrays (Points, 0, 2000);
+      end case;
 
       GL.Attributes.Disable_Vertex_Attrib_Array (Coord_Attribute);
 
@@ -147,17 +170,24 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour (Background);
+
       Result := Build_Shader_Program;
+      Put_Line ("Main_Loop.Init Shader_Program built.");
       if Result then
          Enable (Blend);
          Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
-         Enable (Point_Sprite);
+         Put_Line ("Main_Loop.Init Blend_Func set.");
+--           Enable (Point_Sprite);
+--           Put_Line ("Main_Loop.Init Point_Sprite enabled.");
          Enable (Vertex_Program_Point_Size);
+         Put_Line ("Main_Loop.Init Vertex_Program_Point_Size enabled.");
 
          VAO.Initialize_Id;
          VAO.Bind;
+         Put_Line ("Main_Loop.Init VAO bound.");
 
          Buffers.Create_Vertex_Buffer (Vertices_Buffer);
+         Put_Line ("Main_Loop.Init Load_Texture.");
          Textures.Load_Texture (theTexture);
       end if;
       return Result;
