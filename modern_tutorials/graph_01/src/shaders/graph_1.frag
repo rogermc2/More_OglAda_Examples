@@ -2,8 +2,8 @@
 
 in vec4 f_color;
 
-uniform sampler2D mytexture;
-uniform float sprite;
+ uniform sampler2D mytexture;
+ uniform float sprite;
 
 void main(void)
     {

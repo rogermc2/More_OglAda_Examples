@@ -7,10 +7,10 @@ with GL.Pixels;
 
 package body Textures is
 
-   procedure Load_Texture (aTexture : in out GL.Objects.Textures.Texture;
-                           Image_File_Name : String) is
+   procedure Load_Texture (aTexture : in out GL.Objects.Textures.Texture) is
       use GL.Objects.Textures;
       use GL.Objects.Textures.Targets;
+      Image_File_Name : String;
    begin
       GL.Objects.Textures.Set_Active_Unit (0);
       aTexture.Initialize_Id;

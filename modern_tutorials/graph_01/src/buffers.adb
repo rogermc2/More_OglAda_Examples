@@ -3,42 +3,38 @@ with Interfaces.C.Pointers;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Types;
+
+with Maths;
 with Utilities;
 
 package body Buffers is
-   use GL.Types;
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Vertex_Buffer (VBO      : in out GL.Objects.Buffers.Buffer;
-                                   Vertices : Graph_Data.Point_Data) is
+   procedure Create_Vertex_Buffer (VBO : in out GL.Objects.Buffers.Buffer) is
       use GL.Objects.Buffers;
+      use GL.Types;
+      use Singles;
+      use Maths.Single_Math_Functions;
+      Graph : Vector2_Array (1 .. 2000);
+      X     : Single;
    begin
+      for index in Graph'Range loop
+         X := (Single (index) - 1000.0) / 100.0;
+         Graph (index) (GL.X) := X;
+         Graph (index) (GL.Y) := Sin (10.0 * X) / (1.0 + X ** 2);
+      end loop;
+
       VBO.Initialize_Id;
       Array_Buffer.Bind (VBO);
-      Utilities.Load_Vertex_Buffer
-          (Array_Buffer,  Singles.Vector2_Array (Vertices), Static_Draw);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Graph, Static_Draw);
 
    exception
       when others =>
-         Put_Line ("An exception occurred in BuffersCreate_Vertex_Buffers.");
+         Put_Line ("An exception occurred in BuffersCreate_Vertex_Buffer.");
          raise;
    end Create_Vertex_Buffer;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Create_Elements_Buffer (IBO     : in out GL.Objects.Buffers.Buffer;
-                                     Indices : GL.Types.Int_Array) is
-      use GL.Objects.Buffers;
-   begin
-      IBO.Initialize_Id;
-      Element_Array_Buffer.Bind (IBO);
-      Utilities.Load_Element_Buffer (Element_Array_Buffer, Indices, Static_Draw);
-   exception
-      when others =>
-         Put_Line ("An exception occurred in Buffers.Create_Elements_Buffer.");
-         raise;
-   end Create_Elements_Buffer;
 
    --  ------------------------------------------------------------------------
 

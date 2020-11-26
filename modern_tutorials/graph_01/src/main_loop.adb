@@ -24,13 +24,10 @@ with Program_Loader;
 with Utilities;
 
 with Buffers;
-with Graph_Data;
 with Textures;
 
 procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    use GL.Types;
-
-   Vertex_Array_Size  : GL.Types.Int;
 
    VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program     : GL.Objects.Programs.Program;
@@ -39,10 +36,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    Scale_X_ID         : GL.Uniforms.Uniform;
    Sprite_ID          : GL.Uniforms.Uniform;
    Texture_ID         : GL.Uniforms.Uniform;
-   theTexture         : GL.Objects.Textures.Texture
+   theTexture         : GL.Objects.Textures.Texture;
    Vertices_Buffer    : GL.Objects.Buffers.Buffer;
-
-   Vertices           : Graph_Data.Point_Data;
 
    Background         : constant GL.Types.Colors.Color := (0.7, 0.7, 0.7, 0.0);
 
@@ -162,8 +157,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
          VAO.Initialize_Id;
          VAO.Bind;
 
-         Buffers.Create_Vertex_Buffer (Vertices_Buffer, Vertices);
-         Textures.Load_Texture (theTexture,
+         Buffers.Create_Vertex_Buffer (Vertices_Buffer);
+         Textures.Load_Texture (theTexture);
       end if;
       return Result;
 
