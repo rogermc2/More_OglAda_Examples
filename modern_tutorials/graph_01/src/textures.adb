@@ -5,7 +5,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Images;
 with GL.Objects.Textures.Targets;
 with GL.Pixels;
-with GL.Types;
 
 with MGL_Common;
 
@@ -13,7 +12,8 @@ package body Textures is
 
    type Image_Data is array (GL.Types.Int range <>) of GL.Types.UByte;
 
-   procedure Load_Texture (aTexture : in out GL.Objects.Textures.Texture) is
+   procedure Load_Texture (aTexture : in out GL.Objects.Textures.Texture;
+                          Width : out GL.Types.Int) is
       use GL.Objects.Textures;
       use GL.Objects.Textures.Targets;
       use GL.Types;
@@ -24,7 +24,7 @@ package body Textures is
       Texture_2D.Bind (aTexture);
 
       MGL_Common.Read_SDL_File ("src/res_texture.tex", Texture_Data);
-      Put_Line ("Textures.Load_Texture file read.");
+      Width := Texture_Data.Width;
       declare
          Image : Image_Data
            (1 .. Texture_Data.Width * Texture_Data.Height * Texture_Data.Pitch);

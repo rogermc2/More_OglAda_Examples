@@ -6,7 +6,7 @@ out vec4 f_color;
 
 uniform float offset_x;
 uniform float scale_x;
-uniform lowp float sprite;
+uniform float sprite;
 
 void main(void)
     {

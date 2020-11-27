@@ -164,7 +164,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          VAO.Bind;
 
          Buffers.Create_Vertex_Buffer (Vertices_Buffer);
-         Textures.Load_Texture (theTexture);
+         Textures.Load_Texture (theTexture, Res_Tex_Width);
       end if;
       return Result;
 
