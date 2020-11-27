@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 package body Input_Callback is
    use Glfw.Input.Keys;
 
@@ -28,7 +30,7 @@ package body Input_Callback is
    end Is_Key_Down;
 
    --  ------------------------------------------------------------------------
-   --  Based on input_handler.key_callback
+
    procedure Key_Changed (Object   : not null access Callback_Window;
                           Key      : Glfw.Input.Keys.Key;
                           Scancode : Glfw.Input.Keys.Scancode;

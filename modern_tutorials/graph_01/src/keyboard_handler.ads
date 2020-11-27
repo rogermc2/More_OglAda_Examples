@@ -13,6 +13,6 @@ package Keyboard_Handler is
    end record;
 
    procedure Key_Down (Window : in out Input_Callback.Callback_Window;
-                       Status      : in out Status_Data);
+                       Status : in out Status_Data);
 
 end Keyboard_Handler;

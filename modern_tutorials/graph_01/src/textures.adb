@@ -37,19 +37,14 @@ package body Textures is
             begin
                for char_pos in aLine'Range loop
                   aChar := aLine (char_pos);
-                  Put (aChar);
+--                    Put (aChar);
                   Image (Int (index + char_pos - 1)) :=
                     UByte (Character'Pos (aLine (char_pos)));
                end loop;
-               New_Line;
+--                 New_Line;
             end;
          end loop;
 
-         --        GL.Images.Load_File_To_Texture (
-         --             Path           => "src/res_texture.tex",
-         --             Texture        => aTexture,
-         --             Texture_Format => GL.Pixels.RGB,
-         --             Try_TGA        => False);
          Texture_2D.Load_From_Data (Level           => 0,
                                     Internal_Format => GL.Pixels.RGBA,
                                     Width           => Texture_Data.Width,

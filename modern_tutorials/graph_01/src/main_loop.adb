@@ -41,9 +41,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    theTexture      : GL.Objects.Textures.Texture;
    Res_Tex_Width   : Int := 15;
    Vertices_Buffer : GL.Objects.Buffers.Buffer;
-   Offset_X        : Single := 0.0;
-   Scale_X         : Single := 1.0;
-   Mode            : Keyboard_Handler.Mode_Range := 0;
+   Status          : Keyboard_Handler.Status_Data;
 
    Background      : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
 
@@ -105,18 +103,18 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Background_Colour (Background);
-
+      Keyboard_Handler.Key_Down (Window, Status);
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Int (Texture_ID, 0);
-      GL.Uniforms.Set_Single (Offset_X_ID, Offset_X);
-      GL.Uniforms.Set_Single (Scale_X_ID, Scale_X);
+      GL.Uniforms.Set_Single (Offset_X_ID, Status.X_Offset);
+      GL.Uniforms.Set_Single (Scale_X_ID, Status.X_Scale);
 
       GL.Objects.Buffers.Array_Buffer.Bind (Vertices_Buffer);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (Coord_Attribute);
       GL.Attributes.Set_Vertex_Attrib_Pointer (Coord_Attribute, 2,
                                                Single_Type, False, 0, 0);
-      case Mode is
+      case Status.Mode is
          when 0 =>
             GL.Uniforms.Set_Single (Sprite_ID, 0.0);
             Draw_Arrays (Line_Strip, 0, 2000);
