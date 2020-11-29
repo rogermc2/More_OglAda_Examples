@@ -40,7 +40,7 @@ package body Textures is
          use Ada.Strings;
          Char_Index  : Int := 0;
          Image       : Image_Data
-           (1 .. Texture_Data.Width * Texture_Data.Height * Texture_Data.Pitch + 1)
+           (1 .. Texture_Data.Width * Texture_Data.Height * Texture_Data.Pitch - 1)
            := (others => 0);
          Image_Index : Int := 0;
       begin
@@ -66,7 +66,7 @@ package body Textures is
                   Pos3 := Fixed.Index (aLine (Pos1 + 1 .. Last - 1), """");
                   DQ := Pos3 /= 0 and Pos3 < Pos2;
                   if DQ then
-                     Pos2 := Pos3;
+                     Pos1 := Pos3 + 1;
                   end if;
                   if Pos2 /= 0 then
                      Image_Index := Image_Index + 1;
