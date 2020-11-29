@@ -19,7 +19,7 @@ package MGL_Common is
       Data      : Unbounded_Vector;
    end record;
 
-   function Count_Octal_Values (File_Name : String) return Integer;
    procedure Read_SDL_File (File_Name : String; Data : in out SDL_Data);
+   function To_UByte (Decimal : String) return GL.Types.UByte;
 
 end MGL_Common;

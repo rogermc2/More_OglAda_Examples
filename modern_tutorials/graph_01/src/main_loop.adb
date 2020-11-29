@@ -120,10 +120,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             GL.Uniforms.Set_Single (Sprite_ID, 0.0);
             Draw_Arrays (Line_Strip, 0, 2000);
          when 1 =>
-            GL.Uniforms.Set_Single (Sprite_ID, 1.0);
+            GL.Uniforms.Set_Single (Sprite_ID, 4.0);
             Draw_Arrays (Points, 0, 2000);
          when 2 =>
-            GL.Objects.Textures.Set_Active_Unit (0);
             GL.Uniforms.Set_Single (Sprite_ID, Single (Res_Tex_Width));
             Draw_Arrays (Points, 0, 2000);
       end case;
@@ -156,11 +155,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       if Result then
          Enable (Blend);
          Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
-         Put_Line ("Main_Loop.Init Blend_Func set.");
 --           Enable (Point_Sprite);
---           Put_Line ("Main_Loop.Init Point_Sprite enabled.");
          Enable (Vertex_Program_Point_Size);
-         Put_Line ("Main_Loop.Init Vertex_Program_Point_Size enabled.");
 
          VAO.Initialize_Id;
          VAO.Bind;

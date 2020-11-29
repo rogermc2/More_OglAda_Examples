@@ -4,24 +4,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body MGL_Common is
 
-   function Count_Octal_Values (File_Name : String) return Integer is
-      Input_File  : File_Type;
-      Count       : Integer := 0;
-      aChar       : Character;
-   begin
-      Open (Input_File, In_File, File_Name);
-      while not End_Of_File (Input_File) loop
-         Get (Input_File, aChar);
-         if aChar = '\' then
-            Count := Count + 1;
-         end if;
-      end loop;
-      Close (Input_File);
-      return Count;
-   end Count_Octal_Values;
-
-   --  -------------------------------------------------------------------------
-
    procedure Read_SDL_File (File_Name : String; Data : in out SDL_Data) is
       use Ada.Strings;
       Input_File  : File_Type;
@@ -76,12 +58,28 @@ package body MGL_Common is
       end loop;
       Close (Input_File);
 
-      Put_Line ("MGL_Common.Read_SDL_File, number of lines: " &
-                  Positive'Image(Data.Data.Last_Index));
    exception
       when others =>
-         Put_Line ("An exception occurred in Textures.Load_Texture");
+         Put_Line ("An exception occurred in MGL_Common.Read_SDL_File");
          raise;
    end Read_SDL_File;
+
+   --  -------------------------------------------------------------------------
+
+   function To_UByte (Decimal : String) return GL.Types.UByte is
+      use GL.Types;
+      Last   : constant Integer := Decimal'Last;
+      Power  : Integer := 0;
+      Result : UByte := 0;
+   begin
+      for index in reverse Decimal'First .. Decimal'Last loop
+         Result := Result +
+           UByte'Value (Decimal (index .. index)) * 8 ** Power;
+         Power := Power + 1;
+      end loop;
+      return Result;
+   end To_UByte;
+
+   --  -------------------------------------------------------------------------
 
 end MGL_Common;

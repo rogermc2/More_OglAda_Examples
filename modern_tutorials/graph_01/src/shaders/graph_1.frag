@@ -10,7 +10,7 @@ uniform float sprite;
 void main(void)
     {
 	if (sprite > 1.0)
-		FragColor = texture(mytexture, gl_PointCoord) * f_color;
+        FragColor = texture(mytexture, gl_PointCoord) * f_color;
 	else
-		FragColor = f_color;
+        FragColor = f_color;
     }
