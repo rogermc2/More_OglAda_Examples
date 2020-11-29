@@ -4,6 +4,24 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body MGL_Common is
 
+   function Count_Octal_Values (File_Name : String) return Integer is
+      Input_File  : File_Type;
+      Count       : Integer := 0;
+      aChar       : Character;
+   begin
+      Open (Input_File, In_File, File_Name);
+      while not End_Of_File (Input_File) loop
+         Get (Input_File, aChar);
+         if aChar = '\' then
+            Count := Count + 1;
+         end if;
+      end loop;
+      Close (Input_File);
+      return Count;
+   end Count_Octal_Values;
+
+   --  -------------------------------------------------------------------------
+
    procedure Read_SDL_File (File_Name : String; Data : in out SDL_Data) is
       use Ada.Strings;
       Input_File  : File_Type;
@@ -11,7 +29,6 @@ package body MGL_Common is
       Pos1        : Natural := 0;
       Pos2        : Natural := 0;
       Line_Length : Integer;
-      EOD         : Boolean := False;
    begin
       Open (Input_File, In_File, File_Name);
       aLine := To_Unbounded_String (Get_Line (Input_File));
@@ -34,8 +51,9 @@ package body MGL_Common is
          Data.Pitch := GL.Types.Int'Value (aString (Pos2 + 2 .. Pos1 - 1));
       end;
 
-      while not End_Of_File (Input_File) and not EOD loop
+      while not End_Of_File (Input_File) loop
          declare
+            use GL.Types;
             aLine        : constant String := Get_Line (Input_File);
             Last         : constant Integer := aLine'Length;
             D_Start      : Natural;
@@ -50,11 +68,9 @@ package body MGL_Common is
                else
                   D_End := Fixed.Index (aLine (Double_Quote + 2 .. Last), """");
                end if;
-               EOD := aLine (D_Start + 1 .. D_End - 1) = "\0";
-               if not EOD then
-                  Data.Data.Append
-                    (To_Unbounded_String (aLine (D_Start + 1 .. D_End - 1)));
-               end if;
+               Data.Data.Append
+                 (To_Unbounded_String (aLine (D_Start + 1 .. D_End - 1)));
+
             end if;
          end;
       end loop;

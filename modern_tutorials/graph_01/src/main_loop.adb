@@ -43,7 +43,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Vertices_Buffer : GL.Objects.Buffers.Buffer;
    Status          : Keyboard_Handler.Status_Data;
 
-   Background      : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 0.0);
+   Background      : constant GL.Types.Colors.Color := (0.1, 0.1, 0.1, 0.0);
 
    --  ------------------------------------------------------------------------
 
@@ -104,6 +104,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                               GL.Types.Int (Window_Height));
       Utilities.Clear_Background_Colour (Background);
       Keyboard_Handler.Key_Down (Window, Status);
+
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Int (Texture_ID, 0);
       GL.Uniforms.Set_Single (Offset_X_ID, Status.X_Offset);
@@ -122,6 +123,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             GL.Uniforms.Set_Single (Sprite_ID, 1.0);
             Draw_Arrays (Points, 0, 2000);
          when 2 =>
+            GL.Objects.Textures.Set_Active_Unit (0);
             GL.Uniforms.Set_Single (Sprite_ID, Single (Res_Tex_Width));
             Draw_Arrays (Points, 0, 2000);
       end case;

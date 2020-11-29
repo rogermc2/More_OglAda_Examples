@@ -13,12 +13,13 @@ package MGL_Common is
    type Unbounded_Vector is new UB_Strings_Package.Vector with null record;
 
    type SDL_Data is record
-      Width  : GL.Types.Int;
-      Height : GL.Types.Int;
-      Pitch  : GL.Types.Int;
-      Data   : Unbounded_Vector;
+      Width     : GL.Types.Int;
+      Height    : GL.Types.Int;
+      Pitch     : GL.Types.Int;
+      Data      : Unbounded_Vector;
    end record;
 
+   function Count_Octal_Values (File_Name : String) return Integer;
    procedure Read_SDL_File (File_Name : String; Data : in out SDL_Data);
 
 end MGL_Common;

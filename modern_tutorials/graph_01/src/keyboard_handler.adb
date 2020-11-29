@@ -12,13 +12,10 @@ package body Keyboard_Handler is
    begin
       if Input_Callback.Is_Key_Down (F1) then
          Status.Mode := 0;
-         Put_Line ("Now drawing using lines.");
       elsif Input_Callback.Is_Key_Down (F2) then
          Status.Mode := 1;
-         Put_Line ("Now drawing using points.");
       elsif Input_Callback.Is_Key_Down (F3) then
          Status.Mode := 2;
-         Put_Line ("Now drawing using point sprites.");
 
       elsif Input_Callback.Is_Key_Down (Left) then
          Status.X_Offset := Status.X_Offset - 0.1;
