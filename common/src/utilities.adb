@@ -194,7 +194,7 @@ package body Utilities is
       if Int (Start) >= anArray'First and then Int (Finish) <= anArray'Last then
          for Index in Start .. Finish loop
             Put (UInt'Image (Index) & ": " &
-                     UByte'Image (anArray (Int (Index))) & "   ");
+                     Byte'Image (anArray (Int (Index))) & "   ");
             Count := Count + 1;
             if Count > 5 then
                New_Line;
@@ -392,6 +392,31 @@ package body Utilities is
    end Print_Singles_Array;
 
    --  ------------------------------------------------------------------------
+
+   procedure Print_UByte_Array (Name : String; anArray : UByte_Array;
+                                Start, Finish : GL.Types.UInt) is
+      use GL.Types;
+      Count : Integer := 1;
+   begin
+      Put_Line (Name & ": ");
+      if Int (Start) >= anArray'First and then Int (Finish) <= anArray'Last then
+         for Index in Start .. Finish loop
+            Put (UInt'Image (Index) & ": " &
+                     UByte'Image (anArray (Int (Index))) & "   ");
+            Count := Count + 1;
+            if Count > 5 then
+               New_Line;
+               Count := 1;
+            end if;
+         end loop;
+      else
+         Put_Line ("Print_Byte_Array called with invalid start or finish index.");
+      end if;
+      New_Line;
+   end Print_UByte_Array;
+
+   --  ------------------------------------------------------------------------
+
 
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector2) is
    begin
