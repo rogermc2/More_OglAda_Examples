@@ -37,7 +37,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
                               Int (Window_Height));
       Utilities.Clear_Background_Colour (Background);
 
-      Draw_Sprite (Sprite_SP, theTexture, (200.0, 200.0), (300.0, 400.0),
+      Draw_Sprite (Sprite_SP, theTexture, (200.0, 200.0), (150.0, 200.0),
                    45.0, (0.0, 1.0, 0.0));
 
    exception
@@ -61,7 +61,7 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Maths.Init_Orthographic_Transform
         (Single (Window_Height), 0.0, 0.0, Single (Window_Width), -1.0, 1.0,
          Projection_Matrix);
-      Utilities.Print_Matrix ("Projection_Matrix", Projection_Matrix);
+
       GL.Objects.Programs.Use_Program (Sprite_SP);
       Sprite_Render.Set_Image (0);
       Sprite_Render.Set_Perspective (Projection_Matrix);

@@ -19,7 +19,7 @@ package body Sprite_Render is
    Projection_ID     : GL.Uniforms.Uniform;
 
    --  ------------------------------------------------------------------------
-pragma Warnings (off);
+
    procedure Draw_Sprite (Sprite_SP      : GL.Objects.Programs.Program;
                           aTexture       : GL.Objects.Textures.Texture;
                           Position, Size : GL.Types.Singles.Vector2;
