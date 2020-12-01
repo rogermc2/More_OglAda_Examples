@@ -40,7 +40,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Data_VBO        : GL.Objects.Buffers.Buffer;
    Border_VBO      : GL.Objects.Buffers.Buffer;
    Status          : Keyboard_Handler.Status_Data;
-   Offset_X        : Single := 1.0;
+   Offset_X        : Single := 0.0;
    Scale_X         : Single := 1.0;
 
    Background      : constant GL.Types.Colors.Color := (0.1, 0.1, 0.1, 0.0);
@@ -181,17 +181,17 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       use GL.Objects.Vertex_Arrays;
       use Maths.Single_Math_Functions;
       Tick_Spacing  : constant Single :=
-                        0.1 * (-Single'Floor (Log (Scale_X, 10.0)) ** 10.0);
-      Ticks         : Vector2_Array (1 .. 42) := (others => (0.0, 0.0));
+                        0.1 * (10.0 ** (-Single'Floor (Log (Scale_X, 10.0))));
       Left          : constant Single := -1.0 / Scale_X - Offset_X;
       Right         : constant Single := 1.0 / Scale_X - Offset_X;
       Left_Index    : constant Int := Int (Single'Ceiling (Left / Tick_Spacing));
       Right_Index   : constant Int := Int (Single'Floor (Right / Tick_Spacing));
       Left_Margin   : constant Single := Single (Left_Index) * Tick_Spacing - Left;
       First_Tick    : constant Single := Left_Margin * Scale_X - 1.0;
-      Tick_Scale    : Single;
       Num_Ticks     : Int := Right_Index - Left_Index + 1;
+      Tick_Scale    : Single;
       X             : Single;
+      Ticks         : Vector2_Array (1 .. 42) := (others => (0.0, 0.0));
    begin
       if Num_Ticks > 21 then
          Num_Ticks := 21;   --  should not happen
