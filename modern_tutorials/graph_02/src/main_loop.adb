@@ -134,9 +134,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    function  Init (Window : in out Input_Callback.Callback_Window) return Boolean is
       use GL.Toggles;
-      Position         : constant GL.Types.Singles.Vector4 := (-6.0, -3.0, 3.0, 0.0);
-      Local_View       : constant GL.Types.Single := 0.0;
-      Local_Ambient    : constant GL.Types.Colors.Color := (0.2, 0.2, 0.2, 1.0);
       Window_Width     : Glfw.Size;
       Window_Height    : Glfw.Size;
       Result           : Boolean;
