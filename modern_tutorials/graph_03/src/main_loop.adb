@@ -25,6 +25,7 @@ with Utilities;
 
 with Buffers;
 with Keyboard_Handler;
+with Scissor_API;
 
 procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    use GL.Types;
@@ -39,9 +40,16 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Data_VBO        : GL.Objects.Buffers.Buffer;
    Border_VBO      : GL.Objects.Buffers.Buffer;
    Status          : Keyboard_Handler.Status_Data;
+   Offset_X        : Single := 1.0;
+   Scale_X         : Single := 1.0;
 
    Background      : constant GL.Types.Colors.Color := (0.1, 0.1, 0.1, 0.0);
+   Black           : constant Singles.Vector4 := (0.0, 0.0, 0.0, 1.0);
+   Red             : constant Singles.Vector4 := (1.0, 0.0, 0.0, 1.0);
 
+
+   procedure  Draw_X_Tick_Marks (Pixel_Y : Single);
+   procedure  Draw_Y_Tick_Marks (Pixel_X : Single);
    function Viewport_Transform (Window : in out Input_Callback.Callback_Window;
       X, Y, Width, Height : Single;  Pixel_X, Pixel_Y : in out Single)
       return Singles.Matrix4;
@@ -86,6 +94,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Display (Window : in out Input_Callback.Callback_Window) is
+      use GL.Objects.Buffers;
       use GL.Objects.Vertex_Arrays;
       use GL.Toggles;
       use GL.Types.Singles;
@@ -97,6 +106,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Pixel_X       : Single := 0.0;
       Pixel_Y       : Single := 0.0;
       View          : Matrix4 := Identity4;
+      Transform     : Matrix4 := Identity4;
    begin
       Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -112,24 +122,50 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                                   Border + Tick_Size,
                                   Width - 2.0 * Border, Height - 2.0 * Border,
                                   Pixel_X, Pixel_Y);
-
+      Scissor_API.Set_Scissor_Rectangle
+        (Int (Border + Tick_Size), Int (Border + Tick_Size),
+         GL.Types.Size (Width - 2.0 * Border - Tick_Size),
+         GL.Types.Size (Height - 2.0 * Border - Tick_Size));
       Enable (Scissor_Test);
 
+      Transform := Translation_Matrix ((Offset_X, 0.0, 0.0)) *
+        Scaling_Matrix ((Scale_X, 1.0, 1.0));
+
       GL.Objects.Programs.Use_Program (Shader_Program);
-      GL.Uniforms.Set_Single (Transform_ID, Status.X_Offset);
-      GL.Uniforms.Set_Single (Colour_ID, Status.X_Scale);
+      GL.Uniforms.Set_Single (Transform_ID, Transform);
+      GL.Uniforms.Set_Single (Colour_ID, Red);
 
       GL.Objects.Buffers.Array_Buffer.Bind (Data_VBO);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 1, Single_Type, False, 0, 0);
-      Draw_Arrays (Line_Strip, 0, 101);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+      Draw_Arrays (Line_Strip, 0, 2000);
 
-      if Status.Show_Points then
-         Draw_Arrays (Points, 0, 101);
-      end if;
+      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
+                              GL.Types.Int (Window_Height));
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
+      Disable (Scissor_Test);
+
+      --  Draw the borders
+      Pixel_X := 0.0;
+      Pixel_Y := 0.0;
+      Transform := Viewport_Transform
+        (Window, Border + Tick_Size, Border + Tick_Size,
+         Width - 2.0 * Border - Tick_Size, Height - 2.0 * Border - Tick_Size,
+         Pixel_X, Pixel_Y);
+      GL.Uniforms.Set_Single (Transform_ID, Transform);
+      GL.Uniforms.Set_Single (Colour_ID, Black);
+
+      GL.Objects.Buffers.Array_Buffer.Bind (Border_VBO);
+
+      GL.Attributes.Enable_Vertex_Attrib_Array (0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+      Draw_Arrays (Line_Loop, 0, 4);
+
+      GL.Attributes.Disable_Vertex_Attrib_Array (0);
+      Draw_Y_Tick_Marks (Pixel_X);
+      Draw_X_Tick_Marks (Pixel_Y);
 
    exception
       when others =>
@@ -139,6 +175,82 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  ------------------------------------------------------------------------
 
+   procedure  Draw_X_Tick_Marks (Pixel_Y : Single) is
+      use GL.Types.Singles;
+      use GL.Objects.Buffers;
+      use GL.Objects.Vertex_Arrays;
+      use Maths.Single_Math_Functions;
+      Tick_Spacing  : constant Single :=
+                        0.1 * (-Single'Floor (Log (Scale_X, 10.0)) ** 10.0);
+      Ticks         : Vector2_Array (1 .. 42) := (others => (0.0, 0.0));
+      Left          : constant Single := -1.0 / Scale_X - Offset_X;
+      Right         : constant Single := 1.0 / Scale_X - Offset_X;
+      Left_Index    : constant Int := Int (Single'Ceiling (Left / Tick_Spacing));
+      Right_Index   : constant Int := Int (Single'Floor (Right / Tick_Spacing));
+      Left_Margin   : constant Single := Single (Left_Index) * Tick_Spacing - Left;
+      First_Tick    : constant Single := Left_Margin * Scale_X - 1.0;
+      Tick_Scale    : Single;
+      Num_Ticks     : Int := Right_Index - Left_Index + 1;
+      X             : Single;
+   begin
+      if Num_Ticks > 21 then
+         Num_Ticks := 21;   --  should not happen
+      end if;
+
+      for index in Int range 0 .. Num_Ticks - 1 loop
+         X := First_Tick + Single (index) * Tick_Spacing * Scale_X;
+         if (index + Left_Index) mod 10 = 0 then
+            Tick_Scale := 1.0;
+         else
+            Tick_Scale := 0.5;
+         end if;
+         Ticks (2 * index + 1) := (X, -1.0);
+         Ticks (2 * index + 2) := (X, -1.0 - Tick_Size * Tick_Scale * Pixel_Y);
+      end loop;
+
+      Array_Buffer.Bind (Border_VBO);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Ticks, Dynamic_Draw);
+
+      GL.Attributes.Enable_Vertex_Attrib_Array (0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+      Draw_Arrays (Lines, 0, 2 * Num_Ticks);
+
+      GL.Attributes.Disable_Vertex_Attrib_Array (0);
+   end Draw_X_Tick_Marks;
+
+   --  ------------------------------------------------------------------------
+
+   procedure  Draw_Y_Tick_Marks (Pixel_X : Single) is
+      use GL.Types.Singles;
+      use GL.Objects.Buffers;
+      use GL.Objects.Vertex_Arrays;
+      Ticks         : Vector2_Array (1 .. 42) := (others => (0.0, 0.0));
+      Y             : Single;
+      Tick_Scale    : Single;
+      Tick_Size_Sq  : constant Single := Tick_Size ** 2;
+      begin
+      for index in Int range 0 .. 20 loop
+         Y := 0.1 * Single (index - 1) - 1.0;
+         if (index - 1) mod 10 = 0 then
+            Tick_Scale := 1.0;
+         else
+            Tick_Scale := 0.5;
+         end if;
+         Ticks (2 * index + 1) := (-1.0, Y);
+         Ticks (2 * index + 2) := (-1.0 - Tick_Size_Sq * Pixel_X , Y);
+      end loop;
+
+      Array_Buffer.Bind (Border_VBO);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Ticks, Dynamic_Draw);
+
+      GL.Attributes.Enable_Vertex_Attrib_Array (0);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+      Draw_Arrays (Lines, 0, 42);
+
+      GL.Attributes.Disable_Vertex_Attrib_Array (0);
+   end Draw_Y_Tick_Marks;
+
+   --  ------------------------------------------------------------------------
 
    function  Init (Window : in out Input_Callback.Callback_Window) return Boolean is
       use GL.Toggles;
