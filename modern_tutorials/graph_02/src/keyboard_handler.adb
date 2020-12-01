@@ -11,11 +11,11 @@ package body Keyboard_Handler is
       use GL.Types;
    begin
       if Input_Callback.Is_Key_Down (F1) then
-         Status.Mode := 0;
+         Status.Interpolate := not Status.Interpolate;
       elsif Input_Callback.Is_Key_Down (F2) then
-         Status.Mode := 1;
+         Status.Clamp := not Status.Clamp;
       elsif Input_Callback.Is_Key_Down (F3) then
-         Status.Mode := 2;
+         Status.Show_Points := not Status.Show_Points;
 
       elsif Input_Callback.Is_Key_Down (Left) then
          Status.X_Offset := Status.X_Offset - 0.1;

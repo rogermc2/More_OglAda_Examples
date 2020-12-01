@@ -2,7 +2,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
-with GL.Blending;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
@@ -39,9 +38,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Texture_ID      : Uniform := -1;
    theTexture      : GL.Objects.Textures.Texture;
    Vertices_Buffer : GL.Objects.Buffers.Buffer;
-   Interpolate     : Boolean := False;
-   Clamp           : Boolean := False;
-   Showpoints      : Boolean := False;
    Status          : Keyboard_Handler.Status_Data;
 
    Background      : constant GL.Types.Colors.Color := (0.1, 0.1, 0.1, 0.0);
@@ -94,12 +90,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       use GL.Objects.Vertex_Arrays;
       use GL.Types.Singles;
       use Maths;
-      --        Window_Width  : Glfw.Size;
-      --        Window_Height : Glfw.Size;
    begin
-      --        Window.Get_Framebuffer_Size (Window_Width, Window_Height);
-      --        GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
-      --                                GL.Types.Int (Window_Height));
       Utilities.Clear_Background_Colour (Background);
       Keyboard_Handler.Key_Down (Window, Status);
 
@@ -108,13 +99,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       GL.Uniforms.Set_Single (Offset_X_ID, Status.X_Offset);
       GL.Uniforms.Set_Single (Scale_X_ID, Status.X_Scale);
 
-      if Clamp then
+      if Status.Clamp then
          Texture_2D.Set_X_Wrapping (Clamp_To_Edge);
       else
          Texture_2D.Set_X_Wrapping (Repeat);
       end if;
 
-      if Interpolate then
+      if Status.Interpolate then
          Texture_2D.Set_Minifying_Filter (Linear);
       else
          Texture_2D.Set_Minifying_Filter (Nearest);
@@ -125,7 +116,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (0, 1, Single_Type, False, 0, 0);
       Draw_Arrays (Line_Strip, 0, 101);
-      if Showpoints then
+
+      if Status.Show_Points then
          Draw_Arrays (Points, 0, 101);
       end if;
 
@@ -141,7 +133,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
 
    function  Init (Window : in out Input_Callback.Callback_Window) return Boolean is
-      use GL.Blending;
       use GL.Toggles;
       Position         : constant GL.Types.Singles.Vector4 := (-6.0, -3.0, 3.0, 0.0);
       Local_View       : constant GL.Types.Single := 0.0;
@@ -155,9 +146,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       Result := Build_Shader_Program;
       if Result then
-         Enable (Blend);
-         Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
-         --           Enable (Point_Sprite);
          Enable (Vertex_Program_Point_Size);
 
          VAO.Initialize_Id;
