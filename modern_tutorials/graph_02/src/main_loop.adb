@@ -134,11 +134,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    function  Init (Window : in out Input_Callback.Callback_Window) return Boolean is
       use GL.Toggles;
-      Window_Width     : Glfw.Size;
-      Window_Height    : Glfw.Size;
       Result           : Boolean;
    begin
-      Window.Get_Framebuffer_Size (Window_Width, Window_Height);
       Utilities.Clear_Background_Colour (Background);
 
       Result := Build_Shader_Program;
