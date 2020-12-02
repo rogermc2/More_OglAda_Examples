@@ -7,11 +7,11 @@ with Game_Utils;
 with Settings;
 with Text;
 
-package body Custom_Maps_Manager is
+package body Custom_Levels_Manager is
 
    -- -------------------------------------------------------------------------
 
-   function Get_Custom_Map_Name (Custom_Maps  : Custom_Maps_List;
+   function Get_Custom_Map_Name (Custom_Maps  : Custom_Levels_List;
                                  Selected_Map : Positive) return String is
       aMap    : Custom_Data;
       Result  : String := "";
@@ -22,7 +22,7 @@ package body Custom_Maps_Manager is
          Result := To_String (aMap.Name);
       else
          Game_Utils.Game_Log
-           ("Custom_Maps_Manager.Get_Custom_Map_Name " &
+           ("Custom_Levels_Manager.Get_Custom_Map_Name " &
               "encountered an invalid Map ID: " & Integer'Image (Selected_Map));
       end if;
 
@@ -32,7 +32,7 @@ package body Custom_Maps_Manager is
    --  ------------------------------------------------------------------------
 
    procedure Load_Custom_Map (Path            : String;
-                              Custom_Maps     : in out Custom_Maps_List;
+                              Custom_Maps     : in out Custom_Levels_List;
                               Top_Margin_Cl, Left_Margin_Cl,
                               Text_Height     : Single;
                               Num_Custom_Maps : in out Integer) is
@@ -77,15 +77,16 @@ package body Custom_Maps_Manager is
    exception
       when anError : others =>
          Put_Line
-           ("An exception occurred in Load_Custom_Maps_Manager.Load_Custom_Map!");
+           ("An exception occurred in Custom_Levels_Manager.Load_Custom_Map!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Load_Custom_Map;
 
    --  ----------------------------------------------------------------------------
 
-   procedure Replace_Custom_Map (Path        : String; Maps : in out Custom_Maps_List;
+   procedure Replace_Custom_Map (Path        : String;
+                                 Levels      : in out Custom_Levels_List;
                                  Top_Margin_Cl, Left_Margin_Cl,
-                                 Text_Height : Single; Map_ID : Positive) is
+                                 Text_Height : Single; Level_ID : Positive) is
       use Ada.Streams;
       Input_File         : Stream_IO.File_Type;
       Input_Stream       : Stream_IO.Stream_Access;
@@ -96,7 +97,7 @@ package body Custom_Maps_Manager is
                              220.0 / Single (Settings.Framebuffer_Height);
       Mname_Y            : constant Single :=
                              Top_Margin_Cl - 2.0 * Text_Height *
-                               Single (Map_ID) - Text_Height_Offset;
+                               Single (Level_ID) - Text_Height_Offset;
    begin
       Stream_IO.Open (Input_File, Stream_IO.In_File, Path);
       Input_Stream := Stream_IO.Stream (Input_File);
@@ -118,7 +119,7 @@ package body Custom_Maps_Manager is
                25.0, 1.0, 1.0, 1.0, 1.0);
             Text.Set_Text_Visible (Data.Text_ID, False);
 
-            Maps.Replace_Element (Map_ID, Data);
+            Levels.Replace_Element (Level_ID, Data);
          end if;
       end loop;
 
@@ -127,10 +128,10 @@ package body Custom_Maps_Manager is
    exception
       when anError : others =>
          Put_Line
-           ("An exception occurred in Load_Custom_Maps_Manager.Replace_Custom_Map!");
+           ("An exception occurred in Custom_Levels_Manager.Replace_Custom_Map!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Replace_Custom_Map;
 
    --  ------------------------------------------------------------------------
 
-end Custom_Maps_Manager;
+end Custom_Levels_Manager;

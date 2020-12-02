@@ -5,27 +5,28 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Game_Utils;
 
-package body Selected_Map_Manager is
+package body Selected_Level_Manager is
 
    -- -------------------------------------------------------------------------
 
-   procedure Load_Map (Path             : String; theMap : in out Selected_Map_Data;
+   procedure Load_Map (Path             : String;
+                       theMap           : in out Selected_Level_Data;
                        Has_Hammer_Track : out Boolean) is
       use Ada.Streams;
       Input_File       : File_Type;
       Line_Length      : Integer;
       Num_Story_Lines  : Natural := 0;
    begin
-      theMap.Map_Intro_Text.Clear;
+      theMap.Intro_Text.Clear;
 --        Game_Utils.Game_Log ("Selected_Map_Manager.Load_Map loading map " &
 --                             Path);
       Open (Input_File, In_File, Path);
-      theMap.Map_Title := To_Unbounded_String (Get_Line (Input_File));
-      Line_Length := Length (theMap.Map_Title);
+      theMap.Title := To_Unbounded_String (Get_Line (Input_File));
+      Line_Length := Length (theMap.Title);
       for index in 1 .. Line_Length - 1 loop
-         if Slice (theMap.Map_Title, index, index + 1) = "\r" or
-           Slice (theMap.Map_Title, index, index + 1) = "\n" then
-            Delete  (theMap.Map_Title, index, index + 1);
+         if Slice (theMap.Title, index, index + 1) = "\r" or
+           Slice (theMap.Title, index, index + 1) = "\n" then
+            Delete  (theMap.Title, index, index + 1);
             Line_Length := Line_Length - 2;
          end if;
       end loop;
@@ -41,7 +42,7 @@ package body Selected_Map_Manager is
 --           Put_Line ("Selected_Map_Manager.Load_Map, Num_Story_Lines: " &
 --                    Integer'Image (Num_Story_Lines));
          for line_num in 1 .. Num_Story_Lines loop
-            theMap.Map_Intro_Text.Append
+            theMap.Intro_Text.Append
               (To_Unbounded_String (Get_Line (Input_File)));
          end loop;
       end;  --  declare block
@@ -60,18 +61,18 @@ package body Selected_Map_Manager is
 
    --  ------------------------------------------------------------------------
 
-   function Map_Locked (aMap : Selected_Map_Data) return Boolean is
+   function Map_Locked (aMap : Selected_Level_Data) return Boolean is
    begin
       return aMap.Locked;
    end Map_Locked;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Map_Lock (aMap : in out Selected_Map_Data; Lock : Boolean) is
+   procedure Set_Map_Lock (aMap : in out Selected_Level_Data; Lock : Boolean) is
    begin
       aMap.Locked := Lock;
    end Set_Map_Lock;
 
    --  ------------------------------------------------------------------------
 
-end Selected_Map_Manager;
+end Selected_Level_Manager;
