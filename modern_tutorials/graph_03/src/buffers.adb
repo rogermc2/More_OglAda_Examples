@@ -12,7 +12,8 @@ package body Buffers is
 
    --  ------------------------------------------------------------------------
 
-   procedure Create_Vertex_Buffer (Data_VBO, Border_VBO : in out GL.Objects.Buffers.Buffer) is
+   procedure Create_Vertex_Buffers
+     (Data_VBO, Border_VBO, Ticks_VBO : in out GL.Objects.Buffers.Buffer) is
       use GL.Objects.Buffers;
       use GL.Types;
       use Singles;
@@ -36,11 +37,14 @@ package body Buffers is
       Array_Buffer.Bind (Border_VBO);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Border, Static_Draw);
 
+      Ticks_VBO.Initialize_Id;
+      Array_Buffer.Bind (Ticks_VBO);
+
    exception
       when others =>
-         Put_Line ("An exception occurred in Buffers.Create_Vertex_Buffer.");
+         Put_Line ("An exception occurred in Buffers.Create_Vertex_Buffers.");
          raise;
-   end Create_Vertex_Buffer;
+   end Create_Vertex_Buffers;
 
    --  ------------------------------------------------------------------------
 

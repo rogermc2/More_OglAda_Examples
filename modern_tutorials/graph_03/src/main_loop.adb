@@ -39,6 +39,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Transform_ID    : Uniform := -1;
    Data_VBO        : GL.Objects.Buffers.Buffer;
    Border_VBO      : GL.Objects.Buffers.Buffer;
+   Ticks_VBO       : GL.Objects.Buffers.Buffer;
    Status          : Keyboard_Handler.Status_Data;
    Offset_X        : Single := 0.0;
    Scale_X         : Single := 1.0;
@@ -51,7 +52,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure  Draw_X_Tick_Marks (Pixel_Y : Single);
    procedure  Draw_Y_Tick_Marks (Pixel_X : Single);
    function Viewport_Transform (Window : in out Input_Callback.Callback_Window;
-      X, Y, Width, Height : Single)  --  ;  Pixel_X, Pixel_Y : in out Single)
+      X, Y, Width, Height : Single;  Pixel_X, Pixel_Y : in out Single)
       return Singles.Matrix4;
 
    --  ------------------------------------------------------------------------
@@ -120,8 +121,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       View := Viewport_Transform (Window, Margin + Tick_Size,
                                   Margin + Tick_Size,
-                                  Width - 2.0 * Margin, Height - 2.0 * Margin);
---                                    Pixel_X, Pixel_Y);
+                                  Width - 2.0 * Margin, Height - 2.0 * Margin,
+                                  Pixel_X, Pixel_Y);
       Scissor_API.Set_Scissor_Rectangle
         (Int (Margin + Tick_Size), Int (Margin + Tick_Size),
          GL.Types.Size (Width - 2.0 * Margin - Tick_Size),
@@ -147,13 +148,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       --  Draw the borders
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
---        Pixel_X := 0.0;
---        Pixel_Y := 0.0;
+      Width := Single (Window_Width);
+      Height := Single (Window_Height);
+      Pixel_X := 2.0 / (Width - 2.0 * Margin - Tick_Size);
+      Pixel_Y := 2.0 / (Height - 2.0 * Margin - Tick_Size);
+
       Transform := Viewport_Transform
         (Window, Margin + Tick_Size, Margin + Tick_Size,
-         Width - 2.0 * Margin - Tick_Size, Height - 2.0 * Margin - Tick_Size);
---           Pixel_X, Pixel_Y);
-      Utilities.Print_Matrix ("Viewport_Transform", Transform);
+         Width - 2.0 * Margin - Tick_Size, Height - 2.0 * Margin - Tick_Size,
+         Pixel_X, Pixel_Y);
       GL.Uniforms.Set_Single (Transform_ID, Transform);
       GL.Uniforms.Set_Single (Colour_ID, Black);
 
@@ -164,8 +167,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Draw_Arrays (Line_Loop, 0, 4);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
---        Draw_Y_Tick_Marks (Pixel_X);
---        Draw_X_Tick_Marks (Pixel_Y);
+      Draw_Y_Tick_Marks (Pixel_X);
+      Draw_X_Tick_Marks (Pixel_Y);
 
    exception
       when others =>
@@ -193,7 +196,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       X             : Single;
       Ticks         : Vector2_Array (1 .. 42) := (others => (0.0, 0.0));
    begin
-      Put_Line ("Tick_Spacing " & Single'Image (Tick_Spacing));
       if Num_Ticks > 21 then
          Num_Ticks := 21;   --  should not happen
       end if;
@@ -209,7 +211,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          Ticks (2 * index + 2) := (X, -1.0 - Tick_Size * Tick_Scale * Pixel_Y);
       end loop;
 
-      Array_Buffer.Bind (Border_VBO);
+      Array_Buffer.Bind (Ticks_VBO);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Ticks, Dynamic_Draw);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
@@ -228,21 +230,20 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Ticks         : Vector2_Array (1 .. 42) := (others => (0.0, 0.0));
       Y             : Single;
       Tick_Scale    : Single;
-      Tick_Size_Sq  : constant Single := Tick_Size ** 2;
       begin
       for index in Int range 0 .. 20 loop
-         Y := 0.1 * Single (index - 1) - 1.0;
-         if (index - 1) mod 10 = 0 then
+         Y := 0.1 * Single (index) - 1.0;
+         if (index) mod 10 = 0 then
             Tick_Scale := 1.0;
          else
             Tick_Scale := 0.5;
          end if;
          Ticks (2 * index + 1) := (-1.0, Y);
-         Ticks (2 * index + 2) := (-1.0 - Tick_Size_Sq * Pixel_X , Y);
+         Ticks (2 * index + 2) := (-1.0 - Tick_Size * Tick_Scale * Pixel_X , Y);
       end loop;
 
-      Array_Buffer.Bind (Border_VBO);
-      Utilities.Load_Vertex_Buffer (Array_Buffer, Ticks, Dynamic_Draw);
+      Array_Buffer.Bind (Ticks_VBO);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Ticks, Stream_Draw);
 
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
@@ -266,7 +267,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          VAO.Initialize_Id;
          VAO.Bind;
 
-         Buffers.Create_Vertex_Buffer (Data_VBO, Border_VBO);
+         Buffers.Create_Vertex_Buffers (Data_VBO, Border_VBO, Ticks_VBO);
       end if;
       return Result;
 
@@ -279,8 +280,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    --  ------------------------------------------------------------------------
 
    function Viewport_Transform (Window : in out Input_Callback.Callback_Window;
-                                X, Y, Width, Height : Single)
---                                  Pixel_X, Pixel_Y    : in out Single)
+                                X, Y, Width, Height : Single;
+                                Pixel_X, Pixel_Y    : in out Single)
                                 return Singles.Matrix4 is
       use Singles;
       use Maths;
@@ -300,13 +301,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Offset_Y := (2.0 * Y + Height - FB_Height) / FB_Height;
       Scale_X := Width / FB_Width;
       Scale_Y := Height / FB_Height;
---
---        if Pixel_X /= 0.0 then
---           Pixel_X := 2.0 / FB_Width;
---        end if;
---        if Pixel_Y /= 0.0 then
---           Pixel_Y := 2.0 / FB_Height;
---        end if;
+
+      if Pixel_X /= 0.0 then
+         Pixel_X := 2.0 / FB_Width;
+      end if;
+      if Pixel_Y /= 0.0 then
+         Pixel_Y := 2.0 / FB_Height;
+      end if;
 
       return Translation_Matrix ((Offset_X, Offset_Y, 0.0)) *
         Scaling_Matrix ((Scale_X, Scale_Y, 1.0));
