@@ -10,11 +10,11 @@ with Text;
 
 package body Level_Menu_Manager is
 
-   Num_Maps          : Integer := 0;
+   Num_Levels : Integer := 0;
 
    -- -------------------------------------------------------------------------
 
-   function Get_Map_Name (Maps : Maps_List; Selected_Map_ID : Positive)
+   function Get_Map_Name (Maps : Levels_List; Selected_Map_ID : Positive)
                           return String is
    begin
       if Maps.Is_Empty or else Selected_Map_ID > Maps.Last_Index then
@@ -29,11 +29,11 @@ package body Level_Menu_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Level_Maps (Maps                    : in out Maps_List;
+   procedure Init_Level_Maps (Maps                    : in out Levels_List;
                               Selected_Map_ID         : Positive;
                               Left_Margin_Cl, Top_Margin_Cl : Single) is
       use Settings;
-      use Maps_Package;
+      use Levels_Package;
       In_Cursor          : Cursor := Maps.First;
       Text_Height        : constant Single := 50.0 / Single (Framebuffer_Height);
       Text_Offset_Height : constant Single := 220.0 / Single (Framebuffer_Height);
@@ -159,7 +159,7 @@ package body Level_Menu_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Load_Story_Names (Path : String; Names : in out Maps_List) is
+   procedure Load_Story_Names (Path : String; Names : in out Levels_List) is
       Input_File : File_Type;
       Line_Count : Integer := 0;
 
@@ -186,7 +186,7 @@ package body Level_Menu_Manager is
          Append_Data ("sky_temple");
          Append_Data ("hall");
          Append_Data ("attercoppe");
-         Num_Maps := Integer (Length (Names));
+         Num_Levels := Integer (Length (Names));
       else
          while not End_Of_File (Input_File) loop
             declare
@@ -199,7 +199,7 @@ package body Level_Menu_Manager is
                   Game_Utils.Game_Log ("Level_Menu_Manager.Load_Story_Names, level name: " &
                                         aLine);
                   Append_Data (aLine, true);
-                  Num_Maps := Num_Maps + 1;
+                  Num_Levels := Num_Levels + 1;
                end if;
             end;
          end loop;
@@ -214,10 +214,10 @@ package body Level_Menu_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   function Number_Of_Maps return Integer is
+   function Number_Of_Levels return Integer is
    begin
-      return Num_Maps;
-   end Number_Of_Maps;
+      return Num_Levels;
+   end Number_Of_Levels;
 
    --  ----------------------------------------------------------------------------
 

@@ -43,7 +43,7 @@ package body GUI_Level_Chooser is
    Back_Custom_Texture       : GL.Objects.Textures.Texture;
    Custom_Maps               : Custom_Maps_Manager.Custom_Maps_List;
    Num_Custom_Maps           : Natural := 0;
-   Maps                      : Level_Menu_Manager.Maps_List;
+   Maps                      : Level_Menu_Manager.Levels_List;
    Selected_Map_ID           : Positive := 1;
    Selected_Map              : Selected_Map_Data;
    Selected_Map_Track        : Unbounded_String := To_Unbounded_String ("");
@@ -268,7 +268,7 @@ package body GUI_Level_Chooser is
       use Glfw.Input.Keys;
       use Input_Callback;
       use Input_Handler;
-      use Level_Menu_Manager.Maps_Package;
+      use Level_Menu_Manager.Levels_Package;
       Selected_Map : constant Level_Menu_Manager.Level_Map_Data :=
                        Maps.Element (Selected_Map_ID);
    begin
@@ -297,7 +297,7 @@ package body GUI_Level_Chooser is
                      Credits_Shader_Program                          : GL.Objects.Programs.Program;
                      Delta_Time                                      : Float;
                      Use_Custom_Maps, Started_Loading_Map, Menu_Open : Boolean) is
-      use Level_Menu_Manager.Maps_Package;
+      use Level_Menu_Manager.Levels_Package;
       use Custom_Maps_Manager.Custom_Maps_Package;
       LeveL_Menu  : Level_Menu_Manager.Level_Map_Data;
       Custom_Map  : Custom_Maps_Manager.Custom_Data;
@@ -344,9 +344,9 @@ package body GUI_Level_Chooser is
    --  ------------------------------------------------------------------------
 
    procedure Reset_GUI_Level_Selection (Custom : Boolean) is
-      use Level_Menu_Manager.Maps_Package;
+      use Level_Menu_Manager.Levels_Package;
       use Custom_Maps_Manager.Custom_Maps_Package;
-      Map_Cursor        : Level_Menu_Manager.Maps_Package.Cursor :=
+      Map_Cursor        : Level_Menu_Manager.Levels_Package.Cursor :=
                             Maps.First;
       Custom_Map_Cursor : Custom_Maps_Manager.Custom_Maps_Package.Cursor :=
                             Custom_Maps.First;

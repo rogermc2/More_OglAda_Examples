@@ -18,20 +18,21 @@ package Level_Menu_Manager is
       Locked           : Boolean := False;
    end record;
 
-   package Maps_Package is new Ada.Containers.Vectors
+   package Levels_Package is new Ada.Containers.Vectors
      (Positive, Level_Map_Data);
-   type Custom_Maps_List is new Maps_Package.Vector with null record;
-   type Maps_List is new Maps_Package.Vector with null record;
+   type Custom_Levels_List is new Levels_Package.Vector with null record;
+   type Levels_List is new Levels_Package.Vector with null record;
 
    Levels_Maps_Manager_Exception : Exception;
 
-   function Get_Map_Name (Maps : Maps_List; Selected_Map_ID : Positive)
+   function Get_Map_Name (Maps : Levels_List; Selected_Map_ID : Positive)
                            return String;
-   procedure Init_Level_Maps (Maps : in out Maps_List; Selected_Map_ID : Positive;
+   procedure Init_Level_Maps (Maps            : in out Levels_List;
+                              Selected_Map_ID : Positive;
                               Left_Margin_Cl, Top_Margin_Cl : Single);
    procedure Load_Story (Path     : String; theMap : in out Level_Map_Data;
                        Has_Hammer_Track : out Boolean);
-   procedure Load_Story_Names (Path : String; Names : in out Maps_List);
-   function Number_Of_Maps return Integer;
+   procedure Load_Story_Names (Path : String; Names : in out Levels_List);
+   function Number_Of_Levels return Integer;
 
 end Level_Menu_Manager;
