@@ -308,7 +308,7 @@ package body Specs_Manager is
             Pos_M1   : Natural;
             Pos_P1   : constant Natural := Pos1 + 1;
          begin
-            Game_Utils.Game_Log ("Specs_Manager.Load_Specs_File parsing " & aLine);
+--              Game_Utils.Game_Log ("Specs_Manager.Load_Specs_File parsing " & aLine);
             if  aLine'Length > 0 then
                Pos_M1 := Pos1 - 1;
             end if;
