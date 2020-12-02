@@ -10,17 +10,10 @@ package body Keyboard_Handler is
       use Glfw.Input.Keys;
       use GL.Types;
    begin
-      if Input_Callback.Is_Key_Down (F1) then
-         Status.Interpolate := not Status.Interpolate;
-      elsif Input_Callback.Is_Key_Down (F2) then
-         Status.Clamp := not Status.Clamp;
-      elsif Input_Callback.Is_Key_Down (F3) then
-         Status.Show_Points := not Status.Show_Points;
-
-      elsif Input_Callback.Is_Key_Down (Left) then
-         Status.X_Offset := Status.X_Offset - 0.1;
+      if Input_Callback.Is_Key_Down (Left) then
+         Status.X_Offset := Status.X_Offset - 0.03;
       elsif Input_Callback.Is_Key_Down (Right) then
-         Status.X_Offset := Status.X_Offset + 0.1;
+         Status.X_Offset := Status.X_Offset + 0.03;
 
       elsif Input_Callback.Was_Key_Pressed (Window, Up) then
          Status.X_Scale := 1.5 * Status.X_Scale;

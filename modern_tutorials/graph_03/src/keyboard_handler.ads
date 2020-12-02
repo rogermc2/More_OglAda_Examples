@@ -6,9 +6,6 @@ with Input_Callback;
 package Keyboard_Handler is
 
    type Status_Data is record
-      Interpolate : Boolean := False;
-      Clamp       : Boolean := False;
-      Show_Points : Boolean := False;
       X_Offset    : GL.Types.Single := 0.0;
       X_Scale     : GL.Types.Single := 1.0;
    end record;
