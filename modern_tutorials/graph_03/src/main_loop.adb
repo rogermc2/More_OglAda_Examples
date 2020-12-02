@@ -41,13 +41,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Border_VBO      : GL.Objects.Buffers.Buffer;
    Ticks_VBO       : GL.Objects.Buffers.Buffer;
    Status          : Keyboard_Handler.Status_Data;
-   Offset_X        : Single := 0.0;
-   Scale_X         : Single := 1.0;
 
    Background      : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 1.0);
    Black           : constant Singles.Vector4 := (0.0, 0.0, 0.0, 1.0);
    Red             : constant Singles.Vector4 := (1.0, 0.0, 0.0, 1.0);
-
 
    procedure  Draw_X_Tick_Marks (Pixel_Y : Single);
    procedure  Draw_Y_Tick_Marks (Pixel_X : Single);
@@ -129,8 +126,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          GL.Types.Size (Height - 2.0 * Margin - Tick_Size));
       Enable (Scissor_Test);
 
-      Transform := Translation_Matrix ((Offset_X, 0.0, 0.0)) *
-        Scaling_Matrix ((Scale_X, 1.0, 1.0));
+      Transform := Translation_Matrix ((Status.X_Offset, 0.0, 0.0)) *
+        Scaling_Matrix ((Status.X_Scale, 1.0, 1.0));
 
       GL.Objects.Programs.Use_Program (Shader_Program);
       GL.Uniforms.Set_Single (Transform_ID, Transform);
@@ -184,13 +181,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       use GL.Objects.Vertex_Arrays;
       use Maths.Single_Math_Functions;
       Tick_Spacing  : constant Single :=
-                        0.1 * (10.0 ** (-Single'Floor (Log (Scale_X, 10.0))));
-      Left          : constant Single := -1.0 / Scale_X - Offset_X;
-      Right         : constant Single := 1.0 / Scale_X - Offset_X;
+                        0.1 * (10.0 ** (-Single'Floor (Log (Status.X_Scale, 10.0))));
+      Left          : constant Single := -1.0 / Status.X_Scale - Status.X_Offset;
+      Right         : constant Single := 1.0 / Status.X_Scale - Status.X_Offset;
       Left_Index    : constant Int := Int (Single'Ceiling (Left / Tick_Spacing));
       Right_Index   : constant Int := Int (Single'Floor (Right / Tick_Spacing));
       Left_Margin   : constant Single := Single (Left_Index) * Tick_Spacing - Left;
-      First_Tick    : constant Single := Left_Margin * Scale_X - 1.0;
+      First_Tick    : constant Single := Left_Margin * Status.X_Scale - 1.0;
       Num_Ticks     : Int := Right_Index - Left_Index + 1;
       Tick_Scale    : Single;
       X             : Single;
@@ -201,7 +198,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       end if;
 
       for index in Int range 0 .. Num_Ticks - 1 loop
-         X := First_Tick + Single (index) * Tick_Spacing * Scale_X;
+         X := First_Tick + Single (index) * Tick_Spacing * Status.X_Scale;
          if (index + Left_Index) mod 10 = 0 then
             Tick_Scale := 1.0;
          else
