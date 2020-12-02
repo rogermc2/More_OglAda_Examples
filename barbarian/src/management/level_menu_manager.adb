@@ -23,7 +23,7 @@ package body Level_Menu_Manager is
            & Integer'Image (Selected_Map_ID);
       end if;
 
-      return To_String (Maps.Element (Selected_Map_ID).Map_Name);
+      return To_String (Maps.Element (Selected_Map_ID).Level_Name);
 
    end Get_Map_Name;
 
@@ -53,7 +53,7 @@ package body Level_Menu_Manager is
          Name_Y := Top_Margin_Cl - 2.0 * Count * Text_Height - Text_Offset_Height;
          Count := Count + 1.0;
          declare
-            Name      : constant String := To_String (Out_Data.Map_Name);
+            Name      : constant String := To_String (Out_Data.Level_Name);
             Out_Name  : String := Name (1 .. Name'Length - 4);
          begin
             for index in Positive range 1 .. Out_Name'Length loop
@@ -63,15 +63,15 @@ package body Level_Menu_Manager is
             end loop;
 
             if Out_Data.Locked then
-               Out_Data.Map_Name_Text_ID :=
+               Out_Data.Name_Text_ID :=
                  Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
                                 20.0, 1.0, 1.0, 1.0, 1.0);
             else
-               Out_Data.Map_Name_Text_ID :=
+               Out_Data.Name_Text_ID :=
                  Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
                                 20.0, 0.25, 0.25, 0.25, 1.0);
             end if;
-            Text.Set_Text_Visible (Out_Data.Map_Name_Text_ID, False);
+            Text.Set_Text_Visible (Out_Data.Name_Text_ID, False);
             Maps.Replace_Element (In_Cursor, Out_Data);
          end;  --  declare block
          Next (In_Cursor);
@@ -80,7 +80,7 @@ package body Level_Menu_Manager is
       --                 Ada.Containers.Count_Type'Image (Maps.Length));
 
       Text.Change_Text_Colour
-        (Maps.Element (Selected_Map_ID).Map_Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
+        (Maps.Element (Selected_Map_ID).Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
       Game_Utils.Game_Log ("---Level_Menu_Manager.Init_Level_Maps Maps Initialized---");
 
    end Init_Level_Maps;
@@ -97,7 +97,7 @@ package body Level_Menu_Manager is
    begin
       Put_Line ("Level_Menu_Manager.Load_Story loading " & Path);
       Open (Input_File, In_File, Path);
-      theMap.Map_Name := To_Unbounded_String (Get_Line (Input_File));
+      theMap.Level_Name := To_Unbounded_String (Get_Line (Input_File));
       theMap.Par_Time := To_Unbounded_String (Get_Line (Input_File));
       --  Story
       declare
@@ -166,7 +166,7 @@ package body Level_Menu_Manager is
       procedure Append_Data (Name : String; Lock : Boolean := True) is
          Data : Level_Map_Data;
       begin
-         Data.Map_Name := To_Unbounded_String (Name);
+         Data.Level_Name := To_Unbounded_String (Name);
          Data.Locked := Lock;
          Names.Append (Data);
       end Append_Data;

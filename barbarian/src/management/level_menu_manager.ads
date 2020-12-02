@@ -9,8 +9,8 @@ with Maps_Manager;
 package Level_Menu_Manager is
 
    type Level_Map_Data is record
-      Map_Name         : Unbounded_String := To_Unbounded_String ("");
-      Map_Name_Text_ID : Positive := 1;
+      Level_Name       : Unbounded_String := To_Unbounded_String ("");
+      Name_Text_ID     : Positive := 1;
       Par_Time         : Unbounded_String := To_Unbounded_String ("");
       Level_Map        : Maps_Manager.Map;
       Music_Track      : Unbounded_String := To_Unbounded_String ("");

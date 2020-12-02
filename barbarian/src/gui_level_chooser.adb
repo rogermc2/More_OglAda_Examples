@@ -317,7 +317,7 @@ package body GUI_Level_Chooser is
          end if;
          for index in Maps.First_Index .. Last_Index loop
             LeveL_Menu := Maps.Element (index);
-            Text.Draw_Text (LeveL_Menu.Map_Name_Text_ID);
+            Text.Draw_Text (LeveL_Menu.Name_Text_ID);
          end loop;
       end if;
 
@@ -350,7 +350,7 @@ package body GUI_Level_Chooser is
                             Maps.First;
       Custom_Map_Cursor : Custom_Maps_Manager.Custom_Maps_Package.Cursor :=
                             Custom_Maps.First;
-      aMap              : Level_Menu_Manager.Level_Map_Data;
+      aLevel            : Level_Menu_Manager.Level_Map_Data;
       Custom_Map        : Custom_Maps_Manager.Custom_Data;
    begin
       Selected_Map_ID := 1;
@@ -364,9 +364,9 @@ package body GUI_Level_Chooser is
          end loop;
       else
          while Has_Element (Map_Cursor) and then To_Index (Map_Cursor) < 9 loop
-            aMap := Element (Map_Cursor);
-            Text.Change_Text_Colour (aMap.Map_Name_Text_ID, 1.0, 1.0, 1.0, 1.0);
-            Maps.Replace_Element (Map_Cursor, aMap);
+            aLevel := Element (Map_Cursor);
+            Text.Change_Text_Colour (aLevel.Name_Text_ID, 1.0, 1.0, 1.0, 1.0);
+            Maps.Replace_Element (Map_Cursor, aLevel);
             Next (Map_Cursor);
          end loop;
       end if;
