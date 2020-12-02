@@ -662,7 +662,10 @@ package body GUI_Level_Chooser is
             Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
          end loop;
       else
-         --           Game_Utils.Game_Log ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map not first.");
+         Game_Utils.Game_Log
+           ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map not first Map_Title: '" &
+              To_String (Selected_Map.Map_Title) & "'");
+
          Text.Update_Text (Level_Title_Text_ID, To_String (Selected_Map.Map_Title));
          Level_Story_Text_ID.Clear;
          for index in Selected_Map.Map_Intro_Text.First_Index ..

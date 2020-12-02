@@ -337,9 +337,6 @@ package body Text is
       Enable (Blend);
 
       theText := Renderable_Texts.Element (Text_Index);
---        Game_Utils.Game_Log ("Text.Draw_Text theText Top_Left: " &
---                               Single'Image (theText.Top_Left_X)
---                            & ", " & Single'Image (theText.Top_Left_Y));
       if not theText.Points_VBO.Initialized then
          raise Text_Exception with
          "Text.Draw_Text the Points_VBO is invalid.";
@@ -554,9 +551,9 @@ package body Text is
       Line_Offset        : Single := 0.0;
       Current_X          : Single := 0.0;
       Current_Index_6    : Int := -5;
-      Ascii_Code         : Integer;
-      Atlas_Col          : Integer;
-      Atlas_Row          : Integer;
+      Ascii_Code         : Integer := 0;
+      Atlas_Col          : Integer := 0;
+      Atlas_Row          : Integer := 0;
       S                  : Single := 0.0;
       T                  : Single := 0.0;
       X_Pos              : Single := 0.0;
@@ -685,6 +682,7 @@ package body Text is
       Item : Renderable_Text;
       use GL.Types;
    begin
+--        Game_Utils.Game_Log ("Text.Update_Text aString: '" & aString & "'");
       if ID <= Positive (Renderable_Texts.Length) then
          Item := Renderable_Texts.Element (ID);
          Text_To_VBO (aString, Item.Size_Px, Item.Points_VBO, Item.Tex_Coords_VBO,

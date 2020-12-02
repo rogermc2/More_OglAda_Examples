@@ -202,7 +202,6 @@ package body Main_Loop is
          use GUI_Level_Chooser;
          Is_Running       : Boolean := True;
          Main_Menu_Quit   : Boolean := False;
-         --        Current_Time     : Float := Float (Glfw.Time);
          Last_Time        : Float := Float (Glfw.Time);
          Delta_Time       : Float := 0.0;
          Video_Timer      : Float := 0.0;

@@ -29,8 +29,9 @@ package body Level_Menu_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Level_Maps (Maps                    : in out Maps_List; Selected_Map_ID : Positive;
-                        Left_Margin_Cl, Top_Margin_Cl : Single) is
+   procedure Init_Level_Maps (Maps                    : in out Maps_List;
+                              Selected_Map_ID         : Positive;
+                              Left_Margin_Cl, Top_Margin_Cl : Single) is
       use Settings;
       use Maps_Package;
       In_Cursor          : Cursor := Maps.First;
@@ -86,8 +87,9 @@ package body Level_Menu_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Load_Story (Path             : String; theMap : in out Level_Map_Data;
-                               Has_Hammer_Track : out Boolean) is
+   procedure Load_Story (Path             : String;
+                         theMap           : in out Level_Map_Data;
+                         Has_Hammer_Track : out Boolean) is
       use Maps_Manager;
       Input_File       : File_Type;
       Num_Story_Lines  : Natural;
