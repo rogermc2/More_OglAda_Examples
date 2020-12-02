@@ -31,7 +31,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    use GL.Types;
    use GL.Uniforms;
 
-   Border          : constant Single := 10.0;
+   Margin          : constant Single := 20.0;
    Tick_Size       : constant Single := 10.0;
    VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Shader_Program  : GL.Objects.Programs.Program;
@@ -43,7 +43,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Offset_X        : Single := 0.0;
    Scale_X         : Single := 1.0;
 
-   Background      : constant GL.Types.Colors.Color := (0.1, 0.1, 0.1, 0.0);
+   Background      : constant GL.Types.Colors.Color := (1.0, 1.0, 1.0, 1.0);
    Black           : constant Singles.Vector4 := (0.0, 0.0, 0.0, 1.0);
    Red             : constant Singles.Vector4 := (1.0, 0.0, 0.0, 1.0);
 
@@ -51,7 +51,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure  Draw_X_Tick_Marks (Pixel_Y : Single);
    procedure  Draw_Y_Tick_Marks (Pixel_X : Single);
    function Viewport_Transform (Window : in out Input_Callback.Callback_Window;
-      X, Y, Width, Height : Single;  Pixel_X, Pixel_Y : in out Single)
+      X, Y, Width, Height : Single)  --  ;  Pixel_X, Pixel_Y : in out Single)
       return Singles.Matrix4;
 
    --  ------------------------------------------------------------------------
@@ -118,14 +118,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Utilities.Clear_Background_Colour (Background);
       Keyboard_Handler.Key_Down (Window, Status);
 
-      View := Viewport_Transform (Window, Border + Tick_Size,
-                                  Border + Tick_Size,
-                                  Width - 2.0 * Border, Height - 2.0 * Border,
-                                  Pixel_X, Pixel_Y);
+      View := Viewport_Transform (Window, Margin + Tick_Size,
+                                  Margin + Tick_Size,
+                                  Width - 2.0 * Margin, Height - 2.0 * Margin);
+--                                    Pixel_X, Pixel_Y);
       Scissor_API.Set_Scissor_Rectangle
-        (Int (Border + Tick_Size), Int (Border + Tick_Size),
-         GL.Types.Size (Width - 2.0 * Border - Tick_Size),
-         GL.Types.Size (Height - 2.0 * Border - Tick_Size));
+        (Int (Margin + Tick_Size), Int (Margin + Tick_Size),
+         GL.Types.Size (Width - 2.0 * Margin - Tick_Size),
+         GL.Types.Size (Height - 2.0 * Margin - Tick_Size));
       Enable (Scissor_Test);
 
       Transform := Translation_Matrix ((Offset_X, 0.0, 0.0)) *
@@ -141,19 +141,19 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
       Draw_Arrays (Line_Strip, 0, 2000);
 
-      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
-                              GL.Types.Int (Window_Height));
-
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
       Disable (Scissor_Test);
 
       --  Draw the borders
-      Pixel_X := 0.0;
-      Pixel_Y := 0.0;
+      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
+                              GL.Types.Int (Window_Height));
+--        Pixel_X := 0.0;
+--        Pixel_Y := 0.0;
       Transform := Viewport_Transform
-        (Window, Border + Tick_Size, Border + Tick_Size,
-         Width - 2.0 * Border - Tick_Size, Height - 2.0 * Border - Tick_Size,
-         Pixel_X, Pixel_Y);
+        (Window, Margin + Tick_Size, Margin + Tick_Size,
+         Width - 2.0 * Margin - Tick_Size, Height - 2.0 * Margin - Tick_Size);
+--           Pixel_X, Pixel_Y);
+      Utilities.Print_Matrix ("Viewport_Transform", Transform);
       GL.Uniforms.Set_Single (Transform_ID, Transform);
       GL.Uniforms.Set_Single (Colour_ID, Black);
 
@@ -164,8 +164,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Draw_Arrays (Line_Loop, 0, 4);
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
-      Draw_Y_Tick_Marks (Pixel_X);
-      Draw_X_Tick_Marks (Pixel_Y);
+--        Draw_Y_Tick_Marks (Pixel_X);
+--        Draw_X_Tick_Marks (Pixel_Y);
 
    exception
       when others =>
@@ -193,6 +193,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       X             : Single;
       Ticks         : Vector2_Array (1 .. 42) := (others => (0.0, 0.0));
    begin
+      Put_Line ("Tick_Spacing " & Single'Image (Tick_Spacing));
       if Num_Ticks > 21 then
          Num_Ticks := 21;   --  should not happen
       end if;
@@ -278,8 +279,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    --  ------------------------------------------------------------------------
 
    function Viewport_Transform (Window : in out Input_Callback.Callback_Window;
-                                X, Y, Width, Height : Single;
-                                Pixel_X, Pixel_Y    : in out Single)
+                                X, Y, Width, Height : Single)
+--                                  Pixel_X, Pixel_Y    : in out Single)
                                 return Singles.Matrix4 is
       use Singles;
       use Maths;
@@ -299,16 +300,16 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Offset_Y := (2.0 * Y + Height - FB_Height) / FB_Height;
       Scale_X := Width / FB_Width;
       Scale_Y := Height / FB_Height;
+--
+--        if Pixel_X /= 0.0 then
+--           Pixel_X := 2.0 / FB_Width;
+--        end if;
+--        if Pixel_Y /= 0.0 then
+--           Pixel_Y := 2.0 / FB_Height;
+--        end if;
 
-      if Pixel_X /= 0.0 then
-         Pixel_X := 2.0 / FB_Width;
-      end if;
-      if Pixel_Y /= 0.0 then
-         Pixel_Y := 2.0 / FB_Height;
-      end if;
-
-      return Scaling_Matrix ((Scale_X, Scale_Y, 1.0)) *
-        Translation_Matrix ((Offset_X, Offset_Y, 0.0));
+      return Translation_Matrix ((Offset_X, Offset_Y, 0.0)) *
+        Scaling_Matrix ((Scale_X, Scale_Y, 1.0));
 
    exception
       when others =>
