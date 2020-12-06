@@ -117,6 +117,7 @@ package body Shadows is
       Quad_VP_Buffer := GL_Utils.Create_2D_VBO (SS_Quad_Position);
       Quad_VT_Buffer := GL_Utils.Create_3D_VBO (SS_Quad_ST);
 
+      G_Shadows.Debug_Quad_Vao.Clear;
       G_Shadows.Debug_Quad_Vao.Initialize_Id;
       G_Shadows.Debug_Quad_Vao.Bind;
       Array_Buffer.Bind (Quad_VP_Buffer);

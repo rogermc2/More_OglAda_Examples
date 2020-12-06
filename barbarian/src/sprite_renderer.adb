@@ -122,6 +122,7 @@ package body Sprite_Renderer is
       Tex_VBO      : constant GL.Objects.Buffers.Buffer :=
                        GL_Utils.Create_2D_VBO (Tex_Coords);
    begin
+      Sprite_VAO.Clear;
       Sprite_VAO.Initialize_Id;
       Sprite_VAO.Bind;
       Array_Buffer.Bind (Points_VBO);

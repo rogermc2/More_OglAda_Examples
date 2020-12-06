@@ -208,6 +208,7 @@ package body Mesh_Loader is
       end if;
 
       aMesh := Loaded_Meshes.Element (Mesh_ID);
+      aMesh.VAO.Clear;
       aMesh.VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aMesh.VAO);
       Loaded_Meshes.Replace_Element (Mesh_ID, aMesh);
@@ -249,6 +250,7 @@ package body Mesh_Loader is
       end if;
 
       aMesh := Loaded_Meshes.Element (Loaded_Meshes.Last_Index);
+      aMesh.Shadow_VAO.Clear;
       aMesh.Shadow_VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aMesh.Shadow_VAO);
       if Has_Vp and then aMesh.Vp_Count > 0 then
