@@ -607,9 +607,9 @@ package body GUI_Level_Chooser is
         Title_Length     : Integer := 0;
         Story_Line       : Unbounded_String;
     begin
---          Game_Utils.Game_Log
---            ("GUI_Level_Chooser.Update_Selected_Entry_Level: '" &
---               To_String (Selected_Level.Title) & "'");
+        --          Game_Utils.Game_Log
+        --            ("GUI_Level_Chooser.Update_Selected_Entry_Level: '" &
+        --               To_String (Selected_Level.Title) & "'");
         --  Selected_Level.Title OK here
         if Selected_Level.Locked and not Custom then
             Selected_Level.Title := To_Unbounded_String ("locked");
@@ -633,9 +633,9 @@ package body GUI_Level_Chooser is
         end if;
 
         if First then
---             Game_Utils.Game_Log
---               ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Title: '" &
---                 To_String (Selected_Level.Title) & "'");
+            --             Game_Utils.Game_Log
+            --               ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Title: '" &
+            --                 To_String (Selected_Level.Title) & "'");
             --  Selected_Level.Title OK here
             Level_Title_Text_ID :=
               Text.Add_Text (To_String (Selected_Level.Title),
@@ -667,13 +667,14 @@ package body GUI_Level_Chooser is
                 Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
             end loop;
         else
---             Game_Utils.Game_Log
---                ("GUI_Level_Chooser.Update_Selected_Entry_Level not first Title: '" &
---                  To_String (Selected_Level.Title) & "'");
+            --             Game_Utils.Game_Log
+            --                ("GUI_Level_Chooser.Update_Selected_Entry_Level not first Title: '" &
+            --                  To_String (Selected_Level.Title) & "'");
             --  Selected_Level.Title seems OK here
 
             Text.Update_Text (Level_Title_Text_ID, To_String (Selected_Level.Title));
-            Text.Centre_Text (Level_Title_Text_ID, 0.0, 0.75);
+            Text.Centre_Text (Level_Title_Text_ID, -0.4, 0.75);
+
             Level_Story_Text_ID.Clear;
             for index in Selected_Level.Intro_Text.First_Index ..
               Selected_Level.Intro_Text.Last_Index loop
@@ -681,24 +682,24 @@ package body GUI_Level_Chooser is
                 if Length (Story_Line) < 1 then
                     Story_Line := To_Unbounded_String (" ");
                 end if;
-                --              if index <= Level_Story_Text_ID.Last_Index then
-                --                 Text.Update_Text (Level_Story_Text_ID.Element (index),
-                --                                   To_String (Story_Line));
-                --              else
-                Level_Story_Text_ID.Append
-                  (Text.Add_Text (To_String (Story_Line),
-                   Left_Margin_Cl + Lt_Margin_Cl,
-                   Top_Margin_Cl - (1.0 + 0.2 * Single (index - 1)) * 240.0 / Single
-                   (Settings.Framebuffer_Height),
-                   14.0, 0.75, 0.75, 0.75, 1.0));
-                Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
-                --              end if;
+                if index <= Level_Story_Text_ID.Last_Index then
+                    Text.Update_Text (Level_Story_Text_ID.Element (index),
+                                      To_String (Story_Line));
+                else
+                    Level_Story_Text_ID.Append
+                      (Text.Add_Text (To_String (Story_Line),
+                       Left_Margin_Cl + Lt_Margin_Cl,
+                       Top_Margin_Cl - (1.0 + 0.2 * Single (index - 1)) * 240.0 / Single
+                       (Settings.Framebuffer_Height),
+                       14.0, 0.75, 0.75, 0.75, 1.0));
+                    Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
+                end if;
             end loop;
         end if;
 
     exception
-        when others =>
-            Put_Line ("An exception occurred in GUI_Level_Chooser.Update_Selected_Entry_Level.");
+        when others => Put_Line
+              ("An exception occurred in GUI_Level_Chooser.Update_Selected_Entry_Level.");
     end Update_Selected_Entry_Level;
 
     --  ------------------------------------------------------------------------

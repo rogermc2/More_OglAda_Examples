@@ -557,7 +557,7 @@ package body Text is
         Col_Recip          : constant Single := 1.0 / Atlas_Cols_S;
         Line_Offset        : Single := 0.0;
         Current_X          : Single := 0.0;
-        Current_Index_6    : Int := -5;
+        Current_Index_6    : Int := 1;
         Ascii_Code         : Integer := 0;
         Atlas_Col          : Integer := 0;
         Atlas_Row          : Integer := 0;
@@ -567,11 +567,9 @@ package body Text is
         Y_Pos              : Single := 0.0;
         Skip_Next          : Boolean := False;
     begin
---          Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
---                                Integer'Image (Text_Length) & ", " & theText);
---  temple of THREE DOORS OK here; Text_Length = 21
         Br_X := 0.0;
         Br_Y := 0.0;
+        Point_Count := 0;
         for index in 1 .. Text_Length loop
             if Skip_Next then
                 Skip_Next := False;
@@ -582,11 +580,7 @@ package body Text is
                     Current_X := 0.0;
                     Skip_Next := True;
                 else
-                    Current_Index_6 := Current_Index_6 + 6;
                     Ascii_Code := Character'Pos (theText (index));
---                      Game_Utils.Game_Log ("Text.Text_To_VBO, Character: " &
---                                            theText (index));
-                    --  temple of THREE DOORS OK here
                     Atlas_Col := (Ascii_Code - Character'Pos (' ')) mod Atlas_Cols;
                     Atlas_Row := (Ascii_Code - Character'Pos (' ')) / Atlas_Cols;
                     --  work out texture coordinates in atlas
@@ -603,10 +597,7 @@ package body Text is
                           Font_Metadata_Manager.Width (Glyphs, Ascii_Code) *
                           Font_Width;
                     end if;
-                    Game_Utils.Game_Log ("Text.Text_To_VBO X_Pos, Font_Width: " &
-                                         theText (index) & ", " &
-                                         Single'Image (X_Pos) & " " &
-                                         Single'Image (Font_Width));
+
                     -- add 6 points and texture coordinates to buffers for each glyph
                     Points_Tmp (Current_Index_6) := (X_Pos, Y_Pos);
                     Points_Tmp (Current_Index_6 + 1) := (X_Pos, Y_Pos - Font_Height);
@@ -624,6 +615,7 @@ package body Text is
                     Tex_Coords_Tmp (Current_Index_6 + 3) := (S + Col_Recip, 1.0 - T);
                     Tex_Coords_Tmp (Current_Index_6 + 4) := (S + Col_Recip, 1.0 - T + Row_Recip);
                     Tex_Coords_Tmp (Current_Index_6 + 5) := (S, 1.0 - T + Row_Recip);
+                    Current_Index_6 := Current_Index_6 + 6;
 
                     --  Update values of bottom-right corner of text area
                     --  Font_Width = (2.0f * scale_px) / font_viewport_width
@@ -642,7 +634,7 @@ package body Text is
 
         Array_Buffer.Bind (Tex_Coords_VBO);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Tex_Coords_Tmp, Dynamic_Draw);
-        Point_Count := Current_Index_6 + 5 + 24;
+        Point_Count := Current_Index_6 + 72;
 
     exception
         when others =>
