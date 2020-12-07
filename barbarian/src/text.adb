@@ -367,8 +367,6 @@ package body Text is
         end if;
 
         Texture_Manager.Bind_Texture (0, Font_Texture);
-        --        Text_Shader_Manager.Set_Texture_Unit (0);
-        --        Targets.Texture_2D.Bind (Font_Texture);
 
         if not theText.VAO.Initialized then
             raise Text_Exception with
@@ -569,8 +567,9 @@ package body Text is
         Y_Pos              : Single := 0.0;
         Skip_Next          : Boolean := False;
     begin
-        --        Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
-        --                              Integer'Image (Text_Length) & ", " & theText);
+--          Game_Utils.Game_Log ("Text.Text_To_VBO Text_Length, theText: " &
+--                                Integer'Image (Text_Length) & ", " & theText);
+--  temple of THREE DOORS OK here; Text_Length = 21
         Br_X := 0.0;
         Br_Y := 0.0;
         for index in 1 .. Text_Length loop
@@ -585,8 +584,9 @@ package body Text is
                 else
                     Current_Index_6 := Current_Index_6 + 6;
                     Ascii_Code := Character'Pos (theText (index));
-                    --                 Game_Utils.Game_Log ("Text.Text_To_VBO, Character: " &
-                    --                                        theText (index));
+--                      Game_Utils.Game_Log ("Text.Text_To_VBO, Character: " &
+--                                            theText (index));
+                    --  temple of THREE DOORS OK here
                     Atlas_Col := (Ascii_Code - Character'Pos (' ')) mod Atlas_Cols;
                     Atlas_Row := (Ascii_Code - Character'Pos (' ')) / Atlas_Cols;
                     --  work out texture coordinates in atlas
@@ -600,8 +600,13 @@ package body Text is
                     if index < Text_Length then
                         --  Upper-case letters move twice as far
                         Current_X := Current_X +
-                          Font_Metadata_Manager.Width (Glyphs, Ascii_Code) * Font_Width;
+                          Font_Metadata_Manager.Width (Glyphs, Ascii_Code) *
+                          Font_Width;
                     end if;
+                    Game_Utils.Game_Log ("Text.Text_To_VBO X_Pos, Font_Width: " &
+                                         theText (index) & ", " &
+                                         Single'Image (X_Pos) & " " &
+                                         Single'Image (Font_Width));
                     -- add 6 points and texture coordinates to buffers for each glyph
                     Points_Tmp (Current_Index_6) := (X_Pos, Y_Pos);
                     Points_Tmp (Current_Index_6 + 1) := (X_Pos, Y_Pos - Font_Height);
@@ -621,6 +626,7 @@ package body Text is
                     Tex_Coords_Tmp (Current_Index_6 + 5) := (S, 1.0 - T + Row_Recip);
 
                     --  Update values of bottom-right corner of text area
+                    --  Font_Width = (2.0f * scale_px) / font_viewport_width
                     if X_Pos + Font_Width > Br_X then
                         Br_X := X_Pos + Font_Width;
                     end if;
@@ -636,7 +642,7 @@ package body Text is
 
         Array_Buffer.Bind (Tex_Coords_VBO);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Tex_Coords_Tmp, Dynamic_Draw);
-        Point_Count := Current_Index_6 + 5;
+        Point_Count := Current_Index_6 + 5 + 24;
 
     exception
         when others =>
@@ -715,6 +721,6 @@ package body Text is
         end if;
     end Validate_Text_ID;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
 end Text;

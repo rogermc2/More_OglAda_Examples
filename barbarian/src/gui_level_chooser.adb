@@ -667,12 +667,13 @@ package body GUI_Level_Chooser is
                 Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
             end loop;
         else
-            --           Game_Utils.Game_Log
-            --             ("GUI_Level_Chooser.Update_Selected_Entry_Level not first Title: '" &
-            --                To_String (Selected_Level.Title) & "'");
+--             Game_Utils.Game_Log
+--                ("GUI_Level_Chooser.Update_Selected_Entry_Level not first Title: '" &
+--                  To_String (Selected_Level.Title) & "'");
             --  Selected_Level.Title seems OK here
 
             Text.Update_Text (Level_Title_Text_ID, To_String (Selected_Level.Title));
+            Text.Centre_Text (Level_Title_Text_ID, 0.0, 0.75);
             Level_Story_Text_ID.Clear;
             for index in Selected_Level.Intro_Text.First_Index ..
               Selected_Level.Intro_Text.Last_Index loop
