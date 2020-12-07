@@ -544,9 +544,9 @@ package body Text is
         Glyph_Size         : constant Single := 2.0 * Single (Glyph_Scale_Px);
         Text_Length        : constant Integer := theText'Length;
         Points_Tmp         : Singles.Vector2_Array
-          (1 .. Int (Glyph_Size) * Int (Text_Length));
+          (1 .. Int (Glyph_Size) * Int (Text_Length)) := (others => (0.0, 0.0));
         Tex_Coords_Tmp     : Singles.Vector2_Array
-             (1 .. Int (Glyph_Size)  * Int (Text_Length));
+             (1 .. Int (Glyph_Size)  * Int (Text_Length)) := (others => (0.0, 0.0));
         Atlas_Rows_S       : constant Single := Single (Atlas_Rows);
         Atlas_Cols_S       : constant Single := Single (Atlas_Cols);
         Font_Height        : constant Single :=
