@@ -14,24 +14,24 @@ package body Level_Menu_Manager is
 
    -- -------------------------------------------------------------------------
 
-   function Get_Map_Name (Maps : Levels_List; Selected_Map_ID : Positive)
+   function Get_Level_Name (Maps : Levels_List; Selected_Map_ID : Positive)
                           return String is
    begin
       if Maps.Is_Empty or else Selected_Map_ID > Maps.Last_Index then
-         raise Levels_Maps_Manager_Exception with
-           "Level_Menu_Manager.Get_Map_Name encountered an invalid Map ID: "
+         raise Levels_Manager_Exception with
+           "Level_Menu_Manager.Get_Level_Name encountered an invalid Map ID: "
            & Integer'Image (Selected_Map_ID);
       end if;
 
       return To_String (Maps.Element (Selected_Map_ID).Level_Name);
 
-   end Get_Map_Name;
+   end Get_Level_Name;
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Level_Maps (Maps                    : in out Levels_List;
-                              Selected_Map_ID         : Positive;
-                              Left_Margin_Cl, Top_Margin_Cl : Single) is
+   procedure Init_Levels (Maps                    : in out Levels_List;
+                          Selected_Map_ID         : Positive;
+                          Left_Margin_Cl, Top_Margin_Cl : Single) is
       use Settings;
       use Levels_Package;
       In_Cursor          : Cursor := Maps.First;
@@ -44,7 +44,7 @@ package body Level_Menu_Manager is
       --        Put_Line ("Level_Menu_Manager.Init_Level_Maps initalizing Maps");
       Game_Utils.Game_Log ("---Level_Menu_Manager.Init_Level_Maps initalizing Maps---");
       if Maps.Is_Empty then
-         raise Levels_Maps_Manager_Exception with
+         raise Levels_Manager_Exception with
            "Level_Menu_Manager.Init_Level_Maps Maps List is empty.";
       end if;
 
@@ -76,14 +76,14 @@ package body Level_Menu_Manager is
          end;  --  declare block
          Next (In_Cursor);
       end loop;
-      --        Put_Line ("Level_Menu_Manager.Init_Level_Maps Maps size : " &
+      --        Put_Line ("Level_Menu_Manager.Init_Levels Maps size : " &
       --                 Ada.Containers.Count_Type'Image (Maps.Length));
 
       Text.Change_Text_Colour
         (Maps.Element (Selected_Map_ID).Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
-      Game_Utils.Game_Log ("---Level_Menu_Manager.Init_Level_Maps Maps Initialized---");
+      Game_Utils.Game_Log ("---Level_Menu_Manager.Init_Levels Levels Initialized---");
 
-   end Init_Level_Maps;
+   end Init_Levels;
 
    --  ----------------------------------------------------------------------------
 

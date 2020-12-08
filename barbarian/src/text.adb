@@ -634,7 +634,7 @@ package body Text is
 
         Array_Buffer.Bind (Tex_Coords_VBO);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Tex_Coords_Tmp, Dynamic_Draw);
-        Point_Count := Current_Index_6 + 72;
+            Point_Count := Current_Index_6 + 72;
 
     exception
         when others =>

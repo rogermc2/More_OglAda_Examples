@@ -380,7 +380,7 @@ package body Main_Loop is
                --  chooser can be accessed if the player selects "new game" in the main menu.
                Skip_Intro := False;
                Level_Name := To_Unbounded_String
-                 (GUI_Level_Chooser.Get_Selected_Map_Name (Main_Menu.Are_We_In_Custom_Maps));
+                 (GUI_Level_Chooser.Get_Selected_Level_Name (Main_Menu.Are_We_In_Custom_Maps));
                Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
                                     & To_String (Level_Name));
 

@@ -46,7 +46,7 @@ package body GUI_Level_Chooser is
     Levels                    : Level_Menu_Manager.Levels_List;
     Selected_Level_ID         : Positive := 1;
     Selected_Level            : Selected_Level_Data;
-    Selected_Map_Track        : Unbounded_String := To_Unbounded_String ("");
+    Selected_Level_Track      : Unbounded_String := To_Unbounded_String ("");
     Left_Margin_Cl            : Single := 0.0;
     Top_Margin_Cl             : Single := 0.0;
     Level_GUI_Width           : Single := 1024.0;
@@ -92,7 +92,7 @@ package body GUI_Level_Chooser is
                       1534173, -- 1536666, --  hall
                       905383   --  attercoppe
                      );
-        Map_Name : constant String := Get_Selected_Map_Name (False);
+        Map_Name : constant String := Get_Selected_Level_Name (False);
         Sum      : constant Int := Get_Map_Checksum (Map_Name);
         OK       : Boolean := False;
     begin
@@ -137,14 +137,14 @@ package body GUI_Level_Chooser is
 
     --  ------------------------------------------------------------------------
 
-    function Get_Selected_Map_Music return String is
+    function Get_Selected_Level_Music return String is
     begin
-        return To_String (Selected_Map_Track);
-    end Get_Selected_Map_Music;
+        return To_String (Selected_Level_Track);
+    end Get_Selected_Level_Music;
 
     --  ------------------------------------------------------------------------
 
-    function Get_Selected_Map_Name (Custom : Boolean) return String is
+    function Get_Selected_Level_Name (Custom : Boolean) return String is
         Result  : Unbounded_String := To_Unbounded_String ("");
     begin
         --        Put_Line ("GUI_Level_Chooser.Get_Selected_Map_Name, Selected_Level_ID: " &
@@ -153,12 +153,12 @@ package body GUI_Level_Chooser is
             Result := To_Unbounded_String (Custom_Levels_Manager.Get_Custom_Map_Name
                                            (Custom_Levels, Selected_Level_ID));
         else
-            Result := To_Unbounded_String (Level_Menu_Manager.Get_Map_Name
+            Result := To_Unbounded_String (Level_Menu_Manager.Get_Level_Name
                                            (Levels, Selected_Level_ID));
         end if;
 
         return To_String (Result);
-    end Get_Selected_Map_Name;
+    end Get_Selected_Level_Name;
 
     --  ------------------------------------------------------------------------
 
@@ -202,8 +202,8 @@ package body GUI_Level_Chooser is
         --        Game_Utils.Game_Log ("GUI_Level_Chooser loading maps from " &
         --                               "src/save/maps.dat");
         Level_Menu_Manager.Load_Story_Names ("src/save/maps.dat", Levels);
-        Level_Menu_Manager.Init_Level_Maps (Levels, Selected_Level_ID,
-                                            Left_Margin_Cl, Top_Margin_Cl);
+        Level_Menu_Manager.Init_Levels (Levels, Selected_Level_ID,
+                                        Left_Margin_Cl, Top_Margin_Cl);
         Update_Selected_Entry_Level (True, False);
 
         Choose_Level_Text_ID :=
@@ -243,7 +243,7 @@ package body GUI_Level_Chooser is
     function Is_Level_Introduction return Boolean is
     begin
         return not Main_Menu.Are_We_In_Custom_Maps and
-          Selected_Level.Level_Type = Map_Introduction;
+          Selected_Level.Level_Type = Level_Introduction;
     end Is_Level_Introduction;
 
     --  ------------------------------------------------------------------------
@@ -251,7 +251,7 @@ package body GUI_Level_Chooser is
     function Is_Level_Warlock return Boolean is
     begin
         return not Main_Menu.Are_We_In_Custom_Maps and
-          Selected_Level.Level_Type = Map_Warlock;
+          Selected_Level.Level_Type = Level_Warlock;
     end Is_Level_Warlock;
 
     --  ------------------------------------------------------------------------
@@ -263,20 +263,21 @@ package body GUI_Level_Chooser is
 
     --  ------------------------------------------------------------------------
 
-    procedure Process_Input (Window                                       : in out Input_Callback.Barbarian_Window;
-                             Menu_Open, Started_Loading_Map, Cheat_Unlock : in out Boolean) is
+    procedure Process_Input (Window       : in out Input_Callback.Barbarian_Window;
+                             Menu_Open, Started_Loading_Map,
+                             Cheat_Unlock : in out Boolean) is
         use Glfw.Input.Keys;
         use Input_Callback;
         use Input_Handler;
         use Level_Menu_Manager.Levels_Package;
-        Selected_Map : constant Level_Menu_Manager.Level_Map_Data :=
-                         Levels.Element (Selected_Level_ID);
+        Selected_Level : constant Level_Menu_Manager.Level_Map_Data :=
+                           Levels.Element (Selected_Level_ID);
     begin
         --        Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));
         --        Game_Utils.Game_Log ("Process_Input Attack_Action: " & Natural'Image (Attack_Action));
         if Was_Key_Pressed (Window, Enter) or Was_Action_Pressed (Window, OK_Action)
           or Was_Action_Pressed (Window, Attack_Action) then
-            if not Selected_Map.Locked or Cheat_Unlock then
+            if not Selected_Level.Locked or Cheat_Unlock then
                 Started_Loading_Map := True;
             end if;
         elsif Was_Key_Pressed (Window, Escape) or
@@ -599,7 +600,7 @@ package body GUI_Level_Chooser is
 
     procedure Update_Selected_Entry_Level (First, Custom : Boolean) is
         use Custom_Levels_Manager;
-        Map_Path         : Unbounded_String;
+        Level_Path       : Unbounded_String;
         Left_Margin_Px   : constant Single := 550.0;  --  650.0
         Lt_Margin_Cl     : constant Single :=
                              Left_Margin_Px / Single (Settings.Framebuffer_Width);
@@ -617,19 +618,19 @@ package body GUI_Level_Chooser is
             Selected_Level.Intro_Text.Append (To_Unbounded_String
                                               ("clear previous temples to unlock" &
                                                    ASCII.CR & ASCII.LF & "the portal to this map"));
-        elsif Custom then Map_Path := To_Unbounded_String
+        elsif Custom then Level_Path := To_Unbounded_String
               ("src/maps/" & Get_Custom_Map_Name (Custom_Levels, Selected_Level_ID));
             --           Game_Utils.Game_Log ("level chooser is peeking in map " &
             --                                  To_String (Map_Path));
         else
-            Map_Path := To_Unbounded_String
-              ("src/maps/" & Level_Menu_Manager.Get_Map_Name
+            Level_Path := To_Unbounded_String
+              ("src/maps/" & Level_Menu_Manager.Get_Level_Name
                  (Levels, Selected_Level_ID));
             --           Game_Utils.Game_Log ("level chooser is peeking in map " &
-            --                                  To_String (Map_Path));
-            Selected_Level_Manager.Load_Map (To_String (Map_Path), Selected_Level,
+            --                                  To_String (Level_Path));
+            Selected_Level_Manager.Load_Map (To_String (Level_Path), Selected_Level,
                                              Has_Hammer_Track);
-            Selected_Map_Track := Selected_Level.Music_Track;
+            Selected_Level_Track := Selected_Level.Music_Track;
         end if;
 
         if First then

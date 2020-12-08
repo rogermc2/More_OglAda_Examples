@@ -61,17 +61,18 @@ package body Selected_Level_Manager is
 
    --  ------------------------------------------------------------------------
 
-   function Map_Locked (aMap : Selected_Level_Data) return Boolean is
+   function Level_Locked (aMap : Selected_Level_Data) return Boolean is
    begin
       return aMap.Locked;
-   end Map_Locked;
+   end Level_Locked;
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Map_Lock (aMap : in out Selected_Level_Data; Lock : Boolean) is
+   procedure Set_Level_Lock (aMap : in out Selected_Level_Data;
+                             Lock : Boolean) is
    begin
       aMap.Locked := Lock;
-   end Set_Map_Lock;
+   end Set_Level_Lock;
 
    --  ------------------------------------------------------------------------
 

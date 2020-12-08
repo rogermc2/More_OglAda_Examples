@@ -9,8 +9,8 @@ package GUI_Level_Chooser is
    function Cheated_On_Map return Boolean;
    procedure Init;
    function Get_Hammer_Kills return Integer;
-   function Get_Selected_Map_Music return String;
-   function Get_Selected_Map_Name (Custom : Boolean) return String;
+   function Get_Selected_Level_Music return String;
+   function Get_Selected_Level_Name (Custom : Boolean) return String;
    procedure Increment_Hammer_Kills;
    function Is_Level_Introduction return Boolean;
    function Is_Level_Warlock return Boolean;

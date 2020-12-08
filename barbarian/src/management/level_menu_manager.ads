@@ -23,13 +23,13 @@ package Level_Menu_Manager is
    type Custom_Levels_List is new Levels_Package.Vector with null record;
    type Levels_List is new Levels_Package.Vector with null record;
 
-   Levels_Maps_Manager_Exception : Exception;
+   Levels_Manager_Exception : Exception;
 
-   function Get_Map_Name (Maps : Levels_List; Selected_Map_ID : Positive)
-                           return String;
-   procedure Init_Level_Maps (Maps            : in out Levels_List;
-                              Selected_Map_ID : Positive;
-                              Left_Margin_Cl, Top_Margin_Cl : Single);
+   function Get_Level_Name (Maps : Levels_List; Selected_Map_ID : Positive)
+                            return String;
+   procedure Init_Levels (Maps            : in out Levels_List;
+                          Selected_Map_ID : Positive;
+                           Left_Margin_Cl, Top_Margin_Cl : Single);
    procedure Load_Story (Path     : String; theMap : in out Level_Map_Data;
                        Has_Hammer_Track : out Boolean);
    procedure Load_Story_Names (Path : String; Names : in out Levels_List);
