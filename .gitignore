@@ -12,4 +12,5 @@ bin
 *.ooutline
 * copy.gpr
 *.log
+*.dot
 
