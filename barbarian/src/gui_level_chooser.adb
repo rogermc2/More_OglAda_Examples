@@ -84,13 +84,13 @@ package body GUI_Level_Chooser is
     function Checksums return Boolean is
         Map_Sums : constant Int_Array (1 .. 8) :=
                      (797678,  -- orig 800948,  --  intro
-                      1744957, --  threedoors
+                      1740057, -- orig 1744957 threedoors
                       869974,  --  warlock
                       1014716, --  winder
                       1224821, --  under
                       917647,  --  skytemple
                       1534173, -- 1536666, --  hall
-                      905383   --  attercoppe
+                      901523   --  orig 905383   --  attercoppe
                      );
         Map_Name : constant String := Get_Selected_Level_Name (False);
         Sum      : constant Int := Get_Map_Checksum (Map_Name);
