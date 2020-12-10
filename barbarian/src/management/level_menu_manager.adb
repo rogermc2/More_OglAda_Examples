@@ -50,6 +50,9 @@ package body Level_Menu_Manager is
 
       while Has_Element (In_Cursor) loop
          Out_Data := Element (In_Cursor);
+         if To_Index  (In_Cursor) = Selected_Map_ID then
+                Out_Data.Locked := False;
+         end if;
          Name_Y := Top_Margin_Cl - 2.0 * Count * Text_Height - Text_Offset_Height;
          Count := Count + 1.0;
          declare

@@ -274,11 +274,15 @@ package body GUI_Level_Chooser is
                            Levels.Element (Selected_Level_ID);
     begin
         --        Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));
-        --        Game_Utils.Game_Log ("Process_Input Attack_Action: " & Natural'Image (Attack_Action));
         if Was_Key_Pressed (Window, Enter) or Was_Action_Pressed (Window, OK_Action)
           or Was_Action_Pressed (Window, Attack_Action) then
             if not Selected_Level.Locked or Cheat_Unlock then
                 Started_Loading_Map := True;
+--              else
+--                  Game_Utils.Game_Log ("Process_Input Enter Selected_Level, Locked: "
+--                                       & Integer'Image (Selected_Level_ID) & "  "
+--                                       & To_String (Selected_Level.Level_Name) & "  "
+--                                        & Boolean'Image (Selected_Level.Locked));
             end if;
         elsif Was_Key_Pressed (Window, Escape) or
           Was_Action_Pressed (Window, Menu_Open_Action) then
@@ -367,8 +371,6 @@ package body GUI_Level_Chooser is
         else
             while Has_Element (Map_Cursor) and then To_Index (Map_Cursor) < 9 loop
                 aLevel := Element (Map_Cursor);
-                Game_Utils.Game_Log ("Reset_GUI_Level_Selection aLevel.Level_Name: "
-                                     & To_String (aLevel.Level_Name));
                 Text.Change_Text_Colour (aLevel.Name_Text_ID, 1.0, 1.0, 1.0, 1.0);
                 Levels.Replace_Element (Map_Cursor, aLevel);
                 Next (Map_Cursor);
@@ -463,7 +465,13 @@ package body GUI_Level_Chooser is
         Continue            : Boolean := True;
         Restart             : Boolean := False;
         Result              : Boolean := False;
+        Selected_Level : constant Level_Menu_Manager.Level_Map_Data :=
+                           Levels.Element (Selected_Level_ID);
     begin
+--          Game_Utils.Game_Log ("Start_Level_Chooser_Loop 1 Selected_Level, Locked: "
+--                                       & Integer'Image (Selected_Level_ID) & "  "
+--                                       & To_String (Selected_Level.Level_Name) & "  "
+--                                        & Boolean'Image (Selected_Level.Locked));
         Reset_GUI_Level_Selection (Custom_Maps);
         while not Window.Should_Close and Continue loop
             Current_Time := Float (Glfw.Time);

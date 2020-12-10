@@ -29,6 +29,7 @@ with GL_Utils;
 with GUI;
 with GUI_Level_Chooser;
 with Input_Handler;
+with Level_Menu_Manager;
 with Main_Loop.Game_Support;
 with Manifold;
 with Maps_Manager;
@@ -211,7 +212,7 @@ package body Main_Loop is
          Dump_Video       : Boolean := False;
          Cheating         : Boolean := False;
       begin
-         Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
+--           Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
          Game_Camera.Is_Dirty := True;
          while Is_Running loop
             Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
@@ -219,9 +220,9 @@ package body Main_Loop is
                            Curr_Frames_Count);
             if not Main_Menu_Open then
                Level_Time := Level_Time + Delta_Time;
-               Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop not Main_Menu_Open");
+--                 Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop not Main_Menu_Open");
             else  --  Main_Menu_Open
-               Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop Main_Menu_Open");
+--                 Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop Main_Menu_Open");
                Main_Menu_Quit := not Main_Menu.Update_Menu (Window, Delta_Time);
                if Main_Menu.Menu_Was_Closed then
                   Main_Menu_Open := False;
@@ -265,12 +266,12 @@ package body Main_Loop is
                end if;
             end if;
 
-            Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
-                                & Boolean'Image (Window.Should_Close));
+--              Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
+--                                  & Boolean'Image (Window.Should_Close));
             Is_Running := Is_Running and
               not Window.Should_Close and not Main_Menu_Quit;
-            Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Is_Running: "
-                                & Boolean'Image (Is_Running));
+--              Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Is_Running: "
+--                                  & Boolean'Image (Is_Running));
          end loop;
          Quit_Game := True;
       end Main_Game_Loop;
@@ -457,7 +458,7 @@ package body Main_Loop is
          return OK;
       end Update_Logic_Steps;
 
-      --  ----------------------------------------------------------------------------
+      --  ----------------------------------------------------------------------
 
       use Glfw.Input;
       Running : Boolean := True;
