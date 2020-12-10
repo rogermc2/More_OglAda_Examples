@@ -231,6 +231,7 @@ package body GUI_Level_Chooser is
           ("src/textures/gui_level_chooser_back.png", Back_Texture, False, True);
         Texture_Manager.Load_Image_To_Texture
           ("src/textures/map_2048.png", Back_Custom_Texture, False, True);
+
         Game_Utils.Game_Log ("GUI_Level_Chooser initialized");
     exception
         when others =>

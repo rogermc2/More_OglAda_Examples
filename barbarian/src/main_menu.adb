@@ -542,6 +542,7 @@ package body Main_Menu is
       Result := Since_Last_Key < 0.15;
       if not Result then
          --  Since_Last_Key > 0.15
+--          Game_Utils.Game_Log ("Main_Menu.Update_Menu Since_Last_Key > 0.15");
          if Menu_Graphics_Open then
             Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Graphics_Open");
             Result := Process_Menu_Graphics
@@ -581,7 +582,7 @@ package body Main_Menu is
             Check_Close_Menu_Credits (Window, Menu_Credits_Open,
                                       Menu_End_Story_Open, Menu_Closed, Text_Timer);
          end if;
-         --           Game_Utils.Game_Log ("Main_Menu.Update_Menu General_Menu_Support");
+--           Game_Utils.Game_Log ("Main_Menu.Update_Menu General_Menu_Support");
          General_Menu_Support (Window, Joystick_Detected_Text,
                                To_String (Joy_Name), Menu_Closed,
                                Menu_Graphics_Open, Menu_Audio_Open,
