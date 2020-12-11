@@ -81,6 +81,7 @@ package body Main_Loop.Game_Support is
       Centre_Z        : constant Int := Int ((1.0 + Camera_Position (GL.Z)) / 2.0);
    begin
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
+         Game_Utils.Game_Log ("Game_Support.Player_1_View, Bind_Shadow_FBs");
          for index in Shadow_Direction'Range loop
             Bind_Shadow_FB (index);
             Manifold.Draw_Manifold_Around_Depth_Only;

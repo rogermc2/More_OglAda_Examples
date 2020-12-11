@@ -6,9 +6,12 @@ with GL.Buffers;
 with GL.Objects.Buffers;
 with GL.Objects.Framebuffers;
 with GL.Objects.Programs;
+with GL.Objects.Textures.Targets;
+with GL.Objects.Renderbuffers;
 with GL.Objects.Textures;
 with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
+with GL.Pixels;
 with GL.Types.Colors;
 with GL.Window;
 
@@ -36,7 +39,7 @@ package body Shadows is
       Caster_Vs        : Singles.Matrix4_Array (1 .. 6) :=
                            (others => (others => (others => 0.0)));
       Caster_P         : Singles.Matrix4 := Singles.Identity4;
-      Caster_Pos_Wor   : Singles.Vector3 := Maths.Vec3_0;
+      Caster_Pos_World : Singles.Vector3 := Maths.Vec3_0;
       --  Shaders
       Depth_Sp         : GL.Objects.Programs.Program;
       Depth_Skinned_Sp : GL.Objects.Programs.Program;
@@ -45,7 +48,7 @@ package body Shadows is
       Debug_Quad_Vao   : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Cube_Framebuffer : GL.Objects.Framebuffers.Framebuffer;
       Cube_Colour_Tex  : GL.Objects.Textures.Texture;
-      Render_Buffer    : GL.Objects.Buffers.Buffer;
+      Render_Buffer    : GL.Objects.Renderbuffers.Renderbuffer;
    end record;
 
    Black     : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
@@ -69,7 +72,9 @@ package body Shadows is
       use GL.Objects.Textures.Targets;
    begin
       if Settings.Shadows_Enabled then
+         Game_Utils.Game_Log ("Shadows.Bind_Shadow_FB Bind");
          Read_And_Draw_Target.Bind (G_Shadows.Cube_Framebuffer);
+         Game_Utils.Game_Log ("Shadows.Bind_Shadow_FB Cube_Framebuffer bound");
          --  Stuff like water has no depth render, but the bottom should appear
          --  as if maximally far away which == white.
          --  If it's cleared to black we see odd artifacts appear on these
@@ -92,7 +97,52 @@ package body Shadows is
       end if;
    end Bind_Shadow_FB;
 
-   --  ----------------------------------------------------------------------------
+    --  ----------------------------------------------------------------------------
+
+    procedure Change_Shadow_Size (Dim : Integer) is
+          use GL.Objects.Framebuffers;
+          use GL.Objects.Textures;
+          use GL.Objects.Textures.Targets;
+    begin
+        Game_Utils.Game_Log
+          ("Shadows.Change_Shadow_Size generating shadow textures, size " &
+             Integer'Image (Dim));
+        Read_And_Draw_Target.Bind (G_Shadows.Cube_Framebuffer);
+        Texture_Manager.Bind_Cube_Texture (0, G_Shadows.Cube_Colour_Tex);
+        for index in Int range 0 .. 5 loop
+            Texture_Cube_Map_Positive_X.Load_Empty_Texture
+              (Level           =>  index,
+               Internal_Format => GL.Pixels.RGBA16F,
+               Width           => Int (Settings.Shadows_Size),
+               Height          => Int (Settings.Shadows_Size));
+        end loop;
+        Texture_Cube_Map.Set_Magnifying_Filter (Linear);
+        Texture_Cube_Map.Set_Minifying_Filter (Linear);
+        Texture_Cube_Map.Set_X_Wrapping (Clamp_To_Edge);
+        Texture_Cube_Map.Set_Y_Wrapping (Clamp_To_Edge);
+        Texture_Cube_Map.Set_Z_Wrapping (Clamp_To_Edge);
+        Read_And_Draw_Target.Attach_Texture
+          (Color_Attachment_0, G_Shadows.Cube_Colour_Tex, 0);
+
+        GL.Objects.Renderbuffers.Active_Renderbuffer.Bind
+          (G_Shadows.Render_Buffer);
+        GL.Objects.Renderbuffers.Active_Renderbuffer.Allocate
+         (GL.Pixels.Depth_Component, Int (Settings.Shadows_Size),
+          Int (Settings.Shadows_Size));
+        Read_And_Draw_Target.Attach_Renderbuffer
+          (Depth_Attachment, G_Shadows.Render_Buffer);
+        if not GL_Utils.Verify_Bound_Framebuffer then
+            raise Shadows_Error with
+              "Shadows.Change_Shadow_Size; error verifying framebuffer for depth";
+        end if;
+        Read_And_Draw_Target.Bind (Default_Framebuffer);
+
+    exception
+        when others => raise Shadows_Error with
+              "Shadows.Change_Shadow_Size exception";
+    end Change_Shadow_Size;
+
+    --  ----------------------------------------------------------------------------
 
    procedure Init is
       use GL.Attributes;
@@ -128,7 +178,12 @@ package body Shadows is
       Set_Vertex_Attrib_Pointer (Attrib_VT, 3, Single_Type, False, 0, 0);
       Enable_Vertex_Attrib_Array (Attrib_VT);
 
+      G_Shadows.Cube_Framebuffer.Initialize_Id;
+      G_Shadows.Cube_Colour_Tex.Initialize_Id;
+      G_Shadows.Render_Buffer.Initialize_Id;
+
       Game_Utils.Game_Log ("---SHADOWS INITIALISED---");
+      Change_Shadow_Size (Settings.Shadows_Size);
 
    exception
       when others =>
@@ -140,7 +195,7 @@ package body Shadows is
 
    function Caster_Position return Singles.Vector3 is
    begin
-      return G_Shadows.Caster_Pos_Wor;
+      return G_Shadows.Caster_Pos_World;
    end Caster_Position;
 
    --  ---------------------------------------------------------------------
@@ -171,7 +226,7 @@ package body Shadows is
       G_Shadows.Far := 100.0;
       G_Shadows.Fovy := 90.0;
       G_Shadows.Aspect := 1.0;
-      G_Shadows.Caster_Pos_Wor := (0.0, 0.0, 0.0);
+      G_Shadows.Caster_Pos_World := (0.0, 0.0, 0.0);
 
       for index in Int range 1 .. 6 loop
          Init_Lookat_Transform (Caster_Pos, Target_Pos (index),
