@@ -3,6 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Buffers;
+with GL.Low_Level.Enums;
 with GL.Objects.Buffers;
 with GL.Objects.Framebuffers;
 with GL.Objects.Programs;
@@ -54,6 +55,8 @@ package body Shadows is
    Black     : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
    G_Shadows : Shadow_Data;
 
+    procedure Load_Cube_Map_Texture
+      (theTexture : GL.Objects.Textures.Targets.Cube_Map_Side_Target.Fillable_Target);
    procedure Reset_Shadows;
 
    --  ----------------------------------------------------------------------------
@@ -109,20 +112,25 @@ package body Shadows is
              Integer'Image (Dim));
         Read_And_Draw_Target.Bind (G_Shadows.Cube_Framebuffer);
         Texture_Manager.Bind_Cube_Texture (0, G_Shadows.Cube_Colour_Tex);
-        for index in Int range 0 .. 5 loop
-            Texture_Cube_Map_Positive_X.Load_Empty_Texture
-              (Level           =>  index,
-               Internal_Format => GL.Pixels.RGBA16F,
-               Width           => Int (Settings.Shadows_Size),
-               Height          => Int (Settings.Shadows_Size));
-        end loop;
+
+        Load_Cube_Map_Texture (Texture_Cube_Map_Positive_X);
+        Load_Cube_Map_Texture (Texture_Cube_Map_Positive_Y);
+        Load_Cube_Map_Texture (Texture_Cube_Map_Positive_Z);
+        Load_Cube_Map_Texture (Texture_Cube_Map_Negative_X);
+        Load_Cube_Map_Texture (Texture_Cube_Map_Negative_Y);
+        Load_Cube_Map_Texture (Texture_Cube_Map_Negative_Z);
+
         Texture_Cube_Map.Set_Magnifying_Filter (Linear);
         Texture_Cube_Map.Set_Minifying_Filter (Linear);
         Texture_Cube_Map.Set_X_Wrapping (Clamp_To_Edge);
         Texture_Cube_Map.Set_Y_Wrapping (Clamp_To_Edge);
         Texture_Cube_Map.Set_Z_Wrapping (Clamp_To_Edge);
+        Game_Utils.Game_Log
+          ("Shadows.Change_Shadow_Size Wrapping set ");
         Read_And_Draw_Target.Attach_Texture
           (Color_Attachment_0, G_Shadows.Cube_Colour_Tex, 0);
+        Game_Utils.Game_Log
+          ("Shadows.Change_Shadow_Size Texture attached ");
 
         GL.Objects.Renderbuffers.Active_Renderbuffer.Bind
           (G_Shadows.Render_Buffer);
@@ -191,12 +199,24 @@ package body Shadows is
          raise;
    end Init;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    function Caster_Position return Singles.Vector3 is
    begin
       return G_Shadows.Caster_Pos_World;
    end Caster_Position;
+
+   --  ---------------------------------------------------------------------
+
+    procedure Load_Cube_Map_Texture
+      (theTexture : GL.Objects.Textures.Targets.Cube_Map_Side_Target.Fillable_Target) is
+      use GL.Objects.Textures.Targets;
+    begin
+        theTexture.Load_Empty_Texture
+          (Level => 0, Internal_Format => GL.Pixels.RGBA16F,
+           Width => Int (Settings.Shadows_Size),
+           Height  => Int (Settings.Shadows_Size));
+    end Load_Cube_Map_Texture;
 
    --  ---------------------------------------------------------------------
 
