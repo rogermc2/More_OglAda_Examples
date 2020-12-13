@@ -66,18 +66,16 @@ package body Texture_Manager is
                                 Tex  : GL.Objects.Textures.Texture) is
       use GL.Objects.Textures.Targets;
       use GL.Types;
-      OK : Boolean := False;
    begin
-      OK := Slot < 12;
-      if not OK then
+      if  Slot > 11 then
          raise Texture_Exception with
            "Texture.Bind_Cube_Texture, active texture unit number for binding "
-           & "is high:" & Positive'Image (Slot);
-      elsif not Is_Bound (Slot) then
+           & "is too high:" & Positive'Image (Slot);
+      end if;
+      if Tex /= Bound_Textures.Element (Slot) then
          Set_Active_Unit (GL.Types.Int (Slot));
          Texture_Cube_Map.Bind (Tex);
          Bound_Textures.Replace_Element (Slot, Tex);
-         OK := True;
       end if;
 
    end Bind_Cube_Texture;

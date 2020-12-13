@@ -88,6 +88,7 @@ package body Shadows is
                                  Int (Settings.Shadows_Size));
          Read_And_Draw_Target.Attach_Texture
            (Color_Attachment_0, G_Shadows.Cube_Colour_Tex, 0);
+         Game_Utils.Game_Log ("**** Shadows.Bind_Shadow_FB Cube_Colour_Tex attached");
          Utilities.Clear_Colour_Buffer_And_Depth;
 
          GL.Objects.Programs.Use_Program (G_Shadows.Depth_Sp);
@@ -111,8 +112,8 @@ package body Shadows is
           ("Shadows.Change_Shadow_Size generating shadow textures, size " &
              Integer'Image (Dim));
         Read_And_Draw_Target.Bind (G_Shadows.Cube_Framebuffer);
-        Texture_Manager.Bind_Cube_Texture (0, G_Shadows.Cube_Colour_Tex);
 
+        Texture_Manager.Bind_Cube_Texture (0, G_Shadows.Cube_Colour_Tex);
         Load_Cube_Map_Texture (Texture_Cube_Map_Positive_X);
         Load_Cube_Map_Texture (Texture_Cube_Map_Positive_Y);
         Load_Cube_Map_Texture (Texture_Cube_Map_Positive_Z);
@@ -125,20 +126,21 @@ package body Shadows is
         Texture_Cube_Map.Set_X_Wrapping (Clamp_To_Edge);
         Texture_Cube_Map.Set_Y_Wrapping (Clamp_To_Edge);
         Texture_Cube_Map.Set_Z_Wrapping (Clamp_To_Edge);
-        Game_Utils.Game_Log
-          ("Shadows.Change_Shadow_Size Wrapping set ");
-        Read_And_Draw_Target.Attach_Texture
-          (Color_Attachment_0, G_Shadows.Cube_Colour_Tex, 0);
-        Game_Utils.Game_Log
-          ("Shadows.Change_Shadow_Size Texture attached ");
 
-        GL.Objects.Renderbuffers.Active_Renderbuffer.Bind
-          (G_Shadows.Render_Buffer);
+        Read_And_Draw_Target.Attach_Texture_2D
+          (Attachment => Color_Attachment_0,
+           Tex_Target => GL.Low_Level.Enums.Texture_Cube_Map_Negative_Z,
+           Object     => G_Shadows.Cube_Colour_Tex);
+        Game_Utils.Game_Log
+          ("Shadows.Change_Shadow_Size Texture attached 2");
         GL.Objects.Renderbuffers.Active_Renderbuffer.Allocate
          (GL.Pixels.Depth_Component, Int (Settings.Shadows_Size),
           Int (Settings.Shadows_Size));
+        Game_Utils.Game_Log
+          ("Shadows.Change_Shadow_Size Renderbuffer Allocated");
         Read_And_Draw_Target.Attach_Renderbuffer
           (Depth_Attachment, G_Shadows.Render_Buffer);
+
         if not GL_Utils.Verify_Bound_Framebuffer then
             raise Shadows_Error with
               "Shadows.Change_Shadow_Size; error verifying framebuffer for depth";
