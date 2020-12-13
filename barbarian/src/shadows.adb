@@ -131,13 +131,11 @@ package body Shadows is
           (Attachment => Color_Attachment_0,
            Tex_Target => GL.Low_Level.Enums.Texture_Cube_Map_Negative_Z,
            Object     => G_Shadows.Cube_Colour_Tex);
-        Game_Utils.Game_Log
-          ("Shadows.Change_Shadow_Size Texture attached 2");
+
+        GL.Objects.Renderbuffers.Active_Renderbuffer.Bind (G_Shadows.Render_Buffer);
         GL.Objects.Renderbuffers.Active_Renderbuffer.Allocate
          (GL.Pixels.Depth_Component, Int (Settings.Shadows_Size),
           Int (Settings.Shadows_Size));
-        Game_Utils.Game_Log
-          ("Shadows.Change_Shadow_Size Renderbuffer Allocated");
         Read_And_Draw_Target.Attach_Renderbuffer
           (Depth_Attachment, G_Shadows.Render_Buffer);
 
