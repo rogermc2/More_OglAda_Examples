@@ -470,10 +470,12 @@ package body Prop_Renderer is
       use Single_Math_Functions;
       use Singles;
       use Transparency;
-      Left         : constant Int := Maths.Max_Int (0, V - Tiles_Distance);
-      Right        : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1, V + Tiles_Distance);
-      Up           : constant Int := Maths.Max_Int (0, U - Tiles_Distance);
-      Down         : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1, U + Tiles_Distance);
+      Left         : constant Int := Maths.Max_Int (0, V - Tiles_Distance) + 1;
+      Right        : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1,
+                                                    V + Tiles_Distance) + 1;
+      Up           : constant Int := Maths.Max_Int (0, U - Tiles_Distance) + 1;
+      Down         : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1,
+                                                    U + Tiles_Distance) + 1;
       Curr_Time    : constant Single := Single (Glfw.Time);
       Elapsed      : constant Single := Curr_Time - Prev_Time;
       Hdg_Dia      : constant Single := 20.0 * Elapsed;
