@@ -283,10 +283,10 @@ package body Maths is
    function Max_Int (L, R : GL.Types.Int) return GL.Types.Int is
       Result : GL.Types.Int;
    begin
-      if L < R then
-         Result := L;
-      else
+      if R > L then
          Result := R;
+      else
+         Result := L;
       end if;
       return Result;
    end Max_Int;

@@ -381,10 +381,12 @@ package body Prop_Renderer is
       use Maths;
       use Single_Math_Functions;
       use Singles;
-      Left         : constant Int := Maths.Max_Int (0, V - Tiles_Distance);
-      Right        : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1, V + Tiles_Distance);
-      Up           : constant Int := Maths.Max_Int (0, U - Tiles_Distance);
-      Down         : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1, U + Tiles_Distance);
+      Left         : constant Int := Maths.Max_Int (0, V - Tiles_Distance) + 1;
+      Right        : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1,
+                                                    V + Tiles_Distance) + 1;
+      Up           : constant Int := Maths.Max_Int (0, U - Tiles_Distance) + 1;
+      Down         : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1,
+                                                    U + Tiles_Distance) + 1;
       --  Diamond Bob
       Curr_Time    : constant Single := Single (Glfw.Time);
       Elapsed      : constant Single := Curr_Time - Prev_Time;
@@ -406,6 +408,10 @@ package body Prop_Renderer is
    begin
       Prev_Time := Curr_Time;
       Enable (Depth_Test);
+--        Game_Utils.Game_Log ("Prop_Renderer.Render_Props_Around_Depth_Only Left, Right: "
+--         & Int'Image (Left) & ", " & Int'Image (Right));
+--        Game_Utils.Game_Log ("Prop_Renderer.Render_Props_Around_Depth_Only Up, Down: "
+--         & Int'Image (Up) & ", " & Int'Image (Down));
       for vi in Left .. Right loop
          for ui in Up .. Down loop
             --                 Props_Size := Tile_Data'Size;
