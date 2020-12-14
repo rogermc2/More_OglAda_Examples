@@ -34,7 +34,7 @@ package Prop_Renderer_Support is
       Script_Index          : Positive := 1;
 
       -- Index Of Any Sprite Used In Sprite Renderer
-      Sprite_Index          : Positive := 1;
+      Sprite_Index          : Int := 1;
       -- If Particles Attached This Is Index In Particle Renderer
       Particle_System_Index : Positive := 1;
       Boulder_Snd_Idx       : Positive := 1;

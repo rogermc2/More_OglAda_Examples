@@ -44,6 +44,7 @@ with Shadows;
 with Splats_Shader_Manager;
 with Sprite_Shader_Manager;
 with Sprite_Renderer;
+with Sprite_World_Map;
 with Text;
 with Texture_Manager;
 

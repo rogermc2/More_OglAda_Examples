@@ -3,6 +3,7 @@ with Glfw;
 with Glfw.Input.Keys;
 with Glfw.Windows.Context;
 
+with Maths;
 with Utilities;
 
 with Audio;
@@ -79,6 +80,8 @@ package body Main_Loop.Game_Support is
       Camera_Position : constant Singles.Vector3 := Camera.World_Position;
       Centre_X        : constant Int := Int ((1.0 + Camera_Position (GL.X)) / 2.0);
       Centre_Z        : constant Int := Int ((1.0 + Camera_Position (GL.Z)) / 2.0);
+      UV              : constant Ints.Vector2 :=
+                            (Abs (Centre_X), Abs (Centre_Z));
    begin
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
          Game_Utils.Game_Log ("Game_Support.Player_1_View, Bind_Shadow_FBs");
@@ -86,7 +89,8 @@ package body Main_Loop.Game_Support is
             Bind_Shadow_FB (index);
             Manifold.Draw_Manifold_Around_Depth_Only;
             Prop_Renderer.Render_Props_Around_Depth_Only
-              (Centre_X, Centre_Z, Shadow_Caster_Max_Tiles_Away);
+              (UV (GL.X), UV (GL.Y), Shadow_Caster_Max_Tiles_Away);
+--                (Centre_X, Centre_Z, Shadow_Caster_Max_Tiles_Away);
          end loop;
       end if;   --  end of shadow mapping pass
 
@@ -97,10 +101,12 @@ package body Main_Loop.Game_Support is
       Manifold.Draw_Manifold_Around (Camera_Position,
                                      Single (Settings.Render_Distance));
       Blood_Splats.Render_Splats;
+      Game_Utils.Game_Log ("Game_Support.Player_1_View, Centre_X, Centre_Z " &
+                             Int'Image (Centre_X) & ", " & Int'Image (Centre_Z));
       Prop_Renderer.Render_Props_Around_Split (Centre_X, Centre_Z,
                                                Int (Settings.Render_Distance));
-      Sprite_World_Map.Cache_Sprites_Around (Centre_X, Centre_Z,
-                                             Int (Settings.Render_Distance));
+--        Sprite_World_Map.Cache_Sprites_Around (Centre_X, Centre_Z,
+      Sprite_World_Map.Cache_Sprites_Around (UV (GL.X), UV (GL.Y), Int (Settings.Render_Distance));
       Transparency.Draw_Transparency_List;
       Particle_System.Render_Particle_Systems (Single (Delta_Time));
       GL_Utils.Set_Resized_View (False);

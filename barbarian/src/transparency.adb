@@ -37,6 +37,7 @@ package body Transparency is
    procedure Draw_Transparency_List is
       use GL.Blending;
       use GL.Toggles;
+      use GL.Types;
       Curr_Type : Transparency_Type := Tr_Undef;
       Inspect   : Natural := TR_Farthest_Node;
       Item_Type : Transparency_Type;
@@ -54,11 +55,14 @@ package body Transparency is
             Sprite_Renderer.Start_Sprite_Rendering;
          end if;
          if Item_Type = Tr_Sprite then
-            Sprite_Renderer.Render_Sprite (Node.Render_Id);
+            Sprite_Renderer.Render_Sprite (Int (Node.Render_Id));
          else
             Prop_Renderer.Render_Property (Node.Render_Id);
          end if;
+         Inspect := Node.Closer;
       end loop;
+      GL.Buffers.Depth_Mask (True);
+      Disable (Blend);
 
    end Draw_Transparency_List;
 
@@ -75,7 +79,7 @@ package body Transparency is
    --  ----------------------------------------------------------------------------
 
    procedure Add_Transparency_Item (Item_Type : Transparency_Type;
-                                    Render_ID : Positive;
+                                    Render_ID : GL.Types.Int;
                                     Position  : GL.Types.Singles.Vector3;
                                     Brad      : GL.Types.Single) is
       use GL.Types;
@@ -96,7 +100,7 @@ package body Transparency is
 
    begin
       New_Node.Tr_Type := Item_Type;
-      New_Node.Render_Id := Render_ID;
+      New_Node.Render_Id := Integer (Render_ID);
       New_Node.Sq_Dist := Sq_Dist;
 
       if Is_Empty (TR_Nodes) then

@@ -69,7 +69,9 @@ package Maths is
      (Rotate_X, Rotate_Y, Rotate_Z : Degree; Transform : out Singles.Matrix4);
    procedure Init_Rotation_Transform
      (Rotation_Vec : Singles.Vector3; Transform : out Singles.Matrix4);
+   function Length (V : Singles.Vector2) return Single;
    function Length (V : Singles.Vector3) return Single;
+   function Length_Sq (V : GL.Types.Singles.Vector2) return GL.Types.Single;
    function Length_Sq (V : GL.Types.Singles.Vector3) return GL.Types.Single;
    function Min_Int (L, R : GL.Types.Int) return GL.Types.Int;
    function Min_Integer (L, R : Integer) return Integer;
@@ -79,6 +81,7 @@ package Maths is
    function Max (L, R : GL.Types.Single) return GL.Types.Single;
    function New_Quaternion (Angle : Radian; Axis : GL.Types.Singles.Vector3)
                             return Single_Quaternion.Quaternion;
+   function Normalized (V : Singles.Vector2) return Singles.Vector2;
    function Normalized (V : Singles.Vector3) return Singles.Vector3;
    function Normalized (V : Singles.Vector4) return Singles.Vector4;
    function Perspective_Matrix (View_Angle : Degree; Aspect, Near, Far : Single)

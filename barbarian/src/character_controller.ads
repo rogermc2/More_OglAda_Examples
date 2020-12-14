@@ -65,7 +65,7 @@ private
       Destination_Tile_Y       : Int := -1;
       Current_Weapon           : Specs_Manager.Weapon_Type :=
                                    Specs_Manager.Na_Wt;
-      Sprite_Index             : Integer := 0;
+      Sprite_Index             : Int := 0;
       Current_Anim             : Integer := 0;
       Current_Anim_Frame       : Integer := 0;
       Next_Attack_Event        : Integer := 0;

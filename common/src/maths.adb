@@ -225,11 +225,27 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+   function Length (V : GL.Types.Singles.Vector2) return GL.Types.Single is
+      use Single_Math_Functions;
+   begin
+      return Sqrt (Length_Sq (V));
+   end Length;
+
+   --  ------------------------------------------------------------------------
+
    function Length (V : GL.Types.Singles.Vector3) return GL.Types.Single is
       use Single_Math_Functions;
    begin
       return Sqrt (Length_Sq (V));
    end Length;
+
+   --  ------------------------------------------------------------------------
+
+   function Length_Sq (V : GL.Types.Singles.Vector2) return GL.Types.Single is
+      use GL;
+   begin
+      return V (X) * V (X) + V (Y) * V (Y);
+   end Length_Sq;
 
    --  ------------------------------------------------------------------------
 
@@ -240,7 +256,6 @@ package body Maths is
    end Length_Sq;
 
    --  ------------------------------------------------------------------------
-
    function Min_Int (L, R : GL.Types.Int) return GL.Types.Int is
       Result : GL.Types.Int;
    begin
@@ -331,6 +346,20 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
+   function Normalized (V : Singles.Vector2) return Singles.Vector2 is
+      use GL;
+      L : constant Single := Length (V);
+   begin
+      if L /= 0.0 then
+         return (V (X) / L, V (Y) / L);
+      else
+         raise Math_Exception with
+              "Maths error, attempted to normalize a zero length vector";
+         return V;
+      end if;
+   end Normalized;
+
+   --  ------------------------------------------------------------------------
    function Normalized (V : Singles.Vector3) return Singles.Vector3 is
       use GL;
       L : constant Single := Length (V);
@@ -338,7 +367,8 @@ package body Maths is
       if L /= 0.0 then
          return (V (X) / L, V (Y) / L, V (Z) / L);
       else
-         raise Math_Exception with "Maths error, attempted to normalize a zero length vector";
+         raise Math_Exception with
+              "Maths error, attempted to normalize a zero length vector";
          return V;
       end if;
    end Normalized;

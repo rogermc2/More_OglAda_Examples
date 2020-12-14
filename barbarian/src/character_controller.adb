@@ -652,7 +652,7 @@ package body Character_Controller is
                                Anim_Num  : Natural) is
       Spec_Index  : constant Positive := Character.Specs_Index;
       Spec        : constant Spec_Data := Character_Specs.Element (Spec_Index);
-      Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num);
+      Atlas_Index : constant Int := Int (Animation_Index (Spec_Index, Anim_Num));
    begin
       if Character.Current_Anim /= Anim_Num then
          if Anim_Num > Natural (Max_Animations) then

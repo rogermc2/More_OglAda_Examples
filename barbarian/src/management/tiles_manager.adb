@@ -10,6 +10,7 @@ with Maths;
 with Batch_Manager;
 with Game_Utils;
 with Settings;
+with Sprite_World_Map;
 with Texture_Manager;
 
 package body Tiles_Manager is
@@ -509,6 +510,8 @@ package body Tiles_Manager is
       Add_Tiles_To_Batches;
       Game_Utils.Game_Log ("Load_Tiles Batch calling Add_Dummy_Manifold_Lights");
       Add_Dummy_Manifold_Lights;
+
+      Sprite_World_Map.Init;
 
       Game_Utils.Game_Log ("Total points " & Integer'Image (Total_Points));
       Game_Utils.Game_Log ("Manifold generated.");

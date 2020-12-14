@@ -19,7 +19,7 @@ package Prop_Renderer is
                            Prop_Activator_Prop_State);
 
    package Prop_Indices_Package is new Ada.Containers.Vectors
-     (Positive, Positive);
+     (Positive, GL.Types.Int);
    type Prop_Indices_List is new Prop_Indices_Package.Vector with null Record;
 
    type Props_In_Tiles_Array is array

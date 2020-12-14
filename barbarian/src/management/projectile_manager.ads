@@ -21,10 +21,10 @@ private
         Current_Wind              : Singles.Vector3 := (0.0, 0.0, 0.0);
         Heading_Degrees           : Single := 0.0;
         Characters_Hit            : Characters_Hit_Array := (others => -1);
-        Fired_By_Index            : Integer := -1;
-        Sprite_Index              : Integer := -1;
-	Broken_Sprite_Index       : Integer := -1;
-	Last_Character_Hit_Index  : Integer := -1;
+        Fired_By_Index            : Int := -1;
+        Sprite_Index              : Int := -1;
+	Broken_Sprite_Index       : Int := -1;
+	Last_Character_Hit_Index  : Int := -1;
 	Proj_Type                 : Projectile_Type := Na_Proj_Type;
 	Number_Of_Characters_Hit  : Integer := 0;
 	Is_Airborne               : Boolean := False;
