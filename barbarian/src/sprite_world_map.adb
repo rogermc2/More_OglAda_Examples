@@ -2,6 +2,7 @@
 with Maths;
 
 with Batch_Manager;
+with Game_Utils;
 with Sprite_Renderer;
 with Tiles_Manager;
 with Transparency;
@@ -52,13 +53,13 @@ package body Sprite_World_Map is
       use Transparency;
       S_U       : constant Sprite_Index := Sprite_Index (U);
       S_V       : constant Sprite_Index := Sprite_Index (V);
-      U_First   : constant Sprite_Index := Sprite_Index (Max_Int (0, U - Tile_Range)) + 1;
-      V_First   : constant Sprite_Index := Sprite_Index (Max_Int (0, V - Tile_Range)) + 1;
+      U_First   : constant Sprite_Index := Sprite_Index (Max_Int (0, U - Tile_Range) + 1);
+      V_First   : constant Sprite_Index := Sprite_Index (Max_Int (0, V - Tile_Range) + 1);
       U_Last    : constant Sprite_Index := Sprite_Index (Min_Int
-        (U + Tile_Range, Get_Tiles_Across - 1)) + 1;
+        (U + Tile_Range, Get_Tiles_Across - 1) + 1);
       Sprite_ID : Int;
       V_Last    : constant Sprite_Index :=
-                    Sprite_Index (Min_Int (V + Tile_Range, Get_Tiles_Across - 1)) + 1;
+                    Sprite_Index (Min_Int (V + Tile_Range, Get_Tiles_Across - 1) + 1) ;
       Pos       : Singles.Vector3;
       Count     : Int;
    begin
@@ -72,6 +73,7 @@ package body Sprite_World_Map is
             end loop;
          end loop;
       end loop;
+
    end Cache_Sprites_Around;
 
    --  ------------------------------------------------------------------------
