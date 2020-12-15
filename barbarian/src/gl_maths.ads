@@ -37,13 +37,15 @@ package GL_Maths is
    subtype Single_Vector is Singles_Array_Package.Real_Vector;
    subtype Single_Matrix is Singles_Array_Package.Real_Matrix;
 
+   Maths_Error : Exception;
+
    type Character_Array is array (Integer range <>) of Character;
    type Integer_Array is array (Integer range <>) of Integer;
 
-   function Accel_Exp (X : Single; Init, Final : Vector2) return Single;
-   function Decel_Bounce (X : Single; Init, Final : Vector2; Num : Integer)
+   function Accel_Expand (X : Single; Initial, Final : Vector2) return Single;
+   function Decel_Bounce (X : Single; Initial, Final : Vector2; Num : Integer)
                           return Single;
-   function Decel_Elastic (X : Single; Init, Final : Vector2; Num : Integer)
+   function Decel_Elastic (X : Single; Initial, Final : Vector2; Num : Integer)
                           return Single;
    function From_Real_Matrix4 (R_Matrix : Single_Matrix) return Singles.Matrix4;
    function From_Real_Vector3 (R_Vec : Single_Vector) return Singles.Vector3;

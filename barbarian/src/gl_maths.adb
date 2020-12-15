@@ -5,38 +5,58 @@ with Maths;
 
 package body GL_Maths is
 
-   function Accel_Exp (X : Single; Init, Final : Vector2) return Single is
-      R    : constant Vector2 := Final - Init;
-      N    : constant Single := (X - Init (GL.X)) / R (GL.X);
-      Y    : constant Single := 100.0 * (N - 1.0) ** 2;
+   function Accel_Expand (X : Single; Initial, Final : Vector2) return Single is
+      R    : constant Vector2 := Final - Initial;
+      N    : Single;
+      Y    : Single;
    begin
-      return R (GL.Y) * Y + Init (GL.Y);
-   end Accel_Exp;
+      if Final = Initial then
+            raise Maths_Error with
+              "Maths.Accel_Expand received equal Final and Initial values.";
+      end if;
+      N := (X - Initial (GL.X)) / R (GL.X);
+      Y := 100.0 * (N - 1.0) ** 2;
+      return R (GL.Y) * Y + Initial (GL.Y);
+   end Accel_Expand;
 
    --  -----------------------------------------------------------
 
-   function Decel_Bounce (X : Single; Init, Final : Vector2; Num : Integer)
+   function Decel_Bounce (X : Single; Initial, Final : Vector2; Num : Integer)
                           return Single is
       use Maths.Single_Math_Functions;
       use Ada.Numerics;
-      R    : constant Vector2 := Final - Init;
-      N    : constant Single := (X - Init (GL.X)) / R (GL.X);
-      Y    : constant Single := (1.0 - N) * Abs (Sin (N * PI * Single (Num)));
+      R    : constant Vector2 := Final - Initial;
+      N    : Single;
+      Y    : Single;
    begin
-      return R (GL.Y) * Y + Init (GL.Y);
+      if Final = Initial then
+            raise Maths_Error with
+              "Maths.Decel_Bounce received equal Final and Initial values.";
+      end if;
+
+      N := (X - Initial (GL.X)) / R (GL.X);
+      Y := (1.0 - N) * Abs (Sin (N * PI * Single (Num)));
+      return R (GL.Y) * Y + Initial (GL.Y);
    end Decel_Bounce;
 
    --  -----------------------------------------------------------
 
-   function Decel_Elastic (X : Single; Init, Final : Vector2; Num : Integer)
+   function Decel_Elastic (X : Single; Initial, Final : Vector2; Num : Integer)
                           return Single is
       use Maths.Single_Math_Functions;
       use Ada.Numerics;
-      R    : constant Vector2 := Final - Init;
-      N    : constant Single := (X - Init (GL.X)) / R (GL.X);
-      Y    : constant Single := (1.0 - N) * Sin (N * PI * Single (Num));
+      R    : constant Vector2 := Final - Initial;
+      N    : Single;
+      Y    : Single;
    begin
-      return R (GL.Y) * Y + Init (GL.Y);
+      if Final = Initial then
+            raise Maths_Error with
+              "Maths.Decel_Elastic received equal Final and Initial values.";
+      end if;
+
+      N := (X - Initial (GL.X)) / R (GL.X);
+      Y := (1.0 - N) * Sin (N * PI * Single (Num));
+      return R (GL.Y) * Y + Initial (GL.Y);
    end Decel_Elastic;
 
    --  -----------------------------------------------------------
