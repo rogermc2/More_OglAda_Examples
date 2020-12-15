@@ -34,9 +34,9 @@ package body GUI is
      GL.Objects.Textures.Texture;
 
    type GUI_Icon_Data is record
-      XY_Position       : Single_Array (1 .. 6) := (others => 0.0);
+      XY_Position       : Singles.Vector2_Array (1 .. 3) := (others => (0.0, 0.0));
       Anim_Countdowns   : Single_Array (1 .. 3) := (others => 0.0);
-      Textures          : Texture_Array (1 .. 3);
+      Gold_Textures     : Texture_Array (1 .. 3);
    end record;
 
    type Controller_Button_Overlays_Data is record
@@ -372,11 +372,11 @@ package body GUI is
       X         : Single;
    begin
       Texture_Manager.Load_Image_To_Texture
-        ("src/textures/gui_icon_javs.png", GUI_Icons.Textures (1), False, True);
+        ("src/textures/gui_icon_javs.png", GUI_Icons.Gold_Textures (1), False, True);
       Texture_Manager.Load_Image_To_Texture
-        ("src/textures/gui_icon_coin.png", GUI_Icons.Textures (2), False, True);
+        ("src/textures/gui_icon_coin.png", GUI_Icons.Gold_Textures (2), False, True);
       Texture_Manager.Load_Image_To_Texture
-        ("src/textures/gui_icon_javs.png", GUI_Icons.Textures (3), False, True);
+        ("src/textures/gui_icon_kills.png", GUI_Icons.Gold_Textures (3), False, True);
 
       X := X_Ref + 384.0 / FB_Width;
       Javelin_Ammo_Text_Index := Text.Add_Text
@@ -420,6 +420,7 @@ package body GUI is
       Init_Crong_Head;
       Init_Fist;
       Init_Health_Bar;
+      Init_Gold_Counter;
       Init_Screen_Splat;
 
       Bottom_Health_Name := To_Unbounded_String ("crongdor");
@@ -504,7 +505,6 @@ package body GUI is
       use GL.Objects.Vertex_Arrays;
       use GUI_Atlas_Shader_Manager;
    begin
-      Game_Utils.Game_Log ("GUI.Render_Crong_Head");
       GL.Objects.Programs.Use_Program (Crong_Head_SP);
       Set_Current_Sprite (Single (Crong_Head_Sprite_Index));
       Set_Model_Matrix (Ch_Model_Mat);
@@ -552,20 +552,15 @@ package body GUI is
    begin
       GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
       GL.Objects.Programs.Use_Program (Image_Panel_SP);
---        GL.Objects.Textures.Set_Active_Unit (0);
       for index in Int range 1 .. 3 loop
          T := Max (0.0, 1.0 - Single (GUI_Icons.Anim_Countdowns (index)));
          Y := GL_Maths.Decel_Elastic (T, (0.0, 0.0), (1.0, 1.0), 6);
-         Screen_X := GUI_Icons.XY_Position (2 * index);
-         Screen_Y := GUI_Icons.XY_Position (2 * index + 1) * Y * Amp;
+         Screen_X := GUI_Icons.XY_Position (index) (GL.X);
+         Screen_Y := GUI_Icons.XY_Position (index) (GL.Y) * Y * Amp;
 
-         Game_Utils.Game_Log ("GUI.Render_Gold_Panel set Model_Mat, index: " &
-                                Int'Image (index));
          Model_Mat := Translation_Matrix ((Screen_X, Screen_Y, 0.0)) * Scale_Mat;
          Set_Model_Matrix (Model_Mat);
-         Texture_Manager.Bind_Texture (0, GUI_Icons.Textures (Integer (index)));
---           Texture_2D.Bind (GUI_Icons.Textures (Integer (index)));
-         Game_Utils.Game_Log ("GUI.Render_Gold_Panel Draw_Arrays");
+         Texture_Manager.Bind_Texture (0, GUI_Icons.Gold_Textures (Integer (index)));
          Draw_Arrays (Triangle_Strip, 0, 4);
       end loop;
 
@@ -615,7 +610,6 @@ package body GUI is
 
       Render_Health_Bars;
       Render_Crong_Head;
-      Game_Utils.Game_Log ("GUI.Render_GUIs, Rendering Gold_Panel");
       Render_Gold_Panel;
 
       Enable (Depth_Test);
