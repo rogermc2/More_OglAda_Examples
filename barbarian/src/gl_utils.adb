@@ -109,15 +109,6 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
---     function Get_Elapsed_Seconds return float is
---        Elapsed : constant Float := Float (Glfw.Time) - Previous_Seconds;
---     begin
---        Previous_Seconds := Float (Glfw.Time);
---        return Elapsed;
---     end Get_Elapsed_Seconds;
-
-   --  ------------------------------------------------------------------------
-
    function Is_Edit_Mode return Boolean is
    begin
        return Edit_Mode;

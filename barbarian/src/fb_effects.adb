@@ -110,7 +110,7 @@ package body FB_Effects is
       RB.Initialize_Id;
       Active_Renderbuffer.Bind (RB);
       Active_Renderbuffer.Allocate (GL.Pixels.Depth_Component,
-                                   FB_Width, FB_Height);
+                                    FB_Width, FB_Height);
       Read_And_Draw_Target.Attach_Renderbuffer (Depth_Attachment, RB);
 
       FB_Texture.Initialize_Id;

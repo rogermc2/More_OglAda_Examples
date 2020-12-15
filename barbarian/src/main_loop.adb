@@ -83,13 +83,9 @@ package body Main_Loop is
         Avg_Frames_Count         : Integer := 0;
         Curr_Frames_Count        : Integer := 0;
         --     Batching_Mode        : Boolean := True;
-        --
         --     Reserve_video_Memory : Boolean := True;
         Dump_Video               : Boolean := False;
         --     Draw_Debug_Quads     : Boolean;
-
-        Window_Width             : Glfw.Size;
-        Window_Height            : Glfw.Size;
         --      Param                  : Integer := 0;
         Camera_Height            : constant GL.Types.Single := 13.0;
         Changed_Camera_Height    : constant Boolean := False;
@@ -103,7 +99,14 @@ package body Main_Loop is
         --  ------------------------------------------------------------------------
 
         procedure Init_Modules (Window : in out Input_Callback.Barbarian_Window) is
+            Window_Width   : Glfw.Size;
+            Window_Height  : Glfw.Size;
+            Width          :  Single;
+            Height         :  Single;
         begin
+            Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+            Width := Single (Window_Width);
+            Height := Single (Window_Height);
             Input_Handler.Register_Input_Actions;
             Settings.Load_Settings;
             Shader_Manager.Init;
@@ -132,7 +135,7 @@ package body Main_Loop is
             Sprite_Renderer.Init;
             GUI.Init_GUIs;
             Blood_Splats.Init;
-            --        FB_Effects.Init (Integer (Window_Width), Integer (Window_Height));
+            FB_Effects.Init (Integer (Window_Width), Integer (Window_Height));
             Shadows.Init;
             Manifold.Init;
             Main_Menu.Init;
@@ -261,8 +264,6 @@ package body Main_Loop is
                             Text.Update_Particle_Texts (Delta_Time);
                             Check_Victory_Defeat;
                         end if;
-                        Game_Utils.Game_Log
-                          ("Main_Loop.Main_Game_Loop calling Player_1_View");
                         Player_1_View (Window, Delta_Time, Dump_Video,
                                        Save_Screenshot);
                         Game_Utils.Game_Log
@@ -361,6 +362,8 @@ package body Main_Loop is
         --  ------------------------------------------------------------------------
 
         procedure Run_Game (Window : in out Input_Callback.Barbarian_Window) is
+            Window_Width   : Glfw.Size;
+            Window_Height  : Glfw.Size;
             Width           : GL.Types.Single;
             Height          : GL.Types.Single;
             Map_Path        : Unbounded_String;
@@ -417,8 +420,6 @@ package body Main_Loop is
                     Manifold.Update_Static_Lights_Uniforms;
                     Prop_Renderer.Update_Static_Lights_Uniforms;
                     Sprite_Renderer.Update_Static_Lights_Uniforms;
-                    Game_Utils.Game_Log
-                      ("Main_Loop.Run_Game Sprite_Renderer Static_Lights updated");
 
                     Camera.Cam_Wind_In;  --  Camera screw-in effect
                     Audio.Play_Sound ("enter_portal.wav", False);
