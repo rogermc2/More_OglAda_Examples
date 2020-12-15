@@ -44,6 +44,7 @@ package Input_Handler is
    function Up_Action return Integer;
    function Was_Action_Pressed (Window : in out Input_Callback.Barbarian_Window;
                                 Action_ID : Integer) return Boolean;
+   function Wipe_Screen_Action return Integer;
 
 private
 

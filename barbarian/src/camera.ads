@@ -29,7 +29,7 @@ package Camera is
       Manual_Override                 : Boolean := False;
    end record;
 
-   procedure Cam_Wind_In;
+   procedure Camera_Wind_In;
    function Default_Camera return Camera_Data;
    procedure Init;
    function Far return Single;
@@ -48,6 +48,7 @@ package Camera is
     procedure Set_Is_Dirty (State : Boolean);
    procedure Set_Screen_Shake_Countdown (Countdown : Float);
    function View_Matrix return Singles.Matrix4;
+   procedure Update_Camera_Effects (Delta_Time : Float);
    function World_Position return Singles.Vector3;
 
 end Camera;

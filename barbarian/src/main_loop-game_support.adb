@@ -8,6 +8,7 @@ with Utilities;
 
 with Audio;
 with Blood_Splats;
+with Character_Controller;
 with Character_Map;
 with Event_Controller;
 with FB_Effects;
@@ -33,6 +34,7 @@ package body Main_Loop.Game_Support is
    Shadow_Caster_Max_Tiles_Away : constant GL.Types.Int := 10;
    FPS_Counter                  : Integer := 0;
 
+   procedure Cycle_Rendering_Mode;
    procedure Update_FPS_Box;
 
    --  -------------------------------------------------------------------------
@@ -64,9 +66,31 @@ package body Main_Loop.Game_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Check_Victory_Defeat is
+   procedure Check_Keys (Window : in out Input_Callback.Barbarian_Window;
+                         Save_Screenshot : in out Boolean) is
+        use Glfw.Input.Keys;
    begin
-       null;
+        Save_Screenshot := Input_Callback.Was_Key_Pressed (Window, F11);
+        if Input_Callback.Was_Key_Pressed (Window, F1) then
+            Prop_Renderer.Splash_Particles_At
+              (Character_Controller.Get_Character_Position (1));
+        elsif Input_Callback.Was_Key_Pressed (Window, F2) then
+            Cycle_Rendering_Mode;
+        end if;
+   end Check_Keys;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Cycle_Rendering_Mode is
+   begin
+        null;
+   end Cycle_Rendering_Mode;
+
+   --  -------------------------------------------------------------------------
+
+   function Check_Victory_Defeat return Boolean is
+   begin
+       return True;
    end Check_Victory_Defeat;
 
    --  -------------------------------------------------------------------------

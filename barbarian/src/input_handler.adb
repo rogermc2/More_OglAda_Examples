@@ -399,4 +399,10 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Wipe_Screen_Action return Integer is
+   begin
+      return Input_Actions.Wipe_Screen_Action_ID;
+   end Wipe_Screen_Action;
+
+   --  ------------------------------------------------------------------------
 end Input_Handler;

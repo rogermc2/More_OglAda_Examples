@@ -29,6 +29,7 @@ package Character_Controller is
       Throw_Back_Mps : Single;  Exclude_Id : Positive;
       Weapon         : Specs_Manager.Weapon_Type) return Natural;
    function Get_Character (Character_ID : Positive) return Barbarian_Character;
+   function Get_Character_Position (Character_ID : Positive) return Singles.Vector3;
    procedure Init;
    function Javelin_Count (Character_ID : Positive) return Integer;
    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);

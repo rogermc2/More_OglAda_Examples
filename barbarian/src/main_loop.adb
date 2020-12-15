@@ -94,7 +94,7 @@ package body Main_Loop is
         Initialize_Exception   : Exception;
         Update_Exception       : Exception;
 
-        function Update_Logic_Steps (Seconds : Float) return Boolean;
+        procedure Update_Logic_Steps (Seconds : Float);
 
         --  ------------------------------------------------------------------------
 
@@ -199,7 +199,7 @@ package body Main_Loop is
 
         end Introduction;
 
-        --  ------------------------------------------------------------------------
+        --  --------------------------------------------------------------------
 
         procedure Main_Game_Loop (Window : in out Input_Callback.Barbarian_Window) is
             use Glfw.Input.Keys;
@@ -247,38 +247,62 @@ package body Main_Loop is
                         if Is_Running then
                             Audio.Update_Ambient_Sounds;
                             Audio.Update_Boulder_Sounds;
+--                              Check_Keys;  -- DEBUG MODE!
                             Save_Screenshot :=
                               Input_Callback.Was_Key_Pressed (Window, F11);
                         elsif Settings.Video_Record_Mode and
                           Input_Callback.Was_Key_Pressed (Window, Backspace) then
                             Dump_Video := not Dump_Video;
                             Video_Timer := 0.0;
+                            Put_Line ("==RECORDING VIDEO==");
                         end if;
                     end if;
 
                     if Is_Running then
+                        --  Do cheating checks
                         Cheating := Cheat_Check_1;
                         if not Main_Menu.Menu_Open then
                             GUI.Update_GUIs (Delta_Time);
                             Text.Update_Comic_Texts (Delta_Time);
                             Text.Update_Particle_Texts (Delta_Time);
-                            Check_Victory_Defeat;
+--                          Check_Victory_Defeat checks that if the "defeated"
+--                          gui is up then controls aren't updated except space
+--  		            to restart
+--  			    Note that this reloads and continues execution of game
+--                          as normal - major states stacks don't change or anything
+                            Is_Running := Check_Victory_Defeat;
+
+                            if Is_Running then
+                                Camera.Update_Camera_Effects (Delta_Time);
+                                Update_Logic_Steps (Delta_Time);
+                                if Main_Menu.End_Story_Open then
+                                    Main_Menu_Open := True;
+                                    Unload_Level;
+                                    Is_Running := False;
+                                elsif Input_Handler.Was_Action_Pressed
+                                  (Window, Input_Handler.Wipe_Screen_Action) then
+                                  GUI.Start_Fist;
+                                end if;
+                            end if;
                         end if;
-                        Player_1_View (Window, Delta_Time, Dump_Video,
-                                       Save_Screenshot);
-                        Game_Utils.Game_Log
-                          ("Main_Loop.Main_Game_Loop Player_1_View returned");
+
+                        if Is_Running then
+                            Player_1_View (Window, Delta_Time, Dump_Video,
+                                           Save_Screenshot);
+                        end if;
+                        --                          Game_Utils.Game_Log
+                        --                            ("Main_Loop.Main_Game_Loop Player_1_View returned");
                         Is_Running := Is_Running and then not Main_Menu_Quit;
                         Is_Running := Is_Running and then not Main_Window.Should_Close;
                     end if;
                 end if;
 
-                --              Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
-                --                                  & Boolean'Image (Window.Should_Close));
+                Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
+                                     & Boolean'Image (Window.Should_Close));
                 Is_Running := Is_Running and
                   not Window.Should_Close and not Main_Menu_Quit;
-                --              Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Is_Running: "
-                --                                  & Boolean'Image (Is_Running));
+                Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Is_Running: "
+                                     & Boolean'Image (Is_Running));
             end loop;
             Quit_Game := True;
         end Main_Game_Loop;
@@ -390,9 +414,11 @@ package body Main_Loop is
                     --  chooser can be accessed if the player selects "new game" in the main menu.
                     Skip_Intro := False;
                     Level_Name := To_Unbounded_String
-                      (GUI_Level_Chooser.Get_Selected_Level_Name (Main_Menu.Are_We_In_Custom_Maps));
-                    Game_Utils.Game_Log ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
-                                         & To_String (Level_Name));
+                      (GUI_Level_Chooser.Get_Selected_Level_Name
+                         (Main_Menu.Are_We_In_Custom_Maps));
+                    Game_Utils.Game_Log
+                      ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
+                       & To_String (Level_Name));
 
                     --  Level has been selected, start creating level
                     Map_Path := To_Unbounded_String ("src/maps/") & Level_Name;
@@ -421,7 +447,7 @@ package body Main_Loop is
                     Prop_Renderer.Update_Static_Lights_Uniforms;
                     Sprite_Renderer.Update_Static_Lights_Uniforms;
 
-                    Camera.Cam_Wind_In;  --  Camera screw-in effect
+                    Camera.Camera_Wind_In;  --  Camera screw-in effect
                     Audio.Play_Sound ("enter_portal.wav", False);
 
                     Level_Time := 0.0;
@@ -445,7 +471,7 @@ package body Main_Loop is
 
         --  ------------------------------------------------------------------------
 
-        function Update_Logic_Steps (Seconds : Float) return Boolean is
+        procedure Update_Logic_Steps (Seconds : Float) is
             Accum_Time : Float := Seconds;
             Time_Step  : Integer := 0;
             OK         : Boolean := True;
@@ -464,7 +490,6 @@ package body Main_Loop is
             end loop;
             Max_Steps_Per_Frame := Game_Utils.Max (Max_Steps_Per_Frame, Time_Step);
 
-            return OK;
         end Update_Logic_Steps;
 
         --  ----------------------------------------------------------------------

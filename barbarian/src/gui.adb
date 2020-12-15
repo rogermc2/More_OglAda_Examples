@@ -152,7 +152,6 @@ package body GUI is
    procedure Init_Health_Bar;
    procedure Init_Screen_Splat;
    procedure Render_Screen_Splats;
-   procedure Start_Fist;
    procedure Update_Screen_Splats (Seconds : Float);
 
    --  ----------------------------------------------------------------------------
@@ -763,7 +762,7 @@ package body GUI is
       Text.Set_Text_Visible (Finish_Stats_Text_Index, True);
    end Show_Finished_Stats;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    function Show_Victory return Boolean is
    begin

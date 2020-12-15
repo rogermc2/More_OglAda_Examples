@@ -24,6 +24,7 @@ package GUI is
                                   Kills, Kills_Max, Gold, Gold_Max : Integer;
                                   Time                             : Float; Par               : String);
    function Show_Victory return Boolean;
+   procedure Start_Fist;
    procedure Update_GUIs (Seconds : Float);
 
 end GUI;

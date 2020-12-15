@@ -227,8 +227,10 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   function Damage_Character (Char_ID   : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
-                              Damage    : Int; Weapon : Weapon_Type) return Boolean is
+   function Damage_Character (Char_ID   : Positive; Doer_ID  : Natural;
+                              Angle : Maths.Degree;
+                              Damage    : Int; Weapon : Weapon_Type)
+                              return Boolean is
       use Singles;
       use Particle_System;
       use Projectile_Manager;
@@ -396,6 +398,15 @@ package body Character_Controller is
    begin
       return Characters.Element (Character_ID);
    end Get_Character;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Character_Position (Character_ID : Positive)
+                                    return Singles.Vector3  is
+      theChar : constant Barbarian_Character := Characters.Element (Character_ID);
+   begin
+      return theChar.World_Pos;
+   end Get_Character_Position;
 
    --  -------------------------------------------------------------------------
 
