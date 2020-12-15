@@ -7,15 +7,15 @@ package body GL_Maths is
 
    function Accel_Expand (X : Single; Initial, Final : Vector2) return Single is
       R    : constant Vector2 := Final - Initial;
-      N    : Single;
+      X_N  : Single;
       Y    : Single;
    begin
       if Final = Initial then
             raise Maths_Error with
               "Maths.Accel_Expand received equal Final and Initial values.";
       end if;
-      N := (X - Initial (GL.X)) / R (GL.X);
-      Y := 100.0 * (N - 1.0) ** 2;
+      X_N := (X - Initial (GL.X)) / R (GL.X);
+      Y := 100.0 * (X_N - 1.0) ** 2;
       return R (GL.Y) * Y + Initial (GL.Y);
    end Accel_Expand;
 
@@ -26,7 +26,7 @@ package body GL_Maths is
       use Maths.Single_Math_Functions;
       use Ada.Numerics;
       R    : constant Vector2 := Final - Initial;
-      N    : Single;
+      X_N    : Single;
       Y    : Single;
    begin
       if Final = Initial then
@@ -34,8 +34,8 @@ package body GL_Maths is
               "Maths.Decel_Bounce received equal Final and Initial values.";
       end if;
 
-      N := (X - Initial (GL.X)) / R (GL.X);
-      Y := (1.0 - N) * Abs (Sin (N * PI * Single (Num)));
+      X_N := (X - Initial (GL.X)) / R (GL.X);
+      Y := (1.0 - X_N) * Abs (Sin (X_N * PI * Single (Num)));
       return R (GL.Y) * Y + Initial (GL.Y);
    end Decel_Bounce;
 
@@ -46,7 +46,7 @@ package body GL_Maths is
       use Maths.Single_Math_Functions;
       use Ada.Numerics;
       R    : constant Vector2 := Final - Initial;
-      N    : Single;
+      X_N  : Single;
       Y    : Single;
    begin
       if Final = Initial then
@@ -54,8 +54,8 @@ package body GL_Maths is
               "Maths.Decel_Elastic received equal Final and Initial values.";
       end if;
 
-      N := (X - Initial (GL.X)) / R (GL.X);
-      Y := (1.0 - N) * Sin (N * PI * Single (Num));
+      X_N := (X - Initial (GL.X)) / R (GL.X);
+      Y := (1.0 - X_N) * Sin (X_N * PI * Single (Num));
       return R (GL.Y) * Y + Initial (GL.Y);
    end Decel_Elastic;
 

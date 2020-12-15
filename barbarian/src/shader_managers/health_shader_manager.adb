@@ -26,11 +26,14 @@ package body Health_Shader_Manager is
         Uniform_Location (Shader_Program, "model_matrix");
       Render_Uniforms.Red_Texture_ID :=
           Uniform_Location (Shader_Program, "tex_red");
+      Render_Uniforms.Health_Factor_ID :=
+          Uniform_Location (Shader_Program, "health_factor");
 
       Use_Program (Shader_Program);
       GL.Uniforms.Set_Int (Render_Uniforms.Base_Texture_ID, 0);
       GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Identity4);
       GL.Uniforms.Set_Int (Render_Uniforms.Red_Texture_ID, 0);
+      GL.Uniforms.Set_Single (Render_Uniforms.Health_Factor_ID, 0.0);
 
    exception
       when others =>

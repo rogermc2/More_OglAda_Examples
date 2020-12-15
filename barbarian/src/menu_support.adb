@@ -125,8 +125,8 @@ package body Menu_Support is
       Cam_Target    : constant Vector3 := Cam_Pos + (0.0, 1.0, -1.0);
    begin
       if End_Bounce_At >= Single (Title_Bounce_Timer) then
-         Y := Accel_Exp (Single (Title_Bounce_Timer), (0.0, End_Fall_At),
-                         (Fall_Dist, 0.0));
+         Y := Accel_Expand (Single (Title_Bounce_Timer), (0.0, End_Fall_At),
+                            (Fall_Dist, 0.0));
          if Float (End_Fall_At) < Title_Bounce_Timer + Elapsed then
             Audio.Play_Sound (Title_Impact_Sound, False);
          end if;

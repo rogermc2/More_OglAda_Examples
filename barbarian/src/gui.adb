@@ -274,7 +274,8 @@ package body GUI is
 
       for index in 1 .. 3 loop
          if Control_Button_Overlays.In_Use (index) then
-            Game_Utils.Game_Log ("GUI.Draw_Controller_Button_Overlays, Control_Button_Overlay In_Use");
+            Game_Utils.Game_Log
+                  ("GUI.Draw_Controller_Button_Overlays, Control_Button_Overlay In_Use");
             Control_Button_Overlays.Life_Time (Int (index)) :=
               Control_Button_Overlays.Life_Time (Int (index)) + Single (Elapsed);
             if Control_Button_Overlays.Life_Time (Int (index)) >
@@ -551,15 +552,20 @@ package body GUI is
    begin
       GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
       GL.Objects.Programs.Use_Program (Image_Panel_SP);
-      GL.Objects.Textures.Set_Active_Unit (0);
+--        GL.Objects.Textures.Set_Active_Unit (0);
       for index in Int range 1 .. 3 loop
          T := Max (0.0, 1.0 - Single (GUI_Icons.Anim_Countdowns (index)));
-         Y := GL_Maths.Decel_Elastic (T, (0.0, 1.0), (0.0, 1.0), 6);
+         Y := GL_Maths.Decel_Elastic (T, (0.0, 0.0), (1.0, 1.0), 6);
          Screen_X := GUI_Icons.XY_Position (2 * index);
          Screen_Y := GUI_Icons.XY_Position (2 * index + 1) * Y * Amp;
+
+         Game_Utils.Game_Log ("GUI.Render_Gold_Panel set Model_Mat, index: " &
+                                Int'Image (index));
          Model_Mat := Translation_Matrix ((Screen_X, Screen_Y, 0.0)) * Scale_Mat;
          Set_Model_Matrix (Model_Mat);
-         Texture_2D.Bind (GUI_Icons.Textures (Integer (index)));
+         Texture_Manager.Bind_Texture (0, GUI_Icons.Textures (Integer (index)));
+--           Texture_2D.Bind (GUI_Icons.Textures (Integer (index)));
+         Game_Utils.Game_Log ("GUI.Render_Gold_Panel Draw_Arrays");
          Draw_Arrays (Triangle_Strip, 0, 4);
       end loop;
 
@@ -575,11 +581,10 @@ package body GUI is
       GL.Objects.Programs.Use_Program (Health_Bar_SP);
       Set_Model_Matrix (Player_Health_Bar_Mat);
       Set_Health_Factor (Health_Bar_Factor (1));
+
       GL_Utils.Bind_VAO (VAO_Quad_Tristrip);
-      GL.Objects.Textures.Set_Active_Unit (0);
-      Texture_2D.Bind (Health_Texture_Red);
-      GL.Objects.Textures.Set_Active_Unit (1);
-      Texture_2D.Bind (Health_Texture_Base);
+      Texture_Manager.Bind_Texture (0,  Health_Texture_Red);
+      Texture_Manager.Bind_Texture (1,  Health_Texture_Base);
       Draw_Arrays (Triangle_Strip, 0, 4);
 
       if Health_Bar_Factor (1) > 0.0 then
@@ -597,7 +602,6 @@ package body GUI is
       use GL.Culling;
       use GL.Toggles;
    begin
-      Game_Utils.Game_Log ("GUI.Render_GUIs");
       Set_Front_Face (Clockwise);
       Enable (Blend);
       Disable (Depth_Test);
@@ -608,8 +612,10 @@ package body GUI is
       Fist_Activated then
          Render_Fist;
       end if;
+
       Render_Health_Bars;
       Render_Crong_Head;
+      Game_Utils.Game_Log ("GUI.Render_GUIs, Rendering Gold_Panel");
       Render_Gold_Panel;
 
       Enable (Depth_Test);
