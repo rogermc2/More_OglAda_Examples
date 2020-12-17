@@ -91,7 +91,6 @@ package body Specs_Manager is
                                theSpec_Item : in out Weapon_Array) is
       use Ada.Strings;
       Weapon_ID : Weapon_Type := Na_Wt;
-      theFloat  : Float := 0.0;
       L_Length  : constant Integer := aLine'Length;
       Pos1      : Integer := Fixed.Index (aLine, ":");
       Pos2      : constant Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
@@ -103,8 +102,7 @@ package body Specs_Manager is
          Weapon_ID := Na_Wt;
       else
          Pos1 := Fixed.Index (aLine (Pos2 + 1 .. L_Length), ":");
-         theFloat :=  Float'Value (aLine (Pos1 + 2 .. L_Length));
-         theSpec_Item (Weapon_ID) := theFloat;
+         theSpec_Item (Weapon_ID) :=  Float'Value (aLine (Pos1 + 2 .. L_Length));
       end if;
 
    exception
@@ -229,6 +227,14 @@ package body Specs_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Alert_Sound_File_Name (Spec_Index : Positive) return String is
+      theSpec : constant Spec_Data := Specs.Element (Spec_Index);
+   begin
+        return To_String (theSpec.Alert_Sound_File_Name);
+   end Alert_Sound_File_Name;
+
+   --  -------------------------------------------------------------------------
+
    function Animation_Index (Spec_Index, Anim_Num : Positive) return Positive is
       theSpec    : constant Spec_Data := Specs.Element (Spec_Index);
       Animations : constant Anim_Frame_Array := theSpec.Animations;
@@ -237,6 +243,17 @@ package body Specs_Manager is
    begin
         return Frame.Atlas_Index;
    end Animation_Index;
+
+   --  -------------------------------------------------------------------------
+
+   function Attack_Range (Spec_Index : Positive; Weapon_Id : Weapon_Type)
+                          return Float is
+      theSpec : constant Spec_Data := Specs.Element (Spec_Index);
+      Weapon_Range  : Float
+          := theSpec.Attack_Ranges_Metre (Weapon_Id);
+   begin
+        return Weapon_Range;
+   end Attack_Range;
 
    --  -------------------------------------------------------------------------
 
@@ -278,6 +295,14 @@ package body Specs_Manager is
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          return -1;
    end Get_Script_Index;
+
+   --  -------------------------------------------------------------------------
+
+   function Height (Spec_Index : Positive) return Float is
+      theSpec : constant Spec_Data := Specs.Element (Spec_Index);
+   begin
+        return theSpec.Height_Metre;
+   end Height;
 
    --  -------------------------------------------------------------------------
 
@@ -344,7 +369,7 @@ package body Specs_Manager is
             elsif aLine (1 .. Pos_M1) = "add_anim_frame" then
                Add_Animation_Frame (aLine, theSpec);
             elsif aLine (1 .. Pos_M1) = "attack_duration" then
-               Add_Attack_Float (aLine, theSpec.Weapon_Attack_Time);
+               Add_Attack_Float (aLine, theSpec.Weapon_Attack_Times);
             elsif aLine (1 .. Pos_M1) = "attack_event" then
                Add_Attack_Event (aLine, theSpec);
             elsif aLine (1 .. Pos_M1) = "add_alert_sound:" then
@@ -364,7 +389,7 @@ package body Specs_Manager is
                theSpec.Sight_Range_Tiles :=
                  Integer'Value (aLine (Pos_P1 .. S_Length));
             elsif aLine (1 .. Pos_M1) = "attack_range" then
-               Add_Attack_Float (aLine, theSpec.Attack_Range_Metre);
+               Add_Attack_Float (aLine, theSpec.Attack_Ranges_Metre);
             elsif aLine (1 .. Pos_M1) = "initial_health" then
                theSpec.Initial_Health :=
                  Integer'Value (aLine (Pos_P1 .. S_Length));
@@ -405,7 +430,24 @@ package body Specs_Manager is
          Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Load_Specs_File;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
+
+   function Projectile_Kind (Spec_Index : Positive)
+                             return Projectile_Manager.Projectile_Type is
+      theSpec  : constant Spec_Data := Specs.Element (Spec_Index);
+   begin
+        return theSpec.Projectile;
+   end Projectile_Kind;
+
+   --  -------------------------------------------------------------------------
+
+   function Sight_Range_Tiles (Spec_Index : Positive) return Integer is
+      theSpec  : constant Spec_Data := Specs.Element (Spec_Index);
+   begin
+        return theSpec.Sight_Range_Tiles;
+   end Sight_Range_Tiles;
+
+   --  ---------------------------------------------------------------
 
    procedure Set_Specs_Defaults (aSpec : in out Spec_Data) is
    begin
@@ -417,6 +459,14 @@ package body Specs_Manager is
       aSpec.Land_Move := True;
       aSpec.Tx_On_Death := -1;
    end Set_Specs_Defaults;
+
+   --  -------------------------------------------------------------------------
+
+   function Team_ID (Spec_Index : Positive) return Positive is
+      theSpec  : constant Spec_Data := Specs.Element (Spec_Index);
+   begin
+        return theSpec.Team_ID;
+   end Team_ID;
 
    --  -------------------------------------------------------------------------
 

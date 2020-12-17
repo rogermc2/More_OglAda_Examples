@@ -79,6 +79,7 @@ package Maths is
    function Max_Int (L, R : GL.Types.Int) return GL.Types.Int;
    function Max_Integer (L, R : Integer) return Integer;
    function Max (L, R : GL.Types.Single) return GL.Types.Single;
+   function Max_Float (L, R : Float) return Float;
    function New_Quaternion (Angle : Radian; Axis : GL.Types.Singles.Vector3)
                             return Single_Quaternion.Quaternion;
    function Normalized (V : Singles.Vector2) return Singles.Vector2;

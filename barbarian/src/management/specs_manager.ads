@@ -80,8 +80,10 @@ package Specs_Manager is
                                                             (others => 0);
       File_Name                                         : Unbounded_String := To_Unbounded_String ("");
       Name                                              : Unbounded_String := To_Unbounded_String ("");
-      Weapon_Attack_Time                                : Weapon_Array := (others => 0.0);
-      Attack_Range_Metre                                : Weapon_Array := (others => 0.0);
+      Weapon_Attack_Times                                : Weapon_Array :=
+                                                            (others => 0.0);
+      Attack_Ranges_Metre                               : Weapon_Array :=
+                                                            (others => 0.0);
       Move_Speed_MPS                                    : Float := 0.0;
       Height_Metre                                      : Float := 0.0;
       Width_Radius                                      : Float := 0.0;
@@ -135,11 +137,18 @@ package Specs_Manager is
 
    Specs_Exception : Exception;
 
+   function Alert_Sound_File_Name (Spec_Index : Positive) return String;
    function Animation_Index (Spec_Index, Anim_Num : Positive) return Positive;
+   function Attack_Range (Spec_Index : Positive; Weapon_Id : Weapon_Type)
+                          return Float;
    procedure Clear_Specs;
    function Get_Script_Index (File_Name : String) return Integer;
+   function Height (Spec_Index : Positive) return Float;
    function Initial_Health (Spec_Index : Positive) return Integer;
    procedure Load_Specs_File (File_Name : String);
-
+   function Sight_Range_Tiles (Spec_Index : Positive) return Integer;
+   function Projectile_Kind (Spec_Index : Positive)
+                             return Projectile_Manager.Projectile_Type;
+   function Team_ID (Spec_Index : Positive) return Positive;
 
 end Specs_Manager;

@@ -5,6 +5,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Types;
 
+with Maths;
+
 with Projectile_Manager;
 with Specs_Manager;
 
@@ -21,21 +23,53 @@ package Character_Controller is
 
    Character_Controller_Exception : Exception;
 
+   function Alert_Cooldown (Character : Barbarian_Character) return Float;
    function Current_Health (Character_ID : Positive) return Integer;
    function Current_Kills return Integer;
+   function Current_Weapon (Character : Barbarian_Character)
+                            return Specs_Manager.Weapon_Type;
    function Damage_All_Near
      (Self_Id        : Positive; World_Pos : Singles.Vector3;
       Damage_Range   : Single; Damage         : Int;
       Throw_Back_Mps : Single;  Exclude_Id : Positive;
       Weapon         : Specs_Manager.Weapon_Type) return Natural;
+   function Fireball_Countdown (Character : Barbarian_Character) return Float;
    function Get_Character (Character_ID : Positive) return Barbarian_Character;
    function Get_Character_Position (Character_ID : Positive) return Singles.Vector3;
    procedure Init;
+   function Alive (Character : Barbarian_Character) return Boolean;
+   function Chasing_Enemy (Character : Barbarian_Character) return Boolean;
+   function On_Ground (Character : Barbarian_Character) return Boolean;
    function Javelin_Count (Character_ID : Positive) return Integer;
    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);
+   function Map  (Character_ID : Positive) return Ints.Vector2;
+   function Map  (Character : Barbarian_Character) return Ints.Vector2;
    function Max_Kills return Integer;
+   function Position (Character_ID : Positive) return Singles.Vector3;
+   function Position (Character : Barbarian_Character) return Singles.Vector3;
+   function Skull_Countdown (Character : Barbarian_Character) return Float;
+   procedure Set_Alert_Cooldown (Character : in out Barbarian_Character;
+                                 Value : Float);
+   procedure Set_Chasing_Enemy (Character : in out Barbarian_Character;
+                                State : Boolean);
+   procedure Set_Desired_Direction (Character : in out Barbarian_Character;
+                                     Direction : Singles.Vector3);
+   procedure Set_Fireball_Countdown (Character : in out Barbarian_Character;
+                                     Seconds : Float);
+   procedure Set_Has_Pathing_Destination
+      (Character : in out Barbarian_Character; State : Boolean);
+   procedure Set_Heading (Character : in out Barbarian_Character;
+                           Heading : Maths.Degree);
+   procedure Set_Skull_Countdown (Character : in out Barbarian_Character;
+                                  Seconds : Float);
+   procedure Set_Teleport_Countdown (Character : in out Barbarian_Character;
+                                     Seconds : Float);
+   function Spec_Index (Character : Barbarian_Character) return Positive;
    function Spec_Index (Character_ID : Positive) return Positive;
+   function Teleport_Countdown (Character : Barbarian_Character) return Float;
    function Update_Characters (Seconds : Float) return Boolean;
+   procedure Update_Decay (Character : in out Barbarian_Character;
+                           Seconds : Float);
 
 private
    use GL.Types;
@@ -50,20 +84,18 @@ private
       Desired_Direction        : Singles.Vector3 := (0.0, 0.0, 0.0);
       Current_Anim_Frame_Time  : Integer := 0;
       Attack_Countdown         : Integer := 0;
-      Update_Decay             : Integer := 0;
-      Alert_Cooldown_Sec       : Integer := 0;
-      Skull_Countdown          : Integer := 0;
-      Fireball_Countdown       : Integer := 0;
-      Teleport_Countdown       : Integer := 0;
-      Heading_Deg              : Float := 0.0;
+      Update_Decay             : Float := 0.0;
+      Alert_Cooldown_Sec       : Float := 0.0;
+      Skull_Countdown          : Float := 0.0;
+      Fireball_Countdown       : Float := 0.0;
+      Teleport_Countdown       : Float := 0.0;
+      Heading_Deg              : Maths.Degree := 0.0;
       Distance_Fallen          : Float := 0.0;
       Particle_System_Ids      : Attached_Particle_Systems_Array
         (1 .. Specs_Manager.Max_Particle_Systems_Attached_To_Character)
         := (others => 0);
-      Map_X                    : Int := 0;
-      Map_Y                    : Int := 0;
-      Destination_Tile_X       : Int := -1;
-      Destination_Tile_Y       : Int := -1;
+      Map                      : Ints.Vector2 := (0, 0);
+      Destination_Tile         : Ints.Vector2 := (-1, -1);
       Current_Weapon           : Specs_Manager.Weapon_Type :=
                                    Specs_Manager.Na_Wt;
       Sprite_Index             : Int := 0;
@@ -71,7 +103,7 @@ private
       Current_Anim_Frame       : Integer := 0;
       Next_Attack_Event        : Integer := 0;
       Current_Health           : Integer := 0;
-      Number_Particle_Systems_Attached                                : Integer := 0;
+      Number_Particle_Systems_Attached : Integer := 0;
       Javelin_Count            : Integer := 0;
       --  States
       First_Update             : Boolean := True;
