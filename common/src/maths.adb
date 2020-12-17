@@ -110,6 +110,15 @@ package body Maths is
    end Frustum_Matrix;
 
    --  ------------------------------------------------------------------------
+
+   function Heading_To_Direction (Heading : Degree) return Singles.Vector3 is
+        Rad_Heading : constant Single := Single (To_Radians (Heading));
+   begin
+        return (-Single_Math_Functions.Sin (Rad_Heading), 0.0,
+                -Single_Math_Functions.Cos (Rad_Heading));
+   end Heading_To_Direction;
+
+   --  ------------------------------------------------------------------------
    --  Init_Lookat_Transform is derived from
    --  Computer Graphics Using OpenGL, Chapter 7, transpose of equation 7.2
    --  except, (W, W) = 1 (not 0)

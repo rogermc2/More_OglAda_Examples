@@ -57,6 +57,7 @@ package Maths is
    function Factorial (Num : Natural) return Positive;
    function Frustum_Matrix (Left, Right, Bottom, Top, Near, Far : GL.Types.Single)
                             return GL.Types.Singles.Matrix4;
+   function Heading_To_Direction (Heading : Degree) return Singles.Vector3;
    procedure Init_Lookat_Transform
      (Position, Target, Up : Singles.Vector3; Look_At : out Singles.Matrix4);
    procedure Init_Orthographic_Transform (Top, Bottom, Left, Right,
