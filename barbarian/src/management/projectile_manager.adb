@@ -15,12 +15,6 @@ package body Projectile_Manager is
    type Javelins_Array is array (1 .. Max_Javelin_Projectiles)
      of Projectile_Status;
 
-   Arrows      : Javelins_Array;
-   Darts       : Javelins_Array;
-   Fireballs   : Javelins_Array;
-   Javelins    : Javelins_Array;
-   Skull_Balls : Javelins_Array;
-
    Jav_Diff_Texture            : GL.Objects.Textures.Texture;
    Jav_Spec_Texture            : GL.Objects.Textures.Texture;
 
@@ -35,18 +29,45 @@ package body Projectile_Manager is
    Jav_Skull_Ball_Diff_Texture : GL.Objects.Textures.Texture;
    Jav_Skull_Ball_Spec_Texture : GL.Objects.Textures.Texture;
 
-   Next_Javelin         : Integer := 0;
+   Next_Javelin         : Integer := 1;
    Javelin_Count        : Integer := 0;
-   Next_Dart            : Integer := 0;
+   Next_Dart            : Integer := 1;
    Dart_Count           : Integer := 0;
-   Next_Arrow           : Integer := 0;
+   Next_Arrow           : Integer := 1;
    Arrow_Count          : Integer := 0;
-   Next_Fireball        : Integer := 0;
+   Next_Fireball        : Integer := 1;
    Fireball_Count       : Integer := 0;
-   Next_skull_Ball      : Integer := 0;
+   Next_Skull_Ball      : Integer := 1;
    Skull_Ball_Count     : Integer := 0;
    Blue_Spec_Particles  : Integer := 0;
    Green_Spec_Particles : Integer := 0;
+
+   Arrows      : Javelins_Array;
+   Darts       : Javelins_Array;
+   Fireballs   : Javelins_Array;
+   Javelins    : Javelins_Array;
+   Skull_Balls : Javelins_Array;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Create_Javelin (Fired_By : Positive; Position : Singles.Vector3;
+                             Heading : Maths.Degree) is
+        use Singles;
+        Launch_Speed : constant Single := 10.0;
+   begin
+        Javelins (Next_Javelin).World_Pos := Position;
+        Javelins (Next_Javelin).Velocity :=
+          Launch_Speed * Maths.Heading_To_Direction (Heading);
+        Javelins (Next_Javelin).Is_Airborne := True;
+        Javelins (Next_Javelin).Heading_Degrees := Heading;
+        Javelins (Next_Javelin).Fired_By_Index := Fired_By;
+        Javelins (Next_Javelin).Number_Of_Characters_Hit := 0;
+
+        Sprite_Renderer.Set_Sprite_Visible
+          (Javelins (Next_Javelin).Sprite_Index, True);
+        Next_Javelin := (Next_Javelin + 1) mod Max_Javelin_Projectiles + 1;
+        Javelin_Count := Javelin_Count + 1;
+   end Create_Javelin;
 
    --  ------------------------------------------------------------------------
 
