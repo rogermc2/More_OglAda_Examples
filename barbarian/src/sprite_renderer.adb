@@ -17,7 +17,7 @@ with Texture_Manager;
 
 package body Sprite_Renderer is
 
-   Max_Sprites : constant Int := 1024;
+   Max_Sprites : constant Positive := 1024;
 
    --      type Sprite_Boolean_Array is array (1 .. Max_Sprites) of Boolean;
    --      type Sprite_Int_Array is array (1 .. Max_Sprites) of Int;
@@ -35,7 +35,7 @@ package body Sprite_Renderer is
       Sprite_Map_Specular_Id : GL.Objects.Textures.Texture;
       Sprite_Map_Rows        : Int := 0;
       Sprite_Map_Columns     : Int := 0;
-      Current_Sprite         : Int := 0;
+      Current_Sprite         : Natural := 0;
       Wmap_U                 : Int := -1;
       Wmap_V                 : Int := -1;
       Has_Pitch              : Boolean := False;
@@ -43,7 +43,7 @@ package body Sprite_Renderer is
    end record;
 
    Sprites           : array (1 .. Max_Sprites) of Sprite_Data;
-   Num_Sprites       : Int := 0;
+   Num_Sprites       : Natural := 0;
    Sprite_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Sprites_Use_Mips  : Boolean := True;
    Sprite_Lamp_Moved : array (1 .. 2) of Boolean := (False, False);
@@ -51,7 +51,7 @@ package body Sprite_Renderer is
    --  -------------------------------------------------------------------------
 
    function Add_Sprite (Diffuse, Specular : GL.Objects.Textures.Texture;
-                        Columns, Rows     : Integer) return Int is
+                        Columns, Rows     : Integer) return Natural is
    begin
       if Num_Sprites > Max_Sprites then
          raise Sprite_Exception with "Sprite_Renderer.Add_Sprite, " &
@@ -152,14 +152,7 @@ package body Sprite_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Sprite_World_Pos (Sprite_Index : Int) return Singles.Vector3  is
-   begin
-      return Sprites (Sprite_Index).World_Position;
-   end Get_Sprite_World_Pos;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Render_Sprite (Sprite_Index : Int) is
+   procedure Render_Sprite (Sprite_Index : Positive) is
       use Singles;
       use Maths;
       use Sprite_Shader_Manager;
@@ -195,14 +188,14 @@ package body Sprite_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Sprite_Current_Sprite (Sprite_Index, Current_Sprite : Int) is
+   procedure Set_Sprite_Current_Sprite (Sprite_Index, Current_Sprite : Natural) is
    begin
       Sprites (Sprite_Index).Current_Sprite := Current_Sprite;
    end Set_Sprite_Current_Sprite;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Sprite_Heading (Sprite_Index : Int;
+   procedure Set_Sprite_Heading (Sprite_Index : Positive;
                                  Heading_Deg  : Maths.Degree) is
    begin
       Sprites (Sprite_Index).Heading_Deg := Heading_Deg;
@@ -210,7 +203,7 @@ package body Sprite_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Sprite_Pitch (Sprite_Index : Int;
+   procedure Set_Sprite_Pitch (Sprite_Index : Positive;
                                Pitch_Deg    : Maths.Degree) is
    begin
       Sprites (Sprite_Index).Pitch_Deg := Pitch_Deg;
@@ -218,7 +211,7 @@ package body Sprite_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Sprite_Position (Sprite_Index : Int;
+   procedure Set_Sprite_Position (Sprite_Index : Positive;
                                   World_Pos    : Singles.Vector3) is
       use Singles;
       use Maths;
@@ -252,7 +245,7 @@ package body Sprite_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Sprite_Scale (Sprite_Index : Int;
+   procedure Set_Sprite_Scale (Sprite_Index : Positive;
                                Scale        : Singles.Vector3) is
    begin
       Sprites (Sprite_Index).Scale := Scale;
@@ -260,10 +253,17 @@ package body Sprite_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Sprite_Visible (Sprite_Index : Int; Visible : Boolean) is
+   procedure Set_Sprite_Visible (Sprite_Index : Positive; Visible : Boolean) is
    begin
       Sprites (Sprite_Index).Is_Visible := Visible;
    end Set_Sprite_Visible;
+
+   --  -------------------------------------------------------------------------
+
+   function Sprite_World_Pos (Sprite_Index : Positive) return Singles.Vector3  is
+   begin
+      return Sprites (Sprite_Index).World_Position;
+   end Sprite_World_Pos;
 
    --  -------------------------------------------------------------------------
    --  NOTE : assuming blend etc. already set

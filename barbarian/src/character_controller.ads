@@ -24,6 +24,9 @@ package Character_Controller is
    Character_Controller_Exception : Exception;
 
    function Alert_Cooldown (Character : Barbarian_Character) return Float;
+   function Alive (Character : Barbarian_Character) return Boolean;
+   function Attacking (Character : Barbarian_Character) return Boolean;
+   function Chasing_Enemy (Character : Barbarian_Character) return Boolean;
    function Current_Health (Character_ID : Positive) return Integer;
    function Current_Kills return Integer;
    function Current_Weapon (Character : Barbarian_Character)
@@ -35,10 +38,10 @@ package Character_Controller is
       Weapon         : Specs_Manager.Weapon_Type) return Natural;
    function Fireball_Countdown (Character : Barbarian_Character) return Float;
    function Get_Character (Character_ID : Positive) return Barbarian_Character;
-   function Get_Character_Position (Character_ID : Positive) return Singles.Vector3;
+   function Get_Character_Position (Character_ID : Positive)
+                                    return Singles.Vector3;
+   function Heading (Character : Barbarian_Character) return Maths.Degree;
    procedure Init;
-   function Alive (Character : Barbarian_Character) return Boolean;
-   function Chasing_Enemy (Character : Barbarian_Character) return Boolean;
    function On_Ground (Character : Barbarian_Character) return Boolean;
    function Javelin_Count (Character_ID : Positive) return Integer;
    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);
@@ -66,6 +69,7 @@ package Character_Controller is
                                      Seconds : Float);
    function Spec_Index (Character : Barbarian_Character) return Positive;
    function Spec_Index (Character_ID : Positive) return Positive;
+   function Sprite_Index (Character : Barbarian_Character) return Positive;
    function Teleport_Countdown (Character : Barbarian_Character) return Float;
    function Update_Characters (Seconds : Float) return Boolean;
    procedure Update_Decay (Character : in out Barbarian_Character;

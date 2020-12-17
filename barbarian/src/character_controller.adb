@@ -99,6 +99,21 @@ package body Character_Controller is
     end Alert_Cooldown;
 
     --  -------------------------------------------------------------------------
+
+    function Alive (Character : Barbarian_Character) return Boolean is
+    begin
+        return Character.Is_Alive;
+    end Alive;
+
+    --  --------------------------------------------------------------------------
+
+   function Attacking (Character : Barbarian_Character) return Boolean is
+    begin
+        return Character.Is_Attacking;
+    end Attacking;
+
+    --  -------------------------------------------------------------------------
+
     procedure Attach_Particle_System_To_Character
       (Char_ID, Particle_System_ID  : Positive) is
         use Particle_System;
@@ -141,6 +156,13 @@ package body Character_Controller is
     end Attach_Particle_System_To_Character;
 
     --  -------------------------------------------------------------------------
+
+   function Chasing_Enemy (Character : Barbarian_Character) return Boolean is
+    begin
+        return Character.Is_Chasing_Enemy;
+    end Chasing_Enemy;
+
+    --  ------------------------------------------------------------------------
 
     procedure Create_Character (Source       : Character_Data;
                                 theCharacter : in out Barbarian_Character) is
@@ -440,6 +462,13 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+   function Heading (Character : Barbarian_Character) return Maths.Degree is
+     begin
+        return Character.Heading_Deg;
+    end Heading;
+
+    --  -------------------------------------------------------------------------
+
     procedure Init is
     begin
         Character_Map.Init;
@@ -468,21 +497,6 @@ package body Character_Controller is
     end Init;
 
     --  -------------------------------------------------------------------------
-
-    function Alive (Character : Barbarian_Character) return Boolean is
-    begin
-        return Character.Is_Alive;
-    end Alive;
-
-    --  -------------------------------------------------------------------------
-
-   function Chasing_Enemy (Character : Barbarian_Character) return Boolean is
-    begin
-        return Character.Is_Chasing_Enemy;
-    end Chasing_Enemy;
-
-    --  -------------------------------------------------------------------------
-
     -- derived from _damage_all_near part // work out if close enough
     function Close_Enough (Character    : Barbarian_Character;
                               World_Pos    : Singles.Vector3;
@@ -891,6 +905,13 @@ package body Character_Controller is
             GUI.Add_Screen_Splats (Num_Splats);
         end if;
     end Spray_Screen_Check;
+
+    --  -------------------------------------------------------------------------
+
+   function Sprite_Index (Character : Barbarian_Character) return Positive is
+    begin
+        return Character.Sprite_Index;
+    end Sprite_Index;
 
     --  -------------------------------------------------------------------------
 

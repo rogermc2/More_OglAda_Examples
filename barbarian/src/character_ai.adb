@@ -6,6 +6,7 @@ with Maths;
 with Audio;
 with Projectile_Manager;
 with Specs_Manager;
+with Sprite_Renderer;
 
 package body Character_AI is
 
@@ -103,6 +104,10 @@ package body Character_AI is
                 Set_Has_Pathing_Destination (theCharacter, False);
                 Dist_To_Player := Target_Pos - Position (theCharacter);
                 Set_Heading (theCharacter, Direction_To_Heading (Dist_To_Player));
+                if Attacking (theCharacter) then
+                    Sprite_Renderer.Set_Sprite_Heading
+                      (Sprite_Index (theCharacter), Heading  (theCharacter)) ;
+                end if;
             end if;
         end if;
 
