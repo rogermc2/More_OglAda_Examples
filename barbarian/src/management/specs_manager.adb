@@ -235,11 +235,12 @@ package body Specs_Manager is
 
    --  -------------------------------------------------------------------------
 
-   function Animation_Index (Spec_Index, Anim_Num : Positive) return Positive is
+   function Animation_Index (Spec_Index, Anim_Num, Anim_Index : Positive)
+                             return Positive is
       theSpec    : constant Spec_Data := Specs.Element (Spec_Index);
       Animations : constant Anim_Frame_Array := theSpec.Animations;
       Anim_List  : constant Anim_Frame_List := Animations.Element (Anim_Num);
-      Frame      : constant Anim_Frame := Anim_List.Element (Anim_Num);
+      Frame      : constant Anim_Frame := Anim_List.Element (Anim_Index);
    begin
         return Frame.Atlas_Index;
    end Animation_Index;
@@ -249,10 +250,8 @@ package body Specs_Manager is
    function Attack_Range (Spec_Index : Positive; Weapon_Id : Weapon_Type)
                           return Float is
       theSpec : constant Spec_Data := Specs.Element (Spec_Index);
-      Weapon_Range  : Float
-          := theSpec.Attack_Ranges_Metre (Weapon_Id);
    begin
-        return Weapon_Range;
+        return theSpec.Attack_Ranges_Metre (Weapon_Id);
    end Attack_Range;
 
    --  -------------------------------------------------------------------------
@@ -467,6 +466,15 @@ package body Specs_Manager is
    begin
         return theSpec.Team_ID;
    end Team_ID;
+
+   --  -------------------------------------------------------------------------
+
+   function Weapon_Attack_Time (Spec_Index : Positive; Weapon : Weapon_Type)
+                                return Float is
+      theSpec  : constant Spec_Data := Specs.Element (Spec_Index);
+   begin
+        return theSpec.Weapon_Attack_Times (Weapon);
+   end Weapon_Attack_Time;
 
    --  -------------------------------------------------------------------------
 

@@ -60,6 +60,7 @@ package body Character_AI is
 	Weapon_Range    : Float;
 	Sq_Weapon_Range : Float;
         Dist_To_Player  : Singles.Vector3;
+        Sprite_Pos      : Singles.Vector3;
     begin
         --  If warlock then recharge spells
         if Proj_Type = Skull_Proj_Type then
@@ -106,7 +107,12 @@ package body Character_AI is
                 Set_Heading (theCharacter, Direction_To_Heading (Dist_To_Player));
                 if Attacking (theCharacter) then
                     Sprite_Renderer.Set_Sprite_Heading
-                      (Sprite_Index (theCharacter), Heading  (theCharacter)) ;
+                      (Sprite_Index (theCharacter), Heading  (theCharacter));
+                      Sprite_Pos := Position (theCharacter);
+                      Sprite_Pos (GL.Y) := Sprite_Pos (GL.Y) + 1.0;
+                      Sprite_Renderer.Set_Sprite_Position
+                      (Sprite_Index (theCharacter), Sprite_Pos);
+                      Start_Attack (theCharacter);
                 end if;
             end if;
         end if;

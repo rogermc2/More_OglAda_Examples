@@ -9,6 +9,7 @@ with Audio;
 with Batch_Manager;
 with Camera;
 with Character_AI;
+with Character_Controller.Support;
 with Character_Map;
 with Event_Controller;
 with FB_Effects;
@@ -605,6 +606,14 @@ package body Character_Controller is
     end Javelin_Count;
 
     --  -------------------------------------------------------------------------
+
+   function Javelin_Count (Character : in out Barbarian_Character)
+                           return Integer is
+    begin
+        return Character.Javelin_Count;
+    end Javelin_Count;
+
+    --  ---------------------------------------------------------
     --  read characters from an already open file stream
     procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean) is
         use Ada.Strings.Fixed;
@@ -915,11 +924,56 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+   procedure Start_Attack (Character : in out Barbarian_Character) is
+        use Singles;
+        use Projectile_Manager;
+        use  Character_Controller.Support;
+        Spec_Index      : constant Positive := Character.Specs_Index;
+        Spec            : constant Spec_Data :=
+                            Character_Specs.Element (Spec_Index);
+        Weapon          : constant Weapon_Type := Character.Current_Weapon;
+        Recharging      : Boolean := False;
+        Projectile      : Projectile_Manager.Projectile_Type;
+        Offset_Pos      : Singles.Vector4;
+        Rotation_Matrix : Singles.Matrix4 := Singles.Identity4;
+        Facing          : Singles.Vector3;
+    begin
+        if not Character.Is_Attacking then
+            Character.Is_Attacking := True;
+            if Weapon = Missile_Wt or Weapon = Skull_Wt or
+              Weapon = Teleport_Wt then
+              Projectile := Spec.Projectile;
+              case Projectile is
+              when  Arrow_Proj_Type => Offset_Pos := (0.0, 1.5, -1.0, 1.0);
+              when Fireball_Proj_Type => Offset_Pos := (0.0, 1.5, -0.5, 1.0);
+              when others => Offset_Pos := (0.5, 1.5, 0.0, 1.0);
+              end case;
+            end if;
+            Rotation_Matrix := Maths.Rotate_Y_Degree
+              (Rotation_Matrix, Heading (Character));
+            Facing := To_Vector3 (Rotation_Matrix * Offset_Pos) +
+              Position (Character);
+            case Projectile is
+              when Javelin_Proj_Type => Attack_With_Javelin (Character);
+              when Arrow_Proj_Type =>
+                    null;
+              when Fireball_Proj_Type =>
+                    null;
+              when Skull_Proj_Type
+                    =>
+                    null;
+              when others => null;
+              end case;
+        end if;
+    end Start_Attack;
+
+    --  -------------------------------------------------------------------------
+
     procedure Switch_Animation (Character : in out Barbarian_Character;
                                 Anim_Num  : Natural) is
         Spec_Index  : constant Positive := Character.Specs_Index;
         Spec        : constant Spec_Data := Character_Specs.Element (Spec_Index);
-        Atlas_Index : constant Int := Int (Animation_Index (Spec_Index, Anim_Num));
+        Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num);
     begin
         if Character.Current_Anim /= Anim_Num then
             if Anim_Num > Natural (Max_Animations) then

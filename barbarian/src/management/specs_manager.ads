@@ -138,7 +138,8 @@ package Specs_Manager is
    Specs_Exception : Exception;
 
    function Alert_Sound_File_Name (Spec_Index : Positive) return String;
-   function Animation_Index (Spec_Index, Anim_Num : Positive) return Positive;
+   function Animation_Index (Spec_Index, Anim_Num, Anim_Index : Positive)
+                             return Positive;
    function Attack_Range (Spec_Index : Positive; Weapon_Id : Weapon_Type)
                           return Float;
    procedure Clear_Specs;
@@ -150,5 +151,7 @@ package Specs_Manager is
    function Projectile_Kind (Spec_Index : Positive)
                              return Projectile_Manager.Projectile_Type;
    function Team_ID (Spec_Index : Positive) return Positive;
+   function Weapon_Attack_Time (Spec_Index : Positive; Weapon : Weapon_Type)
+                                return Float;
 
 end Specs_Manager;

@@ -44,6 +44,7 @@ package Character_Controller is
    procedure Init;
    function On_Ground (Character : Barbarian_Character) return Boolean;
    function Javelin_Count (Character_ID : Positive) return Integer;
+   function Javelin_Count (Character : in out Barbarian_Character) return Integer;
    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);
    function Map  (Character_ID : Positive) return Ints.Vector2;
    function Map  (Character : Barbarian_Character) return Ints.Vector2;
@@ -70,6 +71,7 @@ package Character_Controller is
    function Spec_Index (Character : Barbarian_Character) return Positive;
    function Spec_Index (Character_ID : Positive) return Positive;
    function Sprite_Index (Character : Barbarian_Character) return Positive;
+   procedure Start_Attack (Character : in out Barbarian_Character);
    function Teleport_Countdown (Character : Barbarian_Character) return Float;
    function Update_Characters (Seconds : Float) return Boolean;
    procedure Update_Decay (Character : in out Barbarian_Character;
@@ -86,8 +88,8 @@ private
       Velocity                 : Singles.Vector3 := (0.0, 0.0, 0.0);
       Desired_Velocity         : Singles.Vector3 := (0.0, 0.0, 0.0);
       Desired_Direction        : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Current_Anim_Frame_Time  : Integer := 0;
-      Attack_Countdown         : Integer := 0;
+      Current_Anim_Frame_Time  : Float := 0.0;
+      Attack_Countdown         : Float := 0.0;
       Update_Decay             : Float := 0.0;
       Alert_Cooldown_Sec       : Float := 0.0;
       Skull_Countdown          : Float := 0.0;
@@ -102,7 +104,7 @@ private
       Destination_Tile         : Ints.Vector2 := (-1, -1);
       Current_Weapon           : Specs_Manager.Weapon_Type :=
                                    Specs_Manager.Na_Wt;
-      Sprite_Index             : Int := 0;
+      Sprite_Index             : Natural := 0;
       Current_Anim             : Integer := 0;
       Current_Anim_Frame       : Integer := 0;
       Next_Attack_Event        : Integer := 0;
