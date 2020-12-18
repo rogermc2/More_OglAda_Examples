@@ -12,13 +12,14 @@ package body Sprite_World_Map is
    Max_Sprites_In_Tile : constant Integer := 64;
    subtype Sprite_Index is Positive range 1 .. Max_Sprites_In_Tile;
 
-   type Sprites_Int_Array is array
-     (Sprite_Index range <>, Sprite_Index range <>, Sprite_Index range <>) of Int;
+   type Sprites_Integer_Array is array
+     (Sprite_Index range <>, Sprite_Index range <>, Sprite_Index range <>)
+     of Integer;
    type Sprites_Count_Array is array (Sprite_Index range <>, Sprite_Index range <>) of Int;
    type Sprites_Single_Array is array
      (Sprite_Index range <>, Sprite_Index range <>, Sprite_Index range <>) of Single;
    type Sprite_Tiles_Data (Rows, Cols, Val : Sprite_Index := 1) is record
-      Index_Of_Sprites          : Sprites_Int_Array
+      Index_Of_Sprites          : Sprites_Integer_Array
           (1 .. Rows, 1 .. Cols, 1 .. Val) :=
                                     (others => (others => (others => 0)));
       Height_Of_Sprites         : Sprites_Single_Array
@@ -34,13 +35,13 @@ package body Sprite_World_Map is
    --  ------------------------------------------------------------------------
 
    procedure Add_New_Sprite_To_World_Map (U, V      : Int; Y : Single;
-                                          Sprite_ID : Int) is
+                                          Sprite_ID : Positive) is
       S_U : constant Sprite_Index := Sprite_Index (U);
       S_V : constant Sprite_Index := Sprite_Index (V);
       Count : constant Sprite_Index :=
                   Sprite_Index (Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V)) + 1;
    begin
-      Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count) := Int (Sprite_ID);
+      Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count) := Sprite_ID;
       Sprite_Tiles.Height_Of_Sprites (S_U, S_V, Count) := Y;
       Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) := Int (Count);
    end Add_New_Sprite_To_World_Map;
@@ -57,7 +58,7 @@ package body Sprite_World_Map is
       V_First   : constant Sprite_Index := Sprite_Index (Max_Int (0, V - Tile_Range) + 1);
       U_Last    : constant Sprite_Index := Sprite_Index (Min_Int
         (U + Tile_Range, Get_Tiles_Across - 1) + 1);
-      Sprite_ID : Int;
+      Sprite_ID : Positive;
       V_Last    : constant Sprite_Index :=
                     Sprite_Index (Min_Int (V + Tile_Range, Get_Tiles_Across - 1) + 1) ;
       Pos       : Singles.Vector3;
@@ -68,7 +69,7 @@ package body Sprite_World_Map is
             Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V);
             for index in 1 .. Count loop
                Sprite_ID := Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Sprite_Index (index));
-               Pos := Sprite_Renderer.Get_Sprite_World_Pos (Sprite_ID);
+               Pos := Sprite_Renderer.Sprite_World_Pos (Sprite_ID);
                Add_Transparency_Item (Tr_Sprite, Sprite_ID, Pos, 1.0);
             end loop;
          end loop;
@@ -111,7 +112,7 @@ package body Sprite_World_Map is
 
    procedure Move_Sprite_In_World_Map (From_U, From_V,
                                        To_U, To_V : Int;  Y : Single;
-                                       Sprite_ID   : Int) is
+                                       Sprite_ID   : Positive) is
    begin
       if From_U > 0 and From_V > 0 then
          Remove_Sprite_From_World_Map (From_U, From_V, Sprite_ID);
@@ -122,7 +123,7 @@ package body Sprite_World_Map is
    --  ------------------------------------------------------------------------
 
    procedure Remove_Sprite_From_World_Map (U, V      : Int;
-                                           Sprite_ID : Int) is
+                                           Sprite_ID : Positive) is
       S_U   : constant Sprite_Index := Sprite_Index (U);
       S_V   : constant Sprite_Index := Sprite_Index (V);
       Count : constant Sprite_Index :=
@@ -140,7 +141,7 @@ package body Sprite_World_Map is
       if Idx <= 0 then
          raise Sprite_World_Map_Exception with
            "Sprite_World_Map.Remove_Sprite_From_World_Map, Sprite ID " &
-           Int'Image (Sprite_ID) & " was not found.";
+           Integer'Image (Sprite_ID) & " was not found.";
       end if;
 
       for index in reverse Idx .. Count - 1 loop

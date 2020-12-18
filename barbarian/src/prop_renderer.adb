@@ -489,7 +489,7 @@ package body Prop_Renderer is
       Ssi          : Integer;
       Prop_Size    : Integer;
       Sprite_Time  : Float;
-      Curr_Sprite  : Int;
+      Curr_Sprite  : Positive;
    begin
       Basic_Props_Render_List.Clear;
       Skinned_Props_Render_List.Clear;
@@ -524,7 +524,7 @@ package body Prop_Renderer is
                           Sprite_Time;
                      end if;
 
-                     Curr_Sprite := Int (Property.Sprite_Duration /
+                     Curr_Sprite := Positive (Property.Sprite_Duration /
                                                 aScript.Sprite_Timer);
                      Sprite_Renderer.Set_Sprite_Current_Sprite
                        (Property.Sprite_Index, Curr_Sprite);
@@ -534,7 +534,7 @@ package body Prop_Renderer is
                     (Property.Origin_World, aScript.Bounding_Radius) and
                     aScript.Transparent then
                      Add_Transparency_Item
-                       (Tr_Prop, Int (Props_Index), Property.Origin_World,
+                       (Tr_Prop, Props_Index, Property.Origin_World,
                         aScript.Bounding_Radius);
                   else
                      if Prop_Type = Anim_Loop_Prop then

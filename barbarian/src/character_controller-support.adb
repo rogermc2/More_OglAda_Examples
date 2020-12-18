@@ -5,10 +5,10 @@ with Sprite_Renderer;
 package body Character_Controller.Support is
 
     procedure Change_Weapon (Character : in out Barbarian_Character;
-                             Character_Specs : Specs_List;
-                             Weapon : Weapon_Type);
-    procedure Decrement_Weapon_Count (Character : in out Barbarian_Character;
-                                      Projectle : Projectile_Manager.Projectile_Type);
+                             Specs_Index : Positive;  Weapon : Weapon_Type);
+    procedure Decrement_Weapon_Count
+      (Character : in out Barbarian_Character;
+       Projectle : Projectile_Manager.Projectile_Type);
     procedure Set_Idle_Animation (Character : in out Barbarian_Character);
     procedure Switch_Animation (Character : in out Barbarian_Character;
                                 Animation_ID : Positive);
@@ -16,31 +16,27 @@ package body Character_Controller.Support is
     --  ------------------------------------------------------------------------
 
     procedure Attack_With_Javelin (Character : in out Barbarian_Character;
-                                   Character_Specs : Specs_Manager.Specs_List) is
+                                   Specs_Index : Positive) is
         use Projectile_Manager;
     begin
         Decrement_Weapon_Count (Character, Javelin_Proj_Type);
         Gui.Set_GUI_Javalin_Ammo (Javelin_Count (Character));
         --  Draw sword
         if Javelin_Count (Character) = 0 then
-            Change_Weapon (Character, Character_Specs, Sword_Wt);
+            Change_Weapon (Character, Specs_Index, Sword_Wt);
         end if;
     end Attack_With_Javelin;
 
     --  ------------------------------------------------------------------------
 
     procedure Change_Weapon (Character : in out Barbarian_Character;
-                             Character_Specs : Specs_List;
-                             Weapon : Weapon_Type) is
+                             Specs_Index : Positive; Weapon : Weapon_Type) is
         use Projectile_Manager;
-        Spec_ID : constant Positive := Character.Specs_Index;
-        aSpec   : constant Spec_Data :=
-                    Character_Specs.Element (Character.Specs_Index);
     begin
         Character.Current_Weapon := Weapon;
         Character.Is_Attacking := False;
         Character.Attack_Countdown :=
-          Specs_Manager.Weapon_Attack_Time (Spec_ID, Weapon);
+          Specs_Manager.Weapon_Attack_Time (Specs_Index, Weapon);
     end Change_Weapon;
 
     --  -------------------------------------------------------------------------

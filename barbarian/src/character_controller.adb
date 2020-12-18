@@ -949,12 +949,14 @@ package body Character_Controller is
               when others => Offset_Pos := (0.5, 1.5, 0.0, 1.0);
               end case;
             end if;
+
             Rotation_Matrix := Maths.Rotate_Y_Degree
               (Rotation_Matrix, Heading (Character));
             Facing := To_Vector3 (Rotation_Matrix * Offset_Pos) +
               Position (Character);
             case Projectile is
-              when Javelin_Proj_Type => Attack_With_Javelin (Character);
+              when Javelin_Proj_Type => Attack_With_Javelin
+                      (Character, Character.Specs_Index);
               when Arrow_Proj_Type =>
                     null;
               when Fireball_Proj_Type =>
@@ -973,14 +975,14 @@ package body Character_Controller is
                                 Anim_Num  : Natural) is
         Spec_Index  : constant Positive := Character.Specs_Index;
         Spec        : constant Spec_Data := Character_Specs.Element (Spec_Index);
-        Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num);
+        Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num, 1);
     begin
         if Character.Current_Anim /= Anim_Num then
             if Anim_Num > Natural (Max_Animations) then
                 raise Character_Controller_Exception;
             end if;
             Character.Current_Anim := Anim_Num;
-            Character.Current_Anim_Frame_Time := 0;
+            Character.Current_Anim_Frame_Time := 0.0;
             Character.Current_Anim_Frame := 0;
             Sprite_Renderer.Set_Sprite_Current_Sprite
               (Character.Sprite_Index, Atlas_Index);

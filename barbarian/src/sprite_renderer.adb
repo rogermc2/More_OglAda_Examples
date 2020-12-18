@@ -237,7 +237,7 @@ package body Sprite_Renderer is
                          (0.0, 1.0, 0.0)) * Sprites (Sprite_Index).Model_Matrix;
       Sprite_World_Map.Move_Sprite_In_World_Map
         (Sprites (Sprite_Index).Wmap_U, Sprites (Sprite_Index).Wmap_V,
-         U, V, World_Pos (GL.X), Int (Sprite_Index));
+         U, V, World_Pos (GL.X), Sprite_Index);
       Sprites (Sprite_Index).Wmap_U := U;
       Sprites (Sprite_Index).Wmap_V := V;
 

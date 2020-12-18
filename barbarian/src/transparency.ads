@@ -6,7 +6,7 @@ package Transparency is
    type Transparency_Type is (Tr_Undef, Tr_Sprite, Tr_Prop);
 
    procedure Add_Transparency_Item (Item_Type : Transparency_Type;
-                                    Render_ID : GL.Types.Int;
+                                    Render_ID : Positive;
                                     Position  : GL.Types.Singles.Vector3;
                                     Brad      : GL.Types.Single);
    procedure Draw_Transparency_List;

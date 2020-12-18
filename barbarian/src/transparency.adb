@@ -55,7 +55,7 @@ package body Transparency is
             Sprite_Renderer.Start_Sprite_Rendering;
          end if;
          if Item_Type = Tr_Sprite then
-            Sprite_Renderer.Render_Sprite (Int (Node.Render_Id));
+            Sprite_Renderer.Render_Sprite (Node.Render_Id);
          else
             Prop_Renderer.Render_Property (Node.Render_Id);
          end if;
@@ -79,7 +79,7 @@ package body Transparency is
    --  ----------------------------------------------------------------------------
 
    procedure Add_Transparency_Item (Item_Type : Transparency_Type;
-                                    Render_ID : GL.Types.Int;
+                                    Render_ID : Positive;
                                     Position  : GL.Types.Singles.Vector3;
                                     Brad      : GL.Types.Single) is
       use GL.Types;
