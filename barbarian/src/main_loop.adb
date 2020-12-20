@@ -254,7 +254,7 @@ package body Main_Loop is
                         if Is_Running then
                             Audio.Update_Ambient_Sounds;
                             Audio.Update_Boulder_Sounds;
---                              Check_Keys;  -- DEBUG MODE!
+                            --                              Check_Keys;  -- DEBUG MODE!
                             Save_Screenshot :=
                               Input_Callback.Was_Key_Pressed (Window, F11);
                         elsif Settings.Video_Record_Mode and
@@ -266,45 +266,37 @@ package body Main_Loop is
                     end if;
 
                     if Is_Running then
-                        Game_Utils.Game_Log
-                          ("Main_Loop.Main_Game_Loop Do cheating checks");
                         --  Do cheating checks
                         Cheating := Cheat_Check_1;
                         if not Main_Menu.Menu_Open then
                             GUI.Update_GUIs (Delta_Time);
                             Text.Update_Comic_Texts (Delta_Time);
                             Text.Update_Particle_Texts (Delta_Time);
---                          Check_Victory_Defeat checks that if the "defeated"
---                          gui is up then controls aren't updated except space
---  		            to restart
---  			    Note that this reloads and continues execution of game
---                          as normal - major states stacks don't change or anything
+                            --                          Check_Victory_Defeat checks that if the "defeated"
+                            --                          gui is up then controls aren't updated except space
+                            --  		            to restart
+                            --  			    Note that this reloads and continues execution of game
+                            --                          as normal - major states stacks don't change or anything
                             Is_Running := Check_Victory_Defeat;
 
                             if Is_Running then
-                                Game_Utils.Game_Log
-                                  ("Main_Loop.Main_Game_Loop Update_Camera_Effects");
                                 Camera.Update_Camera_Effects (Delta_Time);
-                                Game_Utils.Game_Log
-                                  ("Main_Loop.Main_Game_Loop Camera_Effects updated");
                                 Update_Logic_Steps (Delta_Time);
-                                Game_Utils.Game_Log
-                                  ("Main_Loop.Main_Game_Loop Logic_Steps updated");
                                 if Main_Menu.End_Story_Open then
                                     Main_Menu_Open := True;
                                     Unload_Level;
                                     Is_Running := False;
                                 elsif Input_Handler.Was_Action_Pressed
                                   (Window, Input_Handler.Wipe_Screen_Action) then
-                                  GUI.Start_Fist;
+                                    GUI.Start_Fist;
                                 end if;
                             end if;
-                        end if;
+                        end if;  --  Main menu not open;
 
-                        if Is_Running then
-                            Player_1_View (Window, Delta_Time, Dump_Video,
-                                           Save_Screenshot);
-                        end if;
+                        --                          if Is_Running then
+                        --                              Player_1_View (Window, Delta_Time, Dump_Video,
+                        --                                             Save_Screenshot);
+                        --                          end if;
                         --                          Game_Utils.Game_Log
                         --                            ("Main_Loop.Main_Game_Loop Player_1_View returned");
                         Is_Running := Is_Running and then not Main_Menu_Quit;
@@ -312,19 +304,19 @@ package body Main_Loop is
                     end if;
                 end if;
 
-                Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
-                                     & Boolean'Image (Window.Should_Close));
+                --                  Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
+                --                                       & Boolean'Image (Window.Should_Close));
                 Is_Running := Is_Running and
                   not Window.Should_Close and not Main_Menu_Quit;
-                Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Is_Running: "
-                                     & Boolean'Image (Is_Running));
+                --                  Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Is_Running: "
+                --                                       & Boolean'Image (Is_Running));
             end loop;
             Quit_Game := True;
 
         exception
             when others =>
-            Put_Line ("Main_Loop.Main_Game_Loop exception");
-            raise;
+                Put_Line ("Main_Loop.Main_Game_Loop exception");
+                raise;
 
         end Main_Game_Loop;
 
@@ -354,49 +346,7 @@ package body Main_Loop is
             if not Skip_Intro then
                 Introduction (Window, Last_Time, Flash_Timer, Is_Running);
             end if;
-
-            --  initiate main menu loop
-            Main_Menu.Start_Menu_Title_Bounce;
-            Utilities.Clear_Background_Colour_And_Depth (Black);
-
-            --           if not Skip_Intro then
-            Main_Menu.Set_Menu_Open (True);
-            --           end if;
-
             Is_Running := True;
-            Last_Time := Float (Glfw.Time);
-
-            while Main_Menu.Menu_Open and Is_Running loop
-                GL_Utils.Window_Resize (Window);
-                GL_Utils.Frame_Buffer_Resize (Window);
-
-                Current_Time := Float (Glfw.Time);
-                Delta_Time := Current_Time - Last_Time;
-                Last_Time := Current_Time;
-                Utilities.Clear_Background_Colour_And_Depth (Black);
-                Main_Menu.Draw_Menu (Delta_Time);
-
-                GUI.Draw_Controller_Button_Overlays (Delta_Time);
-                Glfw.Input.Poll_Events;
-                --           --  Poll_Joystick
-                Glfw.Windows.Context.Swap_Buffers (Window'Access);
-
-                if not Main_Menu.Update_Menu (Window, Delta_Time) then
-                    Main_Menu.Set_Menu_Open (False);
-                    Quit_Game := True;
-                end if;
-
-                if Main_Menu.Did_User_Choose_New_Game or
-                  Main_Menu.Did_User_Choose_Custom_Maps then
-                    Main_Menu.Set_Menu_Open (False);
-                end if;
-                Is_Running := not Window.Should_Close;
-            end loop;
-
-            if Is_Running then
-                GUI_Level_Chooser.Init;
-            end if;
-            Game_Utils.Game_Log ("Main_Loop.Main_Setup done");
 
         exception
             when others =>
@@ -492,19 +442,65 @@ package body Main_Loop is
 
         --  --------------------------------------------------------------------
 
+        procedure Run_Main_Menu (Window     : in out Input_Callback.Barbarian_Window;
+                                 Is_Running : in out Boolean) is
+            use Glfw.Input;
+            Current_Time  : Float := Float (Glfw.Time);
+            Delta_Time    : Float := 0.0;
+            Flash_Timer   : Float := 0.0;
+        begin
+            --  initiate main menu loop
+            Main_Menu.Start_Menu_Title_Bounce;
+            Utilities.Clear_Background_Colour_And_Depth (Black);
+
+            --           if not Skip_Intro then
+            Main_Menu.Set_Menu_Open (True);
+            --           end if;
+
+            Is_Running := True;
+            Last_Time := Float (Glfw.Time);
+
+            while Main_Menu.Menu_Open and Is_Running loop
+                GL_Utils.Window_Resize (Window);
+                GL_Utils.Frame_Buffer_Resize (Window);
+
+                Current_Time := Float (Glfw.Time);
+                Delta_Time := Current_Time - Last_Time;
+                Last_Time := Current_Time;
+                Utilities.Clear_Background_Colour_And_Depth (Black);
+                Main_Menu.Draw_Menu (Delta_Time);
+
+                GUI.Draw_Controller_Button_Overlays (Delta_Time);
+                Glfw.Input.Poll_Events;
+                --           --  Poll_Joystick
+                Glfw.Windows.Context.Swap_Buffers (Window'Access);
+
+                if not Main_Menu.Update_Menu (Window, Delta_Time) then
+                    Main_Menu.Set_Menu_Open (False);
+                    Quit_Game := True;
+                end if;
+
+                if Main_Menu.Did_User_Choose_New_Game or
+                  Main_Menu.Did_User_Choose_Custom_Maps then
+                    Main_Menu.Set_Menu_Open (False);
+                end if;
+                Is_Running := not Window.Should_Close;
+            end loop;
+
+        exception
+            when others =>
+                Put_Line ("An exception occurred in Main_Loop.Run_Main_Menu.");
+                raise;
+        end Run_Main_Menu;
+
+        --  ------------------------------------------------------------------------
+
         procedure Update_Logic_Steps (Seconds : Float) is
             Accum_Time : Float := Seconds;
             Time_Step  : Integer := 0;        begin
-           Put_Line ("Main_Loop.Update_Logic_Steps.");
             while Accum_Time >= Logic_Step_Seconds loop
-                Put_Line
-                  ("Main_Loop.Update_Logic_Steps Update_Characters.");
                 Character_Controller.Update_Characters (Logic_Step_Seconds);
-                Put_Line
-                  ("Main_Loop.Update_Logic_Steps Prop_Renderer.Update_Properties.");
                 Prop_Renderer.Update_Properties (Logic_Step_Seconds);
-                Put_Line
-                  ("Main_Loop.Update_Logic_Steps Projectile_Manager.Update_Projectiles.");
                 Projectile_Manager.Update_Projectiles (Logic_Step_Seconds);
                 Time_Step := Time_Step + 1;
                 Accum_Time := Accum_Time - Logic_Step_Seconds;
@@ -526,7 +522,10 @@ package body Main_Loop is
         Main_Window.Set_Input_Toggle (Sticky_Keys, True);
         Game_Utils.Restart_Game_Log;
         Main_Setup (Main_Window, Running);
+        Run_Main_Menu (Main_Window, Running);
+
         if Running then
+            GUI_Level_Chooser.Init;
             Run_Game (Main_Window);
         end if;
         Game_Utils.Close_Game_Log;
