@@ -73,7 +73,7 @@ package Character_Controller is
    function Sprite_Index (Character : Barbarian_Character) return Positive;
    procedure Start_Attack (Character : in out Barbarian_Character);
    function Teleport_Countdown (Character : Barbarian_Character) return Float;
-   function Update_Characters (Seconds : Float) return Boolean;
+   procedure Update_Characters (Seconds : Float);
    procedure Update_Decay (Character : in out Barbarian_Character;
                            Seconds : Float);
 

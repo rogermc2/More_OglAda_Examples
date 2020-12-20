@@ -7,6 +7,7 @@ with Maths;
 
 with Audio;
 with Batch_Manager;
+with Blood_Splats;
 with Camera;
 with Character_AI;
 with Character_Controller.Support;
@@ -35,8 +36,16 @@ package body Character_Controller is
         Heading       : Maths.Degree := 0.0;
     end record;
 
-    Current_Blood_Fountain       : Positive := 1;
-    Current_Blood_Damage_Emitter : Positive := 1;
+    Current_Blood_Fountain       : Natural := 0;
+    Current_Blood_Damage_Emitter : Natural := 0;
+    Teleport_From_Particles_Idx  : Natural := 0;
+    Teleport_To_Particles_Idx    : Natural := 0;
+    Bf_Parts_Last_Attached_To    : array (1 .. Max_Blood_Fountains) of Integer
+                                     := (-1, -1, -1, -1, -1);
+    Bd_Parts_Last_Attached_To    : array (1 .. Max_Blood_Damage_Emitters) of Integer
+                                     := (-1, -1, -1, -1, -1);
+    Most_Characters_Updated_In_One_Frame : Natural := 0;
+
     Hammer_Hit_Armour_Sound      : constant String :=
                                      "SWORD_Hit_Metal_Armor_RR3_mono.wav";
     Sword_Hit_Armour_Sound       : constant String :=
@@ -56,7 +65,7 @@ package body Character_Controller is
     Kills_Current                   : Integer := 0;
     Kills_Max                       : Integer := 0;
     Characters_Updated              : Integer := 0;
-    Character_Controller_Loaded     : Boolean := False;
+--      Character_Controller_Loaded     : Boolean := False;
 
     Teleport_From_Particles_Index   : Integer := 1;
     Teleport_To_Particles_Index     : Integer := 1;
@@ -73,13 +82,14 @@ package body Character_Controller is
                                Damage            : Int; Weapon : Weapon_Type) return Boolean;
 
     procedure Detach_Particle_System (Char_ID, Partsys_ID : Positive);
-    procedure Detach_Particle_System_From_Character (Char_ID, Partsys_ID : Positive);
+    procedure Detach_Particle_System_From_Character
+      (Char_ID, Partsys_ID : Positive);
     --      function Is_Character_Valid (Char_Index : Integer) return Boolean;
     function Close_Enough (Character    : Barbarian_Character;
                            World_Pos    : Singles.Vector3;
                            Height, Dist : Single) return Boolean;
     --      function Is_Spec_Valid (Spec_Index : Integer) return Boolean;
-    procedure Knock_Back (Character         : Barbarian_Character;
+    procedure Knock_Back (Character         : in out Barbarian_Character;
                           Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
                           World_Pos         : Singles.Vector3;
                           Throw_Back_Mps    : Single; Damage : Int);
@@ -108,7 +118,7 @@ package body Character_Controller is
 
     --  --------------------------------------------------------------------------
 
-   function Attacking (Character : Barbarian_Character) return Boolean is
+    function Attacking (Character : Barbarian_Character) return Boolean is
     begin
         return Character.Is_Attacking;
     end Attacking;
@@ -145,25 +155,57 @@ package body Character_Controller is
         end loop;
 
         if not Found_Free_Slot then
-            Game_Utils.Game_Log (
-                                 "Character_Controller.Attach_Particle_System_To_Character " &
-                                   "WARNING: no free particle slot found in character - all in use. " &
-                                   "overwriting... Char_ID: " & Integer'Image (Char_ID));
+            Game_Utils.Game_Log
+              ("Character_Controller.Attach_Particle_System_To_Character " &
+                 "WARNING: no free particle slot found in character - all in use. " &
+                 "overwriting... Char_ID: " & Integer'Image (Char_ID));
         end if;
 
         Character.Particle_System_Ids (Looping_Index) := Particle_System_ID;
         Characters.Replace_Element (Char_ID, Character);
 
+    exception
+        when others => Put_Line
+              ("Character_Controller.Attach_Particle_System_To_Character exception");
+            raise;
     end Attach_Particle_System_To_Character;
 
     --  -------------------------------------------------------------------------
 
-   function Chasing_Enemy (Character : Barbarian_Character) return Boolean is
+    function Chasing_Enemy (Character : Barbarian_Character) return Boolean is
     begin
         return Character.Is_Chasing_Enemy;
     end Chasing_Enemy;
 
     --  ------------------------------------------------------------------------
+   -- derived from _damage_all_near part // work out if close enough
+    function Close_Enough (Character    : Barbarian_Character;
+                           World_Pos    : Singles.Vector3;
+                           Height, Dist : Single) return Boolean is
+        use Singles;
+        use Maths;
+        C_P             : constant Singles.Vector3 := Character.World_Pos;
+        Distance_Top    : constant Singles.Vector3 :=
+                            World_Pos - (C_P (Gl.X), (C_P (Gl.Y) + Height),
+                                         C_P (Gl.Z));
+        Distance_Middle : constant Singles.Vector3
+          := World_Pos - (C_P (Gl.X), C_P (Gl.Y) + Height * 0.5, C_P (Gl.Z));
+        Distance_Bottom : constant Singles.Vector3
+          := World_Pos - (C_P (Gl.X), C_P (Gl.Y), C_P (Gl.Z));
+        Sq_Dist_Top     : constant Single := Length_Sq (Distance_Top);
+        Sq_Dist_Middle  : constant Single := Length_Sq (Distance_Middle);
+        Sq_Dist_Bottom  : constant Single := Length_Sq (Distance_Bottom);
+    begin
+        return Dist ** 2 >=  Min (Min (Sq_Dist_Top, Sq_Dist_Bottom),
+                                  Sq_Dist_Middle);
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Close_Enough exception");
+            raise;
+            return False;
+    end Close_Enough;
+
+    --  -------------------------------------------------------------------------
 
     procedure Create_Character (Source       : Character_Data;
                                 theCharacter : in out Barbarian_Character) is
@@ -189,6 +231,11 @@ package body Character_Controller is
               "Character_Controller.Create_Character, invalid tile siza" &
               Int'Image (Source.U) & "x" & Int'Image (Source.V);
         end if;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Create_Character exception");
+            raise;
     end Create_Character;
 
     --  -------------------------------------------------------------------------
@@ -208,7 +255,7 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-   function Current_Weapon (Character : Barbarian_Character)
+    function Current_Weapon (Character : Barbarian_Character)
                             return Specs_Manager.Weapon_Type is
     begin
         return Character.Current_Weapon;
@@ -267,6 +314,12 @@ package body Character_Controller is
         end loop;
 
         return 0;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Damage_All_Near exception");
+            raise;
+            return 0;
     end Damage_All_Near;
 
     --  -------------------------------------------------------------------------
@@ -345,6 +398,9 @@ package body Character_Controller is
                         --  stop zombified movement
                         Character.Desired_Direction := (0.0, 0.0, 0.0);
                         --  splatter_all_tiles_near (g_characters[char_idx].world_pos);
+                        Detach_Particle_System_From_Character
+                          (Bf_Parts_Last_Attached_To (Current_Blood_Fountain),
+                           Blood_Fountain_Particles_Index (Current_Blood_Fountain));
                     end if;  --  Doer_ID = 1
                 end if;
             end if;
@@ -412,11 +468,17 @@ package body Character_Controller is
               (Char_ID, Blood_Damage_Particles_Index
                  (Current_Blood_Damage_Emitter));
             BDparts_Last_Attached_To (Current_Blood_Damage_Emitter) := Char_ID;
-            Current_Blood_Damage_Emitter := (Current_Blood_Damage_Emitter + 1) mod
-              Max_Blood_Damage_Emitters + 1;
+            Current_Blood_Damage_Emitter := (Current_Blood_Damage_Emitter + 1)
+            mod Max_Blood_Damage_Emitters + 1;
         end if;
 
         return Result;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Damage_Character exception");
+            raise;
+            return False;
     end Damage_Character;
 
     --  -------------------------------------------------------------------------
@@ -428,6 +490,11 @@ package body Character_Controller is
         Bdparts_Last_Attached_To (Current_Blood_Damage_Emitter) := Char_ID;
         Current_Blood_Damage_Emitter :=
           (Current_Blood_Damage_Emitter + 1) mod Max_Blood_Damage_Emitters + 1;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Update_Player exception");
+            raise;
     end Detach_Particle_System;
 
     --  -------------------------------------------------------------------------
@@ -440,7 +507,7 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-   function Fireball_Countdown (Character : Barbarian_Character) return Float is
+    function Fireball_Countdown (Character : Barbarian_Character) return Float is
     begin
         return Character.Fireball_Countdown;
     end Fireball_Countdown;
@@ -463,8 +530,8 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-   function Heading (Character : Barbarian_Character) return Maths.Degree is
-     begin
+    function Heading (Character : Barbarian_Character) return Maths.Degree is
+    begin
         return Character.Heading_Deg;
     end Heading;
 
@@ -495,28 +562,12 @@ package body Character_Controller is
           ("teleport_from.particles", False, True, False);
         Teleport_To_Particles_Index  := Particle_System.Create_Particle_System
           ("teleport_to.particles", False, True, False);
-    end Init;
 
-    --  -------------------------------------------------------------------------
-    -- derived from _damage_all_near part // work out if close enough
-    function Close_Enough (Character    : Barbarian_Character;
-                              World_Pos    : Singles.Vector3;
-                              Height, Dist : Single) return Boolean is
-        use Singles;
-        use Maths;
-        C_P             : constant Singles.Vector3 := Character.World_Pos;
-        Distance_Top    : constant Singles.Vector3 :=
-                            World_Pos - (C_P (Gl.X), (C_P (Gl.Y) + Height),
-                                         C_P (Gl.Z));
-        Distance_Middle : constant Singles.Vector3 := World_Pos - (C_P (Gl.X), C_P (Gl.Y) + Height * 0.5, C_P (Gl.Z));
-        Distance_Bottom : constant Singles.Vector3 := World_Pos - (C_P (Gl.X), C_P (Gl.Y), C_P (Gl.Z));
-        Sq_Dist_Top     : constant Single := Length_Sq (Distance_Top);
-        Sq_Dist_Middle  : constant Single := Length_Sq (Distance_Middle);
-        Sq_Dist_Bottom  : constant Single := Length_Sq (Distance_Bottom);
-    begin
-        return Dist ** 2 >=  Min (Min (Sq_Dist_Top, Sq_Dist_Bottom),
-                                  Sq_Dist_Middle);
-    end Close_Enough;
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Init exception");
+            raise;
+    end Init;
 
     --  -------------------------------------------------------------------------
 
@@ -540,7 +591,23 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-    procedure Knock_Back (Character         : Barbarian_Character;
+    function Javelin_Count (Character_ID : Positive) return Integer is
+        aCharacter : constant Barbarian_Character := Characters.Element (Character_ID);
+    begin
+        return aCharacter.Javelin_Count;
+    end Javelin_Count;
+
+    --  -------------------------------------------------------------------------
+
+    function Javelin_Count (Character : in out Barbarian_Character)
+                           return Integer is
+    begin
+        return Character.Javelin_Count;
+    end Javelin_Count;
+
+    --  ---------------------------------------------------------
+
+    procedure Knock_Back (Character         : in out Barbarian_Character;
                           Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
                           World_Pos         : Singles.Vector3;
                           Throw_Back_Mps    : Single; Damage : Int) is
@@ -549,6 +616,7 @@ package body Character_Controller is
         Distance       : Vector3 := Character.World_Pos - World_Pos;
         Direction      : Vector3 := Maths.Normalized (Distance);
         Momentum       : Vector3 := Direction * Throw_Back_Mps;
+        Pos            : Vector3;
         Y              : Single := Character.Velocity (GL.Y);
         Dir_Deg        : Degree := -Direction_To_Heading ((Direction (Gl.X), 0.0,
                                                           -Direction (Gl.Z)));
@@ -556,7 +624,22 @@ package body Character_Controller is
                                                       Damage, Weapon);
 
     begin
-        null;
+        if Character.Is_On_Ground then
+            Momentum := 0.2 * Momentum;
+        end if;
+        Character.Velocity := Character.Velocity + Momentum;
+        Character.Velocity (GL.Y) := Y;
+        Did_Damage := Damage_Character (Char_ID, Self_Id, Dir_Deg,
+                                        Damage, Weapon);
+        if Did_Damage then
+            Pos := Character.World_Pos;
+            Pos (GL.X) := Pos (GL.X) + 1.0;
+            Blood_Splats.Splat_Event (Pos, 3.0);
+        end if;
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Knock_Back exception");
+            raise;
     end Knock_Back;
 
     --  -------------------------------------------------------------------------
@@ -595,25 +678,13 @@ package body Character_Controller is
             when others => null;
         end case;
 
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Launch_Decapitated_Head exception");
+            raise;
     end Launch_Decapitated_Head;
 
     --  ------------------------------------------------------------------------
-
-    function Javelin_Count (Character_ID : Positive) return Integer is
-        aCharacter : constant Barbarian_Character := Characters.Element (Character_ID);
-    begin
-        return aCharacter.Javelin_Count;
-    end Javelin_Count;
-
-    --  -------------------------------------------------------------------------
-
-   function Javelin_Count (Character : in out Barbarian_Character)
-                           return Integer is
-    begin
-        return Character.Javelin_Count;
-    end Javelin_Count;
-
-    --  ---------------------------------------------------------
     --  read characters from an already open file stream
     procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean) is
         use Ada.Strings.Fixed;
@@ -687,7 +758,7 @@ package body Character_Controller is
 
     --  ----------------------------------------------------------------------------
 
-   function Map (Character_ID : Positive) return Ints.Vector2 is
+    function Map (Character_ID : Positive) return Ints.Vector2 is
         aCharacter : constant Barbarian_Character :=
                        Characters.Element (Character_ID);
     begin
@@ -696,7 +767,7 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-   function Map  (Character : Barbarian_Character) return Ints.Vector2 is
+    function Map  (Character : Barbarian_Character) return Ints.Vector2 is
     begin
         return Character.Map;
     end Map;
@@ -771,11 +842,16 @@ package body Character_Controller is
             end if;
             Next (Curs);
         end loop;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Process_Characters_2 exception");
+            raise;
     end Process_Characters_2;
 
     --  -------------------------------------------------------------------------
 
-   function Position (Character_ID : Positive) return Singles.Vector3 is
+    function Position (Character_ID : Positive) return Singles.Vector3 is
         aCharacter : constant Barbarian_Character :=
                        Characters.Element (Character_ID);
     begin
@@ -784,22 +860,22 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-   function Position (Character : Barbarian_Character) return Singles.Vector3 is
+    function Position (Character : Barbarian_Character) return Singles.Vector3 is
     begin
         return Character.World_Pos;
     end Position;
 
     --  -------------------------------------------------------------------------
 
-   function Skull_Countdown (Character : Barbarian_Character) return Float is
+    function Skull_Countdown (Character : Barbarian_Character) return Float is
     begin
         return Character.Skull_Countdown;
     end Skull_Countdown;
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_Alert_Cooldown (Character : in out Barbarian_Character;
-                                 Value : Float) is
+    procedure Set_Alert_Cooldown (Character : in out Barbarian_Character;
+                                  Value : Float) is
     begin
         Character.Alert_Cooldown_Sec := Value;
     end Set_Alert_Cooldown;
@@ -815,15 +891,15 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-   procedure Set_Chasing_Enemy (Character : in out Barbarian_Character;
-                                State : Boolean) is
+    procedure Set_Chasing_Enemy (Character : in out Barbarian_Character;
+                                 State : Boolean) is
     begin
         Character.Is_Chasing_Enemy := State;
     end Set_Chasing_Enemy;
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Desired_Direction (Character : in out Barbarian_Character;
+    procedure Set_Desired_Direction (Character : in out Barbarian_Character;
                                      Direction : Singles.Vector3) is
     begin
         Character.Desired_Direction := Direction;
@@ -831,7 +907,7 @@ package body Character_Controller is
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Has_Pathing_Destination
+    procedure Set_Has_Pathing_Destination
       (Character : in out Barbarian_Character; State : Boolean) is
     begin
         Character.Has_Pathing_Destination := State;
@@ -847,7 +923,7 @@ package body Character_Controller is
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Heading (Character : in out Barbarian_Character;
+    procedure Set_Heading (Character : in out Barbarian_Character;
                            Heading : Maths.Degree) is
     begin
         Character.Heading_Deg := Heading;
@@ -913,18 +989,23 @@ package body Character_Controller is
           Sqxzdist <= Sqmaxxzdist then
             GUI.Add_Screen_Splats (Num_Splats);
         end if;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Spray_Screen_Check exception");
+            raise;
     end Spray_Screen_Check;
 
     --  -------------------------------------------------------------------------
 
-   function Sprite_Index (Character : Barbarian_Character) return Positive is
+    function Sprite_Index (Character : Barbarian_Character) return Positive is
     begin
         return Character.Sprite_Index;
     end Sprite_Index;
 
     --  -------------------------------------------------------------------------
 
-   procedure Start_Attack (Character : in out Barbarian_Character) is
+    procedure Start_Attack (Character : in out Barbarian_Character) is
         use Singles;
         use Projectile_Manager;
         use  Character_Controller.Support;
@@ -938,16 +1019,17 @@ package body Character_Controller is
         Rotation_Matrix : Singles.Matrix4 := Singles.Identity4;
         Facing          : Singles.Vector3;
     begin
+        Put_Line ("Character_Controller.Start_Attack");
         if not Character.Is_Attacking then
             Character.Is_Attacking := True;
             if Weapon = Missile_Wt or Weapon = Skull_Wt or
               Weapon = Teleport_Wt then
-              Projectile := Spec.Projectile;
-              case Projectile is
-              when  Arrow_Proj_Type => Offset_Pos := (0.0, 1.5, -1.0, 1.0);
-              when Fireball_Proj_Type => Offset_Pos := (0.0, 1.5, -0.5, 1.0);
-              when others => Offset_Pos := (0.5, 1.5, 0.0, 1.0);
-              end case;
+                Projectile := Spec.Projectile;
+                case Projectile is
+                when  Arrow_Proj_Type => Offset_Pos := (0.0, 1.5, -1.0, 1.0);
+                when Fireball_Proj_Type => Offset_Pos := (0.0, 1.5, -0.5, 1.0);
+                when others => Offset_Pos := (0.5, 1.5, 0.0, 1.0);
+                end case;
             end if;
 
             Rotation_Matrix := Maths.Rotate_Y_Degree
@@ -955,18 +1037,23 @@ package body Character_Controller is
             Facing := To_Vector3 (Rotation_Matrix * Offset_Pos) +
               Position (Character);
             case Projectile is
-              when Javelin_Proj_Type => Attack_With_Javelin
+                when Javelin_Proj_Type => Attack_With_Javelin
                       (Character, Character.Specs_Index);
-              when Arrow_Proj_Type =>
+                when Arrow_Proj_Type =>
                     null;
-              when Fireball_Proj_Type =>
+                when Fireball_Proj_Type =>
                     null;
-              when Skull_Proj_Type
+                when Skull_Proj_Type
                     =>
                     null;
-              when others => null;
-              end case;
+                when others => null;
+            end case;
         end if;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Start_Attack exception");
+            raise;
     end Start_Attack;
 
     --  -------------------------------------------------------------------------
@@ -977,6 +1064,7 @@ package body Character_Controller is
         Spec        : constant Spec_Data := Character_Specs.Element (Spec_Index);
         Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num, 1);
     begin
+        Put_Line ("Character_Controller.Switch_Animation");
         if Character.Current_Anim /= Anim_Num then
             if Anim_Num > Natural (Max_Animations) then
                 raise Character_Controller_Exception;
@@ -987,11 +1075,16 @@ package body Character_Controller is
             Sprite_Renderer.Set_Sprite_Current_Sprite
               (Character.Sprite_Index, Atlas_Index);
         end if;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Switch_Animation exception");
+            raise;
     end Switch_Animation;
 
     --  -------------------------------------------------------------------------
 
-   function Teleport_Countdown (Character : Barbarian_Character) return Float is
+    function Teleport_Countdown (Character : Barbarian_Character) return Float is
     begin
         return Character.Teleport_Countdown;
     end Teleport_Countdown;
@@ -1001,6 +1094,7 @@ package body Character_Controller is
     procedure Update_Character (theCharacter : in out Barbarian_Character;
                                 Seconds : Float) is
     begin
+        Put_Line ("Character_Controller.Update_Character");
         if theCharacter.Update_Decay > 0.0 then
             theCharacter.Update_Decay := theCharacter.Update_Decay - Seconds;
         else
@@ -1011,19 +1105,23 @@ package body Character_Controller is
               theCharacter.Alert_Cooldown_Sec - Seconds;
         end if;
 
-
         if theCharacter.Is_Alive then
             Character_AI.Step_AI_For_Character (theCharacter);
         end if;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Update_Character exception");
+            raise;
     end Update_Character;
 
     --  -------------------------------------------------------------------------
 
-    function Update_Characters (Seconds : Float) return Boolean is
+    procedure Update_Characters (Seconds : Float) is
         use Maths;
         use Batch_Manager;
         use Character_Map.Character_Map_Package;
-        aCharacter      : Barbarian_Character := Characters.First_Element;
+        aCharacter      : Barbarian_Character;
         Char_List       : Character_Map.Character_Map_List;
         Curs            : Cursor;
         Char_Index      : Positive;
@@ -1034,56 +1132,64 @@ package body Character_Controller is
         Down            : Int;
         Ok              : Boolean := True;
     begin
-        Characters_Updated := 0;
-        if Character_Controller_Loaded then
-            OK := Update_Player (1, Seconds);
-            if OK then
-                aCharacter.Needs_Update := False;
-                Characters_Updated := Characters_Updated + 1;
-                Left := Max_Int (0, aCharacter.Map (GL.X) - Update_Distance);
-                Right := Min_Int
-                  (Max_Cols - 1, aCharacter.Map (GL.X) + Update_Distance);
-                Up := Max_Int (0, aCharacter.Map (GL.Y) - Update_Distance);
-                Down := Min_Int
-                  (Max_Rows - 1, aCharacter.Map (GL.Y) + Update_Distance);
-                --  Collect all characters around p1
-                for v in Up .. Down loop
-                    for h in Left .. Right loop
-                        Char_List := Character_Map.Get_Characters_In (h, v);
-                        Curs := Char_List.First;
-                        while Has_Element (Curs) loop
-                            Char_Index := Element (Curs);
-                            aCharacter := Characters.Element (Char_Index);
-                            if aCharacter.Is_Alive  then
-                                aCharacter.Needs_Update := True;
-                                Characters.Replace_Element (Char_Index, aCharacter);
-                            end if;
-                            Next (Curs);
+        if not Characters.Is_Empty then
+            aCharacter := Characters.First_Element;
+            Characters_Updated := 0;
+--              if Character_Controller_Loaded then
+                OK := Update_Player (1, Seconds);
+                if OK then
+                    aCharacter.Needs_Update := False;
+                    Characters_Updated := Characters_Updated + 1;
+                    Left := Max_Int (0, aCharacter.Map (GL.X) - Update_Distance);
+                    Right := Min_Int
+                      (Max_Cols - 1, aCharacter.Map (GL.X) + Update_Distance);
+                    Up := Max_Int (0, aCharacter.Map (GL.Y) - Update_Distance);
+                    Down := Min_Int
+                      (Max_Rows - 1, aCharacter.Map (GL.Y) + Update_Distance);
+                    --  Collect all characters around p1
+                    for v in Up .. Down loop
+                        for h in Left .. Right loop
+                            Char_List := Character_Map.Get_Characters_In (h, v);
+                            Curs := Char_List.First;
+                            while Has_Element (Curs) loop
+                                Char_Index := Element (Curs);
+                                aCharacter := Characters.Element (Char_Index);
+                                if aCharacter.Is_Alive  then
+                                    aCharacter.Needs_Update := True;
+                                    Characters.Replace_Element (Char_Index, aCharacter);
+                                end if;
+                                Next (Curs);
+                            end loop;
                         end loop;
                     end loop;
-                end loop;
 
-                Curs := Char_List.First;
-                while Has_Element (Curs) loop
-                    Char_Index := Element (Curs);
-                    aCharacter := Characters.Element (Char_Index);
-                    if aCharacter.Needs_Update then
-                        Update_Character (aCharacter, Seconds);
-                        Characters.Replace_Element (Char_Index, aCharacter);
-                    end if;
-                    Next (Curs);
-                    --   Process_Characters
-                    --    (Self_ID, Exclude_ID, World_Pos, Char_List);
-                end loop;
+                    Curs := Char_List.First;
+                    while Has_Element (Curs) loop
+                        Char_Index := Element (Curs);
+                        aCharacter := Characters.Element (Char_Index);
+                        if aCharacter.Needs_Update then
+                            Update_Character (aCharacter, Seconds);
+                            Characters.Replace_Element (Char_Index, aCharacter);
+                        end if;
+                        Next (Curs);
+                        --   Process_Characters
+                        --    (Self_ID, Exclude_ID, World_Pos, Char_List);
+                    end loop;
+--                  end if;
             end if;
         end if;
-        return OK;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Update_Characters exception");
+            raise;
+
     end Update_Characters;
 
     --  -------------------------------------------------------------------------
 
-   procedure Update_Decay (Character : in out Barbarian_Character;
-                           Seconds : Float) is
+    procedure Update_Decay (Character : in out Barbarian_Character;
+                            Seconds : Float) is
     begin
         Character.Update_Decay := Seconds;
     end Update_Decay;
@@ -1097,6 +1203,11 @@ package body Character_Controller is
         Ok : Boolean := False;
     begin
         return OK;
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Update_Player exception");
+            raise;
+            return False;
     end Update_Player;
 
     --  -------------------------------------------------------------------------

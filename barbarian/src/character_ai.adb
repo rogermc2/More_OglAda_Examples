@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with GL.Types;
 
 with Maths;
@@ -62,6 +64,7 @@ package body Character_AI is
         Dist_To_Player  : Singles.Vector3;
         Sprite_Pos      : Singles.Vector3;
     begin
+        Put_Line ("Character_AI.Step_Hostile_AI");
         --  If warlock then recharge spells
         if Proj_Type = Skull_Proj_Type then
             Set_Skull_Countdown (theCharacter, Max_Float (0.0, Skull_Countdown
@@ -116,6 +119,11 @@ package body Character_AI is
                 end if;
             end if;
         end if;
+
+    exception
+            when others =>
+            Put_Line ("Character_AI.Step_Hostile_AI exception");
+            raise;
 
     end Step_Hostile_AI;
 

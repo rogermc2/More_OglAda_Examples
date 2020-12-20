@@ -223,13 +223,20 @@ package body Main_Loop is
                                Curr_Frame_Time_Accum_Ms, Avg_Frames_Count,
                                Curr_Frames_Count);
                 if not Main_Menu_Open then
+                    Game_Utils.Game_Log
+                      ("Main_Loop.Main_Game_Loop Main Menu not open");
                     Level_Time := Level_Time + Delta_Time;
                 else  --  Main_Menu_Open
-                    Main_Menu_Quit := not Main_Menu.Update_Menu (Window, Delta_Time);
+                    Game_Utils.Game_Log
+                      ("Main_Loop.Main_Game_Loop Main Menu open");
+                    Main_Menu_Quit := not Main_Menu.Update_Menu
+                      (Window, Delta_Time);
                     if Main_Menu.Menu_Was_Closed then
                         Main_Menu_Open := False;
                         FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
                     end if;
+                    Game_Utils.Game_Log
+                      ("Main_Loop.Main_Game_Loop check if User_Choose_New_Game");
                     if Main_Menu.Did_User_Choose_New_Game or
                       Main_Menu.Did_User_Choose_Custom_Maps then
                         Main_Menu_Open := False;
@@ -259,6 +266,8 @@ package body Main_Loop is
                     end if;
 
                     if Is_Running then
+                        Game_Utils.Game_Log
+                          ("Main_Loop.Main_Game_Loop Do cheating checks");
                         --  Do cheating checks
                         Cheating := Cheat_Check_1;
                         if not Main_Menu.Menu_Open then
@@ -273,8 +282,14 @@ package body Main_Loop is
                             Is_Running := Check_Victory_Defeat;
 
                             if Is_Running then
+                                Game_Utils.Game_Log
+                                  ("Main_Loop.Main_Game_Loop Update_Camera_Effects");
                                 Camera.Update_Camera_Effects (Delta_Time);
+                                Game_Utils.Game_Log
+                                  ("Main_Loop.Main_Game_Loop Camera_Effects updated");
                                 Update_Logic_Steps (Delta_Time);
+                                Game_Utils.Game_Log
+                                  ("Main_Loop.Main_Game_Loop Logic_Steps updated");
                                 if Main_Menu.End_Story_Open then
                                     Main_Menu_Open := True;
                                     Unload_Level;
@@ -305,6 +320,12 @@ package body Main_Loop is
                                      & Boolean'Image (Is_Running));
             end loop;
             Quit_Game := True;
+
+        exception
+            when others =>
+            Put_Line ("Main_Loop.Main_Game_Loop exception");
+            raise;
+
         end Main_Game_Loop;
 
         --  ------------------------------------------------------------------------
@@ -469,26 +490,31 @@ package body Main_Loop is
                 raise;
         end Run_Game;
 
-        --  ------------------------------------------------------------------------
+        --  --------------------------------------------------------------------
 
         procedure Update_Logic_Steps (Seconds : Float) is
             Accum_Time : Float := Seconds;
-            Time_Step  : Integer := 0;
-            OK         : Boolean := True;
-        begin
-            while OK and Accum_Time >= Logic_Step_Seconds loop
-                OK := Character_Controller.Update_Characters (Logic_Step_Seconds);
-                if not OK then
-                    raise Update_Exception with
-                      "Update_Logic_Steps, error updating characters";
-                end if;
+            Time_Step  : Integer := 0;        begin
+           Put_Line ("Main_Loop.Update_Logic_Steps.");
+            while Accum_Time >= Logic_Step_Seconds loop
+                Put_Line
+                  ("Main_Loop.Update_Logic_Steps Update_Characters.");
+                Character_Controller.Update_Characters (Logic_Step_Seconds);
+                Put_Line
+                  ("Main_Loop.Update_Logic_Steps Prop_Renderer.Update_Properties.");
                 Prop_Renderer.Update_Properties (Logic_Step_Seconds);
-
+                Put_Line
+                  ("Main_Loop.Update_Logic_Steps Projectile_Manager.Update_Projectiles.");
                 Projectile_Manager.Update_Projectiles (Logic_Step_Seconds);
                 Time_Step := Time_Step + 1;
-                Accum_Time := Accum_Time + Logic_Step_Seconds;
+                Accum_Time := Accum_Time - Logic_Step_Seconds;
             end loop;
             Max_Steps_Per_Frame := Game_Utils.Max (Max_Steps_Per_Frame, Time_Step);
+
+        exception
+            when others =>
+                Put_Line ("An exception occurred in Main_Loop.Update_Logic_Steps.");
+                raise;
 
         end Update_Logic_Steps;
 

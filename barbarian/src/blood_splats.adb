@@ -124,6 +124,13 @@ package body Blood_Splats is
 
    --  -------------------------------------------------------------------------
 
+   procedure Splat_Event (Position : GL.Types.Singles.Vector3; Radius : Float) is
+   begin
+      null;
+   end Splat_Event;
+
+   --  -------------------------------------------------------------------------
+
    procedure Use_Splats_Shader is
    begin
       GL.Objects.Programs.Use_Program (Splat_Shader_Program);
