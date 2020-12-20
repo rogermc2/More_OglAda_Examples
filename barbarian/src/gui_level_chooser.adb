@@ -204,7 +204,7 @@ package body GUI_Level_Chooser is
         Level_Menu_Manager.Load_Story_Names ("src/save/maps.dat", Levels);
         Level_Menu_Manager.Init_Levels (Levels, Selected_Level_ID,
                                         Left_Margin_Cl, Top_Margin_Cl);
-        Update_Selected_Entry_Level (True, False);
+        Update_Selected_Entry_Level (First => True, Custom => False);
 
         Choose_Level_Text_ID :=
           Text.Add_Text ("choose thy battle!", 0.0, Single (Top_Margin_Cl),
@@ -299,16 +299,16 @@ package body GUI_Level_Chooser is
 
     --  ------------------------------------------------------------------------
 
-    procedure Render (Window  : in out Input_Callback.Barbarian_Window;
+    procedure Render_Level_Menu (Window  : in out Input_Callback.Barbarian_Window;
                       Credits_Shader_Program  : GL.Objects.Programs.Program;
                       Delta_Time  : Float;
                       Use_Custom_Levels, Started_Loading_Map,
-                      Menu_Open : Boolean) is
+                      Level_Menu_Open : Boolean) is
         use Level_Menu_Manager.Levels_Package;
         use Custom_Levels_Manager.Custom_Levels_Package;
-        LeveL_Menu  : Level_Menu_Manager.Level_Map_Data;
+        LeveL_Menu    : Level_Menu_Manager.Level_Map_Data;
         Custom_Level  : Custom_Levels_Manager.Custom_Data;
-        Last_Index  : Positive := Levels.Last_Index;
+        Last_Index    : Positive := Levels.Last_Index;
     begin
         Utilities.Clear_Colour;
         Set_Background_Pane (Credits_Shader_Program, Use_Custom_Levels);
@@ -339,14 +339,14 @@ package body GUI_Level_Chooser is
             Text.Draw_Text (Loading_Map_Text_ID);
         end if;
 
-        if Menu_Open then
+        if Level_Menu_Open then
             Main_Menu.Draw_Menu (Delta_Time);
         end if;
 
         GUI.Draw_Controller_Button_Overlays (Delta_Time);
         Glfw.Windows.Context.Swap_Buffers (Window'Access);
 
-    end Render;
+    end Render_Level_Menu;
 
     --  ------------------------------------------------------------------------
 
@@ -456,8 +456,8 @@ package body GUI_Level_Chooser is
        Credits_Shader_Program : GL.Objects.Programs.Program;
        Custom_Maps            : Boolean) return Boolean is
         use GL.Toggles;
-        Menu_Open           : Boolean := Main_Menu.End_Story_Open;
-        Menu_Quit           : Boolean := False;
+        Level_Menu_Open       : Boolean := Main_Menu.End_Story_Open;
+        Level_Menu_Quit       : Boolean := False;
         Cheat_Unlock        : Boolean := False;
         Started_Loading_Map : Boolean := False;
         Current_Time        : Float;
@@ -469,45 +469,47 @@ package body GUI_Level_Chooser is
         Selected_Level : constant Level_Menu_Manager.Level_Map_Data :=
                            Levels.Element (Selected_Level_ID);
     begin
---          Game_Utils.Game_Log ("Start_Level_Chooser_Loop 1 Selected_Level, Locked: "
---                                       & Integer'Image (Selected_Level_ID) & "  "
---                                       & To_String (Selected_Level.Level_Name) & "  "
---                                        & Boolean'Image (Selected_Level.Locked));
+        Game_Utils.Game_Log ("Start_Level_Chooser_Loop 1 Selected_Level, Level_Menu_Open: "
+                                     & Integer'Image (Selected_Level_ID) & "  "
+                                     & To_String (Selected_Level.Level_Name) & "  "
+                                      & Boolean'Image (Level_Menu_Open));
         Reset_GUI_Level_Selection (Custom_Maps);
         while not Window.Should_Close and Continue loop
             Current_Time := Float (Glfw.Time);
             Delta_Time := Current_Time - Last_Time;
             Last_Time := Current_Time;
-            if Menu_Open then
+            if Level_Menu_Open then
                 --              Game_Utils.Game_Log ("Start_Level_Chooser_Loop Delta_Time" &
                 --                                    Float'Image (Delta_Time));
-                Menu_Quit := not Main_Menu.Update_Menu (Window, Delta_Time);
+                Level_Menu_Quit :=
+                  not Main_Menu.Update_Main_Menu (Window, Delta_Time);
                 if Main_Menu.Menu_Was_Closed then
-                    Menu_Open := False;
+                    Level_Menu_Open := False;
                 end if;
 
                 if Main_Menu.Did_User_Choose_New_Game or
                   Main_Menu.Did_User_Choose_Custom_Maps then
-                    Menu_Open := False;
+                    Level_Menu_Open := False;
                     Continue := False;
                     Restart := True;
-                elsif Menu_Quit then
+                elsif Level_Menu_Quit then
                     Continue := False;
-                end if;
-            else
+                end if;  --  Level_Menu_Open
+            else --  Level_Menu_Open
                 --              Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
                 Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
             end if;
 
             if Continue then
                 Started_Loading_Map := False;
-                if not Menu_Open then
+                if not Level_Menu_Open then
                     --                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
-                    Process_Input (Window, Menu_Open, Started_Loading_Map, Cheat_Unlock);
+                    Process_Input (Window, Level_Menu_Open, Started_Loading_Map, Cheat_Unlock);
                 end if;
 
-                Render (Window, Credits_Shader_Program, Delta_Time, Custom_Maps,
-                        Started_Loading_Map, Menu_Open);
+                Render_Level_Menu
+                  (Window, Credits_Shader_Program, Delta_Time, Custom_Maps,
+                    Started_Loading_Map, Level_Menu_Open);
                 Continue := not Started_Loading_Map;
                 if Continue then
                     --                 Poll_Joystick;

@@ -229,7 +229,7 @@ package body Main_Loop is
                 else  --  Main_Menu_Open
                     Game_Utils.Game_Log
                       ("Main_Loop.Main_Game_Loop Main Menu open");
-                    Main_Menu_Quit := not Main_Menu.Update_Menu
+                    Main_Menu_Quit := not Main_Menu.Update_Main_Menu
                       (Window, Delta_Time);
                     if Main_Menu.Menu_Was_Closed then
                         Main_Menu_Open := False;
@@ -244,7 +244,7 @@ package body Main_Loop is
                         Unload_Level;
                         Is_Running := False;
                     end if;
-                end if;
+                end if;  --  Main_Menu_Open
 
                 if Is_Running then
                     if Settings.Video_Record_Mode and Dump_Video then
@@ -263,7 +263,7 @@ package body Main_Loop is
                             Video_Timer := 0.0;
                             Put_Line ("==RECORDING VIDEO==");
                         end if;
-                    end if;
+                    end if;  --  Video processing
 
                     if Is_Running then
                         --  Do cheating checks
@@ -301,8 +301,8 @@ package body Main_Loop is
                         --                            ("Main_Loop.Main_Game_Loop Player_1_View returned");
                         Is_Running := Is_Running and then not Main_Menu_Quit;
                         Is_Running := Is_Running and then not Main_Window.Should_Close;
-                    end if;
-                end if;
+                    end if;  --  inner Is_Running
+                end if;  --  Is_Running
 
                 --                  Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
                 --                                       & Boolean'Image (Window.Should_Close));
@@ -373,7 +373,7 @@ package body Main_Loop is
                 Height := Single (Window_Height);
                 GL.Window.Set_Viewport (0, 0, Int (Width), Int (Height));
 
-                Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
+                Game_Utils.Game_Log ("Main_Loop.Run_Game Opening level map file " &
                                        To_String (Level_Name));
                 if not Skip_Intro then
                     Continue := GUI_Level_Chooser.Start_Level_Chooser_Loop
@@ -475,7 +475,7 @@ package body Main_Loop is
                 --           --  Poll_Joystick
                 Glfw.Windows.Context.Swap_Buffers (Window'Access);
 
-                if not Main_Menu.Update_Menu (Window, Delta_Time) then
+                if not Main_Menu.Update_Main_Menu (Window, Delta_Time) then
                     Main_Menu.Set_Menu_Open (False);
                     Quit_Game := True;
                 end if;

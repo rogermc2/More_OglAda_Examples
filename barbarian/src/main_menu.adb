@@ -524,8 +524,8 @@ package body Main_Menu is
 
    --  ------------------------------------------------------------------------
 
-   function Update_Menu (Window     : in out Input_Callback.Barbarian_Window;
-                         Delta_Time : Float) return Boolean is
+   function Update_Main_Menu (Window     : in out Input_Callback.Barbarian_Window;
+                              Delta_Time : Float) return Boolean is
       use Glfw.Input.Keys;
       use Input_Handler;
       use Menu_Support;
@@ -593,7 +593,7 @@ package body Main_Menu is
       end if; --  Since_Last_Key < 0.15
 
       return not Menu_Confirm_Quit_Open;
-   end Update_Menu;
+   end Update_Main_Menu;
 
    --  ------------------------------------------------------------------------
 
