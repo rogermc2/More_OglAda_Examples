@@ -113,6 +113,7 @@ package body Main_Loop.Game_Support is
    begin
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
          for index in Shadow_Direction'Range loop
+             Put_Line ("Main_Loop.Game_Support.Player_1_View Shadow pass");
             Bind_Shadow_FB (index);
             Manifold.Draw_Manifold_Around_Depth_Only;
             Prop_Renderer.Render_Props_Around_Depth_Only
@@ -120,6 +121,7 @@ package body Main_Loop.Game_Support is
 --                (Centre_X, Centre_Z, Shadow_Caster_Max_Tiles_Away);
          end loop;
       end if;   --  end of shadow mapping pass
+      Put_Line ("Main_Loop.Game_Support.Player_1_View end of shadow mapping pass");
 
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;

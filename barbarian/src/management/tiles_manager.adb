@@ -53,10 +53,14 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Add_Static_Light (Col, Row                  : Int; Tile_Height_Offset : Integer;
+   procedure Add_Static_Light (Col, Row                  : Int;
+                               Tile_Height_Offset : Integer;
                                Offset, Diffuse, Specular : Singles.Vector3;
                                Light_Range               : Single) is
       use Batch_Manager;
+      use Batches_Package;
+      Curs          : Cursor := Batches.First;
+      aBatch        : Batch_Meta;
       X             : constant Single := Single (2 * Col) + Offset (GL.X);
       Y             : constant Single := Single (2 * Get_Tile_Level (Col, Row) + Tile_Height_Offset) +
                         Offset (GL.Y);
@@ -64,7 +68,6 @@ package body Tiles_Manager is
       Total_Batches : constant Integer := Batches_Across * Batches_Down;
       --          Sorted        : Boolean := False;
       New_Light     : Static_Light_Data;
-      aBatch        : Batch_Manager.Batch_Meta;
    begin
       New_Light.Row := Row;
       New_Light.Column := Col;
@@ -77,7 +80,7 @@ package body Tiles_Manager is
       for index in 1 .. Total_Batches loop
          aBatch := Batches.Element (index);
          aBatch.Static_Light_Indices.Append (Static_Lights.Last_Index);
-         Batches.Replace_Element (index, aBatch);
+         Update_Batch (index, aBatch);
       end loop;
 
    end Add_Static_Light;
@@ -121,10 +124,10 @@ package body Tiles_Manager is
             if Has_Element (Batches.To_Cursor (Batch_Index)) then
                Batch := Batches.Element (Batch_Index);
                Add_Tile_Index (Batch, Tile_Index);
-               Batches.Replace_Element (Batch_Index, Batch);
+               Update_Batch (Batch_Index, Batch);
             else
                Add_Tile_Index (Batch, Tile_Index);
-               Batches.Append (Batch);
+               Add_Batch (Batch);
             end if;
          end loop;
       end loop;
@@ -510,7 +513,7 @@ package body Tiles_Manager is
 
       Sprite_World_Map.Init;
 
-      Game_Utils.Game_Log ("Total points " & Integer'Image (Total_Points));
+--        Game_Utils.Game_Log ("Total points " & Integer'Image (Total_Points));
       Game_Utils.Game_Log ("Manifold generated.");
       Game_Utils.Game_Log ("Tiles loaded.");
 

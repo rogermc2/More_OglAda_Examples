@@ -54,8 +54,9 @@ package body Manifold is
       use Batch_Manager;
       use Batches_Package;
       use Tile_Indices_Package;
-      Batch_Cursor  : Batches_Package.Cursor := Batches.First;
-      Batch         : Batch_Manager.Batch_Meta;
+      theBatches   : constant Batches_List := Batches;
+      Batch_Cursor : Batches_Package.Cursor := theBatches.First;
+      Batch        : Batch_Manager.Batch_Meta;
    begin
       while Has_Element (Batch_Cursor) loop
          Batch := Element (Batch_Cursor);
@@ -183,8 +184,9 @@ package body Manifold is
       while Has_Element (Curs) loop
          aBatch := Element (Curs);
          if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
-
             --  Flat Tiles
+            Put_Line ("Manifold.Draw_Manifold_Around_Depth_Only Aabb is In_Frustum array Length"
+            & Integer'Image (Integer (aBatch.Points.Length)));
             GL_Utils.Bind_Vao (aBatch.Vao);
             Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
             GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
@@ -273,11 +275,9 @@ package body Manifold is
    --  ----------------------------------------------------------------------------
 
    procedure Free_Manifold_Mesh_Data is
-      use Batch_Manager;
    begin
-      Batches.Clear;
+      Batch_Manager.Clear;
       --        Batch_Split_Count := 0;
-      Total_Points := 0;
    end Free_Manifold_Mesh_Data;
 
    --  ----------------------------------------------------------------------------
@@ -417,12 +417,13 @@ package body Manifold is
       Water_Shader_Manager.Set_Ambient_Light (Level);
    end Set_Manifold_Ambient_Light;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    procedure Update_Static_Lights_Uniforms  is
       use Batch_Manager;
       use Tile_Indices_Package;
-      Index     : Positive := Static_Lights.First_Index;
+      Lights    : constant Static_Light_Vector := Static_Lights;
+      Index     : Positive := Lights.First_Index;
       aLight    : Static_Light_Data;
       Positions : Singles.Vector3_Array
         (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));

@@ -507,6 +507,7 @@ package body GUI_Level_Chooser is
                     Process_Input (Window, Level_Menu_Open, Started_Loading_Map, Cheat_Unlock);
                 end if;
 
+                Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu");
                 Render_Level_Menu
                   (Window, Credits_Shader_Program, Delta_Time, Custom_Maps,
                     Started_Loading_Map, Level_Menu_Open);

@@ -4,15 +4,27 @@ with Settings;
 
 package body Batch_Manager is
 
-   Atlas_Factor      : constant Single := 0.25;
-   Sets_In_Atlas_Row : constant Integer := 4;
-   ST_Offset         : constant Single := 8.0 / 2048.0;
+   Batches_Data           : Batches_List;
+   Static_Lights_List     : Static_Light_Vector;
+   Atlas_Factor           : constant Single := 0.25;
+   Sets_In_Atlas_Row      : constant Integer := 4;
+   ST_Offset              : constant Single := 8.0 / 2048.0;
+   Ramp_Mesh_Point_Count  : Integer := 0;
+   Water_Mesh_Point_Count : Integer := 0;
+   Total_Points           : Integer := 0;
 
    function Check_For_OOO (Batch_Index : Positive) return Boolean;
    procedure North_Check (aBatch     : in out Batch_Meta;
                           Row, Col   :   Int; Height : Integer;
                           Tiles      : Tiles_Manager.Tile_List;
                           Tile_Index : positive);
+
+   --  -------------------------------------------------------------------------
+
+   procedure Add_Batch (Data : Batch_Meta) is
+   begin
+        Batches_Data.Append (Data);
+   end Add_Batch;
 
    --  -------------------------------------------------------------------------
 
@@ -37,8 +49,8 @@ package body Batch_Manager is
          aBatch  : Batch_Meta := Element (Curs);
       begin
          Sorted := False;
-         aBatch.Static_Light_Indices.Append (Static_Lights.Last_Index);
-         Batches.Replace_Element (Curs, aBatch);
+         aBatch.Static_Light_Indices.Append (Static_Lights_List.Last_Index);
+         Batches_Data.Replace_Element (Curs, aBatch);
          while not Sorted loop
             Sorted := Check_For_OOO (To_Index (Curs));
          end loop;
@@ -53,10 +65,17 @@ package body Batch_Manager is
       New_Light.Light_Range := Light_Range;
       New_Light.Row := Row;
       New_Light.Column := Col;
-      Static_Lights.Append (New_Light);
+      Static_Lights_List.Append (New_Light);
 
       Batches.Iterate (Process_Batch'Access);
    end Add_Static_Light;
+
+   --  ----------------------------------------------------------------------------
+
+   function Batches return Batches_List is
+   begin
+        return Batches_Data;
+   end Batches;
 
    --  ----------------------------------------------------------------------------
 
@@ -78,7 +97,7 @@ package body Batch_Manager is
       Current_Light_Cursor : Cursor := Light_Indices.First;
       Current_Light_Index  : Positive := Element (Current_Light_Cursor);
       Current_Light        : Static_Light_Data :=
-                               Static_Lights.Element (Current_Light_Index);
+                               Static_Lights_List.Element (Current_Light_Index);
       Prev_Light_Cursor    : Cursor := Light_Indices.First;
       Prev_Light_Index     : Positive;
       Next_Light_Index     : Positive;
@@ -96,10 +115,10 @@ package body Batch_Manager is
       Next_Dist            : Single;
    begin
       while Has_Element (Next_Light_Cursor) loop
-         Current_Light := Static_Lights.Element (Current_Light_Index);
+         Current_Light := Static_Lights_List.Element (Current_Light_Index);
          Next (Next_Light_Cursor);
          Next_Light_Index := Element (Next_Light_Cursor);
-         Next_Light := Static_Lights.Element (Next_Light_Index);
+         Next_Light := Static_Lights_List.Element (Next_Light_Index);
 
          Curr_Row := Current_Light.Row;
          Curr_Col := Current_Light.Column;
@@ -126,9 +145,19 @@ package body Batch_Manager is
       end loop;
 
       This_Batch.Static_Light_Indices := Light_Indices;
-      Batches.Replace_Element (Batch_Index, This_Batch);
+      Batches_Data.Replace_Element (Batch_Index, This_Batch);
       return True;
    end Check_For_OOO;
+
+   --  ----------------------------------------------------------------------------
+
+    procedure Clear is
+    begin
+        Batches_Data.Clear;
+        Ramp_Mesh_Point_Count := 0;
+        Water_Mesh_Point_Count := 0;
+        Total_Points := 0;
+    end Clear;
 
    --  ----------------------------------------------------------------------------
 
@@ -138,7 +167,7 @@ package body Batch_Manager is
       theBatch.Points.Clear;
       theBatch.Ramp_Points.Clear;
       theBatch.Water_Points.Clear;
-      Batches.Replace_Element  (Batch_Index, theBatch);
+      Batches_Data.Replace_Element  (Batch_Index, theBatch);
    end Free_Batch_Data;
 
    --  ----------------------------------------------------------------------------
@@ -416,9 +445,23 @@ package body Batch_Manager is
       theBatch.Water_VAO.Initialize_Id;
 
       Generate_Points (theBatch, Tiles);
-      Batches.Replace_Element (Batch_Index, theBatch);
+      Batches_Data.Replace_Element (Batch_Index, theBatch);
 
    end Regenerate_Batch;
+
+   --  ----------------------------------------------------------------------------
+
+   function Static_Lights return Static_Light_Vector is
+   begin
+        return Static_Lights_List;
+   end Static_Lights;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Update_Batch (Index : Positive; Data : Batch_Meta) is
+   begin
+        Batches_Data.Replace_Element (Index, Data);
+   end Update_Batch;
 
    --  ----------------------------------------------------------------------------
 

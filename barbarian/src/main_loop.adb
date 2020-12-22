@@ -68,32 +68,31 @@ package body Main_Loop is
         Logic_Step_Seconds   : constant Float := 0.01;
         --      Char_Map_Tell        : Integer;
         --     Fps_Text             : Integer;
-        Max_Steps_Per_Frame  : Integer;
-        Game_Map             : Maps_Manager.Map;
-        Game_Camera          : Camera.Camera_Data := Camera.Default_Camera;
-        Level_Name           : Unbounded_String :=
-                                 To_Unbounded_String ("anton2");
-        Level_Time           : Float := 0.0;
-        --          Main_Menu_Open       : Boolean := False;
-        Cheated_On_Map       : Boolean := False;
-        Quit_Game            : Boolean := False;
-        Skip_Intro_Screen    : Boolean := True;
+        Max_Steps_Per_Frame             : Integer;
+        Game_Map                        : Maps_Manager.Map;
+        Game_Camera                     : Camera.Camera_Data := Camera.Default_Camera;
+        Level_Name                      : Unbounded_String :=
+                                            To_Unbounded_String ("anton2");
+        Level_Time                      : Float := 0.0;
+        Cheated_On_Map                  : Boolean := False;
+        Quit_Game                       : Boolean := False;
+        Skip_Intro_Screen_And_Main_Menu : Boolean := True;
 
-        Avg_Frame_Time_Accum_Ms  : Float := 0.0;
-        Curr_Frame_Time_Accum_Ms : Float := 0.0;
-        Avg_Frames_Count         : Integer := 0;
-        Curr_Frames_Count        : Integer := 0;
-        --     Batching_Mode        : Boolean := True;
-        --     Reserve_video_Memory : Boolean := True;
-        Dump_Video               : Boolean := False;
-        --     Draw_Debug_Quads     : Boolean;
-        --      Param                  : Integer := 0;
-        Camera_Height            : constant GL.Types.Single := 13.0;
-        Changed_Camera_Height    : constant Boolean := False;
-        Fps_Text_Index           : Integer;
+        Avg_Frame_Time_Accum_Ms         : Float := 0.0;
+        Curr_Frame_Time_Accum_Ms        : Float := 0.0;
+        Avg_Frames_Count                : Integer := 0;
+        Curr_Frames_Count               : Integer := 0;
+        --     Batching_Mode            : Boolean := True;
+        --     Reserve_video_Memory     : Boolean := True;
+        Dump_Video                      : Boolean := False;
+        --     Draw_Debug_Quads         : Boolean;
+        --      Param                   : Integer := 0;
+        Camera_Height                   : constant GL.Types.Single := 13.0;
+        Changed_Camera_Height           : constant Boolean := False;
+        Fps_Text_Index                  : Integer;
 
-        Initialize_Exception   : Exception;
-        Update_Exception       : Exception;
+        Initialize_Exception            : Exception;
+        Update_Exception                : Exception;
 
         procedure Update_Logic_Steps (Seconds : Float);
 
@@ -220,6 +219,7 @@ package body Main_Loop is
             Cheating         : Boolean := False;
         begin
             Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
+            Put_Line ("Main_Loop.Main_Game_Loop");
             Game_Camera.Is_Dirty := True;
             while Is_Running loop
                 Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
@@ -227,6 +227,8 @@ package body Main_Loop is
                                Curr_Frames_Count);
                 if Main_Menu.Menu_Open then
                     Game_Utils.Game_Log
+                      ("Main_Loop.Main_Game_Loop Main Menu open");
+                    Put_Line
                       ("Main_Loop.Main_Game_Loop Main Menu open");
                     Main_Menu_Quit := not Main_Menu.Update_Main_Menu
                       (Window, Delta_Time);
@@ -355,7 +357,7 @@ package body Main_Loop is
             --          Play_Music (Title_Track);
             --          Is_Playing_Hammer_Track := False;
 
-            if not Skip_Intro_Screen then
+            if not Skip_Intro_Screen_And_Main_Menu then
                 Introduction (Window, Last_Time, Flash_Timer, Is_Running);
             end if;
             Is_Running := True;
@@ -391,20 +393,26 @@ package body Main_Loop is
 
                 Game_Utils.Game_Log ("Main_Loop.Run_Game Opening level map file " &
                                        To_String (Level_Name));
-                if not Skip_Intro_Screen then
+                if not Skip_Intro_Screen_And_Main_Menu then
+                    Put_Line ("Main_Loop.Run_Game starting Level_Chooser_Loop");
                     Continue := GUI_Level_Chooser.Start_Level_Chooser_Loop
                       (Window, Main_Menu.Credits_Program,
                        Main_Menu.Are_We_In_Custom_Maps);
                 end if;
 
                 if Continue then
-                    --   Even if flagged to skip initial intro this means that the level
-                    --  chooser can be accessed if the player selects "new game" in the main menu.
-                    Skip_Intro_Screen := False;
+                    --  Even if flagged to skip initial intro this means that
+                    --  the level chooser can be accessed if the player selects
+                    --  "new game" in the main menu???
+                    --  Level Chooser should start on next iteration of this loop.
+                    Skip_Intro_Screen_And_Main_Menu := False;
                     Level_Name := To_Unbounded_String
                       (GUI_Level_Chooser.Get_Selected_Level_Name
                          (Main_Menu.Are_We_In_Custom_Maps));
                     Game_Utils.Game_Log
+                      ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
+                       & To_String (Level_Name));
+                    Put_Line
                       ("Main_Loop.Run_Game Start_Level_Chooser_Loop Level_Name "
                        & To_String (Level_Name));
 
@@ -425,6 +433,7 @@ package body Main_Loop is
                     GL.Culling.Set_Cull_Face (GL.Culling.Back);
 
                     Game_Utils.Game_Log ("---LEVEL START---");
+                    Put_Line ("---LEVEL START---");
                     Sprite_Shader_Manager.Use_Sprite_Shader;
                     Sprite_Renderer.Set_Ambient_Light_Level (Ambient_Light);
                     Manifold.Set_Manifold_Ambient_Light (Ambient_Light);
@@ -473,7 +482,7 @@ package body Main_Loop is
             Main_Menu.Start_Menu_Title_Bounce;
             Utilities.Clear_Background_Colour_And_Depth (Black);
 
-            if not Skip_Intro_Screen then
+            if not Skip_Intro_Screen_And_Main_Menu then
                 Main_Menu.Set_Menu_Open (True);
             end if;
 
