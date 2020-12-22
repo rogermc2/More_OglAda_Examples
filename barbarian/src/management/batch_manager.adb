@@ -28,7 +28,8 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_Static_Light (Row, Col                       : Int; Tile_Height_Offset : Integer;
+   procedure Add_Static_Light (Row, Col : Int;
+                               Tile_Height_Offset : Integer;
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single) is
       use Batches_Package;

@@ -82,7 +82,8 @@ package body Manifold is
       use GL_Maths;
       use Vec3_Package;
       use Manifold_Shader_Manager;
-      Curs          : Batches_Package.Cursor := Batches.First;
+      theBatches    : constant Batches_List := Batches;
+      Curs          : Batches_Package.Cursor := theBatches.First;
       aBatch        : Batch_Meta;
       Rad_Dist      : Single;
       Light_Indices : Tile_Indices_List;
@@ -175,7 +176,8 @@ package body Manifold is
       use GL.Objects.Vertex_Arrays;
       use Batch_Manager;
       use Batches_Package;
-      Curs          : Cursor := Batches.First;
+      theBatches    : constant Batches_List := Batches;
+      Curs          : Cursor := theBatches.First;
       aBatch        : Batch_Meta;
       Light_Indices : Tile_Indices_List;
    begin
@@ -185,8 +187,6 @@ package body Manifold is
          aBatch := Element (Curs);
          if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
             --  Flat Tiles
-            Put_Line ("Manifold.Draw_Manifold_Around_Depth_Only Aabb is In_Frustum array Length"
-            & Integer'Image (Integer (aBatch.Points.Length)));
             GL_Utils.Bind_Vao (aBatch.Vao);
             Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
             GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
