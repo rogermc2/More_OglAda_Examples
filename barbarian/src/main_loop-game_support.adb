@@ -121,7 +121,6 @@ package body Main_Loop.Game_Support is
 --                (Centre_X, Centre_Z, Shadow_Caster_Max_Tiles_Away);
          end loop;
       end if;   --  end of shadow mapping pass
-      Put_Line ("Main_Loop.Game_Support.Player_1_View end of shadow mapping pass");
 
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;
@@ -135,7 +134,8 @@ package body Main_Loop.Game_Support is
 
       Prop_Renderer.Render_Props_Around_Split (Centre_X, Centre_Z,
                                                Int (Settings.Render_Distance));
-      Sprite_World_Map.Cache_Sprites_Around (UV (GL.X), UV (GL.Y), Int (Settings.Render_Distance));
+      Sprite_World_Map.Cache_Sprites_Around
+          (UV (GL.X), UV (GL.Y), Int (Settings.Render_Distance));
       Transparency.Draw_Transparency_List;
       Particle_System.Render_Particle_Systems (Single (Delta_Time));
       GL_Utils.Set_Resized_View (False);

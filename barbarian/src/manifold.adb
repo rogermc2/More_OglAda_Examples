@@ -211,7 +211,8 @@ package body Manifold is
       use GL_Maths;
       use Vec3_Package;
       use Water_Shader_Manager;
-      Curs          : Batches_Package.Cursor := Batches.First;
+      theBatches    : constant Batches_List := Batches;
+      Curs          : Batches_Package.Cursor := theBatches.First;
       aBatch        : Batch_Meta;
       Light_Indices : Tile_Indices_List;
       Light_Cursor  : Tile_Indices_Package.Cursor;
