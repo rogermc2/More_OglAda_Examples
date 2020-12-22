@@ -201,9 +201,9 @@ package body Manifold_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Static_Light_Indices (Indices : Singles.Vector2) is
+    procedure Set_Static_Light_Indices (Indices : Ints.Vector2) is
     begin
-        GL.Uniforms.Set_Single (Render_Uniforms.Static_Light_Indices_ID, Indices);
+        GL.Uniforms.Set_Int (Render_Uniforms.Static_Light_Indices_ID, Indices);
     end Set_Static_Light_Indices;
 
     --  ----------------------------------------------------------

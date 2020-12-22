@@ -1,4 +1,7 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
+with GL.Objects.Textures;
 with GL.Types;
 
 package Manifold is
@@ -10,7 +13,9 @@ package Manifold is
 
    procedure Clear_Manifold_Lights;
    procedure Draw_Manifold_Around (Camera_Pos : GL.Types.Singles.Vector3;
-                                   Radius : GL.Types.Single);
+                                   Radius : GL.Types.Single;
+                                   Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                                   Ramp_Spec_Tex : GL.Objects.Textures.Texture);
    procedure Draw_Manifold_Around_Depth_Only;
    procedure Free_Manifold_Mesh_Data;
    function Get_Light_Index (Column, Row  : GL.Types.Int;

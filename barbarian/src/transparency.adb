@@ -38,7 +38,7 @@ package body Transparency is
       use GL.Blending;
       use GL.Toggles;
       use GL.Types;
-      Curr_Type : Transparency_Type := Tr_Undef;
+      Curr_Type : constant Transparency_Type := Tr_Undef;
       Inspect   : Natural := TR_Farthest_Node;
       Item_Type : Transparency_Type;
       Node      : TR_Node;

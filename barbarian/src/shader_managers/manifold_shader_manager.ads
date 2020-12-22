@@ -46,7 +46,7 @@ package Manifold_Shader_Manager is
     procedure Set_Projection_Matrix (Projection_Matrix : Singles.Matrix4);
     procedure Set_Shadow_Enabled (Shadow : Single);
     procedure Set_Spec_Map (Map : Int);
-    procedure Set_Static_Light_Indices (Indices : Singles.Vector2);
+    procedure Set_Static_Light_Indices (Indices : Ints.Vector2);
     procedure Set_View_Matrix (View_Matrix : Singles.Matrix4);
 
 end Manifold_Shader_Manager;

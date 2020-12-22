@@ -3,8 +3,6 @@ with Ada.Exceptions;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with GL.Objects.Textures;
-
 with Maths;
 
 with Batch_Manager;
@@ -28,10 +26,6 @@ package body Tiles_Manager is
      (Positive, Static_Light_Data);
    type Static_Light_List is new Static_Light_Package.Vector with null record;
 
-   Tile_Tex              : GL.Objects.Textures.Texture;
-   Tile_Spec_Tex         : GL.Objects.Textures.Texture;
-   Ramp_Diff_Tex         : GL.Objects.Textures.Texture;
-   Ramp_Spec_Tex         : GL.Objects.Textures.Texture;
    Static_Lights         : Static_Light_List;
    Diff_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
    Spec_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
@@ -455,7 +449,8 @@ package body Tiles_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Textures is
+   procedure Load_Textures (Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                            Ramp_Spec_Tex : in out GL.Objects.Textures.Texture) is
       use Texture_Manager;
    begin
       Load_Image_To_Texture
@@ -470,7 +465,9 @@ package body Tiles_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Tiles (File : File_Type) is
+   procedure Load_Tiles (File : File_Type;
+                         Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                         Ramp_Spec_Tex : in out GL.Objects.Textures.Texture) is
       use Ada.Strings;
       use Batch_Manager;
       use Settings;
@@ -506,7 +503,7 @@ package body Tiles_Manager is
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Palette file names: " &
                              To_String (Diff_Palette_Name)
                            & ", " & To_String (Spec_Palette_Name));
-      Load_Textures;
+      Load_Textures (Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex, Ramp_Spec_Tex);
       Add_Tiles_To_Batches;
       Game_Utils.Game_Log ("Load_Tiles Batch calling Add_Dummy_Manifold_Lights");
       Add_Dummy_Manifold_Lights;

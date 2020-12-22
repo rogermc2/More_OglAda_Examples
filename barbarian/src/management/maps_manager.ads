@@ -2,6 +2,8 @@
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with GL.Objects.Textures;
+
 package Maps_Manager is
 
     package Story_Lines_Package is new Ada.Containers.Vectors
@@ -10,7 +12,9 @@ package Maps_Manager is
 
     type Map is private;
 
-    procedure Load_Maps (Map_Path : String; theMap : out Map);
+    procedure Load_Maps (Map_Path : String; theMap : out Map;
+                        Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                        Ramp_Spec_Tex : in out GL.Objects.Textures.Texture);
     procedure Set_Title (aMap : in out Map; Title : Unbounded_String);
     procedure Set_Par_Time (aMap : in out Map; Time : Unbounded_String);
     procedure Set_Music_Track (aMap : in out Map; Track : Unbounded_String);

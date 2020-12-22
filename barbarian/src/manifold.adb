@@ -40,16 +40,13 @@ package body Manifold is
    Water_Mesh_Texcoords     : GL_Maths.Vector2_List;
    Water_Mesh_Point_Count   : Integer := 0;
    Manifold_Dyn_Light_Dirty : Boolean := True;
-   Manifold_Dyn_Light_Pos   : Singles.Vector3 := Maths.Vec3_0;
-   Manifold_Dyn_Light_Diff  : Singles.Vector3 := Maths.Vec3_0;
-   Manifold_Dyn_Light_Spec  : Singles.Vector3 := Maths.Vec3_0;
-   Manifold_Dyn_Light_Range : Single := 1.0;
-   Tile_Tex                 : GL.Objects.Textures.Texture;
-   Tile_Spec_Tex            : GL.Objects.Textures.Texture;
-   Ramp_Diff_Tex            : GL.Objects.Textures.Texture;
-   Ramp_Spec_Tex            : GL.Objects.Textures.Texture;
+   Manifold_Dyn_Light_Pos   : constant Singles.Vector3 := Maths.Vec3_0;
+   Manifold_Dyn_Light_Diff  : constant Singles.Vector3 := Maths.Vec3_0;
+   Manifold_Dyn_Light_Spec  : constant Singles.Vector3 := Maths.Vec3_0;
+   Manifold_Dyn_Light_Range : constant Single := 1.0;
 
-   procedure Draw_Water_Manifold_Around;
+   procedure Draw_Water_Manifold_Around
+      (Tile_Tex, Tile_Spec_Tex : GL.Objects.Textures.Texture);
 
    --  ----------------------------------------------------------------------------
 
@@ -70,7 +67,9 @@ package body Manifold is
    --  ----------------------------------------------------------------------------
 
    procedure Draw_Manifold_Around (Camera_Pos : GL.Types.Singles.Vector3;
-                                   Radius     : GL.Types.Single) is
+                                   Radius     : GL.Types.Single;
+                                   Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                                   Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
       use GL.Culling;
       use GL.Toggles;
       use GL.Objects.Programs;
@@ -87,8 +86,8 @@ package body Manifold is
       Rad_Dist      : Single;
       Light_Indices : Tile_Indices_List;
       Light_Cursor  : Tile_Indices_Package.Cursor;
-      Tile_Index1   : Single;
-      Tile_Index2   : Single;
+      Tile_Index1   : Int;
+      Tile_Index2   : Int;
    begin
       Use_Program (Manifold_Program);
       if Camera.Is_Dirty then
@@ -126,8 +125,8 @@ package body Manifold is
                  not (aBatch.Static_Light_Indices.Is_Empty) then
                   Light_Indices := aBatch.Static_Light_Indices;
                   Light_Cursor := Light_Indices.First;
-                  Tile_Index1 := Single (Element (Light_Cursor));
-                  Tile_Index2 := Single (Element (Next (Light_Cursor)));
+                  Tile_Index1 := Int (Element (Light_Cursor));
+                  Tile_Index2 := Int (Element (Next (Light_Cursor)));
                   Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                   if not Is_Empty (aBatch.Points) then
@@ -159,9 +158,13 @@ package body Manifold is
          Next (Curs);
       end loop;
 
-      Draw_Water_Manifold_Around;
+      Draw_Water_Manifold_Around  (Tile_Tex, Tile_Spec_Tex);
       Manifold_Dyn_Light_Dirty := False;
 
+   exception
+            when others =>
+                Put_Line ("Manifold.Draw_Manifold_Around exception");
+                raise;
    end  Draw_Manifold_Around;
 
    --  ----------------------------------------------------------------------------
@@ -193,7 +196,8 @@ package body Manifold is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Draw_Water_Manifold_Around is
+   procedure Draw_Water_Manifold_Around
+      (Tile_Tex, Tile_Spec_Tex : GL.Objects.Textures.Texture) is
       use GL.Culling;
       use GL.Toggles;
       use GL.Objects.Programs;
@@ -330,14 +334,12 @@ package body Manifold is
    begin
       Game_Utils.Game_Log ("Initializing manifold.");
       Manifold_Shader_Manager.Init (Manifold_Program);
-      Game_Utils.Game_Log ("Manifold_Program initialized.");
       Manifold_Shader_Manager.Set_Ambient_Light ((0.0125, 0.0125, 0.0125));
       Manifold_Shader_Manager.Set_Diff_Map (0);
       Manifold_Shader_Manager.Set_Spec_Map (1);
       Manifold_Shader_Manager.Set_Cube_Texture (3);
 
       Water_Shader_Manager.Init (Water_Program);
-      Game_Utils.Game_Log ("Water_Program initialized.");
       Water_Shader_Manager.Set_K_Diff ((0.03, 0.50, 0.20, 0.75));
       Water_Shader_Manager.Set_K_Spec ((0.5, 0.5, 0.5, 1.0));
       Water_Shader_Manager.Set_Ambient_Light ((0.0125, 0.0125, 0.0125));
@@ -371,7 +373,6 @@ package body Manifold is
            "Manifold.Init_Manifold error loading ramp mesh data from file "
            & "src/meshes/water.apg";
       end if;
-      Game_Utils.Game_Log ("water.apg loaded.");
       Game_Utils.Game_Log ("Manifold initialized.");
 
    end Init;

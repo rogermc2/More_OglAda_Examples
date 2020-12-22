@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Culling;
 with GL.Objects.Programs;
+with GL.Objects.Textures;
 with GL.Toggles;
 with GL.Types; use GL.Types;
 with GL.Types.Colors;
@@ -73,10 +74,10 @@ package body Main_Loop is
         Level_Name           : Unbounded_String :=
                                  To_Unbounded_String ("anton2");
         Level_Time           : Float := 0.0;
-        Main_Menu_Open       : Boolean := False;
+        --          Main_Menu_Open       : Boolean := False;
         Cheated_On_Map       : Boolean := False;
         Quit_Game            : Boolean := False;
-        Skip_Intro           : Boolean := False;
+        Skip_Intro_Screen    : Boolean := True;
 
         Avg_Frame_Time_Accum_Ms  : Float := 0.0;
         Curr_Frame_Time_Accum_Ms : Float := 0.0;
@@ -201,7 +202,9 @@ package body Main_Loop is
 
         --  --------------------------------------------------------------------
 
-        procedure Main_Game_Loop (Window : in out Input_Callback.Barbarian_Window) is
+        procedure Main_Game_Loop (Window : in out Input_Callback.Barbarian_Window;
+                                  Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                                  Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
             use Glfw.Input.Keys;
             use Game_Support;
             use GUI_Level_Chooser;
@@ -222,28 +225,28 @@ package body Main_Loop is
                 Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
                                Curr_Frame_Time_Accum_Ms, Avg_Frames_Count,
                                Curr_Frames_Count);
-                if not Main_Menu_Open then
-                    Game_Utils.Game_Log
-                      ("Main_Loop.Main_Game_Loop Main Menu not open");
-                    Level_Time := Level_Time + Delta_Time;
-                else  --  Main_Menu_Open
+                if Main_Menu.Menu_Open then
                     Game_Utils.Game_Log
                       ("Main_Loop.Main_Game_Loop Main Menu open");
                     Main_Menu_Quit := not Main_Menu.Update_Main_Menu
                       (Window, Delta_Time);
                     if Main_Menu.Menu_Was_Closed then
-                        Main_Menu_Open := False;
+                        Main_Menu.Set_Menu_Open (False);
                         FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
                     end if;
                     Game_Utils.Game_Log
                       ("Main_Loop.Main_Game_Loop check if User_Choose_New_Game");
                     if Main_Menu.Did_User_Choose_New_Game or
                       Main_Menu.Did_User_Choose_Custom_Maps then
-                        Main_Menu_Open := False;
+                        Main_Menu.Set_Menu_Open (False);
                         Quit_Game := False;
                         Unload_Level;
                         Is_Running := False;
                     end if;
+                else  --  Main_Menu not Open
+                    Game_Utils.Game_Log
+                      ("Main_Loop.Main_Game_Loop Main Menu not open");
+                    Level_Time := Level_Time + Delta_Time;
                 end if;  --  Main_Menu_Open
 
                 if Is_Running then
@@ -269,6 +272,8 @@ package body Main_Loop is
                         --  Do cheating checks
                         Cheating := Cheat_Check_1;
                         if not Main_Menu.Menu_Open then
+                            Game_Utils.Game_Log
+                              ("Main_Loop.Main_Game_Loop Is_Running Main Menu not open");
                             GUI.Update_GUIs (Delta_Time);
                             Text.Update_Comic_Texts (Delta_Time);
                             Text.Update_Particle_Texts (Delta_Time);
@@ -283,22 +288,29 @@ package body Main_Loop is
                                 Camera.Update_Camera_Effects (Delta_Time);
                                 Update_Logic_Steps (Delta_Time);
                                 if Main_Menu.End_Story_Open then
-                                    Main_Menu_Open := True;
+                                    --  Just won the game
+                                    Game_Utils.Game_Log
+                                      ("Main_Loop.Main_Game_Loop Just won the game");
+                                    Main_Menu.Set_Menu_Open (True);
                                     Unload_Level;
                                     Is_Running := False;
                                 elsif Input_Handler.Was_Action_Pressed
                                   (Window, Input_Handler.Wipe_Screen_Action) then
+                                    Game_Utils.Game_Log
+                                      ("Main_Loop.Main_Game_Loop Action_Pressed");
                                     GUI.Start_Fist;
                                 end if;
                             end if;
                         end if;  --  Main menu not open;
 
-                        --                          if Is_Running then
-                        --                              Player_1_View (Window, Delta_Time, Dump_Video,
-                        --                                             Save_Screenshot);
-                        --                          end if;
-                        --                          Game_Utils.Game_Log
-                        --                            ("Main_Loop.Main_Game_Loop Player_1_View returned");
+                        if Is_Running then
+                            Player_1_View (Window, Tile_Tex, Tile_Spec_Tex,
+                                           Ramp_Diff_Tex, Ramp_Spec_Tex,
+                                           Delta_Time, Dump_Video,
+                                           Save_Screenshot);
+                        end if;
+                        Game_Utils.Game_Log
+                          ("Main_Loop.Main_Game_Loop Player_1_View returned");
                         Is_Running := Is_Running and then not Main_Menu_Quit;
                         Is_Running := Is_Running and then not Main_Window.Should_Close;
                     end if;  --  inner Is_Running
@@ -343,7 +355,7 @@ package body Main_Loop is
             --          Play_Music (Title_Track);
             --          Is_Playing_Hammer_Track := False;
 
-            if not Skip_Intro then
+            if not Skip_Intro_Screen then
                 Introduction (Window, Last_Time, Flash_Timer, Is_Running);
             end if;
             Is_Running := True;
@@ -363,6 +375,10 @@ package body Main_Loop is
             Height          : GL.Types.Single;
             Map_Path        : Unbounded_String;
             Ambient_Light   : constant Singles.Vector3 := (0.025, 0.025, 0.025);
+            Tile_Tex        : GL.Objects.Textures.Texture;
+            Tile_Spec_Tex   : GL.Objects.Textures.Texture;
+            Ramp_Diff_Tex   : GL.Objects.Textures.Texture;
+            Ramp_Spec_Tex   : GL.Objects.Textures.Texture;
             Continue        : Boolean := True;
         begin
             Game_Utils.Game_Log ("Main_Loop.Run_Game started");
@@ -375,15 +391,16 @@ package body Main_Loop is
 
                 Game_Utils.Game_Log ("Main_Loop.Run_Game Opening level map file " &
                                        To_String (Level_Name));
-                if not Skip_Intro then
+                if not Skip_Intro_Screen then
                     Continue := GUI_Level_Chooser.Start_Level_Chooser_Loop
-                      (Window, Main_Menu.Credits_Program, Main_Menu.Are_We_In_Custom_Maps);
+                      (Window, Main_Menu.Credits_Program,
+                       Main_Menu.Are_We_In_Custom_Maps);
                 end if;
 
                 if Continue then
                     --   Even if flagged to skip initial intro this means that the level
                     --  chooser can be accessed if the player selects "new game" in the main menu.
-                    Skip_Intro := False;
+                    Skip_Intro_Screen := False;
                     Level_Name := To_Unbounded_String
                       (GUI_Level_Chooser.Get_Selected_Level_Name
                          (Main_Menu.Are_We_In_Custom_Maps));
@@ -396,7 +413,9 @@ package body Main_Loop is
                     --  Name line
                     Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
                                            To_String (Map_Path));
-                    Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map);
+                    Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map,
+                                            Tile_Tex, Tile_Spec_Tex,
+                                            Ramp_Diff_Tex, Ramp_Spec_Tex);
                     --  Properties and characters are loaded by Load_Maps
                     Projectile_Manager.Init;
 
@@ -422,7 +441,8 @@ package body Main_Loop is
                     Audio.Play_Sound ("enter_portal.wav", False);
 
                     Level_Time := 0.0;
-                    Main_Game_Loop (Window);
+                    Main_Game_Loop (Window, Tile_Tex, Tile_Spec_Tex,
+                                    Ramp_Diff_Tex, Ramp_Spec_Tex);
 
                     if Main_Menu.End_Story_Open then
                         Main_Menu.Play_End_Story_Music;
@@ -431,7 +451,7 @@ package body Main_Loop is
                     end if;
                     Is_Playing_Hammer_Track := False;
                     Quit_Game := Window.Should_Close;
-                end if;
+                end if;  --  Continue
             end loop;
 
         exception
@@ -453,9 +473,9 @@ package body Main_Loop is
             Main_Menu.Start_Menu_Title_Bounce;
             Utilities.Clear_Background_Colour_And_Depth (Black);
 
-            --           if not Skip_Intro then
-            Main_Menu.Set_Menu_Open (True);
-            --           end if;
+            if not Skip_Intro_Screen then
+                Main_Menu.Set_Menu_Open (True);
+            end if;
 
             Is_Running := True;
             Last_Time := Float (Glfw.Time);

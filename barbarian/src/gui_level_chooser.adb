@@ -466,8 +466,8 @@ package body GUI_Level_Chooser is
         Continue            : Boolean := True;
         Restart             : Boolean := False;
         Result              : Boolean := False;
-        Selected_Level : constant Level_Menu_Manager.Level_Map_Data :=
-                           Levels.Element (Selected_Level_ID);
+        Selected_Level      : constant Level_Menu_Manager.Level_Map_Data :=
+                                Levels.Element (Selected_Level_ID);
     begin
         Game_Utils.Game_Log ("Start_Level_Chooser_Loop 1 Selected_Level, Level_Menu_Open: "
                                      & Integer'Image (Selected_Level_ID) & "  "
@@ -483,9 +483,7 @@ package body GUI_Level_Chooser is
                 --                                    Float'Image (Delta_Time));
                 Level_Menu_Quit :=
                   not Main_Menu.Update_Main_Menu (Window, Delta_Time);
-                if Main_Menu.Menu_Was_Closed then
-                    Level_Menu_Open := False;
-                end if;
+                Level_Menu_Open := not Main_Menu.Menu_Was_Closed;
 
                 if Main_Menu.Did_User_Choose_New_Game or
                   Main_Menu.Did_User_Choose_Custom_Maps then
@@ -494,15 +492,17 @@ package body GUI_Level_Chooser is
                     Restart := True;
                 elsif Level_Menu_Quit then
                     Continue := False;
+                    Restart := False;
                 end if;  --  Level_Menu_Open
-            else --  Level_Menu_Open
+            else --  Level_Menu not Open
                 --              Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
                 Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
-            end if;
+            end if;  --  Level_Menu_Open
 
             if Continue then
                 Started_Loading_Map := False;
                 if not Level_Menu_Open then
+                    --   Process input due to some other menu selection?
                     --                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
                     Process_Input (Window, Level_Menu_Open, Started_Loading_Map, Cheat_Unlock);
                 end if;
@@ -510,15 +510,13 @@ package body GUI_Level_Chooser is
                 Render_Level_Menu
                   (Window, Credits_Shader_Program, Delta_Time, Custom_Maps,
                     Started_Loading_Map, Level_Menu_Open);
-                Continue := not Started_Loading_Map;
-                if Continue then
+                if not Started_Loading_Map then
                     --                 Poll_Joystick;
                     Glfw.Input.Poll_Events;
                     Continue := not Window.Should_Close;
                 end if;
-
             end if;
-        end loop;
+        end loop;  --  not Window.Should_Close and Continue
 
         Enable (Depth_Test);
 
@@ -528,7 +526,8 @@ package body GUI_Level_Chooser is
         end if;
 
         if Result and Restart then
-            Result := Start_Level_Chooser_Loop (Window, Credits_Shader_Program, False);
+            Result := Start_Level_Chooser_Loop
+              (Window, Credits_Shader_Program, False);
         end if;
         return Result;
 

@@ -13,7 +13,9 @@ with Tiles_Manager;
 
 package body Maps_Manager is
 
-   procedure Load_Maps (Map_Path : String; theMap : out Map) is
+   procedure Load_Maps (Map_Path : String; theMap : out Map;
+                        Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                        Ramp_Spec_Tex : in out GL.Objects.Textures.Texture) is
       use Ada.Strings;
       Input_File       : File_Type;
       aLine            : Unbounded_String;
@@ -42,8 +44,8 @@ package body Maps_Manager is
       aLine := To_Unbounded_String (Get_Line (Input_File));
 
       Put_Line ("Maps_Manager.Load_Maps loading tiles ");
-      Tiles_Manager.Load_Tiles (Input_File);
-
+      Tiles_Manager.Load_Tiles (Input_File, Tile_Tex, Tile_Spec_Tex,
+                                Ramp_Diff_Tex, Ramp_Spec_Tex);
       Properties_Manager.Load_Properties (Input_File);
       Character_Controller.Init;
       Character_Controller.Load_Characters (Input_File, False);

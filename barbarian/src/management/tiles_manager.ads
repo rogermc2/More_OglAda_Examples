@@ -2,6 +2,7 @@
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Objects.Textures;
 with GL.Types; use GL.Types;
 
 package Tiles_Manager is
@@ -26,7 +27,9 @@ package Tiles_Manager is
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
    function Get_Tiles_Across return Int;
    function Is_Tile_Valid (Row, Col : GL.Types.Int) return Boolean;
-   procedure Load_Tiles (File : File_Type);
+   procedure Load_Tiles (File : File_Type;
+                         Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                         Ramp_Spec_Tex : in out GL.Objects.Textures.Texture);
    function Number_Of_Tiles return Integer;
    procedure Reset_Vars;
 
