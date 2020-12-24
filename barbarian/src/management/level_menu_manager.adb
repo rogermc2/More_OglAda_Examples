@@ -38,7 +38,7 @@ package body Level_Menu_Manager is
       Text_Height        : constant Single := 50.0 / Single (Framebuffer_Height);
       Text_Offset_Height : constant Single := 220.0 / Single (Framebuffer_Height);
       Name_Y             : Single;
-      Out_Data           : Level_Map_Data;
+      Out_Data           : Level_Data;
       Count              : Single := 0.0;
    begin
       --        Put_Line ("Level_Menu_Manager.Init_Level_Maps initalizing Maps");
@@ -91,7 +91,7 @@ package body Level_Menu_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Load_Story (Path             : String;
-                         theMap           : in out Level_Map_Data;
+                         theMap           : in out Level_Data;
                          Has_Hammer_Track : out Boolean) is
       use Maps_Manager;
       Input_File       : File_Type;
@@ -167,7 +167,7 @@ package body Level_Menu_Manager is
       Line_Count : Integer := 0;
 
       procedure Append_Data (Name : String; Lock : Boolean := True) is
-         Data : Level_Map_Data;
+         Data : Level_Data;
       begin
          Data.Level_Name := To_Unbounded_String (Name);
          Data.Locked := Lock;

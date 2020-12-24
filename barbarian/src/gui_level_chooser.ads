@@ -23,6 +23,6 @@ package GUI_Level_Chooser is
    function Start_Level_Chooser_Loop
      (Window : in out Input_Callback.Barbarian_Window;
       Credits_Shader_Program : GL.Objects.Programs.Program;
-      Custom_Maps : Boolean) return Boolean;
+      Custom_Levels : Boolean) return Boolean;
 
 end GUI_Level_Chooser;

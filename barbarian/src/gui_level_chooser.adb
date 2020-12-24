@@ -108,6 +108,28 @@ package body GUI_Level_Chooser is
 
     --  ------------------------------------------------------------------------
 
+    procedure Draw_Custom_Level_Names is
+    begin
+        for index in Custom_Levels.First_Index .. Custom_Levels.Last_Index loop
+            Text.Draw_Text (Custom_Levels.Element (index).Text_ID);
+        end loop;
+    end Draw_Custom_Level_Names;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Draw_Level_Names is
+        Last_Index : Positive := Levels.Last_Index;
+    begin
+        if Last_Index > 8 then
+            Last_Index := 8;
+         end if;
+        for index in Levels.First_Index .. Last_Index loop
+            Text.Draw_Text (Levels.Element (index).Name_Text_ID);
+        end loop;
+    end Draw_Level_Names;
+
+    --  ------------------------------------------------------------------------
+
     function Get_Hammer_Kills return Integer is
     begin
         return Hammer_Kills;
@@ -271,7 +293,7 @@ package body GUI_Level_Chooser is
         use Input_Callback;
         use Input_Handler;
         use Level_Menu_Manager.Levels_Package;
-        Selected_Level : constant Level_Menu_Manager.Level_Map_Data :=
+        Selected_Level : constant Level_Menu_Manager.Level_Data :=
                            Levels.Element (Selected_Level_ID);
     begin
         --        Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));
@@ -279,11 +301,11 @@ package body GUI_Level_Chooser is
           or Was_Action_Pressed (Window, Attack_Action) then
             if not Selected_Level.Locked or Cheat_Unlock then
                 Started_Loading_Map := True;
---              else
---                  Game_Utils.Game_Log ("Process_Input Enter Selected_Level, Locked: "
---                                       & Integer'Image (Selected_Level_ID) & "  "
---                                       & To_String (Selected_Level.Level_Name) & "  "
---                                        & Boolean'Image (Selected_Level.Locked));
+                --              else
+                --                  Game_Utils.Game_Log ("Process_Input Enter Selected_Level, Locked: "
+                --                                       & Integer'Image (Selected_Level_ID) & "  "
+                --                                       & To_String (Selected_Level.Level_Name) & "  "
+                --                                        & Boolean'Image (Selected_Level.Locked));
             end if;
         elsif Was_Key_Pressed (Window, Escape) or
           Was_Action_Pressed (Window, Menu_Open_Action) then
@@ -300,13 +322,13 @@ package body GUI_Level_Chooser is
     --  ------------------------------------------------------------------------
 
     procedure Render_Level_Menu (Window  : in out Input_Callback.Barbarian_Window;
-                      Credits_Shader_Program  : GL.Objects.Programs.Program;
-                      Delta_Time  : Float;
-                      Use_Custom_Levels, Started_Loading_Map,
-                      Level_Menu_Open : Boolean) is
+                                 Credits_Shader_Program  : GL.Objects.Programs.Program;
+                                 Delta_Time  : Float;
+                                 Use_Custom_Levels, Started_Loading_Map,
+                                 Level_Menu_Open : Boolean) is
         use Level_Menu_Manager.Levels_Package;
         use Custom_Levels_Manager.Custom_Levels_Package;
-        LeveL_Menu    : Level_Menu_Manager.Level_Map_Data;
+        LeveL_Menu    : Level_Menu_Manager.Level_Data;
         Custom_Level  : Custom_Levels_Manager.Custom_Data;
         Last_Index    : Positive := Levels.Last_Index;
     begin
@@ -314,18 +336,9 @@ package body GUI_Level_Chooser is
         Set_Background_Pane (Credits_Shader_Program, Use_Custom_Levels);
 
         if Use_Custom_Levels then
-            for index in Custom_Levels.First_Index .. Custom_Levels.Last_Index loop
-                Custom_Level := Custom_Levels.Element (index);
-                Text.Draw_Text (Custom_Level.Text_ID);
-            end loop;
+            Draw_Custom_Level_Names;
         else
-            if Last_Index > 8 then
-                Last_Index := 8;
-            end if;
-            for index in Levels.First_Index .. Last_Index loop
-                LeveL_Menu := Levels.Element (index);
-                Text.Draw_Text (LeveL_Menu.Name_Text_ID);
-            end loop;
+            Draw_Level_Names;
         end if;
 
         Text.Draw_Text (Choose_Level_Text_ID);
@@ -357,7 +370,7 @@ package body GUI_Level_Chooser is
                               Levels.First;
         Custom_Map_Cursor : Custom_Levels_Manager.Custom_Levels_Package.Cursor :=
                               Custom_Levels.First;
-        aLevel            : Level_Menu_Manager.Level_Map_Data;
+        aLevel            : Level_Menu_Manager.Level_Data;
         Custom_Map        : Custom_Levels_Manager.Custom_Data;
     begin
         Selected_Level_ID := 1;
@@ -454,27 +467,27 @@ package body GUI_Level_Chooser is
     function Start_Level_Chooser_Loop
       (Window                 : in out Input_Callback.Barbarian_Window;
        Credits_Shader_Program : GL.Objects.Programs.Program;
-       Custom_Maps            : Boolean) return Boolean is
+       Custom_Levels          : Boolean) return Boolean is
         use GL.Toggles;
         Level_Menu_Open       : Boolean := Main_Menu.End_Story_Open;
         Level_Menu_Quit       : Boolean := False;
-        Cheat_Unlock        : Boolean := False;
-        Started_Loading_Map : Boolean := False;
-        Current_Time        : Float;
-        Delta_Time          : Float;
-        Last_Time           : Float := Float (Glfw.Time);
-        Continue            : Boolean := True;
-        Recurse             : Boolean := False;
-        Result              : Boolean := False;
-        Selected_Level      : constant Level_Menu_Manager.Level_Map_Data :=
-                                Levels.Element (Selected_Level_ID);
+        Cheat_Unlock          : Boolean := False;
+        Started_Loading_Map   : Boolean := False;
+        Current_Time          : Float;
+        Delta_Time            : Float;
+        Last_Time             : Float := Float (Glfw.Time);
+        Continue              : Boolean := True;
+        Recurse               : Boolean := False;
+        Result                : Boolean := False;
+        Selected_Level        : constant Level_Menu_Manager.Level_Data :=
+                                  Levels.Element (Selected_Level_ID);
     begin
         Game_Utils.Game_Log ("Start_Level_Chooser_Loop Selected_Level:" &
-                             Integer'Image (Selected_Level_ID) & "  " &
-                             To_String (Selected_Level.Level_Name) &
-                              ", Level_Menu_Open  " &
-                              Boolean'Image (Level_Menu_Open));
-        Reset_GUI_Level_Selection (Custom_Maps);
+                               Integer'Image (Selected_Level_ID) & "  " &
+                               To_String (Selected_Level.Level_Name) &
+                               ", Level_Menu_Open  " &
+                               Boolean'Image (Level_Menu_Open));
+        Reset_GUI_Level_Selection (Custom_Levels);
         while not Window.Should_Close and Continue loop
             Current_Time := Float (Glfw.Time);
             Delta_Time := Current_Time - Last_Time;
@@ -496,8 +509,8 @@ package body GUI_Level_Chooser is
                     Recurse := False;
                 end if;  --  Level_Menu_Open
             else --  Level_Menu not Open
---                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
-                Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
+                --                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
+                Update_GUI_Level_Chooser (Delta_Time, Custom_Levels);
             end if;  --  Level_Menu_Open
 
             if Continue then
@@ -509,10 +522,11 @@ package body GUI_Level_Chooser is
                                    Started_Loading_Map, Cheat_Unlock);
                 end if;
 
---                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu");
+                --                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu");
                 Render_Level_Menu
-                  (Window, Credits_Shader_Program, Delta_Time, Custom_Maps,
-                    Started_Loading_Map, Level_Menu_Open);
+                  (Window, Credits_Shader_Program, Delta_Time, Custom_Levels,
+                   Started_Loading_Map, Level_Menu_Open);
+
                 if not Started_Loading_Map then
                     --                 Poll_Joystick;
                     Glfw.Input.Poll_Events;
@@ -524,11 +538,11 @@ package body GUI_Level_Chooser is
         if Continue then
             Enable (Depth_Test);
 
-            if not Custom_Maps then
+            if not Custom_Levels then
                 Level_Unmodified := True;
                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop"
-                                      & "map name found is " &
-                                      Get_Selected_Level_Name (False));
+                                     & "map name found is " &
+                                       Get_Selected_Level_Name (False));
                 Result := Checksums;
             end if;
 
@@ -555,7 +569,7 @@ package body GUI_Level_Chooser is
         use Input_Callback;
         use Input_Handler;
         Old_Sel : constant Integer := Selected_Level_ID;
-        Old_Map : Level_Menu_Manager.Level_Map_Data;
+        Old_Map : Level_Menu_Manager.Level_Data;
     begin
         Since_Last_Key := Since_Last_Key + Delta_Time;
         --        Game_Utils.Game_Log  ("Update_GUI_Level_Chooser Selected_Level_ID:" & Integer'Image (Selected_Map_ID));
@@ -635,7 +649,7 @@ package body GUI_Level_Chooser is
             Selected_Level.Intro_Text.Clear;
             Selected_Level.Intro_Text.Append
               (To_Unbounded_String ("clear previous temples to unlock" &
-               ASCII.CR & ASCII.LF & "the portal to this map"));
+                 ASCII.CR & ASCII.LF & "the portal to this map"));
         elsif Custom then Level_Path := To_Unbounded_String
               ("src/maps/" & Get_Custom_Map_Name (Custom_Levels, Selected_Level_ID));
             --           Game_Utils.Game_Log ("level chooser is peeking in map " &
@@ -644,17 +658,17 @@ package body GUI_Level_Chooser is
             Level_Path := To_Unbounded_String
               ("src/maps/" & Level_Menu_Manager.Get_Level_Name
                  (Levels, Selected_Level_ID));
---              Game_Utils.Game_Log ("level chooser is peeking in map " &
---                                              To_String (Level_Path));
+            --              Game_Utils.Game_Log ("level chooser is peeking in map " &
+            --                                              To_String (Level_Path));
             Selected_Level_Manager.Load_Map (To_String (Level_Path), Selected_Level,
                                              Has_Hammer_Track);
             Selected_Level_Track := Selected_Level.Music_Track;
         end if;
 
         if First then
-           Game_Utils.Game_Log
+            Game_Utils.Game_Log
               ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Title: '" &
-                To_String (Selected_Level.Title) & "'");
+                 To_String (Selected_Level.Title) & "'");
             Level_Title_Text_ID :=
               Text.Add_Text (To_String (Selected_Level.Title),
                              Left_Margin_Cl + Lt_Margin_Cl,

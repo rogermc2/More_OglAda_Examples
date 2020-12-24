@@ -56,7 +56,7 @@ package body Main_Loop is
         Black                   : constant Colors.Color := (0.0, 0.0, 0.0, 1.0);
         --     Red            : constant GL.Types.Singles.Vector4 := (1.0, 0.0, 0.0, 1.0);
         --     Green          : constant GL.Types.Singles.Vector4  := (0.0, 0.5, 0.0, 1.0);
-        --     Blue           : constant GL.Types.Singles.Vector4  := (0.0, 0.0, 0.5, 1.0);
+        Blue           : constant Colors.Color := (0.0, 0.0, 0.5, 1.0);
         --     Magenta        : constant GL.Types.Singles.Vector4 := (1.0, 0.0, 1.0, 1.0);
         --     Yellow         : constant GL.Types.Singles.Vector4 := (1.0, 1.0, 0.0, 0.5);
         White                   : constant Colors.Color := (1.0, 1.0, 1.0, 0.0);
@@ -76,7 +76,7 @@ package body Main_Loop is
         Level_Time                      : Float := 0.0;
         Cheated_On_Map                  : Boolean := False;
         Quit_Game                       : Boolean := False;
-        Skip_Intro_Screen_And_Main_Menu : Boolean := True;
+--          Skip_Intro_Screen_And_Main_Menu : Boolean := True;
 
         Avg_Frame_Time_Accum_Ms         : Float := 0.0;
         Curr_Frame_Time_Accum_Ms        : Float := 0.0;
@@ -169,10 +169,12 @@ package body Main_Loop is
                 if Flash_Timer < 0.25 then
                     Flash_Timer := Flash_Timer + Elapsed_Time;
                     b := Abs (Sin (Single ((30.0)) * Single (Current_Time)));
+                    b := 0.4;
                     Back_Colour := (b, b, b, 1.0);
                     Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
                 else
                     b := 0.0;
+                    b := 0.7;
                     Back_Colour := (b, b, b, 1.0);
                     Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
                     Main_Menu.Draw_Title_Only;
@@ -357,9 +359,9 @@ package body Main_Loop is
             --          Play_Music (Title_Track);
             --          Is_Playing_Hammer_Track := False;
 
-            if not Skip_Intro_Screen_And_Main_Menu then
+--              if not Skip_Intro_Screen_And_Main_Menu then
                 Introduction (Window, Last_Time, Flash_Timer, Is_Running);
-            end if;
+--              end if;
             Is_Running := True;
 
         exception
@@ -393,19 +395,19 @@ package body Main_Loop is
 
                 Game_Utils.Game_Log ("Main_Loop.Run_Game Opening level map file " &
                                        To_String (Level_Name));
-                if not Skip_Intro_Screen_And_Main_Menu then
-                    Put_Line ("Main_Loop.Run_Game starting Level_Chooser_Loop");
+--                  if not Skip_Intro_Screen_And_Main_Menu then
+--                      Put_Line ("Main_Loop.Run_Game starting Level_Chooser_Loop");
                     Continue := GUI_Level_Chooser.Start_Level_Chooser_Loop
                       (Window, Main_Menu.Credits_Program,
                        Main_Menu.Are_We_In_Custom_Maps);
-                end if;
+--                  end if;
 
                 if Continue then
                     --  Even if flagged to skip initial intro this means that
                     --  the level chooser can be accessed if the player selects
                     --  "new game" in the main menu???
                     --  Level Chooser should start on next iteration of this loop.
-                    Skip_Intro_Screen_And_Main_Menu := False;
+--                      Skip_Intro_Screen_And_Main_Menu := False;
                     Level_Name := To_Unbounded_String
                       (GUI_Level_Chooser.Get_Selected_Level_Name
                          (Main_Menu.Are_We_In_Custom_Maps));
@@ -481,10 +483,11 @@ package body Main_Loop is
             --  initiate main menu loop
             Main_Menu.Start_Menu_Title_Bounce;
             Utilities.Clear_Background_Colour_And_Depth (Black);
+            Utilities.Clear_Background_Colour_And_Depth (White);
 
-            if not Skip_Intro_Screen_And_Main_Menu then
+--              if not Skip_Intro_Screen_And_Main_Menu then
                 Main_Menu.Set_Menu_Open (True);
-            end if;
+--              end if;
 
             Is_Running := True;
             Last_Time := Float (Glfw.Time);
@@ -497,6 +500,8 @@ package body Main_Loop is
                 Delta_Time := Current_Time - Last_Time;
                 Last_Time := Current_Time;
                 Utilities.Clear_Background_Colour_And_Depth (Black);
+                Utilities.Clear_Background_Colour_And_Depth (Blue);
+
                 Main_Menu.Draw_Menu (Delta_Time);
 
                 GUI.Draw_Controller_Button_Overlays (Delta_Time);
