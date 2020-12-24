@@ -16,7 +16,7 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Action_Name (Index: Integer) return String is
+   function Action_Name (Index: Action_Range) return String is
    begin
       return To_String (Input_Actions.Action_Names (Index));
    end Action_Name;
@@ -40,16 +40,15 @@ package body Input_Handler is
       Code    : Integer;
       Sign    : Character := '+';
       Axis    : Integer := 0;
-      Index   : Integer := 0;
-      J_Index : Integer := -1;
+      J_Index : Action_Range;
       Found   : Boolean := False;
    begin
       -- Find index of Action
-      while not Found and  index <= Input_Actions.Num_Actions loop
-         Index := Index + 1;
-         Found := Input_Actions.Action_Names (index) = Action;
+      for index in Action_Range loop
          if Found then
             J_Index := Index;
+         else
+            Found := Input_Actions.Action_Names (index) = Action;
          end if;
       end loop;
 
@@ -62,15 +61,15 @@ package body Input_Handler is
             end if;
             Axis := Integer'Value (aLine (Pos2 + 7 .. Last));
             if Axis < 0 or Axis > 7 then
-               Input_Actions.Joy_Axis_Bindings (J_Index) := -1;
-               Input_Actions.Joy_Axis_Sign (J_Index) := ' ';
+               Input_Actions.Joy_Axis_Bindings (Action_Range (J_Index)) := -1;
+               Input_Actions.Joy_Axis_Sign (Action_Range (J_Index)) := ' ';
             else
                if Sign /= '-' and Sign /= '+' then
                   raise Input_Handler_Exception with
                     "Read_Key_Config joystick axis sign " & Sign & "invalid.";
                end if;
-               Input_Actions.Joy_Axis_Bindings (J_Index) := Axis;
-               Input_Actions.Joy_Axis_Sign (J_Index) := Sign;
+               Input_Actions.Joy_Axis_Bindings (Action_Range (J_Index)) := Axis;
+               Input_Actions.Joy_Axis_Sign (Action_Range (J_Index)) := Sign;
             end if;
          end if;
          Code := Integer'Value (aLine (Pos2 + 1 .. Last));
@@ -152,7 +151,7 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Is_Action_Down (Action : Integer) return Boolean is
+   function Is_Action_Down (Action : Action_Range) return Boolean is
    begin
       --  Joystick processing
       return Input_Callback.Is_Key_Down (Input_Actions.Key_Bindings (Action));
@@ -160,28 +159,28 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Joy_Axis_Bindings (Index: Integer) return Integer is
+   function Joy_Axis_Bindings (Index: Action_Range) return Integer is
    begin
       return Input_Actions.Joy_Axis_Bindings (Index);
    end Joy_Axis_Bindings;
 
    --  ------------------------------------------------------------------------
 
-   function Joy_Axis_Sign (Index: Integer) return Character is
+   function Joy_Axis_Sign (Index: Action_Range) return Character is
    begin
       return Input_Actions.Joy_Axis_Sign (Index);
    end Joy_Axis_Sign;
 
    --  ------------------------------------------------------------------------
 
-   function Joy_Button_Bindings (Index: Integer) return Integer is
+   function Joy_Button_Bindings (Index: Action_Range) return Integer is
    begin
       return Input_Actions.Joy_Button_Bindings (Index);
    end Joy_Button_Bindings;
 
    --  ------------------------------------------------------------------------
 
-   function Key_Binding (Index: Integer) return Integer is
+   function Key_Binding (Index: Action_Range) return Integer is
    begin
       return Key'Enum_Rep (Input_Actions.Key_Bindings (Index));
    end Key_Binding;
@@ -382,15 +381,9 @@ package body Input_Handler is
    --  ------------------------------------------------------------------------
 
    function Was_Action_Pressed (Window : in out Input_Callback.Barbarian_Window;
-                                Action_ID : Integer) return Boolean is
+                                Action_ID : Action_Range) return Boolean is
       Result : Boolean := False;
    begin
-      if Action_ID <= 0 or Action_ID > Max_Actions then
-         raise Input_Handler_Exception with
-           "Input_Handler.Was_Action_Pressed invalid action code: " &
-           Integer'Image (Action_ID);
-      end if;
-
       --  Joystick not implemented
       Result := Input_Callback.Was_Key_Pressed
         (Window, Input_Actions.Key_Bindings (Action_ID));

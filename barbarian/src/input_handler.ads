@@ -11,22 +11,23 @@ with GL_Maths;
 package Input_Handler is
 
    Max_Actions : constant Integer := 256;
+   subtype Action_Range is Integer range 1 .. Max_Actions;
 
    type Key_Characters is array (Integer range <>, Integer range <>) of Character;
-   type Key_Binding_State is array (1 .. Max_Actions) of Key;
+   type Key_Binding_State is array (Action_Range) of Key;
 
    Input_Handler_Exception : Exception;
 
-   function Action_Name (Index: Integer) return String;
+   function Action_Name (Index: Action_Range) return String;
    function Attack_Action return Integer;
    function Clear_Binding_Action return Integer;
    function Down_Action return Integer;
    procedure Init (Window : in out Input_Callback.Barbarian_Window);
-   function Is_Action_Down (Action : Integer) return Boolean;
-   function Joy_Axis_Bindings (Index: Integer) return Integer;
-   function Joy_Axis_Sign (Index: Integer) return Character;
-   function Joy_Button_Bindings (Index: Integer) return Integer;
-   function Key_Binding (Index: Integer) return Integer;
+   function Is_Action_Down (Action : Action_Range) return Boolean;
+   function Joy_Axis_Bindings (Index: Action_Range) return Integer;
+   function Joy_Axis_Sign (Index: Action_Range) return Character;
+   function Joy_Button_Bindings (Index: Action_Range) return Integer;
+   function Key_Binding (Index: Action_Range) return Integer;
    function Left_Action return Integer;
    function Menu_Back_Action return Integer;
    function OK_Action return Integer;
@@ -43,14 +44,14 @@ package Input_Handler is
                                 return Integer;
    function Up_Action return Integer;
    function Was_Action_Pressed (Window : in out Input_Callback.Barbarian_Window;
-                                Action_ID : Integer) return Boolean;
+                                Action_ID : Action_Range) return Boolean;
    function Wipe_Screen_Action return Integer;
 
 private
 
    type Input_Actions_Data is record
       -- Names of game's registered actions. "jump" "shoot" etc.
-      Action_Names          : Input_Callback.Key_String (1 .. Max_Actions);
+      Action_Names          : Input_Callback.Key_String (Action_Range);
       Num_Actions           : Integer := 0;
       Left_Action_ID        : Integer := 0;
       Right_Action_ID       : Integer := 0;
@@ -69,11 +70,11 @@ private
       Clear_Binding_Action_ID : Integer := 0;
       -- Actual key code for each registered action ingame
       Key_Bindings          : Key_Binding_State;
-      Joy_Button_Bindings   : GL_Maths.Integer_Array (1 .. Max_Actions) :=
+      Joy_Button_Bindings   : GL_Maths.Integer_Array (Action_Range) :=
                                 (others => 0);
-      Joy_Axis_Bindings     : GL_Maths.Integer_Array (1 .. Max_Actions) :=
+      Joy_Axis_Bindings     : GL_Maths.Integer_Array (Action_Range) :=
                                 (others => 0);
-      Joy_Axis_Sign         : GL_Maths.Character_Array (1 .. Max_Actions) :=
+      Joy_Axis_Sign         : GL_Maths.Character_Array (Action_Range) :=
                                 (others => ' ');
    end record;
 
