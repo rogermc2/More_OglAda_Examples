@@ -51,31 +51,31 @@ private
 
    type Input_Actions_Data is record
       -- Names of game's registered actions. "jump" "shoot" etc.
-      Action_Names          : Input_Callback.Key_String (Action_Range);
-      Num_Actions           : Integer := 0;
-      Left_Action_ID        : Integer := 0;
-      Right_Action_ID       : Integer := 0;
-      Up_Action_ID          : Integer := 0;
-      Down_Action_ID        : Integer := 0;
-      Attack_Action_ID      : Integer := 0;
-      Open_Door_Action_ID   : Integer := 0;
-      Wipe_Screen_Action_ID : Integer := 0;
-      Sel_Sword_Action_ID   : Integer := 0;
-      Sel_Javelin_Action_ID : Integer := 0;
-      Sel_Hammer_Action_ID  : Integer := 0;
-      Cycle_Weapons_Action_ID : Integer := 0;
-      Open_Menu_Action_ID    : Integer := 0;
-      Menu_Back_Action_ID   : Integer := 0;
-      Ok_Action_ID         : Integer := 0;
-      Clear_Binding_Action_ID : Integer := 0;
+      Action_Names            : Input_Callback.Key_String (Action_Range);
+      Num_Actions             : Integer := 0;
+      Left_Action_ID          : Action_Range;
+      Right_Action_ID         : Action_Range;
+      Up_Action_ID            : Action_Range;
+      Down_Action_ID          : Action_Range;
+      Attack_Action_ID        : Action_Range;
+      Open_Door_Action_ID     : Action_Range;
+      Wipe_Screen_Action_ID   : Action_Range;
+      Sel_Sword_Action_ID     : Action_Range;
+      Sel_Javelin_Action_ID   : Action_Range;
+      Sel_Hammer_Action_ID    : Action_Range;
+      Cycle_Weapons_Action_ID : Action_Range;
+      Open_Menu_Action_ID     : Action_Range;
+      Menu_Back_Action_ID     : Action_Range;
+      Ok_Action_ID            : Action_Range;
+      Clear_Binding_Action_ID : Action_Range;
       -- Actual key code for each registered action ingame
-      Key_Bindings          : Key_Binding_State;
-      Joy_Button_Bindings   : GL_Maths.Integer_Array (Action_Range) :=
-                                (others => 0);
-      Joy_Axis_Bindings     : GL_Maths.Integer_Array (Action_Range) :=
-                                (others => 0);
-      Joy_Axis_Sign         : GL_Maths.Character_Array (Action_Range) :=
-                                (others => ' ');
+      Key_Bindings            : Key_Binding_State;
+      Joy_Button_Bindings     : GL_Maths.Integer_Array (Action_Range) :=
+                                  (others => 0);
+      Joy_Axis_Bindings       : GL_Maths.Integer_Array (Action_Range) :=
+                                  (others => 0);
+      Joy_Axis_Sign           : GL_Maths.Character_Array (Action_Range) :=
+                                  (others => ' ');
    end record;
 
 end Input_Handler;
