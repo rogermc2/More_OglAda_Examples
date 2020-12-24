@@ -464,15 +464,16 @@ package body GUI_Level_Chooser is
         Delta_Time          : Float;
         Last_Time           : Float := Float (Glfw.Time);
         Continue            : Boolean := True;
-        Restart             : Boolean := False;
+        Recurse             : Boolean := False;
         Result              : Boolean := False;
         Selected_Level      : constant Level_Menu_Manager.Level_Map_Data :=
                                 Levels.Element (Selected_Level_ID);
     begin
-        Game_Utils.Game_Log ("Start_Level_Chooser_Loop 1 Selected_Level, Level_Menu_Open: "
-                                     & Integer'Image (Selected_Level_ID) & "  "
-                                     & To_String (Selected_Level.Level_Name) & "  "
-                                      & Boolean'Image (Level_Menu_Open));
+        Game_Utils.Game_Log ("Start_Level_Chooser_Loop Selected_Level:" &
+                             Integer'Image (Selected_Level_ID) & "  " &
+                             To_String (Selected_Level.Level_Name) &
+                              ", Level_Menu_Open  " &
+                              Boolean'Image (Level_Menu_Open));
         Reset_GUI_Level_Selection (Custom_Maps);
         while not Window.Should_Close and Continue loop
             Current_Time := Float (Glfw.Time);
@@ -489,13 +490,13 @@ package body GUI_Level_Chooser is
                   Main_Menu.Did_User_Choose_Custom_Maps then
                     Level_Menu_Open := False;
                     Continue := False;
-                    Restart := True;
+                    Recurse := True;
                 elsif Level_Menu_Quit then
                     Continue := False;
-                    Restart := False;
+                    Recurse := False;
                 end if;  --  Level_Menu_Open
             else --  Level_Menu not Open
-                --              Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
+--                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
                 Update_GUI_Level_Chooser (Delta_Time, Custom_Maps);
             end if;  --  Level_Menu_Open
 
@@ -504,10 +505,11 @@ package body GUI_Level_Chooser is
                 if not Level_Menu_Open then
                     --   Process input due to some other menu selection?
                     --                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
-                    Process_Input (Window, Level_Menu_Open, Started_Loading_Map, Cheat_Unlock);
+                    Process_Input (Window, Level_Menu_Open,
+                                   Started_Loading_Map, Cheat_Unlock);
                 end if;
 
-                Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu");
+--                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu");
                 Render_Level_Menu
                   (Window, Credits_Shader_Program, Delta_Time, Custom_Maps,
                     Started_Loading_Map, Level_Menu_Open);
@@ -519,22 +521,28 @@ package body GUI_Level_Chooser is
             end if;
         end loop;  --  not Window.Should_Close and Continue
 
-        Enable (Depth_Test);
+        if Continue then
+            Enable (Depth_Test);
 
-        if not Custom_Maps then
-            Level_Unmodified := True;
-            Result := Checksums;
-        end if;
+            if not Custom_Maps then
+                Level_Unmodified := True;
+                Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop"
+                                      & "map name found is " &
+                                      Get_Selected_Level_Name (False));
+                Result := Checksums;
+            end if;
 
-        if Result and Restart then
-            Result := Start_Level_Chooser_Loop
-              (Window, Credits_Shader_Program, False);
+            if Result and Recurse then
+                Result := Start_Level_Chooser_Loop
+                  (Window, Credits_Shader_Program, False);
+            end if;
         end if;
         return Result;
 
     exception
         when others =>
-            Put_Line ("An exception occurred in GUI_Level_Chooser.Start_Level_Chooser_Loop.");
+            Put_Line
+              ("An exception occurred in GUI_Level_Chooser.Start_Level_Chooser_Loop.");
             return False;
 
     end Start_Level_Chooser_Loop;
@@ -622,13 +630,12 @@ package body GUI_Level_Chooser is
         --          Game_Utils.Game_Log
         --            ("GUI_Level_Chooser.Update_Selected_Entry_Level: '" &
         --               To_String (Selected_Level.Title) & "'");
-        --  Selected_Level.Title OK here
         if Selected_Level.Locked and not Custom then
             Selected_Level.Title := To_Unbounded_String ("locked");
             Selected_Level.Intro_Text.Clear;
-            Selected_Level.Intro_Text.Append (To_Unbounded_String
-                                              ("clear previous temples to unlock" &
-                                                   ASCII.CR & ASCII.LF & "the portal to this map"));
+            Selected_Level.Intro_Text.Append
+              (To_Unbounded_String ("clear previous temples to unlock" &
+               ASCII.CR & ASCII.LF & "the portal to this map"));
         elsif Custom then Level_Path := To_Unbounded_String
               ("src/maps/" & Get_Custom_Map_Name (Custom_Levels, Selected_Level_ID));
             --           Game_Utils.Game_Log ("level chooser is peeking in map " &
@@ -637,18 +644,17 @@ package body GUI_Level_Chooser is
             Level_Path := To_Unbounded_String
               ("src/maps/" & Level_Menu_Manager.Get_Level_Name
                  (Levels, Selected_Level_ID));
-            --           Game_Utils.Game_Log ("level chooser is peeking in map " &
-            --                                  To_String (Level_Path));
+--              Game_Utils.Game_Log ("level chooser is peeking in map " &
+--                                              To_String (Level_Path));
             Selected_Level_Manager.Load_Map (To_String (Level_Path), Selected_Level,
                                              Has_Hammer_Track);
             Selected_Level_Track := Selected_Level.Music_Track;
         end if;
 
         if First then
-            --             Game_Utils.Game_Log
-            --               ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Title: '" &
-            --                 To_String (Selected_Level.Title) & "'");
-            --  Selected_Level.Title OK here
+           Game_Utils.Game_Log
+              ("GUI_Level_Chooser.Update_Selected_Entry_Dot_Map first Title: '" &
+                To_String (Selected_Level.Title) & "'");
             Level_Title_Text_ID :=
               Text.Add_Text (To_String (Selected_Level.Title),
                              Left_Margin_Cl + Lt_Margin_Cl,
@@ -682,7 +688,6 @@ package body GUI_Level_Chooser is
             --             Game_Utils.Game_Log
             --                ("GUI_Level_Chooser.Update_Selected_Entry_Level not first Title: '" &
             --                  To_String (Selected_Level.Title) & "'");
-            --  Selected_Level.Title seems OK here
 
             Text.Update_Text (Level_Title_Text_ID, To_String (Selected_Level.Title));
             Text.Centre_Text (Level_Title_Text_ID, -0.4, 0.75);
@@ -701,10 +706,12 @@ package body GUI_Level_Chooser is
                     Level_Story_Text_ID.Append
                       (Text.Add_Text (To_String (Story_Line),
                        Left_Margin_Cl + Lt_Margin_Cl,
-                       Top_Margin_Cl - (1.0 + 0.2 * Single (index - 1)) * 240.0 / Single
+                       Top_Margin_Cl -
+                         (1.0 + 0.2 * Single (index - 1)) * 240.0 / Single
                        (Settings.Framebuffer_Height),
                        14.0, 0.75, 0.75, 0.75, 1.0));
-                    Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
+                    Text.Set_Text_Visible
+                      (Level_Story_Text_ID.Element (index), False);
                 end if;
             end loop;
         end if;

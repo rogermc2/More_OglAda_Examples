@@ -115,10 +115,8 @@ package body Main_Loop.Game_Support is
          for index in Shadow_Direction'Range loop
             Bind_Shadow_FB (index);
             Manifold.Draw_Manifold_Around_Depth_Only;
---              Put_Line ("Main_Loop.Game_Support.Player_1_View Manifold drawn Around_Depth_Only");
             Prop_Renderer.Render_Props_Around_Depth_Only
               (UV (GL.X), UV (GL.Y), Shadow_Caster_Max_Tiles_Away);
---                (Centre_X, Centre_Z, Shadow_Caster_Max_Tiles_Away);
          end loop;
       end if;   --  end of shadow mapping pass
 

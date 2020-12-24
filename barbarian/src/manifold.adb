@@ -136,6 +136,7 @@ package body Manifold is
                      Texture_Manager.Bind_Texture (0, Tile_Tex);
                      Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
                      GL_Utils.Bind_Vao (aBatch.Vao);
+                     Put_Line ("Manifold.Draw_Manifold_Around drawing aBatch.Points ");
                      Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
                   end if;
                   if not Is_Empty (aBatch.Ramp_Points) then
@@ -150,6 +151,8 @@ package body Manifold is
                         Set_Front_Face (Counter_Clockwise);
                      end if;
                      --  regular pass
+                     Put_Line ("Manifold.Draw_Manifold_Around aBatch.Ramp_Points.Length "
+                     & Integer'Image (Integer (aBatch.Ramp_Points.Length)));
                      Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                      Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
                      Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
