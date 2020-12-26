@@ -203,7 +203,7 @@ package body Main_Loop is
 
         --  --------------------------------------------------------------------
 
-        procedure Main_Game_Loop (Window : in out Input_Callback.Barbarian_Window;
+        procedure Game_Loop (Window : in out Input_Callback.Barbarian_Window;
                                   Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                   Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
             use Glfw.Input.Keys;
@@ -220,8 +220,8 @@ package body Main_Loop is
             Dump_Video       : Boolean := False;
             Cheating         : Boolean := False;
         begin
-            Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop");
-            Put_Line ("Main_Loop.Main_Game_Loop");
+            Game_Utils.Game_Log ("Main_Loop.Game_Loop");
+            Put_Line ("Main_Loop.Game_Loop");
             Game_Camera.Is_Dirty := True;
             while Is_Running loop
                 Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
@@ -229,9 +229,9 @@ package body Main_Loop is
                                Curr_Frames_Count);
                 if Main_Menu.Menu_Open then
                     Game_Utils.Game_Log
-                      ("Main_Loop.Main_Game_Loop Main Menu open");
+                      ("Main_Loop.Game_Loop Main Menu open");
                     Put_Line
-                      ("Main_Loop.Main_Game_Loop Main Menu open");
+                      ("Main_Loop.Game_Loop Main Menu open");
                     Main_Menu_Quit := not Main_Menu.Update_Main_Menu
                       (Window, Delta_Time);
                     if Main_Menu.Menu_Was_Closed then
@@ -239,7 +239,7 @@ package body Main_Loop is
                         FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
                     end if;
                     Game_Utils.Game_Log
-                      ("Main_Loop.Main_Game_Loop check if User_Choose_New_Game");
+                      ("Main_Loop.Game_Loop check if User_Choose_New_Game");
                     if Main_Menu.Did_User_Choose_New_Game or
                       Main_Menu.Did_User_Choose_Custom_Maps then
                         Main_Menu.Set_Menu_Open (False);
@@ -249,7 +249,7 @@ package body Main_Loop is
                     end if;
                 else  --  Main_Menu not Open
                     Game_Utils.Game_Log
-                      ("Main_Loop.Main_Game_Loop Main Menu not open");
+                      ("Main_Loop.Game_Loop Main Menu not open");
                     Level_Time := Level_Time + Delta_Time;
                 end if;  --  Main_Menu_Open
 
@@ -277,7 +277,7 @@ package body Main_Loop is
                         Cheating := Cheat_Check_1;
                         if not Main_Menu.Menu_Open then
                             Game_Utils.Game_Log
-                              ("Main_Loop.Main_Game_Loop Is_Running Main Menu not open");
+                              ("Main_Loop.Game_Loop Is_Running Main Menu not open");
                             GUI.Update_GUIs (Delta_Time);
                             Text.Update_Comic_Texts (Delta_Time);
                             Text.Update_Particle_Texts (Delta_Time);
@@ -294,7 +294,7 @@ package body Main_Loop is
                                 if Main_Menu.End_Story_Open then
                                     --  Just won the game
                                     Game_Utils.Game_Log
-                                      ("Main_Loop.Main_Game_Loop Just won the game");
+                                      ("Main_Loop.Game_Loop Just won the game");
                                     Main_Menu.Set_Menu_Open (True);
                                     Unload_Level;
                                     Is_Running := False;
@@ -314,7 +314,7 @@ package body Main_Loop is
                                            Save_Screenshot);
                         end if;
                         Game_Utils.Game_Log
-                          ("Main_Loop.Main_Game_Loop Player_1_View returned");
+                          ("Main_Loop.Game_Loop Player_1_View returned");
                         Is_Running := Is_Running and then not Main_Menu_Quit;
                         Is_Running := Is_Running and then not Main_Window.Should_Close;
                     end if;  --  inner Is_Running
@@ -331,10 +331,10 @@ package body Main_Loop is
 
         exception
             when others =>
-                Put_Line ("Main_Loop.Main_Game_Loop exception");
+                Put_Line ("Main_Loop.Game_Loop exception");
                 raise;
 
-        end Main_Game_Loop;
+        end Game_Loop;
 
         --  ------------------------------------------------------------------------
 
@@ -452,7 +452,7 @@ package body Main_Loop is
                     Audio.Play_Sound ("enter_portal.wav", False);
 
                     Level_Time := 0.0;
-                    Main_Game_Loop (Window, Tile_Tex, Tile_Spec_Tex,
+                    Game_Loop (Window, Tile_Tex, Tile_Spec_Tex,
                                     Ramp_Diff_Tex, Ramp_Spec_Tex);
 
                     if Main_Menu.End_Story_Open then
