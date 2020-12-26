@@ -566,11 +566,15 @@ package body GUI_Level_Chooser is
                     --                 Poll_Joystick;
                     Glfw.Input.Poll_Events;
                     Continue := not Window.Should_Close;
+                    Result := Continue;
                 end if;
             end if;
         end loop;  --  not Window.Should_Close and Continue
 
         if Continue then
+                Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop"
+                                     & "map name found is " &
+                                       Get_Selected_Level_Name (False));
             Enable (Depth_Test);
 
             if not Custom_Levels then
@@ -584,6 +588,10 @@ package body GUI_Level_Chooser is
         Put_Line ("Start_Level_Chooser_Loop finished, Break, Continue, Result: " &
                  Boolean'Image (Break) & "  "  & Boolean'Image (Continue) &
                  "  " & Boolean'Image (Result));
+        Game_Utils.Game_Log ("Start_Level_Chooser_Loop finished, Break, Continue, Result: " &
+                 Boolean'Image (Break) & "  "  & Boolean'Image (Continue) &
+                 "  " & Boolean'Image (Result));
+        Game_Utils.Game_Log ("");   --  New line
         return Result;
 
     exception
