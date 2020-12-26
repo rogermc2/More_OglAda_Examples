@@ -299,18 +299,19 @@ package body GUI_Level_Chooser is
         Attack_Pressed : constant Boolean := Was_Action_Pressed (Window, Attack_Action);
         State_1        : Boolean;
     begin
-        Put_Line ("Process_Input Enter: " & Boolean'Image (Enter_Pressed));
-        Put_Line ("Process_Input OK_Action: " & Boolean'Image (OK_Pressed));
-        Put_Line ("Process_Input Attack_Action: " & Boolean'Image (Attack_Pressed));
+--          Put_Line ("Process_Input entered Started_Loading_Map: " &
+--                      Boolean'Image (Started_Loading_Map));
+--          Put_Line ("Process_Input Enter: " & Boolean'Image (Enter_Pressed));
+--          Put_Line ("Process_Input OK_Action: " & Boolean'Image (OK_Pressed));
+--          Put_Line ("Process_Input Attack_Action: " & Boolean'Image (Attack_Pressed));
         State_1 := Enter_Pressed or OK_Pressed or Attack_Pressed;
-        Put_Line ("Process_Input State_1: " &  Boolean'Image (State_1));
-        New_Line;
+--          Put_Line ("Process_Input State_1: " &  Boolean'Image (State_1));
         if State_1 then
             if not Selected_Level.Locked or Cheat_Unlock then
-              Put_Line ("Process_Input Key or Action pressed Enter: " &
-              Boolean'Image (Was_Key_Pressed (Window, Enter)) & " OK_Action: " &
-              Boolean'Image (Was_Action_Pressed (Window, OK_Action)) &
-              " Attack_Action: " & Boolean'Image (Was_Action_Pressed (Window, Attack_Action)));
+--                Put_Line ("Process_Input Key or Action pressed Enter: " &
+--                Boolean'Image (Was_Key_Pressed (Window, Enter)) & " OK_Action: " &
+--                Boolean'Image (Was_Action_Pressed (Window, OK_Action)) &
+--                " Attack_Action: " & Boolean'Image (Was_Action_Pressed (Window, Attack_Action)));
                 Started_Loading_Map := True;
                 --              else
                 --                  Game_Utils.Game_Log ("Process_Input Enter Selected_Level, Locked: "
@@ -330,6 +331,9 @@ package body GUI_Level_Chooser is
         end if;
         Input_Callback.Clear_All_Keys;
         Input_Callback.Set_Key_Pressed (False);
+
+--          Put_Line ("Process_Input Started_Loading_Map: " &
+--                      Boolean'Image (Started_Loading_Map));
     end Process_Input;
 
     --  ------------------------------------------------------------------------
@@ -522,10 +526,8 @@ package body GUI_Level_Chooser is
 
                 if Main_Menu.Did_User_Choose_New_Game or
                   Main_Menu.Did_User_Choose_Custom_Maps then
-                    Put_Line ("Start_Level_Chooser_Loop User_Choose_New_Game" );
+                    Put_Line ("Start_Level_Chooser_Loop User_Choose_New_Game");
                     Level_Menu_Open := False;
---                      Input_Callback.Clear_All_Keys;
---                      Input_Callback.Set_Key_Pressed (False);
                     Result := Start_Level_Chooser_Loop
                       (Window, Credits_Shader_Program, False);
                     Continue := False;
@@ -533,9 +535,8 @@ package body GUI_Level_Chooser is
                     Continue := False;
                 end if;  --  Level_Menu_Open
             else --  Level_Menu not Open
-               Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
+--                  Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
                 Update_GUI_Level_Chooser (Delta_Time, Custom_Levels);
-                New_Line;
             end if;  --  Level_Menu_Open
 
             if Continue then
@@ -543,23 +544,23 @@ package body GUI_Level_Chooser is
                 if not Level_Menu_Open then
                     --   Process input due to some other menu selection?
                     --                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
-                    Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Process_Input Started_Loading_Map: "
-                                     & Boolean'Image (Started_Loading_Map));
+--                      Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Process_Input Started_Loading_Map: "
+--                                       & Boolean'Image (Started_Loading_Map));
                     Process_Input (Window, Level_Menu_Open,
                                    Started_Loading_Map, Cheat_Unlock);
                 end if;
 
-                Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu Started_Loading_Map: "
-                                     & Boolean'Image (Started_Loading_Map));
+--                  Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu Started_Loading_Map: "
+--                                       & Boolean'Image (Started_Loading_Map));
                 Render_Level_Menu
                   (Window, Credits_Shader_Program, Delta_Time, Custom_Levels,
                    Started_Loading_Map, Level_Menu_Open);
 
-                Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop after Render_Level_Menu Started_Loading_Map: "
-                                     & Boolean'Image (Started_Loading_Map));
+--                  Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop after Render_Level_Menu Started_Loading_Map: "
+--                                       & Boolean'Image (Started_Loading_Map));
                 if Started_Loading_Map then
-                    Put_Line
-                      ("GUI_Level_Chooser.Start_Level_Chooser_Loop Started_Loading_Map");
+--                      Put_Line
+--                        ("GUI_Level_Chooser.Start_Level_Chooser_Loop Started_Loading_Map");
                     Break := True;
                 else
                     --                 Poll_Joystick;

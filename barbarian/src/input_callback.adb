@@ -81,6 +81,7 @@ package body Input_Callback is
          if not Input_State.Keys_Locked (Key) then
             Input_State.Keys_Down (Key) := True;
             Input_State.Key_Pressed := True;
+            Input_State.Keys_Locked (Key) := True;
             Input_State.Last_Key_Down := Key;
          end if;
       elsif Action = Release then

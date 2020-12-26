@@ -142,7 +142,6 @@ package body Tiles_Manager is
         Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch " &
                               Integer'Image (index) & " regenerated");
       end loop;
-      Put_Line ("Tiles_Manager.Add_Tiles_To_Batches done.");
 
    exception
       when anError : others =>
@@ -439,7 +438,6 @@ package body Tiles_Manager is
         ("Tiles_Manager.Load_Palette_File_Names loading palette file names");
       Diff_Palette_Name := Get_Palette_File_Name ("dm ");
       Spec_Palette_Name := Get_Palette_File_Name ("sm ");
-      Put_Line ("Tiles_Manager.Load_Palette_File_Names palette file names loaded");
 
       Game_Utils.Game_Log
         ("Tiles_Manager.Load_Palette_File_Names palette file names loaded");
@@ -479,7 +477,7 @@ package body Tiles_Manager is
       Pos2     : Natural;
    begin
       Game_Utils.Game_Log ("Loading tiles and generating manifold from FP...");
-      Put_Line ("Tiles_Manager.Load_Tiles loading tiles ");
+--        Put_Line ("Tiles_Manager.Load_Tiles loading tiles ");
       Pos1 := Fixed.Index (aLine, " ") + 1;
       if Fixed.Index (aLine, "facings ") = 0 then
          raise Tiles_Manager_Exception with
