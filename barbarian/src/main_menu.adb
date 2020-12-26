@@ -556,6 +556,7 @@ package body Main_Menu is
             Process_Menu_Audio (Window, Audio_Value_Text, Menu_Audio_Open,
                                 Since_Last_Key, Audio_Cursor_Current_Item);
          end if;  --  Menu_Audio_Open
+
          if Menu_Cal_KB_Open then
             Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Cal_KB_Open");
             Process_Menu_Cal_KB (Window, KB_Binding_Text, Greatest_Axis_Text,
@@ -566,6 +567,7 @@ package body Main_Menu is
             Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Cal_Gp_Butts_Open");
             Process_Menu_Cal_GP;
          end if;
+
          if Menu_Input_Open then
             Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Input_Open");
             Process_Menu_Input (Window, To_String (Joy_Name), Since_Last_Key,
@@ -573,15 +575,18 @@ package body Main_Menu is
                                 Menu_Cal_Gp_Axes_Open, Menu_Cal_Gp_Butts_Open,
                                 Joystick_Detected_Text, Input_Cursor_Current_Item);
          end if;
+
          if Menu_Confirm_Quit_Open then
             Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Confirm_Quit_Open");
             Result := Confirm_Quit_Open (Window, Menu_Confirm_Quit_Open);
          end if;
+
          if Menu_Credits_Open then
             --              Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Credits_Open");
             Check_Close_Menu_Credits (Window, Menu_Credits_Open,
                                       Menu_End_Story_Open, Menu_Closed, Text_Timer);
          end if;
+
 --           Game_Utils.Game_Log ("Main_Menu.Update_Menu General_Menu_Support");
          General_Menu_Support (Window, Joystick_Detected_Text,
                                To_String (Joy_Name), Menu_Closed,

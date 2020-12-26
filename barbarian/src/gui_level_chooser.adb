@@ -292,14 +292,25 @@ package body GUI_Level_Chooser is
         use Glfw.Input.Keys;
         use Input_Callback;
         use Input_Handler;
-        use Level_Menu_Manager.Levels_Package;
         Selected_Level : constant Level_Menu_Manager.Level_Data :=
                            Levels.Element (Selected_Level_ID);
+        Enter_Pressed  : constant Boolean := Was_Key_Pressed (Window, Enter);
+        OK_Pressed     : constant Boolean := Was_Action_Pressed (Window, OK_Action);
+        Attack_Pressed : constant Boolean := Was_Action_Pressed (Window, Attack_Action);
+        State_1        : Boolean;
     begin
-        --        Game_Utils.Game_Log ("Process_Input OK_Action: " & Natural'Image (OK_Action));
-        if Was_Key_Pressed (Window, Enter) or Was_Action_Pressed (Window, OK_Action)
-          or Was_Action_Pressed (Window, Attack_Action) then
+        Put_Line ("Process_Input Enter: " & Boolean'Image (Enter_Pressed));
+        Put_Line ("Process_Input OK_Action: " & Boolean'Image (OK_Pressed));
+        Put_Line ("Process_Input Attack_Action: " & Boolean'Image (Attack_Pressed));
+        State_1 := Enter_Pressed or OK_Pressed or Attack_Pressed;
+        Put_Line ("Process_Input State_1: " &  Boolean'Image (State_1));
+        New_Line;
+        if State_1 then
             if not Selected_Level.Locked or Cheat_Unlock then
+              Put_Line ("Process_Input Key or Action pressed Enter: " &
+              Boolean'Image (Was_Key_Pressed (Window, Enter)) & " OK_Action: " &
+              Boolean'Image (Was_Action_Pressed (Window, OK_Action)) &
+              " Attack_Action: " & Boolean'Image (Was_Action_Pressed (Window, Attack_Action)));
                 Started_Loading_Map := True;
                 --              else
                 --                  Game_Utils.Game_Log ("Process_Input Enter Selected_Level, Locked: "
@@ -317,6 +328,8 @@ package body GUI_Level_Chooser is
                 Game_Utils.Game_Log ("cheater!");
             end if;
         end if;
+        Input_Callback.Clear_All_Keys;
+        Input_Callback.Set_Key_Pressed (False);
     end Process_Input;
 
     --  ------------------------------------------------------------------------
@@ -333,6 +346,7 @@ package body GUI_Level_Chooser is
         Last_Index    : Positive := Levels.Last_Index;
     begin
         Utilities.Clear_Colour;
+        --  Set_Background_Pane does the rendering
         Set_Background_Pane (Credits_Shader_Program, Use_Custom_Levels);
 
         if Use_Custom_Levels then
@@ -476,9 +490,9 @@ package body GUI_Level_Chooser is
         Current_Time          : Float;
         Delta_Time            : Float;
         Last_Time             : Float := Float (Glfw.Time);
+        Break                 : Boolean := False;
         Continue              : Boolean := True;
-        Recurse               : Boolean := False;
-        Result                : Boolean := False;
+        Result                : Boolean := True;
         Selected_Level        : constant Level_Menu_Manager.Level_Data :=
                                   Levels.Element (Selected_Level_ID);
     begin
@@ -487,30 +501,41 @@ package body GUI_Level_Chooser is
                                To_String (Selected_Level.Level_Name) &
                                ", Level_Menu_Open  " &
                                Boolean'Image (Level_Menu_Open));
+        Put_Line ("Start_Level_Chooser_Loop Selected_Level:" &
+                               Integer'Image (Selected_Level_ID) & "  " &
+                               To_String (Selected_Level.Level_Name) &
+                               ", Level_Menu_Open  " &
+                               Boolean'Image (Level_Menu_Open));
+        Glfw.Input.Poll_Events;
+--          Input_Callback.Clear_All_Keys;
+--          Input_Callback.Set_Key_Pressed (False);
         Reset_GUI_Level_Selection (Custom_Levels);
-        while not Window.Should_Close and Continue loop
+        while not Window.Should_Close and Continue and not Break loop
             Current_Time := Float (Glfw.Time);
             Delta_Time := Current_Time - Last_Time;
             Last_Time := Current_Time;
             if Level_Menu_Open then
-                --              Game_Utils.Game_Log ("Start_Level_Chooser_Loop Delta_Time" &
-                --                                    Float'Image (Delta_Time));
+               Put_Line ("Start_Level_Chooser_Loop Level_Menu_Open");
                 Level_Menu_Quit :=
                   not Main_Menu.Update_Main_Menu (Window, Delta_Time);
                 Level_Menu_Open := not Main_Menu.Menu_Was_Closed;
 
                 if Main_Menu.Did_User_Choose_New_Game or
                   Main_Menu.Did_User_Choose_Custom_Maps then
+                    Put_Line ("Start_Level_Chooser_Loop User_Choose_New_Game" );
                     Level_Menu_Open := False;
+--                      Input_Callback.Clear_All_Keys;
+--                      Input_Callback.Set_Key_Pressed (False);
+                    Result := Start_Level_Chooser_Loop
+                      (Window, Credits_Shader_Program, False);
                     Continue := False;
-                    Recurse := True;
                 elsif Level_Menu_Quit then
                     Continue := False;
-                    Recurse := False;
                 end if;  --  Level_Menu_Open
             else --  Level_Menu not Open
-                --                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
+               Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Update_GUI_Level_Chooser");
                 Update_GUI_Level_Chooser (Delta_Time, Custom_Levels);
+                New_Line;
             end if;  --  Level_Menu_Open
 
             if Continue then
@@ -518,16 +543,25 @@ package body GUI_Level_Chooser is
                 if not Level_Menu_Open then
                     --   Process input due to some other menu selection?
                     --                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
+                    Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Process_Input Started_Loading_Map: "
+                                     & Boolean'Image (Started_Loading_Map));
                     Process_Input (Window, Level_Menu_Open,
                                    Started_Loading_Map, Cheat_Unlock);
                 end if;
 
-                --                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu");
+                Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu Started_Loading_Map: "
+                                     & Boolean'Image (Started_Loading_Map));
                 Render_Level_Menu
                   (Window, Credits_Shader_Program, Delta_Time, Custom_Levels,
                    Started_Loading_Map, Level_Menu_Open);
 
-                if not Started_Loading_Map then
+                Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop after Render_Level_Menu Started_Loading_Map: "
+                                     & Boolean'Image (Started_Loading_Map));
+                if Started_Loading_Map then
+                    Put_Line
+                      ("GUI_Level_Chooser.Start_Level_Chooser_Loop Started_Loading_Map");
+                    Break := True;
+                else
                     --                 Poll_Joystick;
                     Glfw.Input.Poll_Events;
                     Continue := not Window.Should_Close;
@@ -545,12 +579,10 @@ package body GUI_Level_Chooser is
                                        Get_Selected_Level_Name (False));
                 Result := Checksums;
             end if;
-
-            if Result and Recurse then
-                Result := Start_Level_Chooser_Loop
-                  (Window, Credits_Shader_Program, False);
-            end if;
         end if;
+        Put_Line ("Start_Level_Chooser_Loop finished, Break, Continue, Result: " &
+                 Boolean'Image (Break) & "  "  & Boolean'Image (Continue) &
+                 "  " & Boolean'Image (Result));
         return Result;
 
     exception

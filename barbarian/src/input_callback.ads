@@ -16,6 +16,7 @@ package Input_Callback is
 
    Input_Callback_Exception : Exception;
 
+   procedure Clear_All_Keys;
    function Is_Key_Down (aKey : Glfw.Input.Keys.Key) return Boolean;
    function Joystick_Connected return Boolean;
 

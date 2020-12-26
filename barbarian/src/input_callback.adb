@@ -43,6 +43,15 @@ package body Input_Callback is
 
    --  ------------------------------------------------------------------------
 
+   procedure Clear_All_Keys is
+   begin
+      for index in Input_State.Keys_Down'Range loop
+         Input_State.Keys_Down (index) := False;
+      end loop;
+   end Clear_All_Keys;
+
+   --  ------------------------------------------------------------------------
+
    function Is_Key_Down (aKey : Key) return Boolean is
    begin
       return Input_State.Keys_Down (aKey);
