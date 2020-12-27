@@ -24,6 +24,7 @@ package body Batch_Manager is
                           Row, Col   :   Int; Height : Integer;
                           Tiles      : Tiles_Manager.Tile_List;
                           Tile_Index : positive);
+    procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
    procedure South_Check (aBatch     : in out Batch_Meta;
                           Row, Col   :   Int; Height : Integer;
                           Tiles      : Tiles_Manager.Tile_List;
@@ -313,6 +314,8 @@ package body Batch_Manager is
          GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+
+         Set_AABB_Dimensions (aBatch);
       end if;
 
    end Generate_Points;
@@ -532,7 +535,16 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure South_Check (aBatch     : in out Batch_Meta;
+    procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta) is
+    begin
+         aBatch.AABB_Mins := (100000.0, 100000.0, 100000.0);
+         aBatch.AABB_Maxs := (-100000.0, -100000.0, -100000.0);
+
+    end Set_AABB_Dimensions;
+
+   --  -------------------------------------------------------------------------
+
+    procedure South_Check (aBatch     : in out Batch_Meta;
                           Row, Col   : Int; Height : Integer;
                           Tiles      : Tiles_Manager.Tile_List;
                           Tile_Index : positive) is
