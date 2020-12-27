@@ -505,28 +505,19 @@ package body GUI_Level_Chooser is
                                To_String (Selected_Level.Level_Name) &
                                ", Level_Menu_Open  " &
                                Boolean'Image (Level_Menu_Open));
-        Put_Line ("Start_Level_Chooser_Loop Selected_Level:" &
-                               Integer'Image (Selected_Level_ID) & "  " &
-                               To_String (Selected_Level.Level_Name) &
-                               ", Level_Menu_Open  " &
-                               Boolean'Image (Level_Menu_Open));
-        Glfw.Input.Poll_Events;
---          Input_Callback.Clear_All_Keys;
---          Input_Callback.Set_Key_Pressed (False);
         Reset_GUI_Level_Selection (Custom_Levels);
         while not Window.Should_Close and Continue and not Break loop
             Current_Time := Float (Glfw.Time);
             Delta_Time := Current_Time - Last_Time;
             Last_Time := Current_Time;
             if Level_Menu_Open then
-               Put_Line ("Start_Level_Chooser_Loop Level_Menu_Open");
+--                 Put_Line ("Start_Level_Chooser_Loop Level_Menu_Open");
                 Level_Menu_Quit :=
                   not Main_Menu.Update_Main_Menu (Window, Delta_Time);
                 Level_Menu_Open := not Main_Menu.Menu_Was_Closed;
 
                 if Main_Menu.Did_User_Choose_New_Game or
                   Main_Menu.Did_User_Choose_Custom_Maps then
-                    Put_Line ("Start_Level_Chooser_Loop User_Choose_New_Game");
                     Level_Menu_Open := False;
                     Result := Start_Level_Chooser_Loop
                       (Window, Credits_Shader_Program, False);
@@ -543,24 +534,14 @@ package body GUI_Level_Chooser is
                 Started_Loading_Map := False;
                 if not Level_Menu_Open then
                     --   Process input due to some other menu selection?
-                    --                 Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop Menu not Open");
---                      Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Process_Input Started_Loading_Map: "
---                                       & Boolean'Image (Started_Loading_Map));
                     Process_Input (Window, Level_Menu_Open,
                                    Started_Loading_Map, Cheat_Unlock);
                 end if;
 
---                  Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop Render_Level_Menu Started_Loading_Map: "
---                                       & Boolean'Image (Started_Loading_Map));
                 Render_Level_Menu
                   (Window, Credits_Shader_Program, Delta_Time, Custom_Levels,
                    Started_Loading_Map, Level_Menu_Open);
-
---                  Put_Line ("GUI_Level_Chooser.Start_Level_Chooser_Loop after Render_Level_Menu Started_Loading_Map: "
---                                       & Boolean'Image (Started_Loading_Map));
                 if Started_Loading_Map then
---                      Put_Line
---                        ("GUI_Level_Chooser.Start_Level_Chooser_Loop Started_Loading_Map");
                     Break := True;
                 else
                     --                 Poll_Joystick;
@@ -572,22 +553,19 @@ package body GUI_Level_Chooser is
         end loop;  --  not Window.Should_Close and Continue
 
         if Continue then
-                Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop"
-                                     & "map name found is " &
-                                       Get_Selected_Level_Name (False));
+--                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop"
+--                                       & "map name found is " &
+--                                         Get_Selected_Level_Name (False));
             Enable (Depth_Test);
 
             if not Custom_Levels then
                 Level_Unmodified := True;
-                Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop"
-                                     & "map name found is " &
-                                       Get_Selected_Level_Name (False));
+--                  Game_Utils.Game_Log ("GUI_Level_Chooser.Start_Level_Chooser_Loop"
+--                                       & "map name found is " &
+--                                         Get_Selected_Level_Name (False));
                 Result := Checksums;
             end if;
         end if;
-        Put_Line ("Start_Level_Chooser_Loop finished, Break, Continue, Result: " &
-                 Boolean'Image (Break) & "  "  & Boolean'Image (Continue) &
-                 "  " & Boolean'Image (Result));
         Game_Utils.Game_Log ("Start_Level_Chooser_Loop finished, Break, Continue, Result: " &
                  Boolean'Image (Break) & "  "  & Boolean'Image (Continue) &
                  "  " & Boolean'Image (Result));

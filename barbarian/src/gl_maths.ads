@@ -11,26 +11,26 @@ package GL_Maths is
     use Singles;
 
     package Ints_Package is new Ada.Containers.Vectors (Positive, Int);
-    type Ints_List is new Ints_Package.Vector with null record;
+    subtype Ints_List is Ints_Package.Vector;
 
     package Integers_Package is new Ada.Containers.Vectors (Positive, Integer);
-    type Integers_List is new Integers_Package.Vector with null record;
+    subtype Integers_List is Integers_Package.Vector;
 
     package Singles_Package is new Ada.Containers.Doubly_Linked_Lists
       (Single);
-    type Singles_List is new Singles_Package.List with null record;
+    subtype Singles_List is Singles_Package.List;
 
     package Vec2_Package is new Ada.Containers.Doubly_Linked_Lists
       (Singles.Vector2);
-    type Vector2_List is new Vec2_Package.List with null record;
+    subtype Vec2_List is Vec2_Package.List;
 
     package Vec3_Package is new Ada.Containers.Doubly_Linked_Lists
       (Singles.Vector3);
-    type Vector3_List is new Vec3_Package.List with null record;
+    subtype Vec3_List is Vec3_Package.List;
 
     package Vec4_Package is new Ada.Containers.Doubly_Linked_Lists
       (Singles.Vector4);
-   type Vector4_List is new Vec4_Package.List with null record;
+   subtype Vec4_List is Vec4_Package.List;
 
    package Singles_Array_Package is new Ada.Numerics.Generic_Real_Arrays
      (Single);

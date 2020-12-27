@@ -10,6 +10,7 @@ with GL.Toggles;
 with Glfw;
 
 with Maths;
+with Utilities;
 
 with Batch_Manager;
 with Camera;
@@ -30,14 +31,14 @@ package body Manifold is
 
    Manifold_Program         : GL.Objects.Programs.Program;
    Water_Program            : GL.Objects.Programs.Program;
-   Ramp_Mesh_Points         : GL_Maths.Vector3_List;
-   Ramp_Mesh_Normals        : GL_Maths.Vector3_List;
-   Ramp_Mesh_Smooth_Normals : GL_Maths.Vector3_List;
-   Ramp_Mesh_Texcoords      : GL_Maths.Vector2_List;
+   Ramp_Mesh_Points         : GL_Maths.Vec3_List;
+   Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
+   Ramp_Mesh_Smooth_Normals : GL_Maths.Vec3_List;
+   Ramp_Mesh_Texcoords      : GL_Maths.Vec2_List;
    Ramp_Mesh_Point_Count    : Integer := 0;
-   Water_Mesh_Points        : GL_Maths.Vector3_List;
-   Water_Mesh_Normals       : GL_Maths.Vector3_List;
-   Water_Mesh_Texcoords     : GL_Maths.Vector2_List;
+   Water_Mesh_Points        : GL_Maths.Vec3_List;
+   Water_Mesh_Normals       : GL_Maths.Vec3_List;
+   Water_Mesh_Texcoords     : GL_Maths.Vec2_List;
    Water_Mesh_Point_Count   : Integer := 0;
    Manifold_Dyn_Light_Dirty : Boolean := True;
    Manifold_Dyn_Light_Pos   : constant Singles.Vector3 := Maths.Vec3_0;
@@ -65,7 +66,7 @@ package body Manifold is
       end loop;
    end Clear_Manifold_Lights;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    procedure Draw_Manifold_Around (Camera_Pos : GL.Types.Singles.Vector3;
                                    Radius     : GL.Types.Single;
@@ -119,12 +120,21 @@ package body Manifold is
          Rad_Dist := Min (abs(Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
                           abs(Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
          if Rad_Dist <= 2.0 * Radius then
+--              Put_Line ("Manifold.Draw_Manifold_Around Rad_Dist <= 2.0 * Radius 1");
             Rad_Dist := Min (abs(Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
                              abs(Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
             if Rad_Dist <= 2.0 * Radius then
+               Put_Line ("Manifold.Draw_Manifold_Around Is_Aabb_In_Frustum: "
+                & Boolean'Image (Frustum.Is_Aabb_In_Frustum
+                           (aBatch.AABB_Mins, aBatch.AABB_Maxs)));
+                Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Mins",
+                                        aBatch.AABB_Mins);
+                Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Mins",
+                                        aBatch.AABB_Maxs);
                if Frustum.Is_Aabb_In_Frustum
                  (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
                  not (aBatch.Static_Light_Indices.Is_Empty) then
+                  Put_Line ("Manifold.Draw_Manifold_Around Is_Aabb_In_Frustum");
                   Light_Indices := aBatch.Static_Light_Indices;
                   Light_Cursor := Light_Indices.First;
                   Tile_Index1 := Int (Element (Light_Cursor));
@@ -331,8 +341,8 @@ package body Manifold is
    --  ------------------------------------------------------------------------
 
    procedure Init is
-      Points       : GL_Maths.Vector3_List;
-      Texcoords    : GL_Maths.Vector2_List;
+      Points       : GL_Maths.Vec3_List;
+      Texcoords    : GL_Maths.Vec2_List;
       Points_Count : Integer := 0;
 
    begin

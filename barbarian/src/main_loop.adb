@@ -98,6 +98,139 @@ package body Main_Loop is
 
         --  ------------------------------------------------------------------------
 
+        procedure Game_Loop (Window : in out Input_Callback.Barbarian_Window;
+                                  Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                                  Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
+            use Glfw.Input.Keys;
+            use Game_Support;
+            use GUI_Level_Chooser;
+            Is_Running       : Boolean := True;
+            Main_Menu_Quit   : Boolean := False;
+            Last_Time        : Float := Float (Glfw.Time);
+            Delta_Time       : Float := 0.0;
+            Video_Timer      : Float := 0.0;
+            Video_Dump_Timer : Float := 0.0;
+            Frame_Time       : Float := 0.04;
+            Save_Screenshot  : Boolean := False;
+            Dump_Video       : Boolean := False;
+            Cheating         : Boolean := False;
+        begin
+            Game_Utils.Game_Log ("Main_Loop.Game_Loop");
+            Put_Line ("Main_Loop.Game_Loop");
+            Game_Camera.Is_Dirty := True;
+            while Is_Running loop
+                Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
+                               Curr_Frame_Time_Accum_Ms, Avg_Frames_Count,
+                               Curr_Frames_Count);
+                if Main_Menu.Menu_Open then
+--                      Game_Utils.Game_Log
+--                        ("Main_Loop.Game_Loop Main Menu open");
+                    Main_Menu_Quit := not Main_Menu.Update_Main_Menu
+                      (Window, Delta_Time);
+                    if Main_Menu.Menu_Was_Closed then
+                        Main_Menu.Set_Menu_Open (False);
+                        FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
+                    end if;
+                    Game_Utils.Game_Log
+                      ("Main_Loop.Game_Loop check if User_Choose_New_Game");
+                    if Main_Menu.Did_User_Choose_New_Game or
+                      Main_Menu.Did_User_Choose_Custom_Maps then
+                        Main_Menu.Set_Menu_Open (False);
+                        Quit_Game := False;
+                        Unload_Level;
+                        Is_Running := False;
+                    end if;
+                else  --  Main_Menu not Open
+--                      Game_Utils.Game_Log
+--                        ("Main_Loop.Game_Loop Main Menu not open");
+                    Level_Time := Level_Time + Delta_Time;
+                end if;  --  Main_Menu_Open
+
+                if Is_Running then
+                    if Settings.Video_Record_Mode and Dump_Video then
+                        Video_Timer := Video_Timer + Delta_Time;
+                        Video_Dump_Timer := Video_Dump_Timer + Delta_Time;
+                        Is_Running := Video_Timer < Float (GL_Utils.Video_Seconds_Total);
+                        if Is_Running then
+                            Audio.Update_Ambient_Sounds;
+                            Audio.Update_Boulder_Sounds;
+                            --                              Check_Keys;  -- DEBUG MODE!
+                            Save_Screenshot :=
+                              Input_Callback.Was_Key_Pressed (Window, F11);
+                        elsif Settings.Video_Record_Mode and
+                          Input_Callback.Was_Key_Pressed (Window, Backspace) then
+                            Dump_Video := not Dump_Video;
+                            Video_Timer := 0.0;
+                            Put_Line ("==RECORDING VIDEO==");
+                        end if;
+                    end if;  --  Video processing
+
+                    if Is_Running then
+                        --  Do cheating checks
+                        Cheating := Cheat_Check_1;
+                        if not Main_Menu.Menu_Open then
+                            Game_Utils.Game_Log
+                              ("Main_Loop.Game_Loop Is_Running Main Menu not open");
+                            GUI.Update_GUIs (Delta_Time);
+                            Text.Update_Comic_Texts (Delta_Time);
+                            Text.Update_Particle_Texts (Delta_Time);
+                            --                          Check_Victory_Defeat checks that if the "defeated"
+                            --                          gui is up then controls aren't updated except space
+                            --  		            to restart
+                            --  			    Note that this reloads and continues execution of game
+                            --                          as normal - major states stacks don't change or anything
+                            Is_Running := Check_Victory_Defeat;
+
+                            if Is_Running then
+                                Camera.Update_Camera_Effects (Delta_Time);
+                                Update_Logic_Steps (Delta_Time);
+                                if Main_Menu.End_Story_Open then
+                                    --  Just won the game
+                                    Game_Utils.Game_Log
+                                      ("Main_Loop.Game_Loop Just won the game");
+                                    Main_Menu.Set_Menu_Open (True);
+                                    Unload_Level;
+                                    Is_Running := False;
+                                elsif Input_Handler.Was_Action_Pressed
+                                  (Window, Input_Handler.Wipe_Screen_Action) then
+                                    Game_Utils.Game_Log
+                                      ("Main_Loop.Main_Game_Loop Action_Pressed");
+                                    GUI.Start_Fist;
+                                end if;
+                            end if;
+                        end if;  --  Main menu not open;
+
+                        if Is_Running then
+                            Player_1_View (Window, Tile_Tex, Tile_Spec_Tex,
+                                           Ramp_Diff_Tex, Ramp_Spec_Tex,
+                                           Delta_Time, Dump_Video,
+                                           Save_Screenshot);
+                        end if;
+--                          Game_Utils.Game_Log
+--                            ("Main_Loop.Game_Loop Player_1_View returned");
+                        Is_Running := Is_Running and then not Main_Menu_Quit;
+                        Is_Running := Is_Running and then not Main_Window.Should_Close;
+                    end if;  --  inner Is_Running
+                end if;  --  Is_Running
+
+                --                  Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
+                --                                       & Boolean'Image (Window.Should_Close));
+                Is_Running := Is_Running and
+                  not Window.Should_Close and not Main_Menu_Quit;
+                --                  Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Is_Running: "
+                --                                       & Boolean'Image (Is_Running));
+            end loop;
+            Quit_Game := True;
+
+        exception
+            when others =>
+                Put_Line ("Main_Loop.Game_Loop exception");
+                raise;
+
+        end Game_Loop;
+
+        --  --------------------------------------------------------------------
+
         procedure Init_Modules (Window : in out Input_Callback.Barbarian_Window) is
             Window_Width   : Glfw.Size;
             Window_Height  : Glfw.Size;
@@ -202,141 +335,6 @@ package body Main_Loop is
         end Introduction;
 
         --  --------------------------------------------------------------------
-
-        procedure Game_Loop (Window : in out Input_Callback.Barbarian_Window;
-                                  Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
-                                  Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
-            use Glfw.Input.Keys;
-            use Game_Support;
-            use GUI_Level_Chooser;
-            Is_Running       : Boolean := True;
-            Main_Menu_Quit   : Boolean := False;
-            Last_Time        : Float := Float (Glfw.Time);
-            Delta_Time       : Float := 0.0;
-            Video_Timer      : Float := 0.0;
-            Video_Dump_Timer : Float := 0.0;
-            Frame_Time       : Float := 0.04;
-            Save_Screenshot  : Boolean := False;
-            Dump_Video       : Boolean := False;
-            Cheating         : Boolean := False;
-        begin
-            Game_Utils.Game_Log ("Main_Loop.Game_Loop");
-            Put_Line ("Main_Loop.Game_Loop");
-            Game_Camera.Is_Dirty := True;
-            while Is_Running loop
-                Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
-                               Curr_Frame_Time_Accum_Ms, Avg_Frames_Count,
-                               Curr_Frames_Count);
-                if Main_Menu.Menu_Open then
-                    Game_Utils.Game_Log
-                      ("Main_Loop.Game_Loop Main Menu open");
-                    Put_Line
-                      ("Main_Loop.Game_Loop Main Menu open");
-                    Main_Menu_Quit := not Main_Menu.Update_Main_Menu
-                      (Window, Delta_Time);
-                    if Main_Menu.Menu_Was_Closed then
-                        Main_Menu.Set_Menu_Open (False);
-                        FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
-                    end if;
-                    Game_Utils.Game_Log
-                      ("Main_Loop.Game_Loop check if User_Choose_New_Game");
-                    if Main_Menu.Did_User_Choose_New_Game or
-                      Main_Menu.Did_User_Choose_Custom_Maps then
-                        Main_Menu.Set_Menu_Open (False);
-                        Quit_Game := False;
-                        Unload_Level;
-                        Is_Running := False;
-                    end if;
-                else  --  Main_Menu not Open
-                    Game_Utils.Game_Log
-                      ("Main_Loop.Game_Loop Main Menu not open");
-                    Level_Time := Level_Time + Delta_Time;
-                end if;  --  Main_Menu_Open
-
-                if Is_Running then
-                    if Settings.Video_Record_Mode and Dump_Video then
-                        Video_Timer := Video_Timer + Delta_Time;
-                        Video_Dump_Timer := Video_Dump_Timer + Delta_Time;
-                        Is_Running := Video_Timer < Float (GL_Utils.Video_Seconds_Total);
-                        if Is_Running then
-                            Audio.Update_Ambient_Sounds;
-                            Audio.Update_Boulder_Sounds;
-                            --                              Check_Keys;  -- DEBUG MODE!
-                            Save_Screenshot :=
-                              Input_Callback.Was_Key_Pressed (Window, F11);
-                        elsif Settings.Video_Record_Mode and
-                          Input_Callback.Was_Key_Pressed (Window, Backspace) then
-                            Dump_Video := not Dump_Video;
-                            Video_Timer := 0.0;
-                            Put_Line ("==RECORDING VIDEO==");
-                        end if;
-                    end if;  --  Video processing
-
-                    if Is_Running then
-                        --  Do cheating checks
-                        Cheating := Cheat_Check_1;
-                        if not Main_Menu.Menu_Open then
-                            Game_Utils.Game_Log
-                              ("Main_Loop.Game_Loop Is_Running Main Menu not open");
-                            GUI.Update_GUIs (Delta_Time);
-                            Text.Update_Comic_Texts (Delta_Time);
-                            Text.Update_Particle_Texts (Delta_Time);
-                            --                          Check_Victory_Defeat checks that if the "defeated"
-                            --                          gui is up then controls aren't updated except space
-                            --  		            to restart
-                            --  			    Note that this reloads and continues execution of game
-                            --                          as normal - major states stacks don't change or anything
-                            Is_Running := Check_Victory_Defeat;
-
-                            if Is_Running then
-                                Camera.Update_Camera_Effects (Delta_Time);
-                                Update_Logic_Steps (Delta_Time);
-                                if Main_Menu.End_Story_Open then
-                                    --  Just won the game
-                                    Game_Utils.Game_Log
-                                      ("Main_Loop.Game_Loop Just won the game");
-                                    Main_Menu.Set_Menu_Open (True);
-                                    Unload_Level;
-                                    Is_Running := False;
-                                elsif Input_Handler.Was_Action_Pressed
-                                  (Window, Input_Handler.Wipe_Screen_Action) then
-                                    Game_Utils.Game_Log
-                                      ("Main_Loop.Main_Game_Loop Action_Pressed");
-                                    GUI.Start_Fist;
-                                end if;
-                            end if;
-                        end if;  --  Main menu not open;
-
-                        if Is_Running then
-                            Player_1_View (Window, Tile_Tex, Tile_Spec_Tex,
-                                           Ramp_Diff_Tex, Ramp_Spec_Tex,
-                                           Delta_Time, Dump_Video,
-                                           Save_Screenshot);
-                        end if;
-                        Game_Utils.Game_Log
-                          ("Main_Loop.Game_Loop Player_1_View returned");
-                        Is_Running := Is_Running and then not Main_Menu_Quit;
-                        Is_Running := Is_Running and then not Main_Window.Should_Close;
-                    end if;  --  inner Is_Running
-                end if;  --  Is_Running
-
-                --                  Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Window.Should_Close: "
-                --                                       & Boolean'Image (Window.Should_Close));
-                Is_Running := Is_Running and
-                  not Window.Should_Close and not Main_Menu_Quit;
-                --                  Game_Utils.Game_Log ("Main_Loop.Main_Game_Loop end loop Is_Running: "
-                --                                       & Boolean'Image (Is_Running));
-            end loop;
-            Quit_Game := True;
-
-        exception
-            when others =>
-                Put_Line ("Main_Loop.Game_Loop exception");
-                raise;
-
-        end Game_Loop;
-
-        --  ------------------------------------------------------------------------
 
         procedure Main_Setup (Window     : in out Input_Callback.Barbarian_Window;
                               Is_Running : in out Boolean) is

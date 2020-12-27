@@ -17,9 +17,9 @@ package Mesh_Loader is
                                Has_tangents, Has_Bones : Boolean := False)
                                 return Integer;
    function Load_Mesh_Data_Only (File_Name   : String;
-                                 Points      : in out GL_Maths.Vector3_List;
-                                 Tex_Coords  : in out GL_Maths.Vector2_List;
-                                 Normals     : in out GL_Maths.Vector3_List;
+                                 Points      : in out GL_Maths.Vec3_List;
+                                 Tex_Coords  : in out GL_Maths.Vec2_List;
+                                 Normals     : in out GL_Maths.Vec3_List;
                                  Point_Count : in out Integer)
                                   return Boolean;
    function Loaded_Mesh_VAO (Mesh_ID : Integer;

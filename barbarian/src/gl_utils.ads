@@ -23,16 +23,16 @@ package GL_Utils is
 
    package Singles_Package is new
      Ada.Containers.Vectors (Positive, Single);
-   type Singles_List is new Singles_Package.Vector with null record;
+   subtype Singles_List is Singles_Package.Vector;
 
    package Vector2_Package is new Ada.Containers.Vectors (Positive, Vector2);
-   type Vector2_List is new Vector2_Package.Vector with null record;
+   subtype Vector2_List is Vector2_Package.Vector;
 
    package Vector3_Package is new Ada.Containers.Vectors (Positive, Vector3);
-   type Vector3_List is new Vector3_Package.Vector with null record;
+   subtype Vector3_List is Vector3_Package.Vector;
 
    package Vector4_Package is new Ada.Containers.Vectors (Positive, Vector4);
-   type Vector4_List is new Vector4_Package.Vector with null record;
+   subtype Vector4_List is Vector4_Package.Vector;
 
    type Gfx_Stats is private;
 

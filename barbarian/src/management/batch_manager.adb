@@ -1,6 +1,11 @@
 
+with GL.Attributes;
+with GL.Pixels;
+
 with Game_Utils;
+with GL_Utils;
 with Settings;
+with Shader_Attributes;
 
 package body Batch_Manager is
 
@@ -18,6 +23,14 @@ package body Batch_Manager is
                           Row, Col   :   Int; Height : Integer;
                           Tiles      : Tiles_Manager.Tile_List;
                           Tile_Index : positive);
+   procedure South_Check (aBatch     : in out Batch_Meta;
+                          Row, Col   :   Int; Height : Integer;
+                          Tiles      : Tiles_Manager.Tile_List;
+                          Tile_Index : positive);
+   procedure West_Check (aBatch     : in out Batch_Meta;
+                         Row, Col   :   Int; Height : Integer;
+                         Tiles      : Tiles_Manager.Tile_List;
+                         Tile_Index : positive);
 
    --  -------------------------------------------------------------------------
 
@@ -162,6 +175,56 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
+   procedure East_Check (aBatch     : in out Batch_Meta;
+                         Row, Col   : Int; Height : Integer;
+                         Tiles      : Tiles_Manager.Tile_List;
+                         Tile_Index : positive) is
+      use Tiles_Manager;
+      N_Index  : constant Integer := Tile_Index + Integer (Max_Cols);
+      aTile    :  Tile_Data;
+      N_Height : Integer;
+      Diff     : Integer;
+      X        : Single;
+      Y        : Single;
+      Z        : Single;
+   begin
+      aTile := Tiles.Element (N_Index);
+      N_Height := aTile.Height;
+      if aTile.Tile_Type = '~' then
+         N_Height := N_Height - 1;
+      end if;
+      Diff := Height - N_Height;
+      --  remove bit behind stairs from construction list
+      if aTile.Tile_Type = '/' and then aTile.Facing = 'E' then
+         Diff := Diff - 1;
+      end if;
+
+      for level in -Diff .. -1 loop
+         X := Single (2 * Col - 1);
+         Y := Single (2 * (Height + level + 2));
+         Z := Single (2 * Row + 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         Z := Single (2 * Row - 1);
+         aBatch.Points.Append ((X, Y, Z));
+         aBatch.Points.Append ((X, Y, Z));
+
+         Z := Single (2 * Row + 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         Y := Single (2 * (Height + level + 2));
+         aBatch.Points.Append ((X, Y, Z));
+
+         for index in 1 .. 6 loop
+            aBatch.Normals.Append ((0.0, 0.0, -1.0));
+         end loop;
+         --              Set_Texcoords ();
+      end loop;
+
+   end East_Check;
+
+   --  -------------------------------------------------------------------------
+
    procedure Free_Batch_Data (Batch_Index : Positive) is
       theBatch : Batch_Meta := Batches.Element (Batch_Index);
    begin
@@ -171,11 +234,12 @@ package body Batch_Manager is
       Batches_Data.Replace_Element  (Batch_Index, theBatch);
    end Free_Batch_Data;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    procedure Generate_Points (aBatch : in out Batch_Meta;
                               Tiles  : Tiles_Manager.Tile_List) is
       use Tiles_Manager;
+      use GL_Utils;
       aTile     : Tile_Data;
       Row       : Int;
       Column    : Int;
@@ -231,7 +295,23 @@ package body Batch_Manager is
             if Row < Max_Rows then
                North_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
             end if;
+            if Row > 0 then
+               South_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
+            end if;
+            if Column < Max_Cols then
+               West_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
+            end if;
+            if Column > 0 then
+               East_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
+            end if;
          end loop;
+
+         Bind_VAO (aBatch.VAO);
+         aBatch.Points_VBO :=
+              Create_3D_VBO (aBatch.Points);
+         GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
+         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
       end if;
 
    end Generate_Points;
@@ -249,7 +329,7 @@ package body Batch_Manager is
       return Result;
    end Get_Batch_Index;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    procedure North_Check (aBatch     : in out Batch_Meta;
                           Row, Col   : Int; Height : Integer;
@@ -296,7 +376,7 @@ package body Batch_Manager is
 
    end North_Check;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_List;
                                Batch_Index : Positive) is
@@ -441,7 +521,6 @@ package body Batch_Manager is
       end if;  --  not Tiles not empty
 
       theBatch.VAO.Initialize_Id;
-
       theBatch.Ramp_VAO.Initialize_Id;
       theBatch.Water_VAO.Initialize_Id;
 
@@ -450,14 +529,67 @@ package body Batch_Manager is
 
    end Regenerate_Batch;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
+
+   procedure South_Check (aBatch     : in out Batch_Meta;
+                          Row, Col   : Int; Height : Integer;
+                          Tiles      : Tiles_Manager.Tile_List;
+                          Tile_Index : positive) is
+      use Tiles_Manager;
+      N_Index  : constant Integer := Tile_Index + Integer (Max_Cols);
+      aTile    :  Tile_Data;
+      N_Height : Integer;
+      Diff     : Integer;
+      X        : Single;
+      Y        : Single;
+      Z        : Single;
+   begin
+      aTile := Tiles.Element (N_Index);
+      N_Height := aTile.Height;
+      if aTile.Tile_Type = '~' then
+         N_Height := N_Height - 1;
+      end if;
+      Diff := Height - N_Height;
+      --  remove bit behind stairs from construction list
+      if aTile.Tile_Type = '/' and then aTile.Facing = 'S' then
+         Diff := Diff - 1;
+      end if;
+
+      for level in -Diff .. -1 loop
+         X := Single (2 * Col - 1);
+         Y := Single (2 * (Height + level + 2));
+         Z := Single (2 * Row - 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         X := Single (2 * Col + 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         Y := Single (2 * (Height + level));
+         aBatch.Points.Append ((X, Y, Z));
+         aBatch.Points.Append ((X, Y, Z));
+
+
+         X := Single (2 * Col - 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         Y := Single (2 * (Height + level + 2));
+         aBatch.Points.Append ((X, Y, Z));
+         for index in 1 .. 6 loop
+            aBatch.Normals.Append ((0.0, 0.0, -1.0));
+         end loop;
+         --              Set_Texcoords ();
+      end loop;
+
+   end South_Check;
+
+   --  -------------------------------------------------------------------------
 
    function Static_Lights return Static_Light_Vector is
    begin
         return Static_Lights_List;
    end Static_Lights;
 
-   --  ----------------------------------------------------------------------------
+   --  --------------------------------------------------------------------------
 
    procedure Update_Batch (Index : Positive; Data : Batch_Meta) is
    begin
@@ -465,5 +597,55 @@ package body Batch_Manager is
    end Update_Batch;
 
    --  ----------------------------------------------------------------------------
+
+   procedure West_Check (aBatch     : in out Batch_Meta;
+                         Row, Col   : Int; Height : Integer;
+                          Tiles      : Tiles_Manager.Tile_List;
+                          Tile_Index : positive) is
+      use Tiles_Manager;
+      N_Index  : constant Integer := Tile_Index + Integer (Max_Cols);
+      aTile    :  Tile_Data;
+      N_Height : Integer;
+      Diff     : Integer;
+      X        : Single;
+      Y        : Single;
+      Z        : Single;
+   begin
+      aTile := Tiles.Element (N_Index);
+      N_Height := aTile.Height;
+      if aTile.Tile_Type = '~' then
+         N_Height := N_Height - 1;
+      end if;
+      Diff := Height - N_Height;
+      --  remove bit behind stairs from construction list
+      if aTile.Tile_Type = '/' and then aTile.Facing = 'W' then
+         Diff := Diff - 1;
+      end if;
+
+      for level in -Diff .. -1 loop
+         X := Single (2 * Col + 1);
+         Y := Single (2 * (Height + level + 2));
+         Z := Single (2 * Row - 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         Z := Single (2 * Row + 1);
+         aBatch.Points.Append ((X, Y, Z));
+         aBatch.Points.Append ((X, Y, Z));
+
+         Z := Single (2 * Row - 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         Y := Single (2 * (Height + level + 2));
+         aBatch.Points.Append ((X, Y, Z));
+
+         for index in 1 .. 6 loop
+            aBatch.Normals.Append ((0.0, 0.0, -1.0));
+         end loop;
+         --              Set_Texcoords ();
+      end loop;
+
+   end West_Check;
+
+   --  -------------------------------------------------------------------------
 
 end Batch_Manager;
