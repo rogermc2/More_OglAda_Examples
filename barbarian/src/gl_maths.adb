@@ -172,4 +172,55 @@ package body GL_Maths is
 
    --  -----------------------------------------------------------
 
+   function To_Vector2_Array (Vec : Vec2_Package.List)
+                              return Vector2_Array is
+      use GL.Types;
+      use Vec2_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Vector2_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector2_Array;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Vector3_Array (Vec : Vec3_Package.List)
+                              return Vector3_Array is
+      use GL.Types;
+      use Vec3_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Vector3_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector3_Array;
+
+   --  ------------------------------------------------------------------------
+
+   function To_Vector4_Array (Vec : Vec4_Package.List)
+                              return Vector4_Array is
+      use GL.Types;
+      use Vec4_Package;
+      Curs      : Cursor := Vec.First;
+      Vec_Array : Vector4_Array (1 .. Int (Vec.Length));
+   begin
+      for index in Int range Vec_Array'Range loop
+         Vec_Array (index) := Vec (Curs);
+         Next  (Curs);
+      end loop;
+      return Vec_Array;
+
+   end To_Vector4_Array;
+
+   --  ------------------------------------------------------------------------
+
 end GL_Maths;

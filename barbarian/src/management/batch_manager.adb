@@ -3,6 +3,7 @@ with GL.Attributes;
 with GL.Pixels;
 
 with Game_Utils;
+with GL_Maths;
 with GL_Utils;
 with Settings;
 with Shader_Attributes;
@@ -239,7 +240,7 @@ package body Batch_Manager is
    procedure Generate_Points (aBatch : in out Batch_Meta;
                               Tiles  : Tiles_Manager.Tile_List) is
       use Tiles_Manager;
-      use GL_Utils;
+      use GL_Maths;
       aTile     : Tile_Data;
       Row       : Int;
       Column    : Int;
@@ -306,9 +307,9 @@ package body Batch_Manager is
             end if;
          end loop;
 
-         Bind_VAO (aBatch.VAO);
-         aBatch.Points_VBO :=
-              Create_3D_VBO (aBatch.Points);
+         GL_Utils.Bind_VAO (aBatch.VAO);
+         aBatch.Points_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Points));
          GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);

@@ -59,5 +59,10 @@ package GL_Maths is
    function To_Real_Matrix4 (GL_Matrix : Singles.Matrix4) return Single_Matrix;
    function To_Real_Vector3 (GL_Vec : Singles.Vector3) return Single_Vector;
    function To_Real_Vector4 (GL_Vec : Singles.Vector4) return Single_Vector;
-
+   function To_Vector2_Array (Vec : Vec2_Package.List)
+                              return Vector2_Array;
+   function To_Vector3_Array (Vec : Vec3_Package.List)
+                              return Vector3_Array;
+   function To_Vector4_Array (Vec : Vec4_Package.List)
+                              return Vector4_Array;
 end GL_Maths;
