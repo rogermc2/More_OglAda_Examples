@@ -536,9 +536,24 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
     procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta) is
+    use GL_Maths.Vec3_Package;
+        Curs : Cursor := aBatch.Points.First;
+        aPoint : Singles.Vector3;
     begin
          aBatch.AABB_Mins := (100000.0, 100000.0, 100000.0);
          aBatch.AABB_Maxs := (-100000.0, -100000.0, -100000.0);
+         while Has_Element (Curs) loop
+            aPoint := Element (Curs);
+            for index in Singles.Vector3'Range loop
+                if aPoint (index) < aBatch.AABB_Mins (index) then
+                    aBatch.AABB_Mins (index) := aPoint (index);
+                elsif
+                  aPoint (index) > aBatch.AABB_Maxs (GL.X) then
+                    aBatch.AABB_Maxs (index) := aPoint (index);
+                end if;
+            end loop;
+            Next (Curs);
+         end loop;
 
     end Set_AABB_Dimensions;
 
