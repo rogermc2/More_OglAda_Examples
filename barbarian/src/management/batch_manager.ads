@@ -26,7 +26,7 @@ package Batch_Manager is
       Water_Points         : GL_Maths.Vec3_List;
       Normals              : GL_Maths.Vec3_List;
       Ramp_Normals         : GL_Maths.Vec3_List;
-      Ramp_Smooth_Normals  : GL_Maths.Singles_List;
+      Ramp_Smooth_Normals  : GL_Maths.Vec3_List;
       Tex_Coords           : GL_Maths.Vec2_List;
       Ramp_Tex_Coords      : GL_Maths.Vec2_List;
       VAO                  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -34,6 +34,7 @@ package Batch_Manager is
       Water_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Points_VBO           : GL.Objects.Buffers.Buffer;
       Normals_VBO          : GL.Objects.Buffers.Buffer;
+      Ramp_VBO             : GL.Objects.Buffers.Buffer;
       Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
       Static_Light_Indices : Tile_Indices_List;
    end record;
