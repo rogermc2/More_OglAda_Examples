@@ -315,7 +315,6 @@ package body Batch_Manager is
                 end if;
             end loop;
 
-            Put_Line ("Batch_Manager.Generate_Points binding");
             GL_Utils.Bind_VAO (aBatch.VAO);
             aBatch.Points_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Points));
@@ -643,29 +642,20 @@ package body Batch_Manager is
                       Int'Image (Row) & ", " & Int'Image (Column);
                 end if;
 
-                Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Index, row, col " &
-                                       Integer'Image (Tile_Index) & ", " &
-                                       Int'Image (Row) & ", " &
-                                       Int'Image (Column));
+--                  Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Index, row, col " &
+--                                         Integer'Image (Tile_Index) & ", " &
+--                                         Int'Image (Row) & ", " &
+--                                         Int'Image (Column));
                 Height := aTile.Height;
                 if aTile.Tile_Type = '~' then
                     Height := Height - 1;
-                    --                 theBatch.Water_Point_Count := theBatch.Water_Point_Count +
-                    --                   Water_Mesh_Point_Count;
                     Total_Points := Total_Points + Water_Mesh_Point_Count;
-                    --              elsif aTile.Tile_Type = '/' then
-                    --                 theBatch.Ramp_Point_Count := theBatch.Ramp_Point_Count +
-                    --                   Ramp_Mesh_Point_Count;
                 else
-                    --  Add floor count
-                    --                 theBatch.Point_Count := theBatch.Point_Count + 6;
                     Total_Points := Total_Points + 6;
                 end if;
                 --  Sides count
                 if Row > 1 then
                     N_Index := Tile_Index - Integer (Max_Cols) + 1;
-                    --                      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch sides count: Row, N_Index"
-                    --                                            & Int'Image (Row) & ", " & Integer'Image (N_Index));
                     N_Tile := Tiles.Element (N_Index);
                     N_Height := N_Tile.Height;
                     if N_Tile.Tile_Type = '~' then
@@ -719,8 +709,6 @@ package body Batch_Manager is
                     N_Index := Tile_Index + 1;
                     N_Tile := Tiles.Element (N_Index);
                     N_Height := N_Tile.Height;
-                    --                      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch sides count: Row, N_Index 3"
-                    --                                            & Int'Image (Row) & ", " & Integer'Image (N_Index));
                     if N_Tile.Tile_Type = '~' then
                         N_Height := N_Height - 1;
                     end if;
