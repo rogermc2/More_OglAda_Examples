@@ -304,13 +304,13 @@ package body Batch_Manager is
                 if Row < Max_Rows then
                     North_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
                 end if;
-                if Row > 0 then
+                if Row > 1 then
                     South_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
                 end if;
                 if Column < Max_Cols then
                     West_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
                 end if;
-                if Column > 0 then
+                if Column > 1 then
                     East_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
                 end if;
             end loop;
@@ -744,9 +744,12 @@ package body Batch_Manager is
           (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
         theBatch.Tex_Coords.Clear;
+        Put_Line ("Batch_Manager.Regenerate_Batch Tex set up");
 
         Generate_Ramps (theBatch, Tiles);
+        Put_Line ("Batch_Manager.Regenerate_Batch Ramps generated");
         Generate_Water (theBatch, Tiles);
+        Put_Line ("Batch_Manager.Regenerate_Batch Water generated");
 
         Batches_Data.Replace_Element (Batch_Index, theBatch);
 
@@ -769,8 +772,8 @@ package body Batch_Manager is
                            Tiles      : Tiles_Manager.Tile_List;
                            Tile_Index : positive) is
         use Tiles_Manager;
-        N_Index  : constant Integer :=
-                     (Tile_Index - 1) * Integer (Max_Cols) + 1;
+        --  On entry, Row > 1; therefore Tile_Index > Max_Cols
+        N_Index  : constant Integer := Tile_Index - Integer (Max_Cols) + 1;
         aTile    :  Tile_Data;
         N_Height : Integer;
         Diff     : Integer;
