@@ -138,7 +138,7 @@ package body Tiles_Manager is
         Game_Utils.Game_Log ("Add_Tiles_To_Batches Batches.Last_Index " &
                               Integer'Image (Batches.Last_Index));
       for index in Batches.First_Index .. Batches.Last_Index loop
-         Regenerate_Batch (Tiles, index);
+        Regenerate_Batch (Tiles, index);
         Game_Utils.Game_Log ("Add_Tiles_To_Batches Batch " &
                               Integer'Image (index) & " regenerated");
       end loop;

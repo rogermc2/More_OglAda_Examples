@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with GL.Attributes;
 with GL.Pixels;
 
@@ -184,8 +186,8 @@ package body Batch_Manager is
                           Tiles      : Tiles_Manager.Tile_List;
                           Tile_Index : positive) is
         use Tiles_Manager;
-        N_Index  : constant Integer := Tile_Index + Integer (Max_Cols);
-        aTile    :  Tile_Data;
+        N_Index  : constant Integer := Tile_Index;
+        aTile    : Tile_Data;
         N_Height : Integer;
         Diff     : Integer;
         X        : Single;
@@ -264,6 +266,8 @@ package body Batch_Manager is
     begin
         if not Is_Empty (Tiles) then
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
+--                  Game_Utils.Game_Log ("Batch_Manager.Generate_Points Tile_Index"
+--                                       & Integer'Image (Tile_Index));
                 aTile := Tiles.Element (Tile_Index);
                 Row := Int (Tile_Index) / Max_Cols + 1;
                 Column := Int (Tile_Index) - Row * Max_Cols;
@@ -282,6 +286,7 @@ package body Batch_Manager is
                     aBatch.Points.Append ((X + 1.0, Y, Z + 1.0));
                     aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));
                 end if;
+
                 for index in 1 .. 6 loop
                     aBatch.Normals.Append ((0.0, 1.0, 0.0));
                 end loop;
@@ -310,6 +315,7 @@ package body Batch_Manager is
                 end if;
             end loop;
 
+            Put_Line ("Batch_Manager.Generate_Points binding");
             GL_Utils.Bind_VAO (aBatch.VAO);
             aBatch.Points_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Points));
@@ -378,19 +384,19 @@ package body Batch_Manager is
                     Curs_N := aBatch.Normals.First;
                     Curs_S := aBatch.Ramp_Smooth_Normals.First;
                     while Has_Element (Curs_P) loop
-                       aPoint := Element (Curs_P);
-                       aNormal := Element (Curs_N);
-                       aSmooth_Normal := Element (Curs_S);
-                       VPF := Model_Matrix * Singles.To_Vector4 (aPoint);
-                       VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
-                       Smooth_VNF := Model_Matrix * Singles.To_Vector4 (aSmooth_Normal);
+                        aPoint := Element (Curs_P);
+                        aNormal := Element (Curs_N);
+                        aSmooth_Normal := Element (Curs_S);
+                        VPF := Model_Matrix * Singles.To_Vector4 (aPoint);
+                        VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
+                        Smooth_VNF := Model_Matrix * Singles.To_Vector4 (aSmooth_Normal);
 
-                       aBatch.Ramp_Points.Replace_Element (Curs_P, To_Vector3 (VPF));
-                       aBatch.Ramp_Points.Replace_Element (Curs_N, To_Vector3 (VNF));
-                       aBatch.Ramp_Points.Replace_Element (Curs_S, To_Vector3 (Smooth_VNF));
-                       Next (Curs_N);
-                       Next (Curs_P);
-                       Next (Curs_S);
+                        aBatch.Ramp_Points.Replace_Element (Curs_P, To_Vector3 (VPF));
+                        aBatch.Ramp_Points.Replace_Element (Curs_N, To_Vector3 (VNF));
+                        aBatch.Ramp_Points.Replace_Element (Curs_S, To_Vector3 (Smooth_VNF));
+                        Next (Curs_N);
+                        Next (Curs_P);
+                        Next (Curs_S);
                     end loop;
                 end if;
             end loop;
@@ -475,10 +481,10 @@ package body Batch_Manager is
                       ((Single (2 * Column), Single (2 * Height), Single (2 * Row)));
                     Curs_P := aBatch.Water_Points.First;
                     while Has_Element (Curs_P) loop
-                       aWater_Point := Element (Curs_P);
-                       VPF := Model_Matrix * Singles.To_Vector4 (aWater_Point);
-                       aBatch.Water_Points.Replace_Element (Curs_P, To_Vector3 (VPF));
-                       Next (Curs_P);
+                        aWater_Point := Element (Curs_P);
+                        VPF := Model_Matrix * Singles.To_Vector4 (aWater_Point);
+                        aBatch.Water_Points.Replace_Element (Curs_P, To_Vector3 (VPF));
+                        Next (Curs_P);
                     end loop;  --  end for each Water_Point
                 end if;
             end loop;  --  end for each Tile
@@ -538,7 +544,7 @@ package body Batch_Manager is
                            Tiles      : Tiles_Manager.Tile_List;
                            Tile_Index : positive) is
         use Tiles_Manager;
-        N_Index  : constant Integer := Tile_Index + Integer (Max_Cols);
+        N_Index  : constant Integer := Tile_Index - 1 + Integer (Max_Cols);
         aTile    :  Tile_Data;
         N_Height : Integer;
         Diff     : Integer;
@@ -612,22 +618,22 @@ package body Batch_Manager is
             raise Batch_Manager_Exception with
               "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
         else
-            --           Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Max_Cols " &
-            --                                  Int'Image (Max_Cols));
+--              Put_Line ("Batch_Manager.Regenerate_Batch Max_Cols " &
+--                          Int'Image (Max_Cols));
+--              Put_Line ("Batch_Manager.Regenerate_Batch Length " &
+--                          Integer'Image (Integer (Batch_Tiles.Length)));
             while Has_Element (Curs) loop
                 Tile_Index  := Element (Curs);
                 aTile := Tiles.Element (Tile_Index);
                 Row := (Int (Tile_Index) + Max_Cols - 1) / Max_Cols;
+--                  Put_Line ("Batch_Manager.Regenerate_Batch Tile_Index " &
+--                              Integer'Image (Tile_Index));
                 if Int (Tile_Index) <= Max_Cols then
                     Column := Int (Tile_Index);
                 else
                     Column := Int (Tile_Index - 1) mod (Max_Cols) + 1;
                 end if;
 
-                --              Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Index, row, col " &
-                --                                     Integer'Image (Tile_Index) & ", " &
-                --                                     Int'Image (Row) & ", " &
-                --                                     Int'Image (Column));
                 if Row < 1 or Row > Max_Rows or
                   Column < 1 or Column > Max_Cols then
                     raise Batch_Manager_Exception with
@@ -637,6 +643,10 @@ package body Batch_Manager is
                       Int'Image (Row) & ", " & Int'Image (Column);
                 end if;
 
+                Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Index, row, col " &
+                                       Integer'Image (Tile_Index) & ", " &
+                                       Int'Image (Row) & ", " &
+                                       Int'Image (Column));
                 Height := aTile.Height;
                 if aTile.Tile_Type = '~' then
                     Height := Height - 1;
@@ -654,8 +664,8 @@ package body Batch_Manager is
                 --  Sides count
                 if Row > 1 then
                     N_Index := Tile_Index - Integer (Max_Cols) + 1;
-                    --                 Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch sides count: Row, N_Index"
-                    --                                     & Int'Image (Row) & ", " & Integer'Image (N_Index));
+                    --                      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch sides count: Row, N_Index"
+                    --                                            & Int'Image (Row) & ", " & Integer'Image (N_Index));
                     N_Tile := Tiles.Element (N_Index);
                     N_Height := N_Tile.Height;
                     if N_Tile.Tile_Type = '~' then
@@ -675,6 +685,8 @@ package body Batch_Manager is
                     N_Index := Tile_Index + Integer (Max_Cols);
                     N_Tile := Tiles.Element (N_Index);
                     N_Height := N_Tile.Height;
+                    --                      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch sides count: Row, N_Index 2"
+                    --                                            & Int'Image (Row) & ", " & Integer'Image (N_Index));
                     if N_Tile.Tile_Type = '~' then
                         N_Height := N_Height - 1;
                     end if;
@@ -707,6 +719,8 @@ package body Batch_Manager is
                     N_Index := Tile_Index + 1;
                     N_Tile := Tiles.Element (N_Index);
                     N_Height := N_Tile.Height;
+                    --                      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch sides count: Row, N_Index 3"
+                    --                                            & Int'Image (Row) & ", " & Integer'Image (N_Index));
                     if N_Tile.Tile_Type = '~' then
                         N_Height := N_Height - 1;
                     end if;
@@ -727,6 +741,7 @@ package body Batch_Manager is
         theBatch.Water_VAO.Initialize_Id;
 
         Generate_Points (theBatch, Tiles);
+        Put_Line ("Batch_Manager.Regenerate_Batch Points generated");
 
         theBatch.Normals_VBO := GL_Utils.Create_3D_VBO
           (GL_Maths.To_Vector3_Array (theBatch.Normals));
@@ -766,7 +781,8 @@ package body Batch_Manager is
                            Tiles      : Tiles_Manager.Tile_List;
                            Tile_Index : positive) is
         use Tiles_Manager;
-        N_Index  : constant Integer := Tile_Index + Integer (Max_Cols);
+        N_Index  : constant Integer :=
+                     (Tile_Index - 1) * Integer (Max_Cols) + 1;
         aTile    :  Tile_Data;
         N_Height : Integer;
         Diff     : Integer;
@@ -774,41 +790,41 @@ package body Batch_Manager is
         Y        : Single;
         Z        : Single;
     begin
-        aTile := Tiles.Element (N_Index);
-        N_Height := aTile.Height;
-        if aTile.Tile_Type = '~' then
-            N_Height := N_Height - 1;
-        end if;
-        Diff := Height - N_Height;
-        --  remove bit behind stairs from construction list
-        if aTile.Tile_Type = '/' and then aTile.Facing = 'S' then
-            Diff := Diff - 1;
-        end if;
+        if N_Index <= Tiles.Last_Index then
+            aTile := Tiles.Element (N_Index);
+            N_Height := aTile.Height;
+            if aTile.Tile_Type = '~' then
+                N_Height := N_Height - 1;
+            end if;
+            Diff := Height - N_Height;
+            --  remove bit behind stairs from construction list
+            if aTile.Tile_Type = '/' and then aTile.Facing = 'S' then
+                Diff := Diff - 1;
+            end if;
 
-        for level in -Diff .. -1 loop
-            X := Single (2 * Col - 1);
-            Y := Single (2 * (Height + level + 2));
-            Z := Single (2 * Row - 1);
-            aBatch.Points.Append ((X, Y, Z));
+            for level in -Diff .. -1 loop
+                X := Single (2 * Col - 1);
+                Y := Single (2 * (Height + level + 2));
+                Z := Single (2 * Row - 1);
+                aBatch.Points.Append ((X, Y, Z));
 
-            X := Single (2 * Col + 1);
-            aBatch.Points.Append ((X, Y, Z));
+                X := Single (2 * Col + 1);
+                aBatch.Points.Append ((X, Y, Z));
 
-            Y := Single (2 * (Height + level));
-            aBatch.Points.Append ((X, Y, Z));
-            aBatch.Points.Append ((X, Y, Z));
+                Y := Single (2 * (Height + level));
+                aBatch.Points.Append ((X, Y, Z));
+                aBatch.Points.Append ((X, Y, Z));
 
+                X := Single (2 * Col - 1);
+                aBatch.Points.Append ((X, Y, Z));
 
-            X := Single (2 * Col - 1);
-            aBatch.Points.Append ((X, Y, Z));
-
-            Y := Single (2 * (Height + level + 2));
-            aBatch.Points.Append ((X, Y, Z));
-            for index in 1 .. 6 loop
-                aBatch.Normals.Append ((0.0, 0.0, -1.0));
+                Y := Single (2 * (Height + level + 2));
+                aBatch.Points.Append ((X, Y, Z));
+                for index in 1 .. 6 loop
+                    aBatch.Normals.Append ((0.0, 0.0, -1.0));
+                end loop;
             end loop;
-            --              Set_Texcoords ();
-        end loop;
+        end if;
 
     end South_Check;
 
@@ -856,7 +872,7 @@ package body Batch_Manager is
                           Tiles      : Tiles_Manager.Tile_List;
                           Tile_Index : positive) is
         use Tiles_Manager;
-        N_Index  : constant Integer := Tile_Index + Integer (Max_Cols);
+        N_Index  : constant Integer := Tile_Index + 1;
         aTile    :  Tile_Data;
         N_Height : Integer;
         Diff     : Integer;
@@ -864,38 +880,38 @@ package body Batch_Manager is
         Y        : Single;
         Z        : Single;
     begin
-        aTile := Tiles.Element (N_Index);
-        N_Height := aTile.Height;
-        if aTile.Tile_Type = '~' then
-            N_Height := N_Height - 1;
+        if N_Index <= Tiles.Last_Index then
+            aTile := Tiles.Element (N_Index);
+            N_Height := aTile.Height;
+            if aTile.Tile_Type = '~' then
+                N_Height := N_Height - 1;
+            end if;
+            Diff := Height - N_Height;
+            --  remove bit behind stairs from construction list
+            if aTile.Tile_Type = '/' and then aTile.Facing = 'W' then
+                Diff := Diff - 1;
+            end if;
+
+            for level in -Diff .. -1 loop
+                X := Single (2 * Col + 1);
+                Y := Single (2 * (Height + level + 2));
+                Z := Single (2 * Row - 1);
+                aBatch.Points.Append ((X, Y, Z));
+
+                Z := Single (2 * Row + 1);
+                aBatch.Points.Append ((X, Y, Z));
+                aBatch.Points.Append ((X, Y, Z));
+
+                Z := Single (2 * Row - 1);
+                aBatch.Points.Append ((X, Y, Z));
+
+                Y := Single (2 * (Height + level + 2));
+                aBatch.Points.Append ((X, Y, Z));
+
+                for index in 1 .. 6 loop
+                    aBatch.Normals.Append ((0.0, 0.0, -1.0));
+                end loop;            end loop;
         end if;
-        Diff := Height - N_Height;
-        --  remove bit behind stairs from construction list
-        if aTile.Tile_Type = '/' and then aTile.Facing = 'W' then
-            Diff := Diff - 1;
-        end if;
-
-        for level in -Diff .. -1 loop
-            X := Single (2 * Col + 1);
-            Y := Single (2 * (Height + level + 2));
-            Z := Single (2 * Row - 1);
-            aBatch.Points.Append ((X, Y, Z));
-
-            Z := Single (2 * Row + 1);
-            aBatch.Points.Append ((X, Y, Z));
-            aBatch.Points.Append ((X, Y, Z));
-
-            Z := Single (2 * Row - 1);
-            aBatch.Points.Append ((X, Y, Z));
-
-            Y := Single (2 * (Height + level + 2));
-            aBatch.Points.Append ((X, Y, Z));
-
-            for index in 1 .. 6 loop
-                aBatch.Normals.Append ((0.0, 0.0, -1.0));
-            end loop;
-            --              Set_Texcoords ();
-        end loop;
 
     end West_Check;
 
