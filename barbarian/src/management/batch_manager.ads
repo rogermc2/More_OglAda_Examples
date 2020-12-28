@@ -35,6 +35,9 @@ package Batch_Manager is
       Points_VBO           : GL.Objects.Buffers.Buffer;
       Normals_VBO          : GL.Objects.Buffers.Buffer;
       Ramp_VBO             : GL.Objects.Buffers.Buffer;
+      Ramp_Normals_VBO     : GL.Objects.Buffers.Buffer;
+      Ramp_Smooth_Normals_VBO : GL.Objects.Buffers.Buffer;
+      Water_VBO            : GL.Objects.Buffers.Buffer;
       Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
       Static_Light_Indices : Tile_Indices_List;
    end record;

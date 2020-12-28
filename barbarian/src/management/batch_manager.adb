@@ -29,7 +29,8 @@ package body Batch_Manager is
                            Row, Col   :   Int; Height : Integer;
                            Tiles      : Tiles_Manager.Tile_List;
                            Tile_Index : positive);
-    procedure Update_AABB_Dimensions (aBatch : in out Batch_Meta);
+    procedure Update_AABB_Dimensions (aBatch : in out Batch_Meta;
+                                      Point_List : GL_Maths.Vec3_List);
     procedure West_Check (aBatch     : in out Batch_Meta;
                           Row, Col   :   Int; Height : Integer;
                           Tiles      : Tiles_Manager.Tile_List;
@@ -315,6 +316,9 @@ package body Batch_Manager is
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+
+            Update_AABB_Dimensions  (aBatch, aBatch.Points);
+            aBatch.Points.Clear;
         end if;
 
     end Generate_Points;
@@ -334,8 +338,6 @@ package body Batch_Manager is
         Facing         : Character;
         Height         : Integer;
         Deg            : Degree;
-        Atlas_Row      : Integer;
-        Atlas_Col      : Integer;
         Model_Matrix   : Matrix4 := Identity4;
         Rot_Matrix     : Matrix4 := Identity4;
         Curs_N         : Cursor;
@@ -344,19 +346,9 @@ package body Batch_Manager is
         aNormal        : Vector3;
         aPoint         : Vector3;
         aSmooth_Normal : Vector3;
-        VPI            : Singles.Vector4;
         VPF            : Singles.Vector4;
-        VNI            : Singles.Vector4;
         VNF            : Singles.Vector4;
-        Smooth_VNI     : Singles.Vector4;
         Smooth_VNF     : Singles.Vector4;
-
-        procedure Add_Tex_Coords (S_Offset, T_Offset : Single)  is
-            S  : constant Single := (Single (Atlas_Col) + S_Offset) * Atlas_Factor;
-            T  : constant Single := (Single (Atlas_Row) + T_Offset) * Atlas_Factor;
-        begin
-            aBatch.Tex_Coords.Append ((S - ST_Offset, T - ST_Offset));
-        end Add_Tex_Coords;
 
     begin
         if not Is_Empty (Tiles) then
@@ -389,12 +381,9 @@ package body Batch_Manager is
                        aPoint := Element (Curs_P);
                        aNormal := Element (Curs_N);
                        aSmooth_Normal := Element (Curs_S);
-                       VPI := Singles.To_Vector4 (aPoint);
-                       VPF := Model_Matrix * VPI;
-                       VNI := Singles.To_Vector4 (aNormal);
-                       VNF := Model_Matrix * VNI;
-                       Smooth_VNI := Singles.To_Vector4 (aSmooth_Normal);
-                       Smooth_VNF := Model_Matrix * Smooth_VNI;
+                       VPF := Model_Matrix * Singles.To_Vector4 (aPoint);
+                       VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
+                       Smooth_VNF := Model_Matrix * Singles.To_Vector4 (aSmooth_Normal);
 
                        aBatch.Ramp_Points.Replace_Element (Curs_P, To_Vector3 (VPF));
                        aBatch.Ramp_Points.Replace_Element (Curs_N, To_Vector3 (VNF));
@@ -406,20 +395,130 @@ package body Batch_Manager is
                 end if;
             end loop;
 
-            GL_Utils.Bind_VAO (aBatch.Ramp_VAO);
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
-            Update_AABB_Dimensions  (aBatch);
+            Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
+            aBatch.Ramp_Points.Clear;
 
+            aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
+            aBatch.Ramp_Normals.Clear;
+
+            aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
+              (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_Vt, 2, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
+            aBatch.Tex_Coords.Clear;
+
+            aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Smooth_Normals));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
+            aBatch.Ramp_Smooth_Normals.Clear;
         end if;
 
     end Generate_Ramps;
 
     --  ----------------------------------------------------------------------------
+
+    procedure Generate_Water (aBatch : in out Batch_Meta;
+                              Tiles  : Tiles_Manager.Tile_List) is
+        use Singles;
+        use Maths;
+        use Tiles_Manager;
+        use GL_Maths;
+        use Vec3_Package;
+        aTile          : Tile_Data;
+        Row            : Int;
+        Column         : Int;
+        Facing         : Character;
+        Height         : Integer;
+        Deg            : Degree;
+        Model_Matrix   : Matrix4 := Identity4;
+        Rot_Matrix     : Matrix4 := Identity4;
+        Curs_P         : Cursor;
+        aWater_Point   : Vector3;
+        VPF            : Singles.Vector4;
+
+    begin
+        if not Is_Empty (Tiles) then
+            for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
+                aTile := Tiles.Element (Tile_Index);
+                Row := Int (Tile_Index) / Max_Cols + 1;
+                Column := Int (Tile_Index) - Row * Max_Cols;
+                Height := aTile.Height;
+                Facing := aTile.Facing;
+
+                case Facing is
+                when 'N' => Deg := Degree (0);
+                when 'W' => Deg := Degree (90);
+                when 'S' => Deg := Degree (180);
+                when 'E' => Deg := Degree (270);
+                when others =>
+                    raise Batch_Manager_Exception with
+                      "Generate_Ramps, invalid Facing value";
+                end case;
+
+                if aTile.Tile_Type = '~' then
+                    --  Put each vertex point into world space
+                    Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
+                    Model_Matrix := Translation_Matrix
+                      ((Single (2 * Column), Single (2 * Height), Single (2 * Row)));
+                    Curs_P := aBatch.Water_Points.First;
+                    while Has_Element (Curs_P) loop
+                       aWater_Point := Element (Curs_P);
+                       VPF := Model_Matrix * Singles.To_Vector4 (aWater_Point);
+                       aBatch.Water_Points.Replace_Element (Curs_P, To_Vector3 (VPF));
+                       Next (Curs_P);
+                    end loop;  --  end for each Water_Point
+                end if;
+            end loop;  --  end for each Tile
+
+            GL_Utils.Bind_VAO (aBatch.Water_VAO);
+            aBatch.Water_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Water_Points));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+
+            Update_AABB_Dimensions  (aBatch, aBatch.Water_Points);
+            aBatch.Water_Points.Clear;
+
+            aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
+            aBatch.Ramp_Normals.Clear;
+
+            aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
+              (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_Vt, 2, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
+            aBatch.Tex_Coords.Clear;
+
+            aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Smooth_Normals));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
+            aBatch.Ramp_Smooth_Normals.Clear;
+
+        end if;
+
+    end Generate_Water;
+
+    --  -------------------------------------------------------------------------
 
     function Get_Batch_Index (Column, Row : Int) return Integer is
         Result : Integer := -1;
@@ -628,22 +727,23 @@ package body Batch_Manager is
         theBatch.Water_VAO.Initialize_Id;
 
         Generate_Points (theBatch, Tiles);
-        Set_AABB_Dimensions (theBatch);
-        theBatch.Points.Clear;
 
-        theBatch.Normals_VBO :=
-          GL_Utils.Create_3D_VBO (GL_Maths.To_Vector3_Array (theBatch.Normals));
+        theBatch.Normals_VBO := GL_Utils.Create_3D_VBO
+          (GL_Maths.To_Vector3_Array (theBatch.Normals));
         GL.Attributes.Set_Vertex_Attrib_Pointer
           (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
         theBatch.Normals.Clear;
 
-        theBatch.Tex_Coords_VBO :=
-          GL_Utils.Create_2D_VBO (GL_Maths.To_Vector2_Array (theBatch.Tex_Coords));
+        theBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
+          (GL_Maths.To_Vector2_Array (theBatch.Tex_Coords));
         GL.Attributes.Set_Vertex_Attrib_Pointer
           (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
         theBatch.Tex_Coords.Clear;
+
+        Generate_Ramps (theBatch, Tiles);
+        Generate_Water (theBatch, Tiles);
 
         Batches_Data.Replace_Element (Batch_Index, theBatch);
 
@@ -652,13 +752,10 @@ package body Batch_Manager is
     --  -------------------------------------------------------------------------
 
     procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta) is
-        use GL_Maths.Vec3_Package;
-        Curs   : Cursor := aBatch.Points.First;
-        aPoint : Singles.Vector3;
     begin
         aBatch.AABB_Mins := (100000.0, 100000.0, 100000.0);
         aBatch.AABB_Maxs := (-100000.0, -100000.0, -100000.0);
-        Update_AABB_Dimensions  (aBatch);
+        Update_AABB_Dimensions  (aBatch, aBatch.Points);
 
     end Set_AABB_Dimensions;
 
@@ -724,9 +821,10 @@ package body Batch_Manager is
 
     --  --------------------------------------------------------------------------
 
-    procedure Update_AABB_Dimensions (aBatch : in out Batch_Meta) is
+    procedure Update_AABB_Dimensions (aBatch : in out Batch_Meta;
+                                      Point_List : GL_Maths.Vec3_List) is
         use GL_Maths.Vec3_Package;
-        Curs   : Cursor := aBatch.Points.First;
+        Curs   : Cursor := Point_List.First;
         aPoint : Singles.Vector3;
     begin
         while Has_Element (Curs) loop
