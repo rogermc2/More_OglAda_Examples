@@ -31,15 +31,6 @@ package body Manifold is
 
    Manifold_Program         : GL.Objects.Programs.Program;
    Water_Program            : GL.Objects.Programs.Program;
-   Ramp_Mesh_Points         : GL_Maths.Vec3_List;
-   Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
-   Ramp_Mesh_Smooth_Normals : GL_Maths.Vec3_List;
-   Ramp_Mesh_Texcoords      : GL_Maths.Vec2_List;
-   Ramp_Mesh_Point_Count    : Integer := 0;
-   Water_Mesh_Points        : GL_Maths.Vec3_List;
-   Water_Mesh_Normals       : GL_Maths.Vec3_List;
-   Water_Mesh_Texcoords     : GL_Maths.Vec2_List;
-   Water_Mesh_Point_Count   : Integer := 0;
    Manifold_Dyn_Light_Dirty : Boolean := True;
    Manifold_Dyn_Light_Pos   : constant Singles.Vector3 := Maths.Vec3_0;
    Manifold_Dyn_Light_Diff  : constant Singles.Vector3 := Maths.Vec3_0;
@@ -362,18 +353,18 @@ package body Manifold is
       Game_Utils.Game_Log ("Manifold shaders initialized.");
       Free_Manifold_Mesh_Data;
       if not Mesh_Loader.Load_Mesh_Data_Only
-        ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
-         Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
+        ("src/meshes/ramp_may_2014.apg", Batch_Manager.Ramp_Mesh_Points,
+         Batch_Manager.Ramp_Mesh_Texcoords, Batch_Manager.Ramp_Mesh_Normals) then
          raise Manifold_Exception with
            "Manifold.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_may_2014.apg";
       end if;
       Game_Utils.Game_Log ("Manifold.Init error loaded src/meshes/ramp_may_2014.apg"
-      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length)));
+      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Batch_Manager.Ramp_Mesh_Points.Length)));
 
       if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                               Points, Texcoords,
-                                              Ramp_Mesh_Smooth_Normals) then
+                                              Batch_Manager.Ramp_Mesh_Smooth_Normals) then
          raise Manifold_Exception with
            "Manifold.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_smooth.apg";
@@ -381,8 +372,8 @@ package body Manifold is
       Game_Utils.Game_Log ("Manifold.Init ramp_smooth.apg loaded.");
 
       if not Mesh_Loader.Load_Mesh_Data_Only
-        ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
-         Water_Mesh_Normals) then
+        ("src/meshes/water.apg", Batch_Manager.Water_Mesh_Points, Batch_Manager.Water_Mesh_Texcoords,
+         Batch_Manager.Water_Mesh_Normals) then
          raise Manifold_Exception with
            "Manifold.Init error loading ramp mesh data from file "
            & "src/meshes/water.apg";

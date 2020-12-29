@@ -383,9 +383,9 @@ package body Batch_Manager is
                     Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
                     Model_Matrix := Translation_Matrix
                       ((Single (2 * Column), Single (2 * Height), Single (2 * Row)));
-                    Curs_P := aBatch.Ramp_Points.First;
-                    Curs_N := aBatch.Normals.First;
-                    Curs_S := aBatch.Ramp_Smooth_Normals.First;
+                    Curs_P := Ramp_Mesh_Points.First;
+                    Curs_N := Ramp_Mesh_Normals.First;
+                    Curs_S := Ramp_Mesh_Smooth_Normals.First;
                     while Has_Element (Curs_P) loop
                         Put_Line ("Generate_Ramps, Curs_P");
                         aPoint := Element (Curs_P);
@@ -493,7 +493,7 @@ package body Batch_Manager is
                     Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
                     Model_Matrix := Translation_Matrix
                       ((Single (2 * Column), Single (2 * Height), Single (2 * Row)));
-                    Curs_P := aBatch.Water_Points.First;
+                    Curs_P := Water_Mesh_Points.First;
                     while Has_Element (Curs_P) loop
                         aWater_Point := Element (Curs_P);
                         VPF := Model_Matrix * Singles.To_Vector4 (aWater_Point);

@@ -58,10 +58,17 @@ package Batch_Manager is
      Ada.Containers.Vectors (Positive, Static_Light_Data);
    type Static_Light_Vector is new Static_Light_Package.Vector with null record;
 
-   Max_Cols                : Int := 0;  --  Set by map file
-   Max_Rows                : Int := 0;  --  Set by map file
-   Batches_Across         : Integer := 0;
-   Batches_Down           : Integer := 0;
+   Max_Cols                 : Int := 0;  --  Set by map file
+   Max_Rows                 : Int := 0;  --  Set by map file
+   Batches_Across           : Integer := 0;
+   Batches_Down             : Integer := 0;
+   Ramp_Mesh_Points         : GL_Maths.Vec3_List;
+   Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
+   Ramp_Mesh_Smooth_Normals : GL_Maths.Vec3_List;
+   Ramp_Mesh_Texcoords      : GL_Maths.Vec2_List;
+   Water_Mesh_Points        : GL_Maths.Vec3_List;
+   Water_Mesh_Normals       : GL_Maths.Vec3_List;
+   Water_Mesh_Texcoords     : GL_Maths.Vec2_List;
 
    Batch_Manager_Exception : Exception;
 
