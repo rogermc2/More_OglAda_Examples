@@ -7,6 +7,7 @@ with GL.Pixels;
 with Game_Utils;
 with GL_Maths;
 with GL_Utils;
+with Mesh_Loader;
 with Settings;
 with Shader_Attributes;
 
@@ -550,6 +551,62 @@ package body Batch_Manager is
         end if;
         return Result;
     end Get_Batch_Index;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Init is
+      Points       : GL_Maths.Vec3_List;
+      Texcoords    : GL_Maths.Vec2_List;
+      Points_Count : Integer := 0;
+    begin
+      Clear;
+      if not Mesh_Loader.Load_Mesh_Data_Only
+        ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
+         Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
+         raise Batch_Manager_Exception with
+           "Batch_Manager.Init error loading ramp mesh data from file "
+           & "src/meshes/ramp_may_2014.apg";
+      end if;
+      Game_Utils.Game_Log ("Batch_Manager.Init error loaded src/meshes/ramp_may_2014.apg"
+      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length)));
+
+      if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
+                                              Points, Texcoords,
+                                              Ramp_Mesh_Smooth_Normals) then
+         raise Batch_Manager_Exception with
+           "Batch_Manager.Init error loading ramp mesh data from file "
+           & "src/meshes/ramp_smooth.apg";
+      end if;
+      Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded.");
+
+      if not Mesh_Loader.Load_Mesh_Data_Only
+        ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
+         Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
+         raise Batch_Manager_Exception with
+           "Batch_Manager.Init error loading ramp mesh data from file "
+           & "src/meshes/ramp_may_2014.apg";
+      end if;
+      Game_Utils.Game_Log ("Batch_Manager.Init error loaded src/meshes/ramp_may_2014.apg"
+      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Batch_Manager.Ramp_Mesh_Points.Length)));
+
+      if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
+                                              Points, Texcoords,
+                                              Ramp_Mesh_Smooth_Normals) then
+         raise Batch_Manager_Exception with
+           "Batch_Manager.Init error loading ramp mesh data from file "
+           & "src/meshes/ramp_smooth.apg";
+      end if;
+      Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded.");
+
+      if not Mesh_Loader.Load_Mesh_Data_Only
+        ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
+        Water_Mesh_Normals) then
+         raise Batch_Manager_Exception with
+           "Batch_Manager.Init error loading ramp mesh data from file "
+           & "src/meshes/water.apg";
+      end if;
+
+    end Init;
 
     --  -------------------------------------------------------------------------
 

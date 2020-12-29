@@ -78,6 +78,7 @@ package Batch_Manager is
    procedure Add_Batch (Data : Batch_Meta);
    procedure Clear;
    function Get_Batch_Index (Column, Row : Int) return Integer;
+   procedure Init;
    function Batches return Batches_List;
    procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_List;
                                Batch_Index : Positive);
