@@ -38,9 +38,7 @@ package body Tiles_Manager is
    function Get_Tile_Level (Col, Row : Int) return Integer;
    function Is_Ramp (Col, Row : Int) return Boolean;
    function Is_Water (Col, Row : Int) return Boolean;
-   procedure Parse_Facings_By_Row (File               : File_Type;
-                                   Max_Rows, Max_Cols : Int;
-                                   Tiles              : in out Tile_List);
+   procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int);
 
    --  ------------------------------------------------------------------------
 
@@ -263,8 +261,7 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Load_Char_Rows (File  : File_Type; Load_Type : String;
-                             Tiles : in out Tile_List) is
+   procedure Load_Char_Rows (File  : File_Type; Load_Type : String) is
       use Ada.Strings;
       use Tile_Data_Package;
       Header     : constant String := Get_Line (File);
@@ -294,7 +291,8 @@ package body Tiles_Manager is
             aString : constant String := Get_Line (File);
             aChar   : Character;
          begin
-            --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
+            Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows Row " &
+                                   Int'Image (row) & ": aString " & aString);
             if aString'Length < Batch_Manager.Max_Cols then
                raise Tiles_Manager_Exception with
                  "Tiles_Manager.Load_Char_Rows: " & Load_Type &
@@ -315,6 +313,9 @@ package body Tiles_Manager is
                   aTile.Tile_Type := aChar;
                end if;
 
+--                 Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows aTile.Tile_Type: "
+--                                       & aTile.Tile_Type);
+
                if Has_Element (Tiles.To_Cursor (Tile_Index)) then
                   Tiles.Replace_Element (Tile_Index, aTile);
                else
@@ -333,8 +334,7 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Load_Int_Rows (File  : File_Type; Load_Type : String;
-                            Tiles : in out Tile_List) is
+   procedure Load_Int_Rows (File  : File_Type; Load_Type : String) is
       use Ada.Strings;
       use Tile_Data_Package;
       Header     : constant String := Get_Line (File);
@@ -494,17 +494,18 @@ package body Tiles_Manager is
         Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
 --        Batch_Split_Count := Integer (Batches_Across * Batches_Down);
 
-      Parse_Facings_By_Row (File, Max_Rows, Max_Cols, Tiles);
+      Parse_Facings_By_Row (File, Max_Rows, Max_Cols);
 
-      Load_Int_Rows (File, "textures", Tiles);
-      Load_Char_Rows (File, "types", Tiles);
-      Load_Int_Rows (File, "heights", Tiles);
+      Load_Int_Rows (File, "textures");
+      Load_Char_Rows (File, "types");
+      Load_Int_Rows (File, "heights");
 
       Load_Palette_File_Names (File);
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Palette file names: " &
                              To_String (Diff_Palette_Name)
                            & ", " & To_String (Spec_Palette_Name));
       Load_Textures (Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex, Ramp_Spec_Tex);
+
       Add_Tiles_To_Batches;
       Game_Utils.Game_Log ("Load_Tiles Batch calling Add_Dummy_Manifold_Lights");
       Add_Dummy_Manifold_Lights;
@@ -530,9 +531,7 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Parse_Facings_By_Row (File               : File_Type;
-                                   Max_Rows, Max_Cols : Int;
-                                   Tiles              : in out Tile_List) is
+   procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int) is
       use Tile_Data_Package;
       Prev_Char  : Character;
       aTile      : Tile_Data;
