@@ -18,6 +18,13 @@ package body Batch_Manager is
     Atlas_Factor           : constant Single := 0.25;
     Sets_In_Atlas_Row      : constant Integer := 4;
     ST_Offset              : constant Single := 8.0 / 2048.0;
+    Ramp_Mesh_Points         : GL_Maths.Vec3_List;
+    Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
+    Ramp_Mesh_Smooth_Normals : GL_Maths.Vec3_List;
+    Ramp_Mesh_Texcoords      : GL_Maths.Vec2_List;
+    Water_Mesh_Points        : GL_Maths.Vec3_List;
+    Water_Mesh_Normals       : GL_Maths.Vec3_List;
+    Water_Mesh_Texcoords     : GL_Maths.Vec2_List;
     Ramp_Mesh_Point_Count  : Integer := 0;
     Water_Mesh_Point_Count : Integer := 0;
     Total_Points           : Integer := 0;

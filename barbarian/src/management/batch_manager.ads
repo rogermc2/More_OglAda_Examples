@@ -62,13 +62,6 @@ package Batch_Manager is
    Max_Rows                 : Int := 0;  --  Set by map file
    Batches_Across           : Integer := 0;
    Batches_Down             : Integer := 0;
-   Ramp_Mesh_Points         : GL_Maths.Vec3_List;
-   Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
-   Ramp_Mesh_Smooth_Normals : GL_Maths.Vec3_List;
-   Ramp_Mesh_Texcoords      : GL_Maths.Vec2_List;
-   Water_Mesh_Points        : GL_Maths.Vec3_List;
-   Water_Mesh_Normals       : GL_Maths.Vec3_List;
-   Water_Mesh_Texcoords     : GL_Maths.Vec2_List;
 
    Batch_Manager_Exception : Exception;
 
