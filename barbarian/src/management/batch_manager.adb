@@ -359,8 +359,8 @@ package body Batch_Manager is
     begin
         if not Is_Empty (Tiles) then
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
-                Put_Line ("Batch_Manager.Generate_Ramps, Tile_Index" &
-                            Integer'Image (Integer (Tile_Index)));
+--                  Put_Line ("Batch_Manager.Generate_Ramps, Tile_Index" &
+--                              Integer'Image (Integer (Tile_Index)));
                 aTile := Tiles.Element (Tile_Index);
                 Row := Int (Tile_Index) / Max_Cols + 1;
                 Column := Int (Tile_Index) - Row * Max_Cols;
@@ -377,9 +377,9 @@ package body Batch_Manager is
                       "Batch_Manager.Generate_Ramps, invalid Facing value";
                 end case;
 
-                Put_Line ("Batch_Manager.Generate_Ramps, Tile_Type " &
-                            aTile.Tile_Type);
                 if aTile.Tile_Type = '/' then
+                    Put_Line ("Batch_Manager.Generate_Ramps, Tile_Type " &
+                            aTile.Tile_Type);
                     --  Put each vertex point into world space
                     Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
                     Model_Matrix := Translation_Matrix
@@ -408,8 +408,10 @@ package body Batch_Manager is
                     end loop;
                 end if;
             end loop;
+            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_VBO Ramp_Mesh_Points size: " &
+                        Integer'Image (Integer (Ramp_Mesh_Points.Length)));
 
-            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_VBO Ramp_Points size: " &
+            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_VBO aBatch.Ramp_Points size: " &
                         Integer'Image (Integer (aBatch.Ramp_Points.Length)));
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
@@ -586,8 +588,7 @@ package body Batch_Manager is
            "Batch_Manager.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_may_2014.apg";
       end if;
-      Game_Utils.Game_Log ("Batch_Manager.Init error loaded src/meshes/ramp_may_2014.apg"
-      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Batch_Manager.Ramp_Mesh_Points.Length)));
+      Game_Utils.Game_Log ("Batch_Manager.Init ramp_may_2014.apg loaded.");
 
       if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                               Points, Texcoords,
@@ -605,6 +606,7 @@ package body Batch_Manager is
            "Batch_Manager.Init error loading ramp mesh data from file "
            & "src/meshes/water.apg";
       end if;
+      Game_Utils.Game_Log ("Batch_Manager.Init water.apg loaded.");
 
     end Init;
 
