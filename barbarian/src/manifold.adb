@@ -368,8 +368,6 @@ package body Manifold is
            "Manifold.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_may_2014.apg";
       end if;
-      Game_Utils.Game_Log ("Manifold.Init ramp_may_2014.apg loaded, Ramp_Mesh_Points Size" &
-                          Integer'Image (Integer (Ramp_Mesh_Points.Length)));
 
       if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                               Points, Texcoords,

@@ -404,6 +404,11 @@ package body Mesh_Loader is
                   Point_Count := Integer'Value (aString (13 .. aString'Last));
                elsif String_Length > 9 and then aString (2 .. 10) = "vp comps " then
                   Comps  := Integer'Value (aString (11 .. aString'Last));
+                  if Comps /= 3 then
+                            raise Mesh_Loader_Exception with
+                            "Mesh_Loader.Loaded_Mesh_Data_Only, invalid point vector dimession:" &
+                              Integer'Image (Comps);
+                  end if;
                   if Point_Count > 0 then
                      for index in 1 .. Point_Count loop
                         Load_Point_Data (Input_File, Vec3);
@@ -413,6 +418,11 @@ package body Mesh_Loader is
 
                elsif String_Length > 9 and then aString (2 .. 10) = "vn comps " then
                   Comps  := Integer'Value (aString (11 .. aString'Last));
+                  if Comps /= 3 then
+                            raise Mesh_Loader_Exception with
+                            "Mesh_Loader.Loaded_Mesh_Data_Only, invalid normals vector dimession:" &
+                              Integer'Image (Comps);
+                  end if;
                   if Point_Count > 0 then
                      for index in 1 .. Point_Count loop
                         Load_Normal_Data (Input_File, Vec3);
@@ -422,6 +432,11 @@ package body Mesh_Loader is
 
                elsif String_Length > 9 and then aString (2 .. 10) = "vt comps " then
                   Comps := Integer'Value (aString (11 .. aString'Last));
+                  if Comps /= 2 then
+                            raise Mesh_Loader_Exception with
+                            "Mesh_Loader.Loaded_Mesh_Data_Only, invalid texture vector dimession:" &
+                              Integer'Image (Comps);
+                  end if;
                   if Point_Count > 0 then
                      for index in 1 .. Point_Count loop
                         declare
