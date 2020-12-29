@@ -358,6 +358,8 @@ package body Batch_Manager is
     begin
         if not Is_Empty (Tiles) then
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
+                Put_Line ("Generate_Ramps, Tile_Index" &
+                            Integer'Image (Integer (Tile_Index)));
                 aTile := Tiles.Element (Tile_Index);
                 Row := Int (Tile_Index) / Max_Cols + 1;
                 Column := Int (Tile_Index) - Row * Max_Cols;
@@ -383,9 +385,13 @@ package body Batch_Manager is
                     Curs_N := aBatch.Normals.First;
                     Curs_S := aBatch.Ramp_Smooth_Normals.First;
                     while Has_Element (Curs_P) loop
+                        Put_Line ("Generate_Ramps, Curs_P");
                         aPoint := Element (Curs_P);
+                        Put_Line ("Generate_Ramps, Curs_N");
                         aNormal := Element (Curs_N);
+                        Put_Line ("Generate_Ramps, Curs_S");
                         aSmooth_Normal := Element (Curs_S);
+                        Put_Line ("Generate_Ramps, Cursors OK");
                         VPF := Model_Matrix * Singles.To_Vector4 (aPoint);
                         VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
                         Smooth_VNF := Model_Matrix * Singles.To_Vector4 (aSmooth_Normal);
@@ -400,15 +406,20 @@ package body Batch_Manager is
                 end if;
             end loop;
 
+            Put_Line ("Generate_Ramps, Ramp_VBO Ramp_Points size: " &
+            Integer'Image (Integer (aBatch.Ramp_Points.Length)));
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
+            Put_Line ("Generate_Ramps, Ramp_VBO set");
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
+            Put_Line ("Generate_Ramps, Update_AABB_Dimensions");
             Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
             aBatch.Ramp_Points.Clear;
 
+            Put_Line ("Generate_Ramps, Ramp_Normals_VBO");
             aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -416,6 +427,7 @@ package body Batch_Manager is
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
             aBatch.Ramp_Normals.Clear;
 
+            Put_Line ("Generate_Ramps, Tex_Coords_VBO");
             aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
               (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -423,6 +435,7 @@ package body Batch_Manager is
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
             aBatch.Tex_Coords.Clear;
 
+            Put_Line ("Generate_Ramps, Ramp_Smooth_Normals_VBO");
             aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Smooth_Normals));
             GL.Attributes.Set_Vertex_Attrib_Pointer

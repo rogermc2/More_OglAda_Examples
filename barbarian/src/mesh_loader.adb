@@ -96,6 +96,8 @@ package body Mesh_Loader is
    function Loaded_Mesh_Animation (Mesh_ID : Integer; Anim_ID : Positive)
                                    return Animation;
    function Load_Mesh (Path : String; Mesh_ID : out Integer) return Boolean;
+   procedure Load_Normal_Data (Input_File : File_Type; Vec : in out Vector3);
+   procedure Load_Point_Data (Input_File : File_Type; Vec : in out Vector3);
 
    --  ------------------------------------------------------------------------
 
@@ -131,42 +133,6 @@ package body Mesh_Loader is
    begin
       Loaded_Meshes.Clear;
    end Init;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Load_Normal_Data (Input_File : File_Type; Vec : in out Vector3) is
-      use Ada.Strings;
-      Data  : constant String := Get_Line (Input_File);
-      Pos1  : constant Natural := Fixed.Index (Data, " ");
-      Pos2  : Natural;
-   begin
-      Vec (GL.X) :=
-        Single (Integer'Value (Data (1 .. Pos1)));
-      Pos2 :=
-        Fixed.Index (Data (Pos1 + 1 .. Data'Last), " ");
-      Vec (GL.Y) :=
-        Single (Integer'Value (Data (Pos1 + 1 .. Pos2)));
-      Vec (GL.Z) :=
-        Single (Integer'Value (Data (Pos2 + 1 .. Data'Last)));
-   end Load_Normal_Data;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Load_Point_Data (Input_File : File_Type; Vec : in out Vector3) is
-      use Ada.Strings;
-      Data  : constant String := Get_Line (Input_File);
-      Pos1  : constant Natural := Fixed.Index (Data, " ");
-      Pos2  : Natural;
-   begin
-      Vec (GL.X) :=
-        Single'Value (Data (1 .. Pos1 - 1));
-      Pos2 :=
-        Fixed.Index (Data (Pos1 .. Data'Last), " ");
-      Vec (GL.Y) :=
-        Single'Value (Data (Pos1 + 1 .. Pos2 - 1));
-      Vec (GL.Z) :=
-        Single'Value (Data (Pos2 + 1 .. Data'Last));
-   end Load_Point_Data;
 
    --  ------------------------------------------------------------------------
 
@@ -420,8 +386,8 @@ package body Mesh_Loader is
       Input_File : File_Type;
    begin
       Point_Count := 0;
---        Game_Utils.Game_Log ("Loaded_Mesh_Data_Only loading mesh data from: " &
---                               File_Name);
+      Game_Utils.Game_Log ("Loaded_Mesh_Data_Only loading mesh data from: " &
+                             File_Name);
       Open (Input_File, In_File, File_Name);
       while not End_Of_File (Input_File) loop
          declare
@@ -436,28 +402,28 @@ package body Mesh_Loader is
                   null;
                elsif String_Length > 12 and then aString (2 .. 12) = "vert_count " then
                   Point_Count := Integer'Value (aString (13 .. aString'Last));
-               elsif String_Length > 11 and then aString (2 .. 10) = "vp comps " then
+               elsif String_Length > 9 and then aString (2 .. 10) = "vp comps " then
                   Comps  := Integer'Value (aString (11 .. aString'Last));
-                  if Comps * Point_Count > 0 then
-                     for index in 1 .. Comps * Point_Count loop
+                  if Point_Count > 0 then
+                     for index in 1 .. Point_Count loop
                         Load_Point_Data (Input_File, Vec3);
                         Points.Append (Vec3);
                      end loop;
                   end if;
 
-               elsif String_Length > 11 and then aString (2 .. 10) = "vn comps " then
+               elsif String_Length > 9 and then aString (2 .. 10) = "vn comps " then
                   Comps  := Integer'Value (aString (11 .. aString'Last));
-                  if Comps * Point_Count > 0 then
-                     for index in 1 .. Comps * Point_Count loop
+                  if Point_Count > 0 then
+                     for index in 1 .. Point_Count loop
                         Load_Normal_Data (Input_File, Vec3);
                         Normals.Append (Vec3);
                      end loop;
                   end if;
 
-               elsif String_Length > 11 and then aString (2 .. 10) = "vt comps " then
+               elsif String_Length > 9 and then aString (2 .. 10) = "vt comps " then
                   Comps := Integer'Value (aString (11 .. aString'Last));
-                  if Comps * Point_Count > 0 then
-                     for index in 1 .. Comps * Point_Count loop
+                  if Point_Count > 0 then
+                     for index in 1 .. Point_Count loop
                         declare
                            Value : constant String := Get_Line (Input_File);
                            Pos1  : constant Natural := Fixed.Index (Value, " ");
@@ -479,6 +445,42 @@ package body Mesh_Loader is
 
       return True;
    end Load_Mesh_Data_Only;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Load_Normal_Data (Input_File : File_Type; Vec : in out Vector3) is
+      use Ada.Strings;
+      Data  : constant String := Get_Line (Input_File);
+      Pos1  : constant Natural := Fixed.Index (Data, " ");
+      Pos2  : Natural;
+   begin
+      Vec (GL.X) :=
+        Single (Single'Value (Data (1 .. Pos1 - 1)));
+      Pos2 :=
+        Fixed.Index (Data (Pos1 + 1 .. Data'Last), " ");
+      Vec (GL.Y) :=
+        Single (Single'Value (Data (Pos1 + 1 .. Pos2 - 1)));
+      Vec (GL.Z) :=
+        Single (Single'Value (Data (Pos2 + 1 .. Data'Last)));
+   end Load_Normal_Data;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Load_Point_Data (Input_File : File_Type; Vec : in out Vector3) is
+      use Ada.Strings;
+      Data  : constant String := Get_Line (Input_File);
+      Pos1  : constant Natural := Fixed.Index (Data, " ");
+      Pos2  : Natural;
+   begin
+      Vec (GL.X) :=
+        Single'Value (Data (1 .. Pos1 - 1));
+      Pos2 :=
+        Fixed.Index (Data (Pos1 + 1 .. Data'Last), " ");
+      Vec (GL.Y) :=
+        Single'Value (Data (Pos1 + 1 .. Pos2 - 1));
+      Vec (GL.Z) :=
+        Single'Value (Data (Pos2 + 1 .. Data'Last));
+   end Load_Point_Data;
 
    --  ------------------------------------------------------------------------
 
