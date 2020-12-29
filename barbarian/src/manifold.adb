@@ -363,16 +363,17 @@ package body Manifold is
       Free_Manifold_Mesh_Data;
       if not Mesh_Loader.Load_Mesh_Data_Only
         ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
-         Ramp_Mesh_Texcoords, Ramp_Mesh_Normals, Ramp_Mesh_Point_Count) then
+         Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
          raise Manifold_Exception with
            "Manifold.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_may_2014.apg";
       end if;
+      Game_Utils.Game_Log ("Manifold.Init error loaded src/meshes/ramp_may_2014.apg"
+      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length)));
 
       if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                               Points, Texcoords,
-                                              Ramp_Mesh_Smooth_Normals,
-                                              Points_Count) then
+                                              Ramp_Mesh_Smooth_Normals) then
          raise Manifold_Exception with
            "Manifold.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_smooth.apg";
@@ -381,7 +382,7 @@ package body Manifold is
 
       if not Mesh_Loader.Load_Mesh_Data_Only
         ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
-         Water_Mesh_Normals, Water_Mesh_Point_Count) then
+         Water_Mesh_Normals) then
          raise Manifold_Exception with
            "Manifold.Init error loading ramp mesh data from file "
            & "src/meshes/water.apg";

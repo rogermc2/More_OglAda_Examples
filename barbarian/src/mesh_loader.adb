@@ -379,13 +379,11 @@ package body Mesh_Loader is
    function Load_Mesh_Data_Only (File_Name   : String;
                                  Points      : in out GL_Maths.Vec3_List;
                                  Tex_Coords  : in out GL_Maths.Vec2_List;
-                                 Normals     : in out GL_Maths.Vec3_List;
-                                 Point_Count : in out Integer)
+                                 Normals     : in out GL_Maths.Vec3_List)
                                  return Boolean is
       use Ada.Strings;
       Input_File : File_Type;
    begin
-      Point_Count := 0;
       Game_Utils.Game_Log ("Loaded_Mesh_Data_Only loading mesh data from: " &
                              File_Name);
       Open (Input_File, In_File, File_Name);
@@ -393,6 +391,7 @@ package body Mesh_Loader is
          declare
             aString       : constant String := Get_Line (Input_File);
             String_Length : constant Integer := aString'Length;
+            Point_Count   : Integer := 0;
             Comps         : Integer := 0;
             Vec3          : Vector3 := (0.0, 0.0, 0.0);
          begin
