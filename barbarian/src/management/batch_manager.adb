@@ -434,20 +434,13 @@ package body Batch_Manager is
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
             aBatch.Ramp_Normals.Clear;
 
-            Put_Line ("Batch_Manager.Generate_Ramps, Tex_Coords_VBO Ramp_Mesh_Texcoords size: " &
-                       Integer'Image (Integer (Ramp_Mesh_Texcoords.Length)));
-            Put_Line ("Batch_Manager.Generate_Ramps, Tex_Coords_VBO aBatch.Ramp_Tex_Coords size: " &
-                       Integer'Image (Integer (aBatch.Ramp_Tex_Coords.Length)));
-
             aBatch.Ramp_Texcoords_VBO := GL_Utils.Create_2D_VBO
               (GL_Maths.To_Vector2_Array (aBatch.Ramp_Tex_Coords));
-            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_Texcoords_VBO set");
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_Vt, 2, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
             aBatch.Ramp_Tex_Coords.Clear;
 
-            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_Smooth_Normals_VBO");
             aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Smooth_Normals));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -507,11 +500,16 @@ package body Batch_Manager is
                     while Has_Element (Curs_P) loop
                         aWater_Point := Element (Curs_P);
                         VPF := Model_Matrix * Singles.To_Vector4 (aWater_Point);
-                        aBatch.Water_Points.Replace_Element (Curs_P, To_Vector3 (VPF));
+                        aBatch.Water_Points.Append (To_Vector3 (VPF));
                         Next (Curs_P);
                     end loop;  --  end for each Water_Point
                 end if;
             end loop;  --  end for each Tile
+
+--              Put_Line ("Batch_Manager.Generate_Water, Water_Mesh_Points size: " &
+--                         Integer'Image (Integer (Water_Mesh_Points.Length)));
+--              Put_Line ("Batch_Manager.Generate_Water, aBatch.Water_Points size: " &
+--                         Integer'Image (Integer (aBatch.Water_Points.Length)));
 
             GL_Utils.Bind_VAO (aBatch.Water_VAO);
             aBatch.Water_VBO := GL_Utils.Create_3D_VBO
@@ -519,31 +517,6 @@ package body Batch_Manager is
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-
-            Update_AABB_Dimensions  (aBatch, aBatch.Water_Points);
-            aBatch.Water_Points.Clear;
-
-            aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
-              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
-            GL.Attributes.Set_Vertex_Attrib_Pointer
-              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
-            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-            aBatch.Ramp_Normals.Clear;
-
-            aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
-              (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
-            GL.Attributes.Set_Vertex_Attrib_Pointer
-              (Shader_Attributes.Attrib_Vt, 2, Single_Type, False, 0, 0);
-            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-            aBatch.Tex_Coords.Clear;
-
-            aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
-              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Smooth_Normals));
-            GL.Attributes.Set_Vertex_Attrib_Pointer
-              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
-            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-            aBatch.Ramp_Smooth_Normals.Clear;
-
         end if;
 
     end Generate_Water;
@@ -815,7 +788,6 @@ package body Batch_Manager is
         theBatch.Water_VAO.Initialize_Id;
 
         Generate_Points (theBatch, Tiles);
-        Put_Line ("Batch_Manager.Regenerate_Batch Points generated");
 
         theBatch.Normals_VBO := GL_Utils.Create_3D_VBO
           (GL_Maths.To_Vector3_Array (theBatch.Normals));
@@ -830,12 +802,10 @@ package body Batch_Manager is
           (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
         theBatch.Tex_Coords.Clear;
-        Put_Line ("Batch_Manager.Regenerate_Batch Tex set up");
 
         Generate_Ramps (theBatch, Tiles);
-        Put_Line ("Batch_Manager.Regenerate_Batch Ramps generated");
         Generate_Water (theBatch, Tiles);
-        Put_Line ("Batch_Manager.Regenerate_Batch Water generated");
+--          Put_Line ("Batch_Manager.Regenerate_Batch Water generated");
 
         Batches_Data.Replace_Element (Batch_Index, theBatch);
 

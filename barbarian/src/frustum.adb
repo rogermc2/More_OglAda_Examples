@@ -204,20 +204,20 @@ package body Frustum is
 
    --  ------------------------------------------------------------------------
    --  For each frustum plane:
-   --   * assemble farthest xyz box corner point in direction of plane
-   --   * return false (cull) if that point is behind plane
-   --   * return true if all 6 farthest xyz points are in front of their planes
-   function Is_Aabb_In_Frustum (Mins, Maxs : Singles.Vector3) return Boolean is
+   --   assemble farthest xyz box corner point in direction of plane
+   --   return false (cull) if that point is behind plane
+   --   return true if all 6 farthest xyz points are in front of their planes
+   function Is_Aabb_In_Frustum (Mins, Maxs : in out Singles.Vector3)
+                                return Boolean is
       use Singles;
-      Min3   : Vector3 := Mins;
-      Max3   : Vector3 := Maxs;
+      Min3   : constant Vector3 := Mins;
       Result : Boolean := not Cull_Enabled;
    begin
       if not Result then
          for index in Vector3'Range loop
             if Mins (index) > Maxs (index) then
-               Min3 (index) := Maxs (index);
-               Max3 (index) := Mins (index);
+               Mins (index) := Maxs (index);
+               Maxs (index) := Min3 (index);
             end if;
          end loop;
 

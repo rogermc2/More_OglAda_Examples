@@ -120,8 +120,10 @@ package body Manifold is
                            (aBatch.AABB_Mins, aBatch.AABB_Maxs)));
                 Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Mins",
                                         aBatch.AABB_Mins);
-                Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Mins",
+                Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Maxs",
                                         aBatch.AABB_Maxs);
+               Put_Line ("Manifold.Draw_Manifold_Around Static_Light_Indices.Is_Empty: "
+                         & Boolean'Image (aBatch.Static_Light_Indices.Is_Empty));
                if Frustum.Is_Aabb_In_Frustum
                  (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
                  not (aBatch.Static_Light_Indices.Is_Empty) then
@@ -152,8 +154,8 @@ package body Manifold is
                         Set_Front_Face (Counter_Clockwise);
                      end if;
                      --  regular pass
-                     Put_Line ("Manifold.Draw_Manifold_Around aBatch.Ramp_Points.Length "
-                     & Integer'Image (Integer (aBatch.Ramp_Points.Length)));
+--                       Put_Line ("Manifold.Draw_Manifold_Around aBatch.Ramp_Points.Length "
+--                       & Integer'Image (Integer (aBatch.Ramp_Points.Length)));
                      Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                      Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
                      Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));

@@ -16,7 +16,8 @@ package Frustum is
     procedure Init;
     function Is_Sphere_In_Frustum (Centre : Singles.Vector3;  Radius : Single)
                                    return Boolean;
-    function Is_Aabb_In_Frustum (Mins, Maxs : Singles.Vector3) return Boolean;
+    function Is_Aabb_In_Frustum (Mins, Maxs : in out Singles.Vector3)
+                                 return Boolean;
     procedure Re_Extract_Frustum_Planes
       (Fovy_Deg : Maths.Degree; Aspect, Near, Far : Single;
        Cam_Pos  : Singles.Vector3; Mat : Singles.Matrix4);
