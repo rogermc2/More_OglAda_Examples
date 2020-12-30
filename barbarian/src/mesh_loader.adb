@@ -383,24 +383,26 @@ package body Mesh_Loader is
                                  return Boolean is
       use Ada.Strings;
       Input_File : File_Type;
+      Point_Count   : Integer := 0;
    begin
-      Game_Utils.Game_Log ("Loaded_Mesh_Data_Only loading mesh data from: " &
+      Game_Utils.Game_Log ("Load_Mesh_Data_Only loading mesh data from: " &
                              File_Name);
       Open (Input_File, In_File, File_Name);
       while not End_Of_File (Input_File) loop
          declare
             aString       : constant String := Get_Line (Input_File);
             String_Length : constant Integer := aString'Length;
-            Point_Count   : Integer := 0;
             Comps         : Integer := 0;
             Vec3          : Vector3 := (0.0, 0.0, 0.0);
          begin
-            --                  Game_Utils.Game_Log ("Loaded_Mesh_Data_Only String: " & aString);
+--              Game_Utils.Game_Log ("Loaded_Mesh_Data_Only String: " & aString);
             if aString (1 .. 1) = "@" then
                if String_Length > 8 and aString (2 .. 9) = "Anton's " then
                   null;
                elsif String_Length > 12 and then aString (2 .. 12) = "vert_count " then
                   Point_Count := Integer'Value (aString (13 .. aString'Last));
+--                    Put_Line ("Mesh_Loader.Loaded_Mesh_Data_Only Point_Count: " &
+--                                Integer'Image (Point_Count));
                elsif String_Length > 9 and then aString (2 .. 10) = "vp comps " then
                   Comps  := Integer'Value (aString (11 .. aString'Last));
                   if Comps /= 3 then
@@ -408,6 +410,8 @@ package body Mesh_Loader is
                             "Mesh_Loader.Loaded_Mesh_Data_Only, invalid point vector dimession:" &
                               Integer'Image (Comps);
                   end if;
+--                    Put_Line ("Mesh_Loader.Loaded_Mesh_Data_Only loading Point_Data, Point_Count: " &
+--                                Integer'Image (Point_Count));
                   if Point_Count > 0 then
                      for index in 1 .. Point_Count loop
                         Load_Point_Data (Input_File, Vec3);

@@ -385,8 +385,8 @@ package body Batch_Manager is
                 end case;
 
                 if aTile.Tile_Type = '/' then
-                    Put_Line ("Batch_Manager.Generate_Ramps, Tile_Type " &
-                            aTile.Tile_Type);
+--                      Put_Line ("Batch_Manager.Generate_Ramps, Tile_Type " &
+--                              aTile.Tile_Type);
                     --  Put each vertex point into world space
                     Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
                     Model_Matrix := Translation_Matrix
@@ -576,8 +576,10 @@ package body Batch_Manager is
            "Batch_Manager.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_may_2014.apg";
       end if;
-      Game_Utils.Game_Log ("Batch_Manager.Init error loaded src/meshes/ramp_may_2014.apg"
-      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length)));
+      Game_Utils.Game_Log ("Batch_Manager.Init loaded src/meshes/ramp_may_2014.apg"
+      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length))
+      & " Ramp_Mesh_Texcoords.Length " & Integer'Image (Integer (Ramp_Mesh_Texcoords.Length))
+      & " Ramp_Mesh_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Normals.Length)));
 
       if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                               Points, Texcoords,
@@ -586,7 +588,10 @@ package body Batch_Manager is
            "Batch_Manager.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_smooth.apg";
       end if;
-      Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded.");
+      Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded."
+      & " Points.Length " & Integer'Image (Integer (Points.Length))
+      & " Texcoords.Length " & Integer'Image (Integer (Texcoords.Length))
+      & " Ramp_Mesh_Smooth_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Smooth_Normals.Length)));
 
       if not Mesh_Loader.Load_Mesh_Data_Only
         ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
