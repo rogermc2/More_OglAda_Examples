@@ -23,14 +23,17 @@ package GL_Maths is
     package Vec2_Package is new Ada.Containers.Doubly_Linked_Lists
       (Singles.Vector2);
     subtype Vec2_List is Vec2_Package.List;
+    subtype Vec2_Cursor is Vec2_Package.Cursor;
 
     package Vec3_Package is new Ada.Containers.Doubly_Linked_Lists
       (Singles.Vector3);
     subtype Vec3_List is Vec3_Package.List;
+    subtype Vec3_Cursor is Vec3_Package.Cursor;
 
     package Vec4_Package is new Ada.Containers.Doubly_Linked_Lists
       (Singles.Vector4);
    subtype Vec4_List is Vec4_Package.List;
+   subtype Vec4_Cursor is Vec4_Package.Cursor;
 
    package Singles_Array_Package is new Ada.Numerics.Generic_Real_Arrays
      (Single);

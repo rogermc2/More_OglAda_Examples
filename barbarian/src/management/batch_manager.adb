@@ -344,6 +344,7 @@ package body Batch_Manager is
         use Maths;
         use Tiles_Manager;
         use GL_Maths;
+        use Vec2_Package;
         use Vec3_Package;
         aTile          : Tile_Data;
         Row            : Int;
@@ -353,9 +354,10 @@ package body Batch_Manager is
         Deg            : Degree;
         Model_Matrix   : Matrix4 := Identity4;
         Rot_Matrix     : Matrix4 := Identity4;
-        Curs_N         : Cursor;
-        Curs_P         : Cursor;
-        Curs_S         : Cursor;
+        Curs_N         : Vec3_Cursor;
+        Curs_P         : Vec3_Cursor;
+        Curs_T         : Vec2_Cursor;
+        Curs_S         : Vec3_Cursor;
         aNormal        : Vector3;
         aPoint         : Vector3;
         aSmooth_Normal : Vector3;
@@ -393,6 +395,7 @@ package body Batch_Manager is
                       ((Single (2 * Column), Single (2 * Height), Single (2 * Row)));
                     Curs_P := Ramp_Mesh_Points.First;
                     Curs_N := Ramp_Mesh_Normals.First;
+                    Curs_T := Ramp_Mesh_Texcoords.First;
                     Curs_S := Ramp_Mesh_Smooth_Normals.First;
                     while Has_Element (Curs_P) loop
                         aPoint := Element (Curs_P);
@@ -403,33 +406,27 @@ package body Batch_Manager is
                         Smooth_VNF := Model_Matrix * Singles.To_Vector4 (aSmooth_Normal);
 
                         aBatch.Ramp_Points.Append (To_Vector3 (VPF));
-                        aBatch.Normals.Append (To_Vector3 (VNF));
+                        aBatch.Ramp_Normals.Append (To_Vector3 (VNF));
+                        aBatch.Ramp_Tex_Coords.Append (Element (Curs_T));
                         aBatch.Ramp_Smooth_Normals.Append (To_Vector3 (Smooth_VNF));
 
                         Next (Curs_N);
                         Next (Curs_P);
+                        Next (Curs_T);
                         Next (Curs_S);
                     end loop;
                 end if;
             end loop;
-            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_VBO Ramp_Mesh_Points size: " &
-                        Integer'Image (Integer (Ramp_Mesh_Points.Length)));
 
-            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_VBO aBatch.Ramp_Points size: " &
-                        Integer'Image (Integer (aBatch.Ramp_Points.Length)));
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
-            Put_Line ("Batch_Manager.Generate_Ramps, Update_AABB_Dimensions");
             Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
             aBatch.Ramp_Points.Clear;
 
-            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_VBO aBatch.Ramp_Normals size: " &
-                        Integer'Image (Integer (aBatch.Ramp_Normals.Length)));
-            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_Normals_VBO");
             aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
             Put_Line ("Batch_Manager.Generate_Ramps, Ramp_Normals_VBO set");
@@ -438,7 +435,11 @@ package body Batch_Manager is
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
             aBatch.Ramp_Normals.Clear;
 
-            Put_Line ("Batch_Manager.Generate_Ramps, Tex_Coords_VBO");
+            Put_Line ("Batch_Manager.Generate_Ramps, Tex_Coords_VBO Ramp_Mesh_Texcoords size: " &
+                       Integer'Image (Integer (Ramp_Mesh_Texcoords.Length)));
+            Put_Line ("Batch_Manager.Generate_Ramps, Tex_Coords_VBO aBatch.Ramp_Tex_Coords size: " &
+                       Integer'Image (Integer (aBatch.Ramp_Tex_Coords.Length)));
+
             aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
               (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
             GL.Attributes.Set_Vertex_Attrib_Pointer
