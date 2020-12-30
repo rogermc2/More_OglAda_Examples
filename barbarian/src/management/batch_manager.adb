@@ -429,7 +429,6 @@ package body Batch_Manager is
 
             aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
-            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_Normals_VBO set");
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
@@ -440,12 +439,13 @@ package body Batch_Manager is
             Put_Line ("Batch_Manager.Generate_Ramps, Tex_Coords_VBO aBatch.Ramp_Tex_Coords size: " &
                        Integer'Image (Integer (aBatch.Ramp_Tex_Coords.Length)));
 
-            aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
-              (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
+            aBatch.Ramp_Texcoords_VBO := GL_Utils.Create_2D_VBO
+              (GL_Maths.To_Vector2_Array (aBatch.Ramp_Tex_Coords));
+            Put_Line ("Batch_Manager.Generate_Ramps, Ramp_Texcoords_VBO set");
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_Vt, 2, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-            aBatch.Tex_Coords.Clear;
+            aBatch.Ramp_Tex_Coords.Clear;
 
             Put_Line ("Batch_Manager.Generate_Ramps, Ramp_Smooth_Normals_VBO");
             aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
