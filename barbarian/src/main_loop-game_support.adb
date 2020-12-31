@@ -152,6 +152,7 @@ package body Main_Loop.Game_Support is
 --           Game_Utils.Game_Log ("Main_Loop.Game_Supprt.Player_1_View, Render_GUIs");
          GUI.Render_GUIs;
       end if;
+
       GUI.Draw_Controller_Button_Overlays (Delta_Time);
       -- Debug:
 --        if Settings.Show_FPS then
