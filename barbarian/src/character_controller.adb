@@ -86,6 +86,8 @@ package body Character_Controller is
                                Damage  : Int; Weapon : Weapon_Type) return Boolean;
     procedure Damage_Doer_1 (Character : in out Barbarian_Character;
                              Character_1 : Barbarian_Character);
+    procedure Decapitated_Head_Check (Character : Barbarian_Character;
+                                      Weapon : Weapon_Type);
     procedure Detach_Particle_System (Char_ID, Partsys_ID : Positive);
     procedure Detach_Particle_System_From_Character
       (Char_ID, Partsys_ID : Positive);
@@ -95,8 +97,6 @@ package body Character_Controller is
                           Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
                           World_Pos         : Singles.Vector3;
                           Throw_Back_Mps    : Single; Damage : Int);
-    procedure Launch_Decapitated_Head (Character : Barbarian_Character;
-                                       WT        : Weapon_Type);
     procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character);
     procedure Spray_Screen_Check (Character : Barbarian_Character;
                                   World_Pos : Singles.Vector3);
@@ -407,15 +407,19 @@ package body Character_Controller is
                     Bf_Parts_Last_Attached_To (Current_Blood_Fountain) := 1;
                     Current_Blood_Fountain := (Current_Blood_Fountain + 1)
                     mod Max_Blood_Fountains + 1;
+
+                    if Doer_ID > 0 then
+                        Decapitated_Head_Check (Character, Weapon);
+                    end if;
                 end if;
             end if;
-        end if;
+        end if;  --  not Is_Sorcerer or ...
 
         Audio.Play_Sound (To_String (aSpec.Hurt_Sound_File_Name), True);
-
         if Char_ID = 1 then
             Camera.Screen_Shake (0.4, 0.15, 50.0);
         end if;
+
         Detach_Particle_System_From_Character
           (Bfparts_Last_Attached_To (Current_Blood_Fountain),
            Blood_Fountain_Particles_Index (Current_Blood_Fountain));
@@ -429,7 +433,7 @@ package body Character_Controller is
         Bfparts_Last_Attached_To (Current_Blood_Fountain) := Char_ID;
         Current_Blood_Fountain := (Current_Blood_Fountain + 1) * Max_Blood_Fountains;
         if Doer_ID > 0 then
-            Launch_Decapitated_Head (Character, Weapon);
+            Decapitated_Head_Check (Character, Weapon);
             Decap := True;
             --  if on water splash and make invisible
             if Manifold.Is_Water
@@ -470,8 +474,7 @@ package body Character_Controller is
         end if;
 
         Attach_Particle_System_To_Character
-          (Char_ID, Blood_Damage_Particles_Index
-             (Current_Blood_Damage_Emitter));
+          (Char_ID, Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
         BDparts_Last_Attached_To (Current_Blood_Damage_Emitter) := Char_ID;
         Current_Blood_Damage_Emitter := (Current_Blood_Damage_Emitter + 1)
         mod Max_Blood_Damage_Emitters + 1;
@@ -500,6 +503,49 @@ package body Character_Controller is
     end Damage_Doer_1;
 
     --  -------------------------------------------------------------------------
+
+    --  Derived from approx line 1149
+    --  launch decapitated head if died by slashing weapon
+    procedure Decapitated_Head_Check (Character : Barbarian_Character;
+                                      Weapon : Weapon_Type) is
+        use Maths;
+        use GUI_Level_Chooser;
+        use Projectile_Manager;
+        Chance    : constant Integer := Integer (100.0 * Abs (Random_Float));
+        S_I       : constant Positive := Character.Specs_Index;
+        aSpec     : constant Spec_Data := Character_Specs.Element (S_I);
+        DH_S_I    : constant Positive := aSpec.Decapitated_Head_Prop_Script_ID;
+        Proj_Type : Projectile_Type;
+        Pos       : Singles.Vector3 := Character.World_Pos;
+        Decap     : Boolean := False;
+    begin
+        case Weapon is
+        when Sword_Wt =>
+            if Chance < 25 then
+                Proj_Type := aSpec.Projectile;
+                --                 if Proj_Type = Fireball_Proj_Type and Is_Map_Warlock and
+                --                 not Cheated_On_Map and Map_Is_Unmodified then
+                --                    null;
+                --                 end if;
+                Pos (GL.Y) := Pos (GL.Y) + 2.0;
+                Prop_Renderer.Launch_Decap_Head (DH_S_I, Pos);
+                Decap := True;
+            end if;
+        when Hammer_Wt =>
+            Spray_Screen_Check (Character, Pos);
+        when Pillar_Wt => null;
+        when Boulder_Wt => null;
+        when Fall_Wt => null;
+        when others => null;
+        end case;
+
+    exception
+        when others =>
+            Put_Line ("Character_Controller.Launch_Decapitated_Head exception");
+            raise;
+    end Decapitated_Head_Check;
+
+    --  ------------------------------------------------------------------------
 
     procedure Detach_Particle_System (Char_ID, Partsys_ID : Positive) is
     begin
@@ -661,49 +707,7 @@ package body Character_Controller is
     end Knock_Back;
 
     --  -------------------------------------------------------------------------
-    --  Derived from approx line 1105 // launch decapitated head if died by slashing weapon
-    --  through approx line 1226
-    procedure Launch_Decapitated_Head (Character : Barbarian_Character;
-                                       WT        : Weapon_Type) is
-        use Maths;
-        use GUI_Level_Chooser;
-        use Projectile_Manager;
-        Chance    : constant Integer := Integer (100.0 * Abs (Random_Float));
-        S_I       : constant Positive := Character.Specs_Index;
-        aSpec     : constant Spec_Data := Character_Specs.Element (S_I);
-        DH_S_I    : constant Positive := aSpec.Decapitated_Head_Prop_Script_ID;
-        Proj_Type : Projectile_Type;
-        Pos       : Singles.Vector3 := Character.World_Pos;
-        Decap     : Boolean := False;
-    begin
-        case WT is
-        when Sword_Wt =>
-            if Chance < 25 then
-                Proj_Type := aSpec.Projectile;
-                --                 if Proj_Type = Fireball_Proj_Type and Is_Map_Warlock and
-                --                 not Cheated_On_Map and Map_Is_Unmodified then
-                --                    null;
-                --                 end if;
-                Pos (GL.Y) := Pos (GL.Y) + 2.0;
-                Prop_Renderer.Launch_Decap_Head (DH_S_I, Pos);
-                Decap := True;
-            end if;
-        when Hammer_Wt =>
-            Spray_Screen_Check (Character, Pos);
-        when Pillar_Wt => null;
-        when Boulder_Wt => null;
-        when Fall_Wt => null;
-        when others => null;
-        end case;
-
-    exception
-        when others =>
-            Put_Line ("Character_Controller.Launch_Decapitated_Head exception");
-            raise;
-    end Launch_Decapitated_Head;
-
-    --  ------------------------------------------------------------------------
-    --  read characters from an already open file stream
+       --  read characters from an already open file stream
     procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean) is
         use Ada.Strings.Fixed;
         Pos1           : Integer;
