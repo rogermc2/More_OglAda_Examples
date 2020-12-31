@@ -41,9 +41,9 @@ package body Character_Controller is
     Teleport_From_Particles_Idx  : Natural := 0;
     Teleport_To_Particles_Idx    : Natural := 0;
     Bf_Parts_Last_Attached_To    : array (1 .. Max_Blood_Fountains) of Integer
-                                     := (-1, -1, -1, -1, -1);
+      := (-1, -1, -1, -1, -1);
     Bd_Parts_Last_Attached_To    : array (1 .. Max_Blood_Damage_Emitters) of Integer
-                                     := (-1, -1, -1, -1, -1);
+      := (-1, -1, -1, -1, -1);
     Most_Characters_Updated_In_One_Frame : Natural := 0;
 
     Hammer_Hit_Armour_Sound      : constant String :=
@@ -65,7 +65,7 @@ package body Character_Controller is
     Kills_Current                   : Integer := 0;
     Kills_Max                       : Integer := 0;
     Characters_Updated              : Integer := 0;
---      Character_Controller_Loaded     : Boolean := False;
+    --      Character_Controller_Loaded     : Boolean := False;
 
     Teleport_From_Particles_Index   : Integer := 1;
     Teleport_To_Particles_Index     : Integer := 1;
@@ -78,16 +78,18 @@ package body Character_Controller is
     Bdparts_Last_Attached_To        : array (1 .. Max_Blood_Damage_Emitters)
       of Integer := (others => -1);
 
-    function Damage_Character (Char_ID           : Positive; Doer_ID  : Natural; Angle : Maths.Degree;
-                               Damage            : Int; Weapon : Weapon_Type) return Boolean;
-
+    function Close_Enough (Character    : Barbarian_Character;
+                           World_Pos    : Singles.Vector3;
+                           Height, Dist : Single) return Boolean;
+    function Damage_Character (Char_ID : Positive; Doer_ID  : Natural;
+                               Angle : Maths.Degree;
+                               Damage  : Int; Weapon : Weapon_Type) return Boolean;
+    procedure Damage_Doer_1 (Character : in out Barbarian_Character;
+                             Character_1 : Barbarian_Character);
     procedure Detach_Particle_System (Char_ID, Partsys_ID : Positive);
     procedure Detach_Particle_System_From_Character
       (Char_ID, Partsys_ID : Positive);
     --      function Is_Character_Valid (Char_Index : Integer) return Boolean;
-    function Close_Enough (Character    : Barbarian_Character;
-                           World_Pos    : Singles.Vector3;
-                           Height, Dist : Single) return Boolean;
     --      function Is_Spec_Valid (Spec_Index : Integer) return Boolean;
     procedure Knock_Back (Character         : in out Barbarian_Character;
                           Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
@@ -178,7 +180,7 @@ package body Character_Controller is
     end Chasing_Enemy;
 
     --  ------------------------------------------------------------------------
-   -- derived from _damage_all_near part // work out if close enough
+    -- derived from _damage_all_near part // work out if close enough
     function Close_Enough (Character    : Barbarian_Character;
                            World_Pos    : Singles.Vector3;
                            Height, Dist : Single) return Boolean is
@@ -256,7 +258,7 @@ package body Character_Controller is
     --  -------------------------------------------------------------------------
 
     function Current_Weapon (Character : Barbarian_Character)
-                            return Specs_Manager.Weapon_Type is
+                             return Specs_Manager.Weapon_Type is
     begin
         return Character.Current_Weapon;
     end Current_Weapon;
@@ -338,6 +340,7 @@ package body Character_Controller is
         S_I         : constant Positive := Character.Specs_Index;
         aSpec       : constant Spec_Data := Character_Specs.Element (S_I);
         Max_Health  : Integer;
+        Blood_Fountain_Id : Positive;
         Decap       : Boolean := False;
         H_Fac       : Single := 0.0;
         Tile_Height : Single := 0.0;
@@ -361,116 +364,117 @@ package body Character_Controller is
                 end if;
 
                 if Doer_ID = 1 then
-                    if Character.Current_Weapon = Sword_Wt then
-                        Camera.Screen_Shake (0.2, 0.5, 50.0);
-                        Audio.Play_Sound (Sword_Hit_Armour_Sound, True);
-                    elsif Character_1.Current_Weapon = Hammer_Wt then
-                        Camera.Screen_Shake (0.2, 0.5, 50.0);
-                        Audio.Play_Sound (Hammer_Hit_Armour_Sound, True);
+                    Damage_Doer_1 (Character, Character_1);
+                end if;
+
+                if Character.Current_Health <= 0 then
+                    if Weapon = Hammer_Wt then
+                        GUI_Level_Chooser.Increment_Hammer_Kills;
                     end if;
+                    Character.Is_Alive := False;
 
-                    if Character.Current_Health <= 0 then
-                        if Weapon = Hammer_Wt then
-                            GUI_Level_Chooser.Increment_Hammer_Kills;
+                    if aSpec.Tx_On_Death >= 0 then
+                        Event_Controller.Transmit_Code (aSpec.Tx_On_Death);
+                    end if;
+                    Audio.Play_Sound (To_String (aSpec.Death_Sound_File_Name), True);
+
+                    if Char_ID = 1 then
+                        Camera.Screen_Shake (3.0, 1.0, 50.0);
+                        Stop_Particle_System (Positive (Torch_Particles_Index (1)));
+                        Audio.Stop_All_Boulder_Sounds;
+                        GUI.Show_Defeated_Screen (True);
+                    elsif not Character.Death_Was_Counted then
+                        Character.Death_Was_Counted := True;
+                        if aSpec.Team_ID = 2 then
+                            Kills_Current := Kills_Current + 1;
+                            GUI.Set_GUI_Kills (Kills_Current);
                         end if;
-                        Character.Is_Alive := False;
+                    end if;  --  endif player killed
 
-                        if aSpec.Tx_On_Death >= 0 then
-                            Event_Controller.Transmit_Code (aSpec.Tx_On_Death);
-                        end if;
-                        Audio.Play_Sound (To_String (aSpec.Death_Sound_File_Name), True);
-
-                        if Char_ID = 1 then
-                            Camera.Screen_Shake (3.0, 1.0, 50.0);
-                            Stop_Particle_System (Positive (Torch_Particles_Index (1)));
-                            Audio.Stop_All_Boulder_Sounds;
-                            GUI.Show_Defeated_Screen (True);
-                        else  --  Char_ID > 1
-                            if not Character.Death_Was_Counted then
-                                Character.Death_Was_Counted := True;
-                                if aSpec.Team_ID = 2 then
-                                    Kills_Current := Kills_Current + 1;
-                                    GUI.Set_GUI_Kills (Kills_Current);
-                                end if;
-                            end if;
-                        end if;
-
-                        --  stop zombified movement
-                        Character.Desired_Direction := (0.0, 0.0, 0.0);
-                        --  splatter_all_tiles_near (g_characters[char_idx].world_pos);
-                        Detach_Particle_System_From_Character
-                          (Bf_Parts_Last_Attached_To (Current_Blood_Fountain),
-                           Blood_Fountain_Particles_Index (Current_Blood_Fountain));
-                    end if;  --  Doer_ID = 1
+                    --  stop zombified movement
+                    Character.Desired_Direction := (0.0, 0.0, 0.0);
+                    --  splatter_all_tiles_near (g_characters[char_idx].world_pos);
+                    Blood_Fountain_Id :=
+                      Blood_Fountain_Particles_Index (Current_Blood_Fountain);
+                    Detach_Particle_System_From_Character
+                      (Bf_Parts_Last_Attached_To (Current_Blood_Fountain),
+                       Blood_Fountain_Id);
+                    Set_Particle_System_Position
+                      (Blood_Fountain_Id, Character.World_Pos);
+                    Start_Particle_System
+                      (Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+                    Attach_Particle_System_To_Character (1, Blood_Fountain_Id);
+                    Bf_Parts_Last_Attached_To (Current_Blood_Fountain) := 1;
+                    Current_Blood_Fountain := (Current_Blood_Fountain + 1)
+                    mod Max_Blood_Fountains + 1;
                 end if;
             end if;
+        end if;
+
+        Audio.Play_Sound (To_String (aSpec.Hurt_Sound_File_Name), True);
+
+        if Char_ID = 1 then
+            Camera.Screen_Shake (0.4, 0.15, 50.0);
+        end if;
+        Detach_Particle_System_From_Character
+          (Bfparts_Last_Attached_To (Current_Blood_Fountain),
+           Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+        Set_Particle_System_Position
+          (Blood_Fountain_Particles_Index (Current_Blood_Fountain),
+           Character.World_Pos);
+        Start_Particle_System
+          (Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+        Attach_Particle_System_To_Character
+          (Char_ID, Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+        Bfparts_Last_Attached_To (Current_Blood_Fountain) := Char_ID;
+        Current_Blood_Fountain := (Current_Blood_Fountain + 1) * Max_Blood_Fountains;
+        if Doer_ID > 0 then
+            Launch_Decapitated_Head (Character, Weapon);
+            Decap := True;
+            --  if on water splash and make invisible
+            if Manifold.Is_Water
+              (Character.Map (GL.X), Character.Map (GL.Y)) then
+                Tile_Height := Tiles_Manager.Get_Tile_Height
+                  (Character.World_Pos (GL.X), Character.World_Pos (GL.Z),
+                   True, True);
+                if Character.World_Pos (GL.Y) - Tile_Height <= 0.0 then
+                    Prop_Renderer.Splash_Particles_At (Character.World_Pos);
+                    Sprite_Renderer.Set_Sprite_Visible (Character.Sprite_Index, False);
+                end if;
+            else  --  change sprite and make it closer to ground
+                Sprite_Renderer.Set_Sprite_Position (Character.Sprite_Index,
+                                                     Character.World_Pos  + (0.0, 0.15, 0.0));
+            end if;
+            if Decap then
+                Switch_Animation (Character, 16);
+            else
+                Switch_Animation (Character, 15);
+            end if;  --  Current_Health <= 0 ???
 
         else
             Audio.Play_Sound (To_String (aSpec.Hurt_Sound_File_Name), True);
-
             if Char_ID = 1 then
                 Camera.Screen_Shake (0.4, 0.15, 50.0);
             end if;
             Detach_Particle_System_From_Character
-              (Bfparts_Last_Attached_To (Current_Blood_Fountain),
-               Blood_Fountain_Particles_Index (Current_Blood_Fountain));
+              (Bdparts_Last_Attached_To (Current_Blood_Damage_Emitter),
+               Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
             Set_Particle_System_Position
-              (Blood_Fountain_Particles_Index (Current_Blood_Fountain),
+              (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter),
                Character.World_Pos);
+            Set_Particle_System_Heading
+              (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter),
+               Angle);
             Start_Particle_System
-              (Blood_Fountain_Particles_Index (Current_Blood_Fountain));
-            Attach_Particle_System_To_Character
-              (Char_ID, Blood_Fountain_Particles_Index (Current_Blood_Fountain));
-            Bfparts_Last_Attached_To (Current_Blood_Fountain) := Char_ID;
-            Current_Blood_Fountain := (Current_Blood_Fountain + 1) * Max_Blood_Fountains;
-            if Doer_ID > 0 then
-                Launch_Decapitated_Head (Character, Weapon);
-                Decap := True;
-                --  if on water splash and make invisible
-                if Manifold.Is_Water
-                  (Character.Map (GL.X), Character.Map (GL.Y)) then
-                    Tile_Height := Tiles_Manager.Get_Tile_Height
-                      (Character.World_Pos (GL.X), Character.World_Pos (GL.Z),
-                       True, True);
-                    if Character.World_Pos (GL.Y) - Tile_Height <= 0.0 then
-                        Prop_Renderer.Splash_Particles_At (Character.World_Pos);
-                        Sprite_Renderer.Set_Sprite_Visible (Character.Sprite_Index, False);
-                    end if;
-                else  --  change sprite and make it closer to ground
-                    Sprite_Renderer.Set_Sprite_Position (Character.Sprite_Index,
-                                                         Character.World_Pos  + (0.0, 0.15, 0.0));
-                end if;
-                if Decap then
-                    Switch_Animation (Character, 16);
-                else
-                    Switch_Animation (Character, 15);
-                end if;  --  Current_Health <= 0 ???
-
-            else
-                Audio.Play_Sound (To_String (aSpec.Hurt_Sound_File_Name), True);
-                if Char_ID = 1 then
-                    Camera.Screen_Shake (0.4, 0.15, 50.0);
-                end if;
-                Detach_Particle_System_From_Character
-                  (Bdparts_Last_Attached_To (Current_Blood_Damage_Emitter),
-                   Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
-                Set_Particle_System_Position
-                  (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter),
-                   Character.World_Pos);
-                Set_Particle_System_Heading
-                  (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter),
-                   Angle);
-                Start_Particle_System
-                  (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
-            end if;
-
-            Attach_Particle_System_To_Character
-              (Char_ID, Blood_Damage_Particles_Index
-                 (Current_Blood_Damage_Emitter));
-            BDparts_Last_Attached_To (Current_Blood_Damage_Emitter) := Char_ID;
-            Current_Blood_Damage_Emitter := (Current_Blood_Damage_Emitter + 1)
-            mod Max_Blood_Damage_Emitters + 1;
+              (Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
         end if;
+
+        Attach_Particle_System_To_Character
+          (Char_ID, Blood_Damage_Particles_Index
+             (Current_Blood_Damage_Emitter));
+        BDparts_Last_Attached_To (Current_Blood_Damage_Emitter) := Char_ID;
+        Current_Blood_Damage_Emitter := (Current_Blood_Damage_Emitter + 1)
+        mod Max_Blood_Damage_Emitters + 1;
 
         return Result;
 
@@ -480,6 +484,20 @@ package body Character_Controller is
             raise;
             return False;
     end Damage_Character;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Damage_Doer_1 (Character : in out Barbarian_Character;
+                             Character_1 : Barbarian_Character) is
+    begin
+        if Character.Current_Weapon = Sword_Wt then
+            Camera.Screen_Shake (0.2, 0.5, 50.0);
+            Audio.Play_Sound (Sword_Hit_Armour_Sound, True);
+        elsif Character_1.Current_Weapon = Hammer_Wt then
+            Camera.Screen_Shake (0.2, 0.5, 50.0);
+            Audio.Play_Sound (Hammer_Hit_Armour_Sound, True);
+        end if;
+    end Damage_Doer_1;
 
     --  -------------------------------------------------------------------------
 
@@ -600,7 +618,7 @@ package body Character_Controller is
     --  -------------------------------------------------------------------------
 
     function Javelin_Count (Character : in out Barbarian_Character)
-                           return Integer is
+                            return Integer is
     begin
         return Character.Javelin_Count;
     end Javelin_Count;
@@ -613,13 +631,13 @@ package body Character_Controller is
                           Throw_Back_Mps    : Single; Damage : Int) is
         use GL.Types.Singles;
         use Maths;
-        Distance       : Vector3 := Character.World_Pos - World_Pos;
-        Direction      : Vector3 := Maths.Normalized (Distance);
+        Distance       : constant Vector3 := Character.World_Pos - World_Pos;
+        Direction      : constant Vector3 := Maths.Normalized (Distance);
         Momentum       : Vector3 := Direction * Throw_Back_Mps;
         Pos            : Vector3;
-        Y              : Single := Character.Velocity (GL.Y);
-        Dir_Deg        : Degree := -Direction_To_Heading ((Direction (Gl.X), 0.0,
-                                                          -Direction (Gl.Z)));
+        Y              : constant Single := Character.Velocity (GL.Y);
+        Dir_Deg        : constant Degree :=
+                           -Direction_To_Heading ((Direction (Gl.X), 0.0, -Direction (Gl.Z)));
         Did_Damage     : Boolean := Damage_Character (Char_ID, Self_Id, Dir_Deg,
                                                       Damage, Weapon);
 
@@ -659,23 +677,23 @@ package body Character_Controller is
         Decap     : Boolean := False;
     begin
         case WT is
-            when Sword_Wt =>
-                if Chance < 25 then
-                    Proj_Type := aSpec.Projectile;
-                    --                 if Proj_Type = Fireball_Proj_Type and Is_Map_Warlock and
-                    --                 not Cheated_On_Map and Map_Is_Unmodified then
-                    --                    null;
-                    --                 end if;
-                    Pos (GL.Y) := Pos (GL.Y) + 2.0;
-                    Prop_Renderer.Launch_Decap_Head (DH_S_I, Pos);
-                    Decap := True;
-                end if;
-            when Hammer_Wt =>
-                Spray_Screen_Check (Character, Pos);
-            when Pillar_Wt => null;
-            when Boulder_Wt => null;
-            when Fall_Wt => null;
-            when others => null;
+        when Sword_Wt =>
+            if Chance < 25 then
+                Proj_Type := aSpec.Projectile;
+                --                 if Proj_Type = Fireball_Proj_Type and Is_Map_Warlock and
+                --                 not Cheated_On_Map and Map_Is_Unmodified then
+                --                    null;
+                --                 end if;
+                Pos (GL.Y) := Pos (GL.Y) + 2.0;
+                Prop_Renderer.Launch_Decap_Head (DH_S_I, Pos);
+                Decap := True;
+            end if;
+        when Hammer_Wt =>
+            Spray_Screen_Check (Character, Pos);
+        when Pillar_Wt => null;
+        when Boulder_Wt => null;
+        when Fall_Wt => null;
+        when others => null;
         end case;
 
     exception
@@ -1037,16 +1055,16 @@ package body Character_Controller is
             Facing := To_Vector3 (Rotation_Matrix * Offset_Pos) +
               Position (Character);
             case Projectile is
-                when Javelin_Proj_Type => Attack_With_Javelin
-                      (Character, Character.Specs_Index);
-                when Arrow_Proj_Type =>
-                    null;
-                when Fireball_Proj_Type =>
-                    null;
-                when Skull_Proj_Type
-                    =>
-                    null;
-                when others => null;
+            when Javelin_Proj_Type => Attack_With_Javelin
+                  (Character, Character.Specs_Index);
+            when Arrow_Proj_Type =>
+                null;
+            when Fireball_Proj_Type =>
+                null;
+            when Skull_Proj_Type
+                =>
+                null;
+            when others => null;
             end case;
         end if;
 
@@ -1135,47 +1153,47 @@ package body Character_Controller is
         if not Characters.Is_Empty then
             aCharacter := Characters.First_Element;
             Characters_Updated := 0;
---              if Character_Controller_Loaded then
-                OK := Update_Player (1, Seconds);
-                if OK then
-                    aCharacter.Needs_Update := False;
-                    Characters_Updated := Characters_Updated + 1;
-                    Left := Max_Int (0, aCharacter.Map (GL.X) - Update_Distance);
-                    Right := Min_Int
-                      (Max_Cols - 1, aCharacter.Map (GL.X) + Update_Distance);
-                    Up := Max_Int (0, aCharacter.Map (GL.Y) - Update_Distance);
-                    Down := Min_Int
-                      (Max_Rows - 1, aCharacter.Map (GL.Y) + Update_Distance);
-                    --  Collect all characters around p1
-                    for v in Up .. Down loop
-                        for h in Left .. Right loop
-                            Char_List := Character_Map.Get_Characters_In (h, v);
-                            Curs := Char_List.First;
-                            while Has_Element (Curs) loop
-                                Char_Index := Element (Curs);
-                                aCharacter := Characters.Element (Char_Index);
-                                if aCharacter.Is_Alive  then
-                                    aCharacter.Needs_Update := True;
-                                    Characters.Replace_Element (Char_Index, aCharacter);
-                                end if;
-                                Next (Curs);
-                            end loop;
+            --              if Character_Controller_Loaded then
+            OK := Update_Player (1, Seconds);
+            if OK then
+                aCharacter.Needs_Update := False;
+                Characters_Updated := Characters_Updated + 1;
+                Left := Max_Int (0, aCharacter.Map (GL.X) - Update_Distance);
+                Right := Min_Int
+                  (Max_Cols - 1, aCharacter.Map (GL.X) + Update_Distance);
+                Up := Max_Int (0, aCharacter.Map (GL.Y) - Update_Distance);
+                Down := Min_Int
+                  (Max_Rows - 1, aCharacter.Map (GL.Y) + Update_Distance);
+                --  Collect all characters around p1
+                for v in Up .. Down loop
+                    for h in Left .. Right loop
+                        Char_List := Character_Map.Get_Characters_In (h, v);
+                        Curs := Char_List.First;
+                        while Has_Element (Curs) loop
+                            Char_Index := Element (Curs);
+                            aCharacter := Characters.Element (Char_Index);
+                            if aCharacter.Is_Alive  then
+                                aCharacter.Needs_Update := True;
+                                Characters.Replace_Element (Char_Index, aCharacter);
+                            end if;
+                            Next (Curs);
                         end loop;
                     end loop;
+                end loop;
 
-                    Curs := Char_List.First;
-                    while Has_Element (Curs) loop
-                        Char_Index := Element (Curs);
-                        aCharacter := Characters.Element (Char_Index);
-                        if aCharacter.Needs_Update then
-                            Update_Character (aCharacter, Seconds);
-                            Characters.Replace_Element (Char_Index, aCharacter);
-                        end if;
-                        Next (Curs);
-                        --   Process_Characters
-                        --    (Self_ID, Exclude_ID, World_Pos, Char_List);
-                    end loop;
---                  end if;
+                Curs := Char_List.First;
+                while Has_Element (Curs) loop
+                    Char_Index := Element (Curs);
+                    aCharacter := Characters.Element (Char_Index);
+                    if aCharacter.Needs_Update then
+                        Update_Character (aCharacter, Seconds);
+                        Characters.Replace_Element (Char_Index, aCharacter);
+                    end if;
+                    Next (Curs);
+                    --   Process_Characters
+                    --    (Self_ID, Exclude_ID, World_Pos, Char_List);
+                end loop;
+                --                  end if;
             end if;
         end if;
 
