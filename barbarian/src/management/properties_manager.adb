@@ -196,7 +196,7 @@ package body Properties_Manager is
    --  read properties from an already open file
    procedure Load_Properties (Prop_File : File_Type) is
       use Ada.Strings;
-      aLine          : String := Get_Line (Prop_File);
+      aLine          : constant String := Get_Line (Prop_File);
       PosL           : Natural := Fixed.Index (aLine, " ") + 1;
       PosR           : Natural;
       S_Length       : Integer := aLine'Length;
@@ -224,7 +224,7 @@ package body Properties_Manager is
 
       for index in 1 .. Property_Count loop
          declare
-            Prop_Line : String := Get_Line (Prop_File);
+            Prop_Line : constant String := Get_Line (Prop_File);
          begin
             S_Length := Prop_Line'Length;
             PosL := Fixed.Index (Prop_Line, " ");

@@ -32,6 +32,7 @@ package body FB_Effects is
 
    Num_Shader_Effects   : constant Integer := 9;
    Effect_Elapsed       : Float := 0.0;
+   Ww_Fb_Current_Effect : FB_Effect := FB_Default;
    Ww_Fb_Effect_Elapsed : Float := 0.0;
    Screw_Factor         : Float := 0.0;
    Curr_Ssaa            : Single := 1.0;
@@ -181,6 +182,14 @@ package body FB_Effects is
       Current_Effect := Effect;
       Effect_Elapsed := 0.0;
    end Set_Feedback_Effect;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Feedback_Screw (Factor : Float) is
+   begin
+      Ww_Fb_Current_Effect := FB_Screw;
+      Screw_Factor := Factor;
+   end Set_Feedback_Screw;
 
    --  -------------------------------------------------------------------------
 
