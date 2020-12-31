@@ -1,11 +1,11 @@
-
 #version 410 core
+
 out vec4 frag_colour;
 
 in vec3 p_wor, p_eye, n_eye;
 
 uniform mat4 V;
-uniform float t; // time. used for vertex animation
+uniform float t;  // time. used for vertex animation
 uniform vec4 k_d; // = vec4 (0.1, 0.2, 0.75, 1.0);
 uniform vec4 k_s; // = vec4 (0.75, 0.75, 0.75, 1.0);
 

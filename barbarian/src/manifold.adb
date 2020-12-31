@@ -162,9 +162,7 @@ package body Manifold is
             Next (Curs);
         end loop;
 
-        Put_Line ("Manifold.Draw_Manifold_Around Draw_Water_Manifold_Around");
         Draw_Water_Manifold_Around;
-        Put_Line ("Manifold.Draw_Manifold_Around Water_Manifold_Around drawn");
 
     exception
         when others =>
@@ -218,8 +216,8 @@ package body Manifold is
         aBatch        : Batch_Meta;
         Light_Indices : Tile_Indices_List;
         Light_Cursor  : Tile_Indices_Package.Cursor;
-        Tile_Index1   : Single;
-        Tile_Index2   : Single;
+        Tile_Index1   : Int;
+        Tile_Index2   : Int;
     begin
         Use_Program (Water_Program);
         if Camera.Is_Dirty then
@@ -253,8 +251,8 @@ package body Manifold is
               aBatch.Water_Point_Count > 0 then
                 Light_Indices := aBatch.Static_Light_Indices;
                 Light_Cursor := Light_Indices.First;
-                Tile_Index1 := Single (Element (Light_Cursor));
-                Tile_Index2 := Single (Element (Next (Light_Cursor)));
+                Tile_Index1 := Int (Element (Light_Cursor));
+                Tile_Index2 := Int (Element (Next (Light_Cursor)));
                 Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                 GL_Utils.Bind_Vao (aBatch.Water_VAO);
