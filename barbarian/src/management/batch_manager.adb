@@ -331,6 +331,7 @@ package body Batch_Manager is
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
             Update_AABB_Dimensions  (aBatch, aBatch.Points);
+            aBatch.Point_Count := Integer (aBatch.Points.Length);
             aBatch.Points.Clear;
         end if;
 
@@ -425,6 +426,7 @@ package body Batch_Manager is
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
             Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
+            aBatch.Ramp_Point_Count := Integer (aBatch.Ramp_Points.Length);
             aBatch.Ramp_Points.Clear;
 
             aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
@@ -471,7 +473,6 @@ package body Batch_Manager is
         Curs_P         : Cursor;
         aWater_Point   : Vector3;
         VPF            : Singles.Vector4;
-
     begin
         if not Is_Empty (Tiles) then
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
@@ -517,6 +518,9 @@ package body Batch_Manager is
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+
+            aBatch.Water_Point_Count := Integer (aBatch.Water_Points.Length);
+            aBatch.Water_Points.Clear;
         end if;
 
     end Generate_Water;
@@ -549,6 +553,7 @@ package body Batch_Manager is
            "Batch_Manager.Init error loading ramp mesh data from file "
            & "src/meshes/ramp_may_2014.apg";
       end if;
+
       Game_Utils.Game_Log ("Batch_Manager.Init loaded src/meshes/ramp_may_2014.apg"
       & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length))
       & " Ramp_Mesh_Texcoords.Length " & Integer'Image (Integer (Ramp_Mesh_Texcoords.Length))
@@ -644,6 +649,30 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
+   function Num_Points (Batch_Index : Positive) return Integer is
+        aBatch : constant Batch_Meta := Batches.Element (Batch_Index);
+   begin
+        return aBatch.Point_Count;
+    end Num_Points;
+
+    --  -------------------------------------------------------------------------
+
+   function Num_Ramp_Points (Batch_Index : Positive) return Integer is
+        aBatch : constant Batch_Meta := Batches.Element (Batch_Index);
+   begin
+        return aBatch.Ramp_Point_Count;
+    end Num_Ramp_Points;
+
+    --  -------------------------------------------------------------------------
+
+   function Num_Water_Points  (Batch_Index : Positive) return Integer is
+        aBatch : constant Batch_Meta := Batches.Element (Batch_Index);
+   begin
+        return aBatch.Water_Point_Count;
+    end Num_Water_Points;
+
+    --  -------------------------------------------------------------------------
+
     procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_List;
                                 Batch_Index : Positive) is
         use Tiles_Manager;
@@ -665,7 +694,7 @@ package body Batch_Manager is
         procedure Add_Point_Count (Diff : Integer) is
         begin
             if Diff > 0 then
-                Total_Points := Total_Points + 6 * Diff;
+                Total_Points := Total_Points + 2 * Diff;
             end if;
         end Add_Point_Count;
 
