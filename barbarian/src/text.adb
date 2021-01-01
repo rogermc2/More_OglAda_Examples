@@ -4,6 +4,7 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use  Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL;
 with GL.Attributes;
 with GL.Blending;
 with GL.Buffers;
@@ -70,13 +71,13 @@ package body Text is
 
     package Unbounded_Strings_Package is new Ada.Containers.Vectors
       (Positive, Unbounded_String);
-    type Preloaded_Comic_Texts_List is new Unbounded_Strings_Package.Vector with null record;
+    subtype Preloaded_Comic_Texts_List is Unbounded_Strings_Package.Vector;
 
     package Boolean_Package is new Ada.Containers.Vectors (Natural, Boolean);
-    type Boolean_List is new Boolean_Package.Vector with null record;
+    subtype Boolean_List is Boolean_Package.Vector;
 
     package Colour_Package is new Ada.Containers.Vectors (Natural, Colors.Color);
-    type Colour_List is new Colour_Package.Vector with null record;
+    subtype Colour_List is Colour_Package.Vector;
 
     Max_Particle_Texts          : constant Integer := 8;
     Atlas_Cols                  : constant Integer := 16;
@@ -672,8 +673,33 @@ package body Text is
     --  ----------------------------------------------------------------------------
 
     procedure Update_Comic_Texts (Seconds : Float) is
+        Alpha       : Float;
+        Text_Index  : Integer;
+        Colour      : Colors.Color;
+        Render_Text : Renderable_Text;
     begin
-        null;
+        for index in 1 .. 8 loop
+            if Active_Comic_Texts (index).Is_Active then
+                Active_Comic_Texts (index).Countdown :=
+                  Active_Comic_Texts (index).Countdown - Seconds;
+                  if Active_Comic_Texts (index).Countdown <= 0.0 then
+                    --  disable text from rendering?
+                    Active_Comic_Texts (index).Is_Active := False;
+                    Active_Text_Count := Active_Text_Count - 1;
+                    Set_Text_Visible (Comic_Texts (index), False);
+                  elsif Active_Comic_Texts (index).Countdown < Comic_Text_Time then
+                    Alpha := Active_Comic_Texts (index).Original_Alpha *
+                      (Active_Comic_Texts (index).Countdown / Comic_Text_Time);
+                      Text_Index := Comic_Texts (index);
+                    Colour := Text_Box_Colour.Element (Text_Index);
+                    Colour (A) := Single (Alpha);
+                    Text_Box_Colour.Replace_Element (Text_Index, Colour);
+                    Render_Text := Renderable_Texts.Element (Text_Index);
+                    Render_Text.A := Single (Alpha);
+                    Renderable_Texts.Replace_Element (Text_Index, Render_Text);
+                  end if;
+            end if;
+        end loop;
     end Update_Comic_Texts;
 
     --  ----------------------------------------------------------------------------
