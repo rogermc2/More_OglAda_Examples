@@ -20,6 +20,7 @@ with GL.Toggles;
 
 with Utilities;
 
+with Camera;
 with Game_Utils;
 with GL_Utils;
 with GUI;
@@ -96,29 +97,29 @@ package body Text is
     --      COMIC_TEXT_FULL_COLOUR_TIME     : constant Float := 3.0;
     --      COMIC_TEXT_TIME                 : constant Float :=  6.0;
     --      PARTICLE_TEXT_FULL_COLOUR_TIME  : constant Float := 0.5;
-    --      PARTICLE_TEXT_TIME              : constant Float := 0.25;
-    --      PARTICLE_TEXT_SPEED             : constant Float := 5.0;
+    Particle_Text_Time    : constant Float := 0.25;
+    Particle_Text_Speed   : constant Single := 5.0;
 
-    Font_Shader          : GL.Objects.Programs.Program;
-    Font_Texture         : GL.Objects.Textures.Texture;
-    Text_Box_Shader      : GL.Objects.Programs.Program;
-    Text_Box_VAO         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Text_Box_Points      : constant GL.Types.Singles.Vector2_Array (1 .. 4) :=
+    Font_Shader           : GL.Objects.Programs.Program;
+    Font_Texture          : GL.Objects.Textures.Texture;
+    Text_Box_Shader       : GL.Objects.Programs.Program;
+    Text_Box_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+    Text_Box_Points       : constant GL.Types.Singles.Vector2_Array (1 .. 4) :=
                              ((0.0, 0.0),
                               (0.0, -1.0),
                               (1.0,  0.0),
                               (1.0, -1.0));
-    Text_Box_Colour      : Colour_List;
-    Renderable_Texts     : Renderable_Text_List;
-    Font_Viewport_Width  : Int := 0;
-    Font_Viewport_Height : Int := 0;
-    Num_Render_Strings   : Integer := 0;
+    Text_Box_Colour       : Colour_List;
+    Renderable_Texts      : Renderable_Text_List;
+    Font_Viewport_Width   : Int := 0;
+    Font_Viewport_Height  : Int := 0;
+    Num_Render_Strings    : Integer := 0;
 
-    Glyphs                : Font_Metadata_Manager.Glyph_Array;
-    Preloaded_Comic_Texts : Preloaded_Comic_Texts_List;
+    Glyphs                 : Font_Metadata_Manager.Glyph_Array;
+    Preloaded_Comic_Texts  : Preloaded_Comic_Texts_List;
     Preloaded_Comic_Colours : Colour_List;
-    Text_Was_Triggered    : Boolean_List;
-    Active_Text_Count     : Integer := 0;
+    Text_Was_Triggered      : Boolean_List;
+    Active_Text_Count       : Integer := 0;
 
     procedure Change_Text_Box (Text_ID : Positive; theString : String;
                                Box_Colour : Colors.Color);
@@ -308,7 +309,7 @@ package body Text is
     function Create_Text_Box (Text                    : String;
                               X_Min, Y_Min, Scale     : Single;
                               Text_Colour, Box_Colour : GL.Types.Colors.Color)
-                             return Positive is
+                              return Positive is
         use GL.Types.Colors;
         Text_Index : constant Positive :=
                        Add_Text (Text, X_Min, Y_Min, Scale, Text_Colour (R),
@@ -547,7 +548,7 @@ package body Text is
         Points_Tmp         : Singles.Vector2_Array
           (1 .. Int (Glyph_Size) * Int (Text_Length)) := (others => (0.0, 0.0));
         Tex_Coords_Tmp     : Singles.Vector2_Array
-             (1 .. Int (Glyph_Size)  * Int (Text_Length)) := (others => (0.0, 0.0));
+          (1 .. Int (Glyph_Size)  * Int (Text_Length)) := (others => (0.0, 0.0));
         Atlas_Rows_S       : constant Single := Single (Atlas_Rows);
         Atlas_Cols_S       : constant Single := Single (Atlas_Cols);
         Font_Height        : constant Single :=
@@ -635,7 +636,7 @@ package body Text is
 
         Array_Buffer.Bind (Tex_Coords_VBO);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Tex_Coords_Tmp, Dynamic_Draw);
-            Point_Count := Current_Index_6 + 72;
+        Point_Count := Current_Index_6 + 72;
 
     exception
         when others =>
@@ -682,22 +683,22 @@ package body Text is
             if Active_Comic_Texts (index).Is_Active then
                 Active_Comic_Texts (index).Countdown :=
                   Active_Comic_Texts (index).Countdown - Seconds;
-                  if Active_Comic_Texts (index).Countdown <= 0.0 then
+                if Active_Comic_Texts (index).Countdown <= 0.0 then
                     --  disable text from rendering?
                     Active_Comic_Texts (index).Is_Active := False;
                     Active_Text_Count := Active_Text_Count - 1;
                     Set_Text_Visible (Comic_Texts (index), False);
-                  elsif Active_Comic_Texts (index).Countdown < Comic_Text_Time then
+                elsif Active_Comic_Texts (index).Countdown < Comic_Text_Time then
                     Alpha := Active_Comic_Texts (index).Original_Alpha *
                       (Active_Comic_Texts (index).Countdown / Comic_Text_Time);
-                      Text_Index := Comic_Texts (index);
+                    Text_Index := Comic_Texts (index);
                     Colour := Text_Box_Colour.Element (Text_Index);
                     Colour (A) := Single (Alpha);
                     Text_Box_Colour.Replace_Element (Text_Index, Colour);
                     Render_Text := Renderable_Texts.Element (Text_Index);
                     Render_Text.A := Single (Alpha);
                     Renderable_Texts.Replace_Element (Text_Index, Render_Text);
-                  end if;
+                end if;
             end if;
         end loop;
     end Update_Comic_Texts;
@@ -705,8 +706,36 @@ package body Text is
     --  ----------------------------------------------------------------------------
 
     procedure Update_Particle_Texts (Seconds : Float) is
+        use Singles;
+        Clip_Pos : Vector4;
     begin
-        null;
+        for index in 1 .. Max_Particle_Texts loop
+            if Particle_Texts (index).Countdown > 0.0 then
+                Particle_Texts (index).Countdown :=
+                  Particle_Texts (index).Countdown - Seconds;
+                if Particle_Texts (index).Countdown <= 0.0 then
+                    Set_Text_Visible (Particle_Texts (index).Text_ID, False);
+                else
+                    Particle_Texts (index).World_Pos (GL.Z) :=
+                       Particle_Texts (index).World_Pos (GL.Z) -
+                      Particle_Text_Speed * Single (Seconds);
+                    Clip_Pos := Camera.PV_Matrix *
+                      Singles.To_Vector4 (Particle_Texts (index).World_Pos);
+                      Clip_Pos (GL.X) := Clip_Pos (GL.X) / Clip_Pos (GL.W);
+                      Clip_Pos (GL.Y) := Clip_Pos (GL.Y) / Clip_Pos (GL.W);
+                      Move_Text (index, Clip_Pos (GL.X), Clip_Pos (GL.Y));
+                      if Particle_Texts (index).Countdown < Particle_Text_Time then
+                        Particle_Texts (index).Colour (GL.W) :=
+                          Single (Particle_Texts (index).Countdown / Particle_Text_Time);
+                        Change_Text_Colour
+                          (index, Particle_Texts (index).Colour (GL.X),
+                          Particle_Texts (index).Colour (GL.Y),
+                          Particle_Texts (index).Colour (GL.Z),
+                          Particle_Texts (index).Colour (GL.W));
+                      end if;
+                end if;
+            end if;
+        end loop;
     end Update_Particle_Texts;
 
     --  ----------------------------------------------------------------------------
