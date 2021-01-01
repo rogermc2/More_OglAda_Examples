@@ -63,7 +63,7 @@ package body Custom_Levels_Manager is
                Data.Name := To_Unbounded_String (aLine);
                Data.Text_ID := Text.Add_Text
                  (aLine, Left_Margin_Cl, Mname_Y,
-                  25.0, 1.0, 1.0, 1.0, 1.0);
+                  25.0,  (1.0, 1.0, 1.0, 1.0));
                Text.Set_Text_Visible (Data.Text_ID, False);
 
 --                 Custom_Maps.Replace_Element (Num_Custom_Maps, Data);
@@ -116,7 +116,7 @@ package body Custom_Levels_Manager is
             Data.Name := aLine;
             Data.Text_ID := Text.Add_Text
               (To_String (aLine), Left_Margin_Cl, Mname_Y,
-               25.0, 1.0, 1.0, 1.0, 1.0);
+               25.0,  (1.0, 1.0, 1.0, 1.0));
             Text.Set_Text_Visible (Data.Text_ID, False);
 
             Levels.Replace_Element (Level_ID, Data);

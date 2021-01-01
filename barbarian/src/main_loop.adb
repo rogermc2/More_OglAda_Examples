@@ -255,7 +255,7 @@ package body Main_Loop is
                Settings.Framebuffer_Width, Settings.Framebuffer_Height);
             Text.Init_Particle_Texts;
             Fps_Text_Index := Text.Add_Text ("fps: batches: vertices: ",
-                                             -1.0, 1.0, 15.0, 1.0, 1.0, 0.0, 0.9);
+                                             -1.0, 1.0, 15.0, (1.0, 1.0, 0.0, 0.9));
             Text.Set_Text_Visible (Fps_Text_Index, False);
             Text.Init_Comic_Texts;
 

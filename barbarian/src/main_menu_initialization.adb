@@ -31,6 +31,7 @@ package body Main_Menu_Initialization is
    use GL.Types;
    use Menu_Strings;
 
+   White              : constant Colors.Color := (1.0, 1.0, 1.0, 1.0);
    Menu_Text_Yoffs    : constant Single := 300.0; -- pixels above horizontal
    --  for text to start
    Menu_Big_Text_Sz   : constant Single := 80.0;  -- height of subseq lines to
@@ -111,8 +112,8 @@ package body Main_Menu_Initialization is
                         "have earned it today!                 ",
                         "COME!                                 ");
 
-   Title_Version_Text         : Integer := -1;
-   Restart_Graphics_Text      : Integer := -1;
+   Title_Version_Text      : Integer := -1;
+   Restart_Graphics_Text   : Integer := -1;
 
    Menu_Cursor_Curr_Item   : Integer := -1;
    Cursor_Current_Item     : Integer := -1;
@@ -134,7 +135,7 @@ package body Main_Menu_Initialization is
          End_Story_Text (index) := Text.Add_Text (End_Story_Strings (index),
                                        Credits_Text_Pos (GL.X),
                                        Credits_Text_Pos (GL.Y) + 10.0 * Single (index - 1),
-                                       30.0, 1.0, 1.0, 0.1, 1.0);
+                                       30.0, (1.0, 1.0, 0.1, 1.0));
          Text.Set_Text_Visible (End_Story_Text (index), False);
       end loop;
 
@@ -174,12 +175,12 @@ package body Main_Menu_Initialization is
          if Audio_Value_Strings (index) /= "" then
             Audio_Text (index) :=
               Text.Add_Text (Audio_Strings (index), X1, Y_Step * Y,
-                             20.0, 1.0, 1.0, 1.0, 1.0);
+                             20.0,  (1.0, 1.0, 1.0, 1.0));
             Text.Set_Text_Visible (Audio_Text (index), False);
 
             Audio_Value_Text (index) :=
               Text.Add_Text (To_String (Audio_Value_Strings (index)), X2,
-                             Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                             Y_Step * Y, 20.0,  (1.0, 1.0, 1.0, 1.0));
             Text.Set_Text_Visible (Audio_Text (index), False);
          end if;
       end loop;
@@ -220,7 +221,7 @@ package body Main_Menu_Initialization is
          Credits_Text_ID (index) :=
            Text.Add_Text (Credits_Strings (index), Credits_Text_Pos (GL.X),
                           Credits_Text_Pos (GL.Y),
-                          20.0, 1.0, 1.0, 1.0, 1.0);  --  orig pixels 30.0
+                          20.0,  (1.0, 1.0, 1.0, 1.0));  --  orig pixels 30.0
          Text.Set_Text_Visible (Credits_Text_ID (index), False);
       end loop;
    end Init_Credits;
@@ -314,12 +315,12 @@ package body Main_Menu_Initialization is
          Y_Step := Y_Step + 1.0;
          Graphics_Text (index) :=
            Text.Add_Text (Graphic_Strings (index), X1, Y_Step * Y,
-                          20.0, 1.0, 1.0, 1.0, 1.0);
+                          20.0, White);
          Text.Set_Text_Visible (Graphics_Text (index), False);
 
          Graphic_Value_Text (index) :=
            Text.Add_Text (To_String (Graphic_Value_Strings (index)),
-                          X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                          X2, Y_Step * Y, 20.0, White);
          Text.Set_Text_Visible (Graphic_Value_Text (index), False);
       end loop;
 
@@ -344,12 +345,12 @@ package body Main_Menu_Initialization is
          if Input_Handler.Action_Name (index) /= "" then
             Cal_KB_Text (index) :=
               Text.Add_Text (Input_Handler.Action_Name (index),
-                             X1, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                             X1, Y_Step * Y, 20.0, White);
             Text.Set_Text_Visible (Cal_KB_Text (index), False);
 
             Cal_GP_Text (index) :=
               Text.Add_Text (Input_Handler.Action_Name (index),
-                             X1, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                             X1, Y_Step * Y, 20.0, White);
             Text.Set_Text_Visible (Cal_GP_Text (index), False);
          end if;
 
@@ -363,30 +364,30 @@ package body Main_Menu_Initialization is
          if To_String (Input_Callback.Key_Name (index)) /= "" then
             KB_Binding_Text (index) :=
               Text.Add_Text (To_String (Input_Callback.Key_Name (index)),
-                             X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                             X2, Y_Step * Y, 20.0, White);
             Text.Set_Text_Visible (KB_Binding_Text (index), False);
 
             if Input_Handler.Joy_Axis_Bindings (index) < 0 or
               Input_Handler.Joy_Axis_Bindings (index) >= 8 then
                GP_Axis_Binding_Text (index) :=
-                 Text.Add_Text ("none", X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                 Text.Add_Text ("none", X2, Y_Step * Y, 20.0, White);
             else
                GP_Axis_Binding_Text (index) :=
                  Text.Add_Text (Input_Handler.Joy_Axis_Sign (index) & "AXIS" &
                                   Integer'Image (Input_Handler.Joy_Axis_Bindings (index)),
-                                X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                                X2, Y_Step * Y, 20.0, White);
             end if;
             Text.Set_Text_Visible (GP_Axis_Binding_Text (index), False);
 
             if Input_Handler.Joy_Button_Bindings (index) < 0 or
               Input_Handler.Joy_Button_Bindings (index) >= 32 then
                GP_Buttons_Binding_Text (index) :=
-                 Text.Add_Text ("none", X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                 Text.Add_Text ("none", X2, Y_Step * Y, 20.0, White);
             else
                GP_Buttons_Binding_Text (index) :=
                  Text.Add_Text
                    ("B" & Integer'Image (Input_Handler.Joy_Button_Bindings (index)),
-                    X2, Y_Step * Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                    X2, Y_Step * Y, 20.0, White);
             end if;
             Text.Set_Text_Visible (Input_Handler.Joy_Button_Bindings (index), False);
          end if;
@@ -409,7 +410,7 @@ package body Main_Menu_Initialization is
          Y_Step := Y_Step + 1.0;
          Input_Text (index) :=
            Text.Add_Text (Input_Strings (index), X, Y_Step * Y,
-                          20.0, 1.0, 1.0, 1.0, 1.0);
+                          20.0, White);
          Text.Set_Text_Visible (Input_Text (index), False);
       end loop;
       X := (512.0 - 330.0) / Single (Settings.Framebuffer_Width);
@@ -421,7 +422,7 @@ package body Main_Menu_Initialization is
       end if;
       Input_Value_Text (Input_Choice_Type'First) :=
         Text.Add_Text (To_String (Enabled_Strings (Enabled_String_Index)),
-                       X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+                       X, Y, 20.0, White);
       Text.Set_Text_Visible (Input_Value_Text (Input_Choice_Type'First), False);
    end Init_Input_Text;
 
@@ -441,7 +442,7 @@ package body Main_Menu_Initialization is
          --                                 Menu_Strings.Menu_String_Items (index));
          Menu_Text (index) :=
            Text.Add_Text (Menu_Strings.Menu_String_Items (index),
-                          1.3, Y, 30.0, 1.0, 1.0, 1.0, 1.0);
+                          1.3, Y, 30.0, White);
          Text.Set_Text_Visible (Menu_Text (index), False);
          Text.Centre_Text (Menu_Text (index), 0.5, Y);  --  orig X: 0.0
       end loop;
@@ -499,8 +500,7 @@ package body Main_Menu_Initialization is
       for index in Quit_Choice_Type'Range loop
          Y_Step := Y_Step + 1.0;
          Confirm_Quit_Text (index) :=
-           Text.Add_Text (Quit_Strings (index), X, Y_Step * Y2,
-                          20.0, 1.0, 1.0, 1.0, 1.0);
+           Text.Add_Text (Quit_Strings (index), X, Y_Step * Y2, 20.0, White);
          Text.Set_Text_Visible (Confirm_Quit_Text (index), False);
          Text.Centre_Text (Confirm_Quit_Text (index), 0.0, Y2);
       end loop;
@@ -535,17 +535,17 @@ package body Main_Menu_Initialization is
       Title_Point_Count := Mesh_Loader.Point_Count (Title_Mesh_ID);
 
       Title_Author_Text := Text.Add_Text ("a game by anton gerdelan",
-                                          0.0, -0.4, 30.0, 0.75, 0.75, 0.75, 1.0);
+                                          0.0, -0.4, 30.0, (0.75, 0.75, 0.75, 1.0));
       Text.Centre_Text (Title_Author_Text, 0.0, -0.8);
       Text.Set_Text_Visible (Title_Author_Text, False);
 
       Title_Buildstamp_Text := Text.Add_Text ("Ada v1.0 (alpha)",
-                                              X, Y, 10.0, 0.5, 0.5, 0.5, 1.0);
+                                              X, Y, 10.0, (0.5, 0.5, 0.5, 1.0));
       Text.Centre_Text (Title_Buildstamp_Text, 0.0, 0.0);
       Text.Set_Text_Visible (Title_Buildstamp_Text, False);
 
       Title_Version_Text := Text.Add_Text ("pre-release demo",
-                                           0.0, -0.2, 20.0, 1.0, 1.0, 0.0, 1.0);
+                                           0.0, -0.2, 20.0, (1.0, 1.0, 0.0, 1.0));
       Text.Centre_Text (Title_Version_Text, 0.0, -0.8);
       Text.Set_Text_Visible (Title_Version_Text, False);
 
@@ -576,31 +576,29 @@ package body Main_Menu_Initialization is
       Y_Step : Single := 0.0;
    begin
       Joystick_Detected_Text  :=
-        Text.Add_Text ("joystick detected: " & Joy_Name & CRLF,
-                       X,  Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+        Text.Add_Text ("joystick detected: " & Joy_Name & CRLF, X, Y, 20.0, White);
       Text.Set_Text_Visible (Joystick_Detected_Text, False);
 
       Greatest_Axis_Text  :=
         Text.Add_Text ("axis: ", X,  Y,
-                       20.0, 1.0, 1.0, 0.0, 1.0);
+                       20.0, (1.0, 1.0, 0.0, 1.0));
       Text.Set_Text_Visible (Greatest_Axis_Text, False);
 
       Restart_Graphics_Text  :=
         Text.Add_Text ("the game must be restarted" & CRLF &
                          "for some changes to be applied", X,  Y,
-                       20.0, 1.0, 1.0, 0.0, 1.0);
+                       20.0, (1.0, 1.0, 0.0, 1.0));
       Text.Set_Text_Visible (Restart_Graphics_Text, False);
 
       Y := (-512.0 + 300.0) / Single (Settings.Framebuffer_Height);
       Already_Bound_Text  :=
         Text.Add_Text ("key is already bound!", X,  Y,
-                       20.0, 1.0, 1.0, 0.0, 1.0);
+                       20.0, (1.0, 1.0, 0.0, 1.0));
       Text.Set_Text_Visible (Already_Bound_Text, False);
 
       for index in Input_Choice_Type'Range loop
          Input_Text (index) :=
-           Text.Add_Text (Input_Strings (index), X, Y_Step * Y,
-                          20.0, 1.0, 1.0, 1.0, 1.0);
+           Text.Add_Text (Input_Strings (index), X, Y_Step * Y, 20.0, White);
          Text.Set_Text_Visible (Input_Text (index), False);
          Y_Step := Y_Step + 1.0;
       end loop;

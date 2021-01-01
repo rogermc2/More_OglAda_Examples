@@ -68,11 +68,11 @@ package body Level_Menu_Manager is
             if Out_Data.Locked then
                Out_Data.Name_Text_ID :=
                  Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
-                                20.0, 1.0, 1.0, 1.0, 1.0);
+                                20.0,  (1.0, 1.0, 1.0, 1.0));
             else
                Out_Data.Name_Text_ID :=
                  Text.Add_Text (Out_Name, Left_Margin_Cl, Name_Y,
-                                20.0, 0.25, 0.25, 0.25, 1.0);
+                                20.0, (0.25, 0.25, 0.25, 1.0));
             end if;
             Text.Set_Text_Visible (Out_Data.Name_Text_ID, False);
             Maps.Replace_Element (In_Cursor, Out_Data);
@@ -83,7 +83,7 @@ package body Level_Menu_Manager is
       --                 Ada.Containers.Count_Type'Image (Maps.Length));
 
       Text.Change_Text_Colour
-        (Maps.Element (Selected_Map_ID).Name_Text_ID, 1.0, 0.0, 1.0, 1.0);
+        (Maps.Element (Selected_Map_ID).Name_Text_ID, (1.0, 0.0, 1.0, 1.0));
       Game_Utils.Game_Log ("---Level_Menu_Manager.Init_Levels Levels Initialized---");
 
    end Init_Levels;

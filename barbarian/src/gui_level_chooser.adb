@@ -229,7 +229,7 @@ package body GUI_Level_Chooser is
 
         Choose_Level_Text_ID :=
           Text.Add_Text ("choose thy battle!", 0.0, Single (Top_Margin_Cl),
-                         30.0, 1.0, 1.0, 0.0, 0.8);
+                         30.0, (1.0, 1.0, 0.0, 0.8));
         Text.Centre_Text (Choose_Level_Text_ID, 0.0, Single (Top_Margin_Cl));
         Text.Set_Text_Visible (Choose_Level_Text_ID, False);
 
@@ -395,14 +395,14 @@ package body GUI_Level_Chooser is
         if Custom then
             while Has_Element (Custom_Map_Cursor) loop
                 Custom_Map := Element (Custom_Map_Cursor);
-                Text.Change_Text_Colour (Custom_Map.Text_ID, 1.0, 1.0, 1.0, 1.0);
+                Text.Change_Text_Colour (Custom_Map.Text_ID,  (1.0, 1.0, 1.0, 1.0));
                 Custom_Levels.Replace_Element (Custom_Map_Cursor, Custom_Map);
                 Next (Custom_Map_Cursor);
             end loop;
         else
             while Has_Element (Map_Cursor) and then To_Index (Map_Cursor) < 9 loop
                 aLevel := Element (Map_Cursor);
-                Text.Change_Text_Colour (aLevel.Name_Text_ID, 1.0, 1.0, 1.0, 1.0);
+                Text.Change_Text_Colour (aLevel.Name_Text_ID,  (1.0, 1.0, 1.0, 1.0));
                 Levels.Replace_Element (Map_Cursor, aLevel);
                 Next (Map_Cursor);
             end loop;
@@ -631,15 +631,15 @@ package body GUI_Level_Chooser is
                 end if;
 
                 if Selected_Level_ID /= Old_Sel then
-                    Text.Change_Text_Colour (Selected_Level_ID, 1.0, 0.0, 1.0, 1.0);
-                    Text.Change_Text_Colour (Old_Sel, 1.0, 1.0, 1.0, 1.0);
+                    Text.Change_Text_Colour (Selected_Level_ID, (1.0, 0.0, 1.0, 1.0));
+                    Text.Change_Text_Colour (Old_Sel,  (1.0, 1.0, 1.0, 1.0));
                     Update_Selected_Entry_Level (False, Custom_Maps);
                 end if;
             else
                 if not Old_Map.Locked then
-                    Text.Change_Text_Colour (Old_Sel, 1.0, 1.0, 1.0, 1.0);
+                    Text.Change_Text_Colour (Old_Sel,  (1.0, 1.0, 1.0, 1.0));
                 else
-                    Text.Change_Text_Colour (Old_Sel, 0.25, 0.25, 0.25, 1.0);
+                    Text.Change_Text_Colour (Old_Sel, (0.25, 0.25, 0.25, 1.0));
                 end if;
                 Update_Selected_Entry_Level (False, Custom_Maps);
             end if;
@@ -691,7 +691,7 @@ package body GUI_Level_Chooser is
               Text.Add_Text (To_String (Selected_Level.Title),
                              Left_Margin_Cl + Lt_Margin_Cl,
                              Top_Margin_Cl - 100.0 / Single (Settings.Framebuffer_Height),  --  180
-                             30.0, 0.9, 0.9, 0.0, 0.8);
+                             30.0, (0.9, 0.9, 0.0, 0.8));
             Text.Set_Text_Visible (Level_Title_Text_ID, False);
 
             --           Game_Utils.Game_Log
@@ -713,7 +713,7 @@ package body GUI_Level_Chooser is
                    Left_Margin_Cl + Lt_Margin_Cl,
                    Top_Margin_Cl - (1.0 + 0.2 * Single (index - 1)) * 240.0 / Single
                    (Settings.Framebuffer_Height),
-                   14.0, 0.75, 0.75, 0.75, 1.0));
+                   14.0, (0.75, 0.75, 0.75, 1.0)));
                 Text.Set_Text_Visible (Level_Story_Text_ID.Element (index), False);
             end loop;
         else
@@ -741,7 +741,7 @@ package body GUI_Level_Chooser is
                        Top_Margin_Cl -
                          (1.0 + 0.2 * Single (index - 1)) * 240.0 / Single
                        (Settings.Framebuffer_Height),
-                       14.0, 0.75, 0.75, 0.75, 1.0));
+                       14.0, (0.75, 0.75, 0.75, 1.0)));
                     Text.Set_Text_Visible
                       (Level_Story_Text_ID.Element (index), False);
                 end if;

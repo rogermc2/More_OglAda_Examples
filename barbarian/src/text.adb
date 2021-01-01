@@ -41,7 +41,7 @@ package body Text is
 
     type Particle_Text_Data is record
         Countdown : Float := 0.0;
-        Colour    : Singles.Vector4 := (0.0, 0.0, 0.0, 0.0);
+        Colour    : Colors.Color := (0.0, 0.0, 0.0, 0.0);
         World_Pos : Singles.Vector3 := (0.0, 0.0, 0.0);
         Text_ID   : Integer := 0;
     end record;
@@ -90,25 +90,26 @@ package body Text is
     Active_Comic_Texts   : array (1 .. 8) of Active_Comic_Text_Data;
     Last_Comic_Text_Used : Integer := -1;
     Particle_Texts       : array (1 .. Max_Particle_Texts) of Particle_Text_Data;
+    Next_Particle_Text   : Positive := 1;
 
     --     Max_Strings          : constant Integer := 256;
     --      MAX_POPUP_TEXTS                 : constant Integer := 128;
     --      MAX_PARTICLE_TEXTS              : constant Integer := 8;
     --      COMIC_TEXT_FULL_COLOUR_TIME     : constant Float := 3.0;
     --      COMIC_TEXT_TIME                 : constant Float :=  6.0;
-    --      PARTICLE_TEXT_FULL_COLOUR_TIME  : constant Float := 0.5;
-    Particle_Text_Time    : constant Float := 0.25;
-    Particle_Text_Speed   : constant Single := 5.0;
+    Particle_Text_Full_Colour_Time  : constant Float := 0.5;
+    Particle_Text_Time              : constant Float := 0.25;
+    Particle_Text_Speed             : constant Single := 5.0;
 
     Font_Shader           : GL.Objects.Programs.Program;
     Font_Texture          : GL.Objects.Textures.Texture;
     Text_Box_Shader       : GL.Objects.Programs.Program;
     Text_Box_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Text_Box_Points       : constant GL.Types.Singles.Vector2_Array (1 .. 4) :=
-                             ((0.0, 0.0),
-                              (0.0, -1.0),
-                              (1.0,  0.0),
-                              (1.0, -1.0));
+                              ((0.0, 0.0),
+                               (0.0, -1.0),
+                               (1.0,  0.0),
+                               (1.0, -1.0));
     Text_Box_Colour       : Colour_List;
     Renderable_Texts      : Renderable_Text_List;
     Font_Viewport_Width   : Int := 0;
@@ -181,13 +182,40 @@ package body Text is
     end Add_Comic_Text;
 
     --  ------------------------------------------------------------------------
+
+    procedure Add_Particle_Text
+      (theText : String; Colour : Colors.Color; World_Pos : Singles.Vector3) is
+        use Singles;
+        Index    : constant Positive := Next_Particle_Text;
+        Clip_Pos : Vector4;
+    begin
+        Particle_Texts (index).Countdown := Particle_Text_Time +
+          Particle_Text_Full_Colour_Time;
+        Particle_Texts (index).Colour := Colour;
+        Particle_Texts (index).World_Pos := World_Pos;
+
+        Update_Text (index, theText);
+        Clip_Pos := Camera.PV_Matrix *
+          Singles.To_Vector4 (Particle_Texts (index).World_Pos);
+        Clip_Pos (GL.X) := Clip_Pos (GL.X) / Clip_Pos (GL.W);
+        Clip_Pos (GL.Y) := Clip_Pos (GL.Y) / Clip_Pos (GL.W);
+        Move_Text (index, Clip_Pos (GL.X), Clip_Pos (GL.Y));
+
+        Change_Text_Colour (index, Colour);
+        Set_Text_Visible (Particle_Texts (index).Text_ID, True);
+        Next_Particle_Text := (Next_Particle_Text + 1) mod
+          Max_Particle_Texts + 1;
+    end Add_Particle_Text;
+
+    --  ----------------------------------------------------------------------------
     --  Add_Text adds a string of text to render on-screen
     --  returns an integer to identify it with later to change the text
     --  x,y are position of the bottom-left of the first character in clip space
     --  size_is_px is the size of maximum-sized glyph in pixels on screen
     --  r, g, b, a is the colour of the text string
-    function Add_Text (theText                          : String;
-                       X, Y, Size_In_Pixels, R, G, B, A : Single) return Positive is
+    function Add_Text (theText               : String;
+                       X, Y, Size_In_Pixels : Single;
+                       Colour : GL.Types.Colors.Color) return Positive is
         use GL.Objects.Buffers;
         use GL.Types;
         use Shader_Attributes;
@@ -202,10 +230,10 @@ package body Text is
         R_Text.Top_Left_X := X;
         R_Text.Top_Left_Y := Y;
         R_Text.Size_Px := Size_In_Pixels;
-        R_Text.Red := R;
-        R_Text.Green := G;
-        R_Text.Blue := B;
-        R_Text.A := A;
+        R_Text.Red := Colour (R);
+        R_Text.Green := Colour (G);
+        R_Text.Blue := Colour (B);
+        R_Text.A := Colour (A);
         R_Text.Points_VBO.Initialize_Id;
         R_Text.Tex_Coords_VBO.Initialize_Id;
         R_Text.Point_Count := 0;
@@ -269,7 +297,7 @@ package body Text is
 
     --  ------------------------------------------------------------------------
 
-    procedure Change_Text_Colour (ID : Positive; R, G, B, A : Single) is
+    procedure Change_Text_Colour (ID : Positive; Colour : Colors.Color) is
         use Renderable_Texts_Package;
         Curs     : Cursor := Renderable_Texts.First;
         Valid_ID : Boolean := False;
@@ -279,10 +307,10 @@ package body Text is
             Valid_ID := To_Index (Curs) = ID;
             if Valid_ID then
                 theText := Element (Curs);
-                theText.Red := R;
-                theText.Green := G;
-                theText.Blue := B;
-                theText.A := A;
+                theText.Red := Colour (R);
+                theText.Green := Colour (G);
+                theText.Blue := Colour (B);
+                theText.A := Colour (A);
                 Renderable_Texts.Replace_Element (ID, theText);
             else
                 Next (Curs);
@@ -312,8 +340,7 @@ package body Text is
                               return Positive is
         use GL.Types.Colors;
         Text_Index : constant Positive :=
-                       Add_Text (Text, X_Min, Y_Min, Scale, Text_Colour (R),
-                                 Text_Colour (G), Text_Colour (B), Text_Colour (A));
+                       Add_Text (Text, X_Min, Y_Min, Scale, Text_Colour);
         R_Text     : Renderable_Text := Renderable_Texts.Element (Text_Index);
     begin
         R_Text.Box_Colour := Box_Colour;
@@ -413,7 +440,7 @@ package body Text is
     begin
         for index in 1 .. Max_Particle_Texts loop
             Particle_Texts (index).Text_ID :=
-              Add_Text ("text", 0.0, 0.0, 20.0, 1.0, 1.0, 1.0, 1.0);
+              Add_Text ("text", 0.0, 0.0, 20.0, (1.0, 1.0, 1.0, 1.0));
             Set_Text_Visible (Particle_Texts (index).Text_ID, False);
         end loop;
     end Init_Particle_Texts;
@@ -717,22 +744,19 @@ package body Text is
                     Set_Text_Visible (Particle_Texts (index).Text_ID, False);
                 else
                     Particle_Texts (index).World_Pos (GL.Z) :=
-                       Particle_Texts (index).World_Pos (GL.Z) -
+                      Particle_Texts (index).World_Pos (GL.Z) -
                       Particle_Text_Speed * Single (Seconds);
                     Clip_Pos := Camera.PV_Matrix *
                       Singles.To_Vector4 (Particle_Texts (index).World_Pos);
-                      Clip_Pos (GL.X) := Clip_Pos (GL.X) / Clip_Pos (GL.W);
-                      Clip_Pos (GL.Y) := Clip_Pos (GL.Y) / Clip_Pos (GL.W);
-                      Move_Text (index, Clip_Pos (GL.X), Clip_Pos (GL.Y));
-                      if Particle_Texts (index).Countdown < Particle_Text_Time then
-                        Particle_Texts (index).Colour (GL.W) :=
+                    Clip_Pos (GL.X) := Clip_Pos (GL.X) / Clip_Pos (GL.W);
+                    Clip_Pos (GL.Y) := Clip_Pos (GL.Y) / Clip_Pos (GL.W);
+                    Move_Text (index, Clip_Pos (GL.X), Clip_Pos (GL.Y));
+                    if Particle_Texts (index).Countdown < Particle_Text_Time then
+                        Particle_Texts (index).Colour (A) :=
                           Single (Particle_Texts (index).Countdown / Particle_Text_Time);
                         Change_Text_Colour
-                          (index, Particle_Texts (index).Colour (GL.X),
-                          Particle_Texts (index).Colour (GL.Y),
-                          Particle_Texts (index).Colour (GL.Z),
-                          Particle_Texts (index).Colour (GL.W));
-                      end if;
+                          (index, Particle_Texts (index).Colour);
+                    end if;
                 end if;
             end if;
         end loop;

@@ -6,10 +6,10 @@ package Text is
 
    Text_Exception : Exception;
 
-   function Add_Text (theText                          : String;
-                      X, Y, Size_In_Pixels, R, G, B, A : Single) return Positive;
+   function Add_Text (theText  : String; X, Y, Size_In_Pixels : Single;
+                      Colour : GL.Types.Colors.Color) return Positive;
    procedure Centre_Text (ID : Positive; X, Y : Single);
-   procedure Change_Text_Colour (ID : Positive; R, G, B, A : Single);
+   procedure Change_Text_Colour (ID : Positive; Colour : GL.Types.Colors.Color);
    function Create_Text_Box (Text                    : String;
                              X_Min, Y_Min, Scale     : Single;
                              Text_Colour, Box_Colour : GL.Types.Colors.Color)

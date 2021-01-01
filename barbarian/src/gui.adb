@@ -379,17 +379,17 @@ package body GUI is
 
       X := X_Ref + 384.0 / FB_Width;
       Javelin_Ammo_Text_Index := Text.Add_Text
-        ("0", X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+        ("0", X, Y, 20.0, (1.0, 1.0, 1.0, 1.0));
       Text.Set_Text_Visible (Javelin_Ammo_Text_Index, False);
 
       X := X_Ref + 640.0 / FB_Width;
       Gold_Text_Index := Text.Add_Text
-        ("0", X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+        ("0", X, Y, 20.0,  (1.0, 1.0, 1.0, 1.0));
       Text.Set_Text_Visible (Gold_Text_Index, False);
 
       X := X_Ref + 896.0 / FB_Width;
       Kills_Text_Index := Text.Add_Text
-        ("0", X, Y, 20.0, 1.0, 1.0, 1.0, 1.0);
+        ("0", X, Y, 20.0,  (1.0, 1.0, 1.0, 1.0));
       Text.Set_Text_Visible (Kills_Text_Index, False);
    end Init_Gold_Counter;
 
@@ -427,7 +427,7 @@ package body GUI is
 
       Bottom_Health_Text_Index :=
         Text.Add_Text (To_String (Bottom_Health_Name),
-                       0.0, 0.0, 32.0, 1.0, 1.0, 1.0, 1.0);
+                       0.0, 0.0, 32.0, (1.0, 1.0, 1.0, 1.0));
       Text.Centre_Text (Bottom_Health_Text_Index,
                         Single (5 + Health_Bar_Width_Px + 2 * Crong_Head_Width_Px)
                         / Single (Settings.Framebuffer_Width) - 1.0,
@@ -435,12 +435,12 @@ package body GUI is
                         / Single (Settings.Framebuffer_Height) - 1.0);
       Top_Health_Text_Index :=
         Text.Add_Text (To_String (Top_Health_Name),
-                       0.0, 0.0, 32.0, 1.0, 1.0, 1.0, 1.0);
+                       0.0, 0.0, 32.0,  (1.0, 1.0, 1.0, 1.0));
       Text.Centre_Text (Top_Health_Text_Index, 0.0, 0.0);
       Text.Set_Text_Visible (Top_Health_Text_Index, False);
       Finish_Stats_Text_Index  :=
         Text.Add_Text ("Level finished.",
-                       0.0, 0.0, 24.0, 0.0, 1.0, 0.0, 1.0);
+                       0.0, 0.0, 24.0, (0.0, 1.0, 0.0, 1.0));
       Text.Centre_Text (Finish_Stats_Text_Index, 0.0, 0.0);
       Text.Set_Text_Visible (Finish_Stats_Text_Index, False);
       GUIs_Initialized := True;
