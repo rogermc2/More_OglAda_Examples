@@ -48,6 +48,8 @@ package Prop_Renderer is
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
    procedure Splash_Particles_At (Pos : Singles.Vector3);
    procedure Update_Properties (Seconds : Float);
+   procedure Update_Dynamic_Lights (World_Pos, Diff, Specular : Singles.Vector3;
+                                    Dist : Single);
    procedure Update_Static_Lights_Uniforms;
 
 end Prop_Renderer;

@@ -16,7 +16,7 @@ package Character_Controller is
    type Barbarian_Character is private;
 
    Char_Mount_Wall_Max_Height : constant GL.Types.Single := 1.0;  --  0.75F --  Was 1.0
-   Max_Inventory_Javelins     : constant GL.Types.Int := 4;
+   Max_Inventory_Javelins     : constant Natural := 4;
    Gold_Current               : Integer := 0;
    Gold_Max                   : Integer := 0;
    Total_Treasure_Found       : Integer := 0;
@@ -42,8 +42,8 @@ package Character_Controller is
    function Heading (Character : Barbarian_Character) return Maths.Degree;
    procedure Init;
    function On_Ground (Character : Barbarian_Character) return Boolean;
-   function Javelin_Count (Character_ID : Positive) return Integer;
-   function Javelin_Count (Character : in out Barbarian_Character) return Integer;
+   function Javelin_Count (Character_ID : Positive) return Natural;
+   function Javelin_Count (Character : in out Barbarian_Character) return Natural;
    procedure Load_Characters (Input_File : File_Type; Editor_Mode : Boolean);
    function Map  (Character_ID : Positive) return Ints.Vector2;
    function Map  (Character : Barbarian_Character) return Ints.Vector2;

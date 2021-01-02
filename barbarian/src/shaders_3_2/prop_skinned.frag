@@ -1,4 +1,3 @@
-
 #version 410 core
 
 out vec4 frag_colour;
@@ -42,8 +41,8 @@ float specular_exponent = 50.0;
 void calc_a_light (
 	in vec3 light_pos_wor, in float range, in vec3 l_d, in vec3 l_s,
 	in vec4 texel_diff, in vec4 texel_spec, in vec3 n_eye,
-	inout vec3 I_d, inout vec3 I_s
-) {
+	inout vec3 I_d, inout vec3 I_s)
+    {
 	vec3 light_pos_eye = (V * vec4 (light_pos_wor, 1.0)).xyz;
 	float d = distance (light_pos_eye, p_eye);
 	float roll_off_fac = range - clamp (d, 0.0, range); // 1 to 0

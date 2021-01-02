@@ -45,7 +45,7 @@ package body Properties_Skinned_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Prop_Skinned_Shader
+   procedure Init
      (Prop_Shader : out GL.Objects.Programs.Program) is
       use GL.Objects.Shaders;
       use GL.Types.Singles;
@@ -118,7 +118,7 @@ package body Properties_Skinned_Shader_Manager is
       when others =>
          Put_Line ("An exception occurred in GUI_Atlas_Shader_Manager.Init.");
          raise;
-   end Init_Prop_Skinned_Shader;
+   end Init;
 
    --  -------------------------------------------------------------------------
 

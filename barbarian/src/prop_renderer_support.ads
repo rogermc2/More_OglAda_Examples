@@ -64,7 +64,7 @@ package Prop_Renderer_Support is
 
       -- Animation And Rendering
       -- -----------------------
-      Model_Mat               : Singles.Matrix4 := Singles.Identity4;
+      Model_Matrix            : Singles.Matrix4 := Singles.Identity4;
       Current_Bone_Transforms : Depth_Skinned_Shader_Manager.Bone_Matrices_Array
         := (others => Singles.Identity4);
       Anim_Duration           : Float := 0.0;
@@ -96,9 +96,9 @@ package Prop_Renderer_Support is
    Type Prop_Script is record
       -- Mesh/File Stuff
       File_Name             : Unbounded_String := To_Unbounded_String ("");
-      Mesh_Index            : Positive;  -- Index Of Mesh In The Mesh Loader
-      Outlines_Mesh_Index   : Positive;
-      Smashed_Script_Index  : Positive;-- Script To Switch To Once It Has Been Smashed (Changes Prop Type Stuff)
+      Mesh_Index            : Natural := 0;  -- Index Of Mesh In The Mesh Loader
+      Outlines_Mesh_Index   : Natural := 0;
+      Smashed_Script_Index  : Natural := 0;  -- Script To Switch To Once It Has Been Smashed (Changes Prop Type Stuff)
 
 
       -- Draw Stuff
@@ -108,9 +108,9 @@ package Prop_Renderer_Support is
       Shadow_Vao            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       -- Opengl Outline Mesh Vao
       Outlines_Vao          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      -- # Vertices In Mesh
+      -- Vertices In Mesh
       Vertex_Count          : Int := 0;
-      -- # Vertices In Outlines Mesh
+      -- Vertices In Outlines Mesh
       Outlines_Vertex_Count : Int := 0;
       -- Radius Of Visibility Sphere - Defined In Mesh File
       Bounding_Radius       : Single := 0.0;

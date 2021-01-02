@@ -24,7 +24,7 @@ package Properties_Shader_Manager is
     procedure Set_Dyn_Light_Diff (Diff : Singles.Vector3);
     procedure Set_Dyn_Light_Spec (Spec : Singles.Vector3);
     procedure Set_Dyn_Light_Range (Light_Range : Single);
-    procedure Set_Inverse_Map (Inverse_Map : Singles.Matrix4);
+    procedure Set_Inverse_Matrix (Inverse_Matrix : Singles.Matrix4);
     procedure Set_L_A (L_A : Singles.Vector3);
     procedure Set_Light_Pos (Position : Light_Array);
     procedure Set_Light_Diff (Diff : Light_Array);
@@ -34,7 +34,7 @@ package Properties_Shader_Manager is
     procedure Set_Norm_Map (Norm_Map : Int);
     procedure Set_Outline_Pass (Ol_Pass : Single);
     procedure Set_Perspective (Perspective_Matrix : Singles.Matrix4);
-    procedure Set_Shadow_Enabled (Enable : Single);
+    procedure Set_Shadows_Enabled (Enable : Single);
     procedure Set_Spec_Map (Spec_Map : Int);
     procedure Set_Static_Light_Indices (Indices : Ints.Vector2);
     procedure Set_View (View_Matrix : Singles.Matrix4);

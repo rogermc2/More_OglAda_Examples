@@ -245,10 +245,10 @@ package body Properties_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Inverse_Map (Inverse_Map : Singles.Matrix4) is
+    procedure Set_Inverse_Matrix (Inverse_Matrix : Singles.Matrix4) is
     begin
-        GL.Uniforms.Set_Single (Property_Uniforms.Inv_M_ID, Inverse_Map);
-    end Set_Inverse_Map;
+        GL.Uniforms.Set_Single (Property_Uniforms.Inv_M_ID, Inverse_Matrix);
+    end Set_Inverse_Matrix;
 
     --  -------------------------------------------------------------------------
 
@@ -320,10 +320,10 @@ package body Properties_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Shadow_Enabled (Enable : Single) is
+    procedure Set_Shadows_Enabled (Enable : Single) is
     begin
         GL.Uniforms.Set_Single (Property_Uniforms.Shadow_Enabled_ID, Enable);
-    end Set_Shadow_Enabled;
+    end Set_Shadows_Enabled;
 
     --  -------------------------------------------------------------------------
 

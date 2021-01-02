@@ -173,11 +173,12 @@ package body Main_Loop is
                             GUI.Update_GUIs (Delta_Time);
                             Text.Update_Comic_Texts (Delta_Time);
                             Text.Update_Particle_Texts (Delta_Time);
-                            --                          Check_Victory_Defeat checks that if the "defeated"
-                            --                          gui is up then controls aren't updated except space
-                            --  		            to restart
-                            --  			    Note that this reloads and continues execution of game
-                            --                          as normal - major states stacks don't change or anything
+                            --  Check_Victory_Defeat checks that if the
+                            --  "defeated" gui is up then controls aren't
+                            --  updated except space to restart.
+                            --  Note that this reloads and continues execution
+                            --  of game as normal.
+                            --  Major states stacks don't change or anything
                             Is_Running := Check_Victory_Defeat;
 
                             if Is_Running then

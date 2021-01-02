@@ -664,7 +664,7 @@ end On_Ground;
 
 --  -------------------------------------------------------------------------
 
-function Javelin_Count (Character_ID : Positive) return Integer is
+function Javelin_Count (Character_ID : Positive) return Natural is
     aCharacter : constant Barbarian_Character := Characters.Element (Character_ID);
 begin
     return aCharacter.Javelin_Count;
@@ -673,7 +673,7 @@ end Javelin_Count;
 --  -------------------------------------------------------------------------
 
 function Javelin_Count (Character : in out Barbarian_Character)
-                        return Integer is
+                        return Natural is
 begin
     return Character.Javelin_Count;
 end Javelin_Count;
