@@ -223,7 +223,7 @@ package body Prop_Renderer is
     --  -------------------------------------------------------------------------
 
     function Get_Property_Data (Prop_Index : Positive)
-                               return Prop_Renderer_Support.Property_Data is
+                                return Prop_Renderer_Support.Property_Data is
     begin
         return Properties.Element (Prop_Index);
     end Get_Property_Data;
@@ -231,7 +231,7 @@ package body Prop_Renderer is
     --  -------------------------------------------------------------------------
 
     function Get_Script_Data (Script_Index : Positive)
-                             return Prop_Renderer_Support.Prop_Script is
+                              return Prop_Renderer_Support.Prop_Script is
     begin
         return Scripts.Element (Script_Index);
     end Get_Script_Data;
@@ -475,13 +475,13 @@ package body Prop_Renderer is
                         Translate (GL.Y) := Translate (GL.Y) + Height_Dia;
                         Property.Heading_Deg := Property.Heading_Deg + Heading_Dia;
                         Rot_Matrix := Rotate_Y_Degree
-                              (Rot_Matrix, Property.Heading_Deg);
+                          (Rot_Matrix, Property.Heading_Deg);
                         Trans_Matrix := Translation_Matrix  (Translate);
                         Model_Matrix := Rot_Matrix * Trans_Matrix;
                         Set_Model (Model_Matrix);
                         Particle_System.Set_Particle_System_Position
                           (Property.Particle_System_Index,
-                          Script.Particles_Offset + Translate);
+                           Script.Particles_Offset + Translate);
                         Properties.Replace_Element (Prop_I, Property);
                     end if;
 
@@ -509,6 +509,46 @@ package body Prop_Renderer is
             end loop;
         end if;
     end Render_Javelin_Standard_Properties;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Render_Portal_Properties is
+        use GL.Objects.Vertex_Arrays;
+        use Singles;
+        use Character_Controller;
+        use Indicies_Package;
+        use Portal_Shader_Manager;
+        use Maths;
+        use Single_Math_Functions;
+        Character     : Barbarian_Character := Get_Character (1);
+        Count        : constant Integer := Integer (Jav_Stand_Props_Render_List.Length);
+        Property     : Prop_Renderer_Support.Property_Data;
+        Script       : Prop_Renderer_Support.Prop_Script;
+        Prop_I       : Integer;
+        Script_I     : Integer;
+        Tim          : constant Single := Single (Glfw.Time);
+    begin
+        if not Is_Empty (Portal_Props_Render_List) then
+            GL.Objects.Programs.Use_Program
+              (Properties_Shader_Manager.Portal_Shader);
+            Set_Time (Tim);
+            if Camera.Is_Dirty then
+                Set_View (Camera.View_Matrix);
+                Set_Perspective (Camera.Projection_Matrix);
+            end if;
+
+            for Param_I in 1 .. Count loop
+                Prop_I := Jav_Stand_Props_Render_List (Param_I);
+                Property := Properties.Element (Prop_I);
+                Script_I := Properties (Prop_I).Script_Index;
+                Script := Scripts (Script_I);
+                Set_Model (Property.Model_Matrix);
+                GL_Utils.Bind_VAO (Script.Vao);
+                Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
+                Draw_Arrays (Triangles, 0, Script.Vertex_Count);
+            end loop;
+        end if;
+    end Render_Portal_Properties;
 
     --  -------------------------------------------------------------------------
 
