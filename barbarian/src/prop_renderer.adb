@@ -424,6 +424,9 @@ package body Prop_Renderer is
         Spec_I       : Integer;
         Tim          : constant Single := Single (Glfw.Time);
         Prop_Kind    : Property_Type;
+        Heading_Dia  : Degree;
+        Height_Dia   : Single;
+        Translate    : Vector3;
         Rot_Matrix   : Matrix4 := Identity4;
         Trans_Matrix : Matrix4 := Identity4;
         Model_Matrix : Matrix4 := Identity4;
@@ -466,26 +469,40 @@ package body Prop_Renderer is
                             Set_Model (Model_Matrix);
                         end if;
                     else
-                        null;
+                        Heading_Dia := Degree (20.0 * Tim);
+                        Height_Dia := 0.5 * Sin (2.0 * Tim);
+                        Translate := Property.World_Pos;
+                        Translate (GL.Y) := Translate (GL.Y) + Height_Dia;
+                        Property.Heading_Deg := Property.Heading_Deg + Heading_Dia;
+                        Rot_Matrix := Rotate_Y_Degree
+                              (Rot_Matrix, Property.Heading_Deg);
+                        Trans_Matrix := Translation_Matrix  (Translate);
+                        Model_Matrix := Rot_Matrix * Trans_Matrix;
+                        Set_Model (Model_Matrix);
+                        Particle_System.Set_Particle_System_Position
+                          (Property.Particle_System_Index,
+                          Script.Particles_Offset + Translate);
+                        Properties.Replace_Element (Prop_I, Property);
                     end if;
+
                     if Continue then
-                        Set_Model (Property.Model_Matrix);
                         if Settings.Render_OLS and Script.Draw_Outlines then
                             GL.Culling.Set_Front_Face (Clockwise);
                             Set_Outline_Pass (1.0);
                             if Script.Outlines_Vertex_Count > 0 then
                                 GL_Utils.Bind_VAO (Script.Outlines_Vao);
+                                Draw_Arrays
+                                  (Triangles, 0, Script.Outlines_Vertex_Count);
                             else
                                 GL_Utils.Bind_VAO (Script.Vao);
-                                Draw_Arrays (Triangles, 0, Script.Outlines_Vertex_Count);
                                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
                             end if;
                             Set_Outline_Pass (0.0);
                             GL.Culling.Set_Front_Face (Counter_Clockwise);
                         end if;
+
                         GL_Utils.Bind_VAO (Script.Vao);
                         Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
-                        Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
                         Draw_Arrays (Triangles, 0, Script.Vertex_Count);
                     end if;
                 end if;
