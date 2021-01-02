@@ -333,7 +333,7 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    procedure Render_Basic_Properties is
+    procedure Render_Basic is
         use GL.Objects.Vertex_Arrays;
         use Indicies_Package;
         use Properties_Shader_Manager;
@@ -403,11 +403,11 @@ package body Prop_Renderer is
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
         end if;
-    end Render_Basic_Properties;
+    end Render_Basic;
 
     --  -------------------------------------------------------------------------
 
-    procedure Render_Javelin_Standard_Properties is
+    procedure Render_Javelin_Standard is
         use GL.Objects.Vertex_Arrays;
         use Singles;
         use Character_Controller;
@@ -508,11 +508,11 @@ package body Prop_Renderer is
                 end if;
             end loop;
         end if;
-    end Render_Javelin_Standard_Properties;
+    end Render_Javelin_Standard;
 
     --  -------------------------------------------------------------------------
 
-    procedure Render_Portal_Properties is
+    procedure Render_Portal is
         use GL.Objects.Vertex_Arrays;
         use Singles;
         use Character_Controller;
@@ -548,7 +548,7 @@ package body Prop_Renderer is
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
         end if;
-    end Render_Portal_Properties;
+    end Render_Portal;
 
     --  -------------------------------------------------------------------------
 
@@ -787,14 +787,14 @@ package body Prop_Renderer is
             end loop;  --  end for ui
         end loop;  --  end for vi
 
-        Render_Basic_Properties;
+        Render_Basic;
 
         Prop_Dyn_Light_Dirty := False;
     end Render_Props_Around_Split;
 
     --  -------------------------------------------------------------------------
 
-    procedure Render_Skinned_Properties is
+    procedure Render_Skinned is
         use GL.Objects.Vertex_Arrays;
         use Indicies_Package;
         use Properties_Skinned_Shader_Manager;
@@ -865,7 +865,81 @@ package body Prop_Renderer is
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
         end if;
-    end Render_Skinned_Properties;
+    end Render_Skinned;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Render_Treasure is
+        use GL.Objects.Vertex_Arrays;
+        use Indicies_Package;
+        use Properties_Skinned_Shader_Manager;
+        Count    : constant Integer := Integer (Skinned_Props_Render_List.Length);
+        Property : Prop_Renderer_Support.Property_Data;
+        Script   : Prop_Renderer_Support.Prop_Script;
+        Prop_I   : Integer;
+        Script_I : Integer;
+        Ssi      : Integer;
+        U        : Int;
+        V        : Int;
+    begin
+        if not Is_Empty (Skinned_Props_Render_List) then
+            GL.Objects.Programs.Use_Program
+              (Properties_Shader_Manager.Prop_Skinned_Shader);
+            if Camera.Is_Dirty then
+                Set_View (Camera.View_Matrix);
+                Set_Perspective (Camera.Projection_Matrix);
+            end if;
+            if Prop_Dyn_Light_Dirty then
+                Set_Dyn_Light_Pos (Prop_Dyn_Light_Pos_Wor);
+                Set_Dyn_Light_Diff (Prop_Dyn_Light_Diff);
+                Set_Dyn_Light_Spec (Prop_Dyn_Light_Spec);
+                Set_Dyn_Light_Range (Prop_Dyn_Light_Range);
+            end if;
+            if Settings.Shadows_Enabled then
+                Properties_Shader_Manager.Set_Shadows_Enabled (1.0);
+                Set_Caster_Position (Shadows.Caster_Position);
+                Shadows.Bind_Cube_Shadow_Texture (3);
+            else
+                Properties_Shader_Manager.Set_Shadows_Enabled (0.0);
+            end if;
+
+            for Param_I in 1 .. Count loop
+                Prop_I := Basic_Props_Render_List (Param_I);
+                Script_I := Properties (Prop_I).Script_Index;
+                Ssi := Scripts (Script_I).Smashed_Script_Index;
+                Property := Properties.Element (Prop_I);
+                if Property.Was_Smashed and Ssi > 0 then
+                    Script_I := Ssi;
+                end if;
+                Script := Scripts (Script_I);
+                --                  Mesh_I := Script.Mesh_Index;
+                Set_Bone_Matrices (Property.Current_Bone_Transforms);
+                Set_Model (Property.Model_Matrix);
+                U := Property.Map_U;
+                V := Property.Map_V;
+                Set_Static_Light_Indices
+                  ((Int (Manifold.Get_Light_Index (U, V, 0)),
+                   Int (Manifold.Get_Light_Index (U, V, 1))));
+                if Settings.Render_OLS and Script.Draw_Outlines then
+                    GL.Culling.Set_Front_Face (Clockwise);
+                    Set_Outline_Pass (1.0);
+                    if Script.Outlines_Vertex_Count > 0 then
+                        GL_Utils.Bind_VAO (Script.Outlines_Vao);
+                    else
+                        GL_Utils.Bind_VAO (Script.Vao);
+                        Draw_Arrays (Triangles, 0, Script.Outlines_Vertex_Count);
+                        Draw_Arrays (Triangles, 0, Script.Vertex_Count);
+                    end if;
+                    Set_Outline_Pass (0.0);
+                    GL.Culling.Set_Front_Face (Counter_Clockwise);
+                end if;
+                GL_Utils.Bind_VAO (Script.Vao);
+                Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
+                Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
+                Draw_Arrays (Triangles, 0, Script.Vertex_Count);
+            end loop;
+        end if;
+    end Render_Treasure;
 
     --  -------------------------------------------------------------------------
 

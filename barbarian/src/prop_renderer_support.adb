@@ -66,7 +66,7 @@ package body Prop_Renderer_Support is
 
       if Prop_Type /= Diamond_Trigger_Prop then
          if Prop_Type /= Jav_Stand_Prop or
-           Int (Character_Controller.Javelin_Count (1)) >=
+           Character_Controller.Javelin_Count (1) >=
              Character_Controller.Max_Inventory_Javelins then
             CSI := Character_Controller.Spec_Index (1);
             if Prop_Type /= Tavern_Prop or not (Gold_Current < 5 and
@@ -78,7 +78,7 @@ package body Prop_Renderer_Support is
                  (Identity4, To_Degrees (Radian (20.0 * Curr_Time)));
                Trans_Matrix := Translation_Matrix
                  ((0.0, 1.0 + 0.5 * Sin (2.0 * Curr_Time), 0.0));
-               Model_Matrix := Property.Model_Mat * Trans_Matrix * Rot_Matrix;
+               Model_Matrix := Property.Model_Matrix * Trans_Matrix * Rot_Matrix;
                Jav_Stand_Shader_Manager.Set_Model (Model_Matrix);
             end if;
          end if;
@@ -185,7 +185,7 @@ package body Prop_Renderer_Support is
          end if;
 
          Properties_Skinned_Shader_Manager.Set_Bone_Matrices (Property.Current_Bone_Transforms);
-         Properties_Skinned_Shader_Manager.Set_Model (Property.Model_Mat);
+         Properties_Skinned_Shader_Manager.Set_Model (Property.Model_Matrix);
          Properties_Skinned_Shader_Manager.Set_Static_Light_Indices
            ((Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 0),
             Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 1)));
@@ -202,9 +202,9 @@ package body Prop_Renderer_Support is
             Coins_Shader_Manager.Set_Caster_Pos_World (Shadows.Caster_Position);
             Shadows.Bind_Cube_Shadow_Texture (3);
          else
-            Set_Shadow_Enabled (0.0);
+            Coins_Shader_Manager.Set_Shadow_Enabled (0.0);
          end if;
-         Coins_Shader_Manager.Set_Model (Property.Model_Mat);
+         Coins_Shader_Manager.Set_Model (Property.Model_Matrix);
          Coins_Shader_Manager.Set_Time (Single (Glfw.Time));
 
       elsif Prop_Type = Jav_Stand_Prop or Prop_Type = Diamond_Trigger_Prop or
@@ -217,7 +217,7 @@ package body Prop_Renderer_Support is
             Portal_Shader_Manager.Set_View (Camera.View_Matrix);
             Portal_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
          end if;
-         Portal_Shader_Manager.Set_Model (Property.Model_Mat);
+         Portal_Shader_Manager.Set_Model (Property.Model_Matrix);
          Portal_Shader_Manager.Set_Time (Single (Glfw.Time));
 
       else
@@ -227,15 +227,15 @@ package body Prop_Renderer_Support is
             Properties_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
          end if;
          if Settings.Shadows_Enabled then
-            Properties_Shader_Manager.Set_Shadow_Enabled (1.0);
+            Properties_Shader_Manager.Set_Shadows_Enabled (1.0);
             Properties_Shader_Manager.Set_Caster_Position (Shadows.Caster_Position);
             Shadows.Bind_Cube_Shadow_Texture (3);
          else
-            Properties_Shader_Manager.Set_Shadow_Enabled (0.0);
+            Properties_Shader_Manager.Set_Shadows_Enabled (0.0);
          end if;
-         Properties_Shader_Manager.Set_Model (Property.Model_Mat);
-         Properties_Shader_Manager.Set_Inverse_Map
-           (From_Real_Matrix4 (Inverse (To_Real_Matrix4 (Property.Model_Mat))));
+         Properties_Shader_Manager.Set_Model (Property.Model_Matrix);
+         Properties_Shader_Manager.Set_Inverse_Matrix
+           (From_Real_Matrix4 (Inverse (To_Real_Matrix4 (Property.Model_Matrix))));
          Properties_Shader_Manager.Set_Static_Light_Indices
            ((Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 0),
             Manifold.Get_Light_Index (Property.Map_U, Property.Map_V, 1)));

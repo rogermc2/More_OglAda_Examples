@@ -110,7 +110,7 @@ package body Prop_Renderer.Boulder is
       Next_Pos_4 := (Next_Pos (Gl.X), Next_Pos (Gl.Y), Next_Pos (Gl.Z), 1.0);
       Translate_4 := Rot_Matrix * Next_Pos_4;
       Translate := (Translate_4 (GL.X), Translate_4 (Gl.Y), Translate_4 (Gl.Z));
-      Properties.Model_Mat := Maths.Translation_Matrix (Translate);
+      Properties.Model_Matrix := Maths.Translation_Matrix (Translate);
    end Bounce_Back_From_Wall;
 
    --  -------------------------------------------------------------------------
@@ -169,7 +169,7 @@ package body Prop_Renderer.Boulder is
          for index in Int range 1 .. 4 loop
             Hole_Point := aScript.Hole_Points (index);
             P := (Hole_Point (GL.X), 0.0, Hole_Point (GL.Y), 1.0);
-            Rp := aProperty.Model_Mat * P;
+            Rp := aProperty.Model_Matrix * P;
             Max_Min_XZ (Rp, index, Max_X, Min_X, Max_Z, Min_Z);
          end loop;
 
@@ -209,7 +209,7 @@ package body Prop_Renderer.Boulder is
                   for index in Int range 1 .. 4 loop
                      Box_Point := aScript.Box_Points (index);
                      P := (Box_Point (GL.X), 0.0, Box_Point (GL.Y), 1.0);
-                     Rp := aProperty.Model_Mat * P;
+                     Rp := aProperty.Model_Matrix * P;
                      Max_Min_XZ (Rp, index, Max_X, Min_X, Max_Z, Min_Z);
                   end loop;
                end if;
@@ -495,7 +495,7 @@ package body Prop_Renderer.Boulder is
             Bounce_Back_From_Wall (Properties, Gap_To_Floor, Radius,
                                    Next_U, Next_V, Direction, Desired_Vel);
             Origin := Script_Data.Origin;
-            Origin_4 := Properties.Model_Mat *
+            Origin_4 := Properties.Model_Matrix *
               (Origin (GL.X), Origin (GL.Y), Origin (GL.Z), 1.0);
             Properties.Origin_World := (Origin_4 (GL.X), Origin_4 (GL.Y),
                                         Origin_4 (GL.Z));
