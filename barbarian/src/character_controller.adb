@@ -17,6 +17,8 @@ with FB_Effects;
 with Game_Utils;
 with GUI;
 with GUI_Level_Chooser;
+with Input_Callback;
+with Input_Handler;
 with Manifold;
 with Particle_System;
 with Particle_System_Manager;
@@ -99,10 +101,12 @@ package body Character_Controller is
                           Throw_Back_Mps    : Single);
     procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character);
     procedure Spray_Screen_Check (Character : Barbarian_Character;
-                                  World_Pos : Singles.Vector3);
+                                      World_Pos : Singles.Vector3);
+    procedure Set_Idle_Animation (Character : in out Barbarian_Character);
     procedure Switch_Animation (Character : in out Barbarian_Character;
                                 Anim_Num  : Natural);
-    function Update_Player (Player_ID : Integer; Seconds : Float) return Boolean;
+    function Update_Player (Window    : in out Input_Callback.Barbarian_Window;
+                            Player_ID : Integer; Seconds : Float) return Boolean;
 
     --  -------------------------------------------------------------------------
 
@@ -173,6 +177,19 @@ package body Character_Controller is
     end Attach_Particle_System_To_Character;
 
     --  -------------------------------------------------------------------------
+
+    procedure Change_Weapon (Character : in out Barbarian_Character;
+                             Weapon : Weapon_Type) is
+        Spec_ID : constant Positive := Character.Specs_Index;
+    begin
+        Character.Current_Weapon := Weapon;
+        Character.Is_Attacking := False;
+        Character.Attack_Countdown :=
+          Specs_Manager.Weapon_Attack_Time (Spec_ID, Weapon);
+        Set_Idle_Animation (Character);
+    end Change_Weapon;
+
+    --  ------------------------------------------------------------------------
 
     function Chasing_Enemy (Character : Barbarian_Character) return Boolean is
     begin
@@ -961,6 +978,14 @@ end Set_Heading;
 
 --  ------------------------------------------------------------------------
 
+procedure Set_Idle_Animation (Character : in out Barbarian_Character) is
+begin
+    Switch_Animation
+          (Character, Weapon_Type'Enum_Rep (Character.Current_Weapon) + 1);
+end Set_Idle_Animation;
+
+--  ------------------------------------------------------------------------
+
 procedure Set_Skull_Countdown (Character : in out Barbarian_Character;
                                Seconds : Float) is
 begin
@@ -1147,7 +1172,8 @@ end Update_Character;
 
 --  -------------------------------------------------------------------------
 
-procedure Update_Characters (Seconds : Float) is
+procedure Update_Characters (Window     : in out Input_Callback.Barbarian_Window;
+                             Seconds : Float) is
     use Maths;
     use Batch_Manager;
     use Character_Map.Character_Map_Package;
@@ -1166,7 +1192,7 @@ begin
         aCharacter := Characters.First_Element;
         Characters_Updated := 0;
         --              if Character_Controller_Loaded then
-        OK := Update_Player (1, Seconds);
+        OK := Update_Player (Window, 1, Seconds);
         if OK then
             aCharacter.Needs_Update := False;
             Characters_Updated := Characters_Updated + 1;
@@ -1226,13 +1252,34 @@ end Update_Decay;
 
 --  -------------------------------------------------------------------------
 
-function Update_Player (Player_ID : Integer; Seconds : Float)
+function Update_Player (Window    : in out Input_Callback.Barbarian_Window;
+                        Player_ID : Integer; Seconds : Float)
                         return Boolean is
-    aCharacter : constant Barbarian_Character :=
-                   Characters.Element (Player_ID);
+    use Input_Handler;
+    Character : Barbarian_Character := Characters.Element (Player_ID);
     Ok : Boolean := False;
 begin
+    if Character.Is_Alive then
+            if Is_Action_Down (Up_Action) then
+                Character.Desired_Direction (GL.Z) := -1.0;
+                Character.Is_Walking := True;
+            elsif Is_Action_Down (Down_Action) then
+                Character.Desired_Direction (GL.Z) := 1.0;
+                Character.Is_Walking := True;
+            elsif Is_Action_Down (Left_Action) then
+                Character.Desired_Direction (GL.X) := -1.0;
+                Character.Is_Walking := True;
+            elsif Is_Action_Down (Right_Action) then
+                Character.Desired_Direction (GL.X) := 1.0;
+                Character.Is_Walking := True;
+            end if;
+
+            if Was_Action_Pressed (Window, Sword_Action) then
+                Change_Weapon (Character, Sword_Wt);
+            end if;
+    end if;
     return OK;
+
 exception
     when others =>
         Put_Line ("Character_Controller.Update_Player exception");

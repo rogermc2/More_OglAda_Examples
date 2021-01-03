@@ -21,9 +21,12 @@ package Input_Handler is
    function Action_Name (Index: Action_Range) return String;
    function Attack_Action return Integer;
    function Clear_Binding_Action return Integer;
+   function Cycle_Weapons_Action return Integer;
    function Down_Action return Integer;
+   function Hammer_Action return Integer;
    procedure Init (Window : in out Input_Callback.Barbarian_Window);
    function Is_Action_Down (Action : Action_Range) return Boolean;
+   function Javelin_Action return Integer;
    function Joy_Axis_Bindings (Index: Action_Range) return Integer;
    function Joy_Axis_Sign (Index: Action_Range) return Character;
    function Joy_Button_Bindings (Index: Action_Range) return Integer;
@@ -42,6 +45,7 @@ package Input_Handler is
    procedure Set_Key_For_Action (Action_Name : String; Key_Code : Natural);
    function Set_Key_For_Action (Action_Name : String; Key_Code : Natural)
                                 return Integer;
+   function Sword_Action return Integer;
    function Up_Action return Integer;
    function Was_Action_Pressed (Window : in out Input_Callback.Barbarian_Window;
                                 Action_ID : Action_Range) return Boolean;

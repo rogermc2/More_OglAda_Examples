@@ -9,7 +9,7 @@ with Settings;
 
 package body Input_Handler is
 
-   Input_Actions : Input_Actions_Data;
+   Actions : Input_Actions_Data;
 --     Input_State   : Input_State_Data;
 
    function Register_Key_Action (Name : String) return Integer;
@@ -18,14 +18,14 @@ package body Input_Handler is
 
    function Action_Name (Index: Action_Range) return String is
    begin
-      return To_String (Input_Actions.Action_Names (Index));
+      return To_String (Actions.Action_Names (Index));
    end Action_Name;
 
    --  ------------------------------------------------------------------------
 
    function Attack_Action return Integer is
    begin
-      return Input_Actions.Attack_Action_ID;
+      return Actions.Attack_Action_ID;
    end Attack_Action;
 
    --  ------------------------------------------------------------------------
@@ -48,7 +48,7 @@ package body Input_Handler is
          if Found then
             J_Index := Index;
          else
-            Found := Input_Actions.Action_Names (index) = Action;
+            Found := Actions.Action_Names (index) = Action;
          end if;
       end loop;
 
@@ -61,15 +61,15 @@ package body Input_Handler is
             end if;
             Axis := Integer'Value (aLine (Pos2 + 7 .. Last));
             if Axis < 0 or Axis > 7 then
-               Input_Actions.Joy_Axis_Bindings (Action_Range (J_Index)) := -1;
-               Input_Actions.Joy_Axis_Sign (Action_Range (J_Index)) := ' ';
+               Actions.Joy_Axis_Bindings (Action_Range (J_Index)) := -1;
+               Actions.Joy_Axis_Sign (Action_Range (J_Index)) := ' ';
             else
                if Sign /= '-' and Sign /= '+' then
                   raise Input_Handler_Exception with
                     "Read_Key_Config joystick axis sign " & Sign & "invalid.";
                end if;
-               Input_Actions.Joy_Axis_Bindings (Action_Range (J_Index)) := Axis;
-               Input_Actions.Joy_Axis_Sign (Action_Range (J_Index)) := Sign;
+               Actions.Joy_Axis_Bindings (Action_Range (J_Index)) := Axis;
+               Actions.Joy_Axis_Sign (Action_Range (J_Index)) := Sign;
             end if;
          end if;
          Code := Integer'Value (aLine (Pos2 + 1 .. Last));
@@ -82,14 +82,21 @@ package body Input_Handler is
 
    function Clear_Binding_Action return Integer is
    begin
-      return Input_Actions.Clear_Binding_Action_ID;
+      return Actions.Clear_Binding_Action_ID;
    end Clear_Binding_Action;
 
    --  ------------------------------------------------------------------------
 
+   function Cycle_Weapons_Action return Integer is
+   begin
+      return Actions.Cycle_Weapons_Action_ID;
+   end Cycle_Weapons_Action;
+
+   --  -------------------------------------------------------------------------
+
    function Down_Action return Integer is
    begin
-      return Input_Actions.Down_Action_ID;
+      return Actions.Down_Action_ID;
    end Down_Action;
 
    --  ------------------------------------------------------------------------
@@ -141,6 +148,13 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Hammer_Action return Integer is
+   begin
+      return Actions.Sel_Hammer_Action_ID;
+   end Hammer_Action;
+
+   --  -------------------------------------------------------------------------
+
    procedure Init (Window  : in out Input_Callback.Barbarian_Window) is
       --          Hide_Cursor : Boolean := True;
    begin
@@ -154,63 +168,70 @@ package body Input_Handler is
    function Is_Action_Down (Action : Action_Range) return Boolean is
    begin
       --  Joystick processing
-      return Input_Callback.Is_Key_Down (Input_Actions.Key_Bindings (Action));
+      return Input_Callback.Is_Key_Down (Actions.Key_Bindings (Action));
    end Is_Action_Down;
 
    --  ------------------------------------------------------------------------
 
+   function Javelin_Action return Integer is
+   begin
+      return Actions.Sel_Javelin_Action_ID;
+   end Javelin_Action;
+
+   --  -------------------------------------------------------------------------
+
    function Joy_Axis_Bindings (Index: Action_Range) return Integer is
    begin
-      return Input_Actions.Joy_Axis_Bindings (Index);
+      return Actions.Joy_Axis_Bindings (Index);
    end Joy_Axis_Bindings;
 
    --  ------------------------------------------------------------------------
 
    function Joy_Axis_Sign (Index: Action_Range) return Character is
    begin
-      return Input_Actions.Joy_Axis_Sign (Index);
+      return Actions.Joy_Axis_Sign (Index);
    end Joy_Axis_Sign;
 
    --  ------------------------------------------------------------------------
 
    function Joy_Button_Bindings (Index: Action_Range) return Integer is
    begin
-      return Input_Actions.Joy_Button_Bindings (Index);
+      return Actions.Joy_Button_Bindings (Index);
    end Joy_Button_Bindings;
 
    --  ------------------------------------------------------------------------
 
    function Key_Binding (Index: Action_Range) return Integer is
    begin
-      return Key'Enum_Rep (Input_Actions.Key_Bindings (Index));
+      return Key'Enum_Rep (Actions.Key_Bindings (Index));
    end Key_Binding;
 
    --  ------------------------------------------------------------------------
 
    function Left_Action return Integer is
    begin
-      return Input_Actions.Left_Action_ID;
+      return Actions.Left_Action_ID;
    end Left_Action;
 
    --  ------------------------------------------------------------------------
 
    function Menu_Back_Action return Integer is
    begin
-      return Input_Actions.Menu_Back_Action_ID;
+      return Actions.Menu_Back_Action_ID;
    end Menu_Back_Action;
 
    --  ------------------------------------------------------------------------
 
    function Num_Actions return Integer is
    begin
-      return Input_Actions.Num_Actions;
+      return Actions.Num_Actions;
    end Num_Actions;
 
    --  ------------------------------------------------------------------------
 
    function OK_Action return Integer is
    begin
-      return Input_Actions.Ok_Action_ID;
+      return Actions.Ok_Action_ID;
    end OK_Action;
 
    --  ------------------------------------------------------------------------
@@ -218,7 +239,7 @@ package body Input_Handler is
    function Menu_Open_Action return Integer is
    begin
       --  Joystick processing
-      return Input_Actions.Open_Menu_Action_ID;
+      return Actions.Open_Menu_Action_ID;
    end Menu_Open_Action;
 
    --  ------------------------------------------------------------------------
@@ -265,22 +286,22 @@ package body Input_Handler is
       --           Integer'Image (Action);
       --        end if;
       Game_Utils.Game_Log ("Register_Input_Actions");
-      Input_Actions.Num_Actions := 0;
-      Input_Actions.Left_Action_ID := Register_Key_Action ("Move_Left");
-      Input_Actions.Right_Action_ID := Register_Key_Action ("Move_Right");
-      Input_Actions.Up_Action_ID := Register_Key_Action ("Move_Fwd");
-      Input_Actions.Down_Action_ID := Register_Key_Action ("Move_Bk");
-      Input_Actions.Attack_Action_ID := Register_Key_Action ("Attack");
-      Input_Actions.Open_Door_Action_ID := Register_Key_Action ("Open_Door/Buy");
-      Input_Actions.Wipe_Screen_Action_ID := Register_Key_Action ("Wipe_Screen");
-      Input_Actions.Sel_Sword_Action_ID := Register_Key_Action ("Select_Sword");
-      Input_Actions.Sel_Javelin_Action_ID := Register_Key_Action ("Select_Javelin");
-      Input_Actions.Sel_Hammer_Action_ID := Register_Key_Action ("Select_Hammer");
-      Input_Actions.Cycle_Weapons_Action_ID := Register_Key_Action ("Cycle_Weapons");
-      Input_Actions.Open_Menu_Action_ID := Register_Key_Action ("Open_Menu");
-      Input_Actions.Menu_Back_Action_ID := Register_Key_Action ("Menu_Back");
-      Input_Actions.Ok_Action_ID := Register_Key_Action ("Ok");
-      Input_Actions.Clear_Binding_Action_ID := Register_Key_Action("Clear_Binding");
+      Actions.Num_Actions := 0;
+      Actions.Left_Action_ID := Register_Key_Action ("Move_Left");
+      Actions.Right_Action_ID := Register_Key_Action ("Move_Right");
+      Actions.Up_Action_ID := Register_Key_Action ("Move_Fwd");
+      Actions.Down_Action_ID := Register_Key_Action ("Move_Bk");
+      Actions.Attack_Action_ID := Register_Key_Action ("Attack");
+      Actions.Open_Door_Action_ID := Register_Key_Action ("Open_Door/Buy");
+      Actions.Wipe_Screen_Action_ID := Register_Key_Action ("Wipe_Screen");
+      Actions.Sel_Sword_Action_ID := Register_Key_Action ("Select_Sword");
+      Actions.Sel_Javelin_Action_ID := Register_Key_Action ("Select_Javelin");
+      Actions.Sel_Hammer_Action_ID := Register_Key_Action ("Select_Hammer");
+      Actions.Cycle_Weapons_Action_ID := Register_Key_Action ("Cycle_Weapons");
+      Actions.Open_Menu_Action_ID := Register_Key_Action ("Open_Menu");
+      Actions.Menu_Back_Action_ID := Register_Key_Action ("Menu_Back");
+      Actions.Ok_Action_ID := Register_Key_Action ("Ok");
+      Actions.Clear_Binding_Action_ID := Register_Key_Action("Clear_Binding");
 
       Default_Key_Configuration;
 
@@ -293,22 +314,22 @@ package body Input_Handler is
       if Name = "" then
          raise Input_Handler_Exception with
            "Input_Handler.Register_Key_Actions key name is blank.";
-      elsif Input_Actions.Num_Actions >= Max_Actions then
+      elsif Actions.Num_Actions >= Max_Actions then
          raise Input_Handler_Exception with
            "Input_Handler.Register_Key_Actions too many key actions";
       end if;
 
-      Input_Actions.Num_Actions := Input_Actions.Num_Actions + 1;
-      Input_Actions.Action_Names (Input_Actions.Num_Actions) :=
+      Actions.Num_Actions := Actions.Num_Actions + 1;
+      Actions.Action_Names (Actions.Num_Actions) :=
         To_Unbounded_String (Name);
-      return Input_Actions.Num_Actions;
+      return Actions.Num_Actions;
    end Register_Key_Action;
 
    --  ------------------------------------------------------------------------
 
    function Right_Action return Integer is
    begin
-      return Input_Actions.Right_Action_ID;
+      return Actions.Right_Action_ID;
    end Right_Action;
 
    --  ------------------------------------------------------------------------
@@ -350,16 +371,16 @@ package body Input_Handler is
            Natural'Image (Key_Code);
       end if;
 
-      for index in 1 .. Input_Actions.Num_Actions loop
-         if Input_Actions.Action_Names (index) = Action_Name then
-            Input_Actions.Key_Bindings (index) := Key'Enum_Val (Key_Code);
+      for index in 1 .. Actions.Num_Actions loop
+         if Actions.Action_Names (index) = Action_Name then
+            Actions.Key_Bindings (index) := Key'Enum_Val (Key_Code);
             Result := index;
          end if;
       end loop;
 
-      for index in 1 .. Input_Actions.Num_Actions loop
-         if Input_Actions.Action_Names (index) /= Action_Name  and
-           Input_Actions.Key_Bindings (index) = Key'Enum_Val (Key_Code) then
+      for index in 1 .. Actions.Num_Actions loop
+         if Actions.Action_Names (index) /= Action_Name  and
+           Actions.Key_Bindings (index) = Key'Enum_Val (Key_Code) then
             Game_Utils.Game_Log ("Input_Handler.Set_Key_For_Action,  WARNING:"
                                  &  " duplicate entry for Key_Code: " &
                                  Natural'Image (Key_Code));
@@ -373,9 +394,16 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Sword_Action return Integer is
+   begin
+      return Actions.Sel_Sword_Action_ID;
+   end Sword_Action;
+
+   --  -------------------------------------------------------------------------
+
    function Up_Action return Integer is
    begin
-      return Input_Actions.Up_Action_ID;
+      return Actions.Up_Action_ID;
    end Up_Action;
 
    --  ------------------------------------------------------------------------
@@ -386,7 +414,7 @@ package body Input_Handler is
    begin
       --  Joystick not implemented
       Result := Input_Callback.Was_Key_Pressed
-        (Window, Input_Actions.Key_Bindings (Action_ID));
+        (Window, Actions.Key_Bindings (Action_ID));
       return Result;
    end Was_Action_Pressed;
 
@@ -394,7 +422,7 @@ package body Input_Handler is
 
    function Wipe_Screen_Action return Integer is
    begin
-      return Input_Actions.Wipe_Screen_Action_ID;
+      return Actions.Wipe_Screen_Action_ID;
    end Wipe_Screen_Action;
 
    --  ------------------------------------------------------------------------

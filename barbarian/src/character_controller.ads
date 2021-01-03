@@ -7,6 +7,7 @@ with GL.Types;
 
 with Maths;
 
+with Input_Callback;
 with Projectile_Manager;
 with Specs_Manager;
 
@@ -72,7 +73,8 @@ package Character_Controller is
    function Sprite_Index (Character : Barbarian_Character) return Positive;
    procedure Start_Attack (Character : in out Barbarian_Character);
    function Teleport_Countdown (Character : Barbarian_Character) return Float;
-   procedure Update_Characters (Seconds : Float);
+   procedure Update_Characters (Window     : in out Input_Callback.Barbarian_Window;
+                                Seconds : Float);
    procedure Update_Decay (Character : in out Barbarian_Character;
                            Seconds : Float);
 
