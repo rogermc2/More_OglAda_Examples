@@ -1,6 +1,3 @@
-
-// 3d menu cursor
-
 #version 410 core
 
 out vec4 frag_colour;

@@ -22,6 +22,7 @@ with Portal_Shader_Manager;
 with Properties_Shader_Manager;
 with Properties_Skinned_Shader_Manager;
 with Prop_Renderer.Boulder;
+with Prop_Renderer.Render;
 with Settings;
 with Shadows;
 with Specs_Manager;
@@ -84,11 +85,11 @@ package body Prop_Renderer is
     Active_Properties_A           : Indicies_List;
     Active_Properties_B           : Indicies_List;
     Curr_Active_Props_A           : Boolean := True;
-    Basic_Props_Render_List       : Indicies_List;
-    Skinned_Props_Render_List     : Indicies_List;
-    Jav_Stand_Props_Render_List   : Indicies_List;
-    Portal_Props_Render_List      : Indicies_List;
-    Treasure_Props_Render_List    : Indicies_List;
+    Basic_Render_List             : Indicies_List;
+    Skinned_Render_List           : Indicies_List;
+    Jav_Stand_Render_List         : Indicies_List;
+    Portal_Render_List            : Indicies_List;
+    Treasure_Render_List          : Indicies_List;
     Last_Head_Launched            : GL_Maths.Integer_Array (1 .. Max_Decap_Types);
     Props_In_Tiles                : Props_In_Tiles_Array;
     Head_Particles                : GL_Maths.Integer_Array (1 .. Max_Decap_Particles);
@@ -256,11 +257,11 @@ package body Prop_Renderer is
         Properties.Clear;
         Active_Properties_A.Clear;
         Active_Properties_B.Clear;
-        Basic_Props_Render_List.Clear;
-        Skinned_Props_Render_List.Clear;
-        Jav_Stand_Props_Render_List.Clear;
-        Portal_Props_Render_List.Clear;
-        Treasure_Props_Render_List.Clear;
+        Basic_Render_List.Clear;
+        Skinned_Render_List.Clear;
+        Jav_Stand_Render_List.Clear;
+        Portal_Render_List.Clear;
+        Treasure_Render_List.Clear;
 
         Properties_Shader_Manager.Load_Prop_Shaders;
         Game_Utils.Game_Log ("Prop_Shaders loaded");
@@ -330,225 +331,6 @@ package body Prop_Renderer is
         Audio.Play_Sound (Decap_Sound_File, True);
 
     end Launch_Decap_Head;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Render_Basic is
-        use GL.Objects.Vertex_Arrays;
-        use Indicies_Package;
-        use Properties_Shader_Manager;
-        Count    : constant Integer := Integer (Basic_Props_Render_List.Length);
-        Property : Prop_Renderer_Support.Property_Data;
-        Script   : Prop_Renderer_Support.Prop_Script;
-        Prop_I   : Integer;
-        Script_I : Integer;
-        Ssi      : Integer;
-        U        : Int;
-        V        : Int;
-    begin
-        if not Is_Empty (Basic_Props_Render_List) then
-            GL.Objects.Programs.Use_Program (Prop_Shader);
-            if Camera.Is_Dirty then
-                Set_View (Camera.View_Matrix);
-                Set_Perspective (Camera.Projection_Matrix);
-                Set_Camera_Position (Camera.World_Position);
-            end if;
-            if Prop_Dyn_Light_Dirty then
-                Set_Dyn_Light_Pos (Prop_Dyn_Light_Pos_Wor);
-                Set_Dyn_Light_Diff (Prop_Dyn_Light_Diff);
-                Set_Dyn_Light_Spec (Prop_Dyn_Light_Spec);
-                Set_Dyn_Light_Range (Prop_Dyn_Light_Range);
-            end if;
-            if Settings.Shadows_Enabled then
-                Set_Shadows_Enabled (1.0);
-                Set_Caster_Position (Shadows.Caster_Position);
-                Shadows.Bind_Cube_Shadow_Texture (3);
-            else
-                Set_Shadows_Enabled (0.0);
-            end if;
-
-            for Param_I in 1 .. Count loop
-                Prop_I := Basic_Props_Render_List (Param_I);
-                Script_I := Properties (Prop_I).Script_Index;
-                Ssi := Scripts (Script_I).Smashed_Script_Index;
-                Property := Properties.Element (Prop_I);
-                if Property.Was_Smashed and Ssi > 0 then
-                    Script_I := Ssi;
-                end if;
-                Script := Scripts (Script_I);
-                U := Property.Map_U;
-                V := Property.Map_V;
-                Set_Model (Property.Model_Matrix);
-                Set_Inverse_Matrix (Property.Model_Matrix);
-                Set_Static_Light_Indices
-                  ((Int (Manifold.Get_Light_Index (U, V, 0)),
-                   Int (Manifold.Get_Light_Index (U, V, 1))));
-                if Settings.Render_OLS and Script.Draw_Outlines then
-                    GL.Culling.Set_Front_Face (Clockwise);
-                    Set_Outline_Pass (1.0);
-                    if Script.Outlines_Vertex_Count > 0 then
-                        GL_Utils.Bind_VAO (Script.Outlines_Vao);
-                    else
-                        GL_Utils.Bind_VAO (Script.Vao);
-                        Draw_Arrays (Triangles, 0, Script.Outlines_Vertex_Count);
-                        Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-                    end if;
-                    Set_Outline_Pass (0.0);
-                    GL.Culling.Set_Front_Face (Counter_Clockwise);
-                end if;
-                GL_Utils.Bind_VAO (Script.Vao);
-                Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
-                Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
-                Texture_Manager.Bind_Texture (2, Script.Normal_Map_Id);
-                Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-            end loop;
-        end if;
-    end Render_Basic;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Render_Javelin_Standard is
-        use GL.Objects.Vertex_Arrays;
-        use Singles;
-        use Character_Controller;
-        use Indicies_Package;
-        use Jav_Stand_Shader_Manager;
-        use Maths;
-        use Single_Math_Functions;
-        Character     : Barbarian_Character := Get_Character (1);
-        Count        : constant Integer := Integer (Jav_Stand_Props_Render_List.Length);
-        Property     : Prop_Renderer_Support.Property_Data;
-        Script       : Prop_Renderer_Support.Prop_Script;
-        Prop_I       : Integer;
-        Script_I     : Integer;
-        Spec_I       : Integer;
-        Tim          : constant Single := Single (Glfw.Time);
-        Prop_Kind    : Property_Type;
-        Heading_Dia  : Degree;
-        Height_Dia   : Single;
-        Translate    : Vector3;
-        Rot_Matrix   : Matrix4 := Identity4;
-        Trans_Matrix : Matrix4 := Identity4;
-        Model_Matrix : Matrix4 := Identity4;
-        Continue     : Boolean := True;
-    begin
-        if not Is_Empty (Jav_Stand_Props_Render_List) then
-            GL.Objects.Programs.Use_Program
-              (Properties_Shader_Manager.Jav_Stand_Shader);
-            Set_Time (Tim);
-            if Camera.Is_Dirty then
-                Set_View (Camera.View_Matrix);
-                Set_Perspective (Camera.Projection_Matrix);
-            end if;
-
-            for Param_I in 1 .. Count loop
-                if  Continue then
-                    Prop_I := Jav_Stand_Props_Render_List (Param_I);
-                    Property := Properties.Element (Prop_I);
-                    Script_I := Properties (Prop_I).Script_Index;
-                    Script := Scripts (Script_I);
-                    Spec_I := Spec_Index (1);
-                    Prop_Kind := Script.Script_Type;
-                    if Prop_Kind = Jav_Stand_Prop or Prop_Kind = Tavern_Prop then
-                        --  don't draw if can't buy right now
-                        if Prop_Kind = Jav_Stand_Prop then
-                            Continue := (Gold_Current > 4 and
-                                           Javelin_Count (1) < Max_Inventory_Javelins);
-                        elsif Prop_Kind = Tavern_Prop then
-                            Continue :=
-                              (Gold_Current > 4 and Current_Health (1) <
-                                   Specs_Manager.Initial_Health (Spec_I));
-                        end if;
-                        if Continue then
-                            Rot_Matrix := Rotate_Y_Degree
-                              (Rot_Matrix, Degree (20.0 * Tim));
-                            Trans_Matrix := Translation_Matrix
-                              ((0.0, 1.0 + 0.25 * Sin (2.0 * Tim), 0.0));
-                            Model_Matrix :=
-                              Rot_Matrix * Trans_Matrix * Property.Model_Matrix;
-                            Set_Model (Model_Matrix);
-                        end if;
-                    else
-                        Heading_Dia := Degree (20.0 * Tim);
-                        Height_Dia := 0.5 * Sin (2.0 * Tim);
-                        Translate := Property.World_Pos;
-                        Translate (GL.Y) := Translate (GL.Y) + Height_Dia;
-                        Property.Heading_Deg := Property.Heading_Deg + Heading_Dia;
-                        Rot_Matrix := Rotate_Y_Degree
-                          (Rot_Matrix, Property.Heading_Deg);
-                        Trans_Matrix := Translation_Matrix  (Translate);
-                        Model_Matrix := Rot_Matrix * Trans_Matrix;
-                        Set_Model (Model_Matrix);
-                        Particle_System.Set_Particle_System_Position
-                          (Property.Particle_System_Index,
-                           Script.Particles_Offset + Translate);
-                        Properties.Replace_Element (Prop_I, Property);
-                    end if;
-
-                    if Continue then
-                        if Settings.Render_OLS and Script.Draw_Outlines then
-                            GL.Culling.Set_Front_Face (Clockwise);
-                            Set_Outline_Pass (1.0);
-                            if Script.Outlines_Vertex_Count > 0 then
-                                GL_Utils.Bind_VAO (Script.Outlines_Vao);
-                                Draw_Arrays
-                                  (Triangles, 0, Script.Outlines_Vertex_Count);
-                            else
-                                GL_Utils.Bind_VAO (Script.Vao);
-                                Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-                            end if;
-                            Set_Outline_Pass (0.0);
-                            GL.Culling.Set_Front_Face (Counter_Clockwise);
-                        end if;
-
-                        GL_Utils.Bind_VAO (Script.Vao);
-                        Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
-                        Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-                    end if;
-                end if;
-            end loop;
-        end if;
-    end Render_Javelin_Standard;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Render_Portal is
-        use GL.Objects.Vertex_Arrays;
-        use Singles;
-        use Character_Controller;
-        use Indicies_Package;
-        use Portal_Shader_Manager;
-        use Maths;
-        use Single_Math_Functions;
-        Character     : Barbarian_Character := Get_Character (1);
-        Count        : constant Integer := Integer (Jav_Stand_Props_Render_List.Length);
-        Property     : Prop_Renderer_Support.Property_Data;
-        Script       : Prop_Renderer_Support.Prop_Script;
-        Prop_I       : Integer;
-        Script_I     : Integer;
-        Tim          : constant Single := Single (Glfw.Time);
-    begin
-        if not Is_Empty (Portal_Props_Render_List) then
-            GL.Objects.Programs.Use_Program
-              (Properties_Shader_Manager.Portal_Shader);
-            Set_Time (Tim);
-            if Camera.Is_Dirty then
-                Set_View (Camera.View_Matrix);
-                Set_Perspective (Camera.Projection_Matrix);
-            end if;
-
-            for Param_I in 1 .. Count loop
-                Prop_I := Jav_Stand_Props_Render_List (Param_I);
-                Property := Properties.Element (Prop_I);
-                Script_I := Properties (Prop_I).Script_Index;
-                Script := Scripts (Script_I);
-                Set_Model (Property.Model_Matrix);
-                GL_Utils.Bind_VAO (Script.Vao);
-                Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
-                Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-            end loop;
-        end if;
-    end Render_Portal;
 
     --  -------------------------------------------------------------------------
 
@@ -694,6 +476,7 @@ package body Prop_Renderer is
         use Maths;
         use Single_Math_Functions;
         use Singles;
+        use Prop_Renderer.Render;
         use Transparency;
         Left         : constant Int := Maths.Max_Int (0, V - Tiles_Distance) + 1;
         Right        : constant Int := Maths.Min_Int (Batch_Manager.Max_Cols - 1,
@@ -716,11 +499,11 @@ package body Prop_Renderer is
         Sprite_Time  : Float;
         Curr_Sprite  : Positive;
     begin
-        Basic_Props_Render_List.Clear;
-        Skinned_Props_Render_List.Clear;
-        Jav_Stand_Props_Render_List.Clear;
-        Portal_Props_Render_List.Clear;
-        Treasure_Props_Render_List.Clear;
+        Basic_Render_List.Clear;
+        Skinned_Render_List.Clear;
+        Jav_Stand_Render_List.Clear;
+        Portal_Render_List.Clear;
+        Treasure_Render_List.Clear;
 
         Prev_Time := Curr_Time;
         Enable (Depth_Test);
@@ -768,18 +551,18 @@ package body Prop_Renderer is
                             case Prop_Type is
                             when Door_Prop | Pillar_Prop | Anim_Loop_Prop |
                                  Windlass_Prop =>
-                                Skinned_Props_Render_List.Append (Props_Index);
+                                Skinned_Render_List.Append (Props_Index);
                             when Elevator_Prop =>
-                                Basic_Props_Render_List.Append (Props_Index);
+                                Basic_Render_List.Append (Props_Index);
                             when Jav_Stand_Prop | Tavern_Prop |
                                  Diamond_Trigger_Prop =>
-                                Jav_Stand_Props_Render_List.Append (Props_Index);
+                                Jav_Stand_Render_List.Append (Props_Index);
                             when Portal_Prop =>
-                                Portal_Props_Render_List.Append (Props_Index);
+                                Portal_Render_List.Append (Props_Index);
                             when Treasure_Prop | Hammer_Prop | Food_Prop =>
-                                Treasure_Props_Render_List.Append (Props_Index);
+                                Treasure_Render_List.Append (Props_Index);
                             when others =>
-                                Basic_Props_Render_List.Append (Props_Index);
+                                Basic_Render_List.Append (Props_Index);
                             end case;
                         end if;
                     end if;
@@ -787,159 +570,12 @@ package body Prop_Renderer is
             end loop;  --  end for ui
         end loop;  --  end for vi
 
-        Render_Basic;
+        Render_Basic
+          (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff, Prop_Dyn_Light_Spec,
+           Prop_Dyn_Light_Range, Prop_Dyn_Light_Dirty);
 
         Prop_Dyn_Light_Dirty := False;
     end Render_Props_Around_Split;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Render_Skinned is
-        use GL.Objects.Vertex_Arrays;
-        use Indicies_Package;
-        use Properties_Skinned_Shader_Manager;
-        Count    : constant Integer := Integer (Skinned_Props_Render_List.Length);
-        Property : Prop_Renderer_Support.Property_Data;
-        Script   : Prop_Renderer_Support.Prop_Script;
-        Prop_I   : Integer;
-        Script_I : Integer;
-        --          Mesh_I   : Integer;
-        Ssi      : Integer;
-        U        : Int;
-        V        : Int;
-    begin
-        if not Is_Empty (Skinned_Props_Render_List) then
-            GL.Objects.Programs.Use_Program
-              (Properties_Shader_Manager.Prop_Skinned_Shader);
-            if Camera.Is_Dirty then
-                Set_View (Camera.View_Matrix);
-                Set_Perspective (Camera.Projection_Matrix);
-            end if;
-            if Prop_Dyn_Light_Dirty then
-                Set_Dyn_Light_Pos (Prop_Dyn_Light_Pos_Wor);
-                Set_Dyn_Light_Diff (Prop_Dyn_Light_Diff);
-                Set_Dyn_Light_Spec (Prop_Dyn_Light_Spec);
-                Set_Dyn_Light_Range (Prop_Dyn_Light_Range);
-            end if;
-            if Settings.Shadows_Enabled then
-                Properties_Shader_Manager.Set_Shadows_Enabled (1.0);
-                Set_Caster_Position (Shadows.Caster_Position);
-                Shadows.Bind_Cube_Shadow_Texture (3);
-            else
-                Properties_Shader_Manager.Set_Shadows_Enabled (0.0);
-            end if;
-
-            for Param_I in 1 .. Count loop
-                Prop_I := Basic_Props_Render_List (Param_I);
-                Script_I := Properties (Prop_I).Script_Index;
-                Ssi := Scripts (Script_I).Smashed_Script_Index;
-                Property := Properties.Element (Prop_I);
-                if Property.Was_Smashed and Ssi > 0 then
-                    Script_I := Ssi;
-                end if;
-                Script := Scripts (Script_I);
-                --                  Mesh_I := Script.Mesh_Index;
-                Set_Bone_Matrices (Property.Current_Bone_Transforms);
-                Set_Model (Property.Model_Matrix);
-                U := Property.Map_U;
-                V := Property.Map_V;
-                Set_Static_Light_Indices
-                  ((Int (Manifold.Get_Light_Index (U, V, 0)),
-                   Int (Manifold.Get_Light_Index (U, V, 1))));
-                if Settings.Render_OLS and Script.Draw_Outlines then
-                    GL.Culling.Set_Front_Face (Clockwise);
-                    Set_Outline_Pass (1.0);
-                    if Script.Outlines_Vertex_Count > 0 then
-                        GL_Utils.Bind_VAO (Script.Outlines_Vao);
-                    else
-                        GL_Utils.Bind_VAO (Script.Vao);
-                        Draw_Arrays (Triangles, 0, Script.Outlines_Vertex_Count);
-                        Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-                    end if;
-                    Set_Outline_Pass (0.0);
-                    GL.Culling.Set_Front_Face (Counter_Clockwise);
-                end if;
-                GL_Utils.Bind_VAO (Script.Vao);
-                Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
-                Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
-                Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-            end loop;
-        end if;
-    end Render_Skinned;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Render_Treasure is
-        use GL.Objects.Vertex_Arrays;
-        use Indicies_Package;
-        use Properties_Skinned_Shader_Manager;
-        Count    : constant Integer := Integer (Skinned_Props_Render_List.Length);
-        Property : Prop_Renderer_Support.Property_Data;
-        Script   : Prop_Renderer_Support.Prop_Script;
-        Prop_I   : Integer;
-        Script_I : Integer;
-        Ssi      : Integer;
-        U        : Int;
-        V        : Int;
-    begin
-        if not Is_Empty (Skinned_Props_Render_List) then
-            GL.Objects.Programs.Use_Program
-              (Properties_Shader_Manager.Prop_Skinned_Shader);
-            if Camera.Is_Dirty then
-                Set_View (Camera.View_Matrix);
-                Set_Perspective (Camera.Projection_Matrix);
-            end if;
-            if Prop_Dyn_Light_Dirty then
-                Set_Dyn_Light_Pos (Prop_Dyn_Light_Pos_Wor);
-                Set_Dyn_Light_Diff (Prop_Dyn_Light_Diff);
-                Set_Dyn_Light_Spec (Prop_Dyn_Light_Spec);
-                Set_Dyn_Light_Range (Prop_Dyn_Light_Range);
-            end if;
-            if Settings.Shadows_Enabled then
-                Properties_Shader_Manager.Set_Shadows_Enabled (1.0);
-                Set_Caster_Position (Shadows.Caster_Position);
-                Shadows.Bind_Cube_Shadow_Texture (3);
-            else
-                Properties_Shader_Manager.Set_Shadows_Enabled (0.0);
-            end if;
-
-            for Param_I in 1 .. Count loop
-                Prop_I := Basic_Props_Render_List (Param_I);
-                Script_I := Properties (Prop_I).Script_Index;
-                Ssi := Scripts (Script_I).Smashed_Script_Index;
-                Property := Properties.Element (Prop_I);
-                if Property.Was_Smashed and Ssi > 0 then
-                    Script_I := Ssi;
-                end if;
-                Script := Scripts (Script_I);
-                --                  Mesh_I := Script.Mesh_Index;
-                Set_Bone_Matrices (Property.Current_Bone_Transforms);
-                Set_Model (Property.Model_Matrix);
-                U := Property.Map_U;
-                V := Property.Map_V;
-                Set_Static_Light_Indices
-                  ((Int (Manifold.Get_Light_Index (U, V, 0)),
-                   Int (Manifold.Get_Light_Index (U, V, 1))));
-                if Settings.Render_OLS and Script.Draw_Outlines then
-                    GL.Culling.Set_Front_Face (Clockwise);
-                    Set_Outline_Pass (1.0);
-                    if Script.Outlines_Vertex_Count > 0 then
-                        GL_Utils.Bind_VAO (Script.Outlines_Vao);
-                    else
-                        GL_Utils.Bind_VAO (Script.Vao);
-                        Draw_Arrays (Triangles, 0, Script.Outlines_Vertex_Count);
-                        Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-                    end if;
-                    Set_Outline_Pass (0.0);
-                    GL.Culling.Set_Front_Face (Counter_Clockwise);
-                end if;
-                GL_Utils.Bind_VAO (Script.Vao);
-                Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
-                Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
-                Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-            end loop;
-        end if;
-    end Render_Treasure;
 
     --  -------------------------------------------------------------------------
 
@@ -959,11 +595,11 @@ package body Prop_Renderer is
 
         Active_Properties_A.Clear;
         Active_Properties_B.Clear;
-        Basic_Props_Render_List.Clear;
-        Skinned_Props_Render_List.Clear;
-        Jav_Stand_Props_Render_List.Clear;
-        Portal_Props_Render_List.Clear;
-        Treasure_Props_Render_List.Clear;
+        Basic_Render_List.Clear;
+        Skinned_Render_List.Clear;
+        Jav_Stand_Render_List.Clear;
+        Portal_Render_List.Clear;
+        Treasure_Render_List.Clear;
 
         Prop_Count := 0;
         Num_Types_Decap_Heads := 0;
