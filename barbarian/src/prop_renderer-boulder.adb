@@ -190,7 +190,7 @@ package body Prop_Renderer.Boulder is
                Height := Prop_Centre (GL.Y) + Radius * Cos (F);
                Continue := False;
             when Pillar_Prop =>
-               if aProperty.Door = Closed_State then
+               if aProperty.Door_Position = Closed_State then
                   Height := Height + Prop_Centre (GL.Y);
                else
                   Height := Prop_Centre (GL.Y);
@@ -199,7 +199,7 @@ package body Prop_Renderer.Boulder is
             when Door_Prop | Elevator_Prop | Box_Prop |
                  Mirror_Prop | Windlass_Prop | Big_Box_Prop =>
                if Prop_Type = Door_Prop and then
-                 aProperty.Door = Open_State then
+                 aProperty.Door_Position = Open_State then
                   Height := Min_Height;
                else
                   Min_X := 0.0;

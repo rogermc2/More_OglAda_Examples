@@ -29,6 +29,9 @@ package Prop_Renderer is
    Prop_Renderer_Exception : Exception;
 
    function Activate_Door (Property_Index : Positive) return Boolean;
+   function Activate_Door_In_Tile
+      (Map_U, Map_V : Int; Hand_Y_World_Pos : Single;
+       Activator : Activator_Type) return Boolean;
    procedure Delete_Script_Data (Script_Index : Positive);
    procedure Init;
    procedure Launch_Decap_Head (LHL_Type  : Positive;

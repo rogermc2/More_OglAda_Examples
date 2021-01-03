@@ -851,11 +851,12 @@ package body Character_Controller is
     --  -------------------------------------------------------------------------
 
     procedure Open_Door (Window  : in out Input_Callback.Barbarian_Window;
-                          Character : Barbarian_Character) is
+                         Character : Barbarian_Character) is
         use Maths;
         Hand_U : Int := Map (Character) (GL.X);
         Hand_V : Int := Map (Character) (GL.Y);
         Hdg    : Degree := Heading (Character);
+        Result : Boolean := False;
     begin
         if Input_Handler.Was_Action_Pressed
           (Window, Input_Handler.Open_Door_Action) then
@@ -872,7 +873,12 @@ package body Character_Controller is
                 Hand_U := Hand_U + 1;
             end if;
 
-            Activate_Door
+            Result := Prop_Renderer.Activate_Door_In_Tile
+              (Hand_U, Hand_V, 1.0 + Character.World_Pos (GL.Y),
+               Prop_Renderer.Prop_Activator_Player_State);
+            Result := Prop_Renderer.Activate_Door_In_Tile
+              (Character.Map (GL.X), Character.Map (GL.Y), 1.0 + Character.World_Pos (GL.Y),
+               Prop_Renderer.Prop_Activator_Player_State);
         end if;
 
     end Open_Door;

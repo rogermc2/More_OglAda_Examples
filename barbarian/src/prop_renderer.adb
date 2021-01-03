@@ -179,22 +179,20 @@ package body Prop_Renderer is
                 Property := Properties.Element (Positive (Property_I));
                 Script_I := Property.Script_Index;
                 Script := Scripts.Element (Script_I);
-                if Script.Script_Type = Door_Prop or
-                  Script.Script_Type = Elevator_Prop then
-                    if Activator /= Prop_Activator_Player_State or
-                      Script.Character_Activated then
-                        if Activator /= Prop_Activator_Npc_State or
-                          Script.Npc_Activated then
-                            Handle_Height := 1.0 + Property.World_Pos (GL.Y);
-                            Diff := Abs (Handle_Height - Hand_Y_World_Pos);
-                            if Diff <= 1.0 and then
-                              Script.Script_Type = Elevator_Prop then
-                                --  Activate_Elevator returns false if not
-                                --  in a state to be activated
-                                Result := Activate_Elevator (Positive (Property_I));
-                                Continue := False;
-                            end if;
-                        end if;
+                if (Script.Script_Type = Door_Prop or
+                      Script.Script_Type = Elevator_Prop) and then
+                  (Activator /= Prop_Activator_Player_State or
+                     Script.Character_Activated) and then
+                  (Activator /= Prop_Activator_Npc_State or
+                     Script.Npc_Activated) then
+                    Handle_Height := 1.0 + Property.World_Pos (GL.Y);
+                    Diff := Abs (Handle_Height - Hand_Y_World_Pos);
+                    if Diff <= 1.0 and then
+                      Script.Script_Type = Elevator_Prop then
+                        --  Activate_Elevator returns false if not
+                        --  in a state to be activated
+                        Result := Activate_Elevator (Positive (Property_I));
+                        Continue := False;
                     end if;
                 end if;
             end if;
@@ -465,6 +463,43 @@ package body Prop_Renderer is
         GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, aScript.Vertex_Count);
 
     end Render_Property;
+
+    --  -------------------------------------------------------------------------
+
+    function Push_Boulder_In_Tile (Map_U, Map_V : Int;
+                                   Hand_Y_World_Pos : Single) return Boolean is
+        Prop_IDs   : Prop_Indices_List;
+        Prop_ID    : Integer;
+        Property   : Property_Data;
+        Script_ID  : Positive;
+        Script     : Prop_Script;
+        Dist       : Single;
+        Result     : Boolean := False;
+    begin
+        if not Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
+            raise Prop_Renderer_Exception with
+              "Prop_Renderer.Activate_Door_In_Tile, invalid tile indices: " &
+              Int'Image (Map_U) & ", " & Int'Image (Map_V);
+        end if;
+
+        Prop_IDs := Props_In_Tiles (Integer (Map_U), Integer (Map_V));
+        for index in Prop_IDs.First_Index .. Prop_IDs.Last_Index  loop
+            if not Result then
+                Prop_ID := Integer (Prop_IDs.Element (index));
+                Property := Properties.Element (Prop_ID);
+                Script_ID := Property.Script_Index;
+                Script := Scripts.Element (Script_ID);
+                if Script.Script_Type = Boulder_Prop then
+                    Dist := Property.World_Pos (GL.Y) - Hand_Y_World_Pos;
+                    Result := Abs (Dist) < 2.0;
+                    if Result then
+                        Activate_Property (Prop_ID, False);
+                    end if;
+                end if;
+            end if;
+        end loop;
+        return Result;
+    end Push_Boulder_In_Tile;
 
     --  -------------------------------------------------------------------------
 

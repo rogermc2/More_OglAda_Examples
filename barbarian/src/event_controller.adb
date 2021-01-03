@@ -62,6 +62,7 @@ package body Event_Controller is
       Codes      : constant Code_Received_List := Received_Codes (Code + 1);
       Curs       : Cursor := Codes.First;
       Code_Data  : Code_Received_Data;
+      Result     : Boolean := False;
    begin
       Check_Code_Validity ("Transmit_Code", Code);
       while Has_Element (Curs) loop
@@ -73,7 +74,7 @@ package body Event_Controller is
                   "Event_Controller.Transmit_Code, Trigger_Comic_Text failed.";
                end if;
             when Rx_Door =>
-               Prop_Renderer.Activate_Door (Code_Data.Index);
+               Result := Prop_Renderer.Activate_Door (Code_Data.Index);
             when others => null;
          end case;
          Next (Curs);

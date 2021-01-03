@@ -94,7 +94,8 @@ package body Main_Loop is
         Initialize_Exception            : Exception;
         Update_Exception                : Exception;
 
-        procedure Update_Logic_Steps (Seconds : Float);
+        procedure Update_Logic_Steps (Window : in out Input_Callback.Barbarian_Window;
+                                      Seconds : Float);
 
         --  ------------------------------------------------------------------------
 
@@ -183,7 +184,7 @@ package body Main_Loop is
 
                             if Is_Running then
                                 Camera.Update_Camera_Effects (Delta_Time);
-                                Update_Logic_Steps (Delta_Time);
+                                Update_Logic_Steps (Window, Delta_Time);
                                 if Main_Menu.End_Story_Open then
                                     --  Just won the game
                                     Game_Utils.Game_Log
@@ -527,11 +528,12 @@ package body Main_Loop is
 
         --  ------------------------------------------------------------------------
 
-        procedure Update_Logic_Steps (Seconds : Float) is
+        procedure Update_Logic_Steps (Window  : in out Input_Callback.Barbarian_Window;
+                                      Seconds : Float) is
             Accum_Time : Float := Seconds;
             Time_Step  : Integer := 0;        begin
             while Accum_Time >= Logic_Step_Seconds loop
-                Character_Controller.Update_Characters (Logic_Step_Seconds);
+                Character_Controller.Update_Characters (Window, Logic_Step_Seconds);
                 Prop_Renderer.Update_Properties (Logic_Step_Seconds);
                 Projectile_Manager.Update_Projectiles (Logic_Step_Seconds);
                 Time_Step := Time_Step + 1;
