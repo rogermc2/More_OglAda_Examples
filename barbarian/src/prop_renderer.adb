@@ -573,7 +573,12 @@ package body Prop_Renderer is
         Render_Basic
           (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff, Prop_Dyn_Light_Spec,
            Prop_Dyn_Light_Range, Prop_Dyn_Light_Dirty);
-
+        Render_Skinned
+          (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff, Prop_Dyn_Light_Spec,
+           Prop_Dyn_Light_Range, Prop_Dyn_Light_Dirty);
+        Render_Javelin_Standard;
+        Render_Portal;
+        Render_Treasure;
         Prop_Dyn_Light_Dirty := False;
     end Render_Props_Around_Split;
 
