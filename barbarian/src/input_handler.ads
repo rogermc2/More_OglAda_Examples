@@ -33,9 +33,10 @@ package Input_Handler is
    function Key_Binding (Index: Action_Range) return Integer;
    function Left_Action return Integer;
    function Menu_Back_Action return Integer;
-   function OK_Action return Integer;
    function Menu_Open_Action return Integer;
    function Num_Actions return Integer;
+   function OK_Action return Integer;
+   function Open_Door_Action return Integer;
    procedure Read_Key_Config (aLine : String);
    procedure Register_Input_Actions;
    function Right_Action return Integer;

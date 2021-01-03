@@ -76,7 +76,7 @@ package Prop_Renderer_Support is
 
       -- Various States
       -- --------------
-      Door                    : Door_State := Closed_State;
+      Door_Position           : Door_State := Closed_State;
       Elevator                : Elevator_State := At_Bottom_State;
       Trap                    : Trap_State := Trap_Primed_State;
       Was_Triggered           : Boolean := False;

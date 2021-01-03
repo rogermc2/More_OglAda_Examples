@@ -222,6 +222,14 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
+   function Menu_Open_Action return Integer is
+   begin
+      --  Joystick processing
+      return Actions.Open_Menu_Action_ID;
+   end Menu_Open_Action;
+
+   --  ------------------------------------------------------------------------
+
    function Num_Actions return Integer is
    begin
       return Actions.Num_Actions;
@@ -236,11 +244,10 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Menu_Open_Action return Integer is
+   function Open_Door_Action return Integer is
    begin
-      --  Joystick processing
-      return Actions.Open_Menu_Action_ID;
-   end Menu_Open_Action;
+      return Actions.Open_Door_Action_ID;
+   end Open_Door_Action;
 
    --  ------------------------------------------------------------------------
 
