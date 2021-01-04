@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Glfw;
 
 with GL.Culling;
@@ -187,8 +189,8 @@ package body Prop_Renderer.Render is
         use Jav_Stand_Shader_Manager;
         use Maths;
         use Single_Math_Functions;
-        Character     : Barbarian_Character := Get_Character (1);
-        Count        : constant Integer := Integer (Jav_Stand_Render_List.Length);
+        Character    : Barbarian_Character;
+        Count        : Integer;
         Property     : Prop_Renderer_Support.Property_Data;
         Script       : Prop_Renderer_Support.Prop_Script;
         Prop_I       : Integer;
@@ -204,7 +206,10 @@ package body Prop_Renderer.Render is
         Model_Matrix : Matrix4 := Identity4;
         Continue     : Boolean := True;
     begin
+        Character := Get_Character (1);
+        Count := Integer (Jav_Stand_Render_List.Length);
         if not Is_Empty (Jav_Stand_Render_List) then
+            Put_line ("Prop_renderer.Render Jav_Stand_Render_List not empty ");
             GL.Objects.Programs.Use_Program
               (Properties_Shader_Manager.Jav_Stand_Shader);
             Set_Time (Tim);
@@ -214,6 +219,8 @@ package body Prop_Renderer.Render is
             end if;
 
             for Param_I in 1 .. Count loop
+                Put_line ("Prop_renderer.Render Param_I: " &
+                Integer'Image (Param_I));
                 if  Continue then
                     Prop_I := Jav_Stand_Render_List (Param_I);
                     Property := Properties.Element (Prop_I);

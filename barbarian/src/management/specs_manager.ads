@@ -144,6 +144,7 @@ package Specs_Manager is
                           return Float;
    procedure Clear_Specs;
    function Get_Script_Index (File_Name : String) return Integer;
+   function Get_Spec (Spec_Index : Positive) return Spec_Data;
    function Height (Spec_Index : Positive) return Float;
    function Initial_Health (Spec_Index : Positive) return Integer;
    procedure Load_Specs_File (File_Name : String);

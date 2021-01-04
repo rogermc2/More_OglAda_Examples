@@ -111,14 +111,14 @@ package body Main_Loop.Game_Support is
       UV              : constant Ints.Vector2 :=
                             (Abs (Centre_X), Abs (Centre_Z));
    begin
---        if Settings.Shadows_Enabled and Camera.Is_Dirty then
---           for index in Shadow_Direction'Range loop
---              Bind_Shadow_FB (index);
---              Manifold.Draw_Manifold_Around_Depth_Only;
---              Prop_Renderer.Render_Props_Around_Depth_Only
---                (UV (GL.X), UV (GL.Y), Shadow_Caster_Max_Tiles_Away);
---           end loop;
---        end if;   --  end of shadow mapping pass
+      if Settings.Shadows_Enabled and Camera.Is_Dirty then
+         for index in Shadow_Direction'Range loop
+            Bind_Shadow_FB (index);
+            Manifold.Draw_Manifold_Around_Depth_Only;
+            Prop_Renderer.Render_Props_Around_Depth_Only
+              (UV (GL.X), UV (GL.Y), Shadow_Caster_Max_Tiles_Away);
+         end loop;
+      end if;   --  end of shadow mapping pass
 
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;
@@ -129,9 +129,11 @@ package body Main_Loop.Game_Support is
                                      Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                      Ramp_Spec_Tex);
       Blood_Splats.Render_Splats;
+      Put_Line ("Main_Loop.Game_Support.Player_1_View Render_Props_Around_Split");
 
       Prop_Renderer.Render_Props_Around_Split (Centre_X, Centre_Z,
                                                Int (Settings.Render_Distance));
+      Put_Line ("Main_Loop.Game_Support.Player_1_View Cache_Sprites_Around");
       Sprite_World_Map.Cache_Sprites_Around
           (UV (GL.X), UV (GL.Y), Int (Settings.Render_Distance));
       Transparency.Draw_Transparency_List;
@@ -146,7 +148,7 @@ package body Main_Loop.Game_Support is
 --           Update_FPS_Box;
 --        end if;
       if Main_Menu.Menu_Open then
---           Game_Utils.Game_Log ("Main_Loop.Game_Supprt.Player_1_View, Menu_Open");
+         Game_Utils.Game_Log ("Main_Loop.Game_Supprt.Player_1_View, Menu_Open");
          Main_Menu.Draw_Menu (Delta_Time);
       elsif not Settings.Hide_GUI then
 --           Game_Utils.Game_Log ("Main_Loop.Game_Supprt.Player_1_View, Render_GUIs");

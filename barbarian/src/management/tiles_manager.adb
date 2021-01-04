@@ -477,7 +477,6 @@ package body Tiles_Manager is
       Pos2     : Natural;
    begin
       Game_Utils.Game_Log ("Loading tiles and generating manifold from FP...");
---        Put_Line ("Tiles_Manager.Load_Tiles loading tiles ");
       Pos1 := Fixed.Index (aLine, " ") + 1;
       if Fixed.Index (aLine, "facings ") = 0 then
          raise Tiles_Manager_Exception with

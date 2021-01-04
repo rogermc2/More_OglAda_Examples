@@ -10,7 +10,7 @@ package Character_Map is
 
     package Character_Map_Package is new
      Ada.Containers.Doubly_Linked_Lists (Positive);
-    type Character_Map_List is new Character_Map_Package.List with null record;
+    subtype Character_Map_List is Character_Map_Package.List;
 
    Character_Map_Exception : Exception;
 

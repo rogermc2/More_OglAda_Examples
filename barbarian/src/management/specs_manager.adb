@@ -313,6 +313,13 @@ package body Specs_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Spec (Spec_Index : Positive) return Spec_Data is
+   begin
+        return Specs.Element (Spec_Index);
+   end Get_Spec;
+
+   --  -------------------------------------------------------------------------
+
    procedure Load_Specs_File (File_Name : String) is
       use Ada.Strings;
       Path          : constant String := "src/characters/" & File_Name;

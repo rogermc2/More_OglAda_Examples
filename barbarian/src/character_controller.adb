@@ -3,6 +3,8 @@ with Ada.Exceptions;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with GL.Objects.Textures;
+
 with Maths;
 
 with Audio;
@@ -27,8 +29,9 @@ with Sprite_Renderer;
 with Tiles_Manager;
 
 package body Character_Controller is
-    Max_Blood_Fountains       : constant Integer := 5;
-    Max_Blood_Damage_Emitters : constant Integer := 5;
+    Max_Blood_Fountains                 : constant Integer := 5;
+    Max_Blood_Damage_Emitters           : constant Integer := 5;
+    Character_Sprite_Offset_Over_Ground : constant Single := 1.0;
 
     --      type Integer_Array is array (Integer range <>) of Integer;
     type Character_Data is record
@@ -228,6 +231,14 @@ package body Character_Controller is
 
     procedure Create_Character (Source       : Character_Data;
                                 theCharacter : in out Barbarian_Character) is
+        Diff_U     : GL.Objects.Textures.Texture;
+        Spec_U     : GL.Objects.Textures.Texture;
+        Spec       : Spec_Data;
+        Rows       : Integer;
+        Cols       : Integer;
+        Tile_Y     : Single;
+        W_Pos      : Singles.Vector3;
+        Sprite_Pos : Singles.Vector3;
     begin
         if Source.Script_File = "" then
             raise Character_Controller_Exception with
@@ -242,7 +253,34 @@ package body Character_Controller is
             theCharacter.Map := (Source.U, Source.V);
             theCharacter.Specs_Index :=
               Specs_Manager.Get_Script_Index (To_String (Source.Script_File));
+            Spec := Specs_Manager.Get_Spec (theCharacter.Specs_Index);
+            Diff_U := Spec.Atlas_Diffuse_ID;
+            Spec_U := Spec.Atlas_Specular_ID;
+            Rows := Spec.Atlas_Rows;
+            Cols := Spec.Atlas_Cols;
+            theCharacter.Sprite_Index :=
+              Sprite_Renderer.Add_Sprite (Diff_U, Spec_U, Rows, Cols);
+            theCharacter.Current_Health := Spec.Initial_Health;
+            Sprite_Renderer.Set_Sprite_Heading
+              (theCharacter.Sprite_Index, Source.Heading);
+            Tile_Y := Tiles_Manager.Get_Tile_Height
+              (Single (2 * Source.U), Single (2 * Source.V), True, True);
+            W_Pos := (Single (2 * Source.U), Tile_Y, Single (2 * Source.V));
+            Sprite_Pos := W_Pos;
+            Sprite_Pos (GL.Y) := Sprite_Pos (GL.Y) + Character_Sprite_Offset_Over_Ground
+              + Single (Spec.Sprite_Offset_Adjust);
+            Sprite_Renderer.Set_Sprite_Position
+              (theCharacter.Sprite_Index, Sprite_Pos);
+            theCharacter.Current_Weapon := Spec.Default_Weapon;
+            theCharacter.World_Pos := W_Pos;
+            Characters.Append (theCharacter);
             Character_Count := Character_Count + 1;
+
+            Character_Map.Add_New_Character_To_Map
+              (Source.U, Source.V, Characters.Last_Index);
+            if Spec.Team_ID = 1 then
+                Kills_Max := Kills_Max + 1;
+            end if;
             Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
                                    To_String (Source.Script_File));
         else
@@ -382,6 +420,7 @@ package body Character_Controller is
         Tile_Height : Single := 0.0;
         Result      : Boolean := False;
     begin
+       Put_Line ("Character_Controller.Damage_Character entered");
         Is_Sorcerer := aSpec.Projectile = Skull_Proj_Type;
         --  Sorcerer is invulnerable until all mirrors gone
         Result := not Is_Sorcerer or Prop_Renderer.Get_Num_Live_Mirrors <= 0;
@@ -781,10 +820,10 @@ package body Character_Controller is
         Kills_Max := 0;
 
         if not Editor_Mode then
-            Put_Line ("not Editor_Mode");
-            --              GUI.Set_GUI_Gold (Gold_Current);
-            --              GUI.Set_GUI_Kills (Kills_Current);
-            --              GUI.Set_GUI_Javalin_Ammo (0);
+            Put_Line ("Character_Controller.Load_Characters not Editor_Mode");
+            GUI.Set_GUI_Gold (Gold_Current);
+            GUI.Set_GUI_Kills (Kills_Current);
+            GUI.Set_GUI_Javalin_Ammo (0);
         end if;
 
         declare
@@ -800,6 +839,8 @@ package body Character_Controller is
             Num_Characters := Integer'Value (aLine (7 .. Pos1 - 1));
         end;
 
+        Put_Line ("Character_Controller.Load_Characters Num_Characters: " &
+                    Integer'Image (Num_Characters));
         for count in 1 .. Num_Characters loop
             declare
                 aLine    : constant String := Get_Line (Input_File);

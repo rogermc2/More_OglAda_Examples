@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Glfw;
 
 with GL.Culling;
@@ -695,13 +697,20 @@ package body Prop_Renderer is
         Render_Basic
           (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff, Prop_Dyn_Light_Spec,
            Prop_Dyn_Light_Range, Prop_Dyn_Light_Dirty);
-        Render_Skinned
+       Render_Skinned
           (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff, Prop_Dyn_Light_Spec,
            Prop_Dyn_Light_Range, Prop_Dyn_Light_Dirty);
+        Put_Line ("Prop_Renderer.Game_Support.Render_Props_Around_Split Render_Javelin_Standard");
         Render_Javelin_Standard;
+        Put_Line ("Prop_Renderer.Game_Support.Render_Props_Around_Split Render_Portal");
         Render_Portal;
+        Put_Line ("Prop_Renderer.Game_Support.Render_Props_Around_Split Render_Treasure");
         Render_Treasure;
         Prop_Dyn_Light_Dirty := False;
+   exception
+            when others =>
+                Put_Line ("Prop_Renderer.Game_Support.Render_Props_Around_Split exception");
+                raise;
     end Render_Props_Around_Split;
 
     --  -------------------------------------------------------------------------

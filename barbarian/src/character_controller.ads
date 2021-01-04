@@ -133,7 +133,7 @@ private
 
    package Character_Package is new Ada.Containers.Vectors
      (Positive, Barbarian_Character);
-   type Character_List is new Character_Package.Vector with null Record;
+   subtype Character_List is Character_Package.Vector;
 
    type Attack_Events_Array is array
      (1 .. Max_Weapons, 1 .. Max_Attack_Events) of Attack_Event;
