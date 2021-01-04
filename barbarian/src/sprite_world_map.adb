@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Maths;
 
 with Batch_Manager;
@@ -10,25 +12,26 @@ with Transparency;
 package body Sprite_World_Map is
 
    Max_Sprites_In_Tile : constant Integer := 64;
-   subtype Sprite_Index is Positive range 1 .. Max_Sprites_In_Tile;
+   subtype Sprite_Index is Natural range 0 .. Max_Sprites_In_Tile;
 
    type Sprites_Integer_Array is array
      (Sprite_Index range <>, Sprite_Index range <>, Sprite_Index range <>)
      of Integer;
-   type Sprites_Count_Array is array (Sprite_Index range <>, Sprite_Index range <>) of Int;
+   type Sprites_Count_Array is array (Sprite_Index range <>,
+                                      Sprite_Index range <>) of Int;
    type Sprites_Single_Array is array
      (Sprite_Index range <>, Sprite_Index range <>, Sprite_Index range <>) of Single;
-   type Sprite_Tiles_Data (Rows, Cols, Val : Sprite_Index := 1) is record
+
+   type Sprite_Tiles_Data (Rows, Cols, Num_Sprites : Sprite_Index := 1) is record
       Index_Of_Sprites          : Sprites_Integer_Array
-          (1 .. Rows, 1 .. Cols, 1 .. Val) :=
+          (1 .. Rows, 1 .. Cols, 1 .. Num_Sprites) :=
                                     (others => (others => (others => 0)));
       Height_Of_Sprites         : Sprites_Single_Array
-      (1 .. Rows, 1 .. Cols, 1 .. Val) :=
+      (1 .. Rows, 1 .. Cols, 1 .. Num_Sprites) :=
                                     (others => (others => (others => (0.0))));
       Count_Of_Sprites_In_Tiles : Sprites_Count_Array (1 .. Rows, 1 .. Cols) :=
                                       (others => (others => 0));
    end record;
-
 
    Sprite_Tiles : Sprite_Tiles_Data;
 
@@ -36,11 +39,26 @@ package body Sprite_World_Map is
 
    procedure Add_New_Sprite_To_World_Map (U, V      : Int; Y : Single;
                                           Sprite_ID : Positive) is
-      S_U : constant Sprite_Index := Sprite_Index (U);
-      S_V : constant Sprite_Index := Sprite_Index (V);
-      Count : constant Sprite_Index :=
-                  Sprite_Index (Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V)) + 1;
+      S_U   : constant Sprite_Index := Sprite_Index (U);
+      S_V   : constant Sprite_Index := Sprite_Index (V);
+      Count : Sprite_Index;
    begin
+      if not Tiles_Manager.Is_Tile_Valid (U, V) then
+            raise Sprite_World_Map_Exception with
+              "Sprite_World_Map.Add_New_Sprite_To_World_Map, invalid tile indices: " &
+              Int'Image (U) & ", " & Int'Image (V);
+      end if;
+--        Put_Line ("Sprite_World_Map Sprite_Tiles.Count_Of_Sprites_In_Tiles Dimensions: " &
+--                Integer'Image (Sprite_Tiles.Count_Of_Sprites_In_Tiles'Length) & ", " &
+--                Integer'Image (Sprite_Tiles.Count_Of_Sprites_In_Tiles'Length (2)) );
+--        Put_Line ("Sprite_World_Map Sprite_Tiles Dimensions: " &
+--                Integer'Image (Sprite_Tiles.Rows) & ", " &
+--                Integer'Image (Sprite_Tiles.Cols) & ", " &
+--                Integer'Image (Sprite_Tiles.Num_Sprites));
+--        Put_Line ("Sprite_World_Map.Add_New_Sprite_To_World_Map, sprite indices: " &
+--                Integer'Image (S_U) & ", " & Integer'Image (S_V));
+      Count :=
+          Sprite_Index (Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V)) + 1;
       Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count) := Sprite_ID;
       Sprite_Tiles.Height_Of_Sprites (S_U, S_V, Count) := Y;
       Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) := Int (Count);
@@ -96,11 +114,11 @@ package body Sprite_World_Map is
 
    procedure Init is
         New_Sprite_Tiles : Sprite_Tiles_Data
-        (Sprite_Index (Batch_Manager.Max_Rows),
-        Sprite_Index (Batch_Manager.Max_Cols), Sprite_Tiles.Val);
+        (Sprite_Index (Batch_Manager.Max_Cols),
+         Sprite_Index (Batch_Manager.Max_Cols), Max_Sprites_In_Tile);
    begin
       if Batch_Manager.Max_Rows <= 0 or Batch_Manager.Max_Cols <= 0 or
-      Sprite_Tiles.Val <= 0 then
+      Sprite_Tiles.Num_Sprites <= 0 then
             raise Sprite_World_Map_Exception with
             "Sprite_World_Map.Init; invalid Batch_Manager data.";
       end if;
