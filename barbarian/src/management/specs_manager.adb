@@ -284,6 +284,7 @@ package body Specs_Manager is
            ("Specs_Manager.Get_Script_Index loading specs file: " &
               File_Name);
          Load_Specs_File (File_Name);
+         Spec_Index := Get_Script_Index (File_Name);
       end if;
 
       return Spec_Index;
@@ -429,6 +430,7 @@ package body Specs_Manager is
       end loop;
 
       Close (Input_File);
+      Specs.Append (theSpec);
 
    exception
       when anError : others =>
