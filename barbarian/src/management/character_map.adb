@@ -34,6 +34,9 @@ package body Character_Map is
            "Character_Map.Add_New_Character_To_Map has invalid U, V";
       end if;
 
+      Put_Line ("Character_Map Add_New_Character_To_Map U, V: " &
+           GL.Types.Int'Image (U) & ", " & GL.Types.Int'Image (V));
+
       if Characters_In_Tiles.Length < Count_Type (U) then
          Characters_In_Tiles.Set_Length (Count_Type (U));
       end if;
@@ -48,7 +51,7 @@ package body Character_Map is
       end if;
 
       CM.Append (Char_Index);
-      V2.Append (CM);
+      V2.Replace_Element (Integer (V), CM);
       Characters_In_Tiles.Replace_Element (Integer (U), V2);
 
    end Add_New_Character_To_Map;
@@ -57,7 +60,6 @@ package body Character_Map is
 
    procedure Free_Character_Map is
       use Character_Map_Package;
-      --          Finger_Of_Doom  : Character_Map_List;
    begin
       Characters_In_Tiles.Clear;
    end Free_Character_Map;
@@ -75,6 +77,8 @@ package body Character_Map is
            GL.Types.Int'Image (U) & ", " & GL.Types.Int'Image (V);
       end if;
 
+      Put_Line ("Character_Map Get_Characters_In U, V: " &
+           GL.Types.Int'Image (U) & ", " & GL.Types.Int'Image (V));
       Put_Line ("Character_Map Get_Characters_In getting V2 ");
       V2 := Characters_In_Tiles.Element (Positive (U));
       if Is_Empty (V2) then
