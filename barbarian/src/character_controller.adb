@@ -364,6 +364,7 @@ package body Character_Controller is
         aSpec               : Spec_Data;
         Height              : Single;
     begin
+        Put_Line ("Character_Controller.Damage_All_Near");
         for index_v in Up .. Down loop
             for index_h in Left .. Right loop
                 Character_IDs := Get_Characters_In (index_v, index_h);
@@ -391,6 +392,7 @@ package body Character_Controller is
             end loop;
         end loop;
 
+        Put_Line ("Character_Controller.Damage_All_Near done");
         return 0;
 
     exception
@@ -1294,6 +1296,7 @@ package body Character_Controller is
         Down            : Int;
         Ok              : Boolean := True;
     begin
+        Put_Line ("Character_Controller.Update_Characters");
         if not Characters.Is_Empty then
             aCharacter := Characters.First_Element;
             Characters_Updated := 0;
@@ -1310,8 +1313,12 @@ package body Character_Controller is
             --  Collect all characters around p1
             for v in Up .. Down loop
                 for h in Left .. Right loop
+                    Put_Line ("Character_Controller.Update_Characters v, h :" &
+                             Int'Image (v) & ", " & Int'Image (h));
                     Char_List := Character_Map.Get_Characters_In (h, v);
                     Curs := Char_List.First;
+                    Put_Line ("Character_Controller.Update_Characters v, h :" &
+                             Int'Image (v) & ", " & Int'Image (h));
                     while Has_Element (Curs) loop
                         Char_Index := Element (Curs);
                         aCharacter := Characters.Element (Char_Index);
@@ -1323,6 +1330,7 @@ package body Character_Controller is
                     end loop;
                 end loop;
             end loop;
+            Put_Line ("Character_Controller.Update_Characters 2nd loop");
 
             Curs := Char_List.First;
             while Has_Element (Curs) loop
@@ -1337,6 +1345,7 @@ package body Character_Controller is
                 --    (Self_ID, Exclude_ID, World_Pos, Char_List);
             end loop;
         end if;
+        Put_Line ("Character_Controller.Update_Characters done");
 
     exception
         when others =>
