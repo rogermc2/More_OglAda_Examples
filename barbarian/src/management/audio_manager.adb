@@ -102,9 +102,9 @@ package body Audio_Manager is
             raise Audio_Manager_Exception with
               "Create_Managed_Ambient_Source, too many sound sources";
          else
-            Game_Utils.Game_Log ("Audio_Manager.Create_Managed_Ambient_Source "
-                                 & "creating managed ambient source from " &
-                                   Sound_File);
+--              Game_Utils.Game_Log ("Audio_Manager.Create_Managed_Ambient_Source "
+--                                   & "creating managed ambient source from " &
+--                                     Sound_File);
             Index := Index + 1;
             Game_Audio.Ambient_Sounds (Index).File_Name :=
               To_Unbounded_String (Sound_File);
@@ -164,7 +164,6 @@ package body Audio_Manager is
                                         S, T, Height, Radius);
       end loop;
       Game_Utils.Game_Log ("Audio_Manager.Load_Ambient_Sounds ambient sounds loaded");
-      Put_Line ("Audio_Manager.Load_Ambient_Sounds ambient sounds loaded");
 
    end Load_Ambient_Sounds;
 

@@ -129,11 +129,8 @@ package body Main_Loop.Game_Support is
                                      Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                      Ramp_Spec_Tex);
       Blood_Splats.Render_Splats;
-      Put_Line ("Main_Loop.Game_Support.Player_1_View Render_Props_Around_Split");
-
       Prop_Renderer.Render_Props_Around_Split (Centre_X, Centre_Z,
                                                Int (Settings.Render_Distance));
-      Put_Line ("Main_Loop.Game_Support.Player_1_View Cache_Sprites_Around");
       Sprite_World_Map.Cache_Sprites_Around
           (UV (GL.X), UV (GL.Y), Int (Settings.Render_Distance));
       Transparency.Draw_Transparency_List;

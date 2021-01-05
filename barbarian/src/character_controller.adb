@@ -804,8 +804,6 @@ package body Character_Controller is
         Field          : Character_Data;
         aCharacter     : Barbarian_Character;
     begin
-        Game_Utils.Game_Log
-          ("Character_Controller.Load_Characters, loading characters.");
         --          Portal_Fadeout_Started := False;
         Specs_Manager.Clear_Specs;
 
@@ -859,8 +857,6 @@ package body Character_Controller is
                 Create_Character (Field, aCharacter);
             end;
         end loop;
-        Game_Utils.Game_Log
-          ("Character_Controller.Load_Characters, all characters loaded.");
 
     exception
         when anError : others =>
@@ -1296,7 +1292,6 @@ package body Character_Controller is
         Down            : Int;
         Ok              : Boolean := True;
     begin
-        Put_Line ("Character_Controller.Update_Characters");
         if not Characters.Is_Empty then
             aCharacter := Characters.First_Element;
             Characters_Updated := 0;
@@ -1313,12 +1308,10 @@ package body Character_Controller is
             --  Collect all characters around p1
             for v in Up .. Down loop
                 for h in Left .. Right loop
-                    Put_Line ("Character_Controller.Update_Characters v, h :" &
-                             Int'Image (v) & ", " & Int'Image (h));
                     Char_List := Character_Map.Get_Characters_In (h, v);
                     Curs := Char_List.First;
-                    Put_Line ("Character_Controller.Update_Characters v, h :" &
-                             Int'Image (v) & ", " & Int'Image (h));
+--                      Put_Line ("Character_Controller.Update_Characters v, h :" &
+--                               Int'Image (v) & ", " & Int'Image (h));
                     while Has_Element (Curs) loop
                         Char_Index := Element (Curs);
                         aCharacter := Characters.Element (Char_Index);
@@ -1330,7 +1323,6 @@ package body Character_Controller is
                     end loop;
                 end loop;
             end loop;
-            Put_Line ("Character_Controller.Update_Characters 2nd loop");
 
             Curs := Char_List.First;
             while Has_Element (Curs) loop
@@ -1341,11 +1333,8 @@ package body Character_Controller is
                     Characters.Replace_Element (Char_Index, aCharacter);
                 end if;
                 Next (Curs);
-                --   Process_Characters
-                --    (Self_ID, Exclude_ID, World_Pos, Char_List);
             end loop;
         end if;
-        Put_Line ("Character_Controller.Update_Characters done");
 
     exception
         when others =>
