@@ -12,17 +12,20 @@ with Transparency;
 package body Sprite_World_Map is
 
    Max_Sprites_In_Tile : constant Integer := 64;
-   subtype Sprite_Index is Natural range 0 .. Max_Sprites_In_Tile;
+   subtype Sprite_Index is Natural range 1 .. Max_Sprites_In_Tile;
+   subtype Sprite_Count is Natural range 0 .. Max_Sprites_In_Tile;
 
    type Sprites_Integer_Array is array
-     (Sprite_Index range <>, Sprite_Index range <>, Sprite_Index range <>)
+     (Sprite_Index range <>, Sprite_Index range <>, Natural range <>)
      of Integer;
    type Sprites_Count_Array is array (Sprite_Index range <>,
-                                      Sprite_Index range <>) of Int;
+                                      Sprite_Index range <>) of Sprite_Count;
    type Sprites_Single_Array is array
-     (Sprite_Index range <>, Sprite_Index range <>, Sprite_Index range <>) of Single;
+     (Sprite_Index range <>, Sprite_Index range <>, Sprite_Index range <>)
+      of Single;
 
-   type Sprite_Tiles_Data (Rows, Cols, Num_Sprites : Sprite_Index := 1) is record
+   type Sprite_Tiles_Data (Rows, Cols : Sprite_Index := 1;
+                           Num_Sprites : Sprite_Count := 0) is record
       Index_Of_Sprites          : Sprites_Integer_Array
           (1 .. Rows, 1 .. Cols, 1 .. Num_Sprites) :=
                                     (others => (others => (others => 0)));
@@ -41,27 +44,28 @@ package body Sprite_World_Map is
                                           Sprite_ID : Positive) is
       S_U   : constant Sprite_Index := Sprite_Index (U);
       S_V   : constant Sprite_Index := Sprite_Index (V);
-      Count : Sprite_Index;
+      Count : Natural;
    begin
       if not Tiles_Manager.Is_Tile_Valid (U, V) then
             raise Sprite_World_Map_Exception with
               "Sprite_World_Map.Add_New_Sprite_To_World_Map, invalid tile indices: " &
               Int'Image (U) & ", " & Int'Image (V);
       end if;
---        Put_Line ("Sprite_World_Map Sprite_Tiles.Count_Of_Sprites_In_Tiles Dimensions: " &
---                Integer'Image (Sprite_Tiles.Count_Of_Sprites_In_Tiles'Length) & ", " &
---                Integer'Image (Sprite_Tiles.Count_Of_Sprites_In_Tiles'Length (2)) );
---        Put_Line ("Sprite_World_Map Sprite_Tiles Dimensions: " &
---                Integer'Image (Sprite_Tiles.Rows) & ", " &
---                Integer'Image (Sprite_Tiles.Cols) & ", " &
---                Integer'Image (Sprite_Tiles.Num_Sprites));
---        Put_Line ("Sprite_World_Map.Add_New_Sprite_To_World_Map, sprite indices: " &
---                Integer'Image (S_U) & ", " & Integer'Image (S_V));
-      Count :=
-          Sprite_Index (Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V)) + 1;
-      Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count) := Sprite_ID;
-      Sprite_Tiles.Height_Of_Sprites (S_U, S_V, Count) := Y;
-      Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) := Int (Count);
+      Put_Line ("Sprite_World_Map Sprite_Tiles.Count_Of_Sprites_In_Tiles Dimensions: " &
+              Integer'Image (Sprite_Tiles.Count_Of_Sprites_In_Tiles'Length) & ", " &
+              Integer'Image (Sprite_Tiles.Count_Of_Sprites_In_Tiles'Length (2)) );
+      Put_Line ("Sprite_World_Map Sprite_Tiles Dimensions: " &
+              Integer'Image (Sprite_Tiles.Rows) & ", " &
+              Integer'Image (Sprite_Tiles.Cols) & ", " &
+              Integer'Image (Sprite_Tiles.Num_Sprites));
+      Put_Line ("Sprite_World_Map.Add_New_Sprite_To_World_Map, sprite indices: "
+                & Integer'Image (S_U) & ", " & Integer'Image (S_V));
+      Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V);
+      Put_Line ("Sprite_World_Map.Add_New_Sprite_To_World_Map, Count: " &
+                  Integer'Image (Count));
+      Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count + 1) := Sprite_ID;
+      Sprite_Tiles.Height_Of_Sprites (S_U, S_V, Count + 1) := Y;
+      Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) := Count;
    end Add_New_Sprite_To_World_Map;
 
    --  ------------------------------------------------------------------------
@@ -72,15 +76,17 @@ package body Sprite_World_Map is
       use Transparency;
       S_U       : constant Sprite_Index := Sprite_Index (U);
       S_V       : constant Sprite_Index := Sprite_Index (V);
-      U_First   : constant Sprite_Index := Sprite_Index (Max_Int (0, U - Tile_Range) + 1);
-      V_First   : constant Sprite_Index := Sprite_Index (Max_Int (0, V - Tile_Range) + 1);
-      U_Last    : constant Sprite_Index := Sprite_Index (Min_Int
-        (U + Tile_Range, Get_Tiles_Across - 1) + 1);
+      U_First   : constant Sprite_Index :=
+                      Sprite_Index (Max_Int (1, U - Tile_Range) + 1);
+      V_First   : constant Sprite_Index := Sprite_Index
+          (Max_Int (1, V - Tile_Range) + 1);
+      U_Last    : constant Sprite_Index := Sprite_Index
+          (Min_Int (U + Abs (Tile_Range), Get_Tiles_Across - 1) + 1);
       Sprite_ID : Positive;
-      V_Last    : constant Sprite_Index :=
-                    Sprite_Index (Min_Int (V + Tile_Range, Get_Tiles_Across - 1) + 1) ;
+      V_Last    : constant Sprite_Index := Sprite_Index
+          (Min_Int (V + Abs (Tile_Range), Get_Tiles_Across - 1) + 1) ;
       Pos       : Singles.Vector3;
-      Count     : Int;
+      Count     : Sprite_Count;
    begin
       for index in V_First .. V_Last loop
          for index in U_First .. U_Last loop
@@ -118,7 +124,7 @@ package body Sprite_World_Map is
          Sprite_Index (Batch_Manager.Max_Cols), Max_Sprites_In_Tile);
    begin
       if Batch_Manager.Max_Rows <= 0 or Batch_Manager.Max_Cols <= 0 or
-      Sprite_Tiles.Num_Sprites <= 0 then
+      Sprite_Tiles.Num_Sprites < 0 then
             raise Sprite_World_Map_Exception with
             "Sprite_World_Map.Init; invalid Batch_Manager data.";
       end if;
