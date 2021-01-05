@@ -46,10 +46,7 @@ package body Character_Map is
          V2.Set_Length (Count_Type (V));
       end if;
 
-      if not V2.Is_Empty then
-         CM := V2.Element (Integer (V));
-      end if;
-
+      CM := V2.Element (Integer (V));
       CM.Append (Char_Index);
       V2.Replace_Element (Integer (V), CM);
       Characters_In_Tiles.Replace_Element (Integer (U), V2);
