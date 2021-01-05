@@ -51,18 +51,7 @@ package body Sprite_World_Map is
               "Sprite_World_Map.Add_New_Sprite_To_World_Map, invalid tile indices: " &
               Int'Image (U) & ", " & Int'Image (V);
       end if;
-      Put_Line ("Sprite_World_Map Sprite_Tiles.Count_Of_Sprites_In_Tiles Dimensions: " &
-              Integer'Image (Sprite_Tiles.Count_Of_Sprites_In_Tiles'Length) & ", " &
-              Integer'Image (Sprite_Tiles.Count_Of_Sprites_In_Tiles'Length (2)) );
-      Put_Line ("Sprite_World_Map Sprite_Tiles Dimensions: " &
-              Integer'Image (Sprite_Tiles.Rows) & ", " &
-              Integer'Image (Sprite_Tiles.Cols) & ", " &
-              Integer'Image (Sprite_Tiles.Num_Sprites));
-      Put_Line ("Sprite_World_Map.Add_New_Sprite_To_World_Map, sprite indices: "
-                & Integer'Image (S_U) & ", " & Integer'Image (S_V));
       Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V);
-      Put_Line ("Sprite_World_Map.Add_New_Sprite_To_World_Map, Count: " &
-                  Integer'Image (Count));
       Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count + 1) := Sprite_ID;
       Sprite_Tiles.Height_Of_Sprites (S_U, S_V, Count + 1) := Y;
       Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) := Count;
@@ -92,7 +81,8 @@ package body Sprite_World_Map is
          for index in U_First .. U_Last loop
             Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V);
             for index in 1 .. Count loop
-               Sprite_ID := Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Sprite_Index (index));
+               Sprite_ID := Sprite_Tiles.Index_Of_Sprites
+                      (S_U, S_V, Sprite_Index (index));
                Pos := Sprite_Renderer.Sprite_World_Pos (Sprite_ID);
                Add_Transparency_Item (Tr_Sprite, Sprite_ID, Pos, 1.0);
             end loop;

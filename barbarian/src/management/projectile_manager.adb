@@ -108,7 +108,6 @@ package body Projectile_Manager is
         ("blue_spectral.particles", False, True, Always_Draw);
       Green_Spec_Particles := Particle_System.Create_Particle_System
         ("green_spectral.particles", False, True, Always_Draw);
-      Put_Line ("Projectile_Manager.Init projectiles initalized.");
    end Init;
 
    --  ------------------------------------------------------------------------
