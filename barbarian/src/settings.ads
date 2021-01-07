@@ -78,7 +78,7 @@ private
       Texture_Filtering            : Integer := 2;
       Anisotroic_Texturing_Factor  : Integer := 1;  -- 1 to 16
       --  Maximum rendering distance in tiles from player
-      Render_Distance              : Integer := 15;
+      Render_Distance              : Integer := 15;  --  orig 15
       Far_Clip                     : Single := 40.0;
       --  Number of tiles*tiles to put in batches
       Tile_Batch_Width             : Integer := 8;

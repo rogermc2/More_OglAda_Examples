@@ -2,10 +2,12 @@
 with Ada.Containers.Vectors;
 
 with GL.Culling;
+with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
+with GL.Types.Colors;
 
 with Glfw;
 
@@ -36,6 +38,7 @@ package body Manifold is
     Manifold_Dyn_Light_Diff  : constant Singles.Vector3 := Maths.Vec3_0;
     Manifold_Dyn_Light_Spec  : constant Singles.Vector3 := Maths.Vec3_0;
     Manifold_Dyn_Light_Range : constant Single := 1.0;
+    Count                    : Integer := 0;
 
     procedure Draw_Water_Manifold_Around;
 
@@ -73,6 +76,7 @@ package body Manifold is
         use GL_Maths;
         use Vec3_Package;
         use Manifold_Shader_Manager;
+        Back_Colour   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
         theBatches    : constant Batches_List := Batches;
         Curs          : Batches_Package.Cursor := theBatches.First;
         aBatch        : Batch_Meta;
@@ -82,11 +86,15 @@ package body Manifold is
         Tile_Index1   : Int;
         Tile_Index2   : Int;
     begin
+        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
-        if Camera.Is_Dirty then
+--          if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
-        end if;
+--          else
+            Set_View_Matrix (Singles.Identity4);
+            Set_Projection_Matrix (Singles.Identity4);
+--          end if;
 
         if Manifold_Dyn_Light_Dirty then
             Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
@@ -102,15 +110,16 @@ package body Manifold is
         else
             Set_Shadow_Enabled (0.0);
         end if;
-
+        Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
         Set_Model_Matrix (Singles.Identity4);
 
         while Has_Element (Curs) loop
             aBatch := Element (Curs);
             Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
                              abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
+--              Rad_Dist := 1.0;
             if Rad_Dist <= 2.0 * Radius then
-                --              Put_Line ("Manifold.Draw_Manifold_Around Rad_Dist <= 2.0 * Radius 1");
+                Put_Line ("Manifold.Draw_Manifold_Around Rad_Dist <= 2.0 * Radius 1");
                 Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
                                  abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
                 if Rad_Dist <= 2.0 * Radius then
@@ -123,9 +132,9 @@ package body Manifold is
                     --                                          aBatch.AABB_Maxs);
                     --                 Put_Line ("Manifold.Draw_Manifold_Around Static_Light_Indices.Is_Empty: "
                     --                           & Boolean'Image (aBatch.Static_Light_Indices.Is_Empty));
-                    if Frustum.Is_Aabb_In_Frustum
-                      (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
-                      not (aBatch.Static_Light_Indices.Is_Empty) then
+--                      if Frustum.Is_Aabb_In_Frustum
+--                        (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
+--                        not (aBatch.Static_Light_Indices.Is_Empty) then
                         Light_Indices := aBatch.Static_Light_Indices;
                         Light_Cursor := Light_Indices.First;
                         Tile_Index1 := Int (Element (Light_Cursor));
@@ -134,15 +143,24 @@ package body Manifold is
 
                         if aBatch.Point_Count > 0 then
                             --  flat tiles
-                            Texture_Manager.Bind_Texture (0, Tile_Tex);
-                            Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+                            Count := Count + 1;
+                            Put_Line ("Manifold.Draw_Manifold_Around drawing aBatch.Vao "
+                                     & Integer'Image (Count));
+                            if Count > 10000 then
+                                Count := 0;
+                            end if;
                             GL_Utils.Bind_Vao (aBatch.Vao);
-                            Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+                            Put_Line ("Manifold.Draw_Manifold_Around Vao Array_Buffer size "
+                                     & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
+                            Texture_Manager.Bind_Texture (0, Tile_Tex);
+                            Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);                            Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
                         end if;
 
                         if aBatch.Ramp_Point_Count > 0 then
                             --  ramps
                             GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
+                                     & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
                             if Settings.Render_OLS then
                                 Set_Cull_Face (Front);
                                 Set_Front_Face (Clockwise);
@@ -155,8 +173,8 @@ package body Manifold is
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
                             Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
+                            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
                         end if;
-                    end if;
                 end if;
             end if;
             Next (Curs);
@@ -269,6 +287,7 @@ package body Manifold is
     procedure Free_Manifold_Mesh_Data is
     begin
         Batch_Manager.Clear;
+        Put_Line ( "Manifold.Free_Manifold_Mesh_Data ");
         --        Batch_Split_Count := 0;
     end Free_Manifold_Mesh_Data;
 

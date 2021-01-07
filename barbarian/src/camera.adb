@@ -24,7 +24,7 @@ package body Camera is
         Dir               : Singles.Vector3;
         First_Person_Pos  : Singles.Vector3;
     begin
-        G_Camera.World_Position := (2.0, 10.0, -2.0);  -- orig 2.0
+        G_Camera.World_Position := (2.0, 10.0, 2.0);  -- orig 2.0
         Prev_Cam_Pos := G_Camera.World_Position;
         G_Camera.Shake_Mod_Position := (0.0, 0.0, 0.0);
         G_Camera.Original_Screen_Shake_Time := 0.0;
@@ -39,17 +39,21 @@ package body Camera is
           Single (Settings.Framebuffer_Width);
         G_Camera.Near := 0.1;
         G_Camera.Far := Settings.Far_Clip;
-        Far_Point_Dir := (0.0, 0.0, 1.0);  --  orig z -1.0
+        Far_Point_Dir := (0.0, 0.0, -1.0);  --  orig z -1.0
         if First_Person then
             Dir := G_Camera.World_Position - Prev_Cam_Pos;
-            Dir (GL.X) := 0.0;
+            Dir (GL.Y) := 0.0;
             First_Person_Pos := G_Camera.World_Position;
-            First_Person_Pos (GL.X) := First_Person_Pos (GL.X) - 11.0;
-            Maths.Init_Lookat_Transform (First_Person_Pos, First_Person_Pos + Dir,
-                                         (0.0, 1.0, 0.0), G_Camera.View_Matrix);
+            First_Person_Pos (GL.Y) := First_Person_Pos (GL.X) - 11.0;
+            Maths.Init_Lookat_Transform (Position => First_Person_Pos,
+                                         Target   => First_Person_Pos + Dir,
+                                         Up       => (0.0, 1.0, 0.0),
+                                         Look_At  => G_Camera.View_Matrix);
         else
-            Maths.Init_Lookat_Transform (G_Camera.World_Position, (2.0, 0.0, 2.0),
-                                         (0.0, 0.0, -1.0), G_Camera.View_Matrix);
+            Maths.Init_Lookat_Transform (Position => G_Camera.World_Position,
+                                         Target   => (2.0, 0.0, 2.0),
+                                         Up       => (0.0, 0.0, -1.0),
+                                         Look_At  => G_Camera.View_Matrix);
         end if;
 
         G_Camera.Projection_Matrix := Perspective_Matrix

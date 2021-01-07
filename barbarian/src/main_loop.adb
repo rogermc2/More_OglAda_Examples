@@ -211,6 +211,7 @@ package body Main_Loop is
                         --                            ("Main_Loop.Game_Loop Player_1_View returned");
                         Is_Running := Is_Running and then not Main_Menu_Quit;
                         Is_Running := Is_Running and then not Main_Window.Should_Close;
+                        Delay (0.1);
                     end if;  --  inner Is_Running
                 end if;  --  Is_Running
 

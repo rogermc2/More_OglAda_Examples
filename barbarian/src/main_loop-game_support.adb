@@ -110,6 +110,7 @@ package body Main_Loop.Game_Support is
       Centre_Z        : constant Int := Int ((1.0 + Camera_Position (GL.Z)) / 2.0);
       UV              : constant Ints.Vector2 :=
                             (Abs (Centre_X), Abs (Centre_Z));
+      Count         : Integer := 0;
    begin
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
          for index in Shadow_Direction'Range loop
@@ -122,9 +123,12 @@ package body Main_Loop.Game_Support is
 
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;
-      Transparency.Reset_Transparency_List (Camera_Position);
+        Transparency.Reset_Transparency_List (Camera_Position);
 
-      Manifold.Draw_Manifold_Around (Camera_Position,
+        Count := Count + 1;
+        Put_Line ("Main_Loop.Game_Supprt.Player_1_View Draw_Manifold_Around "
+                  & Integer'Image (Count));
+        Manifold.Draw_Manifold_Around (Camera_Position,
                                      Single (Settings.Render_Distance),
                                      Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                      Ramp_Spec_Tex);

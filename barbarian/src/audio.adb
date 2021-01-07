@@ -50,7 +50,8 @@ package body Audio is
 
    type Audio_Data is record
       --        Device         : Irrklang::Isoundengine*;
-      --        *Credits_Snd   : Irrklang::Isound *Curr_Music_Snd;
+      --        Curr_Music_Snd : Irrklang::Isound;
+      --        Credits_Snd    : Irrklang::Isound;
       Ambient_Sounds      : Ambient_Sound_Array;
       Boulder_Sounds      : Boulder_Sound_Array;
       Loaded_Sounds       : Loaded_Sound_Array;

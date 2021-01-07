@@ -4,6 +4,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Attributes;
 with GL.Pixels;
 
+with Utilities;
+
 with Game_Utils;
 with GL_Maths;
 with GL_Utils;
@@ -182,6 +184,13 @@ package body Batch_Manager is
     procedure Clear is
     begin
         Batches_Data.Clear;
+        Ramp_Mesh_Points.Clear;
+        Ramp_Mesh_Normals.Clear;
+        Ramp_Mesh_Smooth_Normals.Clear;
+        Ramp_Mesh_Texcoords.Clear;
+        Water_Mesh_Points.Clear;
+        Water_Mesh_Normals.Clear;
+        Water_Mesh_Texcoords.Clear;
         Ramp_Mesh_Point_Count := 0;
         Water_Mesh_Point_Count := 0;
         Total_Points := 0;
@@ -288,11 +297,11 @@ package body Batch_Manager is
                     Height := Height - 1;
                 elsif aTile.Tile_Type /= '/' then
                     --  floor FR, FL, BL, BL, BR, FR
-                    aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));
-                    aBatch.Points.Append ((X - 1.0, Y, Z - 1.0));
-                    aBatch.Points.Append ((X - 1.0, Y, Z + 1.0));
-                    aBatch.Points.Append ((X + 1.0, Y, Z + 1.0));
-                    aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));
+                    aBatch.Points.Append (((X + 1.0) / 10.0, Y / 10.0, Z - 1.0));
+                    aBatch.Points.Append (((X - 1.0) / 10.0, Y / 10.0, Z - 1.0));
+                    aBatch.Points.Append (((X - 1.0) / 10.0, Y / 10.0, Z + 1.0));
+                    aBatch.Points.Append (((X + 1.0) / 10.0, Y / 10.0, Z + 1.0));
+                    aBatch.Points.Append (((X + 1.0) / 10.0, Y / 10.0, Z - 1.0));
                 end if;
 
                 for index in 1 .. 6 loop
@@ -323,6 +332,8 @@ package body Batch_Manager is
                 end if;
             end loop;
 
+--              Utilities.Print_GL_Array3
+--                (" aBatch.Points" , GL_Maths.To_Vector3_Array (aBatch.Points));
             GL_Utils.Bind_VAO (aBatch.VAO);
             aBatch.Points_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Points));
@@ -419,6 +430,8 @@ package body Batch_Manager is
                 end if;
             end loop;
 
+--              Utilities.Print_GL_Array3
+--                ("aBatch.Ramp_Points", GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             GL.Attributes.Set_Vertex_Attrib_Pointer
