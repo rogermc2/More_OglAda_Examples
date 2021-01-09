@@ -34,8 +34,10 @@ private
    type Camera_Data is record
       PV                              : Singles.Matrix4 := Singles.Identity4;
       View_Matrix                     : Singles.Matrix4 := Singles.Identity4;
-      Projection_Matrix               : Singles.Matrix4 := (others => (others => 0.0));
-      Clip_Plane                      : Singles.Matrix4 := (others => (others => 0.0));
+      Projection_Matrix               : Singles.Matrix4 :=
+                                            (others => (others => 0.0));
+      Clip_Plane                      : Singles.Matrix4 :=
+                                            (others => (others => 0.0));
       GUI_Proj_Matrix                 : Singles.Matrix4 := Singles.Identity4;
       World_Position                  : Singles.Vector3 := (0.0, 0.0, 0.0);
       Shake_Mod_Position              : Singles.Vector3 := (0.0, 0.0, 0.0);
