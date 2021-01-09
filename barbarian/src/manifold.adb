@@ -91,8 +91,8 @@ package body Manifold is
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
-            Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
-            Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
+--              Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
+--              Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
         end if;
 
         if Manifold_Dyn_Light_Dirty then
@@ -118,7 +118,7 @@ package body Manifold is
                              abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
 --              Rad_Dist := 1.0;
             if Rad_Dist <= 2.0 * Radius then
-                Put_Line ("Manifold.Draw_Manifold_Around Rad_Dist <= 2.0 * Radius 1");
+--                  Put_Line ("Manifold.Draw_Manifold_Around Rad_Dist <= 2.0 * Radius 1");
                 Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
                                  abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
                 if Rad_Dist <= 2.0 * Radius then
