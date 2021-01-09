@@ -173,8 +173,6 @@ package body Mesh_Loader is
          end if ;
       end if;
 
-      Put_Line ("Mesh_Loader.Load_Managed_Mesh Load_Mesh setting " &
-                              Mesh_Name);
       aMesh := Loaded_Meshes.Element (Mesh_ID);
       aMesh.VAO.Clear;
       aMesh.VAO.Initialize_Id;
@@ -217,7 +215,6 @@ package body Mesh_Loader is
          Enable_Vertex_Attrib_Array (Attrib_Bone);
       end if;
 
-      Put_Line ("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading Shadow_VAO from Loaded_Meshes.Last_Index");
       aMesh := Loaded_Meshes.Element (Loaded_Meshes.Last_Index);
       aMesh.Shadow_VAO.Clear;
       aMesh.Shadow_VAO.Initialize_Id;
@@ -235,8 +232,6 @@ package body Mesh_Loader is
       end if;
 
       Loaded_Meshes.Replace_Element (Mesh_ID, aMesh);
---        Game_Utils.Game_Log("Mesh_Loader.Load_Managed_Mesh Managed_Meshe " &
---                              Mesh_Name & " loaded.");
       return Mesh_ID;
    end Load_Managed_Mesh;
 

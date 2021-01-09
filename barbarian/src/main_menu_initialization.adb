@@ -1,5 +1,5 @@
 
-with Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Keys;
 
@@ -248,14 +248,20 @@ package body Main_Menu_Initialization is
         ("src/meshes/skull_helmet.apg", True, True, True, False, False);
       if Cursor_Mesh_ID <= 0 then
          raise MMenu_Exception with
-           "MMenu.Init_Cursor Load_Managed_Mesh failed to load src/meshes/skull_helmet.apg";
+           "Main_Menu_Initialization.Init_Cursor Load_Managed_Mesh failed to load src/meshes/skull_helmet.apg";
          --  Save Cursor_VAO
       elsif not Mesh_Loader.Loaded_Mesh_VAO (Cursor_Mesh_ID, Cursor_VAO) then
          raise MMenu_Exception with
-           "MMenu.Init_Cursor failed to initialize VAO for Cursor_Mesh";
+           "Main_Menu_Initialization.Init_Cursor failed to initialize VAO for Cursor_Mesh";
       end if;
 
       Cursor_Point_Count := Mesh_Loader.Point_Count (Cursor_Mesh_ID);
+
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Main_Menu_Initialization.Init_Cursor.");
+            raise;
+
    end Init_Cursor;
 
    --  ------------------------------------------------------------------------
@@ -357,7 +363,7 @@ package body Main_Menu_Initialization is
          K_Index := Input_Handler.Key_Binding (index);
          if K_Index < 0 or K_Index >= Input_Callback.Max_Keys then
             raise Mmenu_Exception with
-              "Mmenu.Init_Input_Actions, invalid key code " &
+              "Main_Menu_Initialization.Init_Input_Actions, invalid key code " &
               Integer'Image (K_Index) & " detected.";
          end if;
 
@@ -526,11 +532,11 @@ package body Main_Menu_Initialization is
         ("src/meshes/3dtitle_idea.apg", True, True, False, False, False);
       if Title_Mesh_ID <= 0 then
          raise MMenu_Exception with
-           "MMenu.Init_Cursor Load_Managed_Mesh failed to load src/meshes/3dtitle_idea.apg";
+           "Main_Menu_Initialization.Init_Cursor Load_Managed_Mesh failed to load src/meshes/3dtitle_idea.apg";
          --  Save Title_VAO
       elsif not Mesh_Loader.Loaded_Mesh_VAO (Title_Mesh_ID, Title_VAO) then
          raise MMenu_Exception with
-           "MMenu.Init_Title failed to initialize VAO for Title_Mesh";
+           "Main_Menu_Initialization.Init_Title failed to initialize VAO for Title_Mesh";
       end if;
       Title_Point_Count := Mesh_Loader.Point_Count (Title_Mesh_ID);
 
@@ -561,6 +567,10 @@ package body Main_Menu_Initialization is
       Title_Shader_Manager.Set_View_Matrix (Title_V);
       Title_Shader_Manager.Set_Perspective_Matrix (Camera.GUI_Proj_Matrix);
 
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Main_Menu_Initialization.Init_Title.");
+            raise;
    end Init_Title;
 
    --  ------------------------------------------------------------------------
@@ -603,6 +613,10 @@ package body Main_Menu_Initialization is
          Y_Step := Y_Step + 1.0;
       end loop;
 
+    exception
+        when others =>
+            Put_Line ("An exception occurred in Main_Menu_Initialization.Init_Various.");
+            raise;
    end Init_Various;
 
    --  ------------------------------------------------------------------------

@@ -93,9 +93,6 @@ package body Manifold is
             Set_Projection_Matrix (Camera.Projection_Matrix);
             Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
             Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
---          else
---              Set_View_Matrix (Singles.Identity4);
---              Set_Projection_Matrix (Singles.Identity4);
         end if;
 
         if Manifold_Dyn_Light_Dirty then
@@ -358,10 +355,7 @@ package body Manifold is
         Water_Shader_Manager.Set_Ambient_Light ((0.0125, 0.0125, 0.0125));
         Water_Shader_Manager.Set_Cube_Texture (3);
 
-        Game_Utils.Game_Log ("Manifold shaders initialized.");
-
         Batch_Manager.Init;
-        Game_Utils.Game_Log ("Manifold initialized.");
 
     end Init;
 

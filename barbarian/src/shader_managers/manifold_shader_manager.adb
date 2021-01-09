@@ -22,14 +22,21 @@ package body Manifold_Shader_Manager is
           ((Src ("src/shaders_3_2/manifold.vert", Vertex_Shader),
            Src ("src/shaders_3_2/manifold.frag", Fragment_Shader)));
 
-        Render_Uniforms.Ambient_Light_ID :=
-          Uniform_Location (Shader_Program, "L_a");
-        Render_Uniforms.Caster_Position_ID :=
-          Uniform_Location (Shader_Program, "caster_pos_wor");
-        Render_Uniforms.Cube_Texture_ID :=
-          Uniform_Location (Shader_Program, "cube_texture");
+        --  Vertex shader uniforms
+        Render_Uniforms.Model_Matrix_ID :=
+          Uniform_Location (Shader_Program, "M");
+        Render_Uniforms.View_Matrix_ID :=
+          Uniform_Location (Shader_Program, "V");
+        Render_Uniforms.Projection_Matrix_ID :=
+          Uniform_Location (Shader_Program, "P");
+        Render_Uniforms.Outline_Pass_ID :=
+          Uniform_Location (Shader_Program, "ol_pass");
+        --  Fragment shader uniforms
         Render_Uniforms.Diff_Map_ID :=
           Uniform_Location (Shader_Program, "diff_map");
+        Render_Uniforms.Spec_Map_ID :=
+          Uniform_Location (Shader_Program, "spec_map");
+
         Render_Uniforms.Dynamic_Light_Pos_ID :=
           Uniform_Location (Shader_Program, "dyn_light_pos_wor");
         Render_Uniforms.Dynamic_Light_Diff_ID :=
@@ -38,41 +45,44 @@ package body Manifold_Shader_Manager is
           Uniform_Location (Shader_Program, "dyn_light_spec");
         Render_Uniforms.Dynamic_Light_Range_ID :=
           Uniform_Location (Shader_Program, "dyn_light_range");
-        Render_Uniforms.Light_Specular_ID :=
-          Uniform_Location (Shader_Program, "light_spec");
-        Render_Uniforms.Model_Matrix_ID :=
-          Uniform_Location (Shader_Program, "model_mat");
-        Render_Uniforms.Outline_Pass_ID :=
-          Uniform_Location (Shader_Program, "ol_pass");
-        Render_Uniforms.Projection_Matrix_ID :=
-          Uniform_Location (Shader_Program, "P");
-        Render_Uniforms.Shadow_Enabled_ID :=
-          Uniform_Location (Shader_Program, "model_mat");
-        Render_Uniforms.Spec_Map_ID :=
-          Uniform_Location (Shader_Program, "spec_map");
+
+        Render_Uniforms.Ambient_Light_ID :=
+          Uniform_Location (Shader_Program, "L_a");  --  ambient intensity
         Render_Uniforms.Static_Light_Indices_ID :=
           Uniform_Location (Shader_Program, "static_light_indices");
-        Render_Uniforms.View_Matrix_ID :=
-          Uniform_Location (Shader_Program, "V");
---          Game_Utils.Game_Log ("Manifold_Shader_Manager Render_Uniforms initialized.");
+        Render_Uniforms.Light_Position_ID :=
+          Uniform_Location (Shader_Program, "light_pos");
+        Render_Uniforms.Light_Diffuse_ID :=
+          Uniform_Location (Shader_Program, "light_diff");
+        Render_Uniforms.Light_Specular_ID :=
+          Uniform_Location (Shader_Program, "light_spec");
+
+        Render_Uniforms.Shadow_Enabled_ID :=
+          Uniform_Location (Shader_Program, "shadow_enabled");
+        Render_Uniforms.Cube_Texture_ID :=
+          Uniform_Location (Shader_Program, "cube_texture");
+        Render_Uniforms.Caster_Position_ID :=
+          Uniform_Location (Shader_Program, "caster_pos_wor");
 
         Use_Program (Shader_Program);
-        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Maths.Vec3_0);
-        GL.Uniforms.Set_Single (Render_Uniforms.Caster_Position_ID, Maths.Vec3_0);
-        GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Identity4);
+        GL.Uniforms.Set_Single (Render_Uniforms.View_Matrix_ID, Identity4);
+        GL.Uniforms.Set_Single (Render_Uniforms.Projection_Matrix_ID, Identity4);
+        GL.Uniforms.Set_Single (Render_Uniforms.Outline_Pass_ID, 0.0);
+
         GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, 0);
+        GL.Uniforms.Set_Int (Render_Uniforms.Spec_Map_ID, 0);
+
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Pos_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Diff_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Spec_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Range_ID, 0.0);
-        GL.Uniforms.Set_Single (Render_Uniforms.Model_Matrix_ID, Identity4);
-        GL.Uniforms.Set_Single (Render_Uniforms.Outline_Pass_ID, 0.0);
-        GL.Uniforms.Set_Single (Render_Uniforms.Projection_Matrix_ID, Identity4);
+
+        GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Maths.Vec3_0);
+
         GL.Uniforms.Set_Single (Render_Uniforms.Shadow_Enabled_ID, 0.0);
-        GL.Uniforms.Set_Int (Render_Uniforms.Spec_Map_ID, 0);
---          GL.Uniforms.Set_Single (Render_Uniforms.Static_Light_Indices_ID, Maths.Vec3_0);
-        GL.Uniforms.Set_Single (Render_Uniforms.View_Matrix_ID, Identity4);
---          Game_Utils.Game_Log ("Manifold_Shader_Manager Uniforms initialized.");
+        GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Caster_Position_ID, Maths.Vec3_0);
 
     exception
         when others =>
