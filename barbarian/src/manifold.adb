@@ -91,8 +91,8 @@ package body Manifold is
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
---              Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
---              Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
+            --              Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
+            --              Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
         end if;
 
         if Manifold_Dyn_Light_Dirty then
@@ -116,9 +116,9 @@ package body Manifold is
             aBatch := Element (Curs);
             Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
                              abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
---              Rad_Dist := 1.0;
+            --              Rad_Dist := 1.0;
             if Rad_Dist <= 2.0 * Radius then
---                  Put_Line ("Manifold.Draw_Manifold_Around Rad_Dist <= 2.0 * Radius 1");
+                --                  Put_Line ("Manifold.Draw_Manifold_Around Rad_Dist <= 2.0 * Radius 1");
                 Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
                                  abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
                 if Rad_Dist <= 2.0 * Radius then
@@ -131,49 +131,46 @@ package body Manifold is
                     --                                          aBatch.AABB_Maxs);
                     --                 Put_Line ("Manifold.Draw_Manifold_Around Static_Light_Indices.Is_Empty: "
                     --                           & Boolean'Image (aBatch.Static_Light_Indices.Is_Empty));
---                      if Frustum.Is_Aabb_In_Frustum
---                        (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
---                        not (aBatch.Static_Light_Indices.Is_Empty) then
-                        Light_Indices := aBatch.Static_Light_Indices;
-                        Light_Cursor := Light_Indices.First;
-                        Tile_Index1 := Int (Element (Light_Cursor));
-                        Tile_Index2 := Int (Element (Next (Light_Cursor)));
-                        Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
+                    --                      if Frustum.Is_Aabb_In_Frustum
+                    --                        (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
+                    --                        not (aBatch.Static_Light_Indices.Is_Empty) then
+                    Light_Indices := aBatch.Static_Light_Indices;
+                    Light_Cursor := Light_Indices.First;
+                    Tile_Index1 := Int (Element (Light_Cursor));
+                    Tile_Index2 := Int (Element (Next (Light_Cursor)));
+                    Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
-                        if aBatch.Point_Count > 0 then
-                            --  flat tiles
-                            Count := Count + 1;
-                            Put_Line ("Manifold.Draw_Manifold_Around drawing aBatch.Vao "
-                                     & Integer'Image (Count));
-                            if Count > 10000 then
-                                Count := 0;
-                            end if;
-                            GL_Utils.Bind_Vao (aBatch.Vao);
---                              Put_Line ("Manifold.Draw_Manifold_Around Vao Array_Buffer size "
---                                       & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
-                            Texture_Manager.Bind_Texture (0, Tile_Tex);
-                            Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);                            Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
-                        end if;
+                    if aBatch.Point_Count > 0 then
+                        --  flat tiles
+                        GL_Utils.Bind_Vao (aBatch.Points_VAO);
+                         Put_Line ("Manifold.Draw_Manifold_Around Array_Buffer size and Points count "
+                                    & Size'Image (GL.Objects.Buffers.Array_Buffer.Size)
+                                    & ", " & Integer'Image (aBatch.Point_Count));
+                        Texture_Manager.Bind_Texture (0, Tile_Tex);
+                        Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+                        Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+                        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);                        Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+                    end if;
 
-                        if aBatch.Ramp_Point_Count > 0 then
-                            --  ramps
-                            GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
---                              Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
---                                       & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
-                            if Settings.Render_OLS then
-                                Set_Cull_Face (Front);
-                                Set_Front_Face (Clockwise);
-                                Set_Outline_Pass (1.0);
-                                Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
-                                Set_Outline_Pass (0.0);
-                                Set_Front_Face (Counter_Clockwise);
-                            end if;
-                            --  regular pass
-                            Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
-                            Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+                    if aBatch.Ramp_Point_Count > 0 then
+                        --  ramps
+                        GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+                        --   Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
+                        --              & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
+                        if Settings.Render_OLS then
+                            Set_Front_Face (Clockwise);
+                            Set_Outline_Pass (1.0);
                             Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
-                            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+--                              GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+                            Set_Outline_Pass (0.0);
+                            Set_Front_Face (Counter_Clockwise);
                         end if;
+                        --  regular pass
+                        Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
+                        Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+                        Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
+                        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+                    end if;
                 end if;
             end if;
             Next (Curs);
@@ -205,7 +202,7 @@ package body Manifold is
             aBatch := Element (Curs);
             if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
                 --  Flat Tiles
-                GL_Utils.Bind_Vao (aBatch.Vao);
+                GL_Utils.Bind_Vao (aBatch.Points_VAO);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
                 GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));

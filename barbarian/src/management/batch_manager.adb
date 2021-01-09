@@ -283,8 +283,8 @@ package body Batch_Manager is
     begin
         if not Is_Empty (Tiles) then
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
---                  Game_Utils.Game_Log ("Batch_Manager.Generate_Points Tile_Index"
---                                       & Integer'Image (Tile_Index));
+                --                  Game_Utils.Game_Log ("Batch_Manager.Generate_Points Tile_Index"
+                --                                       & Integer'Image (Tile_Index));
                 aTile := Tiles.Element (Tile_Index);
                 Row := Int (Tile_Index) / Max_Cols + 1;
                 Column := Int (Tile_Index) - Row * Max_Cols;
@@ -332,9 +332,9 @@ package body Batch_Manager is
                 end if;
             end loop;
 
---              Utilities.Print_GL_Array3
---                (" aBatch.Points" , GL_Maths.To_Vector3_Array (aBatch.Points));
-            GL_Utils.Bind_VAO (aBatch.VAO);
+            --              Utilities.Print_GL_Array3
+            --                (" aBatch.Points" , GL_Maths.To_Vector3_Array (aBatch.Points));
+            GL_Utils.Bind_VAO (aBatch.Points_VAO);
             aBatch.Points_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Points));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -344,6 +344,20 @@ package body Batch_Manager is
             Update_AABB_Dimensions  (aBatch, aBatch.Points);
             aBatch.Point_Count := Integer (aBatch.Points.Length);
             aBatch.Points.Clear;
+
+            aBatch.Normals_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Normals));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
+            aBatch.Normals.Clear;
+
+            aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
+              (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
+            aBatch.Tex_Coords.Clear;
         end if;
 
     end Generate_Points;
@@ -380,8 +394,8 @@ package body Batch_Manager is
     begin
         if not Is_Empty (Tiles) then
             for Tile_Index in Tiles.First_Index .. Tiles.Last_Index loop
---                  Put_Line ("Batch_Manager.Generate_Ramps, Tile_Index" &
---                              Integer'Image (Integer (Tile_Index)));
+                --                  Put_Line ("Batch_Manager.Generate_Ramps, Tile_Index" &
+                --                              Integer'Image (Integer (Tile_Index)));
                 aTile := Tiles.Element (Tile_Index);
                 Row := Int (Tile_Index) / Max_Cols + 1;
                 Column := Int (Tile_Index) - Row * Max_Cols;
@@ -399,8 +413,8 @@ package body Batch_Manager is
                 end case;
 
                 if aTile.Tile_Type = '/' then
---                      Put_Line ("Batch_Manager.Generate_Ramps, Tile_Type " &
---                              aTile.Tile_Type);
+                    --                      Put_Line ("Batch_Manager.Generate_Ramps, Tile_Type " &
+                    --                              aTile.Tile_Type);
                     --  Put each vertex point into world space
                     Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
                     Model_Matrix := Translation_Matrix
@@ -430,8 +444,8 @@ package body Batch_Manager is
                 end if;
             end loop;
 
---              Utilities.Print_GL_Array3
---                ("aBatch.Ramp_Points", GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
+            --              Utilities.Print_GL_Array3
+            --                ("aBatch.Ramp_Points", GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -520,10 +534,10 @@ package body Batch_Manager is
                 end if;
             end loop;  --  end for each Tile
 
---              Put_Line ("Batch_Manager.Generate_Water, Water_Mesh_Points size: " &
---                         Integer'Image (Integer (Water_Mesh_Points.Length)));
---              Put_Line ("Batch_Manager.Generate_Water, aBatch.Water_Points size: " &
---                         Integer'Image (Integer (aBatch.Water_Points.Length)));
+            --              Put_Line ("Batch_Manager.Generate_Water, Water_Mesh_Points size: " &
+            --                         Integer'Image (Integer (Water_Mesh_Points.Length)));
+            --              Put_Line ("Batch_Manager.Generate_Water, aBatch.Water_Points size: " &
+            --                         Integer'Image (Integer (aBatch.Water_Points.Length)));
 
             GL_Utils.Bind_VAO (aBatch.Water_VAO);
             aBatch.Water_VBO := GL_Utils.Create_3D_VBO
@@ -554,62 +568,62 @@ package body Batch_Manager is
     --  -------------------------------------------------------------------------
 
     procedure Init is
-      Points       : GL_Maths.Vec3_List;
-      Texcoords    : GL_Maths.Vec2_List;
-      Points_Count : Integer := 0;
+        Points       : GL_Maths.Vec3_List;
+        Texcoords    : GL_Maths.Vec2_List;
+        Points_Count : Integer := 0;
     begin
-      Clear;
-      if not Mesh_Loader.Load_Mesh_Data_Only
-        ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
-         Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
-           & "src/meshes/ramp_may_2014.apg";
-      end if;
+        Clear;
+        if not Mesh_Loader.Load_Mesh_Data_Only
+          ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
+           Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Init error loading ramp mesh data from file "
+              & "src/meshes/ramp_may_2014.apg";
+        end if;
 
-      Game_Utils.Game_Log ("Batch_Manager.Init loaded src/meshes/ramp_may_2014.apg"
-      & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length))
-      & " Ramp_Mesh_Texcoords.Length " & Integer'Image (Integer (Ramp_Mesh_Texcoords.Length))
-      & " Ramp_Mesh_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Normals.Length)));
+        Game_Utils.Game_Log ("Batch_Manager.Init loaded src/meshes/ramp_may_2014.apg"
+                             & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length))
+                             & " Ramp_Mesh_Texcoords.Length " & Integer'Image (Integer (Ramp_Mesh_Texcoords.Length))
+                             & " Ramp_Mesh_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Normals.Length)));
 
-      if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
-                                              Points, Texcoords,
-                                              Ramp_Mesh_Smooth_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
-           & "src/meshes/ramp_smooth.apg";
-      end if;
-      Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded."
-      & " Points.Length " & Integer'Image (Integer (Points.Length))
-      & " Texcoords.Length " & Integer'Image (Integer (Texcoords.Length))
-      & " Ramp_Mesh_Smooth_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Smooth_Normals.Length)));
+        if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
+                                                Points, Texcoords,
+                                                Ramp_Mesh_Smooth_Normals) then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Init error loading ramp mesh data from file "
+              & "src/meshes/ramp_smooth.apg";
+        end if;
+        Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded."
+                             & " Points.Length " & Integer'Image (Integer (Points.Length))
+                             & " Texcoords.Length " & Integer'Image (Integer (Texcoords.Length))
+                             & " Ramp_Mesh_Smooth_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Smooth_Normals.Length)));
 
-      if not Mesh_Loader.Load_Mesh_Data_Only
-        ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
-         Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
-           & "src/meshes/ramp_may_2014.apg";
-      end if;
-      Game_Utils.Game_Log ("Batch_Manager.Init ramp_may_2014.apg loaded.");
+        if not Mesh_Loader.Load_Mesh_Data_Only
+          ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
+           Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Init error loading ramp mesh data from file "
+              & "src/meshes/ramp_may_2014.apg";
+        end if;
+        Game_Utils.Game_Log ("Batch_Manager.Init ramp_may_2014.apg loaded.");
 
-      if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
-                                              Points, Texcoords,
-                                              Ramp_Mesh_Smooth_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
-           & "src/meshes/ramp_smooth.apg";
-      end if;
-      Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded.");
+        if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
+                                                Points, Texcoords,
+                                                Ramp_Mesh_Smooth_Normals) then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Init error loading ramp mesh data from file "
+              & "src/meshes/ramp_smooth.apg";
+        end if;
+        Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded.");
 
-      if not Mesh_Loader.Load_Mesh_Data_Only
-        ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
-        Water_Mesh_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
-           & "src/meshes/water.apg";
-      end if;
-      Game_Utils.Game_Log ("Batch_Manager.Init water.apg loaded.");
+        if not Mesh_Loader.Load_Mesh_Data_Only
+          ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
+           Water_Mesh_Normals) then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Init error loading ramp mesh data from file "
+              & "src/meshes/water.apg";
+        end if;
+        Game_Utils.Game_Log ("Batch_Manager.Init water.apg loaded.");
 
     end Init;
 
@@ -662,25 +676,25 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-   function Num_Points (Batch_Index : Positive) return Integer is
+    function Num_Points (Batch_Index : Positive) return Integer is
         aBatch : constant Batch_Meta := Batches.Element (Batch_Index);
-   begin
+    begin
         return aBatch.Point_Count;
     end Num_Points;
 
     --  -------------------------------------------------------------------------
 
-   function Num_Ramp_Points (Batch_Index : Positive) return Integer is
+    function Num_Ramp_Points (Batch_Index : Positive) return Integer is
         aBatch : constant Batch_Meta := Batches.Element (Batch_Index);
-   begin
+    begin
         return aBatch.Ramp_Point_Count;
     end Num_Ramp_Points;
 
     --  -------------------------------------------------------------------------
 
-   function Num_Water_Points  (Batch_Index : Positive) return Integer is
+    function Num_Water_Points  (Batch_Index : Positive) return Integer is
         aBatch : constant Batch_Meta := Batches.Element (Batch_Index);
-   begin
+    begin
         return aBatch.Water_Point_Count;
     end Num_Water_Points;
 
@@ -718,16 +732,16 @@ package body Batch_Manager is
             raise Batch_Manager_Exception with
               "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
         else
---              Put_Line ("Batch_Manager.Regenerate_Batch Max_Cols " &
---                          Int'Image (Max_Cols));
---              Put_Line ("Batch_Manager.Regenerate_Batch Length " &
---                          Integer'Image (Integer (Batch_Tiles.Length)));
+            --              Put_Line ("Batch_Manager.Regenerate_Batch Max_Cols " &
+            --                          Int'Image (Max_Cols));
+            --              Put_Line ("Batch_Manager.Regenerate_Batch Length " &
+            --                          Integer'Image (Integer (Batch_Tiles.Length)));
             while Has_Element (Curs) loop
                 Tile_Index  := Element (Curs);
                 aTile := Tiles.Element (Tile_Index);
                 Row := (Int (Tile_Index) + Max_Cols - 1) / Max_Cols;
---                  Put_Line ("Batch_Manager.Regenerate_Batch Tile_Index " &
---                              Integer'Image (Tile_Index));
+                --                  Put_Line ("Batch_Manager.Regenerate_Batch Tile_Index " &
+                --                              Integer'Image (Tile_Index));
                 if Int (Tile_Index) <= Max_Cols then
                     Column := Int (Tile_Index);
                 else
@@ -743,10 +757,10 @@ package body Batch_Manager is
                       Int'Image (Row) & ", " & Int'Image (Column);
                 end if;
 
---                  Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Index, row, col " &
---                                         Integer'Image (Tile_Index) & ", " &
---                                         Int'Image (Row) & ", " &
---                                         Int'Image (Column));
+                --                  Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Index, row, col " &
+                --                                         Integer'Image (Tile_Index) & ", " &
+                --                                         Int'Image (Row) & ", " &
+                --                                         Int'Image (Column));
                 Height := aTile.Height;
                 if aTile.Tile_Type = '~' then
                     Height := Height - 1;
@@ -825,29 +839,14 @@ package body Batch_Manager is
             end loop;  -- over tiles
         end if;  --  not Tiles not empty
 
-        theBatch.VAO.Initialize_Id;
+        theBatch.Points_VAO.Initialize_Id;
         theBatch.Ramp_VAO.Initialize_Id;
         theBatch.Water_VAO.Initialize_Id;
 
         Generate_Points (theBatch, Tiles);
-
-        theBatch.Normals_VBO := GL_Utils.Create_3D_VBO
-          (GL_Maths.To_Vector3_Array (theBatch.Normals));
-        GL.Attributes.Set_Vertex_Attrib_Pointer
-          (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
-        GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-        theBatch.Normals.Clear;
-
-        theBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
-          (GL_Maths.To_Vector2_Array (theBatch.Tex_Coords));
-        GL.Attributes.Set_Vertex_Attrib_Pointer
-          (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
-        GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-        theBatch.Tex_Coords.Clear;
-
         Generate_Ramps (theBatch, Tiles);
         Generate_Water (theBatch, Tiles);
---          Put_Line ("Batch_Manager.Regenerate_Batch Water generated");
+        --          Put_Line ("Batch_Manager.Regenerate_Batch Water generated");
 
         Batches_Data.Replace_Element (Batch_Index, theBatch);
 
