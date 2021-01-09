@@ -148,8 +148,9 @@ package body Manifold is
                                     & ", " & Integer'Image (aBatch.Point_Count));
                         Texture_Manager.Bind_Texture (0, Tile_Tex);
                         Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+--                          Draw_Arrays (Triangles, 0, Int (GL.Objects.Buffers.Array_Buffer.Size));
                         Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
-                        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);                        Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+                        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
                     end if;
 
                     if aBatch.Ramp_Point_Count > 0 then
@@ -168,8 +169,9 @@ package body Manifold is
                         --  regular pass
                         Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                         Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+--                          Draw_Arrays (Triangles, 0, Int (GL.Objects.Buffers.Array_Buffer.Size));
                         Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
-                        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+--                          GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
                     end if;
                 end if;
             end if;

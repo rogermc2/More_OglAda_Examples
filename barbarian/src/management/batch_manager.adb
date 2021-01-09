@@ -27,9 +27,9 @@ package body Batch_Manager is
     Water_Mesh_Points        : GL_Maths.Vec3_List;
     Water_Mesh_Normals       : GL_Maths.Vec3_List;
     Water_Mesh_Texcoords     : GL_Maths.Vec2_List;
-    Ramp_Mesh_Point_Count  : Integer := 0;
-    Water_Mesh_Point_Count : Integer := 0;
-    Total_Points           : Integer := 0;
+    Ramp_Mesh_Point_Count    : Integer := 0;  --  Set by load_mesh_data_only
+    Water_Mesh_Point_Count   : Integer := 0;  --  Set by load_mesh_data_only
+    Total_Points             : Integer := 0;
 
     function Check_For_OOO (Batch_Index : Positive) return Boolean;
     procedure North_Check (aBatch     : in out Batch_Meta;
@@ -191,7 +191,7 @@ package body Batch_Manager is
         Water_Mesh_Points.Clear;
         Water_Mesh_Normals.Clear;
         Water_Mesh_Texcoords.Clear;
-        Ramp_Mesh_Point_Count := 0;
+--          Ramp_Mesh_Point_Count := 0;  --  Not used?
         Water_Mesh_Point_Count := 0;
         Total_Points := 0;
     end Clear;
@@ -297,25 +297,29 @@ package body Batch_Manager is
                     Height := Height - 1;
                 elsif aTile.Tile_Type /= '/' then
                     --  floor FR, FL, BL, BL, BR, FR
-                    aBatch.Points.Append (((X + 1.0) / 10.0, Y / 10.0, Z - 1.0));
-                    aBatch.Points.Append (((X - 1.0) / 10.0, Y / 10.0, Z - 1.0));
-                    aBatch.Points.Append (((X - 1.0) / 10.0, Y / 10.0, Z + 1.0));
-                    aBatch.Points.Append (((X + 1.0) / 10.0, Y / 10.0, Z + 1.0));
-                    aBatch.Points.Append (((X + 1.0) / 10.0, Y / 10.0, Z - 1.0));
+                    aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));  -- FR
+                    aBatch.Points.Append ((X - 1.0, Y, Z - 1.0));  -- FL
+                    aBatch.Points.Append ((X - 1.0, Y, Z + 1.0));  -- BL
+                    aBatch.Points.Append ((X - 1.0, Y, Z + 1.0));  -- BL
+                    aBatch.Points.Append ((X + 1.0, Y, Z + 1.0));  -- BR
+                    aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));  -- FR
+                    aBatch.Point_Count := aBatch.Point_Count + 6;
+
+                    for index in 1 .. 6 loop
+                        aBatch.Normals.Append ((0.0, 1.0, 0.0));
+                        aBatch.Normal_Count := aBatch.Normal_Count + 1;
+                    end loop;
+
+                    Atlas_Row := Tile_Index / Sets_In_Atlas_Row + 1;
+                    Atlas_Col := Tile_Index - Atlas_Row * Sets_In_Atlas_Row;
+                    Add_Tex_Coords (0.5, 1.0);
+                    Add_Tex_Coords (0.0, 1.0);
+                    Add_Tex_Coords (0.0, 0.5);
+                    Add_Tex_Coords (0.0, 0.5);
+                    Add_Tex_Coords (0.5, 0.5);
+                    Add_Tex_Coords (0.5, 1.0);
+                    aBatch.Tex_Coord_Count := aBatch.Tex_Coord_Count + 6;
                 end if;
-
-                for index in 1 .. 6 loop
-                    aBatch.Normals.Append ((0.0, 1.0, 0.0));
-                end loop;
-
-                Atlas_Row := Tile_Index / Sets_In_Atlas_Row + 1;
-                Atlas_Col := Tile_Index - Atlas_Row * Sets_In_Atlas_Row;
-                Add_Tex_Coords (0.5, 1.0);
-                Add_Tex_Coords (0.0, 1.0);
-                Add_Tex_Coords (0.0, 0.5);
-                Add_Tex_Coords (0.0, 0.5);
-                Add_Tex_Coords (0.5, 0.5);
-                Add_Tex_Coords (0.5, 1.0);
 
                 --  check for higher neighbour to north (walls belong to the lower tile)
                 if Row < Max_Rows then
@@ -441,6 +445,8 @@ package body Batch_Manager is
                         Next (Curs_T);
                         Next (Curs_S);
                     end loop;
+                    aBatch.Ramp_Point_Count :=
+                      aBatch.Ramp_Point_Count + Ramp_Mesh_Point_Count;
                 end if;
             end loop;
 
@@ -531,6 +537,8 @@ package body Batch_Manager is
                         aBatch.Water_Points.Append (To_Vector3 (VPF));
                         Next (Curs_P);
                     end loop;  --  end for each Water_Point
+                    aBatch.Water_Point_Count :=
+                      aBatch.Water_Point_Count + Water_Mesh_Point_Count;
                 end if;
             end loop;  --  end for each Tile
 
@@ -580,6 +588,7 @@ package body Batch_Manager is
               "Batch_Manager.Init error loading ramp mesh data from file "
               & "src/meshes/ramp_may_2014.apg";
         end if;
+        Ramp_Mesh_Point_Count := Integer (Ramp_Mesh_Points.Length);
 
         Game_Utils.Game_Log ("Batch_Manager.Init loaded src/meshes/ramp_may_2014.apg"
                              & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length))
@@ -598,15 +607,6 @@ package body Batch_Manager is
                              & " Texcoords.Length " & Integer'Image (Integer (Texcoords.Length))
                              & " Ramp_Mesh_Smooth_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Smooth_Normals.Length)));
 
-        if not Mesh_Loader.Load_Mesh_Data_Only
-          ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
-           Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
-            raise Batch_Manager_Exception with
-              "Batch_Manager.Init error loading ramp mesh data from file "
-              & "src/meshes/ramp_may_2014.apg";
-        end if;
-        Game_Utils.Game_Log ("Batch_Manager.Init ramp_may_2014.apg loaded.");
-
         if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                                 Points, Texcoords,
                                                 Ramp_Mesh_Smooth_Normals) then
@@ -623,6 +623,7 @@ package body Batch_Manager is
               "Batch_Manager.Init error loading ramp mesh data from file "
               & "src/meshes/water.apg";
         end if;
+        Water_Mesh_Point_Count := Integer (Water_Mesh_Points.Length);
         Game_Utils.Game_Log ("Batch_Manager.Init water.apg loaded.");
 
     end Init;
@@ -764,10 +765,18 @@ package body Batch_Manager is
                 Height := aTile.Height;
                 if aTile.Tile_Type = '~' then
                     Height := Height - 1;
+                    theBatch.Water_Point_Count :=
+                      theBatch.Water_Point_Count + Water_Mesh_Point_Count;
                     Total_Points := Total_Points + Water_Mesh_Point_Count;
+                elsif aTile.Tile_Type = '/' then
+                    theBatch.Ramp_Point_Count :=
+                      theBatch.Ramp_Point_Count + Ramp_Mesh_Point_Count;
+                    Total_Points := Total_Points + Ramp_Mesh_Point_Count;
                 else
+                    theBatch.Point_Count := theBatch.Point_Count + 6;
                     Total_Points := Total_Points + 6;
                 end if;
+
                 --  Sides count
                 if Row > 1 then
                     N_Index := Tile_Index - Integer (Max_Cols) + 1;
