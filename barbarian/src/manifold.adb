@@ -85,7 +85,6 @@ package body Manifold is
         Light_Cursor  : Tile_Indices_Package.Cursor;
         Tile_Index1   : Int;
         Tile_Index2   : Int;
---          Projection_Matrix : Singles.Matrix4;
     begin
         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);

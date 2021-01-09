@@ -9,10 +9,10 @@ package Camera is
 
    procedure Camera_Wind_In;
    function Default_Camera return Camera_Data;
-   procedure Init;
    function Far return Single;
    function Field_Of_View_Y return Maths.Degree;
    function GUI_Proj_Matrix return Singles.Matrix4;
+   procedure Init;
    function Is_Dirty return Boolean;
    function Near return Single;
    function Projection_Matrix return Singles.Matrix4;

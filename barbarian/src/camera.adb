@@ -19,6 +19,34 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+    function Default_Camera return Camera_Data is
+    begin
+        return G_Camera;
+    end Default_Camera;
+
+    --  ------------------------------------------------------------------------
+
+    function Far return Single is
+    begin
+        return G_Camera.Far;
+    end Far;
+
+    --  ------------------------------------------------------------------------
+
+    function Field_Of_View_Y return Maths.Degree is
+    begin
+        return G_Camera.FOY_Y;
+    end Field_Of_View_Y;
+
+    --  ------------------------------------------------------------------------
+
+    function GUI_Proj_Matrix return Singles.Matrix4 is
+    begin
+        return G_Camera.GUI_Proj_Matrix;
+    end GUI_Proj_Matrix;
+
+    --  ------------------------------------------------------------------------
+
     procedure Init is
         use Singles;
         use Maths;
@@ -69,34 +97,6 @@ package body Camera is
         G_Camera.Manual_Override := False;
         G_Camera.Height := 13.0;
     end Init;
-
-    --  ------------------------------------------------------------------------
-
-    function Default_Camera return Camera_Data is
-    begin
-        return G_Camera;
-    end Default_Camera;
-
-    --  ------------------------------------------------------------------------
-
-    function Far return Single is
-    begin
-        return G_Camera.Far;
-    end Far;
-
-    --  ------------------------------------------------------------------------
-
-    function Field_Of_View_Y return Maths.Degree is
-    begin
-        return G_Camera.FOY_Y;
-    end Field_Of_View_Y;
-
-    --  ------------------------------------------------------------------------
-
-    function GUI_Proj_Matrix return Singles.Matrix4 is
-    begin
-        return G_Camera.GUI_Proj_Matrix;
-    end GUI_Proj_Matrix;
 
     --  ------------------------------------------------------------------------
 
