@@ -182,7 +182,8 @@ package body Manifold_Shader_Manager is
 
     procedure Set_Projection_Matrix (Projection_Matrix : Singles.Matrix4) is
     begin
-        GL.Uniforms.Set_Single (Render_Uniforms.Projection_Matrix_ID, Projection_Matrix);
+        GL.Uniforms.Set_Single
+          (Render_Uniforms.Projection_Matrix_ID, Projection_Matrix);
     end Set_Projection_Matrix;
 
     --  -------------------------------------------------------------------------
