@@ -4,9 +4,10 @@ with Frustum;
 with Settings;
 
 package body Camera is
+
     G_Camera      : Camera_Data;
     Prev_Cam_Pos  : Singles.Vector3 := (0.0, 0.0, 0.0);
-    Far_Point_Dir : Singles.Vector3 := (0.0, 0.0, 0.0);
+    Far_Point_Dir : Singles.Vector3 := (0.0, 0.0, -1.0);
     First_Person  : Boolean := False;
 
     --  ------------------------------------------------------------------------
@@ -24,7 +25,8 @@ package body Camera is
         Dir               : Singles.Vector3;
         First_Person_Pos  : Singles.Vector3;
     begin
-        G_Camera.World_Position := (2.0, 10.0, 2.0);  -- orig 2.0
+--          G_Camera.World_Position := (2.0, 10.0, 2.0);  -- orig 2.0
+        G_Camera.World_Position := (0.0, 0.0, 2.0);  -- orig 2.0
         Prev_Cam_Pos := G_Camera.World_Position;
         G_Camera.Shake_Mod_Position := (0.0, 0.0, 0.0);
         G_Camera.Original_Screen_Shake_Time := 0.0;
@@ -37,14 +39,14 @@ package body Camera is
         G_Camera.FOY_Y := 67.0;
         G_Camera.Aspect := Single (Settings.Framebuffer_Height) /
           Single (Settings.Framebuffer_Width);
-        G_Camera.Near := 0.1;
+        G_Camera.Near := 0.1;  --  0.1
         G_Camera.Far := Settings.Far_Clip;
-        Far_Point_Dir := (0.0, 0.0, -1.0);  --  orig z -1.0
+        Far_Point_Dir := (0.0, 0.0, -1.0);
         if First_Person then
             Dir := G_Camera.World_Position - Prev_Cam_Pos;
             Dir (GL.Y) := 0.0;
             First_Person_Pos := G_Camera.World_Position;
-            First_Person_Pos (GL.Y) := First_Person_Pos (GL.X) - 11.0;
+            First_Person_Pos (GL.Y) := First_Person_Pos (GL.Y) - 11.0;
             Maths.Init_Lookat_Transform (Position => First_Person_Pos,
                                          Target   => First_Person_Pos + Dir,
                                          Up       => (0.0, 1.0, 0.0),
