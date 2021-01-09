@@ -85,16 +85,19 @@ package body Manifold is
         Light_Cursor  : Tile_Indices_Package.Cursor;
         Tile_Index1   : Int;
         Tile_Index2   : Int;
+--          Projection_Matrix : Singles.Matrix4;
     begin
         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
---          if Camera.Is_Dirty then
+        if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
+            Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
+            Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
 --          else
-            Set_View_Matrix (Singles.Identity4);
-            Set_Projection_Matrix (Singles.Identity4);
---          end if;
+--              Set_View_Matrix (Singles.Identity4);
+--              Set_Projection_Matrix (Singles.Identity4);
+        end if;
 
         if Manifold_Dyn_Light_Dirty then
             Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
@@ -150,8 +153,8 @@ package body Manifold is
                                 Count := 0;
                             end if;
                             GL_Utils.Bind_Vao (aBatch.Vao);
-                            Put_Line ("Manifold.Draw_Manifold_Around Vao Array_Buffer size "
-                                     & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
+--                              Put_Line ("Manifold.Draw_Manifold_Around Vao Array_Buffer size "
+--                                       & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);                            Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
                         end if;
@@ -159,8 +162,8 @@ package body Manifold is
                         if aBatch.Ramp_Point_Count > 0 then
                             --  ramps
                             GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
-                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
-                                     & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
+--                              Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
+--                                       & Size'Image (GL.Objects.Buffers.Array_Buffer.Size));
                             if Settings.Render_OLS then
                                 Set_Cull_Face (Front);
                                 Set_Front_Face (Clockwise);

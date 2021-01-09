@@ -118,7 +118,7 @@ package body Main_Loop is
         begin
             Game_Utils.Game_Log ("Main_Loop.Game_Loop");
             Put_Line ("Main_Loop.Game_Loop");
-            Game_Camera.Is_Dirty := True;
+            Camera.Set_Is_Dirty (True);
             while Is_Running loop
                 Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
                                Curr_Frame_Time_Accum_Ms, Avg_Frames_Count,
@@ -296,7 +296,7 @@ package body Main_Loop is
         begin
             Game_Utils.Game_Log ("---Main_Loop.Introduction---");
             Is_Running := True;
-            Game_Camera.Is_Dirty := True;
+            Camera.Set_Is_Dirty (True);
             while Is_Running and not Window_Closed loop
                 Current_Time := Float (Glfw.Time);
                 Elapsed_Time := Current_Time - Last_Time;
@@ -318,7 +318,7 @@ package body Main_Loop is
                 Glfw.Input.Poll_Events;
                 Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
 
-                Game_Camera.Is_Dirty := False;
+                Camera.Set_Is_Dirty (False);
                 if Was_Key_Pressed (Window, Escape) or
                   Was_Key_Pressed (Window, Space) or
                   Was_Key_Pressed (Window, Enter) or
@@ -331,7 +331,7 @@ package body Main_Loop is
                 if Window_Closed then
                     Game_Utils.Game_Log ("Window closed by user or system ...exiting");
                 end if;
-                Game_Camera.Is_Dirty := False;
+                Camera.Set_Is_Dirty (False);
             end loop;  --  Is_Running
 
         end Introduction;
