@@ -28,14 +28,40 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
+   procedure Add_Attribute_To_Array
+      (VAO : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+       Attrib : GL.Attributes.Attribute; VBO : GL.Objects.Buffers.Buffer;
+       Dimen : Int) is
+   begin
+      Bind_VAO (VAO);
+      GL.Objects.Buffers.Array_Buffer.Bind (VBO);
+      GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Attrib, Dimen, Single_Type, False, 0, 0);
+      GL.Attributes.Enable_Vertex_Attrib_Array (Attrib);
+   end Add_Attribute_To_Array;
+
+   --  ------------------------------------------------------------------------
+
    procedure Bind_VAO (VAO : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object) is
    begin
-      VAO.Bind;
+      GL.Objects.Vertex_Arrays.Bind (VAO);
       Bound_VAO := VAO;
    end Bind_VAO;
 
    --  ------------------------------------------------------------------------
 
+   function Create_1D_VBO (Data : Single_Array)
+                           return GL.Objects.Buffers.Buffer is
+      use GL.Objects.Buffers;
+      New_Buffer : Buffer;
+   begin
+      New_Buffer.Initialize_Id;
+      Array_Buffer.Bind (New_Buffer);
+      Utilities.Load_Singles_Buffer (Array_Buffer, Data, Static_Draw);
+      return New_Buffer;
+   end Create_1D_VBO;
+
+   --  ------------------------------------------------------------------------
    function Create_2D_VBO (Data : GL.Types.Singles.Vector2_Array)
                            return GL.Objects.Buffers.Buffer is
       use GL.Objects.Buffers;

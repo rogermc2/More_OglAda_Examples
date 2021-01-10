@@ -1,6 +1,7 @@
 
 with Ada.Containers.Vectors;
 
+with GL.Attributes;
 with GL.Culling;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
@@ -143,13 +144,17 @@ package body Manifold is
                     if aBatch.Point_Count > 0 then
                         --  flat tiles
                         GL_Utils.Bind_Vao (aBatch.Points_VAO);
+--                          GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Points_VBO);
                          Put_Line ("Manifold.Draw_Manifold_Around Array_Buffer size and Points count "
-                                    & Size'Image (GL.Objects.Buffers.Array_Buffer.Size)
+                                    & Size'Image (GL.Objects.Buffers.Array_Buffer.Size / 12)
                                     & ", " & Integer'Image (aBatch.Point_Count));
                         Texture_Manager.Bind_Texture (0, Tile_Tex);
                         Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
---                          Draw_Arrays (Triangles, 0, Int (GL.Objects.Buffers.Array_Buffer.Size));
+--                          GL.Attributes.Set_Vertex_Attrib_Pointer
+--                            (0, 3, Single_Type, False, 0, 0);
+--                          GL.Attributes.Enable_Vertex_Attrib_Array (0);
                         Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+--                          Draw_Arrays (Triangles, 0, Int (GL.Objects.Buffers.Array_Buffer.Size));
                         GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
                     end if;
 

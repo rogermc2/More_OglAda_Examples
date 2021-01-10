@@ -200,14 +200,19 @@ package body Shadows is
 
         G_Shadows.Debug_Quad_Vao.Clear;
         G_Shadows.Debug_Quad_Vao.Initialize_Id;
-        G_Shadows.Debug_Quad_Vao.Bind;
-        Array_Buffer.Bind (Quad_VP_Buffer);
-        Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type, False, 0, 0);
-        Enable_Vertex_Attrib_Array (Attrib_VP);
+--          G_Shadows.Debug_Quad_Vao.Bind;
 
-        Array_Buffer.Bind (Quad_VT_Buffer);
-        Set_Vertex_Attrib_Pointer (Attrib_VT, 3, Single_Type, False, 0, 0);
-        Enable_Vertex_Attrib_Array (Attrib_VT);
+        GL_Utils.Add_Attribute_To_Array
+          (G_Shadows.Debug_Quad_Vao, Attrib_VP, Quad_VP_Buffer, 2);
+--          Array_Buffer.Bind (Quad_VP_Buffer);
+--          Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type, False, 0, 0);
+--          Enable_Vertex_Attrib_Array (Attrib_VP);
+
+        GL_Utils.Add_Attribute_To_Array
+          (G_Shadows.Debug_Quad_Vao, Attrib_VT, Quad_VT_Buffer, 3);
+--          Array_Buffer.Bind (Quad_VT_Buffer);
+--          Set_Vertex_Attrib_Pointer (Attrib_VT, 3, Single_Type, False, 0, 0);
+--          Enable_Vertex_Attrib_Array (Attrib_VT);
 
         G_Shadows.Cube_Framebuffer.Initialize_Id;
         G_Shadows.Cube_Colour_Tex.Initialize_Id;

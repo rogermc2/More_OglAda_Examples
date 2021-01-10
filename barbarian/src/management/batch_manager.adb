@@ -338,6 +338,7 @@ package body Batch_Manager is
 
             --              Utilities.Print_GL_Array3
             --                (" aBatch.Points" , GL_Maths.To_Vector3_Array (aBatch.Points));
+            aBatch.Points_VAO.Initialize_Id;
             GL_Utils.Bind_VAO (aBatch.Points_VAO);
             aBatch.Points_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Points));
@@ -347,7 +348,7 @@ package body Batch_Manager is
 
             Update_AABB_Dimensions  (aBatch, aBatch.Points);
             aBatch.Point_Count := Integer (aBatch.Points.Length);
-            aBatch.Points.Clear;
+--              aBatch.Points.Clear;
 
             aBatch.Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Normals));
@@ -848,7 +849,6 @@ package body Batch_Manager is
             end loop;  -- over tiles
         end if;  --  not Tiles not empty
 
-        theBatch.Points_VAO.Initialize_Id;
         theBatch.Ramp_VAO.Initialize_Id;
         theBatch.Water_VAO.Initialize_Id;
 

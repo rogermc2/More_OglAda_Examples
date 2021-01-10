@@ -406,15 +406,12 @@ package body GUI is
    begin
       Game_Utils.Game_Log ("--- GUI.Init_GUIs ___");
       GUIs_Initialized := False;
+
       --  Load generic VAO for 2d panels
       VAO_Quad_Tristrip.Initialize_Id;
-      VAO_Quad_Tristrip.Bind;
-
       Quad_VBO := GL_Utils.Create_2D_VBO (Quad_Tristrip);
-      GL.Objects.Buffers.Array_Buffer.Bind (Quad_VBO);
-      GL.Attributes.Set_Vertex_Attrib_Pointer
-        (Shader_Attributes.Attrib_VP, 2, Single_Type, False, 0, 0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+      GL_Utils.Add_Attribute_To_Array
+          (VAO_Quad_Tristrip, Shader_Attributes.Attrib_VP, Quad_VBO ,2);
 
       Init_Crong_Head;
       Init_Fist;

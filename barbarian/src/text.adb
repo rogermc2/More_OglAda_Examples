@@ -458,17 +458,21 @@ package body Text is
         Font_Viewport_Height := Viewport_Height;
         Create_Font_Shaders;
         Load_Font (Font_Image_File, Font_Metadata_File);
+
         Text_Box_VAO.Clear;
         Text_Box_VAO.Initialize_Id;
         Text_Box_VAO.Bind;
 
         TB_Points_VBO.Clear;
         TB_Points_VBO := GL_Utils.Create_2D_VBO (Text_Box_Points);
-        GL.Objects.Buffers.Array_Buffer.Bind (TB_Points_VBO);
-        GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
-        GL.Attributes.Set_Vertex_Attrib_Pointer
-          (Shader_Attributes.Attrib_VP, 2, GL.Types.Single_Type, False, 0, 0);
+        GL_Utils.Add_Attribute_To_Array
+          (Text_Box_VAO, Shader_Attributes.Attrib_VP, TB_Points_VBO, 2);
+
+--          GL.Objects.Buffers.Array_Buffer.Bind (TB_Points_VBO);
+--          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+--          GL.Attributes.Set_Vertex_Attrib_Pointer
+--            (Shader_Attributes.Attrib_VP, 2, GL.Types.Single_Type, False, 0, 0);
         Game_Utils.Game_Log ("Text initialised for " & Font_image_File);
 
     exception

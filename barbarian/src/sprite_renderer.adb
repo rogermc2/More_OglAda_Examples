@@ -124,18 +124,23 @@ package body Sprite_Renderer is
    begin
       Sprite_VAO.Clear;
       Sprite_VAO.Initialize_Id;
-      Sprite_VAO.Bind;
-      Array_Buffer.Bind (Points_VBO);
-      Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
-      Enable_Vertex_Attrib_Array (Attrib_VP);
 
-      Array_Buffer.Bind (Tex_VBO);
-      Set_Vertex_Attrib_Pointer (Attrib_VT, 2, Single_Type, False, 0, 0);
-      Enable_Vertex_Attrib_Array (Attrib_VT);
+      GL_Utils.Add_Attribute_To_Array (Sprite_VAO, Attrib_VP, Points_VBO, 3);
+--        Sprite_VAO.Bind;
+--        Array_Buffer.Bind (Points_VBO);
+--        Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
+--        Enable_Vertex_Attrib_Array (Attrib_VP);
 
-      Array_Buffer.Bind (Normals_VBO);
-      Set_Vertex_Attrib_Pointer (Attrib_VN, 3, Single_Type, False, 0, 0);
-      Enable_Vertex_Attrib_Array (Attrib_VN);
+
+      GL_Utils.Add_Attribute_To_Array (Sprite_VAO, Attrib_VT, Tex_VBO, 2);
+--        Array_Buffer.Bind (Tex_VBO);
+--        Set_Vertex_Attrib_Pointer (Attrib_VT, 2, Single_Type, False, 0, 0);
+--        Enable_Vertex_Attrib_Array (Attrib_VT);
+
+      GL_Utils.Add_Attribute_To_Array (Sprite_VAO, Attrib_VN, Normals_VBO, 3);
+--        Array_Buffer.Bind (Normals_VBO);
+--        Set_Vertex_Attrib_Pointer (Attrib_VN, 3, Single_Type, False, 0, 0);
+--        Enable_Vertex_Attrib_Array (Attrib_VN);
 
    end Create_Character_VBOs;
 

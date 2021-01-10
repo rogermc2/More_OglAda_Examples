@@ -244,9 +244,10 @@ package body GUI_Level_Chooser is
         Quad_VAO.Initialize_Id;
         Quad_VAO.Bind;
         Quad_VBO := GL_Utils.Create_2D_VBO (Quad_Points);
-        GL.Objects.Buffers.Array_Buffer.Bind (Quad_VBO);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
-        GL.Attributes.Enable_Vertex_Attrib_Array (0);
+        GL_Utils.Add_Attribute_To_Array (Quad_VAO, 0, Quad_VBO, 2);
+--          GL.Objects.Buffers.Array_Buffer.Bind (Quad_VBO);
+--          GL.Attributes.Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+--          GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
         Texture_Manager.Load_Image_To_Texture
           ("src/textures/gui_level_chooser_back.png", Back_Texture, False, True);

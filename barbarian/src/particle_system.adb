@@ -213,6 +213,7 @@ package body Particle_System is
                if On_Screen or aSystem.Always_Update then
                   Update_Particle_System (index, Seconds);
                end if;
+
                if On_Screen then
                   GL_Utils.Bind_VAO (aScript.VAO);
                   if Script_ID /= Scripts.Last_Index then

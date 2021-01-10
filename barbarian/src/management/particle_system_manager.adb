@@ -7,7 +7,9 @@ with Utilities;
 
 with Game_Utils;
 with GL_Maths;
+with  GL_Utils;
 with Settings;
+with Shader_Attributes;
 with Texture_Manager;
 
 package body Particle_System_Manager is
@@ -155,23 +157,32 @@ package body Particle_System_Manager is
          PS.Particle_Initial_Velocity.Append (Velocity);
       end loop;
 
+      PS.Particle_World_Positions_VBO.Initialize_Id;
+      PS.Particle_World_Positions_VBO :=
+      GL_Utils.Create_3D_VBO (Initial_Positions);
+--        Array_Buffer.Bind (PS.Particle_World_Positions_VBO);
+--        Utilities.Load_Vertex_Buffer (Array_Buffer, Initial_Positions, Static_Draw);
+
+      PS.Particle_Ages_VBO.Initialize_Id;
+      PS.Particle_Ages_VBO := GL_Utils.Create_1D_VBO (Age_Offset);
+      --        Array_Buffer.Bind (PS.Particle_Ages_VBO);
+--        Utilities.Load_Singles_Buffer (Array_Buffer, Age_Offset, Static_Draw);
+
       PS.VAO.Initialize_Id;
       PS.VAO.Bind;
 
-      PS.Particle_World_Positions_VBO.Initialize_Id;
-      Array_Buffer.Bind (PS.Particle_World_Positions_VBO);
-      Utilities.Load_Vertex_Buffer (Array_Buffer, Initial_Positions, Static_Draw);
-
+      GL_Utils.Add_Attribute_To_Array
+          (PS.VAO, Shader_Attributes.Attrib_Particle_World,
+           PS.Particle_World_Positions_VBO, 3);
       --  VAO_Index means  attribute index!
-      GL.Attributes.Set_Vertex_Attrib_Pointer (PS.VAO_Index, 3, Single_Type, False, 0, 0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (PS.VAO_Index);
+--        GL.Attributes.Set_Vertex_Attrib_Pointer (PS.VAO_Index, 3, Single_Type, False, 0, 0);
+--        GL.Attributes.Enable_Vertex_Attrib_Array (PS.VAO_Index);
 
-      PS.Particle_Ages_VBO.Initialize_Id;
-      Array_Buffer.Bind (PS.Particle_Ages_VBO);
-      Utilities.Load_Singles_Buffer (Array_Buffer, Age_Offset, Static_Draw);
-
-      GL.Attributes.Set_Vertex_Attrib_Pointer (PS.VAO_Index, 1, Single_Type, False, 0, 0);
-      GL.Attributes.Enable_Vertex_Attrib_Array (PS.VAO_Index);
+      GL_Utils.Add_Attribute_To_Array
+          (PS.VAO, Shader_Attributes.Attrib_Particle_Age,
+           PS.Particle_Ages_VBO, 1);
+--        GL.Attributes.Set_Vertex_Attrib_Pointer (PS.VAO_Index, 1, Single_Type, False, 0, 0);
+--        GL.Attributes.Enable_Vertex_Attrib_Array (PS.VAO_Index);
 
    exception
       when anError : others =>

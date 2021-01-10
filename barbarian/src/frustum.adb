@@ -11,6 +11,7 @@ with Camera;
 with Frustum_Shader_Manager;
 with Game_Utils;
 with GL_Maths;
+with GL_Utils;
 with Shader_Attributes;
 
 package body Frustum is
@@ -181,22 +182,26 @@ package body Frustum is
       use Shader_Attributes;
    begin
       Frustum_Wireframe_VAO.Initialize_Id;
-      Frustum_Wireframe_VAO.Bind;
+--        Frustum_Wireframe_VAO.Bind;
 
       Frustum_Wireframe_VBO.Initialize_Id;
       Array_Buffer.Bind (Frustum_Wireframe_VBO);
       Allocate (Array_Buffer, 16, Static_Draw);
-      Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
-      Enable_Vertex_Attrib_Array (Attrib_VP);
+      GL_Utils.Add_Attribute_To_Array
+          (Frustum_Wireframe_VAO, Attrib_VP, Frustum_Wireframe_VBO, 3);
+--        Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
+--        Enable_Vertex_Attrib_Array (Attrib_VP);
 
       Frustum_Solid_VAO.Initialize_Id;
-      Frustum_Solid_VAO.Bind;
+--        Frustum_Solid_VAO.Bind;
 
       Frustum_Solid_VBO.Initialize_Id ;
       Array_Buffer.Bind (Frustum_Solid_VBO);
       Allocate (Array_Buffer, 36, Static_Draw);
-      Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
-      Enable_Vertex_Attrib_Array (Attrib_VP);
+      GL_Utils.Add_Attribute_To_Array
+          (Frustum_Solid_VAO, Attrib_VP, Frustum_Solid_VBO, 3);
+--        Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
+--        Enable_Vertex_Attrib_Array (Attrib_VP);
 
       Frustum_Shader_Manager.Init (Frustum_Wireframe_Shader_Program);
 

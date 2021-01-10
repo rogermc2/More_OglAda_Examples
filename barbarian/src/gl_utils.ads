@@ -3,6 +3,7 @@ with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 
+with GL.Attributes;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
@@ -36,7 +37,12 @@ package GL_Utils is
 
    type Gfx_Stats is private;
 
+   procedure Add_Attribute_To_Array
+      (VAO : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+       Attrib : GL.Attributes.Attribute; VBO : GL.Objects.Buffers.Buffer;
+       Dimen : Int);
    procedure Bind_VAO (VAO : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object);
+   function Create_1D_VBO (Data : Single_Array) return GL.Objects.Buffers.Buffer;
    function Create_2D_VBO (Data : Vector2_Array)
                             return GL.Objects.Buffers.Buffer;
    function Create_3D_VBO (Data : Vector3_Array)
