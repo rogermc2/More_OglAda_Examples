@@ -138,9 +138,9 @@ package body Manifold is
                             --  flat tiles
                             GL_Utils.Bind_Vao (aBatch.Points_VAO);
                             GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Points_VBO);
-                            Put_Line ("Manifold.Draw_Manifold_Around Array_Buffer size and Points count "
-                                      & Size'Image (GL.Objects.Buffers.Array_Buffer.Size / 12)
-                                      & ", " & Integer'Image (aBatch.Point_Count));
+--                              Put_Line ("Manifold.Draw_Manifold_Around Array_Buffer size and Points count "
+--                                        & Size'Image (GL.Objects.Buffers.Array_Buffer.Size / 12)
+--                                        & ", " & Integer'Image (aBatch.Point_Count));
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
                             Set_Vertex_Attrib_Pointer
@@ -157,9 +157,9 @@ package body Manifold is
                             Set_Vertex_Attrib_Pointer
                               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
                             Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
-                                      & Size'Image (GL.Objects.Buffers.Array_Buffer.Size / 12)
-                                      & ", " & Integer'Image (aBatch.Ramp_Point_Count));
+--                              Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
+--                                        & Size'Image (GL.Objects.Buffers.Array_Buffer.Size / 12)
+--                                        & ", " & Integer'Image (aBatch.Ramp_Point_Count));
                             if Settings.Render_OLS then
                                 Set_Front_Face (Clockwise);
                                 Set_Outline_Pass (1.0);
@@ -300,8 +300,6 @@ package body Manifold is
     procedure Free_Manifold_Meta_Data is
     begin
         Batch_Manager.Clear;
-        Put_Line ( "Manifold.Free_Manifold_Meta_Data ");
-        --        Batch_Split_Count := 0;
     end Free_Manifold_Meta_Data;
 
     --  ----------------------------------------------------------------------------
