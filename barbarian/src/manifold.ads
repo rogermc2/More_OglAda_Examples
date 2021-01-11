@@ -17,7 +17,7 @@ package Manifold is
                                    Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                    Ramp_Spec_Tex : GL.Objects.Textures.Texture);
    procedure Draw_Manifold_Around_Depth_Only;
-   procedure Free_Manifold_Mesh_Data;
+   procedure Free_Manifold_Meta_Data;
    function Get_Light_Index (Column, Row  : GL.Types.Int;
                              Light_Number : Integer) return GL.Types.Int;
    procedure Init;
