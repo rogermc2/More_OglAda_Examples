@@ -68,6 +68,7 @@ package body Manifold is
                                     Radius     : GL.Types.Single;
                                     Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                     Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
+        use GL.Attributes;
         use GL.Culling;
         use GL.Toggles;
         use GL.Objects.Programs;
@@ -75,6 +76,7 @@ package body Manifold is
         use Maths;
         use Batch_Manager;
         use Batches_Package;
+        use Shader_Attributes;
         use Tile_Indices_Package;
         use GL_Maths;
         use Vec3_Package;
@@ -141,20 +143,20 @@ package body Manifold is
                                       & ", " & Integer'Image (aBatch.Point_Count));
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-                            GL.Attributes.Set_Vertex_Attrib_Pointer
+                            Set_Vertex_Attrib_Pointer
                               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
-                            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+                            Enable_Vertex_Attrib_Array (Attrib_VP);
                             Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
-                            GL.Attributes.Disable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+                            Disable_Vertex_Attrib_Array (Attrib_VP);
                         end if;
 
                         if aBatch.Ramp_Point_Count > 0 then
                             --  ramps
                             GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
                             GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Ramp_VBO);
-                            GL.Attributes.Set_Vertex_Attrib_Pointer
+                            Set_Vertex_Attrib_Pointer
                               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
-                            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+                            Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
                             Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
                                       & Size'Image (GL.Objects.Buffers.Array_Buffer.Size / 12)
                                       & ", " & Integer'Image (aBatch.Ramp_Point_Count));
@@ -169,8 +171,8 @@ package body Manifold is
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
                             Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
---                              GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
-                            GL.Attributes.Disable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);                         end if;
+                            --                              GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+                            Disable_Vertex_Attrib_Array (Attrib_VP);                         end if;
                     end if;
                 end if;
             end if;
@@ -188,10 +190,12 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     procedure Draw_Manifold_Around_Depth_Only is
+        use GL.Attributes;
         use GL.Toggles;
         use GL.Objects.Vertex_Arrays;
         use Batch_Manager;
         use Batches_Package;
+        use Shader_Attributes;
         theBatches    : constant Batches_List := Batches;
         Curs          : Cursor := theBatches.First;
         aBatch        : Batch_Meta;
@@ -204,9 +208,15 @@ package body Manifold is
             if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
                 --  Flat Tiles
                 GL_Utils.Bind_Vao (aBatch.Points_VAO);
+                GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Points_VBO);
+                Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
+                Enable_Vertex_Attrib_Array (Attrib_VP);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
                 GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+                GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Ramp_VBO);
+                Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
+                Disable_Vertex_Attrib_Array (Attrib_VP);
             end if;
             Next (Curs);
         end loop;
@@ -215,6 +225,7 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     procedure Draw_Water_Manifold_Around is
+        use GL.Attributes;
         use GL.Culling;
         use GL.Toggles;
         use GL.Objects.Programs;
@@ -222,8 +233,9 @@ package body Manifold is
         use Maths;
         use Batch_Manager;
         use Batches_Package;
-        use Tile_Indices_Package;
         use GL_Maths;
+        use Tile_Indices_Package;
+        use Shader_Attributes;
         use Vec3_Package;
         use Water_Shader_Manager;
         theBatches    : constant Batches_List := Batches;
@@ -271,7 +283,11 @@ package body Manifold is
                 Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                 GL_Utils.Bind_Vao (aBatch.Water_VAO);
+                GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Water_VBO);
+                Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
+                Enable_Vertex_Attrib_Array (Attrib_VP);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Water_Point_Count));
+                Disable_Vertex_Attrib_Array (Attrib_VP);
             end if;
             Next (Curs);
         end loop;
