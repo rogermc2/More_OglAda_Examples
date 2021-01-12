@@ -57,6 +57,96 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
+    procedure Add_Sides_Count (Tiles       : Tiles_Manager.Tile_List;
+                               theBatch    : in out Batch_Meta;
+                               Tile_Index, Height : Positive;
+                               Row, Column : Int) is
+        use Tiles_Manager;
+        N_Tile      : Tile_Data;
+        N_Index     : Integer := 0;
+        N_Height    : Integer := 0;
+        Diff        : Integer := 0;
+
+        procedure Add_Point_Count (Diff : Integer) is
+        begin
+            if Diff > 0 then
+                theBatch.Point_Count := theBatch.Point_Count + 2 * Diff;
+                Total_Points := Total_Points + 2 * Diff;
+            end if;
+        end Add_Point_Count;
+
+    begin
+        if Row > 1 then
+            N_Index := Tile_Index - Integer (Max_Cols) + 1;
+            N_Tile := Tiles.Element (N_Index);
+            N_Height := N_Tile.Height;
+            if N_Tile.Tile_Type = '~' then
+                N_Height := N_Height - 1;
+            end if;
+            Diff := Height - N_Height;
+
+            --  Remove bit behind stairs from construction list
+            if N_Tile.Tile_Type = '/' and then
+              N_Tile.Facing = 'S' then
+                Diff := Diff - 1;
+            end if;
+            Add_Point_Count (Diff);
+        end if;
+
+        if Row < Max_Rows then
+            N_Index := Tile_Index + Integer (Max_Cols);
+            N_Tile := Tiles.Element (N_Index);
+            N_Height := N_Tile.Height;
+            --                      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch sides count: Row, N_Index 2"
+            --                                            & Int'Image (Row) & ", " & Integer'Image (N_Index));
+            if N_Tile.Tile_Type = '~' then
+                N_Height := N_Height - 1;
+            end if;
+            Diff := Height - N_Height;
+
+            if N_Tile.Tile_Type = '/' and then
+              N_Tile.Facing = 'N' then
+                Diff := Diff - 1;
+            end if;
+            Add_Point_Count (Diff);
+        end if;
+
+        if Column > 1 then
+            N_Index := Tile_Index - 1;
+            N_Tile := Tiles.Element (N_Index);
+            N_Height := N_Tile.Height;
+            if N_Tile.Tile_Type = '~' then
+                N_Height := N_Height - 1;
+            end if;
+            Diff := Height - N_Height;
+
+            if N_Tile.Tile_Type = '/' and then
+              N_Tile.Facing = 'E' then
+                Diff := Diff - 1;
+            end if;
+            Add_Point_Count (Diff);
+        end if;
+
+        if Column < Max_Cols then
+            N_Index := Tile_Index + 1;
+            N_Tile := Tiles.Element (N_Index);
+            N_Height := N_Tile.Height;
+            if N_Tile.Tile_Type = '~' then
+                N_Height := N_Height - 1;
+            end if;
+            Diff := Height - N_Height;
+
+            if N_Tile.Tile_Type = '/' and then
+              N_Tile.Facing = 'W' then
+                Diff := Diff - 1;
+            end if;
+            Add_Point_Count (Diff);
+        end if;
+
+    end Add_Sides_Count;
+
+    --  -------------------------------------------------------------------------
+
     procedure Add_Static_Light (Row, Col : Int;
                                 Tile_Height_Offset : Integer;
                                 Offset_Pos, Diffuse, Specular  : Singles.Vector3;
@@ -191,7 +281,7 @@ package body Batch_Manager is
         Water_Mesh_Points.Clear;
         Water_Mesh_Normals.Clear;
         Water_Mesh_Texcoords.Clear;
---          Ramp_Mesh_Point_Count := 0;  --  Not used?
+        --          Ramp_Mesh_Point_Count := 0;  --  Not used?
         Water_Mesh_Point_Count := 0;
         Total_Points := 0;
     end Clear;
@@ -348,7 +438,7 @@ package body Batch_Manager is
 
             Update_AABB_Dimensions  (aBatch, aBatch.Points);
             aBatch.Point_Count := Integer (aBatch.Points.Length);
---              aBatch.Points.Clear;
+            --              aBatch.Points.Clear;
 
             aBatch.Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Normals));
@@ -723,6 +813,7 @@ package body Batch_Manager is
         procedure Add_Point_Count (Diff : Integer) is
         begin
             if Diff > 0 then
+                theBatch.Point_Count := theBatch.Point_Count + 2 * Diff;
                 Total_Points := Total_Points + 2 * Diff;
             end if;
         end Add_Point_Count;
@@ -773,78 +864,13 @@ package body Batch_Manager is
                     theBatch.Ramp_Point_Count :=
                       theBatch.Ramp_Point_Count + Ramp_Mesh_Point_Count;
                     Total_Points := Total_Points + Ramp_Mesh_Point_Count;
-                else
+                else  --  add floor count
                     theBatch.Point_Count := theBatch.Point_Count + 6;
                     Total_Points := Total_Points + 6;
                 end if;
 
-                --  Sides count
-                if Row > 1 then
-                    N_Index := Tile_Index - Integer (Max_Cols) + 1;
-                    N_Tile := Tiles.Element (N_Index);
-                    N_Height := N_Tile.Height;
-                    if N_Tile.Tile_Type = '~' then
-                        N_Height := N_Height - 1;
-                    end if;
-                    Diff := Height - N_Height;
-
-                    --  Remove bit behind stairs from construction list
-                    if N_Tile.Tile_Type = '/' and then
-                      N_Tile.Facing = 'S' then
-                        Diff := Diff - 1;
-                    end if;
-                    Add_Point_Count (Diff);
-                end if;
-
-                if Row < Max_Rows then
-                    N_Index := Tile_Index + Integer (Max_Cols);
-                    N_Tile := Tiles.Element (N_Index);
-                    N_Height := N_Tile.Height;
-                    --                      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch sides count: Row, N_Index 2"
-                    --                                            & Int'Image (Row) & ", " & Integer'Image (N_Index));
-                    if N_Tile.Tile_Type = '~' then
-                        N_Height := N_Height - 1;
-                    end if;
-                    Diff := Height - N_Height;
-
-                    if N_Tile.Tile_Type = '/' and then
-                      N_Tile.Facing = 'N' then
-                        Diff := Diff - 1;
-                    end if;
-                    Add_Point_Count (Diff);
-                end if;
-
-                if Column > 1 then
-                    N_Index := Tile_Index - 1;
-                    N_Tile := Tiles.Element (N_Index);
-                    N_Height := N_Tile.Height;
-                    if N_Tile.Tile_Type = '~' then
-                        N_Height := N_Height - 1;
-                    end if;
-                    Diff := Height - N_Height;
-
-                    if N_Tile.Tile_Type = '/' and then
-                      N_Tile.Facing = 'E' then
-                        Diff := Diff - 1;
-                    end if;
-                    Add_Point_Count (Diff);
-                end if;
-
-                if Column < Max_Cols then
-                    N_Index := Tile_Index + 1;
-                    N_Tile := Tiles.Element (N_Index);
-                    N_Height := N_Tile.Height;
-                    if N_Tile.Tile_Type = '~' then
-                        N_Height := N_Height - 1;
-                    end if;
-                    Diff := Height - N_Height;
-
-                    if N_Tile.Tile_Type = '/' and then
-                      N_Tile.Facing = 'W' then
-                        Diff := Diff - 1;
-                    end if;
-                    Add_Point_Count (Diff);
-                end if;
+                Add_Sides_Count (Tiles, theBatch, Tile_Index, Height,
+                                 Row, Column);
                 Next (Curs);
             end loop;  -- over tiles
         end if;  --  not Tiles not empty
