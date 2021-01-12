@@ -18,7 +18,7 @@ package body Batch_Manager is
     Batches_Data           : Batches_List;
     Static_Lights_List     : Static_Light_Vector;
     Atlas_Factor           : constant Single := 0.25;
-    Sets_In_Atlas_Row      : constant Integer := 4;
+    Sets_In_Atlas_Row      : constant Positive := 4;
     ST_Offset              : constant Single := 8.0 / 2048.0;
     Ramp_Mesh_Points         : GL_Maths.Vec3_List;
     Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
@@ -32,21 +32,21 @@ package body Batch_Manager is
     Total_Points             : Integer := 0;
 
     function Check_For_OOO (Batch_Index : Positive) return Boolean;
-    procedure North_Check (aBatch     : in out Batch_Meta;
-                           Row, Col   :   Int; Height : Integer;
-                           Tiles      : Tiles_Manager.Tile_List;
-                           Tile_Index : positive);
+    procedure Add_North_Points (aBatch     : in out Batch_Meta;
+                                Row, Col   :   Int; Height : Integer;
+                                Tiles      : Tiles_Manager.Tile_List;
+                                Tile_Index : positive);
     procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
-    procedure South_Check (aBatch     : in out Batch_Meta;
-                           Row, Col   :   Int; Height : Integer;
-                           Tiles      : Tiles_Manager.Tile_List;
-                           Tile_Index : positive);
+    procedure Add_South_Points (aBatch     : in out Batch_Meta;
+                                Row, Col   :   Int; Height : Integer;
+                                Tiles      : Tiles_Manager.Tile_List;
+                                Tile_Index : positive);
     procedure Update_AABB_Dimensions (aBatch : in out Batch_Meta;
                                       Point_List : GL_Maths.Vec3_List);
-    procedure West_Check (aBatch     : in out Batch_Meta;
-                          Row, Col   :   Int; Height : Integer;
-                          Tiles      : Tiles_Manager.Tile_List;
-                          Tile_Index : positive);
+    procedure Add_West_Points (aBatch     : in out Batch_Meta;
+                               Row, Col   :   Int; Height : Integer;
+                               Tiles      : Tiles_Manager.Tile_List;
+                               Tile_Index : positive);
 
     --  -------------------------------------------------------------------------
 
@@ -288,10 +288,10 @@ package body Batch_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    procedure East_Check (aBatch     : in out Batch_Meta;
-                          Row, Col   : Int; Height : Integer;
-                          Tiles      : Tiles_Manager.Tile_List;
-                          Tile_Index : positive) is
+    procedure Add_East_Points (aBatch     : in out Batch_Meta;
+                               Row, Col   : Int; Height : Integer;
+                               Tiles      : Tiles_Manager.Tile_List;
+                               Tile_Index : positive) is
         use Tiles_Manager;
         N_Index  : constant Integer := Tile_Index;
         aTile    : Tile_Data;
@@ -334,7 +334,7 @@ package body Batch_Manager is
             --              Set_Texcoords ();
         end loop;
 
-    end East_Check;
+    end Add_East_Points;
 
     --  -------------------------------------------------------------------------
 
@@ -385,7 +385,7 @@ package body Batch_Manager is
 
                 if aTile.Tile_Type = '~' then
                     Height := Height - 1;
-                elsif aTile.Tile_Type /= '/' then
+                elsif aTile.Tile_Type /= '/' then  -- Flat tile
                     --  floor FR, FL, BL, BL, BR, FR
                     aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));  -- FR
                     aBatch.Points.Append ((X - 1.0, Y, Z - 1.0));  -- FL
@@ -400,8 +400,8 @@ package body Batch_Manager is
                         aBatch.Normal_Count := aBatch.Normal_Count + 1;
                     end loop;
 
-                    Atlas_Row := Tile_Index / Sets_In_Atlas_Row + 1;
-                    Atlas_Col := Tile_Index - Atlas_Row * Sets_In_Atlas_Row;
+                    Atlas_Row := Tile_Index / Sets_In_Atlas_Row;
+                    Atlas_Col := (Tile_Index - Atlas_Row + 1) * Sets_In_Atlas_Row;
                     Add_Tex_Coords (0.5, 1.0);
                     Add_Tex_Coords (0.0, 1.0);
                     Add_Tex_Coords (0.0, 0.5);
@@ -413,16 +413,19 @@ package body Batch_Manager is
 
                 --  check for higher neighbour to north (walls belong to the lower tile)
                 if Row < Max_Rows then
-                    North_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
+                    Add_North_Points (aBatch, Row, Column, Height,
+                                      Tiles, Tile_Index);
                 end if;
                 if Row > 1 then
-                    South_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
+                    Add_South_Points (aBatch, Row, Column, Height,
+                                      Tiles, Tile_Index);
                 end if;
                 if Column < Max_Cols then
-                    West_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
+                    Add_West_Points (aBatch, Row, Column, Height, Tiles, Tile_Index);
                 end if;
                 if Column > 1 then
-                    East_Check (aBatch, Row, Column, Height, Tiles, Tile_Index);
+                    Add_East_Points (aBatch, Row, Column, Height,
+                                     Tiles, Tile_Index);
                 end if;
             end loop;
 
@@ -723,10 +726,10 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure North_Check (aBatch     : in out Batch_Meta;
-                           Row, Col   : Int; Height : Integer;
-                           Tiles      : Tiles_Manager.Tile_List;
-                           Tile_Index : positive) is
+    procedure Add_North_Points (aBatch  : in out Batch_Meta;
+                                Row, Col   : Int; Height : Integer;
+                                Tiles      : Tiles_Manager.Tile_List;
+                                Tile_Index : positive) is
         use Tiles_Manager;
         N_Index  : constant Integer := Tile_Index - 1 + Integer (Max_Cols);
         aTile    :  Tile_Data;
@@ -766,7 +769,7 @@ package body Batch_Manager is
             --              Set_Texcoords ();
         end loop;
 
-    end North_Check;
+    end Add_North_Points;
 
     --  -------------------------------------------------------------------------
 
@@ -898,10 +901,10 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure South_Check (aBatch     : in out Batch_Meta;
-                           Row, Col   : Int; Height : Integer;
-                           Tiles      : Tiles_Manager.Tile_List;
-                           Tile_Index : positive) is
+    procedure Add_South_Points (aBatch     : in out Batch_Meta;
+                                Row, Col   : Int; Height : Integer;
+                                Tiles      : Tiles_Manager.Tile_List;
+                                Tile_Index : positive) is
         use Tiles_Manager;
         --  On entry, Row > 1; therefore Tile_Index > Max_Cols
         N_Index  : constant Integer := Tile_Index - Integer (Max_Cols) + 1;
@@ -948,7 +951,7 @@ package body Batch_Manager is
             end loop;
         end if;
 
-    end South_Check;
+    end Add_South_Points;
 
     --  -------------------------------------------------------------------------
 
@@ -989,10 +992,10 @@ package body Batch_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    procedure West_Check (aBatch     : in out Batch_Meta;
-                          Row, Col   : Int; Height : Integer;
-                          Tiles      : Tiles_Manager.Tile_List;
-                          Tile_Index : positive) is
+    procedure Add_West_Points (aBatch     : in out Batch_Meta;
+                               Row, Col   : Int; Height : Integer;
+                               Tiles      : Tiles_Manager.Tile_List;
+                               Tile_Index : positive) is
         use Tiles_Manager;
         N_Index  : constant Integer := Tile_Index + 1;
         aTile    :  Tile_Data;
@@ -1035,7 +1038,7 @@ package body Batch_Manager is
                 end loop;            end loop;
         end if;
 
-    end West_Check;
+    end Add_West_Points;
 
     --  -------------------------------------------------------------------------
 
