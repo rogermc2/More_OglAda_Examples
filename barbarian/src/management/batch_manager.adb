@@ -553,6 +553,7 @@ package body Batch_Manager is
             aBatch.Ramp_Point_Count := Integer (aBatch.Ramp_Points.Length);
             aBatch.Ramp_Points.Clear;
 
+            aBatch.Ramp_VAO.Initialize_Id;
             aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -638,6 +639,7 @@ package body Batch_Manager is
             --              Put_Line ("Batch_Manager.Generate_Water, aBatch.Water_Points size: " &
             --                         Integer'Image (Integer (aBatch.Water_Points.Length)));
 
+            aBatch.Water_VAO.Initialize_Id;
             GL_Utils.Bind_VAO (aBatch.Water_VAO);
             aBatch.Water_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Water_Points));
@@ -874,9 +876,6 @@ package body Batch_Manager is
                 Next (Curs);
             end loop;  -- over tiles
         end if;  --  not Tiles not empty
-
-        theBatch.Ramp_VAO.Initialize_Id;
-        theBatch.Water_VAO.Initialize_Id;
 
         Generate_Points (theBatch, Tiles);
         Generate_Ramps (theBatch, Tiles);
