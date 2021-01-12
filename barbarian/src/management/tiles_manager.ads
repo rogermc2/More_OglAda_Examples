@@ -8,10 +8,10 @@ with GL.Types; use GL.Types;
 package Tiles_Manager is
 
    type Tile_Data is record
-      Height    : Integer := 0;
-      Texture   : Integer := 0;
-      Facing    : Character := 'N';  --  North
-      Tile_Type : Character := ASCII.NUL;
+      Height        : Natural := 0;
+      Texture_Index : Natural := 0;
+      Facing        : Character := 'N';  --  North
+      Tile_Type     : Character := ASCII.NUL;
    end record;
 
    package Tile_Data_Package is new Ada.Containers.Vectors

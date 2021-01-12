@@ -32,7 +32,7 @@ package Batch_Manager is
       Ramp_Normals         : GL_Maths.Vec3_List;
       Ramp_Smooth_Normals  : GL_Maths.Vec3_List;
       Tex_Coords           : GL_Maths.Vec2_List;
-      Tex_Coord_Count      : Integer := 0;
+      Tex_Coord_Count      : Natural := 0;
       Ramp_Tex_Coords      : GL_Maths.Vec2_List;
       Points_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Ramp_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;

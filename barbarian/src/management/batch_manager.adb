@@ -15,6 +15,8 @@ with Shader_Attributes;
 
 package body Batch_Manager is
 
+    type Tile_Side is (North_Side, East_Side, South_Side, West_Side);
+
     Batches_Data           : Batches_List;
     Static_Lights_List     : Static_Light_Vector;
     Atlas_Factor           : constant Single := 0.25;
@@ -32,10 +34,6 @@ package body Batch_Manager is
     Total_Points             : Integer := 0;
 
     function Check_For_OOO (Batch_Index : Positive) return Boolean;
-    procedure Add_North_Points (aBatch     : in out Batch_Meta;
-                                Row, Col   :   Int; Height : Integer;
-                                Tiles      : Tiles_Manager.Tile_List;
-                                Tile_Index : positive);
     procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
     procedure Add_South_Points (aBatch     : in out Batch_Meta;
                                 Row, Col   :   Int; Height : Integer;
@@ -54,6 +52,107 @@ package body Batch_Manager is
     begin
         Batches_Data.Append (Data);
     end Add_Batch;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Add_East_Points (aBatch     : in out Batch_Meta;
+                               Row, Col   : Int; Height : Integer;
+                               Tiles      : Tiles_Manager.Tile_List;
+                               Tile_Index : positive) is
+        use Tiles_Manager;
+        N_Index  : constant Integer := Tile_Index;
+        aTile    : Tile_Data;
+        N_Height : Integer;
+        Diff     : Integer;
+        X        : Single;
+        Y        : Single;
+        Z        : Single;
+    begin
+        aTile := Tiles.Element (N_Index);
+        N_Height := aTile.Height;
+        if aTile.Tile_Type = '~' then
+            N_Height := N_Height - 1;
+        end if;
+        Diff := Height - N_Height;
+        --  remove bit behind stairs from construction list
+        if aTile.Tile_Type = '/' and then aTile.Facing = 'E' then
+            Diff := Diff - 1;
+        end if;
+
+        for level in -Diff .. -1 loop
+            X := Single (2 * Col - 1);
+            Y := Single (2 * (Height + level + 2));
+            Z := Single (2 * Row + 1);
+            aBatch.Points.Append ((X, Y, Z));
+
+            Z := Single (2 * Row - 1);
+            aBatch.Points.Append ((X, Y, Z));
+            aBatch.Points.Append ((X, Y, Z));
+
+            Z := Single (2 * Row + 1);
+            aBatch.Points.Append ((X, Y, Z));
+
+            Y := Single (2 * (Height + level + 2));
+            aBatch.Points.Append ((X, Y, Z));
+
+            for index in 1 .. 6 loop
+                aBatch.Normals.Append ((0.0, 0.0, -1.0));
+            end loop;
+            --              Set_Texcoords ();
+        end loop;
+
+    end Add_East_Points;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Add_North_Points (aBatch  : in out Batch_Meta;
+                                Row, Col   : Int; Height : Integer;
+                                Tiles      : Tiles_Manager.Tile_List;
+                                Tile_Index : positive) is
+        use Tiles_Manager;
+        N_Index  : constant Integer := Tile_Index - 1 + Integer (Max_Cols);
+        aTile    :  Tile_Data;
+        N_Height : Integer;
+        Diff     : Integer;
+        X        : Single;
+        Y        : Single;
+        Z        : Single;
+    begin
+        aTile := Tiles.Element (N_Index);
+        N_Height := aTile.Height;
+        if aTile.Tile_Type = '~' then
+            N_Height := N_Height - 1;
+        end if;
+        Diff := Height - N_Height;
+
+        if aTile.Tile_Type = '/' and then aTile.Facing = 'N' then
+            Diff := Diff - 1;
+        end if;
+
+        for level in -Diff .. -1 loop
+            X := Single (2 * Col + 1);
+            Y := Single (2 * (Height + level + 1));
+            Z := Single (2 * Row + 1);
+            aBatch.Points.Append ((X, Y, Z));  --  1
+            X := Single (2 * Col - 1);
+            aBatch.Points.Append ((X, Y, Z));  --  2
+            Y := Single (2 * (Height + level));
+            aBatch.Points.Append ((X, Y, Z));   --  3
+
+            aBatch.Points.Append ((X, Y, Z));   --  4
+            X := Single (2 * Col + 1);
+            aBatch.Points.Append ((X, Y, Z));   --  5
+            Y := Single (2 * (Height + level + 1));
+            aBatch.Points.Append ((X, Y, Z));    --  6
+            aBatch.Point_Count := aBatch.Point_Count + 6;
+
+            for index in 1 .. 6 loop
+                aBatch.Normals.Append ((0.0, 0.0, 1.0));
+            end loop;
+            --              Set_Texcoords (;
+        end loop;
+
+    end Add_North_Points;
 
     --  -------------------------------------------------------------------------
 
@@ -144,6 +243,60 @@ package body Batch_Manager is
         end if;
 
     end Add_Sides_Count;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Add_South_Points (aBatch     : in out Batch_Meta;
+                                Row, Col   : Int; Height : Integer;
+                                Tiles      : Tiles_Manager.Tile_List;
+                                Tile_Index : positive) is
+        use Tiles_Manager;
+        --  On entry, Row > 1; therefore Tile_Index > Max_Cols
+        N_Index  : constant Integer := Tile_Index - Integer (Max_Cols) + 1;
+        aTile    :  Tile_Data;
+        N_Height : Integer;
+        Diff     : Integer;
+        X        : Single;
+        Y        : Single;
+        Z        : Single;
+    begin
+        if N_Index <= Tiles.Last_Index then
+            aTile := Tiles.Element (N_Index);
+            N_Height := aTile.Height;
+            if aTile.Tile_Type = '~' then
+                N_Height := N_Height - 1;
+            end if;
+            Diff := Height - N_Height;
+            --  remove bit behind stairs from construction list
+            if aTile.Tile_Type = '/' and then aTile.Facing = 'S' then
+                Diff := Diff - 1;
+            end if;
+
+            for level in -Diff .. -1 loop
+                X := Single (2 * Col - 1);
+                Y := Single (2 * (Height + level + 2));
+                Z := Single (2 * Row - 1);
+                aBatch.Points.Append ((X, Y, Z));
+
+                X := Single (2 * Col + 1);
+                aBatch.Points.Append ((X, Y, Z));
+
+                Y := Single (2 * (Height + level));
+                aBatch.Points.Append ((X, Y, Z));
+                aBatch.Points.Append ((X, Y, Z));
+
+                X := Single (2 * Col - 1);
+                aBatch.Points.Append ((X, Y, Z));
+
+                Y := Single (2 * (Height + level + 2));
+                aBatch.Points.Append ((X, Y, Z));
+                for index in 1 .. 6 loop
+                    aBatch.Normals.Append ((0.0, 0.0, -1.0));
+                end loop;
+            end loop;
+        end if;
+
+    end Add_South_Points;
 
     --  -------------------------------------------------------------------------
 
@@ -288,56 +441,6 @@ package body Batch_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Add_East_Points (aBatch     : in out Batch_Meta;
-                               Row, Col   : Int; Height : Integer;
-                               Tiles      : Tiles_Manager.Tile_List;
-                               Tile_Index : positive) is
-        use Tiles_Manager;
-        N_Index  : constant Integer := Tile_Index;
-        aTile    : Tile_Data;
-        N_Height : Integer;
-        Diff     : Integer;
-        X        : Single;
-        Y        : Single;
-        Z        : Single;
-    begin
-        aTile := Tiles.Element (N_Index);
-        N_Height := aTile.Height;
-        if aTile.Tile_Type = '~' then
-            N_Height := N_Height - 1;
-        end if;
-        Diff := Height - N_Height;
-        --  remove bit behind stairs from construction list
-        if aTile.Tile_Type = '/' and then aTile.Facing = 'E' then
-            Diff := Diff - 1;
-        end if;
-
-        for level in -Diff .. -1 loop
-            X := Single (2 * Col - 1);
-            Y := Single (2 * (Height + level + 2));
-            Z := Single (2 * Row + 1);
-            aBatch.Points.Append ((X, Y, Z));
-
-            Z := Single (2 * Row - 1);
-            aBatch.Points.Append ((X, Y, Z));
-            aBatch.Points.Append ((X, Y, Z));
-
-            Z := Single (2 * Row + 1);
-            aBatch.Points.Append ((X, Y, Z));
-
-            Y := Single (2 * (Height + level + 2));
-            aBatch.Points.Append ((X, Y, Z));
-
-            for index in 1 .. 6 loop
-                aBatch.Normals.Append ((0.0, 0.0, -1.0));
-            end loop;
-            --              Set_Texcoords ();
-        end loop;
-
-    end Add_East_Points;
-
-    --  -------------------------------------------------------------------------
-
     procedure Free_Batch_Data (Batch_Index : Positive) is
         theBatch : Batch_Meta := Batches.Element (Batch_Index);
     begin
@@ -408,7 +511,7 @@ package body Batch_Manager is
                     Add_Tex_Coords (0.0, 0.5);
                     Add_Tex_Coords (0.5, 0.5);
                     Add_Tex_Coords (0.5, 1.0);
-                    aBatch.Tex_Coord_Count := aBatch.Tex_Coord_Count + 6;
+                    --                      aBatch.Tex_Coord_Count := aBatch.Tex_Coord_Count;
                 end if;
 
                 --  check for higher neighbour to north (walls belong to the lower tile)
@@ -480,7 +583,7 @@ package body Batch_Manager is
         Rot_Matrix     : Matrix4 := Identity4;
         Curs_N         : Vec3_Cursor;
         Curs_P         : Vec3_Cursor;
-        Curs_T         : Vec2_Cursor;
+        Curs_T         : Vec2_Package.Cursor;
         Curs_S         : Vec3_Cursor;
         aNormal        : Vector3;
         aPoint         : Vector3;
@@ -726,53 +829,6 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Add_North_Points (aBatch  : in out Batch_Meta;
-                                Row, Col   : Int; Height : Integer;
-                                Tiles      : Tiles_Manager.Tile_List;
-                                Tile_Index : positive) is
-        use Tiles_Manager;
-        N_Index  : constant Integer := Tile_Index - 1 + Integer (Max_Cols);
-        aTile    :  Tile_Data;
-        N_Height : Integer;
-        Diff     : Integer;
-        X        : Single;
-        Y        : Single;
-        Z        : Single;
-    begin
-        aTile := Tiles.Element (N_Index);
-        N_Height := aTile.Height;
-        if aTile.Tile_Type = '~' then
-            N_Height := N_Height - 1;
-        end if;
-        Diff := Height - N_Height;
-
-        if aTile.Tile_Type = '/' and then aTile.Facing = 'N' then
-            Diff := Diff - 1;
-        end if;
-
-        for level in -Diff .. -1 loop
-            X := Single (2 * Col + 1);
-            Y := Single (2 * (Height + level + 1));
-            Z := Single (2 * Row - 1);
-            aBatch.Points.Append ((X, Y, Z));
-            X := Single (2 * Col - 1);
-            aBatch.Points.Append ((X, Y, Z));
-            Y := Single (2 * (Height + level));
-            aBatch.Points.Append ((X, Y, Z));
-            X := Single (2 * Col + 1);
-            aBatch.Points.Append ((X, Y, Z));
-            Y := Single (2 * (Height + level + 1));
-            aBatch.Points.Append ((X, Y, Z));
-            for index in 1 .. 6 loop
-                aBatch.Normals.Append ((0.0, 0.0, 1.0));
-            end loop;
-            --              Set_Texcoords ();
-        end loop;
-
-    end Add_North_Points;
-
-    --  -------------------------------------------------------------------------
-
     function Num_Points (Batch_Index : Positive) return Integer is
         aBatch : constant Batch_Meta := Batches.Element (Batch_Index);
     begin
@@ -901,59 +957,87 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Add_South_Points (aBatch     : in out Batch_Meta;
-                                Row, Col   : Int; Height : Integer;
-                                Tiles      : Tiles_Manager.Tile_List;
-                                Tile_Index : positive) is
-        use Tiles_Manager;
-        --  On entry, Row > 1; therefore Tile_Index > Max_Cols
-        N_Index  : constant Integer := Tile_Index - Integer (Max_Cols) + 1;
-        aTile    :  Tile_Data;
-        N_Height : Integer;
-        Diff     : Integer;
-        X        : Single;
-        Y        : Single;
-        Z        : Single;
-    begin
-        if N_Index <= Tiles.Last_Index then
-            aTile := Tiles.Element (N_Index);
-            N_Height := aTile.Height;
-            if aTile.Tile_Type = '~' then
-                N_Height := N_Height - 1;
-            end if;
-            Diff := Height - N_Height;
-            --  remove bit behind stairs from construction list
-            if aTile.Tile_Type = '/' and then aTile.Facing = 'S' then
-                Diff := Diff - 1;
-            end if;
+    procedure Set_Tex_Coords (aBatch : in out Batch_Meta;
+                              aTile : Tiles_Manager.Tile_Data;
+                              Side : Tile_Side; Level : Positive) is
+        Offset_Factor     : Singles.Vector2_Array (1 .. 6);
+        Texture_Index     : constant Positive := aTile.Texture_Index;
+        Half_Atlas_Factor : constant Single := 0.5 * Atlas_Factor;
+        Atlas_Row         : constant Positive := Texture_Index / Sets_In_Atlas_Row;
+        Atlas_Col         : constant Positive := Texture_Index - Atlas_Row * Sets_In_Atlas_Row;
+        S                 : Single := Half_Atlas_Factor;
+        T                 : Single := 0.0;
+        S_Offset          : Single := 0.0;
+        Side_State        : Natural := 0;
+        Reverse_S         : Boolean := False;
 
-            for level in -Diff .. -1 loop
-                X := Single (2 * Col - 1);
-                Y := Single (2 * (Height + level + 2));
-                Z := Single (2 * Row - 1);
-                aBatch.Points.Append ((X, Y, Z));
-
-                X := Single (2 * Col + 1);
-                aBatch.Points.Append ((X, Y, Z));
-
-                Y := Single (2 * (Height + level));
-                aBatch.Points.Append ((X, Y, Z));
-                aBatch.Points.Append ((X, Y, Z));
-
-                X := Single (2 * Col - 1);
-                aBatch.Points.Append ((X, Y, Z));
-
-                Y := Single (2 * (Height + level + 2));
-                aBatch.Points.Append ((X, Y, Z));
-                for index in 1 .. 6 loop
-                    aBatch.Normals.Append ((0.0, 0.0, -1.0));
-                end loop;
+        procedure New_Tex_Cords is
+            SF       : Single := 0.0;
+            TF       : Single := 0.0;
+            STF      : Singles.Vector2 := (0.0, 0.0);
+            T_Offset : Single := 0.0;
+            SI       : Integer := 0;
+            TI       : Integer := 0;
+        begin
+            for index in Int range 1 .. 6 loop
+                SF := Offset_Factor (index) (GL.X) * Half_Atlas_Factor;
+                Tf := Offset_Factor (index) (GL.Y) * Half_Atlas_Factor;
+                S_Offset := S + Sf + Single (Atlas_Col) * Atlas_Factor;
+                T_Offset := T + Tf + Single (Atlas_Row) * Atlas_Factor;
+                Si := aBatch.Tex_Coord_Count;
+                Ti := aBatch.Tex_Coord_Count;
+                Sf := -Offset_Factor (index) (GL.X);
+                Tf := -Offset_Factor (index) (GL.Y);
+                STF := (S_Offset + Sf * ST_Offset,
+                        T_Offset + Tf * ST_Offset);
+                aBatch.Tex_Coords.Replace_Element (Positive (Si), STF);
+                aBatch.Tex_Coord_Count := aBatch.Tex_Coord_Count + 1;
             end loop;
+        end New_Tex_Cords;
+
+    begin
+        case Side is
+        when North_Side => null;
+        when others => Side_State := Side_State + 1;
+        end case;
+
+        case aTile.Facing is
+        when 'N' => null;
+        when 'E' => Side_State := Side_State + 1;
+        when 'S' => Side_State := Side_State + 2;
+        when 'W' => Side_State := Side_State + 3;
+        when others => null;
+        end case;
+
+        Side_State := Side_State mod 4;
+        --  Top bits
+        if Level = 0 then
+            T := Half_Atlas_Factor;
+        elsif Side_State = 1 or Side_State = 3 then
+            S := 0.0;
         end if;
+        Reverse_S := Side_State = 1 or Side_State = 2;
 
-    end Add_South_Points;
+        if not Reverse_S then
+            Offset_Factor := ((1.0, 1.0),
+                              (0.0, 1.0),
+                              (0.0, 0.0),
+                              (0.0, 0.0),
+                              (1.0, 0.0),
+                              (1.0, 1.0));
+        else  --  Reverse_S
+            Offset_Factor := ((0.0, 1.0),
+                              (1.0, 1.0),
+                              (1.0, 0.0),
+                              (1.0, 0.0),
+                              (0.0, 0.0),
+                              (0.0, 1.0));
+        end if;
+        New_Tex_Cords;
 
-    --  -------------------------------------------------------------------------
+    end Set_Tex_Coords;
+
+    --  --------------------------------------------------------------------------
 
     function Static_Lights return Static_Light_Vector is
     begin

@@ -393,7 +393,7 @@ package body Tiles_Manager is
                   end if;
 
                   if Load_Type = "textures" then
-                     aTile.Texture := Tex_Int;
+                     aTile.Texture_Index := Tex_Int;
                   elsif Load_Type = "heights" then
                      aTile.Height := Tex_Int;
                   end if;
@@ -495,7 +495,7 @@ package body Tiles_Manager is
 
       Parse_Facings_By_Row (File, Max_Rows, Max_Cols);
 
-      Load_Int_Rows (File, "textures");
+      Load_Int_Rows (File, "textures");  --  textures header and rows
       Load_Char_Rows (File, "types");
       Load_Int_Rows (File, "heights");
 

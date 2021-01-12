@@ -80,8 +80,8 @@ package body Prop_Renderer.Render is
     Bounce_Count                  : Integer := 0;
     Scripts                       : Script_List;
     Properties                    : Properties_List;
-    Active_Properties_A           : Indicies_List;
-    Active_Properties_B           : Indicies_List;
+    Active_Properties_A           : GL_Maths.Indicies_List;
+    Active_Properties_B           : GL_Maths.Indicies_List;
     Curr_Active_Props_A           : Boolean := True;
     Props_In_Tiles                : Props_In_Tiles_Array;
     Decap_Heads_Prop_Index        : constant array
@@ -109,7 +109,7 @@ package body Prop_Renderer.Render is
                             Prop_Dyn_Light_Range : Single := 1.0;
                             Prop_Dyn_Light_Dirty : Boolean := True) is
         use GL.Objects.Vertex_Arrays;
-        use Indicies_Package;
+        use GL_Maths.Indicies_Package;
         use Properties_Shader_Manager;
         Count    : constant Integer := Integer (Basic_Render_List.Length);
         Property : Prop_Renderer_Support.Property_Data;
@@ -185,7 +185,7 @@ package body Prop_Renderer.Render is
         use GL.Objects.Vertex_Arrays;
         use Singles;
         use Character_Controller;
-        use Indicies_Package;
+        use GL_Maths.Indicies_Package;
         use Jav_Stand_Shader_Manager;
         use Maths;
         use Single_Math_Functions;
@@ -295,7 +295,7 @@ package body Prop_Renderer.Render is
         use GL.Objects.Vertex_Arrays;
         use Singles;
         use Character_Controller;
-        use Indicies_Package;
+        use GL_Maths.Indicies_Package;
         use Portal_Shader_Manager;
         use Maths;
         use Single_Math_Functions;
@@ -336,7 +336,7 @@ package body Prop_Renderer.Render is
                               Prop_Dyn_Light_Range : Single := 1.0;
                               Prop_Dyn_Light_Dirty : Boolean := True) is
         use GL.Objects.Vertex_Arrays;
-        use Indicies_Package;
+        use GL_Maths.Indicies_Package;
         use Properties_Skinned_Shader_Manager;
         Count    : constant Integer := Integer (Skinned_Render_List.Length);
         Property : Prop_Renderer_Support.Property_Data;
@@ -411,7 +411,7 @@ package body Prop_Renderer.Render is
 
     procedure Render_Treasure is
         use GL.Objects.Vertex_Arrays;
-        use Indicies_Package;
+        use GL_Maths.Indicies_Package;
         use Coins_Shader_Manager;
         Tim      : constant Single := Single (Glfw.Time);
         Count    : constant Integer := Integer (Treasure_Render_List.Length);
