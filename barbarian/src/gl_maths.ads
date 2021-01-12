@@ -20,10 +20,12 @@ package GL_Maths is
       (Single);
     subtype Singles_List is Singles_Package.List;
 
-    package Vec2_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Singles.Vector2);
-    subtype Vec2_List is Vec2_Package.List;
-    subtype Vec2_Cursor is Vec2_Package.Cursor;
+    package Indicies_Package is new Ada.Containers.Vectors (Positive, Positive);
+    subtype Indicies_List is Indicies_Package.Vector;
+
+    package Vec2_Package is new Ada.Containers.Vectors
+      (Positive, Singles.Vector2);
+    subtype Vec2_List is Vec2_Package.Vector;
 
     package Vec3_Package is new Ada.Containers.Doubly_Linked_Lists
       (Singles.Vector3);
@@ -62,7 +64,7 @@ package GL_Maths is
    function To_Real_Matrix4 (GL_Matrix : Singles.Matrix4) return Single_Matrix;
    function To_Real_Vector3 (GL_Vec : Singles.Vector3) return Single_Vector;
    function To_Real_Vector4 (GL_Vec : Singles.Vector4) return Single_Vector;
-   function To_Vector2_Array (Vec : Vec2_Package.List)
+   function To_Vector2_Array (Vec : Vec2_Package.Vector)
                               return Vector2_Array;
    function To_Vector3_Array (Vec : Vec3_Package.List)
                               return Vector3_Array;

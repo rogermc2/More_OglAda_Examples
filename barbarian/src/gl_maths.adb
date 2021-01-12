@@ -172,7 +172,7 @@ package body GL_Maths is
 
    --  -----------------------------------------------------------
 
-   function To_Vector2_Array (Vec : Vec2_Package.List)
+   function To_Vector2_Array (Vec : Vec2_Package.Vector)
                               return Vector2_Array is
       use GL.Types;
       use Vec2_Package;
