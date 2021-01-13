@@ -144,11 +144,9 @@ package body Tiles_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Facing (Row_Curs  : Tile_Row_Package.Cursor;
-                         Col_Curs  : Tile_Column_Package.Cursor)
-                         return Character is
+    function Get_Facing (Row, Col : Positive) return Character is
 --          use Batch_Manager;
-        aTile  : constant Tile_Data := Get_Tile (Row_Curs, Col_Curs);
+        aTile  : constant Tile_Data := Get_Tile (Row, Col);
 --          Result : Character := aTile.Facing;
     begin
 --          if Is_Tile_Valid (Row_Curs, Col_Curs) then

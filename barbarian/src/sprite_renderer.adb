@@ -6,6 +6,7 @@ with GL.Objects.Vertex_Arrays;
 with Batch_Manager;
 with Frustum;
 with Game_Utils;
+with GL_Maths;
 with GL_Utils;
 with Manifold;
 with Settings;
@@ -163,8 +164,8 @@ package body Sprite_Renderer is
       use Sprite_Shader_Manager;
       use Texture_Manager;
       Opacity : constant Single := 1.0;
-      U       : constant Int := Sprites (Sprite_Index).Wmap_U;
-      V       : constant Int := Sprites (Sprite_Index).Wmap_V;
+      U       : constant Positive := Positive (Sprites (Sprite_Index).Wmap_U);
+      V       : constant Positive := Positive (Sprites (Sprite_Index).Wmap_V);
    begin
       if Sprites (Sprite_Index).Is_Visible and  Frustum.Is_Sphere_In_Frustum
         (Sprites (Sprite_Index).World_Position, 1.0) then
@@ -177,8 +178,8 @@ package body Sprite_Renderer is
          Set_Current_Sprite (Single (Sprites (Sprite_Index).Current_Sprite));
          Set_Opacity (Opacity);
          Set_Model (Sprites (Sprite_Index).Model_Matrix);
-         Set_Static_Light_Indices ((Int (Manifold.Get_Light_Index (U, V, 0)),
-                                   Int (Manifold.Get_Light_Index (U, V, 1))));
+         Set_Static_Light_Indices ((Manifold.Get_Light_Index (U, V, 0),
+                                   Manifold.Get_Light_Index (U, V, 1)));
          GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
       end if;
    end Render_Sprite;
@@ -312,7 +313,7 @@ package body Sprite_Renderer is
 
    procedure Update_Static_Lights_Uniforms is
       use Batch_Manager;
-      use Tile_Indices_Package;
+      use GL_Maths.Indices_Package;
       use Sprite_Shader_Manager;
       Index     : Positive := Static_Lights.First_Index;
       aLight    : Static_Light_Data;

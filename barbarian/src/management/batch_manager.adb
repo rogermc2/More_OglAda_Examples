@@ -408,7 +408,7 @@ package body Batch_Manager is
     function Check_For_OOO (Batch_Index : Positive) return Boolean is
         use Maths.Single_Math_Functions;
         use Tiles_Manager.Tile_Row_Package;
-        use GL_Maths.Indicies_Package;
+        use GL_Maths.Indices_Package;
         Half_Batch_Width     : constant Int := Int (Settings.Tile_Batch_Width / 2);
         This_Batch           : Batch_Meta := Batches.Element (Batch_Index);
         Batches_Dn           : constant Int := Int (Batch_Index) / Int (Batches_Across);
@@ -420,7 +420,7 @@ package body Batch_Manager is
         Batch_Centre_Col     : constant Int :=
                                  Batches_Ac * Int (Settings.Tile_Batch_Width) +
                                  Half_Batch_Width;
-        Light_Indices        : GL_Maths.Indicies_List := This_Batch.Static_Light_Indices;
+        Light_Indices        : GL_Maths.Indices_List := This_Batch.Static_Light_Indices;
         Current_Light_Index  : Positive := Light_Indices.First_Index;
         Current_Light        : Static_Light_Data :=
                                  Static_Lights_List.Element (Current_Light_Index);
@@ -428,10 +428,10 @@ package body Batch_Manager is
         Next_Light_Index     : Positive := Current_Light_Index + 1;
         Next_Light           : Static_Light_Data :=
                                  Static_Lights_List.Element (Next_Light_Index);
-        Current_Light_Cursor : GL_Maths.Indicies_Package.Cursor :=
+        Current_Light_Cursor : GL_Maths.Indices_Package.Cursor :=
                                  Light_Indices.To_Cursor (Current_Light_Index);
-        Prev_Light_Cursor    : GL_Maths.Indicies_Package.Cursor;
-        Next_Light_Cursor    : GL_Maths.Indicies_Package.Cursor :=
+        Prev_Light_Cursor    : GL_Maths.Indices_Package.Cursor;
+        Next_Light_Cursor    : GL_Maths.Indices_Package.Cursor :=
                                  Light_Indices.To_Cursor (Next_Light_Index);
         Curr_Row             : Int;
         Curr_Col             : Int;
@@ -819,11 +819,11 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    function Get_Batch_Index (Column, Row : Int) return Integer is
+    function Get_Batch_Index (Column, Row : Positive) return Integer is
         Result : Integer := -1;
     begin
-        if Column >= 0 and Column < Max_Cols and
-          Row >= 0 and Row < Max_Rows then
+        if Column >= 0 and Column < Positive (Max_Cols) and
+          Row >= 0 and Row < Positive (Max_Rows) then
             Result := (Integer (Column) + Batches_Across * Integer (Row)) /
               Settings.Tile_Batch_Width;
         end if;

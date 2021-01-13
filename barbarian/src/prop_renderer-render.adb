@@ -80,8 +80,8 @@ package body Prop_Renderer.Render is
     Bounce_Count                  : Integer := 0;
     Scripts                       : Script_List;
     Properties                    : Properties_List;
-    Active_Properties_A           : GL_Maths.Indicies_List;
-    Active_Properties_B           : GL_Maths.Indicies_List;
+    Active_Properties_A           : GL_Maths.Indices_List;
+    Active_Properties_B           : GL_Maths.Indices_List;
     Curr_Active_Props_A           : Boolean := True;
     Props_In_Tiles                : Props_In_Tiles_Array;
     Decap_Heads_Prop_Index        : constant array
@@ -109,7 +109,7 @@ package body Prop_Renderer.Render is
                             Prop_Dyn_Light_Range : Single := 1.0;
                             Prop_Dyn_Light_Dirty : Boolean := True) is
         use GL.Objects.Vertex_Arrays;
-        use GL_Maths.Indicies_Package;
+        use GL_Maths.Indices_Package;
         use Properties_Shader_Manager;
         Count    : constant Integer := Integer (Basic_Render_List.Length);
         Property : Prop_Renderer_Support.Property_Data;
@@ -117,8 +117,8 @@ package body Prop_Renderer.Render is
         Prop_I   : Integer;
         Script_I : Integer;
         Ssi      : Integer;
-        U        : Int;
-        V        : Int;
+        U        : Positive;
+        V        : Positive;
     begin
         if not Is_Empty (Basic_Render_List) then
             GL.Objects.Programs.Use_Program (Prop_Shader);
@@ -150,13 +150,13 @@ package body Prop_Renderer.Render is
                     Script_I := Ssi;
                 end if;
                 Script := Scripts (Script_I);
-                U := Property.Map_U;
-                V := Property.Map_V;
+                U := Positive (Property.Map_U);
+                V := Positive (Property.Map_V);
                 Set_Model (Property.Model_Matrix);
                 Set_Inverse_Matrix (Property.Model_Matrix);
                 Set_Static_Light_Indices
-                  ((Int (Manifold.Get_Light_Index (U, V, 0)),
-                   Int (Manifold.Get_Light_Index (U, V, 1))));
+                  ((Manifold.Get_Light_Index (U, V, 0),
+                   Manifold.Get_Light_Index (U, V, 1)));
                 if Settings.Render_OLS and Script.Draw_Outlines then
                     GL.Culling.Set_Front_Face (Clockwise);
                     Set_Outline_Pass (1.0);
@@ -185,7 +185,7 @@ package body Prop_Renderer.Render is
         use GL.Objects.Vertex_Arrays;
         use Singles;
         use Character_Controller;
-        use GL_Maths.Indicies_Package;
+        use GL_Maths.Indices_Package;
         use Jav_Stand_Shader_Manager;
         use Maths;
         use Single_Math_Functions;
@@ -295,7 +295,7 @@ package body Prop_Renderer.Render is
         use GL.Objects.Vertex_Arrays;
         use Singles;
         use Character_Controller;
-        use GL_Maths.Indicies_Package;
+        use GL_Maths.Indices_Package;
         use Portal_Shader_Manager;
         use Maths;
         use Single_Math_Functions;
@@ -336,7 +336,7 @@ package body Prop_Renderer.Render is
                               Prop_Dyn_Light_Range : Single := 1.0;
                               Prop_Dyn_Light_Dirty : Boolean := True) is
         use GL.Objects.Vertex_Arrays;
-        use GL_Maths.Indicies_Package;
+        use GL_Maths.Indices_Package;
         use Properties_Skinned_Shader_Manager;
         Count    : constant Integer := Integer (Skinned_Render_List.Length);
         Property : Prop_Renderer_Support.Property_Data;
@@ -345,8 +345,8 @@ package body Prop_Renderer.Render is
         Script_I : Integer;
         --          Mesh_I   : Integer;
         Ssi      : Integer;
-        U        : Int;
-        V        : Int;
+        U        : Positive;
+        V        : Positive;
     begin
         if not Is_Empty (Skinned_Render_List) then
             GL.Objects.Programs.Use_Program
@@ -381,11 +381,11 @@ package body Prop_Renderer.Render is
                 --                  Mesh_I := Script.Mesh_Index;
                 Set_Bone_Matrices (Property.Current_Bone_Transforms);
                 Set_Model (Property.Model_Matrix);
-                U := Property.Map_U;
-                V := Property.Map_V;
+                U := Positive (Property.Map_U);
+                V := Positive (Property.Map_V);
                 Set_Static_Light_Indices
-                  ((Int (Manifold.Get_Light_Index (U, V, 0)),
-                   Int (Manifold.Get_Light_Index (U, V, 1))));
+                  ((Manifold.Get_Light_Index (U, V, 0),
+                   Manifold.Get_Light_Index (U, V, 1)));
                 if Settings.Render_OLS and Script.Draw_Outlines then
                     GL.Culling.Set_Front_Face (Clockwise);
                     Set_Outline_Pass (1.0);
@@ -411,7 +411,7 @@ package body Prop_Renderer.Render is
 
     procedure Render_Treasure is
         use GL.Objects.Vertex_Arrays;
-        use GL_Maths.Indicies_Package;
+        use GL_Maths.Indices_Package;
         use Coins_Shader_Manager;
         Tim      : constant Single := Single (Glfw.Time);
         Count    : constant Integer := Integer (Treasure_Render_List.Length);

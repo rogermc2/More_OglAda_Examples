@@ -7,11 +7,11 @@ with GL_Maths;
 
 package Prop_Renderer.Render is
 
-    Basic_Render_List             : GL_Maths.Indicies_List;
-    Skinned_Render_List           : GL_Maths.Indicies_List;
-    Jav_Stand_Render_List         : GL_Maths.Indicies_List;
-    Portal_Render_List            : GL_Maths.Indicies_List;
-    Treasure_Render_List          : GL_Maths.Indicies_List;
+    Basic_Render_List             : GL_Maths.Indices_List;
+    Skinned_Render_List           : GL_Maths.Indices_List;
+    Jav_Stand_Render_List         : GL_Maths.Indices_List;
+    Portal_Render_List            : GL_Maths.Indices_List;
+    Treasure_Render_List          : GL_Maths.Indices_List;
 
     procedure Render_Basic (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff,
                             Prop_Dyn_Light_Spec : Singles.Vector3;

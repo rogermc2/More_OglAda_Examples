@@ -526,7 +526,7 @@ package body Character_Controller is
 
         --  if on water splash and make invisible
         if Manifold.Is_Water
-          (Character.Map (GL.X), Character.Map (GL.Y)) then
+          (Positive (Character.Map (GL.X)), Positive (Character.Map (GL.Y))) then
             Tile_Height := Tiles_Manager.Get_Tile_Height
               (Character.World_Pos (GL.X), Character.World_Pos (GL.Z),
                True, True);

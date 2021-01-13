@@ -35,10 +35,9 @@ package Tiles_Manager is
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
-   function Get_Facing (Row_Curs  : Tile_Row_Package.Cursor;
-                        Col_Curs  : Tile_Column_Package.Cursor) return Character;
-   function Get_Tile (Row_Curs  : Tile_Row_Package.Cursor;
-                      Col_Curs  : Tile_Column_Package.Cursor) return Tile_Data;
+   function Get_Facing  (Row, Col : Positive) return Character;
+   function Get_Tile (Row_Curs : Tile_Row_Package.Cursor;
+                      Col_Curs : Tile_Column_Package.Cursor) return Tile_Data;
    function Get_Tile (Row, Col : Positive) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
