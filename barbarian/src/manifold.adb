@@ -50,14 +50,14 @@ package body Manifold is
     procedure Clear_Manifold_Lights is
         use Batch_Manager;
         use Batches_Package;
-        use Tile_Indices_Package;
+        use Tiles_Manager.Tile_Indices_Package;
         theBatches   : constant Batches_List := Batches;
         Batch_Cursor : Batches_Package.Cursor := theBatches.First;
         Batch        : Batch_Manager.Batch_Meta;
     begin
         while Has_Element (Batch_Cursor) loop
             Batch := Element (Batch_Cursor);
-            Clear (Batch.Static_Light_Indices);
+            Batch.Static_Light_Indices.Clear;
             Next (Batch_Cursor);
         end loop;
     end Clear_Manifold_Lights;
@@ -77,7 +77,7 @@ package body Manifold is
         use Batch_Manager;
         use Batches_Package;
         use Shader_Attributes;
-        use Tile_Indices_Package;
+        use Tiles_Manager.Tile_Indices_Package;
         use GL_Maths;
         use Vec3_Package;
         use Manifold_Shader_Manager;
@@ -86,8 +86,10 @@ package body Manifold is
         Curs          : Batches_Package.Cursor := theBatches.First;
         aBatch        : Batch_Meta;
         Rad_Dist      : Single;
-        Light_Indices : Tile_Indices_List;
-        Light_Cursor  : Tile_Indices_Package.Cursor;
+        Light_Indices : GL_Maths.Indices_List;
+        Light_Cursor  : GL_Maths.Indices_Package.Cursor;
+        Light_Index1  : Positive;
+        Light_Index2  : Positive;
         Tile_Index1   : Int;
         Tile_Index2   : Int;
     begin
@@ -130,8 +132,10 @@ package body Manifold is
                       not (aBatch.Static_Light_Indices.Is_Empty) then
                         Light_Indices := aBatch.Static_Light_Indices;
                         Light_Cursor := Light_Indices.First;
-                        Tile_Index1 := Int (Element (Light_Cursor));
-                        Tile_Index2 := Int (Element (Next (Light_Cursor)));
+                        Light_Index1 := Light_Indices.First_Index;
+                        Light_Index2 := Light_Index1 + 1;
+                        Tile_Index1 := Int (Light_Indices.Element (Light_Index1));
+                        Tile_Index2 := Int (Light_Indices.Element (Light_Index2));
                         Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                         if aBatch.Point_Count > 0 then
@@ -199,7 +203,7 @@ package body Manifold is
         theBatches    : constant Batches_List := Batches;
         Curs          : Cursor := theBatches.First;
         aBatch        : Batch_Meta;
-        Light_Indices : Tile_Indices_List;
+        Light_Indices : GL_Maths.Indices_List;
     begin
         Enable (Depth_Test);
         Shadows.Set_Depth_Model_Matrix (Singles.Identity4);
@@ -234,15 +238,15 @@ package body Manifold is
         use Batch_Manager;
         use Batches_Package;
         use GL_Maths;
-        use Tile_Indices_Package;
+        use GL_Maths.Indices_Package;
         use Shader_Attributes;
         use Vec3_Package;
         use Water_Shader_Manager;
         theBatches    : constant Batches_List := Batches;
         Curs          : Batches_Package.Cursor := theBatches.First;
         aBatch        : Batch_Meta;
-        Light_Indices : Tile_Indices_List;
-        Light_Cursor  : Tile_Indices_Package.Cursor;
+        Light_Indices : Indices_List;
+        Light_Cursor  : Indices_Package.Cursor;
         Tile_Index1   : Int;
         Tile_Index2   : Int;
     begin
@@ -304,15 +308,15 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Light_Index (Column, Row : GL.Types.Int; Light_Number : Integer)
+    function Get_Light_Index (Column, Row : Positive; Light_Number : Integer)
                               return GL.Types.Int is
         use GL.Types;
         use Batch_Manager;
-        use Tile_Indices_Package;
+        use GL_Maths.Indices_Package;
         Batch_Index   : constant Positive :=
                           Get_Batch_Index (Column, Row);
         Batch         : Batch_Meta;
-        Light_Indices : Tile_Indices_List;
+        Light_Indices : GL_Maths.Indices_List;
         Light_Cursor  : Cursor;
         --        Light_Index   : Positive;
         --        theLight      : Batch_Manager.Static_Light_Data;
@@ -326,7 +330,7 @@ package body Manifold is
                 raise Manifold_Exception with
                   "Manifold.Get_Light_Index; Light number " &
                   Integer'Image (Light_Number) & " requested at ( " &
-                  Int'Image (Column) & "," & Int'Image (Row) &
+                  Positive'Image (Column) & "," & Positive'Image (Row) &
                   ") in batch " &  Integer'Image (Batch_Index) &
                   " does not exist.";
             end if;
@@ -373,7 +377,7 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Ramp (Row, Col : GL.Types.Int) return Boolean is
+    function Is_Ramp (Row, Col : Positive) return Boolean is
         use Tiles_Manager;
         aTile : constant Tile_Data := Get_Tile (Row, Col);
     begin
@@ -382,7 +386,7 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Water (Row, Col : GL.Types.Int) return Boolean is
+    function Is_Water (Row, Col : Positive) return Boolean is
         use Tiles_Manager;
         aTile : constant Tile_Data := Get_Tile (Row, Col);
     begin
@@ -415,7 +419,7 @@ package body Manifold is
 
     procedure Update_Static_Lights_Uniforms  is
         use Batch_Manager;
-        use Tile_Indices_Package;
+        use GL_Maths.Indices_Package;
         Lights    : constant Static_Light_Vector := Static_Lights;
         Index     : Positive := Lights.First_Index;
         aLight    : Static_Light_Data;

@@ -20,8 +20,8 @@ package GL_Maths is
       (Single);
     subtype Singles_List is Singles_Package.List;
 
-    package Indicies_Package is new Ada.Containers.Vectors (Positive, Positive);
-    subtype Indicies_List is Indicies_Package.Vector;
+    package Indices_Package is new Ada.Containers.Vectors (Positive, Positive);
+    subtype Indices_List is Indices_Package.Vector;
 
     package Vec2_Package is new Ada.Containers.Vectors
       (Positive, Singles.Vector2);

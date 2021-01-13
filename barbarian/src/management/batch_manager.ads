@@ -41,7 +41,7 @@ package Batch_Manager is
       Ramp_Texcoords_VBO   : GL.Objects.Buffers.Buffer;
       Water_VBO            : GL.Objects.Buffers.Buffer;
       Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
-      Static_Light_Indices : GL_Maths.Indicies_List;
+      Static_Light_Indices : GL_Maths.Indices_List;
    end record;
 
    package Batches_Package is new Ada.Containers.Vectors (Positive, Batch_Meta);
@@ -72,7 +72,7 @@ package Batch_Manager is
                                Light_Range                    : Single);
    procedure Add_Batch (Data : Batch_Meta);
    procedure Clear;
-   function Get_Batch_Index (Column, Row : Int) return Integer;
+   function Get_Batch_Index (Column, Row : Positive) return Integer;
    procedure Init;
    function Batches return Batches_List;
    function Num_Points (Batch_Index : Positive) return Integer;

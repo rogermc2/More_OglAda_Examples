@@ -18,11 +18,11 @@ package Manifold is
                                    Ramp_Spec_Tex : GL.Objects.Textures.Texture);
    procedure Draw_Manifold_Around_Depth_Only;
    procedure Free_Manifold_Meta_Data;
-   function Get_Light_Index (Column, Row  : GL.Types.Int;
+   function Get_Light_Index (Column, Row  : Positive;
                              Light_Number : Integer) return GL.Types.Int;
    procedure Init;
-   function Is_Ramp (Row, Col : GL.Types.Int) return Boolean;
-   function Is_Water (Row, Col : GL.Types.Int) return Boolean;
+   function Is_Ramp (Row, Col : Positive) return Boolean;
+   function Is_Water (Row, Col : Positive) return Boolean;
    procedure Reset_Manifold_Vars;
    procedure Set_Manifold_Ambient_Light (Level : GL.Types.Singles.Vector3);
    procedure Update_Static_Lights_Uniforms;
