@@ -1,4 +1,5 @@
 
+with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -14,15 +15,30 @@ package Tiles_Manager is
       Tile_Type     : Character := ASCII.NUL;
    end record;
 
-   package Tile_Data_Package is new Ada.Containers.Vectors
+   package Tile_Column_Package is new Ada.Containers.Vectors
      (Positive, Tile_Data);
-   type Tile_List is new Tile_Data_Package.Vector with null record;
+   subtype Tile_Column_List is Tile_Column_Package.Vector;
+   subtype Tile_Column_Cursor is Tile_Column_Package.Cursor;
+   use Tile_Column_Package;
+
+   package Tile_Row_Package is new Ada.Containers.Vectors
+     (Positive, Tile_Column_List);
+   subtype Tile_2D_List is Tile_Row_Package.Vector;
+   subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
+
+   use GL.Types.Ints;
+   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
+     (GL.Types.Ints.Vector2);
+   subtype Tile_Indices_List is Tile_Indices_Package.List;
 
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
-   function Get_Facing (Col, Row : Int) return Character;
-   function Get_Tile (Col, Row : Int) return Tile_Data;
+   function Get_Facing (Row_Curs  : Tile_Row_Package.Cursor;
+                        Col_Curs  : Tile_Column_Package.Cursor) return Character;
+   function Get_Tile (Row_Curs  : Tile_Row_Package.Cursor;
+                      Col_Curs  : Tile_Column_Package.Cursor) return Tile_Data;
+   function Get_Tile (Row, Col : Positive) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
    function Get_Tiles_Across return Int;
