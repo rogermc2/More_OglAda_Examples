@@ -30,6 +30,7 @@ package Tiles_Manager is
    package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
      (GL.Types.Ints.Vector2);
    subtype Tile_Indices_List is Tile_Indices_Package.List;
+   subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
 
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;

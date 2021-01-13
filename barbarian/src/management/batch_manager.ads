@@ -13,12 +13,8 @@ with GL_Maths;
 
 package Batch_Manager is
 
-   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
-     (Positive);
-   type Tile_Indices_List is new Tile_Indices_Package.List with null record;
-
    type Batch_Meta is record
-      Tiles                : Tile_Indices_List;
+      Tiles                : Tiles_Manager.Tile_Indices_List;
       AABB_Mins            : Singles.Vector3 := (0.0, 0.0, 0.0);
       AABB_Maxs            : Singles.Vector3 := (0.0, 0.0, 0.0);
       Points               : GL_Maths.Vec3_List;
@@ -45,7 +41,7 @@ package Batch_Manager is
       Ramp_Texcoords_VBO   : GL.Objects.Buffers.Buffer;
       Water_VBO            : GL.Objects.Buffers.Buffer;
       Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
-      Static_Light_Indices : Tile_Indices_List;
+      Static_Light_Indices : GL_Maths.Indicies_List;
    end record;
 
    package Batches_Package is new Ada.Containers.Vectors (Positive, Batch_Meta);
@@ -82,7 +78,7 @@ package Batch_Manager is
    function Num_Points (Batch_Index : Positive) return Integer;
    function Num_Ramp_Points (Batch_Index : Positive) return Integer;
    function Num_Water_Points (Batch_Index : Positive) return Integer;
-   procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_List;
+   procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_2D_List;
                                Batch_Index : Positive);
    function Static_Lights return Static_Light_Vector;
    procedure Update_Batch (Index : Positive; Data : Batch_Meta);
