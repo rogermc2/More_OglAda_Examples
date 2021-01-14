@@ -1,9 +1,12 @@
 
+with GL.Types;
+
 package Audio is
 
    Audio_Exception : Exception;
 
-   procedure Create_Boulder_Sound (Pos : GL.Types.Singles.Vector3);
+   function Create_Boulder_Sound (Pos : GL.Types.Singles.Vector3)
+                                  return Positive;
    procedure Pause_Music (Pause : Boolean);
    procedure Play_Credits_Music (File_Name : String);
    procedure Play_Music (File_Name : String);

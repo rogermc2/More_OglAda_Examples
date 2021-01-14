@@ -68,14 +68,15 @@ package body Audio is
 
     --  -------------------------------------------------------------------------
 
-    procedure Create_Boulder_Sound (Pos : GL.Types.Singles.Vector3) is
-        Index        : constant Natural := G_Audio.Boulder_Sound_Count;
+    function Create_Boulder_Sound (Pos : GL.Types.Singles.Vector3)
+                                   return Positive is
+        Index        : constant Natural := G_Audio.Boulder_Sound_Count + 1;
         Radius       : Float := 12.0;
         Play_Looped  : Boolean := True;
         Start_Paused : Boolean := True;
         Track        : Boolean := True;
     begin
-        if G_Audio.Boulder_Sound_Count >= Max_Boulder_Sounds then
+        if G_Audio.Boulder_Sound_Count > Max_Boulder_Sounds then
             raise Audio_Exception with
               "Audio.Create_Boulder_Sound trying to exceed Max_Boulder_Sounds";
         end if;
@@ -90,6 +91,7 @@ package body Audio is
         --    -- prevent starting at full vol
         --    G_Audio.Boulder_Sounds[Idx].Snd->Setvolume (0.0);
         G_Audio.Boulder_Sound_Count := G_Audio.Boulder_Sound_Count + 1;
+        return Index;
     end Create_Boulder_Sound;
 
     --  -------------------------------------------------------------------------
