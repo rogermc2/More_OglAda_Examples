@@ -32,8 +32,8 @@ package body Sprite_Renderer is
       Scale                  : Singles.Vector3 := (1.0, 1.0, 1.0);
       Heading_Deg            : Maths.Degree := 0.0;
       Pitch_Deg              : Maths.Degree := 0.0;
-      Sprite_Map_Diffuse_Id  : GL.Objects.Textures.Texture;
-      Sprite_Map_Specular_Id : GL.Objects.Textures.Texture;
+      Sprite_Map_Diffuse     : GL.Objects.Textures.Texture;
+      Sprite_Map_Specular    : GL.Objects.Textures.Texture;
       Sprite_Map_Rows        : Int := 0;
       Sprite_Map_Columns     : Int := 0;
       Current_Sprite         : Natural := 0;
@@ -52,15 +52,15 @@ package body Sprite_Renderer is
    --  -------------------------------------------------------------------------
 
    function Add_Sprite (Diffuse, Specular : GL.Objects.Textures.Texture;
-                        Columns, Rows     : Integer) return Natural is
+                        Rows, Columns     : Integer) return Natural is
    begin
       if Num_Sprites > Max_Sprites then
          raise Sprite_Exception with "Sprite_Renderer.Add_Sprite, " &
            "maximum number of sprites has already been assigned";
       end if;
       Num_Sprites := Num_Sprites + 1;
-      Sprites (Num_Sprites).Sprite_Map_Diffuse_Id := Diffuse;
-      Sprites (Num_Sprites).Sprite_Map_Specular_Id := Specular;
+      Sprites (Num_Sprites).Sprite_Map_Diffuse := Diffuse;
+      Sprites (Num_Sprites).Sprite_Map_Specular := Specular;
       Sprites (Num_Sprites).Sprite_Map_Rows := Int (Rows);
       Sprites (Num_Sprites).Sprite_Map_Columns := Int (Columns);
       return Num_Sprites;
@@ -169,8 +169,8 @@ package body Sprite_Renderer is
    begin
       if Sprites (Sprite_Index).Is_Visible and  Frustum.Is_Sphere_In_Frustum
         (Sprites (Sprite_Index).World_Position, 1.0) then
-         Bind_Texture (0, Sprites (Sprite_Index).Sprite_Map_Diffuse_Id);
-         Bind_Texture (1, Sprites (Sprite_Index).Sprite_Map_Specular_Id);
+         Bind_Texture (0, Sprites (Sprite_Index).Sprite_Map_Diffuse);
+         Bind_Texture (1, Sprites (Sprite_Index).Sprite_Map_Specular);
 
          Sprite_Shader_Manager.Use_Sprite_Shader;
          Set_Rows (Single (Sprites (Sprite_Index).Sprite_Map_Rows));

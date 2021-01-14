@@ -5,6 +5,7 @@ with GL.Types; use GL.Types;
 
 with Maths;
 
+with Event_Controller;
 with Mesh_Loader;
 
 package Properties_Manager is

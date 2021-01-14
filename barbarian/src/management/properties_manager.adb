@@ -6,18 +6,23 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Maths;
 
+with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 
 with Audio;
+with Batch_Manager;
 with Character_Controller;
 with Event_Controller;
 with Game_Utils;
 with Particle_System;
+with Prop_Renderer;
+with Sprite_Renderer;
 with Tiles_Manager;
 
 package body Properties_Manager is
 
-    Max_Mirrors : constant Integer := 16;
+    Max_Mirrors     : constant Integer := 16;
+    Sprite_Y_Offset : constant Single := 0.125;
 
     type Points_Array is array (1 .. 4, 1 .. 2) of GL.Types.Single;
 
@@ -53,9 +58,9 @@ package body Properties_Manager is
         Uses_Sprite      : Boolean := False;
 
         --  Textures
-        Diffuse_Map_Id  : GL.Types.Int := 0;
-        Specular_Map_Id : GL.Types.Int := 0;
-        Normal_Map_Id   : GL.Types.Int := 0;
+        Diffuse_Map     : GL.Objects.Textures.Texture;
+        Specular_Map    : GL.Objects.Textures.Texture;
+        Normal_Map      : GL.Objects.Textures.Texture;
         Uses_Normal_Map : Boolean := False;
 
         --  Special rendering modes
@@ -86,7 +91,7 @@ package body Properties_Manager is
         Lamp_Offset   : GL.Types.Singles.Vector3 := Maths.Vec3_0;
         Lamp_Diffuse  : GL.Types.Singles.Vector3 := Maths.Vec3_0;
         Lamp_Specular : GL.Types.Singles.Vector3 := Maths.Vec3_0;
-        Lamp_Rang     : Float := 0.0;
+        Lamp_Range    : Single := 0.0;
         Has_Lamp      : Boolean := False;
 
         --  Particle emitters attached to prop
@@ -151,7 +156,9 @@ package body Properties_Manager is
     function Load_Property_Script (File_Name : String; Index : out Positive)
                                   return Boolean;
     procedure Process_Script_Type (New_Props : in out Prop;
-                                   aScript : Prop_Script);
+                                   aScript : Prop_Script;
+                                   Rx_Kind  : in out Event_Controller.RX_Type);
+   procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script);
 
     -- -------------------------------------------------------------------------
     --  Height_level is the property's own height offset from the tile.
@@ -161,6 +168,7 @@ package body Properties_Manager is
                                        Facing       : Character; Tx, Rx : Integer) is
         use Maths;
         use Singles;
+        use Event_Controller;
         use Properties_Script_Package;
         New_Props     : Prop;
         Script_Index  : constant Positive := Get_Index_Of_Prop_Script (Script_File);
@@ -170,6 +178,7 @@ package body Properties_Manager is
         Start_Now     : Boolean := True;
         Always_Update : Boolean := False;
         Always_Draw   : Boolean := False;
+        RX_Kind       : RX_Type := Rx_Invalid;
         Rot_Matrix    : Matrix4;
         Ros           : Vector3;
     begin
@@ -244,7 +253,21 @@ package body Properties_Manager is
             New_Props.First_Doom_Tile_Set := False;
             New_Props.Second_Doom_Tile_Set := False;
             New_Props.Was_Collected_By_Player := False;
-            Process_Script_Type (New_Props, aScript);
+            Process_Script_Type (New_Props, aScript, RX_Kind);
+            if aScript.Uses_Sprite then
+                Set_Up_Sprite (New_Props, aScript);
+            end if;
+            if aScript.Has_Lamp then
+                Batch_Manager.Add_Static_Light
+                  (Map_U, Map_V, Height_Level, aScript.Lamp_Offset,
+                   aScript.Lamp_Diffuse, aScript.Lamp_Specular, aScript.Lamp_Range);
+            end if;
+            if New_Props.Rx_Code /= 0 and RX_Kind /= Rx_Invalid then
+                Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
+                                               Properties.Last_Index);
+            end if;
+            Prop_Renderer.Update_Props_In_Tiles
+              (New_Props.Map_U, New_Props.Map_V, Int (Properties.Last_Index));
 
             Properties.Append (New_Props);
         end if;
@@ -495,14 +518,13 @@ package body Properties_Manager is
 
     -- --------------------------------------------------------------------------
 
-    procedure Process_Script_Type (New_Props : in out Prop;
-                                   aScript : Prop_Script) is
+    procedure Process_Script_Type (New_Props : in out Prop; aScript : Prop_Script;
+                                   Rx_Kind  : in out Event_Controller.RX_Type) is
         use Singles;
         use Event_Controller;
         use Maths;
         Script_Type : constant Prop_Type := aScript.Prop_Kind;
         Mesh_Index  : constant Positive := aScript.Mesh_Index;
-        Rx          : RX_Type := Event_Controller.Rx_Invalid;
         Duration    : Float := 0.0;
         Tim         : Float := 0.0;
         Rebalance   : Boolean := False;
@@ -515,11 +537,11 @@ package body Properties_Manager is
                 New_Props.World_Pos (GL.Y) :=
                   New_Props.World_Pos (GL.Y) + Single (aScript.Radius);
                 New_Props.Is_On_Ground := True;
-                Rx := Rx_Boulder;
+                Rx_Kind := Rx_Boulder;
                 New_Props.Boulder_Snd_Idx :=
                   Audio.Create_Boulder_Sound (New_Props.World_Pos);
-            when Door => Rx := Rx_Door;
-            when Dart_Trap => Rx := Rx_Dart_Trap;
+            when Door => Rx_Kind := Rx_Door;
+            when Dart_Trap => Rx_Kind := Rx_Dart_Trap;
             when Treasure =>  Character_Controller.Gold_Max :=
                   Character_Controller.Gold_Max + aScript.Value;
             when Portal => Portal_Index := Properties.Last_Index;
@@ -545,7 +567,7 @@ package body Properties_Manager is
                 Live_Mirror_Count := Live_Mirror_Count + 1;
             when Elevator =>
                 New_Props.Elevator := aScript.Initial_Elevator_State;
-                Rx := Rx_Elevator;
+                Rx_Kind := Rx_Elevator;
             when Anim_Loop =>
                 --  randomise starting time
                 Duration := Mesh_Loader.Animation_Duration (Mesh_Index, 1);
@@ -567,6 +589,26 @@ package body Properties_Manager is
           Rotate_Y_Degree (Identity4, New_Props.Heading_Deg);
 
     end Process_Script_Type;
+
+    -- --------------------------------------------------------------------------
+
+   procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script) is
+        use Singles;
+        use Sprite_Renderer;
+        Diff_Map   : constant GL.Objects.Textures.Texture := aScript.Diffuse_Map;
+        Spec_Map   : constant GL.Objects.Textures.Texture := aScript.Specular_Map;
+        Rows       : constant Integer := aScript.Sprite_Map_Rows;
+	Cols       : constant Integer := aScript.Sprite_Map_Cols;
+	Y_Offset   : constant Single := Single (aScript.Sprite_Y_Offset);
+        Sprite_Pos : Vector3 := New_Props.World_Pos;
+   begin
+        New_Props.Script_Index := Add_Sprite (Diff_Map, Spec_Map, Cols, Rows);
+        Set_Sprite_Scale (New_Props.Sprite_Index, aScript.Scale);
+        Sprite_Pos (GL.Y) := Sprite_Pos (GL.Y) + Y_Offset + Sprite_Y_Offset;
+        Set_Sprite_Position (New_Props.Sprite_Index, Sprite_Pos);
+        Set_Sprite_Heading (New_Props.Sprite_Index, New_Props.Heading_Deg);
+
+    end Set_Up_Sprite;
 
     -- --------------------------------------------------------------------------
 

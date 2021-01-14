@@ -892,6 +892,13 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
+    procedure Update_Props_In_Tiles (U, V : Integer; Data : GL.Types.Int) is
+        begin
+        Props_In_Tiles (U, V).Append (Data);
+    end Update_Props_In_Tiles;
+
+    --  -------------------------------------------------------------------------
+
     procedure Update_Static_Lights_Uniforms is
         use Batch_Manager;
         use GL_Maths.Indices_Package;
@@ -925,6 +932,6 @@ package body Prop_Renderer is
         Properties_Skinned_Shader_Manager.Set_Light_Range (Ranges);
     end Update_Static_Lights_Uniforms;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
 end Prop_Renderer;

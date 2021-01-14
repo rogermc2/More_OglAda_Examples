@@ -11,7 +11,7 @@ package Sprite_Renderer is
     Sprite_Exception : Exception;
 
     function Add_Sprite (Diffuse, Specular : GL.Objects.Textures.Texture;
-                         Columns, Rows : Integer) return Natural;
+                         Rows, Columns : Integer) return Natural;
     procedure Clear_Sprites;
     function Sprite_World_Pos (Sprite_Index : Positive) return Singles.Vector3;
     procedure Init;

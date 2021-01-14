@@ -22,7 +22,7 @@ package body Event_Controller is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_Receiver (Code  : Natural; RX_Kind : RX_Type; Index : Natural) is
+   procedure Add_Receiver (Code : Natural; RX_Kind : RX_Type; Index : Natural) is
       Received_Code : Code_Received_Data;
    begin
       Check_Code_Validity ("Add_Receiver", Code);
