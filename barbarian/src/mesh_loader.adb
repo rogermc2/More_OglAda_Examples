@@ -1,97 +1,17 @@
 
 with Ada.Containers.Doubly_Linked_Lists;
-with Ada.Containers.Vectors;
 with Ada.Strings.Fixed;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 with GL.Attributes;
-with GL.Objects.Buffers;
 
 with Shader_Attributes;
 with Game_Utils;
-with GL_Utils;
 
 package body Mesh_Loader is
    use GL.Objects.Vertex_Arrays;
    use GL.Types.Singles;
 
-   type Tra_Anim_Key is record
-	Tra  : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
-	Time : Float := 0.0;
-   end record;
-
-   type Sca_Anim_Key is record
-	Sca  : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
-	Time : Float := 0.0;
-   end record;
-
-   type Rot_Anim_Key is record
-	Rot  : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
-	Time : Float := 0.0;
-   end record;
-   --  Channel_Data defines a channel of keys within an animation.
-   --  All the keys in anim for a particular animation node,
-   --  where an 'animation node' is a bone in the skeleton but doesn't
-   --  necessarily have any vertices weighted to it
-   --  i.e. can be an in-between joint
-   type Channel_Data is record
-	Tra_Keys       : Tra_Anim_Key;
-	Tra_Keys_Count : Integer := 0;
-	Sca_Keys       : Sca_Anim_Key;
-	Sca_Keys_Count : Integer := 0;
-	Rot_Keys       : Rot_Anim_Key;
-        Rot_Keys_Count : Integer := 0;
-   end record;
-
-   package Channels_Package is new Ada.Containers.Vectors (Positive, Channel_Data);
-   type Channel_List is new Channels_Package.Vector with null record;
-
-   type Animation is record
-      Name  : Unbounded_String := To_Unbounded_String ("");
-      Duration : Float := 0.0;
-      --  Order of channels corresponds to anim nodes in hierarchy
-      Channels : Channel_List;
-   end record;
-
-   package Animations_Package is new Ada.Containers.Vectors (Positive, Animation);
-   type Animations_List is new Animations_Package.Vector with null record;
-
-   type Node_Children_Array is array (1 .. Max_Bones, 1 .. Max_Bones) of Integer;
-
-   type Mesh is record
-      File_Name              : Unbounded_String := To_Unbounded_String ("");
-      VAO                    : Vertex_Array_Object := Null_Array_Object;
-      Shadow_VAO             : Vertex_Array_Object := Null_Array_Object;
-      Point_Count            : Integer := 0;
-      Vp_Count               : Integer := 0;
-      Vn_Count               : Integer := 0;
-      Vt_Count               : Integer := 0;
-      Vtan_Count             : Integer := 0;
-      Vb_Count               : Integer := 0;
-      Bounding_Radius        : Float := 1.0;
-      --  the skeleton hierarchy
-      Root_Transform_Matrix  : Singles.Matrix4 := Singles.Identity4;
-      Offset_Matrices        : GL_Utils.Matrix4_List;
-      Current_Bone_Matrices  : GL_Utils.Matrix4_List;
-      Anim_Node_Parents      : GL_Utils.Matrix4_List;
-      Anim_Node_Children     : Node_Children_Array := (others => (others => 0));
-      Anim_Node_Num_Children : Int_Array (1 .. Max_Bones) := (others => 0);
-      Anim_Node_Bone_Ids     : GL_Maths.Ints_List;
-      Bone_Count             : Integer := 0;
-      -- animations using the skeleton
-      Animations             : Animations_List;
-      Animation_Count        : Integer := 0;
-      Points_Vbo             : GL.Objects.Buffers.Buffer;
-      Normals_Vbo            : GL.Objects.Buffers.Buffer;
-      Texcoords_Vbo          : GL.Objects.Buffers.Buffer;
-      Bones_Vbo              : GL.Objects.Buffers.Buffer;
-      Vtans_Vbo              : GL.Objects.Buffers.Buffer;
-   end record;
-
-   package Meshes_Package is new Ada.Containers.Vectors (Positive, Mesh);
-   type Mesh_List is new Meshes_Package.Vector with null record;
-
-   Loaded_Meshes : Mesh_List;
+   Meshes : Mesh_List;
 
    function Loaded_Mesh_Animation (Mesh_ID : Integer; Anim_ID : Positive)
                                    return Animation;
@@ -111,7 +31,7 @@ package body Mesh_Loader is
 
    function Bone_Count (Index : Integer) return Integer is
       use Meshes_Package;
-      Curs  : Cursor := Loaded_Meshes.First;
+      Curs  : Cursor := Meshes.First;
       Found : Boolean := False;
       Count : Integer := 0;
    begin
@@ -131,7 +51,7 @@ package body Mesh_Loader is
 
    procedure Init is
    begin
-      Loaded_Meshes.Clear;
+      Meshes.Clear;
    end Init;
 
    --  ------------------------------------------------------------------------
@@ -150,10 +70,10 @@ package body Mesh_Loader is
       Attr_Count : Integer := 0;
       Mesh_ID    : Integer := 0;
    begin
-      if not Loaded_Meshes.Is_Empty then
-         Index := Loaded_Meshes.First_Index;
-         while Index <= Loaded_Meshes.Last_Index and not Found loop
-            aMesh := Loaded_Meshes.Element (index);
+      if not Meshes.Is_Empty then
+         Index := Meshes.First_Index;
+         while Index <= Meshes.Last_Index and not Found loop
+            aMesh := Meshes.Element (index);
             Found := aMesh.File_Name = To_Unbounded_String (Mesh_Name);
             if Found then
                Mesh_ID := Index;
@@ -166,18 +86,18 @@ package body Mesh_Loader is
       if not Found then
          Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading " &
                               Mesh_Name);
---           if not Load_Mesh (Mesh_Name, Loaded_Meshes, Mesh_ID) then
+--           if not Load_Mesh (Mesh_Name, Meshes, Mesh_ID) then
          if not Load_Mesh (Mesh_Name, Mesh_ID) then
             raise Mesh_Loader_Exception with
             "Mesh_Loader.Load_Managed_Mesh couldn't load " & Mesh_Name;
          end if ;
       end if;
 
-      aMesh := Loaded_Meshes.Element (Mesh_ID);
+      aMesh := Meshes.Element (Mesh_ID);
       aMesh.VAO.Clear;
       aMesh.VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aMesh.VAO);
-      Loaded_Meshes.Replace_Element (Mesh_ID, aMesh);
+      Meshes.Replace_Element (Mesh_ID, aMesh);
 
 --        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh " & Mesh_Name &
 --                               " Vp_Count, Vn_Count, Vt_Count " &
@@ -215,7 +135,7 @@ package body Mesh_Loader is
          Enable_Vertex_Attrib_Array (Attrib_Bone);
       end if;
 
-      aMesh := Loaded_Meshes.Element (Loaded_Meshes.Last_Index);
+      aMesh := Meshes.Element (Meshes.Last_Index);
       aMesh.Shadow_VAO.Clear;
       aMesh.Shadow_VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aMesh.Shadow_VAO);
@@ -231,7 +151,7 @@ package body Mesh_Loader is
          Enable_Vertex_Attrib_Array (Attrib_Bone);
       end if;
 
-      Loaded_Meshes.Replace_Element (Mesh_ID, aMesh);
+      Meshes.Replace_Element (Mesh_ID, aMesh);
       return Mesh_ID;
    end Load_Managed_Mesh;
 
@@ -362,8 +282,8 @@ package body Mesh_Loader is
 
       Result := New_Mesh.Point_Count > 0;
       if Result then
-         Loaded_Meshes.Append (New_Mesh);
-         Mesh_ID := Loaded_Meshes.Last_Index;
+         Meshes.Append (New_Mesh);
+         Mesh_ID := Meshes.Last_Index;
       else
          Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh data not created for "
                               & Path);
@@ -371,6 +291,13 @@ package body Mesh_Loader is
 
       return Result;
    end Load_Mesh;
+
+   --  ------------------------------------------------------------------------
+
+    function Loaded_Meshes return Mesh_List is
+    begin
+      return Meshes;
+   end Loaded_Meshes;
 
    --  ------------------------------------------------------------------------
 
@@ -504,7 +431,7 @@ package body Mesh_Loader is
                              VAO   : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object)
                              return Boolean is
       use Meshes_Package;
-      Curs  : Cursor := Loaded_Meshes.First;
+      Curs  : Cursor := Meshes.First;
       Found : Boolean := False;
    begin
       while Has_Element (Curs) and not Found loop
@@ -529,7 +456,7 @@ package body Mesh_Loader is
                                    return Animation is
       use Meshes_Package;
       use Animations_Package;
-      Mesh_Curs  : Meshes_Package.Cursor := Loaded_Meshes.First;
+      Mesh_Curs  : Meshes_Package.Cursor := Meshes.First;
       Anim_List  : Animations_List;
       Anim_Curs  : Animations_Package.Cursor;
       Mesh_Found : Boolean := False;
@@ -565,7 +492,7 @@ package body Mesh_Loader is
 
    function Point_Count (Index : Integer) return Integer is
       use Meshes_Package;
-      Curs  : Cursor := Loaded_Meshes.First;
+      Curs  : Cursor := Meshes.First;
       Found : Boolean := False;
       Count : Integer := 0;
    begin
