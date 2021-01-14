@@ -45,7 +45,7 @@ package body Text_Manager is
       Popup_Count : Integer := 0;
 
       function Process_Text (theText : String) return Unbounded_String is
-         Last      : Integer := theText'Length;
+         Last      : constant Integer := theText'Length;
          Formatted : Unbounded_String := To_Unbounded_String ("");
          I_Index   : Integer := 1;
       begin

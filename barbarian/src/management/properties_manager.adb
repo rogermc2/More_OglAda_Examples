@@ -157,8 +157,10 @@ package body Properties_Manager is
                                   return Boolean;
     procedure Process_Script_Type (New_Props : in out Prop;
                                    aScript : Prop_Script;
-                                   Rx_Kind  : in out Event_Controller.RX_Type);
-   procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script);
+                                   Rx_Kind  : in out Event_Controller.RX_Type;
+                                   Rebalance  : in out Boolean);
+    procedure Rebalance_Props_In (Map_U, Map_V : Int);
+    procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script);
 
     -- -------------------------------------------------------------------------
     --  Height_level is the property's own height offset from the tile.
@@ -178,6 +180,7 @@ package body Properties_Manager is
         Start_Now     : Boolean := True;
         Always_Update : Boolean := False;
         Always_Draw   : Boolean := False;
+        Rebalance     : Boolean := False;
         RX_Kind       : RX_Type := Rx_Invalid;
         Rot_Matrix    : Matrix4;
         Ros           : Vector3;
@@ -253,7 +256,7 @@ package body Properties_Manager is
             New_Props.First_Doom_Tile_Set := False;
             New_Props.Second_Doom_Tile_Set := False;
             New_Props.Was_Collected_By_Player := False;
-            Process_Script_Type (New_Props, aScript, RX_Kind);
+            Process_Script_Type (New_Props, aScript, RX_Kind, Rebalance);
             if aScript.Uses_Sprite then
                 Set_Up_Sprite (New_Props, aScript);
             end if;
@@ -268,7 +271,9 @@ package body Properties_Manager is
             end if;
             Prop_Renderer.Update_Props_In_Tiles
               (New_Props.Map_U, New_Props.Map_V, Int (Properties.Last_Index));
-
+            if Rebalance then
+                Rebalance_Props_In (Map_U, Map_V);
+            end if;
             Properties.Append (New_Props);
         end if;
     end Create_Prop_From_Script;
@@ -519,7 +524,8 @@ package body Properties_Manager is
     -- --------------------------------------------------------------------------
 
     procedure Process_Script_Type (New_Props : in out Prop; aScript : Prop_Script;
-                                   Rx_Kind  : in out Event_Controller.RX_Type) is
+                                   Rx_Kind   : in out Event_Controller.RX_Type;
+                                   Rebalance  : in out Boolean) is
         use Singles;
         use Event_Controller;
         use Maths;
@@ -527,7 +533,6 @@ package body Properties_Manager is
         Mesh_Index  : constant Positive := aScript.Mesh_Index;
         Duration    : Float := 0.0;
         Tim         : Float := 0.0;
-        Rebalance   : Boolean := False;
         Rot_Matrix  : Matrix4 := Identity4;
         Target      : Vector3 := Vec3_0;
     begin
@@ -589,6 +594,13 @@ package body Properties_Manager is
           Rotate_Y_Degree (Identity4, New_Props.Heading_Deg);
 
     end Process_Script_Type;
+
+    -- --------------------------------------------------------------------------
+
+    procedure Rebalance_Props_In (Map_U, Map_V : Int) is
+    begin
+        null;
+    end Rebalance_Props_In;
 
     -- --------------------------------------------------------------------------
 
