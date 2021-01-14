@@ -58,7 +58,7 @@ private
       World_Pos        : Singles.Vector3 := (0.0, 0.0, 0.0);
       Quat             : Maths.Single_Quaternion.Quaternion :=
                            Maths.New_Quaternion (0.0, (0.0, 1.0, 0.0));   --  Versor;
-      Heading_Deg      : Float := 0.0;
+      Heading_Deg      : Maths.Degree := 0.0;
       Vel              : Singles.Vector3 := (0.0, 0.0, 0.0);
       Origin_Wor       : Singles.Vector3 := (0.0, 0.0, 0.0);
 
