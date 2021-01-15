@@ -542,7 +542,7 @@ begin
         return Integer (Tiles.Length);
     end Number_Of_Tiles;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int) is
         use Tile_Row_Package;
@@ -550,16 +550,20 @@ begin
         aTile      : Tile_Data;
         Tile_Row   : Tile_Column_List;
     begin
-        Game_Utils.Game_Log ("Parsing facings by row");
+        --  Parse_Facings_By_Row initalizes the Tiles list.
+        Game_Utils.Game_Log ("File_Manager.Parse_Facings_By_Row");
         for row in 1 .. Max_Rows loop
-            Tile_Row := Tiles.Element (Positive (row));
             declare
-                aString   : constant String := Get_Line (File);
-                Text_Char : Character;
+                aString     : constant String := Get_Line (File);
+                Line_Length : constant Integer := aString'Length;
+                Text_Char   : Character;
             begin
+                if Line_Length < Integer (Max_Cols) then
+                    raise Tiles_Manager_Exception with
+                    "File_Manager.Parse_Facings_By_Row, facings line has not enough columns";
+                end if;
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Max_Cols loop
-                    aTile := Tile_Row.Element (Positive (col));
                     Text_Char := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (Text_Char = 'n' or Text_Char = ASCII.NUL) then
@@ -567,16 +571,14 @@ begin
                     else
                         aTile.Facing := Text_Char;
                     end if;
-
-                    if Has_Element (Tile_Row.To_Cursor (Positive (col))) then
-                        Tile_Row.Replace_Element (Positive (col), aTile);
-                    else
-                        Tile_Row.Append (aTile);
-                    end if;
+                    Tile_Row.Append (aTile);
                 end loop;
                 Prev_Char := Text_Char;
             end;
+            Tiles.Append (Tile_Row);
         end loop;
+
+        Put_Line ("File_Manager.Parse_Facings_By_Row done.");
 
     exception
         when anError : others =>

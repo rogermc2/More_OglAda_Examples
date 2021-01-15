@@ -217,7 +217,8 @@ package body Texture_Manager is
               ("WARNING: Texture_Manager.Load_Image_To_Texture, texture is " &
                  "not power-of-two dimensions " & File_Name);
          end if;
-
+--           Put_Line ("Texture_Manager.Load_Image_To_Texture Data_Length " &
+--                    GL.Types.Int'Image (Data_Length) & " for " & File_Name);
          declare
             Data_Raw     : GID_Image_Loader.Raw_Data (1 .. Data_Length);
             -- Data is an array of UBytes

@@ -11,8 +11,18 @@ project Barbarian_1 is
    for Main use ("barbarian_1a");
 
    package Compiler is
-      for Switches ("ada") use ("-gnato", "-fstack-check", "-gnatw.c.ufk");
+      for Switches ("ada") use ("-gnato", "-fstack-check", "-g", "-gnata", "-gnatw.c.ufk");
    end Compiler;
+
+   package Builder is
+      for Switches ("ada") use ("-g", "-s");
+   end Builder;
+
+   package Linker is
+      for Switches ("ada") use ("-g");
+   end Linker;
+
+   for Exec_Dir use ".";
 
 end Barbarian_1;
 
