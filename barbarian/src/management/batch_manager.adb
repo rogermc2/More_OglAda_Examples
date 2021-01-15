@@ -177,6 +177,8 @@ package body Batch_Manager is
         end Add_Point_Count;
 
     begin
+--          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, Row_Index, Col_Index: " &
+--                    Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
         if Row_Index > 1 then
             N_Row := Tiles.Element (Row_Index - 1);
             N_Tile := N_Row.Element (1);
@@ -194,8 +196,12 @@ package body Batch_Manager is
             Add_Point_Count (Diff);
         end if;
 
-        if Row_Index < N_Row.Last_Index then
-            N_Row := Tiles.Element (Row_Index + 1);
+        if Row_Index < Tiles.Last_Index then
+--          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, Row_Index: " &
+--                    Integer'Image (Row_Index) & " of " & Integer'Image (Tiles.Last_Index));
+--              N_Row := Tiles.Element (Row_Index + 1);
+--          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, N_Row.Last_Index: " &
+--                    Integer'Image (Integer(N_Row.Last_Index)));
             N_Tile := N_Row.Element (1);
             N_Height := N_Tile.Height;
             if N_Tile.Tile_Type = '~' then
@@ -952,8 +958,9 @@ package body Batch_Manager is
         end if;
         --              Put_Line ("Batch_Manager.Regenerate_Batch Max_Cols " &
         --                          Int'Image (Max_Cols));
-        --              Put_Line ("Batch_Manager.Regenerate_Batch Length " &
-        --                          Integer'Image (Integer (Batch_Tiles.Length)));
+--         Put_Line ("Batch_Manager.Regenerate_Batch  Tile_Indices and Batches Lengths " &
+--              Integer'Image (Integer (Tile_Indices.Length)) &
+--              ", " & Integer'Image (Integer (Batches.Length)));
         if not Tile_Indices.Is_Empty then
             while Has_Element (Indices_Curs) loop
                 Tile_Index := Element (Indices_Curs);
