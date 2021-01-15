@@ -44,9 +44,12 @@ package Prop_Renderer is
    function Get_Script_Data (Script_Index : Positive)
                              return Prop_Renderer_Support.Prop_Script;
    function Get_Script_Index (Prop_Index : Positive) return Positive;
+   function Props_In_Tiles_Size (U, V : Integer) return Natural;
    procedure Render_Property (Prop_ID : Positive);
    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
    procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int);
+   procedure Replace_Property (Index : Positive;
+                               Prop : Prop_Renderer_Support.Property_Data);
    procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
    procedure Splash_Particles_At (Pos : Singles.Vector3);

@@ -16,6 +16,7 @@ with Event_Controller;
 with Game_Utils;
 with Particle_System;
 with Prop_Renderer;
+with Prop_Renderer_Support;
 with Sprite_Renderer;
 with Tiles_Manager;
 
@@ -159,7 +160,7 @@ package body Properties_Manager is
                                    aScript : Prop_Script;
                                    Rx_Kind  : in out Event_Controller.RX_Type;
                                    Rebalance  : in out Boolean);
-    procedure Rebalance_Props_In (Map_U, Map_V : Int);
+    procedure Rebalance_Props_In (Map_U, Map_V : Integer);
     procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script);
 
     -- -------------------------------------------------------------------------
@@ -272,7 +273,7 @@ package body Properties_Manager is
             Prop_Renderer.Update_Props_In_Tiles
               (New_Props.Map_U, New_Props.Map_V, Int (Properties.Last_Index));
             if Rebalance then
-                Rebalance_Props_In (Map_U, Map_V);
+                Rebalance_Props_In (Integer (Map_U), Integer (Map_V));
             end if;
             Properties.Append (New_Props);
         end if;
@@ -597,9 +598,54 @@ package body Properties_Manager is
 
     -- --------------------------------------------------------------------------
 
-    procedure Rebalance_Props_In (Map_U, Map_V : Int) is
+    procedure Rebalance_Props_In (Map_U, Map_V : Integer) is
+       use Prop_Renderer;
+       use Prop_Renderer_Support;
+       use Singles;
+       Prop_Size     : constant Integer := Props_In_Tiles_Size (Map_U, Map_V);
+        Prop_Index   : Integer;
+        Prop         : Property_Data;
+        Script_Index : Integer;
+        Script       : Prop_Renderer_Support.Prop_Script;
+        Script_Kind  : Property_Type;
+        Sprite_Pos   : Vector3;
+        Rot_Matrix   : Matrix4;
+        Origin       : Vector4;
     begin
-        null;
+        if not Tiles_Manager.Is_Tile_Valid (Int (Map_U), Int (Map_V)) then
+            raise Properties_Exception with
+            "Rebalance_Props_In called with invalid Map_U, Map_V: "
+            & Integer'Image (Map_U) & ", " & Integer'Image (Map_V);
+        end if;
+
+        For index in 1 .. Prop_Size loop
+            Prop_Index := Get_Property_Index (Map_U, Map_V, index);
+            Prop := Get_Property_Data (Prop_Index);
+            Script_Index := Prop.Script_Index;
+            Script := Get_Script_Data (Script_Index);
+            Script_Kind := Script.Script_Type;
+
+            Prop.World_Pos (GL.Y) := Tiles_Manager.Get_Tile_Height
+              (Prop.World_Pos (GL.X), Prop.World_Pos (GL.Z), False, False) +
+              Single (2 * Prop.Height_Level);
+            if Script_Kind = Boulder_Prop then
+                Prop.World_Pos (GL.Y) := Prop.World_Pos (GL.Y) + Script.Radius;
+                Prop.Is_On_Ground := True;
+            end if;
+            if Script.Uses_Sprite then
+                Sprite_Pos := Prop.World_Pos;
+                Sprite_Pos (GL.Y) := Sprite_Pos (GL.Y) +
+                  Single (Script.Sprite_Y_Offset) + Sprite_Y_Offset;
+                Sprite_Renderer.Set_Sprite_Position
+                  (Prop.Script_Index, Sprite_Pos);
+            end if;
+            Rot_Matrix := Maths.Rotate_Y_Degree (Identity4, Prop.Heading_Deg);
+            Prop.Model_Matrix := Rot_Matrix * Maths.Translation_Matrix ((Prop.World_Pos));
+            Origin := To_Vector4 (Script.Origin);
+            Prop.Origin_World := To_Vector3 (Prop.Model_Matrix * Origin);
+           Replace_Property (index, Prop);
+        end loop;
+
     end Rebalance_Props_In;
 
     -- --------------------------------------------------------------------------

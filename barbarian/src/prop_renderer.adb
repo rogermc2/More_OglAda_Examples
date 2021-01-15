@@ -421,6 +421,13 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
+   function Props_In_Tiles_Size (U, V : Integer) return Natural is
+   begin
+        return Natural (Props_In_Tiles (U, V).Last_Index);
+    end Props_In_Tiles_Size;
+
+    --  ------------------------------------------------------------------------
+
     procedure Render_Property (Prop_ID : Positive) is
         use GL.Culling;
         use Prop_Indices_Package;
@@ -713,7 +720,15 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    procedure Reset_Properties is
+    procedure Replace_Property (Index : Positive;
+                                Prop : Prop_Renderer_Support.Property_Data) is
+    begin
+        Properties.Replace_Element (Index, Prop);
+    end Replace_Property;
+
+    --  -------------------------------------------------------------------------
+
+   procedure Reset_Properties is
         use Prop_Indices_Package;
         -- Particle Systems
         Start_Now      : constant Boolean := False;
