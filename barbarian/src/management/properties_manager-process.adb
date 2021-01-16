@@ -158,7 +158,54 @@ package body Properties_Manager.Process is
                                                True, True);
     end Do_Specular_Map;
 
-    --  --------------------------------------------
+    --  ------------------------------------------------------------------------
+
+    procedure Do_Type (Type_Code : String; aScript : in out Prop_Script) is
+    begin
+        if Type_Code = "generic" then
+            aScript.Prop_Kind := Generic_Prop;
+        elsif Type_Code = "boulder" then
+            aScript.Prop_Kind := Boulder;
+        elsif Type_Code = "decapitated_head" then
+            aScript.Prop_Kind := Decap_Head;
+        elsif Type_Code = "door" then
+            aScript.Prop_Kind := Door;
+        elsif Type_Code = "elevator" then
+            aScript.Prop_Kind := Elevator;
+        elsif Type_Code = "dart_shooter" then
+            aScript.Prop_Kind := Dart_Trap;
+        elsif Type_Code = "touch_plate" then
+            aScript.Prop_Kind := Touch_Plate;
+        elsif Type_Code = "treasure" then
+            aScript.Prop_Kind := Treasure;
+        elsif Type_Code = "portal" then
+            aScript.Prop_Kind := Portal;
+        elsif Type_Code = "bridge" then
+            aScript.Prop_Kind := Bridge;
+        elsif Type_Code = "pillar" then
+            aScript.Prop_Kind := Pillar;
+        elsif Type_Code = "box" then
+            aScript.Prop_Kind := Box;
+        elsif Type_Code = "mirror" then
+            aScript.Prop_Kind := Mirror_Prop;
+        elsif Type_Code = "tavern" then
+            aScript.Prop_Kind := Tavern_Prop;
+        elsif Type_Code = "javelin_stall" then
+            aScript.Prop_Kind := Jav_Stand_Prop;
+        elsif Type_Code = "diamond_trigger" then
+            aScript.Prop_Kind := Diamond_Trigger_Prop;
+        elsif Type_Code = "hammer" then
+            aScript.Prop_Kind := Hammer_Prop;
+        elsif Type_Code = "food" then
+            aScript.Prop_Kind := Food_Prop;
+        elsif Type_Code = "portal" then
+            aScript.Prop_Kind := Portal;
+        elsif Type_Code = "portal" then
+            aScript.Prop_Kind := Portal;
+        end if;
+    end Do_Type;
+
+    --  ------------------------------------------------------------------------
 
     function Get_Index_Of_Prop_Script (Script_File : String) return Positive is
         use Properties_Script_Package;
@@ -265,7 +312,7 @@ package body Properties_Manager.Process is
                       aLine (1 .. 17)  = "particles_offset:" then
                         null;
                     elsif S_Length > 4 and then aLine (1 .. 5)  = "type:" then
-                        null;
+                        Do_Type (aLine (7 .. S_Length), aScript);
                     elsif S_Length > 5 and then
                       aLine (1 .. 6)  = "scale:" then
                         null;
