@@ -47,14 +47,14 @@ package body Properties_Manager.Process is
 
     -- -------------------------------------------------------------------------
 
-    function Do_Mesh (Mesh_Data : String; aScript : in out Prop_Script)
+    function Do_Mesh (File_Name : String; aScript : in out Prop_Script)
                       return Boolean is
         Full_Path    : Unbounded_String;
         Mesh_Index   : Positive;
         Managed_Mesh : Mesh_Loader.Mesh;
         Ok           : Boolean := False;
     begin
-        Full_Path := To_Unbounded_String ("src/meshes/" & Mesh_Data);
+        Full_Path := To_Unbounded_String ("src/meshes/" & File_Name);
         aScript.Mesh_Index := Mesh_Loader.Load_Managed_Mesh
           (To_String (Full_Path), True, True, True, True, True);
         Mesh_Index := aScript.Mesh_Index;
@@ -62,32 +62,64 @@ package body Properties_Manager.Process is
         OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Vao);
         if not OK then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load VAO for "
-                      & Mesh_Data);
+                      & File_Name);
         end if;
         if not Mesh_Loader.Loaded_Mesh_Bounding_Radius
           (Mesh_Index, aScript.Bounding_Radius) then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load Bounding_Radius for "
-                      & Mesh_Data);
+                      & File_Name);
             OK := False;
         end if;
         if not Mesh_Loader.Loaded_Mesh_Shadow_VAO
           (Mesh_Index, aScript.Shadow_Vao) then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load Shadow_VAO for "
-                      & Mesh_Data);
+                      & File_Name);
             OK := False;
         end if;
         if not Mesh_Loader.Loaded_Mesh_Vertex_Count
           (Mesh_Index, aScript.Vertex_Count) then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load Vertex_Count for "
-                      & Mesh_Data);
+                      & File_Name);
             OK := False;
         end if;
         if not OK then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load "
-                      & Mesh_Data);
+                      & File_Name);
         end if;
         return OK;
     end Do_Mesh;
+
+    --  ----------------------------------------------------------------------------
+
+    function Do_Outlines_Mesh (File_Name : String; aScript : in out Prop_Script)
+                      return Boolean is
+        Full_Path    : Unbounded_String;
+        Mesh_Index   : Positive;
+        Managed_Mesh : Mesh_Loader.Mesh;
+        Ok           : Boolean := False;
+    begin
+        Full_Path := To_Unbounded_String ("src/meshes/" & File_Name);
+        aScript.Outlines_Mesh_Index := Mesh_Loader.Load_Managed_Mesh
+          (To_String (Full_Path), True, True, True, True, True);
+        Mesh_Index := aScript.Outlines_Mesh_Index;
+        Managed_Mesh := Mesh_Loader.Loaded_Mesh (Mesh_Index);
+        OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Outlines_Vao);
+        if not OK then
+            Put_Line ("Properties_Manager.Do_Outlines_Mesh, failed to load outline VAO for "
+                      & File_Name);
+        end if;
+        if not Mesh_Loader.Loaded_Mesh_Vertex_Count
+          (Mesh_Index, aScript.Outlines_Vertex_Count) then
+            Put_Line ("Properties_Manager.Do_Outlines_Mesh, failed to load outline Vertex_Count for "
+                      & File_Name);
+            OK := False;
+        end if;
+        if not OK then
+            Put_Line ("Properties_Manager.Do_Outlines_Mesh, failed to load "
+                      & File_Name);
+        end if;
+        return OK;
+    end Do_Outlines_Mesh;
 
     --  ----------------------------------------------------------------------------
 
@@ -151,7 +183,7 @@ package body Properties_Manager.Process is
                         OK := Do_Mesh (aLine (7 .. S_Length), aScript);
                     elsif S_Length > 13 and then
                       aLine (1 .. 14)  = "outlines_mesh:" then
-                        null;
+                        OK := Do_Mesh (aLine (16 .. S_Length), aScript);
                     elsif S_Length > 14 and then
                       aLine (1 .. 15)  = "smashed_script:" then
                         null;
