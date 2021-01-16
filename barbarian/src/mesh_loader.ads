@@ -12,6 +12,7 @@ with GL_Utils;
 package Mesh_Loader is
 
     type Mesh_List is private;
+    type Mesh is private;
 
     Max_Bones             : constant  Int := 32;
     Mesh_Loader_Exception : Exception;
@@ -20,6 +21,7 @@ package Mesh_Loader is
                                 return Float;
     function Bone_Count (Index : Integer) return Integer;
     procedure Init;
+    function Loaded_Mesh  (Index : Positive) return Mesh;
     function Loaded_Meshes return Mesh_List;
     function Load_Managed_Mesh (Mesh_Name               : String;
                                 Has_Vp, Has_Vn, Has_Vt,
@@ -30,9 +32,16 @@ package Mesh_Loader is
                                   Tex_Coords  : in out GL_Maths.Vec2_List;
                                   Normals     : in out GL_Maths.Vec3_List)
                                  return Boolean;
-    function Loaded_Mesh_VAO (Mesh_ID : Integer;
-                              VAO     : in out  GL.Objects.Vertex_Arrays.Vertex_Array_Object)
-                             return Boolean;
+    function Loaded_Mesh_Bounding_Radius
+      (Mesh_ID : Positive; Radius : in out Float) return Boolean;
+    function Loaded_Mesh_Shadow_VAO (Mesh_ID : Integer;
+                                     VAO   : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object)
+                                     return Boolean;
+    function Loaded_Mesh_Vertex_Count (Mesh_ID : Integer; Count : in out Natural)
+                                       return Boolean;
+    function Loaded_Mesh_VAO (Mesh_ID : Integer; VAO : in out
+                                GL.Objects.Vertex_Arrays.Vertex_Array_Object)
+                              return Boolean;
     function Point_Count (Index : Integer) return Integer;
 
 private

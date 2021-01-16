@@ -348,7 +348,7 @@ package body Batch_Manager is
         Batches.Iterate (Process_Batch'Access);
     end Add_Static_Light;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Add_West_Points (aBatch : in out Batch_Meta; Height : Integer;
                                Tile_Row, Tile_Col : Positive) is

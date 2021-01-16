@@ -155,7 +155,7 @@ package body Properties_Manager is
 
     function Get_Index_Of_Prop_Script (Script_File : String) return Positive;
     function Load_Property_Script (File_Name : String; Index : out Positive)
-                                  return Boolean;
+                                   return Boolean;
     procedure Process_Script_Type (New_Props : in out Prop;
                                    aScript : Prop_Script;
                                    Rx_Kind  : in out Event_Controller.RX_Type;
@@ -164,6 +164,30 @@ package body Properties_Manager is
     procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script);
 
     -- -------------------------------------------------------------------------
+
+    function Do_Mesh (Mesh_Data : String; aScript : in out Prop_Script)
+                      return Boolean is
+        Full_Path    : Unbounded_String;
+        Mesh_Index   : Positive;
+        Managed_Mesh : Mesh_Loader.Mesh;
+        Ok           : Boolean := False;
+    begin
+        Full_Path := To_Unbounded_String ("src/meshes/" & Mesh_Data);
+        aScript.Mesh_Index := Mesh_Loader.Load_Managed_Mesh
+          (To_String (Full_Path), True, True, True, True, True);
+        Mesh_Index := aScript.Mesh_Index;
+        Managed_Mesh := Mesh_Loader.Loaded_Mesh (Mesh_Index);
+        OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Vao);
+        OK := OK and Mesh_Loader.Loaded_Mesh_Bounding_Radius
+          (Mesh_Index, aScript.Bounding_Radius);
+        OK := OK and Mesh_Loader.Loaded_Mesh_Shadow_VAO
+          (Mesh_Index, aScript.Shadow_Vao);
+        OK := OK and Mesh_Loader.Loaded_Mesh_Vertex_Count
+          (Mesh_Index, aScript.Vertex_Count);
+        return OK;
+    end Do_Mesh;
+
+    --  ----------------------------------------------------------------------------
     --  Height_level is the property's own height offset from the tile.
     --  Facing is the compass facing 'N' 'S' 'W' or 'E'.
     procedure Create_Prop_From_Script (Script_File : String;
@@ -186,8 +210,10 @@ package body Properties_Manager is
         Rot_Matrix    : Matrix4;
         Ros           : Vector3;
     begin
-        --        Game_Utils.Game_Log ("Properties Manager creating property from script index"
-        --                                & Integer'Image (Script_Index));
+        Game_Utils.Game_Log ("Properties Manager Create_Prop_From_Script creating property from script index"
+                             & Integer'Image (Script_Index));
+        Game_Utils.Game_Log ("Properties Manager Create_Prop_From_Script Mesh_Index"
+                             & Integer'Image (aScript.Mesh_Index));
         if Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
             --           Game_Utils.Game_Log ("Properties Manager creating property from script "
             --                                & Script_File);
@@ -257,6 +283,8 @@ package body Properties_Manager is
             New_Props.First_Doom_Tile_Set := False;
             New_Props.Second_Doom_Tile_Set := False;
             New_Props.Was_Collected_By_Player := False;
+            Game_Utils.Game_Log ("Properties Manager Create_Prop_From_Script Mesh_Index"
+                                 & Integer'Image (aScript.Mesh_Index));
             Process_Script_Type (New_Props, aScript, RX_Kind, Rebalance);
             if aScript.Uses_Sprite then
                 Set_Up_Sprite (New_Props, aScript);
@@ -301,6 +329,8 @@ package body Properties_Manager is
         if not Found then
             OK := Load_Property_Script (Script_File, Index);
         end if;
+        Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script: Index: " &
+                    Integer'Image (Index));
 
         return Index;
     end Get_Index_Of_Prop_Script;
@@ -378,7 +408,7 @@ package body Properties_Manager is
     --  ----------------------------------------------------------------------------
 
     function Load_Property_Script (File_Name : String; Index : out Positive)
-                                  return Boolean is
+                                   return Boolean is
         use Properties_Script_Package;
         With_Path           : constant String := "src/props/" & File_Name;
         Script_File         : File_Type;
@@ -401,42 +431,59 @@ package body Properties_Manager is
             begin
                 if S_Length > 1 and then aLine (1) /= '#' then
                     if S_Length > 4 and then aLine (1 .. 5)  = "mesh:" then
+                        OK := Do_Mesh (aLine (6 .. S_Length), aScript);
+
+
+                    elsif S_Length > 13 and then
+                      aLine (1 .. 14)  = "outlines_mesh:" then
                         null;
-                    elsif S_Length > 13 and then aLine (1 .. 14)  = "outlines_mesh:" then
+                    elsif S_Length > 14 and then
+                      aLine (1 .. 15)  = "smashed_script:" then
                         null;
-                    elsif S_Length > 14 and then aLine (1 .. 15)  = "smashed_script:" then
+                    elsif S_Length > 11 and then
+                      aLine (1 .. 12)  = "diffuse_map:" then
                         null;
-                    elsif S_Length > 11 and then aLine (1 .. 12)  = "diffuse_map:" then
+                    elsif S_Length > 12 and then
+                      aLine (1 .. 13)  = "specular_map:" then
                         null;
-                    elsif S_Length > 12 and then aLine (1 .. 13)  = "specular_map:" then
+                    elsif S_Length > 10 and then
+                      aLine (1 .. 11)  = "normal_map:" then
                         null;
-                    elsif S_Length > 10 and then aLine (1 .. 11)  = "normal_map:" then
+                    elsif S_Length > 12 and then
+                      aLine (1 .. 13)  = "casts_shadow:" then
                         null;
-                    elsif S_Length > 12 and then aLine (1 .. 13)  = "casts_shadow:" then
+                    elsif S_Length > 13 and then
+                      aLine (1 .. 14)  = "draw_outlines:" then
                         null;
-                    elsif S_Length > 13 and then aLine (1 .. 14)  = "draw_outlines:" then
+                    elsif S_Length > 11 and then
+                      aLine (1 .. 12)  = "transparent:" then
                         null;
-                    elsif S_Length > 11 and then aLine (1 .. 12)  = "transparent:" then
+                    elsif S_Length > 11 and then
+                      aLine (1 .. 12)  = "starts_open:" then
                         null;
-                    elsif S_Length > 11 and then aLine (1 .. 12)  = "starts_open:" then
+                    elsif S_Length > 14 and then aLine
+                      (1 .. 15)  = "starts_visible:" then
                         null;
-                    elsif S_Length > 14 and then aLine (1 .. 15)  = "starts_visible:" then
+                    elsif S_Length > 14 and then
+                      aLine (1 .. 15)  = "lamp_offset_pos" then
                         null;
-                    elsif S_Length > 14 and then aLine (1 .. 15)  = "lamp_offset_pos" then
+                    elsif S_Length > 18 and then
+                      aLine (1 .. 19)  = "lamp_diffuse_colour" then
                         null;
-                    elsif S_Length > 18 and then aLine (1 .. 19)  = "lamp_diffuse_colour" then
-                        null;
-                    elsif S_Length > 19 and then aLine (1 .. 20)  = "lamp_specular_colour" then
+                    elsif S_Length > 19 and then
+                      aLine (1 .. 20)  = "lamp_specular_colour" then
                         null;
                     elsif S_Length > 9 and then aLine (1 .. 10)  = "lamp_range" then
                         null;
                     elsif S_Length > 9 and then aLine (1 .. 10)  = "particles:" then
                         null;
-                    elsif S_Length > 16 and then aLine (1 .. 17)  = "particles_offset:" then
+                    elsif S_Length > 16 and then
+                      aLine (1 .. 17)  = "particles_offset:" then
                         null;
                     elsif S_Length > 4 and then aLine (1 .. 5)  = "type:" then
                         null;
-                    elsif S_Length > 5 and then aLine (1 .. 6)  = "scale:" then
+                    elsif S_Length > 5 and then
+                      aLine (1 .. 6)  = "scale:" then
                         null;
                     elsif S_Length > 11 and then aLine (1 .. 12)  = "uses_sprite:" then
                         null;
@@ -531,12 +578,16 @@ package body Properties_Manager is
         use Event_Controller;
         use Maths;
         Script_Type : constant Prop_Type := aScript.Prop_Kind;
-        Mesh_Index  : constant Positive := aScript.Mesh_Index;
+        Mesh_Index  : Positive;
         Duration    : Float := 0.0;
         Tim         : Float := 0.0;
         Rot_Matrix  : Matrix4 := Identity4;
         Target      : Vector3 := Vec3_0;
     begin
+        Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script: aScript.Mesh_Index: " &
+                    Integer'Image (aScript.Mesh_Index));
+
+        Mesh_Index := aScript.Mesh_Index;
         New_Props.Door := aScript.Initial_Door_State;
         case Script_Type is
             when Boulder =>
@@ -560,13 +611,13 @@ package body Properties_Manager is
                 end if;
                 if Pillar_Bridge_SI = 0 then
                     raise Properties_Exception with
-                    "Process_Script_Type can't create_prop_from_script " &
+                      "Process_Script_Type can't create_prop_from_script " &
                       Pillar_Bridge_Script_File;
                 end if;
             when Mirror =>
                 if Mirror_Count >= Max_Mirrors then
                     raise Properties_Exception with
-                    "Process_Script_Type wants too many mirrors.";
+                      "Process_Script_Type wants too many mirrors.";
                 end if;
                 Mirror_Count := Mirror_Count + 1;
                 Mirror_Indices (Mirror_Count) := Properties.Last_Index;
@@ -588,7 +639,7 @@ package body Properties_Manager is
                 Init_Lookat_Transform
                   (End_Camera_Position, Target, (0.0, 1.0, 0.0),
                    End_Camera_Matrix);
-             when others => null;
+            when others => null;
         end case;
 
         New_Props.Model_Mat := Translation_Matrix (New_Props.World_Pos) *
@@ -599,10 +650,10 @@ package body Properties_Manager is
     -- --------------------------------------------------------------------------
 
     procedure Rebalance_Props_In (Map_U, Map_V : Integer) is
-       use Prop_Renderer;
-       use Prop_Renderer_Support;
-       use Singles;
-       Prop_Size     : constant Integer := Props_In_Tiles_Size (Map_U, Map_V);
+        use Prop_Renderer;
+        use Prop_Renderer_Support;
+        use Singles;
+        Prop_Size     : constant Integer := Props_In_Tiles_Size (Map_U, Map_V);
         Prop_Index   : Integer;
         Prop         : Property_Data;
         Script_Index : Integer;
@@ -614,8 +665,8 @@ package body Properties_Manager is
     begin
         if not Tiles_Manager.Is_Tile_Valid (Int (Map_U), Int (Map_V)) then
             raise Properties_Exception with
-            "Rebalance_Props_In called with invalid Map_U, Map_V: "
-            & Integer'Image (Map_U) & ", " & Integer'Image (Map_V);
+              "Rebalance_Props_In called with invalid Map_U, Map_V: "
+              & Integer'Image (Map_U) & ", " & Integer'Image (Map_V);
         end if;
 
         For index in 1 .. Prop_Size loop
@@ -627,7 +678,7 @@ package body Properties_Manager is
 
             Prop.World_Pos (GL.Y) := Tiles_Manager.Get_Tile_Height
               (Prop.World_Pos (GL.X), Prop.World_Pos (GL.Z), False, False) +
-              Single (2 * Prop.Height_Level);
+                Single (2 * Prop.Height_Level);
             if Script_Kind = Boulder_Prop then
                 Prop.World_Pos (GL.Y) := Prop.World_Pos (GL.Y) + Script.Radius;
                 Prop.Is_On_Ground := True;
@@ -643,23 +694,23 @@ package body Properties_Manager is
             Prop.Model_Matrix := Rot_Matrix * Maths.Translation_Matrix ((Prop.World_Pos));
             Origin := To_Vector4 (Script.Origin);
             Prop.Origin_World := To_Vector3 (Prop.Model_Matrix * Origin);
-           Replace_Property (index, Prop);
+            Replace_Property (index, Prop);
         end loop;
 
     end Rebalance_Props_In;
 
     -- --------------------------------------------------------------------------
 
-   procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script) is
+    procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script) is
         use Singles;
         use Sprite_Renderer;
         Diff_Map   : constant GL.Objects.Textures.Texture := aScript.Diffuse_Map;
         Spec_Map   : constant GL.Objects.Textures.Texture := aScript.Specular_Map;
         Rows       : constant Integer := aScript.Sprite_Map_Rows;
-	Cols       : constant Integer := aScript.Sprite_Map_Cols;
-	Y_Offset   : constant Single := Single (aScript.Sprite_Y_Offset);
+        Cols       : constant Integer := aScript.Sprite_Map_Cols;
+        Y_Offset   : constant Single := Single (aScript.Sprite_Y_Offset);
         Sprite_Pos : Vector3 := New_Props.World_Pos;
-   begin
+    begin
         New_Props.Script_Index := Add_Sprite (Diff_Map, Spec_Map, Cols, Rows);
         Set_Sprite_Scale (New_Props.Sprite_Index, aScript.Scale);
         Sprite_Pos (GL.Y) := Sprite_Pos (GL.Y) + Y_Offset + Sprite_Y_Offset;
