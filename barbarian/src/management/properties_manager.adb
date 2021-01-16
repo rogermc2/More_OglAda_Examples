@@ -178,12 +178,32 @@ package body Properties_Manager is
         Mesh_Index := aScript.Mesh_Index;
         Managed_Mesh := Mesh_Loader.Loaded_Mesh (Mesh_Index);
         OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Vao);
-        OK := OK and Mesh_Loader.Loaded_Mesh_Bounding_Radius
-          (Mesh_Index, aScript.Bounding_Radius);
-        OK := OK and Mesh_Loader.Loaded_Mesh_Shadow_VAO
-          (Mesh_Index, aScript.Shadow_Vao);
-        OK := OK and Mesh_Loader.Loaded_Mesh_Vertex_Count
-          (Mesh_Index, aScript.Vertex_Count);
+        if not OK then
+            Put_Line ("Properties_Manager.Do_Mesh, failed to load VAO for "
+                      & Mesh_Data);
+        end if;
+        if not Mesh_Loader.Loaded_Mesh_Bounding_Radius
+          (Mesh_Index, aScript.Bounding_Radius) then
+            Put_Line ("Properties_Manager.Do_Mesh, failed to load Bounding_Radius for "
+                      & Mesh_Data);
+            OK := False;
+        end if;
+        if not Mesh_Loader.Loaded_Mesh_Shadow_VAO
+          (Mesh_Index, aScript.Shadow_Vao) then
+            Put_Line ("Properties_Manager.Do_Mesh, failed to load Shadow_VAO for "
+                      & Mesh_Data);
+            OK := False;
+        end if;
+        if not Mesh_Loader.Loaded_Mesh_Vertex_Count
+          (Mesh_Index, aScript.Vertex_Count) then
+            Put_Line ("Properties_Manager.Do_Mesh, failed to load Vertex_Count for "
+                      & Mesh_Data);
+            OK := False;
+        end if;
+        if not OK then
+            Put_Line ("Properties_Manager.Do_Mesh, failed to load "
+                      & Mesh_Data);
+        end if;
         return OK;
     end Do_Mesh;
 
@@ -326,11 +346,16 @@ package body Properties_Manager is
                 Next (Curs);
             end if;
         end loop;
+        OK := Found;
         if not Found then
             OK := Load_Property_Script (Script_File, Index);
         end if;
-        Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script: Index: " &
-                    Integer'Image (Index));
+        if not OK then
+            Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script failed to load: " &
+                        Script_File);
+        end if;
+--          Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script: Index: " &
+--                      Integer'Image (Index));
 
         return Index;
     end Get_Index_Of_Prop_Script;
@@ -420,8 +445,8 @@ package body Properties_Manager is
         OK                  : Boolean := True;
     begin
         Open (Script_File, In_File, With_Path);
-        --        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, " &
-        --                                     With_Path & " opened.");
+        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, " &
+                               With_Path & " opened.");
         aScript.File_Name := To_Unbounded_String (File_Name);
 
         while not End_Of_File (Script_File) loop
@@ -555,12 +580,19 @@ package body Properties_Manager is
         if OK then
             Prop_Scripts.Append (aScript);
             Index := Prop_Scripts.Last_Index;
+        else
+            Put_Line ("Properties_Manager.Load_Property_Script, failed to load"
+                      & With_Path);
         end if;
 
         if Has_Smashed_Script then
             OK := Load_Property_Script
               (To_String (Smashed_Script_File), aScript.Smashed_Script_Index);
             Prop_Scripts.Replace_Element (Index, aScript);
+            if not OK then
+                Put_Line ("Properties_Manager.Load_Property_Script, failed to load" &
+                            To_String (Smashed_Script_File));
+            end if;
         end if;
 
         --        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, script properties loaded");
@@ -582,8 +614,11 @@ package body Properties_Manager is
         Rot_Matrix  : Matrix4 := Identity4;
         Target      : Vector3 := Vec3_0;
     begin
-        Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script: aScript.Mesh_Index: " &
-                    Integer'Image (aScript.Mesh_Index));
+        if aScript.Mesh_Index < 1 then
+            raise Properties_Exception with
+              "Process_Script_Type called with invalid Mesh_Index: "
+                  & Integer'Image (aScript.Mesh_Index);
+        end if;
 
         Mesh_Index := aScript.Mesh_Index;
         New_Props.Door := aScript.Initial_Door_State;
