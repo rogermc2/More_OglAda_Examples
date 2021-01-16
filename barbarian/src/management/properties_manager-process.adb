@@ -18,6 +18,7 @@ with Particle_System;
 with Prop_Renderer;
 with Prop_Renderer_Support;
 with Sprite_Renderer;
+with Texture_Manager;
 with Tiles_Manager;
 
 package body Properties_Manager.Process is
@@ -47,16 +48,24 @@ package body Properties_Manager.Process is
 
     -- -------------------------------------------------------------------------
 
+    procedure Do_Diffuse_Map (File_Name : String; aScript : in out Prop_Script) is
+        Full_Path : constant String := "src/textures/" & File_Name;
+    begin
+        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Diffuse_Map,
+                                               True, True);
+    end Do_Diffuse_Map;
+
+    --  ----------------------------------------------------------------------------
+
     function Do_Mesh (File_Name : String; aScript : in out Prop_Script)
                       return Boolean is
-        Full_Path    : Unbounded_String;
+        Full_Path    : constant String := "src/meshes/" & File_Name;
         Mesh_Index   : Positive;
         Managed_Mesh : Mesh_Loader.Mesh;
         Ok           : Boolean := False;
     begin
-        Full_Path := To_Unbounded_String ("src/meshes/" & File_Name);
         aScript.Mesh_Index := Mesh_Loader.Load_Managed_Mesh
-          (To_String (Full_Path), True, True, True, True, True);
+          (Full_Path, True, True, True, True, True);
         Mesh_Index := aScript.Mesh_Index;
         Managed_Mesh := Mesh_Loader.Loaded_Mesh (Mesh_Index);
         OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Vao);
@@ -93,14 +102,13 @@ package body Properties_Manager.Process is
 
     function Do_Outlines_Mesh (File_Name : String; aScript : in out Prop_Script)
                       return Boolean is
-        Full_Path    : Unbounded_String;
+        Full_Path    : constant String := "src/meshes/" & File_Name;
         Mesh_Index   : Positive;
         Managed_Mesh : Mesh_Loader.Mesh;
         Ok           : Boolean := False;
     begin
-        Full_Path := To_Unbounded_String ("src/meshes/" & File_Name);
         aScript.Outlines_Mesh_Index := Mesh_Loader.Load_Managed_Mesh
-          (To_String (Full_Path), True, True, True, True, True);
+          (Full_Path, True, True, True, True, True);
         Mesh_Index := aScript.Outlines_Mesh_Index;
         Managed_Mesh := Mesh_Loader.Loaded_Mesh (Mesh_Index);
         OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Outlines_Vao);
@@ -121,7 +129,36 @@ package body Properties_Manager.Process is
         return OK;
     end Do_Outlines_Mesh;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
+
+    procedure Do_Normal_Map (File_Name : String; aScript : in out Prop_Script) is
+        Full_Path : constant String := "src/textures/" & File_Name;
+    begin
+        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Normal_Map,
+                                               True, False);
+    end Do_Normal_Map;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Do_Starts_Open (State : String; aScript : in out Prop_Script) is
+    begin
+        if State = "1"then
+            aScript.Initial_Door_State := Properties_Manager.Door_Open;
+        else
+            aScript.Initial_Door_State := Properties_Manager.Door_Closed;
+        end if;
+    end Do_Starts_Open;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Do_Specular_Map (File_Name : String; aScript : in out Prop_Script) is
+        Full_Path : constant String := "src/textures/" & File_Name;
+    begin
+        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Specular_Map,
+                                               True, True);
+    end Do_Specular_Map;
+
+    --  --------------------------------------------
 
     function Get_Index_Of_Prop_Script (Script_File : String) return Positive is
         use Properties_Script_Package;
@@ -183,34 +220,34 @@ package body Properties_Manager.Process is
                         OK := Do_Mesh (aLine (7 .. S_Length), aScript);
                     elsif S_Length > 13 and then
                       aLine (1 .. 14)  = "outlines_mesh:" then
-                        OK := Do_Mesh (aLine (16 .. S_Length), aScript);
+                        OK := Do_Outlines_Mesh (aLine (16 .. S_Length), aScript);
                     elsif S_Length > 14 and then
                       aLine (1 .. 15)  = "smashed_script:" then
                         null;
                     elsif S_Length > 11 and then
                       aLine (1 .. 12)  = "diffuse_map:" then
-                        null;
+                        Do_Diffuse_Map (aLine (14 .. S_Length), aScript);
                     elsif S_Length > 12 and then
                       aLine (1 .. 13)  = "specular_map:" then
-                        null;
+                        Do_Specular_Map (aLine (15 .. S_Length), aScript);
                     elsif S_Length > 10 and then
                       aLine (1 .. 11)  = "normal_map:" then
-                        null;
+                        Do_Normal_Map (aLine (13 .. S_Length), aScript);
                     elsif S_Length > 12 and then
                       aLine (1 .. 13)  = "casts_shadow:" then
-                        null;
+                        aScript.Casts_Shadow := aLine (15 .. 15) /= "0";
                     elsif S_Length > 13 and then
                       aLine (1 .. 14)  = "draw_outlines:" then
-                        null;
+                        aScript.Draw_Outlines := aLine (16 .. 16) /= "0";
                     elsif S_Length > 11 and then
                       aLine (1 .. 12)  = "transparent:" then
-                        null;
+                        aScript.Transparent := aLine (14 .. 14) /= "0";
                     elsif S_Length > 11 and then
                       aLine (1 .. 12)  = "starts_open:" then
-                        null;
+                        Do_Starts_Open (aLine (14 .. 14), aScript);
                     elsif S_Length > 14 and then aLine
                       (1 .. 15)  = "starts_visible:" then
-                        null;
+                        aScript.Starts_Visible := aLine (17 .. 17) /= "0";
                     elsif S_Length > 14 and then
                       aLine (1 .. 15)  = "lamp_offset_pos" then
                         null;

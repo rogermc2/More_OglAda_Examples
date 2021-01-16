@@ -78,7 +78,7 @@ package body Properties_Manager is
             --                                & Script_File);
             New_Props.Script_Index := Script_Index;
             --        Set_Property_Defaults;   set by record defaults
-            New_Props.Door := Closed;
+            New_Props.Door := Door_Closed;
             New_Props.Trap := Trap_Primed;
             for index in 1 .. Mesh_Loader.Max_Bones loop
                 New_Props.Current_Bone_Transforms (index) := Singles.Identity4;
@@ -96,7 +96,8 @@ package body Properties_Manager is
               New_Props.World_Pos (GL.Y) + Single (2 * Height_Level);
             --  Allow portcullis and its collision model to start up high
             New_Props.Elevator := aScript.Initial_Elevator_State;
-            if Script_Type = Elevator and New_Props.Elevator = At_Top then
+            if Script_Type = Elevator and
+              New_Props.Elevator = Elevator_At_Top then
                 New_Props.World_Pos (GL.Y) :=
                   New_Props.World_Pos (GL.Y) + Single (aScript.Elevator_Top_Height);
                 New_Props.Is_Visible := aScript.Elevator_Visible_At_Top;

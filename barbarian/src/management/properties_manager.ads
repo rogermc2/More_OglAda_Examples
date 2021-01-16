@@ -17,9 +17,10 @@ package Properties_Manager is
                       Treasure, Portal, Bridge, Pillar, Decap_Head, Box,
                       Mirror, Tavern, Jav_Stand, Elevator, Hammer, Anim_Loop,
                       Food, Windlass, Big_Box, End_Camera, Pot);
-   type Door_State is (Open, Closed, Opening, Closing);
-   type Elevator_State is (At_Top, At_Bottom, Going_Down, Going_Up,
-                           Waiting_To_Go_Up, Waiting_To_Go_Down);
+   type Door_State is (Door_Open, Door_Closed, Door_Opening, Door_Closing);
+   type Elevator_State is (Elevator_At_Top, Elevator_At_Bottom,
+                           Elevator_Going_Down, Elevator_Going_Up,
+                           Elevator_Waiting_To_Go_Up, Elevator_Waiting_To_Go_Down);
    type Trap_State is (Trap_Primed, Trap_Reloading);
    type Activator_Type is (Prop_Activator_Player, Prop_Activator_Npc,
                            Prop_Activator_Prop);
@@ -79,8 +80,8 @@ private
 
       --  Various States
       --  --------------
-      Door                    : Door_State := Closed;
-      Elevator                : Elevator_State := At_Top;
+      Door                    : Door_State := Door_Closed;
+      Elevator                : Elevator_State := Elevator_At_Top;
       Trap                    : Trap_State := Trap_Primed;
       Was_Triggered           : Boolean := False;
       Is_On_Ground            : Boolean := False;
@@ -178,13 +179,13 @@ private
         Hide_After_Triggering : Boolean := False;
 
         --  Door stuff
-        Initial_Door_State : Door_State := Closed;
+        Initial_Door_State : Door_State := Door_Closed;
         Opening_Time_S     : Integer := 0;
         Starts_Visible     : Boolean := True;
         Trap               : Trap_State := Trap_Primed;
 
         --Elevator stuff
-        Initial_Elevator_State     : Elevator_State := At_Top;
+        Initial_Elevator_State     : Elevator_State := Elevator_At_Top;
         Elevator_Up_Duration       : float := 1.0;
         Elevator_Down_Duration     : float := 1.0;
         Elevator_Wait_Delay        : Integer := 0;
