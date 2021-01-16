@@ -431,9 +431,7 @@ package body Properties_Manager is
             begin
                 if S_Length > 1 and then aLine (1) /= '#' then
                     if S_Length > 4 and then aLine (1 .. 5)  = "mesh:" then
-                        OK := Do_Mesh (aLine (6 .. S_Length), aScript);
-
-
+                        OK := Do_Mesh (aLine (7 .. S_Length), aScript);
                     elsif S_Length > 13 and then
                       aLine (1 .. 14)  = "outlines_mesh:" then
                         null;
