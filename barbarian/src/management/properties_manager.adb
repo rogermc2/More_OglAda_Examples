@@ -303,8 +303,11 @@ package body Properties_Manager is
             New_Props.First_Doom_Tile_Set := False;
             New_Props.Second_Doom_Tile_Set := False;
             New_Props.Was_Collected_By_Player := False;
-            Game_Utils.Game_Log ("Properties Manager Create_Prop_From_Script Mesh_Index"
-                                 & Integer'Image (aScript.Mesh_Index));
+            if aScript.Mesh_Index < 1 then
+                raise Properties_Exception with
+                  "Create_Prop_From_Script called with invalid Mesh_Index"
+                  & Integer'Image (aScript.Mesh_Index);
+            end if;
             Process_Script_Type (New_Props, aScript, RX_Kind, Rebalance);
             if aScript.Uses_Sprite then
                 Set_Up_Sprite (New_Props, aScript);
@@ -354,8 +357,8 @@ package body Properties_Manager is
             Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script failed to load: " &
                         Script_File);
         end if;
---          Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script: Index: " &
---                      Integer'Image (Index));
+        --          Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script: Index: " &
+        --                      Integer'Image (Index));
 
         return Index;
     end Get_Index_Of_Prop_Script;
@@ -617,7 +620,7 @@ package body Properties_Manager is
         if aScript.Mesh_Index < 1 then
             raise Properties_Exception with
               "Process_Script_Type called with invalid Mesh_Index: "
-                  & Integer'Image (aScript.Mesh_Index);
+              & Integer'Image (aScript.Mesh_Index);
         end if;
 
         Mesh_Index := aScript.Mesh_Index;
