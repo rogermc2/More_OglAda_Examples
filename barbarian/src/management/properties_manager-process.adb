@@ -319,7 +319,7 @@ package body Properties_Manager.Process is
         Box_Point_Count     : Integer := 0;
         Hole_Point_Count    : Integer := 0;
         Smashed_Script_File : Unbounded_String;
-        Has_Smashed_Script  : constant Boolean := False;
+        Has_Smashed_Script  : Boolean := False;
         OK                  : Boolean := True;
     begin
         Open (Script_File, In_File, With_Path);
@@ -340,7 +340,9 @@ package body Properties_Manager.Process is
                         OK := Do_Outlines_Mesh (aLine (16 .. S_Length), aScript);
                     elsif S_Length > 14 and then
                       aLine (1 .. 15)  = "smashed_script:" then
-                        null;
+                        --  Flag to load at end as prop script counter would
+                        --  be wrong.
+                        Has_Smashed_Script := True;
                     elsif S_Length > 11 and then
                       aLine (1 .. 12)  = "diffuse_map:" then
                         Do_Diffuse_Map (aLine (14 .. S_Length), aScript);
