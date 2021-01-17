@@ -28,7 +28,7 @@ package body Properties_Manager.Process is
     Sprite_Y_Offset : constant Single := 0.125;
 
     package Properties_Package is new Ada.Containers.Vectors
-      (Positive,Property_Data);
+      (Positive, Property_Data);
     type Properties_List is new Properties_Package.Vector with null record;
 
     package Properties_Script_Package is new Ada.Containers.Vectors
@@ -49,7 +49,8 @@ package body Properties_Manager.Process is
 
     -- -------------------------------------------------------------------------
 
-    procedure Do_Diffuse_Map (File_Name : String; aScript : in out Prop_Script) is
+    procedure Do_Diffuse_Map (File_Name : String;
+                              aScript : in out Prop_Script) is
         Full_Path : constant String := "src/textures/" & File_Name;
     begin
         Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Diffuse_Map_Id,
@@ -102,7 +103,7 @@ package body Properties_Manager.Process is
     --  ----------------------------------------------------------------------------
 
     function Do_Outlines_Mesh (File_Name : String; aScript : in out Prop_Script)
-                      return Boolean is
+                               return Boolean is
         Full_Path    : constant String := "src/meshes/" & File_Name;
         Mesh_Index   : Positive;
         Managed_Mesh : Mesh_Loader.Mesh;
@@ -141,6 +142,30 @@ package body Properties_Manager.Process is
 
     --  ------------------------------------------------------------------------
 
+    procedure Do_Scale (aLine : String; aScript : in out Prop_Script) is
+        use Ada.Strings;
+        S_Length : constant Integer := aLine'Length;
+        Scale : Singles.Vector3;
+        Pos_1    : Natural := Fixed.Index (aLine, "(");
+        Pos_2    : Natural := Fixed.Index (aLine, ",");
+    begin
+        if Pos_1 = 0 or Pos_2 = 0 then
+            raise Properties_Exception with
+              "Do_Scale invalid format: " & aLine;
+        else
+            Scale (GL.X) := Single'Value (aLine (Pos_1 + 1 .. Pos_2 - 1));
+            Pos_1 := Pos_2 + 2;
+            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ",");
+            Scale (GL.Y) := Single'Value (aLine (Pos_1 .. Pos_2 - 1));
+            Pos_1 := Pos_2 + 2;
+            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ")");
+            Scale (GL.Z) := Single'Value (aLine (Pos_1 .. Pos_2 - 1));
+            aScript.Scale := Scale;
+        end if;
+    end Do_Scale;
+
+    --  ------------------------------------------------------------------------
+
     procedure Do_Starts_Open (State : String; aScript : in out Prop_Script) is
     begin
         if State = "1"then
@@ -152,7 +177,19 @@ package body Properties_Manager.Process is
 
     --  ------------------------------------------------------------------------
 
-    procedure Do_Specular_Map (File_Name : String; aScript : in out Prop_Script) is
+    procedure Do_Sprite (State : String; aScript : in out Prop_Script) is
+    begin
+        if State = "1"then
+            aScript.Initial_Door_State := Open_State;
+        else
+            aScript.Initial_Door_State := Closed_State;
+        end if;
+    end Do_Sprite;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Do_Specular_Map (File_Name : String;
+                               aScript : in out Prop_Script) is
         Full_Path : constant String := "src/textures/" & File_Name;
     begin
         Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Specular_Map_Id,
@@ -311,9 +348,11 @@ package body Properties_Manager.Process is
                     elsif S_Length > 19 and then
                       aLine (1 .. 20)  = "lamp_specular_colour" then
                         null;
-                    elsif S_Length > 9 and then aLine (1 .. 10)  = "lamp_range" then
+                    elsif S_Length > 9 and then
+                      aLine (1 .. 10)  = "lamp_range" then
                         null;
-                    elsif S_Length > 9 and then aLine (1 .. 10)  = "particles:" then
+                    elsif S_Length > 9 and then
+                      aLine (1 .. 10)  = "particles:" then
                         null;
                     elsif S_Length > 16 and then
                       aLine (1 .. 17)  = "particles_offset:" then
@@ -322,69 +361,95 @@ package body Properties_Manager.Process is
                         Do_Type (aLine (7 .. S_Length), aScript);
                     elsif S_Length > 5 and then
                       aLine (1 .. 6)  = "scale:" then
+                        Do_Scale (aLine (8 .. S_Length), aScript);
+                    elsif S_Length > 11 and then
+                      aLine (1 .. 12)  = "uses_sprite:" then
+                        aScript.Uses_Sprite := aLine (14 .. 14) /= "0";
+                    elsif S_Length > 15 and then
+                      aLine (1 .. 16)  = "sprite_map_rows:" then
                         null;
-                    elsif S_Length > 11 and then aLine (1 .. 12)  = "uses_sprite:" then
+                    elsif S_Length > 15 and then
+                      aLine (1 .. 16)  = "sprite_map_cols:" then
                         null;
-                    elsif S_Length > 15 and then aLine (1 .. 16)  = "sprite_map_rows:" then
+                    elsif S_Length > 15 and then
+                      aLine (1 .. 16)  = "sprite_y_offset:" then
                         null;
-                    elsif S_Length > 15 and then aLine (1 .. 16)  = "sprite_map_cols:" then
+                    elsif S_Length > 12 and then
+                      aLine (1 .. 13)  = "sprite_timer:" then
                         null;
-                    elsif S_Length > 15 and then aLine (1 .. 16)  = "sprite_y_offset:" then
+                    elsif S_Length > 6 and then
+                      aLine (1 .. 7)  = "height:" then
                         null;
-                    elsif S_Length > 12 and then aLine (1 .. 13)  = "sprite_timer:" then
+                    elsif S_Length > 6 and then
+                      aLine (1 .. 7)  = "radius:" then
                         null;
-                    elsif S_Length > 6 and then aLine (1 .. 7)  = "height:" then
+                    elsif S_Length > 6 and then
+                      aLine (1 .. 7)  = "origin:" then
                         null;
-                    elsif S_Length > 6 and then aLine (1 .. 7)  = "radius:" then
-                        null;
-                    elsif S_Length > 6 and then aLine (1 .. 7)  = "origin:" then
-                        null;
-                    elsif S_Length > 17 and then aLine (1 .. 18)  = "trigger_only_once:" then
-                        null;
-                    elsif S_Length > 19 and then aLine (1 .. 20)  = "character_activated:" then
-                        null;
-                    elsif S_Length > 13 and then aLine (1 .. 14)  = "npc_activated:" then
-                        null;
+                    elsif S_Length > 17 and then
+                      aLine (1 .. 18)  = "trigger_only_once:" then
+                        aScript.Trigger_Only_Once := aLine (20 .. 20) /= "0";
+                    elsif S_Length > 19 and then
+                      aLine (1 .. 20)  = "character_activated:" then
+                        aScript.Character_Activated := aLine (22 .. 22) /= "0";
+                    elsif S_Length > 13 and then
+                      aLine (1 .. 14)  = "npc_activated:" then
+                        aScript.Npc_Activated := aLine (16 .. 16) /= "0";
                     elsif S_Length > 21 and then
                       aLine (1 .. 22)  = "hide_after_triggering:" then
                         null;
-                    elsif S_Length > 12 and then aLine (1 .. 13)  = "box_xz_point:" then
+                    elsif S_Length > 12 and then
+                      aLine (1 .. 13)  = "box_xz_point:" then
                         null;
-                    elsif S_Length > 11 and then aLine (1 .. 12)  = "hole_height:" then
+                    elsif S_Length > 11 and then
+                      aLine (1 .. 12)  = "hole_height:" then
                         null;
-                    elsif S_Length > 13 and then aLine (1 .. 14)  = "hole_xz_point:" then
+                    elsif S_Length > 13 and then
+                      aLine (1 .. 14)  = "hole_xz_point:" then
                         null;
-                    elsif S_Length > 16 and then aLine (1 .. 17)  = "setOpeningTime_s:" then
+                    elsif S_Length > 16 and then
+                      aLine (1 .. 17)  = "setOpeningTime_s:" then
                         null;
-                    elsif S_Length > 12 and then aLine (1 .. 13)  = "goes_back_up:" then
+                    elsif S_Length > 12 and then
+                      aLine (1 .. 13)  = "goes_back_up:" then
                         null;
-                    elsif S_Length > 14 and then aLine (1 .. 15)  = "goes_back_down:" then
+                    elsif S_Length > 14 and then
+                      aLine (1 .. 15)  = "goes_back_down:" then
                         null;
-                    elsif S_Length > 16 and then aLine (1 .. 17)  = "starts_at_bottom:" then
+                    elsif S_Length > 16 and then
+                      aLine (1 .. 17)  = "starts_at_bottom:" then
                         null;
-                    elsif S_Length > 23 and then aLine (1 .. 24)  = "elevator_visible_at_top:" then
+                    elsif S_Length > 23 and then
+                      aLine (1 .. 24)  = "elevator_visible_at_top:" then
                         null;
                     elsif S_Length > 26 and then aLine (1 .. 27)  = "elevator_visible_at_bottom:" then
                         null;
-                    elsif S_Length > 19 and then aLine (1 .. 20)  = "elevator_top_height:" then
+                    elsif S_Length > 19 and then
+                      aLine (1 .. 20)  = "elevator_top_height:" then
                         null;
-                    elsif S_Length > 22 and then aLine (1 .. 23)  = "elevator_bottom_height:" then
+                    elsif S_Length > 22 and then
+                      aLine (1 .. 23)  = "elevator_bottom_height:" then
                         null;
-                    elsif S_Length > 22 and then aLine (1 .. 23)  = "elevator_down_duration:" then
+                    elsif S_Length > 22 and then
+                      aLine (1 .. 23)  = "elevator_down_duration:" then
                         null;
-                    elsif S_Length > 20 and then aLine (1 .. 21)  = "elevator_up_duration:" then
+                    elsif S_Length > 20 and then
+                      aLine (1 .. 21)  = "elevator_up_duration:" then
                         null;
-                    elsif S_Length > 7 and then aLine (1 .. 8)  = "delay_s:" then
+                    elsif S_Length > 7 and then
+                      aLine (1 .. 8)  = "delay_s:" then
                         null;
                     elsif S_Length > 5 and then aLine (1 .. 6)  = "value:" then
                         null;
-                    elsif S_Length > 14 and then aLine (1 .. 15)  = "sound_activate:" then
-                        null;
+                    elsif S_Length > 14 and then
+                      aLine (1 .. 15)  = "sound_activate:" then
+                        aScript.Sound_Activate_File_Name :=
+                          To_Unbounded_String (aLine (17 .. S_Length));
                     else
                         OK := False;
-                        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, "
-                                             & "invalid property in " & File_Name &
-                                               ": " & aLine);
+                        Game_Utils.Game_Log
+                          ("Properties_Manager.Load_Property_Script, "  &
+                            "invalid property in " & File_Name & ": " & aLine);
                     end if;
                 end if;
             end;  --  declare block
