@@ -57,7 +57,33 @@ package body Properties_Manager.Process is
                                                True, True);
     end Do_Diffuse_Map;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
+
+    procedure Do_Lamp_Offset (aLine : String; aScript : in out Prop_Script) is
+        use Ada.Strings;
+        S_Length : constant Integer := aLine'Length;
+        Pos_1    : Natural := Fixed.Index (aLine, "(");
+        Pos_2    : Natural := Fixed.Index (aLine, ",");
+    begin
+        if Pos_1 = 0 or Pos_2 = 0 then
+            raise Properties_Exception with
+              "Do_Lamp_Offset invalid format: " & aLine;
+        else
+            aScript.Has_Lamp := True;
+            aScript.Lamp_Offset (GL.X) :=
+              Single'Value (aLine (Pos_1 + 1 .. Pos_2 - 1));
+            Pos_1 := Pos_2 + 2;
+            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ",");
+            aScript.Lamp_Offset (GL.Y) :=
+              Single'Value (aLine (Pos_1 .. Pos_2 - 1));
+            Pos_1 := Pos_2 + 2;
+            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ")");
+            aScript.Lamp_Offset (GL.Z) :=
+              Single'Value (aLine (Pos_1 .. Pos_2 - 1));
+        end if;
+    end Do_Lamp_Offset;
+
+    --  ------------------------------------------------------------------------
 
     function Do_Mesh (File_Name : String; aScript : in out Prop_Script)
                       return Boolean is
@@ -139,30 +165,6 @@ package body Properties_Manager.Process is
         Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Normal_Map_Id,
                                                True, False);
     end Do_Normal_Map;
-
-    --  ------------------------------------------------------------------------
-
-    procedure Do_Scale (aLine : String; aScript : in out Prop_Script) is
-        use Ada.Strings;
-        S_Length : constant Integer := aLine'Length;
-        Scale : Singles.Vector3;
-        Pos_1    : Natural := Fixed.Index (aLine, "(");
-        Pos_2    : Natural := Fixed.Index (aLine, ",");
-    begin
-        if Pos_1 = 0 or Pos_2 = 0 then
-            raise Properties_Exception with
-              "Do_Scale invalid format: " & aLine;
-        else
-            Scale (GL.X) := Single'Value (aLine (Pos_1 + 1 .. Pos_2 - 1));
-            Pos_1 := Pos_2 + 2;
-            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ",");
-            Scale (GL.Y) := Single'Value (aLine (Pos_1 .. Pos_2 - 1));
-            Pos_1 := Pos_2 + 2;
-            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ")");
-            Scale (GL.Z) := Single'Value (aLine (Pos_1 .. Pos_2 - 1));
-            aScript.Scale := Scale;
-        end if;
-    end Do_Scale;
 
     --  ------------------------------------------------------------------------
 
@@ -248,6 +250,30 @@ package body Properties_Manager.Process is
             aScript.Script_Type := Pot_Prop;
         end if;
     end Do_Type;
+
+    --  ------------------------------------------------------------------------
+
+    function Do_Vec3 (aLine : String) return Singles.Vector3 is
+        use Ada.Strings;
+        S_Length  : constant Integer := aLine'Length;
+        Pos_1     : Natural := Fixed.Index (aLine, "(");
+        Pos_2     : Natural := Fixed.Index (aLine, ",");
+        theVector : Singles.Vector3;
+    begin
+        if Pos_1 = 0 or Pos_2 = 0 then
+            raise Properties_Exception with
+              "Do_Vec3 invalid format: " & aLine;
+        else
+            theVector (GL.X) := Single'Value (aLine (Pos_1 + 1 .. Pos_2 - 1));
+            Pos_1 := Pos_2 + 2;
+            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ",");
+            theVector (GL.Y) := Single'Value (aLine (Pos_1 .. Pos_2 - 1));
+            Pos_1 := Pos_2 + 2;
+            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ")");
+            theVector (GL.Z) := Single'Value (aLine (Pos_1 .. Pos_2 - 1));
+        end if;
+        return theVector;
+    end Do_Vec3;
 
     --  ------------------------------------------------------------------------
 
@@ -341,13 +367,16 @@ package body Properties_Manager.Process is
                         aScript.Starts_Visible := aLine (17 .. 17) /= "0";
                     elsif S_Length > 14 and then
                       aLine (1 .. 15)  = "lamp_offset_pos" then
-                        null;
+                        aScript.Has_Lamp := True;
+                        aScript.Lamp_Offset := Do_Vec3  (aLine (17 .. S_Length));
                     elsif S_Length > 18 and then
                       aLine (1 .. 19)  = "lamp_diffuse_colour" then
-                        null;
+                        aScript.Has_Lamp := True;
+                        aScript.Lamp_Diffuse := Do_Vec3  (aLine (21 .. S_Length));
                     elsif S_Length > 19 and then
                       aLine (1 .. 20)  = "lamp_specular_colour" then
-                        null;
+                        aScript.Has_Lamp := True;
+                        aScript.Lamp_Specular := Do_Vec3  (aLine (22 .. S_Length));
                     elsif S_Length > 9 and then
                       aLine (1 .. 10)  = "lamp_range" then
                         null;
@@ -361,7 +390,7 @@ package body Properties_Manager.Process is
                         Do_Type (aLine (7 .. S_Length), aScript);
                     elsif S_Length > 5 and then
                       aLine (1 .. 6)  = "scale:" then
-                        Do_Scale (aLine (8 .. S_Length), aScript);
+                        aScript.Scale := Do_Vec3 (aLine (8 .. S_Length));
                     elsif S_Length > 11 and then
                       aLine (1 .. 12)  = "uses_sprite:" then
                         aScript.Uses_Sprite := aLine (14 .. 14) /= "0";
