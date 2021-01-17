@@ -199,10 +199,16 @@ package body Properties_Manager.Process is
             aScript.Script_Type := Hammer_Prop;
         elsif Type_Code = "food" then
             aScript.Script_Type := Food_Prop;
-        elsif Type_Code = "portal" then
-            aScript.Script_Type := Portal_Prop;
-        elsif Type_Code = "portal" then
-            aScript.Script_Type := Portal_Prop;
+        elsif Type_Code = "anim_loop" then
+            aScript.Script_Type := Anim_Loop_Prop;
+        elsif Type_Code = "windlass" then
+            aScript.Script_Type := Windlass_Prop;
+        elsif Type_Code = "big_box" then
+            aScript.Script_Type := Big_Box_Prop;
+        elsif Type_Code = "end_camera" then
+            aScript.Script_Type := End_Camera_Prop;
+        elsif Type_Code = "pot" then
+            aScript.Script_Type := Pot_Prop;
         end if;
     end Do_Type;
 
