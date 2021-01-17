@@ -7,6 +7,7 @@ with Maths;
 
 with Event_Controller;
 with Mesh_Loader;
+with Prop_Renderer_Support;
 
 package Properties_Manager.Process is
 
@@ -28,8 +29,10 @@ package Properties_Manager.Process is
     function Get_Index_Of_Prop_Script (Script_File : String) return Positive;
     function Load_Property_Script (File_Name : String; Index : out Positive)
                                    return Boolean;
-    procedure Process_Script_Type (New_Props : in out Prop; aScript : Prop_Script;
-                                   Rx_Kind   : in out Event_Controller.RX_Type;
-                                   Rebalance  : in out Boolean);
+    procedure Process_Script_Type
+      (New_Props : in out Prop_Renderer_Support.Property_Data;
+       aScript : Prop_Renderer_Support.Prop_Script;
+       Rx_Kind   : in out Event_Controller.RX_Type;
+       Rebalance  : in out Boolean);
 
 end Properties_Manager.Process;

@@ -13,7 +13,7 @@ with Game_Utils;
 with Particle_System;
 with Properties_Manager.Process;
 with Prop_Renderer;
-with Prop_Renderer_Support;
+with Prop_Renderer_Support; use Prop_Renderer_Support;
 with Sprite_Renderer;
 with Tiles_Manager;
 
@@ -24,7 +24,7 @@ package body Properties_Manager is
     Sprite_Y_Offset : constant Single := 0.125;
 
     package Properties_Package is new Ada.Containers.Vectors
-      (Positive, Prop);
+      (Positive, Property_Data);
     type Properties_List is new Properties_Package.Vector with null record;
 
     package Properties_Script_Package is new Ada.Containers.Vectors
@@ -44,7 +44,8 @@ package body Properties_Manager is
     End_Camera_Position       : Singles.Vector3 := Maths.Vec3_0;
 
     procedure Rebalance_Props_In (Map_U, Map_V : Integer);
-    procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script);
+    procedure Set_Up_Sprite (New_Props : in out Property_Data;
+                             aScript : Prop_Script);
 
     --  ----------------------------------------------------------------------------
     --  Height_level is the property's own height offset from the tile.
@@ -56,11 +57,11 @@ package body Properties_Manager is
         use Singles;
         use Event_Controller;
         use Properties_Script_Package;
-        New_Props     : Prop;
+        New_Props     : Property_Data;
         Script_Index  : constant Positive := Get_Index_Of_Prop_Script (Script_File);
         aScript       : constant Prop_Script := Prop_Scripts.Element (Script_Index);
-        Script_Type   : constant Prop_Type := aScript.Prop_Kind;
-        Respect_Ramps : constant Boolean := Script_Type = Boulder;
+        Script_Type   : constant Property_Type := aScript.Script_Type;
+        Respect_Ramps : constant Boolean := Script_Type = Boulder_Prop;
         Start_Now     : Boolean := True;
         Always_Update : Boolean := False;
         Always_Draw   : Boolean := False;
@@ -78,8 +79,8 @@ package body Properties_Manager is
             --                                & Script_File);
             New_Props.Script_Index := Script_Index;
             --        Set_Property_Defaults;   set by record defaults
-            New_Props.Door := Door_Closed;
-            New_Props.Trap := Trap_Primed;
+            New_Props.Door_Position := Closed_State;
+            New_Props.Trap := Trap_Primed_State;
             for index in 1 .. Mesh_Loader.Max_Bones loop
                 New_Props.Current_Bone_Transforms (index) := Singles.Identity4;
             end loop;
@@ -96,13 +97,13 @@ package body Properties_Manager is
               New_Props.World_Pos (GL.Y) + Single (2 * Height_Level);
             --  Allow portcullis and its collision model to start up high
             New_Props.Elevator := aScript.Initial_Elevator_State;
-            if Script_Type = Elevator and
-              New_Props.Elevator = Elevator_At_Top then
+            if Script_Type = Elevator_Prop and
+              New_Props.Elevator = At_Top_State then
                 New_Props.World_Pos (GL.Y) :=
                   New_Props.World_Pos (GL.Y) + Single (aScript.Elevator_Top_Height);
                 New_Props.Is_Visible := aScript.Elevator_Visible_At_Top;
             end if;
-            New_Props.Vel := Vec3_0;
+            New_Props.Velocity := Vec3_0;
             New_Props.Anim_Duration := 0.0;
             New_Props.Anim_Elapsed_Time := 0.0;
             New_Props.Sprite_Duration := 0.0;
@@ -114,11 +115,11 @@ package body Properties_Manager is
                 when 'W' => New_Props.Heading_Deg := Maths.Degree (90.0);
                 when others => New_Props.Heading_Deg := Maths.Degree (0.0);
             end case;
-            New_Props.Map_U := Integer (Map_U);
-            New_Props.Map_V := Integer (Map_V);
+            New_Props.Map_U := Map_U;
+            New_Props.Map_V := Map_V;
             New_Props.Tx_Code := Tx;
             New_Props.Rx_Code := Rx;
-            New_Props.Script_Index := 0;
+            New_Props.Script_Index := 1;
             New_Props.Height_Level := Height_Level;
 
             if aScript.Has_Particles then
@@ -133,7 +134,7 @@ package body Properties_Manager is
                 Particle_System.Set_Particle_System_Position
                   (New_Props.Particle_System_Index, New_Props.World_Pos + Ros);
             else
-                New_Props.Particle_System_Index := 0;
+                New_Props.Particle_System_Index := 1;
             end if;
 
             New_Props.Was_Triggered := False;
@@ -155,14 +156,16 @@ package body Properties_Manager is
             if aScript.Has_Lamp then
                 Batch_Manager.Add_Static_Light
                   (Map_U, Map_V, Height_Level, aScript.Lamp_Offset,
-                   aScript.Lamp_Diffuse, aScript.Lamp_Specular, aScript.Lamp_Range);
+                   aScript.Lamp_Diffuse, aScript.Lamp_Specular,
+                   Single (aScript.Lamp_Range));
             end if;
             if New_Props.Rx_Code /= 0 and RX_Kind /= Rx_Invalid then
                 Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
                                                Properties.Last_Index);
             end if;
             Prop_Renderer.Update_Props_In_Tiles
-              (New_Props.Map_U, New_Props.Map_V, Int (Properties.Last_Index));
+              (Integer (New_Props.Map_U), Integer (New_Props.Map_V),
+               Int (Properties.Last_Index));
             if Rebalance then
                 Rebalance_Props_In (Integer (Map_U), Integer (Map_V));
             end if;
@@ -293,11 +296,12 @@ package body Properties_Manager is
 
     -- --------------------------------------------------------------------------
 
-    procedure Set_Up_Sprite (New_Props : in out Prop; aScript : Prop_Script) is
+    procedure Set_Up_Sprite (New_Props : in out Property_Data;
+                             aScript : Prop_Script) is
         use Singles;
         use Sprite_Renderer;
-        Diff_Map   : constant GL.Objects.Textures.Texture := aScript.Diffuse_Map;
-        Spec_Map   : constant GL.Objects.Textures.Texture := aScript.Specular_Map;
+        Diff_Map   : constant GL.Objects.Textures.Texture := aScript.Diffuse_Map_Id;
+        Spec_Map   : constant GL.Objects.Textures.Texture := aScript.Specular_Map_Id;
         Rows       : constant Integer := aScript.Sprite_Map_Rows;
         Cols       : constant Integer := aScript.Sprite_Map_Cols;
         Y_Offset   : constant Single := Single (aScript.Sprite_Y_Offset);

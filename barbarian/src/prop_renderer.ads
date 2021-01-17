@@ -11,12 +11,10 @@ with Maths;
 with Depth_Skinned_Shader_Manager;
 with Manifold;
 with Mesh_Loader;
+with Properties_Manager;
 with Prop_Renderer_Support;
 
 package Prop_Renderer is
-
-   type Activator_Type is (Prop_Activator_Player_State, Prop_Activator_Npc_State,
-                           Prop_Activator_Prop_State);
 
    package Prop_Indices_Package is new Ada.Containers.Vectors
      (Positive, GL.Types.Int);
@@ -31,7 +29,7 @@ package Prop_Renderer is
    function Activate_Door (Property_Index : Positive) return Boolean;
    function Activate_Door_In_Tile
       (Map_U, Map_V : Int; Hand_Y_World_Pos : Single;
-       Activator : Activator_Type) return Boolean;
+       Activator : Properties_Manager.Activator_Type) return Boolean;
    procedure Delete_Script_Data (Script_Index : Positive);
    procedure Init;
    procedure Launch_Decap_Head (LHL_Type  : Positive;

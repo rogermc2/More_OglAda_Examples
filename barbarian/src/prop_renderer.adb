@@ -157,7 +157,8 @@ package body Prop_Renderer is
 
     function Activate_Door_In_Tile
       (Map_U, Map_V : Int; Hand_Y_World_Pos : Single;
-       Activator : Activator_Type) return Boolean is
+       Activator : Properties_Manager.Activator_Type) return Boolean is
+        use Properties_Manager;
         Tile_Props    : Prop_Indices_List;
         Property_I    : Int;
         Property      : Property_Data;

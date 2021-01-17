@@ -22,12 +22,13 @@ with Texture_Manager;
 with Tiles_Manager;
 
 package body Properties_Manager.Process is
+    use Prop_Renderer_Support;
 
     Max_Mirrors     : constant Integer := 16;
     Sprite_Y_Offset : constant Single := 0.125;
 
     package Properties_Package is new Ada.Containers.Vectors
-      (Positive, Prop);
+      (Positive,Property_Data);
     type Properties_List is new Properties_Package.Vector with null record;
 
     package Properties_Script_Package is new Ada.Containers.Vectors
@@ -51,7 +52,7 @@ package body Properties_Manager.Process is
     procedure Do_Diffuse_Map (File_Name : String; aScript : in out Prop_Script) is
         Full_Path : constant String := "src/textures/" & File_Name;
     begin
-        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Diffuse_Map,
+        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Diffuse_Map_Id,
                                                True, True);
     end Do_Diffuse_Map;
 
@@ -74,7 +75,7 @@ package body Properties_Manager.Process is
                       & File_Name);
         end if;
         if not Mesh_Loader.Loaded_Mesh_Bounding_Radius
-          (Mesh_Index, aScript.Bounding_Radius) then
+          (Mesh_Index, Float (aScript.Bounding_Radius)) then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load Bounding_Radius for "
                       & File_Name);
             OK := False;
@@ -86,7 +87,7 @@ package body Properties_Manager.Process is
             OK := False;
         end if;
         if not Mesh_Loader.Loaded_Mesh_Vertex_Count
-          (Mesh_Index, aScript.Vertex_Count) then
+          (Mesh_Index, Integer (aScript.Vertex_Count)) then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load Vertex_Count for "
                       & File_Name);
             OK := False;
@@ -117,7 +118,7 @@ package body Properties_Manager.Process is
                       & File_Name);
         end if;
         if not Mesh_Loader.Loaded_Mesh_Vertex_Count
-          (Mesh_Index, aScript.Outlines_Vertex_Count) then
+          (Mesh_Index, Integer (aScript.Outlines_Vertex_Count)) then
             Put_Line ("Properties_Manager.Do_Outlines_Mesh, failed to load outline Vertex_Count for "
                       & File_Name);
             OK := False;
@@ -134,7 +135,7 @@ package body Properties_Manager.Process is
     procedure Do_Normal_Map (File_Name : String; aScript : in out Prop_Script) is
         Full_Path : constant String := "src/textures/" & File_Name;
     begin
-        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Normal_Map,
+        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Normal_Map_Id,
                                                True, False);
     end Do_Normal_Map;
 
@@ -143,9 +144,9 @@ package body Properties_Manager.Process is
     procedure Do_Starts_Open (State : String; aScript : in out Prop_Script) is
     begin
         if State = "1"then
-            aScript.Initial_Door_State := Properties_Manager.Door_Open;
+            aScript.Initial_Door_State := Open_State;
         else
-            aScript.Initial_Door_State := Properties_Manager.Door_Closed;
+            aScript.Initial_Door_State := Closed_State;
         end if;
     end Do_Starts_Open;
 
@@ -154,7 +155,7 @@ package body Properties_Manager.Process is
     procedure Do_Specular_Map (File_Name : String; aScript : in out Prop_Script) is
         Full_Path : constant String := "src/textures/" & File_Name;
     begin
-        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Specular_Map,
+        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Specular_Map_Id,
                                                True, True);
     end Do_Specular_Map;
 
@@ -163,45 +164,45 @@ package body Properties_Manager.Process is
     procedure Do_Type (Type_Code : String; aScript : in out Prop_Script) is
     begin
         if Type_Code = "generic" then
-            aScript.Prop_Kind := Generic_Prop;
+            aScript.Script_Type := Generic_Prop;
         elsif Type_Code = "boulder" then
-            aScript.Prop_Kind := Boulder;
+            aScript.Script_Type := Boulder_Prop;
         elsif Type_Code = "decapitated_head" then
-            aScript.Prop_Kind := Decap_Head;
+            aScript.Script_Type := Decap_Head_Prop;
         elsif Type_Code = "door" then
-            aScript.Prop_Kind := Door;
+            aScript.Script_Type := Door_Prop;
         elsif Type_Code = "elevator" then
-            aScript.Prop_Kind := Elevator;
+            aScript.Script_Type := Elevator_Prop;
         elsif Type_Code = "dart_shooter" then
-            aScript.Prop_Kind := Dart_Trap;
+            aScript.Script_Type := Dart_Trap_Prop;
         elsif Type_Code = "touch_plate" then
-            aScript.Prop_Kind := Touch_Plate;
+            aScript.Script_Type := Touch_Plate_Prop;
         elsif Type_Code = "treasure" then
-            aScript.Prop_Kind := Treasure;
+            aScript.Script_Type := Treasure_Prop;
         elsif Type_Code = "portal" then
-            aScript.Prop_Kind := Portal;
+            aScript.Script_Type := Portal_Prop;
         elsif Type_Code = "bridge" then
-            aScript.Prop_Kind := Bridge;
+            aScript.Script_Type := Bridge_Prop;
         elsif Type_Code = "pillar" then
-            aScript.Prop_Kind := Pillar;
+            aScript.Script_Type := Pillar_Prop;
         elsif Type_Code = "box" then
-            aScript.Prop_Kind := Box;
+            aScript.Script_Type := Box_Prop;
         elsif Type_Code = "mirror" then
-            aScript.Prop_Kind := Mirror_Prop;
+            aScript.Script_Type := Mirror_Prop;
         elsif Type_Code = "tavern" then
-            aScript.Prop_Kind := Tavern_Prop;
+            aScript.Script_Type := Tavern_Prop;
         elsif Type_Code = "javelin_stall" then
-            aScript.Prop_Kind := Jav_Stand_Prop;
+            aScript.Script_Type := Jav_Stand_Prop;
         elsif Type_Code = "diamond_trigger" then
-            aScript.Prop_Kind := Diamond_Trigger_Prop;
+            aScript.Script_Type := Diamond_Trigger_Prop;
         elsif Type_Code = "hammer" then
-            aScript.Prop_Kind := Hammer_Prop;
+            aScript.Script_Type := Hammer_Prop;
         elsif Type_Code = "food" then
-            aScript.Prop_Kind := Food_Prop;
+            aScript.Script_Type := Food_Prop;
         elsif Type_Code = "portal" then
-            aScript.Prop_Kind := Portal;
+            aScript.Script_Type := Portal_Prop;
         elsif Type_Code = "portal" then
-            aScript.Prop_Kind := Portal;
+            aScript.Script_Type := Portal_Prop;
         end if;
     end Do_Type;
 
@@ -409,13 +410,14 @@ package body Properties_Manager.Process is
 
     -- --------------------------------------------------------------------------
 
-    procedure Process_Script_Type (New_Props : in out Prop; aScript : Prop_Script;
+    procedure Process_Script_Type (New_Props : in out Property_Data;
+                                   aScript : Prop_Script;
                                    Rx_Kind   : in out Event_Controller.RX_Type;
                                    Rebalance  : in out Boolean) is
         use Singles;
         use Event_Controller;
         use Maths;
-        Script_Type : constant Prop_Type := aScript.Prop_Kind;
+        Script_Type : constant Property_Type := aScript.Script_Type;
         Mesh_Index  : Positive;
         Duration    : Float := 0.0;
         Tim         : Float := 0.0;
@@ -429,22 +431,22 @@ package body Properties_Manager.Process is
         end if;
 
         Mesh_Index := aScript.Mesh_Index;
-        New_Props.Door := aScript.Initial_Door_State;
+        New_Props.Door_Position := aScript.Initial_Door_State;
         case Script_Type is
-            when Boulder =>
+            when Boulder_Prop =>
                 New_Props.World_Pos (GL.Y) :=
                   New_Props.World_Pos (GL.Y) + Single (aScript.Radius);
                 New_Props.Is_On_Ground := True;
                 Rx_Kind := Rx_Boulder;
                 New_Props.Boulder_Snd_Idx :=
                   Audio.Create_Boulder_Sound (New_Props.World_Pos);
-            when Door => Rx_Kind := Rx_Door;
-            when Dart_Trap => Rx_Kind := Rx_Dart_Trap;
-            when Treasure =>  Character_Controller.Gold_Max :=
+            when Door_Prop => Rx_Kind := Rx_Door;
+            when Dart_Trap_Prop => Rx_Kind := Rx_Dart_Trap;
+            when Treasure_Prop =>  Character_Controller.Gold_Max :=
                   Character_Controller.Gold_Max + aScript.Value;
-            when Portal => Portal_Index := Properties.Last_Index;
-            when Bridge => Rebalance := True;
-            when Pillar =>
+            when Portal_Prop => Portal_Index := Properties.Last_Index;
+            when Bridge_Prop => Rebalance := True;
+            when Pillar_Prop =>
                 Rebalance := True;
                 if Pillar_Bridge_SI = 0 then
                     Pillar_Bridge_SI :=
@@ -455,7 +457,7 @@ package body Properties_Manager.Process is
                       "Process_Script_Type can't create_prop_from_script " &
                       Pillar_Bridge_Script_File;
                 end if;
-            when Mirror =>
+            when Mirror_Prop =>
                 if Mirror_Count >= Max_Mirrors then
                     raise Properties_Exception with
                       "Process_Script_Type wants too many mirrors.";
@@ -463,15 +465,15 @@ package body Properties_Manager.Process is
                 Mirror_Count := Mirror_Count + 1;
                 Mirror_Indices (Mirror_Count) := Properties.Last_Index;
                 Live_Mirror_Count := Live_Mirror_Count + 1;
-            when Elevator =>
+            when Elevator_Prop =>
                 New_Props.Elevator := aScript.Initial_Elevator_State;
                 Rx_Kind := Rx_Elevator;
-            when Anim_Loop =>
+            when Anim_Loop_Prop =>
                 --  randomise starting time
                 Duration := Mesh_Loader.Animation_Duration (Mesh_Index, 1);
                 Tim := Float (Abs (Random_Float));
                 New_Props.Anim_Elapsed_Time := Tim * Duration;
-            when End_Camera =>
+            when End_Camera_Prop =>
                 End_Camera_Position := New_Props.World_Pos;
                 Rot_Matrix :=
                   Rotate_Y_Degree (Identity4, New_Props.Heading_Deg);
@@ -483,7 +485,7 @@ package body Properties_Manager.Process is
             when others => null;
         end case;
 
-        New_Props.Model_Mat := Translation_Matrix (New_Props.World_Pos) *
+        New_Props.Model_Matrix := Translation_Matrix (New_Props.World_Pos) *
           Rotate_Y_Degree (Identity4, New_Props.Heading_Deg);
 
     end Process_Script_Type;

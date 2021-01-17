@@ -11,7 +11,7 @@ with Depth_Skinned_Shader_Manager;
 
 package Prop_Renderer_Support is
 
-   type Property_Type is (Generic_Prop_Prop, Boulder_Prop, Door_Prop,
+   type Property_Type is (Generic_Prop, Boulder_Prop, Door_Prop,
                           Dart_Trap_Prop, Touch_Plate_Prop, Treasure_Prop,
                           Portal_Prop, Bridge_Prop, Pillar_Prop,
                           Decap_Head_Prop, Box_Prop, Mirror_Prop, Tavern_Prop,

@@ -24,6 +24,7 @@ with Input_Handler;
 with Manifold;
 with Particle_System;
 with Particle_System_Manager;
+with Properties_Manager;
 with Prop_Renderer;
 with Sprite_Renderer;
 with Tiles_Manager;
@@ -914,10 +915,10 @@ package body Character_Controller is
 
             Result := Prop_Renderer.Activate_Door_In_Tile
               (Hand_U, Hand_V, 1.0 + Character.World_Pos (GL.Y),
-               Prop_Renderer.Prop_Activator_Player_State);
+               Properties_Manager.Prop_Activator_Player_State);
             Result := Prop_Renderer.Activate_Door_In_Tile
               (Character.Map (GL.X), Character.Map (GL.Y), 1.0 + Character.World_Pos (GL.Y),
-               Prop_Renderer.Prop_Activator_Player_State);
+               Properties_Manager.Prop_Activator_Player_State);
         end if;
 
     end Open_Door;
