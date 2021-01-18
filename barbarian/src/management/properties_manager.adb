@@ -155,18 +155,6 @@ package body Properties_Manager is
 
             Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -10- Has_Lamp done");
             if New_Props.Rx_Code > 0 and RX_Kind /= Rx_Invalid then
-                Game_Utils.Game_Log
-                  ("Properties Manager Create_Prop_From_Script New_Props.Rx_Code "
-                    & Integer'Image (New_Props.Rx_Code));
-                Game_Utils.Game_Log
-                  ("Properties Manager Create_Prop_From_Script Properties.Last_Index "
-                    & Integer'Image (Properties.Last_Index));
-                Game_Utils.Game_Log
-                  ("Properties Manager Create_Prop_From_Script New_Props.Rx_Code "
-                    & Integer'Image (New_Props.Rx_Code));
-                Game_Utils.Game_Log
-                  ("Properties Manager Create_Prop_From_Script RX_Kind "
-                    & RX_Type'Image (RX_Kind));
                 Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
                                                Properties.Last_Index);
             end if;
@@ -176,7 +164,6 @@ package body Properties_Manager is
             if Rebalance then
                 Rebalance_Props_In (Integer (Map_U), Integer (Map_V));
             end if;
---              Properties.Append (New_Props);
         end if;
         Game_Utils.Game_Log ("--------Leaving Properties Manager.Create_Prop_From_Script--------");
 
