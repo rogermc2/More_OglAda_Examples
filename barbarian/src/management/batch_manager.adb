@@ -1,4 +1,5 @@
 
+with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
@@ -177,8 +178,8 @@ package body Batch_Manager is
         end Add_Point_Count;
 
     begin
---          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, Row_Index, Col_Index: " &
---                    Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
+        --          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, Row_Index, Col_Index: " &
+        --                    Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
         if Row_Index > 1 then
             N_Row := Tiles.Element (Row_Index - 1);
             N_Tile := N_Row.Element (1);
@@ -197,11 +198,11 @@ package body Batch_Manager is
         end if;
 
         if Row_Index < Tiles.Last_Index then
---          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, Row_Index: " &
---                    Integer'Image (Row_Index) & " of " & Integer'Image (Tiles.Last_Index));
---              N_Row := Tiles.Element (Row_Index + 1);
---          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, N_Row.Last_Index: " &
---                    Integer'Image (Integer(N_Row.Last_Index)));
+            --          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, Row_Index: " &
+            --                    Integer'Image (Row_Index) & " of " & Integer'Image (Tiles.Last_Index));
+            --              N_Row := Tiles.Element (Row_Index + 1);
+            --          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, N_Row.Last_Index: " &
+            --                    Integer'Image (Integer(N_Row.Last_Index)));
             N_Tile := N_Row.Element (1);
             N_Height := N_Tile.Height;
             if N_Tile.Tile_Type = '~' then
@@ -319,7 +320,7 @@ package body Batch_Manager is
                           + Offset_Pos (GL.Y);
         Z             : Single := 2.0 * S_Row + Offset_Pos (GL.Z);
         Total_Batches : Integer := Batches_Across * Batches_Down;
-        Batch_Index   : Positive := Batches.First_Index;
+        --          Batch_Index   : Positive := Batches.First_Index;
         New_Light     : Static_Light_Data;
 
         procedure Process_Batch (Curs : Batches_Package.Cursor) is
@@ -327,16 +328,23 @@ package body Batch_Manager is
             aBatch  : Batch_Meta := Element (Curs);
         begin
             Sorted := False;
+            Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light aBatch append ");
             aBatch.Static_Light_Indices.Append (Static_Lights_List.Last_Index);
-            Batches_Data.Replace_Element (Curs, aBatch);
+            Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light Static_Light_Indices updated");
+            Update_Batch (To_Index (Curs), aBatch);
+            Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light aBatch updated");
             while not Sorted loop
+                Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light sorting");
                 Sorted := Check_For_OOO (To_Index (Curs));
+                Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light sorted");
             end loop;
         end Process_Batch;
     begin
         if not Tiles_Manager.Is_Tile_Valid (Row, Col) then
             raise Batch_Manager_Exception with "Batch_Manager.Add_Static_Light invalid tile";
         end if;
+
+        Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light entered");
         New_Light.Position := Offset_Pos;
         New_Light.Diffuse := Diffuse;
         New_Light.Specular := Specular;
@@ -345,7 +353,9 @@ package body Batch_Manager is
         New_Light.Column := Col;
         Static_Lights_List.Append (New_Light);
 
+        Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light iterating");
         Batches.Iterate (Process_Batch'Access);
+        Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light done");
     end Add_Static_Light;
 
     --  ------------------------------------------------------------------------
@@ -415,9 +425,11 @@ package body Batch_Manager is
         use Maths.Single_Math_Functions;
         use Tiles_Manager.Tile_Row_Package;
         use GL_Maths.Indices_Package;
-        Half_Batch_Width     : constant Int := Int (Settings.Tile_Batch_Width / 2);
+        Half_Batch_Width     : constant Int :=
+                                 Int (Settings.Tile_Batch_Width / 2);
         This_Batch           : Batch_Meta := Batches.Element (Batch_Index);
-        Batches_Dn           : constant Int := Int (Batch_Index) / Int (Batches_Across);
+        Batches_Dn           : constant Int :=
+                                 Int (Batch_Index) / Int (Batches_Across);
         Batches_Ac           : constant Int := Int (Batch_Index) -
                                  Batches_Dn * Int (Batches_Across);
         Batch_Centre_Row     : constant Int :=
@@ -426,19 +438,18 @@ package body Batch_Manager is
         Batch_Centre_Col     : constant Int :=
                                  Batches_Ac * Int (Settings.Tile_Batch_Width) +
                                  Half_Batch_Width;
-        Light_Indices        : GL_Maths.Indices_List := This_Batch.Static_Light_Indices;
-        Current_Light_Index  : Positive := Light_Indices.First_Index;
+        Batch_Light_Indices  : GL_Maths.Indices_List :=
+                                 This_Batch.Static_Light_Indices;
+        Current_Light_Index  : Positive := Batch_Light_Indices.First_Index;
+        Current_Light_Cursor : GL_Maths.Indices_Package.Cursor :=
+                                 Batch_Light_Indices.To_Cursor (Current_Light_Index);
         Current_Light        : Static_Light_Data :=
                                  Static_Lights_List.Element (Current_Light_Index);
         Prev_Light_Index     : Positive;
-        Next_Light_Index     : Positive := Current_Light_Index + 1;
-        Next_Light           : Static_Light_Data :=
-                                 Static_Lights_List.Element (Next_Light_Index);
-        Current_Light_Cursor : GL_Maths.Indices_Package.Cursor :=
-                                 Light_Indices.To_Cursor (Current_Light_Index);
+        Next_Light_Index     : Positive;
+        Next_Light           : Static_Light_Data;
         Prev_Light_Cursor    : GL_Maths.Indices_Package.Cursor;
-        Next_Light_Cursor    : GL_Maths.Indices_Package.Cursor :=
-                                 Light_Indices.To_Cursor (Next_Light_Index);
+        Next_Light_Cursor    : GL_Maths.Indices_Package.Cursor;
         Curr_Row             : Int;
         Curr_Col             : Int;
         Next_Row             : Int;
@@ -450,40 +461,59 @@ package body Batch_Manager is
         Curr_Dist            : Single;
         Next_Dist            : Single;
     begin
-        while Has_Element (Next_Light_Cursor) loop
-            Current_Light := Static_Lights_List.Element (Current_Light_Index);
-            Next (Next_Light_Cursor);
-            Next_Light_Index := Element (Next_Light_Cursor);
-            Next_Light := Static_Lights_List.Element (Next_Light_Index);
+        Game_Utils.Game_Log ("Batch_Manager.Check_For_OOO entered");
+        if Current_Light_Index < Static_Lights.Last_Index then
+            Game_Utils.Game_Log
+              ("Batch_Manager.Check_For_OOO Current_Light_Index < Static_Lights.Last_Index"
+               & Integer'Image (Static_Lights.Last_Index));
 
-            Curr_Row := Current_Light.Row;
-            Curr_Col := Current_Light.Column;
-            Next_Row := Next_Light.Row;
-            Next_Col := Next_Light.Row;
-            Curr_Row_Dist := Single (Batch_Centre_Row - Curr_Row);
-            Curr_Col_Dist := Single (Batch_Centre_Col - Curr_Col);
-            Next_Row_Dist := Single (Batch_Centre_Row - Next_Row);
-            Next_Col_Dist := Single (Batch_Centre_Col - Next_Col);
-            Curr_Dist := Sqrt (Curr_Row_Dist ** 2 + Curr_Col_Dist ** 2);
-            Next_Dist := Sqrt (Next_Row_Dist ** 2 + Next_Col_Dist ** 2);
+            while Has_Element (Next_Light_Cursor) loop
+                Game_Utils.Game_Log ("Batch_Manager.Check_For_OOO Current_Light_Index: "
+                                     & Integer'Image (Current_Light_Index));
+                Current_Light := Static_Lights_List.Element (Current_Light_Index);
+                Next (Next_Light_Cursor);
+                Next_Light_Index := Element (Next_Light_Cursor);
+                Next_Light := Static_Lights_List.Element (Next_Light_Index);
 
-            if Next_Dist < Curr_Dist then
-                Light_Indices.Swap (Next_Light_Cursor, Current_Light_Cursor);
-                if Prev_Light_Cursor /= Light_Indices.First then
-                    Prev_Light_Cursor := Next_Light_Cursor;
-                    --              else
-                    --                 Light_Indices.First_Element := Next_Light_Cursor;
+                Curr_Row := Current_Light.Row;
+                Curr_Col := Current_Light.Column;
+                Next_Row := Next_Light.Row;
+                Next_Col := Next_Light.Row;
+                Curr_Row_Dist := Single (Batch_Centre_Row - Curr_Row);
+                Curr_Col_Dist := Single (Batch_Centre_Col - Curr_Col);
+                Next_Row_Dist := Single (Batch_Centre_Row - Next_Row);
+                Next_Col_Dist := Single (Batch_Centre_Col - Next_Col);
+                Curr_Dist := Sqrt (Curr_Row_Dist ** 2 + Curr_Col_Dist ** 2);
+                Next_Dist := Sqrt (Next_Row_Dist ** 2 + Next_Col_Dist ** 2);
+
+                if Next_Dist < Curr_Dist then
+                    Batch_Light_Indices.Swap (Next_Light_Cursor, Current_Light_Cursor);
+                    if Prev_Light_Cursor /= Batch_Light_Indices.First then
+                        Prev_Light_Cursor := Next_Light_Cursor;
+                        --              else
+                        --                 Batch_Light_Indices.First_Element := Next_Light_Cursor;
+                    end if;
                 end if;
-            end if;
-            Prev_Light_Index := Current_Light_Index;
-            Current_Light_Index := Next_Light_Index;
-            Current_Light_Cursor := Next_Light_Cursor;
-            Next_Light_Index := Element (Next_Light_Cursor);
-        end loop;
+                Prev_Light_Index := Current_Light_Index;
+                Current_Light_Index := Next_Light_Index;
+                Current_Light_Cursor := Next_Light_Cursor;
+                Next_Light_Index := Element (Next_Light_Cursor);
+            end loop;
 
-        This_Batch.Static_Light_Indices := Light_Indices;
-        Batches_Data.Replace_Element (Batch_Index, This_Batch);
+            This_Batch.Static_Light_Indices := Batch_Light_Indices;
+            Batches_Data.Replace_Element (Batch_Index, This_Batch);
+        end if;
         return True;
+
+    exception
+        when anError : Constraint_Error =>
+            Put ("Batch_Manager.Check_For_OOO constraint error: ");
+            Put_Line (Exception_Information (anError));
+            return False;
+        when anError :  others =>
+            Put_Line ("An exception occurred in Batch_Manager.Check_For_OOO.");
+            Put_Line (Exception_Information (anError));
+            return False;
     end Check_For_OOO;
 
     --  ----------------------------------------------------------------------------
@@ -958,9 +988,9 @@ package body Batch_Manager is
         end if;
         --              Put_Line ("Batch_Manager.Regenerate_Batch Max_Cols " &
         --                          Int'Image (Max_Cols));
---         Put_Line ("Batch_Manager.Regenerate_Batch  Tile_Indices and Batches Lengths " &
---              Integer'Image (Integer (Tile_Indices.Length)) &
---              ", " & Integer'Image (Integer (Batches.Length)));
+        --         Put_Line ("Batch_Manager.Regenerate_Batch  Tile_Indices and Batches Lengths " &
+        --              Integer'Image (Integer (Tile_Indices.Length)) &
+        --              ", " & Integer'Image (Integer (Batches.Length)));
         if not Tile_Indices.Is_Empty then
             while Has_Element (Indices_Curs) loop
                 Tile_Index := Element (Indices_Curs);

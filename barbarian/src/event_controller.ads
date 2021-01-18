@@ -8,7 +8,7 @@ package Event_Controller is
 
    Event_Controller_Exception : Exception;
 
-   procedure Add_Receiver (Code : Natural; RX_Kind : RX_Type; Index : Natural);
+   procedure Add_Receiver (Code : Natural; RX_Kind : RX_Type; Index : Integer);
    procedure Reset;
    procedure Transmit_Code (Code : Natural);
 

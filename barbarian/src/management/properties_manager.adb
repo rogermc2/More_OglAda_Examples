@@ -70,6 +70,7 @@ package body Properties_Manager is
             for index in 1 .. Mesh_Loader.Max_Bones loop
                 New_Props.Current_Bone_Transforms (index) := Singles.Identity4;
             end loop;
+            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -5- Current_Bone_Transforms done");
 
             New_Props.World_Pos (GL.X) := 2.0 * Single (Map_U);
             New_Props.World_Pos (GL.Z) := 2.0 * Single (Map_V);
@@ -107,6 +108,7 @@ package body Properties_Manager is
             New_Props.Rx_Code := Rx;
             New_Props.Script_Index := 1;
             New_Props.Height_Level := Height_Level;
+            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -6- New_Props 1 done");
 
             if aScript.Has_Particles then
                 New_Props.Particle_System_Index :=
@@ -123,6 +125,8 @@ package body Properties_Manager is
                 New_Props.Particle_System_Index := 1;
             end if;
 
+            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -7- Particles done");
+
             New_Props.Was_Triggered := False;
             New_Props.Is_On_Ground := False;
             New_Props.No_Save := False;
@@ -130,6 +134,7 @@ package body Properties_Manager is
             New_Props.First_Doom_Tile_Set := False;
             New_Props.Second_Doom_Tile_Set := False;
             New_Props.Was_Collected_By_Player := False;
+            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -8- New_Props 2 done");
             if aScript.Mesh_Index < 1 then
                 raise Properties_Exception with
                   "Create_Prop_From_Script called with invalid Mesh_Index"
@@ -139,20 +144,29 @@ package body Properties_Manager is
             if aScript.Uses_Sprite then
                 Set_Up_Sprite (New_Props, aScript);
             end if;
+            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -9- Process_Script_Type done");
             if aScript.Has_Lamp then
                 Batch_Manager.Add_Static_Light
                   (Map_U, Map_V, Height_Level, aScript.Lamp_Offset,
                    aScript.Lamp_Diffuse, aScript.Lamp_Specular,
                    Single (aScript.Lamp_Range));
             end if;
-            if New_Props.Rx_Code /= 0 and RX_Kind /= Rx_Invalid then
+            Properties.Append (New_Props);
+
+            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -10- Has_Lamp done");
+            if New_Props.Rx_Code > 0 and RX_Kind /= Rx_Invalid then
                 Game_Utils.Game_Log
-                  ("Properties Manager Create_Prop_From_Script -5- New_Props.Rx_Code "
+                  ("Properties Manager Create_Prop_From_Script New_Props.Rx_Code "
                     & Integer'Image (New_Props.Rx_Code));
                 Game_Utils.Game_Log
-                  ("Properties Manager Create_Prop_From_Script -6- Properties.Last_Index "
+                  ("Properties Manager Create_Prop_From_Script Properties.Last_Index "
                     & Integer'Image (Properties.Last_Index));
-                Flush;
+                Game_Utils.Game_Log
+                  ("Properties Manager Create_Prop_From_Script New_Props.Rx_Code "
+                    & Integer'Image (New_Props.Rx_Code));
+                Game_Utils.Game_Log
+                  ("Properties Manager Create_Prop_From_Script RX_Kind "
+                    & RX_Type'Image (RX_Kind));
                 Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
                                                Properties.Last_Index);
             end if;
@@ -162,16 +176,19 @@ package body Properties_Manager is
             if Rebalance then
                 Rebalance_Props_In (Integer (Map_U), Integer (Map_V));
             end if;
-            Properties.Append (New_Props);
+--              Properties.Append (New_Props);
         end if;
         Game_Utils.Game_Log ("--------Leaving Properties Manager.Create_Prop_From_Script--------");
-    exception
+
+exception
         when anError : Constraint_Error =>
             Put ("Properties_Manager.Create_Prop_From_Script constraint error: ");
             Put_Line (Exception_Information (anError));
+            raise;
         when anError :  others =>
             Put_Line ("An exception occurred in Create_Prop_From_Script.Load_Property_Script.");
             Put_Line (Exception_Information (anError));
+            raise;
     end Create_Prop_From_Script;
 
     -- -------------------------------------------------------------------------
@@ -184,12 +201,13 @@ package body Properties_Manager is
         S_Length       : Integer := aLine'Length;
         Property_Count : Integer := 0;
         Script_File    : Unbounded_String;
-        U              : Int := 0;       --  map position
+        U              : Int := 0;           --  map position
         V              : Int := 0;
         Height         : Integer := 0;       --  map height level
         Facing         : Character := 'N';   --  compass facing
-        Rx             : Integer := -1;      --  receive code
-        Tx             : Integer := -1;      --  transmit code
+        --  Map files can have Rx and Tx set to -1
+        Rx             : Integer := -1;       --  receive code
+        Tx             : Integer := -1;       --  transmit code
     begin
         if Fixed.Index (aLine, "props ") = 0 then
             raise Properties_Exception with
@@ -223,6 +241,7 @@ package body Properties_Manager is
                 Facing := Prop_Line (PosR + 1);
 
                 PosR := Fixed.Index (Prop_Line (PosL + 1 .. S_Length), " ");
+                --  Map files can have Rx and Tx set to -1
                 Rx := Integer'Value (Prop_Line (PosL + 1 .. PosR - 1));
                 Tx := Integer'Value (Prop_Line (PosR + 1 .. S_Length));
                 --              Game_Utils.Game_Log ("Properties_Manager Script_File " &
@@ -242,6 +261,7 @@ package body Properties_Manager is
         when anError : others =>
             Put_Line ("An exception occurred in Properties_Manager.Load_Properties!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Load_Properties;
 
     --  ----------------------------------------------------------------------------

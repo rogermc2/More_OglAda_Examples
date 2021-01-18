@@ -22,7 +22,7 @@ package body Event_Controller is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_Receiver (Code : Natural; RX_Kind : RX_Type; Index : Natural) is
+   procedure Add_Receiver (Code : Natural; RX_Kind : RX_Type; Index : Integer) is
       Received_Code : Code_Received_Data;
    begin
       Check_Code_Validity ("Add_Receiver", Code);
@@ -30,7 +30,6 @@ package body Event_Controller is
          raise Event_Controller_Exception with
            "Event_Controller.Add_Receiver, invalid RX_Kind";
       end if;
-
       Received_Codes (Code + 1).Append ((RX_Kind, Index));
 
    end Add_Receiver;

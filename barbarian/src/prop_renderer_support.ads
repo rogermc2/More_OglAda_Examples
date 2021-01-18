@@ -41,8 +41,8 @@ package Prop_Renderer_Support is
 
       -- Transmit And Recieve Codes For Events And Traps
       -- -----------------------------------------------
-      Tx_Code                : Integer := 0;
-      Rx_Code                : Integer := 0;
+      Tx_Code                : Integer := -1;
+      Rx_Code                : Integer := -1;
 
       -- Tile-Based Position And Facing
       -- ------------------------------
