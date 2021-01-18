@@ -103,8 +103,6 @@ package body Mesh_Loader is
                 end if;
             end loop;
         end if;
-        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh Mesh_ID " &
-                               Integer'Image (Mesh_ID));
 
         if not Found then
             Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh loading " &
@@ -115,8 +113,6 @@ package body Mesh_Loader is
                   "Mesh_Loader.Load_Managed_Mesh couldn't load " & Mesh_Name;
             end if ;
         end if;
-        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh found Mesh_ID " &
-                               Integer'Image (Mesh_ID));
 
         aMesh := Meshes.Element (Mesh_ID);
         aMesh.VAO.Clear;

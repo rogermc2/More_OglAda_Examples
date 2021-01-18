@@ -49,7 +49,8 @@ package body Properties_Manager.Process is
     begin
         if Pos_1 = 0 or Pos_2 = 0 then
             raise Properties_Exception with
-              "Do_Lamp_Offset invalid format: " & aLine;
+              "Properties_Manager-Process.Do_Lamp_Offset invalid format: " &
+              aLine;
         else
             aScript.Has_Lamp := True;
             aScript.Lamp_Offset (GL.X) :=
@@ -75,54 +76,54 @@ package body Properties_Manager.Process is
         Ok           : Boolean := False;
     begin
         Game_Utils.Game_Log
-          ("Properties_Manager.Do_Mesh, File, Mesh_Index " &
+          ("Properties_Manager-Process.Do_Mesh, File, Mesh_Index " &
              File_Name & ", " & Integer'Image (Mesh_Index));
         aScript.Mesh_Index := Mesh_Loader.Load_Managed_Mesh
           (Full_Path, True, True, True, True, True);
         Mesh_Index := aScript.Mesh_Index;
         Managed_Mesh := Mesh_Loader.Loaded_Mesh (Mesh_Index);
         Game_Utils.Game_Log
-          ("Properties_Manager.Do_Mesh, loading Mesh_VAO, Mesh_Index " &
+          ("Properties_Manager.Do_Mesh-Process, loading Mesh_VAO, Mesh_Index " &
              Integer'Image (Mesh_Index));
         OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Vao);
         if not OK then
-            Put_Line ("Properties_Manager.Do_Mesh, failed to load VAO for "
+            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load VAO for "
                       & File_Name);
         end if;
         Game_Utils.Game_Log ("Properties_Manager.Do_Mesh, has loaded Mesh_VAO");
         if not Mesh_Loader.Loaded_Mesh_Bounding_Radius
           (Mesh_Index, Float (aScript.Bounding_Radius)) then
-            Put_Line ("Properties_Manager.Do_Mesh, failed to load Bounding_Radius for "
+            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load Bounding_Radius for "
                       & File_Name);
             OK := False;
         end if;
         if not Mesh_Loader.Loaded_Mesh_Shadow_VAO
           (Mesh_Index, aScript.Shadow_Vao) then
-            Put_Line ("Properties_Manager.Do_Mesh, failed to load Shadow_VAO for "
+            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load Shadow_VAO for "
                       & File_Name);
             OK := False;
         end if;
         if not Mesh_Loader.Loaded_Mesh_Vertex_Count
           (Mesh_Index, Integer (aScript.Vertex_Count)) then
-            Put_Line ("Properties_Manager.Do_Mesh, failed to load Vertex_Count for "
+            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load Vertex_Count for "
                       & File_Name);
             OK := False;
         end if;
         if not OK then
-            Put_Line ("Properties_Manager.Do_Mesh, failed to load "
+            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load "
                       & File_Name);
         end if;
-        Game_Utils.Game_Log ("Properties_Manager.Do_Mesh, has loaded " &
+        Game_Utils.Game_Log ("Properties_Manager-Process.Do_Mesh, has loaded " &
                                File_Name);
         return OK;
 
     exception
         when anError : Constraint_Error =>
-            Put ("Properties_Manager.Do_Mesh constraint error: ");
+            Put ("Properties_Manager-Process.Do_Mesh constraint error: ");
             Put_Line (Exception_Information (anError));
             return False;
         when anError :  others =>
-            Put_Line ("An exception occurred in Properties_Manager.Do_Mesh.");
+            Put_Line ("An exception occurred in Properties_Manager-Process.Do_Mesh.");
             Put_Line (Exception_Information (anError));
             return False;
 
@@ -143,17 +144,17 @@ package body Properties_Manager.Process is
         Managed_Mesh := Mesh_Loader.Loaded_Mesh (Mesh_Index);
         OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Outlines_Vao);
         if not OK then
-            Put_Line ("Properties_Manager.Do_Outlines_Mesh, failed to load outline VAO for "
+            Put_Line ("Properties_Manager-Process.Do_Outlines_Mesh, failed to load outline VAO for "
                       & File_Name);
         end if;
         if not Mesh_Loader.Loaded_Mesh_Vertex_Count
           (Mesh_Index, Integer (aScript.Outlines_Vertex_Count)) then
-            Put_Line ("Properties_Manager.Do_Outlines_Mesh, failed to load outline Vertex_Count for "
+            Put_Line ("Properties_Manager-Process.Do_Outlines_Mesh, failed to load outline Vertex_Count for "
                       & File_Name);
             OK := False;
         end if;
         if not OK then
-            Put_Line ("Properties_Manager.Do_Outlines_Mesh, failed to load "
+            Put_Line ("Properties_Manager-Process.Do_Outlines_Mesh, failed to load "
                       & File_Name);
         end if;
         return OK;
@@ -257,7 +258,7 @@ package body Properties_Manager.Process is
 
     function Do_Vec3 (aLine : String) return Singles.Vector3 is
         use Ada.Strings;
-        S_Length  : constant Integer := aLine'Length;
+        S_Length  : constant Integer := aLine'First + aLine'Length - 1;
         Pos_1     : Natural := Fixed.Index (aLine, "(");
         Pos_2     : Natural := Fixed.Index (aLine, ",");
         theVector : Singles.Vector3;
@@ -268,7 +269,7 @@ package body Properties_Manager.Process is
         else
             theVector (GL.X) := Single'Value (aLine (Pos_1 + 1 .. Pos_2 - 1));
             Pos_1 := Pos_2 + 2;
-            Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ",");
+            Pos_2 := Fixed.Index (aLine (Pos_1 .. S_Length), ",");
             theVector (GL.Y) := Single'Value (aLine (Pos_1 .. Pos_2 - 1));
             Pos_1 := Pos_2 + 2;
             Pos_2 := Fixed.Index (aLine (Pos_1 + 1 .. S_Length), ")");
@@ -351,6 +352,8 @@ package body Properties_Manager.Process is
                 aLine    : constant String := Get_Line (Script_File);
                 S_Length : constant Integer := aLine'Length;
             begin
+                Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, " &
+                                     aLine);
                 if S_Length > 1 and then aLine (1) /= '#' then
                     if S_Length > 4 and then aLine (1 .. 5)  = "mesh:" then
                         OK := Do_Mesh (aLine (7 .. S_Length), aScript);
@@ -510,10 +513,10 @@ package body Properties_Manager.Process is
         if OK then
             Prop_Scripts.Append (aScript);
             Prop_Index := Prop_Scripts.Last_Index;
-            Put_Line ("Properties_Manager.Load_Property_Script, loaded"
+            Game_Utils.Game_Log ("Properties_Manager-Process.Load_Property_Script, loaded"
                       & With_Path & ", index " & Integer'Image (Prop_Index));
         else
-            Put_Line ("Properties_Manager.Load_Property_Script, failed to load"
+            Put_Line ("Properties_Manager-Process.Load_Property_Script, failed to load"
                       & With_Path);
         end if;
 
@@ -521,14 +524,14 @@ package body Properties_Manager.Process is
             OK := Load_Property_Script
               (To_String (Smashed_Script_File), aScript.Smashed_Script_Index);
             Prop_Scripts.Replace_Element (Prop_Index, aScript);
-            Put_Line ("Properties_Manager.Load_Property_Script, loaded " &
+            Game_Utils.Game_Log ("Properties_Manager-Process.Load_Property_Script, loaded " &
                        To_String (Smashed_Script_File));
             if not OK then
-                Put_Line ("Properties_Manager.Load_Property_Script, failed to load " &
+                Put_Line ("Properties_Manager-Process.Load_Property_Script, failed to load " &
                             To_String (Smashed_Script_File));
             end if;
         end if;
-        --        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, script properties loaded");
+        Game_Utils.Game_Log ("Properties_ManagerGame_Utils.Game_Log.Load_Property_Script done");
         return OK;
 
     exception
@@ -560,7 +563,7 @@ package body Properties_Manager.Process is
     begin
         if aScript.Mesh_Index < 1 then
             raise Properties_Exception with
-              "Process_Script_Type called with invalid Mesh_Index: "
+              "Properties_Manager-Process Process_Script_Type called with invalid Mesh_Index: "
               & Integer'Image (aScript.Mesh_Index);
         end if;
 
@@ -630,10 +633,10 @@ package body Properties_Manager.Process is
 
     exception
         when anError : Constraint_Error =>
-            Put ("Properties_Manager.Process_Script_Type constraint error: ");
+            Put ("Properties_Manager-Process.Process_Script_Type constraint error: ");
             Put_Line (Exception_Information (anError));
         when anError :  others =>
-            Put_Line ("An exception occurred in Properties_Manager.Process_Script_Type.");
+            Put_Line ("An exception occurred in Properties_Manager-Process.Process_Script_Type.");
             Put_Line (Exception_Information (anError));
     end Process_Script_Type;
 

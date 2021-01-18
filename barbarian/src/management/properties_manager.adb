@@ -26,9 +26,9 @@ package body Properties_Manager is
     --  ----------------------------------------------------------------------------
     --  Height_level is the property's own height offset from the tile.
     --  Facing is the compass facing 'N' 'S' 'W' or 'E'.
-    procedure Create_Prop_From_Script (Script_File : String;
-                                       Map_U, Map_V : Int; Height_Level : Integer;
-                                       Facing       : Character; Tx, Rx : Integer) is
+    procedure Create_Prop_From_Script
+      (Script_File : String; Map_U, Map_V : Int; Height_Level : Integer;
+       Facing      : Character; Tx, Rx : Integer) is
         use Maths;
         use Singles;
         use Event_Controller;
@@ -146,6 +146,13 @@ package body Properties_Manager is
                    Single (aScript.Lamp_Range));
             end if;
             if New_Props.Rx_Code /= 0 and RX_Kind /= Rx_Invalid then
+                Game_Utils.Game_Log
+                  ("Properties Manager Create_Prop_From_Script -5- New_Props.Rx_Code "
+                    & Integer'Image (New_Props.Rx_Code));
+                Game_Utils.Game_Log
+                  ("Properties Manager Create_Prop_From_Script -6- Properties.Last_Index "
+                    & Integer'Image (Properties.Last_Index));
+                Flush;
                 Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
                                                Properties.Last_Index);
             end if;
@@ -186,7 +193,8 @@ package body Properties_Manager is
     begin
         if Fixed.Index (aLine, "props ") = 0 then
             raise Properties_Exception with
-              "Load_Properties, invalid format, ""props"" expected: " & aLine (1 .. PosL);
+              "Load_Properties, invalid format, ""props"" expected: " &
+              aLine (1 .. PosL);
         end if;
 
         PosR := Fixed.Index (aLine (PosL .. S_Length), " ");
