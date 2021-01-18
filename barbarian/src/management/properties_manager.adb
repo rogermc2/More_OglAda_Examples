@@ -1,6 +1,5 @@
 
-with Ada.Containers.Vectors;
-with Ada.Exceptions;
+with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Strings.Fixed;
 
 with Maths;
@@ -20,29 +19,6 @@ with Tiles_Manager;
 package body Properties_Manager is
     use Properties_Manager.Process;
 
-    Max_Mirrors     : constant Integer := 16;
-    Sprite_Y_Offset : constant Single := 0.125;
-
-    package Properties_Package is new Ada.Containers.Vectors
-      (Positive, Property_Data);
-    type Properties_List is new Properties_Package.Vector with null record;
-
-    package Properties_Script_Package is new Ada.Containers.Vectors
-      (Positive, Prop_Script);
-    type Properties_Script_List is new Properties_Script_Package.Vector with null record;
-
-    Pillar_Bridge_Script_File : constant String := "pillar_bridge.script";
-    Properties                : Properties_List;
-    Prop_Scripts              : Properties_Script_List;
-    Portal_Index              : Natural := 0;
-    Pillar_Bridge_SI          : Natural := 0;
-    Mirror_Indices            : array (1 .. Max_Mirrors) of Natural :=
-                                  (others => 0);
-    Mirror_Count              : Natural := 0;
-    Live_Mirror_Count         : Natural := 0;
-    End_Camera_Matrix         : Singles.Matrix4 := Singles.Identity4;
-    End_Camera_Position       : Singles.Vector3 := Maths.Vec3_0;
-
     procedure Rebalance_Props_In (Map_U, Map_V : Integer);
     procedure Set_Up_Sprite (New_Props : in out Property_Data;
                              aScript : Prop_Script);
@@ -58,10 +34,10 @@ package body Properties_Manager is
         use Event_Controller;
         use Properties_Script_Package;
         New_Props     : Property_Data;
-        Script_Index  : constant Positive := Get_Index_Of_Prop_Script (Script_File);
-        aScript       : constant Prop_Script := Prop_Scripts.Element (Script_Index);
-        Script_Type   : constant Property_Type := aScript.Script_Type;
-        Respect_Ramps : constant Boolean := Script_Type = Boulder_Prop;
+        Script_Index  : Positive;
+        aScript       : Prop_Script;
+        Script_Type   : Property_Type;
+        Respect_Ramps : Boolean;
         Start_Now     : Boolean := True;
         Always_Update : Boolean := False;
         Always_Draw   : Boolean := False;
@@ -70,9 +46,19 @@ package body Properties_Manager is
         Rot_Matrix    : Matrix4;
         Ros           : Vector3;
     begin
-        Game_Utils.Game_Log ("Properties Manager Create_Prop_From_Script creating property from script index"
+        Game_Utils.Game_Log
+          ("--------Properties Manager.Create_Prop_From_Script--------");
+        Game_Utils.Game_Log
+          ("Properties Manager.Create_Prop_From_Script -1- creating property from "
+            & Script_File);
+        Script_Index := Get_Index_Of_Prop_Script (Script_File);
+        Game_Utils.Game_Log ("Properties Manager Create_Prop_From_Script -2- script index "
                              & Integer'Image (Script_Index));
-        Game_Utils.Game_Log ("Properties Manager Create_Prop_From_Script Mesh_Index"
+        aScript := Prop_Scripts.Element (Script_Index);
+        Game_Utils.Game_Log ("Properties.Manager.Create_Prop_From_Script -3- script created ");
+        Script_Type := aScript.Script_Type;
+        Respect_Ramps := Script_Type = Boulder_Prop;
+        Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -4- Mesh_Index"
                              & Integer'Image (aScript.Mesh_Index));
         if Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
             --           Game_Utils.Game_Log ("Properties Manager creating property from script "
@@ -171,6 +157,14 @@ package body Properties_Manager is
             end if;
             Properties.Append (New_Props);
         end if;
+        Game_Utils.Game_Log ("--------Leaving Properties Manager.Create_Prop_From_Script--------");
+    exception
+        when anError : Constraint_Error =>
+            Put ("Properties_Manager.Create_Prop_From_Script constraint error: ");
+            Put_Line (Exception_Information (anError));
+        when anError :  others =>
+            Put_Line ("An exception occurred in Create_Prop_From_Script.Load_Property_Script.");
+            Put_Line (Exception_Information (anError));
     end Create_Prop_From_Script;
 
     -- -------------------------------------------------------------------------

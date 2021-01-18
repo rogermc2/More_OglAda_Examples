@@ -89,6 +89,8 @@ package body Mesh_Loader is
         Attr_Count : Integer := 0;
         Mesh_ID    : Integer := 0;
     begin
+        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh loading " &
+                               Mesh_Name);
         if not Meshes.Is_Empty then
             Index := Meshes.First_Index;
             while Index <= Meshes.Last_Index and not Found loop
@@ -101,9 +103,11 @@ package body Mesh_Loader is
                 end if;
             end loop;
         end if;
+        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh Mesh_ID " &
+                               Integer'Image (Mesh_ID));
 
         if not Found then
-            Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh Load_Mesh loading " &
+            Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh loading " &
                                    Mesh_Name);
             --           if not Load_Mesh (Mesh_Name, Meshes, Mesh_ID) then
             if not Load_Mesh (Mesh_Name, Mesh_ID) then
@@ -111,6 +115,8 @@ package body Mesh_Loader is
                   "Mesh_Loader.Load_Managed_Mesh couldn't load " & Mesh_Name;
             end if ;
         end if;
+        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh found Mesh_ID " &
+                               Integer'Image (Mesh_ID));
 
         aMesh := Meshes.Element (Mesh_ID);
         aMesh.VAO.Clear;
@@ -118,11 +124,11 @@ package body Mesh_Loader is
         GL_Utils.Bind_VAO (aMesh.VAO);
         Meshes.Replace_Element (Mesh_ID, aMesh);
 
-        --        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh " & Mesh_Name &
-        --                               " Vp_Count, Vn_Count, Vt_Count " &
-        --                               Integer'Image (aMesh.Vp_Count) & ", " &
-        --                               Integer'Image (aMesh.Vn_Count)
-        --                             & ", " & Integer'Image (aMesh.Vt_Count));
+        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh " & Mesh_Name &
+                               " Vp_Count, Vn_Count, Vt_Count " &
+                               Integer'Image (aMesh.Vp_Count) & ", " &
+                               Integer'Image (aMesh.Vn_Count)
+                             & ", " & Integer'Image (aMesh.Vt_Count));
 
         if Has_Vp and then aMesh.Vp_Count > 0 then
             Array_Buffer.Bind (aMesh.Points_Vbo);
@@ -171,12 +177,14 @@ package body Mesh_Loader is
         end if;
 
         Meshes.Replace_Element (Mesh_ID, aMesh);
+        Meshes.Replace_Element (Mesh_ID, aMesh);
+
+        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh done");
         return Mesh_ID;
     end Load_Managed_Mesh;
 
     --  ------------------------------------------------------------------------
 
-    --     function Load_Mesh (Path : String; Meshes : in out Mesh_List;
     function Load_Mesh (Path : String; Mesh_ID : out Integer) return Boolean is
         use Ada.Strings;
         use GL_Utils;
@@ -307,6 +315,8 @@ package body Mesh_Loader is
             Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh data not created for "
                                  & Path);
         end if;
+        Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh done Result "  &
+                               Boolean'Image (Result));
 
         return Result;
     end Load_Mesh;
@@ -325,7 +335,8 @@ package body Mesh_Loader is
         return Meshes;
     end Loaded_Meshes;
 
-    --  -----------------------------------------
+    --  ------------------------------------------------------------------------
+
     function Load_Mesh_Data_Only (File_Name   : String;
                                   Points      : in out GL_Maths.Vec3_List;
                                   Tex_Coords  : in out GL_Maths.Vec2_List;
@@ -550,8 +561,8 @@ package body Mesh_Loader is
             end loop;
         else
             raise Mesh_Loader_Exception with
-                "Mesh_Loader.Loaded_Mesh_Animation, invalid mesh index: " &
-                Positive'Image (Mesh_ID);
+              "Mesh_Loader.Loaded_Mesh_Animation, invalid mesh index: " &
+              Positive'Image (Mesh_ID);
         end if;
         return theAnim;
 

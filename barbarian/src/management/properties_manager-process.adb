@@ -1,6 +1,6 @@
 
 with Ada.Containers.Vectors;
-with Ada.Exceptions;
+with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
@@ -24,26 +24,8 @@ with Tiles_Manager;
 package body Properties_Manager.Process is
     use Prop_Renderer_Support;
 
-    Max_Mirrors     : constant Integer := 16;
-    Sprite_Y_Offset : constant Single := 0.125;
-
-    package Properties_Package is new Ada.Containers.Vectors
-      (Positive, Property_Data);
-    type Properties_List is new Properties_Package.Vector with null record;
-
-    package Properties_Script_Package is new Ada.Containers.Vectors
-      (Positive, Prop_Script);
-    type Properties_Script_List is new Properties_Script_Package.Vector with null record;
-
     Pillar_Bridge_Script_File : constant String := "pillar_bridge.script";
-    Properties                : Properties_List;
-    Prop_Scripts              : Properties_Script_List;
-    Portal_Index              : Natural := 0;
     Pillar_Bridge_SI          : Natural := 0;
-    Mirror_Indices            : array (1 .. Max_Mirrors) of Natural :=
-                                  (others => 0);
-    Mirror_Count              : Natural := 0;
-    Live_Mirror_Count         : Natural := 0;
     End_Camera_Matrix         : Singles.Matrix4 := Singles.Identity4;
     End_Camera_Position       : Singles.Vector3 := Maths.Vec3_0;
 
@@ -92,15 +74,22 @@ package body Properties_Manager.Process is
         Managed_Mesh : Mesh_Loader.Mesh;
         Ok           : Boolean := False;
     begin
+        Game_Utils.Game_Log
+          ("Properties_Manager.Do_Mesh, File, Mesh_Index " &
+             File_Name & ", " & Integer'Image (Mesh_Index));
         aScript.Mesh_Index := Mesh_Loader.Load_Managed_Mesh
           (Full_Path, True, True, True, True, True);
         Mesh_Index := aScript.Mesh_Index;
         Managed_Mesh := Mesh_Loader.Loaded_Mesh (Mesh_Index);
+        Game_Utils.Game_Log
+          ("Properties_Manager.Do_Mesh, loading Mesh_VAO, Mesh_Index " &
+             Integer'Image (Mesh_Index));
         OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Vao);
         if not OK then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load VAO for "
                       & File_Name);
         end if;
+        Game_Utils.Game_Log ("Properties_Manager.Do_Mesh, has loaded Mesh_VAO");
         if not Mesh_Loader.Loaded_Mesh_Bounding_Radius
           (Mesh_Index, Float (aScript.Bounding_Radius)) then
             Put_Line ("Properties_Manager.Do_Mesh, failed to load Bounding_Radius for "
@@ -123,7 +112,20 @@ package body Properties_Manager.Process is
             Put_Line ("Properties_Manager.Do_Mesh, failed to load "
                       & File_Name);
         end if;
+        Game_Utils.Game_Log ("Properties_Manager.Do_Mesh, has loaded " &
+                               File_Name);
         return OK;
+
+    exception
+        when anError : Constraint_Error =>
+            Put ("Properties_Manager.Do_Mesh constraint error: ");
+            Put_Line (Exception_Information (anError));
+            return False;
+        when anError :  others =>
+            Put_Line ("An exception occurred in Properties_Manager.Do_Mesh.");
+            Put_Line (Exception_Information (anError));
+            return False;
+
     end Do_Mesh;
 
     --  ----------------------------------------------------------------------------
@@ -277,7 +279,7 @@ package body Properties_Manager.Process is
 
     --  ------------------------------------------------------------------------
 
-    function Get_Index_Of_Prop_Script (Script_File : String) return Positive is
+    function Get_Index_Of_Prop_Script (Script_File : String) return Natural is
         use Properties_Script_Package;
         Curs    : Cursor := Prop_Scripts.First;
         aScript : Prop_Script;
@@ -296,28 +298,45 @@ package body Properties_Manager.Process is
         end loop;
         OK := Found;
         if not Found then
+            Game_Utils.Game_Log
+              ("Properties_Manager.Process.Get_Index_Of_Prop_Script: loading: " &
+                 Script_File);
             OK := Load_Property_Script (Script_File, Index);
         end if;
-        if not OK then
-            Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script failed to load: " &
-                        Script_File);
+        Game_Utils.Game_Log
+          ("Properties_Manager.Process.Get_Index_Of_Prop_Script: loaded script Index: " &
+             Integer'Image (Index));
+        if OK then
+            Put_Line
+              ("Properties_Manager.Process.Get_Index_Of_Prop_Script failed to load: " &
+                 Script_File);
         end if;
-        --          Put_Line ("Properties_Manager.Get_Index_Of_Prop_Script: Index: " &
-        --                      Integer'Image (Index));
-
+        Game_Utils.Game_Log
+          ("Properties_Manager.Process.Get_Index_Of_Prop_Script done, Index: " &
+             Integer'Image (Index));
         return Index;
+
+    exception
+        when anError : Constraint_Error =>
+            Put ("Properties_Manager.Process.Load_Property_Script constraint error: ");
+            Put_Line (Exception_Information (anError));
+            return 0;
+        when anError :  others =>
+            Put_Line ("An exception occurred in Properties_Manager.Process.Load_Property_Script.");
+            Put_Line (Exception_Information (anError));
+            return 0;
     end Get_Index_Of_Prop_Script;
 
     -- -------------------------------------------------------------------------
 
-    function Load_Property_Script (File_Name : String; Index : out Positive)
+    function Load_Property_Script (File_Name : String; Prop_Index : out Positive)
                                    return Boolean is
         use Properties_Script_Package;
         With_Path           : constant String := "src/props/" & File_Name;
         Script_File         : File_Type;
         aScript             : Prop_Script;
-        Box_Point_Count     : Integer := 0;
-        Hole_Point_Count    : Integer := 0;
+        Box_Point_Count     : Natural := 0;
+        Hole_Point_Count    : Natural := 0;
         Smashed_Script_File : Unbounded_String;
         Has_Smashed_Script  : Boolean := False;
         OK                  : Boolean := True;
@@ -480,7 +499,7 @@ package body Properties_Manager.Process is
                         OK := False;
                         Game_Utils.Game_Log
                           ("Properties_Manager.Load_Property_Script, "  &
-                            "invalid property in " & File_Name & ": " & aLine);
+                             "invalid property in " & File_Name & ": " & aLine);
                     end if;
                 end if;
             end;  --  declare block
@@ -490,7 +509,9 @@ package body Properties_Manager.Process is
 
         if OK then
             Prop_Scripts.Append (aScript);
-            Index := Prop_Scripts.Last_Index;
+            Prop_Index := Prop_Scripts.Last_Index;
+            Put_Line ("Properties_Manager.Load_Property_Script, loaded"
+                      & With_Path & ", index " & Integer'Image (Prop_Index));
         else
             Put_Line ("Properties_Manager.Load_Property_Script, failed to load"
                       & With_Path);
@@ -499,15 +520,26 @@ package body Properties_Manager.Process is
         if Has_Smashed_Script then
             OK := Load_Property_Script
               (To_String (Smashed_Script_File), aScript.Smashed_Script_Index);
-            Prop_Scripts.Replace_Element (Index, aScript);
+            Prop_Scripts.Replace_Element (Prop_Index, aScript);
+            Put_Line ("Properties_Manager.Load_Property_Script, loaded " &
+                       To_String (Smashed_Script_File));
             if not OK then
-                Put_Line ("Properties_Manager.Load_Property_Script, failed to load" &
+                Put_Line ("Properties_Manager.Load_Property_Script, failed to load " &
                             To_String (Smashed_Script_File));
             end if;
         end if;
-
         --        Game_Utils.Game_Log ("Properties_Manager.Load_Property_Script, script properties loaded");
         return OK;
+
+    exception
+        when anError : Constraint_Error =>
+            Put ("Properties_Manager.Load_Property_Script constraint error: ");
+            Put_Line (Exception_Information (anError));
+            return False;
+        when anError :  others =>
+            Put_Line ("An exception occurred in Properties_Manager.Load_Property_Script.");
+            Put_Line (Exception_Information (anError));
+            return False;
     end Load_Property_Script;
 
     -- --------------------------------------------------------------------------
@@ -551,8 +583,14 @@ package body Properties_Manager.Process is
             when Pillar_Prop =>
                 Rebalance := True;
                 if Pillar_Bridge_SI = 0 then
+                    Game_Utils.Game_Log
+                      ("Properties_Manager.Load_Property_Script setting Pillar_Bridge_SI from: "
+                       & Pillar_Bridge_Script_File);
                     Pillar_Bridge_SI :=
                       Get_Index_Of_Prop_Script (Pillar_Bridge_Script_File);
+                    Game_Utils.Game_Log
+                      ("Properties_Manager.Load_Property_Script Pillar_Bridge_SI: "
+                       & Integer'Image (Pillar_Bridge_SI));
                 end if;
                 if Pillar_Bridge_SI = 0 then
                     raise Properties_Exception with
@@ -590,6 +628,13 @@ package body Properties_Manager.Process is
         New_Props.Model_Matrix := Translation_Matrix (New_Props.World_Pos) *
           Rotate_Y_Degree (Identity4, New_Props.Heading_Deg);
 
+    exception
+        when anError : Constraint_Error =>
+            Put ("Properties_Manager.Process_Script_Type constraint error: ");
+            Put_Line (Exception_Information (anError));
+        when anError :  others =>
+            Put_Line ("An exception occurred in Properties_Manager.Process_Script_Type.");
+            Put_Line (Exception_Information (anError));
     end Process_Script_Type;
 
     -- --------------------------------------------------------------------------
