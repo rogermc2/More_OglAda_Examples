@@ -68,40 +68,6 @@ package body Prop_Renderer.Render is
       (Positive, Prop_Renderer_Support.Property_Data);
     type Properties_List is new Properties_Package.Vector with null Record;
 
-    --  Animation and rendering
-    Model_Matrix                  : Singles.Matrix4 := (others => (others => 0.0));
-    Current_Bone_Transforms       : Singles.Matrix4_Array
-      (1 .. Mesh_Loader.Max_Bones)  := (others => Singles.Identity4);
-    Anim_Duration                 : Integer := 0;
-    Anim_Elapsed_Time             : Integer := 0;
-    Sprite_Duration               : Integer := 0;
-    Delay_Countdown               : Integer := 0;
-    --  Hack to stop decap head bouncing when stuck
-    Bounce_Count                  : Integer := 0;
-    Scripts                       : Script_List;
-    Properties                    : Properties_List;
-    Active_Properties_A           : GL_Maths.Indices_List;
-    Active_Properties_B           : GL_Maths.Indices_List;
-    Curr_Active_Props_A           : Boolean := True;
-    Props_In_Tiles                : Props_In_Tiles_Array;
-    Decap_Heads_Prop_Index        : constant array
-      (1 .. Max_Decap_Types, 1 .. Max_Active_Decaps_Per_Type) of Integer
-      := (others => (others => 0));
-    Dust_Particles                : Integer := -1;
-    Dust_Particlesb               : Integer := -1;
-    Dust_Particlesc               : Integer := -1;
-    Pot_Particles                 : Integer := -1;
-    Mirror_Particles              : Integer := -1;
-    Splash_Particles              : Integer := -1;
-
-    --     Mirror_Indices              : array (1 .. Max_Mirrors) of Positive;
-    Prop_Count                    : Natural := 0;
-    Mirror_Count                  : Int := 0;
-    Live_Mirror_Count             : Int := 0;
-    Num_Types_Decap_Heads         : Int := 0;
-    Last_Head_Particles_Used      : Integer := 0;
-    Prev_Time                     : Single := Single (Glfw.Time);
-
     --  ------------------------------------------------------------------------
 
     procedure Render_Basic (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff,
@@ -111,6 +77,8 @@ package body Prop_Renderer.Render is
         use GL.Objects.Vertex_Arrays;
         use GL_Maths.Indices_Package;
         use Properties_Shader_Manager;
+        use Properties_Manager;
+        use Prop_Renderer;
         Count    : constant Integer := Integer (Basic_Render_List.Length);
         Property : Prop_Renderer_Support.Property_Data;
         Script   : Prop_Renderer_Support.Prop_Script;

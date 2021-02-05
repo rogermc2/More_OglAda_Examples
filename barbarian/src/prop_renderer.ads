@@ -2,6 +2,8 @@
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with Glfw;
+
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Types; use GL.Types;
@@ -9,6 +11,7 @@ with GL.Types; use GL.Types;
 with Maths;
 
 with Depth_Skinned_Shader_Manager;
+with GL_Maths;
 with Manifold;
 with Mesh_Loader;
 with Properties_Manager;
@@ -56,5 +59,70 @@ package Prop_Renderer is
    procedure Update_Properties (Seconds : Float);
    procedure Update_Props_In_Tiles (U, V : Integer; Data : GL.Types.Int);
    procedure Update_Static_Lights_Uniforms;
+
+private
+    use Prop_Renderer_Support;
+
+    Max_Decap_Types            : constant Integer :=  32;
+    Max_Active_Decaps_Per_Type : constant Integer := 8;
+    Max_Decap_Particles        : constant Integer := 4;
+    Max_Mirrors                : constant Integer := 16;
+
+    package Properties_Package is new Ada.Containers.Vectors
+      (Positive, Prop_Renderer_Support.Property_Data);
+    type Properties_List is new Properties_Package.Vector with null Record;
+
+    package Indicies_Package is new Ada.Containers.Vectors (Positive, Positive);
+    type Indicies_List is new Indicies_Package.Vector with null Record;
+
+    package Property_Scripts_Package is new Ada.Containers.Vectors
+      (Positive, Prop_Script);
+    type Script_List is new Property_Scripts_Package.Vector with null Record;
+
+    --  Animation and rendering
+    Model_Matrix                  : Singles.Matrix4 := (others => (others => 0.0));
+    Current_Bone_Transforms       : Singles.Matrix4_Array
+      (1 .. Mesh_Loader.Max_Bones)  := (others => Singles.Identity4);
+    Anim_Duration                 : Integer := 0;
+    Anim_Elapsed_Time             : Integer := 0;
+    Sprite_Duration               : Integer := 0;
+    Delay_Countdown               : Integer := 0;
+    --  Hack to stop decap head bouncing when stuck
+    Bounce_Count                  : Integer := 0;
+    Scripts                       : Script_List;
+    Properties                    : Properties_List;
+    Active_Properties_A           : Indicies_List;
+    Active_Properties_B           : Indicies_List;
+    Curr_Active_Props_A           : Boolean := True;
+    Basic_Render_List             : Indicies_List;
+    Skinned_Render_List           : Indicies_List;
+    Jav_Stand_Render_List         : Indicies_List;
+    Portal_Render_List            : Indicies_List;
+    Treasure_Render_List          : Indicies_List;
+    Last_Head_Launched            : GL_Maths.Integer_Array (1 .. Max_Decap_Types);
+    Props_In_Tiles                : Props_In_Tiles_Array;
+    Head_Particles                : GL_Maths.Integer_Array (1 .. Max_Decap_Particles);
+    Decap_Heads_Prop_Index        : constant array
+      (1 .. Max_Decap_Types, 1 .. Max_Active_Decaps_Per_Type) of Integer
+      := (others => (others => 0));
+    Dust_Particles                : Integer := -1;
+    Dust_Particlesb               : Integer := -1;
+    Dust_Particlesc               : Integer := -1;
+    Pot_Particles                 : Integer := -1;
+    Mirror_Particles              : Integer := -1;
+    Splash_Particles              : Integer := -1;
+
+    --     Mirror_Indices              : array (1 .. Max_Mirrors) of Positive;
+    Prop_Count                    : Natural := 0;
+    Mirror_Count                  : Int := 0;
+    Live_Mirror_Count             : Int := 0;
+    Num_Types_Decap_Heads         : Int := 0;
+    Last_Head_Particles_Used      : Integer := 0;
+    Prop_Dyn_Light_Pos_Wor        : Singles.Vector3 := Maths.Vec3_0;
+    Prop_Dyn_Light_Diff           : Singles.Vector3 := Maths.Vec3_0;
+    Prop_Dyn_Light_Spec           : Singles.Vector3 := Maths.Vec3_0;
+    Prop_Dyn_Light_Range          : Single := 1.0;
+    Prop_Dyn_Light_Dirty          : Boolean := True;
+    Prev_Time                     : Single := Single (Glfw.Time);
 
 end Prop_Renderer;
