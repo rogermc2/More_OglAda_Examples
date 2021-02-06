@@ -57,7 +57,8 @@ package Prop_Renderer is
    procedure Update_Dynamic_Lights (World_Pos, Diff, Specular : Singles.Vector3;
                                     Dist : Single);
    procedure Update_Properties (Seconds : Float);
-   procedure Update_Props_In_Tiles (U, V : Integer; Data : GL.Types.Int);
+   procedure Update_Props_In_Tiles_Index (U, V : Integer;
+                                          Prop_Index : GL.Types.Int);
    procedure Update_Static_Lights_Uniforms;
 
 private

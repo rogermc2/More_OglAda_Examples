@@ -20,6 +20,7 @@ package Properties_Manager is
 
    Properties_Exception : Exception;
 
+   function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean;
    procedure Load_Properties (Prop_File : File_Type);
 
 private
@@ -30,7 +31,7 @@ private
 
     package Properties_Package is new Ada.Containers.Vectors
       (Positive, Property_Data);
-    type Properties_List is new Properties_Package.Vector with null record;
+    subtype Properties_List is Properties_Package.Vector;
 
     package Properties_Script_Package is new Ada.Containers.Vectors
       (Positive, Prop_Script);

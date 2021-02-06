@@ -843,10 +843,17 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    procedure Update_Props_In_Tiles (U, V : Integer; Data : GL.Types.Int) is
+    procedure Update_Props_In_Tiles_Index (U, V : Integer;
+                                           Prop_Index : GL.Types.Int) is
         begin
-        Props_In_Tiles (U, V).Append (Data);
-    end Update_Props_In_Tiles;
+        if Properties_Manager.Index_Is_Valid (Prop_Index)then
+            Props_In_Tiles (U, V).Append (Prop_Index);
+        else
+           raise Prop_Renderer_Exception with
+               "Prop_Renderer.Update_Props_In_Tiles_Index called with invalid index: "
+               & GL.Types.Int'Image (Prop_Index);
+        end if;
+    end Update_Props_In_Tiles_Index;
 
     --  -------------------------------------------------------------------------
 

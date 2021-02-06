@@ -159,7 +159,8 @@ package body Properties_Manager is
                                                Properties.Last_Index);
             end if;
             Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -11- Update_Props_In_Tiles");
-            Prop_Renderer.Update_Props_In_Tiles
+            --  Update_Props_In_Tiles just adds
+            Prop_Renderer.Update_Props_In_Tiles_Index
               (Integer (New_Props.Map_U), Integer (New_Props.Map_V),
                Int (Properties.Last_Index));
             if Rebalance then
@@ -181,6 +182,14 @@ exception
     end Create_Prop_From_Script;
 
     -- -------------------------------------------------------------------------
+
+    function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean is
+        use Properties_Package;
+    begin
+        return Prop_Index <= GL.Types.Int (Properties.Last_Index);
+    end Index_Is_Valid;
+
+    -- --------------------------------------------------------------------------
     --  read properties from an already open file
     procedure Load_Properties (Prop_File : File_Type) is
         use Ada.Strings;
@@ -339,4 +348,4 @@ exception
 
     -- --------------------------------------------------------------------------
 
-end Properties_Manager;
+    end Properties_Manager;
