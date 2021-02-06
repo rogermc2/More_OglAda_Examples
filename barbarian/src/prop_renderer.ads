@@ -38,8 +38,8 @@ package Prop_Renderer is
    procedure Launch_Decap_Head (LHL_Type  : Positive;
                                 World_Pos : Singles.Vector3);
    function Get_Num_Live_Mirrors return Int;
-   function Get_Property_Indices (U, V : Positive) return Prop_Indices_List;
-   function Get_Property_Index (U, V, Index : Positive) return Positive;
+   function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List;
+   function Get_Tile_Property_Index (U, V, Index : Positive) return Positive;
    function Get_Property_Data (Prop_Index : Positive)
                                return Prop_Renderer_Support.Property_Data;
    function Get_Script_Data (Script_Index : Positive)

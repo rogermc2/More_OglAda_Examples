@@ -59,7 +59,6 @@ package body Prop_Renderer is
                                  Reactivating   : Boolean);
     procedure Update_Anim_Looped_Prop (Prop_Index : Positive; Seconds : Single);
 
-
     --  -------------------------------------------------------------------------
     --  return false if door already opened
     function Activate_Door (Property_Index : Positive) return Boolean is
@@ -231,19 +230,19 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    function Get_Property_Indices (U, V : Positive) return Prop_Indices_List is
+    function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List is
     begin
         return Props_In_Tiles (U, V);
-    end Get_Property_Indices;
+    end Get_Tile_Property_Indices;
 
     --  -------------------------------------------------------------------------
 
-    function Get_Property_Index (U, V, Index : Positive) return Positive is
+    function Get_Tile_Property_Index (U, V, Index : Positive) return Positive is
         use Prop_Indices_Package;
         Prop : constant Prop_Indices_List := Props_In_Tiles (U, V);
     begin
         return Positive (Prop.Element (Index));
-    end Get_Property_Index;
+    end Get_Tile_Property_Index;
 
     --  -------------------------------------------------------------------------
 

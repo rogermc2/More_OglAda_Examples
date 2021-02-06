@@ -47,18 +47,18 @@ package body Properties_Manager is
         Ros           : Vector3;
     begin
         Game_Utils.Game_Log
-          ("--------Properties Manager.Create_Prop_From_Script--------");
+          ("--------Properties_Manager.Create_Prop_From_Script--------");
         Game_Utils.Game_Log
-          ("Properties Manager.Create_Prop_From_Script -1- creating property from "
+          ("Properties_Manager.Create_Prop_From_Script -1- creating property from "
             & Script_File);
         Script_Index := Get_Index_Of_Prop_Script (Script_File);
-        Game_Utils.Game_Log ("Properties Manager Create_Prop_From_Script -2- script index "
+        Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -2- script index "
                              & Integer'Image (Script_Index));
         aScript := Prop_Scripts.Element (Script_Index);
-        Game_Utils.Game_Log ("Properties.Manager.Create_Prop_From_Script -3- script created ");
+        Game_Utils.Game_Log ("Properties_Manager.Create_Prop_From_Script -3- script created ");
         Script_Type := aScript.Script_Type;
         Respect_Ramps := Script_Type = Boulder_Prop;
-        Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -4- Mesh_Index"
+        Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -4- Mesh_Index"
                              & Integer'Image (aScript.Mesh_Index));
         if Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
             --           Game_Utils.Game_Log ("Properties Manager creating property from script "
@@ -70,7 +70,7 @@ package body Properties_Manager is
             for index in 1 .. Mesh_Loader.Max_Bones loop
                 New_Props.Current_Bone_Transforms (index) := Singles.Identity4;
             end loop;
-            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -5- Current_Bone_Transforms done");
+            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5- Current_Bone_Transforms done");
 
             New_Props.World_Pos (GL.X) := 2.0 * Single (Map_U);
             New_Props.World_Pos (GL.Z) := 2.0 * Single (Map_V);
@@ -108,7 +108,7 @@ package body Properties_Manager is
             New_Props.Rx_Code := Rx;
             New_Props.Script_Index := 1;
             New_Props.Height_Level := Height_Level;
-            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -6- New_Props 1 done");
+            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -6- New_Props 1 done");
 
             if aScript.Has_Particles then
                 New_Props.Particle_System_Index :=
@@ -125,7 +125,7 @@ package body Properties_Manager is
                 New_Props.Particle_System_Index := 1;
             end if;
 
-            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -7- Particles done");
+            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -7- Particles done");
 
             New_Props.Was_Triggered := False;
             New_Props.Is_On_Ground := False;
@@ -134,17 +134,17 @@ package body Properties_Manager is
             New_Props.First_Doom_Tile_Set := False;
             New_Props.Second_Doom_Tile_Set := False;
             New_Props.Was_Collected_By_Player := False;
-            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -8- New_Props 2 done");
+            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -8- New_Props 2 done");
             if aScript.Mesh_Index < 1 then
                 raise Properties_Exception with
-                  "Create_Prop_From_Script called with invalid Mesh_Index"
+                  "Properties_Manager Create_Prop_From_Script called with invalid Mesh_Index"
                   & Integer'Image (aScript.Mesh_Index);
             end if;
             Process_Script_Type (New_Props, aScript, RX_Kind, Rebalance);
             if aScript.Uses_Sprite then
                 Set_Up_Sprite (New_Props, aScript);
             end if;
-            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -9- Process_Script_Type done");
+            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -9- Process_Script_Type done");
             if aScript.Has_Lamp then
                 Batch_Manager.Add_Static_Light
                   (Map_U, Map_V, Height_Level, aScript.Lamp_Offset,
@@ -153,19 +153,21 @@ package body Properties_Manager is
             end if;
             Properties.Append (New_Props);
 
-            Game_Utils.Game_Log ("Properties.Manager Create_Prop_From_Script -10- Has_Lamp done");
+            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -10- Has_Lamp done");
             if New_Props.Rx_Code > 0 and RX_Kind /= Rx_Invalid then
                 Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
                                                Properties.Last_Index);
             end if;
+            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -11- Update_Props_In_Tiles");
             Prop_Renderer.Update_Props_In_Tiles
               (Integer (New_Props.Map_U), Integer (New_Props.Map_V),
                Int (Properties.Last_Index));
             if Rebalance then
+                Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -12- Rebalance");
                 Rebalance_Props_In (Integer (Map_U), Integer (Map_V));
             end if;
         end if;
-        Game_Utils.Game_Log ("--------Leaving Properties Manager.Create_Prop_From_Script--------");
+        Game_Utils.Game_Log ("--------Leaving Properties_Manager.Create_Prop_From_Script--------");
 
 exception
         when anError : Constraint_Error =>
@@ -173,7 +175,7 @@ exception
             Put_Line (Exception_Information (anError));
             raise;
         when anError :  others =>
-            Put_Line ("An exception occurred in Create_Prop_From_Script.Load_Property_Script.");
+            Put_Line ("An exception occurred in Properties_Manager.Create_Prop_From_Script.Load_Property_Script.");
             Put_Line (Exception_Information (anError));
             raise;
     end Create_Prop_From_Script;
@@ -198,7 +200,7 @@ exception
     begin
         if Fixed.Index (aLine, "props ") = 0 then
             raise Properties_Exception with
-              "Load_Properties, invalid format, ""props"" expected: " &
+              "Properties_Manager.Load_Properties, invalid format, ""props"" expected: " &
               aLine (1 .. PosL);
         end if;
 
@@ -269,14 +271,19 @@ exception
     begin
         if not Tiles_Manager.Is_Tile_Valid (Int (Map_U), Int (Map_V)) then
             raise Properties_Exception with
-              "Rebalance_Props_In called with invalid Map_U, Map_V: "
+              "Properties_Manager.Rebalance_Props_In called with invalid Map_U, Map_V: "
               & Integer'Image (Map_U) & ", " & Integer'Image (Map_V);
         end if;
 
         For index in 1 .. Prop_Size loop
-            Prop_Index := Get_Property_Index (Map_U, Map_V, index);
+            Prop_Index := Get_Tile_Property_Index (Map_U, Map_V, index);
+            Game_Utils.Game_Log ("Properties_Manager.Rebalance_Props_In Prop_Index"
+                                 & Integer'Image (Prop_Index));
             Prop := Get_Property_Data (Prop_Index);
+            Game_Utils.Game_Log ("Properties_Manager.Rebalance_Props_In Script_Index Prop loaded");
             Script_Index := Prop.Script_Index;
+            Game_Utils.Game_Log ("Properties_Manager.Rebalance_Props_In Script_Index"
+                                 & Integer'Image (Script_Index));
             Script := Get_Script_Data (Script_Index);
             Script_Kind := Script.Script_Type;
 
@@ -295,12 +302,18 @@ exception
                   (Prop.Script_Index, Sprite_Pos);
             end if;
             Rot_Matrix := Maths.Rotate_Y_Degree (Identity4, Prop.Heading_Deg);
-            Prop.Model_Matrix := Rot_Matrix * Maths.Translation_Matrix ((Prop.World_Pos));
+            Prop.Model_Matrix :=
+              Rot_Matrix * Maths.Translation_Matrix ((Prop.World_Pos));
             Origin := To_Vector4 (Script.Origin);
             Prop.Origin_World := To_Vector3 (Prop.Model_Matrix * Origin);
             Replace_Property (index, Prop);
         end loop;
 
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Properties_Manager.Rebalance_Props_In!");
+            Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Rebalance_Props_In;
 
     -- --------------------------------------------------------------------------

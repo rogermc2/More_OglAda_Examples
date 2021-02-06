@@ -293,11 +293,11 @@ package body Prop_Renderer.Boulder is
       for v_index in Up_Bound .. Down_Bound loop
          for h_index in Left_Bound .. Right_Bound loop
             --  Check if radius and or centre is inside height range params
-            Prop_Indices := Prop_Renderer.Get_Property_Indices
+            Prop_Indices := Prop_Renderer.Get_Tile_Property_Indices
               (Integer (v_index), Integer (h_index));
             for index in Prop_Indices.First_Index ..
               Prop_Indices.Last_Index loop
-               Prop_Index := Prop_Renderer.Get_Property_Index
+               Prop_Index := Prop_Renderer.Get_Tile_Property_Index
                  (Integer (v_index), Integer (h_index), index);
                if Prop_Index /= Excluded_Property then
                   aProperty := Get_Property_Data (Prop_Index);
@@ -504,7 +504,7 @@ package body Prop_Renderer.Boulder is
             M_V := Integer (Properties.Map_V);
             Index := Prop_Indices.First_Index;
             while Index <= Prop_Indices.Last_Index and Found_At <= 0 loop
-               Property_Index := Get_Property_Index (M_U, M_V, index);
+               Property_Index := Get_Tile_Property_Index (M_U, M_V, index);
                if Prop_Index = Property_Index then
                   Found_At := Index;
                else
