@@ -186,7 +186,8 @@ exception
     function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean is
         use Properties_Package;
     begin
-        return Prop_Index <= GL.Types.Int (Properties.Last_Index);
+        return Prop_Index > 0 and
+          Prop_Index <= GL.Types.Int (Properties.Last_Index);
     end Index_Is_Valid;
 
     -- --------------------------------------------------------------------------

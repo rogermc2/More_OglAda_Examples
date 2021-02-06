@@ -241,6 +241,11 @@ package body Prop_Renderer is
         use Prop_Indices_Package;
         Prop : constant Prop_Indices_List := Props_In_Tiles (U, V);
     begin
+        if not Properties_Manager.Index_Is_Valid (Int (Index)) then
+            raise Prop_Renderer_Exception with
+            "Prop_Renderer.Get_Tile_Property_Index, invalid property index: " &
+              Positive'Image (Index);
+        end if;
         return Positive (Prop.Element (Index));
     end Get_Tile_Property_Index;
 
@@ -249,6 +254,11 @@ package body Prop_Renderer is
     function Get_Property_Data (Prop_Index : Positive)
                                 return Prop_Renderer_Support.Property_Data is
     begin
+        if not Properties_Manager.Index_Is_Valid (Int (Prop_Index)) then
+            raise Prop_Renderer_Exception with
+            "Prop_Renderer.Get_Property_Data, invalid property index: " &
+              Positive'Image (Prop_Index);
+        end if;
         return Properties.Element (Prop_Index);
     end Get_Property_Data;
 
