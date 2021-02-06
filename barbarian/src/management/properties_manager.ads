@@ -20,8 +20,11 @@ package Properties_Manager is
 
    Properties_Exception : Exception;
 
+  procedure Delete_Script_Data (Script_Index : Positive);
   function Get_Property_Data (Prop_Index : Positive)
                               return Prop_Renderer_Support.Property_Data;
+  function Get_Script_Data (Script_Index : Positive)
+                            return Prop_Renderer_Support.Prop_Script;
   function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean;
   procedure Load_Properties (Prop_File : File_Type);
   procedure Replace_Property (Property_Index : Positive;

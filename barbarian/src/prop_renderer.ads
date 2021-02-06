@@ -33,15 +33,14 @@ package Prop_Renderer is
    function Activate_Door_In_Tile
       (Map_U, Map_V : Int; Hand_Y_World_Pos : Single;
        Activator : Properties_Manager.Activator_Type) return Boolean;
-   procedure Delete_Script_Data (Script_Index : Positive);
    procedure Init;
    procedure Launch_Decap_Head (LHL_Type  : Positive;
                                 World_Pos : Singles.Vector3);
    function Get_Num_Live_Mirrors return Int;
    function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List;
    function Get_Tile_Property_Index (U, V, Index : Positive) return Positive;
-   function Get_Script_Data (Script_Index : Positive)
-                             return Prop_Renderer_Support.Prop_Script;
+--     function Get_Script_Data (Script_Index : Positive)
+--                               return Prop_Renderer_Support.Prop_Script;
    function Get_Script_Index (Prop_Index : Positive) return Positive;
    function Props_In_Tiles_Size (U, V : Integer) return Natural;
    procedure Render_Property (Prop_ID : Positive);
@@ -65,16 +64,16 @@ private
     Max_Decap_Particles        : constant Integer := 4;
     Max_Mirrors                : constant Integer := 16;
 
-    package Properties_Package is new Ada.Containers.Vectors
-      (Positive, Prop_Renderer_Support.Property_Data);
-    type Properties_List is new Properties_Package.Vector with null Record;
+--      package Properties_Package is new Ada.Containers.Vectors
+--        (Positive, Prop_Renderer_Support.Property_Data);
+--      type Properties_List is new Properties_Package.Vector with null Record;
 
     package Indicies_Package is new Ada.Containers.Vectors (Positive, Positive);
     type Indicies_List is new Indicies_Package.Vector with null Record;
 
-    package Property_Scripts_Package is new Ada.Containers.Vectors
-      (Positive, Prop_Script);
-    type Script_List is new Property_Scripts_Package.Vector with null Record;
+--      package Property_Scripts_Package is new Ada.Containers.Vectors
+--        (Positive, Prop_Script);
+--      type Script_List is new Property_Scripts_Package.Vector with null Record;
 
     --  Animation and rendering
     Model_Matrix                  : Singles.Matrix4 := (others => (others => 0.0));
@@ -86,7 +85,7 @@ private
     Delay_Countdown               : Integer := 0;
     --  Hack to stop decap head bouncing when stuck
     Bounce_Count                  : Integer := 0;
-    Scripts                       : Script_List;
+--      Scripts                       : Script_List;
     Active_Properties_A           : Indicies_List;
     Active_Properties_B           : Indicies_List;
     Curr_Active_Props_A           : Boolean := True;

@@ -127,7 +127,7 @@ package body Prop_Renderer.Boulder is
       aProperty    : constant Property_Data :=
                          Properties_Manager.Get_Property_Data (Prop_Index);
       S_I          : Positive := aProperty.Script_Index;
-      aScript      : Prop_Script := Get_Script_Data (S_I);
+      aScript      : Prop_Script := Properties_Manager.Get_Script_Data (S_I);
       Prop_Type    : constant Property_Type := aScript.Script_Type;
       SS_I         : constant Positive := aScript.Smashed_Script_Index;
       Prop_Centre  : Vector3;
@@ -153,7 +153,7 @@ package body Prop_Renderer.Boulder is
    begin
       if aProperty.Was_Smashed and SS_I > 0 then
          S_I := SS_I;
-         aScript := Get_Script_Data (S_I);
+         aScript := Properties_Manager.Get_Script_Data (S_I);
       end if;
 
       Prop_Centre := aProperty.Origin_World;
@@ -303,11 +303,11 @@ package body Prop_Renderer.Boulder is
                if Prop_Index /= Excluded_Property then
                   aProperty := Properties_Manager.Get_Property_Data (Prop_Index);
                   S_I := aProperty.Script_Index;
-                  aScript := Get_Script_Data (S_I);
+                  aScript := Properties_Manager.Get_Script_Data (S_I);
                   SS_I := aScript.Smashed_Script_Index;
                   if aProperty.Was_Smashed and SS_I > 0 then
                      S_I := SS_I;
-                     aScript := Get_Script_Data (S_I);
+                     aScript := Properties_Manager.Get_Script_Data (S_I);
                      Prop_Type := aScript.Script_Type;
                      if Prop_Type /= Pot_Prop and Prop_Type /= Door_Prop and
                        Prop_Type /= Pillar_Prop then
@@ -383,7 +383,8 @@ package body Prop_Renderer.Boulder is
       Properties      : Property_Data :=
                           Properties_Manager.Get_Property_Data (Prop_Index);
       S_I             : constant Positive := Properties.Script_Index;
-      Script_Data     : constant Prop_Script := Get_Script_Data (S_I);
+      Script_Data     : constant Prop_Script :=
+                            Properties_Manager.Get_Script_Data (S_I);
       Prop_Indices    : Prop_Indices_List;
       Property_Index  : Positive;
       S_Seconds       : constant Single := Single (Seconds);
@@ -516,7 +517,7 @@ package body Prop_Renderer.Boulder is
                raise Boulder_Exception with
                "Boulder.Update_Boulder, a boulder tile is lost!";
             end if;
-            Delete_Script_Data (Found_At);
+            Properties_Manager.Delete_Script_Data (Found_At);
             Properties.Map_U := Next_U;
             Properties.Map_V := Next_V;
 

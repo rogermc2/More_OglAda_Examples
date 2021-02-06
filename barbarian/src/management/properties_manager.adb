@@ -185,6 +185,13 @@ exception
 
     -- -------------------------------------------------------------------------
 
+    procedure Delete_Script_Data (Script_Index : Positive) is
+    begin
+        Prop_Scripts.Delete (Script_Index);
+    end Delete_Script_Data;
+
+    --  -------------------------------------------------------------------------
+
     function Get_Property_Data (Prop_Index : Positive)
                                 return Prop_Renderer_Support.Property_Data is
     begin
@@ -199,6 +206,14 @@ exception
                      Positive'Image (Prop_Index));
         return Properties.Element (Prop_Index);
     end Get_Property_Data;
+
+    --  -------------------------------------------------------------------------
+
+    function Get_Script_Data (Script_Index : Positive)
+                              return Prop_Renderer_Support.Prop_Script is
+    begin
+        return Prop_Scripts.Element (Script_Index);
+    end Get_Script_Data;
 
     --  -------------------------------------------------------------------------
 
@@ -309,11 +324,12 @@ exception
             Game_Utils.Game_Log ("Properties_Manager.Rebalance_Props_In Prop_Index"
                                  & Integer'Image (Prop_Index));
             Prop := Get_Property_Data (Prop_Index);
-            Game_Utils.Game_Log ("Properties_Manager.Rebalance_Props_In Script_Index Prop loaded");
+            Game_Utils.Game_Log ("Properties_Manager.Rebalance_Props_In Prop loaded");
             Script_Index := Prop.Script_Index;
             Game_Utils.Game_Log ("Properties_Manager.Rebalance_Props_In Script_Index"
                                  & Integer'Image (Script_Index));
             Script := Get_Script_Data (Script_Index);
+            Game_Utils.Game_Log ("Properties_Manager.Rebalance_Props_In Script loaded");
             Script_Kind := Script.Script_Type;
 
             Prop.World_Pos (GL.Y) := Tiles_Manager.Get_Tile_Height

@@ -66,7 +66,8 @@ package body Prop_Renderer is
                          Properties_Manager.Get_Property_Data (Property_Index);
         Script_Index : constant Positive := Property.Script_Index;
         Mesh_Index   :  Positive;
-        aScript      : constant Prop_Script := Scripts.Element (Script_Index);
+        aScript      : constant Prop_Script :=
+                         Properties_Manager.Get_Script_Data (Script_Index);
         Result       : Boolean := False;
     begin
         Result := Property.Door_Position = aScript.Initial_Door_State;
@@ -117,7 +118,7 @@ package body Prop_Renderer is
                 Property_I := Tile_Props.Element (index);
                 Property := Get_Property_Data (Positive (Property_I));
                 Script_I := Property.Script_Index;
-                Script := Scripts.Element (Script_I);
+                Script := Properties_Manager.Get_Script_Data (Script_I);
                 if (Script.Script_Type = Door_Prop or
                       Script.Script_Type = Elevator_Prop) and then
                   (Activator /= Prop_Activator_Player_State or
@@ -147,7 +148,8 @@ package body Prop_Renderer is
         Property     : Property_Data :=
                          Properties_Manager.Get_Property_Data (Property_Index);
         Script_Index : constant Positive := Property.Script_Index;
-        aScript      : constant Prop_Script := Scripts.Element (Script_Index);
+        aScript      : constant Prop_Script :=
+                         Properties_Manager.Get_Script_Data (Script_Index);
         Result       : Boolean := False;
     begin
         if Property.Elevator = At_Top_State then
@@ -180,7 +182,8 @@ package body Prop_Renderer is
         Property       : Property_Data :=
                            Properties_Manager.Get_Property_Data (Property_Index);
         Script_Index   : constant Positive := Property.Script_Index;
-        aScript        : constant Prop_Script := Scripts.Element (Script_Index);
+        aScript        : constant Prop_Script :=
+                           Properties_Manager.Get_Script_Data (Script_Index);
         Prop_Type      : constant Property_Type := aScript.Script_Type;
         Double_Up      : Boolean := False;
         Active_Curs    : Cursor;
@@ -219,13 +222,6 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    procedure Delete_Script_Data (Script_Index : Positive) is
-    begin
-        Scripts.Delete (Script_Index);
-    end Delete_Script_Data;
-
-    --  -------------------------------------------------------------------------
-
     function Get_Num_Live_Mirrors return Int is
     begin
         return Live_Mirror_Count;
@@ -254,11 +250,11 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    function Get_Script_Data (Script_Index : Positive)
-                              return Prop_Renderer_Support.Prop_Script is
-    begin
-        return Scripts.Element (Script_Index);
-    end Get_Script_Data;
+--      function Get_Script_Data (Script_Index : Positive)
+--                                return Prop_Renderer_Support.Prop_Script is
+--      begin
+--          return Scripts.Element (Script_Index);
+--      end Get_Script_Data;
 
     --  -------------------------------------------------------------------------
 
@@ -277,7 +273,6 @@ package body Prop_Renderer is
         Always_Draw    : constant Boolean := False;
     begin
         Game_Utils.Game_Log ("---INIT PROPS---");
-        Scripts.Clear;
         Active_Properties_A.Clear;
         Active_Properties_B.Clear;
         Basic_Render_List.Clear;
@@ -373,7 +368,7 @@ package body Prop_Renderer is
         Property     : Property_Data :=
                          Properties_Manager.Get_Property_Data (Prop_ID);
         Script_ID    : Positive := Property.Script_Index;
-        aScript      : Prop_Script := Scripts.Element (Script_ID);
+        aScript      : Prop_Script := Properties_Manager.Get_Script_Data (Script_ID);
         SSI          : constant Natural := aScript.Smashed_Script_Index;
         Mesh_Index   : Integer;
         Bone_Count   : Integer;
@@ -386,7 +381,7 @@ package body Prop_Renderer is
         if Property.Was_Smashed and SSI > 0 then
             Script_ID := Ssi;
         end if;
-        aScript := Scripts.Element (Script_ID);
+        aScript := Properties_Manager.Get_Script_Data (Script_ID);
         Mesh_Index := aScript.Mesh_Index;
         Bone_Count := Mesh_Loader.Bone_Count (Mesh_Index);
         Prop_Type := aScript.Script_Type;
@@ -434,7 +429,7 @@ package body Prop_Renderer is
                 Prop_ID := Integer (Prop_IDs.Element (index));
                 Property := Properties_Manager.Get_Property_Data (Prop_ID);
                 Script_ID := Property.Script_Index;
-                Script := Scripts.Element (Script_ID);
+                Script := Properties_Manager.Get_Script_Data (Script_ID);
                 if Script.Script_Type = Boulder_Prop then
                     Dist := Property.World_Pos (GL.Y) - Hand_Y_World_Pos;
                     Result := Abs (Dist) < 2.0;
@@ -495,7 +490,7 @@ package body Prop_Renderer is
                   Prop_Indices.Last_Index loop
                     Property := Properties_Manager.Get_Property_Data (Props_Index);
                     Script_Index := Property.Script_Index;
-                    aScript := Scripts.Element (Script_Index);
+                    aScript := Properties_Manager.Get_Script_Data (Script_Index);
                     Ssi := aScript.Smashed_Script_Index;
                     if Property.Was_Smashed and Ssi > 0 then
                         Script_Index := Ssi;
@@ -583,7 +578,7 @@ package body Prop_Renderer is
                   Prop_Indices.Last_Index loop
                     Property := Properties_Manager.Get_Property_Data (Props_Index);
                     Script_Index := Property.Script_Index;
-                    aScript := Scripts.Element (Script_Index);
+                    aScript := Properties_Manager.Get_Script_Data (Script_Index);
                     Ssi := aScript.Smashed_Script_Index;
                     if Property.Was_Smashed and Ssi >= 0 then
                         Script_Index := Ssi;
@@ -800,7 +795,7 @@ package body Prop_Renderer is
                 P_Index := Element (Props, Index);
                 Property := Properties_Manager.Get_Property_Data (P_Index);
                 S_Index := Property.Script_Index;
-                aScript := Element (Scripts, S_Index);
+                aScript := Properties_Manager.Get_Script_Data (S_Index);
                 SS_Index := aScript.Smashed_Script_Index;
                 if Property.Was_Smashed and SS_Index > 0 then
                     S_Index := SS_Index;

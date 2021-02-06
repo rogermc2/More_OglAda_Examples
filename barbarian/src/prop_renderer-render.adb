@@ -113,12 +113,11 @@ package body Prop_Renderer.Render is
                 Prop_I := Basic_Render_List (Param_I);
                 Property := Get_Property_Data (Prop_I);
                 Script_I := Get_Script_Index (Prop_I);
---                  Script_I := Properties (Prop_I).Script_Index;
-                Ssi := Scripts (Script_I).Smashed_Script_Index;
+                Script := Get_Script_Data (Script_I);
+                Ssi := Script.Smashed_Script_Index;
                 if Property.Was_Smashed and Ssi > 0 then
                     Script_I := Ssi;
                 end if;
-                Script := Scripts (Script_I);
                 U := Positive (Property.Map_U);
                 V := Positive (Property.Map_V);
                 Set_Model (Property.Model_Matrix);
@@ -195,7 +194,7 @@ package body Prop_Renderer.Render is
                     Property := Properties_Manager.Get_Property_Data (Prop_I);
                     Script_I := Get_Script_Index (Prop_I);
 --                      Script_I := Properties (Prop_I).Script_Index;
-                    Script := Scripts (Script_I);
+                    Script := Properties_Manager.Get_Script_Data (Script_I);
                     Spec_I := Spec_Index (1);
                     Prop_Kind := Script.Script_Type;
                     if Prop_Kind = Jav_Stand_Prop or Prop_Kind = Tavern_Prop then
@@ -291,7 +290,7 @@ package body Prop_Renderer.Render is
                 Property := Properties_Manager.Get_Property_Data (Prop_I);
                 Script_I := Get_Script_Index (Prop_I);
 --                  Script_I := Properties (Prop_I).Script_Index;
-                Script := Scripts (Script_I);
+                Script := Properties_Manager.Get_Script_Data (Script_I);
                 Set_Model (Property.Model_Matrix);
                 GL_Utils.Bind_VAO (Script.Vao);
                 Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
@@ -343,13 +342,12 @@ package body Prop_Renderer.Render is
             for Param_I in 1 .. Count loop
                 Prop_I := Basic_Render_List (Param_I);
                 Script_I := Get_Script_Index (Prop_I);
---                  Script_I := Properties (Prop_I).Script_Index;
-                Ssi := Scripts (Script_I).Smashed_Script_Index;
+                Script := Properties_Manager.Get_Script_Data (Script_I);
+                Ssi := Script.Smashed_Script_Index;
                 Property := Properties_Manager.Get_Property_Data (Prop_I);
                 if Property.Was_Smashed and Ssi > 0 then
                     Script_I := Ssi;
                 end if;
-                Script := Scripts (Script_I);
                 --                  Mesh_I := Script.Mesh_Index;
                 Set_Bone_Matrices (Property.Current_Bone_Transforms);
                 Set_Model (Property.Model_Matrix);
@@ -414,7 +412,7 @@ package body Prop_Renderer.Render is
                 Property := Properties_Manager.Get_Property_Data (Prop_I);
                 Script_I := Get_Script_Index (Prop_I);
 --                  Script_I := Properties (Prop_I).Script_Index;
-                Script := Scripts (Script_I);
+                Script := Properties_Manager.Get_Script_Data (Script_I);
                 Set_Model (Property.Model_Matrix);
                 if Settings.Render_OLS and Script.Draw_Outlines then
                     GL.Culling.Set_Front_Face (Clockwise);
