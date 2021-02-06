@@ -124,7 +124,8 @@ package body Prop_Renderer.Boulder is
       use Maths;
       use Single_Math_Functions;
       use Prop_Renderer_Support;
-      aProperty    : constant Property_Data := Get_Property_Data (Prop_Index);
+      aProperty    : constant Property_Data :=
+                         Properties_Manager.Get_Property_Data (Prop_Index);
       S_I          : Positive := aProperty.Script_Index;
       aScript      : Prop_Script := Get_Script_Data (S_I);
       Prop_Type    : constant Property_Type := aScript.Script_Type;
@@ -300,7 +301,7 @@ package body Prop_Renderer.Boulder is
                Prop_Index := Prop_Renderer.Get_Tile_Property_Index
                  (Integer (v_index), Integer (h_index), index);
                if Prop_Index /= Excluded_Property then
-                  aProperty := Get_Property_Data (Prop_Index);
+                  aProperty := Properties_Manager.Get_Property_Data (Prop_Index);
                   S_I := aProperty.Script_Index;
                   aScript := Get_Script_Data (S_I);
                   SS_I := aScript.Smashed_Script_Index;
@@ -380,7 +381,7 @@ package body Prop_Renderer.Boulder is
       use Prop_Renderer_Support;
       use Tiles_Manager;
       Properties      : Property_Data :=
-                          Prop_Renderer.Get_Property_Data (Prop_Index);
+                          Properties_Manager.Get_Property_Data (Prop_Index);
       S_I             : constant Positive := Properties.Script_Index;
       Script_Data     : constant Prop_Script := Get_Script_Data (S_I);
       Prop_Indices    : Prop_Indices_List;

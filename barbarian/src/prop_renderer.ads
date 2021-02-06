@@ -40,8 +40,6 @@ package Prop_Renderer is
    function Get_Num_Live_Mirrors return Int;
    function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List;
    function Get_Tile_Property_Index (U, V, Index : Positive) return Positive;
-   function Get_Property_Data (Prop_Index : Positive)
-                               return Prop_Renderer_Support.Property_Data;
    function Get_Script_Data (Script_Index : Positive)
                              return Prop_Renderer_Support.Prop_Script;
    function Get_Script_Index (Prop_Index : Positive) return Positive;
@@ -49,8 +47,6 @@ package Prop_Renderer is
    procedure Render_Property (Prop_ID : Positive);
    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
    procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int);
-   procedure Replace_Property (Index : Positive;
-                               Prop : Prop_Renderer_Support.Property_Data);
    procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
    procedure Splash_Particles_At (Pos : Singles.Vector3);
@@ -91,7 +87,6 @@ private
     --  Hack to stop decap head bouncing when stuck
     Bounce_Count                  : Integer := 0;
     Scripts                       : Script_List;
-    Properties                    : Properties_List;
     Active_Properties_A           : Indicies_List;
     Active_Properties_B           : Indicies_List;
     Curr_Active_Props_A           : Boolean := True;

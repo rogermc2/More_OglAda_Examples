@@ -23,7 +23,7 @@ package body Properties_Manager is
     procedure Set_Up_Sprite (New_Props : in out Property_Data;
                              aScript : Prop_Script);
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
     --  Height_level is the property's own height offset from the tile.
     --  Facing is the compass facing 'N' 'S' 'W' or 'E'.
     procedure Create_Prop_From_Script
@@ -140,6 +140,7 @@ package body Properties_Manager is
                   "Properties_Manager Create_Prop_From_Script called with invalid Mesh_Index"
                   & Integer'Image (aScript.Mesh_Index);
             end if;
+
             Process_Script_Type (New_Props, aScript, RX_Kind, Rebalance);
             if aScript.Uses_Sprite then
                 Set_Up_Sprite (New_Props, aScript);
@@ -158,7 +159,8 @@ package body Properties_Manager is
                 Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
                                                Properties.Last_Index);
             end if;
-            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -11- Update_Props_In_Tiles");
+            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -11- Update_Props_In_Tiles (Properties.Last_Index: "
+            & Integer'Image (Properties.Last_Index));
             --  Update_Props_In_Tiles just adds
             Prop_Renderer.Update_Props_In_Tiles_Index
               (Integer (New_Props.Map_U), Integer (New_Props.Map_V),
@@ -182,6 +184,23 @@ exception
     end Create_Prop_From_Script;
 
     -- -------------------------------------------------------------------------
+
+    function Get_Property_Data (Prop_Index : Positive)
+                                return Prop_Renderer_Support.Property_Data is
+    begin
+        Put_Line ( "Prop_Renderer.Get_Property_Data, entered with property index: "
+                    & Positive'Image (Prop_Index));
+        if not Properties_Manager.Index_Is_Valid (Int (Prop_Index)) then
+            raise Properties_Exception with
+            "Properties_Manager.Get_Property_Data, invalid property index: " &
+              Positive'Image (Prop_Index);
+        end if;
+        Put_Line ( "Prop_Renderer.Get_Property_Data, property index checked OK: " &
+                     Positive'Image (Prop_Index));
+        return Properties.Element (Prop_Index);
+    end Get_Property_Data;
+
+    --  -------------------------------------------------------------------------
 
     function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean is
         use Properties_Package;
@@ -325,6 +344,15 @@ exception
             Put_Line (Ada.Exceptions.Exception_Information (anError));
             raise;
     end Rebalance_Props_In;
+
+    -- --------------------------------------------------------------------------
+
+    procedure Replace_Property (Property_Index : Positive;
+                                Property : Prop_Renderer_Support.Property_Data) is
+
+    begin
+        Properties.Replace_Element (Property_Index, Property);
+    end Replace_Property;
 
     -- --------------------------------------------------------------------------
 

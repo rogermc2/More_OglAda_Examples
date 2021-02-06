@@ -62,7 +62,8 @@ package body Prop_Renderer is
     --  -------------------------------------------------------------------------
     --  return false if door already opened
     function Activate_Door (Property_Index : Positive) return Boolean is
-        Property     : Property_Data := Properties.Element (Property_Index);
+        Property     : Property_Data :=
+                         Properties_Manager.Get_Property_Data (Property_Index);
         Script_Index : constant Positive := Property.Script_Index;
         Mesh_Index   :  Positive;
         aScript      : constant Prop_Script := Scripts.Element (Script_Index);
@@ -81,7 +82,7 @@ package body Prop_Renderer is
             Property.Anim_Elapsed_Time := 0.0;
             Property.Is_Animating := True;
             Activate_Property (Property_Index, False);
-            Properties.Replace_Element (Property_Index, Property);
+--              Properties.Replace_Element (Property_Index, Property);
             Audio.Play_Sound
               (To_String (aScript.Sound_Activate_File_Name), True);
         end if;
@@ -114,7 +115,7 @@ package body Prop_Renderer is
         for index in Tile_Props.First_Index .. Tile_Props.Last_Index loop
             if Continue then
                 Property_I := Tile_Props.Element (index);
-                Property := Properties.Element (Positive (Property_I));
+                Property := Get_Property_Data (Positive (Property_I));
                 Script_I := Property.Script_Index;
                 Script := Scripts.Element (Script_I);
                 if (Script.Script_Type = Door_Prop or
@@ -143,7 +144,8 @@ package body Prop_Renderer is
     --  -------------------------------------------------------------------------
     --   return false if not in a state to be activated
     function Activate_Elevator (Property_Index : Positive) return Boolean is
-        Property     : Property_Data := Properties.Element (Property_Index);
+        Property     : Property_Data :=
+                         Properties_Manager.Get_Property_Data (Property_Index);
         Script_Index : constant Positive := Property.Script_Index;
         aScript      : constant Prop_Script := Scripts.Element (Script_Index);
         Result       : Boolean := False;
@@ -161,7 +163,7 @@ package body Prop_Renderer is
         if Result then
             Property.Is_Visible := True;
             Property.Anim_Elapsed_Time := 0.0;
-            Properties.Replace_Element (Property_Index, Property);
+            Properties_Manager.Replace_Property (Property_Index, Property);
             Activate_Property (Property_Index, False);
             Audio.Play_Sound
               (To_String (aScript.Sound_Activate_File_Name), True);
@@ -175,7 +177,8 @@ package body Prop_Renderer is
     procedure Activate_Property (Property_Index : Positive;
                                  Reactivating   : Boolean) is
         use Indicies_Package;
-        Property       : Property_Data := Properties.Element (Property_Index);
+        Property       : Property_Data :=
+                           Properties_Manager.Get_Property_Data (Property_Index);
         Script_Index   : constant Positive := Property.Script_Index;
         aScript        : constant Prop_Script := Scripts.Element (Script_Index);
         Prop_Type      : constant Property_Type := aScript.Script_Type;
@@ -251,19 +254,6 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    function Get_Property_Data (Prop_Index : Positive)
-                                return Prop_Renderer_Support.Property_Data is
-    begin
-        if not Properties_Manager.Index_Is_Valid (Int (Prop_Index)) then
-            raise Prop_Renderer_Exception with
-            "Prop_Renderer.Get_Property_Data, invalid property index: " &
-              Positive'Image (Prop_Index);
-        end if;
-        return Properties.Element (Prop_Index);
-    end Get_Property_Data;
-
-    --  -------------------------------------------------------------------------
-
     function Get_Script_Data (Script_Index : Positive)
                               return Prop_Renderer_Support.Prop_Script is
     begin
@@ -273,7 +263,8 @@ package body Prop_Renderer is
     --  -------------------------------------------------------------------------
 
     function Get_Script_Index (Prop_Index : Positive) return Positive is
-        Property : constant Property_Data := Properties.Element (Prop_Index);
+        Property : constant Property_Data :=
+                     Properties_Manager.Get_Property_Data (Prop_Index);
     begin
         return Property.Script_Index;
     end Get_Script_Index;
@@ -287,7 +278,6 @@ package body Prop_Renderer is
     begin
         Game_Utils.Game_Log ("---INIT PROPS---");
         Scripts.Clear;
-        Properties.Clear;
         Active_Properties_A.Clear;
         Active_Properties_B.Clear;
         Basic_Render_List.Clear;
@@ -359,7 +349,7 @@ package body Prop_Renderer is
         Prop.Is_Visible := True;
         Props_In_Tiles (Integer (U), Integer (V)).Append (Int (Prop_Index));
 
-        Properties.Replace_Element (Prop_Index, Prop);
+        Properties_Manager.Replace_Property (Prop_Index, Prop);
         Activate_Property (Prop_Index, True);
         Audio.Play_Sound (Decap_Sound_File, True);
 
@@ -380,7 +370,8 @@ package body Prop_Renderer is
         use Properties_Shader_Manager;
         Curr_Time    : Single;
         Elapsed_Time : Single;
-        Property     : Property_Data := Properties.Element (Prop_ID);
+        Property     : Property_Data :=
+                         Properties_Manager.Get_Property_Data (Prop_ID);
         Script_ID    : Positive := Property.Script_Index;
         aScript      : Prop_Script := Scripts.Element (Script_ID);
         SSI          : constant Natural := aScript.Smashed_Script_Index;
@@ -410,7 +401,7 @@ package body Prop_Renderer is
 
         Set_Shaders (Property, Prop_Type, aScript,
                      Character_Controller.Gold_Current, Elapsed_Time);
-        Properties.Replace_Element (Prop_ID, Property);
+        Properties_Manager.Replace_Property (Prop_ID, Property);
 
         if Settings.Render_OLS and aScript.Draw_Outlines then
             Set_Outline_Shaders (Prop_Type, aScript);
@@ -441,7 +432,7 @@ package body Prop_Renderer is
         for index in Prop_IDs.First_Index .. Prop_IDs.Last_Index  loop
             if not Result then
                 Prop_ID := Integer (Prop_IDs.Element (index));
-                Property := Properties.Element (Prop_ID);
+                Property := Properties_Manager.Get_Property_Data (Prop_ID);
                 Script_ID := Property.Script_Index;
                 Script := Scripts.Element (Script_ID);
                 if Script.Script_Type = Boulder_Prop then
@@ -500,8 +491,9 @@ package body Prop_Renderer is
             for ui in Up .. Down loop
                 --                 Props_Size := Tile_Data'Size;
                 Prop_Indices := Tile_Data (Integer (ui), Integer (vi));
-                for Props_Index in Prop_Indices.First_Index .. Prop_Indices.Last_Index loop
-                    Property := Properties.Element (Props_Index);
+                for Props_Index in Prop_Indices.First_Index ..
+                  Prop_Indices.Last_Index loop
+                    Property := Properties_Manager.Get_Property_Data (Props_Index);
                     Script_Index := Property.Script_Index;
                     aScript := Scripts.Element (Script_Index);
                     Ssi := aScript.Smashed_Script_Index;
@@ -587,8 +579,9 @@ package body Prop_Renderer is
         for vi in Left .. Right loop
             for ui in Up .. Down loop
                 Prop_Indices := Tile_Data (Integer (ui), Integer (vi));
-                for Props_Index in Prop_Indices.First_Index .. Prop_Indices.Last_Index loop
-                    Property := Properties.Element (Props_Index);
+                for Props_Index in Prop_Indices.First_Index ..
+                  Prop_Indices.Last_Index loop
+                    Property := Properties_Manager.Get_Property_Data (Props_Index);
                     Script_Index := Property.Script_Index;
                     aScript := Scripts.Element (Script_Index);
                     Ssi := aScript.Smashed_Script_Index;
@@ -613,7 +606,7 @@ package body Prop_Renderer is
                                                        aScript.Sprite_Timer);
                             Sprite_Renderer.Set_Sprite_Current_Sprite
                               (Property.Sprite_Index, Curr_Sprite);
-                            Properties.Replace_Element (Props_Index, Property);
+                            Properties_Manager.Replace_Property (Props_Index, Property);
 
                         elsif Frustum.Is_Sphere_In_Frustum
                           (Property.Origin_World, aScript.Bounding_Radius) and
@@ -663,14 +656,6 @@ package body Prop_Renderer is
                 Put_Line ("Prop_Renderer.Game_Support.Render_Props_Around_Split exception");
                 raise;
     end Render_Props_Around_Split;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Replace_Property (Index : Positive;
-                                Prop : Prop_Renderer_Support.Property_Data) is
-    begin
-        Properties.Replace_Element (Index, Prop);
-    end Replace_Property;
 
     --  -------------------------------------------------------------------------
 
@@ -813,7 +798,7 @@ package body Prop_Renderer is
         begin
             for Index in Props.First_Index .. Props.Last_Index loop
                 P_Index := Element (Props, Index);
-                Property := Element (Properties, P_Index);
+                Property := Properties_Manager.Get_Property_Data (P_Index);
                 S_Index := Property.Script_Index;
                 aScript := Element (Scripts, S_Index);
                 SS_Index := aScript.Smashed_Script_Index;

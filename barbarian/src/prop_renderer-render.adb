@@ -111,9 +111,10 @@ package body Prop_Renderer.Render is
 
             for Param_I in 1 .. Count loop
                 Prop_I := Basic_Render_List (Param_I);
-                Script_I := Properties (Prop_I).Script_Index;
+                Property := Get_Property_Data (Prop_I);
+                Script_I := Get_Script_Index (Prop_I);
+--                  Script_I := Properties (Prop_I).Script_Index;
                 Ssi := Scripts (Script_I).Smashed_Script_Index;
-                Property := Properties.Element (Prop_I);
                 if Property.Was_Smashed and Ssi > 0 then
                     Script_I := Ssi;
                 end if;
@@ -191,8 +192,9 @@ package body Prop_Renderer.Render is
                 Integer'Image (Param_I));
                 if  Continue then
                     Prop_I := Jav_Stand_Render_List (Param_I);
-                    Property := Properties.Element (Prop_I);
-                    Script_I := Properties (Prop_I).Script_Index;
+                    Property := Properties_Manager.Get_Property_Data (Prop_I);
+                    Script_I := Get_Script_Index (Prop_I);
+--                      Script_I := Properties (Prop_I).Script_Index;
                     Script := Scripts (Script_I);
                     Spec_I := Spec_Index (1);
                     Prop_Kind := Script.Script_Type;
@@ -229,7 +231,7 @@ package body Prop_Renderer.Render is
                         Particle_System.Set_Particle_System_Position
                           (Property.Particle_System_Index,
                            Script.Particles_Offset + Translate);
-                        Properties.Replace_Element (Prop_I, Property);
+                        Properties_Manager.Replace_Property (Prop_I, Property);
                     end if;
 
                     if Continue then
@@ -286,8 +288,9 @@ package body Prop_Renderer.Render is
 
             for Param_I in 1 .. Count loop
                 Prop_I := Jav_Stand_Render_List (Param_I);
-                Property := Properties.Element (Prop_I);
-                Script_I := Properties (Prop_I).Script_Index;
+                Property := Properties_Manager.Get_Property_Data (Prop_I);
+                Script_I := Get_Script_Index (Prop_I);
+--                  Script_I := Properties (Prop_I).Script_Index;
                 Script := Scripts (Script_I);
                 Set_Model (Property.Model_Matrix);
                 GL_Utils.Bind_VAO (Script.Vao);
@@ -339,9 +342,10 @@ package body Prop_Renderer.Render is
 
             for Param_I in 1 .. Count loop
                 Prop_I := Basic_Render_List (Param_I);
-                Script_I := Properties (Prop_I).Script_Index;
+                Script_I := Get_Script_Index (Prop_I);
+--                  Script_I := Properties (Prop_I).Script_Index;
                 Ssi := Scripts (Script_I).Smashed_Script_Index;
-                Property := Properties.Element (Prop_I);
+                Property := Properties_Manager.Get_Property_Data (Prop_I);
                 if Property.Was_Smashed and Ssi > 0 then
                     Script_I := Ssi;
                 end if;
@@ -407,8 +411,9 @@ package body Prop_Renderer.Render is
 
             for Param_I in 1 .. Count loop
                 Prop_I := Basic_Render_List (Param_I);
-                Script_I := Properties (Prop_I).Script_Index;
-                Property := Properties.Element (Prop_I);
+                Property := Properties_Manager.Get_Property_Data (Prop_I);
+                Script_I := Get_Script_Index (Prop_I);
+--                  Script_I := Properties (Prop_I).Script_Index;
                 Script := Scripts (Script_I);
                 Set_Model (Property.Model_Matrix);
                 if Settings.Render_OLS and Script.Draw_Outlines then

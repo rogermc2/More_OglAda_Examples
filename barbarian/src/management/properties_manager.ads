@@ -20,8 +20,12 @@ package Properties_Manager is
 
    Properties_Exception : Exception;
 
-   function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean;
-   procedure Load_Properties (Prop_File : File_Type);
+  function Get_Property_Data (Prop_Index : Positive)
+                              return Prop_Renderer_Support.Property_Data;
+  function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean;
+  procedure Load_Properties (Prop_File : File_Type);
+  procedure Replace_Property (Property_Index : Positive;
+                              Property : Prop_Renderer_Support.Property_Data);
 
 private
     use Prop_Renderer_Support;
@@ -35,7 +39,7 @@ private
 
     package Properties_Script_Package is new Ada.Containers.Vectors
       (Positive, Prop_Script);
-    type Properties_Script_List is new Properties_Script_Package.Vector with null record;
+    subtype Properties_Script_List is Properties_Script_Package.Vector;
 
     Portal_Index              : Natural := 0;
     Mirror_Indices            : array (1 .. Max_Mirrors) of Natural :=
