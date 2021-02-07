@@ -135,11 +135,6 @@ package body Properties_Manager is
             New_Props.Second_Doom_Tile_Set := False;
             New_Props.Was_Collected_By_Player := False;
             Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -8- New_Props 2 done");
-            if aScript.Mesh_Index < 1 then
-                raise Properties_Exception with
-                  "Properties_Manager Create_Prop_From_Script called with invalid Mesh_Index"
-                  & Integer'Image (aScript.Mesh_Index);
-            end if;
 
             Process_Script_Type (New_Props, aScript, RX_Kind, Rebalance);
             if aScript.Uses_Sprite then
@@ -195,15 +190,13 @@ exception
     function Get_Property_Data (Prop_Index : Positive)
                                 return Prop_Renderer_Support.Property_Data is
     begin
-        Put_Line ( "Prop_Renderer.Get_Property_Data, entered with property index: "
-                    & Positive'Image (Prop_Index));
+--          Put_Line ( "Prop_Renderer.Get_Property_Data, entered with property index: "
+--                      & Positive'Image (Prop_Index));
         if not Properties_Manager.Index_Is_Valid (Int (Prop_Index)) then
             raise Properties_Exception with
             "Properties_Manager.Get_Property_Data, invalid property index: " &
               Positive'Image (Prop_Index);
         end if;
-        Put_Line ( "Prop_Renderer.Get_Property_Data, property index checked OK: " &
-                     Positive'Image (Prop_Index));
         return Properties.Element (Prop_Index);
     end Get_Property_Data;
 

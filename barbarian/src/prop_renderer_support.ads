@@ -138,7 +138,8 @@ package Prop_Renderer_Support is
 
       -- General Stuff
       -- -------------
-      Script_Type           : Prop_Renderer_Support.Property_Type;
+      Script_Type           : Prop_Renderer_Support.Property_Type :=
+                                  Generic_Prop;
       Scale                 : Singles.Vector3 := Maths.Vec3_0;
 
       -- Collision Shape
