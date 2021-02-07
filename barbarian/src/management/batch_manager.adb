@@ -328,23 +328,18 @@ package body Batch_Manager is
             aBatch  : Batch_Meta := Element (Curs);
         begin
             Sorted := False;
-            Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light aBatch append ");
             aBatch.Static_Light_Indices.Append (Static_Lights_List.Last_Index);
-            Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light Static_Light_Indices updated");
             Update_Batch (To_Index (Curs), aBatch);
-            Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light aBatch updated");
             while not Sorted loop
-                Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light sorting");
                 Sorted := Check_For_OOO (To_Index (Curs));
-                Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light sorted");
             end loop;
         end Process_Batch;
     begin
         if not Tiles_Manager.Is_Tile_Valid (Row, Col) then
-            raise Batch_Manager_Exception with "Batch_Manager.Add_Static_Light invalid tile";
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Add_Static_Light invalid tile";
         end if;
 
-        Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light entered");
         New_Light.Position := Offset_Pos;
         New_Light.Diffuse := Diffuse;
         New_Light.Specular := Specular;
@@ -461,15 +456,9 @@ package body Batch_Manager is
         Curr_Dist            : Single;
         Next_Dist            : Single;
     begin
-        Game_Utils.Game_Log ("Batch_Manager.Check_For_OOO entered");
         if Current_Light_Index < Static_Lights.Last_Index then
-            Game_Utils.Game_Log
-              ("Batch_Manager.Check_For_OOO Current_Light_Index < Static_Lights.Last_Index"
-               & Integer'Image (Static_Lights.Last_Index));
 
             while Has_Element (Next_Light_Cursor) loop
-                Game_Utils.Game_Log ("Batch_Manager.Check_For_OOO Current_Light_Index: "
-                                     & Integer'Image (Current_Light_Index));
                 Current_Light := Static_Lights_List.Element (Current_Light_Index);
                 Next (Next_Light_Cursor);
                 Next_Light_Index := Element (Next_Light_Cursor);
@@ -509,11 +498,11 @@ package body Batch_Manager is
         when anError : Constraint_Error =>
             Put ("Batch_Manager.Check_For_OOO constraint error: ");
             Put_Line (Exception_Information (anError));
-            return False;
+            raise;
         when anError :  others =>
             Put_Line ("An exception occurred in Batch_Manager.Check_For_OOO.");
             Put_Line (Exception_Information (anError));
-            return False;
+            raise;
     end Check_For_OOO;
 
     --  ----------------------------------------------------------------------------

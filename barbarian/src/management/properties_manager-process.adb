@@ -300,31 +300,31 @@ package body Properties_Manager.Process is
         end loop;
         OK := Found;
         if not Found then
-            Game_Utils.Game_Log
-              ("Properties_Manager.Process.Get_Index_Of_Prop_Script: loading: " &
-                 Script_File);
+--              Game_Utils.Game_Log
+--                ("Properties_Manager.Process.Get_Index_Of_Prop_Script: loading: " &
+--                   Script_File);
             OK := Load_Property_Script (Script_File, Index);
         end if;
-        Game_Utils.Game_Log
-          ("Properties_Manager.Process.Get_Index_Of_Prop_Script: loaded script Index: " &
-             Integer'Image (Index));
+
         if not OK then
             Put_Line
               ("Properties_Manager.Process.Get_Index_Of_Prop_Script failed to load: " &
                  Script_File);
         end if;
-        --        Game_Utils.Game_Log
-        --          ("Properties_Manager.Process.Get_Index_Of_Prop_Script done, Index: " &
-        --             Integer'Image (Index));
+--                Game_Utils.Game_Log
+--                  ("Properties_Manager.Process.Get_Index_Of_Prop_Script done, Index: " &
+--                     Integer'Image (Index));
         return Index;
 
     exception
         when anError : Constraint_Error =>
-            Put ("Properties_Manager.Process.Load_Property_Script constraint error: ");
+            Put
+              ("Properties_Manager.Process.Get_Index_Of_Prop_Script constraint error: ");
             Put_Line (Exception_Information (anError));
             raise;
         when anError :  others =>
-            Put_Line ("An exception occurred in Properties_Manager.Process.Load_Property_Script.");
+            Put_Line
+              ("An exception occurred in Properties_Manager.Process.Get_Index_Of_Prop_Script.Load_Property_Script.");
             Put_Line (Exception_Information (anError));
             raise;
     end Get_Index_Of_Prop_Script;
@@ -343,11 +343,14 @@ package body Properties_Manager.Process is
         Has_Smashed_Script  : Boolean := False;
         OK                  : Boolean := True;
     begin
-        Game_Utils.Game_Log ("Properties_Manager.Process.Load_Property_Script, " &
-                              With_Path);
+        if File_Name'Length = 0 then
+            raise Properties_Process_Exception with
+              "Properties_Manager.Process.Load_Property_Script called with empty file name";
+        end if;
+
         Open (Script_File, In_File, With_Path);
-        Game_Utils.Game_Log ("Properties_Manager.Process.Load_Property_Script, " &
-                              With_Path & " opened.");
+--          Game_Utils.Game_Log ("Properties_Manager.Process.Load_Property_Script, " &
+--                                With_Path & " opened.");
         aScript.File_Name := To_Unbounded_String (File_Name);
 
         while not End_Of_File (Script_File) loop
@@ -355,8 +358,8 @@ package body Properties_Manager.Process is
                 aLine    : constant String := Get_Line (Script_File);
                 S_Length : constant Integer := aLine'Length;
             begin
-                Game_Utils.Game_Log ("Properties_Manager-Process.Load_Property_Script, " &
-                                     aLine);
+--                  Game_Utils.Game_Log ("Properties_Manager-Process.Load_Property_Script, " &
+--                                       aLine);
                 if S_Length > 1 and then aLine (1) /= '#' then
                     if S_Length > 4 and then aLine (1 .. 5)  = "mesh:" then
                         OK := Do_Mesh (aLine (7 .. S_Length), aScript);
@@ -365,6 +368,8 @@ package body Properties_Manager.Process is
                         OK := Do_Outlines_Mesh (aLine (16 .. S_Length), aScript);
                     elsif S_Length > 14 and then
                       aLine (1 .. 15)  = "smashed_script:" then
+                        Smashed_Script_File :=
+                          To_Unbounded_String (aLine (17 .. S_Length));
                         --  Flag to load at end as prop script counter would
                         --  be wrong.
                         Has_Smashed_Script := True;
@@ -511,11 +516,7 @@ package body Properties_Manager.Process is
             end;  --  declare block
         end loop;
 
-        Game_Utils.Game_Log ("Properties_Manager.Process.Load_Property_Script closing  " &
-                              With_Path);
         Close (Script_File);
-        Game_Utils.Game_Log ("Properties_Manager.Process.Load_Property_Script, " &
-                              With_Path & " closed.");
 
         if OK then
             Prop_Scripts.Append (aScript);
@@ -528,11 +529,11 @@ package body Properties_Manager.Process is
         end if;
 
         if Has_Smashed_Script then
+--             Put_Line ("Properties_Manager.Process.Load_Property_Script, Smashed_Script_File: '" &
+--                          To_String (Smashed_Script_File) & "'");
             OK := Load_Property_Script
               (To_String (Smashed_Script_File), aScript.Smashed_Script_Index);
             Prop_Scripts.Replace_Element (Prop_Index, aScript);
-            --           Game_Utils.Game_Log ("Properties_Manager-Process.Load_Property_Script, loaded " &
-            --                                  To_String (Smashed_Script_File));
             if not OK then
                 Put_Line ("Properties_Manager.Process.Load_Property_Script, failed to load " &
                             To_String (Smashed_Script_File));
