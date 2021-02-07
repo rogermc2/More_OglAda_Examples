@@ -411,7 +411,6 @@ package body Prop_Renderer.Render is
                 Prop_I := Basic_Render_List (Param_I);
                 Property := Properties_Manager.Get_Property_Data (Prop_I);
                 Script_I := Get_Script_Index (Prop_I);
---                  Script_I := Properties (Prop_I).Script_Index;
                 Script := Properties_Manager.Get_Script_Data (Script_I);
                 Set_Model (Property.Model_Matrix);
                 if Settings.Render_OLS and Script.Draw_Outlines then

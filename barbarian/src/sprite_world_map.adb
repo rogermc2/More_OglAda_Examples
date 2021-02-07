@@ -51,9 +51,10 @@ package body Sprite_World_Map is
               "Sprite_World_Map.Add_New_Sprite_To_World_Map, invalid tile indices: " &
               Int'Image (U) & ", " & Int'Image (V);
       end if;
-      Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V);
-      Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count + 1) := Sprite_ID;
-      Sprite_Tiles.Height_Of_Sprites (S_U, S_V, Count + 1) := Y;
+
+      Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) + 1;
+      Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count) := Sprite_ID;
+      Sprite_Tiles.Height_Of_Sprites (S_U, S_V, Count) := Y;
       Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) := Count;
    end Add_New_Sprite_To_World_Map;
 

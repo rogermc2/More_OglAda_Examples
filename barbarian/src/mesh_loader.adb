@@ -89,7 +89,7 @@ package body Mesh_Loader is
         Attr_Count : Integer := 0;
         Mesh_ID    : Integer := 0;
     begin
-        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh loading " &
+        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh checking for " &
                                Mesh_Name);
         if not Meshes.Is_Empty then
             Index := Meshes.First_Index;
@@ -119,12 +119,12 @@ package body Mesh_Loader is
         aMesh.VAO.Initialize_Id;
         GL_Utils.Bind_VAO (aMesh.VAO);
         Meshes.Replace_Element (Mesh_ID, aMesh);
-
-        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh " & Mesh_Name &
-                               " Vp_Count, Vn_Count, Vt_Count " &
-                               Integer'Image (aMesh.Vp_Count) & ", " &
-                               Integer'Image (aMesh.Vn_Count)
-                             & ", " & Integer'Image (aMesh.Vt_Count));
+--
+--          Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh " & Mesh_Name &
+--                                 " Vp_Count, Vn_Count, Vt_Count " &
+--                                 Integer'Image (aMesh.Vp_Count) & ", " &
+--                                 Integer'Image (aMesh.Vn_Count)
+--                               & ", " & Integer'Image (aMesh.Vt_Count));
 
         if Has_Vp and then aMesh.Vp_Count > 0 then
             Array_Buffer.Bind (aMesh.Points_Vbo);
@@ -175,7 +175,6 @@ package body Mesh_Loader is
         Meshes.Replace_Element (Mesh_ID, aMesh);
         Meshes.Replace_Element (Mesh_ID, aMesh);
 
-        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh done");
         return Mesh_ID;
     end Load_Managed_Mesh;
 
