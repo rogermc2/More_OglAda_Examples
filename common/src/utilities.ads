@@ -76,6 +76,7 @@ package Utilities is
    procedure Print_UByte_Array (Name : String; anArray : UByte_Array;
                                 Start, Finish : GL.Types.UInt);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector2);
+   procedure Print_Vector (Name : String; aVector : GL.Types.Ints.Vector2);
    procedure Print_Vector (Name : String; aVector : GL.Types.Ints.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector3);
    procedure Print_Vector (Name : String; aVector : GL.Types.Singles.Vector4);

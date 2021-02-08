@@ -425,6 +425,13 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
+   procedure Print_Vector (Name : String; aVector : GL.Types.Ints.Vector2) is
+   begin
+      Print_Ints_Vector2 (Name, aVector);
+   end Print_Vector;
+
+   --  ------------------------------------------------------------------------
+
    procedure Print_Vector (Name : String; aVector : GL.Types.Ints.Vector3) is
    begin
       Print_Ints_Vector3 (Name, aVector);
