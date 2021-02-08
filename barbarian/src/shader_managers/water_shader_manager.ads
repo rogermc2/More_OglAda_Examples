@@ -43,7 +43,7 @@ package Water_Shader_Manager is
     procedure Set_K_Diff (K_Diff : Singles.Vector4);
     procedure Set_K_Spec (K_Spec : Singles.Vector4);
     procedure Set_Light_Diffuse (Diffuse : Singles.Vector3_Array);
-    procedure Set_Light_Position (Position : Singles.Vector3_Array);
+    procedure Set_Light_Positions (Position : Singles.Vector3_Array);
     procedure Set_Light_Range (Light_Range : Single_Array);
     procedure Set_Light_Specular (Specular : Singles.Vector3_Array);
     procedure Set_Model_Matrix (Model_Matrix : Singles.Matrix4);

@@ -5,6 +5,7 @@ with GL.Objects.Shaders;
 
 with Maths;
 with Program_Loader;
+with Utilities;
 
 package body Water_Shader_Manager is
 
@@ -42,8 +43,14 @@ package body Water_Shader_Manager is
           Uniform_Location (Shader_Program, "k_d");
         Render_Uniforms.K_Spec_ID :=
           Uniform_Location (Shader_Program, "k_s");
+        Render_Uniforms.Light_Position_ID :=
+          Uniform_Location (Shader_Program, "light_pos");
         Render_Uniforms.Light_Specular_ID :=
           Uniform_Location (Shader_Program, "light_spec");
+        Render_Uniforms.Light_Diffuse_ID :=
+          Uniform_Location (Shader_Program, "light_diff");
+        Render_Uniforms.Light_Range_ID :=
+          Uniform_Location (Shader_Program, "light_range");
         Render_Uniforms.Model_Matrix_ID :=
           Uniform_Location (Shader_Program, "model_mat");
         Render_Uniforms.Projection_Matrix_ID :=
@@ -64,6 +71,10 @@ package body Water_Shader_Manager is
         GL.Uniforms.Set_Single (Render_Uniforms.Caster_Position_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);
         GL.Uniforms.Set_Int (Render_Uniforms.Diff_Map_ID, 0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Diffuse_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Specular_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Range_ID, 0.0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Pos_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Diff_ID, Maths.Vec3_0);
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Spec_ID, Maths.Vec3_0);
@@ -74,7 +85,7 @@ package body Water_Shader_Manager is
         GL.Uniforms.Set_Single (Render_Uniforms.Projection_Matrix_ID, Identity4);
         GL.Uniforms.Set_Single (Render_Uniforms.Shadow_Enabled_ID, 0.0);
         GL.Uniforms.Set_Int (Render_Uniforms.Spec_Map_ID, 0);
---          GL.Uniforms.Set_Single (Render_Uniforms.Static_Light_Indices_ID, Maths.Vec3_0);
+--          GL.Uniforms.Set_Single (Render_Uniforms.Static_Light_Indices_ID, Maths.Vec2_0);
         GL.Uniforms.Set_Single (Render_Uniforms.View_Matrix_ID, Identity4);
 
     exception
@@ -169,10 +180,10 @@ package body Water_Shader_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Set_Light_Position (Position : Singles.Vector3_Array) is
+    procedure Set_Light_Positions (Position : Singles.Vector3_Array) is
     begin
         GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Position);
-    end Set_Light_Position;
+    end Set_Light_Positions;
 
     --  -------------------------------------------------------------------------
 

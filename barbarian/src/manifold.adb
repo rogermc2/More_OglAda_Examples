@@ -284,6 +284,8 @@ package body Manifold is
                 Light_Cursor := Light_Indices.First;
                 Tile_Index1 := Int (Element (Light_Cursor));
                 Tile_Index2 := Int (Element (Next (Light_Cursor)));
+                Put_Line ("Manifold.Draw_Water_Manifold_Around Tile_Index1, Tile_Index2: "
+                & Int'Image (Tile_Index1) & ", " & Int'Image (Tile_Index2));
                 Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                 GL_Utils.Bind_Vao (aBatch.Water_VAO);
@@ -423,31 +425,30 @@ package body Manifold is
         Lights    : constant Static_Light_Vector := Static_Lights;
         Index     : Positive := Lights.First_Index;
         aLight    : Static_Light_Data;
-        Positions : Singles.Vector3_Array
-          (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
-        Diffuse   : Singles.Vector3_Array
-          (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
-        Specular  : Singles.Vector3_Array
-          (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
-        Ranges    : Single_Array
-          (Int (Static_Lights.First_Index) .. Int (Static_Lights.Last_Index));
+        Positions : Singles.Vector3_Array (1 .. 32) := (others => Maths.Vec3_0);
+        Diffuse   : Singles.Vector3_Array (1 .. 32) := (others => Maths.Vec3_0);
+        Specular  : Singles.Vector3_Array (1 .. 32) := (others => Maths.Vec3_0);
+        Ranges    : Single_Array (1 .. 32) := (others => 0.0);
     begin
+            while Index <= Static_Lights.Last_Index loop
+                aLight := Element (Static_Lights, Index);
+                Positions (Int (Index)) := aLight.Position;
+                Diffuse (Int (Index)) := aLight.Diffuse;
+                Specular (Int (Index)) := aLight.Specular;
+                Ranges (Int (Index)) := aLight.Light_Range;
+                Index := Index + 1;
+            end loop;
+
         GL.Objects.Programs.Use_Program (Manifold_Program);
-        while Index <= Static_Lights.Last_Index loop
-            aLight := Element (Static_Lights, Index);
-            Positions (Int (Index)) := aLight.Position;
-            Diffuse (Int (Index)) := aLight.Diffuse;
-            Specular (Int (Index)) := aLight.Specular;
-            Ranges (Int (Index)) := aLight.Light_Range;
-            Index := Index + 1;
-        end loop;
         Manifold_Shader_Manager.Set_Light_Positions (Positions);
-        Water_Shader_Manager.Set_Light_Position (Positions);
         Manifold_Shader_Manager.Set_Lights_Diffuse (Diffuse);
-        Water_Shader_Manager.Set_Light_Diffuse (Diffuse);
         Manifold_Shader_Manager.Set_Lights_Specular (Specular);
-        Water_Shader_Manager.Set_Light_Specular (Specular);
         Manifold_Shader_Manager.Set_Light_Ranges (Ranges);
+
+        GL.Objects.Programs.Use_Program (Water_Program);
+        Water_Shader_Manager.Set_Light_Positions (Positions);
+        Water_Shader_Manager.Set_Light_Diffuse (Diffuse);
+        Water_Shader_Manager.Set_Light_Specular (Specular);
         Water_Shader_Manager.Set_Light_Range (Ranges);
     end Update_Static_Lights_Uniforms;
 

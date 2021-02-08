@@ -89,8 +89,8 @@ package body Mesh_Loader is
         Attr_Count : Integer := 0;
         Mesh_ID    : Integer := 0;
     begin
-        Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh checking for " &
-                               Mesh_Name);
+--          Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh checking for " &
+--                                 Mesh_Name);
         if not Meshes.Is_Empty then
             Index := Meshes.First_Index;
             while Index <= Meshes.Last_Index and not Found loop
@@ -105,9 +105,8 @@ package body Mesh_Loader is
         end if;
 
         if not Found then
-            Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh loading " &
-                                   Mesh_Name);
-            --           if not Load_Mesh (Mesh_Name, Meshes, Mesh_ID) then
+--              Game_Utils.Game_Log ("Mesh_Loader.Load_Managed_Mesh loading " &
+--                                     Mesh_Name);
             if not Load_Mesh (Mesh_Name, Mesh_ID) then
                 raise Mesh_Loader_Exception with
                   "Mesh_Loader.Load_Managed_Mesh couldn't load " & Mesh_Name;
@@ -310,8 +309,6 @@ package body Mesh_Loader is
             Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh mesh data not created for "
                                  & Path);
         end if;
-        Game_Utils.Game_Log ("Mesh_Loader.Load_Mesh done Result "  &
-                               Boolean'Image (Result));
 
         return Result;
     end Load_Mesh;

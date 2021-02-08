@@ -444,9 +444,13 @@ package body Main_Loop is
                     Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
 
                     FB_Effects.Fade_In;
+                    Put_Line ("FB_Effects.Fade_In done");
                     Manifold.Update_Static_Lights_Uniforms;
+                    Put_Line ("Manifold Static_Lights updated");
                     Prop_Renderer.Update_Static_Lights_Uniforms;
+                    Put_Line ("Prop_Renderer Ambient_Light_Level updated");
                     Sprite_Renderer.Update_Static_Lights_Uniforms;
+                    Put_Line ("Sprite_Renderer Ambient_Light_Level updated");
 
                     Camera.Camera_Wind_In;  --  Camera screw-in effect
                     Audio.Play_Sound ("enter_portal.wav", False);

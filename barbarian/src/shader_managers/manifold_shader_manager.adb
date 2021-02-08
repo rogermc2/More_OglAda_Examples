@@ -5,6 +5,7 @@ with GL.Objects.Shaders;
 
 with Maths;
 with Program_Loader;
+with Utilities;
 
 with Shader_Attributes;
 
@@ -56,6 +57,8 @@ package body Manifold_Shader_Manager is
           Uniform_Location (Shader_Program, "light_diff");
         Render_Uniforms.Light_Specular_ID :=
           Uniform_Location (Shader_Program, "light_spec");
+        Render_Uniforms.Light_Range_ID :=
+          Uniform_Location (Shader_Program, "light_range");
 
         Render_Uniforms.Shadow_Enabled_ID :=
           Uniform_Location (Shader_Program, "shadow_enabled");
@@ -79,6 +82,11 @@ package body Manifold_Shader_Manager is
         GL.Uniforms.Set_Single (Render_Uniforms.Dynamic_Light_Range_ID, 0.0);
 
         GL.Uniforms.Set_Single (Render_Uniforms.Ambient_Light_ID, Maths.Vec3_0);
+
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Position_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Diffuse_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Specular_ID, Maths.Vec3_0);
+        GL.Uniforms.Set_Single (Render_Uniforms.Light_Range_ID, 0.0);
 
         GL.Uniforms.Set_Single (Render_Uniforms.Shadow_Enabled_ID, 0.0);
         GL.Uniforms.Set_Int (Render_Uniforms.Cube_Texture_ID, 0);

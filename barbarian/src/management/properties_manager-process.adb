@@ -77,8 +77,8 @@ package body Properties_Manager.Process is
         Managed_Mesh : Mesh_Loader.Mesh;
         Ok           : Boolean := False;
     begin
-        Game_Utils.Game_Log
-          ("Properties_Manager-Process.Do_Mesh, File " & File_Name);
+--          Game_Utils.Game_Log
+--            ("Properties_Manager-Process.Do_Mesh, File " & File_Name);
         aScript.Mesh_Index := Mesh_Loader.Load_Managed_Mesh
           (Full_Path, True, True, True, True, True);
         Mesh_Index := aScript.Mesh_Index;
@@ -88,30 +88,30 @@ package body Properties_Manager.Process is
         --             Integer'Image (Mesh_Index));
         OK := Mesh_Loader.Loaded_Mesh_VAO (Mesh_Index, aScript.Vao);
         if not OK then
-            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load VAO for "
+            Put_Line ("Properties_Manager.Process.Do_Mesh, failed to load VAO for "
                       & File_Name);
         end if;
-        Game_Utils.Game_Log ("Properties_Manager.Do_Mesh, has loaded Mesh_VAO");
+
         if not Mesh_Loader.Loaded_Mesh_Bounding_Radius
           (Mesh_Index, Float (aScript.Bounding_Radius)) then
-            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load Bounding_Radius for "
+            Put_Line ("Properties_Manager.Process.Do_Mesh, failed to load Bounding_Radius for "
                       & File_Name);
             OK := False;
         end if;
         if not Mesh_Loader.Loaded_Mesh_Shadow_VAO
           (Mesh_Index, aScript.Shadow_Vao) then
-            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load Shadow_VAO for "
+            Put_Line ("Properties_Manager.Process.Do_Mesh, failed to load Shadow_VAO for "
                       & File_Name);
             OK := False;
         end if;
         if not Mesh_Loader.Loaded_Mesh_Vertex_Count
           (Mesh_Index, Integer (aScript.Vertex_Count)) then
-            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load Vertex_Count for "
+            Put_Line ("Properties_Manager.Process.Do_Mesh, failed to load Vertex_Count for "
                       & File_Name);
             OK := False;
         end if;
         if not OK then
-            Put_Line ("Properties_Manager-Process.Do_Mesh, failed to load "
+            Put_Line ("Properties_Manager.Process.Do_Mesh, failed to load "
                       & File_Name);
         end if;
         --        Game_Utils.Game_Log ("Properties_Manager-Process.Do_Mesh, has loaded " &

@@ -348,9 +348,8 @@ package body Batch_Manager is
         New_Light.Column := Col;
         Static_Lights_List.Append (New_Light);
 
-        Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light iterating");
+--          Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light iterating");
         Batches.Iterate (Process_Batch'Access);
-        Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light done");
     end Add_Static_Light;
 
     --  ------------------------------------------------------------------------
