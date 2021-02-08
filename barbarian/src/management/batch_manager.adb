@@ -871,10 +871,10 @@ package body Batch_Manager is
         end if;
         Ramp_Mesh_Point_Count := Integer (Ramp_Mesh_Points.Length);
 
-        Game_Utils.Game_Log ("Batch_Manager.Init loaded src/meshes/ramp_may_2014.apg"
-                             & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length))
-                             & " Ramp_Mesh_Texcoords.Length " & Integer'Image (Integer (Ramp_Mesh_Texcoords.Length))
-                             & " Ramp_Mesh_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Normals.Length)));
+--          Game_Utils.Game_Log ("Batch_Manager.Init loaded src/meshes/ramp_may_2014.apg"
+--                               & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length))
+--                               & " Ramp_Mesh_Texcoords.Length " & Integer'Image (Integer (Ramp_Mesh_Texcoords.Length))
+--                               & " Ramp_Mesh_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Normals.Length)));
 
         if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                                 Points, Texcoords,
@@ -883,10 +883,11 @@ package body Batch_Manager is
               "Batch_Manager.Init error loading ramp mesh data from file "
               & "src/meshes/ramp_smooth.apg";
         end if;
-        Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded."
-                             & " Points.Length " & Integer'Image (Integer (Points.Length))
-                             & " Texcoords.Length " & Integer'Image (Integer (Texcoords.Length))
-                             & " Ramp_Mesh_Smooth_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Smooth_Normals.Length)));
+
+--          Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded."
+--                               & " Points.Length " & Integer'Image (Integer (Points.Length))
+--                               & " Texcoords.Length " & Integer'Image (Integer (Texcoords.Length))
+--                               & " Ramp_Mesh_Smooth_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Smooth_Normals.Length)));
 
         if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                                 Points, Texcoords,
@@ -905,7 +906,6 @@ package body Batch_Manager is
               & "src/meshes/water.apg";
         end if;
         Water_Mesh_Point_Count := Integer (Water_Mesh_Points.Length);
-        Game_Utils.Game_Log ("Batch_Manager.Init water.apg loaded.");
 
     end Init;
 

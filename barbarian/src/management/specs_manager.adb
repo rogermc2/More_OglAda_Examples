@@ -83,6 +83,7 @@ package body Specs_Manager is
       when anError : others =>
          Put_Line ("An exception occurred in Specs_Manager.Add_Animation_Frame!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Add_Animation_Frame;
 
    --  -------------------------------------------------------------------------
@@ -109,6 +110,7 @@ package body Specs_Manager is
       when anError : others =>
          Put_Line ("An exception occurred in Specs_Manager.Add_Attack_Float!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Add_Attack_Float;
 
    --  -------------------------------------------------------------------------
@@ -176,6 +178,7 @@ package body Specs_Manager is
       when anError : others =>
          Put_Line ("An exception occurred in Specs_Manager.Add_Attack_Event!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Add_Attack_Event;
 
    --  -------------------------------------------------------------------------
@@ -188,7 +191,7 @@ package body Specs_Manager is
       Pos2      : constant Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
    begin
       Weapon_ID := Weapon_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
-      if Weapon_ID'Valid then
+      if not Weapon_ID'Valid then
          Game_Utils.Game_Log (" Specs_Manager.Add_Projectile_Type ERROR: invalid weapon ID in attack event.");
          Weapon_ID := Na_Wt;
       else
@@ -199,6 +202,7 @@ package body Specs_Manager is
       when anError : others =>
          Put_Line ("An exception occurred in Specs_Manager.Add_Default_Weapon!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Add_Default_Weapon;
 
    --  -------------------------------------------------------------------------
@@ -212,7 +216,7 @@ package body Specs_Manager is
       Pos2       : constant Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
    begin
       Projectile := Projectile_Type'Enum_Val (Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)));
-      if Projectile'Valid then
+      if not Projectile'Valid then
          Game_Utils.Game_Log (" Specs_Manager.Add_Projectile_Type ERROR: invalid projectile type.");
          theSpec.Projectile := Na_Proj_Type;
       else
@@ -223,6 +227,7 @@ package body Specs_Manager is
       when anError : others =>
          Put_Line ("An exception occurred in Specs_Manager.Add_Projectile_Type!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Add_Projectile_Type;
 
    --  -------------------------------------------------------------------------
@@ -293,6 +298,7 @@ package body Specs_Manager is
       when anError : others =>
          Put_Line ("An exception occurred in Specs_Manager.Get_Script_Index!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
          return -1;
    end Get_Script_Index;
 
@@ -436,6 +442,7 @@ package body Specs_Manager is
       when anError : others =>
          Put_Line ("An exception occurred in Specs_Manager.Load_Specs_File!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Load_Specs_File;
 
    --  -------------------------------------------------------------------------

@@ -378,7 +378,6 @@ package body Text is
             SX := Single (theText.Bottom_Right_X + 0.05);
             SY := Single (-theText.Bottom_Right_Y + 0.05);
 
-            Game_Utils.Game_Log ("Text.Draw_Text Text_Box_Shader");
             GL.Objects.Programs.Use_Program (Text_Box_Shader);
             Text_Box_Shader_Manager.Set_Scale ((SX, SY));
             Text_Box_Shader_Manager.Set_Position_ID ((theText.Top_Left_X - 0.025,
@@ -452,8 +451,8 @@ package body Text is
        Viewport_Width, Viewport_Height     : GL.Types.Int) is
         TB_Points_VBO : GL.Objects.Buffers.Buffer;
     begin
-        Game_Utils.Game_Log ("Text.Init_Text_Rendering initialising text rendering for "
-                             & Font_image_File);
+--          Game_Utils.Game_Log ("Text.Init_Text_Rendering initialising text rendering for "
+--                               & Font_image_File);
         Font_Viewport_Width := Viewport_Width;
         Font_Viewport_Height := Viewport_Height;
         Create_Font_Shaders;
@@ -473,7 +472,7 @@ package body Text is
 --          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 --          GL.Attributes.Set_Vertex_Attrib_Pointer
 --            (Shader_Attributes.Attrib_VP, 2, GL.Types.Single_Type, False, 0, 0);
-        Game_Utils.Game_Log ("Text initialised for " & Font_image_File);
+--          Game_Utils.Game_Log ("Text initialised for " & Font_image_File);
 
     exception
         when others =>
@@ -502,7 +501,7 @@ package body Text is
     begin
         Texture_Manager.Load_Image_To_Texture (Atlas_Image, Font_Texture, False, True);
         Font_Metadata_Manager.Load_Metadata (Atlas_Metadata, Glyphs);
-        Game_Utils.Game_Log ("Text.Load_Font Font_Texture " & Atlas_Image & " loaded ");
+--          Game_Utils.Game_Log ("Text.Load_Font Font_Texture " & Atlas_Image & " loaded ");
     end Load_Font;
 
     --  ------------------------------------------------------------------------

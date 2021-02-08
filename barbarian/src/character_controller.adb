@@ -247,8 +247,8 @@ package body Character_Controller is
         end if;
 
         if Tiles_Manager.Is_Tile_Valid (Source.U, Source.V) then
-            Game_Utils.Game_Log ("Character_Controller.Create_Character creating character from " &
-                                   To_String (Source.Script_File));
+--              Game_Utils.Game_Log ("Character_Controller.Create_Character creating character from " &
+--                                     To_String (Source.Script_File));
             Set_Character_Defaults (theCharacter);
             theCharacter.Heading_Deg := Source.Heading;
             theCharacter.Map := (Source.U, Source.V);
@@ -282,8 +282,8 @@ package body Character_Controller is
             if Spec.Team_ID = 1 then
                 Kills_Max := Kills_Max + 1;
             end if;
-            Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
-                                   To_String (Source.Script_File));
+--              Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
+--                                     To_String (Source.Script_File));
         else
             raise Character_Controller_Exception with
               "Character_Controller.Create_Character, invalid tile siza" &
@@ -365,7 +365,6 @@ package body Character_Controller is
         aSpec               : Spec_Data;
         Height              : Single;
     begin
-        Put_Line ("Character_Controller.Damage_All_Near");
         for index_v in Up .. Down loop
             for index_h in Left .. Right loop
                 Character_IDs := Get_Characters_In (index_v, index_h);
@@ -393,7 +392,6 @@ package body Character_Controller is
             end loop;
         end loop;
 
-        Put_Line ("Character_Controller.Damage_All_Near done");
         return 0;
 
     exception
@@ -423,7 +421,6 @@ package body Character_Controller is
         Tile_Height : Single := 0.0;
         Result      : Boolean := False;
     begin
-       Put_Line ("Character_Controller.Damage_Character entered");
         Is_Sorcerer := aSpec.Projectile = Skull_Proj_Type;
         --  Sorcerer is invulnerable until all mirrors gone
         Result := not Is_Sorcerer or Prop_Renderer.Get_Num_Live_Mirrors <= 0;
@@ -731,19 +728,6 @@ package body Character_Controller is
     end On_Ground;
 
     --  -------------------------------------------------------------------------
-    --      function Is_Character_Valid (Char_Index : Integer) return Boolean is
-    --      begin
-    --          return Char_Index >= 0 and Char_Index < Characters_Allocd_Count;
-    --      end Is_Character_Valid;
-
-    --  -------------------------------------------------------------------------
-
-    --      function Is_Spec_Valid (Spec_Index : Integer) return Boolean is
-    --      begin
-    --          return Spec_Index >= 0 and Spec_Index < Specs_Allocd_Count;
-    --      end Is_Spec_Valid;
-
-    --  -------------------------------------------------------------------------
 
     function Javelin_Count (Character_ID : Positive) return Natural is
         aCharacter : constant Barbarian_Character := Characters.Element (Character_ID);
@@ -840,8 +824,6 @@ package body Character_Controller is
             Num_Characters := Integer'Value (aLine (7 .. Pos1 - 1));
         end;
 
-        Put_Line ("Character_Controller.Load_Characters Num_Characters: " &
-                    Integer'Image (Num_Characters));
         for count in 1 .. Num_Characters loop
             declare
                 aLine    : constant String := Get_Line (Input_File);
@@ -863,6 +845,7 @@ package body Character_Controller is
         when anError : others =>
             Put_Line ("An exception occurred in Character_Controller.Load_Characters!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Load_Characters;
 
     --  ----------------------------------------------------------------------------
@@ -1171,7 +1154,6 @@ package body Character_Controller is
         Rotation_Matrix : Singles.Matrix4 := Singles.Identity4;
         Facing          : Singles.Vector3;
     begin
-        Put_Line ("Character_Controller.Start_Attack");
         if not Character.Is_Attacking then
             Character.Is_Attacking := True;
             if Weapon = Missile_Wt or Weapon = Skull_Wt or
@@ -1216,7 +1198,6 @@ package body Character_Controller is
         Spec        : constant Spec_Data := Character_Specs.Element (Spec_Index);
         Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num, 1);
     begin
-        Put_Line ("Character_Controller.Switch_Animation");
         if Character.Current_Anim /= Anim_Num then
             if Anim_Num > Natural (Max_Animations) then
                 raise Character_Controller_Exception;
@@ -1254,7 +1235,6 @@ package body Character_Controller is
     procedure Update_Character (theCharacter : in out Barbarian_Character;
                                 Seconds : Float) is
     begin
-        Put_Line ("Character_Controller.Update_Character");
         if theCharacter.Update_Decay > 0.0 then
             theCharacter.Update_Decay := theCharacter.Update_Decay - Seconds;
         else
@@ -1341,7 +1321,6 @@ package body Character_Controller is
         when others =>
             Put_Line ("Character_Controller.Update_Characters exception");
             raise;
-
     end Update_Characters;
 
     --  -------------------------------------------------------------------------

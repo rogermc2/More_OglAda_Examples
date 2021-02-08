@@ -169,8 +169,8 @@ package body Main_Loop is
                         --  Do cheating checks
                         Cheating := Cheat_Check_1;
                         if not Main_Menu.Menu_Open then
-                            Game_Utils.Game_Log
-                              ("Main_Loop.Game_Loop Is_Running Main Menu not open");
+--                              Game_Utils.Game_Log
+--                                ("Main_Loop.Game_Loop Is_Running Main Menu not open");
                             GUI.Update_GUIs (Delta_Time);
                             Text.Update_Comic_Texts (Delta_Time);
                             Text.Update_Particle_Texts (Delta_Time);
@@ -444,13 +444,9 @@ package body Main_Loop is
                     Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
 
                     FB_Effects.Fade_In;
-                    Put_Line ("FB_Effects.Fade_In done");
                     Manifold.Update_Static_Lights_Uniforms;
-                    Put_Line ("Manifold Static_Lights updated");
                     Prop_Renderer.Update_Static_Lights_Uniforms;
-                    Put_Line ("Prop_Renderer Ambient_Light_Level updated");
                     Sprite_Renderer.Update_Static_Lights_Uniforms;
-                    Put_Line ("Sprite_Renderer Ambient_Light_Level updated");
 
                     Camera.Camera_Wind_In;  --  Camera screw-in effect
                     Audio.Play_Sound ("enter_portal.wav", False);

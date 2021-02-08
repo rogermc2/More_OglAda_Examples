@@ -108,8 +108,8 @@ package body Tiles_Manager is
         --                                       Int'Image (Max_Rows) & ", " &
         --                                       Int'Image (Max_Cols));
 
-        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
-                               Integer'Image (Settings.Tile_Batch_Width));
+--          Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
+--                                 Integer'Image (Settings.Tile_Batch_Width));
 
         for Row in 1 .. Integer (Max_Rows) loop
             --              Row := index / Max_Cols + 1;
@@ -131,12 +131,12 @@ package body Tiles_Manager is
         for index in Batches.First_Index .. Batches.Last_Index loop
             Regenerate_Batch (Tiles, index);
         end loop;
-        Put_Line ("Add_Tiles_To_Batches done");
 
     exception
         when anError : others =>
             Put_Line ("An exception occurred in Tiles_Manager.Add_Tiles_To_Batches!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Add_Tiles_To_Batches;
 
     --  ----------------------------------------------------------------------------
@@ -301,8 +301,8 @@ begin
                 aString  : constant String := Get_Line (File);
                 aChar    : Character;
             begin
-                Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows Row " &
-                                       Int'Image (row) & ": aString " & aString);
+--                  Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows Row " &
+--                                         Int'Image (row) & ": aString " & aString);
                 if aString'Length < Batch_Manager.Max_Cols then
                     raise Tiles_Manager_Exception with
                       "Tiles_Manager.Load_Char_Rows: " & Load_Type &
@@ -339,6 +339,7 @@ begin
         when anError : others =>
             Put_Line ("An exception occurred in Manifold.Load_Char_Rows!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Load_Char_Rows;
 
     --  ----------------------------------------------------------------------------
@@ -423,6 +424,7 @@ begin
         when anError : others =>
             Put_Line ("An exception occurred in Tiles_Manager.Load_Int_Rows!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Load_Int_Rows;
 
     --  ----------------------------------------------------------------------------
@@ -445,18 +447,14 @@ begin
         end Get_Palette_File_Name;
 
     begin
-        Game_Utils.Game_Log
-          ("Tiles_Manager.Load_Palette_File_Names loading palette file names");
         Diff_Palette_Name := Get_Palette_File_Name ("dm ");
         Spec_Palette_Name := Get_Palette_File_Name ("sm ");
-
-        Game_Utils.Game_Log
-          ("Tiles_Manager.Load_Palette_File_Names palette file names loaded");
 
     exception
         when anError : others =>
             Put_Line ("An exception occurred in Tiles_Manager.Load_Palette_File_Names!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Load_Palette_File_Names;
 
     --  ------------------------------------------------------------------------
@@ -530,6 +528,7 @@ begin
         when anError : others =>
             Put_Line ("An exception occurred in Tiles_Manager.Load_Tiles!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Load_Tiles;
 
     --  ----------------------------------------------------------------------------
@@ -548,7 +547,7 @@ begin
         Tile_Row   : Tile_Column_List;
     begin
         --  Parse_Facings_By_Row initalizes the Tiles list.
-        Game_Utils.Game_Log ("File_Manager.Parse_Facings_By_Row");
+--          Game_Utils.Game_Log ("File_Manager.Parse_Facings_By_Row");
         for row in 1 .. Max_Rows loop
             declare
                 aString     : constant String := Get_Line (File);
@@ -581,6 +580,7 @@ begin
         when anError : others =>
             Put_Line ("An exception occurred in Tiles_Manager.Parse_Facings_By_Row!");
             Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Parse_Facings_By_Row;
 
     --  ----------------------------------------------------------------------------
