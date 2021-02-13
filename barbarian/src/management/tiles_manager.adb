@@ -308,6 +308,7 @@ begin
                       "Tiles_Manager.Load_Char_Rows: " & Load_Type &
                       " line has not enough columns.";
                 end if;
+
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
                     aTile := Tile_Row.Element (Positive (col));
@@ -385,6 +386,7 @@ begin
                       " Tiles_Manager.Load_Int_Rows: " & Load_Type &
                       " line has not enough columns.";
                 end if;
+
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
                     aTile := Tile_Row.Element (Positive (col));
@@ -509,20 +511,18 @@ begin
         Load_Int_Rows (File, "heights");
 
         Load_Palette_File_Names (File);
-        Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Palette file names: " &
-                               To_String (Diff_Palette_Name)
-                             & ", " & To_String (Spec_Palette_Name));
+--          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Palette file names: " &
+--                                 To_String (Diff_Palette_Name)
+--                               & ", " & To_String (Spec_Palette_Name));
         Load_Textures (Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex, Ramp_Spec_Tex);
 
         Add_Tiles_To_Batches;
-        Game_Utils.Game_Log ("Load_Tiles Batch calling Add_Dummy_Manifold_Lights");
         Add_Dummy_Manifold_Lights;
 
         Sprite_World_Map.Init;
 
         --        Game_Utils.Game_Log ("Total points " & Integer'Image (Total_Points));
-        Game_Utils.Game_Log ("Manifold generated.");
-        Game_Utils.Game_Log ("Tiles loaded.");
+        Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles loaded and Manifold generated.");
 
     exception
         when anError : others =>

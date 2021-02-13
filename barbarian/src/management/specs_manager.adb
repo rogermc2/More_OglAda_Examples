@@ -163,8 +163,8 @@ package body Specs_Manager is
             raise Specs_Exception with
               "Specs_Manager.Add_Attack_Event, too many attack_event instances.";
          else
-            Game_Utils.Game_Log (" Specs_Manager.Add_Projectile_Type adding attack_event time: " &
-                                   Single'Image (anEvent.Time_Sec));
+--              Game_Utils.Game_Log (" Specs_Manager.Add_Projectile_Type adding attack_event time: " &
+--                                     Single'Image (anEvent.Time_Sec));
             theSpec.Attack_Events (Weapon_ID).Append (anEvent);
             theSpec.Attack_Event_Count (Weapon_ID) :=
               theSpec.Attack_Event_Count (Weapon_ID) + 1;
@@ -285,9 +285,9 @@ package body Specs_Manager is
       end loop;
 
       if not Found then
-         Game_Utils.Game_Log
-           ("Specs_Manager.Get_Script_Index loading specs file: " &
-              File_Name);
+--           Game_Utils.Game_Log
+--             ("Specs_Manager.Get_Script_Index loading specs file: " &
+--                File_Name);
          Load_Specs_File (File_Name);
          Spec_Index := Get_Script_Index (File_Name);
       end if;

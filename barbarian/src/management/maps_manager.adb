@@ -23,11 +23,9 @@ package body Maps_Manager is
       Num_Story_Lines  : Natural;
       --          Story_Lines      : Story_Lines_List;
    begin
---        Put_Line ("Maps_Manager.Load_Maps opening " & Map_Path);
-      Game_Utils.Game_Log ("Maps_Manager.Load_Maps opening " & Map_Path);
+--        Game_Utils.Game_Log ("Maps_Manager.Load_Maps opening " & Map_Path);
       Open (Input_File, In_File, Map_Path);
---        Put_Line ("Maps_Manager.Load_Maps, " & Map_Path & " opened.");
-      Game_Utils.Game_Log ("Maps_Manager.Load_Maps, " & Map_Path & " opened.");
+--        Game_Utils.Game_Log ("Maps_Manager.Load_Maps, " & Map_Path & " opened.");
       theMap.Level_Title := To_Unbounded_String (Get_Line (Input_File));
       theMap.Level_Par_Time := To_Unbounded_String (Get_Line (Input_File));
 
@@ -43,7 +41,6 @@ package body Maps_Manager is
       --  Hammer_Music_Track
       aLine := To_Unbounded_String (Get_Line (Input_File));
 
---        Put_Line ("Maps_Manager.Load_Maps loading tiles ");
       Tiles_Manager.Load_Tiles (Input_File, Tile_Tex, Tile_Spec_Tex,
                                 Ramp_Diff_Tex, Ramp_Spec_Tex);
       Properties_Manager.Load_Properties (Input_File);
@@ -53,7 +50,6 @@ package body Maps_Manager is
       Audio_Manager.Load_Ambient_Sounds (Input_File);
       Text_Manager.Preload_Comic_Texts (Input_File);
       Close (Input_File);
-      Game_Utils.Game_Log ("Maps_Manager.Load_Maps loaded: " & Map_Path);
 
    exception
       when anError : others =>

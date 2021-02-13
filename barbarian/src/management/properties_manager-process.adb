@@ -524,7 +524,7 @@ package body Properties_Manager.Process is
             --           Game_Utils.Game_Log ("Properties_Manager-Process.Load_Property_Script, loaded"
             --                                & With_Path & ", index " & Integer'Image (Prop_Index));
         else
-            Put_Line ("Properties_Manager-Process.Load_Property_Script, failed to load"
+            Put_Line ("Properties_Manager-Process.Load_Property_Script failed to load"
                       & With_Path);
         end if;
 
@@ -539,7 +539,6 @@ package body Properties_Manager.Process is
                             To_String (Smashed_Script_File));
             end if;
         end if;
-        --        Game_Utils.Game_Log ("Properties_ManagerGame_Utils.Game_Log.Load_Property_Script done");
         return OK;
 
     exception

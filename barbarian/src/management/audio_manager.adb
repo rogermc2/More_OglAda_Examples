@@ -163,7 +163,6 @@ package body Audio_Manager is
          Create_Managed_Ambient_Source (To_String (Sound_File),
                                         S, T, Height, Radius);
       end loop;
-      Game_Utils.Game_Log ("Audio_Manager.Load_Ambient_Sounds ambient sounds loaded");
 
    end Load_Ambient_Sounds;
 
