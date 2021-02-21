@@ -18,11 +18,11 @@ package body Batch_Manager is
 
     type Tile_Side is (North_Side, East_Side, South_Side, West_Side);
 
-    Batches_Data           : Batches_List;
-    Static_Lights_List     : Static_Light_Vector;
-    Atlas_Factor           : constant Single := 0.25;
-    Sets_In_Atlas_Row      : constant Positive := 4;
-    ST_Offset              : constant Single := 8.0 / 2048.0;
+    Batches_Data             : Batches_List;
+    Static_Lights_List       : Static_Light_Vector;
+    Atlas_Factor             : constant Single := 0.25;
+    Sets_In_Atlas_Row        : constant Positive := 4;
+    ST_Offset                : constant Single := 8.0 / 2048.0;
     Ramp_Mesh_Points         : GL_Maths.Vec3_List;
     Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
     Ramp_Mesh_Smooth_Normals : GL_Maths.Vec3_List;
@@ -671,8 +671,10 @@ package body Batch_Manager is
         aNormal        : Vector3;
         aPoint         : Vector3;
         aSmooth_Normal : Vector3;
+        VPI            : Singles.Vector4;
         VPF            : Singles.Vector4;
         VNF            : Singles.Vector4;
+        Smooth_VNI     : Singles.Vector4;
         Smooth_VNF     : Singles.Vector4;
 
     begin
@@ -710,9 +712,11 @@ package body Batch_Manager is
                             aPoint := Element (Curs_P);
                             aNormal := Element (Curs_N);
                             aSmooth_Normal := Element (Curs_S);
-                            VPF := Model_Matrix * Singles.To_Vector4 (aPoint);
+                            VPI := Singles.To_Vector4 (aPoint);
+                            VPF := Model_Matrix * VPI;
                             VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
-                            Smooth_VNF := Model_Matrix * Singles.To_Vector4 (aSmooth_Normal);
+                            Smooth_VNI := Singles.To_Vector4 (aSmooth_Normal);
+                            Smooth_VNF := Model_Matrix * Smooth_VNI;
 
                             aBatch.Ramp_Points.Append (To_Vector3 (VPF));
                             aBatch.Ramp_Normals.Append (To_Vector3 (VNF));
@@ -730,8 +734,8 @@ package body Batch_Manager is
                 end loop;
             end loop;
 
-            --              Utilities.Print_GL_Array3
-            --                ("aBatch.Ramp_Points", GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
+            Utilities.Print_GL_Array3
+              ("aBatch.Ramp_Points", GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             GL.Attributes.Set_Vertex_Attrib_Pointer

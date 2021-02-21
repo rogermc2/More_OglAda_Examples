@@ -38,7 +38,8 @@ package body Frustum is
 
    F_Camera_Position : Singles.Vector3 := Maths.Vec3_0;
 
-   Cull_Enabled      : Boolean := True;
+   Cull_Enabled      : Boolean := False;
+--     Cull_Enabled      : Boolean := True;
    Update_Enabled    : Boolean := True;
 
    --      Prev_Vp_Size   : Integer := 0;

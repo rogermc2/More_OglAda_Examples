@@ -120,16 +120,24 @@ package body Manifold is
         Set_Model_Matrix (Singles.Identity4);
 
         while Has_Element (Curs) loop
+            Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around draw elements loop");
             aBatch := Element (Curs);
             Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
                              abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
             if Rad_Dist <= 2.0 * Radius then
+--              Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around,  Rad_Dist <= 2.0 * Radius");
                 Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
                                  abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
                 if Rad_Dist <= 2.0 * Radius then
+--              Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around, updated Rad_Dist <= 2.0 * Radius");
+--              Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around, Aabb_In_Frustum: "
+--                                   & Boolean'Image (Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.AABB_Maxs)));
+--               Utilities.Print_Vector (" AABB_Mins ", aBatch.AABB_Mins);
+--               Utilities.Print_Vector (" AABB_Maxs ", aBatch.AABB_Maxs);
                     if Frustum.Is_Aabb_In_Frustum
                       (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
                       not (aBatch.Static_Light_Indices.Is_Empty) then
+--              Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around, Aabb_In_Frustum and Static_Light_Indices not empty");
                         Light_Indices := aBatch.Static_Light_Indices;
                         Light_Cursor := Light_Indices.First;
                         Light_Index1 := Light_Indices.First_Index;
@@ -150,7 +158,9 @@ package body Manifold is
                             Set_Vertex_Attrib_Pointer
                               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
                             Enable_Vertex_Attrib_Array (Attrib_VP);
-                            Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+--          Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around Aabb_In_Frustum flat tiles Draw_Arrays");
+--                              Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+--                              Draw_Arrays (Points, 0, 1);
                             Disable_Vertex_Attrib_Array (Attrib_VP);
                         end if;
 
@@ -174,16 +184,18 @@ package body Manifold is
                             --  regular pass
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+        Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around regular Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
-                            --                              GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
-                            Disable_Vertex_Attrib_Array (Attrib_VP);                         end if;
+--                              Draw_Arrays (Points, 0, 1);
+                            Disable_Vertex_Attrib_Array (Attrib_VP);
+                            end if;
                     end if;
                 end if;
             end if;
             Next (Curs);
         end loop;
 
-        Draw_Water_Manifold_Around;
+--          Draw_Water_Manifold_Around;
 
     exception
         when others =>

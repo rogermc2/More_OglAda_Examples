@@ -586,14 +586,8 @@ package body Properties_Manager.Process is
             when Pillar_Prop =>
                 Rebalance := True;
                 if Pillar_Bridge_SI = 0 then
-                    Game_Utils.Game_Log
-                      ("Properties_Manager.Load_Property_Script setting Pillar_Bridge_SI from: "
-                       & Pillar_Bridge_Script_File);
                     Pillar_Bridge_SI :=
                       Get_Index_Of_Prop_Script (Pillar_Bridge_Script_File);
-                    Game_Utils.Game_Log
-                      ("Properties_Manager.Load_Property_Script Pillar_Bridge_SI: "
-                       & Integer'Image (Pillar_Bridge_SI));
                 end if;
                 if Pillar_Bridge_SI = 0 then
                     raise Properties_Exception with

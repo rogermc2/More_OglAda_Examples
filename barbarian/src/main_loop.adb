@@ -430,6 +430,7 @@ package body Main_Loop is
                     Projectile_Manager.Init;
 
                     Utilities.Clear_Background_Colour_And_Depth (White);
+--                      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
                     GL.Toggles.Enable (GL.Toggles.Depth_Test);
                     GL.Toggles.Enable (GL.Toggles.Cull_Face);
                     GL.Culling.Set_Cull_Face (GL.Culling.Back);

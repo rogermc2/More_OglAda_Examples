@@ -72,6 +72,7 @@ package body Texture_Manager is
            "Texture.Bind_Cube_Texture, active texture unit number for binding "
            & "is too high:" & Positive'Image (Slot);
       end if;
+
       if Tex /= Bound_Textures.Element (Slot) then
          Set_Active_Unit (GL.Types.Int (Slot));
          Texture_Cube_Map.Bind (Tex);
@@ -131,7 +132,6 @@ package body Texture_Manager is
 
       Bound_Textures.Append (Default_Texture);
       Loaded_Texture_Count := Loaded_Texture_Count + 1;
-      --        Game_Utils.Game_Log ("Default texture loaded.");
 
    exception
       when anError : others =>
@@ -139,13 +139,13 @@ package body Texture_Manager is
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          Game_Utils.Game_Log  ("An exception occurred in Texture_Manager.Create_Default_Texture!");
          Game_Utils.Game_Log (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Create_Default_Texture;
 
    --  ------------------------------------------------------------------------
 
    procedure Init is
    begin
-      Game_Utils.Game_Log ("Initializing texture manager.");
       Bound_Textures.Clear;
       Loaded_Textures.Clear;
       Bound_Textures.Set_Length (12);
@@ -310,9 +310,9 @@ package body Texture_Manager is
             Loaded_Textures.Append (Texture_Data);
             Loaded_Texture_Count := Loaded_Texture_Count + 1;
          end; -- declare block
-      else
-         Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " &
-                                File_Name & " already loaded.");
+--        else
+--           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " &
+--                                  File_Name & " already loaded.");
       end if;
 
    exception
@@ -321,6 +321,7 @@ package body Texture_Manager is
                      "Texture_Manager.Load_Image_To_Texture when loading " &
                      File_Name);
          Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Load_Image_To_Texture;
 
    --  ------------------------------------------------------------------------
