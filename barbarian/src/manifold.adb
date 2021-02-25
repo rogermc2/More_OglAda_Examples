@@ -100,8 +100,8 @@ package body Manifold is
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
-            --              Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
-            --              Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
+            Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
+            Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
         end if;
 
         if Manifold_Dyn_Light_Dirty then
@@ -118,6 +118,7 @@ package body Manifold is
         else
             Set_Shadow_Enabled (0.0);
         end if;
+
         Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
         Set_Model_Matrix (Singles.Identity4);
 

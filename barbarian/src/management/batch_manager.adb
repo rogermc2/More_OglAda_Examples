@@ -676,10 +676,10 @@ package body Batch_Manager is
         VNF            : Singles.Vector4;
         Smooth_VNI     : Singles.Vector4;
         Smooth_VNF     : Singles.Vector4;
-        First          : Boolean := True;
-        Count          : Integer := 0;
-
+        First          : Boolean := True;  --  Debug
+        Count          : Integer := 0;     --  Debug
     begin
+        --  Manifold.cpp, approx line 1015, p = g_batches[batch_idx].tiles;
         if not Is_Empty (Tiles) then
             for Row_Index in Tiles.First_Index .. Tiles.Last_Index loop
                 aRow := Tiles.Element (Row_Index);
@@ -702,17 +702,18 @@ package body Batch_Manager is
                         --                      Put_Line ("Batch_Manager.Generate_Ramps, Tile_Type " &
                         --                              aTile.Tile_Type);
                         --  Put each vertex point into world space
-                        Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
+                        Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
                         Model_Matrix := Translation_Matrix
-                          ((Single (2 * Col_Index),
-                           Single (2 * Height), Single (2 * Row_Index)));
+                          ((Single (2 * (Col_Index - aRow.First_Index)),
+                           Single (2 * Height),
+                           Single (2 * (Row_Index - Tiles.First_Index)))) *
+                          Rot_Matrix;
+--                          Model_Matrix := Rot_Matrix;
                         Curs_P := Ramp_Mesh_Points.First;
                         Curs_N := Ramp_Mesh_Normals.First;
                         Curs_T := Ramp_Mesh_Texcoords.First;
                         Curs_S := Ramp_Mesh_Smooth_Normals.First;
-                        if First then
-                           Utilities.Print_Matrix ("Model_Matrix", Model_Matrix);
-                        end if;
+                        Utilities.Print_Matrix ("Model_Matrix", Model_Matrix);
                         while Has_Element (Curs_P) loop
                             aPoint := Element (Curs_P);
 --                              if First and Count < 41 then
@@ -725,8 +726,8 @@ package body Batch_Manager is
 --                              if First and Count < 41 then
 --                                  Utilities.Print_Vector ("VPI", VPI);
 --                              end if;
---                              VPF := Model_Matrix * VPI;
-                            VPF := VPI;
+                            VPF := Model_Matrix * VPI;
+--                              VPF := VPI;
                             VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
                             Smooth_VNI := Singles.To_Vector4 (aSmooth_Normal);
                             Smooth_VNF := Model_Matrix * Smooth_VNI;
@@ -745,8 +746,8 @@ package body Batch_Manager is
                         aBatch.Ramp_Point_Count :=
                           aBatch.Ramp_Point_Count + Ramp_Mesh_Point_Count;
                     end if;
-                end loop;
-            end loop;
+                end loop;  --  for Col_Index
+            end loop;  --  for Row_Index
 
 --              Utilities.Print_GL_Array3
 --                ("aBatch.Ramp_Points", GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));

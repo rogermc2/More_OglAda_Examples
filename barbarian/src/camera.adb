@@ -53,8 +53,7 @@ package body Camera is
         Dir               : Singles.Vector3;
         First_Person_Pos  : Singles.Vector3;
     begin
---          G_Camera.World_Position := (2.0, 10.0, 2.0);  -- orig 2.0
-        G_Camera.World_Position := (0.0, 0.0, 2.0);  -- orig 2.0
+        G_Camera.World_Position := (2.0, 10.0, 2.0);
         Prev_Cam_Pos := G_Camera.World_Position;
         G_Camera.Shake_Mod_Position := (0.0, 0.0, 0.0);
         G_Camera.Original_Screen_Shake_Time := 0.0;
