@@ -332,8 +332,6 @@ package body GUI_Level_Chooser is
         Input_Callback.Clear_All_Keys;
         Input_Callback.Set_Key_Pressed (False);
 
---          Put_Line ("Process_Input Started_Loading_Map: " &
---                      Boolean'Image (Started_Loading_Map));
     end Process_Input;
 
     --  ------------------------------------------------------------------------

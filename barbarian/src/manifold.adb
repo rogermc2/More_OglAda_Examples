@@ -71,6 +71,7 @@ package body Manifold is
         use GL.Attributes;
         use GL.Culling;
         use GL.Toggles;
+        use GL.Objects.Buffers;
         use GL.Objects.Programs;
         use GL.Objects.Vertex_Arrays;
         use Maths;
@@ -92,6 +93,7 @@ package body Manifold is
         Light_Index2  : Positive;
         Tile_Index1   : Int;
         Tile_Index2   : Int;
+--          First         : Boolean := True;  --  Debug
     begin
         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
@@ -149,9 +151,9 @@ package body Manifold is
                         if aBatch.Point_Count > 0 then
                             --  flat tiles
                             GL_Utils.Bind_Vao (aBatch.Points_VAO);
-                            GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Points_VBO);
+                            Array_Buffer.Bind (aBatch.Points_VBO);
 --                              Put_Line ("Manifold.Draw_Manifold_Around Array_Buffer size and Points count "
---                                        & Size'Image (GL.Objects.Buffers.Array_Buffer.Size / 12)
+--                                        & GL.Types.Size'Image (Array_Buffer.Size / 12)
 --                                        & ", " & Integer'Image (aBatch.Point_Count));
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
@@ -166,13 +168,39 @@ package body Manifold is
 
                         if aBatch.Ramp_Point_Count > 0 then
                             --  ramps
-                            GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
-                            GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Ramp_VBO);
+                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO initialized "
+                                      & Boolean'Image (aBatch.Ramp_VBO.Initialized));
+                            aBatch.Ramp_Vao.Initialize_Id;
+                            GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
+--                              GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
+                            aBatch.Ramp_VBO.Initialize_Id;
+                            Array_Buffer.Bind (aBatch.Ramp_VBO);
+                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO bound ");
+--                              if First then
+--                                  Utilities.Print_GL_Array3
+--                                    ("Manifold, aBatch.Ramp_Points",
+--                                    GL_Maths.To_Vector3_Array (aBatch.Ramp_Points),
+--                                    40);
+--                                  First := False;
+--                              end if;
+                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size, Ramp_Point_Count "
+                                      & GL.Types.Size'Image (Array_Buffer.Size / 12)
+                                      & ", " & Integer'Image (aBatch.Ramp_Point_Count));
+                             Put_Line ("Ramp_Points size " & GL.Types.Size'Image
+                                       (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points)'Length));
+
+                             Utilities.Load_Vertex_Buffer
+                              (Array_Buffer,
+                               GL_Maths.To_Vector3_Array (aBatch.Ramp_Points),
+                               Static_Draw);
+                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO loaded ");
+                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
+                                      & GL.Types.Size'Image (Array_Buffer.Size / 12));
                             Set_Vertex_Attrib_Pointer
                               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
                             Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 --                              Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
---                                        & Size'Image (GL.Objects.Buffers.Array_Buffer.Size / 12)
+--                                        & GL.Types.Size'Image (Array_Buffer.Size / 12)
 --                                        & ", " & Integer'Image (aBatch.Ramp_Point_Count));
                             if Settings.Render_OLS then
                                 Set_Front_Face (Clockwise);
@@ -184,7 +212,7 @@ package body Manifold is
                             --  regular pass
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-        Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around regular Draw_Arrays");
+                            Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around regular Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
 --                              Draw_Arrays (Points, 0, 1);
                             Disable_Vertex_Attrib_Array (Attrib_VP);

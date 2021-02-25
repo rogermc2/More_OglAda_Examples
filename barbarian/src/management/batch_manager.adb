@@ -676,6 +676,8 @@ package body Batch_Manager is
         VNF            : Singles.Vector4;
         Smooth_VNI     : Singles.Vector4;
         Smooth_VNF     : Singles.Vector4;
+        First          : Boolean := True;
+        Count          : Integer := 0;
 
     begin
         if not Is_Empty (Tiles) then
@@ -708,12 +710,23 @@ package body Batch_Manager is
                         Curs_N := Ramp_Mesh_Normals.First;
                         Curs_T := Ramp_Mesh_Texcoords.First;
                         Curs_S := Ramp_Mesh_Smooth_Normals.First;
+                        if First then
+                           Utilities.Print_Matrix ("Model_Matrix", Model_Matrix);
+                        end if;
                         while Has_Element (Curs_P) loop
                             aPoint := Element (Curs_P);
+--                              if First and Count < 41 then
+--                                  Utilities.Print_Vector ("aPoint", aPoint);
+--                                  Count := Count + 1;
+--                              end if;
                             aNormal := Element (Curs_N);
                             aSmooth_Normal := Element (Curs_S);
                             VPI := Singles.To_Vector4 (aPoint);
-                            VPF := Model_Matrix * VPI;
+--                              if First and Count < 41 then
+--                                  Utilities.Print_Vector ("VPI", VPI);
+--                              end if;
+--                              VPF := Model_Matrix * VPI;
+                            VPF := VPI;
                             VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
                             Smooth_VNI := Singles.To_Vector4 (aSmooth_Normal);
                             Smooth_VNF := Model_Matrix * Smooth_VNI;
@@ -728,14 +741,15 @@ package body Batch_Manager is
                             Next (Curs_T);
                             Next (Curs_S);
                         end loop;
+                        First := False;
                         aBatch.Ramp_Point_Count :=
                           aBatch.Ramp_Point_Count + Ramp_Mesh_Point_Count;
                     end if;
                 end loop;
             end loop;
 
-            Utilities.Print_GL_Array3
-              ("aBatch.Ramp_Points", GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
+--              Utilities.Print_GL_Array3
+--                ("aBatch.Ramp_Points", GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -744,7 +758,7 @@ package body Batch_Manager is
 
             Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
             aBatch.Ramp_Point_Count := Integer (aBatch.Ramp_Points.Length);
-            aBatch.Ramp_Points.Clear;
+--              aBatch.Ramp_Points.Clear;
 
             aBatch.Ramp_VAO.Initialize_Id;
             aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO

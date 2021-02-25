@@ -242,10 +242,16 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
-   procedure Print_GL_Array3 (Name : String; anArray : GL.Types.Singles.Vector3_Array) is
+   procedure Print_GL_Array3 (Name : String;
+                              anArray : GL.Types.Singles.Vector3_Array;
+                              Head : Natural := 0) is
+     Last : GL.Types.Int := anArray'Last;
    begin
+      if Head > 0 then
+         Last := GL.Types.Int (Head);
+      end if;
       Put_Line (Name & ": ");
-      for Index in anArray'First .. anArray'Last loop
+      for Index in anArray'First .. Last loop
          Print_Singles_Vector3 ("", anArray (Index));
       end loop;
       New_Line;
@@ -253,10 +259,16 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
-   procedure Print_GL_Array4 (Name : String; anArray : GL.Types.Singles.Vector4_Array) is
+   procedure Print_GL_Array4 (Name : String;
+                              anArray : GL.Types.Singles.Vector4_Array;
+                              Head : Natural := 0) is
+     Last : GL.Types.Int := anArray'Last;
    begin
+      if Head > 0 then
+         Last := GL.Types.Int (Head);
+      end if;
       Put_Line (Name & ": ");
-      for Index in anArray'First .. anArray'Last loop
+      for Index in anArray'First .. Last loop
          Print_Singles_Vector4 ("", anArray (Index));
       end loop;
       New_Line;
