@@ -704,9 +704,9 @@ package body Batch_Manager is
                         --  Put each vertex point into world space
                         Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
                         Model_Matrix := Translation_Matrix
-                          ((Single (2 * (Col_Index - aRow.First_Index)),
-                           Single (2 * Height),
-                           Single (2 * (Row_Index - Tiles.First_Index)))) *
+                          ((0.1 * Single (2 * (Col_Index - aRow.First_Index)),
+                           0.1 * Single (2 * Height),
+                           0.1 * Single (2 * (Row_Index - Tiles.First_Index)))) *
                           Rot_Matrix;
 --                          Model_Matrix := Rot_Matrix;
                         Curs_P := Ramp_Mesh_Points.First;
@@ -714,6 +714,7 @@ package body Batch_Manager is
                         Curs_T := Ramp_Mesh_Texcoords.First;
                         Curs_S := Ramp_Mesh_Smooth_Normals.First;
                         Utilities.Print_Matrix ("Model_Matrix", Model_Matrix);
+
                         while Has_Element (Curs_P) loop
                             aPoint := Element (Curs_P);
 --                              if First and Count < 41 then
