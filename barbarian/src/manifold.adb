@@ -158,8 +158,6 @@ package body Manifold is
 --                                        & ", " & Integer'Image (aBatch.Point_Count));
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-                            Set_Vertex_Attrib_Pointer
-                              (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
                             Enable_Vertex_Attrib_Array (Attrib_VP);
                             Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around Aabb_In_Frustum flat tiles Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
@@ -171,10 +169,7 @@ package body Manifold is
                             --  ramps
                             Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO initialized "
                                       & Boolean'Image (aBatch.Ramp_VBO.Initialized));
-                            aBatch.Ramp_Vao.Initialize_Id;
                             GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
---                              GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
-                            aBatch.Ramp_VBO.Initialize_Id;
                             Array_Buffer.Bind (aBatch.Ramp_VBO);
                             Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO bound ");
 --                              if First then
@@ -190,15 +185,9 @@ package body Manifold is
                              Put_Line ("Ramp_Points size " & GL.Types.Size'Image
                                        (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points)'Length));
 
-                             Utilities.Load_Vertex_Buffer
-                              (Array_Buffer,
-                               GL_Maths.To_Vector3_Array (aBatch.Ramp_Points),
-                               Static_Draw);
                             Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO loaded ");
                             Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
                                       & GL.Types.Size'Image (Array_Buffer.Size / 12));
-                            Set_Vertex_Attrib_Pointer
-                              (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
                             Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 --                              Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
 --                                        & GL.Types.Size'Image (Array_Buffer.Size / 12)
