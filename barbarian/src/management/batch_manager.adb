@@ -633,14 +633,14 @@ package body Batch_Manager is
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-            aBatch.Normals.Clear;
+--              aBatch.Normals.Clear;
 
             aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
               (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-            aBatch.Tex_Coords.Clear;
+--              aBatch.Tex_Coords.Clear;
         end if;
 
     end Generate_Points;
@@ -857,7 +857,7 @@ package body Batch_Manager is
         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
         aBatch.Water_Point_Count := Integer (aBatch.Water_Points.Length);
-        aBatch.Water_Points.Clear;
+--          aBatch.Water_Points.Clear;
 
     end Generate_Water;
 

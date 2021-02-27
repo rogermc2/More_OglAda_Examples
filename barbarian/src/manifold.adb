@@ -161,8 +161,8 @@ package body Manifold is
                             Set_Vertex_Attrib_Pointer
                               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
                             Enable_Vertex_Attrib_Array (Attrib_VP);
---          Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around Aabb_In_Frustum flat tiles Draw_Arrays");
---                              Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+                            Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around Aabb_In_Frustum flat tiles Draw_Arrays");
+                            Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
 --                              Draw_Arrays (Points, 0, 1);
                             Disable_Vertex_Attrib_Array (Attrib_VP);
                         end if;
