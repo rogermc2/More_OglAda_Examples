@@ -93,15 +93,12 @@ package body Manifold is
         Light_Index2  : Positive;
         Tile_Index1   : Int;
         Tile_Index2   : Int;
---          First         : Boolean := True;  --  Debug
     begin
         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
-            Utilities.Print_Matrix ("View_Matrix", Camera.View_Matrix);
-            Utilities.Print_Matrix ("Projection_Matrix", Camera.Projection_Matrix);
         end if;
 
         if Manifold_Dyn_Light_Dirty then
@@ -123,24 +120,16 @@ package body Manifold is
         Set_Model_Matrix (Singles.Identity4);
 
         while Has_Element (Curs) loop
-            Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around draw elements loop");
             aBatch := Element (Curs);
             Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
                              abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
             if Rad_Dist <= 2.0 * Radius then
---              Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around,  Rad_Dist <= 2.0 * Radius");
                 Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
                                  abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
                 if Rad_Dist <= 2.0 * Radius then
---              Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around, updated Rad_Dist <= 2.0 * Radius");
---              Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around, Aabb_In_Frustum: "
---                                   & Boolean'Image (Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.AABB_Maxs)));
---               Utilities.Print_Vector (" AABB_Mins ", aBatch.AABB_Mins);
---               Utilities.Print_Vector (" AABB_Maxs ", aBatch.AABB_Maxs);
                     if Frustum.Is_Aabb_In_Frustum
                       (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
                       not (aBatch.Static_Light_Indices.Is_Empty) then
---              Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around, Aabb_In_Frustum and Static_Light_Indices not empty");
                         Light_Indices := aBatch.Static_Light_Indices;
                         Light_Cursor := Light_Indices.First;
                         Light_Index1 := Light_Indices.First_Index;
@@ -153,45 +142,18 @@ package body Manifold is
                             --  flat tiles
                             GL_Utils.Bind_Vao (aBatch.Points_VAO);
                             Array_Buffer.Bind (aBatch.Points_VBO);
---                              Put_Line ("Manifold.Draw_Manifold_Around Array_Buffer size and Points count "
---                                        & GL.Types.Size'Image (Array_Buffer.Size / 12)
---                                        & ", " & Integer'Image (aBatch.Point_Count));
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
                             Enable_Vertex_Attrib_Array (Attrib_VP);
-                            Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around Aabb_In_Frustum flat tiles Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
---                              Draw_Arrays (Points, 0, 1);
                             Disable_Vertex_Attrib_Array (Attrib_VP);
                         end if;
 
                         if aBatch.Ramp_Point_Count > 0 then
                             --  ramps
-                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO initialized "
-                                      & Boolean'Image (aBatch.Ramp_VBO.Initialized));
                             GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
                             Array_Buffer.Bind (aBatch.Ramp_VBO);
-                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO bound ");
---                              if First then
---                                  Utilities.Print_GL_Array3
---                                    ("Manifold, aBatch.Ramp_Points",
---                                    GL_Maths.To_Vector3_Array (aBatch.Ramp_Points),
---                                    40);
---                                  First := False;
---                              end if;
-                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size, Ramp_Point_Count "
-                                      & GL.Types.Size'Image (Array_Buffer.Size / 12)
-                                      & ", " & Integer'Image (aBatch.Ramp_Point_Count));
-                             Put_Line ("Ramp_Points size " & GL.Types.Size'Image
-                                       (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points)'Length));
-
-                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_VBO loaded ");
-                            Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
-                                      & GL.Types.Size'Image (Array_Buffer.Size / 12));
                             Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
---                              Put_Line ("Manifold.Draw_Manifold_Around Ramp_Vao Array_Buffer size "
---                                        & GL.Types.Size'Image (Array_Buffer.Size / 12)
---                                        & ", " & Integer'Image (aBatch.Ramp_Point_Count));
                             if Settings.Render_OLS then
                                 Set_Front_Face (Clockwise);
                                 Set_Outline_Pass (1.0);
@@ -202,18 +164,16 @@ package body Manifold is
                             --  regular pass
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-                            Game_Utils.Game_Log ("Manifold.Draw_Manifold_Around regular Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
---                              Draw_Arrays (Points, 0, 1);
                             Disable_Vertex_Attrib_Array (Attrib_VP);
-                            end if;
+                        end if;
                     end if;
                 end if;
             end if;
             Next (Curs);
         end loop;
 
---          Draw_Water_Manifold_Around;
+        Draw_Water_Manifold_Around;
 
     exception
         when others =>
@@ -315,7 +275,7 @@ package body Manifold is
                 Tile_Index1 := Int (Element (Light_Cursor));
                 Tile_Index2 := Int (Element (Next (Light_Cursor)));
                 Put_Line ("Manifold.Draw_Water_Manifold_Around Tile_Index1, Tile_Index2: "
-                & Int'Image (Tile_Index1) & ", " & Int'Image (Tile_Index2));
+                          & Int'Image (Tile_Index1) & ", " & Int'Image (Tile_Index2));
                 Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                 GL_Utils.Bind_Vao (aBatch.Water_VAO);
@@ -460,14 +420,14 @@ package body Manifold is
         Specular  : Singles.Vector3_Array (1 .. 32) := (others => Maths.Vec3_0);
         Ranges    : Single_Array (1 .. 32) := (others => 0.0);
     begin
-            while Index <= Static_Lights.Last_Index loop
-                aLight := Element (Static_Lights, Index);
-                Positions (Int (Index)) := aLight.Position;
-                Diffuse (Int (Index)) := aLight.Diffuse;
-                Specular (Int (Index)) := aLight.Specular;
-                Ranges (Int (Index)) := aLight.Light_Range;
-                Index := Index + 1;
-            end loop;
+        while Index <= Static_Lights.Last_Index loop
+            aLight := Element (Static_Lights, Index);
+            Positions (Int (Index)) := aLight.Position;
+            Diffuse (Int (Index)) := aLight.Diffuse;
+            Specular (Int (Index)) := aLight.Specular;
+            Ranges (Int (Index)) := aLight.Light_Range;
+            Index := Index + 1;
+        end loop;
 
         GL.Objects.Programs.Use_Program (Manifold_Program);
         Manifold_Shader_Manager.Set_Light_Positions (Positions);
