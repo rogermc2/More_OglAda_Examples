@@ -566,9 +566,9 @@ package body Batch_Manager is
                     --                                       & Integer'Image (Tile_Index));
                     aTile := Tile_Row.Element (Col_Index);
                     Height := aTile.Height;
-                    X := 0.1 * Single (2 * (Col_Index - Tile_Row.First_Index));
-                    Y := 0.1 * Single (2 * Height);
-                    Z := 0.1 * Single (2 * Row_Index - Tiles.First_Index);
+                    X := Single (2 * (Col_Index - Tile_Row.First_Index));
+                    Y := Single (2 * Height);
+                    Z := Single (2 * Row_Index - Tiles.First_Index);
 
                     if aTile.Tile_Type = '~' then
                         Height := Height - 1;
@@ -700,16 +700,13 @@ package body Batch_Manager is
                     end case;
 
                     if aTile.Tile_Type = '/' then
-                        --                      Put_Line ("Batch_Manager.Generate_Ramps, Tile_Type " &
-                        --                              aTile.Tile_Type);
-                        --  Put each vertex point into world space
+                       --  Put each vertex point into world space
                         Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
                         Model_Matrix := Translation_Matrix
-                          ((0.1 * Single (2 * (Col_Index - aRow.First_Index)),
-                           0.1 * Single (2 * Height),
-                           0.1 * Single (2 * (Row_Index - Tiles.First_Index)))) *
+                          ((Single (2 * (Col_Index - aRow.First_Index)),
+                           Single (2 * Height),
+                           Single (2 * (Row_Index - Tiles.First_Index)))) *
                           Rot_Matrix;
---                          Model_Matrix := Rot_Matrix;
                         Curs_P := Ramp_Mesh_Points.First;
                         Curs_N := Ramp_Mesh_Normals.First;
                         Curs_T := Ramp_Mesh_Texcoords.First;
@@ -717,16 +714,9 @@ package body Batch_Manager is
 
                         while Has_Element (Curs_P) loop
                             aPoint := Element (Curs_P);
---                              if First and Count < 41 then
---                                  Utilities.Print_Vector ("aPoint", aPoint);
---                                  Count := Count + 1;
---                              end if;
                             aNormal := Element (Curs_N);
                             aSmooth_Normal := Element (Curs_S);
                             VPI := Singles.To_Vector4 (aPoint);
---                              if First and Count < 41 then
---                                  Utilities.Print_Vector ("VPI", VPI);
---                              end if;
                             VPF := Model_Matrix * VPI;
                             VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
                             Smooth_VNI := Singles.To_Vector4 (aSmooth_Normal);
@@ -735,7 +725,6 @@ package body Batch_Manager is
                             aBatch.Ramp_Points.Append (To_Vector3 (VPF));
                             aBatch.Ramp_Normals.Append (To_Vector3 (VNF));
                             aBatch.Ramp_Tex_Coords.Append (Element (Curs_T));
---                              Utilities.Print_Vector ("Element (Curs_T)", Element (Curs_T));
                             aBatch.Ramp_Smooth_Normals.Append (To_Vector3 (Smooth_VNF));
 
                             Next (Curs_N);
@@ -844,11 +833,6 @@ package body Batch_Manager is
             end loop;  --  end for each row
         end loop;  --  end for each Tile
 
-        --              Put_Line ("Batch_Manager.Generate_Water, Water_Mesh_Points size: " &
-        --                         Integer'Image (Integer (Water_Mesh_Points.Length)));
-        --              Put_Line ("Batch_Manager.Generate_Water, aBatch.Water_Points size: " &
-        --                         Integer'Image (Integer (aBatch.Water_Points.Length)));
-
         aBatch.Water_VAO.Initialize_Id;
         GL_Utils.Bind_VAO (aBatch.Water_VAO);
 
@@ -891,13 +875,9 @@ package body Batch_Manager is
               "Batch_Manager.Init error loading ramp mesh data from file "
               & "src/meshes/ramp_may_2014.apg";
         end if;
+
         Ramp_Mesh_Point_Count := Integer (Ramp_Mesh_Points.Length);
 
---          Game_Utils.Game_Log ("Batch_Manager.Init loaded src/meshes/ramp_may_2014.apg"
---                               & " Ramp_Mesh_Points.Length " & Integer'Image (Integer (Ramp_Mesh_Points.Length))
---                               & " Ramp_Mesh_Texcoords.Length " & Integer'Image (Integer (Ramp_Mesh_Texcoords.Length))
---                               & " Ramp_Mesh_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Normals.Length)));
-
         if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                                 Points, Texcoords,
                                                 Ramp_Mesh_Smooth_Normals) then
@@ -906,11 +886,6 @@ package body Batch_Manager is
               & "src/meshes/ramp_smooth.apg";
         end if;
 
---          Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded."
---                               & " Points.Length " & Integer'Image (Integer (Points.Length))
---                               & " Texcoords.Length " & Integer'Image (Integer (Texcoords.Length))
---                               & " Ramp_Mesh_Smooth_Normals.Length " & Integer'Image (Integer (Ramp_Mesh_Smooth_Normals.Length)));
-
         if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
                                                 Points, Texcoords,
                                                 Ramp_Mesh_Smooth_Normals) then
@@ -918,7 +893,6 @@ package body Batch_Manager is
               "Batch_Manager.Init error loading ramp mesh data from file "
               & "src/meshes/ramp_smooth.apg";
         end if;
-        Game_Utils.Game_Log ("Batch_Manager.Init ramp_smooth.apg loaded.");
 
         if not Mesh_Loader.Load_Mesh_Data_Only
           ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
@@ -996,11 +970,7 @@ package body Batch_Manager is
             raise Batch_Manager_Exception with
               "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
         end if;
-        --              Put_Line ("Batch_Manager.Regenerate_Batch Max_Cols " &
-        --                          Int'Image (Max_Cols));
-        --         Put_Line ("Batch_Manager.Regenerate_Batch  Tile_Indices and Batches Lengths " &
-        --              Integer'Image (Integer (Tile_Indices.Length)) &
-        --              ", " & Integer'Image (Integer (Batches.Length)));
+
         if not Tile_Indices.Is_Empty then
             while Has_Element (Indices_Curs) loop
                 Tile_Index := Element (Indices_Curs);

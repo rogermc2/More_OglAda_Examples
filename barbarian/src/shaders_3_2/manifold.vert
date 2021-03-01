@@ -29,7 +29,6 @@ void main()
 		gl_Position = P * V * M * vec4 (pos, 1.0);
 		return;
         }
-    //vec3 vp2 = vec3 (2.0, 0.0, 2.0);
     vec3 vp2 = vp / 10.0;
 	p_eye = (V * M * vec4 (vp2, 1.0)).xyz;
 	n_eye = (V * M * vec4 (vn, 0.0)).xyz;
