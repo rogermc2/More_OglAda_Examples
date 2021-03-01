@@ -146,9 +146,7 @@ package body Manifold is
                             --  Bind_Texture sets active unit and binds texture
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
-                            Set_Diff_Map (0);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-                            Set_Spec_Map (1);
                             Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
                         end if;
 
@@ -161,9 +159,7 @@ package body Manifold is
                             --  Bind_Texture sets active unit and binds texture
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
-                            Set_Diff_Map (0);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-                            Set_Spec_Map (1);
                             Put_Line ("Manifold.Draw_Manifold_Around Texture bound");
                             if Settings.Render_OLS then
                                 Set_Front_Face (Clockwise);
@@ -179,9 +175,7 @@ package body Manifold is
                             --  to Texture_Target Texture_2D
                             Put_Line ("Manifold.Draw_Manifold_Around regular pass");
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
-                            Set_Diff_Map (0);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-                            Set_Spec_Map (1);
                             Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
                             Put_Line ("Manifold.Draw_Manifold_Around regular pass Arrays drawn");

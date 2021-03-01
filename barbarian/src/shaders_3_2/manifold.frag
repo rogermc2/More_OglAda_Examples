@@ -19,7 +19,7 @@ uniform vec3 dyn_light_spec;
 uniform float dyn_light_range;
 
 // static scene lights
-uniform vec3 L_a; // ambient intensity
+uniform vec3 L_a; // ambient light colour
 uniform ivec2 static_light_indices;
 uniform vec3 light_pos[32];
 uniform vec3 light_diff[32];
