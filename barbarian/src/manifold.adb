@@ -141,7 +141,6 @@ package body Manifold is
                         if aBatch.Point_Count > 0 then
                             --  flat tiles
                             GL_Utils.Bind_Vao (aBatch.Points_VAO);
-                            Array_Buffer.Bind (aBatch.Points_VBO);
                             --  Bind_Texture sets active unit and binds texture
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
@@ -152,7 +151,6 @@ package body Manifold is
                         if aBatch.Ramp_Point_Count > 0 then
                             --  ramps
                             GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
-                            Array_Buffer.Bind (aBatch.Ramp_VBO);
 
                             --  Bind_Texture sets active unit and binds texture
                             --  to Texture_Target Texture_2D
@@ -208,15 +206,9 @@ package body Manifold is
             if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
                 --  Flat Tiles
                 GL_Utils.Bind_Vao (aBatch.Points_VAO);
-                GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Points_VBO);
-
-                Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
 
                 GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
-                GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Ramp_VBO);
-
-                Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
             end if;
             Next (Curs);
@@ -284,7 +276,6 @@ package body Manifold is
                 Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                 GL_Utils.Bind_Vao (aBatch.Water_VAO);
-                GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Water_VBO);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Water_Point_Count));
             end if;
             Next (Curs);
