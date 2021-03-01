@@ -348,7 +348,6 @@ package body Batch_Manager is
         New_Light.Column := Col;
         Static_Lights_List.Append (New_Light);
 
---          Game_Utils.Game_Log ("Batch_Manager.Add_Static_Light iterating");
         Batches.Iterate (Process_Batch'Access);
     end Add_Static_Light;
 
@@ -541,8 +540,6 @@ package body Batch_Manager is
         use GL_Maths;
         Tile_Row  : Tile_Column_List := Tiles.First_Element;
         aTile     : Tile_Data;
-        --          Row       : Positive;
-        --          Column    : Positive;
         Height    : Integer;
         X         : Single;
         Y         : Single;
@@ -562,9 +559,7 @@ package body Batch_Manager is
             for Row_Index in Tiles.First_Index .. Tiles.Last_Index loop
                 Tile_Row := Tiles (Row_Index);
                 for Col_Index in Tile_Row.First_Index .. Tile_Row.Last_Index loop
-                    --                  Game_Utils.Game_Log ("Batch_Manager.Generate_Points Tile_Index"
-                    --                                       & Integer'Image (Tile_Index));
-                    aTile := Tile_Row.Element (Col_Index);
+                   aTile := Tile_Row.Element (Col_Index);
                     Height := aTile.Height;
                     X := Single (2 * (Col_Index - Tile_Row.First_Index));
                     Y := Single (2 * Height);
@@ -587,8 +582,6 @@ package body Batch_Manager is
                             aBatch.Normal_Count := aBatch.Normal_Count + 1;
                         end loop;
 
-                        --                          Atlas_Row := Tile_Index / Sets_In_Atlas_Row;
-                        --                          Atlas_Col := (Tile_Index - Atlas_Row + 1) * Sets_In_Atlas_Row;
                         Atlas_Row := Row_Index;
                         Atlas_Col := Col_Index;
                         Add_Tex_Coords (0.5, 1.0);
@@ -811,15 +804,16 @@ package body Batch_Manager is
                     when 'E' => Deg := Degree (270);
                     when others =>
                         raise Batch_Manager_Exception with
-                          "Generate_Ramps, invalid Facing value";
+                          "Generate_Water, invalid Facing value";
                 end case;
 
                 if aTile.Tile_Type = '~' then
                     --  Put each vertex point into world space
                     Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
                     Model_Matrix := Translation_Matrix
-                      ((Single (2 * Col_Index), Single (2 * Height),
-                       Single (2 * Row_Index)));
+                      ((Single (2 * Col_Index - aRow.First_Index),
+                       Single (2 * Height),
+                       Single (2 * Row_Index - Tiles.First_Index)));
                     Curs_P := Water_Mesh_Points.First;
                     while Has_Element (Curs_P) loop
                         aWater_Point := Element (Curs_P);
