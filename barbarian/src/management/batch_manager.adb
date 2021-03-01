@@ -781,7 +781,7 @@ package body Batch_Manager is
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
---              aBatch.Ramp_Smooth_Normals.Clear;
+            aBatch.Ramp_Smooth_Normals.Clear;
         end if;
 
     end Generate_Ramps;
@@ -856,7 +856,7 @@ package body Batch_Manager is
         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
         aBatch.Water_Point_Count := Integer (aBatch.Water_Points.Length);
---          aBatch.Water_Points.Clear;
+        aBatch.Water_Points.Clear;
 
     end Generate_Water;
 
