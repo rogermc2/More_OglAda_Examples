@@ -140,32 +140,51 @@ package body Manifold is
 
                         if aBatch.Point_Count > 0 then
                             --  flat tiles
+                            Put_Line ("Manifold.Draw_Manifold_Around draw flat tiles");
                             GL_Utils.Bind_Vao (aBatch.Points_VAO);
                             Array_Buffer.Bind (aBatch.Points_VBO);
+                            --  Bind_Texture sets active unit and binds texture
+                            --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
+                            Set_Diff_Map (0);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-                            Enable_Vertex_Attrib_Array (Attrib_VP);
+                            Set_Spec_Map (1);
                             Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
-                            Disable_Vertex_Attrib_Array (Attrib_VP);
                         end if;
 
                         if aBatch.Ramp_Point_Count > 0 then
                             --  ramps
+                            Put_Line ("Manifold.Draw_Manifold_Around draw ramps");
                             GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
                             Array_Buffer.Bind (aBatch.Ramp_VBO);
-                            Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+--                              Array_Buffer.Bind (aBatch.Ramp_Normals_VBO);
+                            --  Bind_Texture sets active unit and binds texture
+                            --  to Texture_Target Texture_2D
+                            Texture_Manager.Bind_Texture (0, Tile_Tex);
+                            Set_Diff_Map (0);
+                            Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+                            Set_Spec_Map (1);
+                            Put_Line ("Manifold.Draw_Manifold_Around Texture bound");
                             if Settings.Render_OLS then
                                 Set_Front_Face (Clockwise);
                                 Set_Outline_Pass (1.0);
+                                Put_Line ("Manifold.Draw_Manifold_Around draw OLS");
                                 Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
+                                Put_Line ("Manifold.Draw_Manifold_Around OLS drawn");
                                 Set_Outline_Pass (0.0);
                                 Set_Front_Face (Counter_Clockwise);
                             end if;
                             --  regular pass
+                            --  Bind_Texture sets active unit and binds texture
+                            --  to Texture_Target Texture_2D
+                            Put_Line ("Manifold.Draw_Manifold_Around regular pass");
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
+                            Set_Diff_Map (0);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+                            Set_Spec_Map (1);
+                            Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
-                            Disable_Vertex_Attrib_Array (Attrib_VP);
+                            Put_Line ("Manifold.Draw_Manifold_Around regular pass Arrays drawn");
                         end if;
                     end if;
                 end if;
@@ -206,6 +225,7 @@ package body Manifold is
                 Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
                 Enable_Vertex_Attrib_Array (Attrib_VP);
                 Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+
                 GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
                 GL.Objects.Buffers.Array_Buffer.Bind (aBatch.Ramp_VBO);
                 Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
@@ -274,8 +294,8 @@ package body Manifold is
                 Light_Cursor := Light_Indices.First;
                 Tile_Index1 := Int (Element (Light_Cursor));
                 Tile_Index2 := Int (Element (Next (Light_Cursor)));
-                Put_Line ("Manifold.Draw_Water_Manifold_Around Tile_Index1, Tile_Index2: "
-                          & Int'Image (Tile_Index1) & ", " & Int'Image (Tile_Index2));
+--                  Put_Line ("Manifold.Draw_Water_Manifold_Around Tile_Index1, Tile_Index2: "
+--                            & Int'Image (Tile_Index1) & ", " & Int'Image (Tile_Index2));
                 Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                 GL_Utils.Bind_Vao (aBatch.Water_VAO);

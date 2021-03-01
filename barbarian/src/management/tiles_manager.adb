@@ -432,7 +432,7 @@ begin
     --  ----------------------------------------------------------------------------
 
     procedure Load_Palette_File_Names (File : File_Type) is
-
+        --  Get_Palette_File_Name reads the file name identified by the label ID
         function  Get_Palette_File_Name (ID : String) return Unbounded_String is
             aLine : constant String := Get_Line (File);
             Label : constant String (1 .. 3) := aLine (1 .. 3);
