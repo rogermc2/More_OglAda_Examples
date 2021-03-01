@@ -750,6 +750,9 @@ package body Batch_Manager is
                 end loop;  --  for Col_Index
             end loop;  --  for Row_Index
 
+            aBatch.Ramp_VAO.Initialize_Id;
+            GL_Utils.Bind_VAO (aBatch.Ramp_VAO);
+
             aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -760,7 +763,6 @@ package body Batch_Manager is
             aBatch.Ramp_Point_Count := Integer (aBatch.Ramp_Points.Length);
             aBatch.Ramp_Points.Clear;
 
-            aBatch.Ramp_VAO.Initialize_Id;
             aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
               (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
             GL.Attributes.Set_Vertex_Attrib_Pointer
@@ -849,6 +851,7 @@ package body Batch_Manager is
 
         aBatch.Water_VAO.Initialize_Id;
         GL_Utils.Bind_VAO (aBatch.Water_VAO);
+
         aBatch.Water_VBO := GL_Utils.Create_3D_VBO
           (GL_Maths.To_Vector3_Array (aBatch.Water_Points));
         GL.Attributes.Set_Vertex_Attrib_Pointer
