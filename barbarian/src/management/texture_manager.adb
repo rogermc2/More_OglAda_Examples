@@ -31,9 +31,6 @@ package body Texture_Manager is
      (Natural, Loaded_Texture);
    type Loaded_Textures_List is new Loaded_Textures_Package.Vector with null record;
 
-   --      Max_Textures         : constant Integer := 256;
-   --      Loaded_Texture_Count_Allocated : Integer := Max_Textures;
-   Loaded_Texture_Count : Integer := 0;
    Bound_Textures       : Bound_Textures_List;
    Loaded_Textures      : Loaded_Textures_List;
 
@@ -131,7 +128,6 @@ package body Texture_Manager is
       Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
 
       Bound_Textures.Append (Default_Texture);
-      Loaded_Texture_Count := Loaded_Texture_Count + 1;
 
    exception
       when anError : others =>
@@ -257,6 +253,7 @@ package body Texture_Manager is
             Set_Active_Unit (0);
             Texture_2D.Bind (aTexture);
 
+            --  g_bound_textures[0] = tex;
             if Bound_Textures.Is_Empty then
                Bound_Textures.Append (aTexture);
             else
@@ -308,7 +305,6 @@ package body Texture_Manager is
 
             Texture_Data.Texture_ID := aTexture.Raw_Id;
             Loaded_Textures.Append (Texture_Data);
-            Loaded_Texture_Count := Loaded_Texture_Count + 1;
          end; -- declare block
 --        else
 --           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " &
