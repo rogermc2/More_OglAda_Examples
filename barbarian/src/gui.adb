@@ -693,6 +693,7 @@ package body GUI is
                               & " is invalid.");
          Pos_Index := 2;
       end if;
+
       if Tex_Index < 1 or
         Tex_Index > Controller_Textures_Manager.Num_Steam_Controller_Images then
          Game_Utils.Game_Log
@@ -701,6 +702,8 @@ package body GUI is
          Tex_Index := 1;
       end if;
 
+      Put_Line ("GUI.Show_Controller_Button_Overlay, Pos_Index, Tex_Index " &
+                 Integer'Image (Pos_Index)  & ", " & Integer'Image (Tex_Index));
       Control_Button_Overlays.In_Use (Pos_Index) := True;
       Control_Button_Overlays.Life_Time (Int (Pos_Index)) := 0.0;
       Control_Button_Overlays.Textures (Pos_Index) :=

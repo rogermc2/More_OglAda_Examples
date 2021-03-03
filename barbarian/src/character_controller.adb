@@ -63,10 +63,8 @@ package body Character_Controller is
 
     --      Portal_Fadeout_Started  : Boolean := False;
     Characters_To_Reserve   : constant Integer := 256;
-    Characters_Allocd_Count : Integer := Characters_To_Reserve;
-    Character_Count         : Integer := Characters_To_Reserve;
-    --      Specs_Allocd_Count      : Integer := 0;
-    --      Specs_Count             : Integer := 0;
+--      Characters_Allocd_Count : Integer := Characters_To_Reserve;
+--      Character_Count         : Integer := Characters_To_Reserve;
     --      Gold_Current            : constant Integer := 0;
     Kills_Current                   : Integer := 0;
     Kills_Max                       : Integer := 0;
@@ -232,8 +230,6 @@ package body Character_Controller is
 
     procedure Create_Character (Source       : Character_Data;
                                 theCharacter : in out Barbarian_Character) is
-        Diff_U     : GL.Objects.Textures.Texture;
-        Spec_U     : GL.Objects.Textures.Texture;
         Spec       : Spec_Data;
         Rows       : Integer;
         Cols       : Integer;
@@ -255,12 +251,11 @@ package body Character_Controller is
             theCharacter.Specs_Index :=
               Specs_Manager.Get_Script_Index (To_String (Source.Script_File));
             Spec := Specs_Manager.Get_Spec (theCharacter.Specs_Index);
-            Diff_U := Spec.Atlas_Diffuse_ID;
-            Spec_U := Spec.Atlas_Specular_ID;
             Rows := Spec.Atlas_Rows;
             Cols := Spec.Atlas_Cols;
             theCharacter.Sprite_Index :=
-              Sprite_Renderer.Add_Sprite (Diff_U, Spec_U, Rows, Cols);
+              Sprite_Renderer.Add_Sprite
+                (Spec.Atlas_Diffuse_ID, Spec.Atlas_Specular_ID, Rows, Cols);
             theCharacter.Current_Health := Spec.Initial_Health;
             Sprite_Renderer.Set_Sprite_Heading
               (theCharacter.Sprite_Index, Source.Heading);
@@ -275,15 +270,14 @@ package body Character_Controller is
             theCharacter.Current_Weapon := Spec.Default_Weapon;
             theCharacter.World_Pos := W_Pos;
             Characters.Append (theCharacter);
-            Character_Count := Character_Count + 1;
 
             Character_Map.Add_New_Character_To_Map
               (Source.U, Source.V, Characters.Last_Index);
             if Spec.Team_ID = 1 then
                 Kills_Max := Kills_Max + 1;
             end if;
---              Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
---                                     To_String (Source.Script_File));
+            Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
+                                   To_String (Source.Script_File));
         else
             raise Character_Controller_Exception with
               "Character_Controller.Create_Character, invalid tile siza" &
@@ -793,7 +787,8 @@ package body Character_Controller is
         Specs_Manager.Clear_Specs;
 
         if Characters.Is_Empty then
-            Characters_Allocd_Count := Characters_To_Reserve;
+            null;
+--              Characters_Allocd_Count := Characters_To_Reserve;
         else
             Game_Utils.Game_Log
               ("Character_Controller.Load_Characters, " &

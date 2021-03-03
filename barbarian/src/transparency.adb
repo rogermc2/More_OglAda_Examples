@@ -1,5 +1,6 @@
 
 with Ada.Containers.Vectors;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Blending;
 with GL.Buffers;
@@ -15,16 +16,16 @@ package body Transparency is
    Max_Transparent_Items : constant Integer := 256;
 
  --  node for sorting transparent items by distance from camera
-   type TR_Node is record
+   type Transparency_Node is record
       Closer    : Natural := 0;  --  0 means that this is the first
       Farther   : Natural := 0;  --  0 means that this is the last
-      Tr_Type   : Transparency_Type := Tr_Undef;
+      Tr_Type   : Transparency_Type := Transparency_Undef;
       Render_Id : Positive; --  ID of this item in that renderer
       Sq_Dist   : GL.Types.Single := 0.0;  --  squared dist of the item from the camera
    end record;
 
    package Transparent_Package is new Ada.Containers.Vectors
-     (Positive, TR_Node);
+     (Positive, Transparency_Node);
    type Transparent_Vector is new Transparent_Package.Vector with null Record;
 
    TR_Nodes           : Transparent_Vector;
@@ -38,10 +39,10 @@ package body Transparency is
       use GL.Blending;
       use GL.Toggles;
       use GL.Types;
-      Curr_Type : constant Transparency_Type := Tr_Undef;
+      Curr_Type : constant Transparency_Type := Transparency_Undef;
       Inspect   : Natural := TR_Farthest_Node;
       Item_Type : Transparency_Type;
-      Node      : TR_Node;
+      Node      : Transparency_Node;
    begin
       Enable (Blend);
       Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
@@ -49,14 +50,20 @@ package body Transparency is
       Enable (Depth_Test);
 
       while Inspect /= 0 loop
+           Put_Line ("Transparency.Draw_Transparency_List, Inspect: " &
+                    Integer'Image (Inspect));
          Node := TR_Nodes.Element (Inspect);
          Item_Type := Node.Tr_Type;
-         if Item_Type /= Curr_Type and Item_Type = Tr_Sprite then
+         if Item_Type /= Curr_Type and Item_Type = Transparency_Sprite then
             Sprite_Renderer.Start_Sprite_Rendering;
          end if;
-         if Item_Type = Tr_Sprite then
+         if Item_Type = Transparency_Sprite then
+           Put_Line ("Transparency.Draw_Transparency_List, Render_Sprite: " &
+                       Integer'Image (Node.Render_Id));
             Sprite_Renderer.Render_Sprite (Node.Render_Id);
          else
+           Put_Line ("Transparency.Draw_Transparency_List, Render_Property: " &
+                       Integer'Image (Node.Render_Id));
             Prop_Renderer.Render_Property (Node.Render_Id);
          end if;
          Inspect := Node.Closer;
@@ -87,18 +94,20 @@ package body Transparency is
       use Transparent_Package;
       Dist         : constant Vector3 := TR_Camera_Position - Position;
       Sq_Dist      : constant Single := Maths.Length_Sq (Dist) - Brad ** 2;
-      Inspect_Node : TR_Node;
+      Inspect_Node : Transparency_Node;
       Inspect      : Natural;
-      New_Node     : TR_Node;
+      New_Node     : Transparency_Node;
       P_Closer     : Natural;
       Found        : Boolean := False;
 
-      procedure Update_Farthest (Element : in out TR_Node) is
+      procedure Update_Farthest (Element : in out Transparency_Node) is
       begin
          Element.Farther := TR_Nodes.Last_Index;
       end Update_Farthest;
 
    begin
+      Put_Line ("Transparency.Add_Transparency_Item Render_ID: " &
+               Integer'Image (Render_ID));
       New_Node.Tr_Type := Item_Type;
       New_Node.Render_Id := Integer (Render_ID);
       New_Node.Sq_Dist := Sq_Dist;

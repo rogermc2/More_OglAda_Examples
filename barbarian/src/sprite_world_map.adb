@@ -53,6 +53,8 @@ package body Sprite_World_Map is
       end if;
 
       Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) + 1;
+--        Put_Line ("Sprite_World_Map.Add_New_Sprite_To_World_Map count" &
+--                 Integer'Image (Count));
       Sprite_Tiles.Index_Of_Sprites (S_U, S_V, Count) := Sprite_ID;
       Sprite_Tiles.Height_Of_Sprites (S_U, S_V, Count) := Y;
       Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) := Count;
@@ -78,14 +80,18 @@ package body Sprite_World_Map is
       Pos       : Singles.Vector3;
       Count     : Sprite_Count;
    begin
+--        Put_Line ("Sprite_World_Map.Cache_Sprites_Around, U, V: " &
+--                    Int'Image (U) & ", " & Int'Image (V));
       for index in V_First .. V_Last loop
          for index in U_First .. U_Last loop
             Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V);
             for index in 1 .. Count loop
+               Put_Line ("Sprite_World_Map.Cache_Sprites_Around, index: " &
+                  Sprite_Count'Image (index));
                Sprite_ID := Sprite_Tiles.Index_Of_Sprites
                       (S_U, S_V, Sprite_Index (index));
                Pos := Sprite_Renderer.Sprite_World_Pos (Sprite_ID);
-               Add_Transparency_Item (Tr_Sprite, Sprite_ID, Pos, 1.0);
+               Add_Transparency_Item (Transparency_Sprite, Sprite_ID, Pos, 1.0);
             end loop;
          end loop;
       end loop;

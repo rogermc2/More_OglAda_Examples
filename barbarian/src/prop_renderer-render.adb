@@ -142,6 +142,7 @@ package body Prop_Renderer.Render is
                 Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
                 Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
                 Texture_Manager.Bind_Texture (2, Script.Normal_Map_Id);
+                Put_Line ("Render_Basic Draw_Arrays");
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
         end if;

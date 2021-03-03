@@ -3,7 +3,8 @@ with GL.Types;
 
 package Transparency is
 
-   type Transparency_Type is (Tr_Undef, Tr_Sprite, Tr_Prop);
+   type Transparency_Type is (Transparency_Undef, Transparency_Sprite,
+                              Transparency_Prop);
 
    procedure Add_Transparency_Item (Item_Type : Transparency_Type;
                                     Render_ID : Positive;

@@ -362,6 +362,9 @@ package body Specs_Manager is
                begin
                Texture_Manager.Load_Image_To_Texture
                  (Map_Path, theSpec.Atlas_Diffuse_ID, Use_Character_Mipmaps, True);
+--                 Put_Line ("Specs_Manager.Load_Specs_File File: " &
+--                             Map_Path & " from " & Path & " ID: " &
+--                             UInt'Image (theSpec.Atlas_Diffuse_ID.Raw_Id));
                end;
             elsif aLine (1 .. Pos_M1) = "sprite_map_specular" then
                declare

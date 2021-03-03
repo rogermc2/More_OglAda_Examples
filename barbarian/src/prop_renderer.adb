@@ -83,7 +83,7 @@ package body Prop_Renderer is
             Property.Anim_Elapsed_Time := 0.0;
             Property.Is_Animating := True;
             Activate_Property (Property_Index, False);
---              Properties.Replace_Element (Property_Index, Property);
+            --              Properties.Replace_Element (Property_Index, Property);
             Audio.Play_Sound
               (To_String (aScript.Sound_Activate_File_Name), True);
         end if;
@@ -242,7 +242,7 @@ package body Prop_Renderer is
     begin
         if not Properties_Manager.Index_Is_Valid (Int (Index)) then
             raise Prop_Renderer_Exception with
-            "Prop_Renderer.Get_Tile_Property_Index, invalid property index: " &
+              "Prop_Renderer.Get_Tile_Property_Index, invalid property index: " &
               Positive'Image (Index);
         end if;
         return Positive (Prop.Element (Index));
@@ -250,11 +250,11 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
---      function Get_Script_Data (Script_Index : Positive)
---                                return Prop_Renderer_Support.Prop_Script is
---      begin
---          return Scripts.Element (Script_Index);
---      end Get_Script_Data;
+    --      function Get_Script_Data (Script_Index : Positive)
+    --                                return Prop_Renderer_Support.Prop_Script is
+    --      begin
+    --          return Scripts.Element (Script_Index);
+    --      end Get_Script_Data;
 
     --  -------------------------------------------------------------------------
 
@@ -352,8 +352,8 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-   function Props_In_Tiles_Size (U, V : Integer) return Natural is
-   begin
+    function Props_In_Tiles_Size (U, V : Integer) return Natural is
+    begin
         return Natural (Props_In_Tiles (U, V).Last_Index);
     end Props_In_Tiles_Size;
 
@@ -462,10 +462,8 @@ package body Prop_Renderer is
         Elapsed      : constant Single := Curr_Time - Prev_Time;
         Hdg_Dia      : constant Single := 20.0 * Elapsed;
         Hgt_Dia      : constant Single := 0.5 * Sin (2.0 * Curr_Time);
-        Tile_Data    : Props_In_Tiles_Array;
         Prop_Indices : Prop_Indices_List;
         Property     : Property_Data;
-        --        Props_Size   : Integer;
         Script_Index : Integer;
         Script_Type  : Property_Type;
         aScript      : Prop_Script;
@@ -485,7 +483,12 @@ package body Prop_Renderer is
         for vi in Left .. Right loop
             for ui in Up .. Down loop
                 --                 Props_Size := Tile_Data'Size;
-                Prop_Indices := Tile_Data (Integer (ui), Integer (vi));
+                if not Tiles_Manager.Is_Tile_Valid (ui, vi) then
+                    raise Prop_Renderer_Exception with
+                      "Prop_Renderer.Activate_Door_In_Tile, invalid tile indices: " &
+                      Int'Image (ui) & ", " & Int'Image (vi);
+                end if;
+                Prop_Indices := Props_In_Tiles (Integer (ui), Integer (vi));
                 for Props_Index in Prop_Indices.First_Index ..
                   Prop_Indices.Last_Index loop
                     Property := Properties_Manager.Get_Property_Data (Props_Index);
@@ -552,7 +555,6 @@ package body Prop_Renderer is
         Elapsed      : constant Single := Curr_Time - Prev_Time;
         Hdg_Dia      : constant Single := 20.0 * Elapsed;
         Hgt_Dia      : constant Single := 0.5 * Sin (2.0 * Curr_Time);
-        Tile_Data    : Props_In_Tiles_Array;
         Prop_Indices : Prop_Indices_List;
         Property     : Property_Data;
         Script_Index : Integer;
@@ -573,9 +575,12 @@ package body Prop_Renderer is
         Enable (Depth_Test);
         for vi in Left .. Right loop
             for ui in Up .. Down loop
-                Prop_Indices := Tile_Data (Integer (ui), Integer (vi));
+                Prop_Indices := Props_In_Tiles (Integer (ui), Integer (vi));
                 for Props_Index in Prop_Indices.First_Index ..
                   Prop_Indices.Last_Index loop
+--                      Put_Line ("Prop_Renderer.Render_Props_Around_Split u, v, Props_Index: "
+--                             & Int'Image (ui) & ", " & Int'Image (vi) & ", " &
+--                             Integer'Image (Props_Index));
                     Property := Properties_Manager.Get_Property_Data (Props_Index);
                     Script_Index := Property.Script_Index;
                     aScript := Properties_Manager.Get_Script_Data (Script_Index);
@@ -586,7 +591,9 @@ package body Prop_Renderer is
                     Prop_Type := aScript.Script_Type;
 
                     if Property.Is_Visible or GL_Utils.Is_Edit_Mode then
+                        Put_Line ("Prop_Renderer.Render_Props_Around_Split Is_Visible or Is_Edit_Mode");
                         if aScript.Uses_Sprite then
+                            Put_Line ("Prop_Renderer.Render_Props_Around_Split Uses_Sprite");
                             Prop_Size := aScript.Sprite_Map_Rows *
                               aScript.Sprite_Map_Cols;
                             Sprite_Time := aScript.Sprite_Timer * Float (Prop_Size);
@@ -601,15 +608,20 @@ package body Prop_Renderer is
                                                        aScript.Sprite_Timer);
                             Sprite_Renderer.Set_Sprite_Current_Sprite
                               (Property.Sprite_Index, Curr_Sprite);
-                            Properties_Manager.Replace_Property (Props_Index, Property);
+                            Properties_Manager.Replace_Property
+                              (Props_Index, Property);
 
                         elsif Frustum.Is_Sphere_In_Frustum
                           (Property.Origin_World, aScript.Bounding_Radius) and
                           aScript.Transparent then
+                            Put_Line ("Prop_Renderer.Render_Props_Around_Split Add_Transparency_Item");
                             Add_Transparency_Item
-                              (Tr_Prop, Props_Index, Property.Origin_World,
+                              (Transparency_Prop, Props_Index,
+                               Property.Origin_World,
                                aScript.Bounding_Radius);
                         else
+                            Put_Line ("Prop_Renderer.Render_Props_Around_Split default Prop_Type: "
+                                     & Property_Type'Image (Prop_Type));
                             if Prop_Type = Anim_Loop_Prop then
                                 Update_Anim_Looped_Prop (Props_Index, Elapsed);
                             end if;
@@ -638,7 +650,7 @@ package body Prop_Renderer is
         Render_Basic
           (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff, Prop_Dyn_Light_Spec,
            Prop_Dyn_Light_Range, Prop_Dyn_Light_Dirty);
-       Render_Skinned
+        Render_Skinned
           (Prop_Dyn_Light_Pos_Wor, Prop_Dyn_Light_Diff, Prop_Dyn_Light_Spec,
            Prop_Dyn_Light_Range, Prop_Dyn_Light_Dirty);
         Render_Javelin_Standard;
@@ -646,15 +658,15 @@ package body Prop_Renderer is
         Render_Treasure;
         Prop_Dyn_Light_Dirty := False;
 
-   exception
-            when others =>
-                Put_Line ("Prop_Renderer.Game_Support.Render_Props_Around_Split exception");
-                raise;
+    exception
+        when others =>
+            Put_Line ("Prop_Renderer.Game_Support.Render_Props_Around_Split exception");
+            raise;
     end Render_Props_Around_Split;
 
     --  -------------------------------------------------------------------------
 
-   procedure Reset_Properties is
+    procedure Reset_Properties is
         use Prop_Indices_Package;
         -- Particle Systems
         Start_Now      : constant Boolean := False;
@@ -835,13 +847,16 @@ package body Prop_Renderer is
 
     procedure Update_Props_In_Tiles_Index (U, V : Integer;
                                            Prop_Index : GL.Types.Int) is
-        begin
-        if Properties_Manager.Index_Is_Valid (Prop_Index)then
+    begin
+        if Properties_Manager.Index_Is_Valid (Prop_Index) then
             Props_In_Tiles (U, V).Append (Prop_Index);
+--               Put_Line ("Prop_Renderer.Update_Props_In_Tiles_Index Props_In_Tiles (U, V) length: "
+--                & Integer'Image (U) & ", " & Integer'Image (V) & ", "
+--                & Integer'Image (Integer (Props_In_Tiles(U, V).Length)));
         else
-           raise Prop_Renderer_Exception with
-               "Prop_Renderer.Update_Props_In_Tiles_Index called with invalid index: "
-               & GL.Types.Int'Image (Prop_Index);
+            raise Prop_Renderer_Exception with
+              "Prop_Renderer.Update_Props_In_Tiles_Index called with invalid index: "
+              & GL.Types.Int'Image (Prop_Index);
         end if;
     end Update_Props_In_Tiles_Index;
 
