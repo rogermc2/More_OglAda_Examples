@@ -64,16 +64,8 @@ private
     Max_Decap_Particles        : constant Integer := 4;
     Max_Mirrors                : constant Integer := 16;
 
---      package Properties_Package is new Ada.Containers.Vectors
---        (Positive, Prop_Renderer_Support.Property_Data);
---      type Properties_List is new Properties_Package.Vector with null Record;
-
     package Indicies_Package is new Ada.Containers.Vectors (Positive, Positive);
     type Indicies_List is new Indicies_Package.Vector with null Record;
-
---      package Property_Scripts_Package is new Ada.Containers.Vectors
---        (Positive, Prop_Script);
---      type Script_List is new Property_Scripts_Package.Vector with null Record;
 
     --  Animation and rendering
     Model_Matrix                  : Singles.Matrix4 := (others => (others => 0.0));

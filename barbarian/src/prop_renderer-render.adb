@@ -88,6 +88,8 @@ package body Prop_Renderer.Render is
         U        : Positive;
         V        : Positive;
     begin
+        Put_Line ("Prop_Renderer.Render.Render_Basic Basic_Render_List length"
+         & Integer'Image (Integer (Basic_Render_List.Length)));
         if not Is_Empty (Basic_Render_List) then
             GL.Objects.Programs.Use_Program (Prop_Shader);
             if Camera.Is_Dirty then
@@ -314,7 +316,6 @@ package body Prop_Renderer.Render is
         Script   : Prop_Renderer_Support.Prop_Script;
         Prop_I   : Integer;
         Script_I : Integer;
-        --          Mesh_I   : Integer;
         Ssi      : Integer;
         U        : Positive;
         V        : Positive;
@@ -333,15 +334,15 @@ package body Prop_Renderer.Render is
                 Set_Dyn_Light_Range (Prop_Dyn_Light_Range);
             end if;
             if Settings.Shadows_Enabled then
-                Properties_Shader_Manager.Set_Shadows_Enabled (1.0);
+                Set_Shadow_Enabled (1.0);
                 Set_Caster_Position (Shadows.Caster_Position);
                 Shadows.Bind_Cube_Shadow_Texture (3);
             else
-                Properties_Shader_Manager.Set_Shadows_Enabled (0.0);
+                Set_Shadow_Enabled (0.0);
             end if;
 
             for Param_I in 1 .. Count loop
-                Prop_I := Basic_Render_List (Param_I);
+                Prop_I := Skinned_Render_List.Element (Param_I);
                 Script_I := Get_Script_Index (Prop_I);
                 Script := Properties_Manager.Get_Script_Data (Script_I);
                 Ssi := Script.Smashed_Script_Index;
@@ -349,7 +350,7 @@ package body Prop_Renderer.Render is
                 if Property.Was_Smashed and Ssi > 0 then
                     Script_I := Ssi;
                 end if;
-                --                  Mesh_I := Script.Mesh_Index;
+
                 Set_Bone_Matrices (Property.Current_Bone_Transforms);
                 Set_Model (Property.Model_Matrix);
                 U := Positive (Property.Map_U);
@@ -370,12 +371,14 @@ package body Prop_Renderer.Render is
                     Set_Outline_Pass (0.0);
                     GL.Culling.Set_Front_Face (Counter_Clockwise);
                 end if;
+
                 GL_Utils.Bind_VAO (Script.Vao);
                 Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
                 Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
         end if;
+
     end Render_Skinned;
 
     --  -------------------------------------------------------------------------

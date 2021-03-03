@@ -591,7 +591,7 @@ package body Prop_Renderer is
                     Prop_Type := aScript.Script_Type;
 
                     if Property.Is_Visible or GL_Utils.Is_Edit_Mode then
-                        Put_Line ("Prop_Renderer.Render_Props_Around_Split Is_Visible or Is_Edit_Mode");
+--                          Put_Line ("Prop_Renderer.Render_Props_Around_Split Is_Visible or Is_Edit_Mode");
                         if aScript.Uses_Sprite then
                             Put_Line ("Prop_Renderer.Render_Props_Around_Split Uses_Sprite");
                             Prop_Size := aScript.Sprite_Map_Rows *
@@ -620,11 +620,12 @@ package body Prop_Renderer is
                                Property.Origin_World,
                                aScript.Bounding_Radius);
                         else
-                            Put_Line ("Prop_Renderer.Render_Props_Around_Split default Prop_Type: "
-                                     & Property_Type'Image (Prop_Type));
+--                              Put_Line ("Prop_Renderer.Render_Props_Around_Split default Prop_Type: "
+--                                       & Property_Type'Image (Prop_Type));
                             if Prop_Type = Anim_Loop_Prop then
                                 Update_Anim_Looped_Prop (Props_Index, Elapsed);
                             end if;
+
                             case Prop_Type is
                             when Door_Prop | Pillar_Prop | Anim_Loop_Prop |
                                  Windlass_Prop =>
@@ -660,7 +661,7 @@ package body Prop_Renderer is
 
     exception
         when others =>
-            Put_Line ("Prop_Renderer.Game_Support.Render_Props_Around_Split exception");
+            Put_Line ("Prop_Renderer.Render_Props_Around_Split exception");
             raise;
     end Render_Props_Around_Split;
 
