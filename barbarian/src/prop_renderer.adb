@@ -592,10 +592,10 @@ package body Prop_Renderer is
                         Script_Index := Ssi;
                     end if;
                     Prop_Type := aScript.Script_Type;
---                      Put_Line ("Prop_Renderer.Render_Props_Around_Split Prop_Type: "
---                               & Property_Type'Image (Prop_Type));
 
                     if Property.Is_Visible or GL_Utils.Is_Edit_Mode then
+                        Put_Line ("Prop_Renderer.Render_Props_Around_Split visible Prop_Type: "
+                             & Property_Type'Image (Prop_Type));
                         if aScript.Uses_Sprite then
                             Put_Line ("Prop_Renderer.Render_Props_Around_Split Uses_Sprite");
                             Prop_Size := aScript.Sprite_Map_Rows *

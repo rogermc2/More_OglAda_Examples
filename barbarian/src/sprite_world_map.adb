@@ -86,8 +86,8 @@ package body Sprite_World_Map is
          for u_index in U_First .. U_Last loop
             Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (u_index, v_index);
             for s_index in 1 .. Count loop
-               Put_Line ("Sprite_World_Map.Cache_Sprites_Around, s_index: " &
-                  Sprite_Count'Image (s_index));
+--                 Put_Line ("Sprite_World_Map.Cache_Sprites_Around, s_index: " &
+--                    Sprite_Count'Image (s_index));
                Sprite_ID := Sprite_Tiles.Index_Of_Sprites
                       (u_index, v_index, Sprite_Index (s_index));
                Pos := Sprite_Renderer.Sprite_World_Pos (Sprite_ID);

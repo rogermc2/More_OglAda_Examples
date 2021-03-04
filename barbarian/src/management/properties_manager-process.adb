@@ -368,8 +368,8 @@ package body Properties_Manager.Process is
         end if;
 
         Open (Script_File, In_File, With_Path);
-        Put_Line ("Properties_Manager.Process.Load_Property_Script, " &
-                   With_Path & " opened.");
+--          Put_Line ("Properties_Manager.Process.Load_Property_Script, " &
+--                     With_Path & " opened.");
         aScript.File_Name := To_Unbounded_String (File_Name);
 
         while not End_Of_File (Script_File) loop

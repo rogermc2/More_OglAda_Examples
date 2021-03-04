@@ -101,22 +101,20 @@ package body Transparency is
       P_Closer     : Natural;
       Found        : Boolean := False;
 
-      procedure Update_Farthest (Element : in out Transparency_Node) is
+      procedure Update_Farthest (Node : in out Transparency_Node) is
       begin
-         Element.Farther := TR_Nodes.Last_Index;
+          Node.Farther := TR_Nodes.Last_Index;
       end Update_Farthest;
 
    begin
-      Put_Line ("Transparency.Add_Transparency_Item Render_ID: " &
-               Integer'Image (Render_ID));
       New_Node.Tr_Type := Item_Type;
       New_Node.Render_Id := Integer (Render_ID);
       New_Node.Sq_Dist := Sq_Dist;
 
       if Is_Empty (TR_Nodes) then
          TR_Nodes.Append (New_Node);
-         TR_Closest_Node := 1;
-         TR_Farthest_Node := 1;
+         TR_Closest_Node := TR_Nodes.First_Index;
+         TR_Farthest_Node := TR_Closest_Node;
          Found := True;
       else
          Inspect := TR_Closest_Node;
@@ -131,13 +129,11 @@ package body Transparency is
                if Inspect = TR_Closest_Node then
                   TR_Closest_Node := TR_Nodes.Last_Index;
                else
-                  Inspect_Node.Farther := TR_Nodes.Last_Index;
+               TR_Nodes.Update_Element (P_Closer,
+                                        Update_Farthest'Access);
                end if;
                TR_Nodes.Replace_Element (Inspect, Inspect_Node);
                TR_Nodes.Append (New_Node);
-            else
-               TR_Nodes.Update_Element (P_Closer,
-                                        Update_Farthest'Access);
             end if;
             Inspect := Inspect_Node.Farther;
          end loop;
