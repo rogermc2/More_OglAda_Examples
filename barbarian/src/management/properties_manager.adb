@@ -36,7 +36,7 @@ package body Properties_Manager is
         New_Props     : Property_Data;
         Script_Index  : Positive;
         aScript       : Prop_Script;
-        Script_Type   : Property_Type;
+        aScript_Type  : Property_Type;
         Respect_Ramps : Boolean;
         Start_Now     : Boolean := True;
         Always_Update : Boolean := False;
@@ -56,8 +56,8 @@ package body Properties_Manager is
 --                               & Integer'Image (Script_Index));
         aScript := Prop_Scripts.Element (Script_Index);
 --          Game_Utils.Game_Log ("Properties_Manager.Create_Prop_From_Script -3- script created ");
-        Script_Type := aScript.Script_Type;
-        Respect_Ramps := Script_Type = Boulder_Prop;
+        aScript_Type := aScript.Script_Type;
+        Respect_Ramps := aScript_Type = Boulder_Prop;
 --          Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -4- Mesh_Index"
 --                               & Integer'Image (aScript.Mesh_Index));
         if Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
@@ -84,7 +84,7 @@ package body Properties_Manager is
               New_Props.World_Pos (GL.Y) + Single (2 * Height_Level);
             --  Allow portcullis and its collision model to start up high
             New_Props.Elevator := aScript.Initial_Elevator_State;
-            if Script_Type = Elevator_Prop and
+            if aScript_Type = Elevator_Prop and
               New_Props.Elevator = At_Top_State then
                 New_Props.World_Pos (GL.Y) :=
                   New_Props.World_Pos (GL.Y) + Single (aScript.Elevator_Top_Height);

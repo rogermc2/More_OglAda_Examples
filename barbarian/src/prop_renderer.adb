@@ -458,21 +458,21 @@ package body Prop_Renderer is
         Down         : constant Int := Maths.Min_Int (Batch_Manager.Max_Rows - 1,
                                                       U + Tiles_Distance) + 1;
         --  Diamond Bob
-        Curr_Time    : constant Single := Single (Glfw.Time);
-        Elapsed      : constant Single := Curr_Time - Prev_Time;
-        Hdg_Dia      : constant Single := 20.0 * Elapsed;
-        Hgt_Dia      : constant Single := 0.5 * Sin (2.0 * Curr_Time);
-        Prop_Indices : Prop_Indices_List;
-        Property     : Property_Data;
-        Script_Index : Integer;
-        Script_Type  : Property_Type;
-        aScript      : Prop_Script;
-        Ssi          : Natural;
-        Mesh_Index   : Integer;
-        Bone_Count   : Integer;
-        Rot_Dia      : Singles.Matrix4;
-        Trans_Dia    : Singles.Matrix4;
-        Trans        : Singles.Vector3;
+        Curr_Time      : constant Single := Single (Glfw.Time);
+        Elapsed        : constant Single := Curr_Time - Prev_Time;
+        Hdg_Dia        : constant Single := 20.0 * Elapsed;
+        Hgt_Dia        : constant Single := 0.5 * Sin (2.0 * Curr_Time);
+        Prop_Indices   : Prop_Indices_List;
+        Property       : Property_Data;
+        Script_Index   : Integer;
+        theScript_Type : Property_Type;
+        aScript        : Prop_Script;
+        Ssi            : Natural;
+        Mesh_Index     : Integer;
+        Bone_Count     : Integer;
+        Rot_Dia        : Singles.Matrix4;
+        Trans_Dia      : Singles.Matrix4;
+        Trans          : Singles.Vector3;
     begin
         Prev_Time := Curr_Time;
         Enable (Depth_Test);
@@ -505,18 +505,21 @@ package body Prop_Renderer is
                       Frustum.Is_Sphere_In_Frustum
                         (Property.Origin_World, aScript.Bounding_Radius) then
                         GL_Utils.Bind_VAO (aScript.Vao);
-                        Script_Type := aScript.Script_Type;
-                        if Script_Type = Door_Prop or
-                          Script_Type = Pillar_Prop or
-                          Script_Type = Anim_Loop_Prop or
-                          Script_Type = Windlass_Prop then
+                        theScript_Type := aScript.Script_Type;
+--                          Put_Line ("Prop_Renderer.Render_Props_Around_Split Script_Type: "
+--                               & Property_Type'Image (aScript.Script_Type));
+
+                        if theScript_Type = Door_Prop or
+                          theScript_Type = Pillar_Prop or
+                          theScript_Type = Anim_Loop_Prop or
+                          theScript_Type = Windlass_Prop then
                             Shadows.Set_Depth_Skinned_Model_Matrix
                               (Property.Model_Matrix);
                             Mesh_Index := aScript.Mesh_Index;
                             Bone_Count := Mesh_Loader.Bone_Count (Mesh_Index);
                             Shadows.Set_Depth_Skinned_Bone_Matrices
                               (Property.Current_Bone_Transforms);
-                        elsif Script_Type = Diamond_Trigger_Prop then
+                        elsif theScript_Type = Diamond_Trigger_Prop then
                             Rot_Dia := Rotate_Y_Degree
                               (Singles.Identity4, Degree (Hdg_Dia) +
                                    Property.Heading_Deg);
@@ -589,9 +592,10 @@ package body Prop_Renderer is
                         Script_Index := Ssi;
                     end if;
                     Prop_Type := aScript.Script_Type;
+--                      Put_Line ("Prop_Renderer.Render_Props_Around_Split Prop_Type: "
+--                               & Property_Type'Image (Prop_Type));
 
                     if Property.Is_Visible or GL_Utils.Is_Edit_Mode then
---                          Put_Line ("Prop_Renderer.Render_Props_Around_Split Is_Visible or Is_Edit_Mode");
                         if aScript.Uses_Sprite then
                             Put_Line ("Prop_Renderer.Render_Props_Around_Split Uses_Sprite");
                             Prop_Size := aScript.Sprite_Map_Rows *

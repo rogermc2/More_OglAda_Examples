@@ -75,7 +75,8 @@ package body Transparency is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Reset_Transparency_List (Camera_Position : GL.Types.Singles.Vector3) is
+   procedure Reset_Transparency_List
+      (Camera_Position : GL.Types.Singles.Vector3) is
    begin
       TR_Nodes.Clear;
       TR_Closest_Node := 0;

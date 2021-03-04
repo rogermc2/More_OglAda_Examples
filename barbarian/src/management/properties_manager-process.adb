@@ -257,6 +257,24 @@ package body Properties_Manager.Process is
 
     --  ------------------------------------------------------------------------
 
+    function Do_Vec2 (aLine : String) return Singles.Vector2 is
+        use Ada.Strings;
+        S_Length  : constant Integer := aLine'First + aLine'Length - 1;
+        Pos_1     : constant Natural := Fixed.Index (aLine, ",");
+        theVector : Singles.Vector2;
+    begin
+        if Pos_1 = 0 then
+            raise Properties_Exception with
+              "Do_Vec2 invalid format: " & aLine;
+        else
+            theVector (GL.X) := Single'Value (aLine (aLine'First .. Pos_1 - 1));
+            theVector (GL.Y) := Single'Value (aLine (Pos_1 + 2 .. S_Length));
+        end if;
+        return theVector;
+    end Do_Vec2;
+
+    --  ------------------------------------------------------------------------
+
     function Do_Vec3 (aLine : String) return Singles.Vector3 is
         use Ada.Strings;
         S_Length  : constant Integer := aLine'First + aLine'Length - 1;
@@ -337,8 +355,9 @@ package body Properties_Manager.Process is
         With_Path           : constant String := "src/props/" & File_Name;
         Script_File         : File_Type;
         aScript             : Prop_Script;
-        Box_Point_Count     : Natural := 0;
-        Hole_Point_Count    : Natural := 0;
+        Point_2D            : Singles.Vector2;
+        Box_Point_Count     : Int := 0;
+        Hole_Point_Count    : Int := 0;
         Smashed_Script_File : Unbounded_String;
         Has_Smashed_Script  : Boolean := False;
         OK                  : Boolean := True;
@@ -349,8 +368,8 @@ package body Properties_Manager.Process is
         end if;
 
         Open (Script_File, In_File, With_Path);
---          Game_Utils.Game_Log ("Properties_Manager.Process.Load_Property_Script, " &
---                                With_Path & " opened.");
+        Put_Line ("Properties_Manager.Process.Load_Property_Script, " &
+                   With_Path & " opened.");
         aScript.File_Name := To_Unbounded_String (File_Name);
 
         while not End_Of_File (Script_File) loop
@@ -411,13 +430,14 @@ package body Properties_Manager.Process is
                         aScript.Lamp_Specular := Do_Vec3  (aLine (22 .. S_Length));
                     elsif S_Length > 9 and then
                       aLine (1 .. 10)  = "lamp_range" then
-                        null;
+                        aScript.Lamp_Range := Float'Value (aLine (12 .. S_Length));
                     elsif S_Length > 9 and then
                       aLine (1 .. 10)  = "particles:" then
-                        null;
+                        aScript.Particle_Script_File_Name :=
+                          To_Unbounded_String (aLine (12 .. S_Length));
                     elsif S_Length > 16 and then
                       aLine (1 .. 17)  = "particles_offset:" then
-                        null;
+                        aScript.Particles_Offset := Do_Vec3 (aLine (19 .. S_Length));
                     elsif S_Length > 4 and then aLine (1 .. 5)  = "type:" then
                         Do_Type (aLine (7 .. S_Length), aScript);
                     elsif S_Length > 5 and then
@@ -428,25 +448,31 @@ package body Properties_Manager.Process is
                         aScript.Uses_Sprite := aLine (14 .. 14) /= "0";
                     elsif S_Length > 15 and then
                       aLine (1 .. 16)  = "sprite_map_rows:" then
-                        null;
+                        aScript.Sprite_Map_Rows :=
+                          Integer'Value (aLine (18 .. S_Length));
                     elsif S_Length > 15 and then
                       aLine (1 .. 16)  = "sprite_map_cols:" then
-                        null;
+                        aScript.Sprite_Map_Cols :=
+                          Integer'Value (aLine (18 .. S_Length));
                     elsif S_Length > 15 and then
                       aLine (1 .. 16)  = "sprite_y_offset:" then
-                        null;
+                        aScript.Sprite_Y_Offset :=
+                          Float'Value (aLine (18 .. S_Length));
                     elsif S_Length > 12 and then
                       aLine (1 .. 13)  = "sprite_timer:" then
-                        null;
+                        aScript.Sprite_Timer :=
+                          Float'Value (aLine (15 .. S_Length));
                     elsif S_Length > 6 and then
                       aLine (1 .. 7)  = "height:" then
-                        null;
+                        aScript.Height :=
+                          Single'Value (aLine (9 .. S_Length));
                     elsif S_Length > 6 and then
                       aLine (1 .. 7)  = "radius:" then
-                        null;
+                        aScript.Radius :=
+                          Single'Value (aLine (9 .. S_Length));
                     elsif S_Length > 6 and then
                       aLine (1 .. 7)  = "origin:" then
-                        null;
+                        aScript.Origin := Do_Vec3 (aLine (9 .. S_Length));
                     elsif S_Length > 17 and then
                       aLine (1 .. 18)  = "trigger_only_once:" then
                         aScript.Trigger_Only_Once := aLine (20 .. 20) /= "0";
@@ -458,59 +484,77 @@ package body Properties_Manager.Process is
                         aScript.Npc_Activated := aLine (16 .. 16) /= "0";
                     elsif S_Length > 21 and then
                       aLine (1 .. 22)  = "hide_after_triggering:" then
-                        null;
+                        aScript.Hide_After_Triggering := aLine (24 .. 24) /= "0";
                     elsif S_Length > 12 and then
                       aLine (1 .. 13)  = "box_xz_point:" then
-                        null;
+                      if S_Length > 14 then
+                        Point_2D := Do_Vec2 (aLine (15 .. S_Length));
+                        Box_Point_Count := Box_Point_Count + 1;
+                        aScript.Box_Points (Box_Point_Count) := Point_2D;
+                      end if;
                     elsif S_Length > 11 and then
                       aLine (1 .. 12)  = "hole_height:" then
-                        null;
+                        aScript.Hole_Height :=
+                          Single'Value (aLine (14 .. S_Length));
                     elsif S_Length > 13 and then
-                      aLine (1 .. 14)  = "hole_xz_point:" then
-                        null;
+                      (aLine (1 .. 14)  = "hole_xz_point:") then
+                        if S_Length > 15 then
+                            Point_2D := Do_Vec2 (aLine (15 .. S_Length));
+                            Hole_Point_Count := Hole_Point_Count + 1;
+                            aScript.Hole_Points (Hole_Point_Count) := Point_2D;
+                        end if;
                     elsif S_Length > 16 and then
                       aLine (1 .. 17)  = "setOpeningTime_s:" then
-                        null;
+                        aScript.Opening_Time_S :=
+                          Float'Value (aLine (19 .. S_Length));
                     elsif S_Length > 12 and then
                       aLine (1 .. 13)  = "goes_back_up:" then
-                        null;
+                        aScript.Elevator_Goes_Back_Up := aLine (15 .. 15) /= "0";
                     elsif S_Length > 14 and then
                       aLine (1 .. 15)  = "goes_back_down:" then
-                        null;
+                        aScript.Elevator_Goes_Back_Down := aLine (15 .. 15) /= "0";
                     elsif S_Length > 16 and then
                       aLine (1 .. 17)  = "starts_at_bottom:" then
-                        null;
+                        aScript.Starts_At_Bottom := aLine (19 .. 19) /= "0";
                     elsif S_Length > 23 and then
                       aLine (1 .. 24)  = "elevator_visible_at_top:" then
-                        null;
-                    elsif S_Length > 26 and then aLine (1 .. 27)  = "elevator_visible_at_bottom:" then
-                        null;
+                        aScript.Elevator_Visible_At_Top := aLine (26 .. 26) /= "0";
+                    elsif S_Length > 26 and then
+                      aLine (1 .. 27)  = "elevator_visible_at_bottom:" then
+                        aScript.Elevator_Visible_At_Bottom :=
+                          aLine (29 .. 29) /= "0";
                     elsif S_Length > 19 and then
                       aLine (1 .. 20)  = "elevator_top_height:" then
-                        null;
+                        aScript.Elevator_Top_Height :=
+                          Float'Value (aLine (22 .. S_Length));
                     elsif S_Length > 22 and then
                       aLine (1 .. 23)  = "elevator_bottom_height:" then
-                        null;
+                        aScript.Elevator_Bottom_Height :=
+                          Float'Value (aLine (25 .. S_Length));
                     elsif S_Length > 22 and then
                       aLine (1 .. 23)  = "elevator_down_duration:" then
-                        null;
+                        aScript.Elevator_Down_Duration :=
+                          Float'Value (aLine (25 .. S_Length));
                     elsif S_Length > 20 and then
                       aLine (1 .. 21)  = "elevator_up_duration:" then
-                        null;
+                        aScript.Elevator_Up_Duration :=
+                          Float'Value (aLine (23 .. S_Length));
                     elsif S_Length > 7 and then
                       aLine (1 .. 8)  = "delay_s:" then
-                        null;
+                        aScript.Elevator_Wait_Delay :=
+                          Float'Value (aLine (10 .. S_Length));
                     elsif S_Length > 5 and then aLine (1 .. 6)  = "value:" then
-                        null;
+                        aScript.Value :=
+                          Integer'Value (aLine (8 .. S_Length));
                     elsif S_Length > 14 and then
                       aLine (1 .. 15)  = "sound_activate:" then
                         aScript.Sound_Activate_File_Name :=
                           To_Unbounded_String (aLine (17 .. S_Length));
                     else
                         OK := False;
-                        Game_Utils.Game_Log
-                          ("Properties_Manager.Load_Property_Script, "  &
-                             "invalid property in " & File_Name & ": " & aLine);
+                        raise Properties_Process_Exception with
+                        "Properties_Manager.Load_Property_Script, "  &
+                             "invalid property in " & File_Name & ": " & aLine;
                     end if;
                 end if;
             end;  --  declare block

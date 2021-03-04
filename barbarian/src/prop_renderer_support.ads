@@ -208,5 +208,6 @@ package Prop_Renderer_Support is
                           aScript      : Prop_Script;
                           Gold_Current : Integer;
                           Elapsed      : Single);
+private
 
 end Prop_Renderer_Support;

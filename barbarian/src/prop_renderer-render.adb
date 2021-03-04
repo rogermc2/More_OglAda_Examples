@@ -88,8 +88,8 @@ package body Prop_Renderer.Render is
         U        : Positive;
         V        : Positive;
     begin
-        Put_Line ("Prop_Renderer.Render.Render_Basic Basic_Render_List length"
-         & Integer'Image (Integer (Basic_Render_List.Length)));
+--          Put_Line ("Prop_Renderer.Render.Render_Basic Basic_Render_List length"
+--           & Integer'Image (Integer (Basic_Render_List.Length)));
         if not Is_Empty (Basic_Render_List) then
             GL.Objects.Programs.Use_Program (Prop_Shader);
             if Camera.Is_Dirty then
