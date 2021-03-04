@@ -82,14 +82,14 @@ package body Sprite_World_Map is
    begin
 --        Put_Line ("Sprite_World_Map.Cache_Sprites_Around, U, V: " &
 --                    Int'Image (U) & ", " & Int'Image (V));
-      for index in V_First .. V_Last loop
-         for index in U_First .. U_Last loop
-            Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V);
-            for index in 1 .. Count loop
-               Put_Line ("Sprite_World_Map.Cache_Sprites_Around, index: " &
-                  Sprite_Count'Image (index));
+      for v_index in V_First .. V_Last loop
+         for u_index in U_First .. U_Last loop
+            Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (u_index, v_index);
+            for s_index in 1 .. Count loop
+               Put_Line ("Sprite_World_Map.Cache_Sprites_Around, s_index: " &
+                  Sprite_Count'Image (s_index));
                Sprite_ID := Sprite_Tiles.Index_Of_Sprites
-                      (S_U, S_V, Sprite_Index (index));
+                      (u_index, v_index, Sprite_Index (s_index));
                Pos := Sprite_Renderer.Sprite_World_Pos (Sprite_ID);
                Add_Transparency_Item (Transparency_Sprite, Sprite_ID, Pos, 1.0);
             end loop;
