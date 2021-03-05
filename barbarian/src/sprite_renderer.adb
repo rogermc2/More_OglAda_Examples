@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with GL.Attributes;
 with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
@@ -25,6 +27,12 @@ package body Sprite_Renderer is
    --      type Sprite_Float_Array is array (1 .. Max_Sprites) of Float;
    --      type Sprite_Textures_Array is array (1 .. Max_Sprites) of
    --        GL.Objects.Textures.Texture;
+
+   Points_VBO   : GL.Objects.Buffers.Buffer;
+   Normals_VBO  : GL.Objects.Buffers.Buffer;
+   Tex_VBO      : GL.Objects.Buffers.Buffer;
+
+   --  -------------------------------------------------------------------------
 
    type Sprite_Data is record
       Model_Matrix           : Singles.Matrix4 := Singles.Identity4;
@@ -77,8 +85,6 @@ package body Sprite_Renderer is
          Sprites (index).Scale := (1.0, 1.0, 1.0);
          Sprites (index).Heading_Deg := 0.0;
          Sprites (index).Pitch_Deg := 0.0;
-         --          Sprite_Map_Diffuse_Id  : GL.Objects.Textures.Texture;
-         --          Sprite_Map_Specular_Id : GL.Objects.Textures.Texture;
          Sprites (index).Sprite_Map_Rows := 0;
          Sprites (index).Sprite_Map_Columns := 0;
          Sprites (index).Current_Sprite := 0;
@@ -116,32 +122,19 @@ package body Sprite_Renderer is
                         (0.0, 1.0, 0.0),
                         (0.0, 1.0, 0.0),
                         (0.0, 1.0, 0.0));
-      Points_VBO   : constant GL.Objects.Buffers.Buffer :=
-                       GL_Utils.Create_3D_VBO (Points);
-      Normals_VBO  : constant GL.Objects.Buffers.Buffer :=
-                       GL_Utils.Create_3D_VBO (Normals);
-      Tex_VBO      : constant GL.Objects.Buffers.Buffer :=
-                       GL_Utils.Create_2D_VBO (Tex_Coords);
    begin
+      Points_VBO := GL_Utils.Create_3D_VBO (Points);
+      Normals_VBO := GL_Utils.Create_3D_VBO (Normals);
+      Tex_VBO := GL_Utils.Create_2D_VBO (Tex_Coords);
+
       Sprite_VAO.Clear;
       Sprite_VAO.Initialize_Id;
 
       GL_Utils.Add_Attribute_To_Array (Sprite_VAO, Attrib_VP, Points_VBO, 3);
 --        Sprite_VAO.Bind;
---        Array_Buffer.Bind (Points_VBO);
---        Set_Vertex_Attrib_Pointer (Attrib_VP, 3, Single_Type, False, 0, 0);
---        Enable_Vertex_Attrib_Array (Attrib_VP);
-
 
       GL_Utils.Add_Attribute_To_Array (Sprite_VAO, Attrib_VT, Tex_VBO, 2);
---        Array_Buffer.Bind (Tex_VBO);
---        Set_Vertex_Attrib_Pointer (Attrib_VT, 2, Single_Type, False, 0, 0);
---        Enable_Vertex_Attrib_Array (Attrib_VT);
-
       GL_Utils.Add_Attribute_To_Array (Sprite_VAO, Attrib_VN, Normals_VBO, 3);
---        Array_Buffer.Bind (Normals_VBO);
---        Set_Vertex_Attrib_Pointer (Attrib_VN, 3, Single_Type, False, 0, 0);
---        Enable_Vertex_Attrib_Array (Attrib_VN);
 
    end Create_Character_VBOs;
 
@@ -169,6 +162,7 @@ package body Sprite_Renderer is
    begin
       if Sprites (Sprite_Index).Is_Visible and  Frustum.Is_Sphere_In_Frustum
         (Sprites (Sprite_Index).World_Position, 1.0) then
+         GL_Utils.Bind_Vao (Sprite_VAO);
          Bind_Texture (0, Sprites (Sprite_Index).Sprite_Map_Diffuse);
          Bind_Texture (1, Sprites (Sprite_Index).Sprite_Map_Specular);
 

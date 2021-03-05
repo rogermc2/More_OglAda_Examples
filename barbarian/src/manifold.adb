@@ -94,7 +94,7 @@ package body Manifold is
         Tile_Index1   : Int;
         Tile_Index2   : Int;
     begin
-        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+--          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
