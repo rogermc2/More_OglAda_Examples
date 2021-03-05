@@ -194,8 +194,13 @@ package body Texture_Manager is
       Texture_Data          : Loaded_Texture;
    begin
       while Has_Element (Curs) and not Texture_Loaded loop
-         Texture_Loaded := Element (Curs).File_Name = File_Name;
-         Next (Curs);
+         Texture_Data := Element (Curs);
+         Texture_Loaded := Texture_Data.File_Name = File_Name;
+         if Texture_Loaded then
+           aTexture.Set_Raw_Id (Texture_Data.Texture_ID);
+         else
+            Next (Curs);
+         end if;
       end loop;
 
       if not Texture_Loaded then

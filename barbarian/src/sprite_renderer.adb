@@ -160,7 +160,7 @@ package body Sprite_Renderer is
       U       : constant Positive := Positive (Sprites (Sprite_Index).Wmap_U);
       V       : constant Positive := Positive (Sprites (Sprite_Index).Wmap_V);
    begin
-      if Sprites (Sprite_Index).Is_Visible and  Frustum.Is_Sphere_In_Frustum
+      if Sprites (Sprite_Index).Is_Visible and Frustum.Is_Sphere_In_Frustum
         (Sprites (Sprite_Index).World_Position, 1.0) then
          GL_Utils.Bind_Vao (Sprite_VAO);
          Bind_Texture (0, Sprites (Sprite_Index).Sprite_Map_Diffuse);

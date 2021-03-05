@@ -198,8 +198,8 @@ package body Properties_Manager.Process is
                                aScript   : in out Prop_Script) is
         Full_Path : constant String := "src/textures/" & File_Name;
     begin
-        Texture_Manager.Load_Image_To_Texture (Full_Path, aScript.Specular_Map_Id,
-                                               True, True);
+        Texture_Manager.Load_Image_To_Texture
+          (Full_Path, aScript.Specular_Map_Id,True, True);
     end Do_Specular_Map;
 
     --  ------------------------------------------------------------------------

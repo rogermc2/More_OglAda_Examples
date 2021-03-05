@@ -134,13 +134,11 @@ package body Properties_Manager is
             New_Props.First_Doom_Tile_Set := False;
             New_Props.Second_Doom_Tile_Set := False;
             New_Props.Was_Collected_By_Player := False;
---              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -8- New_Props 2 done");
 
             Process_Script_Type (New_Props, aScript, RX_Kind, Rebalance);
             if aScript.Uses_Sprite then
                 Set_Up_Sprite (New_Props, aScript);
             end if;
---              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -9- Process_Script_Type done");
             if aScript.Has_Lamp then
                 Batch_Manager.Add_Static_Light
                   (Map_U, Map_V, Height_Level, aScript.Lamp_Offset,
@@ -149,7 +147,6 @@ package body Properties_Manager is
             end if;
             Properties.Append (New_Props);
 
---              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -10- Has_Lamp done");
             if New_Props.Rx_Code > 0 and RX_Kind /= Rx_Invalid then
                 Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
                                                Properties.Last_Index);
@@ -372,7 +369,13 @@ exception
         Y_Offset   : constant Single := Single (aScript.Sprite_Y_Offset);
         Sprite_Pos : Vector3 := New_Props.World_Pos;
     begin
+        Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Diffuse_ID"
+                     & UInt'Image (Diff_Map.Raw_Id) );
+        Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Specular_ID"
+                   & UInt'Image (Spec_Map.Raw_Id));
         New_Props.Script_Index := Add_Sprite (Diff_Map, Spec_Map, Cols, Rows);
+        Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Diffuse_ID, New_Props.Script_Index"
+                   & Integer'Image (New_Props.Script_Index));
         Set_Sprite_Scale (New_Props.Sprite_Index, aScript.Scale);
         Sprite_Pos (GL.Y) := Sprite_Pos (GL.Y) + Y_Offset + Sprite_Y_Offset;
         Set_Sprite_Position (New_Props.Sprite_Index, Sprite_Pos);
