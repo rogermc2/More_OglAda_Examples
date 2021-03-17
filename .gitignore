@@ -13,4 +13,10 @@ bin
 * copy.gpr
 *.log
 *.dot
+*.vpj
+*.vpw
+*.vpwhistu
+*.vtg
+
+
 
