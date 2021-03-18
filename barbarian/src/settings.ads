@@ -58,7 +58,8 @@ private
    type Settings_Data is record
       Joy_Axis_Thresh              : Float := 0.5;
       Gfx_Presets                  : Menu_Strings.Graphic_Preset_Choice_Type :=
-                                       Menu_Strings.Graphic_Preset_Medium;
+                                       Menu_Strings.Graphic_Preset_Dire;
+--                                         Menu_Strings.Graphic_Preset_Medium;
       GL_Version                   : V_GL := V3_2;
       GL_Version_To_Save           : V_GL := V3_2;
       Allow_Rand_Pitch             : Boolean := False;

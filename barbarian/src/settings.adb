@@ -55,7 +55,7 @@ package body Settings is
       G_Settings.Far_Clip := 40.0;
       G_Settings.Tile_Batch_Width := 8;
       G_Settings.Render_OLS := True;
-      G_Settings.Shadows_Enabled := True;
+      G_Settings.Shadows_Enabled := False;  --  orig True
       G_Settings.Fb_Effects_Enabled := False;
       G_Settings.Particles_Enabled := True;
       G_Settings.Particle_Mipmaps_Enabled := True;
