@@ -126,14 +126,18 @@ package body Transparency is
          if Item_Type /= Curr_Type and Item_Type = Transparency_Sprite then
             Sprite_Renderer.Start_Sprite_Rendering;
          end if;
+--           if Item_Type = Transparency_Sprite and Node.Render_Id = 6 then
+--           if Item_Type = Transparency_Sprite and Node.Render_Id = 11 then
+--           if Item_Type = Transparency_Sprite and Node.Render_Id = 12 then
+--           if Item_Type = Transparency_Sprite and Node.Render_Id = 18 then
          if Item_Type = Transparency_Sprite then
            Put_Line ("Transparency.Draw_Transparency_List, Render_Sprite: " &
                        Integer'Image (Node.Render_Id));
             Sprite_Renderer.Render_Sprite (Node.Render_Id);
-         else
-           Put_Line ("Transparency.Draw_Transparency_List, Render_Property: " &
-                       Integer'Image (Node.Render_Id));
-            Prop_Renderer.Render_Property (Node.Render_Id);
+--           else
+--             Put_Line ("Transparency.Draw_Transparency_List, Render_Property: " &
+--                         Integer'Image (Node.Render_Id));
+--              Prop_Renderer.Render_Property (Node.Render_Id);
          end if;
          Inspect := Node.Closer;
       end loop;

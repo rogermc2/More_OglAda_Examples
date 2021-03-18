@@ -53,7 +53,8 @@ package body Main_Loop is
 
     procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
-        Black                   : constant Colors.Color := (0.0, 0.0, 0.0, 1.0);
+--          Black                   : constant Colors.Color := (0.0, 0.0, 0.0, 0.0);
+        Grey                  : constant Colors.Color := (0.4, 0.4, 0.4, 0.0);
         --     Red            : constant GL.Types.Singles.Vector4 := (1.0, 0.0, 0.0, 1.0);
         --     Green          : constant GL.Types.Singles.Vector4  := (0.0, 0.5, 0.0, 1.0);
         Blue           : constant Colors.Color := (0.0, 0.0, 0.5, 1.0);
@@ -483,7 +484,7 @@ package body Main_Loop is
         begin
             --  initiate main menu loop
             Main_Menu.Start_Menu_Title_Bounce;
-            Utilities.Clear_Background_Colour_And_Depth (Black);
+            Utilities.Clear_Background_Colour_And_Depth (Grey);
             Utilities.Clear_Background_Colour_And_Depth (White);
 
             --              if not Skip_Intro_Screen_And_Main_Menu then
@@ -500,7 +501,6 @@ package body Main_Loop is
                 Current_Time := Float (Glfw.Time);
                 Delta_Time := Current_Time - Last_Time;
                 Last_Time := Current_Time;
-                Utilities.Clear_Background_Colour_And_Depth (Black);
                 Utilities.Clear_Background_Colour_And_Depth (Blue);
 
                 Main_Menu.Draw_Menu (Delta_Time);

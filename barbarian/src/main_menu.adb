@@ -1,5 +1,6 @@
 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Keys;
 
@@ -129,7 +130,7 @@ package body Main_Menu is
    Graphic_Cursor_Curr_Item        : Graphic_Choice_Type :=
                                        Graphic_Choice_Type'First;
    Graphic_Preset_Cursor_Curr_Item : Graphic_Preset_Choice_Type :=
-                                       Graphic_Preset_Choice_Type'First;
+                                       Graphic_Preset_Dire;
    Audio_Cursor_Curr_Item          : Audio_Choice_Type :=
                                        Audio_Choice_Type'First;
    Input_Cursor_Curr_Item          : Input_Choice_Type :=
@@ -253,7 +254,6 @@ package body Main_Menu is
          Disable (Blend);
          Utilities.Clear_Depth;
          if Menu_Graphics_Open then
-            Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Graphics_Open");
             for index in Graphic_Choice_Type'Range loop
                Text.Draw_Text (Graphics_Text (index));
                Text.Draw_Text (Graphic_Value_Text (index));
@@ -466,8 +466,8 @@ package body Main_Menu is
                     Credits_Text_Pos);
       Init1 (End_Story_Text, Credits_Text_Pos, Text_Background_Texture,
              Menu_Credits_Texture, Title_Skull_Texture, Menu_Cursor_Texture);
-      Init_Main_Menu_Text (Main_Text);
-      Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);
+      Init_Main_Menu_Text (Main_Text);   --  mmenu.cpp aprox line 536
+      Init_Graphic_Value_Strings (Enabled_Strings, Graphic_Value_Strings);   --  mmenu.cpp aprox line 546
       Init_Graphic_Text (Graphics_Text, Graphic_Value_Text, Graphic_Value_Strings);
       Init_Audio_Value_Strings (Audio_Text, Audio_Value_Text);
       Init_Input_Text (Input_Text, Input_Value_Text, Enabled_Strings);
@@ -535,7 +535,7 @@ package body Main_Menu is
       Result  : Boolean := False;
    begin
       Since_Last_Key := Since_Last_Key + Delta_Time;
-      Menu_Closed := False;
+      Menu_Closed := False;    --  Menu_Was_Closed
       User_Chose_Custom_Maps := False;
       User_Chose_New_Game := False;
       --  Joystick processsing

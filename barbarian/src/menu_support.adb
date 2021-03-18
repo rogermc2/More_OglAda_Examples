@@ -1,5 +1,6 @@
 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Keys;
 
@@ -492,6 +493,8 @@ package body Menu_Support is
       Result := Was_Key_Pressed (Window, Escape) or
         Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action);
+      Put_Line ("Menu_Support.Process_Menu_Graphics Result " &
+               Boolean'image (Result));
       if Result then
          Menu_Gr_Open := False;
          --  return
