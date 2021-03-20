@@ -196,13 +196,12 @@ package body Main_Menu is
       FB_Height      : constant Single := Single (Framebuffer_Height);
       Cursor_Scale   : Single := 60.0;  -- 60.0
       Cursor_Pos     : Singles.Vector2 :=
-                         ((40.0 - 512.0) / Single (Framebuffer_Width), 0.0);
+                         ((-220.0 - 512.0) / Single (Framebuffer_Width), 0.0);
 
       function Cursor_Y (Val : Integer) return Single is
-         Y : Single := 2.0 * Single (Val + 2);
+         Y : constant Single := Single (2 * Val + 1);
       begin
-         return 400.0 - 20.0 * (Cursor_Pos (GL.Y) - 1.0) /
-           Single (Framebuffer_Height);
+         return (460.0 - 20.0 * Y) / Single (Framebuffer_Height);
       end Cursor_Y;
 
    begin
@@ -261,8 +260,14 @@ package body Main_Menu is
             if Graphics_Restart_Flag then
                Text.Draw_Text (Restart_Graphics_Text);
             end if;
-            Cursor_Pos (GL.Y) := Cursor_Y (Graphic_Choice_Type'Enum_Rep
-                                           (Graphic_Cursor_Curr_Item));
+--              Cursor_Pos (GL.Y) := Cursor_Y (Graphic_Choice_Type'Enum_Rep
+--                                             (Graphic_Cursor_Curr_Item));
+
+            Cursor_Pos (GL.Y) :=
+              Cursor_Y (Main_Choice_Type'Enum_Rep (Menu_Cursor_Curr_Item));
+--              Cursor_Pos (GL.Y) :=
+--                (Menu_Text_Y_Offset - Menu_Big_Text_Size * Cursor_Pos (GL.Y) - 40.0) /
+--                  Single (Framebuffer_Height);
 
          elsif Menu_Audio_Open then
             Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Audio_Open");
@@ -270,6 +275,7 @@ package body Main_Menu is
                Text.Draw_Text (Audio_Text (index));
                Text.Draw_Text (Audio_Value_Text (index));
             end loop;
+            Cursor_Pos (GL.X) := 0.0;
             Cursor_Pos (GL.Y) :=
               2.0 + Single (Audio_Choice_Type'Enum_Rep (Audio_Cursor_Current_Item));
             Cursor_Pos (GL.Y) := (400.0 - 20.0  * (Cursor_Pos (GL.Y) - 1.0)) /
@@ -323,7 +329,7 @@ package body Main_Menu is
                Text.Draw_Text (Confirm_Quit_Text (index));
             end loop;
             Cursor_Pos (GL.Y) := 0.0;
-         else
+         else  --  Draw main menu
             for index in Main_Choice_Type'Range loop
                Text.Draw_Text (Main_Text (index));
             end loop;
@@ -544,11 +550,12 @@ package body Main_Menu is
          --  Since_Last_Key > 0.15
 --          Game_Utils.Game_Log ("Main_Menu.Update_Menu Since_Last_Key > 0.15");
          if Menu_Graphics_Open then
-            Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Graphics_Open");
             Result := Process_Menu_Graphics
               (Window, Graphic_Value_Text, Menu_Graphics_Open,
                Graphics_Restart_Flag, Since_Last_Key, Graphic_Cursor_Curr_Item,
                Current_Video_Mode);
+--              Put_Line ("Main_Menu.Update_Menu Menu_Graphics_Open Graphic_Cursor_Curr_Item "
+--                    & Graphic_Choice_Type'Image (Graphic_Cursor_Curr_Item));
          end if;  --  Menu_Graphics_Open
 
          if Menu_Audio_Open then

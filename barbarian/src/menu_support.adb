@@ -493,8 +493,6 @@ package body Menu_Support is
       Result := Was_Key_Pressed (Window, Escape) or
         Was_Action_Pressed (Window, Menu_Open_Action) or
         Was_Action_Pressed (Window, Menu_Back_Action);
-      Put_Line ("Menu_Support.Process_Menu_Graphics Result " &
-               Boolean'image (Result));
       if Result then
          Menu_Gr_Open := False;
          --  return
@@ -514,6 +512,8 @@ package body Menu_Support is
          else
             Cursor_Item := Graphic_Choice_Type'Pred (Cursor_Item);
          end if;
+         Put_Line ("Menu_Support.Process_Menu_Graphics Up_Action, Cursor_Item "
+                  & Graphic_Choice_Type'Image (Cursor_Item));
       elsif Is_Key_Down (Down) or Is_Action_Down (Down_Action) then
          if Cursor_Item = Graphic_Choice_Type'Last then
             Cursor_Item := Graphic_Choice_Type'First;
@@ -523,6 +523,8 @@ package body Menu_Support is
          else
             Cursor_Item := Graphic_Choice_Type'Succ (Cursor_Item);
          end if;
+         Put_Line ("Menu_Support.Process_Menu_Graphics Down_Action, Cursor_Item "
+                  & Graphic_Choice_Type'Image (Cursor_Item));
       elsif Is_Key_Down (Left) or Is_Action_Down (Left_Action) then
          if Cursor_Item = Graphic_Choice_Type'First then
             Set_Graphic_Preset (Graphic_Preset_Choice_Type'Last);
