@@ -6,7 +6,7 @@ limited with "deps/gid/gid";
 
 project Barbarian_1 is
 
-   for Source_Dirs use ("src", "src/management", "src/shader_managers/**", "src/maps", "../ogl_dev_common");
+   for Source_Dirs use ("src", "src/management", "src/shader_managers/**", "src/maps", "src/audio/**", "../ogl_dev_common");
    for Object_Dir use "obj";
    for Main use ("barbarian_1a");
 

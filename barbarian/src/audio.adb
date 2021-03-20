@@ -3,6 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with GL.Types;
 
+with Irrklang.Ik_Isound; use Irrklang.Ik_Isound;
 with Settings;
 
 package body Audio is
@@ -24,7 +25,7 @@ package body Audio is
     end record;
 
     type Boulder_Sound_Data is record
-    --        Sound : Irrklang::ISound;
+        Sound    : ISound;  --  Irrklang::Isound;
         Position : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
         Playing  : Boolean := False;
     end record;
@@ -50,8 +51,8 @@ package body Audio is
 
     type Audio_Data is record
     --        Device         : Irrklang::Isoundengine*;
-    --        Curr_Music_Snd : Irrklang::Isound;
-    --        Credits_Snd    : Irrklang::Isound;
+        Curr_Music_Snd      : ISound;  --  Irrklang::Isound;
+        Credits_Snd         : Isound;
         Ambient_Sounds      : Ambient_Sound_Array;
         Boulder_Sounds      : Boulder_Sound_Array;
         Loaded_Sounds       : Loaded_Sound_Array;
@@ -100,9 +101,9 @@ package body Audio is
     begin
         if G_Audio.Was_Init then
             null;
-            --           if G_Audio.Curr_Music_Snd then
-            --              G_Audio.Curr_Music_Snd.Set_Is_Paused (Pause);
-            --           end if;
+--                       if G_Audio.Curr_Music_Snd then
+        Set_Is_Paused (Pause);
+--                       end if;
         end if;
     end Pause_Music;
 
