@@ -201,7 +201,7 @@ package body Main_Menu is
       function Cursor_Y (Val : Integer) return Single is
          Y : constant Single := Single (2 * Val + 1);
       begin
-         return (460.0 - 20.0 * Y) / Single (Framebuffer_Height);
+         return (380.0 - 23.0 * Y) / Single (Framebuffer_Height);
       end Cursor_Y;
 
    begin
@@ -260,15 +260,8 @@ package body Main_Menu is
             if Graphics_Restart_Flag then
                Text.Draw_Text (Restart_Graphics_Text);
             end if;
---              Cursor_Pos (GL.Y) := Cursor_Y (Graphic_Choice_Type'Enum_Rep
---                                             (Graphic_Cursor_Curr_Item));
-
-            Cursor_Pos (GL.Y) :=
-              Cursor_Y (Main_Choice_Type'Enum_Rep (Menu_Cursor_Curr_Item));
---              Cursor_Pos (GL.Y) :=
---                (Menu_Text_Y_Offset - Menu_Big_Text_Size * Cursor_Pos (GL.Y) - 40.0) /
---                  Single (Framebuffer_Height);
-
+            Cursor_Pos (GL.Y) := Cursor_Y (Graphic_Choice_Type'Enum_Rep
+                                           (Graphic_Cursor_Curr_Item));
          elsif Menu_Audio_Open then
             Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Audio_Open");
             for index in Audio_Choice_Type'Range loop
@@ -362,7 +355,7 @@ package body Main_Menu is
       use GL.Types;
       use Singles;
       use Maths;
-      USE Shader_Attributes;
+      use Shader_Attributes;
       Y            : constant Single := 200.0 / Single (Settings.Framebuffer_Height);
       T_Matrix     : constant Singles.Matrix4 :=
                        Translation_Matrix ((0.0, Y, 0.0));
@@ -548,7 +541,6 @@ package body Main_Menu is
       Result := Since_Last_Key < 0.15;
       if not Result then
          --  Since_Last_Key > 0.15
---          Game_Utils.Game_Log ("Main_Menu.Update_Menu Since_Last_Key > 0.15");
          if Menu_Graphics_Open then
             Result := Process_Menu_Graphics
               (Window, Graphic_Value_Text, Menu_Graphics_Open,
@@ -589,12 +581,10 @@ package body Main_Menu is
          end if;
 
          if Menu_Credits_Open then
-            --              Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Credits_Open");
             Check_Close_Menu_Credits (Window, Menu_Credits_Open,
                                       Menu_End_Story_Open, Menu_Closed, Text_Timer);
          end if;
 
---           Game_Utils.Game_Log ("Main_Menu.Update_Menu General_Menu_Support");
          General_Menu_Support (Window, Joystick_Detected_Text,
                                To_String (Joy_Name), Menu_Closed,
                                Menu_Graphics_Open, Menu_Audio_Open,

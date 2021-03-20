@@ -512,8 +512,6 @@ package body Menu_Support is
          else
             Cursor_Item := Graphic_Choice_Type'Pred (Cursor_Item);
          end if;
-         Put_Line ("Menu_Support.Process_Menu_Graphics Up_Action, Cursor_Item "
-                  & Graphic_Choice_Type'Image (Cursor_Item));
       elsif Is_Key_Down (Down) or Is_Action_Down (Down_Action) then
          if Cursor_Item = Graphic_Choice_Type'Last then
             Cursor_Item := Graphic_Choice_Type'First;
@@ -522,6 +520,8 @@ package body Menu_Support is
             Result := True;
          else
             Cursor_Item := Graphic_Choice_Type'Succ (Cursor_Item);
+         Put_Line ("Menu_Support.Process_Menu_Graphics Up_Action, Cursor_Item "
+                  & Graphic_Choice_Type'Image (Cursor_Item));
          end if;
          Put_Line ("Menu_Support.Process_Menu_Graphics Down_Action, Cursor_Item "
                   & Graphic_Choice_Type'Image (Cursor_Item));
