@@ -291,7 +291,7 @@ package body Main_Menu_Initialization is
           (Integer'Image (Anisotroic_Texturing_Factor));
         Graphic_Value_Strings (Graphic_Msaa) := To_Unbounded_String
           (Integer'Image (Multi_Sample_Anti_Aliasing));
-        Graphic_Value_Strings (Graphic_Ssaam) := To_Unbounded_String
+        Graphic_Value_Strings (Graphic_Ssaa) := To_Unbounded_String
           (Single'Image (Super_Sample_Anti_Aliasing));
         Graphic_Value_Strings (Graphic_Render_Dist) := To_Unbounded_String
           (Integer'Image (Render_Distance));
