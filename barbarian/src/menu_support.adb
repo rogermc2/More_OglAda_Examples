@@ -522,12 +522,9 @@ package body Menu_Support is
                 Result := True;
             else
                 Cursor_Item := Graphic_Choice_Type'Succ (Cursor_Item);
-                Put_Line ("Menu_Support.Process_Menu_Graphics Up_Action, Cursor_Item "
-                          & Graphic_Choice_Type'Image (Cursor_Item));
             end if;
-            Put_Line ("Menu_Support.Process_Menu_Graphics Down_Action, Cursor_Item "
-                      & Graphic_Choice_Type'Image (Cursor_Item));
         elsif Is_Key_Down (Left) or Is_Action_Down (Left_Action) then
+            Put_Line ("Menu support.Process_Menu_Graphics left key pressed");
             if Cursor_Item = Graphic_Choice_Type'First then
                 Settings.Set_Graphic_Preset (Graphic_Preset_Choice_Type'Last);
                 if Settings.Graphic_Preset < Graphic_Preset_Dire then
@@ -544,7 +541,6 @@ package body Menu_Support is
             Audio.Play_Sound (Menu_Beep_Sound, True);
 
         elsif Is_Key_Down (Right) or Is_Action_Down (Right_Action) then
-            Put_Line ("Menu support.Process_Menu_Graphics right key pressed");
             if Cursor_Item = Graphic_Presets then
                 if Settings.Graphic_Preset /= Graphic_Preset_Custom then
                     Settings.Set_Graphic_Preset

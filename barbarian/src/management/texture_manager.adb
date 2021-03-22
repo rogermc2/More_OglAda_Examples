@@ -19,7 +19,7 @@ package body Texture_Manager is
 
     package Bound_Textures_Package is new Ada.Containers.Vectors
       (Natural, GL.Objects.Textures.Texture);
-    type Bound_Textures_List is new Bound_Textures_Package.Vector with null record;
+    subtype Bound_Textures_List is  Bound_Textures_Package.Vector;
 
     type Loaded_Texture is record
         File_Name   : Unbounded_String;
@@ -30,8 +30,7 @@ package body Texture_Manager is
 
     package Loaded_Textures_Package is new Ada.Containers.Vectors
       (Natural, Loaded_Texture);
-    type Loaded_Textures_List is new Loaded_Textures_Package.Vector with
-      null record;
+    subtype Loaded_Textures_List is Loaded_Textures_Package.Vector;
 
     Bound_Textures       : Bound_Textures_List;
     Loaded_Textures      : Loaded_Textures_List;
@@ -54,10 +53,14 @@ package body Texture_Manager is
         end if;
 
         if Tex /= Bound_Textures.Element (Slot) then
+--              Put_Line ("Texture.Bind_Texture, Tex not in Bound_Textures ");
             Bound_Textures.Replace_Element (Slot, Tex);
+--              Put_Line ("Texture.Bind_Texture, Tex in  Bound_Textures");
         end if;
         Set_Active_Unit (GL.Types.Int (Slot));
+--          Put_Line ("Texture.Bind_Texture, Active_Unit set");
         Texture_2D.Bind (Tex);
+--          Put_Line ("Texture.Bind_Texture, Tex  Bound");
 
     end Bind_Texture;
 
@@ -94,7 +97,8 @@ package body Texture_Manager is
         Sq_Ac           : Integer;
         Sq_Dn           : Integer;
         Index           : Positive := 1;
-        Default_Texture : Texture;
+        Def_Texture     : Texture;
+        Default_Texture : Loaded_Texture;
     begin
         ---  Generate RGBA pixels
         while Index <= Dt_Data_Size loop
@@ -118,9 +122,10 @@ package body Texture_Manager is
             Index := Index + 4;
         end loop;
 
-        Default_Texture.Initialize_Id;
+        Def_Texture.Initialize_Id;
         Set_Active_Unit (0);
-        Texture_2D.Bind (Default_Texture);
+        Texture_2D.Bind (Def_Texture);
+        Bound_Textures.Append (Def_Texture);
 
         Texture_2D.Load_From_Data
           (0, RGBA, 16, 16, RGBA, Unsigned_Byte,
@@ -131,7 +136,11 @@ package body Texture_Manager is
         Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
         Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
 
-        Bound_Textures.Append (Default_Texture);
+        Default_Texture.File_Name := To_Unbounded_String ("default");
+        Default_Texture.theTexture := Def_Texture;
+        Default_Texture.Has_Mipmaps := False;
+        Loaded_Textures.Append (Default_Texture);
+        Game_Utils.Game_Log  ("Texture_Manager.Create_Default_Texture, Default Texture loaded");
 
     exception
         when anError : others =>
@@ -149,8 +158,8 @@ package body Texture_Manager is
         --  Anistropy does not appear to be supported by OpenGLADA
         Bound_Textures.Clear;
         Loaded_Textures.Clear;
-        Bound_Textures.Set_Length (12);
-        Loaded_Textures.Set_Length (12);
+--          Bound_Textures.Set_Length (12);
+--          Loaded_Textures.Set_Length (12);
         Create_Default_Texture;
         Game_Utils.Game_Log ("Texture manager initialized.");
     end Init;
@@ -177,6 +186,7 @@ package body Texture_Manager is
     procedure Load_Image_To_Texture (File_Name          : String;
                                      aTexture           : in out Texture;
                                      Gen_Mips, Use_SRGB : Boolean) is
+        use Ada.Containers;
         use GL.Objects.Textures.Targets;
         use GL.Pixels;
         use GL.Types;
@@ -264,10 +274,10 @@ package body Texture_Manager is
                 Texture_2D.Bind (aTexture);
 
                 --  g_bound_textures[0] = tex;
-                if Bound_Textures.Is_Empty then
+                if Bound_Textures.Length = 0 then
                     Bound_Textures.Append (aTexture);
                 else
-                    Bound_Textures.Replace_Element (1, aTexture);
+                    Bound_Textures.Replace_Element (0, aTexture);
                 end if;
 
                 if Use_SRGB then
@@ -343,40 +353,57 @@ package body Texture_Manager is
         -- Anisotroic Texturing not supported?
         Anisotropy_Factor := Max_Aniso;
         Set_Active_Unit (0);
-        Bound_Textures.Clear;
+
         if not Loaded_Textures.Is_Empty then
             for Tex_Index in Loaded_Textures.First_Index ..
               Loaded_Textures.Last_Index loop
+--                  Put_Line ("Texture_Manager.Refilter_Textures Tex_Index " &
+--                              Integer'Image (Tex_Index));
                 aTexture := Loaded_Textures (Tex_Index);
-                Bind_Texture (0, aTexture.theTexture);
-                Bound_Textures.Append (aTexture.theTexture);
-                if aTexture.Has_Mipmaps then
-                    case Settings.Texture_Filter is
+                if aTexture.theTexture.Initialized then
+--                      Put_Line ("Texture_Manager.Refilter_Textures Tex_Index " &
+--                                  Integer'Image (Tex_Index) & " aTexture set");
+                    Bind_Texture (0, aTexture.theTexture);
+--                      Put_Line ("Texture_Manager.Refilter_Textures Tex_Index " &
+--                                  Integer'Image (Tex_Index) & " bound");
+                    Bound_Textures.Append (aTexture.theTexture);
+                    if aTexture.Has_Mipmaps then
+                        case Settings.Texture_Filter is
                         when 1 => Texture_2D.Set_Minifying_Filter
                               (Linear_Mipmap_Linear);
                         when 2 => Texture_2D.Set_Minifying_Filter
                               (Nearest_Mipmap_Linear);
                         when others => Texture_2D.Set_Minifying_Filter
                               (Nearest_Mipmap_Nearest);
-                    end case;
-                else
-                    if Settings.Texture_Filter > 0 then
-                        Texture_2D.Set_Minifying_Filter (Linear);
+                        end case;
                     else
-                        Texture_2D.Set_Minifying_Filter (Nearest);
+                        if Settings.Texture_Filter > 0 then
+                            Texture_2D.Set_Minifying_Filter (Linear);
+                        else
+                            Texture_2D.Set_Minifying_Filter (Nearest);
+                        end if;
                     end if;
-                end if;
 
-                if Settings.Texture_Filter > 0 then
-                    Texture_2D.Set_Magnifying_Filter (Linear);
+                    if Settings.Texture_Filter > 0 then
+                        Texture_2D.Set_Magnifying_Filter (Linear);
+                    else
+                        Texture_2D.Set_Magnifying_Filter (Nearest);
+                    end if;
+                    --                  if Settings.Anisotroic_Texturing_Factor > 0 then
+                    --                      GL_TEXTURE_MAX_ANISOTROPY_EXT not supported
+                    --                  end if;
                 else
-                    Texture_2D.Set_Magnifying_Filter (Nearest);
+                    Put_Line ("Texture_Manager.Refilter_Textures, Loaded_Textures " &
+                               Integer'Image (Tex_Index) & " is not initialised");
                 end if;
---                  if Settings.Anisotroic_Texturing_Factor > 0 then
---                      GL_TEXTURE_MAX_ANISOTROPY_EXT not supported
---                  end if;
             end loop;
         end if;
+
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Texture_Manager.Refilter_Textures" );
+            Put_Line (Ada.Exceptions.Exception_Information (anError));
+            raise;
     end Refilter_Textures;
 
     --  -------------------------------------------------------------------------
