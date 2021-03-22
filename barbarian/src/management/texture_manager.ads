@@ -11,4 +11,6 @@ package Texture_Manager is
    procedure Init;
    procedure Load_Image_To_Texture
      (File_Name : String; aTexture : in out Texture; Gen_Mips, Use_SRGB : Boolean);
+   procedure Refilter_Textures;
+
 end Texture_Manager;
