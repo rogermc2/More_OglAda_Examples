@@ -524,15 +524,17 @@ package body Menu_Support is
                 Cursor_Item := Graphic_Choice_Type'Succ (Cursor_Item);
             end if;
         elsif Is_Key_Down (Left) or Is_Action_Down (Left_Action) then
-            Put_Line ("Menu support.Process_Menu_Graphics left key pressed");
-            if Cursor_Item = Graphic_Choice_Type'First then
-                Settings.Set_Graphic_Preset (Graphic_Preset_Choice_Type'Last);
-                if Settings.Graphic_Preset < Graphic_Preset_Dire then
-                    Settings.Set_Graphic_Preset (Graphic_Preset_Ultra);
-                    Text.Update_Text (Graphic_Value_Text (Cursor_Item),
-                                      Graphic_Preset_Strings (Settings.Graphic_Preset));
-                    Settings.Set_Graphic_Preset (Settings.Graphic_Preset);
+            if Cursor_Item = Graphic_Presets then
+                if Settings.Graphic_Preset /= Graphic_Preset_Dire then
+                    Settings.Set_Graphic_Preset
+                      (Graphic_Preset_Choice_Type'Pred (Settings.Graphic_Preset));
+                else
+                    Settings.Set_Graphic_Preset (Graphic_Preset_Custom);
                 end if;
+                Text.Update_Text (Graphic_Value_Text (Cursor_Item),
+                                  Graphic_Preset_Strings (Settings.Graphic_Preset));
+                Set_Graphic_Presets (Graphic_Value_Text);
+
             elsif Cursor_Item = Graphic_Windowed_Size then
                 Process_Video_Modes (Video_Mode, Cursor_Item, Graphic_Value_Text,
                                      False);
