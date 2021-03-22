@@ -205,11 +205,9 @@ package body Main_Menu is
       end Cursor_Y;
 
    begin
-      Utilities.Clear_Depth;
-      Text_Background_Scale := (512.0 / FB_Width, 400.0 / FB_Height);
+      Utilities.Clear_Depth;  --  clear depth buffer so that menu is always on top
       GL.Objects.Programs.Use_Program (Credits_Shader_Program);
       if Menu_Credits_Open then
-         --           Game_Utils.Game_Log ("Main_Menu.Draw_Menu Menu_Credits_Open");
          Utilities.Clear_Background_Colour_And_Depth (Black);
          Disable (Depth_Test);
          Text_Timer := Text_Timer + Elapsed;
@@ -237,7 +235,6 @@ package body Main_Menu is
          end if;
          Enable (Depth_Test);
       else  --  Menu_Credits not open
-         --           Game_Utils.Game_Log ("Main_Menu.Draw_Menu not Menu_Credits_Open");
          Enable (Blend);
          --  text background box
          GL.Objects.Programs.Use_Program (Credits_Shader_Program);
@@ -252,6 +249,7 @@ package body Main_Menu is
 
          Disable (Blend);
          Utilities.Clear_Depth;
+
          if Menu_Graphics_Open then
             for index in Graphic_Choice_Type'Range loop
                Text.Draw_Text (Graphics_Text (index));
@@ -546,15 +544,13 @@ package body Main_Menu is
               (Window, Graphic_Value_Text, Menu_Graphics_Open,
                Graphics_Restart_Flag, Since_Last_Key, Graphic_Cursor_Curr_Item,
                Current_Video_Mode);
---              Put_Line ("Main_Menu.Update_Menu Menu_Graphics_Open Graphic_Cursor_Curr_Item "
---                    & Graphic_Choice_Type'Image (Graphic_Cursor_Curr_Item));
-         end if;  --  Menu_Graphics_Open
+         end if;
 
          if Menu_Audio_Open then
             Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Audio_Open");
             Process_Menu_Audio (Window, Audio_Value_Text, Menu_Audio_Open,
                                 Since_Last_Key, Audio_Cursor_Current_Item);
-         end if;  --  Menu_Audio_Open
+         end if;
 
          if Menu_Cal_KB_Open then
             Game_Utils.Game_Log ("Main_Menu.Update_Menu Menu_Cal_KB_Open");

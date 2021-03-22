@@ -533,7 +533,7 @@ package body Menu_Support is
       elsif Is_Key_Down (Left) or Is_Action_Down (Left_Action) then
          if not Key_Processed then
             if Cursor_Item = Graphic_Presets then
-               if Settings.Graphic_Preset /= Graphic_Preset_Dire then
+               if Settings.Graphic_Preset /= Graphic_Preset_Choice_Type'First then
                   Settings.Set_Graphic_Preset
                     (Graphic_Preset_Choice_Type'Pred (Settings.Graphic_Preset));
                else
@@ -554,7 +554,7 @@ package body Menu_Support is
       elsif Is_Key_Down (Right) or Is_Action_Down (Right_Action) then
          if not Key_Processed then
             if Cursor_Item = Graphic_Presets then
-               if Settings.Graphic_Preset /= Graphic_Preset_Custom then
+               if Settings.Graphic_Preset /= Graphic_Preset_Choice_Type'Last then
                   Settings.Set_Graphic_Preset
                     (Graphic_Preset_Choice_Type'Succ (Settings.Graphic_Preset));
                else
