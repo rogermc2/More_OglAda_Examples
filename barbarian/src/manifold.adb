@@ -8,7 +8,6 @@ with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
-with GL.Types.Colors;
 
 with Glfw;
 
@@ -82,7 +81,6 @@ package body Manifold is
         use GL_Maths;
         use Vec3_Package;
         use Manifold_Shader_Manager;
-        Back_Colour   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
         theBatches    : constant Batches_List := Batches;
         Curs          : Batches_Package.Cursor := theBatches.First;
         aBatch        : Batch_Meta;
@@ -116,7 +114,6 @@ package body Manifold is
             Set_Shadow_Enabled (0.0);
         end if;
 
-        Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
         Set_Model_Matrix (Singles.Identity4);
 
         while Has_Element (Curs) loop
@@ -169,7 +166,7 @@ package body Manifold is
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-                            Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
+--                              Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
                         end if;
                     end if;
                 end if;

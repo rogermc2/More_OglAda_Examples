@@ -186,6 +186,13 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Aniso (Val: Integer) is
+   begin
+      G_Settings.Anisotroic_Texturing_Factor := Val;
+   end Set_Aniso;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Audio_Volume (Volume : Integer) is
    begin
       G_Settings.Audio_Volume := Volume;
@@ -193,10 +200,25 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+
    procedure Set_Disable_Joystick (State : Boolean) is
    begin
       G_Settings.Disable_Joystick := State;
    end Set_Disable_Joystick;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Far_Clip (Distance : Single) is
+   begin
+      G_Settings.Far_Clip := Distance;
+   end Set_Far_Clip;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_FB_Effects_Enabled (State : Boolean) is
+   begin
+      G_Settings.Fb_Effects_Enabled := State;
+   end Set_FB_Effects_Enabled;
 
    --  ------------------------------------------------------------------------
 
@@ -222,6 +244,13 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_MSAA (Val : Integer) is
+   begin
+      G_Settings.Multi_Sample_Anti_Aliasing := Val;
+   end Set_MSAA;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Music_Volume (Volume : Integer) is
    begin
       G_Settings.Music_Volume := Volume;
@@ -229,10 +258,45 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Render_Distance (Distance : Integer) is
+   begin
+      G_Settings.Render_Distance := Distance;
+   end Set_Render_Distance;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Render_OLS (Set : Boolean) is
+   begin
+      G_Settings.Render_OLS := Set;
+   end Set_Render_OLS;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Shadows_Enabled (State : Boolean) is
+   begin
+      G_Settings.Shadows_Enabled := State;
+   end Set_Shadows_Enabled;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Shadow_Size (Val : Integer) is
+   begin
+      G_Settings.Shadow_Size := Val;
+   end Set_Shadow_Size;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_SSAA (Val : Float) is
    begin
       G_Settings.Super_Sample_Anti_Aliasing := Val;
    end Set_SSAA;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_TexF (Val : Integer) is
+   begin
+      G_Settings.Texf := Val;
+   end Set_TexF;
 
    --  ------------------------------------------------------------------------
 
