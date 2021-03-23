@@ -200,6 +200,12 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Autoblood_Wipe (State : Boolean) is
+   begin
+      G_Settings.Auto_Blood_Wipe := State;
+   end Set_Autoblood_Wipe;
+
+   --  ------------------------------------------------------------------------
 
    procedure Set_Disable_Joystick (State : Boolean) is
    begin
@@ -233,6 +239,13 @@ package body Settings is
    begin
       G_Settings.GL_Framebuffer_Width := Width;
    end Set_Framebuffer_Width;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Full_Screen (State : Boolean) is
+   begin
+      G_Settings.Full_Screen := State;
+   end Set_Full_Screen;
 
    --  ------------------------------------------------------------------------
 
@@ -286,6 +299,13 @@ package body Settings is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Show_FPS (State : Boolean) is
+   begin
+      G_Settings.Show_Fps := State;
+   end Set_Show_FPS;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_SSAA (Val : Float) is
    begin
       G_Settings.Super_Sample_Anti_Aliasing := Val;
@@ -297,6 +317,13 @@ package body Settings is
    begin
       G_Settings.Texf := Val;
    end Set_TexF;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_V_Sync (State : Boolean) is
+   begin
+      G_Settings.V_Sync := State;
+   end Set_V_Sync;
 
    --  ------------------------------------------------------------------------
 

@@ -194,7 +194,7 @@ package body Main_Menu is
       use Settings;
       FB_Width       : constant Single := Single (Framebuffer_Width);
       FB_Height      : constant Single := Single (Framebuffer_Height);
-      Cursor_Scale   : Single := 60.0;  -- 60.0
+      Cursor_Scale   : Single := 60.0;
       Cursor_Pos     : Singles.Vector2 :=
                          ((-220.0 - 512.0) / Single (Framebuffer_Width), 0.0);
 

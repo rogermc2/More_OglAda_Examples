@@ -31,13 +31,15 @@ package Settings is
    function Render_OLS return Boolean;
    function Render_Distance return Integer;
    function Save_Settings return Boolean;
-   procedure Set_Audio_Volume (Volume : Integer);
    procedure Set_Aniso (Val : Integer);
+   procedure Set_Audio_Volume (Volume : Integer);
+   procedure Set_Autoblood_Wipe (State : Boolean);
    procedure Set_Disable_Joystick (State : Boolean);
    procedure Set_Far_Clip (Distance : Single);
    procedure Set_FB_Effects_Enabled (State : Boolean);
    procedure Set_Framebuffer_Height (Height : GL.Types.Int);
    procedure Set_Framebuffer_Width (Width : GL.Types.Int);
+   procedure Set_Full_Screen (State : Boolean);
    procedure Set_Graphic_Preset (Preset : Menu_Strings.Graphic_Preset_Choice_Type);
    procedure Set_MSAA (Val : Integer);
    procedure Set_Music_Volume (Volume : Integer);
@@ -45,8 +47,10 @@ package Settings is
    procedure Set_Render_OLS (Set : Boolean);
    procedure Set_Shadows_Enabled (State : Boolean);
    procedure Set_Shadow_Size (Val : Integer);
+   procedure Set_Show_FPS (State : Boolean);
    procedure Set_SSAA (Val : Float);
    procedure Set_TexF (Val : Integer);
+   procedure Set_V_Sync (State : Boolean);
    procedure Set_Window_Height (Height : Integer);
    procedure Set_Window_Height_To_Save (Height : Integer);
    procedure Set_Window_Width (Width : Integer);

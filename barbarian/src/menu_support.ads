@@ -12,6 +12,8 @@ with Menu_Strings; use Menu_Strings;
 
 package Menu_Support is
 
+   Menu_Support_Error : Exception;
+
    procedure Check_Close_Menu_Credits (Window      : in out Barbarian_Window;
                                        Credits_Open, End_Story_Open,
                                        Menu_Closed : in out Boolean;
@@ -40,12 +42,12 @@ package Menu_Support is
       Custom_Maps               : in out Boolean;
       Since_Last_Key            : in out Float;
       Menu_Cursor_Item          : in out Menu_Strings.Main_Choice_Type);
-   --                                    return Boolean;
-   procedure Process_Menu_Audio (Window                    : in out Barbarian_Window;
-                                 Audio_Value_Text          : Audio_Text_Array;
-                                 Menu_Audio_Open           : in out Boolean;
-                                 Since_Last_Key            : in out Float;
-                                 Audio_Cursor_Item         : in out Audio_Choice_Type);
+
+   procedure Process_Menu_Audio (Window            : in out Barbarian_Window;
+                                 Audio_Value_Text  : Audio_Text_Array;
+                                 Menu_Audio_Open   : in out Boolean;
+                                 Since_Last_Key    : in out Float;
+                                 Audio_Cursor_Item : in out Audio_Choice_Type);
    procedure Process_Menu_Cal_GP;
    procedure Process_Menu_Cal_KB
      (Window                          : in out Barbarian_Window;
