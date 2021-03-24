@@ -1,4 +1,5 @@
 
+with Ada.Containers.Ordered_Maps;
 with Ada.Containers.Vectors;
 with Ada.Exceptions;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -17,9 +18,9 @@ package body Texture_Manager is
 
     type Mod_16 is mod 2 ** 16;
 
-    package Bound_Textures_Package is new Ada.Containers.Vectors
+    package Bound_Textures_Package is new Ada.Containers.Ordered_Maps
       (Natural, GL.Objects.Textures.Texture);
-    subtype Bound_Textures_List is  Bound_Textures_Package.Vector;
+    subtype Bound_Textures_Map is  Bound_Textures_Package.Map;
 
     type Loaded_Texture is record
         File_Name   : Unbounded_String;
@@ -32,7 +33,7 @@ package body Texture_Manager is
       (Natural, Loaded_Texture);
     subtype Loaded_Textures_List is Loaded_Textures_Package.Vector;
 
-    Bound_Textures       : Bound_Textures_List;
+    Bound_Textures       : Bound_Textures_Map := Bound_Textures_Package.Empty_Map;
     Loaded_Textures      : Loaded_Textures_List;
     Max_Aniso            : constant Float := 1.0;
     Anisotropy_Factor    : Float := 1.0;
@@ -53,14 +54,10 @@ package body Texture_Manager is
         end if;
 
         if Tex /= Bound_Textures.Element (Slot) then
---              Put_Line ("Texture.Bind_Texture, Tex not in Bound_Textures ");
-            Bound_Textures.Replace_Element (Slot, Tex);
---              Put_Line ("Texture.Bind_Texture, Tex in  Bound_Textures");
+            Bound_Textures.Replace (Slot, Tex);
         end if;
         Set_Active_Unit (GL.Types.Int (Slot));
---          Put_Line ("Texture.Bind_Texture, Active_Unit set");
         Texture_2D.Bind (Tex);
---          Put_Line ("Texture.Bind_Texture, Tex  Bound");
 
     end Bind_Texture;
 
@@ -80,7 +77,7 @@ package body Texture_Manager is
         if Tex /= Bound_Textures.Element (Slot) then
             Set_Active_Unit (GL.Types.Int (Slot));
             Texture_Cube_Map.Bind (Tex);
-            Bound_Textures.Replace_Element (Slot, Tex);
+            Bound_Textures.Replace (Slot, Tex);
         end if;
 
     end Bind_Cube_Texture;
@@ -125,7 +122,7 @@ package body Texture_Manager is
         Def_Texture.Initialize_Id;
         Set_Active_Unit (0);
         Texture_2D.Bind (Def_Texture);
-        Bound_Textures.Append (Def_Texture);
+        Bound_Textures.Insert (0, Def_Texture);
 
         Texture_2D.Load_From_Data
           (0, RGBA, 16, 16, RGBA, Unsigned_Byte,
@@ -168,16 +165,16 @@ package body Texture_Manager is
 
     function Is_Bound (Slot : Natural) return Boolean is
         use Bound_Textures_Package;
+        Curs  : Cursor := Bound_Textures.First;
+        aKey  : Natural;
+        Tex   : Texture;
         Found : Boolean := False;
-        Index : Natural;
     begin
-        if not Bound_Textures.Is_Empty then
-            Index := Bound_Textures.First_Index;
-            while Index <= Bound_Textures.Last_Index and not Found loop
-                Found := Slot = Index;
-                Index := Index + 1;
-            end loop;
-        end if;
+        while Has_Element (Curs)  and not Found loop
+            aKey := Key (Curs);
+            Found := Slot = Key  (Curs);
+            Next (Curs);
+        end loop;
         return Found;
     end Is_Bound;
 
@@ -274,11 +271,7 @@ package body Texture_Manager is
                 Texture_2D.Bind (aTexture);
 
                 --  g_bound_textures[0] = tex;
-                if Bound_Textures.Length = 0 then
-                    Bound_Textures.Append (aTexture);
-                else
-                    Bound_Textures.Replace_Element (0, aTexture);
-                end if;
+                Bound_Textures.Replace (0, aTexture);
 
                 if Use_SRGB then
                     Texture_2D.Load_From_Data
@@ -357,16 +350,10 @@ package body Texture_Manager is
         if not Loaded_Textures.Is_Empty then
             for Tex_Index in Loaded_Textures.First_Index ..
               Loaded_Textures.Last_Index loop
---                  Put_Line ("Texture_Manager.Refilter_Textures Tex_Index " &
---                              Integer'Image (Tex_Index));
                 aTexture := Loaded_Textures (Tex_Index);
                 if aTexture.theTexture.Initialized then
---                      Put_Line ("Texture_Manager.Refilter_Textures Tex_Index " &
---                                  Integer'Image (Tex_Index) & " aTexture set");
                     Bind_Texture (0, aTexture.theTexture);
---                      Put_Line ("Texture_Manager.Refilter_Textures Tex_Index " &
---                                  Integer'Image (Tex_Index) & " bound");
-                    Bound_Textures.Append (aTexture.theTexture);
+                    Bound_Textures.Replace (0, aTexture.theTexture);
                     if aTexture.Has_Mipmaps then
                         case Settings.Texture_Filter is
                         when 1 => Texture_2D.Set_Minifying_Filter
