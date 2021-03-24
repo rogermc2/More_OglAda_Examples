@@ -180,7 +180,6 @@ package body Prop_Renderer.Render is
         Character := Get_Character (1);
         Count := Integer (Jav_Stand_Render_List.Length);
         if not Is_Empty (Jav_Stand_Render_List) then
-            Put_line ("Prop_renderer.Render Jav_Stand_Render_List not empty ");
             GL.Objects.Programs.Use_Program
               (Properties_Shader_Manager.Jav_Stand_Shader);
             Set_Time (Tim);
@@ -190,8 +189,8 @@ package body Prop_Renderer.Render is
             end if;
 
             for Param_I in 1 .. Count loop
-                Put_line ("Prop_renderer.Render Param_I: " &
-                Integer'Image (Param_I));
+--                  Put_line ("Prop_renderer.Render Param_I: " &
+--                  Integer'Image (Param_I));
                 if  Continue then
                     Prop_I := Jav_Stand_Render_List (Param_I);
                     Property := Properties_Manager.Get_Property_Data (Prop_I);
@@ -292,7 +291,6 @@ package body Prop_Renderer.Render is
                 Prop_I := Jav_Stand_Render_List (Param_I);
                 Property := Properties_Manager.Get_Property_Data (Prop_I);
                 Script_I := Get_Script_Index (Prop_I);
---                  Script_I := Properties (Prop_I).Script_Index;
                 Script := Properties_Manager.Get_Script_Data (Script_I);
                 Set_Model (Property.Model_Matrix);
                 GL_Utils.Bind_VAO (Script.Vao);

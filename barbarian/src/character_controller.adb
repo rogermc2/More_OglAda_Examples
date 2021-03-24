@@ -243,8 +243,6 @@ package body Character_Controller is
         end if;
 
         if Tiles_Manager.Is_Tile_Valid (Source.U, Source.V) then
---              Game_Utils.Game_Log ("Character_Controller.Create_Character creating character from " &
---                                     To_String (Source.Script_File));
             Set_Character_Defaults (theCharacter);
             theCharacter.Heading_Deg := Source.Heading;
             theCharacter.Map := (Source.U, Source.V);
@@ -253,15 +251,18 @@ package body Character_Controller is
             Spec := Specs_Manager.Get_Spec (theCharacter.Specs_Index);
             Rows := Spec.Atlas_Rows;
             Cols := Spec.Atlas_Cols;
-            Put_Line ("Character_Controller.Create_Character, Spec.Atlas_Diffuse_ID, Spec.Atlas_Specular_ID"
-                     & UInt'Image (Spec.Atlas_Diffuse_ID.Raw_Id) & ", " &
-                     UInt'Image (Spec.Atlas_Specular_ID.Raw_Id));
+            if not Spec.Atlas_Diffuse_ID.Initialized then
+                raise Character_Controller_Exception with "Character_Controller.Create_Character, " &
+                  "Diff_Map texture has not been initialized";
+            end if;
+            if not Spec.Atlas_Specular_ID.Initialized then
+                raise Character_Controller_Exception with "Character_Controller.Create_Character, " &
+                  "Spec_Map texture has not been initialized";
+            end if;
             theCharacter.Sprite_Index :=
               Sprite_Renderer.Add_Sprite
                 (Spec.Atlas_Diffuse_ID, Spec.Atlas_Specular_ID, Rows, Cols);
 
-            Put_Line ("Character_Controller.Create_Character, Sprite_Index added: "
-                        & Integer'Image (theCharacter.Sprite_Index));
             theCharacter.Current_Health := Spec.Initial_Health;
             Sprite_Renderer.Set_Sprite_Heading
               (theCharacter.Sprite_Index, Source.Heading);
@@ -283,8 +284,6 @@ package body Character_Controller is
                 Kills_Max := Kills_Max + 1;
             end if;
             Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
-                                   To_String (Source.Script_File));
-            Put_Line ("Character_Controller.Create_Character character created from " &
                                    To_String (Source.Script_File));
         else
             raise Character_Controller_Exception with

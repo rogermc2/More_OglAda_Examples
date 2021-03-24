@@ -315,6 +315,7 @@ package body Main_Loop is
                     Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
                     Main_Menu.Draw_Title_Only;
                 end if;
+
                 GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
                 Glfw.Input.Poll_Events;
                 Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);

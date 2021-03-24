@@ -66,6 +66,15 @@ package body Sprite_Renderer is
          raise Sprite_Exception with "Sprite_Renderer.Add_Sprite, " &
            "maximum number of sprites has already been assigned";
       end if;
+      if not Diffuse.Initialized then
+         raise Sprite_Exception with "Sprite_Renderer.Add_Sprite, " &
+           "Diffuse texture has not been initialized";
+      end if;
+      if not Specular.Initialized then
+         raise Sprite_Exception with "Sprite_Renderer.Add_Sprite, " &
+           "Specular texture has not been initialized";
+      end if;
+
       Num_Sprites := Num_Sprites + 1;
       Sprites (Num_Sprites).Sprite_Map_Diffuse := Diffuse;
       Sprites (Num_Sprites).Sprite_Map_Specular := Specular;

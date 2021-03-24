@@ -53,9 +53,14 @@ package body Texture_Manager is
               & "is too high:" & Natural'Image (Slot);
         end if;
 
-        if Tex /= Bound_Textures.Element (Slot) then
-            Bound_Textures.Replace (Slot, Tex);
+        if Bound_Textures.Contains (Slot) then
+            if Tex /= Bound_Textures.Element (Slot) then
+                Bound_Textures.Replace (Slot, Tex);
+            end if;
+        else
+            Bound_Textures.Insert (Slot, Tex);
         end if;
+
         Set_Active_Unit (GL.Types.Int (Slot));
         Texture_2D.Bind (Tex);
 
@@ -74,10 +79,16 @@ package body Texture_Manager is
               & "is too high:" & Positive'Image (Slot);
         end if;
 
-        if Tex /= Bound_Textures.Element (Slot) then
+        if Bound_Textures.Contains (Slot) then
+            if Tex /= Bound_Textures.Element (Slot) then
+                Set_Active_Unit (GL.Types.Int (Slot));
+                Texture_Cube_Map.Bind (Tex);
+                Bound_Textures.Replace (Slot, Tex);
+            end if;
+        else
+            Bound_Textures.Insert (Slot, Tex);
             Set_Active_Unit (GL.Types.Int (Slot));
             Texture_Cube_Map.Bind (Tex);
-            Bound_Textures.Replace (Slot, Tex);
         end if;
 
     end Bind_Cube_Texture;
@@ -208,9 +219,12 @@ package body Texture_Manager is
         while Has_Element (Curs) and not Texture_Loaded loop
             Texture_Data := Element (Curs);
             Texture_Loaded := Texture_Data.File_Name = File_Name;
-            if not Texture_Loaded then
-                --                  aTexture.Set_Raw_Id (Texture_Data.Texture_ID);
-                --              else
+            if Texture_Loaded then
+                if not Texture_Data.theTexture.Initialized then
+                    Texture_Data.theTexture.Initialize_Id;
+                end if;
+                aTexture := Texture_Data.theTexture;
+            else
                 Next (Curs);
             end if;
         end loop;
@@ -230,8 +244,8 @@ package body Texture_Manager is
                   ("WARNING: Texture_Manager.Load_Image_To_Texture, texture is " &
                      "not power-of-two dimensions " & File_Name);
             end if;
-            --           Put_Line ("Texture_Manager.Load_Image_To_Texture Data_Length " &
-            --                    GL.Types.Int'Image (Data_Length) & " for " & File_Name);
+--              Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture Data_Length " &
+--                          GL.Types.Int'Image (Data_Length) & " for " & File_Name);
             declare
                 Data_Raw     : GID_Image_Loader.Raw_Data (1 .. Data_Length);
                 -- Data is an array of UBytes
@@ -266,7 +280,6 @@ package body Texture_Manager is
                 --  Copy Data into an OpenGL texture
                 aTexture.Initialize_Id;
                 Texture_Data.File_Name := To_Unbounded_String (File_Name);
-                --                  Texture_Data.Texture_ID := aTexture.Raw_Id;
                 Set_Active_Unit (0);
                 Texture_2D.Bind (aTexture);
 
@@ -316,13 +329,12 @@ package body Texture_Manager is
                 Texture_2D.Set_X_Wrapping (Clamp_To_Edge);
                 Texture_2D.Set_Y_Wrapping (Clamp_To_Edge);
 
-                --                  Texture_Data.Texture_ID := aTexture.Raw_Id;
                 Texture_Data.theTexture := aTexture;
                 Loaded_Textures.Append (Texture_Data);
+--                  Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture aTexture Initialized " &
+--                          Boolean'Image (aTexture.Initialized) & " for " & File_Name);
+
             end; -- declare block
-            --        else
-            --           Game_Utils.Game_Log ("Texture_Manager.Load_Image_To_Texture image " &
-            --                                  File_Name & " already loaded.");
         end if;
 
     exception

@@ -119,8 +119,6 @@ package body Transparency is
       Enable (Depth_Test);
 
       while Inspect > 0 loop
-           Put_Line ("Transparency.Draw_Transparency_List, Inspect: " &
-                    Integer'Image (Inspect));
          Node := TR_Nodes.Element (Inspect);
          Item_Type := Node.Tr_Type;
          if Item_Type /= Curr_Type and Item_Type = Transparency_Sprite then
@@ -131,9 +129,10 @@ package body Transparency is
 --           if Item_Type = Transparency_Sprite and Node.Render_Id = 12 then
 --           if Item_Type = Transparency_Sprite and Node.Render_Id = 18 then
          if Item_Type = Transparency_Sprite then
-           Put_Line ("Transparency.Draw_Transparency_List, Render_Sprite: " &
-                       Integer'Image (Node.Render_Id));
+--             Put_Line ("Transparency.Draw_Transparency_List, Render_Sprite: " &
+--                         Integer'Image (Node.Render_Id));
             Sprite_Renderer.Render_Sprite (Node.Render_Id);
+--             Put_Line ("Transparency.Draw_Transparency_List, Sprite rendered. ");
 --           else
 --             Put_Line ("Transparency.Draw_Transparency_List, Render_Property: " &
 --                         Integer'Image (Node.Render_Id));

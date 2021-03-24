@@ -132,15 +132,16 @@ package body Main_Menu_Initialization is
         Menu_Colour     : constant Singles.Vector4 := (1.0, 1.0, 1.0, 1.0);
     begin
         for index in End_Story_Array'Range loop
-            End_Story_Text (index) := Text.Add_Text (End_Story_Strings (index),
-                                                     Credits_Text_Pos (GL.X),
-                                                     Credits_Text_Pos (GL.Y) + 10.0 * Single (index - 1),
-                                                     30.0, (1.0, 1.0, 0.1, 1.0));
+            End_Story_Text (index) := Text.Add_Text
+              (End_Story_Strings (index), Credits_Text_Pos (GL.X),
+               Credits_Text_Pos (GL.Y) + 10.0 * Single (index - 1),
+               30.0, (1.0, 1.0, 0.1, 1.0));
             Text.Set_Text_Visible (End_Story_Text (index), False);
         end loop;
 
         Texture_Manager.Load_Image_To_Texture
-          ("src/textures/skull_small_helmet_painterv_shade.png", Menu_Cursor_Texture, False, True);
+          ("src/textures/skull_small_helmet_painterv_shade.png",
+           Menu_Cursor_Texture, False, True);
         Texture_Manager.Load_Image_To_Texture
           ("src/textures/title_skull.png", Title_Skull_Texture, False, True);
         Texture_Manager.Load_Image_To_Texture

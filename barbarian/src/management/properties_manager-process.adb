@@ -172,17 +172,6 @@ package body Properties_Manager.Process is
 
     --  ------------------------------------------------------------------------
 
-    procedure Do_Starts_Open (State : String; aScript : in out Prop_Script) is
-    begin
-        if State = "1"then
-            aScript.Initial_Door_State := Open_State;
-        else
-            aScript.Initial_Door_State := Closed_State;
-        end if;
-    end Do_Starts_Open;
-
-    --  ------------------------------------------------------------------------
-
     procedure Do_Sprite (State : String; aScript : in out Prop_Script) is
     begin
         if State = "1"then
@@ -198,9 +187,26 @@ package body Properties_Manager.Process is
                                aScript   : in out Prop_Script) is
         Full_Path : constant String := "src/textures/" & File_Name;
     begin
+        Game_Utils.Game_Log ("Properties_Manager-Process.Do_Specular_Map, Specular_Map "
+                             & File_Name);
+        Game_Utils.Game_Log ("Properties_Manager-Process.Do_Specular_Map, Specular_Map already initialized "
+                             & Boolean'Image (aScript.Specular_Map_Id.Initialized));
         Texture_Manager.Load_Image_To_Texture
-          (Full_Path, aScript.Specular_Map_Id,True, True);
+          (Full_Path, aScript.Specular_Map_Id, True, True);
+        Game_Utils.Game_Log ("Properties_Manager-Process.Do_Specular_Map, Specular_Map initialized "
+                             & Boolean'Image (aScript.Specular_Map_Id.Initialized));
     end Do_Specular_Map;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Do_Starts_Open (State : String; aScript : in out Prop_Script) is
+    begin
+        if State = "1"then
+            aScript.Initial_Door_State := Open_State;
+        else
+            aScript.Initial_Door_State := Closed_State;
+        end if;
+    end Do_Starts_Open;
 
     --  ------------------------------------------------------------------------
 
@@ -319,9 +325,13 @@ package body Properties_Manager.Process is
         OK := Found;
         if not Found then
 --              Game_Utils.Game_Log
---                ("Properties_Manager.Process.Get_Index_Of_Prop_Script: loading: " &
+--                ("Properties_Manager.Process.Get_Index_Of_Prop_Script loading: " &
 --                   Script_File);
             OK := Load_Property_Script (Script_File, Index);
+            Game_Utils.Game_Log
+                ("Properties_Manager.Process.Get_Index_Of_Prop_Script Diffuse and Specular_Map_Id.Initialized: " &
+                   Boolean'Image (aScript.Diffuse_Map_Id.Initialized) & " " &
+                   Boolean'Image (aScript.Specular_Map_Id.Initialized));
         end if;
 
         if not OK then
@@ -573,8 +583,6 @@ package body Properties_Manager.Process is
         end if;
 
         if Has_Smashed_Script then
---             Put_Line ("Properties_Manager.Process.Load_Property_Script, Smashed_Script_File: '" &
---                          To_String (Smashed_Script_File) & "'");
             OK := Load_Property_Script
               (To_String (Smashed_Script_File), aScript.Smashed_Script_Index);
             Prop_Scripts.Replace_Element (Prop_Index, aScript);

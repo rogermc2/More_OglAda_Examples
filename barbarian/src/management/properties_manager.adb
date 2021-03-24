@@ -19,6 +19,8 @@ with Tiles_Manager;
 package body Properties_Manager is
     use Properties_Manager.Process;
 
+    Properties_Manager_Exception : Exception;
+
     procedure Rebalance_Props_In (Map_U, Map_V : Integer);
     procedure Set_Up_Sprite (New_Props : in out Property_Data;
                              aScript : Prop_Script);
@@ -46,20 +48,20 @@ package body Properties_Manager is
         Rot_Matrix    : Matrix4;
         Ros           : Vector3;
     begin
---          Game_Utils.Game_Log
---            ("--------Properties_Manager.Create_Prop_From_Script--------");
---          Game_Utils.Game_Log
---            ("Properties_Manager.Create_Prop_From_Script -1- creating property from "
---              & Script_File);
+        --          Game_Utils.Game_Log
+        --            ("--------Properties_Manager.Create_Prop_From_Script--------");
+        --          Game_Utils.Game_Log
+        --            ("Properties_Manager.Create_Prop_From_Script -1- creating property from "
+        --              & Script_File);
         Script_Index := Get_Index_Of_Prop_Script (Script_File);
---          Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -2- script index "
---                               & Integer'Image (Script_Index));
+        --          Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -2- script index "
+        --                               & Integer'Image (Script_Index));
         aScript := Prop_Scripts.Element (Script_Index);
---          Game_Utils.Game_Log ("Properties_Manager.Create_Prop_From_Script -3- script created ");
+        --          Game_Utils.Game_Log ("Properties_Manager.Create_Prop_From_Script -3- script created ");
         aScript_Type := aScript.Script_Type;
         Respect_Ramps := aScript_Type = Boulder_Prop;
---          Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -4- Mesh_Index"
---                               & Integer'Image (aScript.Mesh_Index));
+        --          Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -4- Mesh_Index"
+        --                               & Integer'Image (aScript.Mesh_Index));
         if Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
             --           Game_Utils.Game_Log ("Properties Manager creating property from script "
             --                                & Script_File);
@@ -70,7 +72,7 @@ package body Properties_Manager is
             for index in 1 .. Mesh_Loader.Max_Bones loop
                 New_Props.Current_Bone_Transforms (index) := Singles.Identity4;
             end loop;
---              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5- Current_Bone_Transforms done");
+            --              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5- Current_Bone_Transforms done");
 
             New_Props.World_Pos (GL.X) := 2.0 * Single (Map_U);
             New_Props.World_Pos (GL.Z) := 2.0 * Single (Map_V);
@@ -108,7 +110,7 @@ package body Properties_Manager is
             New_Props.Rx_Code := Rx;
             New_Props.Script_Index := 1;
             New_Props.Height_Level := Height_Level;
---              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -6- New_Props 1 done");
+            --              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -6- New_Props 1 done");
 
             if aScript.Has_Particles then
                 New_Props.Particle_System_Index :=
@@ -124,8 +126,6 @@ package body Properties_Manager is
             else
                 New_Props.Particle_System_Index := 1;
             end if;
-
---              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -7- Particles done");
 
             New_Props.Was_Triggered := False;
             New_Props.Is_On_Ground := False;
@@ -151,20 +151,20 @@ package body Properties_Manager is
                 Event_Controller.Add_Receiver (New_Props.Rx_Code, RX_Kind,
                                                Properties.Last_Index);
             end if;
---              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -11- Update_Props_In_Tiles (Properties.Last_Index: "
---              & Integer'Image (Properties.Last_Index));
+            --              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -11- Update_Props_In_Tiles (Properties.Last_Index: "
+            --              & Integer'Image (Properties.Last_Index));
             --  Update_Props_In_Tiles just adds
             Prop_Renderer.Update_Props_In_Tiles_Index
               (Integer (New_Props.Map_U), Integer (New_Props.Map_V),
                Int (Properties.Last_Index));
             if Rebalance then
---                  Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -12- Rebalance");
+                --                  Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -12- Rebalance");
                 Rebalance_Props_In (Integer (Map_U), Integer (Map_V));
             end if;
         end if;
---          Game_Utils.Game_Log ("--------Leaving Properties_Manager.Create_Prop_From_Script--------");
+        --          Game_Utils.Game_Log ("--------Leaving Properties_Manager.Create_Prop_From_Script--------");
 
-exception
+    exception
         when anError : Constraint_Error =>
             Put ("Properties_Manager.Create_Prop_From_Script constraint error: ");
             Put_Line (Exception_Information (anError));
@@ -187,11 +187,11 @@ exception
     function Get_Property_Data (Prop_Index : Positive)
                                 return Prop_Renderer_Support.Property_Data is
     begin
---          Put_Line ( "Prop_Renderer.Get_Property_Data, entered with property index: "
---                      & Positive'Image (Prop_Index));
+        --          Put_Line ( "Prop_Renderer.Get_Property_Data, entered with property index: "
+        --                      & Positive'Image (Prop_Index));
         if not Properties_Manager.Index_Is_Valid (Int (Prop_Index)) then
             raise Properties_Exception with
-            "Properties_Manager.Get_Property_Data, invalid property index: " &
+              "Properties_Manager.Get_Property_Data, invalid property index: " &
               Positive'Image (Prop_Index);
         end if;
         return Properties.Element (Prop_Index);
@@ -250,8 +250,8 @@ exception
             declare
                 Prop_Line : constant String := Get_Line (Prop_File);
             begin
-            Game_Utils.Game_Log ("Properties_Manager.Load_Properties Prop_Line: "
-                                 & Prop_Line);
+                Game_Utils.Game_Log ("Properties_Manager.Load_Properties Prop_Line: "
+                                     & Prop_Line);
                 S_Length := Prop_Line'Length;
                 PosL := Fixed.Index (Prop_Line, " ");
                 Script_File := To_Unbounded_String (Prop_Line (1 .. PosL - 1));
@@ -369,13 +369,18 @@ exception
         Y_Offset   : constant Single := Single (aScript.Sprite_Y_Offset);
         Sprite_Pos : Vector3 := New_Props.World_Pos;
     begin
-        Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Diffuse_ID"
-                     & UInt'Image (Diff_Map.Raw_Id) );
-        Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Specular_ID"
-                   & UInt'Image (Spec_Map.Raw_Id));
+        if not Diff_Map.Initialized then
+            raise Properties_Manager_Exception with "Properties_Manager.Set_Up_Sprite, " &
+              "Diff_Map texture has not been initialized";
+        end if;
+        if not Spec_Map.Initialized then
+            raise Properties_Manager_Exception with "Properties_Manager.Set_Up_Sprite, " &
+              "Spec_Map texture has not been initialized";
+        end if;
+
         New_Props.Script_Index := Add_Sprite (Diff_Map, Spec_Map, Cols, Rows);
-        Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Diffuse_ID, New_Props.Script_Index"
-                   & Integer'Image (New_Props.Script_Index));
+--          Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Diffuse_ID, New_Props.Script_Index"
+--                    & Integer'Image (New_Props.Script_Index));
         Set_Sprite_Scale (New_Props.Sprite_Index, aScript.Scale);
         Sprite_Pos (GL.Y) := Sprite_Pos (GL.Y) + Y_Offset + Sprite_Y_Offset;
         Set_Sprite_Position (New_Props.Sprite_Index, Sprite_Pos);
@@ -385,4 +390,4 @@ exception
 
     -- --------------------------------------------------------------------------
 
-    end Properties_Manager;
+end Properties_Manager;

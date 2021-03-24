@@ -369,7 +369,7 @@ package body Main_Menu is
 
       if not Title_VAO.Initialized then
          raise Main_Menu_Exception with
-           "MMen.Draw_Title_Only, Title_VAO has not been initialized";
+           "MMen.Draw_Title, Title_VAO has not been initialized";
       end if;
       GL_Utils.Bind_VAO (Title_VAO);
       Draw_Arrays (Triangles, 0, Int (Title_Point_Count));
@@ -395,7 +395,6 @@ package body Main_Menu is
       Current_Time : constant Single := Single (Glfw.Time);
    begin
       --  Draw cursor skull in background
-      Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
       if not Title_Skull_Texture.Initialized then
          raise Main_Menu_Exception with
            "MMen.Draw_Title_Only, Title_Skull_Texture has not been initialized";
@@ -403,6 +402,7 @@ package body Main_Menu is
          raise Main_Menu_Exception with
            "MMen.Draw_Title_Only, Cursor_VAO has not been initialized";
       end if;
+      Texture_Manager.Bind_Texture (0, Title_Skull_Texture);
       GL_Utils.Bind_VAO (Cursor_VAO);
 
       GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
