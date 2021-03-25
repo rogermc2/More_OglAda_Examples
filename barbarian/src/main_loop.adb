@@ -141,7 +141,7 @@ package body Main_Loop is
                               Delta_Time                 : Float;
                               Main_Menu_Quit, Is_Running : in out Boolean) is
       begin
-         --   Game_Utils.Game_Log ("Main_Loop.Game_Loop Main Menu open");
+         --   Game_Utils.Game_Log ("Main_Loop.Do_Menu_Open");
          Main_Menu_Quit := not Main_Menu.Update_Main_Menu
            (Window, Delta_Time);
          if Main_Menu.Menu_Was_Closed then
@@ -149,7 +149,7 @@ package body Main_Loop is
             FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
          end if;
 --           Game_Utils.Game_Log
---             ("Main_Loop.Game_Loop check if User_Choose_New_Game");
+--             ("Main_Loop.Do_Menu_Open check if User_Chose_New_Game");
          if Main_Menu.Did_User_Choose_New_Game or
            Main_Menu.Did_User_Choose_Custom_Maps then
             Main_Menu.Set_Menu_Open (False);
