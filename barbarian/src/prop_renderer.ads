@@ -36,6 +36,7 @@ package Prop_Renderer is
     procedure Init;
     procedure Launch_Decap_Head (LHL_Type  : Positive;
                                  World_Pos : Singles.Vector3);
+    function Get_End_Camera_Matrix return Singles.Matrix4;
     function Get_End_Camera_Position return Singles.Vector3;
     function Get_Num_Live_Mirrors return Int;
     function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List;
@@ -49,6 +50,7 @@ package Prop_Renderer is
     procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int);
     procedure Reset_Properties;
     procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
+    procedure Set_End_Camera_Matrix (Mat : Singles.Matrix4);
     procedure Set_End_Camera_Position (Pos : Singles.Vector3);
     procedure Set_Portal_Index (Index : Natural);
     procedure Splash_Particles_At (Pos : Singles.Vector3);

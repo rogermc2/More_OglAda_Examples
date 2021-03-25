@@ -193,4 +193,12 @@ package body FB_Effects is
 
    --  -------------------------------------------------------------------------
 
+    procedure Set_WW_FB_Effect (Effect : FB_Effect) is
+    begin
+        WW_FB_Current_Effect := Effect;
+        WW_FB_Effect_Elapsed := 0.0;
+    end Set_WW_FB_Effect;
+
+    --  ------------------------------------------------------------------------
+
 end FB_Effects;

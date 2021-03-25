@@ -17,5 +17,6 @@ package FB_Effects is
    procedure Fade_Out;
    procedure Set_Feedback_Effect (Effect : FB_Effect);
    procedure Set_Feedback_Screw (Factor : Float);
+   procedure Set_WW_FB_Effect (Effect : FB_Effect);
 
 end FB_Effects;

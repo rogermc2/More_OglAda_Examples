@@ -45,6 +45,7 @@ package body Prop_Renderer is
     All_Mirrors_Smashed_Sound : constant String
       := "MAGIC_SPELL_Passing_Tunnel_Sci-Fi_Fast_Rapid_Echo_stereo.wav";
 
+    End_Camera_Matrix     : Singles.Matrix4 := Singles.Identity4;
     End_Camera_Position   : Singles.Vector3 := (0.0, 0.0, 0.0);
     Head_Particles_File   : constant String := "blood_artery_jet.particles";
     Splash_Particles_File : constant String := "splash.particles";
@@ -232,6 +233,12 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
+    function Get_End_Camera_Matrix return Singles.Matrix4 is
+    begin
+        return End_Camera_Matrix;
+    end Get_End_Camera_Matrix;
+
+    --  -------------------------------------------------------------------------
     function Get_Num_Live_Mirrors return Int is
     begin
         return Live_Mirror_Count;
@@ -739,6 +746,13 @@ package body Prop_Renderer is
     end Set_Ambient_Light_Level;
 
     --  -------------------------------------------------------------------------
+
+    procedure Set_End_Camera_Matrix (Mat : Singles.Matrix4) is
+    begin
+        End_Camera_Matrix := Mat;
+    end Set_End_Camera_Matrix;
+
+    --  ------------------------------------------------------------------------
 
     procedure Set_End_Camera_Position (Pos : Singles.Vector3) is
     begin

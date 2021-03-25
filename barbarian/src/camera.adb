@@ -1,7 +1,11 @@
 
+with Blood_Splats;
 with FB_Effects;
 with Frustum;
+with Manifold;
+with Prop_Renderer;
 with Settings;
+with Sprite_Renderer;
 
 package body Camera is
 
@@ -215,8 +219,25 @@ package body Camera is
     --  ------------------------------------------------------------------------
 
    procedure Set_End_Camera is
+        use GL.Types.Singles;
+        Ambient : constant Vector3 := (0.04, 0.04, 0.04);
     begin
-        null;
+        G_Camera.World_Position := Prop_Renderer.Get_End_Camera_Position;
+        G_Camera.View_Matrix := Prop_Renderer.Get_End_Camera_Matrix;
+        G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
+        G_Camera.Is_Dirty := True;
+        Frustum.Re_Extract_Frustum_Planes
+          (G_Camera.FOY_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
+           Frustum.Frustum_Camera_Position, G_Camera.View_Matrix);
+
+        --  Raise brightness a little because torch won't be there
+        Sprite_Renderer.Set_Ambient_Light_Level (Ambient);
+        Manifold.Set_Manifold_Ambient_Light (Ambient);
+        Prop_Renderer.Set_Ambient_Light_Level (Ambient);
+        Blood_Splats.Set_Ambient_Light_Level (Ambient);
+
+        FB_Effects.Set_WW_FB_Effect (FB_Effects.FB_Default);
+
     end Set_End_Camera;
 
     --  ------------------------------------------------------------------------

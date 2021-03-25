@@ -124,6 +124,13 @@ package body Blood_Splats is
 
    --  -------------------------------------------------------------------------
 
+   procedure Set_Ambient_Light_Level (Level : GL.Types.Singles.Vector3) is
+   begin
+      Splats_Shader_Manager.Set_Ambient_Light (Level);
+   end Set_Ambient_Light_Level;
+
+   --  -------------------------------------------------------------------------
+
    procedure Splat_Event (Position : GL.Types.Singles.Vector3; Radius : Float) is
    begin
       null;
