@@ -116,21 +116,20 @@ package body Main_Loop is
          --  of game as normal.
          --  Major states stacks don't change or anything
          Is_Running := Game_Support.Check_Victory_Defeat;
-
          if Is_Running then
             Camera.Update_Camera_Effects (Delta_Time);
             Update_Logic_Steps (Window, Delta_Time);
             if Main_Menu.End_Story_Open then
                --  Just won the game
                Game_Utils.Game_Log
-                 ("Main_Loop.Game_Loop Just won the game");
+                 ("Main_Loop.Do_Menu_Not_Open Just won the game");
                Main_Menu.Set_Menu_Open (True);
                Game_Support.Unload_Level;
                Is_Running := False;
             elsif Input_Handler.Was_Action_Pressed
               (Window, Input_Handler.Wipe_Screen_Action) then
                Game_Utils.Game_Log
-                 ("Main_Loop.Main_Game_Loop Action_Pressed");
+                 ("Main_Loop.Do_Menu_Not_Open Action_Pressed");
                GUI.Start_Fist;
             end if;
          end if;
