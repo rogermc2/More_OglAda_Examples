@@ -129,6 +129,21 @@ package body GUI_Level_Chooser is
 
     --  ------------------------------------------------------------------------
 
+   function Get_Level_Data (Selected_Map_ID : Positive)
+                            return Level_Menu_Manager.Level_Data is
+   begin
+      if Levels.Is_Empty or else Selected_Map_ID > Levels.Last_Index then
+         raise GUI_Level_Chooser_Exception with
+           "GUI_Level_Chooser.Get_Level_Name encountered an invalid Map ID: "
+           & Integer'Image (Selected_Map_ID);
+      end if;
+
+      return Levels.Element (Selected_Map_ID);
+
+   end Get_Level_Data;
+
+   --  ------------------------------------------------------------------------
+
     function Get_Hammer_Kills return Integer is
     begin
         return Hammer_Kills;
@@ -473,6 +488,16 @@ package body GUI_Level_Chooser is
 
     --  ------------------------------------------------------------------------
 
+   procedure Set_Level_Lock (Level_Index : Positive;  Lock : Boolean) is
+        use Level_Menu_Manager;
+        Data : Level_Data := Get_Level_Data (Level_Index);
+   begin
+      Data.Locked := Lock;
+      Set_Level_Data (Levels, Level_Index, Data);
+   end Set_Level_Lock;
+
+   --  ------------------------------------------------------------------------
+
     procedure Set_Pillar_Crushes (Value : Integer) is
     begin
         Pillar_Crushes := Value;
@@ -751,6 +776,29 @@ package body GUI_Level_Chooser is
         when others => Put_Line
               ("An exception occurred in GUI_Level_Chooser.Update_Selected_Entry_Level.");
     end Update_Selected_Entry_Level;
+
+    --  ------------------------------------------------------------------------
+
+   function Unlock_Next_Map (Custom_Maps : Boolean) return Boolean is
+        use Selected_Level_Manager;
+        Result : Boolean := True;
+   begin
+        if Custom_Maps then
+            Game_Utils.Game_Log
+              ("Game in custom map mode - not unlocking/doing cheevs");
+        elsif Game_Utils.Started_Game_With_Map_Param then
+            Game_Utils.Game_Log
+              ("Game started with -map param - not unlocking/doing cheevs");
+        else
+            Game_Utils.Game_Log  ("Unlocking next map...");
+            if Selected_Level_ID = Level_Menu_Manager.Number_Of_Levels then
+                Main_Menu.Flag_End_Story_Credits_Start;
+            else
+                Set_Level_Lock (Selected_Level_ID + 1, False);
+            end if;
+        end if;
+        return Result;
+   end Unlock_Next_Map;
 
     --  ------------------------------------------------------------------------
 

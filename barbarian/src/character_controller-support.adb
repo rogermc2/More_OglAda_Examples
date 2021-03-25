@@ -1,5 +1,6 @@
-
+with Audio;
 with GUI;
+with Prop_Renderer;
 with Sprite_Renderer;
 
 package body Character_Controller.Support is
@@ -40,6 +41,22 @@ package body Character_Controller.Support is
     end Change_Weapon;
 
     --  -------------------------------------------------------------------------
+
+    procedure Check_End_Of_Level_Stairs  (Character : in out Barbarian_Character) is
+        Distance : constant Float :=
+                     Prop_Renderer.Sq_Dist_To_End_Level_Portal (Character.World_Pos);
+    begin
+        if Distance < 28.0 then
+            if Distance < 1.0 then
+                Audio.Stop_All_Boulder_Sounds;
+                if not Show_Victory then
+
+                end if;
+            end if;
+        end if;
+    end Check_End_Of_Level_Stairs;
+
+    --  ------------------------------------------------------------------------
 
     procedure Decrement_Weapon_Count (Character : in out Barbarian_Character;
                                       Projectle : Projectile_Manager.Projectile_Type) is

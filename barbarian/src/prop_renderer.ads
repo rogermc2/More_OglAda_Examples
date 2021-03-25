@@ -48,7 +48,9 @@ package Prop_Renderer is
    procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int);
    procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
+    procedure Set_Portal_Index (Index : Natural);
    procedure Splash_Particles_At (Pos : Singles.Vector3);
+   function Sq_Dist_To_End_Level_Portal (Pos : Singles.Vector3) return Float;
    procedure Update_Dynamic_Lights (World_Pos, Diff, Specular : Singles.Vector3;
                                     Dist : Single);
    procedure Update_Properties (Seconds : Float);

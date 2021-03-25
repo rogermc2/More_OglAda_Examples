@@ -118,10 +118,13 @@ package body GUI is
    --      FS_IMAGE_PANEL : constant String := "image_panel.frag";
 
    -- audio paths
-   Fist_Sound_File : constant String := "squeak_short.ogg";
-   Screen_Splat_Sound_File : constant String := "GORE_Splat_Hit_Bubbles_mono.wav";
-   --      WIN_SOUND : constant String := "MUSIC_EFFECT_Orchestral_Battle_Neutral_stereo.wav";
-   Lose_Sound      : constant String := "MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav";
+   Fist_Sound_File       : constant String := "squeak_short.ogg";
+   Screen_Splat_Sound_File : constant String
+      := "GORE_Splat_Hit_Bubbles_mono.wav";
+   Win_Sound               : constant String
+      := "MUSIC_EFFECT_Orchestral_Battle_Neutral_stereo.wav";
+   Lose_Sound              : constant String
+      := "MUSIC_EFFECT_Orchestral_Battle_Negative_stereo.wav";
 
    --  timers
    Fist_Countdown           : Single := 0.0;
@@ -711,33 +714,34 @@ package body GUI is
 
    end Show_Controller_Button_Overlay;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    function Show_Defeated return Boolean is
    begin
       return Show_Defeated_State;
    end Show_Defeated;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    procedure Show_Defeated_Screen (Show : Boolean) is
       use Character_Controller;
    begin
       if Show then
          Audio.Play_Sound (Lose_Sound, False);
-         Show_Finished_Stats (False, Current_Kills, Max_Kills,
-                              Total_Treasure_Found, Gold_Max, 0.0, "n/a");
+         Show_Finish_Stats (False, Current_Kills, Max_Kills,
+                            Total_Treasure_Found, Gold_Max, 0.0, "n/a");
       else
          Hide_Finish_Stats;
       end if;
       Show_Defeated_State := True;
    end Show_Defeated_Screen;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
-   procedure Show_Finished_Stats (Won                              : Boolean;
-                                  Kills, Kills_Max, Gold, Gold_Max : Integer;
-                                  Time                             : Float; Par               : String) is
+   procedure Show_Finish_Stats (Won                              : Boolean;
+                                Kills, Kills_Max, Gold, Gold_Max : Integer;
+                                Time                             : Float;
+                                Par               : String) is
       Mins  : Integer;
       Secs  : Integer;
       Stats : Unbounded_String;
@@ -760,7 +764,7 @@ package body GUI is
       Text.Centre_Text (Finish_Stats_Text_Index,
                         0.0, 256.0 / Single (Settings.Framebuffer_Height));
       Text.Set_Text_Visible (Finish_Stats_Text_Index, True);
-   end Show_Finished_Stats;
+   end Show_Finish_Stats;
 
    --  -------------------------------------------------------------------------
 
@@ -769,7 +773,23 @@ package body GUI is
       return Show_Victory_State;
    end Show_Victory;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
+
+   procedure Show_Victory_Screen (Show : Boolean; Level_Time : Float;
+                                  Par : String) is
+        use Character_Controller;
+   begin
+      if Show then
+            Audio.Play_Sound (Win_Sound, False);
+            Show_Finish_Stats (True, Current_Kills, Max_Kills,
+                               Total_Treasure_Found, Gold_Max, Level_Time, Par);
+      else
+           Hide_Finish_Stats;
+      end if;
+      Show_Victory_State := True;
+   end Show_Victory_Screen;
+
+   --  -------------------------------------------------------------------------
 
    procedure Start_Fist is
       Activated : constant Boolean := Fist_Activated;

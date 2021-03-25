@@ -5,6 +5,7 @@ with Ada.Streams.Stream_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Game_Utils;
+with Selected_Level_Manager;
 with Settings;
 with Text;
 
@@ -14,8 +15,23 @@ package body Level_Menu_Manager is
 
    -- -------------------------------------------------------------------------
 
+   function Get_Level_Data (Maps : Levels_List; Selected_Map_ID : Positive)
+                            return Level_Data  is
+   begin
+      if Maps.Is_Empty or else Selected_Map_ID > Maps.Last_Index then
+         raise Levels_Manager_Exception with
+           "Level_Menu_Manager.Get_Level_Name encountered an invalid Map ID: "
+           & Integer'Image (Selected_Map_ID);
+      end if;
+
+      return  Maps.Element (Selected_Map_ID);
+
+   end Get_Level_Data;
+
+   --  ------------------------------------------------------------------------
+
    function Get_Level_Name (Maps : Levels_List; Selected_Map_ID : Positive)
-                          return String is
+                            return String is
    begin
       if Maps.Is_Empty or else Selected_Map_ID > Maps.Last_Index then
          raise Levels_Manager_Exception with
@@ -162,7 +178,7 @@ package body Level_Menu_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Load_Story_Names (Path : String; Names : in out Levels_List) is
+   procedure Load_Story_Names (Path : String; Names_List : in out Levels_List) is
       Input_File : File_Type;
       Line_Count : Integer := 0;
 
@@ -171,14 +187,14 @@ package body Level_Menu_Manager is
       begin
          Data.Level_Name := To_Unbounded_String (Name);
          Data.Locked := Lock;
-         Names.Append (Data);
+         Names_List.Append (Data);
       end Append_Data;
 
    begin
       --        Put_Line ("Levels_Maps_Manager.Load_Story_Names loading " & Path);
       Open (Input_File, In_File, Path);
       if not Is_Open (Input_File) then
-         Names.Clear;
+         Names_List.Clear;
 --           Game_Utils.Game_Log ("Levels_Maps_Manager.Load_Story_Names, no file " &
 --                                  Path & " found -- locking all but first.");
          Append_Data ("introduction", False);
@@ -189,18 +205,20 @@ package body Level_Menu_Manager is
          Append_Data ("sky_temple");
          Append_Data ("hall");
          Append_Data ("attercoppe");
-         Num_Levels := Integer (Length (Names));
+         Num_Levels := Integer (Names_List.Last_Index);
       else
          while not End_Of_File (Input_File) loop
             declare
                aLine : constant String := Get_Line (Input_File);
             begin
                if aLine'Length < 2 then
-                  Game_Utils.Game_Log ("WARNING: Load_Story_Names skipping short line " &
-                                         aLine & " in maps list.");
+                  Game_Utils.Game_Log
+                          ("WARNING: Load_Story_Names skipping short line " &
+                            aLine & " in maps list.");
                else
-                  Game_Utils.Game_Log ("Level_Menu_Manager.Load_Story_Names, level name: " &
-                                        aLine);
+                  Game_Utils.Game_Log
+                          ("Level_Menu_Manager.Load_Story_Names, level name: "
+                            & aLine);
                   Append_Data (aLine, true);
                   Num_Levels := Num_Levels + 1;
                end if;
@@ -215,13 +233,21 @@ package body Level_Menu_Manager is
          Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Load_Story_Names;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
    function Number_Of_Levels return Integer is
    begin
       return Num_Levels;
    end Number_Of_Levels;
 
-   --  ----------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Level_Data (Maps : in out Levels_List; Map_ID : Positive;
+                             Data : Level_Data) is
+   begin
+      Maps.Replace_Element (Map_ID, Data);
+   end Set_Level_Data;
+
+   --  -------------------------------------------------------------------------
 
 end Level_Menu_Manager;

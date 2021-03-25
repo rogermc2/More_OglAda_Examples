@@ -20,10 +20,12 @@ package GUI is
                                              Tex_Index : in out Integer);
    function  Show_Defeated return Boolean;
    procedure Show_Defeated_Screen (Show : Boolean);
-   procedure Show_Finished_Stats (Won                              : Boolean;
-                                  Kills, Kills_Max, Gold, Gold_Max : Integer;
-                                  Time                             : Float; Par               : String);
+   procedure Show_Finish_Stats (Won                              : Boolean;
+                                Kills, Kills_Max, Gold, Gold_Max : Integer;
+                                Time : Float; Par : String);
    function Show_Victory return Boolean;
+
+   procedure Show_Victory_Screen (Show : Boolean; Level_Time : Float; Par : String);
    procedure Start_Fist;
    procedure Update_GUIs (Seconds : Float);
 

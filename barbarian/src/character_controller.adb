@@ -107,6 +107,10 @@ package body Character_Controller is
     procedure Set_Idle_Animation (Character : in out Barbarian_Character);
     procedure Switch_Animation (Character : in out Barbarian_Character;
                                 Anim_Num  : Natural);
+    procedure Update_Character_Motion (Character : in out Barbarian_Character;
+                                       Seconds : Float);
+    procedure Update_Character_Physics (Character : in out Barbarian_Character;
+                                       Seconds : Float);
     procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
                              Player_ID : Integer; Seconds : Float);
 
@@ -283,8 +287,8 @@ package body Character_Controller is
             if Spec.Team_ID = 1 then
                 Kills_Max := Kills_Max + 1;
             end if;
-            Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
-                                   To_String (Source.Script_File));
+--              Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
+--                                     To_String (Source.Script_File));
         else
             raise Character_Controller_Exception with
               "Character_Controller.Create_Character, invalid tile siza" &
@@ -1327,6 +1331,22 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+    procedure  Update_Character_Motion (Character : in out Barbarian_Character;
+                                       Seconds : Float) is
+    begin
+        null;
+    end Update_Character_Motion;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Update_Character_Physics (Character : in out Barbarian_Character;
+                                       Seconds : Float) is
+    begin
+        null;
+    end Update_Character_Physics;
+
+    --  -------------------------------------------------------------------------
+
     procedure Update_Decay (Character : in out Barbarian_Character;
                             Seconds : Float) is
     begin
@@ -1338,6 +1358,7 @@ package body Character_Controller is
     procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
                              Player_ID : Integer; Seconds : Float) is
         use Input_Handler;
+        use Character_Controller.Support;
         Character : Barbarian_Character := Characters.Element (Player_ID);
     begin
         if Character.Is_Alive then
@@ -1373,6 +1394,9 @@ package body Character_Controller is
             end if;
 
             Update_Attack (Character, Seconds);
+
+            Check_End_Of_Level_Stairs  (Character);
+            Update_Character_Motion (Character, Seconds);
         end if;
 
     exception

@@ -54,6 +54,8 @@ package body Prop_Renderer is
     Max_Scene_Lamp_Locs        : constant integer := 3;
     --  Up To 32 Types, With 8 Active Ones Of Each Type
 
+    Portal_Index              : Natural := 0;
+
     function Activate_Elevator (Property_Index : Positive) return Boolean;
     procedure Activate_Property (Property_Index : Positive;
                                  Reactivating   : Boolean);
@@ -730,12 +732,35 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
+    procedure Set_Portal_Index (Index : Natural) is
+    begin
+        Portal_Index := Index;
+    end Set_Portal_Index;
+
+    --  ------------------------------------------------------------------------
+
     procedure Splash_Particles_At (Pos : Singles.Vector3) is
     begin
         Audio.Play_Sound (Splash_Sound_File, True);
         Particle_System.Set_Particle_System_Position (Splash_Particles, Pos);
         Particle_System.Start_Particle_System (Splash_Particles);
     end Splash_Particles_At;
+
+    --  -------------------------------------------------------------------------
+
+   function Sq_Dist_To_End_Level_Portal (Pos : Singles.Vector3) return Float is
+        use GL.Types.Singles;
+        Data    : Prop_Renderer_Support.Property_Data;
+        Dist_3D : Singles.Vector3;
+        Result  : Float := 10000.0;
+    begin
+        if Portal_Index > 0 then
+            Data := Properties_Manager.Get_Property_Data (Portal_Index);
+            Dist_3D := Pos - Data.World_Pos;
+            Result := Abs (Float (Maths.Length_Sq (Dist_3D)));
+        end if;
+        return Result;
+    end Sq_Dist_To_End_Level_Portal;
 
     --  -------------------------------------------------------------------------
 

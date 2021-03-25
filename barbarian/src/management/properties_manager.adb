@@ -241,7 +241,7 @@ package body Properties_Manager is
         PosR := Fixed.Index (aLine (PosL .. S_Length), " ");
 
         Property_Count := Integer'Value (aLine (PosL .. PosR));
-        Portal_Index := 0;
+        Prop_Renderer.Set_Portal_Index (0);
         Character_Controller.Gold_Current := 0;
         Character_Controller.Gold_Max := 0;
         Character_Controller.Total_Treasure_Found := 0;

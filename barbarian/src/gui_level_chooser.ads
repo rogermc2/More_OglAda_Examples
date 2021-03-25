@@ -24,5 +24,6 @@ package GUI_Level_Chooser is
      (Window : in out Input_Callback.Barbarian_Window;
       Credits_Shader_Program : GL.Objects.Programs.Program;
       Custom_Levels : Boolean) return Boolean;
+   function Unlock_Next_Map (Custom_Maps : Boolean) return Boolean;
 
 end GUI_Level_Chooser;

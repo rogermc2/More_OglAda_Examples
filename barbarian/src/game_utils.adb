@@ -6,9 +6,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body Game_Utils is
 
-   Log_Directory       : constant String := ".";
-   Game_Log_File       : constant String := "game.log";
-   Log_File_Descriptor : File_Type;
+   Log_Directory          : constant String := ".";
+   Game_Log_File          : constant String := "game.log";
+   Log_File_Descriptor    : File_Type;
+   Started_With_Map_Param : Boolean := False;
 
    --  ------------------------------------------------------------------------
 
@@ -109,6 +110,20 @@ package body Game_Utils is
          Put_Line ("An exception occurred in Game_Utils.Restart_Game_Log! ");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
    end Restart_Game_Log;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Started_Game_With_Map_Param (State : Boolean) is
+   begin
+        Started_With_Map_Param := State;
+   end Set_Started_Game_With_Map_Param;
+
+   --  ------------------------------------------------------------------------
+
+   function Started_Game_With_Map_Param return Boolean is
+   begin
+        return Started_With_Map_Param;
+   end Started_Game_With_Map_Param;
 
    --  ------------------------------------------------------------------------
 

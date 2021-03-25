@@ -44,12 +44,11 @@ private
       (Positive, Prop_Script);
     subtype Properties_Script_List is Properties_Script_Package.Vector;
 
-    Portal_Index              : Natural := 0;
     Mirror_Indices            : array (1 .. Max_Mirrors) of Natural :=
                                   (others => 0);
     Mirror_Count              : Natural := 0;
     Live_Mirror_Count         : Natural := 0;
-    Properties                : Properties_List;
-    Prop_Scripts              : Properties_Script_List;
+    Properties                : Properties_List;        --  g_props
+    Prop_Scripts              : Properties_Script_List; --  g_prop_scripts
 
 end Properties_Manager;

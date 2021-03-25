@@ -142,6 +142,7 @@ package body Text is
         Text_ID   : Integer;
         R_Text    : Renderable_Text;
     begin
+        Put_Line ("Text.Add_Comic_Text.");
         Last_Comic_Text_Used := (Last_Comic_Text_Used + 1) mod 8;
         if not Active_Comic_Texts (Last_Comic_Text_Used).Is_Active then
             Active_Text_Count := Active_Text_Count + 1;
