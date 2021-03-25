@@ -22,8 +22,9 @@ package Camera is
    procedure Screen_Shake (Seconds, Amplitude, Hz : Float);
    procedure Set_Camera_Height (Height : Single);
    procedure Set_Camera_Position (World_Position : Singles.Vector3);
+   procedure Set_End_Camera;
    procedure Set_First_Person (State : Boolean);
-    procedure Set_Is_Dirty (State : Boolean);
+   procedure Set_Is_Dirty (State : Boolean);
    procedure Set_Screen_Shake_Countdown (Countdown : Float);
    function View_Matrix return Singles.Matrix4;
    procedure Update_Camera_Effects (Delta_Time : Float);

@@ -27,7 +27,7 @@ package Level_Menu_Manager is
    subtype Custom_Levels_List is Levels_Package.Vector;
    subtype Levels_List is Levels_Package.Vector;
 
-   Levels_Manager_Exception : Exception;
+   Level_Manager_Exception : Exception;
 
    function Get_Level_Data (Maps : Levels_List; Selected_Map_ID : Positive)
                             return Level_Data;
@@ -39,6 +39,7 @@ package Level_Menu_Manager is
    procedure Load_Story (Path     : String; theMap : in out Level_Data;
                          Has_Hammer_Track : out Boolean);
    procedure Load_Story_Names (Path : String; Names_List : in out Levels_List);
+   procedure Write_Story_Names (Names_List : in out Levels_List);
    function Number_Of_Levels return Integer;
    procedure Set_Level_Data (Maps : in out Levels_List; Map_ID : Positive;
                              Data : Level_Data);

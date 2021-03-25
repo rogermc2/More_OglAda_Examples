@@ -19,44 +19,46 @@ with Prop_Renderer_Support;
 
 package Prop_Renderer is
 
-   package Prop_Indices_Package is new Ada.Containers.Vectors
-     (Positive, GL.Types.Int);
-   type Prop_Indices_List is new Prop_Indices_Package.Vector with null Record;
+    package Prop_Indices_Package is new Ada.Containers.Vectors
+      (Positive, GL.Types.Int);
+    type Prop_Indices_List is new Prop_Indices_Package.Vector with null Record;
 
-   type Props_In_Tiles_Array is array
-     (1 .. Manifold.Max_Tile_Cols, 1 .. Manifold.Max_Tile_Cols) of
-     Prop_Indices_List;
+    type Props_In_Tiles_Array is array
+      (1 .. Manifold.Max_Tile_Cols, 1 .. Manifold.Max_Tile_Cols) of
+      Prop_Indices_List;
 
-   Prop_Renderer_Exception : Exception;
+    Prop_Renderer_Exception : Exception;
 
-   function Activate_Door (Property_Index : Positive) return Boolean;
-   function Activate_Door_In_Tile
+    function Activate_Door (Property_Index : Positive) return Boolean;
+    function Activate_Door_In_Tile
       (Map_U, Map_V : Int; Hand_Y_World_Pos : Single;
        Activator : Properties_Manager.Activator_Type) return Boolean;
-   procedure Init;
-   procedure Launch_Decap_Head (LHL_Type  : Positive;
-                                World_Pos : Singles.Vector3);
-   function Get_Num_Live_Mirrors return Int;
-   function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List;
-   function Get_Tile_Property_Index (U, V, Index : Positive) return Positive;
---     function Get_Script_Data (Script_Index : Positive)
---                               return Prop_Renderer_Support.Prop_Script;
-   function Get_Script_Index (Prop_Index : Positive) return Positive;
-   function Props_In_Tiles_Size (U, V : Integer) return Natural;
-   procedure Render_Property (Prop_ID : Positive);
-   procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
-   procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int);
-   procedure Reset_Properties;
-   procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
+    procedure Init;
+    procedure Launch_Decap_Head (LHL_Type  : Positive;
+                                 World_Pos : Singles.Vector3);
+    function Get_End_Camera_Position return Singles.Vector3;
+    function Get_Num_Live_Mirrors return Int;
+    function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List;
+    function Get_Tile_Property_Index (U, V, Index : Positive) return Positive;
+    --     function Get_Script_Data (Script_Index : Positive)
+    --                               return Prop_Renderer_Support.Prop_Script;
+    function Get_Script_Index (Prop_Index : Positive) return Positive;
+    function Props_In_Tiles_Size (U, V : Integer) return Natural;
+    procedure Render_Property (Prop_ID : Positive);
+    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
+    procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int);
+    procedure Reset_Properties;
+    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
+    procedure Set_End_Camera_Position (Pos : Singles.Vector3);
     procedure Set_Portal_Index (Index : Natural);
-   procedure Splash_Particles_At (Pos : Singles.Vector3);
-   function Sq_Dist_To_End_Level_Portal (Pos : Singles.Vector3) return Float;
-   procedure Update_Dynamic_Lights (World_Pos, Diff, Specular : Singles.Vector3;
-                                    Dist : Single);
-   procedure Update_Properties (Seconds : Float);
-   procedure Update_Props_In_Tiles_Index (U, V : Integer;
-                                          Prop_Index : GL.Types.Int);
-   procedure Update_Static_Lights_Uniforms;
+    procedure Splash_Particles_At (Pos : Singles.Vector3);
+    function Sq_Dist_To_End_Level_Portal (Pos : Singles.Vector3) return Float;
+    procedure Update_Dynamic_Lights (World_Pos, Diff, Specular : Singles.Vector3;
+                                     Dist : Single);
+    procedure Update_Properties (Seconds : Float);
+    procedure Update_Props_In_Tiles_Index (U, V : Integer;
+                                           Prop_Index : GL.Types.Int);
+    procedure Update_Static_Lights_Uniforms;
 
 private
     use Prop_Renderer_Support;
@@ -79,7 +81,7 @@ private
     Delay_Countdown               : Integer := 0;
     --  Hack to stop decap head bouncing when stuck
     Bounce_Count                  : Integer := 0;
---      Scripts                       : Script_List;
+    --      Scripts                       : Script_List;
     Active_Properties_A           : Indicies_List;
     Active_Properties_B           : Indicies_List;
     Curr_Active_Props_A           : Boolean := True;

@@ -214,6 +214,13 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+   procedure Set_End_Camera is
+    begin
+        null;
+    end Set_End_Camera;
+
+    --  ------------------------------------------------------------------------
+
     procedure Set_First_Person (State : Boolean) is
     begin
         First_Person := State;

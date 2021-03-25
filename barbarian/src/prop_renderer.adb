@@ -45,6 +45,7 @@ package body Prop_Renderer is
     All_Mirrors_Smashed_Sound : constant String
       := "MAGIC_SPELL_Passing_Tunnel_Sci-Fi_Fast_Rapid_Echo_stereo.wav";
 
+    End_Camera_Position   : Singles.Vector3 := (0.0, 0.0, 0.0);
     Head_Particles_File   : constant String := "blood_artery_jet.particles";
     Splash_Particles_File : constant String := "splash.particles";
     Dust_Particles_File   : constant String := "dust.particles";
@@ -221,6 +222,13 @@ package body Prop_Renderer is
             end if;
         end if;
     end Activate_Property;
+
+    --  -------------------------------------------------------------------------
+
+    function Get_End_Camera_Position return Singles.Vector3 is
+    begin
+        return End_Camera_Position;
+    end Get_End_Camera_Position;
 
     --  -------------------------------------------------------------------------
 
@@ -731,6 +739,13 @@ package body Prop_Renderer is
     end Set_Ambient_Light_Level;
 
     --  -------------------------------------------------------------------------
+
+    procedure Set_End_Camera_Position (Pos : Singles.Vector3) is
+    begin
+        End_Camera_Position := Pos;
+    end Set_End_Camera_Position;
+
+    --  ------------------------------------------------------------------------
 
     procedure Set_Portal_Index (Index : Natural) is
     begin

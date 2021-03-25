@@ -779,25 +779,29 @@ package body GUI_Level_Chooser is
 
     --  ------------------------------------------------------------------------
 
-   function Unlock_Next_Map (Custom_Maps : Boolean) return Boolean is
+   procedure Unlock_Next_Map (Custom_Maps : Boolean) is
         use Selected_Level_Manager;
-        Result : Boolean := True;
+        use Level_Menu_Manager;
+        Data        : Level_Data;
    begin
         if Custom_Maps then
             Game_Utils.Game_Log
-              ("Game in custom map mode - not unlocking/doing cheevs");
+              ("GUI_Level_Chooser, Game in custom map mode - not unlocking/doing cheevs");
         elsif Game_Utils.Started_Game_With_Map_Param then
             Game_Utils.Game_Log
-              ("Game started with -map param - not unlocking/doing cheevs");
+              ("GUI_Level_Chooser, Game started with -map param - not unlocking/doing cheevs");
         else
             Game_Utils.Game_Log  ("Unlocking next map...");
             if Selected_Level_ID = Level_Menu_Manager.Number_Of_Levels then
                 Main_Menu.Flag_End_Story_Credits_Start;
             else
                 Set_Level_Lock (Selected_Level_ID + 1, False);
+                Text.Change_Text_Colour
+                  (Selected_Level_ID + 1, (1.0, 1.0, 1.0, 1.0));
+                Level_Menu_Manager.Write_Story_Names (Levels);
             end if;
         end if;
-        return Result;
+
    end Unlock_Next_Map;
 
     --  ------------------------------------------------------------------------

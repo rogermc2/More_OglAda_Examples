@@ -1,9 +1,13 @@
 with Audio;
 with GUI;
+with GUI_Level_Chooser;
+with Main_Menu;
 with Prop_Renderer;
 with Sprite_Renderer;
 
 package body Character_Controller.Support is
+
+    Enter_Portal_Sound : constant String := "enter_portal.wav";
 
     procedure Change_Weapon (Character : in out Barbarian_Character;
                              Specs_Index : Positive;  Weapon : Weapon_Type);
@@ -42,15 +46,20 @@ package body Character_Controller.Support is
 
     --  -------------------------------------------------------------------------
 
-    procedure Check_End_Of_Level_Stairs  (Character : in out Barbarian_Character) is
+    procedure Check_End_Of_Level_Stairs
+      (Character : in out Barbarian_Character;
+       Level_Time : Float; Level_Par_Time : String) is
         Distance : constant Float :=
                      Prop_Renderer.Sq_Dist_To_End_Level_Portal (Character.World_Pos);
     begin
         if Distance < 28.0 then
             if Distance < 1.0 then
                 Audio.Stop_All_Boulder_Sounds;
-                if not Show_Victory then
-
+                if not GUI.Show_Victory then
+                    GUI_Level_Chooser.Unlock_Next_Map (Main_Menu.Are_We_In_Custom_Maps);
+                    GUI.Show_Victory_Screen (True, Level_Time, Level_Par_Time);
+                    Audio.Play_Sound (Enter_Portal_Sound, False);
+                    Set_End_Cam;
                 end if;
             end if;
         end if;

@@ -1395,7 +1395,7 @@ package body Character_Controller is
 
             Update_Attack (Character, Seconds);
 
-            Check_End_Of_Level_Stairs  (Character);
+            Check_End_Of_Level_Stairs  (Character, Seconds);
             Update_Character_Motion (Character, Seconds);
         end if;
 
