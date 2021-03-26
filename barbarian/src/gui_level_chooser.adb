@@ -1,5 +1,4 @@
 
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw;
@@ -36,33 +35,35 @@ with Texture_Manager;
 package body GUI_Level_Chooser is
     use Selected_Level_Manager;
 
-    Quad_VAO                  : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Quad_VBO                  : GL.Objects.Buffers.Buffer;
-    Back_Texture              : GL.Objects.Textures.Texture;
-    Back_Custom_Texture       : GL.Objects.Textures.Texture;
-    Custom_Levels             : Custom_Levels_Manager.Custom_Levels_List;
-    Num_Custom_Levels         : Natural := 0;
-    Levels                    : Level_Menu_Manager.Levels_List;
-    Selected_Level_ID         : Positive := 1;
-    Selected_Level            : Selected_Level_Data;
-    Selected_Level_Track      : Unbounded_String := To_Unbounded_String ("");
-    Left_Margin_Cl            : Single := 0.0;
-    Top_Margin_Cl             : Single := 0.0;
-    Level_GUI_Width           : Single := 1024.0;
-    Level_GUI_Height          : Single := 768.0;
+    Quad_VAO                    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+    Quad_VBO                    : GL.Objects.Buffers.Buffer;
+    Back_Texture                : GL.Objects.Textures.Texture;
+    Back_Custom_Texture         : GL.Objects.Textures.Texture;
+    Custom_Levels               : Custom_Levels_Manager.Custom_Levels_List;
+    Num_Custom_Levels           : Natural := 0;
+    Levels                      : Level_Menu_Manager.Levels_List;
+    Selected_Level_ID           : Positive := 1;
+    Selected_Level              : Selected_Level_Data;
+    Selected_Level_Track        : Unbounded_String := To_Unbounded_String ("");
+    Selected_Level_Hammer_Track : constant Unbounded_String := To_Unbounded_String ("");
+    Left_Margin_Cl              : Single := 0.0;
+    Top_Margin_Cl               : Single := 0.0;
+    Level_GUI_Width             : Single := 1024.0;
+    Level_GUI_Height            : Single := 768.0;
 
-    Choose_Level_Text_ID      : Integer := -1;
-    Level_Title_Text_ID       : Integer := -1;
-    Level_Story_Text_ID       : GL_Utils.Integer_List;
-    Loading_Map_Text_ID       : Integer := -1;
+    Choose_Level_Text_ID        : Integer := -1;
+    Level_Title_Text_ID         : Integer := -1;
+    Level_Story_Text_ID         : GL_Utils.Integer_List;
+    Loading_Map_Text_ID         : Integer := -1;
 
-    Cheated                   : Boolean := False;
-    Level_Unmodified          : Boolean := True;
-    Pillar_Crushes            : Integer := 0;
-    Boulder_Crushes           : Integer := 0;
-    Hammer_Kills              : Integer := 0;
-    Fall_Kills                : Integer := 0;
-    Since_Last_Key            : Float := 0.0;
+    Cheated                     : Boolean := False;
+    Level_Unmodified            : Boolean := True;
+    Pillar_Crushes              : Integer := 0;
+    Boulder_Crushes             : Integer := 0;
+    Hammer_Kills                : Integer := 0;
+    Fall_Kills                  : Integer := 0;
+    Since_Last_Key              : Float := 0.0;
+    Has_Hammer_Track            : constant Boolean := False;
 
     function Get_Map_Checksum (Map_Name : String) return Int;
     procedure Set_Background_Pane
@@ -173,6 +174,17 @@ package body GUI_Level_Chooser is
 
     --  ------------------------------------------------------------------------
 
+   function Get_Selected_Level_Hammer_Music return Unbounded_String is
+        Track  : Unbounded_String := To_Unbounded_String ("");
+    begin
+        if Has_Hammer_Track then
+            Track := Selected_Level_Hammer_Track;
+        end if;
+        return Track;
+    end Get_Selected_Level_Hammer_Music;
+
+    --  ------------------------------------------------------------------------
+
     function Get_Selected_Level_Music return String is
     begin
         return To_String (Selected_Level_Track);
@@ -183,8 +195,6 @@ package body GUI_Level_Chooser is
     function Get_Selected_Level_Name (Custom : Boolean) return String is
         Result  : Unbounded_String := To_Unbounded_String ("");
     begin
-        --        Put_Line ("GUI_Level_Chooser.Get_Selected_Map_Name, Selected_Level_ID: " &
-        --                 Integer'Image (Selected_Level_ID));
         if Custom then
             Result := To_Unbounded_String (Custom_Levels_Manager.Get_Custom_Map_Name
                                            (Custom_Levels, Selected_Level_ID));

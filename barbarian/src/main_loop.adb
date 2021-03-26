@@ -146,7 +146,7 @@ package body Main_Loop is
            (Window, Delta_Time);
          if Main_Menu.Menu_Was_Closed then
             Main_Menu.Set_Menu_Open (False);
-            FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
+            FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default_Effect);
          end if;
 --           Game_Utils.Game_Log
 --             ("Main_Loop.Do_Menu_Open check if User_Chose_New_Game");

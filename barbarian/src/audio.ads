@@ -7,11 +7,13 @@ package Audio is
 
    function Create_Boulder_Sound (Pos : GL.Types.Singles.Vector3)
                                   return Positive;
+   function Is_Playing_Hammer_Track return Boolean;
    procedure Pause_Music (Pause : Boolean);
    procedure Play_Credits_Music (File_Name : String);
    procedure Play_Music (File_Name : String);
    procedure Play_Sound (File_Name : String; Random_Pitch : Boolean);
    procedure Set_Audio_Volume (Volume : Integer);
+   procedure Set_Playing_Hammer_Track (State : Boolean);
    function Start_Boulder_Sound (Index : Positive) return Boolean;
    procedure Stop_All_Boulder_Sounds;
    procedure Stop_All_Sounds;

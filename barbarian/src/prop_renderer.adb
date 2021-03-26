@@ -12,9 +12,11 @@ with Character_Controller;
 with Coins_Shader_Manager;
 with Depth_Skinned_Shader_Manager;
 with Event_Controller;
+with FB_Effects;
 with Frustum;
 with Game_Utils;
 with GL_Utils;
+with GUI_Level_Chooser;
 with Jav_Stand_Shader_Manager;
 with Particle_System;
 with Portal_Shader_Manager;
@@ -26,6 +28,7 @@ with Settings;
 with Shadows;
 with Specs_Manager;
 with Sprite_Renderer;
+with Text;
 with Texture_Manager;
 with Tiles_Manager;
 with Transparency;
@@ -369,6 +372,156 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
+    procedure Do_Food (Prop : in out Property_Data;
+                       Prop_Type : in out Prop_Renderer_Support.Property_Type;
+                       Pos : Singles.Vector3; Radius : Float;
+                       aScript : Prop_Script; Continue : in out Boolean;
+                       Result : in out Integer) is
+        use Singles;
+        Max_D_Sq     : constant Float := 0.343;  --  0.7^3 + radius = most of tile;
+        Distance     : Vector3 := (0.0, 0.0, 0.0);
+        Sq_Distance  : Float := 0.0;
+        Prop_Pos     : Vector3 := (0.0, 0.0, 0.0);
+    begin
+        if not Prop.Was_Collected_By_Player then
+            Prop_Pos := Prop.World_Pos;
+            Distance := Prop_Pos - Pos;
+            Sq_Distance := Float (Maths.Length_Sq (Distance));
+            Sq_Distance := Sq_Distance - Radius ** 3;
+            if Sq_Distance <= Max_D_Sq then
+                Prop_Type := Food_Prop;
+                Prop.Was_Collected_By_Player := True;
+                Prop.Is_Visible := False;
+                Audio.Play_Sound
+                  (To_String (aScript.Sound_Activate_File_Name),
+                   True);
+                Result := aScript.Value;
+                Continue := False;
+            end if;
+        end if;
+    end Do_Food;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Do_Hammer (Prop : in out Property_Data;
+                       Prop_Type : in out Prop_Renderer_Support.Property_Type;
+                       aScript : Prop_Script) is
+        use Singles;
+        Track  : Unbounded_String := To_Unbounded_String ("");
+    begin
+        if not Prop.Was_Collected_By_Player then
+            Prop_Type := Hammer_Prop;
+            Prop.Is_Visible := False;
+            Prop.Was_Collected_By_Player := True;
+                Audio.Play_Sound
+                  (To_String (aScript.Sound_Activate_File_Name),
+                   True);
+            FB_Effects.FB_White_Flash;
+            if not Audio.Is_Playing_Hammer_Track then
+                Track := GUI_Level_Chooser.Get_Selected_Level_Hammer_Music;
+                if Track /= To_Unbounded_String ("") then
+                    Audio.Play_Music (To_String (Track));
+                end if;
+                Audio.Set_Playing_Hammer_Track (True);
+            end if;
+        end if;
+    end Do_Hammer;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Do_Treasure (Prop : in out Property_Data;
+                           Prop_Type : in out Prop_Renderer_Support.Property_Type;
+                           Pos : Singles.Vector3; Radius : Float;
+                           aScript : Prop_Script; Continue : in out Boolean;
+                           Result : in out Integer) is
+        use Singles;
+        Max_D_Sq     : constant Float := 0.343;  --  0.7^3 + radius = most of tile;
+        Distance     : Vector3 := (0.0, 0.0, 0.0);
+        Sq_Distance  : Float := 0.0;
+        Prop_Pos     : Vector3 := (0.0, 0.0, 0.0);
+        Value        : Integer;
+    begin
+        if not Prop.Was_Collected_By_Player then
+            Prop_Pos := Prop.World_Pos;
+            Distance := Prop_Pos - Pos;
+            Sq_Distance := Float (Maths.Length_Sq (Distance));
+            Sq_Distance := Sq_Distance - Radius ** 3;
+            if Sq_Distance <= Max_D_Sq then
+                Prop_Type := Treasure_Prop;
+                Audio.Play_Sound
+                  (To_String (aScript.Sound_Activate_File_Name),
+                   True);
+                Prop.Was_Collected_By_Player := True;
+                Prop.Is_Visible := False;
+                if aScript.Uses_Sprite then
+                    Sprite_Renderer.Set_Sprite_Visible
+                      (Prop.Sprite_Index, False);
+                end if;
+                Value := aScript.Value;
+                if Value > 0 then
+                    Text.Add_Particle_Text
+                      (Integer'Image (Value), (1.0, 1.0, 0.0, 1.0),
+                       Prop_Pos + (0.0, 2.0, 0.0));
+                end if;
+                Character_Controller.Set_Total_Treasure_Found
+                  (Character_Controller.Total_Treasure_Found + Value);
+                Result := Value;
+                Continue := False;
+            end if;
+        end if;
+
+    end Do_Treasure;
+
+    --  -------------------------------------------------------------------------
+
+    function Pick_Up_Item_In
+      (U, V : Int; Pos : Singles.Vector3; Radius : Float; Player_Health : Integer;
+       Prop_Type : in out Prop_Renderer_Support.Property_Type) return Integer is
+        use Prop_Indices_Package;
+        use gl.Types.Singles;
+        --         IU          : constant Integer := Integer (U);
+        --         IV          : constant Integer := Integer (V);
+        Indices_List : constant Prop_Indices_List :=
+                         Props_In_Tiles (Integer (U), Integer (V));
+        Curs         : Cursor := Indices_List.First;
+        Prop_Pos     : Vector3 := (0.0, 0.0, 0.0);
+        Props_Size   : Integer;
+        Prop_Index   : Integer;
+        Prop         : Property_Data;
+        Scrip_Index  : Positive;
+        aScript      : Prop_Script;
+        Continue     : Boolean := True;
+        Result       : Integer := Property_Type'Enum_Rep (Generic_Prop);
+    begin
+        if Tiles_Manager.Is_Tile_Valid (U, V) then
+            Props_Size := Integer (Indices_List.Length);
+            while Has_Element (Curs) and Continue loop
+                Prop_Index := Integer (Element (Curs));
+                Prop := Properties_Manager.Get_Property_Data (Prop_Index);
+                Scrip_Index := Prop.Script_Index;
+                aScript := Properties_Manager.Get_Script_Data (Scrip_Index);
+                case aScript.Script_Type is
+                when Treasure_Prop =>
+                    Do_Treasure (Prop, Prop_Type, Pos, Radius, aScript,
+                                 Continue, Result);
+                when Food_Prop =>
+                    if Player_Health < 100 then
+                        Do_Food (Prop, Prop_Type, Pos, Radius, aScript,
+                                 Continue, Result);
+                    end if;
+                when Hammer_Prop =>
+                    Do_Hammer (Prop, Prop_Type, aScript);
+                    Continue := False;
+                when others => null;
+                end case;
+                Next (Curs);
+            end loop;
+        end if;
+        return Result;
+    end Pick_Up_Item_In;
+
+    --  ------------------------------------------------------------------------
+
     function Props_In_Tiles_Size (U, V : Integer) return Natural is
     begin
         return Natural (Props_In_Tiles (U, V).Last_Index);
@@ -523,8 +676,8 @@ package body Prop_Renderer is
                         (Property.Origin_World, aScript.Bounding_Radius) then
                         GL_Utils.Bind_VAO (aScript.Vao);
                         theScript_Type := aScript.Script_Type;
---                          Put_Line ("Prop_Renderer.Render_Props_Around_Split Script_Type: "
---                               & Property_Type'Image (aScript.Script_Type));
+                        --                          Put_Line ("Prop_Renderer.Render_Props_Around_Split Script_Type: "
+                        --                               & Property_Type'Image (aScript.Script_Type));
 
                         if theScript_Type = Door_Prop or
                           theScript_Type = Pillar_Prop or
@@ -598,9 +751,9 @@ package body Prop_Renderer is
                 Prop_Indices := Props_In_Tiles (Integer (ui), Integer (vi));
                 for Props_Index in Prop_Indices.First_Index ..
                   Prop_Indices.Last_Index loop
---                      Put_Line ("Prop_Renderer.Render_Props_Around_Split u, v, Props_Index: "
---                             & Int'Image (ui) & ", " & Int'Image (vi) & ", " &
---                             Integer'Image (Props_Index));
+                    --                      Put_Line ("Prop_Renderer.Render_Props_Around_Split u, v, Props_Index: "
+                    --                             & Int'Image (ui) & ", " & Int'Image (vi) & ", " &
+                    --                             Integer'Image (Props_Index));
                     Property := Properties_Manager.Get_Property_Data (Props_Index);
                     Script_Index := Property.Script_Index;
                     aScript := Properties_Manager.Get_Script_Data (Script_Index);
@@ -612,7 +765,7 @@ package body Prop_Renderer is
 
                     if Property.Is_Visible or GL_Utils.Is_Edit_Mode then
                         Put_Line ("Prop_Renderer.Render_Props_Around_Split visible Prop_Type: "
-                             & Property_Type'Image (Prop_Type));
+                                  & Property_Type'Image (Prop_Type));
                         if aScript.Uses_Sprite then
                             Put_Line ("Prop_Renderer.Render_Props_Around_Split Uses_Sprite");
                             Prop_Size := aScript.Sprite_Map_Rows *
@@ -641,8 +794,8 @@ package body Prop_Renderer is
                                Property.Origin_World,
                                aScript.Bounding_Radius);
                         else
---                              Put_Line ("Prop_Renderer.Render_Props_Around_Split default Prop_Type: "
---                                       & Property_Type'Image (Prop_Type));
+                            --                              Put_Line ("Prop_Renderer.Render_Props_Around_Split default Prop_Type: "
+                            --                                       & Property_Type'Image (Prop_Type));
                             if Prop_Type = Anim_Loop_Prop then
                                 Update_Anim_Looped_Prop (Props_Index, Elapsed);
                             end if;
@@ -777,7 +930,7 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-   function Sq_Dist_To_End_Level_Portal (Pos : Singles.Vector3) return Float is
+    function Sq_Dist_To_End_Level_Portal (Pos : Singles.Vector3) return Float is
         use GL.Types.Singles;
         Data    : Prop_Renderer_Support.Property_Data;
         Dist_3D : Singles.Vector3;
@@ -909,9 +1062,9 @@ package body Prop_Renderer is
     begin
         if Properties_Manager.Index_Is_Valid (Prop_Index) then
             Props_In_Tiles (U, V).Append (Prop_Index);
---               Put_Line ("Prop_Renderer.Update_Props_In_Tiles_Index Props_In_Tiles (U, V) length: "
---                & Integer'Image (U) & ", " & Integer'Image (V) & ", "
---                & Integer'Image (Integer (Props_In_Tiles(U, V).Length)));
+            --               Put_Line ("Prop_Renderer.Update_Props_In_Tiles_Index Props_In_Tiles (U, V) length: "
+            --                & Integer'Image (U) & ", " & Integer'Image (V) & ", "
+            --                & Integer'Image (Integer (Props_In_Tiles(U, V).Length)));
         else
             raise Prop_Renderer_Exception with
               "Prop_Renderer.Update_Props_In_Tiles_Index called with invalid index: "

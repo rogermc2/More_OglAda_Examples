@@ -8,6 +8,8 @@ package Text is
 
    function Add_Text (theText  : String; X, Y, Size_In_Pixels : Single;
                       Colour : GL.Types.Colors.Color) return Positive;
+   procedure Add_Particle_Text (theText : String; Colour : GL.Types.Colors.Color;
+                               World_Pos : Singles.Vector3);
    procedure Centre_Text (ID : Positive; X, Y : Single);
    procedure Change_Text_Colour (ID : Positive; Colour : GL.Types.Colors.Color);
    function Create_Text_Box (Text                    : String;

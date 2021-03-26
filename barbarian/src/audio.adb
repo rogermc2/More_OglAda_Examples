@@ -65,7 +65,8 @@ package body Audio is
         Was_Init            : Boolean := False;
     end record;
 
-    G_Audio : Audio_Data;
+    G_Audio              : Audio_Data;
+    Playing_Hammer_Track : Boolean := False;
 
     --  -------------------------------------------------------------------------
 
@@ -96,6 +97,13 @@ package body Audio is
     end Create_Boulder_Sound;
 
     --  -------------------------------------------------------------------------
+
+    function Is_Playing_Hammer_Track return Boolean is
+    begin
+        return Playing_Hammer_Track;
+    end Is_Playing_Hammer_Track;
+
+    --  ------------------------------------------------------------------------
 
     procedure Pause_Music (Pause : Boolean) is
     begin
@@ -140,6 +148,13 @@ package body Audio is
     end Set_Audio_Volume;
 
     --  -------------------------------------------------------------------------
+
+    procedure Set_Playing_Hammer_Track (State : Boolean) is
+    begin
+        Playing_Hammer_Track := State;
+    end Set_Playing_Hammer_Track;
+
+    --  ------------------------------------------------------------------------
 
     function Start_Boulder_Sound (Index : Positive) return Boolean is
     begin

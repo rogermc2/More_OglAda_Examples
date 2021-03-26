@@ -1,8 +1,13 @@
 with Audio;
+with Camera;
+with FB_Effects;
 with GUI;
 with GUI_Level_Chooser;
 with Main_Menu;
 with Prop_Renderer;
+with Prop_Renderer_Support;
+with Settings;
+with Shadows;
 with Sprite_Renderer;
 
 package body Character_Controller.Support is
@@ -14,7 +19,6 @@ package body Character_Controller.Support is
     procedure Decrement_Weapon_Count
       (Character : in out Barbarian_Character;
        Projectle : Projectile_Manager.Projectile_Type);
-    procedure Set_Idle_Animation (Character : in out Barbarian_Character);
     procedure Switch_Animation (Character : in out Barbarian_Character;
                                 Animation_ID : Positive);
 
@@ -59,10 +63,16 @@ package body Character_Controller.Support is
                     GUI_Level_Chooser.Unlock_Next_Map (Main_Menu.Are_We_In_Custom_Maps);
                     GUI.Show_Victory_Screen (True, Level_Time, Level_Par_Time);
                     Audio.Play_Sound (Enter_Portal_Sound, False);
-                    Set_End_Cam;
+                    Camera.Set_End_Camera;
+                    Character.World_Pos := Camera.World_Position;
                 end if;
+            Portal_Feedback_Started := True;
+            end if;
+            if not Portal_Feedback_Started then
+                FB_Effects.Set_Feedback_Screw (1.0 - Distance / 128.0);
             end if;
         end if;
+
     end Check_End_Of_Level_Stairs;
 
     --  ------------------------------------------------------------------------
@@ -79,6 +89,26 @@ package body Character_Controller.Support is
             when others => null;
         end case;
     end Decrement_Weapon_Count;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Grab_Nearby_Gold (Character : in out Barbarian_Character) is
+        Item_Type : Prop_Renderer_Support.Property_Type :=
+                       Prop_Renderer_Support.Generic_Prop;
+        Value     : Integer := Prop_Renderer.Pick_Up_Item_In (
+    begin
+        Null;
+    end Grab_Nearby_Gold;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Set_Idle_Animation (Character : in out Barbarian_Character) is
+        Animation_Number : constant Positive
+          := (3 * Weapon_Type'Enum_Rep (Character.Current_Weapon)) mod
+          Integer (Max_Animations) + 1;
+    begin
+        Switch_Animation (Character, Animation_Number);
+    end Set_Idle_Animation;
 
     --  -------------------------------------------------------------------------
 
@@ -108,6 +138,25 @@ package body Character_Controller.Support is
                                                        Atlas_Index);
         end if;
     end Switch_Animation;
+
+    --  -------------------------------------------------------------------------
+
+    procedure  Update_Camera_Position (Character : in out Barbarian_Character) is
+        Castor_Pos : Singles.Vector3;
+        Camera_Pos : Singles.Vector3;
+    begin
+        if Settings.Shadows_Enabled then
+            Castor_Pos := Character.World_Pos;
+            Castor_Pos (GL.Y) := Castor_Pos (GL.Y) + 1.3;
+            Shadows.Set_Caster_Position (Castor_Pos);
+        end if;
+
+        if not GUI.Show_Victory then
+            Camera_Pos := Character.World_Pos;
+            Camera_Pos (GL.Y) := Camera_Pos (GL.Y) + Camera.Camera_Height;
+        end if;
+
+    end Update_Camera_Position;
 
     --  -------------------------------------------------------------------------
 

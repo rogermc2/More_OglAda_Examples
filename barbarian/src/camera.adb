@@ -16,6 +16,13 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
+    function Camera_Height return Single is
+    begin
+        return G_Camera.Height;
+    end Camera_Height;
+
+    --  ------------------------------------------------------------------------
+
     procedure Camera_Wind_In is
     begin
         G_Camera.Wind_In_Countdown := 2.0;

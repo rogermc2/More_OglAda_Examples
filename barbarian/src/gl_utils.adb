@@ -25,6 +25,7 @@ package body GL_Utils is
    Total_Video_Seconds : constant Integer := 10;
    G_Resized_View      : Boolean := False;
    Edit_Mode           : Boolean := False;
+   G_Level_Par_Time    : String (1 .. 16) := "                ";
 
    --  ------------------------------------------------------------------------
 
@@ -142,6 +143,13 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
+   function Level_Par_Time return String is
+   begin
+       return G_Level_Par_Time;
+   end Level_Par_Time;
+
+   --  ------------------------------------------------------------------------
+
    function Read_Vec2 (Vec : String) return GL.Types.Singles.Vector2 is
       use Ada.Strings;
       use GL.Types;
@@ -206,6 +214,13 @@ package body GL_Utils is
    begin
        Edit_Mode := Mode;
    end Set_Is_Edit_Mode;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Level_Par_Time (Par_Time : String) is
+   begin
+       G_Level_Par_Time := Par_Time;
+   end Set_Level_Par_Time;
 
    --  ------------------------------------------------------------------------
 

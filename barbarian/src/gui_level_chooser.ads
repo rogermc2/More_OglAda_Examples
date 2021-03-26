@@ -1,4 +1,6 @@
 
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
 with GL.Objects.Programs;
 with Input_Callback;
 
@@ -9,6 +11,7 @@ package GUI_Level_Chooser is
    function Cheated_On_Map return Boolean;
    procedure Init;
    function Get_Hammer_Kills return Integer;
+   function Get_Selected_Level_Hammer_Music return Unbounded_String;
    function Get_Selected_Level_Music return String;
    function Get_Selected_Level_Name (Custom : Boolean) return String;
    procedure Increment_Hammer_Kills;

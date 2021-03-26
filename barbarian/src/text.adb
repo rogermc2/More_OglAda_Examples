@@ -94,7 +94,6 @@ package body Text is
 
     --     Max_Strings          : constant Integer := 256;
     --      MAX_POPUP_TEXTS                 : constant Integer := 128;
-    --      MAX_PARTICLE_TEXTS              : constant Integer := 8;
     --      COMIC_TEXT_FULL_COLOUR_TIME     : constant Float := 3.0;
     --      COMIC_TEXT_TIME                 : constant Float :=  6.0;
     Particle_Text_Full_Colour_Time  : constant Float := 0.5;

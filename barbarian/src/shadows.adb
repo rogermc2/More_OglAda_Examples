@@ -58,6 +58,7 @@ package body Shadows is
     procedure Load_Cube_Map_Texture
       (theTexture : GL.Objects.Textures.Targets.Cube_Map_Side_Target.Fillable_Target);
     procedure Reset_Shadows;
+    procedure Set_Depth_Light_Position_World (Pos : Singles.Vector3);
 
     --  ----------------------------------------------------------------------------
 
@@ -173,7 +174,7 @@ package body Shadows is
               "Shadows.Change_Shadow_Size exception";
     end Change_Shadow_Size;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Init is
         use GL.Attributes;
@@ -200,19 +201,19 @@ package body Shadows is
 
         G_Shadows.Debug_Quad_Vao.Clear;
         G_Shadows.Debug_Quad_Vao.Initialize_Id;
---          G_Shadows.Debug_Quad_Vao.Bind;
+        --          G_Shadows.Debug_Quad_Vao.Bind;
 
         GL_Utils.Add_Attribute_To_Array
           (G_Shadows.Debug_Quad_Vao, Attrib_VP, Quad_VP_Buffer, 2);
---          Array_Buffer.Bind (Quad_VP_Buffer);
---          Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type, False, 0, 0);
---          Enable_Vertex_Attrib_Array (Attrib_VP);
+        --          Array_Buffer.Bind (Quad_VP_Buffer);
+        --          Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type, False, 0, 0);
+        --          Enable_Vertex_Attrib_Array (Attrib_VP);
 
         GL_Utils.Add_Attribute_To_Array
           (G_Shadows.Debug_Quad_Vao, Attrib_VT, Quad_VT_Buffer, 3);
---          Array_Buffer.Bind (Quad_VT_Buffer);
---          Set_Vertex_Attrib_Pointer (Attrib_VT, 3, Single_Type, False, 0, 0);
---          Enable_Vertex_Attrib_Array (Attrib_VT);
+        --          Array_Buffer.Bind (Quad_VT_Buffer);
+        --          Set_Vertex_Attrib_Pointer (Attrib_VT, 3, Single_Type, False, 0, 0);
+        --          Enable_Vertex_Attrib_Array (Attrib_VT);
 
         G_Shadows.Cube_Framebuffer.Initialize_Id;
         G_Shadows.Cube_Colour_Tex.Initialize_Id;
@@ -227,14 +228,14 @@ package body Shadows is
             raise;
     end Init;
 
-    --  -------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     function Caster_Position return Singles.Vector3 is
     begin
         return G_Shadows.Caster_Pos_World;
     end Caster_Position;
 
-    --  ---------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Load_Cube_Map_Texture
       (theTexture : GL.Objects.Textures.Targets.Cube_Map_Side_Target.Fillable_Target) is
@@ -288,6 +289,38 @@ package body Shadows is
 
     --  ----------------------------------------------------------------------------
 
+    procedure Set_Caster_Position (Caster_Pos : Singles.Vector3) is
+        use GL.Types.Singles;
+        Target_Pos : constant Vector3_Array (1 .. 6 ) :=
+                       (Caster_Pos + (1.0, 0.0, 0.0),    --  Posx
+                        Caster_Pos + (-1.0, 0.0, 0.0),   --  Negx
+                        Caster_Pos + (0.0, 1.0, 0.0),    -- Posy
+                        Caster_Pos + (0.0, -1.0, 0.0),   -- Negy
+                        Caster_Pos + (0.0, 0.0, 1.0),    -- Posz
+                        Caster_Pos + (0.0, 0.0, -1.0));  -- Negz
+        --  Up is upside-down up to store texture right way up
+        Up         : constant Vector3_Array (1 .. 6 ) :=
+                       ((0.0, -1.0, 0.0),
+                        (0.0, -1.0, 0.0),
+                        (0.0, 0.0, 1.0),
+                        (0.0, 0.0, -1.0),
+                        (0.0, -1.0, 0.0),
+                        (0.0, -1.0, 0.0));
+
+    begin
+        if Settings.Shadows_Enabled then
+            G_Shadows.Caster_Pos_World := Caster_Pos;
+            for index in Int range 1 ..6 loop
+                 Maths.Init_Lookat_Transform
+                  (Caster_Pos, Target_Pos (index), Up (index),
+                   G_Shadows.Caster_Vs (index));
+            end loop;
+            Set_Depth_Light_Position_World (Caster_Pos);
+        end if;
+    end Set_Caster_Position;
+
+    --  ----------------------------------------------------------------------------
+
     procedure Set_Depth_Model_Matrix (Mat : Singles.Matrix4) is
     begin
         if Settings.Shadows_Enabled then
@@ -295,6 +328,16 @@ package body Shadows is
             Depth_Shader_Manager.Set_Model_Matrix (Mat);
         end if;
     end Set_Depth_Model_Matrix;
+
+    --  ----------------------------------------------------------------------------
+
+    procedure Set_Depth_Light_Position_World (Pos : Singles.Vector3) is
+    begin
+        GL.Objects.Programs.Use_Program (G_Shadows.Depth_Sp);
+        Depth_Shader_Manager.Set_Light_Position (Pos);
+        GL.Objects.Programs.Use_Program (G_Shadows.Depth_Skinned_Sp);
+        Depth_Shader_Manager.Set_Light_Position (Pos);
+    end Set_Depth_Light_Position_World;
 
     --  ----------------------------------------------------------------------------
 

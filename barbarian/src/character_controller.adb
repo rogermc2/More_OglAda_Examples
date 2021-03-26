@@ -17,6 +17,7 @@ with Character_Map;
 with Event_Controller;
 with FB_Effects;
 with Game_Utils;
+with GL_Utils;
 with GUI;
 with GUI_Level_Chooser;
 with Input_Callback;
@@ -82,6 +83,10 @@ package body Character_Controller is
     Bdparts_Last_Attached_To        : array (1 .. Max_Blood_Damage_Emitters)
       of Integer := (others => -1);
 
+    Current_Gold    : Integer := 0;
+    Max_Gold        : Integer := 0;
+    Treasure_Found  : Integer := 0;
+
     function Close_Enough (Character    : Barbarian_Character;
                            World_Pos    : Singles.Vector3;
                            Height, Dist : Single) return Boolean;
@@ -107,8 +112,6 @@ package body Character_Controller is
     procedure Set_Idle_Animation (Character : in out Barbarian_Character);
     procedure Switch_Animation (Character : in out Barbarian_Character;
                                 Anim_Num  : Natural);
-    procedure Update_Character_Motion (Character : in out Barbarian_Character;
-                                       Seconds : Float);
     procedure Update_Character_Physics (Character : in out Barbarian_Character;
                                        Seconds : Float);
     procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
@@ -686,6 +689,13 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+   function Gold_Current return Integer is
+    begin
+        return Current_Gold;
+    end Gold_Current;
+
+    --  -------------------------------------------------------------------------
+
     function Heading (Character : Barbarian_Character) return Maths.Degree is
     begin
         return Character.Heading_Deg;
@@ -812,7 +822,7 @@ package body Character_Controller is
 
         if not Editor_Mode then
             Put_Line ("Character_Controller.Load_Characters not Editor_Mode");
-            GUI.Set_GUI_Gold (Gold_Current);
+            GUI.Set_GUI_Gold (Current_Gold);
             GUI.Set_GUI_Kills (Kills_Current);
             GUI.Set_GUI_Javalin_Ammo (0);
         end if;
@@ -1040,6 +1050,13 @@ package body Character_Controller is
 
     --  ------------------------------------------------------------------------
 
+    procedure Set_Gold_Current (Amount : Integer) is
+    begin
+        Current_Gold := Amount;
+    end Set_Gold_Current;
+
+    --  ------------------------------------------------------------------------
+
     procedure Set_Has_Pathing_Destination
       (Character : in out Barbarian_Character; State : Boolean) is
     begin
@@ -1087,6 +1104,13 @@ package body Character_Controller is
     end Set_Teleport_Countdown;
 
     --  ------------------------------------------------------------------------
+
+    procedure Set_Total_Treasure_Found (Amount : Integer) is
+    begin
+        Treasure_Found := Amount;
+    end Set_Total_Treasure_Found;
+
+    --  -------------------------------------------------------------------------
 
     function Spec_Index (Character : Barbarian_Character) return Positive is
     begin
@@ -1227,6 +1251,13 @@ package body Character_Controller is
     begin
         return Character.Teleport_Countdown;
     end Teleport_Countdown;
+
+    --  -------------------------------------------------------------------------
+
+    function Total_Treasure_Found return Integer is
+    begin
+        return Treasure_Found;
+    end Total_Treasure_Found;
 
     --  -------------------------------------------------------------------------
 
@@ -1395,8 +1426,12 @@ package body Character_Controller is
 
             Update_Attack (Character, Seconds);
 
-            Check_End_Of_Level_Stairs  (Character, Seconds, "");
+            Check_End_Of_Level_Stairs  (Character, Seconds, GL_Utils.Level_Par_Time);
             Update_Character_Motion (Character, Seconds);
+        end if;
+
+        if Character.Is_Moving or Character.First_Update then
+            Character_Controller.Support.Update_Camera_Position (Character);
         end if;
 
     exception

@@ -44,6 +44,10 @@ package Prop_Renderer is
     --     function Get_Script_Data (Script_Index : Positive)
     --                               return Prop_Renderer_Support.Prop_Script;
     function Get_Script_Index (Prop_Index : Positive) return Positive;
+    function Pick_Up_Item_In
+      (U, V : Int; Pos : Singles.Vector3; Radius : Float; Player_Health : Integer;
+       Prop_Type : in out Prop_Renderer_Support.Property_Type)
+       return Integer;
     function Props_In_Tiles_Size (U, V : Integer) return Natural;
     procedure Render_Property (Prop_ID : Positive);
     procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);

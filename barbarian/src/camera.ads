@@ -7,6 +7,7 @@ package Camera is
 
    type Camera_Data is private;
 
+    function Camera_Height return Single;
    procedure Camera_Wind_In;
    function Default_Camera return Camera_Data;
    function Far return Single;

@@ -14,6 +14,7 @@ package Shadows is
    procedure Bind_Cube_Shadow_Texture (Slot : Integer);
    function Caster_Position return Singles.Vector3;
    procedure Init;
+   procedure Set_Caster_Position (Caster_Pos : Singles.Vector3);
    procedure Set_Depth_Model_Matrix (Mat : Singles.Matrix4);
    procedure Set_Depth_Skinned_Bone_Matrices (Mats : Singles.Matrix4_Array);
    procedure Set_Depth_Skinned_Model_Matrix (Mat : Singles.Matrix4);

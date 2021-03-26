@@ -18,9 +18,6 @@ package Character_Controller is
 
    Char_Mount_Wall_Max_Height : constant GL.Types.Single := 1.0;  --  0.75F --  Was 1.0
    Max_Inventory_Javelins     : constant Natural := 4;
-   Gold_Current               : Integer := 0;
-   Gold_Max                   : Integer := 0;
-   Total_Treasure_Found       : Integer := 0;
 
    Character_Controller_Exception : Exception;
 
@@ -40,6 +37,7 @@ package Character_Controller is
    function Get_Character (Character_ID : Positive) return Barbarian_Character;
    function Get_Character_Position (Character_ID : Positive)
                                     return Singles.Vector3;
+   function Gold_Current return Integer;
    function Heading (Character : Barbarian_Character) return Maths.Degree;
    procedure Init;
    function On_Ground (Character : Barbarian_Character) return Boolean;
@@ -60,6 +58,7 @@ package Character_Controller is
                                      Direction : Singles.Vector3);
    procedure Set_Fireball_Countdown (Character : in out Barbarian_Character;
                                      Seconds : Float);
+   procedure Set_Gold_Current (Amount : Integer);
    procedure Set_Has_Pathing_Destination
       (Character : in out Barbarian_Character; State : Boolean);
    procedure Set_Heading (Character : in out Barbarian_Character;
@@ -68,12 +67,16 @@ package Character_Controller is
                                   Seconds : Float);
    procedure Set_Teleport_Countdown (Character : in out Barbarian_Character;
                                      Seconds : Float);
+   procedure Set_Total_Treasure_Found (Amount : Integer);
    function Spec_Index (Character : Barbarian_Character) return Positive;
    function Spec_Index (Character_ID : Positive) return Positive;
    function Sprite_Index (Character : Barbarian_Character) return Positive;
    procedure Start_Attack (Character : in out Barbarian_Character);
    function Teleport_Countdown (Character : Barbarian_Character) return Float;
-   procedure Update_Characters (Window     : in out Input_Callback.Barbarian_Window;
+   function Total_Treasure_Found return Integer;
+   procedure  Update_Character_Motion (Character : in out Barbarian_Character;
+                                       Seconds : Float);
+   procedure Update_Characters (Window  : in out Input_Callback.Barbarian_Window;
                                 Seconds : Float);
    procedure Update_Decay (Character : in out Barbarian_Character;
                            Seconds : Float);
@@ -144,5 +147,7 @@ private
    type Anim_Count_Array is array (1 .. Max_Animations) of Integer;
    type Weapon_Param_Array is array (1 .. Max_Weapons) of Float;
    type Unbounded_String_Array is array (Integer range <>) of Unbounded_String;
+
+   Portal_Feedback_Started : Boolean := False;
 
 end Character_Controller;
