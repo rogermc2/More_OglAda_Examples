@@ -441,7 +441,7 @@ package body Character_Controller is
                 if Char_ID = 1 then
                     GUI.Change_Health_Bar (0, H_Fac, To_String (aSpec.Name));
                     GUI.Change_Crong_Head (H_Fac);
-                    FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Red_Flash);
+                    FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Red_Flash_Effect);
                 else
                     GUI.Change_Health_Bar (1, H_Fac, To_String (aSpec.Name));
                 end if;
@@ -693,6 +693,13 @@ package body Character_Controller is
     begin
         return Current_Gold;
     end Gold_Current;
+
+    --  -------------------------------------------------------------------------
+
+   function Gold_Max return Integer is
+    begin
+        return Max_Gold;
+    end Gold_Max;
 
     --  -------------------------------------------------------------------------
 
@@ -1054,6 +1061,13 @@ package body Character_Controller is
     begin
         Current_Gold := Amount;
     end Set_Gold_Current;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Set_Gold_Max (Amount : Integer) is
+    begin
+        Max_Gold := Amount;
+    end Set_Gold_Max;
 
     --  ------------------------------------------------------------------------
 

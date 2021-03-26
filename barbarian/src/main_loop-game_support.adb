@@ -179,7 +179,7 @@ package body Main_Loop.Game_Support is
                Input_Handler.Was_Action_Pressed
              (Window, Input_Handler.Menu_Open_Action)) then
             Main_Menu.Set_Menu_Open (True);
-            FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Grey);
+            FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Grey_Effect);
         end if;
 
     exception
@@ -198,7 +198,7 @@ package body Main_Loop.Game_Support is
         Set_Hammer_Kills (0);
         Set_Fall_Kills (0);
         Camera.Set_Camera_Position ((2.0, 10.0, 2.0));
-        FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default);
+        FB_Effects.Set_Feedback_Effect (FB_Effects.FB_Default_Effect);
         Event_Controller.Reset;
         Text.Unload_Comic_Texts;
         Sprite_World_Map.Free_Sprite_World_Map;

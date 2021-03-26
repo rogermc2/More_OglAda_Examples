@@ -38,6 +38,7 @@ package Character_Controller is
    function Get_Character_Position (Character_ID : Positive)
                                     return Singles.Vector3;
    function Gold_Current return Integer;
+   function Gold_Max return Integer;
    function Heading (Character : Barbarian_Character) return Maths.Degree;
    procedure Init;
    function On_Ground (Character : Barbarian_Character) return Boolean;
@@ -59,6 +60,7 @@ package Character_Controller is
    procedure Set_Fireball_Countdown (Character : in out Barbarian_Character;
                                      Seconds : Float);
    procedure Set_Gold_Current (Amount : Integer);
+   procedure Set_Gold_Max (Amount : Integer);
    procedure Set_Has_Pathing_Destination
       (Character : in out Barbarian_Character; State : Boolean);
    procedure Set_Heading (Character : in out Barbarian_Character;

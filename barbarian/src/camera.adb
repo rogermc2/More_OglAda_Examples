@@ -243,7 +243,7 @@ package body Camera is
         Prop_Renderer.Set_Ambient_Light_Level (Ambient);
         Blood_Splats.Set_Ambient_Light_Level (Ambient);
 
-        FB_Effects.Set_WW_FB_Effect (FB_Effects.FB_Default);
+        FB_Effects.Set_WW_FB_Effect (FB_Effects.FB_Default_Effect);
 
     end Set_End_Camera;
 
