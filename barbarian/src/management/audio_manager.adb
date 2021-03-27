@@ -94,7 +94,7 @@ package body Audio_Manager is
             raise Audio_Manager_Exception with
               "Create_Managed_Ambient_Source, invalid sound file name: " &
               Sound_File;
-         elsif not Tiles_Manager.Is_Tile_Valid (Map_S, Map_T) then
+         elsif not Tiles_Manager.Is_Tile_Valid ((Map_S, Map_T)) then
             raise Audio_Manager_Exception with
               "Create_Managed_Ambient_Source, invalid tile parameters: " &
               Int'Image (Map_S) & ", " & Int'Image (Map_T);

@@ -62,7 +62,7 @@ package body Properties_Manager is
         Respect_Ramps := aScript_Type = Boulder_Prop;
         --          Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -4- Mesh_Index"
         --                               & Integer'Image (aScript.Mesh_Index));
-        if Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
+        if Tiles_Manager.Is_Tile_Valid ((Map_U, Map_V)) then
             --           Game_Utils.Game_Log ("Properties Manager creating property from script "
             --                                & Script_File);
             New_Props.Script_Index := Script_Index;
@@ -305,7 +305,7 @@ package body Properties_Manager is
         Rot_Matrix   : Matrix4;
         Origin       : Vector4;
     begin
-        if not Tiles_Manager.Is_Tile_Valid (Int (Map_U), Int (Map_V)) then
+        if not Tiles_Manager.Is_Tile_Valid ((Int (Map_U), Int (Map_V))) then
             raise Properties_Exception with
               "Properties_Manager.Rebalance_Props_In called with invalid Map_U, Map_V: "
               & Integer'Image (Map_U) & ", " & Integer'Image (Map_V);

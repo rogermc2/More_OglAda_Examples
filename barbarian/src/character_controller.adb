@@ -256,10 +256,10 @@ package body Character_Controller is
               "Character_Controller.Create_Character, no script file name.";
         end if;
 
-        if Tiles_Manager.Is_Tile_Valid (Source.U, Source.V) then
+        if Tiles_Manager.Is_Tile_Valid ((Source.U, Source.V)) then
             Set_Character_Defaults (theCharacter);
             theCharacter.Heading_Deg := Source.Heading;
-            theCharacter.Map := (Source.U, Source.V);
+            theCharacter.Map := ((Source.U, Source.V));
             theCharacter.Specs_Index :=
               Specs_Manager.Get_Script_Index (To_String (Source.Script_File));
             Spec := Specs_Manager.Get_Spec (theCharacter.Specs_Index);
@@ -1455,6 +1455,8 @@ package body Character_Controller is
             Character_Controller.Support.Update_Camera_Position (Character);
             Character_Controller.Support.Grab_Nearby_Gold
               (Character, Player_ID);
+              --  check if moved into tavern
+
         end if;
 
     exception

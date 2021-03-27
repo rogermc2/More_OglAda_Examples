@@ -5,6 +5,8 @@ with GL.Culling;
 with GL.Objects.Programs;
 with GL.Toggles;
 
+with Utilities;
+
 with Audio;
 with Batch_Manager;
 with Camera;
@@ -113,7 +115,7 @@ package body Prop_Renderer is
         Continue      : Boolean := True;
         Result        : Boolean := False;
     begin
-        if not Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
+        if not Tiles_Manager.Is_Tile_Valid ((Map_U, Map_V)) then
             raise Prop_Renderer_Exception with
               "Prop_Renderer.Activate_Door_In_Tile, invalid tile indices: " &
               Int'Image (Map_U) & ", " & Int'Image (Map_V);
@@ -229,6 +231,18 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
+    function Check_Tile_For_Tavern (Map : Ints.Vector2) return Boolean is
+    begin
+      if not Tiles_Manager.Is_Tile_Valid (Map) then
+            Utilities.Print_Vector
+              ("Prop_Renderer.Check_Tile_For_Tavern, invalid tile indices: ", Map);
+            raise Prop_Renderer_Exception;
+      end if;
+        return False;
+    end Check_Tile_For_Tavern;
+
+    --  ------------------------------------------------------------------------
+
     function Get_End_Camera_Position return Singles.Vector3 is
     begin
         return End_Camera_Position;
@@ -242,6 +256,7 @@ package body Prop_Renderer is
     end Get_End_Camera_Matrix;
 
     --  -------------------------------------------------------------------------
+
     function Get_Num_Live_Mirrors return Int is
     begin
         return Live_Mirror_Count;
@@ -493,7 +508,7 @@ package body Prop_Renderer is
         Continue     : Boolean := True;
         Result       : Integer := Property_Type'Enum_Rep (Generic_Prop);
     begin
-        if Tiles_Manager.Is_Tile_Valid (Int (U), Int (V)) then
+        if Tiles_Manager.Is_Tile_Valid (Map) then
             Props_Size := Integer (Indices_List.Length);
             while Has_Element (Curs) and Continue loop
                 Prop_Index := Integer (Element (Curs));
@@ -587,7 +602,7 @@ package body Prop_Renderer is
         Dist       : Single;
         Result     : Boolean := False;
     begin
-        if not Tiles_Manager.Is_Tile_Valid (Map_U, Map_V) then
+        if not Tiles_Manager.Is_Tile_Valid ((Map_U, Map_V)) then
             raise Prop_Renderer_Exception with
               "Prop_Renderer.Activate_Door_In_Tile, invalid tile indices: " &
               Int'Image (Map_U) & ", " & Int'Image (Map_V);
@@ -653,7 +668,7 @@ package body Prop_Renderer is
         for vi in Left .. Right loop
             for ui in Up .. Down loop
                 --                 Props_Size := Tile_Data'Size;
-                if not Tiles_Manager.Is_Tile_Valid (ui, vi) then
+                if not Tiles_Manager.Is_Tile_Valid ((ui, vi)) then
                     raise Prop_Renderer_Exception with
                       "Prop_Renderer.Activate_Door_In_Tile, invalid tile indices: " &
                       Int'Image (ui) & ", " & Int'Image (vi);

@@ -29,7 +29,7 @@ package body Character_Map is
         V2 : Character_Vector2;   --
         CM : Character_Map_List;
     begin
-        if not Tiles_Manager.Is_Tile_Valid (U, V) then
+        if not Tiles_Manager.Is_Tile_Valid ((U, V)) then
             raise Character_Map_Exception with
               "Character_Map.Add_New_Character_To_Map has invalid U, V";
         end if;
@@ -66,7 +66,7 @@ package body Character_Map is
         V2 : Character_Vector2;
         CM : Character_Map_Package.List;
     begin
-        if not Tiles_Manager.Is_Tile_Valid (U, V) then
+        if not Tiles_Manager.Is_Tile_Valid ((U, V)) then
             raise Character_Map_Exception with
               "Character_Map Get_Characters_In has invalid U, V: " &
               GL.Types.Int'Image (U) & ", " & GL.Types.Int'Image (V);

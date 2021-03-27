@@ -335,7 +335,7 @@ package body Batch_Manager is
             end loop;
         end Process_Batch;
     begin
-        if not Tiles_Manager.Is_Tile_Valid (Row, Col) then
+        if not Tiles_Manager.Is_Tile_Valid ((Row, Col)) then
             raise Batch_Manager_Exception with
               "Batch_Manager.Add_Static_Light invalid tile";
         end if;

@@ -46,7 +46,7 @@ package body Sprite_World_Map is
       S_V   : constant Sprite_Index := Sprite_Index (V);
       Count : Natural;
    begin
-      if not Tiles_Manager.Is_Tile_Valid (U, V) then
+      if not Tiles_Manager.Is_Tile_Valid ((U, V)) then
             raise Sprite_World_Map_Exception with
               "Sprite_World_Map.Add_New_Sprite_To_World_Map, invalid tile indices: " &
               Int'Image (U) & ", " & Int'Image (V);

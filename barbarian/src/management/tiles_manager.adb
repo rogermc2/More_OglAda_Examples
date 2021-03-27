@@ -252,11 +252,11 @@ begin
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Tile_Valid (Row, Col : GL.Types.Int) return Boolean is
+    function Is_Tile_Valid (Map : Ints.Vector2) return Boolean is
         use Batch_Manager;
     begin
-        return Col > 0 and Col <= Max_Cols and
-          Row > 0 and Row <= Max_Rows;
+        return Map (GL.Y) > 0 and Map (GL.Y) <= Max_Cols and
+          Map (GL.X) > 0 and Map (GL.X) <= Max_Rows;
     end Is_Tile_Valid;
 
     --  ----------------------------------------------------------------------------
