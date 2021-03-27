@@ -232,13 +232,35 @@ package body Prop_Renderer is
     --  -------------------------------------------------------------------------
 
     function Check_Tile_For_Tavern (Map : Ints.Vector2) return Boolean is
+        use Prop_Indices_Package;
+        Prop_Indices : Prop_Indices_List;
+        Property     : Property_Data;
+        aScript      : Prop_Script;
+        P_Index      : Positive;
+        Index        : Positive;
+        Result       : Boolean := False;
     begin
-      if not Tiles_Manager.Is_Tile_Valid (Map) then
+        if not Tiles_Manager.Is_Tile_Valid (Map) then
             Utilities.Print_Vector
               ("Prop_Renderer.Check_Tile_For_Tavern, invalid tile indices: ", Map);
             raise Prop_Renderer_Exception;
-      end if;
-        return False;
+        end if;
+        Prop_Indices :=
+          Props_In_Tiles (Integer (Map (GL.X)), Integer (Map (GL.Y)));
+        if not Prop_Indices.Is_Empty then
+            Index := Prop_Indices.First_Index;
+            while index <= Prop_Indices.Last_Index and not Result loop
+                P_Index := Positive (Prop_Indices.Element (index));
+                Property :=
+                  Properties_Manager.Get_Property_Data (P_Index);
+                aScript := Properties_Manager.Get_Script_Data (Property.Script_Index);
+                Result := aScript.Script_Type = Tavern_Prop;
+                if Index /= Prop_Indices.Last_Index then
+                    Index := Index + 1;
+                end if;
+            end loop;
+        end if;
+        return Result;
     end Check_Tile_For_Tavern;
 
     --  ------------------------------------------------------------------------
@@ -419,8 +441,8 @@ package body Prop_Renderer is
     --  -------------------------------------------------------------------------
 
     procedure Do_Hammer (Prop : in out Property_Data;
-                       Prop_Type : in out Prop_Renderer_Support.Property_Type;
-                       aScript : Prop_Script) is
+                         Prop_Type : in out Prop_Renderer_Support.Property_Type;
+                         aScript : Prop_Script) is
         use Singles;
         Track  : Unbounded_String := To_Unbounded_String ("");
     begin
@@ -428,9 +450,9 @@ package body Prop_Renderer is
             Prop_Type := Hammer_Prop;
             Prop.Is_Visible := False;
             Prop.Was_Collected_By_Player := True;
-                Audio.Play_Sound
-                  (To_String (aScript.Sound_Activate_File_Name),
-                   True);
+            Audio.Play_Sound
+              (To_String (aScript.Sound_Activate_File_Name),
+               True);
             FB_Effects.FB_White_Flash;
             if not Audio.Is_Playing_Hammer_Track then
                 Track := GUI_Level_Chooser.Get_Selected_Level_Hammer_Music;
