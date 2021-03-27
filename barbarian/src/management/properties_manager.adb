@@ -242,9 +242,9 @@ package body Properties_Manager is
 
         Property_Count := Integer'Value (aLine (PosL .. PosR));
         Prop_Renderer.Set_Portal_Index (0);
-        Character_Controller.Gold_Current := 0;
-        Character_Controller.Gold_Max := 0;
-        Character_Controller.Total_Treasure_Found := 0;
+        Character_Controller.Set_Gold_Current (0);
+        Character_Controller.Set_Gold_Max (0);
+        Character_Controller.Set_Total_Treasure_Found (0);
 
         for index in 1 .. Property_Count loop
             declare

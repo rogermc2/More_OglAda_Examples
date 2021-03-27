@@ -475,12 +475,12 @@ package body Prop_Renderer is
     --  -------------------------------------------------------------------------
 
     function Pick_Up_Item_In
-      (U, V : Int; Pos : Singles.Vector3; Radius : Float; Player_Health : Integer;
+      (Map : Ints.Vector2; Pos : Singles.Vector3; Radius : Float; Player_Health : Integer;
        Prop_Type : in out Prop_Renderer_Support.Property_Type) return Integer is
         use Prop_Indices_Package;
         use gl.Types.Singles;
-        --         IU          : constant Integer := Integer (U);
-        --         IV          : constant Integer := Integer (V);
+        U          : constant Integer := Integer (Map (GL.X));
+        V          : constant Integer := Integer (Map (GL.Y));
         Indices_List : constant Prop_Indices_List :=
                          Props_In_Tiles (Integer (U), Integer (V));
         Curs         : Cursor := Indices_List.First;
@@ -493,7 +493,7 @@ package body Prop_Renderer is
         Continue     : Boolean := True;
         Result       : Integer := Property_Type'Enum_Rep (Generic_Prop);
     begin
-        if Tiles_Manager.Is_Tile_Valid (U, V) then
+        if Tiles_Manager.Is_Tile_Valid (Int (U), Int (V)) then
             Props_Size := Integer (Indices_List.Length);
             while Has_Element (Curs) and Continue loop
                 Prop_Index := Integer (Element (Curs));

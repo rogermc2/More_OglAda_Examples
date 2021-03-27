@@ -631,9 +631,10 @@ package body Properties_Manager.Process is
                   Audio.Create_Boulder_Sound (New_Props.World_Pos);
             when Door_Prop => Rx_Kind := Rx_Door;
             when Dart_Trap_Prop => Rx_Kind := Rx_Dart_Trap;
-            when Treasure_Prop =>  Character_Controller.Gold_Max :=
-                  Character_Controller.Gold_Max + aScript.Value;
-            when Portal_Prop => Portal_Index := Properties.Last_Index;
+            when Treasure_Prop =>  Character_Controller.Set_Gold_Max
+                  (Character_Controller.Gold_Max + aScript.Value);
+            when Portal_Prop =>
+                Prop_Renderer.Set_Portal_Index (Properties.Last_Index);
             when Bridge_Prop => Rebalance := True;
             when Pillar_Prop =>
                 Rebalance := True;

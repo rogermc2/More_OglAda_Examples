@@ -177,6 +177,22 @@ package body FB_Effects is
 
     --  -------------------------------------------------------------------------
 
+    procedure FB_Gold_Flash is
+    begin
+        Current_Effect := FB_Gold_Flash_Effect;
+        Effect_Elapsed := 0.0;
+    end FB_Gold_Flash;
+
+    --  -------------------------------------------------------------------------
+
+    procedure FB_Green_Flash is
+    begin
+        Current_Effect := FB_Green_Flash_Effect;
+        Effect_Elapsed := 0.0;
+    end FB_Green_Flash;
+
+    --  -------------------------------------------------------------------------
+
     procedure FB_White_Flash is
     begin
         Current_Effect := FB_White_Flash_Effect;

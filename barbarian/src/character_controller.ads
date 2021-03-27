@@ -21,6 +21,7 @@ package Character_Controller is
 
    Character_Controller_Exception : Exception;
 
+   procedure Add_Gold_Current (Amount : Integer := 1);
    function Alert_Cooldown (Character : Barbarian_Character) return Float;
    function Alive (Character : Barbarian_Character) return Boolean;
    function Attacking (Character : Barbarian_Character) return Boolean;
@@ -76,7 +77,7 @@ package Character_Controller is
    procedure Start_Attack (Character : in out Barbarian_Character);
    function Teleport_Countdown (Character : Barbarian_Character) return Float;
    function Total_Treasure_Found return Integer;
-   procedure  Update_Character_Motion (Character : in out Barbarian_Character;
+   procedure Update_Character_Motion (Character : in out Barbarian_Character;
                                        Seconds : Float);
    procedure Update_Characters (Window  : in out Input_Callback.Barbarian_Window;
                                 Seconds : Float);

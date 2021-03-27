@@ -45,7 +45,7 @@ package Prop_Renderer is
     --                               return Prop_Renderer_Support.Prop_Script;
     function Get_Script_Index (Prop_Index : Positive) return Positive;
     function Pick_Up_Item_In
-      (U, V : Int; Pos : Singles.Vector3; Radius : Float; Player_Health : Integer;
+      (Map : Ints.Vector2; Pos : Singles.Vector3; Radius : Float; Player_Health : Integer;
        Prop_Type : in out Prop_Renderer_Support.Property_Type)
        return Integer;
     function Props_In_Tiles_Size (U, V : Integer) return Natural;

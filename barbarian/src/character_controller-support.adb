@@ -5,7 +5,6 @@ with GUI;
 with GUI_Level_Chooser;
 with Main_Menu;
 with Prop_Renderer;
-with Prop_Renderer_Support;
 with Settings;
 with Shadows;
 with Sprite_Renderer;
@@ -92,23 +91,42 @@ package body Character_Controller.Support is
 
     --  -------------------------------------------------------------------------
 
-    procedure Grab_Nearby_Gold (Character : in out Barbarian_Character) is
-        Item_Type : Prop_Renderer_Support.Property_Type :=
-                       Prop_Renderer_Support.Generic_Prop;
-        Value     : Integer := Prop_Renderer.Pick_Up_Item_In (
+    procedure Grab_Nearby_Gold (Character : in out Barbarian_Character;
+                                Player_ID : Integer) is
+        use Prop_Renderer_Support;
+        use Specs_Package;
+        U             : constant Int := Character.Map (GL.X);
+        V             : constant Int := Character.Map (GL.Y);
+        Pos           : constant Singles.Vector3 := Character.World_Pos;
+        Player_Health : constant Integer := Character.Current_Health;
+        S_Index       : constant Positive := Character.Specs_Index;
+        Spec          : constant Specs_Manager.Spec_Data :=
+                          Specs_Manager.Get_Spec (S_Index);
+        Radius        : constant Float := Spec.Width_Radius;
+        Item_Type     : Property_Type := Generic_Prop;
+        Value         : constant Integer := Prop_Renderer.Pick_Up_Item_In
+          (Character.Map, Pos, Radius, Player_Health, Item_Type);
+        Health_Factor : Single;
     begin
-        Null;
+        case Item_Type is
+            when Treasure_Prop =>
+                Add_Gold_Current;
+                GUI.Set_GUI_Gold (Gold_Current);
+                FB_Effects.FB_Gold_Flash;
+            when Food_Prop =>
+                Character.Current_Health := Character.Current_Health + Value;
+                Health_Factor := Single (Player_Health) /
+                  Single (Spec.Initial_Health);
+                GUI.Change_Health_Bar (Int (Player_ID), Health_Factor,
+                                       To_String (Spec.Name));
+                gui.Change_Crong_Head (Health_Factor);
+                FB_Effects.FB_Green_Flash;
+            when Hammer_Prop =>
+                Character.Has_Hammer := True;
+                Change_Weapon (Character, S_Index, Hammer_Wt);
+            when others => null;
+        end case;
     end Grab_Nearby_Gold;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Set_Idle_Animation (Character : in out Barbarian_Character) is
-        Animation_Number : constant Positive
-          := (3 * Weapon_Type'Enum_Rep (Character.Current_Weapon)) mod
-          Integer (Max_Animations) + 1;
-    begin
-        Switch_Animation (Character, Animation_Number);
-    end Set_Idle_Animation;
 
     --  -------------------------------------------------------------------------
 

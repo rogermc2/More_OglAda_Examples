@@ -119,6 +119,13 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+    procedure Add_Gold_Current (Amount : Integer := 1) is
+    begin
+        Current_Gold := Amount;
+    end Add_Gold_Current;
+
+    --  ------------------------------------------------------------------------
+
     function Alert_Cooldown (Character : Barbarian_Character) return Float is
     begin
         return Character.Alert_Cooldown_Sec;
@@ -1439,13 +1446,15 @@ package body Character_Controller is
             end if;
 
             Update_Attack (Character, Seconds);
-
-            Check_End_Of_Level_Stairs  (Character, Seconds, GL_Utils.Level_Par_Time);
+            Check_End_Of_Level_Stairs  (Character, Seconds,
+                                        GL_Utils.Level_Par_Time);
             Update_Character_Motion (Character, Seconds);
         end if;
 
         if Character.Is_Moving or Character.First_Update then
             Character_Controller.Support.Update_Camera_Position (Character);
+            Character_Controller.Support.Grab_Nearby_Gold
+              (Character, Player_ID);
         end if;
 
     exception
