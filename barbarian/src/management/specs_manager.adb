@@ -28,9 +28,9 @@ package body Specs_Manager is
       L_Length    : constant Integer := aLine'Length;
       Pos1        : Integer := Fixed.Index (aLine, ":");
       Pos2        : Integer := Fixed.Index (aLine (Pos1 + 2 .. L_Length), " ");
-      anAnim      : Anim_Frame;
-      Anim_1D     : Anim_Frame_List;
-      Anim_2D     : Anim_Frame_Array;
+      anAnim      : Animation_Frame;
+      Anim_1D     : Animation_Frame_List;
+      Anim_2D     : Animation_Frame_Array;
    begin
       Anim_Num := Int'Value (aLine (Pos1 + 2 .. Pos2 - 1)) + 1;
 --        Game_Utils.Game_Log ("Specs_Manager.Add_Animation_Frame, Anim_Num: "
@@ -243,9 +243,9 @@ package body Specs_Manager is
    function Animation_Index (Spec_Index, Anim_Num, Anim_Index : Positive)
                              return Positive is
       theSpec    : constant Spec_Data := Specs.Element (Spec_Index);
-      Animations : constant Anim_Frame_Array := theSpec.Animations;
-      Anim_List  : constant Anim_Frame_List := Animations.Element (Anim_Num);
-      Frame      : constant Anim_Frame := Anim_List.Element (Anim_Index);
+      Animations : constant Animation_Frame_Array := theSpec.Animations;
+      Anim_List  : constant Animation_Frame_List := Animations.Element (Anim_Num);
+      Frame      : constant Animation_Frame := Anim_List.Element (Anim_Index);
    begin
         return Frame.Atlas_Index;
    end Animation_Index;
@@ -270,7 +270,7 @@ package body Specs_Manager is
 
    function Get_Script_Index (File_Name : String) return Integer is
       use Specs_Package;
-      Curs       : Cursor := Specs.First;
+      Curs       : Specs_Package.Cursor := Specs.First;
       Data       : Spec_Data;
       Found      : Boolean := False;
       Spec_Index : Integer := 0;

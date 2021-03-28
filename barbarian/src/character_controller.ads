@@ -112,8 +112,8 @@ private
       Current_Weapon           : Specs_Manager.Weapon_Type :=
                                    Specs_Manager.Na_Wt;
       Sprite_Index             : Natural := 0;
-      Current_Anim             : Integer := 0;
-      Current_Anim_Frame       : Integer := 0;
+      Current_Animation        : Integer := 0;
+      Current_Animation_Frame  : Integer := 0;
       Next_Attack_Event        : Integer := 0;
       Current_Health           : Integer := 0;
       Number_Particle_Systems_Attached : Integer := 0;
@@ -146,7 +146,7 @@ private
    type Event_Count_Array is array (1 .. Max_Weapons) of Integer;
    type Animations_Array is array
      (1 .. Max_Animations, 1 .. Max_Anim_Frames) of
-     Specs_Manager.Anim_Frame;
+     Specs_Manager.Animation_Frame;
    type Anim_Count_Array is array (1 .. Max_Animations) of Integer;
    type Weapon_Param_Array is array (1 .. Max_Weapons) of Float;
    type Unbounded_String_Array is array (Integer range <>) of Unbounded_String;

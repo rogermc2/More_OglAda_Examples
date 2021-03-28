@@ -27,7 +27,7 @@ package Specs_Manager is
                         Teleport_Wt, Pillar_Wt, Boulder_Wt, Fall_Wt,
                         Na_Wt);      --  Everything else
 
-   type Anim_Frame is record
+   type Animation_Frame is record
       Atlas_Index : Positive := 1;
       Seconds     : Single := 0.0;
    end record;
@@ -41,17 +41,18 @@ package Specs_Manager is
       Min_Damage      : Int := 0;
    end record;
 
-   package Anim_Frame_Package_1D is new Ada.Containers.Vectors
-     (Positive, Anim_Frame);
-   type Anim_Frame_List is new Anim_Frame_Package_1D.Vector with null Record;
+   package Animation_Frame_Package_1D is new Ada.Containers.Vectors
+     (Positive, Animation_Frame);
+   subtype Animation_Frame_List is Animation_Frame_Package_1D.Vector;
+   use Animation_Frame_Package_1D;
 
-   package Anim_Frame_Package is new Ada.Containers.Vectors
-     (Positive, Anim_Frame_List);
-   type Anim_Frame_Array is new Anim_Frame_Package.Vector with null Record;
+   package Animation_Frame_Package is new Ada.Containers.Vectors
+     (Positive, Animation_Frame_List);
+   subtype Animation_Frame_Array is Animation_Frame_Package.Vector;
 
    package Attack_Events_Package is new Ada.Containers.Doubly_Linked_Lists
      (Attack_Event);
-   type Attack_Events_List is new Attack_Events_Package.List with null Record;
+   subtype Attack_Events_List is Attack_Events_Package.List;
 
    for Weapon_Type use (Sword_Wt    => 0,
                         Missile_Wt  => 1,  --  Used for javelin, arrow and green fireballs
@@ -65,22 +66,20 @@ package Specs_Manager is
 
    type Weapon_Array is array
      (Weapon_Type range Weapon_Type'First .. Weapon_Type'Last) of Float;
-
    type Attack_Events_Array is array
-     (Weapon_Type range Weapon_Type'First .. Weapon_Type'Last) of Attack_Events_List;
-
+     (Weapon_Type range Weapon_Type'First .. Weapon_Type'Last) of
+      Attack_Events_List;
    type Event_Count_Array is array
      (Weapon_Type range Weapon_Type'First .. Weapon_Type'Last) of Integer;
-
    type Spec_Data is record
       Attack_Events                                     : Attack_Events_Array;
       Attack_Event_Count                                : Event_Count_Array := (others => 0);
-      Animations                                        : Anim_Frame_Array;
+      Animations                                        : Animation_Frame_Array;
       Animation_Frame_Count                             : Int_Array (1 .. Max_Animations) :=
                                                             (others => 0);
       File_Name                                         : Unbounded_String := To_Unbounded_String ("");
       Name                                              : Unbounded_String := To_Unbounded_String ("");
-      Weapon_Attack_Times                                : Weapon_Array :=
+      Weapon_Attack_Times                               : Weapon_Array :=
                                                             (others => 0.0);
       Attack_Ranges_Metre                               : Weapon_Array :=
                                                             (others => 0.0);

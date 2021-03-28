@@ -1251,13 +1251,13 @@ package body Character_Controller is
         Spec        : constant Spec_Data := Character_Specs.Element (Spec_Index);
         Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num, 1);
     begin
-        if Character.Current_Anim /= Anim_Num then
+        if Character.Current_Animation /= Anim_Num then
             if Anim_Num > Natural (Max_Animations) then
                 raise Character_Controller_Exception;
             end if;
-            Character.Current_Anim := Anim_Num;
+            Character.Current_Animation := Anim_Num;
             Character.Current_Anim_Frame_Time := 0.0;
-            Character.Current_Anim_Frame := 0;
+            Character.Current_Animation_Frame := 0;
             Sprite_Renderer.Set_Sprite_Current_Sprite
               (Character.Sprite_Index, Atlas_Index);
         end if;
@@ -1292,6 +1292,33 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+    procedure  Update_Animation_Frame
+      (theCharacter : in out Barbarian_Character;
+       Curr_Frame_ID :Positive; theAnimation : Animation_Frame_List;
+       Frame_Length : Single; Anim_Size : Integer) is
+
+       Atlas_Index : Positive;
+    begin
+        if theCharacter.Current_Anim_Frame_Time > Float (Frame_Length) then
+            theCharacter.Current_Animation_Frame :=
+              theCharacter.Current_Animation_Frame + 1;
+            theCharacter.Current_Animation_Frame :=
+              theCharacter.Current_Animation_Frame mod Anim_Size;
+            --  don't loop attack animations when done early
+            if not theCharacter.Is_Attacking or
+              (theCharacter.Current_Anim_Frame_Time /= 0.0) then
+                --  tell sprite renderer to change frame index
+                Atlas_Index :=
+                  theAnimation.Element (Curr_Frame_ID).Atlas_Index;
+                Sprite_Renderer.Set_Sprite_Current_Sprite
+                  (theCharacter.Sprite_Index, Atlas_Index);
+            end if;
+            theCharacter.Current_Anim_Frame_Time := 0.0;
+        end if;
+    end Update_Animation_Frame;
+
+    --  -------------------------------------------------------------------------
+
     procedure Update_Character (theCharacter : in out Barbarian_Character;
                                 Seconds : Float) is
     begin
@@ -1319,9 +1346,45 @@ package body Character_Controller is
 
     procedure  Update_Character_Animation (Character_ID : Positive;
                                            Seconds : Float) is
-        Character : Barbarian_Character := Characters.Element (Character_ID);
+        Character     : Barbarian_Character :=
+                          Characters.Element (Character_ID);
+        Anim_Number   : constant Integer := Character.Current_Animation;
+        S_I           : constant Positive := Character.Specs_Index;
+        aSpec         : constant Spec_Data := Character_Specs.Element (S_I);
+        theAnimation  : Animation_Frame_List;
+        Anim_Size     : Integer;
+        Curr_Frame_ID : Integer;
+        Curr_Frame    : Animation_Frame;
+        Frame_Length  : Single;
     begin
-        null;
+        if Anim_Number > 0 then
+            Anim_Size :=
+              Integer (aSpec.Animation_Frame_Count (Int (Anim_Number)));
+            if Anim_Size > 0 then
+                Curr_Frame_ID := Character.Current_Animation_Frame;
+                theAnimation := aSpec.Animations.Element (Anim_Number);
+                Frame_Length := theAnimation (Curr_Frame_ID).Seconds;
+
+                --  check if stopped moving
+                if Character.Is_Alive and Character.Is_Walking and
+                  Character.Is_Attacking then
+                    Set_Idle_Animation (Character);
+                end if;
+
+                if Frame_Length > 0.0 then
+                    Update_Animation_Frame (Character, Curr_Frame_ID,
+                                            theAnimation, Frame_Length, Anim_Size);
+                end if;
+            end if;
+        end if;
+
+        if Character.Is_On_Ground or Character.Is_Attacking then
+            Character.Current_Anim_Frame_Time :=
+              Character.Current_Anim_Frame_Time + Seconds;
+        end if;
+
+        Characters.Replace_Element (Character_ID, Character);
+
     end Update_Character_Animation;
 
     --  -------------------------------------------------------------------------
@@ -1420,7 +1483,7 @@ package body Character_Controller is
 
     procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
                              Player_ID : Integer; Seconds : Float) is
-                             use GL.Types.Singles;
+        use GL.Types.Singles;
         use Maths;
         use Single_Math_Functions;
         use Input_Handler;
@@ -1509,7 +1572,7 @@ package body Character_Controller is
         Sprite_Renderer.Update_Dynamic_Light
           (Lamp_Position, (0.9, 0.7, 0.5), (1.0, 0.8, 0.0), Torch_Light_Range);
 
-          -- rotate around player
+        -- rotate around player
         Particle_System.Set_Particle_System_Position
           (Torch_Particles_Index (Player_ID), Torch_Pos);
         Update_Character_Animation (1, Seconds);
