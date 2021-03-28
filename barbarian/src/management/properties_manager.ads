@@ -25,7 +25,7 @@ package Properties_Manager is
                               return Prop_Renderer_Support.Property_Data;
   function Get_Script_Data (Script_Index : Positive)
                             return Prop_Renderer_Support.Prop_Script;
-  function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean;
+  function Index_Is_Valid (Prop_Index : Positive) return Boolean;
   procedure Load_Properties (Prop_File : File_Type);
   procedure Replace_Property (Property_Index : Positive;
                               Property : Prop_Renderer_Support.Property_Data);

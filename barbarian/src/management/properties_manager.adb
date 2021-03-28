@@ -189,7 +189,7 @@ package body Properties_Manager is
     begin
         --          Put_Line ( "Prop_Renderer.Get_Property_Data, entered with property index: "
         --                      & Positive'Image (Prop_Index));
-        if not Properties_Manager.Index_Is_Valid (Int (Prop_Index)) then
+        if not Properties_Manager.Index_Is_Valid (Prop_Index) then
             raise Properties_Exception with
               "Properties_Manager.Get_Property_Data, invalid property index: " &
               Positive'Image (Prop_Index);
@@ -207,11 +207,10 @@ package body Properties_Manager is
 
     --  -------------------------------------------------------------------------
 
-    function Index_Is_Valid (Prop_Index : GL.Types.Int) return Boolean is
+    function Index_Is_Valid (Prop_Index : Positive) return Boolean is
         use Properties_Package;
     begin
-        return Prop_Index > 0 and
-          Prop_Index <= GL.Types.Int (Properties.Last_Index);
+        return Prop_Index <= Properties.Last_Index;
     end Index_Is_Valid;
 
     -- --------------------------------------------------------------------------
