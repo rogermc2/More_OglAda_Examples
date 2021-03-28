@@ -25,5 +25,8 @@ package Manifold is
    function Is_Water (Row, Col : Positive) return Boolean;
    procedure Reset_Manifold_Vars;
    procedure Set_Manifold_Ambient_Light (Level : GL.Types.Singles.Vector3);
+    procedure Update_Manifold_Dynamic_Light
+      (Pos_Wor, Diff, Spec : GL.Types.Singles.Vector3;
+       Light_Range : GL.Types.Single);
    procedure Update_Static_Lights_Uniforms;
 end Manifold;

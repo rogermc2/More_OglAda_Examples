@@ -67,6 +67,7 @@ package body Prop_Renderer is
     procedure Activate_Property (Property_Index : Positive;
                                  Reactivating   : Boolean);
     procedure Update_Anim_Looped_Prop (Prop_Index : Positive; Seconds : Single);
+    procedure Update_Windlass (Prop_Index : Positive; Seconds : Float);
 
     --  -------------------------------------------------------------------------
     --  return false if door already opened
@@ -231,7 +232,9 @@ package body Prop_Renderer is
 
     --  -------------------------------------------------------------------------
 
-    function Check_Tile_For_Tavern (Map : Ints.Vector2) return Boolean is
+    function Check_Tile_For_Property
+      (Map : Ints.Vector2; Prop_Type : Prop_Renderer_Support.Property_Type)
+       return Boolean is
         use Prop_Indices_Package;
         Prop_Indices : Prop_Indices_List;
         Property     : Property_Data;
@@ -242,7 +245,8 @@ package body Prop_Renderer is
     begin
         if not Tiles_Manager.Is_Tile_Valid (Map) then
             Utilities.Print_Vector
-              ("Prop_Renderer.Check_Tile_For_Tavern, invalid tile indices: ", Map);
+              ("Prop_Renderer.Check_Tile_For_Property, invalid tile indices: ",
+               Map);
             raise Prop_Renderer_Exception;
         end if;
         Prop_Indices :=
@@ -253,15 +257,16 @@ package body Prop_Renderer is
                 P_Index := Positive (Prop_Indices.Element (index));
                 Property :=
                   Properties_Manager.Get_Property_Data (P_Index);
-                aScript := Properties_Manager.Get_Script_Data (Property.Script_Index);
-                Result := aScript.Script_Type = Tavern_Prop;
+                aScript :=
+                  Properties_Manager.Get_Script_Data (Property.Script_Index);
+                Result := aScript.Script_Type = Prop_Type;
                 if Index /= Prop_Indices.Last_Index then
                     Index := Index + 1;
                 end if;
             end loop;
         end if;
         return Result;
-    end Check_Tile_For_Tavern;
+    end Check_Tile_For_Property;
 
     --  ------------------------------------------------------------------------
 
@@ -1011,6 +1016,7 @@ package body Prop_Renderer is
         Prop_Dyn_Light_Diff := Diff;
         Prop_Dyn_Light_Spec := Specular;
         Prop_Dyn_Light_Range := Dist;
+        Prop_Dyn_Light_Dirty := True;
     end Update_Dynamic_Lights;
 
     --  -------------------------------------------------------------------------
@@ -1033,13 +1039,6 @@ package body Prop_Renderer is
     begin
         null;
     end Update_Decap_Head;
-
-    --  -------------------------------------------------------------------------
-
-    procedure Update_Windlass (Prop_Index : Positive; Seconds : Float) is
-    begin
-        null;
-    end Update_Windlass;
 
     --  -------------------------------------------------------------------------
 
@@ -1145,5 +1144,12 @@ package body Prop_Renderer is
     end Update_Static_Lights_Uniforms;
 
     --  ------------------------------------------------------------------------
+
+    procedure Update_Windlass (Prop_Index : Positive; Seconds : Float) is
+    begin
+        null;
+    end Update_Windlass;
+
+    --  -------------------------------------------------------------------------
 
 end Prop_Renderer;

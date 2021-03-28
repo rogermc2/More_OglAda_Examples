@@ -27,7 +27,7 @@ package Sprite_Renderer is
     procedure Set_Sprite_Visible (Sprite_Index : Positive; Visible : Boolean);
     procedure Start_Sprite_Rendering;
     procedure Update_Dynamic_Light (Pos_Wor, Diff, Spec : Singles.Vector3;
-                                    Light_Range : Float);
+                                    Light_Range : Single);
     procedure Update_Static_Lights_Uniforms;
 
 end Sprite_Renderer;

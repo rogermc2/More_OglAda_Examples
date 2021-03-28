@@ -27,6 +27,7 @@ with Particle_System;
 with Particle_System_Manager;
 with Properties_Manager;
 with Prop_Renderer;
+with Prop_Renderer_Support;
 with Sprite_Renderer;
 with Tiles_Manager;
 
@@ -34,8 +35,9 @@ package body Character_Controller is
     Max_Blood_Fountains                 : constant Integer := 5;
     Max_Blood_Damage_Emitters           : constant Integer := 5;
     Character_Sprite_Offset_Over_Ground : constant Single := 1.0;
+    Torch_Light_Range                   : constant Single := 8.0;
+    Hello_Friend_Sound_File             : constant String := "hello_my_frien.ogg";
 
-    --      type Integer_Array is array (Integer range <>) of Integer;
     type Character_Data is record
         Script_File   : Unbounded_String := To_Unbounded_String ("");
         U             : GL.Types.Int := 0;
@@ -64,8 +66,8 @@ package body Character_Controller is
 
     --      Portal_Fadeout_Started  : Boolean := False;
     Characters_To_Reserve   : constant Integer := 256;
---      Characters_Allocd_Count : Integer := Characters_To_Reserve;
---      Character_Count         : Integer := Characters_To_Reserve;
+    --      Characters_Allocd_Count : Integer := Characters_To_Reserve;
+    --      Character_Count         : Integer := Characters_To_Reserve;
     --      Gold_Current            : constant Integer := 0;
     Kills_Current                   : Integer := 0;
     Kills_Max                       : Integer := 0;
@@ -113,7 +115,7 @@ package body Character_Controller is
     procedure Switch_Animation (Character : in out Barbarian_Character;
                                 Anim_Num  : Natural);
     procedure Update_Character_Physics (Character : in out Barbarian_Character;
-                                       Seconds : Float);
+                                        Seconds : Float);
     procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
                              Player_ID : Integer; Seconds : Float);
 
@@ -297,8 +299,8 @@ package body Character_Controller is
             if Spec.Team_ID = 1 then
                 Kills_Max := Kills_Max + 1;
             end if;
---              Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
---                                     To_String (Source.Script_File));
+            --              Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
+            --                                     To_String (Source.Script_File));
         else
             raise Character_Controller_Exception with
               "Character_Controller.Create_Character, invalid tile siza" &
@@ -688,7 +690,7 @@ package body Character_Controller is
     --  -------------------------------------------------------------------------
 
     function Get_Character_Position (Character_ID : Positive)
-                                 return Singles.Vector3  is
+                                     return Singles.Vector3  is
         theChar : constant Barbarian_Character := Characters.Element (Character_ID);
     begin
         return theChar.World_Pos;
@@ -696,14 +698,14 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-   function Gold_Current return Integer is
+    function Gold_Current return Integer is
     begin
         return Current_Gold;
     end Gold_Current;
 
     --  -------------------------------------------------------------------------
 
-   function Gold_Max return Integer is
+    function Gold_Max return Integer is
     begin
         return Max_Gold;
     end Gold_Max;
@@ -767,7 +769,7 @@ package body Character_Controller is
     --  -------------------------------------------------------------------------
 
     function Javelin_Count (Character : in out Barbarian_Character)
-                        return Natural is
+                            return Natural is
     begin
         return Character.Javelin_Count;
     end Javelin_Count;
@@ -823,7 +825,7 @@ package body Character_Controller is
 
         if Characters.Is_Empty then
             null;
---              Characters_Allocd_Count := Characters_To_Reserve;
+            --              Characters_Allocd_Count := Characters_To_Reserve;
         else
             Game_Utils.Game_Log
               ("Character_Controller.Load_Characters, " &
@@ -1315,6 +1317,15 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+    procedure  Update_Character_Animation (Character_ID : Positive;
+                                           Seconds : Float) is
+        Character : Barbarian_Character := Characters.Element (Character_ID);
+    begin
+        null;
+    end Update_Character_Animation;
+
+    --  -------------------------------------------------------------------------
+
     procedure Update_Characters (Window  : in out Input_Callback.Barbarian_Window;
                                  Seconds : Float) is
         use Maths;
@@ -1349,8 +1360,8 @@ package body Character_Controller is
                 for h in Left .. Right loop
                     Char_List := Character_Map.Get_Characters_In (h, v);
                     Curs := Char_List.First;
---                      Put_Line ("Character_Controller.Update_Characters v, h :" &
---                               Int'Image (v) & ", " & Int'Image (h));
+                    --                      Put_Line ("Character_Controller.Update_Characters v, h :" &
+                    --                               Int'Image (v) & ", " & Int'Image (h));
                     while Has_Element (Curs) loop
                         Char_Index := Element (Curs);
                         aCharacter := Characters.Element (Char_Index);
@@ -1384,7 +1395,7 @@ package body Character_Controller is
     --  -------------------------------------------------------------------------
 
     procedure  Update_Character_Motion (Character : in out Barbarian_Character;
-                                       Seconds : Float) is
+                                        Seconds : Float) is
     begin
         null;
     end Update_Character_Motion;
@@ -1392,7 +1403,7 @@ package body Character_Controller is
     --  -------------------------------------------------------------------------
 
     procedure Update_Character_Physics (Character : in out Barbarian_Character;
-                                       Seconds : Float) is
+                                        Seconds : Float) is
     begin
         null;
     end Update_Character_Physics;
@@ -1409,9 +1420,20 @@ package body Character_Controller is
 
     procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
                              Player_ID : Integer; Seconds : Float) is
+                             use GL.Types.Singles;
+        use Maths;
+        use Single_Math_Functions;
         use Input_Handler;
         use Character_Controller.Support;
-        Character : Barbarian_Character := Characters.Element (Player_ID);
+        Character      : Barbarian_Character := Characters.Element (Player_ID);
+        Lamp_Freq      : constant Single := 2.0;
+        Lamp_Amplitude : constant Single := 0.25;
+        Lamp_Position  : Vector3 := Character.World_Pos;
+        Lamp_Time      : Single := 0.0;
+        Rot            : constant Matrix4 :=
+                           Rotate_Y_Degree (Identity4, Character.Heading_Deg);
+        Torch_Pos      : constant Vector3 := Character.World_Pos +
+                           To_Vector3 (Rot * (-0.25, 1.0, -0.4, 1.0));
     begin
         if Character.Is_Alive then
             if Is_Action_Down (Up_Action) then
@@ -1455,9 +1477,42 @@ package body Character_Controller is
             Character_Controller.Support.Update_Camera_Position (Character);
             Character_Controller.Support.Grab_Nearby_Gold
               (Character, Player_ID);
-              --  check if moved into tavern
-
+            --  check if moved into tavern
+            if  Prop_Renderer.Check_Tile_For_Property
+              (Character.Map, Prop_Renderer_Support.Tavern_Prop) then
+                Character.Is_Drinking_In_Tavern :=
+                  not Character.Is_Drinking_In_Tavern;
+                if Character.Is_Drinking_In_Tavern then
+                    Audio.Play_Sound (Hello_Friend_Sound_File, False);
+                end if;
+            end if;
+            --  check_tile_for_javelin_stall
+            if  Prop_Renderer.Check_Tile_For_Property
+              (Character.Map, Prop_Renderer_Support.Jav_Stand_Prop) then
+                Character.Is_Buying_Javelins := not Character.Is_Buying_Javelins;
+                if Character.Is_Buying_Javelins then
+                    Audio.Play_Sound (Hello_Friend_Sound_File, False);
+                end if;
+            end if;
         end if;
+
+        Character.First_Update := False;
+        Lamp_Time := Lamp_Time + Lamp_Freq * Single (Seconds);
+        Lamp_Position (GL.X) :=
+          Lamp_Position (GL.X) + Sin (Lamp_Time) * Lamp_Amplitude;
+        Lamp_Position (GL.Z) :=
+          Lamp_Position (GL.Z) + Sin (2.0 * Lamp_Time) * Lamp_Amplitude;
+        Manifold.Update_Manifold_Dynamic_Light
+          (Lamp_Position, (0.9, 0.7, 0.5), (1.0, 0.8, 0.0), Torch_Light_Range);
+        Prop_Renderer.Update_Dynamic_Lights
+          (Lamp_Position, (0.9, 0.7, 0.5), (1.0, 0.8, 0.0), Torch_Light_Range);
+        Sprite_Renderer.Update_Dynamic_Light
+          (Lamp_Position, (0.9, 0.7, 0.5), (1.0, 0.8, 0.0), Torch_Light_Range);
+
+          -- rotate around player
+        Particle_System.Set_Particle_System_Position
+          (Torch_Particles_Index (Player_ID), Torch_Pos);
+        Update_Character_Animation (1, Seconds);
 
     exception
         when others =>

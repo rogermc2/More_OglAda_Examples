@@ -36,10 +36,10 @@ package body Manifold is
     Manifold_Program         : GL.Objects.Programs.Program;
     Water_Program            : GL.Objects.Programs.Program;
     Manifold_Dyn_Light_Dirty : Boolean := True;
-    Manifold_Dyn_Light_Pos   : constant Singles.Vector3 := Maths.Vec3_0;
-    Manifold_Dyn_Light_Diff  : constant Singles.Vector3 := Maths.Vec3_0;
-    Manifold_Dyn_Light_Spec  : constant Singles.Vector3 := Maths.Vec3_0;
-    Manifold_Dyn_Light_Range : constant Single := 1.0;
+    Manifold_Dyn_Light_Pos   : Singles.Vector3 := Maths.Vec3_0;
+    Manifold_Dyn_Light_Diff  : Singles.Vector3 := Maths.Vec3_0;
+    Manifold_Dyn_Light_Spec  : Singles.Vector3 := Maths.Vec3_0;
+    Manifold_Dyn_Light_Range : Single := 1.0;
     Count                    : Integer := 0;
 
     procedure Draw_Water_Manifold_Around;
@@ -92,7 +92,7 @@ package body Manifold is
         Tile_Index1   : Int;
         Tile_Index2   : Int;
     begin
---          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+        --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
@@ -166,7 +166,7 @@ package body Manifold is
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
---                              Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
+                            --                              Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
                         end if;
                     end if;
                 end if;
@@ -396,6 +396,19 @@ package body Manifold is
         Manifold_Shader_Manager.Set_Ambient_Light (Level);
         Water_Shader_Manager.Set_Ambient_Light (Level);
     end Set_Manifold_Ambient_Light;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Update_Manifold_Dynamic_Light
+      (Pos_Wor, Diff, Spec : GL.Types.Singles.Vector3;
+       Light_Range : GL.Types.Single) is
+    begin
+        Manifold_Dyn_Light_Dirty := True;
+        Manifold_Dyn_Light_Pos := Pos_Wor;
+        Manifold_Dyn_Light_Diff := Diff;
+        Manifold_Dyn_Light_Spec := Spec;
+        Manifold_Dyn_Light_Range := Light_Range;
+    end Update_Manifold_Dynamic_Light;
 
     --  -------------------------------------------------------------------------
 

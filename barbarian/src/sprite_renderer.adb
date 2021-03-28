@@ -303,13 +303,13 @@ package body Sprite_Renderer is
    --  -------------------------------------------------------------------------
 
    procedure Update_Dynamic_Light (Pos_Wor, Diff, Spec : Singles.Vector3;
-                                   Light_Range         : Float) is
+                                   Light_Range         : Single) is
    begin
       Sprite_Shader_Manager.Use_Sprite_Shader;
       Sprite_Shader_Manager.Set_Dyn_Light_Pos (Pos_Wor);
       Sprite_Shader_Manager.Set_Dyn_Light_Diff (Diff);
       Sprite_Shader_Manager.Set_Dyn_Light_Spec (Spec);
-      Sprite_Shader_Manager.Set_Dyn_Light_Range (Single (Light_Range));
+      Sprite_Shader_Manager.Set_Dyn_Light_Range (Light_Range);
    end Update_Dynamic_Light;
 
    --  -------------------------------------------------------------------------

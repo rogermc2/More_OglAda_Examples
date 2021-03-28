@@ -33,6 +33,9 @@ package Prop_Renderer is
     function Activate_Door_In_Tile
       (Map_U, Map_V : Int; Hand_Y_World_Pos : Single;
        Activator : Properties_Manager.Activator_Type) return Boolean;
+    function Check_Tile_For_Property
+      (Map : Ints.Vector2; Prop_Type : Prop_Renderer_Support.Property_Type)
+       return Boolean;
     procedure Init;
     procedure Launch_Decap_Head (LHL_Type  : Positive;
                                  World_Pos : Singles.Vector3);
