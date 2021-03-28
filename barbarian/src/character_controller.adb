@@ -116,6 +116,8 @@ package body Character_Controller is
                                 Anim_Num  : Natural);
     procedure Update_Character_Physics (Character : in out Barbarian_Character;
                                         Seconds : Float);
+    procedure  Update_Desired_Velocity (Character : in out Barbarian_Character);
+
     procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
                              Player_ID : Integer; Seconds : Float);
 
@@ -1135,6 +1137,14 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+    procedure Set_Walk_Animation (Character : in out Barbarian_Character) is
+    begin
+        Switch_Animation (Character,
+                          3 *  Weapon_Type'Enum_Rep (Character.Current_Weapon) + 1);
+    end Set_Walk_Animation;
+
+    --  -------------------------------------------------------------------------
+
     function Spec_Index (Character : Barbarian_Character) return Positive is
     begin
         return Character.Specs_Index;
@@ -1457,10 +1467,30 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
+    procedure  Update_Character_Gravity (Character : in out Barbarian_Character;
+                                        Seconds : Float) is
+        use Singles;
+    begin
+        if not Character.Is_On_Ground then
+            Character.Is_Walking := False;
+            Character.Velocity (GL.Y) := Character.Velocity (GL.Y) +
+              (-10.0) * Single (Seconds);  --  Gravity mpsps
+        end if;
+    end Update_Character_Gravity;
+
+    --  -------------------------------------------------------------------------
+
     procedure  Update_Character_Motion (Character : in out Barbarian_Character;
                                         Seconds : Float) is
+        S_I           : constant Positive := Character.Specs_Index;
+        aSpec         : constant Spec_Data := Character_Specs.Element (S_I);
     begin
-        null;
+        Character.Velocity := (0.0, 0.0, 0.0);
+        if Character.Is_Walking or Character.Is_On_Ground then
+            Update_Desired_Velocity (Character);
+        end if;
+        Update_Character_Physics (Character, Seconds);
+
     end Update_Character_Motion;
 
     --  -------------------------------------------------------------------------
@@ -1478,6 +1508,32 @@ package body Character_Controller is
     begin
         Character.Update_Decay := Seconds;
     end Update_Decay;
+
+    --  -------------------------------------------------------------------------
+
+    procedure  Update_Desired_Velocity (Character : in out Barbarian_Character) is
+        use Singles;
+        S_I   : constant Positive := Character.Specs_Index;
+        aSpec : constant Spec_Data := Character_Specs.Element (S_I);
+        Speed : Single := Single (aSpec.Move_Speed_MPS);
+    begin
+        if abs (Character.Desired_Direction (GL.Z)) +
+        abs (Character.Desired_Direction (GL.X)) > 0.0 then
+            Speed := Speed + 0.707106781;
+        end if;
+        Character.Desired_Velocity := Speed * Character.Desired_Direction;
+        if abs (Character.Desired_Direction (GL.Z))  > 0.0 or
+        abs (Character.Desired_Direction (GL.X)) > 0.0 then
+            if not Character.Is_Attacking then
+              Set_Walk_Animation (Character);
+            end if;
+            Character.Heading_Deg :=
+              Maths.Direction_To_Heading (Character.Desired_Direction);
+            Sprite_Renderer.Set_Sprite_Heading
+              (Character.Sprite_Index, Character.Heading_Deg);
+        end if;
+
+    end Update_Desired_Velocity;
 
     --  -------------------------------------------------------------------------
 
