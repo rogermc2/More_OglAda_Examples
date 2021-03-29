@@ -25,7 +25,8 @@ package Mesh_Loader is
    function Loaded_Mesh  (Index : Positive) return Mesh;
    function Loaded_Meshes return Mesh_List;
    function Loaded_Mesh_Animation
-     (Mesh_ID,  Animation_ID : Integer; theAnimation : in out Animation) return Boolean;
+     (Mesh_ID,  Animation_ID : Integer; theAnimation : in out Animation)
+      return Boolean;
    function Load_Managed_Mesh (Mesh_Name               : String;
                                Has_Vp, Has_Vn, Has_Vt,
                                Has_tangents, Has_Bones : Boolean := False)
@@ -44,7 +45,10 @@ package Mesh_Loader is
                                        return Boolean;
    function Loaded_Mesh_VAO (Mesh_ID : Integer; VAO : in out
                                GL.Objects.Vertex_Arrays.Vertex_Array_Object)
-                              return Boolean;
+                             return Boolean;
+   function Mesh_Animation
+     (Mesh_ID,  Animation_ID : Integer; theAnimation : in out Animation)
+      return Boolean;
    function Point_Count (Index : Integer) return Integer;
    procedure Recurse_Animation_Tree
      (aMesh        : in out Mesh; Anim : in out Animation; Anim_Time : Float;

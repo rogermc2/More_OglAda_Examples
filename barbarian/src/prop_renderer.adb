@@ -992,12 +992,12 @@ package body Prop_Renderer is
       use Mesh_Loader;
       Property     : Property_Data;
       Script_Index : Integer;
-      Prop_Type    : Property_Type;
       aScript      : Prop_Script;
       Smashed_SI   : Integer;
       Meshes       : Mesh_List := Loaded_Meshes;
       Mesh_Index   : Integer;
       aMesh        : Mesh;
+      Animation_1  : Animation;
       Duration     : Float;
       Elapsed_Time : Float;
    begin
@@ -1010,6 +1010,7 @@ package body Prop_Renderer is
       Property := Properties_Manager.Get_Property_Data (Prop_Index);
       if Property.Is_Visible then
          Script_Index := Property.Script_Index;
+         aScript := Properties_Manager.Get_Script_Data (Script_Index);
          Smashed_SI := aScript.Smashed_Script_Index;
          if Property.Was_Smashed then
             Script_Index := Smashed_SI;
@@ -1025,9 +1026,12 @@ package body Prop_Renderer is
       end if;
       Elapsed_Time := Property.Anim_Elapsed_Time;
       aMesh := Loaded_Mesh (Mesh_Index);
-      Mesh_Loader.Recurse_Animation_Tree
-        (aMesh, aMesh.Animations (1),
-         Elapsed_Time, 0, Singles.Identity4 );
+      if Mesh_Loader.Mesh_Animation (Mesh_Index, 1, Animation_1) then
+         Mesh_Loader.Recurse_Animation_Tree
+           (aMesh, Animation_1, Elapsed_Time, 0, Singles.Identity4 );
+      end if;
+
+      Properties_Manager.Replace_Property (Prop_Index, Property);
 
    end Update_Anim_Looped_Prop;
 
@@ -1112,6 +1116,7 @@ package body Prop_Renderer is
                   raise Prop_Renderer_Exception with
                     ("Prop_Renderer.Update_Properties, unhandled property type.");
             end case;
+            Properties_Manager.Replace_Property (P_Index, Property);
          end loop;
       end Update;
 

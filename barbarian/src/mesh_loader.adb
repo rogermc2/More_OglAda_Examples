@@ -578,6 +578,22 @@ package body Mesh_Loader is
 
    --  ------------------------------------------------------------------------
 
+   function Mesh_Animation
+     (Mesh_ID, Animation_ID : Integer; theAnimation : in out Animation)
+      return Boolean is
+      theMesh : Mesh;
+      Found   : Boolean := False;
+   begin
+      Found := Get_Mesh (Mesh_ID, theMesh);
+      if Found then
+         theAnimation := theMesh.Animations (Animation_ID);
+      end if;
+      return Found;
+
+   end Mesh_Animation;
+
+   --  ------------------------------------------------------------------------
+
    function Point_Count (Index : Integer) return Integer is
       use Meshes_Package;
       Curs  : Cursor := Meshes.First;
