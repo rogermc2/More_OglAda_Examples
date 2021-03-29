@@ -32,15 +32,6 @@ package Specs_Manager is
       Seconds     : Single := 0.0;
    end record;
 
-   type Attack_Event is record
-      Location        : Singles.Vector3 := (0.0, 0.0, 0.0);
-      Time_Sec        : Single := 0.0;
-      Radius          : Single := 0.0;
-      Throw_Back_MPS  : Single := 0.0;
-      Max_Damage      : Int := 0;
-      Min_Damage      : Int := 0;
-   end record;
-
    package Animation_Frame_Package_1D is new Ada.Containers.Vectors
      (Positive, Animation_Frame);
    subtype Animation_Frame_List is Animation_Frame_Package_1D.Vector;
@@ -49,6 +40,15 @@ package Specs_Manager is
    package Animation_Frame_Package is new Ada.Containers.Vectors
      (Positive, Animation_Frame_List);
    subtype Animation_Frame_Array is Animation_Frame_Package.Vector;
+
+   type Attack_Event is record
+      Location        : Singles.Vector3 := (0.0, 0.0, 0.0);
+      Time_Sec        : Single := 0.0;
+      Radius          : Single := 0.0;
+      Throw_Back_MPS  : Single := 0.0;
+      Max_Damage      : Int := 0;
+      Min_Damage      : Int := 0;
+   end record;
 
    package Attack_Events_Package is new Ada.Containers.Doubly_Linked_Lists
      (Attack_Event);

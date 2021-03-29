@@ -142,16 +142,16 @@ package body Character_Controller.Support is
 
     procedure Switch_Animation (Character : in out Barbarian_Character;
                                 Animation_ID : Positive) is
-        use Anim_Frame_Package;
         use Specs_Manager;
+        use Specs_Manager.Animation_Frame_Package;
         Spec_ID     : constant Positive := Character.Specs_Index;
         Atlas_Index : constant Positive :=
                         Animation_Index (Spec_ID, Animation_ID, 1);
     begin
-        if Character.Current_Anim /= Animation_ID then
-            Character.Current_Anim := Animation_ID;
+        if Character.Current_Animation /= Animation_ID then
+            Character.Current_Animation := Animation_ID;
             Character.Current_Anim_Frame_Time := 0.0;
-            Character.Current_Anim_Frame := 1;
+            Character.Current_Animation_Frame := 1;
             Sprite_Renderer.Set_Sprite_Current_Sprite (Character.Specs_Index,
                                                        Atlas_Index);
         end if;
