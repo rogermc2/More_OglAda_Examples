@@ -37,6 +37,8 @@ package GL_Maths is
    subtype Vec4_List is Vec4_Package.List;
    subtype Vec4_Cursor is Vec4_Package.Cursor;
 
+   type Pos2_Vector is array (Integer range <>, Integer range <>) of Positive;
+
    package Singles_Array_Package is new Ada.Numerics.Generic_Real_Arrays
      (Single);
    subtype Single_Vector is Singles_Array_Package.Real_Vector;

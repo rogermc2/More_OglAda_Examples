@@ -1548,10 +1548,30 @@ package body Character_Controller is
 
    procedure Update_Character_Physics (Character : in out Barbarian_Character;
                                        Seconds   : Float) is
-      a   : Boolean := Update_Character_Accel_Decel  (Character, GL.X, Seconds);
-      b   : Boolean := Update_Character_Accel_Decel  (Character, GL.Z, Seconds);
+      use Singles;
+      a             : constant Boolean :=
+                        Update_Character_Accel_Decel  (Character, GL.X, Seconds);
+      b             : constant Boolean :=
+                        Update_Character_Accel_Decel  (Character, GL.Z, Seconds);
+      Effective_Vel : Vector3 := Character.Velocity;
+      Water_Height  : Single;
+      Ramp_Boost    : Vector3 := (1.0, 1.0, 1.0);
    begin
       Update_Character_Gravity (Character, Seconds);
+      if (not a) and then (not b) then
+         Character.Is_Walking := False;
+      end if;
+
+      if Manifold.Is_Water (Positive (Character.Map (GL.X)),
+                            Positive (Character.Map (GL.Y))) then
+         Water_Height :=
+           Tiles_Manager.Get_Tile_Height (Character.World_Pos (GL.X),
+                                          Character.World_Pos (GL.Z), True, True);
+         if Water_Height + 0.1 > Character.World_Pos (GL.Y) then
+            Effective_Vel := 0.7 * Effective_Vel;
+         end if;
+      end if;
+
 
    end Update_Character_Physics;
 
