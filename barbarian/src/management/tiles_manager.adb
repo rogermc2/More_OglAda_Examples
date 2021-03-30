@@ -32,13 +32,13 @@ package body Tiles_Manager is
 
     Tiles                 : Tile_2D_List;
 
-    procedure Add_Static_Light (Row, Col : Positive;
+    procedure Add_Static_Light (Row, Col : Tiles_Index;
                                 Tile_Height_Offset : Integer;
                                 Offset, Diffuse, Specular : Singles.Vector3;
                                 Light_Range : Single);
-    function Get_Tile_Level (Row, Col : Positive) return Integer;
-    function Is_Ramp (Row, Col : Positive) return Boolean;
-    function Is_Water (Row, Col : Positive) return Boolean;
+    function Get_Tile_Level (Row, Col : Tiles_Index) return Integer;
+    function Is_Ramp (Row, Col : Tiles_Index) return Boolean;
+    function Is_Water (Row, Col : Tiles_Index) return Boolean;
     procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int);
 
     --  ------------------------------------------------------------------------
@@ -52,7 +52,7 @@ package body Tiles_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Add_Static_Light (Row, Col : Positive;
+    procedure Add_Static_Light (Row, Col : Tiles_Index;
                                 Tile_Height_Offset : Integer;
                                 Offset, Diffuse, Specular : Singles.Vector3;
                                 Light_Range               : Single) is
@@ -68,8 +68,8 @@ package body Tiles_Manager is
         --          Sorted        : Boolean := False;
         New_Light     : Static_Light_Data;
     begin
-        New_Light.Row := Row;
-        New_Light.Column := Col;
+        New_Light.Row := Positive (Row);
+        New_Light.Column := Positive (Col);
         New_Light.Position := (X, Y, Z);
         New_Light.Diffuse := Diffuse;
         New_Light.Specular := Specular;
@@ -141,9 +141,9 @@ package body Tiles_Manager is
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Facing (Row, Col : Positive) return Character is
+    function Get_Facing (Pos : Ints.Vector2) return Character is
 --          use Batch_Manager;
-        aTile  : constant Tile_Data := Get_Tile (Row, Col);
+        aTile  : constant Tile_Data := Get_Tile (Pos);
 --          Result : Character := aTile.Facing;
     begin
 --          if Is_Tile_Valid (Row_Curs, Col_Curs) then
@@ -163,8 +163,8 @@ package body Tiles_Manager is
         use Batch_Manager;
         use Tile_Row_Package;
 
-        Row_Index : constant Positive := To_Index (Row_Curs);
-        Col_Index : constant Positive := To_Index (Col_Curs);
+        Row_Index : constant Tiles_Index := To_Index (Row_Curs);
+        Col_Index : constant Tiles_Index := To_Index (Col_Curs);
         Row       : constant Tile_Column_List := Tiles (Row_Index);
 begin
         return  Row.Element (Col_Index);
@@ -172,12 +172,13 @@ begin
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Tile (Row, Col : Positive) return Tile_Data is
+    function Get_Tile (Pos : Ints.Vector2) return Tile_Data is
         use Batch_Manager;
         use Tile_Row_Package;
-        Row_Vector : constant Tile_Column_List := Tiles (Row);
+      Row_Vector : constant Tile_Column_List :=
+                     Tiles (Pos (GL.X));
 begin
-        return  Row_Vector.Element (Col);
+        return  Row_Vector.Element (Pos (GL.Y));
     end Get_Tile;
 
     --  ----------------------------------------------------------------------------
@@ -187,18 +188,18 @@ begin
         use Batch_Manager;
         use Tile_Row_Package;
         use Tile_Column_Package;
-        Col    : constant Positive := Positive (0.5 * (1.0 + X));
-        Row    : constant Positive := Positive (0.5 * (1.0 + Z));
+        Col    : constant Tiles_Index := Tiles_Index (0.5 * (1.0 + X));
+        Row    : constant Tiles_Index := Tiles_Index (0.5 * (1.0 + Z));
         Row_Curs : constant Tile_Row_Cursor := Tiles.To_Cursor (Row);
         Tile_Row : constant Tile_Column_List := Element (Row_Curs);
         Col_Curs : constant Tile_Column_Cursor := Tile_Row.To_Cursor (Col);
-        aTile  : constant Tile_Data := Get_Tile (Row, Col);
+        aTile  : constant Tile_Data := Get_Tile ((Row, Col));
         S      : Single;
         T      : Single;
         Height : Single := 0.0;
     begin
-        if X < -1.0 or Col > Positive (Max_Cols) or Z < -1.0 or
-          Row > Positive (Max_Rows) then
+        if X < -1.0 or Col > Tiles_Index (Max_Cols) or Z < -1.0 or
+          Row > Tiles_Index (Max_Rows) then
             Height := Out_Of_Bounds_Height;
         else
             Height := 2.0 * Single (aTile.Height);
@@ -227,18 +228,18 @@ begin
 
     --  ----------------------------------------------------------------------------
 
-    function Get_Tile_Level (Row, Col : Positive) return Integer is
+    function Get_Tile_Level (Row, Col : Tiles_Index) return Integer is
         use Batch_Manager;
-        aTile : constant Tile_Data := Get_Tile (Row, Col);
+        aTile : constant Tile_Data := Get_Tile ((Row, Col));
     begin
         return aTile.Height;
     end Get_Tile_Level;
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Ramp (Row, Col : Positive) return Boolean is
+    function Is_Ramp (Row, Col : Tiles_Index) return Boolean is
         use Batch_Manager;
-        aTile : constant Tile_Data := Get_Tile (Row, Col);
+        aTile : constant Tile_Data := Get_Tile ((Row, Col));
     begin
         return aTile.Tile_Type = '/';
     end Is_Ramp;
@@ -261,9 +262,9 @@ begin
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Water (Row, Col : Positive) return Boolean is
+    function Is_Water (Row, Col : Tiles_Index) return Boolean is
         use Batch_Manager;
-        aTile : constant Tile_Data := Get_Tile (Row, Col);
+        aTile : constant Tile_Data := Get_Tile ((Row, Col));
     begin
         return aTile.Tile_Type = '~';
     end Is_Water;
@@ -296,7 +297,7 @@ begin
         --          Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows loading '" & Load_Type & "'," & Int'Image (Rows)
         --                               & " rows, "  & Int'Image (Cols) & " columns");
         for row in 1 .. Rows loop
-            Tile_Row := Tiles.Element (Positive (row));
+            Tile_Row := Tiles.Element (row);
             declare
                 aString  : constant String := Get_Line (File);
                 aChar    : Character;
@@ -311,7 +312,7 @@ begin
 
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
-                    aTile := Tile_Row.Element (Positive (col));
+                    aTile := Tile_Row.Element (col);
                     aChar := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (aChar = 'n' or aChar = ASCII.NUL) then
@@ -321,14 +322,14 @@ begin
                     end if;
                     --                 Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows aTile.Tile_Type: "
                     --                                       & aTile.Tile_Type);
-                    if Has_Element (Tile_Row.To_Cursor (Positive (col))) then
-                        Tile_Row.Replace_Element (Positive (col), aTile);
+                    if Has_Element (Tile_Row.To_Cursor (col)) then
+                        Tile_Row.Replace_Element (col, aTile);
                     else
                         Tile_Row.Append (aTile);
                     end if;
                 end loop;
-                if Has_Element (Tiles.To_Cursor (Positive (row))) then
-                    Tiles.Replace_Element (Positive (row), Tile_Row);
+                if Has_Element (Tiles.To_Cursor (row)) then
+                    Tiles.Replace_Element (row, Tile_Row);
                 else
                     Tiles.Append (Tile_Row);
                 end if;
@@ -374,7 +375,7 @@ begin
         --                                 Int'Image (Rows) & " rows, "  &
         --                                 Int'Image (Cols) & " columns");
         for row in Int range 1 .. Rows loop
-            Tile_Row := Tiles.Element (Positive (row));
+            Tile_Row := Tiles.Element (row);
             declare
                 aString    : constant String := Get_Line (File);
                 Tex_Char   : Character;
@@ -389,7 +390,7 @@ begin
 
                 Prev_Char := ASCII.NUL;
                 for col in 1 .. Cols loop
-                    aTile := Tile_Row.Element (Positive (col));
+                    aTile := Tile_Row.Element (col);
                     Tex_Char := aString (Integer (col));
                     if Prev_Char = '\' and then
                       (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
@@ -406,15 +407,15 @@ begin
                         elsif Load_Type = "heights" then
                             aTile.Height := Tex_Int;
                         end if;
-                        if Has_Element (Tile_Row.To_Cursor (Positive (col))) then
-                            Tile_Row.Replace_Element (Positive (col), aTile);
+                        if Has_Element (Tile_Row.To_Cursor (col)) then
+                            Tile_Row.Replace_Element (col, aTile);
                         else
                             Tile_Row.Append (aTile);
                         end if;
                     end if;
                 end loop;
-                if Has_Element (Tiles.To_Cursor (Positive (row))) then
-                    Tiles.Replace_Element (Positive (row), Tile_Row);
+                if Has_Element (Tiles.To_Cursor (row)) then
+                    Tiles.Replace_Element (row, Tile_Row);
                 else
                     Tiles.Append (Tile_Row);
                 end if;

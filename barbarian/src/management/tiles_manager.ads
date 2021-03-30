@@ -6,7 +6,11 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Textures;
 with GL.Types; use GL.Types;
 
+with Manifold;
+
 package Tiles_Manager is
+
+   subtype Tiles_Index is Int range 1 .. Int (Manifold.Max_Tile_Cols);
 
    type Tile_Data is record
       Height        : Natural := 0;
@@ -16,13 +20,13 @@ package Tiles_Manager is
    end record;
 
    package Tile_Column_Package is new Ada.Containers.Vectors
-     (Positive, Tile_Data);
+     (Tiles_Index, Tile_Data);
    subtype Tile_Column_List is Tile_Column_Package.Vector;
    subtype Tile_Column_Cursor is Tile_Column_Package.Cursor;
    use Tile_Column_Package;
 
    package Tile_Row_Package is new Ada.Containers.Vectors
-     (Positive, Tile_Column_List);
+     (Tiles_Index, Tile_Column_List);
    subtype Tile_2D_List is Tile_Row_Package.Vector;
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 
@@ -35,10 +39,10 @@ package Tiles_Manager is
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
-   function Get_Facing  (Row, Col : Positive) return Character;
+   function Get_Facing (Pos : Ints.Vector2) return Character;
    function Get_Tile (Row_Curs : Tile_Row_Package.Cursor;
                       Col_Curs : Tile_Column_Package.Cursor) return Tile_Data;
-   function Get_Tile (Row, Col : Positive) return Tile_Data;
+   function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
    function Get_Tiles_Across return Int;

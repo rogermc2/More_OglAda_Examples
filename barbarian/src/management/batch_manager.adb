@@ -52,9 +52,9 @@ package body Batch_Manager is
     --  -------------------------------------------------------------------------
 
     procedure Add_East_Points (aBatch : in out Batch_Meta;  Height : Integer;
-                               Tile_Row, Tile_Col : Positive) is
+                               Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
         use Tiles_Manager;
-        aTile    : constant Tile_Data := Get_Tile (Tile_Row, Tile_Col);
+        aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
         N_Height : Integer;
         Diff     : Integer;
         X        : Single;
@@ -105,9 +105,9 @@ package body Batch_Manager is
     --  -------------------------------------------------------------------------
 
     procedure Add_North_Points (aBatch   : in out Batch_Meta; Height : Integer;
-                                Tile_Row, Tile_Col : Positive) is
+                                Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
         use Tiles_Manager;
-        aTile    : constant Tile_Data := Get_Tile (Tile_Row, Tile_Col);
+        aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
         N_Height : Integer;
         Diff     : Integer;
         X        : Single;
@@ -160,12 +160,13 @@ package body Batch_Manager is
 
     procedure Add_Sides_Count (Tiles       : Tiles_Manager.Tile_2D_List;
                                theBatch    : in out Batch_Meta;
-                               Tile_Height, Row_Index, Col_Index : Positive) is
+                               Tile_Height          : Natural;
+                               Row_Index, Col_Index : Tiles_Manager.Tiles_Index) is
         use Tiles_Manager;
         use Tile_Row_Package;
         use Tile_Column_Package;
         N_Row       : Tile_Column_List := Tiles (Row_Index);
-        N_Tile      : Tile_Data := Get_Tile (Row_Index, Col_Index);
+        N_Tile      : Tile_Data := Get_Tile ((Row_Index, Col_Index));
         N_Height    : Integer := 0;
         Diff        : Integer := 0;
 
@@ -252,9 +253,9 @@ package body Batch_Manager is
     --  -------------------------------------------------------------------------
 
     procedure Add_South_Points (aBatch : in out Batch_Meta; Height : Integer;
-                                Tile_Row, Tile_Col : Positive) is
+                                Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
         use Tiles_Manager;
-        aTile    : constant Tile_Data := Get_Tile (Tile_Row, Tile_Col);
+        aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
         N_Height : Integer;
         Diff     : Integer;
         X        : Single;
@@ -354,9 +355,9 @@ package body Batch_Manager is
     --  ------------------------------------------------------------------------
 
     procedure Add_West_Points (aBatch : in out Batch_Meta; Height : Integer;
-                               Tile_Row, Tile_Col : Positive) is
+                               Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
         use Tiles_Manager;
-        aTile    : constant Tile_Data := Get_Tile (Tile_Row, Tile_Col);
+        aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
         N_Height : Integer;
         Diff     : Integer;
         X        : Single;
@@ -544,8 +545,8 @@ package body Batch_Manager is
         X         : Single;
         Y         : Single;
         Z         : Single;
-        Atlas_Row : Integer;
-        Atlas_Col : Integer;
+        Atlas_Row : Tiles_Manager.Tiles_Index;
+        Atlas_Col : Tiles_Manager.Tiles_Index;
 
         procedure Add_Tex_Coords (S_Offset, T_Offset : Single)  is
             S  : constant Single := (Single (Atlas_Col) + S_Offset) * Atlas_Factor;
@@ -936,13 +937,11 @@ package body Batch_Manager is
         Tile_Indices : constant Tiles_Manager.Tile_Indices_List :=
                          theBatch.Tiles;
         Tile_Index   : Ints.Vector2 := Tile_Indices.First_Element;
-        Row_Index    : Positive := Positive (Tile_Index (GL.X));
-        Col_Index    : Positive := Positive (Tile_Index (GL.Y));
+        Row_Index    : Tiles_Manager.Tiles_Index := Tile_Index (GL.X);
+        Col_Index    : Tiles_Manager.Tiles_Index := Tile_Index (GL.Y);
         Indices_Curs : Tile_Indices_Cursor := Tile_Indices.First;
         Tile_Row    : Tile_Column_List;
         aTile       : Tile_Data;
-        Row         : Int := 0;
-        Column      : Int := 0;
         Height      : Integer := 0;
         N_Tile      : Tile_Data;
         N_Index     : Integer := 0;
@@ -968,9 +967,9 @@ package body Batch_Manager is
         if not Tile_Indices.Is_Empty then
             while Has_Element (Indices_Curs) loop
                 Tile_Index := Element (Indices_Curs);
-                Row_Index := Positive (Tile_Index (GL.X));
-                Col_Index := Positive (Tile_Index (GL.Y));
-                aTile := Get_Tile (Row_Index, Col_Index);
+                Row_Index := Tile_Index (GL.X);
+                Col_Index := Tile_Index (GL.Y);
+                aTile := Get_Tile ((Row_Index, Col_Index));
                 Height := aTile.Height;
                 if aTile.Tile_Type = '~' then
                     Height := Height - 1;

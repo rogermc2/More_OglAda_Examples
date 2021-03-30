@@ -359,18 +359,18 @@ package body Manifold is
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Ramp (Row, Col : Positive) return Boolean is
+    function Is_Ramp (Pos : Ints.Vector2) return Boolean is
         use Tiles_Manager;
-        aTile : constant Tile_Data := Get_Tile (Row, Col);
+        aTile : constant Tile_Data := Get_Tile (Pos);
     begin
         return aTile.Tile_Type = '/';
     end Is_Ramp;
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Water (Row, Col : Positive) return Boolean is
+    function Is_Water (Pos : Ints.Vector2) return Boolean is
         use Tiles_Manager;
-        aTile : constant Tile_Data := Get_Tile (Row, Col);
+        aTile : constant Tile_Data := Get_Tile (Pos);
     begin
         return aTile.Tile_Type = '~';
     end Is_Water;
