@@ -291,6 +291,14 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Prop_Height_Between (NW, SE : Singles.Vector3) return Single is
+      Height : Single;
+   begin
+      return Height;
+   end Get_Prop_Height_Between;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List is
    begin
       return Props_In_Tiles (U, V);

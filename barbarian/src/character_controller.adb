@@ -125,8 +125,9 @@ package body Character_Controller is
    procedure Update_Character_Physics (Character : in out Barbarian_Character;
                                        Seconds   : Float);
 
-   procedure Update_Character_Stairs (Character : in out Barbarian_Character);
-   procedure  Update_Desired_Velocity (Character : in out Barbarian_Character);
+   procedure Update_Character_Stairs (Character : in out Barbarian_Character;
+                                      Effective_Velocity : in out Singles.Vector3);
+   procedure Update_Desired_Velocity (Character : in out Barbarian_Character);
 
    procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
                             Player_ID : Integer; Seconds : Float);
@@ -715,6 +716,50 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Min_Height_For_Character
+     (Character : Barbarian_Character; Also_Exclude : Positive;
+      Pos          : Singles.Vector3; Extra_Radius : Float) return Single is
+      use Maths;
+      use Tiles_Manager;
+      S_I          : constant Positive := Character.Specs_Index;
+      aSpec        : constant Spec_Data := Character_Specs.Element (S_I);
+      Radius       : constant Single :=
+                       Single (aSpec.Width_Radius + Extra_Radius);
+      Floor_Height : Single :=
+                       Get_Tile_Height (Pos (GL.X), Pos (GL.Z), True, True);
+      NW           : Singles.Vector3 := Pos;
+      SE           : Singles.Vector3 := Pos;
+      Self_Height  : constant Single := Single (aSpec.Height_Metre);
+      P_Height     : constant Single := Get_Prop_Height_Between (NW, SE);
+      Min_Height   : Single;
+   begin
+      Floor_Height :=
+        Max (Floor_Height, Get_Tile_Height (Pos (GL.X) + Radius,
+             Pos (GL.Z), True, True));
+      Floor_Height :=
+        Max (Floor_Height, Get_Tile_Height (Pos (GL.X) - Radius,
+             Pos (GL.Z), True, True));
+      Floor_Height :=
+        Max (Floor_Height, Get_Tile_Height (Pos (GL.X),
+             Pos (GL.Z) + Single (Radius), True, True));
+      Floor_Height :=
+        Max (Floor_Height, Get_Tile_Height (Pos (GL.X),
+             Pos (GL.Z) - Single (Radius), True, True));
+
+      NW (GL.X) := NW (GL.X) - Radius;
+      NW (GL.Y) := NW (GL.Y) - Self_Height;
+      NW (GL.Z) := NW (GL.Z) - Radius;
+
+      NW (GL.X) := NW (GL.X) + Radius;
+      NW (GL.Z) := NW (GL.Z) + Radius;
+
+
+      return Min_Height;
+
+   end Get_Min_Height_For_Character;
+
+   --  -------------------------------------------------------------------------
+
    function Gold_Current return Integer is
    begin
       return Current_Gold;
@@ -920,6 +965,20 @@ package body Character_Controller is
    begin
       return Kills_Max;
    end Max_Kills;
+
+   --  -------------------------------------------------------------------------
+
+   function Next_Position (Character : in out Barbarian_Character;
+                           Effective_Velocity : Singles.Vector3;
+                           Seconds            : Float) return Singles.Vector3 is
+      use Singles;
+      Max_Climb : Single :=
+                    Character.World_Pos (GL.Y) + Char_Mount_Wall_Max_Height;
+      Height    : Single := get_m
+      Pos       : Vector3 := Maths.Vec3_0;
+   begin
+      return Pos;
+   end Next_Position;
 
    --  -------------------------------------------------------------------------
 
@@ -1570,6 +1629,7 @@ package body Character_Controller is
       b             : constant Boolean :=
                         Update_Character_Accel_Decel  (Character, GL.Z, Seconds);
       Effective_Vel : Vector3 := Character.Velocity;
+      Next_Pos       : Vector3;
       Water_Height  : Single;
    begin
       Update_Character_Gravity (Character, Seconds);
@@ -1586,15 +1646,18 @@ package body Character_Controller is
          end if;
 
          --  work out stairs slow-down, speed-up
-         Update_Character_Stairs (Character);
+         Update_Character_Stairs (Character, Effective_Vel);
       end if;
+
+      Next_Pos := Character.World_Pos + Single (Seconds) * Effective_Vel;
 
 
    end Update_Character_Physics;
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Character_Stairs (Character : in out Barbarian_Character) is
+   procedure Update_Character_Stairs (Character : in out Barbarian_Character;
+                                      Effective_Velocity : in out Singles.Vector3) is
       use Singles;
       Ramp_Glue_Threshold : constant Single := 0.6;  --  100 mm
       Ramp_Boost          : Vector3 := (1.0, 1.0, 1.0);
@@ -1637,10 +1700,39 @@ package body Character_Controller is
             Character.Is_On_Ground := True;
             Ramp_Facing := Tiles_Manager.Get_Facing (Character.Map);
             case Ramp_Facing is
+               when 'N' =>
+                  if Effective_Velocity (GL.Z) > 0.0 then
+                     Ramp_Boost (GL.Z) := 1.25;
+                  else
+                     Ramp_Boost (GL.Z) := 0.75;
+                  end if;
+               when 'S' =>
+                  if Effective_Velocity (GL.Z) < 0.0 then
+                     Ramp_Boost (GL.Z) := 1.25;
+                  else
+                     Ramp_Boost (GL.Z) := 0.75;
+                  end if;
+               when 'W' =>
+                  if Effective_Velocity (GL.X) > 0.0 then
+                     Ramp_Boost (GL.X) := 1.25;
+                  else
+                     Ramp_Boost (GL.X) := 0.75;
+                  end if;
+               when 'E' =>
+                  if Effective_Velocity (GL.X) < 0.0 then
+                     Ramp_Boost (GL.X) := 1.25;
+                  else
+                     Ramp_Boost (GL.X) := 0.75;
+                  end if;
                when others => null;
             end case;
-         end if;
-      end if;
+            for index in GL.Index_3D'range loop
+               Effective_Velocity (index) :=
+                 Effective_Velocity (index) * Ramp_Boost (index);
+            end loop;
+         end if; --  if Ramp_Height + Ramp_Glue_Threshold
+      end if;  --  Manifold.Is_Ramp
+
    end Update_Character_Stairs;
 
    --  -------------------------------------------------------------------------
