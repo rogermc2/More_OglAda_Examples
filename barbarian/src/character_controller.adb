@@ -730,7 +730,9 @@ package body Character_Controller is
       NW           : Singles.Vector3 := Pos;
       SE           : Singles.Vector3 := Pos;
       Self_Height  : constant Single := Single (aSpec.Height_Metre);
-      P_Height     : constant Single := Get_Prop_Height_Between (NW, SE);
+      P_Height     : constant Single :=
+                         Prop_Renderer.Get_Prop_Height_Between (NW, SE);
+      Char_Height  : Single;
       Min_Height   : Single;
    begin
       Floor_Height :=
@@ -753,6 +755,7 @@ package body Character_Controller is
       NW (GL.X) := NW (GL.X) + Radius;
       NW (GL.Z) := NW (GL.Z) + Radius;
 
+      Char_Height := Get_Character_Height_Near (Character, Also_Exclude, Pos);
 
       return Min_Height;
 
@@ -1649,7 +1652,7 @@ package body Character_Controller is
          Update_Character_Stairs (Character, Effective_Vel);
       end if;
 
-      Next_Pos := Character.World_Pos + Single (Seconds) * Effective_Vel;
+      Next_Pos := Next_Position (Character, Effective_Velocity, Seconds);
 
 
    end Update_Character_Physics;
