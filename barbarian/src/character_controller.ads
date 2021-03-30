@@ -32,7 +32,7 @@ package Character_Controller is
                             return Specs_Manager.Weapon_Type;
    function Damage_All_Near
      (Self_Id        : Positive; World_Pos : Singles.Vector3;
-      Damage_Range   : Single; Throw_Back_Mps : Single;  Exclude_Id : Positive;
+      Damage_Range   : Single; Damage : Natural; Throw_Back_Mps : Single;  Exclude_Id : Positive;
       Weapon         : Specs_Manager.Weapon_Type) return Natural;
    function Fireball_Countdown (Character : Barbarian_Character) return Float;
    function Get_Character (Character_ID : Positive) return Barbarian_Character;
@@ -78,7 +78,7 @@ package Character_Controller is
    function Teleport_Countdown (Character : Barbarian_Character) return Float;
    function Total_Treasure_Found return Integer;
    procedure Update_Character_Motion (Character : in out Barbarian_Character;
-                                       Seconds : Float);
+                                      Seconds : Float);
    procedure Update_Characters (Window  : in out Input_Callback.Barbarian_Window;
                                 Seconds : Float);
    procedure Update_Decay (Character : in out Barbarian_Character;

@@ -37,6 +37,10 @@ package body Character_Controller is
     Character_Sprite_Offset_Over_Ground : constant Single := 1.0;
     Torch_Light_Range                   : constant Single := 8.0;
     Hello_Friend_Sound_File             : constant String := "hello_my_frien.ogg";
+    Fall_Damage_Sound_File              : constant String :=
+                                            "BREAK_Crack_stereo.wav";
+    Fall_Death_Sound_File               : constant String :=
+                                            "GORE_Splat_Hit_Short_mono.wav";
 
     type Character_Data is record
         Script_File   : Unbounded_String := To_Unbounded_String ("");
@@ -95,7 +99,8 @@ package body Character_Controller is
     function Close_Enough (Character    : Barbarian_Character;
                            World_Pos    : Singles.Vector3;
                            Height, Dist : Single) return Boolean;
-    function Damage_Character (Char_ID : Positive; Doer_ID  : Natural;
+    function Damage_Character (Character : in out Barbarian_Character;
+                               Damage, Doer_ID : Natural;
                                Angle   : Maths.Degree; Weapon : Weapon_Type)
                                return Boolean;
     procedure Damage_Doer_1 (Character   : in out Barbarian_Character;
@@ -105,10 +110,9 @@ package body Character_Controller is
     procedure Detach_Particle_System (Char_ID, Partsys_ID : Positive);
     procedure Detach_Particle_System_From_Character
       (Char_ID, Partsys_ID : Positive);
-    --      function Is_Character_Valid (Char_Index : Integer) return Boolean;
-    --      function Is_Spec_Valid (Spec_Index : Integer) return Boolean;
     procedure Knock_Back (Character         : in out Barbarian_Character;
-                          Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
+                          Self_Id  : Positive;
+                          Damage : Natural; Weapon : Weapon_Type;
                           World_Pos         : Singles.Vector3;
                           Throw_Back_Mps    : Single);
     procedure Set_Character_Defaults (aCharacter : in out Barbarian_Character);
@@ -369,8 +373,9 @@ package body Character_Controller is
 
     function Damage_All_Near
       (Self_Id        : Positive; World_Pos : Singles.Vector3;
-       Damage_Range   : Single; Throw_Back_Mps : Single;  Exclude_Id : Positive;
-       Weapon         : Specs_Manager.Weapon_Type) return Natural is
+       Damage_Range   : Single; Damage : Natural; Throw_Back_Mps : Single;
+       Exclude_Id : Positive; Weapon : Specs_Manager.Weapon_Type)
+       return Natural is
         use Maths;
         use Character_Map;
         use Character_Map_Package;
@@ -405,8 +410,9 @@ package body Character_Controller is
                                 if Close_Enough
                                   (Character, World_Pos, Height, Damage_Range) then
                                     Last_Character_Hit := Char_ID;
-                                    Knock_Back (Character, Self_Id, Char_ID,
-                                                Weapon, World_Pos, Throw_Back_Mps);
+                                    Knock_Back
+                                      (Character, Self_Id, Damage,
+                                       Weapon, World_Pos, Throw_Back_Mps);
                                 end if;
                             end if;
                         end if;
@@ -427,14 +433,17 @@ package body Character_Controller is
 
     --  -------------------------------------------------------------------------
 
-    function Damage_Character (Char_ID   : Positive; Doer_ID  : Natural;
-                               Angle     : Maths.Degree;  Weapon : Weapon_Type)
+    function Damage_Character (Character : in out Barbarian_Character;
+                               Damage, Doer_ID : Natural;
+                               Angle   : Maths.Degree;  Weapon : Weapon_Type)
                                return Boolean is
         use Singles;
         use Particle_System;
         use Projectile_Manager;
-        Character         : Barbarian_Character := Characters.Element (Char_ID);
-        Character_1       : constant Barbarian_Character := Characters.First_Element;
+        Char_ID           : constant Positive :=
+                              Characters.Find_Index (Character);
+        Character_1       : constant Barbarian_Character :=
+                              Characters.First_Element;
         Is_Sorcerer       : Boolean := False;
         S_I               : constant Positive := Character.Specs_Index;
         aSpec             : constant Spec_Data := Character_Specs.Element (S_I);
@@ -449,7 +458,7 @@ package body Character_Controller is
         --  Sorcerer is invulnerable until all mirrors gone
         Result := not Is_Sorcerer or Prop_Renderer.Get_Num_Live_Mirrors <= 0;
         if Result then
-            Character.Current_Health := Character.Current_Health - 1;
+            Character.Current_Health := Character.Current_Health - Damage;
             Max_Health := aSpec.Initial_Health;
             Result := Max_Health > 0;
             if Result then
@@ -588,8 +597,8 @@ package body Character_Controller is
         Attach_Particle_System_To_Character
           (Char_ID, Blood_Damage_Particles_Index (Current_Blood_Damage_Emitter));
         BDparts_Last_Attached_To (Current_Blood_Damage_Emitter) := Char_ID;
-        Current_Blood_Damage_Emitter := (Current_Blood_Damage_Emitter + 1)
-        mod Max_Blood_Damage_Emitters + 1;
+        Current_Blood_Damage_Emitter :=
+          (Current_Blood_Damage_Emitter + 1) mod Max_Blood_Damage_Emitters + 1;
         return Result;
 
     exception
@@ -784,7 +793,8 @@ package body Character_Controller is
     --  ---------------------------------------------------------
 
     procedure Knock_Back (Character         : in out Barbarian_Character;
-                          Self_Id, Char_ID  : Positive; Weapon : Weapon_Type;
+                          Self_Id : Positive;
+                          Damage : Natural; Weapon : Weapon_Type;
                           World_Pos         : Singles.Vector3;
                           Throw_Back_Mps    : Single) is
         use GL.Types.Singles;
@@ -796,8 +806,8 @@ package body Character_Controller is
         Y              : constant Single := Character.Velocity (GL.Y);
         Dir_Deg        : constant Degree :=
                            -Direction_To_Heading ((Direction (Gl.X), 0.0, -Direction (Gl.Z)));
-        Did_Damage     : Boolean := Damage_Character (Char_ID, Self_Id, Dir_Deg,
-                                                      Weapon);
+        Did_Damage     : Boolean := Damage_Character
+          (Character, Self_Id, Damage, Dir_Deg, Weapon);
 
     begin
         if Character.Is_On_Ground then
@@ -805,7 +815,7 @@ package body Character_Controller is
         end if;
         Character.Velocity := Character.Velocity + Momentum;
         Character.Velocity (GL.Y) := Y;
-        Did_Damage := Damage_Character (Char_ID, Self_Id, Dir_Deg, Weapon);
+        Did_Damage := Damage_Character (Character, Damage, Self_Id, Dir_Deg, Weapon);
         if Did_Damage then
             Pos := Character.World_Pos;
             Pos (GL.X) := Pos (GL.X) + 1.0;
@@ -1589,6 +1599,10 @@ package body Character_Controller is
         Ramp_Glue_Threshold : constant Single := 0.6;  --  100 mm
         Ramp_Boost          : Vector3 := (1.0, 1.0, 1.0);
         Ramp_Height         : Single;
+        Num_D_Sixes         : Integer;
+        Damage              : Integer;
+        Max_Damage          : Integer;
+        Damaged             : Boolean;
     begin
         if Manifold.Is_Ramp (Integer (Character.Map (GL.X)),
                              Integer (Character.Map (GL.Y))) then
@@ -1606,7 +1620,18 @@ package body Character_Controller is
               Character.World_Pos (GL.Y) := Ramp_Height;
               --  check if fallen too far
               if Character.Distance_Fallen > Fall_Dmage_Start_Height then
-                    null;
+                    Num_D_Sixes := Integer (Character.Distance_Fallen / 4.0);
+                    Max_Damage := 50 * Num_D_Sixes;
+                    Damage := Natural (Maths.Random_Float) mod Max_Damage +
+                      Num_D_Sixes;
+                    if Character.Distance_Fallen > Fall_Damage_Death_Heigt then
+                        Damage := 1000;
+                        Audio.Play_Sound (Fall_Death_Sound_File, True);
+                    else
+                        Audio.Play_Sound (Fall_Damage_Sound_File, True);
+                    end if;
+                    Damaged :=
+                      Damage_Character (Character, Damage, 0, 0.0, Fall_Wt);
               end if;
             end if;
         end if;
