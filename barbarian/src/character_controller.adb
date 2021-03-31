@@ -127,6 +127,9 @@ package body Character_Controller is
 
    procedure Update_Character_Stairs (Character : in out Barbarian_Character;
                                       Effective_Velocity : in out Singles.Vector3);
+   procedure Update_Character_Position (Character : in out Barbarian_Character;
+                                        Effective_Velocity : in out Singles.Vector3;
+                                        Seconds            : Float);
    procedure Update_Desired_Velocity (Character : in out Barbarian_Character);
 
    procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
@@ -716,17 +719,19 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Character_Height_Near (Exclude_ID, Also_Exclude_ID : Positive;
-                                       Next_Pos  : Singles.Vector3) return Float  is
+   function Get_Character_Height_Near (Excluded_Char  : Barbarian_Character;
+                                       Also_Exclude_ID : Natural;
+                                       Next_Pos        : Singles.Vector3)
+                                       return Single is
       use Singles;
       use Maths;
       use Character_Map;
       use Character_Map_Package;
-      aChar         : Barbarian_Character;
-      Excluded_Char : constant Barbarian_Character := Characters.Element (Exclude_ID);
+      Excluded_ID   : constant Positive := Characters.Find_Index (Excluded_Char);
       Self_S_I      : constant Positive := Excluded_Char.Specs_Index;
       Self_Spec     : constant Spec_Data := Character_Specs.Element (Self_S_I);
       Other_Spec    : Spec_Data;
+      aChar         : Barbarian_Character;
       Char_S_I      : Positive;
       Width_Radius  : constant Float := Self_Spec.Width_Radius;
       Next_U        : constant Positive :=
@@ -741,22 +746,22 @@ package body Character_Controller is
         := Min_Integer (Integer (Batch_Manager.Max_Rows - 1), Next_V + 1);
       Char_List     : Character_Map_List;
       Curs          : Cursor := Char_List.First;
-      List_Index    : Positive;
+      List_Index    : Natural;
       Distance      : Vector3;
       Self_Height   : Float;
       Threshold     : constant Float := 0.25;
       Self_Head     : Float;
-      Other_Head    : Float;
+      Other_Head    : Single;
       Sq_Dist       : Single;
       Continue      : Boolean := True;
-      Height        : Float := -100.0;
+      Height        : Single := -100.0;
    begin
       for h in Left .. Right loop
          for v in Up .. Down loop
             Char_List := Get_Characters_In (Int (h), Int (v));
             while Has_Element (Curs) loop
                List_Index := Element (Curs);
-               if List_Index /= Exclude_ID and
+               if List_Index /= Excluded_ID and
                  List_Index /= Also_Exclude_ID then
                   aChar := Characters.Element (List_Index);
                   if aChar.Is_Alive then
@@ -773,9 +778,9 @@ package body Character_Controller is
                      if Sq_Dist <= Single (Width_Radius ** 2) then
                         Char_S_I := aChar.Specs_Index;
                         Other_Spec := Specs_Manager.Get_Spec (Char_S_I);
-                        Other_Head := Float (aChar.World_Pos (GL.Y)) +
-                          Other_Spec.Height_Metre;
-                        Height := Max_Float (Height, Other_Head);
+                        Other_Head := aChar.World_Pos (GL.Y) +
+                          Single (Other_Spec.Height_Metre);
+                        Height := Max (Height, Other_Head);
                      end if;
                   end if;
                end if;
@@ -790,8 +795,8 @@ package body Character_Controller is
    --  -------------------------------------------------------------------------
 
    function Get_Min_Height_For_Character
-     (Character : Barbarian_Character; Also_Exclude : Positive;
-      Pos          : Singles.Vector3; Extra_Radius : Float) return Single is
+     (Character : Barbarian_Character; Also_Exclude : Natural;
+      Pos       : Singles.Vector3; Extra_Radius : Float) return Single is
       use Maths;
       use Tiles_Manager;
       S_I          : constant Positive := Character.Specs_Index;
@@ -806,7 +811,6 @@ package body Character_Controller is
       P_Height     : constant Single :=
                          Prop_Renderer.Get_Prop_Height_Between (NW, SE);
       Char_Height  : Single;
-      Min_Height   : Single;
    begin
       Floor_Height :=
         Max (Floor_Height, Get_Tile_Height (Pos (GL.X) + Radius,
@@ -825,13 +829,13 @@ package body Character_Controller is
       NW (GL.Y) := NW (GL.Y) - Self_Height;
       NW (GL.Z) := NW (GL.Z) - Radius;
 
-      NW (GL.X) := NW (GL.X) + Radius;
-      NW (GL.Z) := NW (GL.Z) + Radius;
+      SE (GL.X) := NW (GL.X) + Radius;
+      SE (GL.Z) := NW (GL.Z) + Radius;
 
       Char_Height :=
         Get_Character_Height_Near (Character, Also_Exclude, Pos);
 
-      return Min_Height;
+      return Max (Floor_Height, Max (Char_Height, P_Height));
 
    end Get_Min_Height_For_Character;
 
@@ -1042,20 +1046,6 @@ package body Character_Controller is
    begin
       return Kills_Max;
    end Max_Kills;
-
-   --  -------------------------------------------------------------------------
-
-   function Next_Position (Character : in out Barbarian_Character;
-                           Effective_Velocity : Singles.Vector3;
-                           Seconds            : Float) return Singles.Vector3 is
-      use Singles;
-      Max_Climb : Single :=
-                    Character.World_Pos (GL.Y) + Char_Mount_Wall_Max_Height;
-      Height    : Single := get_m;
-      Pos       : Vector3 := Maths.Vec3_0;
-   begin
-      return Pos;
-   end Next_Position;
 
    --  -------------------------------------------------------------------------
 
@@ -1706,7 +1696,6 @@ package body Character_Controller is
       b             : constant Boolean :=
                         Update_Character_Accel_Decel  (Character, GL.Z, Seconds);
       Effective_Vel : Vector3 := Character.Velocity;
-      Next_Pos       : Vector3;
       Water_Height  : Single;
    begin
       Update_Character_Gravity (Character, Seconds);
@@ -1726,10 +1715,72 @@ package body Character_Controller is
          Update_Character_Stairs (Character, Effective_Vel);
       end if;
 
-      Next_Pos := Next_Position (Character, Effective_Velocity, Seconds);
-
+      Update_Character_Position (Character, Effective_Vel, Seconds);
 
    end Update_Character_Physics;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Update_Character_Position (Character : in out Barbarian_Character;
+                           Effective_Velocity : in out Singles.Vector3;
+                           Seconds            : Float) is
+      use Singles;
+      Next_Pos           : constant Vector3 := Character.World_Pos +
+                             Effective_Velocity * Single (Seconds);
+      Height             : constant Single := Get_Min_Height_For_Character (Character, 0,
+                                                           Next_Pos, -0.2);
+      Max_Climb          : constant Single :=
+                          Character.World_Pos (GL.Y) + Char_Mount_Wall_Max_Height;
+      Bounce_Factor      : constant Single := 0.4;
+      Inert_Threshold    : constant Single := 0.01;
+      Radius_Extra       : constant Float := -0.02;
+      Next_Pos_X         : Vector3;
+      Next_Pos_Z         : Vector3;
+      Height_X           : Single;
+      Height_Z           : Single;
+      Bounced_XV         : Single;
+      Bounced_ZV         : Single;
+      Bounced_Pos        : Vector3;
+      Max_Bounced_Height : Single;
+      Bounced_Height     : Single;
+   begin
+      if Height > Max_Climb then
+         Next_Pos_X := Character.World_Pos +
+           Single (Seconds) * (Effective_Velocity (GL.X),
+                               Effective_Velocity (GL.Y), 0.0);
+         Next_Pos_Z := Character.World_Pos +
+           Single (Seconds) * (0.0, Effective_Velocity (GL.Y),
+                               Effective_Velocity (GL.Z));
+         Height_X := Get_Min_Height_For_Character (Character, 0, Next_Pos_X, -0.2);
+         Height_Z := Get_Min_Height_For_Character (Character, 0, Next_Pos_Z, -0.2);
+
+         if Height_X > Max_Climb then
+            Effective_Velocity (GL.X) := 0.0;
+            Bounced_XV := -Bounce_Factor * Character.Velocity (GL.X);
+         else
+            Bounced_XV := Character.Velocity (GL.X);
+         end if;
+         if Height_Z > Max_Climb then
+            Effective_Velocity (GL.Z) := 0.0;
+            Bounced_ZV := -Bounce_Factor * Character.Velocity (GL.Z);
+         else
+            Bounced_ZV := Character.Velocity (GL.Z);
+         end if;
+
+         --  double check that we are not bouncing INTO a new wall
+         Bounced_Pos := Character.World_Pos +
+           Single (Seconds) * Effective_Velocity;
+         Max_Bounced_Height := Bounced_Pos (GL.Y) +
+           Char_Mount_Wall_Max_Height;
+         Bounced_Height :=
+           Get_Min_Height_For_Character (Character, 0, Bounced_Pos, -0.2);
+         if Bounced_Height <= Max_Bounced_Height then
+            Character.Velocity (GL.X) := Bounced_XV;
+            Character.Velocity (GL.Z) := Bounced_ZV;
+         end if;
+      end if;
+
+   end Update_Character_Position;
 
    --  -------------------------------------------------------------------------
 
