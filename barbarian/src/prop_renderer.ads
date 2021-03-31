@@ -42,8 +42,7 @@ package Prop_Renderer is
     function Get_End_Camera_Matrix return Singles.Matrix4;
     function Get_End_Camera_Position return Singles.Vector3;
     function Get_Num_Live_Mirrors return Int;
-    function Get_Prop_Height_Between (NW, SE : Singles.Vector3;
-                                      Excluded_Index : Positive) return Single;
+    function Get_Prop_Height_Between (NW, SE : Singles.Vector3) return Single;
     function Get_Tile_Property_Indices (U, V : Positive) return Prop_Indices_List;
     function Get_Tile_Property_Index (U, V, Index : Positive) return Positive;
     --     function Get_Script_Data (Script_Index : Positive)
