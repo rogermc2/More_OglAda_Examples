@@ -21,7 +21,6 @@ package Character_Map is
    function Get_Characters_In (U, V : GL.Types.Int) return Character_Map_List;
    procedure Init;
    function Move_Character_In_Map
-     (Character : in out Character_Controller.Barbarian_Character;
-       Next_U, Next_V : Positive) return Boolean;
+     (From_U, From_V, To_U, To_V, Char_Index : Positive) return Boolean;
 
 end Character_Map;

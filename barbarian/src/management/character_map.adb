@@ -2,6 +2,7 @@
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with Game_Utils;
 with Tiles_Manager;
 
 package body Character_Map is
@@ -26,7 +27,7 @@ package body Character_Map is
                                         Char_Index : Positive) is
         use Ada.Containers;
         use Character_Map_Package;
-        V2 : Character_Vector2;   --
+        V2 : Character_Vector2;
         CM : Character_Map_List;
     begin
         if not Tiles_Manager.Is_Tile_Valid ((U, V)) then
@@ -91,26 +92,76 @@ package body Character_Map is
     --  -------------------------------------------------------------------------
 
    function Move_Character_In_Map
-     (Character : in out Character_Controller.Barbarian_Character;
-       Next_U, Next_V : Positive) return Boolean is
+     (From_U, From_V, To_U, To_V, Char_Index : Positive) return Boolean is
       use GL.Types;
       use Character_Controller;
-      theMap : Ints.Vector2 := Map (Character);
-      To_U   : constant Int := Int (Next_U);
-      To_V   : constant Int := Int (Next_V);
-      Tile_Char : Barbarian_Character;
-      Result : Boolean := False;
+      use Character_Map_Package;
+      To_IU   : constant Int := Int (To_U);
+      To_IV   : constant Int := Int (To_V);
+      From_IU : constant Int := Int (From_U);
+      From_IV : constant Int := Int (From_V);
+      Chars_N : Character_Map_List;
+      Curs    : Character_Map_Package.Cursor;
+      Data    : Positive;
+      Result  : Boolean := From_U = To_U and From_V = To_V;
+      Found   : Boolean := Result;
    begin
-      Result := theMap (GL.X) = To_U and theMap (GL.Y) = To_V;
       if not Result then
-         Result := Tiles_Manager.Is_Tile_Valid (theMap);
-         Result := Result and Tiles_Manager.Is_Tile_Valid ((To_U, To_V));
+         Result := Tiles_Manager.Is_Tile_Valid ((From_IU, From_IV));
+         Result := Result and Tiles_Manager.Is_Tile_Valid ((To_IU, To_IV));
          if Result then
-            Tile_Char := Characters_In_Tiles (theMap);
+            Chars_N := Get_Characters_In (From_IU, From_IV);
+            Result := not Chars_N.Is_Empty;
+            if Result then
+               Curs := Chars_N.Find (Char_Index);
+               Found := Curs /= Character_Map_Package.No_Element;
+               if Found then
+                  Data := Element (Curs);
+                  Chars_N.Delete (Curs);
+               end if;
+            end if;
          end if;
       end if;
-      return Result;
+
+      if not Found then
+         Game_Utils.Game_Log ("ERROR: Character_Map.Move_Character_In_Map, character was not in tile. Char_Index: "
+                                & Positive'Image (Char_Index));
+      else
+
+         Chars_N := Get_Characters_In (To_IU, To_IV);
+         if Chars_N.Is_Empty then
+            Chars_N.Append (Data);
+         else
+            Chars_N.Prepend (Data);
+         end if;
+      end if;
+      return Found;
+
     end Move_Character_In_Map;
+
+    --  -------------------------------------------------------------------------
+
+   procedure Replace_Characters_In (U, V     : GL.Types.Int;
+                                    New_List : Character_Map_List) is
+        use Ada.Containers;
+        use Character_Map_Package;
+        V1 : Character_Vector1;
+        V2 : Character_Vector2;
+    begin
+        if not Tiles_Manager.Is_Tile_Valid ((U, V)) then
+            raise Character_Map_Exception with
+              "Character_Map Get_Characters_In has invalid U, V: " &
+              GL.Types.Int'Image (U) & ", " & GL.Types.Int'Image (V);
+        end if;
+
+        V2 := Characters_In_Tiles.Element (Positive (U));
+        if V2.Length < Count_Type (V) then
+            V2.Set_Length (Count_Type (V));
+        end if;
+
+        CM := V2.Element (Positive (V));
+
+    end Replace_Characters_In;
 
     --  -------------------------------------------------------------------------
 
