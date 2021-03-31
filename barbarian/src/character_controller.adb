@@ -716,6 +716,79 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Character_Height_Near (Exclude_ID, Also_Exclude_ID : Positive;
+                                       Next_Pos  : Singles.Vector3) return Float  is
+      use Singles;
+      use Maths;
+      use Character_Map;
+      use Character_Map_Package;
+      aChar         : Barbarian_Character;
+      Excluded_Char : constant Barbarian_Character := Characters.Element (Exclude_ID);
+      Self_S_I      : constant Positive := Excluded_Char.Specs_Index;
+      Self_Spec     : constant Spec_Data := Character_Specs.Element (Self_S_I);
+      Other_Spec    : Spec_Data;
+      Char_S_I      : Positive;
+      Width_Radius  : constant Float := Self_Spec.Width_Radius;
+      Next_U        : constant Positive :=
+                        Positive (0.5 * (1.0 + Next_Pos (GL.X)));
+      Next_V        : constant Positive :=
+                        Positive (0.5 * (1.0 + Next_Pos (GL.Z)));
+      Left          : constant Integer := Max_Integer (0, Next_U - 1);
+      Right         : constant Integer
+        := Min_Integer (Integer (Batch_Manager.Max_Cols - 1), Next_U + 1);
+      Up            : constant Integer := Max_Integer (0, Next_V - 1);
+      Down          : constant Integer
+        := Min_Integer (Integer (Batch_Manager.Max_Rows - 1), Next_V + 1);
+      Char_List     : Character_Map_List;
+      Curs          : Cursor := Char_List.First;
+      List_Index    : Positive;
+      Distance      : Vector3;
+      Self_Height   : Float;
+      Threshold     : constant Float := 0.25;
+      Self_Head     : Float;
+      Other_Head    : Float;
+      Sq_Dist       : Single;
+      Continue      : Boolean := True;
+      Height        : Float := -100.0;
+   begin
+      for h in Left .. Right loop
+         for v in Up .. Down loop
+            Char_List := Get_Characters_In (Int (h), Int (v));
+            while Has_Element (Curs) loop
+               List_Index := Element (Curs);
+               if List_Index /= Exclude_ID and
+                 List_Index /= Also_Exclude_ID then
+                  aChar := Characters.Element (List_Index);
+                  if aChar.Is_Alive then
+                     Distance := aChar.World_Pos - Next_Pos;
+                     Self_Height := 0.0;
+                     if aChar.Is_Alive then
+                        Self_Height := Self_Spec.Height_Metre;
+                        Self_Head := Float (Next_Pos (GL.Y)) + Self_Height - Threshold;
+                        Continue := Float (aChar.World_Pos (GL.Y)) <= Self_Head;
+                     end if;
+                  end if;
+                  if Continue then
+                     Sq_Dist := Distance (GL.X) ** 2 + Distance (GL.Z) ** 2;
+                     if Sq_Dist <= Single (Width_Radius ** 2) then
+                        Char_S_I := aChar.Specs_Index;
+                        Other_Spec := Specs_Manager.Get_Spec (Char_S_I);
+                        Other_Head := Float (aChar.World_Pos (GL.Y)) +
+                          Other_Spec.Height_Metre;
+                        Height := Max_Float (Height, Other_Head);
+                     end if;
+                  end if;
+               end if;
+               Next (Curs);
+            end loop;
+         end loop;
+      end loop;
+      return Height;
+
+   end Get_Character_Height_Near;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Min_Height_For_Character
      (Character : Barbarian_Character; Also_Exclude : Positive;
       Pos          : Singles.Vector3; Extra_Radius : Float) return Single is
@@ -755,7 +828,8 @@ package body Character_Controller is
       NW (GL.X) := NW (GL.X) + Radius;
       NW (GL.Z) := NW (GL.Z) + Radius;
 
-      Char_Height := Get_Character_Height_Near (Character, Also_Exclude, Pos);
+      Char_Height :=
+        Get_Character_Height_Near (Character, Also_Exclude, Pos);
 
       return Min_Height;
 
@@ -977,7 +1051,7 @@ package body Character_Controller is
       use Singles;
       Max_Climb : Single :=
                     Character.World_Pos (GL.Y) + Char_Mount_Wall_Max_Height;
-      Height    : Single := get_m
+      Height    : Single := get_m;
       Pos       : Vector3 := Maths.Vec3_0;
    begin
       return Pos;
