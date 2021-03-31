@@ -90,4 +90,28 @@ package body Character_Map is
 
     --  -------------------------------------------------------------------------
 
+   function Move_Character_In_Map
+     (Character : in out Character_Controller.Barbarian_Character;
+       Next_U, Next_V : Positive) return Boolean is
+      use GL.Types;
+      use Character_Controller;
+      theMap : Ints.Vector2 := Map (Character);
+      To_U   : constant Int := Int (Next_U);
+      To_V   : constant Int := Int (Next_V);
+      Tile_Char : Barbarian_Character;
+      Result : Boolean := False;
+   begin
+      Result := theMap (GL.X) = To_U and theMap (GL.Y) = To_V;
+      if not Result then
+         Result := Tiles_Manager.Is_Tile_Valid (theMap);
+         Result := Result and Tiles_Manager.Is_Tile_Valid ((To_U, To_V));
+         if Result then
+            Tile_Char := Characters_In_Tiles (theMap);
+         end if;
+      end if;
+      return Result;
+    end Move_Character_In_Map;
+
+    --  -------------------------------------------------------------------------
+
 end Character_Map;

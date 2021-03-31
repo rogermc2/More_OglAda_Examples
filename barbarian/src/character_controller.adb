@@ -103,7 +103,7 @@ package body Character_Controller is
    function Damage_Character (Character       : in out Barbarian_Character;
                               Damage, Doer_ID : Natural;
                               Angle           : Maths.Degree; Weapon : Weapon_Type)
-                               return Boolean;
+                              return Boolean;
    procedure Damage_Doer_1 (Character   : in out Barbarian_Character;
                             Character_1 : Barbarian_Character);
    procedure Decapitated_Head_Check (Character : Barbarian_Character;
@@ -125,9 +125,9 @@ package body Character_Controller is
    procedure Update_Character_Physics (Character : in out Barbarian_Character;
                                        Seconds   : Float);
 
-   procedure Update_Character_Stairs (Character : in out Barbarian_Character;
+   procedure Update_Character_Stairs (Character          : in out Barbarian_Character;
                                       Effective_Velocity : in out Singles.Vector3);
-   procedure Update_Character_Position (Character : in out Barbarian_Character;
+   procedure Update_Character_Position (Character          : in out Barbarian_Character;
                                         Effective_Velocity : in out Singles.Vector3;
                                         Seconds            : Float);
    procedure Update_Desired_Velocity (Character : in out Barbarian_Character);
@@ -369,7 +369,7 @@ package body Character_Controller is
    --  -------------------------------------------------------------------------
 
    function Current_Weapon (Character : Barbarian_Character)
-                             return Specs_Manager.Weapon_Type is
+                            return Specs_Manager.Weapon_Type is
    begin
       return Character.Current_Weapon;
    end Current_Weapon;
@@ -380,7 +380,7 @@ package body Character_Controller is
      (Self_Id        : Positive; World_Pos : Singles.Vector3;
       Damage_Range   : Single; Damage : Natural; Throw_Back_Mps : Single;
       Exclude_Id     : Positive; Weapon : Specs_Manager.Weapon_Type)
-       return Natural is
+      return Natural is
       use Maths;
       use Character_Map;
       use Character_Map_Package;
@@ -441,7 +441,7 @@ package body Character_Controller is
    function Damage_Character (Character       : in out Barbarian_Character;
                               Damage, Doer_ID : Natural;
                               Angle           : Maths.Degree;  Weapon : Weapon_Type)
-                               return Boolean is
+                              return Boolean is
       use Singles;
       use Particle_System;
       use Projectile_Manager;
@@ -711,7 +711,7 @@ package body Character_Controller is
    --  -------------------------------------------------------------------------
 
    function Get_Character_Position (Character_ID : Positive)
-                                     return Singles.Vector3  is
+                                    return Singles.Vector3  is
       theChar : constant Barbarian_Character := Characters.Element (Character_ID);
    begin
       return theChar.World_Pos;
@@ -719,7 +719,7 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Character_Height_Near (Excluded_Char  : Barbarian_Character;
+   function Get_Character_Height_Near (Excluded_Char   : Barbarian_Character;
                                        Also_Exclude_ID : Natural;
                                        Next_Pos        : Singles.Vector3)
                                        return Single is
@@ -809,7 +809,7 @@ package body Character_Controller is
       SE           : Singles.Vector3 := Pos;
       Self_Height  : constant Single := Single (aSpec.Height_Metre);
       P_Height     : constant Single :=
-                         Prop_Renderer.Get_Prop_Height_Between (NW, SE);
+                       Prop_Renderer.Get_Prop_Height_Between (NW, SE);
       Char_Height  : Single;
    begin
       Floor_Height :=
@@ -912,7 +912,7 @@ package body Character_Controller is
    --  -------------------------------------------------------------------------
 
    function Javelin_Count (Character : in out Barbarian_Character)
-                            return Natural is
+                           return Natural is
    begin
       return Character.Javelin_Count;
    end Javelin_Count;
@@ -1695,8 +1695,12 @@ package body Character_Controller is
                         Update_Character_Accel_Decel  (Character, GL.X, Seconds);
       b             : constant Boolean :=
                         Update_Character_Accel_Decel  (Character, GL.Z, Seconds);
+      Inert_Thresh  : constant Single := 0.01;
       Effective_Vel : Vector3 := Character.Velocity;
       Water_Height  : Single;
+      Prev_Height   : Single;
+      Next_U        : Positive;
+      Next_V        : Positive;
    begin
       Update_Character_Gravity (Character, Seconds);
       if (not a) and then (not b) then
@@ -1717,20 +1721,39 @@ package body Character_Controller is
 
       Update_Character_Position (Character, Effective_Vel, Seconds);
 
+      --  attempt to reset state
+      Character.Is_Moving := abs (Effective_Vel (GL.X)) >= Inert_Thresh or
+      abs (Effective_Vel (GL.Y)) >= Inert_Thresh or
+      abs (Effective_Vel (GL.Z)) >= Inert_Thresh;
+      if Character.Is_Moving then
+         Character.Needs_Update := True;
+      end if;
+
+      Prev_Height := Character.World_Pos (GL.Y);
+      if Character.Is_Moving then
+         Character.World_Pos := Character.World_Pos +
+           Single (Seconds) * Effective_Vel;
+         Character.Distance_Fallen := Character.Distance_Fallen +
+           Maths.Max_Float (0.0, Float (Prev_Height - Character.World_Pos (GL.Y)));
+         Next_U := Integer (0.5 * (1.0 + Character.World_Pos (GL.X)));
+         Next_V := Integer (0.5 * (1.0 + Character.World_Pos (GL.Z)));
+         Move_Character_In_Map (Character, Next_U, Next_V);
+      end if;
+
    end Update_Character_Physics;
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Character_Position (Character : in out Barbarian_Character;
-                           Effective_Velocity : in out Singles.Vector3;
-                           Seconds            : Float) is
+   procedure Update_Character_Position (Character          : in out Barbarian_Character;
+                                        Effective_Velocity : in out Singles.Vector3;
+                                        Seconds            : Float) is
       use Singles;
       Next_Pos           : constant Vector3 := Character.World_Pos +
                              Effective_Velocity * Single (Seconds);
       Height             : constant Single := Get_Min_Height_For_Character (Character, 0,
-                                                           Next_Pos, -0.2);
+                                                                            Next_Pos, -0.2);
       Max_Climb          : constant Single :=
-                          Character.World_Pos (GL.Y) + Char_Mount_Wall_Max_Height;
+                             Character.World_Pos (GL.Y) + Char_Mount_Wall_Max_Height;
       Bounce_Factor      : constant Single := 0.4;
       Inert_Threshold    : constant Single := 0.01;
       Radius_Extra       : constant Float := -0.02;
@@ -1784,7 +1807,7 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Character_Stairs (Character : in out Barbarian_Character;
+   procedure Update_Character_Stairs (Character          : in out Barbarian_Character;
                                       Effective_Velocity : in out Singles.Vector3) is
       use Singles;
       Ramp_Glue_Threshold : constant Single := 0.6;  --  100 mm
