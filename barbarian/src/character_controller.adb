@@ -1701,6 +1701,7 @@ package body Character_Controller is
       Prev_Height   : Single;
       Next_U        : Positive;
       Next_V        : Positive;
+      Char_Index    : Positive;
    begin
       Update_Character_Gravity (Character, Seconds);
       if (not a) and then (not b) then
@@ -1735,9 +1736,16 @@ package body Character_Controller is
            Single (Seconds) * Effective_Vel;
          Character.Distance_Fallen := Character.Distance_Fallen +
            Maths.Max_Float (0.0, Float (Prev_Height - Character.World_Pos (GL.Y)));
+         --  update character map entry
          Next_U := Integer (0.5 * (1.0 + Character.World_Pos (GL.X)));
          Next_V := Integer (0.5 * (1.0 + Character.World_Pos (GL.Z)));
-         Move_Character_In_Map (Character, Next_U, Next_V);
+         Char_Index := Characters.Find_Index (Character);
+         if not Character_Map.Move_Character_In_Map
+           (Character.Map, Next_U, Next_V, Char_Index) then
+            raise Character_Controller_Exception with
+              "ERROR: Update_Character_Physics moving character's map entry: "
+              & Positive'Image (Char_Index);
+         end if;
       end if;
 
    end Update_Character_Physics;
