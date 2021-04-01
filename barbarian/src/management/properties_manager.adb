@@ -249,8 +249,6 @@ package body Properties_Manager is
             declare
                 Prop_Line : constant String := Get_Line (Prop_File);
             begin
-                Game_Utils.Game_Log ("Properties_Manager.Load_Properties Prop_Line: "
-                                     & Prop_Line);
                 S_Length := Prop_Line'Length;
                 PosL := Fixed.Index (Prop_Line, " ");
                 Script_File := To_Unbounded_String (Prop_Line (1 .. PosL - 1));

@@ -148,12 +148,14 @@ package body Properties_Manager.Process is
             Put_Line ("Properties_Manager-Process.Do_Outlines_Mesh, failed to load outline VAO for "
                       & File_Name);
         end if;
+
         if not Mesh_Loader.Loaded_Mesh_Vertex_Count
           (Mesh_Index, Integer (aScript.Outlines_Vertex_Count)) then
             Put_Line ("Properties_Manager-Process.Do_Outlines_Mesh, failed to load outline Vertex_Count for "
                       & File_Name);
             OK := False;
         end if;
+
         if not OK then
             Put_Line ("Properties_Manager-Process.Do_Outlines_Mesh, failed to load "
                       & File_Name);
@@ -187,14 +189,8 @@ package body Properties_Manager.Process is
                                aScript   : in out Prop_Script) is
         Full_Path : constant String := "src/textures/" & File_Name;
     begin
-        Game_Utils.Game_Log ("Properties_Manager-Process.Do_Specular_Map, Specular_Map "
-                             & File_Name);
-        Game_Utils.Game_Log ("Properties_Manager-Process.Do_Specular_Map, Specular_Map already initialized "
-                             & Boolean'Image (aScript.Specular_Map_Id.Initialized));
         Texture_Manager.Load_Image_To_Texture
           (Full_Path, aScript.Specular_Map_Id, True, True);
-        Game_Utils.Game_Log ("Properties_Manager-Process.Do_Specular_Map, Specular_Map initialized "
-                             & Boolean'Image (aScript.Specular_Map_Id.Initialized));
     end Do_Specular_Map;
 
     --  ------------------------------------------------------------------------
@@ -324,14 +320,7 @@ package body Properties_Manager.Process is
         end loop;
         OK := Found;
         if not Found then
---              Game_Utils.Game_Log
---                ("Properties_Manager.Process.Get_Index_Of_Prop_Script loading: " &
---                   Script_File);
             OK := Load_Property_Script (Script_File, Index);
-            Game_Utils.Game_Log
-                ("Properties_Manager.Process.Get_Index_Of_Prop_Script Diffuse and Specular_Map_Id.Initialized: " &
-                   Boolean'Image (aScript.Diffuse_Map_Id.Initialized) & " " &
-                   Boolean'Image (aScript.Specular_Map_Id.Initialized));
         end if;
 
         if not OK then
@@ -339,9 +328,6 @@ package body Properties_Manager.Process is
               ("Properties_Manager.Process.Get_Index_Of_Prop_Script failed to load: " &
                  Script_File);
         end if;
---                Game_Utils.Game_Log
---                  ("Properties_Manager.Process.Get_Index_Of_Prop_Script done, Index: " &
---                     Integer'Image (Index));
         return Index;
 
     exception
@@ -575,8 +561,6 @@ package body Properties_Manager.Process is
         if OK then
             Prop_Scripts.Append (aScript);
             Prop_Index := Prop_Scripts.Last_Index;
-            --           Game_Utils.Game_Log ("Properties_Manager-Process.Load_Property_Script, loaded"
-            --                                & With_Path & ", index " & Integer'Image (Prop_Index));
         else
             Put_Line ("Properties_Manager-Process.Load_Property_Script failed to load"
                       & With_Path);
