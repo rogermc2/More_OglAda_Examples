@@ -65,8 +65,6 @@ package body Prop_Renderer is
    Portal_Index               : Natural := 0;
 
    function Activate_Elevator (Property_Index : Positive) return Boolean;
-   procedure Activate_Property (Property_Index : Positive;
-                                Reactivating   : Boolean);
    procedure Update_Anim_Looped_Prop (Prop_Index : Positive; Seconds : Single);
    procedure Update_Windlass (Prop_Index : Positive; Seconds : Float);
 
@@ -1253,17 +1251,31 @@ package body Prop_Renderer is
                  aScript.Npc_Activated) then
                Script_Type := aScript.Script_Type;
                case Script_Type is
-                  when Touch_Plate_Prop =>
-                     Trigger_Touch_Plate
-                       (aProp.World_Pos, Pos, Radius, aProp, aScript, Continue ;
-                  when Windlass_Prop => Trigger_Windlass (Continue);
-                  when Diamond_Trigger_Prop => Trigger_Diamond (Continue);
+                  when Touch_Plate_Prop => Trigger_Touch_Plate
+                       (aProp.World_Pos, Pos, Radius, aProp, aScript, Continue);
+                  when Windlass_Prop => Trigger_Windlass
+                       (aProp.World_Pos, Pos, Radius, aProp, aScript,
+                        Prop_Index, Continue);
+                  when Diamond_Trigger_Prop => Trigger_Diamond
+                       (aProp.World_Pos, Pos, Radius, aProp, aScript, Continue);
                   when others => Continue := False;
                end case;
+               if Continue then
+                  if aScript.Hide_After_Triggering then
+                     aProp.Is_Visible := False;
+                     if aProp.Script_Index > 0 then
+                        Sprite_Renderer.Set_Sprite_Visible
+                          (aProp.Script_Index, False);
+                     end if;
+                  end if;
+
+                  Event_Controller.Transmit_Code (aProp.Tx_Code);
+                  aProp.Was_Triggered :=True;
+               end if;
+               Properties_Manager.Replace_Property (Prop_Index, aProp);
             end if;
          end if;
       end loop;
-
 
    end Trigger_Any_Tx_In;
 

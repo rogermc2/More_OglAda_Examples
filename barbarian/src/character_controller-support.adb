@@ -163,15 +163,16 @@ package body Character_Controller.Support is
    procedure  Trigger_Tx (Character : in out Barbarian_Character) is
       use Properties_Manager;
       Player_Type : Activator_Type := Prop_Activator_Player_State;
-      theSpec     : Spec_Data := Specs_Manager.Get_Spec (Character.Specs_Index);
+      theSpec     : constant Spec_Data := Specs_Manager.Get_Spec (Character.Specs_Index);
    begin
       if Characters.Find_Index (Character) > 2 then
          Player_Type := Prop_Activator_Npc_State;
       end if;
 
-      if not Trigger_Any_Tx_In () then
+      Prop_Renderer.Trigger_Any_Tx_In (Character.Map, Player_Type,
+                                       Character.World_Pos,
+                                       Single (theSpec.Width_Radius));
 
-      endif;
 
    end Trigger_Tx;
 
