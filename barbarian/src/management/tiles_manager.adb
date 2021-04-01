@@ -30,7 +30,7 @@ package body Tiles_Manager is
     Diff_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
     Spec_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
 
-    Tiles                 : Tile_2D_List;
+    Tiles                 : Tile_Row_List;
 
     procedure Add_Static_Light (Row, Col : Tiles_Index;
                                 Tile_Height_Offset : Integer;
@@ -112,7 +112,6 @@ package body Tiles_Manager is
 --                                 Integer'Image (Settings.Tile_Batch_Width));
 
         for Row in 1 .. Integer (Max_Rows) loop
-            --              Row := index / Max_Cols + 1;
             Batch_Down  := Integer (Row - 1) / Settings.Tile_Batch_Width;
             for Col in 1 .. Integer (Max_Cols) loop
                 Batch_Across := Integer (Col - 1) / Settings.Tile_Batch_Width;
@@ -293,17 +292,12 @@ begin
         Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
         Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
         Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
-
-        --          Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows loading '" & Load_Type & "'," & Int'Image (Rows)
-        --                               & " rows, "  & Int'Image (Cols) & " columns");
         for row in 1 .. Rows loop
             Tile_Row := Tiles.Element (row);
             declare
                 aString  : constant String := Get_Line (File);
                 aChar    : Character;
             begin
---                  Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows Row " &
---                                         Int'Image (row) & ": aString " & aString);
                 if aString'Length < Batch_Manager.Max_Cols then
                     raise Tiles_Manager_Exception with
                       "Tiles_Manager.Load_Char_Rows: " & Load_Type &
@@ -320,8 +314,7 @@ begin
                     else
                         aTile.Tile_Type := aChar;
                     end if;
-                    --                 Game_Utils.Game_Log ("Tiles_Manager.Load_Char_Rows aTile.Tile_Type: "
-                    --                                       & aTile.Tile_Type);
+
                     if Has_Element (Tile_Row.To_Cursor (col)) then
                         Tile_Row.Replace_Element (col, aTile);
                     else
@@ -371,9 +364,6 @@ begin
         Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
         Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
 
-        --          Game_Utils.Game_Log ("Tiles_Manager.Load_Int_Rows loading '" & Load_Type & "', " &
-        --                                 Int'Image (Rows) & " rows, "  &
-        --                                 Int'Image (Cols) & " columns");
         for row in Int range 1 .. Rows loop
             Tile_Row := Tiles.Element (row);
             declare
@@ -381,7 +371,6 @@ begin
                 Tex_Char   : Character;
                 Tex_Int    : Integer;
             begin
-                --                  Game_Utils.Game_Log ("Row " & Int'Image (row) & ": aString " & aString);
                 if aString'Length < Batch_Manager.Max_Cols then
                     raise Tiles_Manager_Exception with
                       " Tiles_Manager.Load_Int_Rows: " & Load_Type &
@@ -503,7 +492,6 @@ begin
           Integer (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
         Batches_Down :=
           Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
-        --        Batch_Split_Count := Integer (Batches_Across * Batches_Down);
 
         Parse_Facings_By_Row (File, Max_Rows, Max_Cols);
 
@@ -512,9 +500,6 @@ begin
         Load_Int_Rows (File, "heights");
 
         Load_Palette_File_Names (File);
---          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Palette file names: " &
---                                 To_String (Diff_Palette_Name)
---                               & ", " & To_String (Spec_Palette_Name));
         Load_Textures (Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex, Ramp_Spec_Tex);
 
         Add_Tiles_To_Batches;
@@ -522,7 +507,6 @@ begin
 
         Sprite_World_Map.Init;
 
-        --        Game_Utils.Game_Log ("Total points " & Integer'Image (Total_Points));
         Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles loaded and Manifold generated.");
 
     exception
@@ -543,12 +527,14 @@ begin
 
     procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int) is
         use Tile_Row_Package;
+        use Tile_Column_Package;
         Prev_Char  : Character;
         aTile      : Tile_Data;
-        Tile_Row   : Tile_Column_List;
+        Tile_Col   : Tile_Column_List;
     begin
         --  Parse_Facings_By_Row initalizes the Tiles list.
---          Game_Utils.Game_Log ("File_Manager.Parse_Facings_By_Row");
+        Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Max_Rows, Max_Cols "
+        & Int'Image (Max_Rows) & ", " & Int'Image (Max_Cols));
         for row in 1 .. Max_Rows loop
             declare
                 aString     : constant String := Get_Line (File);
@@ -557,9 +543,11 @@ begin
             begin
                 if Line_Length < Integer (Max_Cols) then
                     raise Tiles_Manager_Exception with
-                    "File_Manager.Parse_Facings_By_Row, facings line has not enough columns";
+                    "Tiles_Manager.Parse_Facings_By_Row, facings line has not enough columns";
                 end if;
+
                 Prev_Char := ASCII.NUL;
+                Tile_Col.Clear;
                 for col in 1 .. Max_Cols loop
                     Text_Char := aString (Integer (col));
                     if Prev_Char = '\' and then
@@ -568,14 +556,13 @@ begin
                     else
                         aTile.Facing := Text_Char;
                     end if;
-                    Tile_Row.Append (aTile);
+
+                    Tile_Col.Append (aTile);
                 end loop;
                 Prev_Char := Text_Char;
             end;
-            Tiles.Append (Tile_Row);
+            Tiles.Append (Tile_Col);
         end loop;
-
-        Put_Line ("File_Manager.Parse_Facings_By_Row done.");
 
     exception
         when anError : others =>

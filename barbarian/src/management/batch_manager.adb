@@ -158,7 +158,7 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Add_Sides_Count (Tiles       : Tiles_Manager.Tile_2D_List;
+    procedure Add_Sides_Count (Tiles       : Tiles_Manager.Tile_Row_List;
                                theBatch    : in out Batch_Meta;
                                Tile_Height          : Natural;
                                Row_Index, Col_Index : Tiles_Manager.Tiles_Index) is
@@ -535,7 +535,7 @@ package body Batch_Manager is
     --  -------------------------------------------------------------------------
 
     procedure Generate_Points (aBatch : in out Batch_Meta;
-                               Tiles  : Tiles_Manager.Tile_2D_List) is
+                               Tiles  : Tiles_Manager.Tile_Row_List) is
         use Tiles_Manager;
         use Tile_Row_Package;
         use GL_Maths;
@@ -643,7 +643,7 @@ package body Batch_Manager is
     --  ----------------------------------------------------------------------------
 
     procedure Generate_Ramps (aBatch : in out Batch_Meta;
-                              Tiles  : Tiles_Manager.Tile_2D_List) is
+                              Tiles  : Tiles_Manager.Tile_Row_List) is
         use Singles;
         use Maths;
         use Tiles_Manager;
@@ -774,7 +774,7 @@ package body Batch_Manager is
     --  ----------------------------------------------------------------------------
 
     procedure Generate_Water (aBatch : in out Batch_Meta;
-                              Tiles  : Tiles_Manager.Tile_2D_List) is
+                              Tiles  : Tiles_Manager.Tile_Row_List) is
         use Singles;
         use Maths;
         use Tiles_Manager;
@@ -926,7 +926,7 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_2D_List;
+    procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_Row_List;
                                 Batch_Index : Positive) is
         use Tiles_Manager;
         use Tiles_Manager.Tile_Indices_Package;

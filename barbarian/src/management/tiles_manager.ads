@@ -27,7 +27,7 @@ package Tiles_Manager is
 
    package Tile_Row_Package is new Ada.Containers.Vectors
      (Tiles_Index, Tile_Column_List);
-   subtype Tile_2D_List is Tile_Row_Package.Vector;
+   subtype Tile_Row_List is Tile_Row_Package.Vector;
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 
    use GL.Types.Ints;
