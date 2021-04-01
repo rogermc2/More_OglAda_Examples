@@ -138,8 +138,7 @@ package Prop_Renderer_Support is
 
       -- General Stuff
       -- -------------
-      Script_Type           : Prop_Renderer_Support.Property_Type :=
-                                  Generic_Prop;
+      Script_Type           : Property_Type := Generic_Prop;
       Scale                 : Singles.Vector3 := Maths.Vec3_0;
 
       -- Collision Shape
@@ -208,6 +207,22 @@ package Prop_Renderer_Support is
                           aScript      : Prop_Script;
                           Gold_Current : Integer;
                           Elapsed      : Single);
+
+   procedure Trigger_Diamond  (World_Pos, Pos : Singles.Vector3;
+                                  Radius : Single; aProp : Property_Data;
+                                  aScript        : Prop_Script;
+                                  Continue       : in out Boolean);
+   procedure Trigger_Touch_Plate (World_Pos, Pos : Singles.Vector3;
+                                  Radius : Single; aProp : In Out Property_Data;
+                                  aScript        : Prop_Script;
+                                  Continue       : in out Boolean);
+   procedure Trigger_Windlass (World_Pos, Pos : Singles.Vector3;
+                               Radius : Single; aProp : In Out Property_Data;
+                               aScript        : Prop_Script; Index : Positive;
+                               Continue       : in out Boolean);
+
+   --  -------------------------------------------------------------------------
+
 private
 
 end Prop_Renderer_Support;

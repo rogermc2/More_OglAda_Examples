@@ -4,6 +4,7 @@ with FB_Effects;
 with GUI;
 with GUI_Level_Chooser;
 with Main_Menu;
+with Properties_Manager;
 with Prop_Renderer;
 with Settings;
 with Shadows;
@@ -156,6 +157,23 @@ package body Character_Controller.Support is
                                                        Atlas_Index);
         end if;
     end Switch_Animation;
+
+    --  -------------------------------------------------------------------------
+
+   procedure  Trigger_Tx (Character : in out Barbarian_Character) is
+      use Properties_Manager;
+      Player_Type : Activator_Type := Prop_Activator_Player_State;
+      theSpec     : Spec_Data := Specs_Manager.Get_Spec (Character.Specs_Index);
+   begin
+      if Characters.Find_Index (Character) > 2 then
+         Player_Type := Prop_Activator_Npc_State;
+      end if;
+
+      if not Trigger_Any_Tx_In () then
+
+      endif;
+
+   end Trigger_Tx;
 
     --  -------------------------------------------------------------------------
 

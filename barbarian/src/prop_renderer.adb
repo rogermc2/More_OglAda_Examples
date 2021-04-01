@@ -415,8 +415,8 @@ package body Prop_Renderer is
             when others => null;
          end case;
          if Radius <= 0.0 then
-               Height := -100.0;
-               Continue := False;
+            Height := -100.0;
+            Continue := False;
          end if;
       end if;
 
@@ -1214,6 +1214,58 @@ package body Prop_Renderer is
       end if;
       return Result;
    end Sq_Dist_To_End_Level_Portal;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Trigger_Any_Tx_In
+     (Map : Ints.Vector2; Act_Type : Properties_Manager.Activator_Type;
+      Pos : Singles.Vector3; Radius : Single) is
+      use Properties_Manager;
+      U            : constant Positive := Positive (Map (GL.X));
+      V            : constant Positive := Positive (Map (GL.Y));
+      Prop_Indices : constant Prop_Indices_List := Props_In_Tiles (U, V);
+      Prop_Index   : Positive;
+      aProp        : Property_Data;
+      Script_Index : Positive;
+      aScript      : Prop_Script;
+      Script_Type  : Prop_Renderer_Support.Property_Type;
+      Continue     : Boolean := True;
+   begin
+      if not Tiles_Manager.Is_Tile_Valid (Map) then
+         raise Prop_Renderer_Exception with
+           "Trigger_Any_Tx_In, invalid tile indices: " &
+           Integer'Image (U) & ", " & Integer'Image (V);
+      end if;
+
+      for index in Prop_Indices.First_Index .. Prop_Indices.Last_Index loop
+         --  only trigger once
+         --  tx_codes will be increased for receivers too because the editor
+         --  does tx++ and rx++ with the same button
+         Prop_Index := Positive (Prop_Indices.Element (index));
+         aProp := Properties_Manager.Get_Property_Data (Prop_Index);
+         Script_Index := aProp.Script_Index;
+         aScript := Get_Script_Data (Script_Index);
+         if aProp.Tx_Code >= 0 and
+           (not aProp.Was_Triggered or not aScript.Trigger_Only_Once) then
+            if (Act_Type /= Prop_Activator_Player_State or
+                  aScript.Character_Activated) and
+              (Act_Type /= Prop_Activator_Npc_State or
+                 aScript.Npc_Activated) then
+               Script_Type := aScript.Script_Type;
+               case Script_Type is
+                  when Touch_Plate_Prop =>
+                     Trigger_Touch_Plate
+                       (aProp.World_Pos, Pos, Radius, aProp, aScript, Continue ;
+                  when Windlass_Prop => Trigger_Windlass (Continue);
+                  when Diamond_Trigger_Prop => Trigger_Diamond (Continue);
+                  when others => Continue := False;
+               end case;
+            end if;
+         end if;
+      end loop;
+
+
+   end Trigger_Any_Tx_In;
 
    --  -------------------------------------------------------------------------
 

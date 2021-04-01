@@ -151,6 +151,7 @@ private
    type Weapon_Param_Array is array (1 .. Max_Weapons) of Float;
    type Unbounded_String_Array is array (Integer range <>) of Unbounded_String;
 
+   Characters              : Character_List;
    Portal_Feedback_Started : Boolean := False;
 
 end Character_Controller;

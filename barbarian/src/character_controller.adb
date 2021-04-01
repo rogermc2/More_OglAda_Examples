@@ -67,7 +67,6 @@ package body Character_Controller is
                                     "SWORD_Hit_Metal_Armor_RR3_mono.wav";
    Sword_Hit_Armour_Sound       : constant String :=
                                     "HAMMER_Hit_Metal_Armor_stereo.wav";
-   Characters                   : Character_List;
    Character_Specs              : Specs_List;
    Torch_Light_Index            : array (1 .. 2) of Positive := (1, 1);
    Torch_Particles_Index        : array (1 .. 2) of Positive := (1, 1);
@@ -1377,7 +1376,7 @@ package body Character_Controller is
            Position (Character);
          case Projectile is
             when Javelin_Proj_Type => Attack_With_Javelin
-                 (Character, Character.Specs_Index);
+                 (Character, Spec_Index);
             when Arrow_Proj_Type =>
                null;
             when Fireball_Proj_Type =>
