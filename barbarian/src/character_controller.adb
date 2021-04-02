@@ -733,12 +733,12 @@ package body Character_Controller is
                         Positive (0.5 * (1.0 + Next_Pos (GL.X)));
       Next_V        : constant Positive :=
                         Positive (0.5 * (1.0 + Next_Pos (GL.Z)));
-      Left          : constant Integer := Max_Integer (0, Next_U - 1);
+      Left          : constant Integer := Max_Integer (1, Next_U);
       Right         : constant Integer
-        := Min_Integer (Integer (Batch_Manager.Max_Cols - 1), Next_U + 1);
-      Up            : constant Integer := Max_Integer (0, Next_V - 1);
+        := Min_Integer (Integer (Batch_Manager.Max_Cols), Next_U);
+      Up            : constant Integer := Max_Integer (1, Next_V);
       Down          : constant Integer
-        := Min_Integer (Integer (Batch_Manager.Max_Rows - 1), Next_V + 1);
+        := Min_Integer (Integer (Batch_Manager.Max_Rows), Next_V);
       Char_List     : Character_Map_List;
       Curs          : Cursor := Char_List.First;
       List_Index    : Natural;

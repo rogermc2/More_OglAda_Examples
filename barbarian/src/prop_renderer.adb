@@ -445,15 +445,15 @@ package body Prop_Renderer is
       Head            : constant Single := Max (NW (GL.Y), SE (GL.Y));
       Max_Tile_Radius : constant Integer := 2;
       Up_Bound        : constant Integer :=
-                          Max_Integer (Top - Max_Tile_Radius, 0);
+                          Max_Integer (Top - Max_Tile_Radius, 1);
       Down_Bound      : constant Integer :=
                           Min_Integer (Bottom + Max_Tile_Radius,
-                                       Manifold.Max_Tile_Cols - 1);
+                                       Manifold.Max_Tile_Cols);
       Left_Bound      : constant Integer :=
-                          Max_Integer (Left - Max_Tile_Radius, 0);
+                          Max_Integer (Left - Max_Tile_Radius, 1);
       Right_Bound     : constant Integer :=
                           Max_Integer (Right + Max_Tile_Radius,
-                                       Manifold.Max_Tile_Cols - 1);
+                                       Manifold.Max_Tile_Cols);
       Prop_Indices    : Prop_Indices_List;
       Prop_Index      : Positive;
       aProp           : Property_Data;
