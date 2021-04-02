@@ -93,26 +93,25 @@ package body Character_Map is
    --  -------------------------------------------------------------------------
 
    function Move_Character_In_Map
-     (From_Map : GL.Types.Ints.Vector2; To_U, To_V, Char_Index : Positive)
+     (From_Map : GL.Types.Ints.Vector2; To_U, To_V : GL.Types.Int;
+      Char_Index : Integer)
       return Boolean is
       use GL.Types;
       use Character_Controller;
       use Character_Map_Package;
-      To_IU   : constant Int := Int (To_U);
-      To_IV   : constant Int := Int (To_V);
-      From_IU : constant Int := From_Map (GL.X);
-      From_IV : constant Int := From_Map (GL.Y);
+      From_U : constant Int := From_Map (GL.X);
+      From_V : constant Int := From_Map (GL.Y);
       Chars_N : Character_Map_List;
       Curs    : Character_Map_Package.Cursor;
       Data    : Positive;
-      Result  : Boolean := From_IU = To_IU and From_IV = To_IV;
+      Result  : Boolean := From_U = To_U and From_V = To_V;
       Found   : Boolean := Result;
    begin
       if not Result then
          Result := Tiles_Manager.Is_Tile_Valid (From_Map);
-         Result := Result and Tiles_Manager.Is_Tile_Valid ((To_IU, To_IV));
+         Result := Result and Tiles_Manager.Is_Tile_Valid (From_Map);
          if Result then
-            Chars_N := Get_Characters_In (From_IU, From_IV);
+            Chars_N := Get_Characters_In (From_U, From_V);
             Result := not Chars_N.Is_Empty;
             if Result then
                Curs := Chars_N.Find (Char_Index);
@@ -120,7 +119,7 @@ package body Character_Map is
                if Found then
                   Data := Element (Curs);
                   Chars_N.Delete (Curs);
-                  Replace_Characters_In (From_IU, From_IV, Chars_N);
+                  Replace_Characters_In (From_U, From_V, Chars_N);
                end if;
             end if;
          end if;
@@ -130,9 +129,9 @@ package body Character_Map is
          Game_Utils.Game_Log ("ERROR: Character_Map.Move_Character_In_Map, character was not in tile. Char_Index: "
                               & Positive'Image (Char_Index));
       else
-         Chars_N := Get_Characters_In (To_IU, To_IV);
+         Chars_N := Get_Characters_In (To_U, To_V);
          Chars_N.Append (Data);
-         Replace_Characters_In (To_IV, To_IV, Chars_N);
+         Replace_Characters_In (To_U, To_V, Chars_N);
       end if;
       return Found;
 

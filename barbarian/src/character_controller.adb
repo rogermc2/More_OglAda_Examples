@@ -1636,6 +1636,7 @@ package body Character_Controller is
       if not Result then
          Character.Velocity (Dimension) := 0.0;
       end if;
+
       return Result;
 
    end Update_Character_Accel_Decel;
@@ -1694,8 +1695,8 @@ package body Character_Controller is
       Effective_Vel : Vector3 := Character.Velocity;
       Water_Height  : Single;
       Prev_Height   : Single;
-      Next_U        : Positive;
-      Next_V        : Positive;
+      Next_U        : Int;
+      Next_V        : Int;
       Char_Index    : Positive;
    begin
       Update_Character_Gravity (Character, Seconds);
@@ -1732,8 +1733,9 @@ package body Character_Controller is
          Character.Distance_Fallen := Character.Distance_Fallen +
            Maths.Max_Float (0.0, Float (Prev_Height - Character.World_Pos (GL.Y)));
          --  update character map entry
-         Next_U := Integer (0.5 * (1.0 + Character.World_Pos (GL.X)));
-         Next_V := Integer (0.5 * (1.0 + Character.World_Pos (GL.Z)));
+         Next_U := Int (0.5 * (1.0 + Character.World_Pos (GL.X)));
+         Next_V := Int (0.5 * (1.0 + Character.World_Pos (GL.Z)));
+
          Char_Index := Characters.Find_Index (Character);
          if not Character_Map.Move_Character_In_Map
            (Character.Map, Next_U, Next_V, Char_Index) then
@@ -1741,6 +1743,8 @@ package body Character_Controller is
               "ERROR: Update_Character_Physics moving character's map entry: "
               & Positive'Image (Char_Index);
          end if;
+         Character_Controller.Support.Trigger_Tx (Character);
+         Character.Map := ((Next_U, Next_V));
       end if;
 
    end Update_Character_Physics;
