@@ -1556,11 +1556,19 @@ package body Character_Controller is
       Down            : Int;
       Ok              : Boolean := True;
    begin
+      Game_Utils.Game_Log
+                 ("Character_Controller.Update_Characters entered");
       if not Characters.Is_Empty then
+        Game_Utils.Game_Log
+                 ("Character_Controller.Update_Characters Characters not Empty");
          aCharacter := Characters.First_Element;
          Characters_Updated := 0;
          --              if Character_Controller_Loaded then
+        Game_Utils.Game_Log
+                 ("Character_Controller.Update_Characters Update_Player");
          Update_Player (Window, 1, Seconds);
+        Game_Utils.Game_Log
+                 ("Character_Controller.Update_Characters Player updated");
          aCharacter.Needs_Update := False;
          Characters_Updated := Characters_Updated + 1;
          Left := Max_Int (0, aCharacter.Map (GL.X) - Update_Distance);
@@ -1574,8 +1582,8 @@ package body Character_Controller is
             for h in Left .. Right loop
                Char_List := Character_Map.Get_Characters_In (h, v);
                Curs := Char_List.First;
-               --                      Put_Line ("Character_Controller.Update_Characters v, h :" &
-               --                               Int'Image (v) & ", " & Int'Image (h));
+               Put_Line ("Character_Controller.Update_Characters v, h :" &
+                          Int'Image (v) & ", " & Int'Image (h));
                while Has_Element (Curs) loop
                   Char_Index := Element (Curs);
                   aCharacter := Characters.Element (Char_Index);
@@ -1588,6 +1596,8 @@ package body Character_Controller is
             end loop;
          end loop;
 
+        Game_Utils.Game_Log
+                 ("Character_Controller.Update_Characters firsy loop done");
          Curs := Char_List.First;
          while Has_Element (Curs) loop
             Char_Index := Element (Curs);
@@ -1946,6 +1956,8 @@ package body Character_Controller is
       Torch_Pos      : constant Vector3 := Character.World_Pos +
                          To_Vector3 (Rot * (-0.25, 1.0, -0.4, 1.0));
    begin
+        Game_Utils.Game_Log
+                 ("Character_ControllerUpdate_Player start");
       if Character.Is_Alive then
          if Is_Action_Down (Up_Action) then
             Character.Desired_Direction (GL.Z) := -1.0;
