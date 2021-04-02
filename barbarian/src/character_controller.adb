@@ -51,7 +51,7 @@ package body Character_Controller is
    end record;
 
    Fall_Dmage_Start_Height   : constant Float := 5.0;   -- Distance of falling below which does no damage
-   Fall_Damage_Death_Heigt   : constant Float := 7.0;  -- Distance of falling beyond which always kills instantly
+   Fall_Damage_Death_Height  : constant Float := 7.0;  -- Distance of falling beyond which always kills instantly
 
    Current_Blood_Fountain               : Natural := 0;
    Current_Blood_Damage_Emitter         : Natural := 0;
@@ -791,7 +791,7 @@ package body Character_Controller is
 
    function Get_Min_Height_For_Character
      (Character : Barbarian_Character; Also_Exclude : Natural;
-      Pos       : Singles.Vector3; Extra_Radius : Float) return Single is
+      Pos : Singles.Vector3; Extra_Radius : Float) return Single is
       use Maths;
       use Tiles_Manager;
       S_I          : constant Positive := Character.Specs_Index;
@@ -1692,12 +1692,19 @@ package body Character_Controller is
       b             : constant Boolean :=
                         Update_Character_Accel_Decel  (Character, GL.Z, Seconds);
       Inert_Thresh  : constant Single := 0.01;
+      Radius_Extra  : constant Float := -0.2;
       Effective_Vel : Vector3 := Character.Velocity;
       Water_Height  : Single;
       Prev_Height   : Single;
+      Height        : Single;
+      Tile_Height   : Single;
       Next_U        : Int;
       Next_V        : Int;
       Char_Index    : Positive;
+      Num_D_Sixes   : Integer;
+      Damage        : Integer;
+      Max_Damage    : Integer;
+      Damaged       : Boolean := False;
    begin
       Update_Character_Gravity (Character, Seconds);
       if (not a) and then (not b) then
@@ -1745,6 +1752,47 @@ package body Character_Controller is
          end if;
          Character_Controller.Support.Trigger_Tx (Character);
          Character.Map := ((Next_U, Next_V));
+      end if;  --  Character.Is_Moving
+
+      Height := Get_Min_Height_For_Character (Character, 0, Character.World_Pos,
+                                              Radius_Extra);
+      if Character.World_Pos (GL.Y) <= Height then
+         --  put on ground but not if it's a huge difference or we'll fly up
+         --  over tall things -- better to be 'stuck'
+         if Character.World_Pos (GL.Y) + Char_Mount_Wall_Max_Height >= Height then
+            Character.World_Pos (GL.Y) := Height;
+         end if;
+         Character.Velocity (GL.Y) := 0.0;
+         Character.Is_On_Ground := True;
+         if Character.Distance_Fallen > 0.1 and
+           Manifold.Is_Water (Character.Map) then
+            --  Make sure we've hit the ground and not a bridge type of thing
+            Tile_Height :=
+              Tiles_Manager.Get_Tile_Height (Character.World_Pos (GL.X),
+                               Character.World_Pos (GL.Z), True, True);
+            if Character.World_Pos (GL.Y) - Tile_Height <= 0.0 then
+               Prop_Renderer.Splash_Particles_At (Character.World_Pos);
+            end if;
+         end if;
+
+         --  check if fallen too far
+         if Character.Distance_Fallen > Fall_Dmage_Start_Height then
+            Num_D_Sixes := Integer (Character.Distance_Fallen / 4.0);
+            Max_Damage := 50 * Num_D_Sixes;
+            Damage := abs (Integer (Maths.Random_Float)) * Max_Damage;
+            if Character.Distance_Fallen > Fall_Damage_Death_Height then
+               Damage := 1000;
+            end if;
+            Audio.Play_Sound (Fall_Death_Sound_File, True);
+            Damaged := Damage_Character (Character, Damage, 0, 0.0, Fall_Wt);
+         end if;
+         Character.Distance_Fallen := 0.0;
+      else  --  allow to fall off ledges
+         Character.Is_On_Ground := False;
+      end if;
+
+      if not Character.Is_On_Ground then
+         Character.Needs_Update := True;
       end if;
 
    end Update_Character_Physics;
@@ -1757,8 +1805,8 @@ package body Character_Controller is
       use Singles;
       Next_Pos           : constant Vector3 := Character.World_Pos +
                              Effective_Velocity * Single (Seconds);
-      Height             : constant Single := Get_Min_Height_For_Character (Character, 0,
-                                                                            Next_Pos, -0.2);
+      Height             : constant Single := Get_Min_Height_For_Character
+        (Character, 0,  Next_Pos, -0.2);
       Max_Climb          : constant Single :=
                              Character.World_Pos (GL.Y) + Char_Mount_Wall_Max_Height;
       Bounce_Factor      : constant Single := 0.4;
@@ -1843,19 +1891,18 @@ package body Character_Controller is
             if Character.Distance_Fallen > Fall_Dmage_Start_Height then
                Num_D_Sixes := Integer (Character.Distance_Fallen / 4.0);
                Max_Damage := 50 * Num_D_Sixes;
-               Damage := Natural (Maths.Random_Float) mod Max_Damage +
+               Damage := Natural (Maths.Random_Float) * Max_Damage +
                  Num_D_Sixes;
-               if Character.Distance_Fallen > Fall_Damage_Death_Heigt then
+               if Character.Distance_Fallen > Fall_Damage_Death_Height then
                   Damage := 1000;
-                  Audio.Play_Sound (Fall_Death_Sound_File, True);
-               else
-                  Audio.Play_Sound (Fall_Damage_Sound_File, True);
                end if;
+               Audio.Play_Sound (Fall_Damage_Sound_File, True);
                Damaged :=
                  Damage_Character (Character, Damage, 0, 0.0, Fall_Wt);
             end if;
             Character.Distance_Fallen := 0.0;
             Character.Is_On_Ground := True;
+
             Ramp_Facing := Tiles_Manager.Get_Facing (Character.Map);
             case Ramp_Facing is
                when 'N' =>
