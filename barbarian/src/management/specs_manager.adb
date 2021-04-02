@@ -285,11 +285,11 @@ package body Specs_Manager is
       end loop;
 
       if not Found then
---           Game_Utils.Game_Log
---             ("Specs_Manager.Get_Script_Index loading specs file: " &
---                File_Name);
          Load_Specs_File (File_Name);
          Spec_Index := Get_Script_Index (File_Name);
+         Game_Utils.Game_Log
+           ("Specs_Manager.Get_Script_Index specs file: " &
+              File_Name & " loaded, Spec_Index " & Integer'Image (Spec_Index));
       end if;
 
       return Spec_Index;

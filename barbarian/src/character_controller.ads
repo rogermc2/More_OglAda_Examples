@@ -89,6 +89,7 @@ private
    use Specs_Manager;
    type Attached_Particle_Systems_Array is array (Integer range <>)
      of Integer;
+
    type Barbarian_Character is record
       Specs_Index              : Natural := 0;
       World_Pos                : Singles.Vector3 := (0.0, 0.0, 0.0);

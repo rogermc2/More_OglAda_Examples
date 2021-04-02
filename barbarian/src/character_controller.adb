@@ -67,14 +67,11 @@ package body Character_Controller is
                                     "SWORD_Hit_Metal_Armor_RR3_mono.wav";
    Sword_Hit_Armour_Sound       : constant String :=
                                     "HAMMER_Hit_Metal_Armor_stereo.wav";
-   Character_Specs              : Specs_List;
    Torch_Light_Index            : array (1 .. 2) of Positive := (1, 1);
    Torch_Particles_Index        : array (1 .. 2) of Positive := (1, 1);
 
    --      Portal_Fadeout_Started  : Boolean := False;
    Characters_To_Reserve           : constant Integer := 256;
-   --      Characters_Allocd_Count : Integer := Characters_To_Reserve;
-   --      Character_Count         : Integer := Characters_To_Reserve;
    --      Gold_Current            : constant Integer := 0;
    Kills_Current                   : Integer := 0;
    Kills_Max                       : Integer := 0;
@@ -314,8 +311,7 @@ package body Character_Controller is
          if Spec.Team_ID = 1 then
             Kills_Max := Kills_Max + 1;
          end if;
-         --              Game_Utils.Game_Log ("Character_Controller.Create_Character character created from " &
-         --                                     To_String (Source.Script_File));
+
       else
          raise Character_Controller_Exception with
            "Character_Controller.Create_Character, invalid tile siza" &
@@ -408,7 +404,7 @@ package body Character_Controller is
                   Character := Characters.Element (Char_ID);
                   if Character.Is_Alive then
                      Spec_ID := Character.Specs_Index;
-                     aSpec := Character_Specs.Element (Spec_ID);
+                     aSpec := Specs_Manager.Get_Spec (Spec_ID);
                      if  aSpec.Initial_Health > 0 then
                         Height := Single (aSpec.Height_Metre);
                         if Close_Enough
@@ -450,7 +446,7 @@ package body Character_Controller is
                             Characters.First_Element;
       Is_Sorcerer       : Boolean := False;
       S_I               : constant Positive := Character.Specs_Index;
-      aSpec             : constant Spec_Data := Character_Specs.Element (S_I);
+      aSpec             : constant Spec_Data := Specs_Manager.Get_Spec (S_I);
       Max_Health        : Integer;
       Blood_Fountain_Id : Positive;
       Decap             : Boolean := False;
@@ -637,7 +633,7 @@ package body Character_Controller is
       use Projectile_Manager;
       Chance    : constant Integer := Integer (100.0 * Abs (Random_Float));
       S_I       : constant Positive := Character.Specs_Index;
-      aSpec     : constant Spec_Data := Character_Specs.Element (S_I);
+      aSpec     : constant Spec_Data := Specs_Manager.Get_Spec (S_I);
       DH_S_I    : constant Positive := aSpec.Decapitated_Head_Prop_Script_ID;
       Proj_Type : Projectile_Type;
       Pos       : Singles.Vector3 := Character.World_Pos;
@@ -728,7 +724,7 @@ package body Character_Controller is
       use Character_Map_Package;
       Excluded_ID   : constant Positive := Characters.Find_Index (Excluded_Char);
       Self_S_I      : constant Positive := Excluded_Char.Specs_Index;
-      Self_Spec     : constant Spec_Data := Character_Specs.Element (Self_S_I);
+      Self_Spec     : constant Spec_Data := Specs_Manager.Get_Spec (Self_S_I);
       Other_Spec    : Spec_Data;
       aChar         : Barbarian_Character;
       Char_S_I      : Positive;
@@ -799,7 +795,7 @@ package body Character_Controller is
       use Maths;
       use Tiles_Manager;
       S_I          : constant Positive := Character.Specs_Index;
-      aSpec        : constant Spec_Data := Character_Specs.Element (S_I);
+      aSpec        : constant Spec_Data := Specs_Manager.Get_Spec (S_I);
       Radius       : constant Single :=
                        Single (aSpec.Width_Radius + Extra_Radius);
       Floor_Height : Single :=
@@ -863,6 +859,7 @@ package body Character_Controller is
 
    procedure Init is
    begin
+      Specs_Manager.Clear_Specs;
       Character_Map.Init;
       Torch_Particles_Index (1) := Particle_System.Create_Particle_System
         ("torch_smoke.particles", True, True, True);
@@ -1350,7 +1347,7 @@ package body Character_Controller is
       use  Character_Controller.Support;
       Spec_Index      : constant Positive := Character.Specs_Index;
       Spec            : constant Spec_Data :=
-                          Character_Specs.Element (Spec_Index);
+                          Specs_Manager.Get_Spec (Spec_Index);
       Weapon          : constant Weapon_Type := Character.Current_Weapon;
       Recharging      : Boolean := False;
       Projectile      : Projectile_Manager.Projectile_Type;
@@ -1399,7 +1396,7 @@ package body Character_Controller is
    procedure Switch_Animation (Character : in out Barbarian_Character;
                                Anim_Num  : Natural) is
       Spec_Index  : constant Positive := Character.Specs_Index;
-      Spec        : constant Spec_Data := Character_Specs.Element (Spec_Index);
+      Spec        : constant Spec_Data := Specs_Manager.Get_Spec (Spec_Index);
       Atlas_Index : constant Positive := Animation_Index (Spec_Index, Anim_Num, 1);
    begin
       if Character.Current_Animation /= Anim_Num then
@@ -1501,7 +1498,7 @@ package body Character_Controller is
                         Characters.Element (Character_ID);
       Anim_Number   : constant Integer := Character.Current_Animation;
       S_I           : constant Positive := Character.Specs_Index;
-      aSpec         : constant Spec_Data := Character_Specs.Element (S_I);
+      aSpec         : constant Spec_Data := Specs_Manager.Get_Spec (S_I);
       theAnimation  : Animation_Frame_List;
       Anim_Size     : Integer;
       Curr_Frame_ID : Integer;
@@ -1556,19 +1553,10 @@ package body Character_Controller is
       Down            : Int;
       Ok              : Boolean := True;
    begin
-      Game_Utils.Game_Log
-                 ("Character_Controller.Update_Characters entered");
       if not Characters.Is_Empty then
-        Game_Utils.Game_Log
-                 ("Character_Controller.Update_Characters Characters not Empty");
          aCharacter := Characters.First_Element;
          Characters_Updated := 0;
-         --              if Character_Controller_Loaded then
-        Game_Utils.Game_Log
-                 ("Character_Controller.Update_Characters Update_Player");
          Update_Player (Window, 1, Seconds);
-        Game_Utils.Game_Log
-                 ("Character_Controller.Update_Characters Player updated");
          aCharacter.Needs_Update := False;
          Characters_Updated := Characters_Updated + 1;
          Left := Max_Int (0, aCharacter.Map (GL.X) - Update_Distance);
@@ -1582,8 +1570,6 @@ package body Character_Controller is
             for h in Left .. Right loop
                Char_List := Character_Map.Get_Characters_In (h, v);
                Curs := Char_List.First;
-               Put_Line ("Character_Controller.Update_Characters v, h :" &
-                          Int'Image (v) & ", " & Int'Image (h));
                while Has_Element (Curs) loop
                   Char_Index := Element (Curs);
                   aCharacter := Characters.Element (Char_Index);
@@ -1596,8 +1582,6 @@ package body Character_Controller is
             end loop;
          end loop;
 
-        Game_Utils.Game_Log
-                 ("Character_Controller.Update_Characters firsy loop done");
          Curs := Char_List.First;
          while Has_Element (Curs) loop
             Char_Index := Element (Curs);
@@ -1674,10 +1658,12 @@ package body Character_Controller is
    procedure  Update_Character_Motion (Character : in out Barbarian_Character;
                                        Seconds   : Float) is
       use Singles;
-      S_I           : constant Positive := Character.Specs_Index;
-      aSpec         : constant Spec_Data := Character_Specs.Element (S_I);
+      S_I           :  Positive;
+      aSpec         :  Spec_Data;
       Sprite_Pos    : Singles.Vector3;
    begin
+      S_I := Character.Specs_Index;
+      aSpec := Specs_Manager.Get_Spec (S_I);
       Character.Velocity := (0.0, 0.0, 0.0);
       if Character.Is_Walking or Character.Is_On_Ground then
          Update_Desired_Velocity (Character);
@@ -1916,7 +1902,7 @@ package body Character_Controller is
    procedure  Update_Desired_Velocity (Character : in out Barbarian_Character) is
       use Singles;
       S_I   : constant Positive := Character.Specs_Index;
-      aSpec : constant Spec_Data := Character_Specs.Element (S_I);
+      aSpec : constant Spec_Data := Specs_Manager.Get_Spec (S_I);
       Speed : Single := Single (aSpec.Move_Speed_MPS);
    begin
       if abs (Character.Desired_Direction (GL.Z)) +
@@ -1956,8 +1942,6 @@ package body Character_Controller is
       Torch_Pos      : constant Vector3 := Character.World_Pos +
                          To_Vector3 (Rot * (-0.25, 1.0, -0.4, 1.0));
    begin
-        Game_Utils.Game_Log
-                 ("Character_ControllerUpdate_Player start");
       if Character.Is_Alive then
          if Is_Action_Down (Up_Action) then
             Character.Desired_Direction (GL.Z) := -1.0;

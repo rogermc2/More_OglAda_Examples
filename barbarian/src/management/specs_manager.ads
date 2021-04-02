@@ -78,27 +78,27 @@ package Specs_Manager is
       Animation_Frame_Count                             : Int_Array (1 .. Max_Animations) :=
                                                             (others => 0);
       File_Name                                         : Unbounded_String := To_Unbounded_String ("");
-      Name                                              : Unbounded_String := To_Unbounded_String ("");
+      Name                                              : Unbounded_String := To_Unbounded_String ("name");
       Weapon_Attack_Times                               : Weapon_Array :=
                                                             (others => 0.0);
       Attack_Ranges_Metre                               : Weapon_Array :=
                                                             (others => 0.0);
-      Move_Speed_MPS                                    : Float := 0.0;
-      Height_Metre                                      : Float := 0.0;
-      Width_Radius                                      : Float := 0.0;
+      Move_Speed_MPS                                    : Float := 4.0;
+      Height_Metre                                      : Float := 1.8;
+      Width_Radius                                      : Float := 0.5;
       Sprite_Offset_Adjust                              : Float := 0.0;
       Atlas_Rows                                        : Integer := 0;
       Atlas_Cols                                        : Integer := 0;
       Sight_Range_Tiles                                 : Integer := 0;
-      Initial_Health                                    : Integer := 0;
+      Initial_Health                                    : Integer := 100;
       Default_Weapon                                    : Weapon_Type := Na_Wt;
       Projectile                                        : Projectile_Manager.Projectile_Type :=
                                                             Projectile_Manager.Na_Proj_Type;
-      Decapitated_Head_Prop_Script_ID                   : Positive := 1;
+      Decapitated_Head_Prop_Script_ID                   : Natural := 0;
       Decapitated_Head_Script                           : Unbounded_String := To_Unbounded_String ("");
       Team_ID                                           : Integer := 0;
       Tx_On_Death                                       : Integer := 0;
-      Land_Move                                         : Boolean;  --  False for sewerman
+      Land_Move                                         : Boolean := True;  --  False for sewerman
       Atlas_Diffuse_ID                                  : GL.Objects.Textures.Texture;
       Atlas_Specular_ID                                 : GL.Objects.Textures.Texture;
       Alert_Sound_File_Name                             : Unbounded_String := To_Unbounded_String ("");
