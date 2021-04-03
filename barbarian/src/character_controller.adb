@@ -1556,6 +1556,7 @@ package body Character_Controller is
       if not Characters.Is_Empty then
          aCharacter := Characters.First_Element;
          Characters_Updated := 0;
+
          Update_Player (Window, 1, Seconds);
          aCharacter.Needs_Update := False;
          Characters_Updated := Characters_Updated + 1;

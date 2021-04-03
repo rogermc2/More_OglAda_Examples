@@ -248,20 +248,19 @@ package body Prop_Renderer is
             Map);
          raise Prop_Renderer_Exception;
       end if;
+
       Prop_Indices :=
         Props_In_Tiles (Integer (Map (GL.X)), Integer (Map (GL.Y)));
       if not Prop_Indices.Is_Empty then
          Index := Prop_Indices.First_Index;
-         while index <= Prop_Indices.Last_Index and not Result loop
+         while Index <= Prop_Indices.Last_Index and not Result loop
             P_Index := Positive (Prop_Indices.Element (index));
             Property :=
               Properties_Manager.Get_Property_Data (P_Index);
             aScript :=
               Properties_Manager.Get_Script_Data (Property.Script_Index);
             Result := aScript.Script_Type = Prop_Type;
-            if Index /= Prop_Indices.Last_Index then
-               Index := Index + 1;
-            end if;
+            Index := Index + 1;
          end loop;
       end if;
       return Result;
@@ -1033,10 +1032,7 @@ package body Prop_Renderer is
                Prop_Type := aScript.Script_Type;
 
                if Property.Is_Visible or GL_Utils.Is_Edit_Mode then
-                  Put_Line ("Prop_Renderer.Render_Props_Around_Split visible Prop_Type: "
-                            & Property_Type'Image (Prop_Type));
                   if aScript.Uses_Sprite then
-                     Put_Line ("Prop_Renderer.Render_Props_Around_Split Uses_Sprite");
                      Prop_Size := aScript.Sprite_Map_Rows *
                        aScript.Sprite_Map_Cols;
                      Sprite_Time := aScript.Sprite_Timer * Float (Prop_Size);
@@ -1057,14 +1053,11 @@ package body Prop_Renderer is
                   elsif Frustum.Is_Sphere_In_Frustum
                     (Property.Origin_World, aScript.Bounding_Radius) and
                     aScript.Transparent then
-                     Put_Line ("Prop_Renderer.Render_Props_Around_Split Add_Transparency_Item");
                      Add_Transparency_Item
                        (Transparency_Prop, Props_Index,
                         Property.Origin_World,
                         aScript.Bounding_Radius);
                   else
-                     --                              Put_Line ("Prop_Renderer.Render_Props_Around_Split default Prop_Type: "
-                     --                                       & Property_Type'Image (Prop_Type));
                      if Prop_Type = Anim_Loop_Prop then
                         Update_Anim_Looped_Prop (Props_Index, Elapsed);
                      end if;
