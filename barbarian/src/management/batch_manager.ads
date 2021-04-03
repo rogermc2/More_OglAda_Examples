@@ -18,11 +18,11 @@ package Batch_Manager is
       AABB_Mins            : Singles.Vector3 := (0.0, 0.0, 0.0);
       AABB_Maxs            : Singles.Vector3 := (0.0, 0.0, 0.0);
       Points               : GL_Maths.Vec3_List;
-      Point_Count          : Integer := 0;
+--        Point_Count          : Integer := 0;
       Ramp_Points          : GL_Maths.Vec3_List;
-      Ramp_Point_Count     : Integer := 0;
+--        Ramp_Point_Count     : Integer := 0;
       Water_Points         : GL_Maths.Vec3_List;
-      Water_Point_Count    : Integer := 0;
+--        Water_Point_Count    : Integer := 0;
       Normals              : GL_Maths.Vec3_List;
       Normal_Count         : Integer := 0;
       Ramp_Normals         : GL_Maths.Vec3_List;
@@ -75,9 +75,9 @@ package Batch_Manager is
    function Get_Batch_Index (Column, Row : Positive) return Integer;
    procedure Init;
    function Batches return Batches_List;
-   function Num_Points (Batch_Index : Positive) return Integer;
-   function Num_Ramp_Points (Batch_Index : Positive) return Integer;
-   function Num_Water_Points (Batch_Index : Positive) return Integer;
+--     function Num_Points (Batch_Index : Positive) return Integer;
+--     function Num_Ramp_Points (Batch_Index : Positive) return Integer;
+--     function Num_Water_Points (Batch_Index : Positive) return Integer;
    procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_Row_List;
                                Batch_Index : Positive);
    function Static_Lights return Static_Light_Vector;

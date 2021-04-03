@@ -135,17 +135,17 @@ package body Manifold is
                         Tile_Index2 := Int (Light_Indices.Element (Light_Index2));
                         Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
-                        if aBatch.Point_Count > 0 then
+                        if not aBatch.Points.Is_Empty then
                             --  flat tiles
                             GL_Utils.Bind_Vao (aBatch.Points_VAO);
                             --  Bind_Texture sets active unit and binds texture
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-                            Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+                            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
                         end if;
 
-                        if aBatch.Ramp_Point_Count > 0 then
+                        if not aBatch.Ramp_Points.Is_Empty then
                             --  ramps
                             GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
 
@@ -157,7 +157,7 @@ package body Manifold is
                             if Settings.Render_OLS then
                                 Set_Front_Face (Clockwise);
                                 Set_Outline_Pass (1.0);
-                                Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
+                                Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
                                 Set_Outline_Pass (0.0);
                                 Set_Front_Face (Counter_Clockwise);
                             end if;
@@ -203,10 +203,10 @@ package body Manifold is
             if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then
                 --  Flat Tiles
                 GL_Utils.Bind_Vao (aBatch.Points_VAO);
-                Draw_Arrays (Triangles, 0, Int (aBatch.Point_Count));
+                Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
 
                 GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
-                Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Point_Count));
+                Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
             end if;
             Next (Curs);
         end loop;
@@ -265,7 +265,7 @@ package body Manifold is
             aBatch := Element (Curs);
             if Frustum.Is_Aabb_In_Frustum
               (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
-              aBatch.Water_Point_Count > 0 then
+               not aBatch.Water_Points.Is_Empty then
                 Light_Indices := aBatch.Static_Light_Indices;
                 Light_Cursor := Light_Indices.First;
                 Tile_Index1 := Int (Element (Light_Cursor));
@@ -273,7 +273,7 @@ package body Manifold is
                 Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                 GL_Utils.Bind_Vao (aBatch.Water_VAO);
-                Draw_Arrays (Triangles, 0, Int (aBatch.Water_Point_Count));
+                Draw_Arrays (Triangles, 0, Int (aBatch.Water_Points.Length));
             end if;
             Next (Curs);
         end loop;
