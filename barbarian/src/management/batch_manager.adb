@@ -21,7 +21,7 @@ package body Batch_Manager is
    Batches_Data             : Batches_List;
    Static_Lights_List       : Static_Light_Vector;
    Atlas_Factor             : constant Single := 0.25;
-   Sets_In_Atlas_Row        : constant Positive := 4;
+   Sets_In_Atlas_Row        : constant Tiles_Manager.Tiles_Index := 4;
    ST_Offset                : constant Single := 8.0 / 2048.0;
    Ramp_Mesh_Points         : GL_Maths.Vec3_List;
    Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
@@ -534,6 +534,7 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
+   --  Generate_Points for all tiles in a batch
    procedure Generate_Points (aBatch : in out Batch_Meta;
                               Tiles  : Tiles_Manager.Tile_Row_List) is
       use Tiles_Manager;
@@ -543,14 +544,12 @@ package body Batch_Manager is
       aTile       : Tile_Data;
       N_Tile      : Tile_Data;
       Height      : Integer;
-      Diff        : Integer;
-      N_Height    : Integer;
-      N_Index     : Int;
       X           : Single;
       Y           : Single;
       Z           : Single;
-      Atlas_Row   : Tiles_Manager.Tiles_Index;
-      Atlas_Col   : Tiles_Manager.Tiles_Index;
+      Index       : Tiles_Index;
+      Atlas_Row   : Tiles_Index;
+      Atlas_Col   : Tiles_Index;
 
       procedure Add_Tex_Coords (S_Offset, T_Offset : Single)  is
          S  : constant Single := (Single (Atlas_Col) + S_Offset) * Atlas_Factor;
@@ -560,75 +559,28 @@ package body Batch_Manager is
       end Add_Tex_Coords;
 
    begin
+      aBatch.Points_VAO.Initialize_Id;
+      aBatch.Point_Count := 0;
+
+      --  for all tiles in aBatch
       if not Is_Empty (Tiles) then
+         aBatch.Points.Clear;
          for Row_Index in Tiles.First_Index .. Tiles.Last_Index loop
             Column_List := Tiles (Row_Index);
             for Col_Index in Column_List.First_Index ..
               Column_List.Last_Index loop
                aTile := Column_List.Element (Col_Index);
                Height := aTile.Height;
-               N_Height := aTile.Height;
-               X := Single (2 * (Col_Index - Column_List.First_Index));
+
+               X := Single (2 * (Col_Index - 1));
                Y := Single (2 * Height);
-               Z := Single (2 * Row_Index - Tiles.First_Index);
-
-               if aTile.Tile_Type = '~' then  --  Water
-                  N_Height := N_Height - 1;
-               end if;
-               Diff := Height - N_Height;
-               if aTile.Tile_Type = '/' then  --  Ramp
-                  if aTile.Facing = 'N' then
-                     Diff := Diff -1;
-                  end if;
+               Z := Single (2 * (Row_Index - 1));
+               if aTile.Tile_Type = '~' then
+                  Height := Height - 1;
                end if;
 
-               if Diff > 0 then  --  for all tile types
-                  aBatch.Ramp_Point_Count := aBatch.Ramp_Point_Count + 6 * Diff;
-                  Total_Points := Total_Points + 6 * Diff;
-               end if;
-
-               if Col_Index > 1 then
-                  N_Index := Col_Index - 1;
-                  N_Tile := Column_List.Element (N_Index);
-                  N_Height := N_Tile.Height;
-                  if N_Tile.Tile_Type = '~' then
-                     N_Height := N_Height - 1;
-                  end if;
-                  Diff := Height - N_Height;
-                  if N_Tile.Tile_Type = '/' then
-                     if N_Tile.Facing = 'E' then
-                        Diff := Diff - 1;
-                     end if;
-                  end if;
-                  if Diff > 0 then
-                     aBatch.Ramp_Point_Count := aBatch.Ramp_Point_Count + 6 * Diff;
-                     Total_Points := Total_Points + 6 * Diff;
-                  end if;
-               end if;
-
-               if Col_Index < Max_Cols then
-                  N_Index := Col_Index + 1;
-                  N_Tile := Column_List.Element (N_Index);
-                  N_Height := N_Tile.Height;
-                  if aTile.Tile_Type = '~' then
-                     N_Height := N_Height - 1;
-                  end if;
-                  Diff := Height - N_Height;
-                  if N_Tile.Tile_Type = '/' then
-                     if N_Tile.Facing = 'W' then
-                        Diff := Diff - 1;
-                     end if;
-                  end if;
-               end if;
-            end loop;
-         end loop;
-
-         for Row_Index in Tiles.First_Index .. Tiles.Last_Index loop
-            Column_List := Tiles (Row_Index);
-            for Col_Index in Column_List.First_Index ..
-              Column_List.Last_Index loop
-               aTile := Column_List.Element (Col_Index);
-               if aTile.Tile_Type /= '/' then  -- Flat tile
+               --  Generate flat tiles
+               if aTile.Tile_Type /= '/' and aTile.Tile_Type = '~' then
                   --  floor FR, FL, BL, BL, BR, FR
                   aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));  -- FR
                   aBatch.Points.Append ((X - 1.0, Y, Z - 1.0));  -- FL
@@ -643,15 +595,17 @@ package body Batch_Manager is
                      aBatch.Normal_Count := aBatch.Normal_Count + 1;
                   end loop;
 
-                  Atlas_Row := Row_Index;
-                  Atlas_Col := Col_Index;
+                  Index := Tiles_Index (aTile.Texture_Index);
+                  Atlas_Row := Index / Tiles_Index (Sets_In_Atlas_Row + 1);
+                  Atlas_Col := Tiles_Index ((Index - Atlas_Row - 1) *
+                    Sets_In_Atlas_Row + 1);
                   Add_Tex_Coords (0.5, 1.0);
                   Add_Tex_Coords (0.0, 1.0);
                   Add_Tex_Coords (0.0, 0.5);
                   Add_Tex_Coords (0.0, 0.5);
                   Add_Tex_Coords (0.5, 0.5);
                   Add_Tex_Coords (0.5, 1.0);
-                  --     aBatch.Tex_Coord_Count := aBatch.Tex_Coord_Count;
+                  aBatch.Tex_Coord_Count := aBatch.Tex_Coord_Count;
                end if;
 
                --  check for higher neighbour to north (walls belong to the lower tile)
@@ -1018,12 +972,15 @@ package body Batch_Manager is
 
    begin
       Free_Batch_Data (Batch_Index);
+      theBatch.Static_Light_Indices.Clear;
+
       if Tile_Row_Package.Is_Empty (Tiles) then
          Game_Utils.Game_Log ("Regenerate_Batch, theBatch.Tiles is empty.");
          raise Batch_Manager_Exception with
            "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
       end if;
 
+      --  recalculate points in batch
       if not Tile_Indices.Is_Empty then
          while Has_Element (Indices_Curs) loop
             Tile_Index := Element (Indices_Curs);
@@ -1045,6 +1002,7 @@ package body Batch_Manager is
                Total_Points := Total_Points + 6;
             end if;
 
+            --  work out sides count
             Add_Sides_Count (Tiles, theBatch, Height, Row_Index, Col_Index);
             Next (Indices_Curs);
          end loop;  -- over tile indices
@@ -1077,8 +1035,10 @@ package body Batch_Manager is
       Offset_Factor     : Singles.Vector2_Array (1 .. 6);
       Texture_Index     : constant Positive := aTile.Texture_Index;
       Half_Atlas_Factor : constant Single := 0.5 * Atlas_Factor;
-      Atlas_Row         : constant Positive := Texture_Index / Sets_In_Atlas_Row;
-      Atlas_Col         : constant Positive := Texture_Index - Atlas_Row * Sets_In_Atlas_Row;
+      Atlas_Row         : constant Tiles_Manager.Tiles_Index
+        := Tiles_Manager.Tiles_Index (Texture_Index) / Sets_In_Atlas_Row;
+      Atlas_Col         : constant Tiles_Manager.Tiles_Index
+        := Tiles_Manager.Tiles_Index (Texture_Index) - Atlas_Row * Sets_In_Atlas_Row;
       S                 : Single := Half_Atlas_Factor;
       T                 : Single := 0.0;
       S_Offset          : Single := 0.0;
