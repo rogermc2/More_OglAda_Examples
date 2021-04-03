@@ -62,44 +62,43 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Height := aTile.Height;
+      N_Tile := Get_Tile ((Tile_Row, Tile_Col - 1));
+      N_Height := N_Tile.Height;
       if aTile.Tile_Type = '~' then
          N_Height := N_Height - 1;
       end if;
       Diff := Height - N_Height;
+
       --  remove bit behind stairs from construction list
       if aTile.Tile_Type = '/' and then aTile.Facing = 'E' then
          Diff := Diff - 1;
       end if;
 
       for level in -Diff .. -1 loop
-         X := Single (2 * Col - 1);
-         Y := Single (2 * (Height + level + 2));
-         Z := Single (2 * Tile_Row + 1);
+         X := Single (2 * (Col - 1) - 1);
+         Y := Single (2 * (Height + level + 1));
+         Z := Single (2 * (Tile_Row - 1) + 1);
          aBatch.Points.Append ((X, Y, Z));
 
-         Z := Single (2 * Tile_Row - 1);
+         Z := Single (2 * (Tile_Row - 1) - 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         Y := Single (2 * (Height + level));
          aBatch.Points.Append ((X, Y, Z));
          aBatch.Points.Append ((X, Y, Z));
 
-         Z := Single (2 * Tile_Row + 1);
+         Z := Single (2 * (Tile_Row - 1) + 1);
          aBatch.Points.Append ((X, Y, Z));
 
-         Y := Single (2 * (Height + level + 2));
+         Y := Single (2 * (Height + level + 1));
          aBatch.Points.Append ((X, Y, Z));
 
          for index in 1 .. 6 loop
-            aBatch.Normals.Append ((0.0, 0.0, -1.0));
+            aBatch.Normals.Append ((-1.0, 0.0, 0.0));
          end loop;
          aBatch.Normal_Count := aBatch.Normal_Count + 6;
 
-         if level >= 0 then
-            Set_Tex_Coords (aBatch, aTile, East_Side, level);
-         else
-            raise Batch_Manager_Exception with
-              "Add_East_Points, invalid level value: " &
-              Integer'Image (level);
-         end if;
+         Set_Tex_Coords (aBatch, aTile, East_Side, diff - level - 1);
       end loop;
 
    end Add_East_Points;
@@ -368,44 +367,43 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Height := aTile.Height;
+      N_Tile := Get_Tile ((Tile_Row, Tile_Col + 1));
+      N_Height := N_Tile.Height;
       if aTile.Tile_Type = '~' then
          N_Height := N_Height - 1;
       end if;
       Diff := Height - N_Height;
+
       --  remove bit behind stairs from construction list
       if aTile.Tile_Type = '/' and then aTile.Facing = 'W' then
          Diff := Diff - 1;
       end if;
 
       for level in -Diff .. -1 loop
-         X := Single (2 * Col + 1);
-         Y := Single (2 * (Height + level + 2));
-         Z := Single (2 * Tile_Row - 1);
+         X := Single (2 * (Col - 1) + 1);
+         Y := Single (2 * (Height + level + 1));
+         Z := Single (2 * (Tile_Row - 1) - 1);
          aBatch.Points.Append ((X, Y, Z));
 
-         Z := Single (2 * Tile_Row + 1);
+         Z := Single (2 * (Tile_Row - 1) + 1);
+         aBatch.Points.Append ((X, Y, Z));
+
+         Y := Single (2 * (Height + level));
          aBatch.Points.Append ((X, Y, Z));
          aBatch.Points.Append ((X, Y, Z));
 
-         Z := Single (2 * Tile_Row - 1);
+         Z := Single (2 * (Tile_Row - 1) - 1);
          aBatch.Points.Append ((X, Y, Z));
 
-         Y := Single (2 * (Height + level + 2));
+         Y := Single (2 * (Height + level + 1));
          aBatch.Points.Append ((X, Y, Z));
 
          for index in 1 .. 6 loop
-            aBatch.Normals.Append ((0.0, 0.0, -1.0));
+            aBatch.Normals.Append ((1.0, 0.0, 0.0));
          end loop;
          aBatch.Normal_Count := aBatch.Normal_Count + 6;
 
-         if level >= 0 then
-            Set_Tex_Coords (aBatch, aTile, West_Side, Abs (level));
-         else
-            raise Batch_Manager_Exception with
-              "Add_West_Points, invalid level value: " &
-              Integer'Image (level);
-         end if;
+         Set_Tex_Coords (aBatch, aTile, West_Side, Diff - level - 1);
       end loop;
 
    end Add_West_Points;
