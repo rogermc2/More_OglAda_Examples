@@ -18,17 +18,12 @@ package Batch_Manager is
       AABB_Mins            : Singles.Vector3 := (0.0, 0.0, 0.0);
       AABB_Maxs            : Singles.Vector3 := (0.0, 0.0, 0.0);
       Points               : GL_Maths.Vec3_List;
---        Point_Count          : Integer := 0;
       Ramp_Points          : GL_Maths.Vec3_List;
---        Ramp_Point_Count     : Integer := 0;
       Water_Points         : GL_Maths.Vec3_List;
---        Water_Point_Count    : Integer := 0;
       Normals              : GL_Maths.Vec3_List;
-      Normal_Count         : Integer := 0;
       Ramp_Normals         : GL_Maths.Vec3_List;
       Ramp_Smooth_Normals  : GL_Maths.Vec3_List;
       Tex_Coords           : GL_Maths.Vec2_List;
-      Tex_Coord_Count      : Natural := 0;
       Ramp_Tex_Coords      : GL_Maths.Vec2_List;
       Points_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Ramp_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
