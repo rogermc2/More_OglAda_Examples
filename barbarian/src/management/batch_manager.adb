@@ -91,6 +91,7 @@ package body Batch_Manager is
          for index in 1 .. 6 loop
             aBatch.Normals.Append ((0.0, 0.0, -1.0));
          end loop;
+         aBatch.Normal_Count := aBatch.Normal_Count + 6;
 
          if level >= 0 then
             Set_Tex_Coords (aBatch, aTile, East_Side, level);
@@ -151,6 +152,7 @@ package body Batch_Manager is
             for index in 1 .. 6 loop
                aBatch.Normals.Append ((0.0, 0.0, 1.0));
             end loop;
+            aBatch.Normal_Count := aBatch.Normal_Count + 6;
 
             Set_Tex_Coords (aBatch, aTile, North_Side, Diff - level - 1);
          end loop;
@@ -254,7 +256,8 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_South_Points (aBatch             : in out Batch_Meta; Height : Integer;
+   procedure Add_South_Points (aBatch             : in out Batch_Meta;
+                               Height             : Integer;
                                Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
@@ -277,34 +280,30 @@ package body Batch_Manager is
       end if;
 
       for level in -Diff .. -1 loop
-         X := Single (2 * Col - 1);
-         Y := Single (2 * (Height + level + 2));
-         Z := Single (2 * Tile_Row - 1);
+         X := Single (2 * (Col - 1) - 1);
+         Y := Single (2 * (Height + level + 1));
+         Z := Single (2 * (Tile_Row - 1) - 1);
          aBatch.Points.Append ((X, Y, Z));
 
-         X := Single (2 * Col + 1);
+         X := Single (2 * (Col - 1) + 1);
          aBatch.Points.Append ((X, Y, Z));
 
          Y := Single (2 * (Height + level));
          aBatch.Points.Append ((X, Y, Z));
          aBatch.Points.Append ((X, Y, Z));
 
-         X := Single (2 * Col - 1);
+         X := Single (2 * (Col - 1) - 1);
          aBatch.Points.Append ((X, Y, Z));
 
          Y := Single (2 * (Height + level + 2));
          aBatch.Points.Append ((X, Y, Z));
+
          for index in 1 .. 6 loop
             aBatch.Normals.Append ((0.0, 0.0, -1.0));
          end loop;
+         aBatch.Normal_Count := aBatch.Normal_Count + 6;
 
-         if level >= 0 then
-            Set_Tex_Coords (aBatch, aTile, South_Side, level);
-         else
-            raise Batch_Manager_Exception with
-              "Add_South_Points, invalid level value: " &
-              Integer'Image (level);
-         end if;
+         Set_Tex_Coords (aBatch, aTile, South_Side, diff - level - 1);
       end loop;
 
    end Add_South_Points;
@@ -398,6 +397,7 @@ package body Batch_Manager is
          for index in 1 .. 6 loop
             aBatch.Normals.Append ((0.0, 0.0, -1.0));
          end loop;
+         aBatch.Normal_Count := aBatch.Normal_Count + 6;
 
          if level >= 0 then
             Set_Tex_Coords (aBatch, aTile, West_Side, Abs (level));
@@ -620,6 +620,7 @@ package body Batch_Manager is
                if Row_Index > 1 then
                   Add_South_Points (aBatch, Height, Row_Index, Col_Index);
                end if;
+
                if Col_Index < Column_List.Last_Index then
                   Add_West_Points (aBatch, Height, Row_Index, Col_Index);
                end if;
@@ -1044,7 +1045,7 @@ package body Batch_Manager is
         := Tiles_Manager.Tiles_Index (Texture_Index) / Sets_In_Atlas_Row + 1;
       Atlas_Col         : constant Tiles_Manager.Tiles_Index
         := Tiles_Manager.Tiles_Index (Texture_Index) - (Atlas_Row - 1) *
-                            Sets_In_Atlas_Row;
+                            Sets_In_Atlas_Row + 1;
       S                 : Single := Half_Atlas_Factor;
       T                 : Single := 0.0;
       S_Offset          : Single := 0.0;
