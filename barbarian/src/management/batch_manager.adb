@@ -583,7 +583,7 @@ package body Batch_Manager is
                end if;
 
                --  Generate flat tiles
-               if aTile.Tile_Type /= '/' and aTile.Tile_Type = '~' then
+               if aTile.Tile_Type /= '/' and aTile.Tile_Type /= '~' then
                   --  floor FR, FL, BL, BL, BR, FR
                   aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));  -- FR
                   aBatch.Points.Append ((X - 1.0, Y, Z - 1.0));  -- FL
@@ -593,15 +593,16 @@ package body Batch_Manager is
                   aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));  -- FR
                   aBatch.Point_Count := aBatch.Point_Count + 6;
 
-                  for index in 1 .. 6 loop
+                  for norm_count in 1 .. 6 loop
                      aBatch.Normals.Append ((0.0, 1.0, 0.0));
                      aBatch.Normal_Count := aBatch.Normal_Count + 1;
                   end loop;
 
+                  --  Sets_In_Atlas_Row = 4
                   Index := Tiles_Index (aTile.Texture_Index);
-                  Atlas_Row := Index / Tiles_Index (Sets_In_Atlas_Row + 1);
+                  Atlas_Row := Index / Tiles_Index (Sets_In_Atlas_Row) + 1;
                   Atlas_Col := Tiles_Index ((Index - Atlas_Row - 1) *
-                                              Sets_In_Atlas_Row + 1);
+                                              Sets_In_Atlas_Row) + 1;
                   Add_Tex_Coords (0.5, 1.0);
                   Add_Tex_Coords (0.0, 1.0);
                   Add_Tex_Coords (0.0, 0.5);
