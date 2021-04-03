@@ -55,6 +55,7 @@ package body Batch_Manager is
                               Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
+      N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
       X        : Single;
@@ -104,55 +105,56 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_North_Points (aBatch             : in out Batch_Meta; Height : Integer;
+   procedure Add_North_Points (aBatch             : in out Batch_Meta;
+                               Height             : Integer;
                                Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
+      N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
       X        : Single;
       Y        : Single;
       Z        : Single;
    begin
-      N_Height := aTile.Height;
+      N_Tile := Get_Tile ((Tile_Row + 1, Tile_Col));
+      N_Height := N_Tile.Height;
       if aTile.Tile_Type = '~' then
          N_Height := N_Height - 1;
       end if;
       Diff := Height - N_Height;
 
+      --  Remove bit behind stairs from construction list
       if aTile.Tile_Type = '/' and then aTile.Facing = 'N' then
          Diff := Diff - 1;
       end if;
 
-      for level in -Diff .. -1 loop
-         X := Single (2 * Col + 1);
-         Y := Single (2 * (Height + level + 1));
-         Z := Single (2 * Tile_Row + 1);
-         aBatch.Points.Append ((X, Y, Z));  --  1
-         X := Single (2 * Col - 1);
-         aBatch.Points.Append ((X, Y, Z));  --  2
-         Y := Single (2 * (Height + level));
-         aBatch.Points.Append ((X, Y, Z));   --  3
+      --  Build one of Diff wall sections at a time
+      if Diff > 0 then
+         for level in -Diff .. -1 loop
+            X := Single (2 * (Col - 1) + 1);
+            Y := Single (2 * (Height + level) + 1);
+            Z := Single (2 * (Tile_Row - 1) + 1);
+            aBatch.Points.Append ((X, Y, Z));  --  1
+            X := Single (2 * (Col - 1) - 1);
+            aBatch.Points.Append ((X, Y, Z));  --  2
+            Y := Single (2 * (Height + level));
+            aBatch.Points.Append ((X, Y, Z));   --  3
 
-         aBatch.Points.Append ((X, Y, Z));   --  4
-         X := Single (2 * Col + 1);
-         aBatch.Points.Append ((X, Y, Z));   --  5
-         Y := Single (2 * (Height + level + 1));
-         aBatch.Points.Append ((X, Y, Z));    --  6
-         aBatch.Point_Count := aBatch.Point_Count + 6;
+            aBatch.Points.Append ((X, Y, Z));   --  4
+            X := Single (2 * (Col - 1) + 1);
+            aBatch.Points.Append ((X, Y, Z));   --  5
+            Y := Single (2 * (Height + level + 1));
+            aBatch.Points.Append ((X, Y, Z));    --  6
+            aBatch.Point_Count := aBatch.Point_Count + 6;
 
-         for index in 1 .. 6 loop
-            aBatch.Normals.Append ((0.0, 0.0, 1.0));
+            for index in 1 .. 6 loop
+               aBatch.Normals.Append ((0.0, 0.0, 1.0));
+            end loop;
+
+            Set_Tex_Coords (aBatch, aTile, North_Side, Diff - level - 1);
          end loop;
-
-         if level >= 0 then
-            Set_Tex_Coords (aBatch, aTile, North_Side, Abs (level));
-         else
-            raise Batch_Manager_Exception with
-              "Add_North_Points, invalid level value: " &
-              Integer'Image (level);
-         end if;
-      end loop;
+      end if;
 
    end Add_North_Points;
 
@@ -256,13 +258,15 @@ package body Batch_Manager is
                                Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
+      N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
       X        : Single;
       Y        : Single;
       Z        : Single;
    begin
-      N_Height := aTile.Height;
+      N_Tile := Get_Tile ((Tile_Row - 1, Tile_Col));
+      N_Height := N_Tile.Height;
       if aTile.Tile_Type = '~' then
          N_Height := N_Height - 1;
       end if;
@@ -359,6 +363,7 @@ package body Batch_Manager is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
       N_Height : Integer;
+      N_Tile   : Tile_Data;
       Diff     : Integer;
       X        : Single;
       Y        : Single;
@@ -598,7 +603,7 @@ package body Batch_Manager is
                   Index := Tiles_Index (aTile.Texture_Index);
                   Atlas_Row := Index / Tiles_Index (Sets_In_Atlas_Row + 1);
                   Atlas_Col := Tiles_Index ((Index - Atlas_Row - 1) *
-                    Sets_In_Atlas_Row + 1);
+                                              Sets_In_Atlas_Row + 1);
                   Add_Tex_Coords (0.5, 1.0);
                   Add_Tex_Coords (0.0, 1.0);
                   Add_Tex_Coords (0.0, 0.5);
@@ -1036,9 +1041,10 @@ package body Batch_Manager is
       Texture_Index     : constant Positive := aTile.Texture_Index;
       Half_Atlas_Factor : constant Single := 0.5 * Atlas_Factor;
       Atlas_Row         : constant Tiles_Manager.Tiles_Index
-        := Tiles_Manager.Tiles_Index (Texture_Index) / Sets_In_Atlas_Row;
+        := Tiles_Manager.Tiles_Index (Texture_Index) / Sets_In_Atlas_Row + 1;
       Atlas_Col         : constant Tiles_Manager.Tiles_Index
-        := Tiles_Manager.Tiles_Index (Texture_Index) - Atlas_Row * Sets_In_Atlas_Row;
+        := Tiles_Manager.Tiles_Index (Texture_Index) - (Atlas_Row - 1) *
+                            Sets_In_Atlas_Row;
       S                 : Single := Half_Atlas_Factor;
       T                 : Single := 0.0;
       S_Offset          : Single := 0.0;
@@ -1050,8 +1056,8 @@ package body Batch_Manager is
          TF       : Single := 0.0;
          STF      : Singles.Vector2 := (0.0, 0.0);
          T_Offset : Single := 0.0;
-         SI       : Integer := 0;
-         TI       : Integer := 0;
+         SI       : Natural := 0;
+         TI       : Natural := 0;
       begin
          for index in Int range 1 .. 6 loop
             SF := Offset_Factor (index) (GL.X) * Half_Atlas_Factor;
@@ -1064,8 +1070,13 @@ package body Batch_Manager is
             Tf := -Offset_Factor (index) (GL.Y);
             STF := (S_Offset + Sf * ST_Offset,
                     T_Offset + Tf * ST_Offset);
-            aBatch.Tex_Coords.Replace_Element (Positive (Si), STF);
-            aBatch.Tex_Coord_Count := aBatch.Tex_Coord_Count + 1;
+            if Si > 0 then
+               if SI > aBatch.Tex_Coords.Last_Index then
+                  aBatch.Tex_Coords.Set_Length (Ada.Containers.Count_Type (Si));
+               end if;
+               aBatch.Tex_Coords.Replace_Element (Positive (Si), STF);
+               aBatch.Tex_Coord_Count := aBatch.Tex_Coord_Count + 1;
+            end if;
          end loop;
       end New_Tex_Cords;
 
