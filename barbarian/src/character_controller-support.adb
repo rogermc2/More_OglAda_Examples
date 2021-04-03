@@ -173,7 +173,6 @@ package body Character_Controller.Support is
                                        Character.World_Pos,
                                        Single (theSpec.Width_Radius));
 
-
    end Trigger_Tx;
 
     --  -------------------------------------------------------------------------

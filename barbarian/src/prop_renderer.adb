@@ -66,7 +66,7 @@ package body Prop_Renderer is
 
    function Activate_Elevator (Property_Index : Positive) return Boolean;
    procedure Update_Anim_Looped_Prop (Prop_Index : Positive; Seconds : Single);
-   procedure Update_Windlass (Prop_Index : Positive; Seconds : Float);
+   procedure Update_Prop_Animation_One_Off (Prop_Index : Positive; Seconds : Float);
 
    --  -------------------------------------------------------------------------
    --  return false if door already opened
@@ -1253,6 +1253,7 @@ package body Prop_Renderer is
                        (aProp.World_Pos, Pos, Radius, aProp, aScript, Continue);
                   when others => Continue := False;
                end case;
+
                if Continue then
                   if aScript.Hide_After_Triggering then
                      aProp.Is_Visible := False;
@@ -1370,6 +1371,14 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
+   procedure Update_Prop_Animation_One_Off
+     (Prop_Index : Positive; Seconds : Float) is
+   begin
+      null;
+   end Update_Prop_Animation_One_Off;
+
+   --  -------------------------------------------------------------------------
+
    procedure Update_Properties (Seconds : Float) is
 
       procedure Update (Props : Indicies_List) is
@@ -1397,7 +1406,7 @@ package body Prop_Renderer is
                when Elevator_Prop => Update_Elevator (P_Index, Seconds);
                when Pillar_Prop => Update_Pillar (P_Index, Seconds);
                when Decap_Head_Prop => Update_Decap_Head (P_Index, Seconds);
-               when Windlass_Prop => Update_Windlass (P_Index, Seconds);
+               when Windlass_Prop => Update_Prop_Animation_One_Off (P_Index, Seconds);
                when others =>
                   raise Prop_Renderer_Exception with
                     ("Prop_Renderer.Update_Properties, unhandled property type.");
@@ -1473,12 +1482,5 @@ package body Prop_Renderer is
    end Update_Static_Lights_Uniforms;
 
    --  ------------------------------------------------------------------------
-
-   procedure Update_Windlass (Prop_Index : Positive; Seconds : Float) is
-   begin
-      null;
-   end Update_Windlass;
-
-   --  -------------------------------------------------------------------------
 
 end Prop_Renderer;
