@@ -369,7 +369,7 @@ package body Main_Menu is
 
       if not Title_VAO.Initialized then
          raise Main_Menu_Exception with
-           "MMen.Draw_Title, Title_VAO has not been initialized";
+           "MMenu.Draw_Title, Title_VAO has not been initialized";
       end if;
       GL_Utils.Bind_VAO (Title_VAO);
       Draw_Arrays (Triangles, 0, Int (Title_Point_Count));

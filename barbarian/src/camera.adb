@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Blood_Splats;
 with FB_Effects;
 with Frustum;
@@ -308,6 +310,8 @@ package body Camera is
         end if;
 
         if G_Camera.Wind_In_Countdown >= 0.0 then
+            Put_Line ("Camera.Update_Camera_Effects Wind_In_Countdown " &
+                     Float'Image (G_Camera.Wind_In_Countdown));
             G_Camera.Wind_In_Countdown :=
               G_Camera.Wind_In_Countdown - Delta_Time;
             CD := Maths.Max_Float (G_Camera.Wind_In_Countdown, 0.0);
