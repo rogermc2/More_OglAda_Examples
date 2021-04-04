@@ -28,7 +28,7 @@ package Camera is
    procedure Set_Is_Dirty (State : Boolean);
    procedure Set_Screen_Shake_Countdown (Countdown : Float);
    function View_Matrix return Singles.Matrix4;
-   procedure Update_Camera_Effects (Delta_Time : Float);
+   procedure Update_Camera_Effects (Elapsed_Time : Float);
    function World_Position return Singles.Vector3;
 
 private

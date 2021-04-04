@@ -35,10 +35,10 @@ package body FB_Effects is
 
    Grey                    : constant Colors.Color := (0.6, 0.6, 0.6, 1.0);
    Num_Shader_Effects      : constant Integer := 9;
-   FB_Effect_Elapsed       : Float := 0.0;
+   FB_Effect_Elapsed       : Single := 0.0;
    Ww_Fb_Current_Effect    : FB_Effect := FB_Default_Effect;
    Ww_Fb_Effect_Elapsed    : Float := 0.0;
-   FB_Screw_Factor         : Float := 0.0;
+   FB_Screw_Factor         : Single := 0.0;
    Curr_Ssaa               : Single := 1.0;
 
    FB_VAO               : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -46,23 +46,23 @@ package body FB_Effects is
    --  g_fb:
    Special_FB           : GL.Objects.Framebuffers.Framebuffer;
    WW_FB                : GL.Objects.Framebuffers.Framebuffer;
-   WW_FB_Texture        : GL.Objects.Framebuffers.Framebuffer;
+   WW_FB_Texture        : GL.Objects.Textures.Texture;
    FB_Current_Effect    : FB_Effect := FB_Default_Effect;
-   FB_Shader_Programs   : array (1 .. Num_Shader_Effects) of
+   FB_Shader_Programs   : array (FB_Effect'Range) of
      GL.Objects.Programs.Program;
 
-   FB_Durations         : constant array (1 .. 9) of Float :=
-                            (0.0, --  default
-                             0.25, --  gold (was 1.0 / 2.0 * 0.5 -- wth?)
-                             0.17, --  red (was 1.0 / 3.0 * 0.5 -- ?)
-                             2.0,  --  fadein
-                             2.0,  --  fadeout
-                             5.0,  --  screw
-                             10.0, --  greyscale
-                             1.0,  --  white flash
+   FB_Durations         : constant array (FB_Effect'Range) of Single :=
+                            (0.0,    --  default
+                             0.25,   --  gold (was 1.0 / 2.0 * 0.5 -- wth?)
+                             0.17,   --  red (was 1.0 / 3.0 * 0.5 -- ?)
+                             2.0,    --  fadein
+                             2.0,    --  fadeout
+                             5.0,    --  screw
+                             10.0,   --  greyscale
+                             1.0,    --  white flash
                              0.25);  --  green
 
-   FB_Expires           : constant array (1 .. 9) of Boolean :=
+   FB_Expires           : constant array (FB_Effect'Range) of Boolean :=
                             (False, --  Default
                              True,  --  Gold
                              True,  --  Red
@@ -107,7 +107,7 @@ package body FB_Effects is
       Wibbly_Pass : Boolean := False;
    begin
       if Settings.Fb_Effects_Enabled then
-         FB_Effect_Elapsed := FB_Effect_Elapsed + Float (Delta_Time);
+         FB_Effect_Elapsed := FB_Effect_Elapsed + Delta_Time;
          Ww_Fb_Effect_Elapsed := Ww_Fb_Effect_Elapsed + Float (Delta_Time);
          Wibbly_Pass := Ww_Fb_Current_Effect /= FB_Default_Effect;
          if Wibbly_Pass then
@@ -121,6 +121,57 @@ package body FB_Effects is
          Utilities.Clear_Background_Colour_And_Depth (Grey);
          GL.Objects.Textures.Set_Active_Unit (0);
          Texture_2D.Bind (FB_Texture);
+      end if;
+
+      GL.Objects.Programs.Use_Program (FB_Shader_Programs (FB_Current_Effect));
+      if FB_Expires (FB_Current_Effect) and
+        FB_Effect_Elapsed > FB_Durations (FB_Current_Effect) then
+         FB_Current_Effect := FB_Default_Effect;
+      end if;
+
+      case FB_Current_Effect is
+         when FB_Gold_Flash_Effect =>
+            FB_Gold_Shader_Manager.Set_Time (FB_Effect_Elapsed);
+         when FB_Red_Flash_Effect =>
+            FB_Red_Shader_Manager.Set_Time (FB_Effect_Elapsed);
+         when FB_Fadein_Effect =>
+            FB_Fadein_Shader_Manager.Set_Time (FB_Effect_Elapsed);
+         when FB_Fadeout_Effect =>
+            FB_Fadeout_Shader_Manager.Set_Time (FB_Effect_Elapsed);
+         when FB_White_Flash_Effect =>
+            FB_White_Shader_Manager.Set_Time (FB_Effect_Elapsed);
+         when FB_Green_Flash_Effect =>
+            FB_Green_Shader_Manager.Set_Time (FB_Effect_Elapsed);
+         when others => null;
+      end case;
+      Put_Line ("FB_Effects.Draw_FB_Effects 2a");
+
+      GL_Utils.Bind_VAO (FB_VAO);
+      Put_Line ("FB_Effects.Draw_FB_Effects Draw_Arrays 1");
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
+
+      Put_Line ("FB_Effects.Draw_FB_Effects 3");
+      GL.Objects.Textures.Set_Active_Unit (0);
+      if Wibbly_Pass then
+         Read_And_Draw_Target.Bind (Default_Framebuffer);
+         Utilities.Clear_Colour_Buffer_And_Depth;
+         Texture_2D.Bind (WW_FB_Texture);
+
+      Put_Line ("FB_Effects.Draw_FB_Effects 4");
+         GL.Objects.Programs.Use_Program (FB_Shader_Programs (FB_Current_Effect));
+         if FB_Expires (FB_Current_Effect) and
+           FB_Effect_Elapsed > FB_Durations (FB_Current_Effect) then
+            FB_Current_Effect := FB_Default_Effect;
+         end if;
+         if Ww_Fb_Current_Effect = FB_Screw_Effect then
+            FB_Screw_Shader_Manager.Set_Time (FB_Effect_Elapsed);
+            FB_Screw_Shader_Manager.Set_Force (FB_Screw_Factor);
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
+
+            if FB_Screw_Factor < 0.1 then
+               FB_Current_Effect := FB_Default_Effect;
+            end if;
+         end if;
       end if;
 
    end Draw_FB_Effects;
@@ -179,22 +230,22 @@ package body FB_Effects is
          raise FB_Effects_Exception with "FB_Effects.Init Incomplete frambuffer";
       end if;
 
-      VBO := GL_Utils.Create_2D_VBO (Points);
       FB_VAO.Initialize_Id;
+      VBO := GL_Utils.Create_2D_VBO (Points);
       GL_Utils.Bind_VAO (FB_VAO);
       Enable_Vertex_Attrib_Array (Attrib_VP);
       Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type, False, 0, 0);
 
-      FB_Default_Shader_Manager.Init (FB_Shader_Programs (1));
-      FB_Gold_Shader_Manager.Init (FB_Shader_Programs (2));
-      FB_Red_Shader_Manager.Init (FB_Shader_Programs (3));
-      FB_Fadein_Shader_Manager.Init (FB_Shader_Programs (4));
+      FB_Default_Shader_Manager.Init (FB_Shader_Programs (FB_Default_Effect));
+      FB_Gold_Shader_Manager.Init (FB_Shader_Programs (FB_Gold_Flash_Effect));
+      FB_Red_Shader_Manager.Init (FB_Shader_Programs (FB_Red_Flash_Effect));
+      FB_Fadein_Shader_Manager.Init (FB_Shader_Programs (FB_Fadein_Effect));
 
-      FB_Fadeout_Shader_Manager.Init (FB_Shader_Programs (5));
-      FB_Screw_Shader_Manager.Init (FB_Shader_Programs (6));
-      FB_Grey_Shader_Manager.Init (FB_Shader_Programs (7));
-      FB_White_Shader_Manager.Init (FB_Shader_Programs (8));
-      FB_Green_Shader_Manager.Init (FB_Shader_Programs (9));
+      FB_Fadeout_Shader_Manager.Init (FB_Shader_Programs (FB_Fadeout_Effect));
+      FB_Screw_Shader_Manager.Init (FB_Shader_Programs (FB_Screw_Effect));
+      FB_Grey_Shader_Manager.Init (FB_Shader_Programs (FB_Grey_Effect));
+      FB_White_Shader_Manager.Init (FB_Shader_Programs (FB_White_Flash_Effect));
+      FB_Green_Shader_Manager.Init (FB_Shader_Programs (FB_Green_Flash_Effect));
 
       Game_Utils.Game_Log ("---FRAMEBUFFER INITIALIZED---");
 
@@ -259,7 +310,7 @@ package body FB_Effects is
    procedure Set_Feedback_Screw (Factor : Float) is
    begin
       Ww_Fb_Current_Effect := FB_Screw_Effect;
-      FB_Screw_Factor := Factor;
+      FB_Screw_Factor := Single (Factor);
    end Set_Feedback_Screw;
 
    --  -------------------------------------------------------------------------

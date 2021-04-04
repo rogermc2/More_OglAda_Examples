@@ -55,11 +55,11 @@ package body Main_Loop is
 
       --          Black                   : constant Colors.Color := (0.0, 0.0, 0.0, 0.0);
       Grey                    : constant Colors.Color := (0.4, 0.4, 0.4, 0.0);
-      --     Red            : constant GL.Types.Singles.Vector4 := (1.0, 0.0, 0.0, 1.0);
-      --     Green          : constant GL.Types.Singles.Vector4  := (0.0, 0.5, 0.0, 1.0);
+      --     Red            : constant Colors.Color := (1.0, 0.0, 0.0, 1.0);
+      --     Green          : constant Colors.Color  := (0.0, 0.5, 0.0, 1.0);
       Blue                    : constant Colors.Color := (0.0, 0.0, 0.5, 1.0);
-      --     Magenta        : constant GL.Types.Singles.Vector4 := (1.0, 0.0, 1.0, 1.0);
-      --     Yellow         : constant GL.Types.Singles.Vector4 := (1.0, 1.0, 0.0, 0.5);
+      --     Magenta        : constant Colors.Color := (1.0, 0.0, 1.0, 1.0);
+      Yellow                  : constant Colors.Color := (1.0, 1.0, 0.0, 0.5);
       White                   : constant Colors.Color := (1.0, 1.0, 1.0, 0.0);
       Title_Track             : constant String := "Warlock_Symphony.ogg";
       Is_Playing_Hammer_Track : Boolean := False;
@@ -103,6 +103,7 @@ package body Main_Loop is
       procedure Do_Menu_Not_Open (Window     : in out Input_Callback.Barbarian_Window;
                                   Delta_Time : Float;
                                   Is_Running : in out Boolean) is
+         Back_Colour   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.0);
       begin
          --                              Game_Utils.Game_Log
          --                                ("Main_Loop.Game_Loop Is_Running Main Menu not open");
@@ -181,6 +182,7 @@ package body Main_Loop is
          Put_Line ("Main_Loop.Game_Loop");
          Camera.Set_Is_Dirty (True);
          while Is_Running loop
+            Utilities.Clear_Background_Colour (Yellow);
             Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
                            Curr_Frame_Time_Accum_Ms, Avg_Frames_Count,
                            Curr_Frames_Count);
@@ -320,13 +322,10 @@ package body Main_Loop is
             if Flash_Timer < 0.25 then
                Flash_Timer := Flash_Timer + Elapsed_Time;
                b := Abs (Sin (Single ((30.0)) * Single (Current_Time)));
-               b := 0.4;
                Back_Colour := (b, b, b, 1.0);
                Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
             else
-               b := 0.0;
-               b := 0.7;
-               Back_Colour := (b, b, b, 1.0);
+               Back_Colour := (0.0, 0.0, 0.0, 1.0);
                Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
                Main_Menu.Draw_Title_Only;
             end if;
@@ -463,7 +462,7 @@ package body Main_Loop is
                Prop_Renderer.Update_Static_Lights_Uniforms;
                Sprite_Renderer.Update_Static_Lights_Uniforms;
 
-               Camera.Camera_Wind_In;  --  Camera screw-in effect
+               Camera.Camera_Wind_In;
                Audio.Play_Sound ("enter_portal.wav", False);
 
                Level_Time := 0.0;
@@ -495,10 +494,9 @@ package body Main_Loop is
          Delta_Time    : Float := 0.0;
          Flash_Timer   : Float := 0.0;
       begin
-         --  initiate main menu loop
+         --  initial main menu loop
          Main_Menu.Start_Menu_Title_Bounce;
          Utilities.Clear_Background_Colour_And_Depth (Grey);
-         Utilities.Clear_Background_Colour_And_Depth (White);
 
          --              if not Skip_Intro_Screen_And_Main_Menu then
          Main_Menu.Set_Menu_Open (True);
@@ -507,7 +505,7 @@ package body Main_Loop is
          Is_Running := True;
          Last_Time := Float (Glfw.Time);
 
-         while Main_Menu.Menu_Open and Is_Running loop
+         while Main_Menu.Menu_Open loop
             GL_Utils.Window_Resize (Window);
             GL_Utils.Frame_Buffer_Resize (Window);
 

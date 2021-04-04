@@ -7,6 +7,7 @@ package FB_Effects is
                       FB_Red_Flash_Effect, FB_Fadein_Effect,
                       FB_Fadeout_Effect, FB_Screw_Effect, FB_Grey_Effect,
                       FB_White_Flash_Effect, FB_Green_Flash_Effect);
+   pragma Ordered (FB_Effect);
 
    FB_Effects_Exception : Exception;
 
