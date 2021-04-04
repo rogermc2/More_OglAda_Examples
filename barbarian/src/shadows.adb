@@ -52,8 +52,8 @@ package body Shadows is
         Render_Buffer    : GL.Objects.Renderbuffers.Renderbuffer;
     end record;
 
-    Black     : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
-    G_Shadows : Shadow_Data;
+    Background : constant GL.Types.Colors.Color := (0.4, 0.4, 0.4, 1.0);
+    G_Shadows  : Shadow_Data;
 
     procedure Load_Cube_Map_Texture
       (theTexture : GL.Objects.Textures.Targets.Cube_Map_Side_Target.Fillable_Target);
@@ -121,7 +121,7 @@ package body Shadows is
             GL.Objects.Programs.Use_Program (G_Shadows.Depth_Skinned_Sp);
             Depth_Skinned_Shader_Manager.Set_View_Matrix
               (G_Shadows.Caster_Vs (Caster_Index));
-            Utilities.Clear_Background_Colour (Black);
+            Utilities.Clear_Background_Colour (Background);
         end if;
     end Bind_Shadow_FB;
 
