@@ -43,12 +43,14 @@ package body FB_Effects is
    Curr_Ssaa               : Single := 1.0;
 
    FB_VAO               : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   FB_VBO               : GL.Objects.Buffers.Buffer;
    FB_Texture           : GL.Objects.Textures.Texture;
    --  g_fb:
    Special_FB           : GL.Objects.Framebuffers.Framebuffer;
    WW_FB                : GL.Objects.Framebuffers.Framebuffer;
    WW_FB_Texture        : GL.Objects.Textures.Texture;
    Render_Buff          : GL.Objects.Renderbuffers.Renderbuffer;
+   Draw_Buffers         : GL.Buffers.Explicit_Color_Buffer_List (1 .. 1);
    FB_Current_Effect    : FB_Effect := FB_Default_Effect;
    FB_Shader_Programs   : array (FB_Effect'Range) of
      GL.Objects.Programs.Program;
@@ -74,6 +76,10 @@ package body FB_Effects is
                              False, --  Grey
                              True,  --  White
                              True); --  Green
+
+
+    procedure Set_Up_FB_Textures  (FB_Width, FB_Height : Int);
+    procedure Set_Up_WW_Texture (Width, Height : Int);
 
    --  -------------------------------------------------------------------------
 
@@ -194,12 +200,8 @@ package body FB_Effects is
                         (-1.0, -1.0),
                         ( 1.0, -1.0),
                         ( 1.0,  1.0));
-
-      Draw_Buffers : Explicit_Color_Buffer_List (1 .. 1);
-      VBO          : GL.Objects.Buffers.Buffer;
       FB_Width     : constant Int := Int (Curr_Ssaa * Single (Width));
       FB_Height    : constant Int := Int (Curr_Ssaa * Single (Height));
-      RB           : Renderbuffer;
    begin
       Game_Utils.Game_Log ("---INIT FRAMEBUFFER---");
       Draw_Buffers (1) := Color_Attachment0;
@@ -208,29 +210,10 @@ package body FB_Effects is
       Special_FB.Initialize_Id;  --  g_fb
       Read_And_Draw_Target.Bind (Special_FB);
 
-      RB.Initialize_Id;
-      Active_Renderbuffer.Bind (RB);
-      Active_Renderbuffer.Allocate (GL.Pixels.Depth_Component,
-                                    FB_Width, FB_Height);
-      Read_And_Draw_Target.Attach_Renderbuffer (Depth_Attachment, RB);
-
-      FB_Texture.Initialize_Id;
-      GL.Objects.Textures.Set_Active_Unit (0);
-      Texture_2D.Bind (FB_Texture);
-      if Curr_Ssaa > 1.0 then
-         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
-      else
-         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Nearest);
-      end if;
-      Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Nearest);
-      Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
-      Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
-      Texture_2D.Load_Empty_Texture (0, GL.Pixels.SRGB_Alpha,
-                                     Int (Single (FB_Width) * Curr_Ssaa),
-                                     Int (Single (FB_Height) * Curr_Ssaa));
-
+      Set_Up_FB_Textures (FB_Width, FB_Height);
       Read_And_Draw_Target.Attach_Texture_2D
           (Color_Attachment_0, GL.Low_Level.Enums.Texture_2D, FB_Texture);
+
       Draw_Buffers (1) := Color_Attachment0;
       Set_Active_Buffers (Draw_Buffers);
       if not GL_Utils.Verify_Bound_Framebuffer then
@@ -247,20 +230,13 @@ package body FB_Effects is
           (GL.Pixels.Depth_Component, Int (Width), Int (Height));
       Read_And_Draw_Target.Attach_Renderbuffer (Depth_Attachment, Render_Buff);
 
-      WW_FB_Texture.Initialize_Id;
-      GL.Objects.Textures.Set_Active_Unit (0);
-      Texture_2D.Bind (WW_FB_Texture);
+      Set_Up_WW_Texture (Int (Width), Int (Height)) ;
 
-      Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Nearest);
-      Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Nearest);
-      Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
-      Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
-      Texture_2D.Load_Empty_Texture (0, GL.Pixels.SRGB_Alpha,
-                                     Int (Width), Int (Height));
       Read_And_Draw_Target.Attach_Texture (Color_Attachment_0, WW_FB_Texture, 0);
+      Set_Active_Buffers (Draw_Buffers);
 
       FB_VAO.Initialize_Id;
-      VBO := GL_Utils.Create_2D_VBO (Points);
+      FB_VBO := GL_Utils.Create_2D_VBO (Points);
       GL_Utils.Bind_VAO (FB_VAO);
       Enable_Vertex_Attrib_Array (Attrib_VP);
       Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type, False, 0, 0);
@@ -349,6 +325,43 @@ package body FB_Effects is
       WW_FB_Current_Effect := Effect;
       WW_FB_Effect_Elapsed := 0.0;
    end Set_WW_FB_Effect;
+
+   --  ------------------------------------------------------------------------
+
+    procedure Set_Up_FB_Textures (FB_Width, FB_Height : Int) is
+      use GL.Objects.Textures.Targets;
+    begin
+      FB_Texture.Initialize_Id;
+      GL.Objects.Textures.Set_Active_Unit (0);
+      Texture_2D.Bind (FB_Texture);
+      if Curr_Ssaa > 1.0 then
+         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Linear);
+      else
+         Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Nearest);
+      end if;
+      Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Nearest);
+      Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
+      Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
+      Texture_2D.Load_Empty_Texture (0, GL.Pixels.SRGB_Alpha,
+                                     Int (Single (FB_Width) * Curr_Ssaa),
+                                     Int (Single (FB_Height) * Curr_Ssaa));
+   end Set_Up_FB_Textures;
+
+   --  ------------------------------------------------------------------------
+
+    procedure Set_Up_WW_Texture (Width, Height : Int) is
+      use GL.Objects.Textures.Targets;
+    begin
+      WW_FB_Texture.Initialize_Id;
+      GL.Objects.Textures.Set_Active_Unit (0);
+      Texture_2D.Bind (WW_FB_Texture);
+
+      Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Nearest);
+      Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Nearest);
+      Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
+      Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
+      Texture_2D.Load_Empty_Texture (0, GL.Pixels.SRGB_Alpha, Width, Height);
+   end Set_Up_WW_Texture;
 
    --  ------------------------------------------------------------------------
 
