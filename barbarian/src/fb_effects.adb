@@ -3,6 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Buffers;
+with GL.Low_Level.Enums;
 with GL.Objects.Buffers;
 with GL.Objects.Framebuffers;
 with GL.Objects.Programs;
@@ -47,6 +48,7 @@ package body FB_Effects is
    Special_FB           : GL.Objects.Framebuffers.Framebuffer;
    WW_FB                : GL.Objects.Framebuffers.Framebuffer;
    WW_FB_Texture        : GL.Objects.Textures.Texture;
+   Render_Buff          : GL.Objects.Renderbuffers.Renderbuffer;
    FB_Current_Effect    : FB_Effect := FB_Default_Effect;
    FB_Shader_Programs   : array (FB_Effect'Range) of
      GL.Objects.Programs.Program;
@@ -203,7 +205,7 @@ package body FB_Effects is
       Draw_Buffers (1) := Color_Attachment0;
       Curr_Ssaa := Settings.Super_Sample_Anti_Aliasing;
 
-      Special_FB.Initialize_Id;
+      Special_FB.Initialize_Id;  --  g_fb
       Read_And_Draw_Target.Bind (Special_FB);
 
       RB.Initialize_Id;
@@ -224,11 +226,38 @@ package body FB_Effects is
       Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
       Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
       Texture_2D.Load_Empty_Texture (0, GL.Pixels.SRGB_Alpha,
-                                     FB_Width, FB_Height);
+                                     Int (Single (FB_Width) * Curr_Ssaa),
+                                     Int (Single (FB_Height) * Curr_Ssaa));
+
+      Read_And_Draw_Target.Attach_Texture_2D
+          (Color_Attachment_0, GL.Low_Level.Enums.Texture_2D, FB_Texture);
+      Draw_Buffers (1) := Color_Attachment0;
       Set_Active_Buffers (Draw_Buffers);
       if not GL_Utils.Verify_Bound_Framebuffer then
          raise FB_Effects_Exception with "FB_Effects.Init Incomplete frambuffer";
       end if;
+
+      --  create another FB for the wibbly wobbly after effect
+      WW_FB.Initialize_Id;
+      Read_And_Draw_Target.Bind (WW_FB);
+
+      Render_Buff.Initialize_Id;
+      Active_Renderbuffer.Bind (Render_Buff);
+      Active_Renderbuffer.Allocate
+          (GL.Pixels.Depth_Component, Int (Width), Int (Height));
+      Read_And_Draw_Target.Attach_Renderbuffer (Depth_Attachment, Render_Buff);
+
+      WW_FB_Texture.Initialize_Id;
+      GL.Objects.Textures.Set_Active_Unit (0);
+      Texture_2D.Bind (WW_FB_Texture);
+
+      Texture_2D.Set_Magnifying_Filter (GL.Objects.Textures.Nearest);
+      Texture_2D.Set_Minifying_Filter (GL.Objects.Textures.Nearest);
+      Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_S
+      Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge); --  Wrap_T
+      Texture_2D.Load_Empty_Texture (0, GL.Pixels.SRGB_Alpha,
+                                     Int (Width), Int (Height));
+      Read_And_Draw_Target.Attach_Texture (Color_Attachment_0, WW_FB_Texture, 0);
 
       FB_VAO.Initialize_Id;
       VBO := GL_Utils.Create_2D_VBO (Points);
