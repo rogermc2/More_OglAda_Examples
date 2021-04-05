@@ -5,7 +5,8 @@ out vec4 frag_colour;
 
 in vec2 fp, st;
 uniform sampler2D tex;
-uniform float t, f;
+uniform float t;
+uniform float f;
 
 void main ()
     {

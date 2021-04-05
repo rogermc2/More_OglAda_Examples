@@ -115,6 +115,7 @@ package body FB_Effects is
         Wibbly_Pass : Boolean := False;
     begin
         if Settings.Fb_Effects_Enabled then
+            Put_Line ("FB_Effects,Draw_FB_Effects enabled");
             FB_Effect_Elapsed := FB_Effect_Elapsed + Delta_Time;
             Ww_Fb_Effect_Elapsed := Ww_Fb_Effect_Elapsed + Float (Delta_Time);
             Wibbly_Pass := Ww_Fb_Current_Effect /= FB_Default_Effect;
@@ -153,7 +154,9 @@ package body FB_Effects is
             end case;
 
             GL_Utils.Bind_VAO (FB_VAO);
+
             GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
+
 
             GL.Objects.Textures.Set_Active_Unit (0);
             if Wibbly_Pass then
@@ -168,8 +171,11 @@ package body FB_Effects is
                 end if;
                 if Ww_Fb_Current_Effect = FB_Screw_Effect then
                     FB_Screw_Shader_Manager.Set_Time (FB_Effect_Elapsed);
+                    Put_Line ("FB_Effects,Draw_FB_Effects Time set");
                     FB_Screw_Shader_Manager.Set_Force (FB_Screw_Factor);
+                    Put_Line ("FB_Effects,Draw_FB_Effects Force set");
                     GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
+                    Put_Line ("FB_Effects,Draw_FB_Effects arrays drawn");
 
                     if FB_Screw_Factor < 0.1 then
                         FB_Current_Effect := FB_Default_Effect;
@@ -177,6 +183,7 @@ package body FB_Effects is
                 end if;
             end if;
         end if;
+        Put_Line ("FB_Effects,Draw_FB_Effects done");
 
     end Draw_FB_Effects;
 

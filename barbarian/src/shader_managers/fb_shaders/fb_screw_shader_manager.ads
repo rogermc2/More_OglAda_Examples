@@ -11,8 +11,8 @@ package FB_Screw_Shader_Manager is
         Time_ID  : GL.Uniforms.Uniform := 0;
     end record;
 
-    procedure Init (Shader_Program : in out GL.Objects.Programs.Program);
-    procedure Set_Force (F : Single);
+    procedure Init (Shader_Program : out GL.Objects.Programs.Program);
+    procedure Set_Force (Force : Single);
     procedure Set_Tex (Tex : Int);
     procedure Set_Time (T : Single);
 
