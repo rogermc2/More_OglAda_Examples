@@ -212,8 +212,6 @@ package body FB_Effects is
       Read_And_Draw_Target.Bind (FB_FBO);
 
       Set_Up_FB_Textures (FB_Width, FB_Height);
-      Read_And_Draw_Target.Attach_Texture_2D
-        (Color_Attachment_0, GL.Low_Level.Enums.Texture_2D, FB_Texture);
 
       Draw_Buffers (1) := Color_Attachment0;
       Set_Active_Buffers (Draw_Buffers);
@@ -344,6 +342,7 @@ package body FB_Effects is
 
    procedure Set_Up_FB_Textures (FB_Width, FB_Height : Int) is
       use GL.Objects.Textures.Targets;
+      use GL.Objects.Framebuffers;
    begin
       FB_Texture.Initialize_Id;
       GL.Objects.Textures.Set_Active_Unit (0);
@@ -359,6 +358,8 @@ package body FB_Effects is
       Texture_2D.Load_Empty_Texture (0, GL.Pixels.SRGB_Alpha,
                                      Int (Single (FB_Width) * Curr_Ssaa),
                                      Int (Single (FB_Height) * Curr_Ssaa));
+      Read_And_Draw_Target.Attach_Texture_2D
+        (Color_Attachment_0, GL.Low_Level.Enums.Texture_2D, FB_Texture);
    end Set_Up_FB_Textures;
 
    --  ------------------------------------------------------------------------
