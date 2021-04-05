@@ -2,7 +2,6 @@
 with Ada.Containers.Ordered_Maps;
 with Ada.Containers.Vectors;
 with Ada.Exceptions;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures.Targets;
@@ -22,19 +21,13 @@ package body Texture_Manager is
       (Natural, GL.Objects.Textures.Texture);
     subtype Bound_Textures_Map is  Bound_Textures_Package.Map;
 
-    type Loaded_Texture is record
-        File_Name   : Unbounded_String;
-        --          Texture_ID  : GL.Types.UInt;
-        theTexture  : GL.Objects.Textures.Texture;
-        Has_Mipmaps : Boolean := False;
-    end record;
-
     package Loaded_Textures_Package is new Ada.Containers.Vectors
       (Natural, Loaded_Texture);
     subtype Loaded_Textures_List is Loaded_Textures_Package.Vector;
 
     Bound_Textures       : Bound_Textures_Map := Bound_Textures_Package.Empty_Map;
     Loaded_Textures      : Loaded_Textures_List;
+    Default_Texture      : Loaded_Texture;
     Max_Aniso            : constant Float := 1.0;
     Anisotropy_Factor    : Float := 1.0;
 
@@ -106,7 +99,6 @@ package body Texture_Manager is
         Sq_Dn           : Integer;
         Index           : Positive := 1;
         Def_Texture     : Texture;
-        Default_Texture : Loaded_Texture;
     begin
         ---  Generate RGBA pixels
         while Index <= Dt_Data_Size loop
@@ -161,13 +153,35 @@ package body Texture_Manager is
 
     --  ------------------------------------------------------------------------
 
+   function Get_Default_Texture return Texture is
+   begin
+      return Default_Texture.theTexture;
+   end Get_Default_Texture;
+
+    --  ------------------------------------------------------------------------
+
+   function Get_Loaded_Texture (Index : Positive) return Loaded_Texture is
+      use Loaded_Textures_Package;
+      aTexture : Loaded_Texture;
+   begin
+        if Index <= Loaded_Textures.Last_Index then
+         aTexture := Loaded_Textures.Element (Index);
+      else
+         raise Texture_Exception with
+           " Get_Loaded_Texture called with invalid index: " &
+           Integer'Image (Index);
+        end if;
+      return aTexture;
+
+   end Get_Loaded_Texture;
+
+    --  ------------------------------------------------------------------------
+
     procedure Init is
     begin
         --  Anistropy does not appear to be supported by OpenGLADA
         Bound_Textures.Clear;
         Loaded_Textures.Clear;
---          Bound_Textures.Set_Length (12);
---          Loaded_Textures.Set_Length (12);
         Create_Default_Texture;
         Game_Utils.Game_Log ("Texture manager initialized.");
     end Init;

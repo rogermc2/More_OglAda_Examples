@@ -30,6 +30,7 @@ with FB_Screw_Shader_Manager;
 with FB_Grey_Shader_Manager;
 with FB_White_Shader_Manager;
 with FB_Green_Shader_Manager;
+with Texture_Manager;
 
 package body FB_Effects is
    use GL.Types;
@@ -152,20 +153,16 @@ package body FB_Effects is
             FB_Green_Shader_Manager.Set_Time (FB_Effect_Elapsed);
          when others => null;
       end case;
-      Put_Line ("FB_Effects.Draw_FB_Effects 2a");
 
       GL_Utils.Bind_VAO (FB_VAO);
-      Put_Line ("FB_Effects.Draw_FB_Effects Draw_Arrays 1");
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
 
-      Put_Line ("FB_Effects.Draw_FB_Effects 3");
       GL.Objects.Textures.Set_Active_Unit (0);
       if Wibbly_Pass then
          Read_And_Draw_Target.Bind (Default_Framebuffer);
          Utilities.Clear_Colour_Buffer_And_Depth;
          Texture_2D.Bind (WW_FB_Texture);
 
-      Put_Line ("FB_Effects.Draw_FB_Effects 4");
          GL.Objects.Programs.Use_Program (FB_Shader_Programs (FB_Current_Effect));
          if FB_Expires (FB_Current_Effect) and
            FB_Effect_Elapsed > FB_Durations (FB_Current_Effect) then
@@ -256,6 +253,13 @@ package body FB_Effects is
       FB_Grey_Shader_Manager.Init (FB_Shader_Programs (FB_Grey_Effect));
       FB_White_Shader_Manager.Init (FB_Shader_Programs (FB_White_Flash_Effect));
       FB_Green_Shader_Manager.Init (FB_Shader_Programs (FB_Green_Flash_Effect));
+
+      FB_Current_Effect := FB_Default_Effect;
+      WW_FB_Current_Effect := FB_Default_Effect;
+
+      GL.Objects.Textures.Set_Active_Unit (0);
+      Texture_2D.Bind (Texture_Manager.Get_Default_Texture);
+      Read_And_Draw_Target.Bind (Default_Framebuffer);
 
       Game_Utils.Game_Log ("---FRAMEBUFFER INITIALIZED---");
 
