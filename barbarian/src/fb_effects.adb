@@ -217,7 +217,7 @@ package body FB_Effects is
       Draw_Buffers (1) := Color_Attachment0;
       Set_Active_Buffers (Draw_Buffers);
       if not GL_Utils.Verify_Bound_Framebuffer then
-         raise FB_Effects_Exception with "FB_Effects.Init Incomplete frambuffer";
+         raise FB_Effects_Exception with "Init Incomplete frambuffer";
       end if;
 
       --  create another FB for the wibbly wobbly after effect
@@ -234,6 +234,11 @@ package body FB_Effects is
 
       Read_And_Draw_Target.Attach_Texture (Color_Attachment_0, WW_FB_Texture, 0);
       Set_Active_Buffers (Draw_Buffers);
+
+      if not GL_Utils.Verify_Bound_Framebuffer then
+            raise FB_Effects_Exception with
+            "Init framebuffer invalid";
+      end if;
 
       FB_VAO.Initialize_Id;
       FB_VBO := GL_Utils.Create_2D_VBO (Points);
