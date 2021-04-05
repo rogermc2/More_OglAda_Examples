@@ -120,6 +120,7 @@ package body Main_Loop is
          if Is_Running then
             Camera.Update_Camera_Effects (Delta_Time);
             Update_Logic_Steps (Window, Delta_Time);
+            Utilities.Clear_Background_Colour (Yellow);
             if Main_Menu.End_Story_Open then
                --  Just won the game
                Game_Utils.Game_Log
@@ -219,6 +220,7 @@ package body Main_Loop is
 --                    Game_Utils.Game_Log ("Main_Loop.Game_Loop Do_Menu_Not_Open");
                   Do_Menu_Not_Open (Window, Delta_Time, Is_Running);
 
+                  Utilities.Clear_Background_Colour (Yellow);
                   if Is_Running then
                      Player_1_View (Window, Tile_Tex, Tile_Spec_Tex,
                                     Ramp_Diff_Tex, Ramp_Spec_Tex,
@@ -325,7 +327,7 @@ package body Main_Loop is
                Back_Colour := (b, b, b, 1.0);
                Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
             else
-               Back_Colour := (0.0, 0.0, 0.0, 1.0);
+               Back_Colour := (0.0, 0.6, 0.6, 1.0);
                Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
                Main_Menu.Draw_Title_Only;
             end if;

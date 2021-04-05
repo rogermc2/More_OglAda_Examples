@@ -34,7 +34,6 @@ with Texture_Manager;
 
 package body FB_Effects is
    use GL.Types;
-
    Grey                    : constant Colors.Color := (0.6, 0.6, 0.6, 1.0);
    Num_Shader_Effects      : constant Integer := 9;
    FB_Effect_Elapsed       : Single := 0.0;
@@ -44,10 +43,10 @@ package body FB_Effects is
    Curr_Ssaa               : Single := 1.0;
 
    FB_VAO               : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   FB_VBO               : GL.Objects.Buffers.Buffer;
+   Points_VBO           : GL.Objects.Buffers.Buffer;
    FB_Texture           : GL.Objects.Textures.Texture;
    --  g_fb:
-   Special_FB           : GL.Objects.Framebuffers.Framebuffer;
+   FB_FBO               : GL.Objects.Framebuffers.Framebuffer;
    WW_FB                : GL.Objects.Framebuffers.Framebuffer;
    WW_FB_Texture        : GL.Objects.Textures.Texture;
    Render_Buff          : GL.Objects.Renderbuffers.Renderbuffer;
@@ -89,7 +88,7 @@ package body FB_Effects is
       use GL.Objects.Framebuffers;
    begin
       if Settings.Fb_Effects_Enabled then
-         Read_And_Draw_Target.Bind  (Special_FB);
+         Read_And_Draw_Target.Bind (FB_FBO);
          GL.Window.Set_Viewport
            (0, 0, Int (Single (Settings.Framebuffer_Width) * Curr_Ssaa),
             Int (Single (Settings.Framebuffer_Height) * Curr_Ssaa));
@@ -191,12 +190,12 @@ package body FB_Effects is
       use GL.Objects.Textures.Targets;
       use Shader_Attributes;
       Points       : constant Singles.Vector2_Array (1 .. 6) :=
-                       ((-1.0, -1.0),
-                        ( 1.0,  1.0),
-                        (-1.0,  1.0),
-                        (-1.0, -1.0),
-                        ( 1.0, -1.0),
-                        ( 1.0,  1.0));
+                       ((-1.0, -1.0),   --  BL
+                        ( 1.0,  1.0),   --  TR
+                        (-1.0,  1.0),   --  BR
+                        (-1.0, -1.0),   --  BL
+                        ( 1.0, -1.0),   --  TL
+                        ( 1.0,  1.0));  --  TR
       FB_Width     : constant Int := Int (Curr_Ssaa * Single (Width));
       FB_Height    : constant Int := Int (Curr_Ssaa * Single (Height));
    begin
@@ -204,8 +203,8 @@ package body FB_Effects is
       Draw_Buffers (1) := Color_Attachment0;
       Curr_Ssaa := Settings.Super_Sample_Anti_Aliasing;
 
-      Special_FB.Initialize_Id;  --  g_fb
-      Read_And_Draw_Target.Bind (Special_FB);
+      FB_FBO.Initialize_Id;  --  g_fb
+      Read_And_Draw_Target.Bind (FB_FBO);
 
       Set_Up_FB_Textures (FB_Width, FB_Height);
       Read_And_Draw_Target.Attach_Texture_2D
@@ -238,7 +237,8 @@ package body FB_Effects is
       end if;
 
       FB_VAO.Initialize_Id;
-      FB_VBO := GL_Utils.Create_2D_VBO (Points);
+      --  Create_2D_VBO initializes, binds and loads Points_VBO
+      Points_VBO := GL_Utils.Create_2D_VBO (Points);
       GL_Utils.Bind_VAO (FB_VAO);
       Enable_Vertex_Attrib_Array (Attrib_VP);
       Set_Vertex_Attrib_Pointer (Attrib_VP, 2, Single_Type, False, 0, 0);

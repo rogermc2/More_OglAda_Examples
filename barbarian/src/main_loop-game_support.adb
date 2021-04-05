@@ -35,6 +35,7 @@ with Transparency;
 
 package body Main_Loop.Game_Support is
 
+    Yellow                       : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.5);
     Shadow_Caster_Max_Tiles_Away : constant GL.Types.Int := 10;
     FPS_Counter                  : Integer := 0;
 
@@ -111,7 +112,7 @@ package body Main_Loop.Game_Support is
         Centre_Z        : constant Int := Int ((1.0 + Camera_Position (GL.Z)) / 2.0);
         UV              : constant Ints.Vector2 :=
                             (Abs (Centre_X), Abs (Centre_Z));
-        Back_Colour   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 0.0);
+        Back_Colour     : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
     begin
         Utilities.Clear_Background_Colour_And_Depth (Back_Colour);
         if Settings.Shadows_Enabled and Camera.Is_Dirty then
@@ -150,7 +151,6 @@ package body Main_Loop.Game_Support is
             Game_Utils.Game_Log ("Main_Loop.Game_Supprt.Player_1_View, Menu_Open");
             Main_Menu.Draw_Menu (Delta_Time);
         elsif not Settings.Hide_GUI then
-            --           Game_Utils.Game_Log ("Main_Loop.Game_Supprt.Player_1_View, Render_GUIs");
             GUI.Render_GUIs;
         end if;
 

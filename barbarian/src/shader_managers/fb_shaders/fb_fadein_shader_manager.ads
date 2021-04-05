@@ -10,7 +10,7 @@ package FB_Fadein_Shader_Manager is
         Time_ID  : GL.Uniforms.Uniform := 0;
     end record;
 
-    procedure Init (Shader_Program : in out GL.Objects.Programs.Program);
+    procedure Init (Shader_Program : out GL.Objects.Programs.Program);
     procedure Set_Tex (Tex : Int);
     procedure Set_Time (T : Single);
 

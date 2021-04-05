@@ -63,6 +63,7 @@ package body GL_Utils is
    end Create_1D_VBO;
 
    --  ------------------------------------------------------------------------
+
    function Create_2D_VBO (Data : GL.Types.Singles.Vector2_Array)
                            return GL.Objects.Buffers.Buffer is
       use GL.Objects.Buffers;

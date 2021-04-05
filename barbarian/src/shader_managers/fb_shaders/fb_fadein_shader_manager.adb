@@ -10,7 +10,7 @@ package body FB_Fadein_Shader_Manager is
 
    Render_Uniforms : Shader_Uniforms;
 
-   procedure Init (Shader_Program : in out GL.Objects.Programs.Program) is
+   procedure Init (Shader_Program : out GL.Objects.Programs.Program) is
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
       use GL.Types.Singles;

@@ -13,5 +13,5 @@ void main ()
 	vec3 scene = texture (tex, st).rgb;
 	vec3 original = vec3 (0.0, 0.0, 0.0);
 	frag_colour = vec4 (
-		mix (scene, original, abs (cos (t * 6.28 * 0.125))), 1.0);
+		mix (5 * scene, original, 0.8 * abs (cos (t * 6.28 * 0.125))), 1.0);
     }

@@ -24,6 +24,7 @@ package body Blood_Splats is
    Splat_Vao            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Splat_Buffer         : GL.Objects.Buffers.Buffer;
    Splat_Normals_Vbo    : GL.Objects.Buffers.Buffer;
+   VT_VBO               : GL.Objects.Buffers.Buffer;
    Splat_Shader_Program : GL.Objects.Programs.Program;
    Blood_Splats_Tex     : GL.Objects.Textures.Texture;
 
@@ -44,7 +45,6 @@ package body Blood_Splats is
       use GL.Attributes;
       use GL.Objects.Buffers;
       use Shader_Attributes;
-      VT_VBO  : Buffer;
       VT_12   : constant Single_Array (1 .. 12) :=
                   (1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
                    0.0, 0.0, 1.0, 0.0,1.0, 1.0);
