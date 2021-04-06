@@ -125,4 +125,5 @@ void main()
 		sf_f = mix (sf_f, 1.0, 1.0 - light_emission_factor);
 		frag_colour.rgb *= sf_f;
         }
+    frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
     }
