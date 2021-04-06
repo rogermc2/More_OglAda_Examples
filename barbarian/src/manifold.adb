@@ -92,6 +92,8 @@ package body Manifold is
         Tile_Index1   : Int;
         Tile_Index2   : Int;
     begin
+--        Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
+--                 Integer'Image (Integer (theBatches.Length)));
         GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
@@ -124,12 +126,10 @@ package body Manifold is
                 Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
                                  abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
                 if Rad_Dist <= 2.0 * Radius then
-                    Put_Line ("Manifold.Draw_Manifold_Around Rad_Dist" &
-                             " aBatch.Static_Light_Indices.Is_Empty :" &
-                                Boolean'Image (aBatch.Static_Light_Indices.Is_Empty));
                     if Frustum.Is_Aabb_In_Frustum
                       (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
                       not (aBatch.Static_Light_Indices.Is_Empty) then
+--                          Put_Line ("Manifold.Draw_Manifold_Around Aabb_In_Frustum");
                         Light_Indices := aBatch.Static_Light_Indices;
                         Light_Cursor := Light_Indices.First;
                         Light_Index1 := Light_Indices.First_Index;
@@ -145,7 +145,9 @@ package body Manifold is
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Tile_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+                            Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+                            Draw_Arrays (Points, 0, 1);
                         end if;
 
                         if not aBatch.Ramp_Points.Is_Empty then

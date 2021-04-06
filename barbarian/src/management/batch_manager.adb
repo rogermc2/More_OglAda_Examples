@@ -724,14 +724,12 @@ package body Batch_Manager is
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
          Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
-         aBatch.Ramp_Points.Clear;
 
          aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
            (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-         aBatch.Ramp_Normals.Clear;
 
          aBatch.Ramp_Texcoords_VBO := GL_Utils.Create_2D_VBO
            (GL_Maths.To_Vector2_Array (aBatch.Ramp_Tex_Coords));
@@ -739,14 +737,12 @@ package body Batch_Manager is
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_Vt, 2, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-         aBatch.Ramp_Tex_Coords.Clear;
 
          aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
            (GL_Maths.To_Vector3_Array (aBatch.Ramp_Smooth_Normals));
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-         aBatch.Ramp_Smooth_Normals.Clear;
       end if;
 
    end Generate_Ramps;
@@ -814,8 +810,6 @@ package body Batch_Manager is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-
-      aBatch.Water_Points.Clear;
 
    end Generate_Water;
 
@@ -915,12 +909,8 @@ package body Batch_Manager is
             Next (Indices_Curs);
          end loop;  -- over tile indices
       end if;  --  not Tiles not empty
-       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Indices.Is_Empty: "
-                       & Boolean'Image (Tile_Indices.Is_Empty));
 
       Generate_Points (theBatch, Tiles);
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch theBatch.Points.Is_Empty: "
-                       & Boolean'Image (theBatch.Points.Is_Empty));
       Generate_Ramps (theBatch, Tiles);
       Generate_Water (theBatch, Tiles);
 
