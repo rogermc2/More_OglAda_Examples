@@ -70,8 +70,7 @@ package Batch_Manager is
    function Get_Batch_Index (Column, Row : Positive) return Integer;
    procedure Init;
    function Batches return Batches_List;
-   procedure Regenerate_Batch (Tiles       : Tiles_Manager.Tile_Row_List;
-                               Batch_Index : Positive);
+   procedure Regenerate_Batch (Batch_Index : Positive);
    function Static_Lights return Static_Light_Vector;
    procedure Update_Batch (Index : Positive; Data : Batch_Meta);
 

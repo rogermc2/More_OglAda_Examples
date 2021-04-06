@@ -128,7 +128,7 @@ package body Tiles_Manager is
         end loop;
 
         for index in Batches.First_Index .. Batches.Last_Index loop
-            Regenerate_Batch (Tiles, index);
+            Regenerate_Batch (index);
         end loop;
 
     exception
