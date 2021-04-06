@@ -327,7 +327,7 @@ package body Batch_Manager is
       New_Light.Column := Col;
       Static_Lights_List.Append (New_Light);
 
-      Batches.Iterate (Process_Batch'Access);
+      Batches_Data.Iterate (Process_Batch'Access);
    end Add_Static_Light;
 
    --  ------------------------------------------------------------------------
@@ -399,7 +399,7 @@ package body Batch_Manager is
       use GL_Maths.Indices_Package;
       Half_Batch_Width     : constant Int :=
                                Int (Settings.Tile_Batch_Width / 2);
-      This_Batch           : Batch_Meta := Batches.Element (Batch_Index);
+      This_Batch           : Batch_Meta := Batches_Data.Element (Batch_Index);
       Batches_Dn           : constant Int :=
                                Int (Batch_Index) / Int (Batches_Across);
       Batches_Ac           : constant Int := Int (Batch_Index) -
@@ -499,7 +499,7 @@ package body Batch_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Free_Batch_Data (Batch_Index : Positive) is
-      theBatch : Batch_Meta := Batches.Element (Batch_Index);
+      theBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
    begin
       theBatch.Points.Clear;
       theBatch.Ramp_Points.Clear;
@@ -607,21 +607,18 @@ package body Batch_Manager is
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
          Set_AABB_Dimensions (aBatch);
-         aBatch.Points.Clear;
 
          aBatch.Normals_VBO := GL_Utils.Create_3D_VBO
            (GL_Maths.To_Vector3_Array (aBatch.Normals));
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-         aBatch.Normals.Clear;
 
          aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
            (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-         aBatch.Tex_Coords.Clear;
       end if;
 
    end Generate_Points;
@@ -876,7 +873,7 @@ package body Batch_Manager is
       use Batches_Package;
       use Tile_Row_Package;
       use Tile_Column_Package;
-      theBatch     : Batch_Meta := Batches.Element (Batch_Index);
+      theBatch     : Batch_Meta := Batches_Data.Element (Batch_Index);
       Tile_Indices : constant Tiles_Manager.Tile_Indices_List :=
                        theBatch.Tiles;
       Tile_Index   : Ints.Vector2 := Tile_Indices.First_Element;
@@ -918,8 +915,12 @@ package body Batch_Manager is
             Next (Indices_Curs);
          end loop;  -- over tile indices
       end if;  --  not Tiles not empty
+       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Tile_Indices.Is_Empty: "
+                       & Boolean'Image (Tile_Indices.Is_Empty));
 
       Generate_Points (theBatch, Tiles);
+      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch theBatch.Points.Is_Empty: "
+                       & Boolean'Image (theBatch.Points.Is_Empty));
       Generate_Ramps (theBatch, Tiles);
       Generate_Water (theBatch, Tiles);
 
