@@ -510,13 +510,13 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    --  Generate_Points for all tiles in a batch
-   procedure Generate_Points (aBatch : in out Batch_Meta) is
+   procedure Generate_Points (aBatch : in out Batch_Meta;
+                              Tiles : Tiles_Manager.Tile_Indices_List) is
       use Tiles_Manager;
       --          use Tile_Row_Package;
       use Tile_Indices_Package;
       use GL_Maths;
       --  Tiles is a list of Ints.Vector2
-      Tiles        : constant Tile_Indices_List := aBatch.Tiles;
       Indices_Curs : Tile_Indices_Package.Cursor := Tiles.First;
       Row_Index    : Tiles_Index;
       Col_Index    : Tiles_Index;
@@ -540,7 +540,6 @@ package body Batch_Manager is
 
    begin
       --  for all tiles in aBatch
-      if not Tiles.Is_Empty then
          while Has_Element (Indices_Curs) loop
             Row_Index := Element (Indices_Curs) (GL.X);
             Col_Index := Element (Indices_Curs) (GL.Y);
@@ -597,7 +596,6 @@ package body Batch_Manager is
             end if;
             Next (Indices_Curs);
          end loop;  -- over tile indices
-      end if;
 
       aBatch.Points_VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aBatch.Points_VAO);
@@ -626,7 +624,8 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Generate_Ramps (aBatch : in out Batch_Meta) is
+   procedure Generate_Ramps (aBatch : in out Batch_Meta;
+                             Tiles : Tiles_Manager.Tile_Indices_List) is
       use Singles;
       use Maths;
       use Tiles_Manager;
@@ -636,7 +635,7 @@ package body Batch_Manager is
       use GL_Maths;
       use Vec2_Package;
       use Vec3_Package;
-      Tiles          : constant Tile_Indices_List := aBatch.Tiles;
+
       Indices_Curs   : Tile_Indices_Package.Cursor := Tiles.First;
       Row_Index      : Tiles_Index;
       Col_Index      : Tiles_Index;
@@ -666,11 +665,8 @@ package body Batch_Manager is
       --  for all tiles in aBatch
       Game_Utils.Game_Log ("Batch_Manager.Generate_Ramps Tiles.Is_Empty " &
                           Boolean'Image (Tiles.Is_Empty));
-      if not Tiles.Is_Empty then
          while Has_Element (Indices_Curs) loop
-            Row_Index := Element (Indices_Curs) (GL.X);
-            Col_Index := Element (Indices_Curs) (GL.Y);
-            aTile := Get_Tile ((Row_Index, Col_Index));
+            aTile := Get_Tile (Element (Indices_Curs));
             Height := aTile.Height;
             Facing := aTile.Facing;
 
@@ -685,6 +681,8 @@ package body Batch_Manager is
             end case;
 
             if aTile.Tile_Type = '/' then
+               Row_Index := Element (Indices_Curs) (GL.X);
+               Col_Index := Element (Indices_Curs) (GL.Y);
                Game_Utils.Game_Log ("Batch_Manager.Generate_Ramps ramp case ");
                --  Put each vertex point into world space
                Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
@@ -761,21 +759,20 @@ package body Batch_Manager is
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-      end if;
 
       Game_Utils.Game_Log ("Batch_Manager.Generate_Ramps done ");
    end Generate_Ramps;
 
    --  ----------------------------------------------------------------------------
 
-   procedure Generate_Water (aBatch : in out Batch_Meta) is
+   procedure Generate_Water (aBatch : in out Batch_Meta;
+                             Tiles : Tiles_Manager.Tile_Indices_List) is
       use Singles;
       use Maths;
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
       use Vec3_Package;
-      Tiles          : constant Tile_Indices_List := aBatch.Tiles;
       Indices_Curs   : Tile_Indices_Package.Cursor := Tiles.First;
       Row_Index      : Tiles_Index;
       Col_Index      : Tiles_Index;
@@ -790,11 +787,8 @@ package body Batch_Manager is
       aWater_Point   : Vector3;
       VPF            : Singles.Vector4;
    begin
-      if not Tiles.Is_Empty then
          while Has_Element (Indices_Curs) loop
-            Row_Index := Element (Indices_Curs) (GL.X);
-            Col_Index := Element (Indices_Curs) (GL.Y);
-            aTile := Get_Tile ((Row_Index, Col_Index));
+            aTile := Get_Tile (Element (Indices_Curs));
             Height := aTile.Height;
             Facing := aTile.Facing;
 
@@ -809,6 +803,8 @@ package body Batch_Manager is
             end case;
 
             if aTile.Tile_Type = '~' then
+               Row_Index := Element (Indices_Curs) (GL.X);
+               Col_Index := Element (Indices_Curs) (GL.Y);
                --  Put each vertex point into world space
                Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
                Model_Matrix := Translation_Matrix
@@ -834,7 +830,7 @@ package body Batch_Manager is
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-      end if;
+
       Game_Utils.Game_Log ("Batch_Manager.Generate_Water done ");
    end Generate_Water;
 
@@ -893,7 +889,7 @@ package body Batch_Manager is
       --              use Tile_Column_Package;
       theBatch     : Batch_Meta;
       --        Tiles        : Tiles_Manager.Tile_Row_List;
-      --              Tile_Indices : Tiles_Manager.Tile_Indices_List;
+      Tile_Indices : Tiles_Manager.Tile_Indices_List;
       --              Height       : Integer := 0;
       --              N_Tile       : Tile_Data;
       --              N_Index      : Integer := 0;
@@ -905,7 +901,11 @@ package body Batch_Manager is
       theBatch.Static_Light_Indices.Clear;
 
       theBatch := Batches_Data.Element (Batch_Index);
-      --              Tile_Indices := theBatch.Tiles;
+      Tile_Indices := theBatch.Tiles;
+      if Tile_Indices.Is_Empty then
+         raise Batch_Manager_Exception with
+           "Batch_Manager.Regenerate_Batch called with empty Tiles list";
+      end if;
 
       --        if Tile_Row_Package.Is_Empty (Tiles) then
       --           Game_Utils.Game_Log ("Regenerate_Batch, theBatch.Tiles is empty.");
@@ -931,9 +931,9 @@ package body Batch_Manager is
       --           end loop;  -- over tile indices
       --        end if;  --  not Tiles not empty
 
-      Generate_Points (theBatch);
-      Generate_Ramps (theBatch);
-      Generate_Water (theBatch);
+      Generate_Points (theBatch, Tile_Indices);
+      Generate_Ramps (theBatch, Tile_Indices);
+      Generate_Water (theBatch, Tile_Indices);
 
       Batches_Data.Replace_Element (Batch_Index, theBatch);
 
