@@ -18,18 +18,20 @@ package body Batch_Manager is
 
    type Tile_Side is (North_Side, East_Side, South_Side, West_Side);
 
-   Batches_Data             : Batches_List;
-   Static_Lights_List       : Static_Light_Vector;
-   Atlas_Factor             : constant Single := 0.25;
-   Sets_In_Atlas_Row        : constant Tiles_Manager.Tiles_Index := 4;
-   ST_Offset                : constant Single := 8.0 / 2048.0;
-   Ramp_Mesh_Points         : GL_Maths.Vec3_List;
-   Ramp_Mesh_Normals        : GL_Maths.Vec3_List;
-   Ramp_Mesh_Smooth_Normals : GL_Maths.Vec3_List;
-   Ramp_Mesh_Texcoords      : GL_Maths.Vec2_List;
-   Water_Mesh_Points        : GL_Maths.Vec3_List;
-   Water_Mesh_Normals       : GL_Maths.Vec3_List;
-   Water_Mesh_Texcoords     : GL_Maths.Vec2_List;
+   Batches_Data               : Batches_List;
+   Static_Lights_List         : Static_Light_Vector;
+   Atlas_Factor               : constant Single := 0.25;
+   Sets_In_Atlas_Row          : constant Tiles_Manager.Tiles_Index := 4;
+   ST_Offset                  : constant Single := 8.0 / 2048.0;
+   Ramp_Mesh_Points           : GL_Maths.Vec3_List;
+   Ramp_Mesh_Normals          : GL_Maths.Vec3_List;
+   Ramp_Mesh_Texcoords        : GL_Maths.Vec2_List;
+   Ramp_Mesh_Smooth_Points    : GL_Maths.Vec3_List;
+   Ramp_Mesh_Smooth_Normals   : GL_Maths.Vec3_List;
+   Ramp_Mesh_Smooth_Texcoords : GL_Maths.Vec2_List;
+   Water_Mesh_Points          : GL_Maths.Vec3_List;
+   Water_Mesh_Normals         : GL_Maths.Vec3_List;
+   Water_Mesh_Texcoords       : GL_Maths.Vec2_List;
 
    function Check_For_OOO (Batch_Index : Positive) return Boolean;
    procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
@@ -485,12 +487,13 @@ package body Batch_Manager is
       Batches_Data.Clear;
       Ramp_Mesh_Points.Clear;
       Ramp_Mesh_Normals.Clear;
-      Ramp_Mesh_Smooth_Normals.Clear;
       Ramp_Mesh_Texcoords.Clear;
+      Ramp_Mesh_Smooth_Points.Clear;
+      Ramp_Mesh_Smooth_Normals.Clear;
+      Ramp_Mesh_Smooth_Texcoords.Clear;
       Water_Mesh_Points.Clear;
       Water_Mesh_Normals.Clear;
       Water_Mesh_Texcoords.Clear;
---        Water_Mesh_Point_Count := 0;
    end Clear;
 
    --  ----------------------------------------------------------------------------
@@ -603,7 +606,7 @@ package body Batch_Manager is
            (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
 
-         Update_AABB_Dimensions  (aBatch, aBatch.Points);
+         Set_AABB_Dimensions (aBatch);
          aBatch.Points.Clear;
 
          aBatch.Normals_VBO := GL_Utils.Create_3D_VBO
@@ -654,8 +657,8 @@ package body Batch_Manager is
       VNF            : Singles.Vector4;
       Smooth_VNI     : Singles.Vector4;
       Smooth_VNF     : Singles.Vector4;
---        First          : Boolean := True;  --  Debug
---        Count          : Integer := 0;     --  Debug
+      --        First          : Boolean := True;  --  Debug
+      --        Count          : Integer := 0;     --  Debug
    begin
       --  Manifold.cpp, approx line 1015, p = g_batches[batch_idx].tiles;
       if not Is_Empty (Tiles) then
@@ -709,7 +712,7 @@ package body Batch_Manager is
                      Next (Curs_T);
                      Next (Curs_S);
                   end loop;
---                    First := False;
+                  --                    First := False;
                end if;
             end loop;  --  for Col_Index
          end loop;  --  for Row_Index
@@ -835,8 +838,6 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Init is
-      Points       : GL_Maths.Vec3_List;
-      Texcoords    : GL_Maths.Vec2_List;
    begin
       Clear;
       if not Mesh_Loader.Load_Mesh_Data_Only
@@ -848,18 +849,11 @@ package body Batch_Manager is
       end if;
 
       if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
-                                              Points, Texcoords,
+                                              Ramp_Mesh_Smooth_Points,
+                                              Ramp_Mesh_Smooth_Texcoords,
                                               Ramp_Mesh_Smooth_Normals) then
          raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
-           & "src/meshes/ramp_smooth.apg";
-      end if;
-
-      if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
-                                              Points, Texcoords,
-                                              Ramp_Mesh_Smooth_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
+           "Batch_Manager.Init error loading ramp smooth mesh data from file "
            & "src/meshes/ramp_smooth.apg";
       end if;
 
