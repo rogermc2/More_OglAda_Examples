@@ -9,20 +9,18 @@ project Barbarian_1 is
    for Source_Dirs use ("src", "src/management", "src/shader_managers/**", "src/maps", "src/audio/**", "../ogl_dev_common");
    for Object_Dir use "obj";
    for Main use ("barbarian_1a");
+   for Exec_Dir use ".";
 
    package Compiler is
-      for Switches ("ada") use ("-gnato", "-fstack-check", "-g", "-gnata", "-gnatw.c.ufk");
+      for Switches ("ada") use ("-gnato", "-fstack-check", "-O");
    end Compiler;
 
    package Builder is
-      for Switches ("ada") use ("-g", "-s");
+      for Switches ("ada") use ("-s");
    end Builder;
 
    package Linker is
-      for Switches ("ada") use ("-g");
    end Linker;
-
-   for Exec_Dir use ".";
 
 end Barbarian_1;
 
