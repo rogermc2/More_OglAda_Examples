@@ -89,9 +89,11 @@ package body Tiles_Manager is
    procedure Add_Tile (Batch                : in out Batch_Manager.Batch_Meta;
                        Row_Index, Col_Index : Positive) is
    begin
-      --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tile_Index Tile_Index " &
-      --                                 Integer'Image (Tile_Index));
+--        Game_Utils.Game_Log ("Tiles_Manager.Add_Tile_Index Row, Col Indices " &
+--                               Integer'Image (Row_Index) & ", " &
+--                               Integer'Image (Col_Index));
       Batch.Tiles.Append ((Int (Row_Index), Int (Col_Index)));
+
    end Add_Tile;
 
    --  ----------------------------------------------------------------------------
@@ -130,8 +132,6 @@ package body Tiles_Manager is
       end loop;
 
       for index in Batches.First_Index .. Batches.Last_Index loop
-         Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches index " &
-                                Integer'Image (index));
          Regenerate_Batch (index);
       end loop;
 
@@ -175,8 +175,9 @@ package body Tiles_Manager is
       return  Row_Vector.Element (Pos (GL.Y));
    end Get_Tile;
 
-   --  ----------------------------------------------------------------------------
+   --  --------------------------------------------------------------------------
 
+   --  returns actual height in meters
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single  is
       use Batch_Manager;
@@ -228,6 +229,15 @@ package body Tiles_Manager is
    begin
       return aTile.Height;
    end Get_Tile_Level;
+
+   --  ----------------------------------------------------------------------------
+
+   function Get_Tile_Type (Row, Col : Tiles_Index) return Character is
+      use Batch_Manager;
+      aTile : constant Tile_Data := Get_Tile ((Row, Col));
+   begin
+      return aTile.Tile_Type;
+   end Get_Tile_Type;
 
    --  ----------------------------------------------------------------------------
 
@@ -284,6 +294,7 @@ package body Tiles_Manager is
            "Invalid format, " & Load_Type & " expected: " & Header (1 .. Pos1);
       end if;
 
+     Game_Utils.Game_Log ("Manifold.Load_Char_Rows Load_Type: " & Load_Type);
       Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
       Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
       Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));

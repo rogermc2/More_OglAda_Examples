@@ -45,6 +45,7 @@ package Tiles_Manager is
    function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
+   function Get_Tile_Type (Row, Col : Tiles_Index) return Character;
    function Get_Tiles_Across return Int;
    function Is_Tile_Valid (Map : Ints.Vector2) return Boolean;
    procedure Load_Tiles (File : File_Type;
