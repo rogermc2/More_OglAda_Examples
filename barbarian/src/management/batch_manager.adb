@@ -157,81 +157,6 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    --     procedure Add_Sides_Count (Tiles                : Tiles_Manager.Tile_Row_List;
-    --                                Tile_Height          : Natural;
-    --                                Row_Index, Col_Index : Tiles_Manager.Tiles_Index) is
-    --        use Tiles_Manager;
-    --        use Tile_Row_Package;
-    --        use Tile_Column_Package;
-    --        N_Row       : Tile_Column_List := Tiles (Row_Index);
-    --        N_Tile      : Tile_Data := Get_Tile ((Row_Index, Col_Index));
-    --        N_Height    : Integer := 0;
-    --        Diff        : Integer := 0;
-    --     begin
-    --        --          Game_Utils.Game_Log ("Batch_Manager.Add_Sides_Count, Row_Index, Col_Index: " &
-    --        --                    Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
-    --        if Row_Index > 1 then
-    --           N_Row := Tiles.Element (Row_Index - 1);
-    --           N_Tile := N_Row.Element (1);
-    --           N_Height := N_Tile.Height;
-    --           if N_Tile.Tile_Type = '~' then
-    --              N_Height := N_Height - 1;
-    --           end if;
-    --           Diff := Tile_Height - N_Height;
-    --
-    --           --  Remove bit behind stairs from construction list
-    --           if N_Tile.Tile_Type = '/' and then
-    --             N_Tile.Facing = 'S' then
-    --              Diff := Diff - 1;
-    --           end if;
-    --        end if;
-    --
-    --        if Row_Index < Tiles.Last_Index then
-    --           N_Tile := N_Row.Element (1);
-    --           N_Height := N_Tile.Height;
-    --           if N_Tile.Tile_Type = '~' then
-    --              N_Height := N_Height - 1;
-    --           end if;
-    --           Diff := Tile_Height - N_Height;
-    --
-    --           if N_Tile.Tile_Type = '/' and then
-    --             N_Tile.Facing = 'N' then
-    --              Diff := Diff - 1;
-    --           end if;
-    --        end if;
-    --
-    --        if Col_Index > 1 then
-    --           N_Tile := N_Row.Element (Col_Index - 1);
-    --           N_Height := N_Tile.Height;
-    --           if N_Tile.Tile_Type = '~' then
-    --              N_Height := N_Height - 1;
-    --           end if;
-    --           Diff := Tile_Height - N_Height;
-    --
-    --           if N_Tile.Tile_Type = '/' and then
-    --             N_Tile.Facing = 'E' then
-    --              Diff := Diff - 1;
-    --           end if;
-    --        end if;
-    --
-    --        if Col_Index < N_Row.Last_Index then
-    --           N_Tile := N_Row.Element (Col_Index + 1);
-    --           N_Height := N_Tile.Height;
-    --           if N_Tile.Tile_Type = '~' then
-    --              N_Height := N_Height - 1;
-    --           end if;
-    --           Diff := Tile_Height - N_Height;
-    --
-    --           if N_Tile.Tile_Type = '/' and then
-    --             N_Tile.Facing = 'W' then
-    --              Diff := Diff - 1;
-    --           end if;
-    --        end if;
-    --
-    --     end Add_Sides_Count;
-
-    --  -------------------------------------------------------------------------
-
     procedure Add_South_Points (aBatch             : in out Batch_Meta;
                                 Height             : Integer;
                                 Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
@@ -328,6 +253,7 @@ package body Batch_Manager is
         Static_Lights_List.Append (New_Light);
 
         Batches_Data.Iterate (Process_Batch'Access);
+
     end Add_Static_Light;
 
     --  ------------------------------------------------------------------------
@@ -580,19 +506,19 @@ package body Batch_Manager is
             end if;
 
             --  check for higher neighbour to north (walls belong to the lower tile)
-            if Row_Index < Max_Rows then
-                Add_North_Points (aBatch, Height, Row_Index, Col_Index);
-            end if;
-            if Row_Index > 1 then
-                Add_South_Points (aBatch, Height, Row_Index, Col_Index);
-            end if;
-
-            if Col_Index < Column_List.Last_Index then
-                Add_West_Points (aBatch, Height, Row_Index, Col_Index);
-            end if;
-            if Col_Index > 1 then
-                Add_East_Points (aBatch, Height, Row_Index, Col_Index);
-            end if;
+--              if Row_Index < Max_Rows then
+--                  Add_North_Points (aBatch, Height, Row_Index, Col_Index);
+--              end if;
+--              if Row_Index > 1 then
+--                  Add_South_Points (aBatch, Height, Row_Index, Col_Index);
+--              end if;
+--
+--              if Col_Index < Column_List.Last_Index then
+--                  Add_West_Points (aBatch, Height, Row_Index, Col_Index);
+--              end if;
+--              if Col_Index > 1 then
+--                  Add_East_Points (aBatch, Height, Row_Index, Col_Index);
+--              end if;
             Next (Indices_Curs);
         end loop;  -- over tile indices
 
@@ -873,19 +799,8 @@ package body Batch_Manager is
     --  -------------------------------------------------------------------------
 
     procedure Regenerate_Batch (Batch_Index : Positive) is
-    --              use Tiles_Manager;
-    --              use Tiles_Manager.Tile_Indices_Package;
-    --              use Batches_Package;
-    --              use Tile_Row_Package;
-    --              use Tile_Column_Package;
         theBatch     : Batch_Meta;
-        --        Tiles        : Tiles_Manager.Tile_Row_List;
         Tile_Indices : Tiles_Manager.Tile_Indices_List;
-        --              Height       : Integer := 0;
-        --              N_Tile       : Tile_Data;
-        --              N_Index      : Integer := 0;
-        --              N_Height     : Integer := 0;
-        --              Diff         : Integer := 0;
 
     begin
         Free_Batch_Data (Batch_Index);
@@ -897,30 +812,6 @@ package body Batch_Manager is
             raise Batch_Manager_Exception with
               "Batch_Manager.Regenerate_Batch called with empty Tiles list";
         end if;
-
-        --        if Tile_Row_Package.Is_Empty (Tiles) then
-        --           Game_Utils.Game_Log ("Regenerate_Batch, theBatch.Tiles is empty.");
-        --           raise Batch_Manager_Exception with
-        --             "Batch_Manager.Regenerate_Batch, theBatch.Tiles is empty.";
-        --        end if;
-
-        --  recalculate points in batch
-        --        if not Tile_Indices.Is_Empty then
-        --           while Has_Element (Indices_Curs) loop
-        --              Tile_Index := Element (Indices_Curs);
-        --              Row_Index := Tile_Index (GL.X);
-        --              Col_Index := Tile_Index (GL.Y);
-        --              aTile := Get_Tile ((Row_Index, Col_Index));
-        --              Height := aTile.Height;
-        --              if aTile.Tile_Type = '~' then
-        --                 Height := Height - 1;
-        --              end if;
-
-        --  work out sides count
-        --              Add_Sides_Count (Tiles, Height, Row_Index, Col_Index);
-        --              Next (Indices_Curs);
-        --           end loop;  -- over tile indices
-        --        end if;  --  not Tiles not empty
 
         Generate_Points (theBatch, Tile_Indices);
         Generate_Ramps (theBatch, Tile_Indices);
