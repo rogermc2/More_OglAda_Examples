@@ -22,16 +22,17 @@ float ol_dist = 0.03;
 
 void main()
     {
-    gl_PointSize = 40.0;
+    vec3 vp2 = vp / 5.0;
+    vec3 vn2 = vn / 5.0;
+    // gl_PointSize = 40.0;
 	if (ol_pass > 0.1)
         {
-		vec3 pos = vp + smooth_vn * ol_dist;
+		vec3 pos = vp2 + smooth_vn * ol_dist;
 		gl_Position = P * V * M * vec4 (pos, 1.0);
 		return;
         }
-    vec3 vp2 = vp / 10.0;
 	p_eye = (V * M * vec4 (vp2, 1.0)).xyz;
-	n_eye = (V * M * vec4 (vn, 0.0)).xyz;
+	n_eye = (V * M * vec4 (vn2, 0.0)).xyz;
 	st = vt;
 	gl_Position = P * vec4 (p_eye, 1.0);
 	texcoords = (M * vec4 (vp, 1.0)).xyz;

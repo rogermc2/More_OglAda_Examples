@@ -94,7 +94,7 @@ package body Manifold is
     begin
 --        Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
 --                 Integer'Image (Integer (theBatches.Length)));
-        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+--          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
@@ -147,7 +147,7 @@ package body Manifold is
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
                             Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
                             Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
-                            Draw_Arrays (Points, 0, 1);
+--                              Draw_Arrays (Points, 0, 1);
                         end if;
 
                         if not aBatch.Ramp_Points.Is_Empty then
@@ -181,7 +181,7 @@ package body Manifold is
             Next (Curs);
         end loop;
 
-        Draw_Water_Manifold_Around;
+--          Draw_Water_Manifold_Around;
 
     exception
         when others =>
@@ -217,6 +217,7 @@ package body Manifold is
             end if;
             Next (Curs);
         end loop;
+
     end  Draw_Manifold_Around_Depth_Only;
 
     --  ----------------------------------------------------------------------------
@@ -286,6 +287,7 @@ package body Manifold is
         end loop;
         Disable (Blend);
         Manifold_Dyn_Light_Dirty := False;
+
     end  Draw_Water_Manifold_Around;
 
     --  ----------------------------------------------------------------------------

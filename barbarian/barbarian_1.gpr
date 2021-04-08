@@ -12,15 +12,14 @@ project Barbarian_1 is
    for Exec_Dir use ".";
 
    package Compiler is
-      for Switches ("ada") use ("-gnato", "-fstack-check", "-pg", "-g", "-gnata", "-O", "-gnatw.c.ufk");
+      for Switches ("ada") use ("-gnato", "-fstack-check", "-O");
    end Compiler;
 
    package Builder is
-      for Switches ("ada") use ("-g", "-s");
+      for Switches ("ada") use ("-s");
    end Builder;
 
    package Linker is
-      for Switches ("ada") use ("-g");
    end Linker;
 
 end Barbarian_1;
