@@ -168,19 +168,21 @@ package body FB_Effects is
             end if;
 
             if Ww_Fb_Current_Effect = FB_Screw_Effect then
---                 GL.Objects.Programs.Use_Program (FB_Shader_Programs (FB_Screw_Effect));
+               GL.Objects.Programs.Use_Program (FB_Shader_Programs (FB_Screw_Effect));
                FB_Screw_Shader_Manager.Set_Time (Ww_Fb_Effect_Elapsed);
                FB_Screw_Shader_Manager.Set_Force (FB_Screw_Factor);
-               GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
-               Texture_2D.Bind (Texture_Manager.Get_Default_Texture);
-
-               if FB_Screw_Factor < 0.1 then
-                  Ww_Fb_Current_Effect := FB_Default_Effect;
-               end if;
+               GL.Objects.Programs.Use_Program (FB_Shader_Programs (FB_Current_Effect));
             end if;
-         else
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
             Texture_2D.Bind (Texture_Manager.Get_Default_Texture);
+
+            if FB_Screw_Factor < 0.1 then
+               Ww_Fb_Current_Effect := FB_Default_Effect;
+            end if;
          end if;
+      else
+         Texture_2D.Bind (Texture_Manager.Get_Default_Texture);
+
       end if;
 
    end Draw_FB_Effects;

@@ -183,7 +183,6 @@ package body Main_Loop is
          Put_Line ("Main_Loop.Game_Loop");
          Camera.Set_Is_Dirty (True);
          while Is_Running loop
-            Utilities.Clear_Background_Colour (Yellow);
             Update_Timers (Last_Time, Delta_Time, Avg_Frame_Time_Accum_Ms,
                            Curr_Frame_Time_Accum_Ms, Avg_Frames_Count,
                            Curr_Frames_Count);
@@ -444,12 +443,6 @@ package body Main_Loop is
                --  Properties and characters are loaded by Load_Maps
                Projectile_Manager.Init;
 
-               Utilities.Clear_Background_Colour_And_Depth (White);
-               --                      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-               GL.Toggles.Enable (GL.Toggles.Depth_Test);
-               GL.Toggles.Enable (GL.Toggles.Cull_Face);
-               GL.Culling.Set_Cull_Face (GL.Culling.Back);
-
                Game_Utils.Game_Log ("---LEVEL START---");
                Put_Line ("---LEVEL START---");
                Sprite_Shader_Manager.Use_Sprite_Shader;
@@ -514,7 +507,7 @@ package body Main_Loop is
             Current_Time := Float (Glfw.Time);
             Delta_Time := Current_Time - Last_Time;
             Last_Time := Current_Time;
-            Utilities.Clear_Background_Colour_And_Depth (Blue);
+            Utilities.Clear_Colour_Buffer_And_Depth;
 
             Main_Menu.Draw_Menu (Delta_Time);
 
