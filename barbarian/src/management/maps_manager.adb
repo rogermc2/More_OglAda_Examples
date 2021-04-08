@@ -23,10 +23,12 @@ package body Maps_Manager is
       Num_Story_Lines  : Natural;
       --          Story_Lines      : Story_Lines_List;
    begin
---        Game_Utils.Game_Log ("Maps_Manager.Load_Maps opening " & Map_Path);
+      Game_Utils.Game_Log ("Maps_Manager.Load_Maps opening " & Map_Path);
       Open (Input_File, In_File, Map_Path);
 --        Game_Utils.Game_Log ("Maps_Manager.Load_Maps, " & Map_Path & " opened.");
       theMap.Level_Title := To_Unbounded_String (Get_Line (Input_File));
+      Game_Utils.Game_Log ("Maps_Manager.Load_Maps Level_Title " &
+                             To_String (theMap.Level_Title));
       theMap.Level_Par_Time := To_Unbounded_String (Get_Line (Input_File));
 
       --  Story

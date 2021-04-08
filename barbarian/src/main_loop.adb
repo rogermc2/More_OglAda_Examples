@@ -137,9 +137,10 @@ package body Main_Loop is
 
       --  ------------------------------------------------------------------------
 
-      procedure Do_Menu_Open (Window                     : in out Input_Callback.Barbarian_Window;
-                              Delta_Time                 : Float;
-                              Main_Menu_Quit, Is_Running : in out Boolean) is
+      procedure Do_Menu_Open (Window         : in out Input_Callback.Barbarian_Window;
+                              Delta_Time     : Float;
+                              Main_Menu_Quit : in out Boolean) is
+--                                Main_Menu_Quit, Is_Running : in out Boolean) is
       begin
          --   Game_Utils.Game_Log ("Main_Loop.Do_Menu_Open");
          Main_Menu_Quit := not Main_Menu.Update_Main_Menu
@@ -155,7 +156,7 @@ package body Main_Loop is
             Main_Menu.Set_Menu_Open (False);
             Quit_Game := False;
             Game_Support.Unload_Level;
-            Is_Running := False;
+--              Is_Running := False;
          end if;
       end Do_Menu_Open;
 
@@ -189,7 +190,8 @@ package body Main_Loop is
             if Main_Menu.Menu_Open then
                --                      Game_Utils.Game_Log
                --                        ("Main_Loop.Game_Loop Main Menu open");
-               Do_Menu_Open (Window, Delta_Time, Main_Menu_Quit, Is_Running);
+               Do_Menu_Open (Window, Delta_Time, Main_Menu_Quit);
+--                 Do_Menu_Open (Window, Delta_Time, Main_Menu_Quit, Is_Running);
             else  --  Main_Menu not Open
 --                 Game_Utils.Game_Log ("Main_Loop.Game_Loop Main Menu not open");
                Level_Time := Level_Time + Delta_Time;
