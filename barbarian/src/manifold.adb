@@ -171,9 +171,9 @@ package body Manifold is
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-                            Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
-                            Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
-                            Draw_Arrays (Points, 0, 1);
+--                              Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
+--                              Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+--                              Draw_Arrays (Points, 0, 1);
                         end if;
                     end if;
                 end if;
