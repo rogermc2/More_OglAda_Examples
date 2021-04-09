@@ -14,7 +14,7 @@ package Manifold is
    procedure Clear_Manifold_Lights;
    procedure Draw_Manifold_Around (Camera_Pos : GL.Types.Singles.Vector3;
                                    Radius : GL.Types.Single;
-                                   Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                                   Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                    Ramp_Spec_Tex : GL.Objects.Textures.Texture);
    procedure Draw_Manifold_Around_Depth_Only;
    procedure Free_Manifold_Meta_Data;

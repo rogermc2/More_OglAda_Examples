@@ -457,12 +457,12 @@ package body Tiles_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Textures (Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+   procedure Load_Textures (Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                             Ramp_Spec_Tex : in out GL.Objects.Textures.Texture) is
       use Texture_Manager;
    begin
       Load_Image_To_Texture
-        (To_String (Diff_Palette_Name), Tile_Tex, True, True);
+        (To_String (Diff_Palette_Name), Tile_Diff_Tex, True, True);
       Load_Image_To_Texture (To_String (Spec_Palette_Name),
                              Tile_Spec_Tex, True, True);
       Load_Image_To_Texture ("src/textures/stepsTileSet1_diff.png",

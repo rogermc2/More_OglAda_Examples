@@ -65,7 +65,7 @@ package body Manifold is
 
    procedure Draw_Manifold_Around (Camera_Pos    : GL.Types.Singles.Vector3;
                                    Radius        : GL.Types.Single;
-                                   Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                                   Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                    Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
       use GL.Attributes;
       use GL.Culling;
@@ -143,7 +143,7 @@ package body Manifold is
                      GL_Utils.Bind_Vao (aBatch.Points_VAO);
                      --  Bind_Texture sets active unit and binds texture
                      --  to Texture_Target Texture_2D
-                     Texture_Manager.Bind_Texture (0, Tile_Tex);
+                     Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
                      Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
                      Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
                      --  Draws start scene
@@ -157,7 +157,7 @@ package body Manifold is
 
                      --  Bind_Texture sets active unit and binds texture
                      --  to Texture_Target Texture_2D
-                     Texture_Manager.Bind_Texture (0, Tile_Tex);
+                     Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
                      Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
 
                      if Settings.Render_OLS then
