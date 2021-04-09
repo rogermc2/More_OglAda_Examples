@@ -146,6 +146,7 @@ package body Manifold is
                      Texture_Manager.Bind_Texture (0, Tile_Tex);
                      Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
                      Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
+                     --  Draws start scene
                      Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
                      --                              Draw_Arrays (Points, 0, 1);
                   end if;
@@ -162,7 +163,7 @@ package body Manifold is
                      if Settings.Render_OLS then
                         Set_Front_Face (Clockwise);
                         Set_Outline_Pass (1.0);
-                        Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+--                          Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
                         Set_Outline_Pass (0.0);
                         Set_Front_Face (Counter_Clockwise);
                      end if;
@@ -171,8 +172,8 @@ package body Manifold is
                      --  to Texture_Target Texture_2D
                      Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
                      Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-                                                 Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
-                                                 Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+--                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
+--                       Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
                      --                              Draw_Arrays (Points, 0, 1);
                   end if;
                end if;
@@ -181,7 +182,7 @@ package body Manifold is
          Next (Curs);
       end loop;
 
-      Draw_Water_Manifold_Around;
+--        Draw_Water_Manifold_Around;
 
    exception
       when others =>
@@ -211,8 +212,8 @@ package body Manifold is
             --  Flat Tiles
             GL_Utils.Bind_Vao (aBatch.Points_VAO);
             Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
---              Put_Line ("Manifold.Draw_Manifold_Around_Depth_Only, Ramp_Points.Length"
---                        & Integer'Image (Integer (aBatch.Ramp_Points.Length)));
+            --              Put_Line ("Manifold.Draw_Manifold_Around_Depth_Only, Ramp_Points.Length"
+            --                        & Integer'Image (Integer (aBatch.Ramp_Points.Length)));
             if not aBatch.Ramp_Points.Is_Empty then
                GL_Utils.Bind_Vao (aBatch.Ramp_Vao);
                Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
@@ -303,7 +304,7 @@ package body Manifold is
    --  ----------------------------------------------------------------------------
 
    function Get_Light_Index (Column, Row : Positive; Light_Number : Integer)
-                              return GL.Types.Int is
+                             return GL.Types.Int is
       use GL.Types;
       use Batch_Manager;
       use GL_Maths.Indices_Package;

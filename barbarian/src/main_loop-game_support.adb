@@ -118,12 +118,13 @@ package body Main_Loop.Game_Support is
          for index in Shadow_Direction'Range loop
             Bind_Shadow_FB (index);
             Game_Utils.Game_Log ("Draw_manifold_around_depth_only...");
-            Manifold.Draw_Manifold_Around_Depth_Only;
-            Prop_Renderer.Render_Props_Around_Depth_Only
-              (UV (GL.X), UV (GL.Y), Shadow_Caster_Max_Tiles_Away);
+--              Manifold.Draw_Manifold_Around_Depth_Only;
+--              Prop_Renderer.Render_Props_Around_Depth_Only
+--                (UV (GL.X), UV (GL.Y), Shadow_Caster_Max_Tiles_Away);
          end loop;
       end if;   --  end of shadow mapping pass
 
+      Game_Utils.Game_Log ("Bind_main_scene_fb...");
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;
       Transparency.Reset_Transparency_List (Camera_Position);
@@ -131,7 +132,7 @@ package body Main_Loop.Game_Support is
                                      Single (Settings.Render_Distance),
                                      Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                                      Ramp_Spec_Tex);
-      Blood_Splats.Render_Splats;
+--        Blood_Splats.Render_Splats;
       GL_Utils.Set_Resized_View (False);
       Prop_Renderer.Render_Props_Around_Split (Centre_X, Centre_Z,
                                                Int (Settings.Render_Distance));
