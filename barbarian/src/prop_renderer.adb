@@ -22,6 +22,7 @@ with GUI_Level_Chooser;
 with Jav_Stand_Shader_Manager;
 with Particle_System;
 with Portal_Shader_Manager;
+with Properties_Basic_Shader_Manager;
 with Properties_Shader_Manager;
 with Properties_Skinned_Shader_Manager;
 with Prop_Renderer.Boulder;
@@ -1158,7 +1159,7 @@ package body Prop_Renderer is
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3) is
    begin
       GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
-      Properties_Shader_Manager.Set_L_A (Level);
+      Properties_Basic_Shader_Manager.Set_L_A (Level);
       Properties_Skinned_Shader_Manager.Set_L_A (Level);
    end Set_Ambient_Light_Level;
 
@@ -1469,10 +1470,10 @@ package body Prop_Renderer is
       end loop;
 
       GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
-      Properties_Shader_Manager.Set_Light_Pos (Positions);
-      Properties_Shader_Manager.Set_Light_Diff (Diffuse);
-      Properties_Shader_Manager.Set_Light_Spec (Specular);
-      Properties_Shader_Manager.Set_Light_Range (Ranges);
+      Properties_Basic_Shader_Manager.Set_Light_Pos (Positions);
+      Properties_Basic_Shader_Manager.Set_Light_Diff (Diffuse);
+      Properties_Basic_Shader_Manager.Set_Light_Spec (Specular);
+      Properties_Basic_Shader_Manager.Set_Light_Range (Ranges);
 
       GL.Objects.Programs.Use_Program
         (Properties_Shader_Manager.Prop_Skinned_Shader);

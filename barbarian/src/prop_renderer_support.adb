@@ -16,6 +16,7 @@ with Manifold;
 with Particle_System;
 with Prop_Renderer;
 with Portal_Shader_Manager;
+with Properties_Basic_Shader_Manager;
 with Properties_Shader_Manager;
 with Properties_Skinned_Shader_Manager;
 with Specs_Manager;
@@ -154,9 +155,9 @@ package body Prop_Renderer_Support is
               (Triangles, 0, aScript.Vertex_Count);
 
         else
-            Properties_Shader_Manager.Set_Outline_Pass (1.0);
+            Properties_Basic_Shader_Manager.Set_Outline_Pass (1.0);
             Draw_Outline (aScript);
-            Properties_Shader_Manager.Set_Outline_Pass (0.0);
+            Properties_Basic_Shader_Manager.Set_Outline_Pass (0.0);
         end if;
 
         Set_Front_Face (Counter_Clockwise);
@@ -229,21 +230,21 @@ package body Prop_Renderer_Support is
         else
             GL.Objects.Programs.Use_Program (Prop_Shader);
             if Camera.Is_Dirty then
-                Properties_Shader_Manager.Set_View (Camera.View_Matrix);
-                Properties_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
+                Properties_Basic_Shader_Manager.Set_View (Camera.View_Matrix);
+                Properties_Basic_Shader_Manager.Set_Perspective (Camera.Projection_Matrix);
             end if;
             if Settings.Shadows_Enabled then
-                Properties_Shader_Manager.Set_Shadows_Enabled (1.0);
-                Properties_Shader_Manager.Set_Caster_Position (Shadows.Caster_Position);
+                Properties_Basic_Shader_Manager.Set_Shadows_Enabled (1.0);
+                Properties_Basic_Shader_Manager.Set_Caster_Position (Shadows.Caster_Position);
                 Shadows.Bind_Cube_Shadow_Texture (3);
             else
-                Properties_Shader_Manager.Set_Shadows_Enabled (0.0);
+                Properties_Basic_Shader_Manager.Set_Shadows_Enabled (0.0);
             end if;
 
-            Properties_Shader_Manager.Set_Model (Property.Model_Matrix);
-            Properties_Shader_Manager.Set_Inverse_Matrix
+            Properties_Basic_Shader_Manager.Set_Model (Property.Model_Matrix);
+            Properties_Basic_Shader_Manager.Set_Inverse_Matrix
               (From_Real_Matrix4 (Inverse (To_Real_Matrix4 (Property.Model_Matrix))));
-            Properties_Shader_Manager.Set_Static_Light_Indices
+            Properties_Basic_Shader_Manager.Set_Static_Light_Indices
               ((Manifold.Get_Light_Index
                (Positive (Property.Map_U), Positive (Property.Map_V), 1),
                Manifold.Get_Light_Index

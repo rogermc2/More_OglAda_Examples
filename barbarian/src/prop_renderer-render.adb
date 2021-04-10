@@ -21,6 +21,7 @@ with GL_Utils;
 with Jav_Stand_Shader_Manager;
 with Particle_System;
 with Portal_Shader_Manager;
+with Properties_Basic_Shader_Manager;
 with Properties_Shader_Manager;
 with Properties_Skinned_Shader_Manager;
 with Prop_Renderer.Boulder;
@@ -77,7 +78,7 @@ package body Prop_Renderer.Render is
                             Prop_Dyn_Light_Dirty : Boolean := True) is
         use GL.Objects.Vertex_Arrays;
         use GL_Maths.Indices_Package;
-        use Properties_Shader_Manager;
+        use Properties_Basic_Shader_Manager;
         use Properties_Manager;
         use Prop_Renderer;
         Count    : constant Integer := Integer (Basic_Render_List.Length);
@@ -92,7 +93,7 @@ package body Prop_Renderer.Render is
 --          Put_Line ("Prop_Renderer.Render.Render_Basic Basic_Render_List length"
 --           & Integer'Image (Integer (Basic_Render_List.Length)));
         if not Is_Empty (Basic_Render_List) then
-            GL.Objects.Programs.Use_Program (Prop_Shader);
+            GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
             if Camera.Is_Dirty then
                 Set_View (Camera.View_Matrix);
                 Set_Perspective (Camera.Projection_Matrix);
@@ -405,11 +406,11 @@ package body Prop_Renderer.Render is
             end if;
 
             if Settings.Shadows_Enabled then
-                Properties_Shader_Manager.Set_Shadows_Enabled (1.0);
+                Properties_Basic_Shader_Manager.Set_Shadows_Enabled (1.0);
                 Set_Caster_Pos_World (Shadows.Caster_Position);
                 Shadows.Bind_Cube_Shadow_Texture (1);
             else
-                Properties_Shader_Manager.Set_Shadows_Enabled (0.0);
+                Properties_Basic_Shader_Manager.Set_Shadows_Enabled (0.0);
             end if;
 
             for Param_I in 1 .. Count loop
