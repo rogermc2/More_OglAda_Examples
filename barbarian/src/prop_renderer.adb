@@ -590,6 +590,7 @@ package body Prop_Renderer is
         (Splash_Particles_File, Start_Now, Always_Update, Always_Draw);
 
       Game_Utils.Game_Log ("---PROPS INITIALIZED---");
+
    end Init;
 
    --  -------------------------------------------------------------------------
@@ -1054,10 +1055,9 @@ package body Prop_Renderer is
                   elsif Frustum.Is_Sphere_In_Frustum
                     (Property.Origin_World, aScript.Bounding_Radius) and
                     aScript.Transparent then
-                     Add_Transparency_Item
-                       (Transparency_Prop, Props_Index,
-                        Property.Origin_World,
-                        aScript.Bounding_Radius);
+                     Add_Transparency_Item (Transparency_Prop, Props_Index,
+                                            Property.Origin_World,
+                                            aScript.Bounding_Radius);
                   else
                      if Prop_Type = Anim_Loop_Prop then
                         Update_Anim_Looped_Prop (Props_Index, Elapsed);
@@ -1454,20 +1454,18 @@ package body Prop_Renderer is
       use Batch_Manager;
       use GL_Maths.Indices_Package;
       use Properties_Shader_Manager;
-      Index     : Positive := Static_Lights.First_Index;
       aLight    : Static_Light_Data;
       Positions : Light_Array;
       Diffuse   : Light_Array;
       Specular  : Light_Array;
       Ranges    : Light_Range_Array;
    begin
-      while Index <= Static_Lights.Last_Index loop
+      for Index in Static_Lights.First_Index .. Static_Lights.Last_Index loop
          aLight := Element (Static_Lights, Index);
          Positions (Int (Index)) := aLight.Position;
          Diffuse (Int (Index)) := aLight.Diffuse;
          Specular (Int (Index)) := aLight.Specular;
          Ranges (Int (Index)) := aLight.Light_Range;
-         Index := Index + 1;
       end loop;
 
       GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
@@ -1475,12 +1473,14 @@ package body Prop_Renderer is
       Properties_Shader_Manager.Set_Light_Diff (Diffuse);
       Properties_Shader_Manager.Set_Light_Spec (Specular);
       Properties_Shader_Manager.Set_Light_Range (Ranges);
+
       GL.Objects.Programs.Use_Program
         (Properties_Shader_Manager.Prop_Skinned_Shader);
       Properties_Skinned_Shader_Manager.Set_Light_Diff (Diffuse);
       Properties_Skinned_Shader_Manager.Set_Light_Pos (Positions);
       Properties_Skinned_Shader_Manager.Set_Light_Spec (Specular);
       Properties_Skinned_Shader_Manager.Set_Light_Range (Ranges);
+
    end Update_Static_Lights_Uniforms;
 
    --  ------------------------------------------------------------------------

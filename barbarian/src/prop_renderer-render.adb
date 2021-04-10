@@ -126,8 +126,8 @@ package body Prop_Renderer.Render is
                 Set_Model (Property.Model_Matrix);
                 Set_Inverse_Matrix (Property.Model_Matrix);
                 Set_Static_Light_Indices
-                  ((Manifold.Get_Light_Index (U, V, 0),
-                   Manifold.Get_Light_Index (U, V, 1)));
+                  ((Manifold.Get_Light_Index (U, V, 1),
+                   Manifold.Get_Light_Index (U, V, 2)));
                 if Settings.Render_OLS and Script.Draw_Outlines then
                     GL.Culling.Set_Front_Face (Clockwise);
                     Set_Outline_Pass (1.0);
@@ -310,12 +310,12 @@ package body Prop_Renderer.Render is
         use GL.Objects.Vertex_Arrays;
         use GL_Maths.Indices_Package;
         use Properties_Skinned_Shader_Manager;
-        Count    : constant Integer := Integer (Skinned_Render_List.Length);
         Property : Prop_Renderer_Support.Property_Data;
         Script   : Prop_Renderer_Support.Prop_Script;
-        Prop_I   : Integer;
-        Script_I : Integer;
-        Ssi      : Integer;
+        Prop_I   : Positive;
+        Script_I : Positive;
+--          Ssi      : Integer;
+--          Mesh_I   : Positive;
         U        : Positive;
         V        : Positive;
     begin
@@ -340,23 +340,25 @@ package body Prop_Renderer.Render is
                 Set_Shadow_Enabled (0.0);
             end if;
 
-            for Param_I in 1 .. Count loop
+            for Param_I in Skinned_Render_List.First_Index ..
+              Skinned_Render_List.Last_Index loop
                 Prop_I := Skinned_Render_List.Element (Param_I);
                 Script_I := Get_Script_Index (Prop_I);
                 Script := Properties_Manager.Get_Script_Data (Script_I);
-                Ssi := Script.Smashed_Script_Index;
+--                  Ssi := Script.Smashed_Script_Index;
                 Property := Properties_Manager.Get_Property_Data (Prop_I);
-                if Property.Was_Smashed and Ssi > 0 then
-                    Script_I := Ssi;
-                end if;
-
+--                  if Property.Was_Smashed and Ssi > 0 then
+--                      Script_I := Ssi;
+--                  end if;
+--                  Script := Properties_Manager.Get_Script_Data (Script_I);
+--                  Mesh_I := Script.Mesh_Index;
                 Set_Bone_Matrices (Property.Current_Bone_Transforms);
                 Set_Model (Property.Model_Matrix);
                 U := Positive (Property.Map_U);
                 V := Positive (Property.Map_V);
-                Set_Static_Light_Indices
-                  ((Manifold.Get_Light_Index (U, V, 0),
-                   Manifold.Get_Light_Index (U, V, 1)));
+--                   Properties_Skinned_Shader_Manager.Set_Skinned_Static_Light_Indices
+--                    ((Manifold.Get_Light_Index (U, V, 1),
+--                     Manifold.Get_Light_Index (U, V, 2)));
                 if Settings.Render_OLS and Script.Draw_Outlines then
                     GL.Culling.Set_Front_Face (Clockwise);
                     Set_Outline_Pass (1.0);
@@ -364,17 +366,17 @@ package body Prop_Renderer.Render is
                         GL_Utils.Bind_VAO (Script.Outlines_Vao);
                     else
                         GL_Utils.Bind_VAO (Script.Vao);
-                        Draw_Arrays (Triangles, 0, Script.Outlines_Vertex_Count);
-                        Draw_Arrays (Triangles, 0, Script.Vertex_Count);
+--                          Draw_Arrays (Triangles, 0, Script.Outlines_Vertex_Count);
+--                          Draw_Arrays (Triangles, 0, Script.Vertex_Count);
                     end if;
                     Set_Outline_Pass (0.0);
                     GL.Culling.Set_Front_Face (Counter_Clockwise);
                 end if;
 
-                GL_Utils.Bind_VAO (Script.Vao);
-                Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
-                Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
-                Draw_Arrays (Triangles, 0, Script.Vertex_Count);
+--                  GL_Utils.Bind_VAO (Script.Vao);
+--                  Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
+--                  Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
+--                  Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
         end if;
 

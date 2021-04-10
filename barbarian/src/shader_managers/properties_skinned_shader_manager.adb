@@ -35,7 +35,7 @@ package body Properties_Skinned_Shader_Manager is
       View_ID                 : GL.Uniforms.Uniform := 0;
    end record;
 
-   Property_Uniforms : Skinned_Properties_Uniforms;
+   Skinned_Property_Uniforms : Skinned_Properties_Uniforms;
    Vec2_Init         : constant GL.Types.Singles.Vector2 := (0.0, 0.0);
    IVec2_Init        : constant GL.Types.Ints.Vector2 := (0, 0);
    Vec3_Init         : constant GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
@@ -45,7 +45,7 @@ package body Properties_Skinned_Shader_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init
+   procedure Init_Skinned_Shader
      (Prop_Shader : out GL.Objects.Programs.Program) is
       use GL.Objects.Shaders;
       use GL.Types.Singles;
@@ -55,139 +55,139 @@ package body Properties_Skinned_Shader_Manager is
         ((Src ("src/shaders_3_2/prop_skinned.vert", Vertex_Shader),
          Src ("src/shaders_3_2/prop_skinned.frag", Fragment_Shader)));
 
-      Property_Uniforms.Perspective_ID := Uniform_Location (Prop_Shader, "P");
-      Property_Uniforms.View_ID := Uniform_Location (Prop_Shader, "V");
-      Property_Uniforms.Model_ID :=
+      Skinned_Property_Uniforms.Perspective_ID := Uniform_Location (Prop_Shader, "P");
+      Skinned_Property_Uniforms.View_ID := Uniform_Location (Prop_Shader, "V");
+      Skinned_Property_Uniforms.Model_ID :=
         Uniform_Location (Prop_Shader, "M");
-      Property_Uniforms.Bone_Matrices_ID  :=
+      Skinned_Property_Uniforms.Bone_Matrices_ID  :=
         Uniform_Location (Prop_Shader, "bone_matrices");
-      Property_Uniforms.Outline_Pass_ID :=
+      Skinned_Property_Uniforms.Outline_Pass_ID :=
         Uniform_Location (Prop_Shader, "ol_pass");
-      Property_Uniforms.Dyn_Light_Pos_World_ID :=
+      Skinned_Property_Uniforms.Dyn_Light_Pos_World_ID :=
         Uniform_Location (Prop_Shader, "dyn_light_pos_wor");
-      Property_Uniforms.Dyn_Light_Diff_ID :=
+      Skinned_Property_Uniforms.Dyn_Light_Diff_ID :=
         Uniform_Location (Prop_Shader, "dyn_light_diff");
-      Property_Uniforms.Dyn_Light_Spec_ID :=
+      Skinned_Property_Uniforms.Dyn_Light_Spec_ID :=
         Uniform_Location (Prop_Shader, "dyn_light_spec");
-      Property_Uniforms.Dyn_Light_Range_ID :=
+      Skinned_Property_Uniforms.Dyn_Light_Range_ID :=
         Uniform_Location (Prop_Shader, "dyn_light_range");
-      Property_Uniforms.L_A_ID :=
+      Skinned_Property_Uniforms.L_A_ID :=
         Uniform_Location (Prop_Shader, "L_a");
-      Property_Uniforms.Static_Light_Indices_ID :=
+      Skinned_Property_Uniforms.Static_Light_Indices_ID :=
         Uniform_Location (Prop_Shader, "static_light_indices");
-      Property_Uniforms.Light_Pos_ID :=
+      Skinned_Property_Uniforms.Light_Pos_ID :=
         Uniform_Location (Prop_Shader, "light_pos");
-      Property_Uniforms.Light_Diff_ID :=
+      Skinned_Property_Uniforms.Light_Diff_ID :=
         Uniform_Location (Prop_Shader, "light_diff");
-      Property_Uniforms.Light_Spec_ID :=
+      Skinned_Property_Uniforms.Light_Spec_ID :=
         Uniform_Location (Prop_Shader, "light_spec");
-      Property_Uniforms.Light_Range_ID :=
+      Skinned_Property_Uniforms.Light_Range_ID :=
         Uniform_Location (Prop_Shader, "light_range");
-      Property_Uniforms.Diff_Map_ID :=
+      Skinned_Property_Uniforms.Diff_Map_ID :=
         Uniform_Location (Prop_Shader, "diff_map");
-      Property_Uniforms.Spec_Map_ID :=
+      Skinned_Property_Uniforms.Spec_Map_ID :=
         Uniform_Location (Prop_Shader, "spec_map");
-      Property_Uniforms.Shadow_Enabled_ID :=
+      Skinned_Property_Uniforms.Shadow_Enabled_ID :=
         Uniform_Location (Prop_Shader, "shadow_enabled");
-      Property_Uniforms.Cube_Texture_ID :=
+      Skinned_Property_Uniforms.Cube_Texture_ID :=
         Uniform_Location (Prop_Shader, "cube_texture");
-      Property_Uniforms.Caster_Pos_World_ID :=
+      Skinned_Property_Uniforms.Caster_Pos_World_ID :=
         Uniform_Location (Prop_Shader, "caster_pos_wor");
 
       Use_Program (Prop_Shader);
-      GL.Uniforms.Set_Single (Property_Uniforms.Caster_Pos_World_ID, Vec3_Init);
-      GL.Uniforms.Set_Int (Property_Uniforms.Cube_Texture_ID, 0);
-      GL.Uniforms.Set_Int (Property_Uniforms.Diff_Map_ID, 0);
-      GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Pos_World_ID, Vec3_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Diff_ID, Vec3_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Spec_ID, Vec3_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.L_A_ID, Vec3_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.Light_Pos_ID, Light_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.Light_Diff_ID, Light_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.Light_Spec_ID, Light_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.Light_Range_ID, Range_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.Model_ID, Identity4);
-      GL.Uniforms.Set_Single (Property_Uniforms.Outline_Pass_ID, 0.0);
-      GL.Uniforms.Set_Single (Property_Uniforms.Perspective_ID, Identity4);
-      GL.Uniforms.Set_Single (Property_Uniforms.Shadow_Enabled_ID, 0.0);
-      GL.Uniforms.Set_Int (Property_Uniforms.Spec_Map_ID, 0);
-      GL.Uniforms.Set_Int (Property_Uniforms.Static_Light_Indices_ID, IVec2_Init);
-      GL.Uniforms.Set_Single (Property_Uniforms.View_ID, Identity4);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Caster_Pos_World_ID, Vec3_Init);
+      GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Cube_Texture_ID, 0);
+      GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Diff_Map_ID, 0);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Pos_World_ID, Vec3_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Diff_ID, Vec3_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Spec_ID, Vec3_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.L_A_ID, Vec3_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Light_Pos_ID, Light_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Light_Diff_ID, Light_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Light_Spec_ID, Light_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Light_Range_ID, Range_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Model_ID, Identity4);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Outline_Pass_ID, 0.0);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Perspective_ID, Identity4);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Shadow_Enabled_ID, 0.0);
+      GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Spec_Map_ID, 0);
+      GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Static_Light_Indices_ID, IVec2_Init);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.View_ID, Identity4);
 
    exception
       when others =>
          Put_Line ("An exception occurred in GUI_Atlas_Shader_Manager.Init.");
          raise;
-   end Init;
+   end Init_Skinned_Shader;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Bone_Matrices (Bone_Matrices : Singles.Matrix4_Array)  is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Bone_Matrices_ID, Bone_Matrices);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Bone_Matrices_ID, Bone_Matrices);
    end Set_Bone_Matrices;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Caster_Position (Position : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Caster_Pos_World_ID, Position);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Caster_Pos_World_ID, Position);
    end Set_Caster_Position;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Cube_Texture (Texture : Int)  is
    begin
-      GL.Uniforms.Set_Int (Property_Uniforms.Cube_Texture_ID, Texture);
+      GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Cube_Texture_ID, Texture);
    end Set_Cube_Texture;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Diff_Map (Diff_Map : Int) is
    begin
-      GL.Uniforms.Set_Int (Property_Uniforms.Diff_Map_ID, Diff_Map);
+      GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Diff_Map_ID, Diff_Map);
    end Set_Diff_Map;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Dyn_Light_Pos (Position  : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Pos_World_ID, Position);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Pos_World_ID, Position);
    end Set_Dyn_Light_Pos;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Dyn_Light_Diff (Diff  : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Diff_ID, Diff);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Diff_ID, Diff);
    end Set_Dyn_Light_Diff;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Dyn_Light_Spec (Spec : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Spec_ID, Spec);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Spec_ID, Spec);
    end Set_Dyn_Light_Spec;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Dyn_Light_Range (Light_Range : Single) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Dyn_Light_Range_ID, Light_Range);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Range_ID, Light_Range);
    end Set_Dyn_Light_Range;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_L_A (L_A : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.L_A_ID, L_A);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.L_A_ID, L_A);
    end Set_L_A;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Light_Pos (Position : Light_Array) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Light_Pos_ID,
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Light_Pos_ID,
                               Singles.Vector3_Array (Position));
    end Set_Light_Pos;
 
@@ -195,7 +195,7 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Light_Diff (Diff : Light_Array) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Light_Diff_ID,
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Light_Diff_ID,
                               Singles.Vector3_Array (Diff));
    end Set_Light_Diff;
 
@@ -203,7 +203,7 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Light_Spec (Spec : Light_Array) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Light_Spec_ID,
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Light_Spec_ID,
                               Singles.Vector3_Array (Spec));
    end Set_Light_Spec;
 
@@ -211,7 +211,7 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Light_Range (Light_Range :  Light_Range_Array) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Light_Range_ID,
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Light_Range_ID,
                               Single_Array (Light_Range));
    end Set_Light_Range;
 
@@ -219,21 +219,21 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Model (Model_Matrix : Singles.Matrix4) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Model_ID, Model_Matrix);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Model_ID, Model_Matrix);
    end Set_Model;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Outline_Pass (Ol_Pass : Single) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Outline_Pass_ID, Ol_Pass);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Outline_Pass_ID, Ol_Pass);
    end Set_Outline_Pass;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Perspective (Perspective_Matrix : Singles.Matrix4) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Perspective_ID,
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Perspective_ID,
                               Perspective_Matrix);
    end Set_Perspective;
 
@@ -241,28 +241,29 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Shadow_Enabled (Enable : Single) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.Shadow_Enabled_ID, Enable);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Shadow_Enabled_ID, Enable);
    end Set_Shadow_Enabled;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Spec_Map (Spec_Map : Int) is
    begin
-      GL.Uniforms.Set_Int (Property_Uniforms.Spec_Map_ID, Spec_Map);
+      GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Spec_Map_ID, Spec_Map);
    end Set_Spec_Map;
 
    --  -------------------------------------------------------------------------
 
-   procedure Set_Static_Light_Indices (Indices : Ints.Vector2) is
+   procedure Set_Skinned_Static_Light_Indices (Indices : Ints.Vector2) is
    begin
-      GL.Uniforms.Set_Int (Property_Uniforms.Static_Light_Indices_ID, Indices);
-   end Set_Static_Light_Indices;
+      GL.Uniforms.Set_Int
+          (Skinned_Property_Uniforms.Static_Light_Indices_ID, Indices);
+   end Set_Skinned_Static_Light_Indices;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_View (View_Matrix : Singles.Matrix4) is
    begin
-      GL.Uniforms.Set_Single (Property_Uniforms.View_ID, View_Matrix);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.View_ID, View_Matrix);
    end Set_View;
 
    --  -------------------------------------------------------------------------

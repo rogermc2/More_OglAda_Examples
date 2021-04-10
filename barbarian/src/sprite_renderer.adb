@@ -181,8 +181,8 @@ package body Sprite_Renderer is
          Set_Current_Sprite (Single (Sprites (Sprite_Index).Current_Sprite));
          Set_Opacity (Opacity);
          Set_Model (Sprites (Sprite_Index).Model_Matrix);
-         Set_Static_Light_Indices ((Manifold.Get_Light_Index (U, V, 0),
-                                   Manifold.Get_Light_Index (U, V, 1)));
+         Set_Static_Light_Indices ((Manifold.Get_Light_Index (U, V, 1),
+                                   Manifold.Get_Light_Index (U, V, 2)));
          GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
       end if;
    end Render_Sprite;
@@ -318,7 +318,6 @@ package body Sprite_Renderer is
       use Batch_Manager;
       use GL_Maths.Indices_Package;
       use Sprite_Shader_Manager;
-      Index     : Positive := Static_Lights.First_Index;
       aLight    : Static_Light_Data;
       Positions : Light_Array;
       Diffuse   : Light_Array;
@@ -326,18 +325,19 @@ package body Sprite_Renderer is
       Ranges    : Light_Range_Array;
    begin
       Sprite_Shader_Manager.Use_Sprite_Shader;
-      while Index <= Static_Lights.Last_Index loop
+      for Index in Static_Lights.First_Index .. Static_Lights.Last_Index loop
          aLight := Element (Static_Lights, Index);
          Positions (Int (Index)) := aLight.Position;
          Diffuse (Int (Index)) := aLight.Diffuse;
          Specular (Int (Index)) := aLight.Specular;
          Ranges (Int (Index)) := aLight.Light_Range;
-         Index := Index + 1;
       end loop;
+
       Sprite_Shader_Manager.Set_Light_Pos (Positions);
       Sprite_Shader_Manager.Set_Light_Diff (Diffuse);
       Sprite_Shader_Manager.Set_Light_Spec (Specular);
       Sprite_Shader_Manager.Set_Light_Range (Ranges);
+
    end Update_Static_Lights_Uniforms;
 
    --  -------------------------------------------------------------------------

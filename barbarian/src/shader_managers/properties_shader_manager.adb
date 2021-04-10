@@ -155,7 +155,7 @@ package body Properties_Shader_Manager is
         Set_Norm_Map (2);
         Set_Cube_Texture (3);
 
-        Properties_Skinned_Shader_Manager.Init (Prop_Skinned_Shader);
+        Properties_Skinned_Shader_Manager.Init_Skinned_Shader (Prop_Skinned_Shader);
         Properties_Skinned_Shader_Manager.Set_Diff_Map (0);
         Properties_Skinned_Shader_Manager.Set_Spec_Map (1);
         Properties_Skinned_Shader_Manager.Set_Cube_Texture (3);

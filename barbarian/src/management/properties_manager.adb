@@ -266,14 +266,14 @@ package body Properties_Manager is
                 --  Map files can have Rx and Tx set to -1
                 Rx := Integer'Value (Prop_Line (PosL + 1 .. PosR - 1));
                 Tx := Integer'Value (Prop_Line (PosR + 1 .. S_Length));
-                --              Game_Utils.Game_Log ("Properties_Manager Script_File " &
-                --                                  To_String (Script_File) & ", U: " &
-                --                               Integer'Image (U) & ", V: " &
-                --                               Integer'Image (V) & ", Height: " &
-                --                               Integer'Image (Height) & ", Facing: " &
-                --                               Facing & ", Rx: " &
-                --                               Integer'Image (Rx) & ", Tx: " &
-                --                               Integer'Image (Tx));
+                Game_Utils.Game_Log ("Properties_Manager Script_File " &
+                                       To_String (Script_File) & ", U: " &
+                                       Int'Image (U) & ", V: " &
+                                       Int'Image (V) & ", Height: " &
+                                       Integer'Image (Height) & ", Facing: " &
+                                       Facing & ", Rx: " &
+                                       Integer'Image (Rx) & ", Tx: " &
+                                       Integer'Image (Tx));
             end; --  declare block
             Create_Prop_From_Script (To_String (Script_File), U, V, Height,
                                      Facing, Tx, Rx);
@@ -376,8 +376,8 @@ package body Properties_Manager is
         end if;
 
         New_Props.Script_Index := Add_Sprite (Diff_Map, Spec_Map, Cols, Rows);
---          Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Diffuse_ID, New_Props.Script_Index"
---                    & Integer'Image (New_Props.Script_Index));
+        --          Put_Line ("Properties_Manager.Set_Up_Sprite, Spec.Atlas_Diffuse_ID, New_Props.Script_Index"
+        --                    & Integer'Image (New_Props.Script_Index));
         Set_Sprite_Scale (New_Props.Sprite_Index, aScript.Scale);
         Sprite_Pos (GL.Y) := Sprite_Pos (GL.Y) + Y_Offset + Sprite_Y_Offset;
         Set_Sprite_Position (New_Props.Sprite_Index, Sprite_Pos);
