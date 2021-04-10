@@ -48,7 +48,7 @@ package body Portal_Shader_Manager is
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Coins_Shader_Manager.Init_Portal_Shader.");
+            Put_Line ("An exception occurred in Coins_Portal_Manager.Init_Portal_Shader.");
             raise;
     end Init_Portal_Shader;
 

@@ -14,7 +14,7 @@ with Tiles_Manager;
 package body Maps_Manager is
 
    procedure Load_Maps (Map_Path : String; theMap : out Map;
-                        Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                        Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                         Ramp_Spec_Tex : in out GL.Objects.Textures.Texture) is
       use Ada.Strings;
       Input_File       : File_Type;
@@ -43,7 +43,7 @@ package body Maps_Manager is
       --  Hammer_Music_Track
       aLine := To_Unbounded_String (Get_Line (Input_File));
 
-      Tiles_Manager.Load_Tiles (Input_File, Tile_Tex, Tile_Spec_Tex,
+      Tiles_Manager.Load_Tiles (Input_File, Tile_Diff_Tex, Tile_Spec_Tex,
                                 Ramp_Diff_Tex, Ramp_Spec_Tex);
       Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Tiles loaded");
       Properties_Manager.Load_Properties (Input_File);

@@ -108,7 +108,7 @@ void main()
 		return;
         }
 	// sampling
-	vec4 texel_diff = texture (diff_map, st);
+	vec4 texel_diff = texture (diff_map, 0.4 * st);
 	vec4 texel_spec = texture (spec_map, st);
         
 	frag_colour.a = texel_diff.a;
@@ -127,5 +127,5 @@ void main()
 		frag_colour.rgb *= sf_f;
         }
     frag_colour.rgb = texel_diff.rgb;
-    frag_colour = vec4(5.0 * texel_diff.rgb, 1.0);
+    frag_colour = vec4(2.0 * texel_diff.rgb, 1.0);
     }

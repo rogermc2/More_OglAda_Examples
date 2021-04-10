@@ -13,7 +13,7 @@ package Maps_Manager is
     type Map is private;
 
     procedure Load_Maps (Map_Path : String; theMap : out Map;
-                        Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                        Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                         Ramp_Spec_Tex : in out GL.Objects.Textures.Texture);
     procedure Set_Title (aMap : in out Map; Title : Unbounded_String);
     procedure Set_Par_Time (aMap : in out Map; Time : Unbounded_String);

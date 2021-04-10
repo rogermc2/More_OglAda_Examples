@@ -8,6 +8,7 @@ with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Toggles;
+with GL.Types.Colors;
 
 with Glfw;
 
@@ -32,6 +33,7 @@ with Water_Shader_Manager;
 package body Manifold is
    use GL.Types;
 
+   Yellow                   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.5);
    Batch_Split_Count        : Integer := 0;
    Manifold_Program         : GL.Objects.Programs.Program;
    Water_Program            : GL.Objects.Programs.Program;
@@ -95,6 +97,7 @@ package body Manifold is
       --        Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
       --                 Integer'Image (Integer (theBatches.Length)));
       --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+      Utilities.Clear_Background_Colour_And_Depth (Yellow);
       Use_Program (Manifold_Program);
       if Camera.Is_Dirty then
          Set_View_Matrix (Camera.View_Matrix);

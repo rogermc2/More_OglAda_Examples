@@ -71,13 +71,12 @@ package body Main_Loop is
       --     Fps_Text             : Integer;
       Max_Steps_Per_Frame             : Integer;
       Game_Map                        : Maps_Manager.Map;
-      Game_Camera                     : Camera.Camera_Data := Camera.Default_Camera;
       Level_Name                      : Unbounded_String :=
                                           To_Unbounded_String ("anton2");
       Level_Time                      : Float := 0.0;
       Cheated_On_Map                  : Boolean := False;
       Quit_Game                       : Boolean := False;
-      Skip_Intro_Screen_And_Main_Menu : Boolean := True;
+      Skip_Intro_Screen_And_Main_Menu : Boolean := False;
 
       Avg_Frame_Time_Accum_Ms         : Float := 0.0;
       Curr_Frame_Time_Accum_Ms        : Float := 0.0;
@@ -107,9 +106,9 @@ package body Main_Loop is
       begin
          --                              Game_Utils.Game_Log
          --                                ("Main_Loop.Game_Loop Is_Running Main Menu not open");
-         GUI.Update_GUIs (Delta_Time);
-         Text.Update_Comic_Texts (Delta_Time);
-         Text.Update_Particle_Texts (Delta_Time);
+--           GUI.Update_GUIs (Delta_Time);
+--           Text.Update_Comic_Texts (Delta_Time);
+--           Text.Update_Particle_Texts (Delta_Time);
          --  Check_Victory_Defeat checks that if the
          --  "defeated" gui is up then controls aren't
          --  updated except space to restart.
@@ -164,7 +163,7 @@ package body Main_Loop is
       --  ------------------------------------------------------------------------
 
       procedure Game_Loop (Window        : in out Input_Callback.Barbarian_Window;
-                           Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+                           Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                            Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
          use Glfw.Input.Keys;
          use Game_Support;
@@ -220,7 +219,7 @@ package body Main_Loop is
                Do_Menu_Not_Open (Window, Delta_Time, Is_Running);
 
                if Is_Running then
-                  Player_1_View (Window, Tile_Tex, Tile_Spec_Tex,
+                  Player_1_View (Window, Tile_Diff_Tex, Tile_Spec_Tex,
                                  Ramp_Diff_Tex, Ramp_Spec_Tex,
                                  Delta_Time, Dump_Video,
                                  Save_Screenshot);
@@ -329,7 +328,7 @@ package body Main_Loop is
                Main_Menu.Draw_Title_Only;
             end if;
 
-            GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
+--              GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
             Glfw.Input.Poll_Events;
             Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
 
@@ -394,7 +393,7 @@ package body Main_Loop is
          Height          : GL.Types.Single;
          Map_Path        : Unbounded_String;
          Ambient_Light   : constant Singles.Vector3 := (0.025, 0.025, 0.025);
-         Tile_Tex        : GL.Objects.Textures.Texture;
+         Tile_Diff_Tex   : GL.Objects.Textures.Texture;
          Tile_Spec_Tex   : GL.Objects.Textures.Texture;
          Ramp_Diff_Tex   : GL.Objects.Textures.Texture;
          Ramp_Spec_Tex   : GL.Objects.Textures.Texture;
@@ -436,7 +435,7 @@ package body Main_Loop is
                Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
                                       To_String (Map_Path));
                Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map,
-                                       Tile_Tex, Tile_Spec_Tex,
+                                       Tile_Diff_Tex, Tile_Spec_Tex,
                                        Ramp_Diff_Tex, Ramp_Spec_Tex);
                --  Properties and characters are loaded by Load_Maps
                Projectile_Manager.Init;
@@ -459,7 +458,7 @@ package body Main_Loop is
                Audio.Play_Sound ("enter_portal.wav", False);
 
                Level_Time := 0.0;
-               Game_Loop (Window, Tile_Tex, Tile_Spec_Tex,
+               Game_Loop (Window, Tile_Diff_Tex, Tile_Spec_Tex,
                           Ramp_Diff_Tex, Ramp_Spec_Tex);
 
                if Main_Menu.End_Story_Open then
@@ -491,9 +490,9 @@ package body Main_Loop is
          Main_Menu.Start_Menu_Title_Bounce;
          Utilities.Clear_Background_Colour_And_Depth (Grey);
 
-                     if not Skip_Intro_Screen_And_Main_Menu then
-         Main_Menu.Set_Menu_Open (True);
-                     end if;
+         if not Skip_Intro_Screen_And_Main_Menu then
+            Main_Menu.Set_Menu_Open (True);
+         end if;
 
          Is_Running := True;
          Last_Time := Float (Glfw.Time);

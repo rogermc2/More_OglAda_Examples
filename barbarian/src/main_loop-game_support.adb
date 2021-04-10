@@ -27,6 +27,7 @@ with Main_Menu;
 with Particle_System;
 with Prop_Renderer;
 with Settings;
+with Shader_Manager;
 with Shadows;
 with Sprite_Renderer;
 with Sprite_World_Map;
@@ -113,6 +114,7 @@ package body Main_Loop.Game_Support is
       UV              : constant Ints.Vector2 :=
                           (Abs (Centre_X), Abs (Centre_Z));
    begin
+      Utilities.Clear_Background_Colour_And_Depth (Yellow);
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
          Game_Utils.Game_Log ("Settings.Shadows_Enabled and Camera.Is_Dirty...");
          for index in Shadow_Direction'Range loop
@@ -136,6 +138,7 @@ package body Main_Loop.Game_Support is
       GL_Utils.Set_Resized_View (False);
       Prop_Renderer.Render_Props_Around_Split (Centre_X, Centre_Z,
                                                Int (Settings.Render_Distance));
+      GL.Objects.Programs.Use_Program (Shader_Manager.f);
       Sprite_World_Map.Cache_Sprites_Around
         (UV (GL.X), UV (GL.Y), Int (Settings.Render_Distance));
       Transparency.Draw_Transparency_List;

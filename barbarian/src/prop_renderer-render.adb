@@ -14,6 +14,7 @@ with Character_Controller;
 with Coins_Shader_Manager;
 with Depth_Skinned_Shader_Manager;
 with Event_Controller;
+with Fallback_Shader_Manager;
 with Frustum;
 with Game_Utils;
 with GL_Maths;
@@ -375,6 +376,8 @@ package body Prop_Renderer.Render is
                 Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
+            GL.Objects.Programs.Use_Program
+              (Fallback_Shader_Manager.);
         end if;
 
     end Render_Skinned;
