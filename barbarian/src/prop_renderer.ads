@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Glfw;
 
+with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Types; use GL.Types;
@@ -57,7 +58,8 @@ package Prop_Renderer is
    function Props_In_Tiles_Size (U, V : Integer) return Natural;
    procedure Render_Property (Prop_ID : Positive);
    procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
-   procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int);
+   procedure Render_Props_Around_Split
+      (Fallback_Shader : GL.Objects.Programs.Program; U, V, Tiles_Distance : Int);
    procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
    procedure Set_End_Camera_Matrix (Mat : Singles.Matrix4);

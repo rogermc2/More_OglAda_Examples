@@ -1,9 +1,10 @@
 
+with GL.Objects.Programs;
 with GL.Types; use GL.Types;
 
 package Shader_Manager is
 
-   procedure Init;
+   procedure Init (Fallback_Shader : out GL.Objects.Programs.Program);
    procedure Set_Model_Matrix (Program_Index : Positive;
                                Model_Matrix  : Singles.Matrix4);
    procedure Set_Projection_Matrix (Program_Index : Positive;

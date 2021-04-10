@@ -3,7 +3,6 @@ with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Culling;
-with GL.Objects.Programs;
 with GL.Toggles;
 
 with Utilities;
@@ -977,7 +976,9 @@ package body Prop_Renderer is
 
    --  -------------------------------------------------------------------------
 
-   procedure Render_Props_Around_Split (U, V, Tiles_Distance : Int) is
+   procedure Render_Props_Around_Split
+      (Fallback_Shader : GL.Objects.Programs.Program;
+       U, V, Tiles_Distance : Int) is
       use Prop_Indices_Package;
       use GL.Objects.Vertex_Arrays;
       use GL.Toggles;
@@ -1093,6 +1094,7 @@ package body Prop_Renderer is
       Render_Javelin_Standard;
       Render_Portal;
       Render_Treasure;
+      GL.Objects.Programs.Use_Program (Fallback_Shader);
       Prop_Dyn_Light_Dirty := False;
 
    exception

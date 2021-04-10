@@ -3,7 +3,6 @@ with Ada.Containers.Vectors;
 
 with GL.Objects.Shaders;
 
-with GL.Objects.Programs;
 with GL.Uniforms;
 with Program_Loader;
 
@@ -31,18 +30,18 @@ package body Shader_Manager is
 
    Fallback_Shader_Programs  : Shader_Programs_List;
 
-   procedure Init_Fallback;
+   procedure Init_Fallback (Fallback_Shader : out GL.Objects.Programs.Program);
 
    --  -------------------------------------------------------------------------
 
-   procedure Init is
+   procedure Init (Fallback_Shader : out GL.Objects.Programs.Program) is
    begin
-      Init_Fallback;
+      Init_Fallback (Fallback_Shader);
    end Init;
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Fallback is
+   procedure Init_Fallback (Fallback_Shader : out GL.Objects.Programs.Program) is
       use GL.Objects.Shaders;
       use Program_Loader;
       SP_Data : Shader_Program_Data;
@@ -61,6 +60,7 @@ package body Shader_Manager is
       GL.Uniforms.Set_Single (SP_Data.View_Matrix_ID, Singles.Identity4);
 
       Fallback_Shader_Programs.Append (SP_Data);
+      Fallback_Shader := SP_Data.Shader_Program;
 
    end Init_Fallback;
 

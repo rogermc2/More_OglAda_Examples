@@ -61,6 +61,7 @@ package body Main_Loop is
       --     Magenta        : constant Colors.Color := (1.0, 0.0, 1.0, 1.0);
       Yellow                  : constant Colors.Color := (1.0, 1.0, 0.0, 0.5);
       White                   : constant Colors.Color := (1.0, 1.0, 1.0, 0.0);
+      Fallback_Shader         : GL.Objects.Programs.Program;
       Title_Track             : constant String := "Warlock_Symphony.ogg";
       Is_Playing_Hammer_Track : Boolean := False;
       Key_Pressed             : boolean := False;
@@ -219,8 +220,8 @@ package body Main_Loop is
                Do_Menu_Not_Open (Window, Delta_Time, Is_Running);
 
                if Is_Running then
-                  Player_1_View (Window, Tile_Diff_Tex, Tile_Spec_Tex,
-                                 Ramp_Diff_Tex, Ramp_Spec_Tex,
+                  Player_1_View (Window, Fallback_Shader, Tile_Diff_Tex,
+                                  Tile_Spec_Tex, Ramp_Diff_Tex, Ramp_Spec_Tex,
                                  Delta_Time, Dump_Video,
                                  Save_Screenshot);
                end if;
@@ -260,7 +261,7 @@ package body Main_Loop is
          Height := Single (Window_Height);
          Input_Handler.Register_Input_Actions;
          Settings.Load_Settings;
-         Shader_Manager.Init;
+         Shader_Manager.Init (Fallback_Shader);
          Audio_Manager.Init;
          Texture_Manager.Init;
          Controller_Textures_Manager.Load_Controller_Textures;
