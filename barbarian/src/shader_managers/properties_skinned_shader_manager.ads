@@ -7,7 +7,8 @@ with Properties_Shader_Manager;
 package Properties_Skinned_Shader_Manager is
    use Properties_Shader_Manager;
 
-   procedure Init_Skinned_Shader (Prop_Shader : out GL.Objects.Programs.Program);
+   procedure Init_Skinned_Shader
+      (Prop_Skinned_Shader : out GL.Objects.Programs.Program);
    procedure Set_Bone_Matrices (Bone_Matrices : Singles.Matrix4_Array);
    procedure Set_Caster_Position (Position : Singles.Vector3);
    procedure Set_Cube_Texture (Texture : Int);

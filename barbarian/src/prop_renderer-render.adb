@@ -378,6 +378,8 @@ package body Prop_Renderer.Render is
 --                  Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
 --                  Texture_Manager.Bind_Texture (1, Script.Specular_Map_Id);
 --                  Draw_Arrays (Triangles, 0, Script.Vertex_Count);
+                    Properties_Skinned_Shader_Manager.
+                  Set_Skinned_Static_Light_Indices ((0, 0));
             end loop;
         end if;
 

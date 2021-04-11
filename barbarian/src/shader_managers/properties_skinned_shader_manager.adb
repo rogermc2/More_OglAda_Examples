@@ -46,56 +46,59 @@ package body Properties_Skinned_Shader_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Init_Skinned_Shader
-     (Prop_Shader : out GL.Objects.Programs.Program) is
+     (Prop_Skinned_Shader : out GL.Objects.Programs.Program) is
       use GL.Objects.Shaders;
       use GL.Types.Singles;
       use Program_Loader;
    begin
-      Prop_Shader := Program_From
+      Prop_Skinned_Shader := Program_From
         ((Src ("src/shaders_3_2/prop_skinned.vert", Vertex_Shader),
          Src ("src/shaders_3_2/prop_skinned.frag", Fragment_Shader)));
 
-      Skinned_Property_Uniforms.Perspective_ID := Uniform_Location (Prop_Shader, "P");
-      Skinned_Property_Uniforms.View_ID := Uniform_Location (Prop_Shader, "V");
+      Skinned_Property_Uniforms.Perspective_ID :=
+          Uniform_Location (Prop_Skinned_Shader, "P");
+      Skinned_Property_Uniforms.View_ID :=
+          Uniform_Location (Prop_Skinned_Shader, "V");
       Skinned_Property_Uniforms.Model_ID :=
-        Uniform_Location (Prop_Shader, "M");
+        Uniform_Location (Prop_Skinned_Shader, "M");
       Skinned_Property_Uniforms.Bone_Matrices_ID  :=
-        Uniform_Location (Prop_Shader, "bone_matrices");
+        Uniform_Location (Prop_Skinned_Shader, "bone_matrices");
       Skinned_Property_Uniforms.Outline_Pass_ID :=
-        Uniform_Location (Prop_Shader, "ol_pass");
+        Uniform_Location (Prop_Skinned_Shader, "ol_pass");
       Skinned_Property_Uniforms.Dyn_Light_Pos_World_ID :=
-        Uniform_Location (Prop_Shader, "dyn_light_pos_wor");
+        Uniform_Location (Prop_Skinned_Shader, "dyn_light_pos_wor");
       Skinned_Property_Uniforms.Dyn_Light_Diff_ID :=
-        Uniform_Location (Prop_Shader, "dyn_light_diff");
+        Uniform_Location (Prop_Skinned_Shader, "dyn_light_diff");
       Skinned_Property_Uniforms.Dyn_Light_Spec_ID :=
-        Uniform_Location (Prop_Shader, "dyn_light_spec");
+        Uniform_Location (Prop_Skinned_Shader, "dyn_light_spec");
       Skinned_Property_Uniforms.Dyn_Light_Range_ID :=
-        Uniform_Location (Prop_Shader, "dyn_light_range");
+        Uniform_Location (Prop_Skinned_Shader, "dyn_light_range");
       Skinned_Property_Uniforms.L_A_ID :=
-        Uniform_Location (Prop_Shader, "L_a");
+        Uniform_Location (Prop_Skinned_Shader, "L_a");
       Skinned_Property_Uniforms.Static_Light_Indices_ID :=
-        Uniform_Location (Prop_Shader, "static_light_indices");
+        Uniform_Location (Prop_Skinned_Shader, "static_light_indices");
       Skinned_Property_Uniforms.Light_Pos_ID :=
-        Uniform_Location (Prop_Shader, "light_pos");
+        Uniform_Location (Prop_Skinned_Shader, "light_pos");
       Skinned_Property_Uniforms.Light_Diff_ID :=
-        Uniform_Location (Prop_Shader, "light_diff");
+        Uniform_Location (Prop_Skinned_Shader, "light_diff");
       Skinned_Property_Uniforms.Light_Spec_ID :=
-        Uniform_Location (Prop_Shader, "light_spec");
+        Uniform_Location (Prop_Skinned_Shader, "light_spec");
       Skinned_Property_Uniforms.Light_Range_ID :=
-        Uniform_Location (Prop_Shader, "light_range");
+        Uniform_Location (Prop_Skinned_Shader, "light_range");
       Skinned_Property_Uniforms.Diff_Map_ID :=
-        Uniform_Location (Prop_Shader, "diff_map");
+        Uniform_Location (Prop_Skinned_Shader, "diff_map");
       Skinned_Property_Uniforms.Spec_Map_ID :=
-        Uniform_Location (Prop_Shader, "spec_map");
+        Uniform_Location (Prop_Skinned_Shader, "spec_map");
       Skinned_Property_Uniforms.Shadow_Enabled_ID :=
-        Uniform_Location (Prop_Shader, "shadow_enabled");
+        Uniform_Location (Prop_Skinned_Shader, "shadow_enabled");
       Skinned_Property_Uniforms.Cube_Texture_ID :=
-        Uniform_Location (Prop_Shader, "cube_texture");
+        Uniform_Location (Prop_Skinned_Shader, "cube_texture");
       Skinned_Property_Uniforms.Caster_Pos_World_ID :=
-        Uniform_Location (Prop_Shader, "caster_pos_wor");
+        Uniform_Location (Prop_Skinned_Shader, "caster_pos_wor");
 
-      Use_Program (Prop_Shader);
-      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Caster_Pos_World_ID, Vec3_Init);
+      Use_Program (Prop_Skinned_Shader);
+      GL.Uniforms.Set_Single
+          (Skinned_Property_Uniforms.Caster_Pos_World_ID, Vec3_Init);
       GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Cube_Texture_ID, 0);
       GL.Uniforms.Set_Int (Skinned_Property_Uniforms.Diff_Map_ID, 0);
       GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Pos_World_ID, Vec3_Init);
@@ -116,7 +119,7 @@ package body Properties_Skinned_Shader_Manager is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in GUI_Atlas_Shader_Manager.Init.");
+         Put_Line ("An exception occurred in Init_Skinned_Shader.Init.");
          raise;
    end Init_Skinned_Shader;
 
@@ -124,14 +127,16 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Bone_Matrices (Bone_Matrices : Singles.Matrix4_Array)  is
    begin
-      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Bone_Matrices_ID, Bone_Matrices);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Bone_Matrices_ID,
+                              Bone_Matrices);
    end Set_Bone_Matrices;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Caster_Position (Position : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Caster_Pos_World_ID, Position);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Caster_Pos_World_ID,
+                              Position);
    end Set_Caster_Position;
 
    --  -------------------------------------------------------------------------
@@ -152,7 +157,8 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Dyn_Light_Pos (Position  : Singles.Vector3) is
    begin
-      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Pos_World_ID, Position);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Pos_World_ID,
+                              Position);
    end Set_Dyn_Light_Pos;
 
    --  -------------------------------------------------------------------------
@@ -173,7 +179,8 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Dyn_Light_Range (Light_Range : Single) is
    begin
-      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Range_ID, Light_Range);
+      GL.Uniforms.Set_Single (Skinned_Property_Uniforms.Dyn_Light_Range_ID,
+                              Light_Range);
    end Set_Dyn_Light_Range;
 
    --  -------------------------------------------------------------------------
