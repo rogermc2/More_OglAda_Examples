@@ -67,11 +67,16 @@ package Batch_Manager is
                                Light_Range                    : Single);
    procedure Add_Batch (Data : Batch_Meta);
    procedure Clear;
-   function Get_Batch_Index (Column, Row : Positive) return Integer;
+   function Get_Batch_Index (Column, Row : Positive) return Natural;
+   pragma Inline (Get_Batch_Index);
    procedure Init;
-   function Batches return Batches_List;
+   function Batch_List return Batches_List;
+   function Batches_Empty return Boolean;
+   pragma Inline (Batches_Empty);
    procedure Regenerate_Batch (Batch_Index : Positive);
    function Static_Lights return Static_Light_Vector;
+   function Static_Indices  (Batch_Index : Positive)
+                                    return GL_Maths.Indices_List;
    procedure Update_Batch (Index : Positive; Data : Batch_Meta);
 
 end Batch_Manager;

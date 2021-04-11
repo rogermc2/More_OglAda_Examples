@@ -58,7 +58,7 @@ package body Tiles_Manager is
                                Light_Range               : Single) is
       use Batch_Manager;
       use Batches_Package;
-      Curs          : Batches_Package.Cursor := Batches.First;
+      Curs          : Batches_Package.Cursor := Batch_List.First;
       aBatch        : Batch_Meta;
       X             : constant Single := Single (2 * Col) + Offset (GL.X);
       Y             : constant Single := Single (2 * Get_Tile_Level (Col, Row) + Tile_Height_Offset) +
@@ -77,7 +77,7 @@ package body Tiles_Manager is
       Static_Lights.Append (New_Light);
 
       for index in 1 .. Total_Batches loop
-         aBatch := Batches.Element (index);
+         aBatch := Batch_List.Element (index);
          aBatch.Static_Light_Indices.Append (Static_Lights.Last_Index);
          Update_Batch (index, aBatch);
       end loop;
@@ -120,8 +120,8 @@ package body Tiles_Manager is
 --                                   Integer'Image (row) & ", " & Integer'Image (col));
             Batch_Across := Integer (Col - 1) / Settings.Tile_Batch_Width;
             Batch_Index := Batches_Across * Batch_Down + Batch_Across + 1;
-            if Has_Element (Batches.To_Cursor (Batch_Index)) then
-               Batch := Batches.Element (Batch_Index);
+            if Has_Element (Batch_List.To_Cursor (Batch_Index)) then
+               Batch := Batch_List.Element (Batch_Index);
                Add_Tile (Batch, Row, Col);
                Update_Batch (Batch_Index, Batch);
             else
@@ -131,7 +131,7 @@ package body Tiles_Manager is
          end loop;
       end loop;
 
-      for index in Batches.First_Index .. Batches.Last_Index loop
+      for index in Batch_List.First_Index .. Batch_List.Last_Index loop
          Regenerate_Batch (index);
       end loop;
 

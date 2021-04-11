@@ -910,8 +910,6 @@ package body Prop_Renderer is
       theScript_Type : Property_Type;
       aScript        : Prop_Script;
       Ssi            : Natural;
-      Mesh_Index     : Integer;
-      Bone_Count     : Integer;
       Rot_Dia        : Singles.Matrix4;
       Trans_Dia      : Singles.Matrix4;
       Trans          : Singles.Vector3;
@@ -924,7 +922,6 @@ package body Prop_Renderer is
       --         & Int'Image (Up) & ", " & Int'Image (Down));
       for vi in Left .. Right loop
          for ui in Up .. Down loop
-            --                 Props_Size := Tile_Data'Size;
             if not Tiles_Manager.Is_Tile_Valid ((ui, vi)) then
                raise Prop_Renderer_Exception with
                  "Prop_Renderer.Activate_Door_In_Tile, invalid tile indices: " &
@@ -957,8 +954,6 @@ package body Prop_Renderer is
                     theScript_Type = Windlass_Prop then
                      Shadows.Set_Depth_Skinned_Model_Matrix
                        (Property.Model_Matrix);
-                     Mesh_Index := aScript.Mesh_Index;
-                     Bone_Count := Mesh_Loader.Bone_Count (Mesh_Index);
                      Shadows.Set_Depth_Skinned_Bone_Matrices
                        (Property.Current_Bone_Transforms);
                   elsif theScript_Type = Diamond_Trigger_Prop then

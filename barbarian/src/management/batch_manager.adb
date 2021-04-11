@@ -311,12 +311,19 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    function Batches return Batches_List is
+    function Batch_List return Batches_List is
     begin
         return Batches_Data;
-    end Batches;
+    end Batch_List;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
+
+   function Batches_Empty return Boolean is
+    begin
+        return Batches_Data.Is_Empty;
+    end Batches_Empty;
+
+    --  ------------------------------------------------------------------------
     --  Out-of-order check. swap on first out-of-order and returns false.
     --  Multiple calls required to sort entire list
     function Check_For_OOO (Batch_Index : Positive) return Boolean is
@@ -505,19 +512,19 @@ package body Batch_Manager is
             end if;
 
             --  check for higher neighbour to north (walls belong to the lower tile)
---              if Row_Index < Max_Rows then
---                  Add_North_Points (aBatch, Height, Row_Index, Col_Index);
---              end if;
---              if Row_Index > 1 then
---                  Add_South_Points (aBatch, Height, Row_Index, Col_Index);
---              end if;
---
---              if Col_Index < Column_List.Last_Index then
---                  Add_West_Points (aBatch, Height, Row_Index, Col_Index);
---              end if;
---              if Col_Index > 1 then
---                  Add_East_Points (aBatch, Height, Row_Index, Col_Index);
---              end if;
+            --              if Row_Index < Max_Rows then
+            --                  Add_North_Points (aBatch, Height, Row_Index, Col_Index);
+            --              end if;
+            --              if Row_Index > 1 then
+            --                  Add_South_Points (aBatch, Height, Row_Index, Col_Index);
+            --              end if;
+            --
+            --              if Col_Index < Column_List.Last_Index then
+            --                  Add_West_Points (aBatch, Height, Row_Index, Col_Index);
+            --              end if;
+            --              if Col_Index > 1 then
+            --                  Add_East_Points (aBatch, Height, Row_Index, Col_Index);
+            --              end if;
             Next (Indices_Curs);
         end loop;  -- over tile indices
 
@@ -752,13 +759,13 @@ package body Batch_Manager is
 
     --  -------------------------------------------------------------------------
 
-    function Get_Batch_Index (Column, Row : Positive) return Integer is
-        Result : Integer := -1;
+    function Get_Batch_Index (Column, Row : Positive) return Natural is
+        Result : Integer := 0;
     begin
-        if Column >= 0 and Column < Positive (Max_Cols) and
-          Row >= 0 and Row < Positive (Max_Rows) then
-            Result := (Integer (Column) + Batches_Across * Integer (Row)) /
-              Settings.Tile_Batch_Width;
+        if Column < Positive (Max_Cols) and Row < Positive (Max_Rows) then
+            Result := (Integer (Column - 1) +
+                         Batches_Across * Integer (Row - 1 )) /
+              Settings.Tile_Batch_Width + 1;
         end if;
         return Result;
     end Get_Batch_Index;
@@ -928,6 +935,15 @@ package body Batch_Manager is
 
     --  --------------------------------------------------------------------------
 
+   function Static_Indices  (Batch_Index : Positive)
+                                    return GL_Maths.Indices_List is
+        aBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
+    begin
+        return aBatch.Static_Light_Indices;
+    end Static_Indices;
+
+    --  --------------------------------------------------------------------------
+
     procedure Update_AABB_Dimensions (aBatch     : in out Batch_Meta;
                                       Point_List : GL_Maths.Vec3_List) is
         use GL_Maths.Vec3_Package;
@@ -956,6 +972,6 @@ package body Batch_Manager is
         Batches_Data.Replace_Element (Index, Data);
     end Update_Batch;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
 end Batch_Manager;

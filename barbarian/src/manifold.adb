@@ -1,5 +1,8 @@
 
+with Ada.Calendar;
+with Ada.Calendar.Formatting;
 with Ada.Containers.Vectors;
+with Ada.Execution_Time;
 
 with GL.Attributes;
 with GL.Culling;
@@ -52,7 +55,7 @@ package body Manifold is
         use Batch_Manager;
         use Batches_Package;
         use Tiles_Manager.Tile_Indices_Package;
-        theBatches   : constant Batches_List := Batches;
+        theBatches   : constant Batches_List := Batch_List;
         Batch_Cursor : Batches_Package.Cursor := theBatches.First;
         Batch        : Batch_Manager.Batch_Meta;
     begin
@@ -83,7 +86,7 @@ package body Manifold is
         use GL_Maths;
         use Vec3_Package;
         use Manifold_Shader_Manager;
-        theBatches    : constant Batches_List := Batches;
+        theBatches    : constant Batches_List := Batch_List;
         Curs          : Batches_Package.Cursor := theBatches.First;
         aBatch        : Batch_Meta;
         Rad_Dist      : Single;
@@ -202,7 +205,7 @@ package body Manifold is
         use Batch_Manager;
         use Batches_Package;
         use Shader_Attributes;
-        theBatches    : constant Batches_List := Batches;
+        theBatches    : constant Batches_List := Batch_List;
         Curs          : Cursor := theBatches.First;
         aBatch        : Batch_Meta;
         Light_Indices : GL_Maths.Indices_List;
@@ -244,7 +247,7 @@ package body Manifold is
         use Shader_Attributes;
         use Vec3_Package;
         use Water_Shader_Manager;
-        theBatches    : constant Batches_List := Batches;
+        theBatches    : constant Batches_List := Batch_List;
         Curs          : Batches_Package.Cursor := theBatches.First;
         aBatch        : Batch_Meta;
         Light_Indices : Indices_List;
@@ -309,24 +312,30 @@ package body Manifold is
 
     function Get_Light_Index (Column, Row : Positive; Light_Number : Positive)
                               return GL.Types.Int is
+        use Ada.Calendar;
         use GL.Types;
         use Batch_Manager;
         use GL_Maths.Indices_Package;
-        Batch_Index   : constant Positive :=
-                          Get_Batch_Index (Column, Row);
-        aBatch        : Batch_Meta;
+        Start_Time    : Time := Clock;
+        Batch_Index   : Positive;
         Light_Indices : GL_Maths.Indices_List;
         Light_Cursor  : Cursor;
         Found         : Boolean := False;
         Result        : Int := -1;
     begin
-        if Batches.Is_Empty then
+        if Batches_Empty then
             raise Manifold_Exception with
               "Manifold.Get_Light_Index; Batches.Is_Empty!";
         end if;
+--          Put_Line ("Manifold.Get_Light_Index Batches not Empty time taken : "
+--                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
 
-        aBatch := Batches.Element (Batch_Index);
-        Light_Indices := aBatch.Static_Light_Indices;
+--          Start_Time := Clock;
+        Batch_Index := Get_Batch_Index (Column, Row);
+--          Put_Line ("Manifold.Get_Light_Index Batches get aBatch_Index time taken : "
+--                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
+--          Start_Time := Clock;
+        Light_Indices := Static_Indices (Batch_Index);
         if Light_Number > Integer (Light_Indices.Length) then
             raise Manifold_Exception with
               "Manifold.Get_Light_Index; Light number " &
@@ -337,6 +346,9 @@ package body Manifold is
         end if;
 
         Light_Cursor := Light_Indices.First;
+--          Put_Line ("Manifold.Get_Light_Index Batches start loop time taken : "
+--                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
+--          Start_Time := Clock;
         while Has_Element (Light_Cursor) and not Found loop
             Found := Element (Light_Cursor) = Light_Number;
             if not Found then
@@ -344,10 +356,18 @@ package body Manifold is
             end if;
         end loop;
 
+--          Put_Line ("Manifold.Get_Light_Index end loop, found time taken : "
+--                   & Boolean'Image (Found) & ", "
+--                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
+--          Start_Time := Clock;
+
         if Found then
             Result := Int (Element (Light_Cursor));
         end if;
+        Put_Line ("Manifold.Get_Light_Index time taken : "
+                 & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
         return Result;
+
     end Get_Light_Index;
 
     --  ------------------------------------------------------------------------

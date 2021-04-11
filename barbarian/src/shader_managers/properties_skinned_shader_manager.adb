@@ -262,8 +262,9 @@ package body Properties_Skinned_Shader_Manager is
 
    procedure Set_Skinned_Static_Light_Indices (Indices : Ints.Vector2) is
    begin
-      GL.Uniforms.Set_Int
-          (Skinned_Property_Uniforms.Static_Light_Indices_ID, Indices);
+        null;
+--        GL.Uniforms.Set_Int
+--            (Skinned_Property_Uniforms.Static_Light_Indices_ID, Indices);
    end Set_Skinned_Static_Light_Indices;
 
    --  -------------------------------------------------------------------------
