@@ -36,18 +36,21 @@ package body Properties_Shader_Manager is
     begin
         Game_Utils.Game_Log ("___INITIALIZING PROP SHADERS---");
         Properties_Basic_Shader_Manager.Init_Prop_Shader (Prop_Shader);
+        Use_Program (Prop_Shader);
         Properties_Basic_Shader_Manager.Set_Diff_Map (0);
         Properties_Basic_Shader_Manager.Set_Spec_Map (1);
         Properties_Basic_Shader_Manager.Set_Norm_Map (2);
         Properties_Basic_Shader_Manager.Set_Cube_Texture (3);
 
         Properties_Skinned_Shader_Manager.Init_Skinned_Shader (Prop_Skinned_Shader);
+        Use_Program (Prop_Skinned_Shader);
         Properties_Skinned_Shader_Manager.Set_Diff_Map (0);
         Properties_Skinned_Shader_Manager.Set_Spec_Map (1);
         Properties_Skinned_Shader_Manager.Set_Cube_Texture (3);
         Properties_Skinned_Shader_Manager.Set_Bone_Matrices (Identity4_Array);
 
         Coins_Shader_Manager.Init_Coins_Shader (Coins_Shader);
+        Use_Program (Coins_Shader);
         Coins_Shader_Manager.Set_DM (0);
         Coins_Shader_Manager.Set_Cube_Texture (1);
 

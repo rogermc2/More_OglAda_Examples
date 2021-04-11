@@ -311,68 +311,68 @@ package body Prop_Renderer.Render is
         use GL.Objects.Vertex_Arrays;
         use GL_Maths.Indices_Package;
         use Properties_Skinned_Shader_Manager;
-        Property : Prop_Renderer_Support.Property_Data;
-        Script   : Prop_Renderer_Support.Prop_Script;
-        Prop_I   : Positive;
-        Script_I : Positive;
+        SK_Property : Prop_Renderer_Support.Property_Data;
+--          SP_Script   : Prop_Renderer_Support.Prop_Script;
+        SK_Prop_I   : Positive;
+--          Script_I : Positive;
 --          Ssi      : Integer;
 --          Mesh_I   : Positive;
-        U        : Positive;
-        V        : Positive;
+        U           : Positive;
+        V           : Positive;
     begin
         if not Is_Empty (Skinned_Render_List) then
             GL.Objects.Programs.Use_Program
               (Properties_Shader_Manager.Prop_Skinned_Shader);
-            if Camera.Is_Dirty then
-                Set_View (Camera.View_Matrix);
-                Set_Perspective (Camera.Projection_Matrix);
-            end if;
-            if Prop_Dyn_Light_Dirty then
-                Set_Dyn_Light_Pos (Prop_Dyn_Light_Pos_Wor);
-                Set_Dyn_Light_Diff (Prop_Dyn_Light_Diff);
-                Set_Dyn_Light_Spec (Prop_Dyn_Light_Spec);
-                Set_Dyn_Light_Range (Prop_Dyn_Light_Range);
-            end if;
-            if Settings.Shadows_Enabled then
-                Set_Shadow_Enabled (1.0);
-                Set_Caster_Position (Shadows.Caster_Position);
-                Shadows.Bind_Cube_Shadow_Texture (3);
-            else
-                Set_Shadow_Enabled (0.0);
-            end if;
+--              if Camera.Is_Dirty then
+--                  Set_View (Camera.View_Matrix);
+--                  Set_Perspective (Camera.Projection_Matrix);
+--              end if;
+--              if Prop_Dyn_Light_Dirty then
+--                  Set_Dyn_Light_Pos (Prop_Dyn_Light_Pos_Wor);
+--                  Set_Dyn_Light_Diff (Prop_Dyn_Light_Diff);
+--                  Set_Dyn_Light_Spec (Prop_Dyn_Light_Spec);
+--                  Set_Dyn_Light_Range (Prop_Dyn_Light_Range);
+--              end if;
+--              if Settings.Shadows_Enabled then
+--                  Set_Shadow_Enabled (1.0);
+--                  Set_Caster_Position (Shadows.Caster_Position);
+--                  Shadows.Bind_Cube_Shadow_Texture (3);
+--              else
+--                  Set_Shadow_Enabled (0.0);
+--              end if;
 
             for Param_I in Skinned_Render_List.First_Index ..
               Skinned_Render_List.Last_Index loop
-                Prop_I := Skinned_Render_List.Element (Param_I);
-                Script_I := Get_Script_Index (Prop_I);
-                Script := Properties_Manager.Get_Script_Data (Script_I);
+                SK_Prop_I := Skinned_Render_List.Element (Param_I);
+--                  Script_I := Get_Script_Index (Prop_I);
+--                  Script := Properties_Manager.Get_Script_Data (Script_I);
 --                  Ssi := Script.Smashed_Script_Index;
-                Property := Properties_Manager.Get_Property_Data (Prop_I);
+                SK_Property := Properties_Manager.Get_Property_Data (SK_Prop_I);
 --                  if Property.Was_Smashed and Ssi > 0 then
 --                      Script_I := Ssi;
 --                  end if;
 --                  Script := Properties_Manager.Get_Script_Data (Script_I);
 --                  Mesh_I := Script.Mesh_Index;
-                Set_Bone_Matrices (Property.Current_Bone_Transforms);
-                Set_Model (Property.Model_Matrix);
-                U := Positive (Property.Map_U);
-                V := Positive (Property.Map_V);
---                   Properties_Skinned_Shader_Manager.Set_Skinned_Static_Light_Indices
---                    ((Manifold.Get_Light_Index (U, V, 1),
---                     Manifold.Get_Light_Index (U, V, 2)));
-                if Settings.Render_OLS and Script.Draw_Outlines then
-                    GL.Culling.Set_Front_Face (Clockwise);
-                    Set_Outline_Pass (1.0);
-                    if Script.Outlines_Vertex_Count > 0 then
-                        GL_Utils.Bind_VAO (Script.Outlines_Vao);
-                    else
-                        GL_Utils.Bind_VAO (Script.Vao);
+--                  Set_Bone_Matrices (SK_Property.Current_Bone_Transforms);
+--                  Set_Model (SK_Property.Model_Matrix);
+                U := Positive (SK_Property.Map_U);
+                V := Positive (SK_Property.Map_V);
+                Properties_Skinned_Shader_Manager.Set_Skinned_Static_Light_Indices
+                  ((Manifold.Get_Light_Index (U, V, 1),
+                   Manifold.Get_Light_Index (U, V, 2)));
+--                  if Settings.Render_OLS and Script.Draw_Outlines then
+--                      GL.Culling.Set_Front_Face (Clockwise);
+--                      Set_Outline_Pass (1.0);
+--                      if Script.Outlines_Vertex_Count > 0 then
+--                          GL_Utils.Bind_VAO (Script.Outlines_Vao);
+--                      else
+--                          GL_Utils.Bind_VAO (Script.Vao);
 --                          Draw_Arrays (Triangles, 0, Script.Outlines_Vertex_Count);
 --                          Draw_Arrays (Triangles, 0, Script.Vertex_Count);
-                    end if;
-                    Set_Outline_Pass (0.0);
-                    GL.Culling.Set_Front_Face (Counter_Clockwise);
-                end if;
+--                      end if;
+--                      Set_Outline_Pass (0.0);
+--                      GL.Culling.Set_Front_Face (Counter_Clockwise);
+--                  end if;
 
 --                  GL_Utils.Bind_VAO (Script.Vao);
 --                  Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
@@ -398,7 +398,7 @@ package body Prop_Renderer.Render is
     begin
         if not Is_Empty (Treasure_Render_List) then
             GL.Objects.Programs.Use_Program
-              (Properties_Shader_Manager.Prop_Skinned_Shader);
+              (Properties_Shader_Manager.Coins_Shader);
             Set_Time (Tim);
             if Camera.Is_Dirty then
                 Set_View (Camera.View_Matrix);
@@ -406,15 +406,15 @@ package body Prop_Renderer.Render is
             end if;
 
             if Settings.Shadows_Enabled then
-                Properties_Basic_Shader_Manager.Set_Shadows_Enabled (1.0);
+                Set_Shadow_Enabled (1.0);
                 Set_Caster_Pos_World (Shadows.Caster_Position);
                 Shadows.Bind_Cube_Shadow_Texture (1);
             else
-                Properties_Basic_Shader_Manager.Set_Shadows_Enabled (0.0);
+                Set_Shadow_Enabled (0.0);
             end if;
 
             for Param_I in 1 .. Count loop
-                Prop_I := Basic_Render_List (Param_I);
+                Prop_I := Treasure_Render_List (Param_I);
                 Property := Properties_Manager.Get_Property_Data (Prop_I);
                 Script_I := Get_Script_Index (Prop_I);
                 Script := Properties_Manager.Get_Script_Data (Script_I);
@@ -432,11 +432,13 @@ package body Prop_Renderer.Render is
                     Set_Outline_Pass (0.0);
                     GL.Culling.Set_Front_Face (Counter_Clockwise);
                 end if;
+
                 GL_Utils.Bind_VAO (Script.Vao);
                 Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
         end if;
+
     end Render_Treasure;
 
     --  -------------------------------------------------------------------------

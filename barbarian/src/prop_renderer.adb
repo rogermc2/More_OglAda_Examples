@@ -821,8 +821,10 @@ package body Prop_Renderer is
          Script_ID := Ssi;
       end if;
       aScript := Properties_Manager.Get_Script_Data (Script_ID);
+      --  if skinned update bones
       Mesh_Index := aScript.Mesh_Index;
       Bone_Count := Mesh_Loader.Bone_Count (Mesh_Index);
+
       Prop_Type := aScript.Script_Type;
       if Prop_Type = Anim_Loop_Prop then
          Update_Anim_Looped_Prop (Prop_ID, Elapsed_Time);
@@ -833,6 +835,7 @@ package body Prop_Renderer is
       Texture_Manager.Bind_Texture (1, aScript.Specular_Map_Id);
       Texture_Manager.Bind_Texture (2, aScript.Normal_Map_Id);
 
+      --  enable correct shader
       Set_Shaders (Property, Prop_Type, aScript,
                    Character_Controller.Gold_Current, Elapsed_Time);
       Properties_Manager.Replace_Property (Prop_ID, Property);
