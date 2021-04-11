@@ -390,7 +390,6 @@ package body Prop_Renderer.Render is
         use GL_Maths.Indices_Package;
         use Coins_Shader_Manager;
         Tim      : constant Single := Single (Glfw.Time);
-        Count    : constant Integer := Integer (Treasure_Render_List.Length);
         Property : Prop_Renderer_Support.Property_Data;
         Script   : Prop_Renderer_Support.Prop_Script;
         Prop_I   : Integer;
@@ -413,7 +412,8 @@ package body Prop_Renderer.Render is
                 Set_Shadow_Enabled (0.0);
             end if;
 
-            for Param_I in 1 .. Count loop
+            for Param_I in Treasure_Render_List.First_Index ..
+              Treasure_Render_List.Last_Index loop
                 Prop_I := Treasure_Render_List (Param_I);
                 Property := Properties_Manager.Get_Property_Data (Prop_I);
                 Script_I := Get_Script_Index (Prop_I);
@@ -432,7 +432,6 @@ package body Prop_Renderer.Render is
                     Set_Outline_Pass (0.0);
                     GL.Culling.Set_Front_Face (Counter_Clockwise);
                 end if;
-
                 GL_Utils.Bind_VAO (Script.Vao);
                 Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);

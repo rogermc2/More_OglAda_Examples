@@ -193,6 +193,7 @@ package body Particle_System is
       On_Screen        : Boolean := False;
    begin
       if Particles_Initialised and Settings.Particles_Enabled then
+         GL.Objects.Programs.Use_Program (Basic_Particles_SP);
          Enable (Blend);
          Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
          GL.Buffers.Depth_Mask (False);
@@ -243,6 +244,7 @@ package body Particle_System is
          GL.Buffers.Depth_Mask (True);
          Disable (Blend);
       end if;
+
    end Render_Particle_Systems;
 
    --  ------------------------------------------------------------------------

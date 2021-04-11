@@ -122,6 +122,7 @@ package body Frustum is
                                Near_Top_Left, Near_Top_Right, Far_Top_Right);
     begin
         if not Frustum_Update_Enabled then
+            GL.Objects.Programs.Use_Program (Frustum_Wireframe_Shader_Program);
             Array_Buffer.Bind (Frustum_Solid_VBO);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Solid_Points, Dynamic_Draw);
 

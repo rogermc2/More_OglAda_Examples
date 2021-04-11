@@ -175,7 +175,7 @@ package body Sprite_Renderer is
          Bind_Texture (0, Sprites (Sprite_Index).Sprite_Map_Diffuse);
          Bind_Texture (1, Sprites (Sprite_Index).Sprite_Map_Specular);
 
-         Sprite_Shader_Manager.Use_Sprite_Shader;
+         Use_Sprite_Shader;
          Set_Rows (Single (Sprites (Sprite_Index).Sprite_Map_Rows));
          Set_Columns (Single (Sprites (Sprite_Index).Sprite_Map_Columns));
          Set_Current_Sprite (Single (Sprites (Sprite_Index).Current_Sprite));

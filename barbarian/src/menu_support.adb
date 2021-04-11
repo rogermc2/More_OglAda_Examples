@@ -191,11 +191,13 @@ package body Menu_Support is
         Cursor_M := Rot_Matrix;
         T_Matrix := Translation_Matrix ((Cursor_Pos (GL.X), Cursor_Pos (GL.Y), 0.0));
         P_Matrix := T_Matrix * Camera.GUI_Proj_Matrix;
+
         GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
         Cursor_Shader_Manager.Set_Model_Matrix (Cursor_M);
         Cursor_Shader_Manager.Set_View_Matrix (Cursor_V);
         Cursor_Shader_Manager.Set_Perspective_Matrix (P_Matrix);
         Draw_Arrays (Triangles, 0, Int (Cursor_Point_Count));
+
     end Draw_Skull_Cursor;
 
     --  -------------------------------------------------------------------------

@@ -209,6 +209,7 @@ package body Manifold is
     begin
         Enable (Depth_Test);
         Shadows.Set_Depth_Model_Matrix (Singles.Identity4);
+        GL.Objects.Programs.Use_Program (Manifold_Program);
         while Has_Element (Curs) loop
             aBatch := Element (Curs);
             if Frustum.Is_Aabb_In_Frustum (aBatch.AABB_Mins, aBatch.Aabb_Maxs) then

@@ -92,6 +92,7 @@ package body Prop_Renderer_Support is
     procedure Draw_Outline (aScript : in out Prop_Script) is
 
     begin
+        GL.Objects.Programs.Use_Program (Properties_Shader_Manager.Prop_Shader);
         if aScript.Outlines_Vertex_Count > 0 then
             GL_Utils.Bind_VAO (aScript.Outlines_Vao);
             GL.Objects.Vertex_Arrays.Draw_Arrays
