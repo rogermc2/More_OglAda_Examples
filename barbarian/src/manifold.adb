@@ -324,9 +324,6 @@ package body Manifold is
         Result        : Int := -1;
     begin
         Batch_Index := Get_Batch_Index (Column, Row);
---          Put_Line ("Manifold.Get_Light_Index Batches get aBatch_Index time taken : "
---                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
---          Start_Time := Clock;
         Light_Indices := Static_Indices (Batch_Index);
         if Light_Number > Integer (Light_Indices.Length) then
             raise Manifold_Exception with
@@ -338,20 +335,12 @@ package body Manifold is
         end if;
 
         Light_Cursor := Light_Indices.First;
---          Put_Line ("Manifold.Get_Light_Index Batches start loop time taken : "
---                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
---          Start_Time := Clock;
         while Has_Element (Light_Cursor) and not Found loop
             Found := Element (Light_Cursor) = Light_Number;
             if not Found then
                 Next (Light_Cursor);
             end if;
         end loop;
-
---          Put_Line ("Manifold.Get_Light_Index end loop, found time taken : "
---                   & Boolean'Image (Found) & ", "
---                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
---          Start_Time := Clock;
 
         if Found then
             Result := Int (Element (Light_Cursor));
