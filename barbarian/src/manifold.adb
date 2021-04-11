@@ -323,14 +323,6 @@ package body Manifold is
         Found         : Boolean := False;
         Result        : Int := -1;
     begin
-        if Batches_Empty then
-            raise Manifold_Exception with
-              "Manifold.Get_Light_Index; Batches.Is_Empty!";
-        end if;
---          Put_Line ("Manifold.Get_Light_Index Batches not Empty time taken : "
---                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
-
---          Start_Time := Clock;
         Batch_Index := Get_Batch_Index (Column, Row);
 --          Put_Line ("Manifold.Get_Light_Index Batches get aBatch_Index time taken : "
 --                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");

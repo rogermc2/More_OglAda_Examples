@@ -360,9 +360,6 @@ package body Prop_Renderer.Render is
                 Properties_Skinned_Shader_Manager.Set_Skinned_Static_Light_Indices
                   ((Manifold.Get_Light_Index (U, V, 1),
                    Manifold.Get_Light_Index (U, V, 2)));
-                Put_Line ("Prop_Renderer.Render static light indices " &
-                            Int'Image (Manifold.Get_Light_Index (U, V, 1)) & ", " &
-                            Int'Image (Manifold.Get_Light_Index (U, V, 2)));
                 if Settings.Render_OLS and SP_Script.Draw_Outlines then
                     GL.Culling.Set_Front_Face (Clockwise);
                     Set_Outline_Pass (1.0);
