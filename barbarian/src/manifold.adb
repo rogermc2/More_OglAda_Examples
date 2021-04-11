@@ -151,7 +151,7 @@ package body Manifold is
                             --  to Texture_Target Texture_2D
                             Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
                             Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-                            Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
+--                              Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
                             --  Draws start scene
                             Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
                             --                              Draw_Arrays (Points, 0, 1);
@@ -316,7 +316,7 @@ package body Manifold is
         use GL.Types;
         use Batch_Manager;
         use GL_Maths.Indices_Package;
-        Start_Time    : Time := Clock;
+--          Start_Time    : Time := Clock;
         Batch_Index   : Positive;
         Light_Indices : GL_Maths.Indices_List;
         Light_Cursor  : Cursor;
@@ -345,8 +345,8 @@ package body Manifold is
         if Found then
             Result := Int (Element (Light_Cursor));
         end if;
-        Put_Line ("Manifold.Get_Light_Index time taken : "
-                 & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
+--          Put_Line ("Manifold.Get_Light_Index time taken : "
+--                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
         return Result;
 
     end Get_Light_Index;
