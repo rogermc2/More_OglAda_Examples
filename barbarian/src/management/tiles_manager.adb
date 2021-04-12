@@ -106,9 +106,9 @@ package body Tiles_Manager is
       Batch         : Batch_Manager.Batch_Meta;
       Batch_Index   : Positive;
    begin
-      --                Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Max_Rows, Max_Cols " &
-      --                                       Int'Image (Max_Rows) & ", " &
-      --                                       Int'Image (Max_Cols));
+      Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Max_Rows, Max_Cols " &
+                             Int'Image (Max_Rows) & ", " &
+                             Int'Image (Max_Cols));
 
 --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
 --                              Integer'Image (Settings.Tile_Batch_Width));
@@ -133,6 +133,9 @@ package body Tiles_Manager is
          end loop;
       end loop;
 
+      Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Batch_List, range " &
+                             Int'Image (Int (Batch_List.First_Index)) & ", " &
+                             Int'Image (Int (Batch_List.Last_Index)));
       for index in Batch_List.First_Index .. Batch_List.Last_Index loop
          Regenerate_Batch (index);
       end loop;
@@ -578,7 +581,9 @@ package body Tiles_Manager is
          end;
          Tile_Rows.Append (Tile_Col);
       end loop;
-      Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row done");
+      Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row done Tile Rows range: "
+                           & Integer'Image (Integer (Tile_Rows.First_Index)) & ", "
+                           &  Integer'Image (Integer (Tile_Rows.Last_Index)));
 
    exception
       when anError : others =>

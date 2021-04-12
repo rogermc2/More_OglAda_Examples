@@ -451,7 +451,7 @@ package body Batch_Manager is
 
    --  Generate_Points for all tiles in a batch
    procedure Generate_Points (aBatch : in out Batch_Meta;
-                              Tiles  : Tiles_Manager.Tile_Indices_List) is
+                              Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
@@ -459,7 +459,7 @@ package body Batch_Manager is
       subtype Atlas_Index is Int range 0 .. Int (Manifold.Max_Tile_Cols) - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       --  Tiles is a list of Ints.Vector2
-      Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tiles.First;
+      Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tile_Indices.First;
       Row_Index    : Tiles_Index;
       Col_Index    : Tiles_Index;
       Column_List  : Tile_Column_List;
@@ -490,6 +490,9 @@ package body Batch_Manager is
       end Add_Tex_Coords;
 
    begin
+      Game_Utils.Game_Log
+              ("Batch_Manger.Generate_Points Tile_Indices length: " &
+               Int'Image (Int (Tile_Indices.Length)));
       --  for all tiles in aBatch
       while Has_Element (Tile_Indices_Curs) loop
          aTile := Get_Tile (Element (Tile_Indices_Curs));
@@ -850,7 +853,7 @@ package body Batch_Manager is
 
       Generate_Points (theBatch, Tile_Indices);
       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points done"
-                           & "Batch_Index " & Integer'Image (Batch_Index));
+                           & " Batch_Index " & Integer'Image (Batch_Index));
       Generate_Ramps (theBatch, Tile_Indices);
       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
       Generate_Water (theBatch, Tile_Indices);

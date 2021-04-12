@@ -68,10 +68,10 @@ package Batch_Manager is
    procedure Add_Batch_To_Batch_List (Batch_Data : Batch_Meta);
    procedure Clear;
    function Get_Batch_Index (Column, Row : Positive) return Natural;
-   pragma Inline (Get_Batch_Index);
    procedure Init;
    function Batch_List return Batches_List;
    function Batches_Empty return Boolean;
+   pragma Inline (Batches_Empty);
    procedure Regenerate_Batch (Batch_Index : Positive);
    function Static_Lights return Static_Light_Vector;
    function Static_Indices  (Batch_Index : Positive)
