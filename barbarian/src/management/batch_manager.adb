@@ -482,10 +482,10 @@ package body Batch_Manager is
          T  : constant Texture_Index :=
                 Atlas_Factor * (Single (Atlas_Row) + T_Offset);
       begin
-         --  ST_Offset = 8.0 / 2048.0 = 256
+         --  ST_Offset = 8.0 / 2048.0 = 1 / 256
          --  For S_Offset = 0:
-         --  S - ST_Offset = Atlas_Col/4 - 256
-         --  S - ST_Offset range; -256, 63/4 -256
+         --  S - ST_Offset = Atlas_Col/4 - 1 / 256
+         --  S - ST_Offset range; -1 / 256, 63/4 -1 / 256
          aBatch.Tex_Coords.Append ((S - ST_Offset, T - ST_Offset));
       end Add_Tex_Coords;
 
