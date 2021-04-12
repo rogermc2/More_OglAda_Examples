@@ -115,7 +115,6 @@ package body Main_Loop.Game_Support is
       UV              : constant Ints.Vector2 :=
                           (Abs (Centre_X), Abs (Centre_Z));
    begin
-      Utilities.Clear_Background_Colour_And_Depth (Yellow);
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
          Game_Utils.Game_Log ("Settings.Shadows_Enabled and Camera.Is_Dirty...");
          for index in Shadow_Direction'Range loop

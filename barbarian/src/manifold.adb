@@ -100,7 +100,6 @@ package body Manifold is
         --        Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
         --                 Integer'Image (Integer (theBatches.Length)));
         --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-        Utilities.Clear_Background_Colour_And_Depth (Yellow);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);

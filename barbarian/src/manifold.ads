@@ -6,7 +6,7 @@ with GL.Types;
 
 package Manifold is
 
-   Max_Tile_Cols              : constant Integer := 64;
+   Max_Tile_Cols              : constant Positive := 64;
 
    Manifold_Exception         : Exception;
    Manifold_Parsing_Exception : Exception;

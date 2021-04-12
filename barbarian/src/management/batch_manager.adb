@@ -10,6 +10,7 @@ with Utilities;
 with Game_Utils;
 with GL_Maths;
 with GL_Utils;
+with Manifold;
 with Mesh_Loader;
 with Settings;
 with Shader_Attributes;
@@ -448,6 +449,8 @@ package body Batch_Manager is
         use Tiles_Manager;
         use Tile_Indices_Package;
         use GL_Maths;
+        --  Max_Tile_Cols = 64
+        subtype Atlas_Index is Int range 0 .. Int (Manifold.Max_Tile_Cols) - 1;
         --  Tiles is a list of Ints.Vector2
         Indices_Curs : Tile_Indices_Package.Cursor := Tiles.First;
         Row_Index    : Tiles_Index;
@@ -459,14 +462,25 @@ package body Batch_Manager is
         X            : Single;
         Y            : Single;
         Z            : Single;
-        Index        : Tiles_Index;
-        Atlas_Row    : Tiles_Index;
-        Atlas_Col    : Tiles_Index;
+--          Index        : Tiles_Index;
+--          Atlas_Row    : Tiles_Index;
+--          Atlas_Col    : Tiles_Index;
+
+        Index        : Atlas_Index;
+        Atlas_Row    : Atlas_Index;
+        Atlas_Col    : Atlas_Index;
 
         procedure Add_Tex_Coords (S_Offset, T_Offset : Single)  is
+            --  Atlas_Factor = 0.25 (Atlas_Col and Row range 0 .. 63)
+            --  Atlas_Factor reduces Atlas_Col and Row range 0 .. 15
+            --  Object size 125 x 125 pixels
             S  : constant Single := (Single (Atlas_Col) + S_Offset) * Atlas_Factor;
             T  : constant Single := (Single (Atlas_Row) + T_Offset) * Atlas_Factor;
         begin
+            --  ST_Offset = 8.0 / 2048.0 = 256
+            --  For S_Offset = 0:
+            --  S - ST_Offset = Atlas_Col/4 - 256
+            --  S - ST_Offset range; -256, 63/4 -256
             aBatch.Tex_Coords.Append ((S - ST_Offset, T - ST_Offset));
         end Add_Tex_Coords;
 
@@ -498,11 +512,15 @@ package body Batch_Manager is
                     aBatch.Normals.Append ((0.0, 1.0, 0.0));
                 end loop;
 
-                --  Sets_In_Atlas_Row = 4
+                --  Texture_Index from map file (range 0 .. 15, one hex digit)
                 Index := Tiles_Index (aTile.Texture_Index);
-                Atlas_Row := Index / Tiles_Index (Sets_In_Atlas_Row) + 1;
-                Atlas_Col := Tiles_Index ((Index - Atlas_Row - 1) *
-                                            Sets_In_Atlas_Row) + 1;
+                --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
+                Atlas_Row := Index / Tiles_Index (Sets_In_Atlas_Row);
+                Atlas_Col := Index - Atlas_Row * Sets_In_Atlas_Row;
+                Game_Utils.Game_Log
+                  ("Batch_Manger.Generate_Points Index, Atlas_Row, Atlas_Col: "
+                   & Int'Image (Index) & ", " & Int'Image (Atlas_Row)
+                   & ", " & Int'Image (Atlas_Col));
                 Add_Tex_Coords (0.5, 1.0);
                 Add_Tex_Coords (0.0, 1.0);
                 Add_Tex_Coords (0.0, 0.5);
