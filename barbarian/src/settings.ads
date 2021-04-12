@@ -94,7 +94,7 @@ private
       --  Maximum rendering distance in tiles from player
       Render_Distance              : Integer := 15;  --  orig 15
       Far_Clip                     : Single := 40.0;
-      --  Number of tiles*tiles to put in batches
+      --  Number of tiles*tiles to put in each batch
       Tile_Batch_Width             : Integer := 8;
       Texf                         : Integer := 2;
       Audio_Volume                 : Audio_Volume_Range := 5;

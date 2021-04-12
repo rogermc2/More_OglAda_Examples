@@ -14,7 +14,7 @@ with GL_Maths;
 package Batch_Manager is
 
    type Batch_Meta is record
-      Tiles                : Tiles_Manager.Tile_Indices_List;
+      Tile_Indices         : Tiles_Manager.Tile_Indices_List;
       AABB_Mins            : Singles.Vector3 := (0.0, 0.0, 0.0);
       AABB_Maxs            : Singles.Vector3 := (0.0, 0.0, 0.0);
       Points               : GL_Maths.Vec3_List;
@@ -65,7 +65,7 @@ package Batch_Manager is
    procedure Add_Static_Light (Row, Col : Int; Tile_Height_Offset : Integer;
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single);
-   procedure Add_Batch (Data : Batch_Meta);
+   procedure Add_Batch_To_Batch_List (Batch_Data : Batch_Meta);
    procedure Clear;
    function Get_Batch_Index (Column, Row : Positive) return Natural;
    pragma Inline (Get_Batch_Index);
@@ -75,7 +75,7 @@ package Batch_Manager is
    procedure Regenerate_Batch (Batch_Index : Positive);
    function Static_Lights return Static_Light_Vector;
    function Static_Indices  (Batch_Index : Positive)
-                                    return GL_Maths.Indices_List;
+                             return GL_Maths.Indices_List;
    procedure Update_Batch (Index : Positive; Data : Batch_Meta);
 
 end Batch_Manager;

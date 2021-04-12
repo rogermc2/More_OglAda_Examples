@@ -266,14 +266,14 @@ package body Properties_Manager is
                 --  Map files can have Rx and Tx set to -1
                 Rx := Integer'Value (Prop_Line (PosL + 1 .. PosR - 1));
                 Tx := Integer'Value (Prop_Line (PosR + 1 .. S_Length));
-                Game_Utils.Game_Log ("Properties_Manager Script_File " &
-                                       To_String (Script_File) & ", U: " &
-                                       Int'Image (U) & ", V: " &
-                                       Int'Image (V) & ", Height: " &
-                                       Integer'Image (Height) & ", Facing: " &
-                                       Facing & ", Rx: " &
-                                       Integer'Image (Rx) & ", Tx: " &
-                                       Integer'Image (Tx));
+--                  Game_Utils.Game_Log ("Properties_Manager Script_File " &
+--                                         To_String (Script_File) & ", U: " &
+--                                         Int'Image (U) & ", V: " &
+--                                         Int'Image (V) & ", Height: " &
+--                                         Integer'Image (Height) & ", Facing: " &
+--                                         Facing & ", Rx: " &
+--                                         Integer'Image (Rx) & ", Tx: " &
+--                                         Integer'Image (Tx));
             end; --  declare block
             Create_Prop_From_Script (To_String (Script_File), U, V, Height,
                                      Facing, Tx, Rx);

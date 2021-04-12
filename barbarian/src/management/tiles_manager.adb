@@ -86,15 +86,15 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Add_Tile (Batch                : in out Batch_Manager.Batch_Meta;
-                       Row_Index, Col_Index : Positive) is
+   procedure Add_Tile_To_Batch (Batch       : in out Batch_Manager.Batch_Meta;
+                                Row_Index, Col_Index : Positive) is
    begin
---        Game_Utils.Game_Log ("Tiles_Manager.Add_Tile_Index Row, Col Indices " &
+--        Game_Utils.Game_Log ("Tiles_Manager.Add_Tile_To_Batch Row, Col Indices " &
 --                               Integer'Image (Row_Index) & ", " &
 --                               Integer'Image (Col_Index));
-      Batch.Tiles.Append ((Int (Row_Index), Int (Col_Index)));
+      Batch.Tile_Indices.Append ((Int (Row_Index), Int (Col_Index)));
 
-   end Add_Tile;
+   end Add_Tile_To_Batch;
 
    --  ----------------------------------------------------------------------------
 
@@ -113,20 +113,22 @@ package body Tiles_Manager is
 --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
 --                              Integer'Image (Settings.Tile_Batch_Width));
 
-      for Row in 1 .. Integer (Max_Rows) loop
-         Batch_Down  := Integer (Row - 1) / Settings.Tile_Batch_Width;
-         for Col in 1 .. Integer (Max_Cols) loop
+      --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
+
+      for Row in 1 .. Positive (Max_Rows) loop
+         Batch_Down := Row / Settings.Tile_Batch_Width;
+         for Col in 1 .. Positive (Max_Cols) loop
 --              Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
 --                                   Integer'Image (row) & ", " & Integer'Image (col));
-            Batch_Across := Integer (Col - 1) / Settings.Tile_Batch_Width;
-            Batch_Index := Batches_Across * Batch_Down + Batch_Across + 1;
+            Batch_Across := Col / Settings.Tile_Batch_Width;
+            Batch_Index := Batch_Down * Batches_Across + Batch_Across + 1;
             if Has_Element (Batch_List.To_Cursor (Batch_Index)) then
                Batch := Batch_List.Element (Batch_Index);
-               Add_Tile (Batch, Row, Col);
+               Add_Tile_To_Batch (Batch, Row, Col);
                Update_Batch (Batch_Index, Batch);
             else
-               Add_Tile (Batch, Row, Col);
-               Add_Batch (Batch);
+               Add_Tile_To_Batch (Batch, Row, Col);
+               Add_Batch_To_Batch_List (Batch);
             end if;
          end loop;
       end loop;
