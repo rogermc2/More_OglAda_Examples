@@ -485,7 +485,7 @@ package body Batch_Manager is
          --  ST_Offset = 8.0 / 2048.0 = 1 / 256
          --  For S_Offset = 0:
          --  S - ST_Offset = Atlas_Col/4 - 1 / 256
-         --  S - ST_Offset range; -1 / 256, 63/4 -1 / 256
+         --  S - ST_Offset range; -1 / 256  .. 63/4 -1 / 256
          aBatch.Tex_Coords.Append ((S - ST_Offset, T - ST_Offset));
       end Add_Tex_Coords;
 
@@ -496,6 +496,9 @@ package body Batch_Manager is
          Height := aTile.Height;
          Row_Index := Element (Tile_Indices_Curs) (GL.X);
          Col_Index := Element (Tile_Indices_Curs) (GL.Y);
+         Game_Utils.Game_Log
+              ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
+               Int'Image (Row_Index) & ", " & Int'Image (Col_Index));
          X := Single (2 * (Col_Index - 1));
          Y := Single (2 * Height);
          Z := Single (2 * (Row_Index - 1));

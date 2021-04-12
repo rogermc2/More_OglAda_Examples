@@ -47,10 +47,10 @@ package body Maps_Manager is
                                 Ramp_Diff_Tex, Ramp_Spec_Tex);
       Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Tiles loaded");
       Properties_Manager.Load_Properties (Input_File);
-      Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Properties loaded");
+--        Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Properties loaded");
       Character_Controller.Init;
       Character_Controller.Load_Characters (Input_File, False);
-      Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Characters loaded");
+--        Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Characters loaded");
       Projectile_Manager.Init;
       Audio_Manager.Load_Ambient_Sounds (Input_File);
       Text_Manager.Preload_Comic_Texts (Input_File);

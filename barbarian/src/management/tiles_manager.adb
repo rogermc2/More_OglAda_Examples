@@ -30,7 +30,7 @@ package body Tiles_Manager is
    Diff_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
    Spec_Palette_Name     : Unbounded_String := To_Unbounded_String ("");
 
-   Tiles                 : Tile_Row_List;
+   Tile_Rows              : Tile_Row_List;
 
    procedure Add_Static_Light (Row, Col                  : Tiles_Index;
                                Tile_Height_Offset        : Integer;
@@ -162,9 +162,9 @@ package body Tiles_Manager is
 
       Row_Index : constant Tiles_Index := To_Index (Row_Curs);
       Col_Index : constant Tiles_Index := To_Index (Col_Curs);
-      Row       : constant Tile_Column_List := Tiles (Row_Index);
+      Tile_Row  : constant Tile_Column_List := Tile_Rows (Row_Index);
    begin
-      return  Row.Element (Col_Index);
+      return  Tile_Row.Element (Col_Index);
    end Get_Tile;
 
    --  ----------------------------------------------------------------------------
@@ -172,7 +172,7 @@ package body Tiles_Manager is
    function Get_Tile (Pos : Ints.Vector2) return Tile_Data is
       use Batch_Manager;
       use Tile_Row_Package;
-      Row_Vector : constant Tile_Column_List := Tiles (Pos (GL.X));
+      Row_Vector : constant Tile_Column_List := Tile_Rows (Pos (GL.X));
    begin
       return  Row_Vector.Element (Pos (GL.Y));
    end Get_Tile;
@@ -187,7 +187,7 @@ package body Tiles_Manager is
       use Tile_Column_Package;
       Col      : constant Tiles_Index := Tiles_Index (0.5 * (1.0 + X));
       Row      : constant Tiles_Index := Tiles_Index (0.5 * (1.0 + Z));
-      Row_Curs : constant Tile_Row_Cursor := Tiles.To_Cursor (Row);
+      Row_Curs : constant Tile_Row_Cursor := Tile_Rows.To_Cursor (Row);
       Tile_Row : constant Tile_Column_List := Element (Row_Curs);
       Col_Curs : constant Tile_Column_Cursor := Tile_Row.To_Cursor (Col);
       aTile    : constant Tile_Data := Get_Tile ((Row, Col));
@@ -301,7 +301,7 @@ package body Tiles_Manager is
       Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
       Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
       for row in 1 .. Rows loop
-         Tile_Row := Tiles.Element (row);
+         Tile_Row := Tile_Rows.Element (row);
          declare
             aString  : constant String := Get_Line (File);
             aChar    : Character;
@@ -318,7 +318,7 @@ package body Tiles_Manager is
                aChar := aString (Integer (col));
                if Prev_Char = '\' and then
                  (aChar = 'n' or aChar = ASCII.NUL) then
-                  Tiles.Delete_Last;
+                  Tile_Rows.Delete_Last;
                else
                   aTile.Tile_Type := aChar;
                end if;
@@ -329,10 +329,10 @@ package body Tiles_Manager is
                   Tile_Row.Append (aTile);
                end if;
             end loop;
-            if Has_Element (Tiles.To_Cursor (row)) then
-               Tiles.Replace_Element (row, Tile_Row);
+            if Has_Element (Tile_Rows.To_Cursor (row)) then
+               Tile_Rows.Replace_Element (row, Tile_Row);
             else
-               Tiles.Append (Tile_Row);
+               Tile_Rows.Append (Tile_Row);
             end if;
             Prev_Char := aChar;
          end;  --  declare block
@@ -353,8 +353,8 @@ package body Tiles_Manager is
       Header     : constant String := Get_Line (File);
       Code_0     : constant Integer := Character'Pos ('0');
       Code_a     : constant Integer := Character'Pos ('a');
-      Cols       : Int := 0;
-      Rows       : Int := 0;
+      Num_Cols   : Int := 0;
+      Num_Rows   : Int := 0;
       Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
       Pos2       : Natural;
       Prev_Char  : Character;
@@ -369,11 +369,11 @@ package body Tiles_Manager is
       end if;
 
       Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
-      Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
-      Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
+      Num_Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
+      Num_Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
 
-      for row in Int range 1 .. Rows loop
-         Tile_Row := Tiles.Element (row);
+      for row in Int range 1 .. Num_Rows loop
+         Tile_Row := Tile_Rows.Element (row);  --  List of Tile columns
          declare
             aString    : constant String := Get_Line (File);
             Tex_Char   : Character;
@@ -386,12 +386,12 @@ package body Tiles_Manager is
             end if;
 
             Prev_Char := ASCII.NUL;
-            for col in 1 .. Cols loop
+            for col in 1 .. Num_Cols loop
                aTile := Tile_Row.Element (col);
                Tex_Char := aString (Integer (col));
                if Prev_Char = '\' and then
                  (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
-                  Tiles.Delete_Last;
+                  Tile_Rows.Delete_Last;
                else
                   if Tex_Char >= '0' and Tex_Char <= '9' then
                      Tex_Int := Character'Pos (Tex_Char) - Code_0;
@@ -411,10 +411,10 @@ package body Tiles_Manager is
                   end if;
                end if;
             end loop;
-            if Has_Element (Tiles.To_Cursor (row)) then
-               Tiles.Replace_Element (row, Tile_Row);
+            if Has_Element (Tile_Rows.To_Cursor (row)) then
+               Tile_Rows.Replace_Element (row, Tile_Row);
             else
-               Tiles.Append (Tile_Row);
+               Tile_Rows.Append (Tile_Row);
             end if;
             Prev_Char := Tex_Char;
          end;  --  declare block
@@ -501,6 +501,9 @@ package body Tiles_Manager is
       Batches_Down :=
         Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
 
+      Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Batches_Across, Batches_Down"
+                           & Integer'Image (Batches_Across) & ", " &
+                           Integer'Image (Batches_Down));
       Parse_Facings_By_Row (File, Max_Rows, Max_Cols);
 
       Load_Int_Rows (File, "textures");  --  textures header and rows
@@ -532,7 +535,7 @@ package body Tiles_Manager is
 
    function Number_Of_Tiles return Integer is
    begin
-      return Integer (Tiles.Length);
+      return Integer (Tile_Rows.Length);
    end Number_Of_Tiles;
 
    --  ------------------------------------------------------------------------
@@ -564,7 +567,7 @@ package body Tiles_Manager is
                Text_Char := aString (Integer (col));
                if Prev_Char = '\' and then
                  (Text_Char = 'n' or Text_Char = ASCII.NUL) then
-                  Tiles.Delete_Last;
+                  Tile_Rows.Delete_Last;
                else
                   aTile.Facing := Text_Char;
                end if;
@@ -573,7 +576,7 @@ package body Tiles_Manager is
             end loop;
             Prev_Char := Text_Char;
          end;
-         Tiles.Append (Tile_Col);
+         Tile_Rows.Append (Tile_Col);
       end loop;
       Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row done");
 
