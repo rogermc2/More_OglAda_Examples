@@ -11,7 +11,8 @@ package body Water_Shader_Manager is
 
     Render_Uniforms : Shader_Uniforms;
 
-    procedure Init (Shader_Program : in out GL.Objects.Programs.Program) is
+    procedure Init_Shaders
+      (Shader_Program : in out GL.Objects.Programs.Program) is
         use GL.Objects.Programs;
         use GL.Objects.Shaders;
         use GL.Types.Singles;
@@ -90,9 +91,9 @@ package body Water_Shader_Manager is
 
     exception
         when others =>
-            Put_Line ("An exception occurred in Water_Shader_Manager.Init.");
+            Put_Line ("An exception occurred in Water_Shader_Manager.Init_Shaders.");
             raise;
-    end Init;
+    end Init_Shaders;
 
     --  -------------------------------------------------------------------------
 

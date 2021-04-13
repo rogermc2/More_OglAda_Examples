@@ -66,9 +66,9 @@ package Batch_Manager is
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single);
    procedure Add_Batch_To_Batch_List (Batch_Data : Batch_Meta);
-   procedure Clear;
+   procedure Clear_Batch_Data;
    function Get_Batch_Index (Column, Row : Positive) return Natural;
-   procedure Init;
+   procedure Init_Batch_Data;
    function Batch_List return Batches_List;
    function Batches_Empty return Boolean;
    pragma Inline (Batches_Empty);

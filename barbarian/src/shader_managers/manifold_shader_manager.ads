@@ -28,7 +28,7 @@ package Manifold_Shader_Manager is
 
     end record;
 
-    procedure Init (Shader_Program : in out GL.Objects.Programs.Program);
+    procedure Init_Shaders (Shader_Program : in out GL.Objects.Programs.Program);
     procedure Set_Ambient_Light (Level : Singles.Vector3);
     procedure Set_Caster_Position (Position : Singles.Vector3);
     procedure Set_Cube_Texture (Texture : Int);

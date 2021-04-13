@@ -13,7 +13,7 @@ package body Manifold_Shader_Manager is
 
     Render_Uniforms : Shader_Uniforms;
 
-    procedure Init (Shader_Program : in out GL.Objects.Programs.Program) is
+    procedure Init_Shaders (Shader_Program : in out GL.Objects.Programs.Program) is
         use GL.Objects.Programs;
         use GL.Objects.Shaders;
         use GL.Types.Singles;
@@ -96,7 +96,7 @@ package body Manifold_Shader_Manager is
         when others =>
             Put_Line ("An exception occurred in Manifold_Shader_Manager.Init.");
             raise;
-    end Init;
+    end Init_Shaders;
 
     --  -------------------------------------------------------------------------
 

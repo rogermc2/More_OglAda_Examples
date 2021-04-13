@@ -86,7 +86,7 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Add_Tile_To_Batch (Batch       : in out Batch_Manager.Batch_Meta;
+   procedure Add_Tile_Index_To_Batch (Batch       : in out Batch_Manager.Batch_Meta;
                                 Row_Index, Col_Index : Positive) is
    begin
 --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tile_To_Batch Row, Col Indices " &
@@ -94,7 +94,7 @@ package body Tiles_Manager is
 --                               Integer'Image (Col_Index));
       Batch.Tile_Indices.Append ((Int (Row_Index), Int (Col_Index)));
 
-   end Add_Tile_To_Batch;
+   end Add_Tile_Index_To_Batch;
 
    --  ----------------------------------------------------------------------------
 
@@ -124,10 +124,10 @@ package body Tiles_Manager is
             Batch_Index := Batch_Down * Batches_Across + Batch_Across + 1;
             if Has_Element (Batch_List.To_Cursor (Batch_Index)) then
                Batch := Batch_List.Element (Batch_Index);
-               Add_Tile_To_Batch (Batch, Row, Col);
+               Add_Tile_Index_To_Batch (Batch, Row, Col);
                Update_Batch (Batch_Index, Batch);
             else
-               Add_Tile_To_Batch (Batch, Row, Col);
+               Add_Tile_Index_To_Batch (Batch, Row, Col);
                Add_Batch_To_Batch_List (Batch);
             end if;
          end loop;

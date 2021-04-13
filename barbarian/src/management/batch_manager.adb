@@ -416,7 +416,7 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Clear is
+   procedure Clear_Batch_Data is
    begin
       Batches_Data.Clear;
       Ramp_Mesh_Points.Clear;
@@ -428,7 +428,7 @@ package body Batch_Manager is
       Water_Mesh_Points.Clear;
       Water_Mesh_Normals.Clear;
       Water_Mesh_Texcoords.Clear;
-   end Clear;
+   end Clear_Batch_Data;
 
    --  ----------------------------------------------------------------------------
 
@@ -804,9 +804,9 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init is
+   procedure Init_Batch_Data is
    begin
-      Clear;
+      Clear_Batch_Data;
       if not Mesh_Loader.Load_Mesh_Data_Only
         ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
          Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
@@ -832,7 +832,7 @@ package body Batch_Manager is
            & "src/meshes/water.apg";
       end if;
 
-   end Init;
+   end Init_Batch_Data;
 
    --  -------------------------------------------------------------------------
 

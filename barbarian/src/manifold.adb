@@ -304,7 +304,7 @@ package body Manifold is
 
     procedure Free_Manifold_Meta_Data is
     begin
-        Batch_Manager.Clear;
+        Batch_Manager.Clear_Batch_Data;
     end Free_Manifold_Meta_Data;
 
     --  ----------------------------------------------------------------------------
@@ -359,21 +359,21 @@ package body Manifold is
 
     begin
         Game_Utils.Game_Log ("Initializing manifold.");
-        Manifold_Shader_Manager.Init (Manifold_Program);
+        Manifold_Shader_Manager.Init_Shaders (Manifold_Program);
         GL.Objects.Programs.Use_Program (Manifold_Program);
         Manifold_Shader_Manager.Set_Ambient_Light ((0.0125, 0.0125, 0.0125));
         Manifold_Shader_Manager.Set_Diff_Map (0);
         Manifold_Shader_Manager.Set_Spec_Map (1);
         Manifold_Shader_Manager.Set_Cube_Texture (3);
 
-        Water_Shader_Manager.Init (Water_Program);
+        Water_Shader_Manager.Init_Shaders (Water_Program);
         GL.Objects.Programs.Use_Program (Water_Program);
         Water_Shader_Manager.Set_K_Diff ((0.03, 0.50, 0.20, 0.75));
         Water_Shader_Manager.Set_K_Spec ((0.5, 0.5, 0.5, 1.0));
         Water_Shader_Manager.Set_Ambient_Light ((0.0125, 0.0125, 0.0125));
         Water_Shader_Manager.Set_Cube_Texture (3);
 
-        Batch_Manager.Init;
+        Batch_Manager.Init_Batch_Data;
 
     end Init;
 
