@@ -39,7 +39,8 @@ package body Tiles_Manager is
    function Get_Tile_Level (Row, Col : Tiles_Index) return Integer;
    function Is_Ramp (Row, Col : Tiles_Index) return Boolean;
    function Is_Water (Row, Col : Tiles_Index) return Boolean;
-   procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int);
+   procedure Parse_Facings_By_Row (File                       : File_Type;
+                                   Max_Map_Rows, Max_Map_Cols : Int);
 
    --  ------------------------------------------------------------------------
 
@@ -87,7 +88,7 @@ package body Tiles_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Add_Tile_Index_To_Batch (Batch       : in out Batch_Manager.Batch_Meta;
-                                Row_Index, Col_Index : Positive) is
+                                      Row_Index, Col_Index : Positive) is
    begin
 --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tile_To_Batch Row, Col Indices " &
 --                               Integer'Image (Row_Index) & ", " &
@@ -103,32 +104,32 @@ package body Tiles_Manager is
       use Batches_Package;
       Batch_Across  : Natural;
       Batch_Down    : Natural;
-      Batch         : Batch_Manager.Batch_Meta;
+      aBatch        : Batch_Manager.Batch_Meta;
       Batch_Index   : Positive;
    begin
       Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Max_Rows, Max_Cols " &
-                             Int'Image (Max_Rows) & ", " &
-                             Int'Image (Max_Cols));
+                             Int'Image (Max_Map_Rows) & ", " &
+                             Int'Image (Max_Map_Cols));
 
 --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
 --                              Integer'Image (Settings.Tile_Batch_Width));
 
       --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
-
-      for Row in 1 .. Positive (Max_Rows) loop
-         Batch_Down := Row / Settings.Tile_Batch_Width;
-         for Col in 1 .. Positive (Max_Cols) loop
+      -- a map is a Max_Map_Rows A Max_Map_Cols data frame in a map file
+      for Map_Row in 1 .. Positive (Max_Map_Rows) loop
+         Batch_Down := Map_Row / Settings.Tile_Batch_Width;
+         for Map_Col in 1 .. Positive (Max_Map_Cols) loop
 --              Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
 --                                   Integer'Image (row) & ", " & Integer'Image (col));
-            Batch_Across := Col / Settings.Tile_Batch_Width;
+            Batch_Across := Map_Col / Settings.Tile_Batch_Width;
             Batch_Index := Batch_Down * Batches_Across + Batch_Across + 1;
             if Has_Element (Batch_List.To_Cursor (Batch_Index)) then
-               Batch := Batch_List.Element (Batch_Index);
-               Add_Tile_Index_To_Batch (Batch, Row, Col);
-               Update_Batch (Batch_Index, Batch);
+               aBatch := Batch_List.Element (Batch_Index);
+               Add_Tile_Index_To_Batch (aBatch, Map_Row, Map_Col);
+               Update_Batch (Batch_Index, aBatch);
             else
-               Add_Tile_Index_To_Batch (Batch, Row, Col);
-               Add_Batch_To_Batch_List (Batch);
+               Add_Tile_Index_To_Batch (aBatch, Map_Row, Map_Col);
+               Add_Batch_To_Batch_List (aBatch);
             end if;
          end loop;
       end loop;
@@ -198,8 +199,8 @@ package body Tiles_Manager is
       T        : Single;
       Height   : Single := 0.0;
    begin
-      if X < -1.0 or Col > Tiles_Index (Max_Cols) or Z < -1.0 or
-        Row > Tiles_Index (Max_Rows) then
+      if X < -1.0 or Col > Tiles_Index (Max_Map_Cols) or Z < -1.0 or
+        Row > Tiles_Index (Max_Map_Rows) then
          Height := Out_Of_Bounds_Height;
       else
          Height := 2.0 * Single (aTile.Height);
@@ -257,7 +258,7 @@ package body Tiles_Manager is
 
    function Get_Tiles_Across return Int is
    begin
-      return Batch_Manager.Max_Cols;
+      return Batch_Manager.Max_Map_Cols;
    end Get_Tiles_Across;
 
    --  ----------------------------------------------------------------------------
@@ -265,8 +266,8 @@ package body Tiles_Manager is
    function Is_Tile_Valid (Map : Ints.Vector2) return Boolean is
       use Batch_Manager;
    begin
-      return Map (GL.Y) > 0 and Map (GL.Y) <= Max_Cols and
-        Map (GL.X) > 0 and Map (GL.X) <= Max_Rows;
+      return Map (GL.Y) > 0 and Map (GL.Y) <= Max_Map_Cols and
+        Map (GL.X) > 0 and Map (GL.X) <= Max_Map_Rows;
    end Is_Tile_Valid;
 
    --  ----------------------------------------------------------------------------
@@ -309,7 +310,7 @@ package body Tiles_Manager is
             aString  : constant String := Get_Line (File);
             aChar    : Character;
          begin
-            if aString'Length < Batch_Manager.Max_Cols then
+            if aString'Length < Batch_Manager.Max_Map_Cols then
                raise Tiles_Manager_Exception with
                  "Tiles_Manager.Load_Char_Rows: " & Load_Type &
                  " line has not enough columns.";
@@ -382,7 +383,7 @@ package body Tiles_Manager is
             Tex_Char   : Character;
             Tex_Int    : Integer;
          begin
-            if aString'Length < Batch_Manager.Max_Cols then
+            if aString'Length < Batch_Manager.Max_Map_Cols then
                raise Tiles_Manager_Exception with
                  " Tiles_Manager.Load_Int_Rows: " & Load_Type &
                  " line has not enough columns.";
@@ -497,17 +498,17 @@ package body Tiles_Manager is
 
       Pos2 := Fixed.Index (aLine (Pos1 + 1 .. aLine'Last), "x");
 
-      Max_Cols := Int'Value (aLine (Pos1 .. Pos2 - 1));
-      Max_Rows := Int'Value (aLine (Pos2 + 1 .. aLine'Last));
+      Max_Map_Cols := Int'Value (aLine (Pos1 .. Pos2 - 1));
+      Max_Map_Rows := Int'Value (aLine (Pos2 + 1 .. aLine'Last));
       Batches_Across :=
-        Integer (Float'Ceiling (Float (Max_Cols) / Float (Tile_Batch_Width)));
+        Integer (Float'Ceiling (Float (Max_Map_Cols) / Float (Tile_Batch_Width)));
       Batches_Down :=
-        Integer (Float'Ceiling (Float (Max_Rows) / Float (Tile_Batch_Width)));
+        Integer (Float'Ceiling (Float (Max_Map_Rows) / Float (Tile_Batch_Width)));
 
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Batches_Across, Batches_Down"
                            & Integer'Image (Batches_Across) & ", " &
                            Integer'Image (Batches_Down));
-      Parse_Facings_By_Row (File, Max_Rows, Max_Cols);
+      Parse_Facings_By_Row (File, Max_Map_Rows, Max_Map_Cols);
 
       Load_Int_Rows (File, "textures");  --  textures header and rows
       Load_Char_Rows (File, "types");
@@ -543,7 +544,8 @@ package body Tiles_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Parse_Facings_By_Row (File : File_Type; Max_Rows, Max_Cols : Int) is
+   procedure Parse_Facings_By_Row (File               : File_Type;
+                                   Max_Map_Rows, Max_Map_Cols : Int) is
       use Tile_Row_Package;
       use Tile_Column_Package;
       Prev_Char  : Character;
@@ -551,22 +553,23 @@ package body Tiles_Manager is
       Tile_Col   : Tile_Column_List;
    begin
       --  Parse_Facings_By_Row initalizes the Tiles list.
-      Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Max_Rows, Max_Cols "
-                           & Int'Image (Max_Rows) & ", " & Int'Image (Max_Cols));
-      for row in 1 .. Max_Rows loop
+      Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Max_Map_Rows, Max_Map_Cols "
+                           & Int'Image (Max_Map_Rows) & ", " &
+                             Int'Image (Max_Map_Cols));
+      for row in 1 .. Max_Map_Rows loop
          declare
             aString     : constant String := Get_Line (File);
             Line_Length : constant Integer := aString'Length;
             Text_Char   : Character;
          begin
-            if Line_Length < Integer (Max_Cols) then
+            if Line_Length < Integer (Max_Map_Cols) then
                raise Tiles_Manager_Exception with
                  "Tiles_Manager.Parse_Facings_By_Row, facings line has not enough columns";
             end if;
 
             Prev_Char := ASCII.NUL;
             Tile_Col.Clear;
-            for col in 1 .. Max_Cols loop
+            for col in 1 .. Max_Map_Cols loop
                Text_Char := aString (Integer (col));
                if Prev_Char = '\' and then
                  (Text_Char = 'n' or Text_Char = ASCII.NUL) then

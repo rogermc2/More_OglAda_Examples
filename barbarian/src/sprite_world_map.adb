@@ -102,8 +102,8 @@ package body Sprite_World_Map is
 
    procedure Free_Sprite_World_Map is
    begin
-      for row in 1 .. Sprite_Index (Batch_Manager.Max_Rows) loop
-         for col in 1 .. Sprite_Index (Batch_Manager.Max_Cols) loop
+      for row in 1 .. Sprite_Index (Batch_Manager.Max_Map_Rows) loop
+         for col in 1 .. Sprite_Index (Batch_Manager.Max_Map_Cols) loop
             Sprite_Tiles.Count_Of_Sprites_In_Tiles (row, col) := 0;
             for sprite in Sprite_Index range 1 .. Sprite_Index (Max_Sprites_In_Tile) loop
                Sprite_Tiles.Index_Of_Sprites (row, col, sprite) := 0;
@@ -117,10 +117,10 @@ package body Sprite_World_Map is
 
    procedure Init is
         New_Sprite_Tiles : Sprite_Tiles_Data
-        (Sprite_Index (Batch_Manager.Max_Cols),
-         Sprite_Index (Batch_Manager.Max_Cols), Max_Sprites_In_Tile);
+        (Sprite_Index (Batch_Manager.Max_Map_Cols),
+         Sprite_Index (Batch_Manager.Max_Map_Cols), Max_Sprites_In_Tile);
    begin
-      if Batch_Manager.Max_Rows <= 0 or Batch_Manager.Max_Cols <= 0 or
+      if Batch_Manager.Max_Map_Rows <= 0 or Batch_Manager.Max_Map_Cols <= 0 or
       Sprite_Tiles.Num_Sprites < 0 then
             raise Sprite_World_Map_Exception with
             "Sprite_World_Map.Init; invalid Batch_Manager data.";

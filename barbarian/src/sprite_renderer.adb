@@ -227,8 +227,8 @@ package body Sprite_Renderer is
       U    : Int := Int (Max (0.5 * (World_Pos (GL.X) + 1.0), 0.0));
       V    : Int := Int (Max (0.5 * (World_Pos (GL.Y) + 1.0), 0.0));
    begin
-      U := Min_Int (U, Int (Batch_Manager.Max_Rows - 1));
-      V := Min_Int (V, Int (Batch_Manager.Max_Cols - 1));
+      U := Min_Int (U, Int (Batch_Manager.Max_Map_Rows - 1));
+      V := Min_Int (V, Int (Batch_Manager.Max_Map_Cols - 1));
 
       Sprites (Sprite_Index).World_Position := World_Pos;
       Sprites (Sprite_Index).Model_Matrix :=

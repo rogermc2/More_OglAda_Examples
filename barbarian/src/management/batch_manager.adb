@@ -794,7 +794,7 @@ package body Batch_Manager is
    function Get_Batch_Index (Column, Row : Positive) return Natural is
       Result : Integer := 0;
    begin
-      if Column < Positive (Max_Cols) and Row < Positive (Max_Rows) then
+      if Column < Positive (Max_Map_Cols) and Row < Positive (Max_Map_Rows) then
          Result := (Integer (Column - 1) +
                       Batches_Across * Integer (Row - 1 )) /
            Settings.Tile_Batch_Width + 1;
@@ -811,7 +811,7 @@ package body Batch_Manager is
         ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
          Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
          raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
+           "Batch_Manager.Init_Batch_Data error loading ramp mesh data from file "
            & "src/meshes/ramp_may_2014.apg";
       end if;
 
@@ -820,7 +820,7 @@ package body Batch_Manager is
                                               Ramp_Mesh_Smooth_Texcoords,
                                               Ramp_Mesh_Smooth_Normals) then
          raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp smooth mesh data from file "
+           "Batch_Manager.Init_Batch_Data error loading ramp smooth mesh data from file "
            & "src/meshes/ramp_smooth.apg";
       end if;
 
@@ -828,7 +828,7 @@ package body Batch_Manager is
         ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
          Water_Mesh_Normals) then
          raise Batch_Manager_Exception with
-           "Batch_Manager.Init error loading ramp mesh data from file "
+           "Batch_Manager.Init_Batch_Data error loading ramp mesh data from file "
            & "src/meshes/water.apg";
       end if;
 
