@@ -452,6 +452,7 @@ package body Batch_Manager is
    --  Generate_Points for all tiles in a batch
    procedure Generate_Points (aBatch : in out Batch_Meta;
                               Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
+      pragma Inline (Generate_Points);
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
@@ -465,11 +466,12 @@ package body Batch_Manager is
       Column_List  : Tile_Column_List;
       aTile        : Tile_Data;  --  includes texture index
       N_Tile       : Tile_Data;
+      T_Indices    : Ints.Vector2;
       Height       : Integer;
       X            : Single;
       Y            : Single;
       Z            : Single;
-      Index        : Atlas_Index;
+      Tex_Index    : Atlas_Index;
       Atlas_Row    : Atlas_Index;
       Atlas_Col    : Atlas_Index;
 
@@ -495,10 +497,11 @@ package body Batch_Manager is
                Int'Image (Int (Tile_Indices.Length)));
       --  for all tiles in aBatch
       while Has_Element (Tile_Indices_Curs) loop
-         aTile := Get_Tile (Element (Tile_Indices_Curs));
+         T_Indices := Element (Tile_Indices_Curs);
+         aTile := Get_Tile (T_Indices);
          Height := aTile.Height;
-         Row_Index := Element (Tile_Indices_Curs) (GL.X);
-         Col_Index := Element (Tile_Indices_Curs) (GL.Y);
+         Row_Index := T_Indices (GL.X);
+         Col_Index := T_Indices (GL.Y);
          Game_Utils.Game_Log
               ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
                Int'Image (Row_Index) & ", " & Int'Image (Col_Index));
@@ -524,14 +527,14 @@ package body Batch_Manager is
             end loop;
 
             --  Texture_Index from map file (range 0 .. 15, one hex digit)
-            Index := Tiles_Index (aTile.Texture_Index);
+            Tex_Index := Tiles_Index (aTile.Texture_Index);
             --  Select tile from map file
             --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
-            Atlas_Row := Index / Tiles_Index (Sets_In_Atlas_Row);
-            Atlas_Col := Index - Atlas_Row * Sets_In_Atlas_Row;
+            Atlas_Row := Tex_Index / Tiles_Index (Sets_In_Atlas_Row);
+            Atlas_Col := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
             Game_Utils.Game_Log
-              ("Batch_Manger.Generate_Points Index, Atlas_Row, Atlas_Col: "
-               & Int'Image (Index) & ", " & Int'Image (Atlas_Row)
+              ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
+               & Int'Image (Tex_Index) & ", " & Int'Image (Atlas_Row)
                & ", " & Int'Image (Atlas_Col));
             Add_Tex_Coords (0.5, 1.0);
             Add_Tex_Coords (0.0, 1.0);

@@ -336,7 +336,8 @@ package body Tiles_Manager is
             if Has_Element (Tile_Rows.To_Cursor (row)) then
                Tile_Rows.Replace_Element (row, Tile_Row);
             else
-               Tile_Rows.Append (Tile_Row);
+               raise Tiles_Manager_Exception with
+                      "Load_Char_Rows missing a tile row";
             end if;
             Prev_Char := aChar;
          end;  --  declare block
@@ -344,14 +345,14 @@ package body Tiles_Manager is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Manifold.Load_Char_Rows!");
+         Put_Line ("An exception occurred in Tiles_Manager.Load_Char_Rows!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
    end Load_Char_Rows;
 
    --  ----------------------------------------------------------------------------
 
-   procedure Load_Int_Rows (File  : File_Type; Load_Type : String) is
+   procedure Load_Int_Rows (File : File_Type; Load_Type : String) is
       use Ada.Strings;
       use Tile_Row_Package;
       Header     : constant String := Get_Line (File);
@@ -418,7 +419,8 @@ package body Tiles_Manager is
             if Has_Element (Tile_Rows.To_Cursor (row)) then
                Tile_Rows.Replace_Element (row, Tile_Row);
             else
-               Tile_Rows.Append (Tile_Row);
+               raise Tiles_Manager_Exception with
+                      "Load_Int_Rows missing a tile row";
             end if;
             Prev_Char := Tex_Char;
          end;  --  declare block
@@ -505,9 +507,11 @@ package body Tiles_Manager is
       Batches_Down :=
         Integer (Float'Ceiling (Float (Max_Map_Rows) / Float (Tile_Batch_Width)));
 
+      Tile_Rows.Clear;
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Batches_Across, Batches_Down"
                            & Integer'Image (Batches_Across) & ", " &
                            Integer'Image (Batches_Down));
+      --  Parse_Facings_By_Row initializes Tile_Rows
       Parse_Facings_By_Row (File, Max_Map_Rows, Max_Map_Cols);
 
       Load_Int_Rows (File, "textures");  --  textures header and rows

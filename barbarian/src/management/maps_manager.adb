@@ -35,12 +35,13 @@ package body Maps_Manager is
       aLine := To_Unbounded_String (Get_Line (Input_File));
       Pos1 := Index (aLine, " ");
       Num_Story_Lines := Integer'Value (Slice (aLine, Pos1, Length (aLine)));
+     --  Skip story lines
       for line_num in 1 .. Num_Story_Lines loop
          aLine := To_Unbounded_String (Get_Line (Input_File));
       end loop;
-      --  Music_Track
+      --  Skip Music_Track
       aLine := To_Unbounded_String (Get_Line (Input_File));
-      --  Hammer_Music_Track
+      --  Skip Hammer_Music_Track
       aLine := To_Unbounded_String (Get_Line (Input_File));
 
       Tiles_Manager.Load_Tiles (Input_File, Tile_Diff_Tex, Tile_Spec_Tex,

@@ -353,9 +353,8 @@ package body Manifold is
     --  ------------------------------------------------------------------------
 
     procedure Init is
-        Points       : GL_Maths.Vec3_List;
-        Texcoords    : GL_Maths.Vec2_List;
-        Points_Count : Integer := 0;
+        Points    : GL_Maths.Vec3_List;
+        Texcoords : GL_Maths.Vec2_List;
 
     begin
         Game_Utils.Game_Log ("Initializing manifold.");
