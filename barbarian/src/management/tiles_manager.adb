@@ -112,18 +112,14 @@ package body Tiles_Manager is
 --                                   Integer'Image (row) & ", " & Integer'Image (col));
             Batch_Across := Map_Col / Settings.Tile_Batch_Width;
             Batch_Index := Batch_Down * Batches_Across + Batch_Across + 1;
-            if Batch_Index >= Batch_List.First_Index and
-                  Batch_Index <= Batch_List.Last_Index then
+            --  Add_Tile_Index_To_Batch
+            if Batch_Index <= Batch_List.Last_Index then
                aBatch := Batch_List.Element (Batch_Index);
---                 aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
---                 Update_Batch (Batch_Index, aBatch);
-               --  Add_Tile_Index_To_Batch
+               aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
+               Update_Batch (Batch_Index, aBatch);
+            else
                aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
                Add_Batch_To_Batch_List (aBatch);
-            else
-               raise Tiles_Manager_exception with
-                    "Add_Tiles_To_Batches, invalid batch index: "
-                    & integer'Image (Batch_Index);
             end if;
          end loop;
       end loop;
