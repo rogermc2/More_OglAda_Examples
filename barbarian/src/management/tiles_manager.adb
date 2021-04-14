@@ -103,7 +103,8 @@ package body Tiles_Manager is
 --                              Integer'Image (Settings.Tile_Batch_Width));
 
       --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
-      -- a map is a Max_Map_Rows A Max_Map_Cols data frame in a map file
+      -- a map is a Max_Map_Rows x Max_Map_Cols data frame in a map file
+      -- Total number of tiles = Max_Map_Rows x Max_Map_Cols
       for Map_Row in 1 .. Positive (Max_Map_Rows) loop
          Batch_Down := Map_Row / Settings.Tile_Batch_Width;
          for Map_Col in 1 .. Positive (Max_Map_Cols) loop
@@ -113,17 +114,21 @@ package body Tiles_Manager is
             Batch_Index := Batch_Down * Batches_Across + Batch_Across + 1;
             if Has_Element (Batch_List.To_Cursor (Batch_Index)) then
                aBatch := Batch_List.Element (Batch_Index);
+--                 --  Add_Tile_Index_To_Batch
+--                 aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
+--                 Update_Batch (Batch_Index, aBatch);
                --  Add_Tile_Index_To_Batch
                aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
-               Update_Batch (Batch_Index, aBatch);
-            else
-               aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
                Add_Batch_To_Batch_List (aBatch);
+            else
+               raise Tiles_Manager_exception with
+                    "Add_Tiles_To_Batches, invalid batch index: "
+                    & integer'Image (Batch_Index);
             end if;
          end loop;
       end loop;
 
-      Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Batch_List, range " &
+      Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
                              Int'Image (Int (Batch_List.First_Index)) & ", " &
                              Int'Image (Int (Batch_List.Last_Index)));
       for index in Batch_List.First_Index .. Batch_List.Last_Index loop
