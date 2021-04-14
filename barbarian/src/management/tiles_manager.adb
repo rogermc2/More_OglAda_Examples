@@ -87,18 +87,6 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Add_Tile_Index_To_Batch (Batch       : in out Batch_Manager.Batch_Meta;
-                                      Row_Index, Col_Index : Positive) is
-   begin
---        Game_Utils.Game_Log ("Tiles_Manager.Add_Tile_To_Batch Row, Col Indices " &
---                               Integer'Image (Row_Index) & ", " &
---                               Integer'Image (Col_Index));
-      Batch.Tile_Indices.Append ((Int (Row_Index), Int (Col_Index)));
-
-   end Add_Tile_Index_To_Batch;
-
-   --  ----------------------------------------------------------------------------
-
    procedure Add_Tiles_To_Batches is
       use Batch_Manager;
       use Batches_Package;
@@ -125,10 +113,11 @@ package body Tiles_Manager is
             Batch_Index := Batch_Down * Batches_Across + Batch_Across + 1;
             if Has_Element (Batch_List.To_Cursor (Batch_Index)) then
                aBatch := Batch_List.Element (Batch_Index);
-               Add_Tile_Index_To_Batch (aBatch, Map_Row, Map_Col);
+               --  Add_Tile_Index_To_Batch
+               aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
                Update_Batch (Batch_Index, aBatch);
             else
-               Add_Tile_Index_To_Batch (aBatch, Map_Row, Map_Col);
+               aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
                Add_Batch_To_Batch_List (aBatch);
             end if;
          end loop;
@@ -466,8 +455,9 @@ package body Tiles_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Load_Textures (Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
-                            Ramp_Spec_Tex : in out GL.Objects.Textures.Texture) is
+   procedure Load_Tile_And_Ramp_Textures
+      (Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+      Ramp_Spec_Tex : in out GL.Objects.Textures.Texture) is
       use Texture_Manager;
    begin
       Load_Image_To_Texture
@@ -478,7 +468,7 @@ package body Tiles_Manager is
                              Ramp_Diff_Tex, True, True);
       Load_Image_To_Texture ("src/textures/stepsTileSet1_spec.png",
                              Ramp_Spec_Tex, True, True);
-   end Load_Textures;
+   end Load_Tile_And_Ramp_Textures;
 
    --  ------------------------------------------------------------------------
 
@@ -522,7 +512,8 @@ package body Tiles_Manager is
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, heights loaded.");
 
       Load_Palette_File_Names (File);
-      Load_Textures (Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex, Ramp_Spec_Tex);
+      Load_Tile_And_Ramp_Textures (Tile_Tex, Tile_Spec_Tex,
+                                   Ramp_Diff_Tex, Ramp_Spec_Tex);
 
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Textures loaded.");
       Add_Tiles_To_Batches;
