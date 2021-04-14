@@ -412,7 +412,8 @@ package body Tiles_Manager is
                   if Has_Element (Tile_Row.To_Cursor (col)) then
                      Tile_Row.Replace_Element (col, aTile);
                   else
-                     Tile_Row.Append (aTile);
+               raise Tiles_Manager_Exception with
+                      "Load_Int_Rows missing a tile column";
                   end if;
                end if;
             end loop;
