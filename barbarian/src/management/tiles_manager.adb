@@ -112,9 +112,9 @@ package body Tiles_Manager is
 --                                   Integer'Image (row) & ", " & Integer'Image (col));
             Batch_Across := Map_Col / Settings.Tile_Batch_Width;
             Batch_Index := Batch_Down * Batches_Across + Batch_Across + 1;
-            if Has_Element (Batch_List.To_Cursor (Batch_Index)) then
+            if Batch_Index >= Batch_List.First_Index and
+                  Batch_Index <= Batch_List.Last_Index then
                aBatch := Batch_List.Element (Batch_Index);
---                 --  Add_Tile_Index_To_Batch
 --                 aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
 --                 Update_Batch (Batch_Index, aBatch);
                --  Add_Tile_Index_To_Batch
