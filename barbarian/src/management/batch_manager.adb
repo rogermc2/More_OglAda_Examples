@@ -54,7 +54,6 @@ package body Batch_Manager is
    procedure Add_East_Points (aBatch             : in out Batch_Meta;  Height : Integer;
                               Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
-      aTile    : constant Tile_Data := Get_Tile (Tile_Index);
       N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
@@ -97,7 +96,8 @@ package body Batch_Manager is
             aBatch.Normals.Append ((-1.0, 0.0, 0.0));
          end loop;
 
-         Set_Tex_Coords (aBatch, aTile, East_Side, diff - level - 1);
+         Set_Tex_Coords (aBatch, Get_Tile (Tile_Index), East_Side,
+                         diff - level - 1);
       end loop;
 
    end Add_East_Points;
