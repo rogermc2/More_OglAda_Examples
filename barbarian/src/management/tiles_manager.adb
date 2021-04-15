@@ -389,7 +389,7 @@ package body Tiles_Manager is
       Num_Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
       Num_Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
 
-      for row in Int range 1 .. Num_Rows loop
+      for row in Int range 0 .. Num_Rows - 1 loop
          Tile_Row := Tile_Rows.Element (row);  --  List of Tile columns
          declare
             aString    : constant String := Get_Line (File);

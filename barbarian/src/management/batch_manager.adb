@@ -54,7 +54,7 @@ package body Batch_Manager is
    procedure Add_East_Points (aBatch             : in out Batch_Meta;  Height : Integer;
                               Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
-      aTile    : constant Tile_Data := Get_Tile (Tile_Row, Tile_Col));
+      aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
       N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
@@ -450,8 +450,8 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    --  Generate_Points for all tiles in a batch
-   procedure Generate_Points (aBatch : in out Batch_Meta;
-                              Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
+   procedure Generate_Points (aBatch : in out Batch_Meta) is
+--                                Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
       pragma Inline (Generate_Points);
       use Tiles_Manager;
       use Tile_Indices_Package;
@@ -494,21 +494,18 @@ package body Batch_Manager is
       end Add_Tex_Coords;
 
    begin
-      Game_Utils.Game_Log
-              ("Batch_Manger.Generate_Points Tile_Indices length: " &
-               Int'Image (Int (Tile_Indices.Length)));
       --  for all tiles in aBatch
       while Has_Element (Tile_Indices_Curs) loop
          Tile_Index := Element (Tile_Indices_Curs);
          aTile := Get_Tile (Tile_Index);
          Height := aTile.Height;
+         Row_Index := Int (Tile_Index) / Max_Map_Cols;
+         Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
 --           Row_Index := T_Indices (GL.X);
---           Col_Index := T_Indices (GL.Y);
-         Row_Index := Tile_Index / Max_Map_Cols;
-         Col_Index := Tile_Index - Row_Index * ;
+--           Col_Index := T_Indices (GL.Y);;
          Game_Utils.Game_Log
-              ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
-               Int'Image (Row_Index) & ", " & Int'Image (Col_Index));
+              ("Batch_Manger.Generate_Points Tile_Index: " &
+               Natural'Image (Tile_Index));
          X := Single (2 * (Col_Index - 1));
          Y := Single (2 * Height);
          Z := Single (2 * (Row_Index - 1));
@@ -594,8 +591,8 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Generate_Ramps (aBatch : in out Batch_Meta;
-                             Tiles  : Tiles_Manager.Tile_Indices_List) is
+   procedure Generate_Ramps (aBatch : in out Batch_Meta) is
+--                               Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
       use Singles;
       use Maths;
       use Tiles_Manager;
@@ -604,7 +601,8 @@ package body Batch_Manager is
       use Vec2_Package;
       use Vec3_Package;
 
-      Indices_Curs   : Tile_Indices_Package.Cursor := Tiles.First;
+      Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
+      Tile_Index     : Natural;
       Row_Index      : Tiles_Index;
       Col_Index      : Tiles_Index;
       aTile          : Tile_Data;
@@ -633,7 +631,9 @@ package body Batch_Manager is
       --  Manifold.cpp, approx line 1015, p = g_batches[batch_idx].tiles;
       --  for all tiles in aBatch
       while Has_Element (Indices_Curs) loop
-         aTile := Get_Tile (Element (Indices_Curs));
+         Tile_Index := Element (Indices_Curs);
+         aTile := Get_Tile (Tile_Index);
+--           aTile := Get_Tile (Element (Indices_Curs));
          Height := aTile.Height;
          Facing := aTile.Facing;
 
@@ -649,8 +649,10 @@ package body Batch_Manager is
 
          if aTile.Tile_Type = '/' then
             Has_Ramp := True;
-            Row_Index := Element (Indices_Curs) (GL.X);
-            Col_Index := Element (Indices_Curs) (GL.Y);
+--              Row_Index := Element (Indices_Curs) (GL.X);
+--              Col_Index := Element (Indices_Curs) (GL.Y);
+            Row_Index := Int (Tile_Index) / Max_Map_Cols;
+            Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
             --  Put each vertex point into world space
             Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
             Model_Matrix := Translation_Matrix
@@ -724,15 +726,16 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Generate_Water (aBatch : in out Batch_Meta;
-                             Tiles  : Tiles_Manager.Tile_Indices_List) is
+   procedure Generate_Water (aBatch : in out Batch_Meta) is
+--                               Tiles  : Tiles_Manager.Tile_Indices_List) is
       use Singles;
       use Maths;
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
       use Vec3_Package;
-      Indices_Curs   : Tile_Indices_Package.Cursor := Tiles.First;
+      Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
+      Tile_Index   : Natural;
       Row_Index      : Tiles_Index;
       Col_Index      : Tiles_Index;
       aTile          : Tile_Data;
@@ -748,7 +751,9 @@ package body Batch_Manager is
       Has_Water      : Boolean := False;
    begin
       while Has_Element (Indices_Curs) loop
-         aTile := Get_Tile (Element (Indices_Curs));
+         Tile_Index := Element (Indices_Curs);
+         aTile := Get_Tile (Tile_Index);
+--           aTile := Get_Tile (Element (Indices_Curs));
          Height := aTile.Height;
          Facing := aTile.Facing;
 
@@ -764,8 +769,10 @@ package body Batch_Manager is
 
          if aTile.Tile_Type = '~' then
             Has_Water := True;
-            Row_Index := Element (Indices_Curs) (GL.X);
-            Col_Index := Element (Indices_Curs) (GL.Y);
+--              Row_Index := Element (Indices_Curs) (GL.X);
+--              Col_Index := Element (Indices_Curs) (GL.Y);
+            Row_Index := Int (Tile_Index) / Max_Map_Cols;
+            Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
             --  Put each vertex point into world space
             Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
             Model_Matrix := Translation_Matrix
@@ -858,12 +865,12 @@ package body Batch_Manager is
            "Batch_Manager.Regenerate_Batch called with empty Tiles list";
       end if;
 
-      Generate_Points (theBatch, Tile_Indices);
+      Generate_Points (theBatch);
       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points done"
                            & " Batch_Index " & Integer'Image (Batch_Index));
-      Generate_Ramps (theBatch, Tile_Indices);
+      Generate_Ramps (theBatch);
       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
-      Generate_Water (theBatch, Tile_Indices);
+      Generate_Water (theBatch);
       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
 
       Batches_Data.Replace_Element (Batch_Index, theBatch);
