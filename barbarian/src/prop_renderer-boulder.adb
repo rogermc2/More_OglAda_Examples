@@ -406,10 +406,10 @@ package body Prop_Renderer.Boulder is
       Next_Z          : Single;
       V_Sum           : Single;
       --   work out if can increase linear speed due to a ramp
-      Current_U       : constant Tiles_Manager.Tiles_Index
-        := Tiles_Manager.Tiles_Index (0.5 * (Properties.World_Pos (GL.X) + 1.0));
-      Current_V       : constant Tiles_Manager.Tiles_Index
-        := Tiles_Manager.Tiles_Index (0.5 * (Properties.World_Pos (GL.Z) + 1.0));
+      Current_U       : constant Tiles_Manager.Tiles_RC_Index
+        := Tiles_Manager.Tiles_RC_Index (0.5 * (Properties.World_Pos (GL.X) + 1.0));
+      Current_V       : constant Tiles_Manager.Tiles_RC_Index
+        := Tiles_Manager.Tiles_RC_Index (0.5 * (Properties.World_Pos (GL.Z) + 1.0));
       Facing          : constant Character :=
                           Tiles_Manager.Get_Facing ((Current_U, Current_V));
       Floor_Height    : Single;

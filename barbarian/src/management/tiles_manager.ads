@@ -11,7 +11,7 @@ with Manifold;
 package Tiles_Manager is
 
    Max_Tile_Cols    : constant Positive := 64;
-   subtype Tiles_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
+   subtype Tiles_RC_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
 
    type Tile_Data is record
       Height        : Natural := 0;
@@ -21,33 +21,33 @@ package Tiles_Manager is
    end record;
 
    package Tile_Column_Package is new Ada.Containers.Vectors
-     (Tiles_Index, Tile_Data);
+     (Tiles_RC_Index, Tile_Data);
    subtype Tile_Column_List is Tile_Column_Package.Vector;
    subtype Tile_Column_Cursor is Tile_Column_Package.Cursor;
    use Tile_Column_Package;
 
    package Tile_Row_Package is new Ada.Containers.Vectors
-     (Tiles_Index, Tile_Column_List);
+     (Tiles_RC_Index, Tile_Column_List);
    subtype Tile_Row_List is Tile_Row_Package.Vector;
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 
    package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
-     (Tiles_Index);
+     (Tiles_RC_Index);
    subtype Tile_Indices_List is Tile_Indices_Package.List;
    subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
 
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
-   function Get_Facing (Index : Tiles_Index) return Character;
+   function Get_Facing (Index : Tiles_RC_Index) return Character;
    function Get_Facing (Map : Ints.Vector2) return Character;
 --     function Get_Tile (Row_Curs : Tile_Row_Package.Cursor;
 --                        Col_Curs : Tile_Column_Package.Cursor) return Tile_Data;
 --     function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
-   function Get_Tile (Tile_Index : Tiles_Index) return Tile_Data;
+   function Get_Tile (Tile_Index : Tiles_RC_Index) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
-   function Get_Tile_Type (Index : Tiles_Index) return Character;
+   function Get_Tile_Type (Index : Tiles_RC_Index) return Character;
    function Get_Tiles_Across return Int;
    function Is_Tile_Valid (Map : Ints.Vector2) return Boolean;
    procedure Load_Tiles (File : File_Type;

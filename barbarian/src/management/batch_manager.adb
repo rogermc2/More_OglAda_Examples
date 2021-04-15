@@ -22,7 +22,7 @@ package body Batch_Manager is
    Batches_Data               : Batches_List;
    Static_Lights_List         : Static_Light_Vector;
    Atlas_Factor               : constant Single := 0.25;
-   Sets_In_Atlas_Row          : constant Tiles_Manager.Tiles_Index := 4;
+   Sets_In_Atlas_Row          : constant Tiles_Manager.Tiles_RC_Index := 4;
    ST_Offset                  : constant Single := 8.0 / 2048.0;
    Ramp_Mesh_Points           : GL_Maths.Vec3_List;
    Ramp_Mesh_Normals          : GL_Maths.Vec3_List;
@@ -53,7 +53,7 @@ package body Batch_Manager is
 
    procedure Add_East_Points
      (aBatch : in out Batch_Meta;  Height : Integer;
-       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
       N_Height : Integer;
@@ -107,7 +107,7 @@ package body Batch_Manager is
 
    procedure Add_North_Points
      (aBatch : in out Batch_Meta;  Height : Integer;
-       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
       N_Height : Integer;
@@ -161,7 +161,7 @@ package body Batch_Manager is
 
    procedure Add_South_Points
      (aBatch : in out Batch_Meta;  Height : Integer;
-       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile (Tile_Index);
       N_Tile   : Tile_Data;
@@ -262,7 +262,7 @@ package body Batch_Manager is
 
    procedure Add_West_Points
      (aBatch : in out Batch_Meta;  Height : Integer;
-       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Height : Integer;
       N_Tile   : Tile_Data;
@@ -465,12 +465,12 @@ package body Batch_Manager is
       --        Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tile_Indices.First;
       Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
                             aBatch.Tile_Indices.First;
-      Row_Index         : Tiles_Index;
-      Col_Index         : Tiles_Index;
+      Row_Index         : Tiles_RC_Index;
+      Col_Index         : Tiles_RC_Index;
       Column_List       : Tile_Column_List;
       aTile             : Tile_Data;  --  includes texture index
       N_Tile            : Tile_Data;
-      Tile_Index        : Tiles_Index;
+      Tile_Index        : Tiles_RC_Index;
       Height            : Integer;
       X                 : Single;
       Y                 : Single;
@@ -498,7 +498,7 @@ package body Batch_Manager is
    begin
       --  for all tiles in aBatch
       while Has_Element (Tile_Indices_Curs) loop
-         Tile_Index := Tiles_Index (Element (Tile_Indices_Curs));
+         Tile_Index := Tiles_RC_Index (Element (Tile_Indices_Curs));
          aTile := Get_Tile (Int (Tile_Index));
          Height := aTile.Height;
          Row_Index := Int (Tile_Index) / Max_Map_Cols;
@@ -530,10 +530,10 @@ package body Batch_Manager is
             end loop;
 
             --  Texture_Index from map file (range 0 .. 15, one hex digit)
-            Tex_Index := Tiles_Index (aTile.Texture_Index);
+            Tex_Index := Tiles_RC_Index (aTile.Texture_Index);
             --  Select tile from map file
             --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
-            Atlas_Row := Tex_Index / Tiles_Index (Sets_In_Atlas_Row);
+            Atlas_Row := Tex_Index / Tiles_RC_Index (Sets_In_Atlas_Row);
             Atlas_Col := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
             Game_Utils.Game_Log
               ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
@@ -604,9 +604,9 @@ package body Batch_Manager is
          use Vec3_Package;
 
          Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-         Tile_Index     : Tiles_Index;
-         Row_Index      : Tiles_Index;
-         Col_Index      : Tiles_Index;
+         Tile_Index     : Tiles_RC_Index;
+         Row_Index      : Tiles_RC_Index;
+         Col_Index      : Tiles_RC_Index;
          aTile          : Tile_Data;
          aRow           : Tile_Column_List;
          Facing         : Character;
@@ -633,7 +633,7 @@ package body Batch_Manager is
          --  Manifold.cpp, approx line 1015, p = g_batches[batch_idx].tiles;
          --  for all tiles in aBatch
          while Has_Element (Indices_Curs) loop
-            Tile_Index := Tiles_Index (Element (Indices_Curs));
+            Tile_Index := Tiles_RC_Index (Element (Indices_Curs));
             aTile := Get_Tile (Tile_Index);
             --           aTile := Get_Tile (Element (Indices_Curs));
             Height := aTile.Height;
@@ -737,9 +737,9 @@ package body Batch_Manager is
          use GL_Maths;
          use Vec3_Package;
          Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-         Tile_Index     : Tiles_Index;
-         Row_Index      : Tiles_Index;
-         Col_Index      : Tiles_Index;
+         Tile_Index     : Tiles_RC_Index;
+         Row_Index      : Tiles_RC_Index;
+         Col_Index      : Tiles_RC_Index;
          aTile          : Tile_Data;
          aRow           : Tile_Column_List;
          Facing         : Character;
@@ -897,10 +897,10 @@ package body Batch_Manager is
          Offset_Factor     : Singles.Vector2_Array (1 .. 6);
          Texture_Index     : constant Positive := aTile.Texture_Index;
          Half_Atlas_Factor : constant Single := 0.5 * Atlas_Factor;
-         Atlas_Row         : constant Tiles_Manager.Tiles_Index
-           := Tiles_Manager.Tiles_Index (Texture_Index) / Sets_In_Atlas_Row + 1;
-         Atlas_Col         : constant Tiles_Manager.Tiles_Index
-           := Tiles_Manager.Tiles_Index (Texture_Index) - (Atlas_Row - 1) *
+         Atlas_Row         : constant Tiles_Manager.Tiles_RC_Index
+           := Tiles_Manager.Tiles_RC_Index (Texture_Index) / Sets_In_Atlas_Row + 1;
+         Atlas_Col         : constant Tiles_Manager.Tiles_RC_Index
+           := Tiles_Manager.Tiles_RC_Index (Texture_Index) - (Atlas_Row - 1) *
                                Sets_In_Atlas_Row + 1;
          S                 : Single := Half_Atlas_Factor;
          T                 : Single := 0.0;
