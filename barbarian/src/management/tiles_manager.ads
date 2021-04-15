@@ -32,7 +32,7 @@ package Tiles_Manager is
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 
    package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
-     (Natural);
+     (Tiles_Index);
    subtype Tile_Indices_List is Tile_Indices_Package.List;
    subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
 

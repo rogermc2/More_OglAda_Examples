@@ -51,8 +51,9 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_East_Points (aBatch             : in out Batch_Meta;  Height : Integer;
-                              Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+   procedure Add_East_Points
+     (aBatch : in out Batch_Meta;  Height : Integer;
+       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
       N_Height : Integer;
@@ -97,18 +98,17 @@ package body Batch_Manager is
          end loop;
 
          Set_Tex_Coords (aBatch, Get_Tile (Tile_Index), East_Side,
-                         diff - level - 1);
+                         Diff - level - 1);
       end loop;
 
    end Add_East_Points;
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_North_Points (aBatch             : in out Batch_Meta;
-                               Height             : Integer;
-                               Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+   procedure Add_North_Points
+     (aBatch : in out Batch_Meta;  Height : Integer;
+       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
-      aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
       N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
@@ -116,15 +116,15 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile ((Tile_Row + 1, Tile_Col));
+      N_Tile := Get_Tile (Tile_Index + 1);
       N_Height := N_Tile.Height;
-      if aTile.Tile_Type = '~' then
+      if N_Tile.Tile_Type = '~' then
          N_Height := N_Height - 1;
       end if;
       Diff := Height - N_Height;
 
       --  Remove bit behind stairs from construction list
-      if aTile.Tile_Type = '/' and then aTile.Facing = 'N' then
+      if N_Tile.Tile_Type = '/' and then N_Tile.Facing = 'N' then
          Diff := Diff - 1;
       end if;
 
@@ -150,7 +150,8 @@ package body Batch_Manager is
                aBatch.Normals.Append ((0.0, 0.0, 1.0));
             end loop;
 
-            Set_Tex_Coords (aBatch, aTile, North_Side, Diff - level - 1);
+            Set_Tex_Coords (aBatch, Get_Tile (Tile_Index), North_Side,
+                            Diff - level - 1);
          end loop;
       end if;
 
@@ -158,10 +159,9 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_South_Points (aBatch             : in out Batch_Meta;
-                               Height             : Integer;
-                               Tile_Index : Tiles_Manager.Tiles_Index) is
---                                 Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+   procedure Add_South_Points
+     (aBatch : in out Batch_Meta;  Height : Integer;
+       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile (Tile_Index);
       N_Tile   : Tile_Data;
@@ -260,10 +260,10 @@ package body Batch_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Add_West_Points (aBatch             : in out Batch_Meta; Height : Integer;
-                              Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+   procedure Add_West_Points
+     (aBatch : in out Batch_Meta;  Height : Integer;
+       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
-      aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
       N_Height : Integer;
       N_Tile   : Tile_Data;
       Diff     : Integer;
@@ -271,15 +271,15 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile ((Tile_Row, Tile_Col + 1));
+      N_Tile := Get_Tile (Tile_Index + 1);
       N_Height := N_Tile.Height;
-      if aTile.Tile_Type = '~' then
+      if N_Tile.Tile_Type = '~' then
          N_Height := N_Height - 1;
       end if;
       Diff := Height - N_Height;
 
       --  remove bit behind stairs from construction list
-      if aTile.Tile_Type = '/' and then aTile.Facing = 'W' then
+      if N_Tile.Tile_Type = '/' and then N_Tile.Facing = 'W' then
          Diff := Diff - 1;
       end if;
 
@@ -306,7 +306,8 @@ package body Batch_Manager is
             aBatch.Normals.Append ((1.0, 0.0, 0.0));
          end loop;
 
-         Set_Tex_Coords (aBatch, aTile, West_Side, Diff - level - 1);
+         Set_Tex_Coords (aBatch, Get_Tile (Tile_Index), West_Side,
+                         Diff - level - 1);
       end loop;
 
    end Add_West_Points;
@@ -452,7 +453,7 @@ package body Batch_Manager is
 
    --  Generate_Points for all tiles in a batch
    procedure Generate_Points (aBatch : in out Batch_Meta) is
---                                Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
+      --                                Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
       pragma Inline (Generate_Points);
       use Tiles_Manager;
       use Tile_Indices_Package;
@@ -461,22 +462,22 @@ package body Batch_Manager is
       subtype Atlas_Index is Int range 0 .. Int (Manifold.Max_Tile_Cols) - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       --  Tiles is a list of Ints.Vector2
---        Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tile_Indices.First;
+      --        Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tile_Indices.First;
       Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
-                              aBatch.Tile_Indices.First;
-      Row_Index    : Tiles_Index;
-      Col_Index    : Tiles_Index;
-      Column_List  : Tile_Column_List;
-      aTile        : Tile_Data;  --  includes texture index
-      N_Tile       : Tile_Data;
-      Tile_Index   : Natural;
-      Height       : Integer;
-      X            : Single;
-      Y            : Single;
-      Z            : Single;
-      Tex_Index    : Atlas_Index;
-      Atlas_Row    : Atlas_Index;
-      Atlas_Col    : Atlas_Index;
+                            aBatch.Tile_Indices.First;
+      Row_Index         : Tiles_Index;
+      Col_Index         : Tiles_Index;
+      Column_List       : Tile_Column_List;
+      aTile             : Tile_Data;  --  includes texture index
+      N_Tile            : Tile_Data;
+      Tile_Index        : Tiles_Index;
+      Height            : Integer;
+      X                 : Single;
+      Y                 : Single;
+      Z                 : Single;
+      Tex_Index         : Atlas_Index;
+      Atlas_Row         : Atlas_Index;
+      Atlas_Col         : Atlas_Index;
 
       procedure Add_Tex_Coords (S_Offset, T_Offset : Single)  is
          --  Atlas_Factor = 0.25 (Atlas_Col and Row range 0 .. 63)
@@ -497,16 +498,16 @@ package body Batch_Manager is
    begin
       --  for all tiles in aBatch
       while Has_Element (Tile_Indices_Curs) loop
-         Tile_Index := Element (Tile_Indices_Curs);
+         Tile_Index := Tiles_Index (Element (Tile_Indices_Curs));
          aTile := Get_Tile (Int (Tile_Index));
          Height := aTile.Height;
          Row_Index := Int (Tile_Index) / Max_Map_Cols;
          Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
---           Row_Index := T_Indices (GL.X);
---           Col_Index := T_Indices (GL.Y);;
+         --           Row_Index := T_Indices (GL.X);
+         --           Col_Index := T_Indices (GL.Y);;
          Game_Utils.Game_Log
-              ("Batch_Manger.Generate_Points Tile_Index: " &
-               Natural'Image (Tile_Index));
+           ("Batch_Manger.Generate_Points Tile_Index: " &
+              Natural'Image (Tile_Index));
          X := Single (2 * (Col_Index - 1));
          Y := Single (2 * Height);
          Z := Single (2 * (Row_Index - 1));
@@ -547,19 +548,19 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
-         --              if Row_Index < Max_Rows then
-         --                  Add_North_Points (aBatch, Height, Row_Index, Col_Index);
-         --              end if;
-         --              if Row_Index > 1 then
-         --                  Add_South_Points (aBatch, Height, Row_Index, Col_Index);
-         --              end if;
-         --
-         --              if Col_Index < Column_List.Last_Index then
-         --                  Add_West_Points (aBatch, Height, Row_Index, Col_Index);
-         --              end if;
-         --              if Col_Index > 1 then
-         --                  Add_East_Points (aBatch, Height, Row_Index, Col_Index);
-         --              end if;
+         if Row_Index < Max_Map_Rows then
+            Add_North_Points (aBatch, Height, Int (Tile_Index), Row_Index, Col_Index);
+         end if;
+         if Row_Index > 1 then
+            Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+
+         if Col_Index < Column_List.Last_Index then
+            Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+         if Col_Index > 1 then
+            Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
          Next (Tile_Indices_Curs);
       end loop;  -- over tile indices
       Game_Utils.Game_Log
@@ -593,52 +594,52 @@ package body Batch_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Generate_Ramps (aBatch : in out Batch_Meta) is
-                             Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
-      use Singles;
-      use Maths;
-      use Tiles_Manager;
-      use Tile_Indices_Package;
-      use GL_Maths;
-      use Vec2_Package;
-      use Vec3_Package;
+      Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
+         use Singles;
+         use Maths;
+         use Tiles_Manager;
+         use Tile_Indices_Package;
+         use GL_Maths;
+         use Vec2_Package;
+         use Vec3_Package;
 
-      Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-      Tile_Index     : Natural;
-      Row_Index      : Tiles_Index;
-      Col_Index      : Tiles_Index;
-      aTile          : Tile_Data;
-      aRow           : Tile_Column_List;
-      Facing         : Character;
-      Height         : Integer;
-      Deg            : Degree;
-      Model_Matrix   : Matrix4 := Identity4;
-      Rot_Matrix     : Matrix4 := Identity4;
-      Curs_N         : Vec3_Cursor;
-      Curs_P         : Vec3_Cursor;
-      Curs_T         : Vec2_Package.Cursor;
-      Curs_S         : Vec3_Cursor;
-      aNormal        : Vector3;
-      aPoint         : Vector3;
-      aSmooth_Normal : Vector3;
-      VPI            : Singles.Vector4;
-      VPF            : Singles.Vector4;
-      VNF            : Singles.Vector4;
-      Smooth_VNI     : Singles.Vector4;
-      Smooth_VNF     : Singles.Vector4;
-      Has_Ramp       : Boolean := False;
-      --        First          : Boolean := True;  --  Debug
-      --        Count          : Integer := 0;     --  Debug
-   begin
-      --  Manifold.cpp, approx line 1015, p = g_batches[batch_idx].tiles;
-      --  for all tiles in aBatch
-      while Has_Element (Indices_Curs) loop
-         Tile_Index := Element (Indices_Curs);
-         aTile := Get_Tile (Tile_Index);
---           aTile := Get_Tile (Element (Indices_Curs));
-         Height := aTile.Height;
-         Facing := aTile.Facing;
+         Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
+         Tile_Index     : Natural;
+         Row_Index      : Tiles_Index;
+         Col_Index      : Tiles_Index;
+         aTile          : Tile_Data;
+         aRow           : Tile_Column_List;
+         Facing         : Character;
+         Height         : Integer;
+         Deg            : Degree;
+         Model_Matrix   : Matrix4 := Identity4;
+         Rot_Matrix     : Matrix4 := Identity4;
+         Curs_N         : Vec3_Cursor;
+         Curs_P         : Vec3_Cursor;
+         Curs_T         : Vec2_Package.Cursor;
+         Curs_S         : Vec3_Cursor;
+         aNormal        : Vector3;
+         aPoint         : Vector3;
+         aSmooth_Normal : Vector3;
+         VPI            : Singles.Vector4;
+         VPF            : Singles.Vector4;
+         VNF            : Singles.Vector4;
+         Smooth_VNI     : Singles.Vector4;
+         Smooth_VNF     : Singles.Vector4;
+         Has_Ramp       : Boolean := False;
+         --        First          : Boolean := True;  --  Debug
+         --        Count          : Integer := 0;     --  Debug
+      begin
+         --  Manifold.cpp, approx line 1015, p = g_batches[batch_idx].tiles;
+         --  for all tiles in aBatch
+         while Has_Element (Indices_Curs) loop
+            Tile_Index := Element (Indices_Curs);
+            aTile := Get_Tile (Tile_Index);
+            --           aTile := Get_Tile (Element (Indices_Curs));
+            Height := aTile.Height;
+            Facing := aTile.Facing;
 
-         case Facing is
+            case Facing is
             when 'N' => Deg := Degree (0);
             when 'W' => Deg := Degree (90);
             when 'S' => Deg := Degree (180);
@@ -646,119 +647,119 @@ package body Batch_Manager is
             when others =>
                raise Batch_Manager_Exception with
                  "Batch_Manager.Generate_Ramps, invalid Facing value";
-         end case;
+            end case;
 
-         if aTile.Tile_Type = '/' then
-            Has_Ramp := True;
---              Row_Index := Element (Indices_Curs) (GL.X);
---              Col_Index := Element (Indices_Curs) (GL.Y);
-            Row_Index := Int (Tile_Index) / Max_Map_Cols;
-            Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
-            --  Put each vertex point into world space
-            Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
-            Model_Matrix := Translation_Matrix
-              ((Single (2 * (Col_Index - aRow.First_Index)),
-               Single (2 * Height),
-               Single (2 * (Row_Index - 1)))) *
-              Rot_Matrix;
-            Curs_P := Ramp_Mesh_Points.First;
-            Curs_N := Ramp_Mesh_Normals.First;
-            Curs_T := Ramp_Mesh_Texcoords.First;
-            Curs_S := Ramp_Mesh_Smooth_Normals.First;
+            if aTile.Tile_Type = '/' then
+               Has_Ramp := True;
+               --              Row_Index := Element (Indices_Curs) (GL.X);
+               --              Col_Index := Element (Indices_Curs) (GL.Y);
+               Row_Index := Int (Tile_Index) / Max_Map_Cols;
+               Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
+               --  Put each vertex point into world space
+               Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
+               Model_Matrix := Translation_Matrix
+                 ((Single (2 * (Col_Index - aRow.First_Index)),
+                  Single (2 * Height),
+                  Single (2 * (Row_Index - 1)))) *
+                 Rot_Matrix;
+               Curs_P := Ramp_Mesh_Points.First;
+               Curs_N := Ramp_Mesh_Normals.First;
+               Curs_T := Ramp_Mesh_Texcoords.First;
+               Curs_S := Ramp_Mesh_Smooth_Normals.First;
 
-            while Has_Element (Curs_P) loop
-               aPoint := Element (Curs_P);
-               aNormal := Element (Curs_N);
-               aSmooth_Normal := Element (Curs_S);
-               VPI := Singles.To_Vector4 (aPoint);
-               VPF := Model_Matrix * VPI;
-               VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
-               Smooth_VNI := Singles.To_Vector4 (aSmooth_Normal);
-               Smooth_VNF := Model_Matrix * Smooth_VNI;
+               while Has_Element (Curs_P) loop
+                  aPoint := Element (Curs_P);
+                  aNormal := Element (Curs_N);
+                  aSmooth_Normal := Element (Curs_S);
+                  VPI := Singles.To_Vector4 (aPoint);
+                  VPF := Model_Matrix * VPI;
+                  VNF := Model_Matrix * Singles.To_Vector4 (aNormal);
+                  Smooth_VNI := Singles.To_Vector4 (aSmooth_Normal);
+                  Smooth_VNF := Model_Matrix * Smooth_VNI;
 
-               aBatch.Ramp_Points.Append (To_Vector3 (VPF));
-               aBatch.Ramp_Normals.Append (To_Vector3 (VNF));
-               aBatch.Ramp_Tex_Coords.Append (Element (Curs_T));
-               aBatch.Ramp_Smooth_Normals.Append (To_Vector3 (Smooth_VNF));
+                  aBatch.Ramp_Points.Append (To_Vector3 (VPF));
+                  aBatch.Ramp_Normals.Append (To_Vector3 (VNF));
+                  aBatch.Ramp_Tex_Coords.Append (Element (Curs_T));
+                  aBatch.Ramp_Smooth_Normals.Append (To_Vector3 (Smooth_VNF));
 
-               Next (Curs_N);
-               Next (Curs_P);
-               Next (Curs_T);
-               Next (Curs_S);
-            end loop;
-            --                    First := False;
+                  Next (Curs_N);
+                  Next (Curs_P);
+                  Next (Curs_T);
+                  Next (Curs_S);
+               end loop;
+               --                    First := False;
+            end if;
+            Next  (Indices_Curs);
+         end loop;
+
+         if Has_Ramp then
+            aBatch.Ramp_VAO.Initialize_Id;
+            GL_Utils.Bind_VAO (aBatch.Ramp_VAO);
+
+            aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+
+            Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
+
+            aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
+
+            aBatch.Ramp_Texcoords_VBO := GL_Utils.Create_2D_VBO
+              (GL_Maths.To_Vector2_Array (aBatch.Ramp_Tex_Coords));
+
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_Vt, 2, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
+
+            aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Ramp_Smooth_Normals));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
          end if;
-         Next  (Indices_Curs);
-      end loop;
 
-      if Has_Ramp then
-         aBatch.Ramp_VAO.Initialize_Id;
-         GL_Utils.Bind_VAO (aBatch.Ramp_VAO);
+      end Generate_Ramps;
 
-         aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
-           (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
-         GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
-         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+      --  ----------------------------------------------------------------------------
 
-         Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
+      procedure Generate_Water (aBatch : in out Batch_Meta) is
+         --                               Tiles  : Tiles_Manager.Tile_Indices_List) is
+         use Singles;
+         use Maths;
+         use Tiles_Manager;
+         use Tile_Indices_Package;
+         use GL_Maths;
+         use Vec3_Package;
+         Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
+         Tile_Index     : Natural;
+         Row_Index      : Tiles_Index;
+         Col_Index      : Tiles_Index;
+         aTile          : Tile_Data;
+         aRow           : Tile_Column_List;
+         Facing         : Character;
+         Height         : Integer;
+         Deg            : Degree;
+         Model_Matrix   : Matrix4 := Identity4;
+         Rot_Matrix     : Matrix4 := Identity4;
+         Curs_P         : Vec3_Cursor;
+         aWater_Point   : Vector3;
+         VPF            : Singles.Vector4;
+         Has_Water      : Boolean := False;
+      begin
+         while Has_Element (Indices_Curs) loop
+            Tile_Index := Element (Indices_Curs);
+            aTile := Get_Tile (Tile_Index);
+            --           aTile := Get_Tile (Element (Indices_Curs));
+            Height := aTile.Height;
+            Facing := aTile.Facing;
 
-         aBatch.Ramp_Normals_VBO := GL_Utils.Create_3D_VBO
-           (GL_Maths.To_Vector3_Array (aBatch.Ramp_Normals));
-         GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
-         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-
-         aBatch.Ramp_Texcoords_VBO := GL_Utils.Create_2D_VBO
-           (GL_Maths.To_Vector2_Array (aBatch.Ramp_Tex_Coords));
-
-         GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Shader_Attributes.Attrib_Vt, 2, Single_Type, False, 0, 0);
-         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-
-         aBatch.Ramp_Smooth_Normals_VBO := GL_Utils.Create_3D_VBO
-           (GL_Maths.To_Vector3_Array (aBatch.Ramp_Smooth_Normals));
-         GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
-         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
-      end if;
-
-   end Generate_Ramps;
-
-   --  ----------------------------------------------------------------------------
-
-   procedure Generate_Water (aBatch : in out Batch_Meta) is
---                               Tiles  : Tiles_Manager.Tile_Indices_List) is
-      use Singles;
-      use Maths;
-      use Tiles_Manager;
-      use Tile_Indices_Package;
-      use GL_Maths;
-      use Vec3_Package;
-      Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-      Tile_Index   : Natural;
-      Row_Index      : Tiles_Index;
-      Col_Index      : Tiles_Index;
-      aTile          : Tile_Data;
-      aRow           : Tile_Column_List;
-      Facing         : Character;
-      Height         : Integer;
-      Deg            : Degree;
-      Model_Matrix   : Matrix4 := Identity4;
-      Rot_Matrix     : Matrix4 := Identity4;
-      Curs_P         : Vec3_Cursor;
-      aWater_Point   : Vector3;
-      VPF            : Singles.Vector4;
-      Has_Water      : Boolean := False;
-   begin
-      while Has_Element (Indices_Curs) loop
-         Tile_Index := Element (Indices_Curs);
-         aTile := Get_Tile (Tile_Index);
---           aTile := Get_Tile (Element (Indices_Curs));
-         Height := aTile.Height;
-         Facing := aTile.Facing;
-
-         case Facing is
+            case Facing is
             when 'N' => Deg := Degree (0);
             when 'W' => Deg := Degree (90);
             when 'S' => Deg := Degree (180);
@@ -766,263 +767,263 @@ package body Batch_Manager is
             when others =>
                raise Batch_Manager_Exception with
                  "Generate_Water, invalid Facing value";
-         end case;
+            end case;
 
-         if aTile.Tile_Type = '~' then
-            Has_Water := True;
---              Row_Index := Element (Indices_Curs) (GL.X);
---              Col_Index := Element (Indices_Curs) (GL.Y);
-            Row_Index := Int (Tile_Index) / Max_Map_Cols;
-            Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
-            --  Put each vertex point into world space
-            Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
-            Model_Matrix := Translation_Matrix
-              ((Single (2 * Col_Index - aRow.First_Index),
-               Single (2 * Height),
-               Single (2 * Row_Index - 1)));
-            Curs_P := Water_Mesh_Points.First;
-            while Has_Element (Curs_P) loop
-               aWater_Point := Element (Curs_P);
-               VPF := Model_Matrix * Singles.To_Vector4 (aWater_Point);
-               aBatch.Water_Points.Append (To_Vector3 (VPF));
-               Next (Curs_P);
-            end loop;  --  end for each Water_Point
-         end if;
-         Next  (Indices_Curs);
-      end loop;
-
-      if Has_Water then
-         aBatch.Water_VAO.Initialize_Id;
-         GL_Utils.Bind_VAO (aBatch.Water_VAO);
-
-         aBatch.Water_VBO := GL_Utils.Create_3D_VBO
-           (GL_Maths.To_Vector3_Array (aBatch.Water_Points));
-         GL.Attributes.Set_Vertex_Attrib_Pointer
-           (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
-         GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-      end if;
-
-   end Generate_Water;
-
-   --  -------------------------------------------------------------------------
-
-   function Get_Batch_Index (Column, Row : Positive) return Natural is
-      Result : Integer := 0;
-   begin
-      if Column < Positive (Max_Map_Cols) and Row < Positive (Max_Map_Rows) then
-         Result := (Integer (Column - 1) +
-                      Batches_Across * Integer (Row - 1 )) /
-           Settings.Tile_Batch_Width + 1;
-      end if;
-      return Result;
-   end Get_Batch_Index;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Init_Batch_Data is
-   begin
-      Clear_Batch_Data;
-      if not Mesh_Loader.Load_Mesh_Data_Only
-        ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
-         Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init_Batch_Data error loading ramp mesh data from file "
-           & "src/meshes/ramp_may_2014.apg";
-      end if;
-
-      if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
-                                              Ramp_Mesh_Smooth_Points,
-                                              Ramp_Mesh_Smooth_Texcoords,
-                                              Ramp_Mesh_Smooth_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init_Batch_Data error loading ramp smooth mesh data from file "
-           & "src/meshes/ramp_smooth.apg";
-      end if;
-
-      if not Mesh_Loader.Load_Mesh_Data_Only
-        ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
-         Water_Mesh_Normals) then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Init_Batch_Data error loading ramp mesh data from file "
-           & "src/meshes/water.apg";
-      end if;
-
-   end Init_Batch_Data;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Regenerate_Batch (Batch_Index : Positive) is
-      theBatch     : Batch_Meta;
-      Tile_Indices : Tiles_Manager.Tile_Indices_List;
-
-   begin
-      Free_Batch_Data (Batch_Index);
-
-      theBatch := Batches_Data.Element (Batch_Index);
-      theBatch.Static_Light_Indices.Clear;
-      Tile_Indices := theBatch.Tile_Indices;
-      if Tile_Indices.Is_Empty then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Regenerate_Batch called with empty Tiles list";
-      end if;
-
-      Generate_Points (theBatch);
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points done"
-                           & " Batch_Index " & Integer'Image (Batch_Index));
-      Generate_Ramps (theBatch);
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
-      Generate_Water (theBatch);
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
-
-      Batches_Data.Replace_Element (Batch_Index, theBatch);
-
-   end Regenerate_Batch;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta) is
-   begin
-      aBatch.AABB_Mins := (100000.0, 100000.0, 100000.0);
-      aBatch.AABB_Maxs := (-100000.0, -100000.0, -100000.0);
-      Update_AABB_Dimensions  (aBatch, aBatch.Points);
-
-   end Set_AABB_Dimensions;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Set_Tex_Coords (aBatch : in out Batch_Meta;
-                             aTile  : Tiles_Manager.Tile_Data;
-                             Side   : Tile_Side; Level : Natural) is
-      Offset_Factor     : Singles.Vector2_Array (1 .. 6);
-      Texture_Index     : constant Positive := aTile.Texture_Index;
-      Half_Atlas_Factor : constant Single := 0.5 * Atlas_Factor;
-      Atlas_Row         : constant Tiles_Manager.Tiles_Index
-        := Tiles_Manager.Tiles_Index (Texture_Index) / Sets_In_Atlas_Row + 1;
-      Atlas_Col         : constant Tiles_Manager.Tiles_Index
-        := Tiles_Manager.Tiles_Index (Texture_Index) - (Atlas_Row - 1) *
-                            Sets_In_Atlas_Row + 1;
-      S                 : Single := Half_Atlas_Factor;
-      T                 : Single := 0.0;
-      S_Offset          : Single := 0.0;
-      Side_State        : Natural := 0;
-      Reverse_S         : Boolean := False;
-
-      procedure New_Tex_Cords is
-         SF       : Single := 0.0;
-         TF       : Single := 0.0;
-         STF      : Singles.Vector2 := (0.0, 0.0);
-         T_Offset : Single := 0.0;
-         SI       : Natural := 0;
-         TI       : Natural := 0;
-      begin
-         for index in Int range 1 .. 6 loop
-            SF := Offset_Factor (index) (GL.X) * Half_Atlas_Factor;
-            Tf := Offset_Factor (index) (GL.Y) * Half_Atlas_Factor;
-            S_Offset := S + Sf + Single (Atlas_Col) * Atlas_Factor;
-            T_Offset := T + Tf + Single (Atlas_Row) * Atlas_Factor;
-            Si := Integer (aBatch.Tex_Coords.Length);
-            Ti := Si;
-            Sf := -Offset_Factor (index) (GL.X);
-            Tf := -Offset_Factor (index) (GL.Y);
-            STF := (S_Offset + Sf * ST_Offset,
-                    T_Offset + Tf * ST_Offset);
-            if Si > 0 then
-               if SI > aBatch.Tex_Coords.Last_Index then
-                  aBatch.Tex_Coords.Set_Length (Ada.Containers.Count_Type (Si));
-               end if;
-               aBatch.Tex_Coords.Replace_Element (Positive (Si), STF);
+            if aTile.Tile_Type = '~' then
+               Has_Water := True;
+               --              Row_Index := Element (Indices_Curs) (GL.X);
+               --              Col_Index := Element (Indices_Curs) (GL.Y);
+               Row_Index := Int (Tile_Index) / Max_Map_Cols;
+               Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
+               --  Put each vertex point into world space
+               Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
+               Model_Matrix := Translation_Matrix
+                 ((Single (2 * Col_Index - aRow.First_Index),
+                  Single (2 * Height),
+                  Single (2 * Row_Index - 1)));
+               Curs_P := Water_Mesh_Points.First;
+               while Has_Element (Curs_P) loop
+                  aWater_Point := Element (Curs_P);
+                  VPF := Model_Matrix * Singles.To_Vector4 (aWater_Point);
+                  aBatch.Water_Points.Append (To_Vector3 (VPF));
+                  Next (Curs_P);
+               end loop;  --  end for each Water_Point
             end if;
+            Next  (Indices_Curs);
          end loop;
-      end New_Tex_Cords;
 
-   begin
-      case Side is
+         if Has_Water then
+            aBatch.Water_VAO.Initialize_Id;
+            GL_Utils.Bind_VAO (aBatch.Water_VAO);
+
+            aBatch.Water_VBO := GL_Utils.Create_3D_VBO
+              (GL_Maths.To_Vector3_Array (aBatch.Water_Points));
+            GL.Attributes.Set_Vertex_Attrib_Pointer
+              (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
+            GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+         end if;
+
+      end Generate_Water;
+
+      --  -------------------------------------------------------------------------
+
+      function Get_Batch_Index (Column, Row : Positive) return Natural is
+         Result : Integer := 0;
+      begin
+         if Column < Positive (Max_Map_Cols) and Row < Positive (Max_Map_Rows) then
+            Result := (Integer (Column - 1) +
+                         Batches_Across * Integer (Row - 1 )) /
+              Settings.Tile_Batch_Width + 1;
+         end if;
+         return Result;
+      end Get_Batch_Index;
+
+      --  -------------------------------------------------------------------------
+
+      procedure Init_Batch_Data is
+      begin
+         Clear_Batch_Data;
+         if not Mesh_Loader.Load_Mesh_Data_Only
+           ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
+            Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Init_Batch_Data error loading ramp mesh data from file "
+              & "src/meshes/ramp_may_2014.apg";
+         end if;
+
+         if not Mesh_Loader.Load_Mesh_Data_Only ("src/meshes/ramp_smooth.apg",
+                                                 Ramp_Mesh_Smooth_Points,
+                                                 Ramp_Mesh_Smooth_Texcoords,
+                                                 Ramp_Mesh_Smooth_Normals) then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Init_Batch_Data error loading ramp smooth mesh data from file "
+              & "src/meshes/ramp_smooth.apg";
+         end if;
+
+         if not Mesh_Loader.Load_Mesh_Data_Only
+           ("src/meshes/water.apg", Water_Mesh_Points, Water_Mesh_Texcoords,
+            Water_Mesh_Normals) then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Init_Batch_Data error loading ramp mesh data from file "
+              & "src/meshes/water.apg";
+         end if;
+
+      end Init_Batch_Data;
+
+      --  -------------------------------------------------------------------------
+
+      procedure Regenerate_Batch (Batch_Index : Positive) is
+         theBatch     : Batch_Meta;
+         Tile_Indices : Tiles_Manager.Tile_Indices_List;
+
+      begin
+         Free_Batch_Data (Batch_Index);
+
+         theBatch := Batches_Data.Element (Batch_Index);
+         theBatch.Static_Light_Indices.Clear;
+         Tile_Indices := theBatch.Tile_Indices;
+         if Tile_Indices.Is_Empty then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Regenerate_Batch called with empty Tiles list";
+         end if;
+
+         Generate_Points (theBatch);
+         Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points done"
+                              & " Batch_Index " & Integer'Image (Batch_Index));
+         Generate_Ramps (theBatch);
+         Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
+         Generate_Water (theBatch);
+         Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
+
+         Batches_Data.Replace_Element (Batch_Index, theBatch);
+
+      end Regenerate_Batch;
+
+      --  -------------------------------------------------------------------------
+
+      procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta) is
+      begin
+         aBatch.AABB_Mins := (100000.0, 100000.0, 100000.0);
+         aBatch.AABB_Maxs := (-100000.0, -100000.0, -100000.0);
+         Update_AABB_Dimensions  (aBatch, aBatch.Points);
+
+      end Set_AABB_Dimensions;
+
+      --  -------------------------------------------------------------------------
+
+      procedure Set_Tex_Coords (aBatch : in out Batch_Meta;
+                                aTile  : Tiles_Manager.Tile_Data;
+                                Side   : Tile_Side; Level : Natural) is
+         Offset_Factor     : Singles.Vector2_Array (1 .. 6);
+         Texture_Index     : constant Positive := aTile.Texture_Index;
+         Half_Atlas_Factor : constant Single := 0.5 * Atlas_Factor;
+         Atlas_Row         : constant Tiles_Manager.Tiles_Index
+           := Tiles_Manager.Tiles_Index (Texture_Index) / Sets_In_Atlas_Row + 1;
+         Atlas_Col         : constant Tiles_Manager.Tiles_Index
+           := Tiles_Manager.Tiles_Index (Texture_Index) - (Atlas_Row - 1) *
+                               Sets_In_Atlas_Row + 1;
+         S                 : Single := Half_Atlas_Factor;
+         T                 : Single := 0.0;
+         S_Offset          : Single := 0.0;
+         Side_State        : Natural := 0;
+         Reverse_S         : Boolean := False;
+
+         procedure New_Tex_Cords is
+            SF       : Single := 0.0;
+            TF       : Single := 0.0;
+            STF      : Singles.Vector2 := (0.0, 0.0);
+            T_Offset : Single := 0.0;
+            SI       : Natural := 0;
+            TI       : Natural := 0;
+         begin
+            for index in Int range 1 .. 6 loop
+               SF := Offset_Factor (index) (GL.X) * Half_Atlas_Factor;
+               Tf := Offset_Factor (index) (GL.Y) * Half_Atlas_Factor;
+               S_Offset := S + Sf + Single (Atlas_Col) * Atlas_Factor;
+               T_Offset := T + Tf + Single (Atlas_Row) * Atlas_Factor;
+               Si := Integer (aBatch.Tex_Coords.Length);
+               Ti := Si;
+               Sf := -Offset_Factor (index) (GL.X);
+               Tf := -Offset_Factor (index) (GL.Y);
+               STF := (S_Offset + Sf * ST_Offset,
+                       T_Offset + Tf * ST_Offset);
+               if Si > 0 then
+                  if SI > aBatch.Tex_Coords.Last_Index then
+                     aBatch.Tex_Coords.Set_Length (Ada.Containers.Count_Type (Si));
+                  end if;
+                  aBatch.Tex_Coords.Replace_Element (Positive (Si), STF);
+               end if;
+            end loop;
+         end New_Tex_Cords;
+
+      begin
+         case Side is
          when North_Side => null;
          when others => Side_State := Side_State + 1;
-      end case;
+         end case;
 
-      case aTile.Facing is
+         case aTile.Facing is
          when 'N' => null;
          when 'E' => Side_State := Side_State + 1;
          when 'S' => Side_State := Side_State + 2;
          when 'W' => Side_State := Side_State + 3;
          when others => null;
-      end case;
+         end case;
 
-      Side_State := Side_State mod 4;
-      --  Top bits
-      if Level = 0 then
-         T := Half_Atlas_Factor;
-      elsif Side_State = 1 or Side_State = 3 then
-         S := 0.0;
-      end if;
-      Reverse_S := Side_State = 1 or Side_State = 2;
+         Side_State := Side_State mod 4;
+         --  Top bits
+         if Level = 0 then
+            T := Half_Atlas_Factor;
+         elsif Side_State = 1 or Side_State = 3 then
+            S := 0.0;
+         end if;
+         Reverse_S := Side_State = 1 or Side_State = 2;
 
-      if not Reverse_S then
-         Offset_Factor := ((1.0, 1.0),
-                           (0.0, 1.0),
-                           (0.0, 0.0),
-                           (0.0, 0.0),
-                           (1.0, 0.0),
-                           (1.0, 1.0));
-      else  --  Reverse_S
-         Offset_Factor := ((0.0, 1.0),
-                           (1.0, 1.0),
-                           (1.0, 0.0),
-                           (1.0, 0.0),
-                           (0.0, 0.0),
-                           (0.0, 1.0));
-      end if;
-      New_Tex_Cords;
+         if not Reverse_S then
+            Offset_Factor := ((1.0, 1.0),
+                              (0.0, 1.0),
+                              (0.0, 0.0),
+                              (0.0, 0.0),
+                              (1.0, 0.0),
+                              (1.0, 1.0));
+         else  --  Reverse_S
+            Offset_Factor := ((0.0, 1.0),
+                              (1.0, 1.0),
+                              (1.0, 0.0),
+                              (1.0, 0.0),
+                              (0.0, 0.0),
+                              (0.0, 1.0));
+         end if;
+         New_Tex_Cords;
 
-   end Set_Tex_Coords;
+      end Set_Tex_Coords;
 
-   --  --------------------------------------------------------------------------
+      --  --------------------------------------------------------------------------
 
-   function Static_Lights return Static_Light_Vector is
-   begin
-      return Static_Lights_List;
-   end Static_Lights;
+      function Static_Lights return Static_Light_Vector is
+      begin
+         return Static_Lights_List;
+      end Static_Lights;
 
-   --  --------------------------------------------------------------------------
+      --  --------------------------------------------------------------------------
 
-   function Static_Indices  (Batch_Index : Positive)
+      function Static_Indices  (Batch_Index : Positive)
                              return GL_Maths.Indices_List is
-      aBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
-   begin
-      return aBatch.Static_Light_Indices;
-   end Static_Indices;
+         aBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
+      begin
+         return aBatch.Static_Light_Indices;
+      end Static_Indices;
 
-   --  --------------------------------------------------------------------------
+      --  --------------------------------------------------------------------------
 
-   procedure Update_AABB_Dimensions (aBatch     : in out Batch_Meta;
-                                     Point_List : GL_Maths.Vec3_List) is
-      use GL_Maths.Vec3_Package;
-      Curs   : Cursor := Point_List.First;
-      aPoint : Singles.Vector3;
-   begin
-      while Has_Element (Curs) loop
-         aPoint := Element (Curs);
-         for index in Singles.Vector3'Range loop
-            if aPoint (index) < aBatch.AABB_Mins (index) then
-               aBatch.AABB_Mins (index) := aPoint (index);
-            elsif
-              aPoint (index) > aBatch.AABB_Maxs (GL.X) then
-               aBatch.AABB_Maxs (index) := aPoint (index);
-            end if;
+      procedure Update_AABB_Dimensions (aBatch     : in out Batch_Meta;
+                                        Point_List : GL_Maths.Vec3_List) is
+         use GL_Maths.Vec3_Package;
+         Curs   : Cursor := Point_List.First;
+         aPoint : Singles.Vector3;
+      begin
+         while Has_Element (Curs) loop
+            aPoint := Element (Curs);
+            for index in Singles.Vector3'Range loop
+               if aPoint (index) < aBatch.AABB_Mins (index) then
+                  aBatch.AABB_Mins (index) := aPoint (index);
+               elsif
+                 aPoint (index) > aBatch.AABB_Maxs (GL.X) then
+                  aBatch.AABB_Maxs (index) := aPoint (index);
+               end if;
+            end loop;
+            Next (Curs);
          end loop;
-         Next (Curs);
-      end loop;
 
-   end Update_AABB_Dimensions;
+      end Update_AABB_Dimensions;
 
-   --  -------------------------------------------------------------------------
+      --  -------------------------------------------------------------------------
 
-   procedure Update_Batch (Index : Positive; Data : Batch_Meta) is
-   begin
-      Batches_Data.Replace_Element (Index, Data);
-   end Update_Batch;
+      procedure Update_Batch (Index : Positive; Data : Batch_Meta) is
+      begin
+         Batches_Data.Replace_Element (Index, Data);
+      end Update_Batch;
 
-   --  ------------------------------------------------------------------------
+      --  ------------------------------------------------------------------------
 
-end Batch_Manager;
+   end Batch_Manager;

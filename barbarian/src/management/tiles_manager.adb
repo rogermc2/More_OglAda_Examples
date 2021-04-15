@@ -36,7 +36,7 @@ package body Tiles_Manager is
                                Tile_Height_Offset        : Integer;
                                Offset, Diffuse, Specular : Singles.Vector3;
                                Light_Range               : Single);
-   function Get_Tile_Level (Row, Col : Tiles_Index) return Integer;
+   function Get_Tile_Level (Index : Tiles_Index) return Integer;
    function Is_Ramp (Index : Tiles_Index) return Boolean;
    function Is_Water (Index : Tiles_Index) return Boolean;
    procedure Parse_Facings_By_Row (File                       : File_Type;
@@ -61,9 +61,11 @@ package body Tiles_Manager is
       use Batches_Package;
       Curs          : Batches_Package.Cursor := Batch_List.First;
       aBatch        : Batch_Meta;
+      Tile_Index    : constant Tiles_Index := Row * Max_Map_Cols + Col;
       X             : constant Single := Single (2 * Col) + Offset (GL.X);
-      Y             : constant Single := Single (2 * Get_Tile_Level (Col, Row) + Tile_Height_Offset) +
-                        Offset (GL.Y);
+      Y             : constant Single :=
+                        Single (2 * Get_Tile_Level (Tile_Index) +
+                                  Tile_Height_Offset) + Offset (GL.Y);
       Z             : constant Single := Single (2 * (Row - 1)) + Offset (GL.Z);
       Total_Batches : constant Integer := Batches_Across * Batches_Down;
       --          Sorted        : Boolean := False;
@@ -90,7 +92,7 @@ package body Tiles_Manager is
    procedure Add_Tiles_To_Batches is
       use Batch_Manager;
       use Batches_Package;
-      Total_Tiles : constant Positive := Positive (Max_Map_Rows * Max_Map_Cols);
+      Total_Tiles : constant Tiles_Index := Max_Map_Rows * Max_Map_Cols;
       Row         : Natural;
       Column      : Natural;
       B_Across    : Natural;
@@ -109,9 +111,9 @@ package body Tiles_Manager is
       --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
       -- a map is a Max_Map_Rows x Max_Map_Cols data frame in a map file
       -- Total number of tiles = Max_Map_Rows x Max_Map_Cols
-      for Tile_Index in 0 .. Total_Tiles - 1 loop
-         Row := Tile_Index / Integer (Max_Map_Cols);
-         Column := Tile_Index - Row * Integer (Max_Map_Cols);
+      for Tile_Index in Tiles_Index range 0 .. Total_Tiles - 1 loop
+         Row := Natural (Tile_Index / Max_Map_Cols);
+         Column := Natural (Tile_Index) - Row * Natural (Max_Map_Cols);
          B_Down := Row / Settings.Tile_Batch_Width;
          Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
                                 Integer'Image (Integer (Row)) & ", " &
@@ -126,7 +128,7 @@ package body Tiles_Manager is
          --  Add_Tile_Index_To_Batch
          if Batch_Index <= Batch_List.Last_Index then
             aBatch := Batch_List.Element (Batch_Index);
-            aBatch.Tile_Indices.Append (Tile_Index);
+            aBatch.Tile_Indices.Append (Tiles_Index (Tile_Index));
             Update_Batch (Batch_Index, aBatch);
          else
             aBatch.Tile_Indices.Append (Tile_Index);
@@ -195,18 +197,19 @@ package body Tiles_Manager is
 
    --  --------------------------------------------------------------------------
 
-   --  returns actual height in meters (get_tile_level)
+   --  returns actual height in meters (manifold.h get_tile_level)
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single  is
       use Batch_Manager;
       use Tile_Row_Package;
       use Tile_Column_Package;
-      Col      : constant Tiles_Index := Tiles_Index (0.5 * (1.0 + X));
-      Row      : constant Tiles_Index := Tiles_Index (0.5 * (1.0 + Z));
-      Row_Curs : constant Tile_Row_Cursor := Tile_Rows.To_Cursor (Row);
-      Tile_Row : constant Tile_Column_List := Element (Row_Curs);
-      Col_Curs : constant Tile_Column_Cursor := Tile_Row.To_Cursor (Col);
-      aTile    : Tile_Data;
+      Col        : constant Tiles_Index := Tiles_Index (0.5 * (1.0 + X));
+      Row        : constant Tiles_Index := Tiles_Index (0.5 * (1.0 + Z));
+      Row_Curs   : constant Tile_Row_Cursor := Tile_Rows.To_Cursor (Row);
+      Tile_Row   : constant Tile_Column_List := Element (Row_Curs);
+      Col_Curs   : constant Tile_Column_Cursor := Tile_Row.To_Cursor (Col);
+      Tile_Index : constant Tiles_Index := Row * Max_Map_Cols + Col;
+      aTile      : Tile_Data := Get_Tile (Tile_Index);
 --        aTile    : constant Tile_Data := Get_Tile ((Row, Col));
       S        : Single;
       T        : Single;
@@ -217,7 +220,7 @@ package body Tiles_Manager is
          Height := Out_Of_Bounds_Height;
       else
          Height := 2.0 * Single (aTile.Height);
-         if Respect_Ramps and then Is_Ramp (Row, Col) then
+         if Respect_Ramps and then Is_Ramp (Tile_Index) then
             --  Work out position within ramp. subtract left-most pos from x, etc.
             S := 0.5 * (1.0 + X - Single (2 * Col));
             T := 0.5 * (1.0 + Z - Single (2 * Row));
@@ -231,7 +234,7 @@ package body Tiles_Manager is
             elsif aTile.Facing = 'E' then
                Height := Height + 2.0 * S;
             end if;
-         elsif Consider_Water and then Is_Water (Col, Row) then
+         elsif Consider_Water and then Is_Water (Tile_Index) then
             Height := Height - 0.5;
          end if;
       end if;
@@ -243,28 +246,28 @@ package body Tiles_Manager is
    --  ----------------------------------------------------------------------------
 
    function Get_Tile_Level (Index : Tiles_Index) return Integer is
-      use Batch_Manager;
-      aTile : constant Tile_Data := Get_Tile (Index);
+--        use Batch_Manager;
+--        aTile : constant Tile_Data := Get_Tile (Index);
    begin
-      return aTile.Height;
+      return Get_Tile (Index).Height;
    end Get_Tile_Level;
 
    --  ----------------------------------------------------------------------------
 
    function Get_Tile_Type (Index : Tiles_Index) return Character is
-      use Batch_Manager;
-      aTile : constant Tile_Data := Get_Tile (Index);
+--        use Batch_Manager;
+--        aTile : constant Tile_Data := Get_Tile (Index);
    begin
-      return aTile.Tile_Type;
+      return Get_Tile (Index).Tile_Type;
    end Get_Tile_Type;
 
    --  ----------------------------------------------------------------------------
 
    function Is_Ramp (Index : Tiles_Index) return Boolean is
-      use Batch_Manager;
-      aTile : constant Tile_Data := Get_Tile (Index);
+--        use Batch_Manager;
+--        aTile : constant Tile_Data := Get_Tile (Index);
    begin
-      return aTile.Tile_Type = '/';
+      return Get_Tile (Index).Tile_Type = '/';
    end Is_Ramp;
 
    --  ----------------------------------------------------------------------------
@@ -286,10 +289,11 @@ package body Tiles_Manager is
    --  ----------------------------------------------------------------------------
 
    function Is_Water (Index : Tiles_Index) return Boolean is
-      use Batch_ManagerRow, Col : Tiles_Index;
+      use Batch_Manager;
+--        Row, Col : Tiles_Index;
       aTile : constant Tile_Data := Get_Tile (Index);
    begin
-      return aTile.Tile_Type = '~';
+      return Get_Tile (Index).Tile_Type = '~';
    end Is_Water;
 
    --  ----------------------------------------------------------------------------
