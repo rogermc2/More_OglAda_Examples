@@ -31,8 +31,7 @@ package Tiles_Manager is
    subtype Tile_Row_List is Tile_Row_Package.Vector;
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 
-   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
-     (Tiles_RC_Index);
+   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists (Int);
    subtype Tile_Indices_List is Tile_Indices_Package.List;
    subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
 
@@ -44,7 +43,7 @@ package Tiles_Manager is
 --     function Get_Tile (Row_Curs : Tile_Row_Package.Cursor;
 --                        Col_Curs : Tile_Column_Package.Cursor) return Tile_Data;
 --     function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
-   function Get_Tile (Tile_Index : Tiles_RC_Index) return Tile_Data;
+   function Get_Tile (Tile_Index : Int) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
    function Get_Tile_Type (Index : Tiles_RC_Index) return Character;

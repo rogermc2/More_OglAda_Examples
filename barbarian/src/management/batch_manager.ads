@@ -55,10 +55,10 @@ package Batch_Manager is
      Ada.Containers.Vectors (Positive, Static_Light_Data);
    type Static_Light_Vector is new Static_Light_Package.Vector with null record;
 
-   Max_Map_Cols             : Int := 0;  --  Set by map file
-   Max_Map_Rows             : Int := 0;  --  Set by map file
-   Batches_Across           : Integer := 0;
-   Batches_Down             : Integer := 0;
+   Max_Map_Cols   : Int := 0;  --  Set by map file
+   Max_Map_Rows   : Int := 0;  --  Set by map file
+   Batches_Across : Integer := 0;
+   Batches_Down   : Integer := 0;
 
    Batch_Manager_Exception : Exception;
 
@@ -77,5 +77,6 @@ package Batch_Manager is
    function Static_Indices  (Batch_Index : Positive)
                              return GL_Maths.Indices_List;
    procedure Update_Batch (Index : Positive; Data : Batch_Meta);
+   procedure Update_Batch (Index : Positive; Tile_Index : Int);
 
 end Batch_Manager;

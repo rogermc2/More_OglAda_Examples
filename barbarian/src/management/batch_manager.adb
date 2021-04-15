@@ -52,8 +52,8 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_East_Points
-     (aBatch : in out Batch_Meta;  Height : Integer;
-       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
+     (aBatch : in out Batch_Meta;  Height : Integer; Tile_Index : Int;
+      Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
       N_Height : Integer;
@@ -106,8 +106,8 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_North_Points
-     (aBatch : in out Batch_Meta;  Height : Integer;
-       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
+     (aBatch : in out Batch_Meta;  Height : Integer; Tile_Index : Int;
+       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
       N_Height : Integer;
@@ -160,8 +160,8 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_South_Points
-     (aBatch : in out Batch_Meta;  Height : Integer;
-       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
+     (aBatch : in out Batch_Meta;  Height : Integer; Tile_Index : Int;
+       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile (Tile_Index);
       N_Tile   : Tile_Data;
@@ -261,8 +261,8 @@ package body Batch_Manager is
    --  ------------------------------------------------------------------------
 
    procedure Add_West_Points
-     (aBatch : in out Batch_Meta;  Height : Integer;
-       Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
+     (aBatch : in out Batch_Meta;  Height : Integer; Tile_Index : Int;
+      Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Height : Integer;
       N_Tile   : Tile_Data;
@@ -453,8 +453,7 @@ package body Batch_Manager is
 
    --  Generate_Points for all tiles in a batch
    procedure Generate_Points (aBatch : in out Batch_Meta) is
-      --                                Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
-      pragma Inline (Generate_Points);
+       pragma Inline (Generate_Points);
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
@@ -470,7 +469,7 @@ package body Batch_Manager is
       Column_List       : Tile_Column_List;
       aTile             : Tile_Data;  --  includes texture index
       N_Tile            : Tile_Data;
-      Tile_Index        : Tiles_RC_Index;
+      Tile_Index        : Int;
       Height            : Integer;
       X                 : Single;
       Y                 : Single;
@@ -498,11 +497,11 @@ package body Batch_Manager is
    begin
       --  for all tiles in aBatch
       while Has_Element (Tile_Indices_Curs) loop
-         Tile_Index := Tiles_RC_Index (Element (Tile_Indices_Curs));
-         aTile := Get_Tile (Int (Tile_Index));
+         Tile_Index := Element (Tile_Indices_Curs);
+         aTile := Get_Tile (Tile_Index);
          Height := aTile.Height;
          Row_Index := Int (Tile_Index) / Max_Map_Cols;
-         Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
+         Col_Index := Int (Tile_Index) - Row_Index * Max_Map_Cols;
          --           Row_Index := T_Indices (GL.X);
          --           Col_Index := T_Indices (GL.Y);;
          Game_Utils.Game_Log
@@ -549,7 +548,7 @@ package body Batch_Manager is
 
          --  check for higher neighbour to north (walls belong to the lower tile)
          if Row_Index < Max_Map_Rows then
-            Add_North_Points (aBatch, Height, Int (Tile_Index), Row_Index, Col_Index);
+            Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
          end if;
          if Row_Index > 1 then
             Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
@@ -589,12 +588,17 @@ package body Batch_Manager is
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
 
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Tiles_Manager.Generate_Points!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
    end Generate_Points;
 
    --  ----------------------------------------------------------------------------
 
    procedure Generate_Ramps (aBatch : in out Batch_Meta) is
---        Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
          use Singles;
          use Maths;
          use Tiles_Manager;
@@ -604,7 +608,7 @@ package body Batch_Manager is
          use Vec3_Package;
 
          Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-         Tile_Index     : Tiles_RC_Index;
+         Tile_Index     : Int;
          Row_Index      : Tiles_RC_Index;
          Col_Index      : Tiles_RC_Index;
          aTile          : Tile_Data;
@@ -633,7 +637,7 @@ package body Batch_Manager is
          --  Manifold.cpp, approx line 1015, p = g_batches[batch_idx].tiles;
          --  for all tiles in aBatch
          while Has_Element (Indices_Curs) loop
-            Tile_Index := Tiles_RC_Index (Element (Indices_Curs));
+            Tile_Index := Element (Indices_Curs);
             aTile := Get_Tile (Tile_Index);
             --           aTile := Get_Tile (Element (Indices_Curs));
             Height := aTile.Height;
@@ -654,7 +658,7 @@ package body Batch_Manager is
                --              Row_Index := Element (Indices_Curs) (GL.X);
                --              Col_Index := Element (Indices_Curs) (GL.Y);
                Row_Index := Int (Tile_Index) / Max_Map_Cols;
-               Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
+               Col_Index := Int (Tile_Index) - Row_Index * Max_Map_Cols;
                --  Put each vertex point into world space
                Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
                Model_Matrix := Translation_Matrix
@@ -724,12 +728,17 @@ package body Batch_Manager is
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
          end if;
 
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Tiles_Manager.Generate_Ramps!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
       end Generate_Ramps;
 
       --  ----------------------------------------------------------------------------
 
       procedure Generate_Water (aBatch : in out Batch_Meta) is
-         --                               Tiles  : Tiles_Manager.Tile_Indices_List) is
          use Singles;
          use Maths;
          use Tiles_Manager;
@@ -737,7 +746,7 @@ package body Batch_Manager is
          use GL_Maths;
          use Vec3_Package;
          Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-         Tile_Index     : Tiles_RC_Index;
+         Tile_Index     : Int;
          Row_Index      : Tiles_RC_Index;
          Col_Index      : Tiles_RC_Index;
          aTile          : Tile_Data;
@@ -774,7 +783,7 @@ package body Batch_Manager is
                --              Row_Index := Element (Indices_Curs) (GL.X);
                --              Col_Index := Element (Indices_Curs) (GL.Y);
                Row_Index := Int (Tile_Index) / Max_Map_Cols;
-               Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
+               Col_Index := Int (Tile_Index) - Row_Index * Max_Map_Cols;
                --  Put each vertex point into world space
                Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
                Model_Matrix := Translation_Matrix
@@ -802,6 +811,12 @@ package body Batch_Manager is
               (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
          end if;
+
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Tiles_Manager.Generate_Water!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
 
       end Generate_Water;
 
@@ -877,6 +892,11 @@ package body Batch_Manager is
 
          Batches_Data.Replace_Element (Batch_Index, theBatch);
 
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Tiles_Manager.Regenerate_Batch!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
       end Regenerate_Batch;
 
       --  -------------------------------------------------------------------------
@@ -886,6 +906,12 @@ package body Batch_Manager is
          aBatch.AABB_Mins := (100000.0, 100000.0, 100000.0);
          aBatch.AABB_Maxs := (-100000.0, -100000.0, -100000.0);
          Update_AABB_Dimensions  (aBatch, aBatch.Points);
+
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Tiles_Manager.Set_AABB_Dimensions!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
 
       end Set_AABB_Dimensions;
 
@@ -1026,4 +1052,12 @@ package body Batch_Manager is
 
       --  ------------------------------------------------------------------------
 
+   procedure Update_Batch (Index : Positive; Tile_Index : Int) is
+         aBatch : Batch_Meta := Batch_List.Element (Index);
+   begin
+        aBatch.Tile_Indices.Append (Tile_Index);
+        Batches_Data.Replace_Element (Index, aBatch);
+   end Update_Batch;
+
+      --  ------------------------------------------------------------------------
    end Batch_Manager;
