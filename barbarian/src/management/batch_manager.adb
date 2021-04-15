@@ -54,7 +54,7 @@ package body Batch_Manager is
    procedure Add_East_Points (aBatch             : in out Batch_Meta;  Height : Integer;
                               Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
-      aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
+      aTile    : constant Tile_Data := Get_Tile (Tile_Row, Tile_Col));
       N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
@@ -460,13 +460,15 @@ package body Batch_Manager is
       subtype Atlas_Index is Int range 0 .. Int (Manifold.Max_Tile_Cols) - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       --  Tiles is a list of Ints.Vector2
-      Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tile_Indices.First;
+--        Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tile_Indices.First;
+      Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
+                              aBatch.Tile_Indices.First;
       Row_Index    : Tiles_Index;
       Col_Index    : Tiles_Index;
       Column_List  : Tile_Column_List;
       aTile        : Tile_Data;  --  includes texture index
       N_Tile       : Tile_Data;
-      T_Indices    : Ints.Vector2;
+      Tile_Index   : Natural;
       Height       : Integer;
       X            : Single;
       Y            : Single;
@@ -497,11 +499,13 @@ package body Batch_Manager is
                Int'Image (Int (Tile_Indices.Length)));
       --  for all tiles in aBatch
       while Has_Element (Tile_Indices_Curs) loop
-         T_Indices := Element (Tile_Indices_Curs);
-         aTile := Get_Tile (T_Indices);
+         Tile_Index := Element (Tile_Indices_Curs);
+         aTile := Get_Tile (Tile_Index);
          Height := aTile.Height;
-         Row_Index := T_Indices (GL.X);
-         Col_Index := T_Indices (GL.Y);
+--           Row_Index := T_Indices (GL.X);
+--           Col_Index := T_Indices (GL.Y);
+         Row_Index := Tile_Index / Max_Map_Cols;
+         Col_Index := Tile_Index - Row_Index * ;
          Game_Utils.Game_Log
               ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
                Int'Image (Row_Index) & ", " & Int'Image (Col_Index));

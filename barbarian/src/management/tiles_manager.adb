@@ -109,9 +109,9 @@ package body Tiles_Manager is
       --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
       -- a map is a Max_Map_Rows x Max_Map_Cols data frame in a map file
       -- Total number of tiles = Max_Map_Rows x Max_Map_Cols
-      for Index in 0 .. Total_Tiles - 1 loop
-         Row := Index / Integer (Max_Map_Cols);
-         Column := Index - Row * Integer (Max_Map_Cols);
+      for Tile_Index in 0 .. Total_Tiles - 1 loop
+         Row := Tile_Index / Integer (Max_Map_Cols);
+         Column := Tile_Index - Row * Integer (Max_Map_Cols);
          B_Down := Row / Settings.Tile_Batch_Width;
          Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
                                 Integer'Image (Integer (Row)) & ", " &
@@ -126,14 +126,13 @@ package body Tiles_Manager is
          --  Add_Tile_Index_To_Batch
          if Batch_Index <= Batch_List.Last_Index then
             aBatch := Batch_List.Element (Batch_Index);
-            aBatch.Tile_Indices.Append ((Int (Row + 1), Int (Column + 1)));
+            aBatch.Tile_Indices.Append (Tile_Index);
             Update_Batch (Batch_Index, aBatch);
          else
-            aBatch.Tile_Indices.Append ((Int (Row + 1), Int (Column + 1)));
+            aBatch.Tile_Indices.Append (Tile_Index);
             Add_Batch_To_Batch_List (aBatch);
          end if;
       end loop;
-      --        end loop;
 
       Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
                              Int'Image (Int (Batch_List.First_Index)) & ", " &
@@ -180,6 +179,18 @@ package body Tiles_Manager is
       Row_Vector : constant Tile_Column_List := Tile_Rows (Pos (GL.X));
    begin
       return  Row_Vector.Element (Pos (GL.Y));
+   end Get_Tile;
+
+   --  --------------------------------------------------------------------------
+
+   function Get_Tile (Tile_Index : Natural) return Tile_Data is
+      use Batch_Manager;
+      use Tile_Row_Package;
+      Row        : constant Int := Int (Tile_Index) / Max_Map_Cols;
+      Column     : constant Int := Int (Tile_Index) - Row * Max_Map_Cols;
+      Row_Vector : constant Tile_Column_List := Tile_Rows (Row);
+   begin
+      return  Row_Vector.Element (Column);
    end Get_Tile;
 
    --  --------------------------------------------------------------------------
