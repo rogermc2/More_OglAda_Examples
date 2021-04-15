@@ -160,6 +160,21 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
+   function Get_Facing (Map : Ints.Vector2) return Character is
+        use Batch_Manager;
+        Tile_Index : Tiles_Index;
+        Result     : Character := 'N';
+   begin
+        if Map (GL.X) > 0 and Map (GL.X) < Max_Map_Rows and
+          Map (GL.Y) > 0 and Map (GL.Y) < Max_Map_Cols then
+          Tile_Index :=  Map (GL.X) * Max_Map_Cols + Map (GL.Y);
+            Result := Get_Facing (Tile_Index);
+        end if;
+        return Result;
+   end Get_Facing;
+
+   --  ----------------------------------------------------------------------------
+
 --     function Get_Tile (Row_Curs  : Tile_Row_Package.Cursor;
 --                        Col_Curs  : Tile_Column_Package.Cursor)
 --                        return Tile_Data is

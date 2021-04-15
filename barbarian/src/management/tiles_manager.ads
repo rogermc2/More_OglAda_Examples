@@ -40,6 +40,7 @@ package Tiles_Manager is
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
    function Get_Facing (Index : Tiles_Index) return Character;
+   function Get_Facing (Map : Ints.Vector2) return Character;
 --     function Get_Tile (Row_Curs : Tile_Row_Package.Cursor;
 --                        Col_Curs : Tile_Column_Package.Cursor) return Tile_Data;
 --     function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
