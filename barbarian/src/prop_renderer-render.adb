@@ -19,6 +19,7 @@ with Game_Utils;
 with GL_Maths;
 with GL_Utils;
 with Jav_Stand_Shader_Manager;
+with Manifold;
 with Particle_System;
 with Portal_Shader_Manager;
 with Properties_Basic_Shader_Manager;

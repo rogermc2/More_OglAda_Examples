@@ -13,7 +13,7 @@ with Maths;
 
 with Depth_Skinned_Shader_Manager;
 with GL_Maths;
-with Manifold;
+with Tiles_Manager;
 with Mesh_Loader;
 with Properties_Manager;
 with Prop_Renderer_Support;
@@ -25,7 +25,7 @@ package Prop_Renderer is
    type Prop_Indices_List is new Prop_Indices_Package.Vector with null Record;
 
    type Props_In_Tiles_Array is array
-     (1 .. Manifold.Max_Tile_Cols, 1 .. Manifold.Max_Tile_Cols) of
+     (1 .. Tiles_Manager.Max_Tile_Cols, 1 .. Tiles_Manager.Max_Tile_Cols) of
      Prop_Indices_List;
 
    Prop_Renderer_Exception : Exception;

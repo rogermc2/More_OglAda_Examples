@@ -459,7 +459,7 @@ package body Batch_Manager is
       use Tile_Indices_Package;
       use GL_Maths;
       --  Max_Tile_Cols = 64
-      subtype Atlas_Index is Int range 0 .. Int (Manifold.Max_Tile_Cols) - 1;
+      subtype Atlas_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       --  Tiles is a list of Ints.Vector2
       --        Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tile_Indices.First;

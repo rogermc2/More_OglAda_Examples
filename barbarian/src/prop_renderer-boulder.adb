@@ -275,10 +275,10 @@ package body Prop_Renderer.Boulder is
       Max_Prop_Tile_Rad  : constant Int := 2;
       Up_Bound           : constant Int := Max_Int (Top - Max_Prop_Tile_Rad, 0);
       Down_Bound         : constant Int := Min_Int (Bottom + Max_Prop_Tile_Rad,
-                                                    Int (Manifold.Max_Tile_Cols - 1));
+                                                    Int (Tiles_Manager.Max_Tile_Cols - 1));
       Left_Bound         : constant Int := Max_Int (Left - Max_Prop_Tile_Rad, 0);
       Right_Bound        : constant Int := Min_Int (Right + Max_Prop_Tile_Rad,
-                                                    Int (Manifold.Max_Tile_Cols - 1));
+                                                    Int (Tiles_Manager.Max_Tile_Cols - 1));
       Height             : Single := -100.0;
       New_Height         : Single;
       Prop_Radius        : Single;
@@ -429,7 +429,7 @@ package body Prop_Renderer.Boulder is
       Next_V          : Int;
       Direction       : Singles.Vector3;
       Index           : Positive;
-      Props_In_Tiles_Size : constant Int := Int (Manifold.Max_Tile_Cols ** 2);
+      Props_In_Tiles_Size : constant Int := Int (Tiles_Manager.Max_Tile_Cols ** 2);
    begin
       if Properties.Is_On_Ground then
          if Manifold.Is_Ramp ((Current_U, Current_V)) then

@@ -10,8 +10,8 @@ with Manifold;
 
 package Tiles_Manager is
 
-    --  Max_Tile_Cols = 64
-   subtype Tiles_Index is Int range 0 .. Int (Manifold.Max_Tile_Cols) - 1;
+   Max_Tile_Cols    : constant Positive := 64;
+   subtype Tiles_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
 
    type Tile_Data is record
       Height        : Natural := 0;
