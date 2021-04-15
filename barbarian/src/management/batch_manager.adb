@@ -507,7 +507,7 @@ package body Batch_Manager is
          --           Col_Index := T_Indices (GL.Y);;
          Game_Utils.Game_Log
            ("Batch_Manger.Generate_Points Tile_Index: " &
-              Natural'Image (Tile_Index));
+              Int'Image (Tile_Index));
          X := Single (2 * (Col_Index - 1));
          Y := Single (2 * Height);
          Z := Single (2 * (Row_Index - 1));
@@ -594,7 +594,7 @@ package body Batch_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Generate_Ramps (aBatch : in out Batch_Meta) is
-      Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
+--        Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
          use Singles;
          use Maths;
          use Tiles_Manager;
@@ -604,7 +604,7 @@ package body Batch_Manager is
          use Vec3_Package;
 
          Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-         Tile_Index     : Natural;
+         Tile_Index     : Tiles_Index;
          Row_Index      : Tiles_Index;
          Col_Index      : Tiles_Index;
          aTile          : Tile_Data;
@@ -633,7 +633,7 @@ package body Batch_Manager is
          --  Manifold.cpp, approx line 1015, p = g_batches[batch_idx].tiles;
          --  for all tiles in aBatch
          while Has_Element (Indices_Curs) loop
-            Tile_Index := Element (Indices_Curs);
+            Tile_Index := Tiles_Index (Element (Indices_Curs));
             aTile := Get_Tile (Tile_Index);
             --           aTile := Get_Tile (Element (Indices_Curs));
             Height := aTile.Height;
@@ -737,7 +737,7 @@ package body Batch_Manager is
          use GL_Maths;
          use Vec3_Package;
          Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-         Tile_Index     : Natural;
+         Tile_Index     : Tiles_Index;
          Row_Index      : Tiles_Index;
          Col_Index      : Tiles_Index;
          aTile          : Tile_Data;

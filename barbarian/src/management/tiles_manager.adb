@@ -92,7 +92,7 @@ package body Tiles_Manager is
    procedure Add_Tiles_To_Batches is
       use Batch_Manager;
       use Batches_Package;
-      Total_Tiles : constant Tiles_Index := Max_Map_Rows * Max_Map_Cols;
+      Total_Tiles : constant Int := Max_Map_Rows * Max_Map_Cols;
       Row         : Natural;
       Column      : Natural;
       B_Across    : Natural;
@@ -111,7 +111,7 @@ package body Tiles_Manager is
       --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
       -- a map is a Max_Map_Rows x Max_Map_Cols data frame in a map file
       -- Total number of tiles = Max_Map_Rows x Max_Map_Cols
-      for Tile_Index in Tiles_Index range 0 .. Total_Tiles - 1 loop
+      for Tile_Index in Int range 0 .. Total_Tiles - 1 loop
          Row := Natural (Tile_Index / Max_Map_Cols);
          Column := Natural (Tile_Index) - Row * Natural (Max_Map_Cols);
          B_Down := Row / Settings.Tile_Batch_Width;
@@ -336,7 +336,7 @@ package body Tiles_Manager is
       Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
       Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
       Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
-      for row in 1 .. Rows loop
+      for row in 0 .. Rows - 1 loop
          Tile_Row := Tile_Rows.Element (row);
          declare
             aString  : constant String := Get_Line (File);
@@ -349,9 +349,9 @@ package body Tiles_Manager is
             end if;
 
             Prev_Char := ASCII.NUL;
-            for col in 1 .. Cols loop
+            for col in 0 .. Cols - 1 loop
                aTile := Tile_Row.Element (col);
-               aChar := aString (Integer (col));
+               aChar := aString (Integer (col + 1));
                if Prev_Char = '\' and then
                  (aChar = 'n' or aChar = ASCII.NUL) then
                   Tile_Rows.Delete_Last;
@@ -423,9 +423,9 @@ package body Tiles_Manager is
             end if;
 
             Prev_Char := ASCII.NUL;
-            for col in 1 .. Num_Cols loop
+            for col in 0 .. Num_Cols - 1 loop
                aTile := Tile_Row.Element (col);
-               Tex_Char := aString (Integer (col));
+               Tex_Char := aString (Integer (col + 1));
                if Prev_Char = '\' and then
                  (Tex_Char = 'n' or Tex_Char = ASCII.NUL) then
                   Tile_Rows.Delete_Last;
