@@ -379,8 +379,19 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     function Is_Ramp (Pos : Ints.Vector2) return Boolean is
+        use Batch_Manager;
         use Tiles_Manager;
-        aTile : constant Tile_Data := Get_Tile (Pos);
+        aTile : constant Tile_Data :=
+                  Get_Tile (Pos (GL.X) * Max_Map_Cols + Pos (GL.Y));
+    begin
+        return aTile.Tile_Type = '/';
+    end Is_Ramp;
+
+    --  ----------------------------------------------------------------------------
+
+    function Is_Ramp (Index : GL.Types.Int) return Boolean is
+        use Tiles_Manager;
+        aTile : constant Tile_Data := Get_Tile (Index);
     begin
         return aTile.Tile_Type = '/';
     end Is_Ramp;
@@ -388,8 +399,19 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     function Is_Water (Pos : Ints.Vector2) return Boolean is
+        use Batch_Manager;
         use Tiles_Manager;
-        aTile : constant Tile_Data := Get_Tile (Pos);
+        aTile : constant Tile_Data :=
+                  Get_Tile (Pos (GL.X) * Max_Map_Cols + Pos (GL.Y));
+    begin
+        return aTile.Tile_Type = '~';
+    end Is_Water;
+
+    --  ----------------------------------------------------------------------------
+
+    function Is_Water (Index : GL.Types.Int) return Boolean is
+        use Tiles_Manager;
+        aTile : constant Tile_Data := Get_Tile (Index);
     begin
         return aTile.Tile_Type = '~';
     end Is_Water;
