@@ -552,6 +552,7 @@ package body Tiles_Manager is
 
       Batch_Manager.Max_Map_Cols := Int'Value (aLine (Pos1 .. Pos2 - 1));
       Batch_Manager.Max_Map_Rows := Int'Value (aLine (Pos2 + 1 .. aLine'Last));
+      Batch_Manager.Total_Tiles := Max_Map_Rows * Max_Map_Cols;
       Batch_Manager.Batches_Across :=
         Integer (Float'Ceiling (Float (Max_Map_Cols) / Float (Tile_Batch_Width)));
       Batch_Manager.Batches_Down :=

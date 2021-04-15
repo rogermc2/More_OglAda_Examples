@@ -57,6 +57,7 @@ package Batch_Manager is
 
    Max_Map_Cols   : Int := 0;  --  Set by map file
    Max_Map_Rows   : Int := 0;  --  Set by map file
+   Total_Tiles    : Int := 0;
    Batches_Across : Integer := 0;
    Batches_Down   : Integer := 0;
 
