@@ -90,39 +90,50 @@ package body Tiles_Manager is
    procedure Add_Tiles_To_Batches is
       use Batch_Manager;
       use Batches_Package;
-      Batch_Across  : Natural;
-      Batch_Down    : Natural;
-      aBatch        : Batch_Manager.Batch_Meta;
-      Batch_Index   : Positive;
+      Total_Tiles : constant Positive := Positive (Max_Map_Rows * Max_Map_Cols);
+      Row         : Natural;
+      Column      : Natural;
+      B_Across    : Natural;
+      B_Down      : Natural;
+      aBatch      : Batch_Manager.Batch_Meta;
+      Batch_Index : Positive;
    begin
-      Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Max_Rows, Max_Cols " &
+      Game_Utils.Game_Log ("Manifold.Add_Tiles_To_Batches Max_Rows, Max_Cols, Batches_Across " &
                              Int'Image (Max_Map_Rows) & ", " &
-                             Int'Image (Max_Map_Cols));
+                             Int'Image (Max_Map_Cols) & ", " &
+                             Integer'Image (Batches_Across));
 
---        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
---                              Integer'Image (Settings.Tile_Batch_Width));
+      --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Settings.Tile_Batch_Width " &
+      --                              Integer'Image (Settings.Tile_Batch_Width));
 
       --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
       -- a map is a Max_Map_Rows x Max_Map_Cols data frame in a map file
       -- Total number of tiles = Max_Map_Rows x Max_Map_Cols
-      for Map_Row in 1 .. Positive (Max_Map_Rows) loop
-         Batch_Down := Map_Row / Settings.Tile_Batch_Width;
-         for Map_Col in 1 .. Positive (Max_Map_Cols) loop
---              Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
---                                   Integer'Image (row) & ", " & Integer'Image (col));
-            Batch_Across := Map_Col / Settings.Tile_Batch_Width;
-            Batch_Index := Batch_Down * Batches_Across + Batch_Across + 1;
-            --  Add_Tile_Index_To_Batch
-            if Batch_Index <= Batch_List.Last_Index then
-               aBatch := Batch_List.Element (Batch_Index);
-               aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
-               Update_Batch (Batch_Index, aBatch);
-            else
-               aBatch.Tile_Indices.Append ((Int (Map_Row), Int (Map_Col)));
-               Add_Batch_To_Batch_List (aBatch);
-            end if;
-         end loop;
+      for Index in 0 .. Total_Tiles - 1 loop
+         Row := Index / Integer (Max_Map_Cols);
+         Column := Index - Row * Integer (Max_Map_Cols);
+         B_Down := Row / Settings.Tile_Batch_Width;
+         Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
+                                Integer'Image (Integer (Row)) & ", " &
+                                Integer'Image (Integer (Column)));
+         B_Across := Column / Settings.Tile_Batch_Width;
+         Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches B_Down, B_Across " &
+                                Int'Image (Int (B_Down)) &  ", " &
+                                Int'Image (Int (B_Across)));
+         Batch_Index := B_Down * Batches_Across + B_Across + 1;
+         Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_Index " &
+                                Int'Image (Int (Batch_Index)));
+         --  Add_Tile_Index_To_Batch
+         if Batch_Index <= Batch_List.Last_Index then
+            aBatch := Batch_List.Element (Batch_Index);
+            aBatch.Tile_Indices.Append ((Int (Row + 1), Int (Column + 1)));
+            Update_Batch (Batch_Index, aBatch);
+         else
+            aBatch.Tile_Indices.Append ((Int (Row + 1), Int (Column + 1)));
+            Add_Batch_To_Batch_List (aBatch);
+         end if;
       end loop;
+      --        end loop;
 
       Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
                              Int'Image (Int (Batch_List.First_Index)) & ", " &
@@ -150,7 +161,7 @@ package body Tiles_Manager is
 
    function Get_Tile (Row_Curs  : Tile_Row_Package.Cursor;
                       Col_Curs  : Tile_Column_Package.Cursor)
-                       return Tile_Data is
+                      return Tile_Data is
       use Batch_Manager;
       use Tile_Row_Package;
 
@@ -290,7 +301,7 @@ package body Tiles_Manager is
            "Invalid format, " & Load_Type & " expected: " & Header (1 .. Pos1);
       end if;
 
-     Game_Utils.Game_Log ("Manifold.Load_Char_Rows Load_Type: " & Load_Type);
+      Game_Utils.Game_Log ("Manifold.Load_Char_Rows Load_Type: " & Load_Type);
       Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
       Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
       Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
@@ -327,7 +338,7 @@ package body Tiles_Manager is
                Tile_Rows.Replace_Element (row, Tile_Row);
             else
                raise Tiles_Manager_Exception with
-                      "Load_Char_Rows missing a tile row";
+                 "Load_Char_Rows missing a tile row";
             end if;
             Prev_Char := aChar;
          end;  --  declare block
@@ -402,8 +413,8 @@ package body Tiles_Manager is
                   if Has_Element (Tile_Row.To_Cursor (col)) then
                      Tile_Row.Replace_Element (col, aTile);
                   else
-               raise Tiles_Manager_Exception with
-                      "Load_Int_Rows missing a tile column";
+                     raise Tiles_Manager_Exception with
+                       "Load_Int_Rows missing a tile column";
                   end if;
                end if;
             end loop;
@@ -411,7 +422,7 @@ package body Tiles_Manager is
                Tile_Rows.Replace_Element (row, Tile_Row);
             else
                raise Tiles_Manager_Exception with
-                      "Load_Int_Rows missing a tile row";
+                 "Load_Int_Rows missing a tile row";
             end if;
             Prev_Char := Tex_Char;
          end;  --  declare block
@@ -457,7 +468,7 @@ package body Tiles_Manager is
    --  ------------------------------------------------------------------------
 
    procedure Load_Tile_And_Ramp_Textures
-      (Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
+     (Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
       Ramp_Spec_Tex : in out GL.Objects.Textures.Texture) is
       use Texture_Manager;
    begin
@@ -502,7 +513,7 @@ package body Tiles_Manager is
       Tile_Rows.Clear;
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Batches_Across, Batches_Down"
                            & Integer'Image (Batches_Across) & ", " &
-                           Integer'Image (Batches_Down));
+                             Integer'Image (Batches_Down));
       --  Parse_Facings_By_Row initializes Tile_Rows
       Parse_Facings_By_Row (File, Max_Map_Rows, Max_Map_Cols);
 
@@ -541,7 +552,7 @@ package body Tiles_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Parse_Facings_By_Row (File               : File_Type;
+   procedure Parse_Facings_By_Row (File                       : File_Type;
                                    Max_Map_Rows, Max_Map_Cols : Int) is
       use Tile_Row_Package;
       use Tile_Column_Package;
