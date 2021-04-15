@@ -39,14 +39,14 @@ package Tiles_Manager is
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
-   function Get_Facing (Pos : Ints.Vector2) return Character;
-   function Get_Tile (Row_Curs : Tile_Row_Package.Cursor;
-                      Col_Curs : Tile_Column_Package.Cursor) return Tile_Data;
-   function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
-   function Get_Tile (Tile_Index : Natural) return Tile_Data;
+   function Get_Facing (Index : Tiles_Index) return Character;
+--     function Get_Tile (Row_Curs : Tile_Row_Package.Cursor;
+--                        Col_Curs : Tile_Column_Package.Cursor) return Tile_Data;
+--     function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
+   function Get_Tile (Tile_Index : Tiles_Index) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
-   function Get_Tile_Type (Row, Col : Tiles_Index) return Character;
+   function Get_Tile_Type (Index : Tiles_Index) return Character;
    function Get_Tiles_Across return Int;
    function Is_Tile_Valid (Map : Ints.Vector2) return Boolean;
    procedure Load_Tiles (File : File_Type;

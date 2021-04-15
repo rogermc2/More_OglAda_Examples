@@ -52,9 +52,9 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_East_Points (aBatch             : in out Batch_Meta;  Height : Integer;
-                              Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+                              Tile_Index, Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
-      aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
+      aTile    : constant Tile_Data := Get_Tile (Tile_Index);
       N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
@@ -62,15 +62,15 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile ((Tile_Row, Tile_Col - 1));
+      N_Tile := Get_Tile (Tile_Index - 1);
       N_Height := N_Tile.Height;
-      if aTile.Tile_Type = '~' then
+      if N_Tile.Tile_Type = '~' then
          N_Height := N_Height - 1;
       end if;
       Diff := Height - N_Height;
 
       --  remove bit behind stairs from construction list
-      if aTile.Tile_Type = '/' and then aTile.Facing = 'E' then
+      if N_Tile.Tile_Type = '/' and then N_Tile.Facing = 'E' then
          Diff := Diff - 1;
       end if;
 
@@ -160,9 +160,10 @@ package body Batch_Manager is
 
    procedure Add_South_Points (aBatch             : in out Batch_Meta;
                                Height             : Integer;
-                               Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
+                               Tile_Index : Tiles_Manager.Tiles_Index) is
+--                                 Tile_Row, Tile_Col : Tiles_Manager.Tiles_Index) is
       use Tiles_Manager;
-      aTile    : constant Tile_Data := Get_Tile ((Tile_Row, Tile_Col));
+      aTile    : constant Tile_Data := Get_Tile (Tile_Index);
       N_Tile   : Tile_Data;
       N_Height : Integer;
       Diff     : Integer;
@@ -170,7 +171,7 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile ((Tile_Row - 1, Tile_Col));
+      N_Tile := Get_Tile (Tile_Index - 1);
       N_Height := N_Tile.Height;
       if aTile.Tile_Type = '~' then
          N_Height := N_Height - 1;
@@ -497,7 +498,7 @@ package body Batch_Manager is
       --  for all tiles in aBatch
       while Has_Element (Tile_Indices_Curs) loop
          Tile_Index := Element (Tile_Indices_Curs);
-         aTile := Get_Tile (Tile_Index);
+         aTile := Get_Tile (Int (Tile_Index));
          Height := aTile.Height;
          Row_Index := Int (Tile_Index) / Max_Map_Cols;
          Col_Index := Int (Tile_Index) + Row_Index * Max_Map_Cols;
@@ -592,7 +593,7 @@ package body Batch_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Generate_Ramps (aBatch : in out Batch_Meta) is
---                               Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
+                             Tile_Indices  : Tiles_Manager.Tile_Indices_List) is
       use Singles;
       use Maths;
       use Tiles_Manager;
