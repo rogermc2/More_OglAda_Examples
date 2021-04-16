@@ -702,7 +702,24 @@ package body Character_Controller is
 
    function Get_Character (Character_ID : Positive) return Barbarian_Character is
    begin
+      if Characters.Is_Empty then
+         raise Character_Controller_Exception with
+           "Character_Controller.Get_Character Characters list is empty.";
+      end if;
+      if Character_ID > Integer (Characters.Length) then
+         raise Character_Controller_Exception with
+           "Character_Controller.Get_Character called with invalid Character_ID: "
+             & Integer'Image (Character_ID);
+      end if;
+
       return Characters.Element (Character_ID);
+
+   exception
+      when anError : others =>
+         Put ("Character_Controller.Get_Character exception:  ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
    end Get_Character;
 
    --  -------------------------------------------------------------------------

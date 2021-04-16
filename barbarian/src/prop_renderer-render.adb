@@ -1,4 +1,5 @@
 
+with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw;
@@ -150,7 +151,14 @@ package body Prop_Renderer.Render is
                 Put_Line ("Render_Basic Draw_Arrays");
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
-        end if;
+      end if;
+
+   exception
+      when anError : others =>
+         Put ("Prop_Renderer.Render Render_Basic exception:  ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
     end Render_Basic;
 
     --  -------------------------------------------------------------------------
@@ -163,7 +171,7 @@ package body Prop_Renderer.Render is
         use Jav_Stand_Shader_Manager;
         use Maths;
         use Single_Math_Functions;
-        Character    : Barbarian_Character;
+        aCharacter   : Barbarian_Character;
         Count        : Integer;
         Property     : Prop_Renderer_Support.Property_Data;
         Script       : Prop_Renderer_Support.Prop_Script;
@@ -180,8 +188,12 @@ package body Prop_Renderer.Render is
         Model_Matrix : Matrix4 := Identity4;
         Continue     : Boolean := True;
     begin
-        Character := Get_Character (1);
+        Put_line ("Prop_Renderer.Render Render_Javelin_Standard entered");
+        aCharacter := Get_Character (1);
+        Put_line ("Prop_Renderer.Render Render_Javelin_Standard aCharacter set");
         Count := Integer (Jav_Stand_Render_List.Length);
+        Put_line ("Prop_Renderer.Render Render_Javelin_Standard Count: " &
+                Integer'Image (Count));
         if not Is_Empty (Jav_Stand_Render_List) then
             GL.Objects.Programs.Use_Program
               (Properties_Shader_Manager.Jav_Stand_Shader);
@@ -192,8 +204,8 @@ package body Prop_Renderer.Render is
             end if;
 
             for Param_I in 1 .. Count loop
---                  Put_line ("Prop_renderer.Render Param_I: " &
---                  Integer'Image (Param_I));
+                Put_line ("Prop_Renderer.Render Render_Javelin_Standard Param_I: " &
+                Integer'Image (Param_I));
                 if  Continue then
                     Prop_I := Jav_Stand_Render_List (Param_I);
                     Property := Properties_Manager.Get_Property_Data (Prop_I);
@@ -260,7 +272,14 @@ package body Prop_Renderer.Render is
                     end if;
                 end if;
             end loop;
-        end if;
+      end if;
+
+   exception
+      when anError : others =>
+         Put ("Prop_Renderer.Render Render_Javelin_Standard exception:  ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
     end Render_Javelin_Standard;
 
     --  -------------------------------------------------------------------------
@@ -273,7 +292,6 @@ package body Prop_Renderer.Render is
         use Portal_Shader_Manager;
         use Maths;
         use Single_Math_Functions;
-        Character     : Barbarian_Character := Get_Character (1);
         Count        : constant Integer := Integer (Jav_Stand_Render_List.Length);
         Property     : Prop_Renderer_Support.Property_Data;
         Script       : Prop_Renderer_Support.Prop_Script;
@@ -300,7 +318,14 @@ package body Prop_Renderer.Render is
                 Texture_Manager.Bind_Texture (0, Script.Diffuse_Map_Id);
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
-        end if;
+      end if;
+
+   exception
+      when anError : others =>
+         Put ("Prop_Renderer.Render Render_Portal exception:  ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
     end Render_Portal;
 
     --  -------------------------------------------------------------------------
@@ -382,6 +407,12 @@ package body Prop_Renderer.Render is
             end loop;
         end if;
 
+   exception
+      when anError : others =>
+         Put ("Prop_Renderer.Render Render_Skinned exception:  ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
     end Render_Skinned;
 
     --  -------------------------------------------------------------------------
@@ -438,6 +469,12 @@ package body Prop_Renderer.Render is
                 Draw_Arrays (Triangles, 0, Script.Vertex_Count);
             end loop;
         end if;
+
+   exception
+      when anError : others =>
+         Put ("Prop_Renderer.Render Render_Treasure exception:  ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
 
     end Render_Treasure;
 

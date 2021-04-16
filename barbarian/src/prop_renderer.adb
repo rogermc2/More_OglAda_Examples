@@ -1,4 +1,5 @@
 
+with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -1097,9 +1098,11 @@ package body Prop_Renderer is
       Prop_Dyn_Light_Dirty := False;
 
    exception
-      when others =>
-         Put_Line ("Prop_Renderer.Render_Props_Around_Split exception");
+      when anError : others =>
+         Put ("Prop_Renderer.Render_Props_Around_Split exception:  ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
+
    end Render_Props_Around_Split;
 
    --  -------------------------------------------------------------------------
