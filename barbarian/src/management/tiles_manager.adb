@@ -61,7 +61,7 @@ package body Tiles_Manager is
       use Batches_Package;
       Curs          : Batches_Package.Cursor := Batch_List.First;
       aBatch        : Batch_Meta;
-      Tile_Index    : constant Tiles_RC_Index := Row * Max_Map_Cols + Col;
+      Tile_Index    : constant Tiles_RC_Index := Row * Positive (Max_Map_Cols) + Col;
       X             : constant Single := Single (2 * Col) + Offset (GL.X);
       Y             : constant Single :=
                         Single (2 * Get_Tile_Level (Tile_Index) +
@@ -109,7 +109,7 @@ package body Tiles_Manager is
    procedure Add_Tiles_To_Batches is
       use Batch_Manager;
       use Batches_Package;
-      Total_Tiles : constant Int := Max_Map_Rows * Max_Map_Cols;
+      Total_Tiles : constant Integer := Max_Map_Rows * Max_Map_Cols;
       Row         : Natural;
       Column      : Natural;
       B_Across    : Natural;
@@ -118,18 +118,18 @@ package body Tiles_Manager is
       Batch_Index : Positive;
    begin
       Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Max_Rows, Max_Cols, Batches_Across " &
-                             Int'Image (Max_Map_Rows) & ", " &
-                             Int'Image (Max_Map_Cols) & ", " &
+                             Integer'Image (Max_Map_Rows) & ", " &
+                             Integer'Image (Max_Map_Cols) & ", " &
                              Integer'Image (Batches_Across));
 
       Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Total_Tiles: " &
-                            Int'Image (Total_Tiles));
+                            Integer'Image (Total_Tiles));
 
 
       --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
       -- a map is a Max_Map_Rows x Max_Map_Cols data frame in a map file
       -- Total number of tiles = Max_Map_Rows x Max_Map_Cols
-      for Tile_Index in Int range 0 .. Total_Tiles - 1 loop
+      for Tile_Index in 0 .. Total_Tiles - 1 loop
          Row := Natural (Tile_Index / Max_Map_Cols);
          Column := Natural (Tile_Index) - Row * Natural (Max_Map_Cols);
          B_Down := Row / Settings.Tile_Batch_Width;
@@ -183,7 +183,7 @@ package body Tiles_Manager is
    begin
         if Map (GL.X) > 0 and Map (GL.X) < Max_Map_Rows and
           Map (GL.Y) > 0 and Map (GL.Y) < Max_Map_Cols then
-          Tile_Index :=  Map (GL.X) * Max_Map_Cols + Map (GL.Y);
+          Tile_Index :=  Positive (Map (GL.X) * Max_Map_Cols + Map (GL.Y));
             Result := Get_Facing (Tile_Index);
         end if;
         return Result;
@@ -209,9 +209,10 @@ package body Tiles_Manager is
    function Get_Tile (Pos : Ints.Vector2) return Tile_Data is
       use Batch_Manager;
       use Tile_Row_Package;
-      Row_Vector : constant Tile_Column_List := Tile_Rows (Pos (GL.X));
+      Row_Vector : constant Tile_Column_List :=
+                       Tile_Rows.Element (Positive (Pos (GL.X)));
    begin
-      return  Row_Vector.Element (Pos (GL.Y));
+      return  Row_Vector.Element (Positive (Pos (GL.Y)));
 
    exception
       when anError : others =>
@@ -223,14 +224,14 @@ package body Tiles_Manager is
 
    --  --------------------------------------------------------------------------
 
-   function Get_Tile (Tile_Index : Int) return Tile_Data is
+   function Get_Tile (Tile_Index : Natural) return Tile_Data is
       use Batch_Manager;
       use Tile_Row_Package;
-      Row        : constant Int := Tile_Index / Max_Map_Cols;
-      Column     : constant Int := Tile_Index - Row * Max_Map_Cols;
+      Row        : constant Natural := Tile_Index / Positive (Max_Map_Cols);
+      Column     : constant Natural := Tile_Index - Row * Positive (Max_Map_Cols);
       Row_Vector : constant Tile_Column_List := Tile_Rows (Row);
    begin
-      return  Row_Vector.Element (Column);
+      return  Row_Vector.Element (Positive (Column));
 
    exception
       when anError : others =>
@@ -248,23 +249,39 @@ package body Tiles_Manager is
       use Batch_Manager;
       use Tile_Row_Package;
       use Tile_Column_Package;
-      Col        : constant Tiles_RC_Index := Tiles_RC_Index (0.5 * (1.0 + X));
-      Row        : constant Tiles_RC_Index := Tiles_RC_Index (0.5 * (1.0 + Z));
+      Col        : Tiles_RC_Index := Tiles_RC_Index (0.5 * (1.0 + X));
+      Row        : Tiles_RC_Index := Tiles_RC_Index (0.5 * (1.0 + Z));
       Row_Curs   : constant Tile_Row_Cursor := Tile_Rows.To_Cursor (Row);
       Tile_Row   : constant Tile_Column_List := Element (Row_Curs);
       Col_Curs   : constant Tile_Column_Cursor := Tile_Row.To_Cursor (Col);
-      Tile_Index : constant Tiles_RC_Index := Row * Max_Map_Cols + Col;
---        aTile      : Tile_Data := Get_Tile (Tile_Index);
-      aTile    : constant Tile_Data := Get_Tile ((Row, Col));
+      Tile_Index : Tiles_RC_Index;
+      aTile      : Tile_Data;
+--        aTile    : constant Tile_Data := Get_Tile ((Row, Col));
       S        : Single;
       T        : Single;
       Height   : Single := 0.0;
    begin
+      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height entered");
+      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height X, Z: " &
+                            Single'Image (X) & ", " & Single'Image (Z) );
+      Col := Tiles_RC_Index (0.5 * (1.0 + X));
+      Row := Tiles_RC_Index (0.5 * (1.0 + Z));
+      Tile_Index := Row * Positive (Max_Map_Cols) + Col;
+      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Row, Col: " &
+                            Integer'Image (Row) & ", " & Integer'Image (Col));
+      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Tile_Index: " &
+                             Integer'Image (Tile_Index));
+      aTile := Get_Tile (Tile_Index);
+      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height aTile set");
       if X < -1.0 or Col > Tiles_RC_Index (Max_Map_Cols) or Z < -1.0 or
         Row > Tiles_RC_Index (Max_Map_Rows) then
          Height := Out_Of_Bounds_Height;
+         Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Out_Of_Bounds_Height" &
+                               Single'Image (Height));
       else
          Height := 2.0 * Single (aTile.Height);
+         Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height " &
+                               Single'Image (Height));
          if Respect_Ramps and then Is_Ramp (Tile_Index) then
             --  Work out position within ramp. subtract left-most pos from x, etc.
             S := 0.5 * (1.0 + X - Single (2 * Col));
@@ -283,13 +300,13 @@ package body Tiles_Manager is
             Height := Height - 0.5;
          end if;
       end if;
-            Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height row, col " &
-                                   Int'Image (Row) & ", " & Int'Image (Col));
+      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height row, col " &
+                             Integer'Image (Row) & ", " & Integer'Image (Col));
       return Height;
 
    exception
       when anError : others =>
-         Put ("Tiles_Manager.Get_Tile_Heightt exception: ");
+         Put ("Tiles_Manager.Get_Tile_Height exception: ");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
 

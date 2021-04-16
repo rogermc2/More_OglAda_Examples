@@ -19,9 +19,9 @@ package Manifold is
     function Get_Light_Index (Column, Row  : Positive;
                               Light_Number : Positive) return GL.Types.Int;
     procedure Init;
-    function Is_Ramp (Index : GL.Types.Int) return Boolean;
+    function Is_Ramp (Index : Natural) return Boolean;
     function Is_Ramp (Pos : GL.Types.Ints.Vector2) return Boolean;
-    function Is_Water (Index : GL.Types.Int) return Boolean;
+    function Is_Water (Index : Natural) return Boolean;
     function Is_Water (Pos : GL.Types.Ints.Vector2) return Boolean;
     procedure Reset_Manifold_Vars;
     procedure Set_Manifold_Ambient_Light (Level : GL.Types.Singles.Vector3);

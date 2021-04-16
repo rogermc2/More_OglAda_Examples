@@ -52,7 +52,8 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_East_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer; Tile_Index : Int;
+     (aBatch             : in out Batch_Meta;  Height : Integer;
+      Tile_Index : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
@@ -112,7 +113,8 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_North_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer; Tile_Index : Int;
+     (aBatch             : in out Batch_Meta;  Height : Integer;
+      Tile_Index : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
@@ -122,7 +124,7 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile ((Tile_Row + 1, Tile_Col));
+      N_Tile := Get_Tile ((Int (Tile_Row + 1), Int (Tile_Col)));
       N_Height := N_Tile.Height;
       if N_Tile.Tile_Type = '~' then
          N_Height := N_Height - 1;
@@ -172,7 +174,8 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_South_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer; Tile_Index : Int;
+     (aBatch             : in out Batch_Meta;  Height : Integer;
+      Tile_Index : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile (Tile_Index);
@@ -280,7 +283,8 @@ package body Batch_Manager is
    --  ------------------------------------------------------------------------
 
    procedure Add_West_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer; Tile_Index : Int;
+     (aBatch             : in out Batch_Meta;  Height : Integer;
+      Tile_Index : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Height : Integer;
@@ -484,8 +488,8 @@ package body Batch_Manager is
       use Tile_Indices_Package;
       use GL_Maths;
       --  Max_Tile_Cols = 64
-      subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
-      subtype Atlas_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
+      subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
+      subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
                             aBatch.Tile_Indices.First;
@@ -525,8 +529,8 @@ package body Batch_Manager is
          Tile_Index := Element (Tile_Indices_Curs);
          aTile := Get_Tile (Tile_Index);
          Height := aTile.Height;
-         Row_Index := Int (Tile_Index) / Max_Map_Cols;
-         Col_Index := Int (Tile_Index) - Row_Index * Max_Map_Cols;
+         Row_Index := Tile_Index / Max_Map_Cols;
+         Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
          --           Row_Index := T_Indices (GL.X);
          --           Col_Index := T_Indices (GL.Y);
 --           Game_Utils.Game_Log
@@ -632,7 +636,7 @@ package body Batch_Manager is
       use Vec2_Package;
       use Vec3_Package;
 
-      subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
+      subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
       Tile_Index     : Tiles_Index;
       Row_Index      : Tiles_RC_Index;
@@ -683,8 +687,8 @@ package body Batch_Manager is
             Has_Ramp := True;
             --              Row_Index := Element (Indices_Curs) (GL.X);
             --              Col_Index := Element (Indices_Curs) (GL.Y);
-            Row_Index := Int (Tile_Index) / Max_Map_Cols;
-            Col_Index := Int (Tile_Index) - Row_Index * Max_Map_Cols;
+            Row_Index := Tile_Index / Max_Map_Cols;
+            Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
             --  Put each vertex point into world space
             Rot_Matrix := Rotate_Y_Degree (Identity4, Deg);
             Model_Matrix := Translation_Matrix
@@ -771,7 +775,7 @@ package body Batch_Manager is
       use Tile_Indices_Package;
       use GL_Maths;
       use Vec3_Package;
-      subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
+      subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
       Tile_Index     : Tiles_Index;
       Row_Index      : Tiles_RC_Index;
@@ -809,8 +813,8 @@ package body Batch_Manager is
             Has_Water := True;
             --              Row_Index := Element (Indices_Curs) (GL.X);
             --              Col_Index := Element (Indices_Curs) (GL.Y);
-            Row_Index := Int (Tile_Index) / Max_Map_Cols;
-            Col_Index := Int (Tile_Index) - Row_Index * Max_Map_Cols;
+            Row_Index := Tile_Index / Max_Map_Cols;
+            Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
             --  Put each vertex point into world space
             Rot_Matrix := Rotate_Y_Degree (Rot_Matrix, Deg);
             Model_Matrix := Translation_Matrix
@@ -1080,7 +1084,7 @@ package body Batch_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Update_Batch (Index : Positive; Tile_Index : Int) is
+   procedure Update_Batch (Index : Positive; Tile_Index : Natural) is
       aBatch : Batch_Meta := Batch_List.Element (Index);
    begin
       aBatch.Tile_Indices.Append (Tile_Index);

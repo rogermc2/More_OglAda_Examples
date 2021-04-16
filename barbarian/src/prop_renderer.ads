@@ -55,11 +55,12 @@ package Prop_Renderer is
      (Map       : Ints.Vector2; Pos : Singles.Vector3; Radius : Float; Player_Health : Integer;
       Prop_Type : in out Prop_Renderer_Support.Property_Type)
        return Integer;
-   function Props_In_Tiles_Size (U, V : Integer) return Natural;
+   function Props_In_Tiles_Size (U, V : Natural) return Natural;
    procedure Render_Property (Prop_ID : Positive);
-   procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Int);
+   procedure Render_Props_Around_Depth_Only (U, V, Tiles_Distance : Natural);
    procedure Render_Props_Around_Split
-      (Fallback_Shader : GL.Objects.Programs.Program; U, V, Tiles_Distance : Int);
+      (Fallback_Shader : GL.Objects.Programs.Program;
+       U, V, Tiles_Distance : Natural);
    procedure Reset_Properties;
    procedure Set_Ambient_Light_Level (Level : Singles.Vector3);
    procedure Set_End_Camera_Matrix (Mat : Singles.Matrix4);

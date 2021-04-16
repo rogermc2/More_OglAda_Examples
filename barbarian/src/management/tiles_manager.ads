@@ -10,15 +10,16 @@ package Tiles_Manager is
 
    Max_Tile_Cols    : constant Positive := 64;
 
-   Max_Map_Cols   : Int := 0;  --  Set by map file
-   Max_Map_Rows   : Int := 0;  --  Set by map file
-   Batches_Across : Integer := 0;
-   Batches_Down   : Integer := 0;
+   Max_Map_Cols   : Natural := 0;  --  Set by map file
+   Max_Map_Rows   : Natural := 0;  --  Set by map file
+   Batches_Across : Natural := 0;
+   Batches_Down   : Natural := 0;
 
-   Total_Tiles    : Int := 0;
-   subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
-
-   subtype Tiles_RC_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
+   Total_Tiles    : Natural := 0;
+   subtype Tiles_Index is Natural;
+   subtype Tiles_RC_Index is Natural;
+--     subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
+--     subtype Tiles_RC_Index is Int range 0 .. Int (Max_Map_Cols) - 1;
 
    type Tile_Data is record
       Height        : Natural := 0;
@@ -38,7 +39,8 @@ package Tiles_Manager is
    subtype Tile_Row_List is Tile_Row_Package.Vector;
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 
-   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists (Int);
+   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
+      (Natural);
    subtype Tile_Indices_List is Tile_Indices_Package.List;
    subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
 
@@ -50,7 +52,7 @@ package Tiles_Manager is
 --     function Get_Tile (Row_Curs : Tile_Row_Package.Cursor;
 --                        Col_Curs : Tile_Column_Package.Cursor) return Tile_Data;
    function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
-   function Get_Tile (Tile_Index : Int) return Tile_Data;
+   function Get_Tile (Tile_Index : Natural) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
    function Get_Tile_Type (Index : Tiles_RC_Index) return Character;

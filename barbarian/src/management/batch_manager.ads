@@ -72,6 +72,6 @@ package Batch_Manager is
    function Static_Indices  (Batch_Index : Positive)
                              return GL_Maths.Indices_List;
    procedure Update_Batch (Index : Positive; Data : Batch_Meta);
-   procedure Update_Batch (Index : Positive; Tile_Index : Int);
+   procedure Update_Batch (Index : Positive; Tile_Index : Natural);
 
 end Batch_Manager;

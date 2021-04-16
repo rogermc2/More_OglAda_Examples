@@ -110,10 +110,10 @@ package body Main_Loop.Game_Support is
       use Glfw.Input.Keys;
       use Shadows;
       Camera_Position : constant Singles.Vector3 := Camera.World_Position;
-      Centre_X        : constant Int := Int ((1.0 + Camera_Position (GL.X)) / 2.0);
-      Centre_Z        : constant Int := Int ((1.0 + Camera_Position (GL.Z)) / 2.0);
+      Centre_X        : constant Integer := Integer ((1.0 + Camera_Position (GL.X)) / 2.0);
+      Centre_Z        : constant Integer := Integer ((1.0 + Camera_Position (GL.Z)) / 2.0);
       UV              : constant Ints.Vector2 :=
-                          (Abs (Centre_X), Abs (Centre_Z));
+                          (Int (Abs (Centre_X)), Int (Abs (Centre_Z)));
    begin
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
          Game_Utils.Game_Log ("Settings.Shadows_Enabled and Camera.Is_Dirty...");
@@ -137,7 +137,7 @@ package body Main_Loop.Game_Support is
 --        Blood_Splats.Render_Splats;
       GL_Utils.Set_Resized_View (False);
       Prop_Renderer.Render_Props_Around_Split
-          (Fallback_Shader, Centre_X, Centre_Z, Int (Settings.Render_Distance));
+          (Fallback_Shader, Centre_X, Centre_Z, Settings.Render_Distance);
       GL.Objects.Programs.Use_Program (Fallback_Shader);
       Sprite_World_Map.Cache_Sprites_Around
         (UV (GL.X), UV (GL.Y), Int (Settings.Render_Distance));

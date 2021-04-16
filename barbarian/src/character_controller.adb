@@ -379,14 +379,14 @@ package body Character_Controller is
       use Maths;
       use Character_Map;
       use Character_Map_Package;
-      Map_U               : constant Int := Int (0.5 * (World_Pos (Gl.X) + 1.0));
-      Map_V               : constant Int := Int (0.5 * (World_Pos (Gl.Z) + 1.0));
-      Left                : constant Int := Maths.Max_Int (0, Map_U - 1);
-      Right               : constant Int
-          := Maths.Min_Int (Tiles_Manager.Max_Map_Cols - 1, Map_U + 1);
-      Up                  : constant Int := Maths.Max_Int (0, Map_V - 1);
-      Down                : constant Int
-          := Maths.Min_Int (Tiles_Manager.Max_Map_Rows - 1, Map_V + 1);
+      Map_U               : constant Positive := Positive (0.5 * (World_Pos (Gl.X) + 1.0));
+      Map_V               : constant Positive := Positive (0.5 * (World_Pos (Gl.Z) + 1.0));
+      Left                : constant Natural := Maths.Max_Integer (0, Map_U - 1);
+      Right               : constant Natural
+          := Maths.Min_Integer (Tiles_Manager.Max_Map_Cols - 1, Map_U + 1);
+      Up                  : constant Natural := Maths.Max_Integer (0, Map_V - 1);
+      Down                : constant Natural
+          := Maths.Min_Integer (Tiles_Manager.Max_Map_Rows - 1, Map_V + 1);
       Last_Character_Hit  : Integer := -1;
       Character_IDs       : Character_Map_List;
       Curs                : Cursor;
@@ -398,7 +398,7 @@ package body Character_Controller is
    begin
       for index_v in Up .. Down loop
          for index_h in Left .. Right loop
-            Character_IDs := Get_Characters_In (index_v, index_h);
+            Character_IDs := Get_Characters_In (Int (index_v), Int (index_h));
             Curs := Character_IDs.First;
             while Has_Element (Curs) loop
                Char_ID := Element (Curs);
@@ -1565,11 +1565,11 @@ package body Character_Controller is
       Char_List       : Character_Map.Character_Map_List;
       Curs            : Cursor;
       Char_Index      : Positive;
-      Update_Distance : constant Int := 5;
-      Left            : Int;
-      Right           : Int;
-      Up              : Int;
-      Down            : Int;
+      Update_Distance : constant Positive := 5;
+      Left            : Natural;
+      Right           : Natural;
+      Up              : Natural;
+      Down            : Natural;
       Ok              : Boolean := True;
    begin
       if not Characters.Is_Empty then
@@ -1579,16 +1579,16 @@ package body Character_Controller is
          Update_Player (Window, 1, Seconds);
          aCharacter.Needs_Update := False;
          Characters_Updated := Characters_Updated + 1;
-         Left := Max_Int (0, aCharacter.Map (GL.X) - Update_Distance);
-         Right := Min_Int
-           (Max_Map_Cols - 1, aCharacter.Map (GL.X) + Update_Distance);
-         Up := Max_Int (0, aCharacter.Map (GL.Y) - Update_Distance);
-         Down := Min_Int
-           (Max_Map_Rows - 1, aCharacter.Map (GL.Y) + Update_Distance);
+         Left := Max_Integer (0, Natural (aCharacter.Map (GL.X)) - Update_Distance);
+         Right := Min_Integer
+           (Max_Map_Cols - 1, Natural (aCharacter.Map (GL.X)) + Update_Distance);
+         Up := Max_Integer (0, Natural (aCharacter.Map (GL.Y)) - Update_Distance);
+         Down := Min_Integer
+           (Max_Map_Rows - 1, Natural (aCharacter.Map (GL.Y)) + Update_Distance);
          --  Collect all characters around p1
          for v in Up .. Down loop
             for h in Left .. Right loop
-               Char_List := Character_Map.Get_Characters_In (h, v);
+               Char_List := Character_Map.Get_Characters_In (Int (h), Int (v));
                Curs := Char_List.First;
                while Has_Element (Curs) loop
                   Char_Index := Element (Curs);

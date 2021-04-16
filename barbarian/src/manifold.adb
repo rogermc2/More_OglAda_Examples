@@ -382,14 +382,15 @@ package body Manifold is
         use Batch_Manager;
         use Tiles_Manager;
         aTile : constant Tile_Data :=
-                  Get_Tile (Pos (GL.X) * Max_Map_Cols + Pos (GL.Y));
+                  Get_Tile (Natural (Pos (GL.X)) * Max_Map_Cols +
+                              Natural (Pos (GL.Y)));
     begin
         return aTile.Tile_Type = '/';
     end Is_Ramp;
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Ramp (Index : GL.Types.Int) return Boolean is
+    function Is_Ramp (Index : Natural) return Boolean is
         use Tiles_Manager;
         aTile : constant Tile_Data := Get_Tile (Index);
     begin
@@ -402,14 +403,15 @@ package body Manifold is
         use Batch_Manager;
         use Tiles_Manager;
         aTile : constant Tile_Data :=
-                  Get_Tile (Pos (GL.X) * Max_Map_Cols + Pos (GL.Y));
+                  Get_Tile (Natural (Pos (GL.X)) * Max_Map_Cols +
+                              Natural (Pos (GL.Y)));
     begin
         return aTile.Tile_Type = '~';
     end Is_Water;
 
     --  ----------------------------------------------------------------------------
 
-    function Is_Water (Index : GL.Types.Int) return Boolean is
+    function Is_Water (Index : Natural) return Boolean is
         use Tiles_Manager;
         aTile : constant Tile_Data := Get_Tile (Index);
     begin
