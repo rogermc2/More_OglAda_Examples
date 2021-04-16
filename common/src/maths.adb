@@ -265,6 +265,7 @@ package body Maths is
    end Length_Sq;
 
    --  ------------------------------------------------------------------------
+
    function Min_Int (L, R : GL.Types.Int) return GL.Types.Int is
       Result : GL.Types.Int;
    begin
@@ -333,7 +334,7 @@ package body Maths is
    function Max_Integer (L, R : Integer) return Integer is
       Result : Integer;
    begin
-      if L < R then
+      if L > R then
          Result := L;
       else
          Result := R;
