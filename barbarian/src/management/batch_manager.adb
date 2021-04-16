@@ -233,7 +233,7 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Add_Static_Light (Row, Col                       : Int;
+   procedure Add_Static_Light (Row, Col                       : Natural;
                                Tile_Height_Offset             : Integer;
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single) is
@@ -263,7 +263,7 @@ package body Batch_Manager is
       end Process_Batch;
 
    begin
-      if not Tiles_Manager.Is_Tile_Valid ((Row, Col)) then
+      if not Tiles_Manager.Is_Tile_Valid ((Int (Row), Int (Col))) then
          raise Batch_Manager_Exception with
            "Batch_Manager.Add_Static_Light invalid tile";
       end if;
@@ -363,18 +363,17 @@ package body Batch_Manager is
       use Tiles_Manager;
       use Tile_Row_Package;
       use GL_Maths.Indices_Package;
-      Half_Batch_Width     : constant Int :=
-                               Int (Settings.Tile_Batch_Width / 2);
+      Half_Batch_Width     : constant Natural :=
+                               Settings.Tile_Batch_Width / 2;
       This_Batch           : Batch_Meta := Batches_Data.Element (Batch_Index);
-      Batches_Dn           : constant Int :=
-                               Int (Batch_Index) / Int (Batches_Across);
-      Batches_Ac           : constant Int := Int (Batch_Index) -
-                               Batches_Dn * Int (Batches_Across);
-      Batch_Centre_Row     : constant Int :=
-                               Batches_Dn * Int (Settings.Tile_Batch_Width) +
+      Batches_Dn           : constant Natural := Batch_Index / Batches_Across;
+      Batches_Ac           : constant Natural := Batch_Index -
+                               Batches_Dn * Batches_Across;
+      Batch_Centre_Row     : constant Natural :=
+                               Batches_Dn * Settings.Tile_Batch_Width +
                                Half_Batch_Width;
-      Batch_Centre_Col     : constant Int :=
-                               Batches_Ac * Int (Settings.Tile_Batch_Width) +
+      Batch_Centre_Col     : constant Natural :=
+                               Batches_Ac * Settings.Tile_Batch_Width +
                                Half_Batch_Width;
       Batch_Light_Indices  : GL_Maths.Indices_List :=
                                This_Batch.Static_Light_Indices;
@@ -388,10 +387,10 @@ package body Batch_Manager is
       Next_Light           : Static_Light_Data;
       Prev_Light_Cursor    : GL_Maths.Indices_Package.Cursor;
       Next_Light_Cursor    : GL_Maths.Indices_Package.Cursor;
-      Curr_Row             : Int;
-      Curr_Col             : Int;
-      Next_Row             : Int;
-      Next_Col             : Int;
+      Curr_Row             : Natural;
+      Curr_Col             : Natural;
+      Next_Row             : Natural;
+      Next_Col             : Natural;
       Curr_Row_Dist        : Single;
       Curr_Col_Dist        : Single;
       Next_Row_Dist        : Single;

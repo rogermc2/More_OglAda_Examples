@@ -56,7 +56,7 @@ package Tiles_Manager is
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
    function Get_Tile_Type (Index : Tiles_RC_Index) return Character;
-   function Get_Tiles_Across return Int;
+   function Get_Tiles_Across return Natural;
    function Is_Tile_Valid (Map : Ints.Vector2) return Boolean;
    procedure Load_Tiles (File : File_Type;
                          Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,

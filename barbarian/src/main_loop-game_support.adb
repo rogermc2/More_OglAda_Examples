@@ -140,7 +140,7 @@ package body Main_Loop.Game_Support is
           (Fallback_Shader, Centre_X, Centre_Z, Settings.Render_Distance);
       GL.Objects.Programs.Use_Program (Fallback_Shader);
       Sprite_World_Map.Cache_Sprites_Around
-        (UV (GL.X), UV (GL.Y), Int (Settings.Render_Distance));
+        (Natural (UV (GL.X)), Natural (UV (GL.Y)), Settings.Render_Distance);
       Transparency.Draw_Transparency_List;
       --          Particle_System.Render_Particle_Systems (Single (Delta_Time));
       GL_Utils.Set_Resized_View (False);

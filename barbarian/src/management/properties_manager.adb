@@ -30,7 +30,7 @@ package body Properties_Manager is
    --  Height_level is the property's own height offset from the tile.
    --  Facing is the compass facing 'N' 'S' 'W' or 'E'.
    procedure Create_Prop_From_Script
-     (Script_File : String; Map_U, Map_V : Int; Height_Level : Integer;
+     (Script_File : String; Map_U, Map_V : Natural; Height_Level : Integer;
       Facing      : Character; Tx, Rx : Integer) is
       use Maths;
       use Singles;
@@ -64,7 +64,7 @@ package body Properties_Manager is
       Respect_Ramps := aScript_Type = Boulder_Prop;
       Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -4- Mesh_Index"
                            & Integer'Image (aScript.Mesh_Index));
-      if Tiles_Manager.Is_Tile_Valid ((Map_U, Map_V)) then
+      if Tiles_Manager.Is_Tile_Valid ((Int (Map_U), Int (Map_V))) then
          Game_Utils.Game_Log ("Properties Manager creating property from script "
                               & Script_File);
          New_Prop.Script_Index := Script_Index;
@@ -230,8 +230,8 @@ package body Properties_Manager is
       S_Length       : Integer := aLine'Length;
       Property_Count : Integer := 0;
       Script_File    : Unbounded_String;
-      U              : Int := 0;           --  map position
-      V              : Int := 0;
+      U              : Natural := 0;           --  map position
+      V              : Natural := 0;
       Height         : Integer := 0;       --  map height level
       Facing         : Character := 'N';   --  compass facing
       --  Map files can have Rx and Tx set to -1
@@ -266,9 +266,9 @@ package body Properties_Manager is
             PosL := Fixed.Index (Prop_Line, " ");
             Script_File := To_Unbounded_String (Prop_Line (1 .. PosL - 1));
             PosR := Fixed.Index (Prop_Line (PosL .. S_Length), ",");
-            U := Int'Value (Prop_Line (PosL + 1 .. PosR - 1));
+            U := Integer'Value (Prop_Line (PosL + 1 .. PosR - 1));
             PosL := Fixed.Index (Prop_Line (PosR .. S_Length), " ");
-            V := Int'Value (Prop_Line (PosR + 1 .. PosL - 1));
+            V := Integer'Value (Prop_Line (PosR + 1 .. PosL - 1));
 
             PosR := Fixed.Index (Prop_Line (PosL + 1 .. S_Length), " ");
             Height := Integer'Value (Prop_Line (PosL + 1 .. PosR - 1));
@@ -281,8 +281,8 @@ package body Properties_Manager is
             Tx := Integer'Value (Prop_Line (PosR + 1 .. S_Length));
             Game_Utils.Game_Log ("Properties_Manager Script_File " &
                                    To_String (Script_File) & ", U: " &
-                                   Int'Image (U) & ", V: " &
-                                   Int'Image (V) & ", Height: " &
+                                   Integer'Image (U) & ", V: " &
+                                   Integer'Image (V) & ", Height: " &
                                    Integer'Image (Height) & ", Facing: " &
                                    Facing & ", Rx: " &
                                    Integer'Image (Rx) & ", Tx: " &
@@ -381,8 +381,8 @@ package body Properties_Manager is
       aProperty.Quat :=  (0.0, 0.0, 1.0, 0.0);
       aProperty.Facing := 'N';
       aProperty.Script_Index := 1;
-      aProperty.Map_U := -1;
-      aProperty.Map_V := -1;
+      aProperty.Map_U := 0;
+      aProperty.Map_V := 0;
       aProperty.Tx_Code := -1;
       aProperty.Rx_Code := -1;
       aProperty.Sprite_Index := 1;

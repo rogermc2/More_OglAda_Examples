@@ -14,12 +14,12 @@ package Sprite_World_Map is
 
     Sprite_World_Map_Exception : Exception;
 
-    procedure Add_New_Sprite_To_World_Map (U, V : Int; Y : Single;
+    procedure Add_New_Sprite_To_World_Map (U, V : Natural; Y : Single;
                                            Sprite_ID : Positive);
-    procedure Cache_Sprites_Around (U, V, Tile_Range : Int);
+    procedure Cache_Sprites_Around (U, V, Tile_Range : Natural);
     procedure Free_Sprite_World_Map;
     procedure Init;
-    procedure Move_Sprite_In_World_Map (From_U, From_V, To_U, To_V : Int;
+    procedure Move_Sprite_In_World_Map (From_U, From_V, To_U, To_V : Natural;
                                         Y : Single; Sprite_ID : Positive);
-    procedure Remove_Sprite_From_World_Map (U, V : Int; Sprite_ID : Positive);
+    procedure Remove_Sprite_From_World_Map (U, V : Natural; Sprite_ID : Positive);
 end Sprite_World_Map;

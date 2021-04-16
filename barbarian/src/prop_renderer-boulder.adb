@@ -16,7 +16,7 @@ package body Prop_Renderer.Boulder is
    procedure Bounce_Back_From_Wall
      (Properties              : in out Prop_Renderer_Support.Property_Data;
       Gap_To_Floor            : Single; Radius : Single;
-      Next_U, Next_V          : out Int;
+      Next_U, Next_V          : out Positive;
       Direction, Desired_Vel  : in out Singles.Vector3) is
       use Singles;
       Use Maths;
@@ -95,8 +95,8 @@ package body Prop_Renderer.Boulder is
          Properties.Is_On_Ground := False;
       end if;
 
-      Next_U := Int (0.5 * (1.0 + Next_Pos (Gl.X)));
-      Next_V := Int (0.5 * (1.0 + Next_Pos (Gl.Z)));
+      Next_U := Positive (0.5 * (1.0 + Next_Pos (Gl.X)));
+      Next_V := Positive (0.5 * (1.0 + Next_Pos (Gl.Z)));
       Direction := Maths.Normalized (Next_Pos - Properties.World_Pos);
       Dist := Maths.Length (Properties.World_Pos - Next_Pos);
       Axis := Cross_Product ((0.0, 1.0, 0.0), Direction);
@@ -411,7 +411,8 @@ package body Prop_Renderer.Boulder is
       Current_V       : constant Tiles_Manager.Tiles_RC_Index
         := Tiles_Manager.Tiles_RC_Index (0.5 * (Properties.World_Pos (GL.Z) + 1.0));
       Facing          : constant Character :=
-                          Tiles_Manager.Get_Facing ((Current_U, Current_V));
+                          Tiles_Manager.Get_Facing ((Int (Current_U),
+                                                    Int (Current_V)));
       Floor_Height    : Single;
       N               : Single;
       W               : Single;
@@ -425,14 +426,14 @@ package body Prop_Renderer.Boulder is
       Found_At        : Natural := 0;
       M_U             : Integer;
       M_V             : Integer;
-      Next_U          : Int;
-      Next_V          : Int;
+      Next_U          : Natural;
+      Next_V          : Natural;
       Direction       : Singles.Vector3;
       Index           : Positive;
       Props_In_Tiles_Size : constant Int := Int (Tiles_Manager.Max_Tile_Cols ** 2);
    begin
       if Properties.Is_On_Ground then
-         if Manifold.Is_Ramp ((Current_U, Current_V)) then
+         if Manifold.Is_Ramp ((Int (Current_U), Int (Current_V))) then
             Speed_Increase := 7.5 * S_Seconds;  --  due to gravity
             Desired_Vel (GL.Y) := Desired_Vel (GL.Y) - Speed_Increase;
             if Facing = 'N' then
@@ -463,7 +464,7 @@ package body Prop_Renderer.Boulder is
 
       --  If stopped here, deactivate
       if Properties.Is_On_Ground and not
-        Manifold.Is_Ramp ((Current_U, Current_V)) then
+        Manifold.Is_Ramp ((Int (Current_U), Int (Current_V))) then
          V_Sum := abs (Desired_Vel (GL.X)) + abs (Desired_Vel (GL.Z));
          if V_Sum < Min_Speed then
             Desired_Vel := (0.0, 0.0, 0.0);

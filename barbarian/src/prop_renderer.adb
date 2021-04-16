@@ -606,8 +606,8 @@ package body Prop_Renderer is
         Sys_Index  : Positive;
         Vel_X      : constant Single := Abs (Maths.Random_Float) * 7.0 - 3.5;
         Vel_Z      : constant Single := Abs (Maths.Random_Float) * 7.0 - 3.5;
-        U          : Int;
-        V          : Int;
+        U          : Positive;
+        V          : Positive;
     begin
         Last_Head_Launched (LHL_Type) := T_Index;
         Prop_Index := Decap_Heads_Prop_Index (LHL_Type, T_Index);
@@ -618,8 +618,8 @@ package body Prop_Renderer is
         Prop.Model_Matrix := Maths.Translation_Matrix (World_Pos);
         Prop.Quat := GL_Maths.Quat_From_Axis_Radian (0.0, 0.0, 1.0, 0.0);
         Prop.Velocity := (Vel_X, 10.0, Vel_Z);
-        U := Int (0.5 * (World_Pos (GL.X) + 1.0));
-        V := Int (0.5 * (World_Pos (GL.Z) + 1.0));
+        U := Positive (0.5 * (World_Pos (GL.X) + 1.0));
+        V := Positive (0.5 * (World_Pos (GL.Z) + 1.0));
         Prop.Map_U := U;
         Prop.Map_V := V;
         Last_Head_Particles_Used := (Last_Head_Particles_Used + 1) mod

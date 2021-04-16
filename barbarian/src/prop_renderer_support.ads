@@ -47,8 +47,8 @@ package Prop_Renderer_Support is
       -- Tile-Based Position And Facing
       -- ------------------------------
       -- 2D Tile Position
-      Map_U                : Int := 0;
-      Map_V                : Int := 0;
+      Map_U                : Natural := 0;
+      Map_V                : Natural := 0;
       -- In 2M Levels Above Ground
       Height_Level         : Integer := 0;
       -- Compass Facing

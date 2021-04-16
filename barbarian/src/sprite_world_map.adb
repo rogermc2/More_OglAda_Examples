@@ -40,16 +40,16 @@ package body Sprite_World_Map is
 
     --  ------------------------------------------------------------------------
 
-    procedure Add_New_Sprite_To_World_Map (U, V      : Int; Y : Single;
+    procedure Add_New_Sprite_To_World_Map (U, V      : Natural; Y : Single;
                                            Sprite_ID : Positive) is
         S_U   : constant Sprite_Index := Sprite_Index (U);
         S_V   : constant Sprite_Index := Sprite_Index (V);
         Count : Natural;
     begin
-        if not Tiles_Manager.Is_Tile_Valid ((U, V)) then
+        if not Tiles_Manager.Is_Tile_Valid ((Int (U), Int (V))) then
             raise Sprite_World_Map_Exception with
               "Sprite_World_Map.Add_New_Sprite_To_World_Map, invalid tile indices: " &
-              Int'Image (U) & ", " & Int'Image (V);
+              Integer'Image (U) & ", " & Integer'Image (V);
         end if;
 
         Count := Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) + 1;
@@ -62,21 +62,21 @@ package body Sprite_World_Map is
 
     --  ------------------------------------------------------------------------
 
-    procedure Cache_Sprites_Around (U, V, Tile_Range : Int) is
+    procedure Cache_Sprites_Around (U, V, Tile_Range : Natural) is
         use Maths;
         use Tiles_Manager;
         use Transparency;
         S_U       : constant Sprite_Index := Sprite_Index (U);
         S_V       : constant Sprite_Index := Sprite_Index (V);
         U_First   : constant Sprite_Index :=
-                      Sprite_Index (Max_Int (1, U - Tile_Range) + 1);
+                      Sprite_Index (Max_Integer (1, U - Tile_Range) + 1);
         V_First   : constant Sprite_Index := Sprite_Index
-          (Max_Int (1, V - Tile_Range) + 1);
+          (Max_Integer (1, V - Tile_Range) + 1);
         U_Last    : constant Sprite_Index := Sprite_Index
-          (Min_Int (U + Abs (Tile_Range), Get_Tiles_Across - 1) + 1);
+          (Min_Integer (U + Abs (Tile_Range), Get_Tiles_Across - 1) + 1);
         Sprite_ID : Positive;
         V_Last    : constant Sprite_Index := Sprite_Index
-          (Min_Int (V + Abs (Tile_Range), Get_Tiles_Across - 1) + 1) ;
+          (Min_Integer (V + Abs (Tile_Range), Get_Tiles_Across - 1) + 1) ;
         Pos       : Singles.Vector3;
         Count     : Sprite_Count;
     begin
@@ -133,7 +133,7 @@ package body Sprite_World_Map is
     --  ------------------------------------------------------------------------
 
     procedure Move_Sprite_In_World_Map (From_U, From_V,
-                                        To_U, To_V : Int;  Y : Single;
+                                        To_U, To_V : Natural;  Y : Single;
                                         Sprite_ID   : Positive) is
     begin
         if From_U > 0 and From_V > 0 then
@@ -144,7 +144,7 @@ package body Sprite_World_Map is
 
     --  ------------------------------------------------------------------------
 
-    procedure Remove_Sprite_From_World_Map (U, V      : Int;
+    procedure Remove_Sprite_From_World_Map (U, V      : Natural;
                                             Sprite_ID : Positive) is
         S_U   : constant Sprite_Index := Sprite_Index (U);
         S_V   : constant Sprite_Index := Sprite_Index (V);

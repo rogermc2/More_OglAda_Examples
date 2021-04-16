@@ -181,9 +181,9 @@ package body Tiles_Manager is
         Tile_Index : Tiles_RC_Index;
         Result     : Character := 'N';
    begin
-        if Map (GL.X) > 0 and Map (GL.X) < Max_Map_Rows and
-          Map (GL.Y) > 0 and Map (GL.Y) < Max_Map_Cols then
-          Tile_Index :=  Positive (Map (GL.X) * Max_Map_Cols + Map (GL.Y));
+        if Map (GL.X) > 0 and Map (GL.X) < Int (Max_Map_Rows) and
+          Map (GL.Y) > 0 and Map (GL.Y) < Int (Max_Map_Cols) then
+          Tile_Index :=  Positive (Map (GL.X)) * Max_Map_Cols + Positive (Map (GL.Y));
             Result := Get_Facing (Tile_Index);
         end if;
         return Result;
@@ -341,7 +341,7 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   function Get_Tiles_Across return Int is
+   function Get_Tiles_Across return Natural is
    begin
       return Max_Map_Cols;
    end Get_Tiles_Across;
@@ -351,8 +351,8 @@ package body Tiles_Manager is
    function Is_Tile_Valid (Map : Ints.Vector2) return Boolean is
       use Batch_Manager;
    begin
-      return Map (GL.Y) > 0 and Map (GL.Y) <= Max_Map_Cols and
-        Map (GL.X) > 0 and Map (GL.X) <= Max_Map_Rows;
+      return Map (GL.Y) > 0 and Map (GL.Y) <= Int (Max_Map_Cols) and
+        Map (GL.X) > 0 and Map (GL.X) <= Int (Max_Map_Rows);
    end Is_Tile_Valid;
 
    --  ----------------------------------------------------------------------------
@@ -370,8 +370,8 @@ package body Tiles_Manager is
       use Ada.Strings;
       use Tile_Row_Package;
       Header     : constant String := Get_Line (File);
-      Cols       : Int := 0;
-      Rows       : Int := 0;
+      Cols       : Integer := 0;
+      Rows       : Integer := 0;
       Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
       Pos2       : Natural;
       Prev_Char  : Character;
@@ -387,8 +387,8 @@ package body Tiles_Manager is
 
       Game_Utils.Game_Log ("Manifold.Load_Char_Rows Load_Type: " & Load_Type);
       Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
-      Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
-      Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
+      Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
+      Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
       for row in 0 .. Rows - 1 loop
          Tile_Row := Tile_Rows.Element (row);
          declare
@@ -443,8 +443,8 @@ package body Tiles_Manager is
       Header     : constant String := Get_Line (File);
       Code_0     : constant Integer := Character'Pos ('0');
       Code_a     : constant Integer := Character'Pos ('a');
-      Num_Cols   : Int := 0;
-      Num_Rows   : Int := 0;
+      Num_Cols   : Natural := 0;
+      Num_Rows   : Natural := 0;
       Pos1       : constant Natural := Fixed.Index (Header, " ") + 1;
       Pos2       : Natural;
       Prev_Char  : Character;
@@ -459,10 +459,10 @@ package body Tiles_Manager is
       end if;
 
       Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
-      Num_Cols := Int'Value (Header (Pos1 .. Pos2 - 1));
-      Num_Rows := Int'Value (Header (Pos2 + 1 .. Header'Last));
+      Num_Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
+      Num_Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
 
-      for row in Int range 0 .. Num_Rows - 1 loop
+      for row in 0 .. Num_Rows - 1 loop
          Tile_Row := Tile_Rows.Element (row);  --  List of Tile columns
          declare
             aString    : constant String := Get_Line (File);
@@ -587,8 +587,8 @@ package body Tiles_Manager is
 
       Pos2 := Fixed.Index (aLine (Pos1 + 1 .. aLine'Last), "x");
 
-      Max_Map_Cols := Int'Value (aLine (Pos1 .. Pos2 - 1));
-      Max_Map_Rows := Int'Value (aLine (Pos2 + 1 .. aLine'Last));
+      Max_Map_Cols := Integer'Value (aLine (Pos1 .. Pos2 - 1));
+      Max_Map_Rows := Integer'Value (aLine (Pos2 + 1 .. aLine'Last));
       Total_Tiles := Max_Map_Rows * Max_Map_Cols;
       Batches_Across :=
         Integer (Float'Ceiling (Float (Max_Map_Cols) / Float (Tile_Batch_Width)));
@@ -646,8 +646,8 @@ package body Tiles_Manager is
    begin
       --  Parse_Facings_By_Row initalizes the Tiles list.
       Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Max_Map_Rows, Max_Map_Cols "
-                           & Int'Image (Max_Map_Rows) & ", " &
-                             Int'Image (Max_Map_Cols));
+                           & Integer'Image (Max_Map_Rows) & ", " &
+                             Integer'Image (Max_Map_Cols));
       for row in 1 .. Max_Map_Rows loop
          declare
             aString     : constant String := Get_Line (File);

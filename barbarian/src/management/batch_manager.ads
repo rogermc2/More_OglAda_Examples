@@ -47,8 +47,8 @@ package Batch_Manager is
       Diffuse     : Singles.Vector3 := Maths.Vec3_0;
       Specular    : Singles.Vector3 := Maths.Vec3_0;
       Light_Range : Single := 0.0;
-      Row         : Int;
-      Column      : Int;
+      Row         : Natural;
+      Column      : Natural;
    end record;
 
    package Static_Light_Package is new
@@ -57,7 +57,7 @@ package Batch_Manager is
 
    Batch_Manager_Exception : Exception;
 
-   procedure Add_Static_Light (Row, Col : Int; Tile_Height_Offset : Integer;
+   procedure Add_Static_Light (Row, Col : Natural; Tile_Height_Offset : Integer;
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single);
    procedure Add_Batch_To_Batch_List (Batch_Data : Batch_Meta);

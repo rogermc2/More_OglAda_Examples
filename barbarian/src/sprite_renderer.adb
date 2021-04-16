@@ -46,8 +46,8 @@ package body Sprite_Renderer is
       Sprite_Map_Rows        : Int := 0;
       Sprite_Map_Columns     : Int := 0;
       Current_Sprite         : Natural := 0;
-      Wmap_U                 : Int := -1;
-      Wmap_V                 : Int := -1;
+      Wmap_U                 : Integer := -1;
+      Wmap_V                 : Integer := -1;
       Has_Pitch              : Boolean := False;
       Is_Visible             : Boolean := True;
    end record;
@@ -225,11 +225,11 @@ package body Sprite_Renderer is
                                   World_Pos    : Singles.Vector3) is
       use Singles;
       use Maths;
-      U    : Int := Int (Max (0.5 * (World_Pos (GL.X) + 1.0), 0.0));
-      V    : Int := Int (Max (0.5 * (World_Pos (GL.Y) + 1.0), 0.0));
+      U    : Natural := Natural (Max (0.5 * (World_Pos (GL.X) + 1.0), 0.0));
+      V    : Natural := Natural (Max (0.5 * (World_Pos (GL.Y) + 1.0), 0.0));
    begin
-      U := Min_Int (U, Int (Tiles_Manager.Max_Map_Rows - 1));
-      V := Min_Int (V, Int (Tiles_Manager.Max_Map_Cols - 1));
+      U := Min_Integer (U, Tiles_Manager.Max_Map_Rows - 1);
+      V := Min_Integer (V, Tiles_Manager.Max_Map_Cols - 1);
 
       Sprites (Sprite_Index).World_Position := World_Pos;
       Sprites (Sprite_Index).Model_Matrix :=
