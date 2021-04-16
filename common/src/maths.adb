@@ -267,92 +267,50 @@ package body Maths is
    --  ------------------------------------------------------------------------
 
    function Min_Int (L, R : GL.Types.Int) return GL.Types.Int is
-      Result : GL.Types.Int;
    begin
-      if L < R then
-         Result := L;
-      else
-         Result := R;
-      end if;
-      return Result;
+      return GL.Types.Int'Min (L, R);
    end Min_Int;
 
    --  ------------------------------------------------------------------------
 
    function Min_Integer (L, R : Integer) return Integer is
-      Result : Integer;
    begin
-      if L < R then
-         Result := L;
-      else
-         Result := R;
-      end if;
-      return Result;
+      return Integer'Min (L, R);
    end Min_Integer;
 
    --  ------------------------------------------------------------------------
 
    function Min (L, R : GL.Types.Single) return GL.Types.Single is
-      Result : GL.Types.Single;
    begin
-      if L < R then
-         Result := L;
-      else
-         Result := R;
-      end if;
-      return Result;
+      return GL.Types.Single'Min (L, R);
    end Min;
 
    --  ------------------------------------------------------------------------
 
    function Max_Float (L, R : Float) return Float is
-      Result : Float;
    begin
-      if R > L then
-         Result := R;
-      else
-         Result := L;
-      end if;
-      return Result;
+      return Float'Max (L, R);
    end Max_Float;
 
    --  ------------------------------------------------------------------------
 
    function Max_Int (L, R : GL.Types.Int) return GL.Types.Int is
-      Result : GL.Types.Int;
    begin
-      if R > L then
-         Result := R;
-      else
-         Result := L;
-      end if;
-      return Result;
+      return GL.Types.Int'Max (L, R);
    end Max_Int;
 
    --  ------------------------------------------------------------------------
 
    function Max_Integer (L, R : Integer) return Integer is
-      Result : Integer;
    begin
-      if L > R then
-         Result := L;
-      else
-         Result := R;
-      end if;
-      return Result;
+      return Integer'Max (L, R);
    end Max_Integer;
 
    --  ------------------------------------------------------------------------
 
    function Max (L, R : GL.Types.Single) return GL.Types.Single is
-      Result : GL.Types.Single;
    begin
-      if L > R then
-         Result := L;
-      else
-         Result := R;
-      end if;
-      return Result;
+      return GL.Types.Single'Max (L, R);
    end Max;
 
    --  ------------------------------------------------------------------------
