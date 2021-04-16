@@ -217,6 +217,7 @@ package body Batch_Manager is
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single) is
       use Batches_Package;
+      use Tiles_Manager;
       S_Row         : constant Single := Single (Row);
       S_Col         : constant Single := Single (Col);
       X             : Single := 2.0 * S_Col + Offset_Pos (GL.X);
@@ -331,7 +332,8 @@ package body Batch_Manager is
    --  Multiple calls required to sort entire list
    function Check_For_OOO (Batch_Index : Positive) return Boolean is
       use Maths.Single_Math_Functions;
-      use Tiles_Manager.Tile_Row_Package;
+      use Tiles_Manager;
+      use Tile_Row_Package;
       use GL_Maths.Indices_Package;
       Half_Batch_Width     : constant Int :=
                                Int (Settings.Tile_Batch_Width / 2);
@@ -460,8 +462,6 @@ package body Batch_Manager is
       --  Max_Tile_Cols = 64
       subtype Atlas_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
-      --  Tiles is a list of Ints.Vector2
-      --        Tile_Indices_Curs : Tile_Indices_Package.Cursor := Tile_Indices.First;
       Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
                             aBatch.Tile_Indices.First;
       Row_Index         : Tiles_RC_Index;
@@ -823,6 +823,7 @@ package body Batch_Manager is
       --  -------------------------------------------------------------------------
 
       function Get_Batch_Index (Column, Row : Positive) return Natural is
+         use Tiles_Manager;
          Result : Integer := 0;
       begin
          if Column < Positive (Max_Map_Cols) and Row < Positive (Max_Map_Rows) then

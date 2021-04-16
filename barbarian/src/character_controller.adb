@@ -382,9 +382,11 @@ package body Character_Controller is
       Map_U               : constant Int := Int (0.5 * (World_Pos (Gl.X) + 1.0));
       Map_V               : constant Int := Int (0.5 * (World_Pos (Gl.Z) + 1.0));
       Left                : constant Int := Maths.Max_Int (0, Map_U - 1);
-      Right               : constant Int := Maths.Min_Int (Batch_Manager.Max_Map_Cols - 1, Map_U + 1);
+      Right               : constant Int
+          := Maths.Min_Int (Tiles_Manager.Max_Map_Cols - 1, Map_U + 1);
       Up                  : constant Int := Maths.Max_Int (0, Map_V - 1);
-      Down                : constant Int := Maths.Min_Int (Batch_Manager.Max_Map_Rows - 1, Map_V + 1);
+      Down                : constant Int
+          := Maths.Min_Int (Tiles_Manager.Max_Map_Rows - 1, Map_V + 1);
       Last_Character_Hit  : Integer := -1;
       Character_IDs       : Character_Map_List;
       Curs                : Cursor;
@@ -735,10 +737,10 @@ package body Character_Controller is
                         Positive (0.5 * (1.0 + Next_Pos (GL.Z)));
       Left          : constant Integer := Max_Integer (1, Next_U);
       Right         : constant Integer
-        := Min_Integer (Integer (Batch_Manager.Max_Map_Cols), Next_U);
+        := Min_Integer (Integer (Tiles_Manager.Max_Map_Cols), Next_U);
       Up            : constant Integer := Max_Integer (1, Next_V);
       Down          : constant Integer
-        := Min_Integer (Integer (Batch_Manager.Max_Map_Rows), Next_V);
+        := Min_Integer (Integer (Tiles_Manager.Max_Map_Rows), Next_V);
       Char_List     : Character_Map_List;
       Curs          : Cursor := Char_List.First;
       List_Index    : Natural;
@@ -1540,7 +1542,7 @@ package body Character_Controller is
    procedure Update_Characters (Window  : in out Input_Callback.Barbarian_Window;
                                 Seconds : Float) is
       use Maths;
-      use Batch_Manager;
+      use Tiles_Manager;
       use Character_Map.Character_Map_Package;
       aCharacter      : Barbarian_Character;
       Char_List       : Character_Map.Character_Map_List;

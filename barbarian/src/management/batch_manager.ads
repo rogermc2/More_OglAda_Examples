@@ -55,12 +55,6 @@ package Batch_Manager is
      Ada.Containers.Vectors (Positive, Static_Light_Data);
    type Static_Light_Vector is new Static_Light_Package.Vector with null record;
 
-   Max_Map_Cols   : Int := 0;  --  Set by map file
-   Max_Map_Rows   : Int := 0;  --  Set by map file
-   Total_Tiles    : Int := 0;
-   Batches_Across : Integer := 0;
-   Batches_Down   : Integer := 0;
-
    Batch_Manager_Exception : Exception;
 
    procedure Add_Static_Light (Row, Col : Int; Tile_Height_Offset : Integer;

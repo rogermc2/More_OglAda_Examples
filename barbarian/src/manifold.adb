@@ -419,13 +419,13 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     procedure Reset_Manifold_Vars is
-        use Batch_Manager;
+        use Tiles_Manager;
     begin
         Batches_Across := 0;
         Batches_Down := 0;
         Batch_Split_Count := 0;
-        Batch_Manager.Max_Map_Cols := 0;
-        Batch_Manager.Max_Map_Rows := 0;
+        Max_Map_Cols := 0;
+        Max_Map_Rows := 0;
         Tiles_Manager.Reset_Vars;
     end Reset_Manifold_Vars;
 

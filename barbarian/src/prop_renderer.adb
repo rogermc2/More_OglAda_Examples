@@ -894,10 +894,10 @@ package body Prop_Renderer is
       use Single_Math_Functions;
       use Singles;
       Left           : constant Int := Maths.Max_Int (0, V - Tiles_Distance) + 1;
-      Right          : constant Int := Maths.Min_Int (Batch_Manager.Max_Map_Cols - 1,
+      Right          : constant Int := Maths.Min_Int (Tiles_Manager.Max_Map_Cols - 1,
                                                       V + Tiles_Distance) + 1;
       Up             : constant Int := Maths.Max_Int (0, U - Tiles_Distance) + 1;
-      Down           : constant Int := Maths.Min_Int (Batch_Manager.Max_Map_Rows - 1,
+      Down           : constant Int := Maths.Min_Int (Tiles_Manager.Max_Map_Rows - 1,
                                                       U + Tiles_Distance) + 1;
       --  Diamond Bob
       Curr_Time      : constant Single := Single (Glfw.Time);
@@ -988,10 +988,10 @@ package body Prop_Renderer is
       use Prop_Renderer.Render;
       use Transparency;
       Left         : constant Int := Maths.Max_Int (0, V - Tiles_Distance) + 1;
-      Right        : constant Int := Maths.Min_Int (Batch_Manager.Max_Map_Cols - 1,
+      Right        : constant Int := Maths.Min_Int (Tiles_Manager.Max_Map_Cols - 1,
                                                     V + Tiles_Distance) + 1;
       Up           : constant Int := Maths.Max_Int (0, U - Tiles_Distance) + 1;
-      Down         : constant Int := Maths.Min_Int (Batch_Manager.Max_Map_Rows - 1,
+      Down         : constant Int := Maths.Min_Int (Tiles_Manager.Max_Map_Rows - 1,
                                                     U + Tiles_Distance) + 1;
       Curr_Time    : constant Single := Single (Glfw.Time);
       Elapsed      : constant Single := Curr_Time - Prev_Time;

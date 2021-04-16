@@ -6,11 +6,17 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GL.Objects.Textures;
 with GL.Types; use GL.Types;
 
-with Manifold;
-
 package Tiles_Manager is
 
    Max_Tile_Cols    : constant Positive := 64;
+
+   Max_Map_Cols   : Int := 0;  --  Set by map file
+   Max_Map_Rows   : Int := 0;  --  Set by map file
+   Total_Tiles    : Int := 0;
+   Batches_Across : Integer := 0;
+   Batches_Down   : Integer := 0;
+
+   subtype Tile_Indicy is Int range 0 .. Total_Tiles;
    subtype Tiles_RC_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
 
    type Tile_Data is record
@@ -31,7 +37,8 @@ package Tiles_Manager is
    subtype Tile_Row_List is Tile_Row_Package.Vector;
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 
-   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists (Int);
+   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
+      (Tile_Indicy);
    subtype Tile_Indices_List is Tile_Indices_Package.List;
    subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
 
