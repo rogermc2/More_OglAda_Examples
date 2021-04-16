@@ -234,7 +234,7 @@ package body Prop_Renderer is
 
     function Check_Tile_For_Property
       (Map : Ints.Vector2; Prop_Type : Prop_Renderer_Support.Property_Type)
-      return Boolean is
+       return Boolean is
         use Prop_Indices_Package;
         Prop_Indices : Prop_Indices_List;
         Property     : Property_Data;
@@ -994,8 +994,8 @@ package body Prop_Renderer is
         Right        : constant Natural
           := Maths.Min_Integer (Tiles_Manager.Max_Map_Cols - 1,
                                 V + Tiles_Distance) + 1;
-        Up           : constant Natural := Maths.Max_Integer
-          (0, U - Tiles_Distance) + 1;
+        Up           : constant Natural :=
+                         Maths.Max_Integer (0, U - Tiles_Distance) + 1;
         Down         : constant Natural
           := Maths.Min_Integer (Tiles_Manager.Max_Map_Rows - 1,
                                 U + Tiles_Distance) + 1;

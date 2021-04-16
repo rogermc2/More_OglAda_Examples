@@ -188,12 +188,10 @@ package body Prop_Renderer.Render is
         Model_Matrix : Matrix4 := Identity4;
         Continue     : Boolean := True;
     begin
-        Put_line ("Prop_Renderer.Render Render_Javelin_Standard entered");
         aCharacter := Get_Character (1);
-        Put_line ("Prop_Renderer.Render Render_Javelin_Standard aCharacter set");
         Count := Integer (Jav_Stand_Render_List.Length);
-        Put_line ("Prop_Renderer.Render Render_Javelin_Standard Count: " &
-                Integer'Image (Count));
+--          Put_line ("Prop_Renderer.Render Render_Javelin_Standard Count: " &
+--                  Integer'Image (Count));
         if not Is_Empty (Jav_Stand_Render_List) then
             GL.Objects.Programs.Use_Program
               (Properties_Shader_Manager.Jav_Stand_Shader);
@@ -204,8 +202,8 @@ package body Prop_Renderer.Render is
             end if;
 
             for Param_I in 1 .. Count loop
-                Put_line ("Prop_Renderer.Render Render_Javelin_Standard Param_I: " &
-                Integer'Image (Param_I));
+--                  Put_line ("Prop_Renderer.Render Render_Javelin_Standard Param_I: " &
+--                  Integer'Image (Param_I));
                 if  Continue then
                     Prop_I := Jav_Stand_Render_List (Param_I);
                     Property := Properties_Manager.Get_Property_Data (Prop_I);

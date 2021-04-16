@@ -18,8 +18,6 @@ package Tiles_Manager is
    Total_Tiles    : Natural := 0;
    subtype Tiles_Index is Natural;
    subtype Tiles_RC_Index is Natural;
---     subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
---     subtype Tiles_RC_Index is Int range 0 .. Int (Max_Map_Cols) - 1;
 
    type Tile_Data is record
       Height        : Natural := 0;

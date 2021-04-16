@@ -1,4 +1,5 @@
 
+with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
@@ -46,8 +47,8 @@ package body Sprite_Renderer is
       Sprite_Map_Rows        : Int := 0;
       Sprite_Map_Columns     : Int := 0;
       Current_Sprite         : Natural := 0;
-      Wmap_U                 : Integer := -1;
-      Wmap_V                 : Integer := -1;
+      Wmap_U                 : Natural := 0;
+      Wmap_V                 : Natural := 0;
       Has_Pitch              : Boolean := False;
       Is_Visible             : Boolean := True;
    end record;
@@ -98,8 +99,8 @@ package body Sprite_Renderer is
          Sprites (index).Sprite_Map_Rows := 0;
          Sprites (index).Sprite_Map_Columns := 0;
          Sprites (index).Current_Sprite := 0;
-         Sprites (index).Wmap_U := -1;
-         Sprites (index).Wmap_V := -1;
+         Sprites (index).Wmap_U := 0;
+         Sprites (index).Wmap_V := 0;
          Sprites (index).Has_Pitch := False;
          Sprites (index).Is_Visible := True;
       end loop;
@@ -245,11 +246,20 @@ package body Sprite_Renderer is
       Sprites (Sprite_Index).Model_Matrix :=
         Rotation_Matrix (To_Radians (Sprites (Sprite_Index).Heading_Deg),
                          (0.0, 1.0, 0.0)) * Sprites (Sprite_Index).Model_Matrix;
+
+--        Put_Line ("Sprite_Renderer.Set_Sprite_Position Sprites (Sprite_Index).Wmap_U: "
+--                  & Integer'Image (Sprites (Sprite_Index).Wmap_U));
       Sprite_World_Map.Move_Sprite_In_World_Map
         (Sprites (Sprite_Index).Wmap_U, Sprites (Sprite_Index).Wmap_V,
          U, V, World_Pos (GL.X), Sprite_Index);
       Sprites (Sprite_Index).Wmap_U := U;
       Sprites (Sprite_Index).Wmap_V := V;
+
+   exception
+      when anError : others =>
+         Put ("Sprite_Renderer.Set_Sprite_Position exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
 
    end Set_Sprite_Position;
 
@@ -298,6 +308,12 @@ package body Sprite_Renderer is
       else
          Sprite_Shader_Manager.Set_Shadow_Enabled (0.0);
       end if;
+
+   exception
+      when anError : others =>
+         Put ("Sprite_Renderer.Start_Sprite_Rendering exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
 
    end Start_Sprite_Rendering;
 

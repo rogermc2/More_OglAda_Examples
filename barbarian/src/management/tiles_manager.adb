@@ -71,8 +71,8 @@ package body Tiles_Manager is
       --          Sorted        : Boolean := False;
       New_Light     : Static_Light_Data;
    begin
-      Put_Line ("Tiles_Manager.Add_Static_Light Total_Batches: " &
-               Integer'Image (Total_Batches));
+--        Put_Line ("Tiles_Manager.Add_Static_Light Total_Batches: " &
+--                 Integer'Image (Total_Batches));
       New_Light.Row := Positive (Row);
       New_Light.Column := Positive (Col);
       New_Light.Position := (X, Y, Z);
@@ -80,19 +80,19 @@ package body Tiles_Manager is
       New_Light.Specular := Specular;
       New_Light.Distance := Light_Range;
       Static_Lights.Append (New_Light);
+
       if Batch_List.Is_Empty then
          raise Tiles_Manager_Exception with
          "Tiles_Manager.Add_Static_Light Batch_List is empty! ";
       end if;
-      Put_Line ("Tiles_Manager.Add_Static_Light Batch_List size: " &
-               Integer'Image (Integer (Batch_List.Length)));
+
+--        Put_Line ("Tiles_Manager.Add_Static_Light Batch_List size: " &
+--                 Integer'Image (Integer (Batch_List.Length)));
       for index in 1 .. Total_Batches loop
-         Put_Line ("Tiles_Manager.Add_Static_Light index: " &
-                     Integer'Image (index));
+--           Put_Line ("Tiles_Manager.Add_Static_Light index: " &
+--                       Integer'Image (index));
          aBatch := Batch_List.Element (index);
-         Put_Line ("Tiles_Manager.Add_Static_Light Append.");
          aBatch.Static_Light_Indices.Append (Static_Lights.Last_Index);
-         Put_Line ("Tiles_Manager.Add_Static_Light Update_Batch.");
          Update_Batch (index, aBatch);
       end loop;
 
@@ -210,9 +210,9 @@ package body Tiles_Manager is
       use Batch_Manager;
       use Tile_Row_Package;
       Row_Vector : constant Tile_Column_List :=
-                       Tile_Rows.Element (Positive (Pos (GL.X)));
+                       Tile_Rows.Element (Natural (Pos (GL.X)));
    begin
-      return  Row_Vector.Element (Positive (Pos (GL.Y)));
+      return  Row_Vector.Element (Natural (Pos (GL.Y)));
 
    exception
       when anError : others =>
@@ -231,11 +231,11 @@ package body Tiles_Manager is
       Column     : constant Natural := Tile_Index - Row * Positive (Max_Map_Cols);
       Row_Vector : constant Tile_Column_List := Tile_Rows (Row);
    begin
-      return  Row_Vector.Element (Positive (Column));
+      return  Row_Vector.Element (Column);
 
    exception
       when anError : others =>
-         Put ("Tiles_Manager.Get_Tile Int exception: ");
+         Put ("Tiles_Manager.Get_Tile Natural exception: ");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
 
@@ -261,27 +261,25 @@ package body Tiles_Manager is
       T        : Single;
       Height   : Single := 0.0;
    begin
-      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height entered");
-      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height X, Z: " &
-                            Single'Image (X) & ", " & Single'Image (Z) );
+--        Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height X, Z: " &
+--                              Single'Image (X) & ", " & Single'Image (Z) );
       Col := Tiles_RC_Index (0.5 * (1.0 + X));
       Row := Tiles_RC_Index (0.5 * (1.0 + Z));
       Tile_Index := Row * Positive (Max_Map_Cols) + Col;
-      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Row, Col: " &
-                            Integer'Image (Row) & ", " & Integer'Image (Col));
-      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Tile_Index: " &
-                             Integer'Image (Tile_Index));
+--        Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Row, Col: " &
+--                              Integer'Image (Row) & ", " & Integer'Image (Col));
+--        Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Tile_Index: " &
+--                               Integer'Image (Tile_Index));
       aTile := Get_Tile (Tile_Index);
-      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height aTile set");
       if X < -1.0 or Col > Tiles_RC_Index (Max_Map_Cols) or Z < -1.0 or
         Row > Tiles_RC_Index (Max_Map_Rows) then
          Height := Out_Of_Bounds_Height;
-         Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Out_Of_Bounds_Height" &
-                               Single'Image (Height));
+--           Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Out_Of_Bounds_Height" &
+--                                 Single'Image (Height));
       else
          Height := 2.0 * Single (aTile.Height);
-         Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height " &
-                               Single'Image (Height));
+--           Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height " &
+--                                 Single'Image (Height));
          if Respect_Ramps and then Is_Ramp (Tile_Index) then
             --  Work out position within ramp. subtract left-most pos from x, etc.
             S := 0.5 * (1.0 + X - Single (2 * Col));
@@ -300,8 +298,8 @@ package body Tiles_Manager is
             Height := Height - 0.5;
          end if;
       end if;
-      Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height row, col " &
-                             Integer'Image (Row) & ", " & Integer'Image (Col));
+--        Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height row, col " &
+--                               Integer'Image (Row) & ", " & Integer'Image (Col));
       return Height;
 
    exception

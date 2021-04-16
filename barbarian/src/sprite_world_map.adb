@@ -1,4 +1,5 @@
 
+with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Maths;
@@ -140,6 +141,13 @@ package body Sprite_World_Map is
             Remove_Sprite_From_World_Map (From_U, From_V, Sprite_ID);
         end if;
         Add_New_Sprite_To_World_Map (To_U, To_V, Y, Sprite_ID);
+
+   exception
+      when anError : others =>
+         Put ("Sprite_World_Map.Move_Sprite_In_World_Map exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
     end Move_Sprite_In_World_Map;
 
     --  ------------------------------------------------------------------------
@@ -174,6 +182,12 @@ package body Sprite_World_Map is
         end loop;
         Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) :=
           Sprite_Tiles.Count_Of_Sprites_In_Tiles (S_U, S_V) - 1;
+
+   exception
+      when anError : others =>
+         Put ("Sprite_World_Map.Remove_Sprite_From_World_Map exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
 
     end Remove_Sprite_From_World_Map;
 
