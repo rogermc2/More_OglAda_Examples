@@ -206,13 +206,20 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
---     function Get_Tile (Pos : Ints.Vector2) return Tile_Data is
---        use Batch_Manager;
---        use Tile_Row_Package;
---        Row_Vector : constant Tile_Column_List := Tile_Rows (Pos (GL.X));
---     begin
---        return  Row_Vector.Element (Pos (GL.Y));
---     end Get_Tile;
+   function Get_Tile (Pos : Ints.Vector2) return Tile_Data is
+      use Batch_Manager;
+      use Tile_Row_Package;
+      Row_Vector : constant Tile_Column_List := Tile_Rows (Pos (GL.X));
+   begin
+      return  Row_Vector.Element (Pos (GL.Y));
+
+   exception
+      when anError : others =>
+         Put ("Tiles_Manager.Get_Tile Vector2 exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
+   end Get_Tile;
 
    --  --------------------------------------------------------------------------
 
@@ -224,6 +231,13 @@ package body Tiles_Manager is
       Row_Vector : constant Tile_Column_List := Tile_Rows (Row);
    begin
       return  Row_Vector.Element (Column);
+
+   exception
+      when anError : others =>
+         Put ("Tiles_Manager.Get_Tile Int exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
    end Get_Tile;
 
    --  --------------------------------------------------------------------------
