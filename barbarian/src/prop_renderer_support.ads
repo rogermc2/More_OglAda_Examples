@@ -57,7 +57,8 @@ package Prop_Renderer_Support is
       -- Position And Facing In Meters And Degrees
       -- -----------------------------------------
       World_Pos           : Singles.Vector3 := Maths.Vec3_0;
-      Quat                : Maths.Single_Quaternion.Quaternion;  --  Versor
+      Quat                : Maths.Single_Quaternion.Quaternion :=
+                              (0.0, 0.0, 1.0, 0.0);  --  Versor
       Heading_Deg         : Maths.Degree := 0.0;
       Velocity            : Singles.Vector3 := Maths.Vec3_0;
       Origin_World        : Singles.Vector3 := Maths.Vec3_0;

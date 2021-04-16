@@ -254,8 +254,8 @@ package body Tiles_Manager is
       Tile_Row   : constant Tile_Column_List := Element (Row_Curs);
       Col_Curs   : constant Tile_Column_Cursor := Tile_Row.To_Cursor (Col);
       Tile_Index : constant Tiles_RC_Index := Row * Max_Map_Cols + Col;
-      aTile      : Tile_Data := Get_Tile (Tile_Index);
---        aTile    : constant Tile_Data := Get_Tile ((Row, Col));
+--        aTile      : Tile_Data := Get_Tile (Tile_Index);
+      aTile    : constant Tile_Data := Get_Tile ((Row, Col));
       S        : Single;
       T        : Single;
       Height   : Single := 0.0;
@@ -283,9 +283,16 @@ package body Tiles_Manager is
             Height := Height - 0.5;
          end if;
       end if;
-      --        Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height row, col " &
-      --                               Int'Image (Row) & ", " & Int'Image (Col));
+            Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height row, col " &
+                                   Int'Image (Row) & ", " & Int'Image (Col));
       return Height;
+
+   exception
+      when anError : others =>
+         Put ("Tiles_Manager.Get_Tile_Heightt exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
    end Get_Tile_Height;
 
    --  ----------------------------------------------------------------------------
