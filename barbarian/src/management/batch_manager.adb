@@ -101,6 +101,12 @@ package body Batch_Manager is
                          Diff - level - 1);
       end loop;
 
+   exception
+      when anError : others =>
+         Put ("Batch_Manager.Add_East_Points exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
    end Add_East_Points;
 
    --  -------------------------------------------------------------------------
@@ -155,6 +161,12 @@ package body Batch_Manager is
          end loop;
       end if;
 
+   exception
+      when anError : others =>
+         Put ("Batch_Manager.Add_North_Points exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
    end Add_North_Points;
 
    --  -------------------------------------------------------------------------
@@ -207,6 +219,12 @@ package body Batch_Manager is
 
          Set_Tex_Coords (aBatch, aTile, South_Side, diff - level - 1);
       end loop;
+
+   exception
+      when anError : others =>
+         Put ("Batch_Manager.Add_South_Points exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
 
    end Add_South_Points;
 
@@ -310,6 +328,12 @@ package body Batch_Manager is
          Set_Tex_Coords (aBatch, Get_Tile (Tile_Index), West_Side,
                          Diff - level - 1);
       end loop;
+
+   exception
+      when anError : others =>
+         Put ("Batch_Manager.Add_West_Points exception: ");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
 
    end Add_West_Points;
 
@@ -460,6 +484,7 @@ package body Batch_Manager is
       use Tile_Indices_Package;
       use GL_Maths;
       --  Max_Tile_Cols = 64
+      subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
       subtype Atlas_Index is Int range 0 .. Int (Max_Tile_Cols) - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
@@ -469,7 +494,7 @@ package body Batch_Manager is
       Column_List       : Tile_Column_List;
       aTile             : Tile_Data;  --  includes texture index
       N_Tile            : Tile_Data;
-      Tile_Index        : Int;
+      Tile_Index        : Tiles_Index;
       Height            : Integer;
       X                 : Single;
       Y                 : Single;
@@ -505,8 +530,8 @@ package body Batch_Manager is
          --           Row_Index := T_Indices (GL.X);
          --           Col_Index := T_Indices (GL.Y);;
          Game_Utils.Game_Log
-           ("Batch_Manger.Generate_Points Tile_Index: " &
-              Int'Image (Tile_Index));
+           ("Batch_Manger.Generate_Points Total_Tiles, Tile_Index: " &
+              Int'Image (Tile_Index) & ", " & Int'Image (Total_Tiles));
          X := Single (2 * (Col_Index - 1));
          Y := Single (2 * Height);
          Z := Single (2 * (Row_Index - 1));
@@ -590,7 +615,7 @@ package body Batch_Manager is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Tiles_Manager.Generate_Points!");
+         Put_Line ("An exception occurred in Batch_Manger.Generate_Points!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
 
@@ -607,8 +632,9 @@ package body Batch_Manager is
          use Vec2_Package;
          use Vec3_Package;
 
+         subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
          Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-         Tile_Index     : Int;
+         Tile_Index     : Tiles_Index;
          Row_Index      : Tiles_RC_Index;
          Col_Index      : Tiles_RC_Index;
          aTile          : Tile_Data;
@@ -730,7 +756,7 @@ package body Batch_Manager is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Tiles_Manager.Generate_Ramps!");
+         Put_Line ("An exception occurred in Batch_Manger.Generate_Ramps!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
 
@@ -745,8 +771,9 @@ package body Batch_Manager is
          use Tile_Indices_Package;
          use GL_Maths;
          use Vec3_Package;
+         subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
          Indices_Curs   : Tile_Indices_Package.Cursor := aBatch.Tile_Indices.First;
-         Tile_Index     : Int;
+         Tile_Index     : Tiles_Index;
          Row_Index      : Tiles_RC_Index;
          Col_Index      : Tiles_RC_Index;
          aTile          : Tile_Data;
@@ -814,7 +841,7 @@ package body Batch_Manager is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Tiles_Manager.Generate_Water!");
+         Put_Line ("An exception occurred in Batch_Manger.Generate_Water!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
 
@@ -895,7 +922,7 @@ package body Batch_Manager is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Tiles_Manager.Regenerate_Batch!");
+         Put_Line ("An exception occurred in Batch_Manger.Regenerate_Batch!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
       end Regenerate_Batch;

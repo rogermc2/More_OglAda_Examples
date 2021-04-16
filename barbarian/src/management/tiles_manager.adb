@@ -110,7 +110,6 @@ package body Tiles_Manager is
       use Batch_Manager;
       use Batches_Package;
       Total_Tiles : constant Int := Max_Map_Rows * Max_Map_Cols;
-      subtype Tiles_Index is Int range 0 .. Total_Tiles - 1;
       Row         : Natural;
       Column      : Natural;
       B_Across    : Natural;
