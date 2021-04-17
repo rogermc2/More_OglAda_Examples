@@ -3,6 +3,8 @@ with GL.Types; use GL.Types;
 
 with Maths;
 
+with Settings;
+
 package Camera is
 
    type Camera_Data is private;
@@ -50,10 +52,10 @@ private
       Screen_Shake_Amplitude          : Float := 0.0;
       Screen_Shake_Frequency          : Float := 0.0;
       Wind_In_Angle                   : Maths.Degree := 0.0;
-      FOY_Y                           : Maths.Degree := 67.0;
+      Field_Of_View_Y                 : Maths.Degree := 67.0;
       Aspect                          : Single := 0.0;
-      Near                            : Single := 0.0;
-      Far                             : Single := 0.0;
+      Near                            : Single := 0.1;
+      Far                             : Single := Settings.Far_Clip;
       Height                          : Single := 13.0;
       Is_Dirty                        : Boolean := True;
       Manual_Override                 : Boolean := False;
