@@ -529,14 +529,12 @@ package body Batch_Manager is
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
-         --           Row_Index := T_Indices (GL.X);
-         --           Col_Index := T_Indices (GL.Y);
 --           Game_Utils.Game_Log
 --             ("Batch_Manger.Generate_Points Total_Tiles, Tile_Index: " &
 --                Int'Image (Tile_Index) & ", " & Int'Image (Total_Tiles));
-         X := Single (2 * (Col_Index - 1));
+         X := Single (2 * Col_Index);
          Y := Single (2 * Height);
-         Z := Single (2 * (Row_Index - 1));
+         Z := Single (2 * Row_Index);
          if aTile.Tile_Type = '~' then
             Height := Height - 1;
          end if;
