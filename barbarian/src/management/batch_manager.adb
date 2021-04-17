@@ -76,19 +76,19 @@ package body Batch_Manager is
       end if;
 
       for level in -Diff .. -1 loop
-         X := Single (2 * (Col - 1) - 1);
+         X := Single (2 * Col - 1);
          Y := Single (2 * (Height + level + 1));
-         Z := Single (2 * (Tile_Row - 1) + 1);
+         Z := Single (2 * Tile_Row + 1);
          aBatch.Points.Append ((X, Y, Z));
 
-         Z := Single (2 * (Tile_Row - 1) - 1);
+         Z := Single (2 * Tile_Row - 1);
          aBatch.Points.Append ((X, Y, Z));
 
          Y := Single (2 * (Height + level));
          aBatch.Points.Append ((X, Y, Z));
          aBatch.Points.Append ((X, Y, Z));
 
-         Z := Single (2 * (Tile_Row - 1) + 1);
+         Z := Single (2 * Tile_Row + 1);
          aBatch.Points.Append ((X, Y, Z));
 
          Y := Single (2 * (Height + level + 1));
@@ -113,7 +113,7 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_North_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer;
+     (aBatch : in out Batch_Meta;  Height : Integer;
       Tile_Index : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
@@ -124,7 +124,7 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile ((Int (Tile_Row + 1), Int (Tile_Col)));
+      N_Tile := Get_Tile (Tile_Index + Max_Map_Cols);
       N_Height := N_Tile.Height;
       if N_Tile.Tile_Type = '~' then
          N_Height := N_Height - 1;
@@ -139,17 +139,17 @@ package body Batch_Manager is
       --  Build one of Diff wall sections at a time
       if Diff > 0 then
          for level in -Diff .. -1 loop
-            X := Single (2 * (Col - 1) + 1);
-            Y := Single (2 * (Height + level) + 1);
-            Z := Single (2 * (Tile_Row - 1) + 1);
+            X := Single (2 * Col + 1);
+            Y := Single (2 * (Height + level + 1));
+            Z := Single (2 * Tile_Row + 1);
             aBatch.Points.Append ((X, Y, Z));  --  1
-            X := Single (2 * (Col - 1) - 1);
+            X := Single (2 * Col - 1);
             aBatch.Points.Append ((X, Y, Z));  --  2
             Y := Single (2 * (Height + level));
             aBatch.Points.Append ((X, Y, Z));   --  3
-
             aBatch.Points.Append ((X, Y, Z));   --  4
-            X := Single (2 * (Col - 1) + 1);
+
+            X := Single (2 * Col + 1);
             aBatch.Points.Append ((X, Y, Z));   --  5
             Y := Single (2 * (Height + level + 1));
             aBatch.Points.Append ((X, Y, Z));    --  6
@@ -186,7 +186,7 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile (Tile_Index - 1);
+      N_Tile := Get_Tile (Tile_Index - Max_Map_Cols);
       N_Height := N_Tile.Height;
       if aTile.Tile_Type = '~' then
          N_Height := N_Height - 1;
@@ -198,23 +198,23 @@ package body Batch_Manager is
       end if;
 
       for level in -Diff .. -1 loop
-         X := Single (2 * (Col - 1) - 1);
+         X := Single (2 * Col - 1);
          Y := Single (2 * (Height + level + 1));
-         Z := Single (2 * (Tile_Row - 1) - 1);
-         aBatch.Points.Append ((X, Y, Z));
+         Z := Single (2 * Tile_Row - 1);
+         aBatch.Points.Append ((X, Y, Z));   --  1
 
-         X := Single (2 * (Col - 1) + 1);
-         aBatch.Points.Append ((X, Y, Z));
+         X := Single (2 * Col + 1);
+         aBatch.Points.Append ((X, Y, Z));   --  2
 
          Y := Single (2 * (Height + level));
-         aBatch.Points.Append ((X, Y, Z));
-         aBatch.Points.Append ((X, Y, Z));
+         aBatch.Points.Append ((X, Y, Z));   --  3
+         aBatch.Points.Append ((X, Y, Z));   --  4
 
-         X := Single (2 * (Col - 1) - 1);
-         aBatch.Points.Append ((X, Y, Z));
+         X := Single (2 * Col - 1);
+         aBatch.Points.Append ((X, Y, Z));   --  5
 
          Y := Single (2 * (Height + level + 2));
-         aBatch.Points.Append ((X, Y, Z));
+         aBatch.Points.Append ((X, Y, Z));   --  6
 
          for index in 1 .. 6 loop
             aBatch.Normals.Append ((0.0, 0.0, -1.0));
@@ -307,23 +307,21 @@ package body Batch_Manager is
       end if;
 
       for level in -Diff .. -1 loop
-         X := Single (2 * (Col - 1) + 1);
+         X := Single (2 * Col + 1);
          Y := Single (2 * (Height + level + 1));
-         Z := Single (2 * (Tile_Row - 1) - 1);
-         aBatch.Points.Append ((X, Y, Z));
+         Z := Single (2 * Tile_Row - 1);
+         aBatch.Points.Append ((X, Y, Z));   --  1
 
-         Z := Single (2 * (Tile_Row - 1) + 1);
-         aBatch.Points.Append ((X, Y, Z));  --  1
-         X := Single (2 * (Col - 1) - 1);
-         aBatch.Points.Append ((X, Y, Z));  --  2
+         Z := Single (2 * Tile_Row + 1);
+         aBatch.Points.Append ((X, Y, Z));   --  2
          Y := Single (2 * (Height + level));
          aBatch.Points.Append ((X, Y, Z));   --  3
-
          aBatch.Points.Append ((X, Y, Z));   --  4
-         X := Single (2 * (Col - 1) + 1);
+
+         Z := Single (2 * Tile_Row - 1);
          aBatch.Points.Append ((X, Y, Z));   --  5
-         Y := Single (2 * (Height + level + 1));
-         aBatch.Points.Append ((X, Y, Z));    --  6
+         X := Single (2 * Col + 1);
+         aBatch.Points.Append ((X, Y, Z));   --  6
 
          for index in 1 .. 6 loop
             aBatch.Normals.Append ((1.0, 0.0, 0.0));
@@ -554,10 +552,10 @@ package body Batch_Manager is
             end loop;
 
             --  Texture_Index from map file (range 0 .. 15, one hex digit)
-            Tex_Index := Tiles_RC_Index (aTile.Texture_Index);
+            Tex_Index := aTile.Texture_Index;
             --  Select tile from map file
             --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
-            Atlas_Row := Tex_Index / Tiles_RC_Index (Sets_In_Atlas_Row);
+            Atlas_Row := Tex_Index / Sets_In_Atlas_Row;
             Atlas_Col := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
 --              Game_Utils.Game_Log
 --                ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
@@ -572,19 +570,19 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
---           if Row_Index < Max_Map_Rows - 1 then
---              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---           if Row_Index > 0 then
---              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---
---           if Col_Index < Column_List.Last_Index then
---              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---           if Col_Index > 0 then
---              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
+         if Row_Index < Max_Map_Rows - 1 then
+            Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+         if Row_Index > 0 then
+            Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+
+         if Col_Index < Column_List.Last_Index then
+            Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+         if Col_Index > 0 then
+            Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
          Next (Tile_Indices_Curs);
       end loop;  -- over tile indices
       Game_Utils.Game_Log

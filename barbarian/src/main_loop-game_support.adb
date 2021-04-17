@@ -1,4 +1,5 @@
 
+with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw;
@@ -186,8 +187,9 @@ package body Main_Loop.Game_Support is
       end if;
 
    exception
-      when others =>
+      when anError : others =>
          Put_Line ("Main_Loop.Game_Support.Player_1_View exception");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
    end Player_1_View;
 
