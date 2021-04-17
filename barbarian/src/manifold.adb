@@ -2,7 +2,7 @@
 with Ada.Calendar;
 with Ada.Calendar.Formatting;
 with Ada.Containers.Vectors;
-with Ada.Execution_Time;
+with Ada.Exceptions;
 
 with GL.Attributes;
 with GL.Culling;
@@ -105,9 +105,9 @@ package body Manifold is
         if Camera.Is_Dirty then
             Set_View_Matrix (Translation_Matrix ((0.0, 5.0, 0.0)) * Rotate_X_Degree (Camera.View_Matrix, Degree (-80)));
             Set_Projection_Matrix (Translation_Matrix ((0.0, 0.0, -1.8)) * Camera.Projection_Matrix);
-      end if;
---        Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Camera.View_Matrix",
---                                Camera.View_Matrix);
+        end if;
+        --        Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Camera.View_Matrix",
+        --                                Camera.View_Matrix);
 
         if Manifold_Dyn_Light_Dirty then
             Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
@@ -116,85 +116,89 @@ package body Manifold is
             Set_Dynamic_Light_Range (Manifold_Dyn_Light_Range);
         end if;
 
---          if Settings.Shadows_Enabled then
---              Set_Shadow_Enabled (1.0);
---              Set_Caster_Position (Shadows.Caster_Position);
---              Shadows.Bind_Cube_Shadow_Texture (3);
---          else
-            Set_Shadow_Enabled (0.0);
---          end if;
+        --          if Settings.Shadows_Enabled then
+        --              Set_Shadow_Enabled (1.0);
+        --              Set_Caster_Position (Shadows.Caster_Position);
+        --              Shadows.Bind_Cube_Shadow_Texture (3);
+        --          else
+        Set_Shadow_Enabled (0.0);
+        --          end if;
 
-        Set_Model_Matrix (Singles.Identity4);
-
-        while Has_Element (Batch_Cursor) loop
-            aBatch := Element (Batch_Cursor);
-            Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
-                             abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
-            if Rad_Dist <= 2.0 * Radius then
-                Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
-                                 abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
+        if not theBatches.Is_Empty then
+            Set_Model_Matrix (Singles.Identity4);
+            for index in theBatches.First_Index .. theBatches.Last_Index loop
+                --          while Has_Element (Batch_Cursor) loop
+                --              aBatch := Element (Batch_Cursor);
+                aBatch := theBatches.Element (index);
+                Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
+                                 abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
                 if Rad_Dist <= 2.0 * Radius then
-                    if Frustum.Is_Aabb_In_Frustum
-                      (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
-                      not (aBatch.Static_Light_Indices.Is_Empty) then
-                        --                          Put_Line ("Manifold.Draw_Manifold_Around Aabb_In_Frustum");
-                        Light_Indices := aBatch.Static_Light_Indices;
-                        Light_Cursor := Light_Indices.First;
-                        Light_Index1 := Light_Indices.First_Index;
-                        Light_Index2 := Light_Index1 + 1;
-                        Tile_Index1 := Int (Light_Indices.Element (Light_Index1));
-                        Tile_Index2 := Int (Light_Indices.Element (Light_Index2));
---                          Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
+                    Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
+                                     abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
+                    if Rad_Dist <= 2.0 * Radius then
+                        if Frustum.Is_Aabb_In_Frustum
+                          (aBatch.AABB_Mins, aBatch.AABB_Maxs) and
+                          not (aBatch.Static_Light_Indices.Is_Empty) then
+                            --                          Put_Line ("Manifold.Draw_Manifold_Around Aabb_In_Frustum");
+                            Light_Indices := aBatch.Static_Light_Indices;
+                            Light_Cursor := Light_Indices.First;
+                            Light_Index1 := Light_Indices.First_Index;
+                            Light_Index2 := Light_Index1 + 1;
+                            Tile_Index1 := Int (Light_Indices.Element (Light_Index1));
+                            Tile_Index2 := Int (Light_Indices.Element (Light_Index2));
+                            --                          Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
-                        if not aBatch.Points.Is_Empty then
-                            --  flat tiles
-                            GL_Utils.Bind_Vao (aBatch.Points_VAO);
-                            --  Bind_Texture sets active unit and binds texture
-                            --  to Texture_Target Texture_2D
-                            Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
-                            Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
---                              Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
-                            --  Draws start scene
-                            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
-                            --                              Draw_Arrays (Points, 0, 1);
-                        end if;
-
-                        if not aBatch.Ramp_Points.Is_Empty then
-                            --  ramps
-                            GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
-
-                            --  Bind_Texture sets active unit and binds texture
-                            --  to Texture_Target Texture_2D
---                              Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
---                              Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-
-                            if Settings.Render_OLS then
-                                Set_Front_Face (Clockwise);
-                                Set_Outline_Pass (1.0);
-                                --                          Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
-                                Set_Outline_Pass (0.0);
-                                Set_Front_Face (Counter_Clockwise);
+                            if not aBatch.Points.Is_Empty then
+                                --  flat tiles
+                                GL_Utils.Bind_Vao (aBatch.Points_VAO);
+                                --  Bind_Texture sets active unit and binds texture
+                                --  to Texture_Target Texture_2D
+                                Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
+                                Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+                                --                              Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
+                                --  Draws start scene
+                                Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+                                --                              Draw_Arrays (Points, 0, 1);
                             end if;
-                            --  regular pass
-                            --  Bind_Texture sets active unit and binds texture
-                            --  to Texture_Target Texture_2D
---                              Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
---                              Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-                            --                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
-                            --                       Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
-                            --                              Draw_Arrays (Points, 0, 1);
+
+                            if not aBatch.Ramp_Points.Is_Empty then
+                                --  ramps
+                                GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
+
+                                --  Bind_Texture sets active unit and binds texture
+                                --  to Texture_Target Texture_2D
+                                --                              Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
+                                --                              Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+
+                                if Settings.Render_OLS then
+                                    Set_Front_Face (Clockwise);
+                                    Set_Outline_Pass (1.0);
+                                    --                          Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+                                    Set_Outline_Pass (0.0);
+                                    Set_Front_Face (Counter_Clockwise);
+                                end if;
+                                --  regular pass
+                                --  Bind_Texture sets active unit and binds texture
+                                --  to Texture_Target Texture_2D
+                                --                              Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
+                                --                              Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+                                --                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
+                                --                       Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+                                --                              Draw_Arrays (Points, 0, 1);
+                            end if;
                         end if;
                     end if;
                 end if;
-            end if;
-            Next (Batch_Cursor);
-        end loop;
+                --              Next (Batch_Cursor);
+            end loop;
+        end if;
 
         --        Draw_Water_Manifold_Around;
 
     exception
-        when others =>
+        when anError : others =>
             Put_Line ("Manifold.Draw_Manifold_Around exception");
+            Put_Line (Ada.Exceptions.Exception_Information (anError));
             raise;
     end  Draw_Manifold_Around;
 
@@ -318,7 +322,7 @@ package body Manifold is
         use GL.Types;
         use Batch_Manager;
         use GL_Maths.Indices_Package;
---          Start_Time    : Time := Clock;
+        --          Start_Time    : Time := Clock;
         Batch_Index   : Positive;
         Light_Indices : GL_Maths.Indices_List;
         Light_Cursor  : Cursor;
@@ -347,8 +351,8 @@ package body Manifold is
         if Found then
             Result := Int (Element (Light_Cursor));
         end if;
---          Put_Line ("Manifold.Get_Light_Index time taken : "
---                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
+        --          Put_Line ("Manifold.Get_Light_Index time taken : "
+        --                   & Duration'Image ((Clock - Start_Time) * 1000) & "ms");
         return Result;
 
     end Get_Light_Index;

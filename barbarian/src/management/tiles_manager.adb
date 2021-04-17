@@ -132,11 +132,11 @@ package body Tiles_Manager is
       for Tile_Index in 0 .. Total_Tiles - 1 loop
          Row := Natural (Tile_Index / Max_Map_Cols);
          Column := Natural (Tile_Index) - Row * Natural (Max_Map_Cols);
-         B_Down := Row / Settings.Tile_Batch_Width;
          Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
                                 Integer'Image (Integer (Row)) & ", " &
                                 Integer'Image (Integer (Column)));
          B_Across := Column / Settings.Tile_Batch_Width;
+         B_Down := Row / Settings.Tile_Batch_Width;
          Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches B_Down, B_Across " &
                                 Int'Image (Int (B_Down)) &  ", " &
                                 Int'Image (Int (B_Across)));

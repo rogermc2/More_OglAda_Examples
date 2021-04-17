@@ -34,7 +34,7 @@ package body Batch_Manager is
    Water_Mesh_Normals         : GL_Maths.Vec3_List;
    Water_Mesh_Texcoords       : GL_Maths.Vec2_List;
 
-   function Check_For_OOO (Batch_Index : Positive) return Boolean;
+   function Check_For_OOO (Batch_Index : Natural) return Boolean;
    procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
    procedure Update_AABB_Dimensions (aBatch     : in out Batch_Meta;
                                      Point_List : GL_Maths.Vec3_List);
@@ -358,7 +358,7 @@ package body Batch_Manager is
    --  ------------------------------------------------------------------------
    --  Out-of-order check. swap on first out-of-order and returns false.
    --  Multiple calls required to sort entire list
-   function Check_For_OOO (Batch_Index : Positive) return Boolean is
+   function Check_For_OOO (Batch_Index : Natural) return Boolean is
       use Maths.Single_Math_Functions;
       use Tiles_Manager;
       use Tile_Row_Package;
@@ -463,7 +463,7 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Free_Batch_Data (Batch_Index : Positive) is
+   procedure Free_Batch_Data (Batch_Index : Natural) is
       theBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
    begin
       theBatch.Points.Clear;
@@ -898,7 +898,7 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Regenerate_Batch (Batch_Index : Positive) is
+   procedure Regenerate_Batch (Batch_Index : Natural) is
       theBatch     : Batch_Meta;
       Tile_Indices : Tiles_Manager.Tile_Indices_List;
 
@@ -1076,14 +1076,14 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Batch (Index : Positive; Data : Batch_Meta) is
+   procedure Update_Batch (Index : Natural; Data : Batch_Meta) is
    begin
       Batches_Data.Replace_Element (Index, Data);
    end Update_Batch;
 
    --  ------------------------------------------------------------------------
 
-   procedure Update_Batch (Index : Positive; Tile_Index : Natural) is
+   procedure Update_Batch (Index : Natural; Tile_Index : Natural) is
       aBatch : Batch_Meta := Batch_List.Element (Index);
    begin
       aBatch.Tile_Indices.Append (Tile_Index);

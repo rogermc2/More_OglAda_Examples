@@ -39,7 +39,7 @@ package Batch_Manager is
       Static_Light_Indices : GL_Maths.Indices_List;
    end record;
 
-   package Batches_Package is new Ada.Containers.Vectors (Positive, Batch_Meta);
+   package Batches_Package is new Ada.Containers.Vectors (Natural, Batch_Meta);
    type Batches_List is new Batches_Package.Vector with null record;
 
    type Static_Light_Data is record
@@ -67,11 +67,11 @@ package Batch_Manager is
    function Batch_List return Batches_List;
    function Batches_Empty return Boolean;
    pragma Inline (Batches_Empty);
-   procedure Regenerate_Batch (Batch_Index : Positive);
+   procedure Regenerate_Batch (Batch_Index : Natural);
    function Static_Lights return Static_Light_Vector;
    function Static_Indices  (Batch_Index : Positive)
                              return GL_Maths.Indices_List;
-   procedure Update_Batch (Index : Positive; Data : Batch_Meta);
-   procedure Update_Batch (Index : Positive; Tile_Index : Natural);
+   procedure Update_Batch (Index : Natural; Data : Batch_Meta);
+   procedure Update_Batch (Index : Natural; Tile_Index : Natural);
 
 end Batch_Manager;
