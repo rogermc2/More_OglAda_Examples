@@ -533,6 +533,9 @@ package body Tiles_Manager is
               "Tiles_Manager.Get_Palette_File_Name, invalid format, " & ID &
               " expected starting " & aLine;
          end if;
+          Game_Utils.Game_Log
+              ("Manifold.Get_Palette_File_Name File_Name: " &
+              aLine (4 .. aLine'Last));
          return To_Unbounded_String ("src/" & aLine (4 .. aLine'Last));
       end Get_Palette_File_Name;
 

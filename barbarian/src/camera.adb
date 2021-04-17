@@ -48,7 +48,7 @@ package body Camera is
 
    function Field_Of_View_Y return Maths.Degree is
    begin
-      return G_Camera.FOY_Y;
+      return G_Camera.Field_Of_View_Y;
    end Field_Of_View_Y;
 
    --  ------------------------------------------------------------------------
@@ -76,7 +76,7 @@ package body Camera is
       G_Camera.Screen_Shake_Amplitude := 0.0;
       G_Camera.Screen_Shake_Frequency := 0.0;
       G_Camera.Wind_In_Angle := 0.0;
-      G_Camera.FOY_Y := 67.0;
+      G_Camera.Field_Of_View_Y := 67.0;
       G_Camera.Aspect := Single (Settings.Framebuffer_Height) /
         Single (Settings.Framebuffer_Width);
       G_Camera.Near := 0.1;  --  0.1
@@ -99,11 +99,11 @@ package body Camera is
       end if;
 
       G_Camera.Projection_Matrix := Perspective_Matrix
-        (G_Camera.FOY_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far);
+        (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far);
       G_Camera.GUI_Proj_Matrix := Perspective_Matrix
-        (G_Camera.FOY_Y, G_Camera.Aspect, 0.01, 1000.0);
+        (G_Camera.Field_Of_View_Y, G_Camera.Aspect, 0.01, 1000.0);
       G_Camera.Clip_Plane := Perspective_Matrix
-        (G_Camera.FOY_Y, G_Camera.Aspect, 0.1, 1000.0);
+        (G_Camera.Field_Of_View_Y, G_Camera.Aspect, 0.1, 1000.0);
       G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
       G_Camera.Is_Dirty  := True;
       G_Camera.Manual_Override := False;
@@ -145,7 +145,7 @@ package body Camera is
       use GL.Types.Singles;
       use Maths;
    begin
-      G_Camera.FOY_Y := FOV_Y;
+      G_Camera.Field_Of_View_Y := FOV_Y;
       G_Camera.Aspect := Width / Height;
       G_Camera.Near := Near;
       G_Camera.Far := Far;
@@ -205,14 +205,14 @@ package body Camera is
                Rot_Matrix := Rotate_Z_Degree (Identity4, G_Camera.Wind_In_Angle);
                G_Camera.View_Matrix := Rot_Matrix * G_Camera.View_Matrix;
             end if;
-         else
+         else --  First_Person
             Dir := G_Camera.World_Position - Prev_Cam_Pos;
             Dir (GL.Y) := 0.0;
             if Abs (Dir (GL.X) + Dir (GL.Z)) > 0.0 then
                Far_Point_Dir := Dir;
             end if;
             Far_Point_Pos := G_Camera.World_Position;
-            Far_Point_Pos (GL.Y) := Far_Point_Pos (GL.Y) - 11.0 ;
+            Far_Point_Pos (GL.Y) := Far_Point_Pos (GL.Y) - 11.0;
             Init_Lookat_Transform (Far_Point_Pos + G_Camera.Shake_Mod_Position,
                                    Far_Point_Pos + Far_Point_Dir,
                                    (0.0, 1.0, 0.0), G_Camera.View_Matrix);
@@ -220,7 +220,7 @@ package body Camera is
          G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
          G_Camera.Is_Dirty := True;
          Frustum.Re_Extract_Frustum_Planes
-           (G_Camera.FOY_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
+           (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
             G_Camera.World_Position, G_Camera.View_Matrix);
       end if;
    end Set_Camera_Position;
@@ -236,7 +236,7 @@ package body Camera is
       G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
       G_Camera.Is_Dirty := True;
       Frustum.Re_Extract_Frustum_Planes
-        (G_Camera.FOY_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
+        (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
          Frustum.Frustum_Camera_Position, G_Camera.View_Matrix);
 
       --  Raise brightness a little because torch won't be there
