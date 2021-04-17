@@ -575,19 +575,19 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
-         if Row_Index < Max_Map_Rows - 1 then
-            Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-         if Row_Index > 0 then
-            Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-
-         if Col_Index < Column_List.Last_Index then
-            Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-         if Col_Index > 0 then
-            Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
+--           if Row_Index < Max_Map_Rows - 1 then
+--              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--           if Row_Index > 0 then
+--              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--
+--           if Col_Index < Column_List.Last_Index then
+--              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--           if Col_Index > 0 then
+--              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
          Next (Tile_Indices_Curs);
       end loop;  -- over tile indices
       Game_Utils.Game_Log

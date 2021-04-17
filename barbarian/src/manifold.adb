@@ -78,6 +78,7 @@ package body Manifold is
         use GL.Objects.Buffers;
         use GL.Objects.Programs;
         use GL.Objects.Vertex_Arrays;
+        use GL.Types.Singles;
         use Maths;
         use Batch_Manager;
         use Batches_Package;
@@ -87,7 +88,7 @@ package body Manifold is
         use Vec3_Package;
         use Manifold_Shader_Manager;
         theBatches    : constant Batches_List := Batch_List;
-        Curs          : Batches_Package.Cursor := theBatches.First;
+        Batch_Cursor  : Batches_Package.Cursor := theBatches.First;
         aBatch        : Batch_Meta;
         Rad_Dist      : Single;
         Light_Indices : GL_Maths.Indices_List;
@@ -102,9 +103,11 @@ package body Manifold is
         --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
-            Set_View_Matrix (Camera.View_Matrix);
-            Set_Projection_Matrix (Camera.Projection_Matrix);
-        end if;
+            Set_View_Matrix (Translation_Matrix ((0.0, 5.0, 0.0)) * Rotate_X_Degree (Camera.View_Matrix, Degree (-80)));
+            Set_Projection_Matrix (Translation_Matrix ((0.0, 0.0, -1.8)) * Camera.Projection_Matrix);
+      end if;
+--        Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Camera.View_Matrix",
+--                                Camera.View_Matrix);
 
         if Manifold_Dyn_Light_Dirty then
             Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
@@ -113,18 +116,18 @@ package body Manifold is
             Set_Dynamic_Light_Range (Manifold_Dyn_Light_Range);
         end if;
 
-        if Settings.Shadows_Enabled then
-            Set_Shadow_Enabled (1.0);
-            Set_Caster_Position (Shadows.Caster_Position);
-            Shadows.Bind_Cube_Shadow_Texture (3);
-        else
+--          if Settings.Shadows_Enabled then
+--              Set_Shadow_Enabled (1.0);
+--              Set_Caster_Position (Shadows.Caster_Position);
+--              Shadows.Bind_Cube_Shadow_Texture (3);
+--          else
             Set_Shadow_Enabled (0.0);
-        end if;
+--          end if;
 
         Set_Model_Matrix (Singles.Identity4);
 
-        while Has_Element (Curs) loop
-            aBatch := Element (Curs);
+        while Has_Element (Batch_Cursor) loop
+            aBatch := Element (Batch_Cursor);
             Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
                              abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
             if Rad_Dist <= 2.0 * Radius then
@@ -141,7 +144,7 @@ package body Manifold is
                         Light_Index2 := Light_Index1 + 1;
                         Tile_Index1 := Int (Light_Indices.Element (Light_Index1));
                         Tile_Index2 := Int (Light_Indices.Element (Light_Index2));
-                        Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
+--                          Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
 
                         if not aBatch.Points.Is_Empty then
                             --  flat tiles
@@ -162,8 +165,8 @@ package body Manifold is
 
                             --  Bind_Texture sets active unit and binds texture
                             --  to Texture_Target Texture_2D
-                            Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
-                            Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+--                              Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
+--                              Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
 
                             if Settings.Render_OLS then
                                 Set_Front_Face (Clockwise);
@@ -175,8 +178,8 @@ package body Manifold is
                             --  regular pass
                             --  Bind_Texture sets active unit and binds texture
                             --  to Texture_Target Texture_2D
-                            Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
-                            Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+--                              Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
+--                              Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
                             --                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
                             --                       Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
                             --                              Draw_Arrays (Points, 0, 1);
@@ -184,7 +187,7 @@ package body Manifold is
                     end if;
                 end if;
             end if;
-            Next (Curs);
+            Next (Batch_Cursor);
         end loop;
 
         --        Draw_Water_Manifold_Around;
