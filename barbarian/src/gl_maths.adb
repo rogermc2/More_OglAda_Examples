@@ -174,10 +174,11 @@ package body GL_Maths is
 
    function To_Vector2_Array (Vec : Vec2_Package.Vector)
                               return Vector2_Array is
+      use Ada.Containers;
       use GL.Types;
       use Vec2_Package;
       Curs      : Cursor := Vec.First;
-      Vec_Array : Vector2_Array (1 .. Int (Vec.Length));
+      Vec_Array : Vector2_Array (0 .. Int (Vec.Length - 1));
    begin
       for index in Int range Vec_Array'Range loop
          Vec_Array (index) := Vec (Curs);
@@ -191,10 +192,11 @@ package body GL_Maths is
 
    function To_Vector3_Array (Vec : Vec3_Package.List)
                               return Vector3_Array is
+      use Ada.Containers;
       use GL.Types;
       use Vec3_Package;
       Curs      : Cursor := Vec.First;
-      Vec_Array : Vector3_Array (1 .. Int (Vec.Length));
+      Vec_Array : Vector3_Array (0 .. Int (Vec.Length - 1));
    begin
       for index in Int range Vec_Array'Range loop
          Vec_Array (index) := Vec (Curs);
