@@ -482,7 +482,6 @@ package body Batch_Manager is
 
    --  Generate_Points for all tiles in a batch
    procedure Generate_Points (aBatch : in out Batch_Meta) is
-      pragma Inline (Generate_Points);
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
@@ -492,8 +491,8 @@ package body Batch_Manager is
       subtype Texture_Index is single range 0.0 .. 1.0;
       Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
                             aBatch.Tile_Indices.First;
-      Row_Index         : Tiles_RC_Index;
-      Col_Index         : Tiles_RC_Index;
+      Row_Index         : Natural;
+      Col_Index         : Natural;
       Column_List       : Tile_Column_List;
       aTile             : Tile_Data;  --  includes texture index
       N_Tile            : Tile_Data;

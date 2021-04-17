@@ -88,7 +88,7 @@ package body Tiles_Manager is
 
 --        Put_Line ("Tiles_Manager.Add_Static_Light Batch_List size: " &
 --                 Integer'Image (Integer (Batch_List.Length)));
-      for index in 1 .. Total_Batches loop
+      for index in 0 .. Total_Batches - 1 loop
 --           Put_Line ("Tiles_Manager.Add_Static_Light index: " &
 --                       Integer'Image (index));
          aBatch := Batch_List.Element (index);
@@ -115,34 +115,34 @@ package body Tiles_Manager is
       B_Across    : Natural;
       B_Down      : Natural;
       aBatch      : Batch_Manager.Batch_Meta;
-      Batch_Index : Positive;
+      Batch_Index : Natural;
    begin
-      Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Max_Rows, Max_Cols, Batches_Across " &
-                             Integer'Image (Max_Map_Rows) & ", " &
-                             Integer'Image (Max_Map_Cols) & ", " &
-                             Integer'Image (Batches_Across));
-
-      Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Total_Tiles: " &
-                            Integer'Image (Total_Tiles));
-
+--        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Max_Rows, Max_Cols, Batches_Across " &
+--                               Integer'Image (Max_Map_Rows) & ", " &
+--                               Integer'Image (Max_Map_Cols) & ", " &
+--                               Integer'Image (Batches_Across));
+--
+--        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Total_Tiles: " &
+--                              Integer'Image (Total_Tiles));
 
       --  Tile_Batch_Width = 8 is the number of tiles*tiles to put into each batch
       -- a map is a Max_Map_Rows x Max_Map_Cols data frame in a map file
       -- Total number of tiles = Max_Map_Rows x Max_Map_Cols
+      --  Split Tile indicies into 16 batches of 8 tiles per batch
       for Tile_Index in 0 .. Total_Tiles - 1 loop
          Row := Natural (Tile_Index / Max_Map_Cols);
          Column := Natural (Tile_Index) - Row * Natural (Max_Map_Cols);
-         Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
-                                Integer'Image (Integer (Row)) & ", " &
-                                Integer'Image (Integer (Column)));
+--           Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
+--                                 Integer'Image (Row) & ", " & Integer'Image (Column));
          B_Across := Column / Settings.Tile_Batch_Width;
          B_Down := Row / Settings.Tile_Batch_Width;
-         Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches B_Down, B_Across " &
-                                Int'Image (Int (B_Down)) &  ", " &
-                                Int'Image (Int (B_Across)));
-         Batch_Index := B_Down * Batches_Across + B_Across + 1;
-         Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_Index " &
-                                Int'Image (Int (Batch_Index)));
+--           Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches B_Down, B_Across " &
+--                                  Integer'Image (B_Down) &  ", " &
+--                                  Integer'Image (B_Across));
+         Batch_Index := B_Down * Batches_Across + B_Across;
+--           Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_Index, Tile_Index" &
+--                                  Integer'Image (Batch_Index) & ", " &
+--                                  Integer'Image (Tile_Index) );
          --  Add_Tile_Index_To_Batch
          if Batch_Index <= Batch_List.Last_Index then
             Update_Batch (Batch_Index, Tile_Index);
@@ -152,9 +152,9 @@ package body Tiles_Manager is
          end if;
       end loop;
 
-      Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
-                             Int'Image (Int (Batch_List.First_Index)) & ", " &
-                             Int'Image (Int (Batch_List.Last_Index)));
+--        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
+--                               Integer'Image (Batch_List.First_Index) & ", " &
+--                               Integer'Image (Batch_List.Last_Index));
       for index in Batch_List.First_Index .. Batch_List.Last_Index loop
          Regenerate_Batch (index);
       end loop;
