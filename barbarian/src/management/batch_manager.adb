@@ -359,7 +359,6 @@ package body Batch_Manager is
    function Check_For_OOO (Batch_Index : Natural) return Boolean is
       use Maths.Single_Math_Functions;
       use Tiles_Manager;
-      use Tile_Row_Package;
       use GL_Maths.Indices_Package;
       Half_Batch_Width     : constant Natural :=
                                Settings.Tile_Batch_Width / 2;
