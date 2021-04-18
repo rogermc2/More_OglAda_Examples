@@ -118,7 +118,7 @@ package body Main_Loop.Game_Support is
                           (Int (Abs (Centre_X)), Int (Abs (Centre_Z)));
    begin
       if Settings.Shadows_Enabled and Camera.Is_Dirty then
-         Game_Utils.Game_Log ("Settings.Shadows_Enabled and Camera.Is_Dirty...");
+--           Game_Utils.Game_Log ("Settings.Shadows_Enabled and Camera.Is_Dirty...");
          for index in Shadow_Direction'Range loop
             Bind_Shadow_FB (index);
 --              Game_Utils.Game_Log ("Draw_manifold_around_depth_only...");

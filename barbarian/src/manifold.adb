@@ -102,9 +102,9 @@ package body Manifold is
       --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       Use_Program (Manifold_Program);
       if Camera.Is_Dirty then
---           Set_View_Matrix (Camera.View_Matrix);
---           Set_Projection_Matrix (Camera.Projection_Matrix);
-         Set_View_Matrix (Translation_Matrix ((0.0, 5.0, 0.0)) * Rotate_X_Degree (Camera.View_Matrix, Degree (-80)));
+         Set_View_Matrix (Camera.View_Matrix);
+         Set_Projection_Matrix (Camera.Projection_Matrix);
+         Set_View_Matrix (Translation_Matrix ((0.0, 5.0, 0.0)) * Rotate_X_Degree (Camera.View_Matrix, Degree (-70)));
          Set_Projection_Matrix (Translation_Matrix ((0.0, 0.0, -1.8)) * Camera.Projection_Matrix);
       end if;
       --        Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Camera.View_Matrix",
@@ -117,13 +117,13 @@ package body Manifold is
          Set_Dynamic_Light_Range (Manifold_Dyn_Light_Range);
       end if;
 
-      if Settings.Shadows_Enabled then
-         Set_Shadow_Enabled (1.0);
-         Set_Caster_Position (Shadows.Caster_Position);
-         Shadows.Bind_Cube_Shadow_Texture (3);
-      else
+--        if Settings.Shadows_Enabled then
+--           Set_Shadow_Enabled (1.0);
+--           Set_Caster_Position (Shadows.Caster_Position);
+--           Shadows.Bind_Cube_Shadow_Texture (3);
+--        else
          Set_Shadow_Enabled (0.0);
-      end if;
+--        end if;
 
       if not theBatches.Is_Empty then
          Set_Model_Matrix (Singles.Identity4);
@@ -153,7 +153,7 @@ package body Manifold is
                         --  Bind_Texture sets active unit and binds texture
                         --  to Texture_Target Texture_2D
                         Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
-                        Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+--                          Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
                         --                              Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
                         --  Draws start scene
                         Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
@@ -179,10 +179,10 @@ package body Manifold is
                         --  regular pass
                         --  Bind_Texture sets active unit and binds texture
                         --  to Texture_Target Texture_2D
-                        Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
-                        Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+--                          Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
+--                          Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
                         --                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
-                        Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+--                          Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
                         --                              Draw_Arrays (Points, 0, 1);
                      end if;
                   end if;
