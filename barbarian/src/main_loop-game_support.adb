@@ -37,8 +37,9 @@ with Transparency;
 
 package body Main_Loop.Game_Support is
 
-   Yellow                       : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.5);
-   Shadow_Caster_Max_Tiles_Away : constant GL.Types.Int := 10;
+   Yellow                       : constant GL.Types.Colors.Color :=
+                                    (0.6, 0.6, 0.0, 0.5);
+   Shadow_Caster_Max_Tiles_Away : constant Positive := 10;
    FPS_Counter                  : Integer := 0;
 
    --      procedure Cycle_Rendering_Mode;  --  Debug
@@ -120,14 +121,14 @@ package body Main_Loop.Game_Support is
          Game_Utils.Game_Log ("Settings.Shadows_Enabled and Camera.Is_Dirty...");
          for index in Shadow_Direction'Range loop
             Bind_Shadow_FB (index);
-            Game_Utils.Game_Log ("Draw_manifold_around_depth_only...");
+--              Game_Utils.Game_Log ("Draw_manifold_around_depth_only...");
 --              Manifold.Draw_Manifold_Around_Depth_Only;
 --              Prop_Renderer.Render_Props_Around_Depth_Only
---                (UV (GL.X), UV (GL.Y), Shadow_Caster_Max_Tiles_Away);
+--                (Natural (UV (GL.X)), Natural (UV (GL.Y)), Shadow_Caster_Max_Tiles_Away);
          end loop;
       end if;   --  end of shadow mapping pass
 
-      Game_Utils.Game_Log ("Bind_main_scene_fb...");
+--        Game_Utils.Game_Log ("Main_Loop.Game_Support.Player_1_View, Bind_main_scene_fb...");
       FB_Effects.Bind_Main_Scene_FB;
       Utilities.Clear_Colour_Buffer_And_Depth;
       Transparency.Reset_Transparency_List (Camera_Position);
@@ -137,11 +138,11 @@ package body Main_Loop.Game_Support is
                                      Ramp_Diff_Tex, Ramp_Spec_Tex);
 --        Blood_Splats.Render_Splats;
       GL_Utils.Set_Resized_View (False);
-      Prop_Renderer.Render_Props_Around_Split
-          (Fallback_Shader, Centre_X, Centre_Z, Settings.Render_Distance);
-      GL.Objects.Programs.Use_Program (Fallback_Shader);
-      Sprite_World_Map.Cache_Sprites_Around
-        (Natural (UV (GL.X)), Natural (UV (GL.Y)), Settings.Render_Distance);
+--        Prop_Renderer.Render_Props_Around_Split
+--            (Fallback_Shader, Centre_X, Centre_Z, Settings.Render_Distance);
+--        GL.Objects.Programs.Use_Program (Fallback_Shader);
+--        Sprite_World_Map.Cache_Sprites_Around
+--          (Natural (UV (GL.X)), Natural (UV (GL.Y)), Settings.Render_Distance);
       Transparency.Draw_Transparency_List;
       --          Particle_System.Render_Particle_Systems (Single (Delta_Time));
       GL_Utils.Set_Resized_View (False);
@@ -157,10 +158,11 @@ package body Main_Loop.Game_Support is
          Game_Utils.Game_Log ("Main_Loop.Game_Supprt.Player_1_View, Menu_Open");
          Main_Menu.Draw_Menu (Delta_Time);
       elsif not Settings.Hide_GUI then
-         GUI.Render_GUIs;
+         null;
+--           GUI.Render_GUIs;
       end if;
 
-      GUI.Draw_Controller_Button_Overlays (Delta_Time);
+--        GUI.Draw_Controller_Button_Overlays (Delta_Time);
       -- Debug:
       --        if Settings.Show_FPS then
       --           Text.Draw_Text (FPS_Text);

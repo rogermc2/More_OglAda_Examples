@@ -486,8 +486,8 @@ package body Batch_Manager is
       subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
-      Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
-                            aBatch.Tile_Indices.First;
+--        Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
+--                              aBatch.Tile_Indices.First;
       Row_Index         : Natural;
       Col_Index         : Natural;
       Column_List       : Tile_Column_List;
@@ -519,9 +519,15 @@ package body Batch_Manager is
       end Add_Tex_Coords;
 
    begin
+      aBatch.Points.Clear;
+      aBatch.Normals.Clear;
+      aBatch.Tex_Coords.Clear;
       --  for all tiles in aBatch
-      while Has_Element (Tile_Indices_Curs) loop
-         Tile_Index := Element (Tile_Indices_Curs);
+--        while Has_Element (Tile_Indices_Curs) loop
+      for index in aBatch.Tile_Indices.First_Index ..
+        aBatch.Tile_Indices.Last_Index loop
+         Tile_Index := aBatch.Tile_Indices.Element (index);
+--           Tile_Index := Element (Tile_Indices_Curs);
          aTile := Get_Tile (Tile_Index);
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
@@ -569,20 +575,20 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
-         if Row_Index < Max_Map_Rows - 1 then
-            Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-         if Row_Index > 0 then
-            Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-
-         if Col_Index < Column_List.Last_Index then
-            Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-         if Col_Index > 0 then
-            Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-         Next (Tile_Indices_Curs);
+--           if Row_Index < Max_Map_Rows - 1 then
+--              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--           if Row_Index > 0 then
+--              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--
+--           if Col_Index < Column_List.Last_Index then
+--              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--           if Col_Index > 0 then
+--              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--           Next (Tile_Indices_Curs);
       end loop;  -- over tile indices
       Game_Utils.Game_Log
         ("Batch_Manger.Generate_Points Tiles loaded");
@@ -595,7 +601,7 @@ package body Batch_Manager is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-
+      Utilities.Print_GL_Array3 ("Points", GL_Maths.To_Vector3_Array (aBatch.Points));
       Set_AABB_Dimensions (aBatch);
 
       aBatch.Normals_VBO := GL_Utils.Create_3D_VBO
@@ -609,6 +615,11 @@ package body Batch_Manager is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
+      Game_Utils.Game_Log
+        ("Batch_Manger.Generate_Points done points, normals, tex coords lengths: "
+          & Integer'Image (Integer (aBatch.Points.Length)) & ", " &
+           Integer'Image (Integer (aBatch.Normals.Length)) & ", " &
+           Integer'Image (Integer (aBatch.Tex_Coords.Length)));
 
    exception
       when anError : others =>
@@ -910,10 +921,10 @@ package body Batch_Manager is
       Generate_Points (theBatch);
       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points done"
                            & " Batch_Index " & Integer'Image (Batch_Index));
-      Generate_Ramps (theBatch);
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
-      Generate_Water (theBatch);
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
+--        Generate_Ramps (theBatch);
+--        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
+--        Generate_Water (theBatch);
+--        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
 
       Batches_Data.Replace_Element (Batch_Index, theBatch);
 
@@ -1046,6 +1057,24 @@ package body Batch_Manager is
    end Static_Indices;
 
    --  --------------------------------------------------------------------------
+
+--     function To_Vector3_Array (Vec : ind)
+--                                return Vector3_Array is
+--        use Ada.Containers;
+--        use GL.Types;
+--        use Vec3_Package;
+--        Curs      : Cursor := Vec.First;
+--        Vec_Array : Vector3_Array (0 .. Int (Vec.Length - 1));
+--     begin
+--        for index in Int range Vec_Array'Range loop
+--           Vec_Array (index) := Vec (Curs);
+--           Next  (Curs);
+--        end loop;
+--        return Vec_Array;
+--
+--     end To_Vector3_Array;
+
+   --  ------------------------------------------------------------------------
 
    procedure Update_AABB_Dimensions (aBatch     : in out Batch_Meta;
                                      Point_List : GL_Maths.Vec3_List) is

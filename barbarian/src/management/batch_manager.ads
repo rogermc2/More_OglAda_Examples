@@ -13,29 +13,29 @@ with GL_Maths;
 
 package Batch_Manager is
 
-    type Data_Record is record
-        Point      : Singles.Vector3 := (0.0, 0.0, 0.0);
-        Normal     :  Singles.Vector3 := (0.0, 0.0, 0.0);
-        Tex_Coords : Singles.Vector3 := (0.0, 0.0);
-    end record;
+--      type Data_Record is record
+--          Point      : Singles.Vector3 := (0.0, 0.0, 0.0);
+--          Normal     :  Singles.Vector3 := (0.0, 0.0, 0.0);
+--          Tex_Coords : Singles.Vector3 := (0.0, 0.0);
+--      end record;
 
-    package Data_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Data_Record);
-    subtype Data_List is Data_Package.List;
-    subtype Data_Cursor is Data_Package.Cursor;
+--      package Data_Package is new Ada.Containers.Doubly_Linked_Lists
+--        (Data_Record);
+--      subtype Data_List is Data_Package.List;
+--      subtype Data_Cursor is Data_Package.Cursor;
 
    type Batch_Meta is record
       Tile_Indices         : Tiles_Manager.Tile_Indices_List;
       AABB_Mins            : Singles.Vector3 := (0.0, 0.0, 0.0);
       AABB_Maxs            : Singles.Vector3 := (0.0, 0.0, 0.0);
---        Points               : GL_Maths.Vec3_List;
+      Points               : GL_Maths.Vec3_List;
       PointData            : GL_Maths.Vec3_List;
       Ramp_Points          : GL_Maths.Vec3_List;
       Water_Points         : GL_Maths.Vec3_List;
---        Normals              : GL_Maths.Vec3_List;
+      Normals              : GL_Maths.Vec3_List;
       Ramp_Normals         : GL_Maths.Vec3_List;
       Ramp_Smooth_Normals  : GL_Maths.Vec3_List;
---        Tex_Coords           : GL_Maths.Vec2_List;
+      Tex_Coords           : GL_Maths.Vec2_List;
       Ramp_Tex_Coords      : GL_Maths.Vec2_List;
       Points_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Ramp_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;

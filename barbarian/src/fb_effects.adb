@@ -174,6 +174,7 @@ package body FB_Effects is
                FB_Screw_Shader_Manager.Set_Force (FB_Screw_Factor);
                GL.Objects.Programs.Use_Program (FB_Shader_Programs (FB_Current_Effect));
             end if;
+
             GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
             Texture_2D.Bind (Texture_Manager.Get_Default_Texture);
 
@@ -181,9 +182,6 @@ package body FB_Effects is
                Ww_Fb_Current_Effect := FB_Default_Effect;
             end if;
          end if;
-      else
-         Texture_2D.Bind (Texture_Manager.Get_Default_Texture);
-
       end if;
 
    end Draw_FB_Effects;

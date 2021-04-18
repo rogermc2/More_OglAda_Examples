@@ -37,10 +37,10 @@ package Tiles_Manager is
    subtype Tile_Row_List is Tile_Row_Package.Vector;
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 
-   package Tile_Indices_Package is new Ada.Containers.Doubly_Linked_Lists
-      (Natural);
-   subtype Tile_Indices_List is Tile_Indices_Package.List;
-   subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
+   package Tile_Indices_Package is new Ada.Containers.Vectors
+      (Natural, Natural);
+   subtype Tile_Indices_List is Tile_Indices_Package.Vector;
+--     subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
 
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
