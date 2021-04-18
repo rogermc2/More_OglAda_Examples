@@ -126,6 +126,7 @@ void main()
 		sf_f = mix (sf_f, 1.0, 1.0 - light_emission_factor);
 		frag_colour.rgb *= sf_f;
         }
-    frag_colour.rgb = texel_diff.rgb;
-    frag_colour = vec4(2.0 * texel_diff.rgb, 1.0);
+        //  Debug:
+ //   frag_colour.rgb = texel_diff.rgb;
+    frag_colour = vec4(1.5 * texel_diff.rgb, 1.0);
     }
