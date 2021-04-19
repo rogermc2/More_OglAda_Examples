@@ -53,7 +53,7 @@ package body Batch_Manager is
 
    procedure Add_East_Points
      (aBatch             : in out Batch_Meta;  Height : Integer;
-      Tile_Index : Natural;
+      Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
@@ -113,8 +113,8 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_North_Points
-     (aBatch : in out Batch_Meta;  Height : Integer;
-      Tile_Index : Natural;
+     (aBatch             : in out Batch_Meta;  Height : Integer;
+      Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
@@ -175,7 +175,7 @@ package body Batch_Manager is
 
    procedure Add_South_Points
      (aBatch             : in out Batch_Meta;  Height : Integer;
-      Tile_Index : Natural;
+      Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile (Tile_Index);
@@ -284,7 +284,7 @@ package body Batch_Manager is
 
    procedure Add_West_Points
      (aBatch             : in out Batch_Meta;  Height : Integer;
-      Tile_Index : Natural;
+      Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Height : Integer;
@@ -368,10 +368,10 @@ package body Batch_Manager is
                                Batches_Dn * Batches_Across;
       Batch_Centre_Row     : constant Natural :=
                                Batches_Dn * Settings.Tile_Batch_Width +
-                               Half_Batch_Width;
+                                 Half_Batch_Width;
       Batch_Centre_Col     : constant Natural :=
                                Batches_Ac * Settings.Tile_Batch_Width +
-                               Half_Batch_Width;
+                                 Half_Batch_Width;
       Batch_Light_Indices  : GL_Maths.Indices_List :=
                                This_Batch.Static_Light_Indices;
       Current_Light_Index  : Positive := Batch_Light_Indices.First_Index;
@@ -486,8 +486,8 @@ package body Batch_Manager is
       subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
---        Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
---                              aBatch.Tile_Indices.First;
+      --        Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
+      --                              aBatch.Tile_Indices.First;
       Row_Index         : Natural;
       Col_Index         : Natural;
       Column_List       : Tile_Column_List;
@@ -523,18 +523,18 @@ package body Batch_Manager is
       aBatch.Normals.Clear;
       aBatch.Tex_Coords.Clear;
       --  for all tiles in aBatch
---        while Has_Element (Tile_Indices_Curs) loop
+      --        while Has_Element (Tile_Indices_Curs) loop
       for index in aBatch.Tile_Indices.First_Index ..
         aBatch.Tile_Indices.Last_Index loop
          Tile_Index := aBatch.Tile_Indices.Element (index);
---           Tile_Index := Element (Tile_Indices_Curs);
+         --           Tile_Index := Element (Tile_Indices_Curs);
          aTile := Get_Tile (Tile_Index);
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
---           Game_Utils.Game_Log
---             ("Batch_Manger.Generate_Points Total_Tiles, Tile_Index: " &
---                Int'Image (Tile_Index) & ", " & Int'Image (Total_Tiles));
+         --           Game_Utils.Game_Log
+         --             ("Batch_Manger.Generate_Points Total_Tiles, Tile_Index: " &
+         --                Int'Image (Tile_Index) & ", " & Int'Image (Total_Tiles));
          X := Single (2 * Col_Index);
          Y := Single (2 * Height);
          Z := Single (2 * Row_Index);
@@ -562,10 +562,10 @@ package body Batch_Manager is
             --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
             Atlas_Row := Tex_Index / Sets_In_Atlas_Row;
             Atlas_Col := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
---              Game_Utils.Game_Log
---                ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
---                 & Int'Image (Tex_Index) & ", " & Int'Image (Atlas_Row)
---                 & ", " & Int'Image (Atlas_Col));
+            --              Game_Utils.Game_Log
+            --                ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
+            --                 & Int'Image (Tex_Index) & ", " & Int'Image (Atlas_Row)
+            --                 & ", " & Int'Image (Atlas_Col));
             Add_Tex_Coords (0.5, 1.0);
             Add_Tex_Coords (0.0, 1.0);
             Add_Tex_Coords (0.0, 0.5);
@@ -575,20 +575,20 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
---           if Row_Index < Max_Map_Rows - 1 then
---              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---           if Row_Index > 0 then
---              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---
---           if Col_Index < Column_List.Last_Index then
---              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---           if Col_Index > 0 then
---              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---           Next (Tile_Indices_Curs);
+         --           if Row_Index < Max_Map_Rows - 1 then
+         --              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         --           end if;
+         --           if Row_Index > 0 then
+         --              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         --           end if;
+         --
+         --           if Col_Index < Column_List.Last_Index then
+         --              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         --           end if;
+         --           if Col_Index > 0 then
+         --              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         --           end if;
+         --           Next (Tile_Indices_Curs);
       end loop;  -- over tile indices
       Game_Utils.Game_Log
         ("Batch_Manger.Generate_Points Tiles loaded");
@@ -601,7 +601,6 @@ package body Batch_Manager is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
-      Utilities.Print_GL_Array3 ("Points", GL_Maths.To_Vector3_Array (aBatch.Points));
       Set_AABB_Dimensions (aBatch);
 
       aBatch.Normals_VBO := GL_Utils.Create_3D_VBO
@@ -617,7 +616,7 @@ package body Batch_Manager is
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
       Game_Utils.Game_Log
         ("Batch_Manger.Generate_Points done points, normals, tex coords lengths: "
-          & Integer'Image (Integer (aBatch.Points.Length)) & ", " &
+         & Integer'Image (Integer (aBatch.Points.Length)) & ", " &
            Integer'Image (Integer (aBatch.Normals.Length)) & ", " &
            Integer'Image (Integer (aBatch.Tex_Coords.Length)));
 
@@ -921,10 +920,10 @@ package body Batch_Manager is
       Generate_Points (theBatch);
       Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points done"
                            & " Batch_Index " & Integer'Image (Batch_Index));
---        Generate_Ramps (theBatch);
---        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
---        Generate_Water (theBatch);
---        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
+      Generate_Ramps (theBatch);
+      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
+      Generate_Water (theBatch);
+      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
 
       Batches_Data.Replace_Element (Batch_Index, theBatch);
 
@@ -1050,7 +1049,7 @@ package body Batch_Manager is
    --  --------------------------------------------------------------------------
 
    function Static_Indices  (Batch_Index : Positive)
-                                return GL_Maths.Indices_List is
+                             return GL_Maths.Indices_List is
       aBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
    begin
       return aBatch.Static_Light_Indices;
@@ -1058,21 +1057,21 @@ package body Batch_Manager is
 
    --  --------------------------------------------------------------------------
 
---     function To_Vector3_Array (Vec : ind)
---                                return Vector3_Array is
---        use Ada.Containers;
---        use GL.Types;
---        use Vec3_Package;
---        Curs      : Cursor := Vec.First;
---        Vec_Array : Vector3_Array (0 .. Int (Vec.Length - 1));
---     begin
---        for index in Int range Vec_Array'Range loop
---           Vec_Array (index) := Vec (Curs);
---           Next  (Curs);
---        end loop;
---        return Vec_Array;
---
---     end To_Vector3_Array;
+   --     function To_Vector3_Array (Vec : ind)
+   --                                return Vector3_Array is
+   --        use Ada.Containers;
+   --        use GL.Types;
+   --        use Vec3_Package;
+   --        Curs      : Cursor := Vec.First;
+   --        Vec_Array : Vector3_Array (0 .. Int (Vec.Length - 1));
+   --     begin
+   --        for index in Int range Vec_Array'Range loop
+   --           Vec_Array (index) := Vec (Curs);
+   --           Next  (Curs);
+   --        end loop;
+   --        return Vec_Array;
+   --
+   --     end To_Vector3_Array;
 
    --  ------------------------------------------------------------------------
 
@@ -1081,16 +1080,24 @@ package body Batch_Manager is
       use GL_Maths.Vec3_Package;
       Curs   : Cursor := Point_List.First;
       aPoint : Singles.Vector3;
+
+      procedure Update_AABB_Dim (Dim : GL.Index_3D) is
+      begin
+         if aPoint (Dim) < aBatch.AABB_Mins (Dim) then
+            aBatch.AABB_Mins (Dim) := aPoint (Dim);
+         elsif
+           aPoint (Dim) > aBatch.AABB_Maxs (Dim) then
+            aBatch.AABB_Maxs (Dim) := aPoint  (Dim);
+         end if;
+      end Update_AABB_Dim;
+
    begin
       while Has_Element (Curs) loop
          aPoint := Element (Curs);
          for index in Singles.Vector3'Range loop
-            if aPoint (index) < aBatch.AABB_Mins (index) then
-               aBatch.AABB_Mins (index) := aPoint (index);
-            elsif
-              aPoint (index) > aBatch.AABB_Maxs (GL.X) then
-               aBatch.AABB_Maxs (index) := aPoint (index);
-            end if;
+            Update_AABB_Dim (GL.X);
+            Update_AABB_Dim (GL.Y);
+            Update_AABB_Dim (GL.Z);
          end loop;
          Next (Curs);
       end loop;
