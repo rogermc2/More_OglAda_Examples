@@ -593,8 +593,6 @@ package body Batch_Manager is
       Game_Utils.Game_Log
         ("Batch_Manger.Generate_Points Tiles loaded");
 
-      Update_AABB_Dimensions (aBatch, aBatch.Points);
-
       aBatch.Points_VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aBatch.Points_VAO);
 
@@ -603,6 +601,7 @@ package body Batch_Manager is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VP);
+
       Set_AABB_Dimensions (aBatch);
 
       aBatch.Normals_VBO := GL_Utils.Create_3D_VBO
