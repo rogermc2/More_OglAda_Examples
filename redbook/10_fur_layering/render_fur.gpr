@@ -1,0 +1,15 @@
+with "../../common/common.gpr";
+with "../../../OpenGLAda/opengl.gpr";
+limited with "../../../OpenGLAda/opengl-glfw.gpr";
+
+project Render_Fur is
+
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Exec_Dir use ".";
+   for Main use ("fur.adb");
+
+    package Compiler renames OpenGL.Compiler;
+
+end Render_Fur;
+
