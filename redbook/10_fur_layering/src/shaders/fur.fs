@@ -17,5 +17,5 @@ void main(void)
     vec4 rgba = texture(fur_texture, fragment_in.tex_coord);
     float t = rgba.a;
     t = t * fragment_in.fur_strength;
-    color = fur_color * vec4(1.0, 1.0, 1.0, t);
+    colour = fur_colour * vec4(1.0, 1.0, 1.0, t);
 }

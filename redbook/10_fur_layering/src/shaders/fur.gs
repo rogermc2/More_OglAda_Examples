@@ -9,13 +9,13 @@ uniform mat4 projection_matrix;
 uniform int fur_layers = 30;
 uniform float fur_depth = 5.0;
 
-in VS_GS_VERTEX
+in VS_GS_INTERFACE
 {
     vec3 normal;
     vec2 tex_coord;
 } vertex_in[];
 
-out VS_GS_VERTEX
+out GS_FS_INTERFACE
 {
     vec3 normal;
     vec2 tex_coord;
@@ -45,5 +45,5 @@ void main(void)
         d = d + disp_delta;
         EndPrimitive();
         }
-        "};
+}
 
