@@ -18,6 +18,7 @@ with GL.Toggles;
 with GL.Types;
 with GL.Types.Colors;
 with GL.Uniforms;
+with GL.Window;
 
 with Glfw;
 with Glfw.Input;
@@ -66,6 +67,8 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
 
       Utilities.Clear_Background_Colour_And_Depth (Background);
       Main_Window.Get_Framebuffer_Size (Window_Width, Window_Height);
+      GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
+                              GL.Types.Int (Window_Height));
 
       Aspect := Single (Window_Height / Window_Width);
       Model_Matrix := Translation_Matrix
