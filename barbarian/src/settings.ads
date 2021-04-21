@@ -104,9 +104,9 @@ private
       Joy_Axis_Threshold           : Float := 0.0;
       Show_Fps                     : Boolean := False;
       Video_Record_Mode            : Boolean := False;
-      Render_OLS                   : Boolean := True;
-      Shadows_Enabled              : Boolean := True;
-      Fb_Effects_Enabled           : Boolean := True;
+      Render_OLS                   : Boolean := False;
+      Shadows_Enabled              : Boolean := false;
+      Fb_Effects_Enabled           : Boolean := False;
       Particles_Enabled            : Boolean := True;
       Particle_Mipmaps_Enabled     : Boolean := True;
       Auto_Blood_Wipe              : Boolean := False;

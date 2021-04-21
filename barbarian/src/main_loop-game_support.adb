@@ -149,7 +149,7 @@ package body Main_Loop.Game_Support is
       --  if Draw_Debug_Quads then
       --    Draw_Shadow_Debug;
       --  end if;
-      FB_Effects.Draw_FB_Effects (Single (Delta_Time));
+--        FB_Effects.Draw_FB_Effects (Single (Delta_Time));
       -- Debug:
       --        if Settings.Show_FPS then
       --           Update_FPS_Box;

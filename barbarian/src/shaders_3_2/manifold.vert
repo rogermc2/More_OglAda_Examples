@@ -22,9 +22,12 @@ float ol_dist = 0.03;
 
 void main()
     {
-    vec3 vp2 = vp / 5.0;
-    vec3 vn2 = vn / 5.0;
-    // gl_PointSize = 40.0;
+//    vec3 vp2 = vec3 (vp.r /1, vp.g /1, vp.b /1);
+//    vec3 vn2 = vec3 (vn.r /1, vn.g /1, vn.b /1);
+    vec3 vp2 = vp;
+    vec3 vn2 = vn;
+//    gl_PointSize = 40.0;
+        
 	if (ol_pass > 0.1)
         {
 		vec3 pos = vp2 + smooth_vn * ol_dist;

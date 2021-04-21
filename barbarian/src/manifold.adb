@@ -99,16 +99,15 @@ package body Manifold is
    begin
       --        Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
       --                 Integer'Image (Integer (theBatches.Length)));
-      --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       Use_Program (Manifold_Program);
       if Camera.Is_Dirty then
-         --           Set_View_Matrix (Camera.View_Matrix);
-
-         --           Set_Projection_Matrix (Camera.Projection_Matrix);
-         Set_View_Matrix (Translation_Matrix ((0.0, 5.0, 0.0)) *
-                            Rotate_X_Degree (Camera.View_Matrix, Degree (-75)));
+--           Set_View_Matrix (Camera.View_Matrix);
+--           Set_Projection_Matrix (Camera.Projection_Matrix);
+          Set_View_Matrix (Translation_Matrix ((20.0, 20.0, -40.0)) *
+                           Rotate_X_Degree (Camera.View_Matrix, Degree (0)));
          Set_Projection_Matrix
-           (Translation_Matrix ((0.0, 0.0, -1.8)) * Camera.Projection_Matrix);
+             (Translation_Matrix ((0.0, -2.0, 0.0)) * Camera.Projection_Matrix);
       end if;
       --        Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Camera.View_Matrix",
       --                                Camera.View_Matrix);
@@ -130,7 +129,7 @@ package body Manifold is
 
       if theBatches.Is_Empty then
          raise Manifold_Exception with
-         "Manifold.Draw_Manifold_Around - Batches is empty";
+           "Manifold.Draw_Manifold_Around - Batches is empty";
       end if;
 
       Set_Model_Matrix (Singles.Identity4);
@@ -167,7 +166,7 @@ package body Manifold is
                      --                              Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
                      --  Draws start scene
                      Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
-                     --                              Draw_Arrays (Points, 0, 1);
+--                       Draw_Arrays (Points, 0, 1);
                   end if;
 
                   if not aBatch.Ramp_Points.Is_Empty then
