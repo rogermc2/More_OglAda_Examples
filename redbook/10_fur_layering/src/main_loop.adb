@@ -110,11 +110,11 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Setup is
-      --        use Interfaces;
       use GL.Objects.Buffers;
       use GL.Objects.Programs;
       use GL.Objects.Shaders;
       use Program_Loader;
+      VBM_Exception         : Exception;
       Vertex_Location       : constant Int := 0;
       Normal_Location       : constant Int := 1;
       Tex_Coord0_Location   : constant Int := 2;
@@ -182,6 +182,12 @@ procedure Main_Loop (Main_Window :  in out Glfw.Windows.Window) is
       Load_VB_Object.Load_From_VBM ("../media/ninja.vbm", VBM_Object,
                                     Vertex_Location, Normal_Location,
                                     Tex_Coord0_Location, VBM_Result);
+      if VBM_Result then
+         Put_Line ("Main_Loop.Setup ninja.vbm loaded.");
+      else
+         raise VBM_Exception with
+         "Main_Loop.Setup ninja.vbm failed to load";
+      end if;
 
    exception
       when anError : others =>
