@@ -66,7 +66,8 @@ package body Camera is
       Dir               : Singles.Vector3;
       First_Person_Pos  : Singles.Vector3;
    begin
-      G_Camera.World_Position := (2.0, 10.0, 2.0);
+--        G_Camera.World_Position := (2.0, 10.0, 2.0);
+      G_Camera.World_Position := (2.0, 52.0, 2.0);
       Prev_Cam_Pos := G_Camera.World_Position;
       G_Camera.Shake_Mod_Position := (0.0, 0.0, 0.0);
       G_Camera.Original_Screen_Shake_Time := 0.0;
@@ -82,7 +83,7 @@ package body Camera is
       G_Camera.Near := 0.1;  --  0.1
       G_Camera.Far := Settings.Far_Clip;
       Far_Point_Dir := (0.0, 0.0, -1.0);
-      if First_Person then
+      if First_Person then   --  only set true in Debug Mode
          Dir := G_Camera.World_Position - Prev_Cam_Pos;
          Dir (GL.Y) := 0.0;
          First_Person_Pos := G_Camera.World_Position;

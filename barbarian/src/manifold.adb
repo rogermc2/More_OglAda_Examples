@@ -102,10 +102,10 @@ package body Manifold is
       GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       Use_Program (Manifold_Program);
       if Camera.Is_Dirty then
---           Set_View_Matrix (Camera.View_Matrix);
+         Set_View_Matrix (Camera.View_Matrix);
 --           Set_Projection_Matrix (Camera.Projection_Matrix);
-          Set_View_Matrix (Translation_Matrix ((20.0, 20.0, -40.0)) *
-                           Rotate_X_Degree (Camera.View_Matrix, Degree (0)));
+--            Set_View_Matrix (Translation_Matrix ((0.0, 0.0, -20.0)) *
+--                             Rotate_X_Degree (Camera.View_Matrix, Degree (0)));
          Set_Projection_Matrix
              (Translation_Matrix ((0.0, -2.0, 0.0)) * Camera.Projection_Matrix);
       end if;
