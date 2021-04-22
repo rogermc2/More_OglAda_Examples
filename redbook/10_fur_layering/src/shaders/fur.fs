@@ -18,4 +18,5 @@ void main(void)
     float t = rgba.a;
     t = t * fragment_in.fur_strength;
     colour = fur_colour * vec4(1.0, 1.0, 1.0, t);
+    colour = vec4(1.0, 0.0, 0.0, 1.0);
 }
