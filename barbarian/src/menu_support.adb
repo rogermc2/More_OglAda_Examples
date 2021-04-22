@@ -636,13 +636,13 @@ package body Menu_Support is
                 Restart_Flag := True;
                 Enable_Strings (Settings.Full_Screen, Graphic_Value_Text,
                                 Cursor_Item);
---                  if Settings.Full_Screen then
---                      Text.Update_Text (Graphic_Value_Text (Cursor_Item),
---                                        Enabled_Strings (Graphic_Strings_Enabled));
---                  else
---                      Text.Update_Text (Graphic_Value_Text (Cursor_Item),
---                                        Enabled_Strings (Graphic_Strings_Disabled));
---                  end if;
+                if Settings.Full_Screen then
+                    Text.Update_Text (Graphic_Value_Text (Cursor_Item),
+                                      Enabled_Strings (Graphic_Strings_Enabled));
+                else
+                    Text.Update_Text (Graphic_Value_Text (Cursor_Item),
+                                      Enabled_Strings (Graphic_Strings_Disabled));
+                end if;
             when Graphic_Vsync =>
                 Settings.Set_V_Sync (not Settings.V_Sync);
                 Restart_Flag := True;
@@ -953,9 +953,9 @@ package body Menu_Support is
         Text.Update_Text (Graphic_Value_Text (Graphic_Far_Clip),
                           Single'Image (Far_Clip));
 
-        Camera.Recalculate_Perspective
-          (Camera.Field_Of_View_Y, Single (Framebuffer_Width),
-           Single (Framebuffer_Height), Camera.Near, Far_Clip);
+--          Camera.Recalculate_Perspective
+--            (Camera.Field_Of_View_Y, Single (Framebuffer_Width),
+--             Single (Framebuffer_Height), Camera.Near, Far_Clip);
 
         Enable_Strings (Auto_Blood_Wipe, Graphic_Value_Text,
                         Graphic_Auto_Blood_Wipe);
