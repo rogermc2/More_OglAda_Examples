@@ -98,7 +98,7 @@ package body Camera is
                                          Target   => (2.0, 0.0, 2.0),
                                          Up       => (0.0, 0.0, -1.0),
                                          Look_At  => G_Camera.View_Matrix);
-            Utilities.Print_Matrix ("Camera.View_Matrix", G_Camera.View_Matrix);
+--              Utilities.Print_Matrix ("Camera.View_Matrix", G_Camera.View_Matrix);
 --          end if;
 
         G_Camera.Projection_Matrix := Perspective_Matrix
@@ -159,10 +159,10 @@ package body Camera is
           (FOV_Y, Width, Height, 0.01, 1000.0, G_Camera.GUI_Proj_Matrix);
         G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
         G_Camera.Is_Dirty := True;
-        Utilities.Print_Matrix ("Recalculate_Perspective Camera.View_Matrix",
-                                G_Camera.View_Matrix);
-        Utilities.Print_Matrix ("Recalculate_Perspective Camera.Projection_Matrix",
-                                G_Camera.Projection_Matrix);
+--          Utilities.Print_Matrix ("Recalculate_Perspective Camera.View_Matrix",
+--                                  G_Camera.View_Matrix);
+--          Utilities.Print_Matrix ("Recalculate_Perspective Camera.Projection_Matrix",
+--                                  G_Camera.Projection_Matrix);
         Frustum.Re_Extract_Frustum_Planes
           (FOV_Y, G_Camera.Aspect, Near, Far, G_Camera.World_Position, G_Camera.View_Matrix);
     end Recalculate_Perspective;
@@ -204,6 +204,8 @@ package body Camera is
             Prev_Cam_Pos := G_Camera.World_Position;
             G_Camera.World_Position := World_Position;
             Cam_Target := World_Position + G_Camera.Shake_Mod_Position;
+            Utilities.Print_Vector ("Camera.Set_Camera_Position G_Camera.Shake_Mod_Position",
+                       G_Camera.Shake_Mod_Position);
             Cam_Target (GL.Y) := Cam_Target (GL.Y) - 1.0;
 --              if not First_Person then
                 Maths.Init_Lookat_Transform
@@ -292,6 +294,7 @@ package body Camera is
     procedure Update_Camera_Effects (Elapsed_Time : Float) is
         use GL.Types;
         use Maths.Single_Math_Functions;
+
         Time_Factor : Float;
         XZ          : Single;
         CD          : Float;
