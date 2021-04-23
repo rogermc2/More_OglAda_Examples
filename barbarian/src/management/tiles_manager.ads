@@ -27,13 +27,13 @@ package Tiles_Manager is
    end record;
 
    package Tile_Column_Package is new Ada.Containers.Vectors
-     (Tiles_RC_Index, Tile_Data);
+     (Natural, Tile_Data);
    subtype Tile_Column_List is Tile_Column_Package.Vector;
    subtype Tile_Column_Cursor is Tile_Column_Package.Cursor;
    use Tile_Column_Package;
 
    package Tile_Row_Package is new Ada.Containers.Vectors
-     (Tiles_RC_Index, Tile_Column_List);
+     (Natural, Tile_Column_List);
    subtype Tile_Row_List is Tile_Row_Package.Vector;
    subtype Tile_Row_Cursor is Tile_Row_Package.Cursor;
 

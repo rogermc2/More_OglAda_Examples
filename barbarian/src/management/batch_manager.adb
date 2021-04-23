@@ -523,10 +523,10 @@ package body Batch_Manager is
 --          ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
 --             Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
 --             Integer'Image (aBatch.Tile_Indices.Last_Index));
-      Put_Line ("Batch_Manger.Generate_Points, Tile_Indices.Last_Index: " &
-                 Integer'Image (Integer (aBatch.Tile_Indices.Last_Index)));
-      Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tiles" &
-                 Integer'Image (Tiles_Manager.Number_Of_Tiles));
+--        Put_Line ("Batch_Manger.Generate_Points, Tile_Indices.Last_Index: " &
+--                   Integer'Image (Integer (aBatch.Tile_Indices.Last_Index)));
+--        Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tiles" &
+--                   Integer'Image (Tiles_Manager.Number_Of_Tiles));
       --  for all tiles in aBatch
       for index in aBatch.Tile_Indices.First_Index ..
         aBatch.Tile_Indices.Last_Index loop
@@ -535,6 +535,8 @@ package body Batch_Manager is
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
+         Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
+                                Integer'Image (Tile_Index));
 --           Game_Utils.Game_Log
 --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
 --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
@@ -575,6 +577,9 @@ package body Batch_Manager is
             Add_Tex_Coords (0.0, 0.5);
             Add_Tex_Coords (0.5, 0.5);
             Add_Tex_Coords (0.5, 1.0);
+            Game_Utils.Game_Log
+              ("Batch_Manger.Generate_Points Add_Tex_Coords added to tile: " &
+              Integer'Image (Tile_Index));
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
@@ -591,7 +596,6 @@ package body Batch_Manager is
          --           if Col_Index > 0 then
          --              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
          --           end if;
-         --           Next (Tile_Indices_Curs);
       end loop;  -- over tile indices
       Game_Utils.Game_Log
         ("Batch_Manger.Generate_Points Tiles loaded.");
