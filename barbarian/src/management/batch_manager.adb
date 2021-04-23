@@ -535,8 +535,8 @@ package body Batch_Manager is
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
-                                Integer'Image (Tile_Index));
+--           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
+--                                  Integer'Image (Tile_Index));
 --           Game_Utils.Game_Log
 --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
 --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
@@ -567,19 +567,19 @@ package body Batch_Manager is
             --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
             Atlas_Row := Tex_Index / Sets_In_Atlas_Row;
             Atlas_Col := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
-            Game_Utils.Game_Log
-              ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
-               & Integer'Image (Tex_Index) & ", " & Integer'Image (Atlas_Row)
-               & ", " & Integer'Image (Atlas_Col));
+--              Game_Utils.Game_Log
+--                ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
+--                 & Integer'Image (Tex_Index) & ", " & Integer'Image (Atlas_Row)
+--                 & ", " & Integer'Image (Atlas_Col));
             Add_Tex_Coords (0.5, 1.0);
             Add_Tex_Coords (0.0, 1.0);
             Add_Tex_Coords (0.0, 0.5);
             Add_Tex_Coords (0.0, 0.5);
             Add_Tex_Coords (0.5, 0.5);
             Add_Tex_Coords (0.5, 1.0);
-            Game_Utils.Game_Log
-              ("Batch_Manger.Generate_Points Add_Tex_Coords added to tile: " &
-              Integer'Image (Tile_Index));
+--              Game_Utils.Game_Log
+--                ("Batch_Manger.Generate_Points Add_Tex_Coords added to tile: " &
+--                Integer'Image (Tile_Index));
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
