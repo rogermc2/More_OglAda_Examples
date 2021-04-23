@@ -105,11 +105,13 @@ package body Manifold is
          Set_View_Matrix (Camera.View_Matrix);
          Set_Projection_Matrix (Camera.Projection_Matrix);
          Utilities.Print_Vector ("Manifold.Draw_Manifold_Around World_Position",
-                                Camera.World_Position);
-         Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around View_Matrix",
-                                Camera.View_Matrix);
-         Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Projection_Matrix",
-                                Camera.Projection_Matrix);
+                                 Camera.World_Position);
+         Put_Line ("Manifold.Draw_Manifold_Around, Number_Of_Tiles" &
+                     Integer'Image (Tiles_Manager.Number_Of_Tiles));
+--           Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around View_Matrix",
+--                                  Camera.View_Matrix);
+--           Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Projection_Matrix",
+--                                  Camera.Projection_Matrix);
 --            Set_View_Matrix (Translation_Matrix ((0.0, 0.0, -20.0)) *
 --                             Rotate_X_Degree (Camera.View_Matrix, Degree (0)));
 --           Set_Projection_Matrix

@@ -359,6 +359,7 @@ package body FB_Effects is
       Texture_2D.Load_Empty_Texture (0, GL.Pixels.SRGB_Alpha,
                                      Int (Single (FB_Width) * Curr_Ssaa),
                                      Int (Single (FB_Height) * Curr_Ssaa));
+      --  Attach_Texture_2D not in OpenGLAda develop branch; use barb branch
       Read_And_Draw_Target.Attach_Texture_2D
         (Color_Attachment_0, GL.Low_Level.Enums.Texture_2D, FB_Texture);
    end Set_Up_FB_Textures;

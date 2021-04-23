@@ -103,7 +103,7 @@ package body Camera is
 
         G_Camera.Projection_Matrix := Perspective_Matrix
           (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far);
-        Utilities.Print_Matrix ("Camera.Projection_Matrix", G_Camera.Projection_Matrix);
+--          Utilities.Print_Matrix ("Camera.Projection_Matrix", G_Camera.Projection_Matrix);
         G_Camera.GUI_Proj_Matrix := Perspective_Matrix
           (G_Camera.Field_Of_View_Y, G_Camera.Aspect, 0.01, 1000.0);
         G_Camera.Clip_Plane := Perspective_Matrix

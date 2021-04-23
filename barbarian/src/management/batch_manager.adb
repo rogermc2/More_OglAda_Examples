@@ -486,8 +486,6 @@ package body Batch_Manager is
       subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
-      --        Tile_Indices_Curs : Tile_Indices_Package.Cursor :=
-      --                              aBatch.Tile_Indices.First;
       Row_Index         : Natural;
       Col_Index         : Natural;
       Column_List       : Tile_Column_List;
@@ -522,12 +520,18 @@ package body Batch_Manager is
       aBatch.Points.Clear;
       aBatch.Normals.Clear;
       aBatch.Tex_Coords.Clear;
+      Game_Utils.Game_Log
+        ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
+           Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
+           Integer'Image (aBatch.Tile_Indices.Last_Index));
+      Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tiles" &
+                 Integer'Image (Tiles_Manager.Number_Of_Tiles));
+      Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tile_Indices" &
+                 Integer'Image (Integer (aBatch.Tile_Indices.Length)));
       --  for all tiles in aBatch
-      --        while Has_Element (Tile_Indices_Curs) loop
       for index in aBatch.Tile_Indices.First_Index ..
         aBatch.Tile_Indices.Last_Index loop
          Tile_Index := aBatch.Tile_Indices.Element (index);
-         --           Tile_Index := Element (Tile_Indices_Curs);
          aTile := Get_Tile (Tile_Index);
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
@@ -1116,12 +1120,13 @@ package body Batch_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Update_Batch (Index : Natural; Tile_Index : Natural) is
+   procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural) is
       aBatch : Batch_Meta := Batch_List.Element (Index);
    begin
       aBatch.Tile_Indices.Append (Tile_Index);
       Batches_Data.Replace_Element (Index, aBatch);
-   end Update_Batch;
+   end Add_Tile_To_Batch;
 
    --  ------------------------------------------------------------------------
+
 end Batch_Manager;
