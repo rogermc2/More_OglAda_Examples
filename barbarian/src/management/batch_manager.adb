@@ -22,7 +22,7 @@ package body Batch_Manager is
    Batches_Data               : Batches_List;
    Static_Lights_List         : Static_Light_Vector;
    Atlas_Factor               : constant Single := 0.25;
-   Sets_In_Atlas_Row          : constant Tiles_Manager.Tiles_RC_Index := 4;
+   Sets_In_Atlas_Row          : constant Positive := 4;
    ST_Offset                  : constant Single := 8.0 / 2048.0;
    Ramp_Mesh_Points           : GL_Maths.Vec3_List;
    Ramp_Mesh_Normals          : GL_Maths.Vec3_List;
@@ -482,7 +482,6 @@ package body Batch_Manager is
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
-      --  Max_Tile_Cols = 64
       subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
@@ -520,14 +519,14 @@ package body Batch_Manager is
       aBatch.Points.Clear;
       aBatch.Normals.Clear;
       aBatch.Tex_Coords.Clear;
-      Game_Utils.Game_Log
-        ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
-           Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
-           Integer'Image (aBatch.Tile_Indices.Last_Index));
+--        Game_Utils.Game_Log
+--          ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
+--             Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
+--             Integer'Image (aBatch.Tile_Indices.Last_Index));
+      Put_Line ("Batch_Manger.Generate_Points, Tile_Indices.Last_Index: " &
+                 Integer'Image (Integer (aBatch.Tile_Indices.Last_Index)));
       Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tiles" &
                  Integer'Image (Tiles_Manager.Number_Of_Tiles));
-      Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tile_Indices" &
-                 Integer'Image (Integer (aBatch.Tile_Indices.Length)));
       --  for all tiles in aBatch
       for index in aBatch.Tile_Indices.First_Index ..
         aBatch.Tile_Indices.Last_Index loop
@@ -536,9 +535,9 @@ package body Batch_Manager is
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
-         --           Game_Utils.Game_Log
-         --             ("Batch_Manger.Generate_Points Total_Tiles, Tile_Index: " &
-         --                Int'Image (Tile_Index) & ", " & Int'Image (Total_Tiles));
+--           Game_Utils.Game_Log
+--             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
+--                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
          X := Single (2 * Col_Index);
          Y := Single (2 * Height);
          Z := Single (2 * Row_Index);
@@ -566,10 +565,10 @@ package body Batch_Manager is
             --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
             Atlas_Row := Tex_Index / Sets_In_Atlas_Row;
             Atlas_Col := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
-            --              Game_Utils.Game_Log
-            --                ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
-            --                 & Int'Image (Tex_Index) & ", " & Int'Image (Atlas_Row)
-            --                 & ", " & Int'Image (Atlas_Col));
+            Game_Utils.Game_Log
+              ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
+               & Integer'Image (Tex_Index) & ", " & Integer'Image (Atlas_Row)
+               & ", " & Integer'Image (Atlas_Col));
             Add_Tex_Coords (0.5, 1.0);
             Add_Tex_Coords (0.0, 1.0);
             Add_Tex_Coords (0.0, 0.5);
@@ -595,7 +594,7 @@ package body Batch_Manager is
          --           Next (Tile_Indices_Curs);
       end loop;  -- over tile indices
       Game_Utils.Game_Log
-        ("Batch_Manger.Generate_Points Tiles loaded");
+        ("Batch_Manger.Generate_Points Tiles loaded.");
 
       aBatch.Points_VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aBatch.Points_VAO);
