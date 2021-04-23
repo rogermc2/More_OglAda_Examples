@@ -501,13 +501,13 @@ package body Tiles_Manager is
                             raise Tiles_Manager_Exception with
                               "Load_Hex_Rows missing a tile column";
                         end if;
-                        if Load_Type = "textures" then
-                            Game_Utils.Game_Log
-                              ("Tiles_Manager.Load_Hex_Rows Tile row, col, Texture_Index: " &
-                                 Integer'Image (row) & ", " &
-                                 Integer'Image (col) & ", " &
-                                 Integer'Image (Tile_Row.Element (col).Texture_Index));
-                        end if;
+--                          if Load_Type = "textures" then
+--                              Game_Utils.Game_Log
+--                                ("Tiles_Manager.Load_Hex_Rows Tile row, col, Texture_Index: " &
+--                                   Integer'Image (row) & ", " &
+--                                   Integer'Image (col) & ", " &
+--                                   Integer'Image (Tile_Row.Element (col).Texture_Index));
+--                          end if;
                     end if;
                 end loop;
 
