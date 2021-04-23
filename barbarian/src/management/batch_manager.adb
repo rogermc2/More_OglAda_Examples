@@ -597,8 +597,8 @@ package body Batch_Manager is
          --              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
          --           end if;
       end loop;  -- over tile indices
-      Game_Utils.Game_Log
-        ("Batch_Manger.Generate_Points Tiles loaded.");
+--        Game_Utils.Game_Log
+--          ("Batch_Manger.Generate_Points Tiles loaded.");
 
       aBatch.Points_VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aBatch.Points_VAO);
@@ -622,11 +622,11 @@ package body Batch_Manager is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
-      Game_Utils.Game_Log
-        ("Batch_Manger.Generate_Points done points, normals, tex coords lengths: "
-         & Integer'Image (Integer (aBatch.Points.Length)) & ", " &
-           Integer'Image (Integer (aBatch.Normals.Length)) & ", " &
-           Integer'Image (Integer (aBatch.Tex_Coords.Length)));
+--        Game_Utils.Game_Log
+--          ("Batch_Manger.Generate_Points done points, normals, tex coords lengths: "
+--           & Integer'Image (Integer (aBatch.Points.Length)) & ", " &
+--             Integer'Image (Integer (aBatch.Normals.Length)) & ", " &
+--             Integer'Image (Integer (aBatch.Tex_Coords.Length)));
 
    exception
       when anError : others =>
@@ -927,13 +927,13 @@ package body Batch_Manager is
            "Batch_Manager.Regenerate_Batch called with empty Tiles list";
       end if;
 
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points for Batch_Index"
-                           & Integer'Image (Batch_Index));
+--        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points for Batch_Index"
+--                             & Integer'Image (Batch_Index));
       Generate_Points (theBatch);
       Generate_Ramps (theBatch);
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
+--        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
       Generate_Water (theBatch);
-      Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
+--        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
 
       Batches_Data.Replace_Element (Batch_Index, theBatch);
 

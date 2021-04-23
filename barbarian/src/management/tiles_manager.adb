@@ -384,7 +384,7 @@ package body Tiles_Manager is
               "Invalid format, " & Load_Type & " expected: " & Header (1 .. Pos1);
         end if;
 
-        Game_Utils.Game_Log ("Manifold.Load_Char_Rows Load_Type: " & Load_Type);
+--          Game_Utils.Game_Log ("Manifold.Load_Char_Rows Load_Type: " & Load_Type);
         Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
         Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
         Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
@@ -537,14 +537,14 @@ package body Tiles_Manager is
         begin
             if Label /= ID then
                 Game_Utils.Game_Log
-                  ("Manifold.Get_Palette_File_Name invalid format, expected "
+                  ("Tiles_Manager.Get_Palette_File_Name invalid format, expected "
                    & "line commencing " & ID & " but obtained " & aLine);
                 raise Tiles_Manager_Exception with
                   "Tiles_Manager.Get_Palette_File_Name, invalid format, " & ID &
                   " expected starting " & aLine;
             end if;
             Game_Utils.Game_Log
-              ("Manifold.Get_Palette_File_Name File_Name: " &
+              ("Tiles_Manager.Get_Palette_File_Name File_Name: " &
                  aLine (4 .. aLine'Last));
             return To_Unbounded_String ("src/" & aLine (4 .. aLine'Last));
         end Get_Palette_File_Name;
@@ -589,11 +589,11 @@ package body Tiles_Manager is
         Pos1     : Natural;
         Pos2     : Natural;
     begin
-        Game_Utils.Game_Log ("Loading tiles and generating manifold from FP...");
+        Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, loading tiles and generating manifold from FP...");
         Pos1 := Fixed.Index (aLine, " ") + 1;
         if Fixed.Index (aLine, "facings ") = 0 then
             raise Tiles_Manager_Exception with
-              "Invalid format, ""facings"" expected: " & aLine (1 .. Pos1);
+              "Tiles_Manager.Load_Tiles, invalid format, ""facings"" expected: " & aLine (1 .. Pos1);
         end if;
 
         Pos2 := Fixed.Index (aLine (Pos1 + 1 .. aLine'Last), "x");
@@ -607,9 +607,9 @@ package body Tiles_Manager is
           Integer (Float'Ceiling (Float (Max_Map_Rows) / Float (Tile_Batch_Width)));
 
         Tile_Rows.Clear;
-        Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Batches_Across, Batches_Down"
-                             & Integer'Image (Batches_Across) & ", " &
-                               Integer'Image (Batches_Down));
+--          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Batches_Across, Batches_Down"
+--                               & Integer'Image (Batches_Across) & ", " &
+--                                 Integer'Image (Batches_Down));
         --  Parse_Facings_By_Row initializes Tile_Rows
         Parse_Facings_By_Row (File);
 
@@ -617,15 +617,15 @@ package body Tiles_Manager is
         Load_Char_Rows (File, "types");
         Load_Hex_Rows (File, "heights");
 
-        Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, heights loaded.");
+--          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, heights loaded.");
 
         Load_Palette_File_Names (File);
         Load_Tile_And_Ramp_Textures (Tile_Tex, Tile_Spec_Tex,
                                      Ramp_Diff_Tex, Ramp_Spec_Tex);
 
-        Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Textures loaded.");
+--          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Textures loaded.");
         Add_Tiles_To_Batches;
-        Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles added To_Batches.");
+--          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles added To_Batches.");
         Add_Dummy_Manifold_Lights;
 
         Sprite_World_Map.Init;
@@ -656,9 +656,9 @@ package body Tiles_Manager is
         Tile_Col   : Tile_Column_List;
     begin
         --  Parse_Facings_By_Row initalizes the Tiles list.
-        Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Max_Map_Rows, Max_Map_Cols "
-                             & Integer'Image (Max_Map_Rows) & ", " &
-                               Integer'Image (Max_Map_Cols));
+--          Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Max_Map_Rows, Max_Map_Cols "
+--                               & Integer'Image (Max_Map_Rows) & ", " &
+--                                 Integer'Image (Max_Map_Cols));
         for row in 1 .. Max_Map_Rows loop
             declare
                 aString     : constant String := Get_Line (File);
@@ -687,9 +687,9 @@ package body Tiles_Manager is
             end;
             Tile_Rows.Append (Tile_Col);
         end loop;
-        Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row done Tile Rows range: "
-                             & Integer'Image (Integer (Tile_Rows.First_Index)) & ", "
-                             &  Integer'Image (Integer (Tile_Rows.Last_Index)));
+--          Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row done Tile Rows range: "
+--                               & Integer'Image (Integer (Tile_Rows.First_Index)) & ", "
+--                               &  Integer'Image (Integer (Tile_Rows.Last_Index)));
 
     exception
         when anError : others =>

@@ -99,7 +99,7 @@ package body Manifold is
    begin
       --        Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
       --                 Integer'Image (Integer (theBatches.Length)));
-      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+--        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       Use_Program (Manifold_Program);
       if Camera.Is_Dirty then
          Set_View_Matrix (Camera.View_Matrix);
@@ -120,22 +120,22 @@ package body Manifold is
       --        Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Camera.View_Matrix",
       --                                Camera.View_Matrix);
 
-      if Manifold_Dyn_Light_Dirty then
-         Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
-         Set_Dynamic_Light_Diff (Manifold_Dyn_Light_Diff);
-         Set_Dynamic_Light_Spec (Manifold_Dyn_Light_Spec);
-         Set_Dynamic_Light_Range (Manifold_Dyn_Light_Range);
-      end if;
+        if Manifold_Dyn_Light_Dirty then
+            Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
+            Set_Dynamic_Light_Diff (Manifold_Dyn_Light_Diff);
+            Set_Dynamic_Light_Spec (Manifold_Dyn_Light_Spec);
+            Set_Dynamic_Light_Range (Manifold_Dyn_Light_Range);
+        end if;
 
-      --        if Settings.Shadows_Enabled then
-      --           Set_Shadow_Enabled (1.0);
-      --           Set_Caster_Position (Shadows.Caster_Position);
-      --           Shadows.Bind_Cube_Shadow_Texture (3);
-      --        else
-      Set_Shadow_Enabled (0.0);
-      --        end if;
+        if Settings.Shadows_Enabled then
+            Set_Shadow_Enabled (1.0);
+            Set_Caster_Position (Shadows.Caster_Position);
+            Shadows.Bind_Cube_Shadow_Texture (3);
+        else
+            Set_Shadow_Enabled (0.0);
+        end if;
 
-      if theBatches.Is_Empty then
+        if theBatches.Is_Empty then
          raise Manifold_Exception with
            "Manifold.Draw_Manifold_Around - Batches is empty";
       end if;
@@ -170,7 +170,7 @@ package body Manifold is
                      --  Bind_Texture sets active unit and binds texture
                      --  to Texture_Target Texture_2D
                      Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
-                     --                          Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+                     Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
                      --                              Put_Line ("Manifold.Draw_Manifold_Around flat tiles Draw_Arrays");
                      --  Draws start scene
                      Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));

@@ -49,12 +49,12 @@ package body Properties_Manager is
       Rot_Matrix    : Matrix4;
       Ros           : Vector3;
    begin
-      Game_Utils.Game_Log
-        ("--------Properties_Manager.Create_Prop_From_Script--------");
+--        Game_Utils.Game_Log
+--          ("--------Properties_Manager.Create_Prop_From_Script--------");
       Set_Property_Defaults (New_Prop);
-      Game_Utils.Game_Log
-        ("Properties_Manager.Create_Prop_From_Script -1- creating property from "
-         & Script_File);
+--        Game_Utils.Game_Log
+--          ("Properties_Manager.Create_Prop_From_Script -1- creating property from "
+--           & Script_File);
       Script_Index := Get_Index_Of_Prop_Script (Script_File);
       --          Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -2- script index "
       --                               & Integer'Image (Script_Index));
@@ -62,11 +62,11 @@ package body Properties_Manager is
       --          Game_Utils.Game_Log ("Properties_Manager.Create_Prop_From_Script -3- script created ");
       aScript_Type := aScript.Script_Type;
       Respect_Ramps := aScript_Type = Boulder_Prop;
-      Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -4- Mesh_Index"
-                           & Integer'Image (aScript.Mesh_Index));
+--        Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -4- Mesh_Index"
+--                             & Integer'Image (aScript.Mesh_Index));
       if Tiles_Manager.Is_Tile_Valid ((Int (Map_U), Int (Map_V))) then
-         Game_Utils.Game_Log ("Properties Manager creating property from script "
-                              & Script_File);
+--           Game_Utils.Game_Log ("Properties Manager creating property from script "
+--                                & Script_File);
          New_Prop.Script_Index := Script_Index;
          --   Set_Property_Defaults;   set by record defaults
          New_Prop.Door_Position := Closed_State;
@@ -74,21 +74,21 @@ package body Properties_Manager is
          for index in 1 .. Mesh_Loader.Max_Bones loop
             New_Prop.Current_Bone_Transforms (index) := Singles.Identity4;
          end loop;
-         Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5- Current_Bone_Transforms done");
+--           Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5- Current_Bone_Transforms done");
 
          New_Prop.World_Pos (GL.X) := 2.0 * Single (Map_U);
          New_Prop.World_Pos (GL.Z) := 2.0 * Single (Map_V);
          New_Prop.Is_Visible := aScript.Starts_Visible;
-         Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5a- New_Prop.Is_Visible set");
+--           Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5a- New_Prop.Is_Visible set");
 
          New_Prop.World_Pos (GL.Y) :=
            Tiles_Manager.Get_Tile_Height (New_Prop.World_Pos (GL.X),
                                           New_Prop.World_Pos (GL.Z),
                                           False, Respect_Ramps);
-         Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5b- initialNew_Prop.World_Pos (GL.Y) set");
+--           Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5b- initialNew_Prop.World_Pos (GL.Y) set");
          New_Prop.World_Pos (GL.Y) :=
            New_Prop.World_Pos (GL.Y) + Single (2 * Height_Level);
-         Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5c- New_Prop.World_Pos done");
+--           Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5c- New_Prop.World_Pos done");
          --  Allow portcullis and its collision model to start up high
          New_Prop.Elevator := aScript.Initial_Elevator_State;
          if aScript_Type = Elevator_Prop and
@@ -98,7 +98,7 @@ package body Properties_Manager is
             New_Prop.Is_Visible := aScript.Elevator_Visible_At_Top;
          end if;
 
-         Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5d- New_Prop.Elevator done");
+--           Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -5d- New_Prop.Elevator done");
          New_Prop.Velocity := Vec3_0;
          New_Prop.Anim_Duration := 0.0;
          New_Prop.Anim_Elapsed_Time := 0.0;
@@ -117,7 +117,7 @@ package body Properties_Manager is
          New_Prop.Rx_Code := Rx;
          New_Prop.Script_Index := 1;
          New_Prop.Height_Level := Height_Level;
-         Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -6- New_Prop 1 done");
+--           Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -6- New_Prop 1 done");
 
          if aScript.Has_Particles then
             New_Prop.Particle_System_Index :=
@@ -158,18 +158,18 @@ package body Properties_Manager is
             Event_Controller.Add_Receiver (New_Prop.Rx_Code, RX_Kind,
                                            Properties.Last_Index);
          end if;
-         Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -11- Update_Props_In_Tiles (Properties.Last_Index: "
-                              & Integer'Image (Properties.Last_Index));
+--           Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -11- Update_Props_In_Tiles (Properties.Last_Index: "
+--                                & Integer'Image (Properties.Last_Index));
          --  Update_Props_In_Tiles just adds
          Prop_Renderer.Update_Props_In_Tiles_Index
            (Integer (New_Prop.Map_U), Integer (New_Prop.Map_V),
             Int (Properties.Last_Index));
          if Rebalance then
-            Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -12- Rebalance");
+--              Game_Utils.Game_Log ("Properties_Manager Create_Prop_From_Script -12- Rebalance");
             Rebalance_Props_In (Integer (Map_U), Integer (Map_V));
          end if;
       end if;
-      Game_Utils.Game_Log ("--------Leaving Properties_Manager.Create_Prop_From_Script--------");
+--        Game_Utils.Game_Log ("--------Leaving Properties_Manager.Create_Prop_From_Script--------");
 
    exception
       when anError : Constraint_Error =>
@@ -239,7 +239,7 @@ package body Properties_Manager is
       Tx             : Integer := -1;       --  transmit code
    begin
 
-      Game_Utils.Game_Log ("Properties_Manager.Load_Properties entered");
+--        Game_Utils.Game_Log ("Properties_Manager.Load_Properties entered");
       if Fixed.Index (aLine, "props ") = 0 then
          raise Properties_Exception with
            "Properties_Manager.Load_Properties, invalid format, ""props"" expected: " &
@@ -249,8 +249,8 @@ package body Properties_Manager is
       PosR := Fixed.Index (aLine (PosL .. S_Length), " ");
 
       Property_Count := Integer'Value (aLine (PosL .. PosR));
-      Game_Utils.Game_Log ("Properties_Manager.Load_Properties Property_Count: "
-                           & Integer'Image (Property_Count));
+--        Game_Utils.Game_Log ("Properties_Manager.Load_Properties Property_Count: "
+--                             & Integer'Image (Property_Count));
       Prop_Renderer.Set_Portal_Index (0);
       Character_Controller.Set_Gold_Current (0);
       Character_Controller.Set_Gold_Max (0);
@@ -260,8 +260,8 @@ package body Properties_Manager is
          declare
             Prop_Line : constant String := Get_Line (Prop_File);
          begin
-            Game_Utils.Game_Log ("Properties_Manager.Load_Properties p_index: "
-                                 & Integer'Image (p_index));
+--              Game_Utils.Game_Log ("Properties_Manager.Load_Properties p_index: "
+--                                   & Integer'Image (p_index));
             S_Length := Prop_Line'Length;
             PosL := Fixed.Index (Prop_Line, " ");
             Script_File := To_Unbounded_String (Prop_Line (1 .. PosL - 1));
@@ -279,19 +279,19 @@ package body Properties_Manager is
             --  Map files can have Rx and Tx set to -1
             Rx := Integer'Value (Prop_Line (PosL + 1 .. PosR - 1));
             Tx := Integer'Value (Prop_Line (PosR + 1 .. S_Length));
-            Game_Utils.Game_Log ("Properties_Manager Script_File " &
-                                   To_String (Script_File) & ", U: " &
-                                   Integer'Image (U) & ", V: " &
-                                   Integer'Image (V) & ", Height: " &
-                                   Integer'Image (Height) & ", Facing: " &
-                                   Facing & ", Rx: " &
-                                   Integer'Image (Rx) & ", Tx: " &
-                                   Integer'Image (Tx));
+--              Game_Utils.Game_Log ("Properties_Manager.Load_Properties Script_File " &
+--                                     To_String (Script_File) & ", U: " &
+--                                     Integer'Image (U) & ", V: " &
+--                                     Integer'Image (V) & ", Height: " &
+--                                     Integer'Image (Height) & ", Facing: " &
+--                                     Facing & ", Rx: " &
+--                                     Integer'Image (Rx) & ", Tx: " &
+--                                     Integer'Image (Tx));
          end; --  declare block
          Create_Prop_From_Script (To_String (Script_File), U, V, Height,
                                   Facing, Tx, Rx);
       end loop;
-      Game_Utils.Game_Log ("Properties_Manager.Load_Properties, Properties loaded");
+--        Game_Utils.Game_Log ("Properties_Manager.Load_Properties, Properties loaded");
 
    exception
       when anError : others =>
