@@ -204,8 +204,8 @@ package body Camera is
             Prev_Cam_Pos := G_Camera.World_Position;
             G_Camera.World_Position := World_Position;
             Cam_Target := World_Position + G_Camera.Shake_Mod_Position;
-            Utilities.Print_Vector ("Camera.Set_Camera_Position G_Camera.Shake_Mod_Position",
-                       G_Camera.Shake_Mod_Position);
+--              Utilities.Print_Vector ("Camera.Set_Camera_Position G_Camera.Shake_Mod_Position",
+--                         G_Camera.Shake_Mod_Position);
             Cam_Target (GL.Y) := Cam_Target (GL.Y) - 1.0;
 --              if not First_Person then
                 Maths.Init_Lookat_Transform
@@ -318,18 +318,20 @@ package body Camera is
                 Single (G_Camera.Screen_Shake_Amplitude);
             G_Camera.Shake_Mod_Position (GL.X) := XZ;
             G_Camera.Shake_Mod_Position (GL.Z) := XZ;
+
+            --  Update Camera_Position with Shake_Mod_Position
             Set_Camera_Position (G_Camera.World_Position);
         end if;
 
         if G_Camera.Wind_In_Countdown >= 0.0 then
-            --              Put_Line ("Camera.Update_Camera_Effects Wind_In_Countdown " &
-            --                       Float'Image (G_Camera.Wind_In_Countdown));
             G_Camera.Wind_In_Countdown :=
               G_Camera.Wind_In_Countdown - Elapsed_Time;
             CD := Maths.Max_Float (G_Camera.Wind_In_Countdown, 0.0);
             Dist := Single (40.0 / 3.0 * CD);
             G_Camera.Shake_Mod_Position := (0.0, Dist, 0.0);
             G_Camera.Wind_In_Angle := Maths.Degree (1024.0 / 3.0 * CD);
+
+            --  Update Camera_Position with Shake_Mod_Position
             Set_Camera_Position (G_Camera.World_Position);
             FB_Effects.Set_Feedback_Screw (G_Camera.Wind_In_Countdown);
         end if;
