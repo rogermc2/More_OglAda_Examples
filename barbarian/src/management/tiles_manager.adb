@@ -150,6 +150,7 @@ package body Tiles_Manager is
          else
             aBatch.Tile_Indices.Append (Tile_Index);
             Add_Batch_To_Batch_List (aBatch);
+            aBatch.Tile_Indices.Clear;
          end if;
       end loop;
 
