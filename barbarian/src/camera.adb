@@ -210,7 +210,7 @@ package body Camera is
 --              if not First_Person then
                 Maths.Init_Lookat_Transform
                   (World_Position + G_Camera.Shake_Mod_Position, Cam_Target,
-                   (0.0, 0.0, 1.0), G_Camera.View_Matrix);
+                   (0.0, 0.0, -1.0), G_Camera.View_Matrix);
                 if G_Camera.Wind_In_Angle > 0.0 then
                     Rot_Matrix := Rotate_Z_Degree (Identity4, G_Camera.Wind_In_Angle);
                     G_Camera.View_Matrix := Rot_Matrix * G_Camera.View_Matrix;
@@ -297,7 +297,7 @@ package body Camera is
 
         Time_Factor : Float;
         XZ          : Single;
-        CD          : Float;
+        Count_Down  : Float;
         Dist        : Single;
     begin
         if G_Camera.Screen_Shake_Countdown_Secs >= 0.0 then
@@ -326,10 +326,10 @@ package body Camera is
         if G_Camera.Wind_In_Countdown >= 0.0 then
             G_Camera.Wind_In_Countdown :=
               G_Camera.Wind_In_Countdown - Elapsed_Time;
-            CD := Maths.Max_Float (G_Camera.Wind_In_Countdown, 0.0);
-            Dist := Single (40.0 / 3.0 * CD);
+            Count_Down := Maths.Max_Float (G_Camera.Wind_In_Countdown, 0.0);
+            Dist := Single (40.0 / 3.0 * Count_Down);
             G_Camera.Shake_Mod_Position := (0.0, Dist, 0.0);
-            G_Camera.Wind_In_Angle := Maths.Degree (1024.0 / 3.0 * CD);
+            G_Camera.Wind_In_Angle := Maths.Degree (1024.0 / 3.0 * Count_Down);
 
             --  Update Camera_Position with Shake_Mod_Position
             Set_Camera_Position (G_Camera.World_Position);

@@ -147,9 +147,9 @@ package body Tiles_Manager is
             if Batch_Index <= Batch_List.Last_Index then
                 Add_Tile_To_Batch (Batch_Index, Tile_Index);
             else
+                aBatch.Tile_Indices.Clear;
                 aBatch.Tile_Indices.Append (Tile_Index);
                 Add_Batch_To_Batch_List (aBatch);
-                aBatch.Tile_Indices.Clear;
             end if;
         end loop;
 
