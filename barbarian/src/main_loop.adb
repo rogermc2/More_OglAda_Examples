@@ -118,7 +118,7 @@ package body Main_Loop is
          --  Major states stacks don't change or anything
          Is_Running := Game_Support.Check_Victory_Defeat;
          if Is_Running then
-            Camera.Update_Camera_Effects (Delta_Time);
+--              Camera.Update_Camera_Effects (Delta_Time);
             Update_Logic_Steps (Window, Delta_Time);
             if Main_Menu.End_Story_Open then
                --  Just won the game

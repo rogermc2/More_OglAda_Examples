@@ -68,7 +68,7 @@ package body Camera is
 --          Dir               : Singles.Vector3;
 --          First_Person_Pos  : Singles.Vector3;
     begin
-        G_Camera.World_Position := (2.0, 30.0, 2.0);  --  2.0, 10.0, 2.0
+        G_Camera.World_Position := (2.0, 50.0, 2.0);  --  2.0, 10.0, 2.0
         Prev_Cam_Pos := G_Camera.World_Position;
         G_Camera.Shake_Mod_Position := (0.0, 0.0, 0.0);
         G_Camera.Original_Screen_Shake_Time := 0.0;
@@ -98,7 +98,8 @@ package body Camera is
                                          Target   => (2.0, 0.0, 2.0),
                                          Up       => (0.0, 0.0, -1.0),
                                          Look_At  => G_Camera.View_Matrix);
---              Utilities.Print_Matrix ("Camera.View_Matrix", G_Camera.View_Matrix);
+--        Utilities.Print_Matrix ("Camera.Init Camera.View_Matrix",
+--                                G_Camera.View_Matrix);
 --          end if;
 
         G_Camera.Projection_Matrix := Perspective_Matrix
@@ -204,9 +205,9 @@ package body Camera is
             Prev_Cam_Pos := G_Camera.World_Position;
             G_Camera.World_Position := World_Position;
             Cam_Target := World_Position + G_Camera.Shake_Mod_Position;
---              Utilities.Print_Vector ("Camera.Set_Camera_Position G_Camera.Shake_Mod_Position",
---                         G_Camera.Shake_Mod_Position);
             Cam_Target (GL.Y) := Cam_Target (GL.Y) - 1.0;
+            Utilities.Print_Vector ("Camera.Set_Camera_Position Target",
+                                    Cam_Target);
 --              if not First_Person then
                 Maths.Init_Lookat_Transform
                   (World_Position + G_Camera.Shake_Mod_Position, Cam_Target,
