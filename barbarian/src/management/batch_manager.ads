@@ -28,26 +28,29 @@ package Batch_Manager is
       Tile_Indices         : Tiles_Manager.Tile_Indices_List;
       AABB_Mins            : Singles.Vector3 := (0.0, 0.0, 0.0);
       AABB_Maxs            : Singles.Vector3 := (0.0, 0.0, 0.0);
+      --  batching of flat tiles
       Points               : GL_Maths.Vec3_List;
       PointData            : GL_Maths.Vec3_List;
-      Ramp_Points          : GL_Maths.Vec3_List;
-      Water_Points         : GL_Maths.Vec3_List;
       Normals              : GL_Maths.Vec3_List;
-      Ramp_Normals         : GL_Maths.Vec3_List;
-      Ramp_Smooth_Normals  : GL_Maths.Vec3_List;
       Tex_Coords           : GL_Maths.Vec2_List;
-      Ramp_Tex_Coords      : GL_Maths.Vec2_List;
       Points_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Ramp_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-      Water_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
       Points_VBO           : GL.Objects.Buffers.Buffer;
       Normals_VBO          : GL.Objects.Buffers.Buffer;
-      Ramp_VBO             : GL.Objects.Buffers.Buffer;
+      Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
+      --  batching of ramps
+      Ramp_Points          : GL_Maths.Vec3_List;
+      Ramp_Normals         : GL_Maths.Vec3_List;
+      Ramp_Smooth_Normals  : GL_Maths.Vec3_List;
+      Ramp_Tex_Coords      : GL_Maths.Vec2_List;
+      Ramp_VAO             : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Ramp_Points_VBO      : GL.Objects.Buffers.Buffer;
       Ramp_Normals_VBO     : GL.Objects.Buffers.Buffer;
       Ramp_Smooth_Normals_VBO : GL.Objects.Buffers.Buffer;
       Ramp_Texcoords_VBO   : GL.Objects.Buffers.Buffer;
-      Water_VBO            : GL.Objects.Buffers.Buffer;
-      Tex_Coords_VBO       : GL.Objects.Buffers.Buffer;
+      --  batching of water
+      Water_Points         : GL_Maths.Vec3_List;
+      Water_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+      Water_Points_VBO     : GL.Objects.Buffers.Buffer;
       Static_Light_Indices : GL_Maths.Indices_List;
    end record;
 

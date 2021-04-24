@@ -37,7 +37,7 @@ package body Manifold is
    use GL.Types;
 
    Yellow                   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.5);
-   Batch_Split_Count        : Integer := 0;
+--     Batch_Split_Count        : Integer := 0;
    Manifold_Program         : GL.Objects.Programs.Program;
    Water_Program            : GL.Objects.Programs.Program;
    Manifold_Dyn_Light_Dirty : Boolean := True;
@@ -446,7 +446,7 @@ package body Manifold is
    begin
       Batches_Across := 0;
       Batches_Down := 0;
-      Batch_Split_Count := 0;
+--        Batch_Split_Count := 0;
       Max_Map_Cols := 0;
       Max_Map_Rows := 0;
       Tiles_Manager.Reset_Vars;

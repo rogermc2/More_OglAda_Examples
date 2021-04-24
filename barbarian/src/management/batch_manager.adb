@@ -482,7 +482,7 @@ package body Batch_Manager is
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
-      subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
+--        subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       Row_Index         : Natural;
@@ -741,7 +741,7 @@ package body Batch_Manager is
          aBatch.Ramp_VAO.Initialize_Id;
          GL_Utils.Bind_VAO (aBatch.Ramp_VAO);
 
-         aBatch.Ramp_VBO := GL_Utils.Create_3D_VBO
+         aBatch.Ramp_Points_VBO := GL_Utils.Create_3D_VBO
            (GL_Maths.To_Vector3_Array (aBatch.Ramp_Points));
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
@@ -847,7 +847,7 @@ package body Batch_Manager is
          aBatch.Water_VAO.Initialize_Id;
          GL_Utils.Bind_VAO (aBatch.Water_VAO);
 
-         aBatch.Water_VBO := GL_Utils.Create_3D_VBO
+         aBatch.Water_Points_VBO := GL_Utils.Create_3D_VBO
            (GL_Maths.To_Vector3_Array (aBatch.Water_Points));
          GL.Attributes.Set_Vertex_Attrib_Pointer
            (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
