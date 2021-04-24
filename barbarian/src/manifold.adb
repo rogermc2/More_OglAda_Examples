@@ -112,10 +112,6 @@ package body Manifold is
 --                                  Camera.View_Matrix);
 --           Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Projection_Matrix",
 --                                  Camera.Projection_Matrix);
---            Set_View_Matrix (Translation_Matrix ((0.0, 0.0, -20.0)) *
---                             Rotate_X_Degree (Camera.View_Matrix, Degree (0)));
---           Set_Projection_Matrix
---               (Translation_Matrix ((0.0, -2.0, 0.0)) * Camera.Projection_Matrix);
       end if;
       --        Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Camera.View_Matrix",
       --                                Camera.View_Matrix);
@@ -181,11 +177,6 @@ package body Manifold is
                      --  ramps
                      GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
 
-                     --  Bind_Texture sets active unit and binds texture
-                     --  to Texture_Target Texture_2D
-                     Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
-                     Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-
                      if Settings.Render_OLS then
                         Set_Front_Face (Clockwise);
                         Set_Outline_Pass (1.0);
@@ -196,10 +187,10 @@ package body Manifold is
                      --  regular pass
                      --  Bind_Texture sets active unit and binds texture
                      --  to Texture_Target Texture_2D
-                     --                          Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
-                     --                          Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-                     --                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
-                     --                          Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+                     Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
+                     Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+--                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
+                     Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
                      --                              Draw_Arrays (Points, 0, 1);
                   end if;
                end if;
