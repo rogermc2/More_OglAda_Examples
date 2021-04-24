@@ -27,10 +27,10 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
-    procedure Camera_Wind_In is
+    procedure Set_Camera_Wind_In is
     begin
         G_Camera.Wind_In_Countdown := 2.0;
-    end Camera_Wind_In;
+    end Set_Camera_Wind_In;
 
     --  ------------------------------------------------------------------------
 

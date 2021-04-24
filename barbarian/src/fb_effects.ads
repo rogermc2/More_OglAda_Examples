@@ -15,8 +15,8 @@ package FB_Effects is
    function Current_SSAA return GL.Types.Single;
    procedure Draw_FB_Effects (Delta_Time : GL.Types.Single);
    procedure Init (Width, Height : Integer);
-   procedure Fade_In;
-   procedure Fade_Out;
+   procedure Set_Fade_In;
+   procedure Set_Fade_Out;
    procedure FB_Gold_Flash;
    procedure FB_Green_Flash;
    procedure FB_White_Flash;

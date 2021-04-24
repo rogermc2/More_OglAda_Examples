@@ -450,12 +450,12 @@ package body Main_Loop is
                Blood_Splats.Use_Splats_Shader;
                Splats_Shader_Manager.Set_Ambient_Light (Ambient_Light);
 
-               FB_Effects.Fade_In;
+               FB_Effects.Set_Fade_In;
                Manifold.Update_Static_Lights_Uniforms;
                Prop_Renderer.Update_Static_Lights_Uniforms;
                Sprite_Renderer.Update_Static_Lights_Uniforms;
 
-               Camera.Camera_Wind_In;
+               Camera.Set_Camera_Wind_In;
                Audio.Play_Sound ("enter_portal.wav", False);
 
                Level_Time := 0.0;

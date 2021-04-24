@@ -275,21 +275,21 @@ package body FB_Effects is
 
    --  -------------------------------------------------------------------------
 
-   procedure Fade_In is
+   procedure Set_Fade_In is
    begin
       FB_Current_Effect := FB_Fadein_Effect;
       FB_Effect_Elapsed := 0.0;
-   end Fade_In;
+   end Set_Fade_In;
 
    --  -------------------------------------------------------------------------
 
-   procedure Fade_Out is
+   procedure Set_Fade_Out is
    begin
       if FB_Current_Effect /= FB_Fadeout_Effect then
          FB_Current_Effect := FB_Fadeout_Effect;
          FB_Effect_Elapsed := 0.0;
       end if;
-   end Fade_Out;
+   end Set_Fade_Out;
 
    --  -------------------------------------------------------------------------
 
