@@ -104,8 +104,7 @@ package body Tiles_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Add_Tiles_To_Batches is
-      use Batch_Manager;
-      use Batches_Package;
+      use Batch_Manager.Batches_Package;
       Total_Tiles : constant Integer := Max_Map_Rows * Max_Map_Cols;
       Row         : Natural;
       Column      : Natural;
@@ -141,21 +140,19 @@ package body Tiles_Manager is
          --                                  Integer'Image (Batch_Index) & ", " &
          --                                  Integer'Image (Tile_Index) );
          --  Add_Tile_Index_To_Batch
-         if Batch_Index <= Batch_List.Last_Index then
-            Add_Tile_To_Batch (Batch_Index, Tile_Index);
+         if Batch_Index <= Batch_Manager.Batch_List.Last_Index then
+            Batch_Manager.Add_Tile_To_Batch (Batch_Index, Tile_Index);
          else
             aBatch.Tile_Indices.Clear;
             aBatch.Tile_Indices.Append (Tile_Index);
-            Add_Batch_To_Batch_List (aBatch);
+            Batch_Manager.Add_Batch_To_Batch_List (aBatch);
          end if;
       end loop;
 
       --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
       --                               Integer'Image (Batch_List.First_Index) & ", " &
       --                               Integer'Image (Batch_List.Last_Index));
-      for index in Batch_List.First_Index .. Batch_List.Last_Index loop
-         Regenerate_Batch (index);
-      end loop;
+      Batch_Manager.Regenerate_Batches;
 
    exception
       when anError : others =>

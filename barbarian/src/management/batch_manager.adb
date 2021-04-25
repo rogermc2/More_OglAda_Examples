@@ -484,7 +484,7 @@ package body Batch_Manager is
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
---        subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
+      --        subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       Row_Index         : Natural;
@@ -521,14 +521,14 @@ package body Batch_Manager is
       aBatch.Points.Clear;
       aBatch.Normals.Clear;
       aBatch.Tex_Coords.Clear;
---        Game_Utils.Game_Log
---          ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
---             Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
---             Integer'Image (aBatch.Tile_Indices.Last_Index));
---        Put_Line ("Batch_Manger.Generate_Points, Tile_Indices.Last_Index: " &
---                   Integer'Image (Integer (aBatch.Tile_Indices.Last_Index)));
---        Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tiles" &
---                   Integer'Image (Tiles_Manager.Number_Of_Tiles));
+      --        Game_Utils.Game_Log
+      --          ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
+      --             Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
+      --             Integer'Image (aBatch.Tile_Indices.Last_Index));
+      --        Put_Line ("Batch_Manger.Generate_Points, Tile_Indices.Last_Index: " &
+      --                   Integer'Image (Integer (aBatch.Tile_Indices.Last_Index)));
+      --        Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tiles" &
+      --                   Integer'Image (Tiles_Manager.Number_Of_Tiles));
       --  for all tiles in aBatch
       for index in aBatch.Tile_Indices.First_Index ..
         aBatch.Tile_Indices.Last_Index loop
@@ -539,9 +539,9 @@ package body Batch_Manager is
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
          Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
                                 Integer'Image (Tile_Index));
---           Game_Utils.Game_Log
---             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
---                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
+         --           Game_Utils.Game_Log
+         --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
+         --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
          X := Single (2 * Col_Index) - 25.0;
          Y := Single (2 * Height) - 5.0;
          Z := Single (2 * Row_Index) - 27.0;
@@ -572,19 +572,19 @@ package body Batch_Manager is
             --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
             Atlas_Row := Tex_Index / Sets_In_Atlas_Row;
             Atlas_Col := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
---              Game_Utils.Game_Log
---                ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
---                 & Integer'Image (Tex_Index) & ", " & Integer'Image (Atlas_Row)
---                 & ", " & Integer'Image (Atlas_Col));
+            --              Game_Utils.Game_Log
+            --                ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
+            --                 & Integer'Image (Tex_Index) & ", " & Integer'Image (Atlas_Row)
+            --                 & ", " & Integer'Image (Atlas_Col));
             Add_Tex_Coords (0.5, 1.0);
             Add_Tex_Coords (0.0, 1.0);
             Add_Tex_Coords (0.0, 0.5);
             Add_Tex_Coords (0.0, 0.5);
             Add_Tex_Coords (0.5, 0.5);
             Add_Tex_Coords (0.5, 1.0);
---              Game_Utils.Game_Log
---                ("Batch_Manger.Generate_Points Add_Tex_Coords added to tile: " &
---                Integer'Image (Tile_Index));
+            --              Game_Utils.Game_Log
+            --                ("Batch_Manger.Generate_Points Add_Tex_Coords added to tile: " &
+            --                Integer'Image (Tile_Index));
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
@@ -602,8 +602,8 @@ package body Batch_Manager is
          --              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
          --           end if;
       end loop;  -- over tile indices
---        Game_Utils.Game_Log
---          ("Batch_Manger.Generate_Points Tiles loaded.");
+      --        Game_Utils.Game_Log
+      --          ("Batch_Manger.Generate_Points Tiles loaded.");
 
       aBatch.Points_VAO.Initialize_Id;
       GL_Utils.Bind_VAO (aBatch.Points_VAO);
@@ -627,11 +627,11 @@ package body Batch_Manager is
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
---        Game_Utils.Game_Log
---          ("Batch_Manger.Generate_Points done points, normals, tex coords lengths: "
---           & Integer'Image (Integer (aBatch.Points.Length)) & ", " &
---             Integer'Image (Integer (aBatch.Normals.Length)) & ", " &
---             Integer'Image (Integer (aBatch.Tex_Coords.Length)));
+      --        Game_Utils.Game_Log
+      --          ("Batch_Manger.Generate_Points done points, normals, tex coords lengths: "
+      --           & Integer'Image (Integer (aBatch.Points.Length)) & ", " &
+      --             Integer'Image (Integer (aBatch.Normals.Length)) & ", " &
+      --             Integer'Image (Integer (aBatch.Tex_Coords.Length)));
 
    exception
       when anError : others =>
@@ -917,36 +917,39 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Regenerate_Batch (Batch_Index : Natural) is
+   procedure Regenerate_Batches is
       theBatch     : Batch_Meta;
       Tile_Indices : Tiles_Manager.Tile_Indices_List;
 
    begin
-      Free_Batch_Data (Batch_Index);
+      for Batch_Index in Batches_Data.First_Index .. Batches_Data.Last_Index loop
 
-      theBatch := Batches_Data.Element (Batch_Index);
-      Tile_Indices := theBatch.Tile_Indices;
-      if Tile_Indices.Is_Empty then
-         raise Batch_Manager_Exception with
-           "Batch_Manager.Regenerate_Batch called with empty Tiles list";
-      end if;
+         Free_Batch_Data (Batch_Index);
 
---        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Points for Batch_Index"
---                             & Integer'Image (Batch_Index));
-      Generate_Points (theBatch);
-      Generate_Ramps (theBatch);
---        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
-      Generate_Water (theBatch);
---        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
+         theBatch := Batches_Data.Element (Batch_Index);
+         Tile_Indices := theBatch.Tile_Indices;
+         if Tile_Indices.Is_Empty then
+            raise Batch_Manager_Exception with
+              "Batch_Manager.Regenerate_Batches called with empty Tiles list";
+         end if;
 
-      Batches_Data.Replace_Element (Batch_Index, theBatch);
+         --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batches Generate_Points for Batch_Index"
+         --                             & Integer'Image (Batch_Index));
+         Generate_Points (theBatch);
+         Generate_Ramps (theBatch);
+         --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
+         Generate_Water (theBatch);
+         --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
+
+         Batches_Data.Replace_Element (Batch_Index, theBatch);
+      end loop;
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Batch_Manger.Regenerate_Batch!");
+         Put_Line ("An exception occurred in Batch_Manger.Regenerate_Batches!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
-   end Regenerate_Batch;
+   end Regenerate_Batches;
 
    --  -------------------------------------------------------------------------
 
