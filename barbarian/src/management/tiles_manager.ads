@@ -16,12 +16,13 @@ package Tiles_Manager is
    Batches_Down   : Natural := 0;  --  Set by Load_Tiles
 
    Total_Tiles    : Natural := 0;
+   subtype Hex_Digit is Integer range 0 .. 15;
    subtype Tiles_Index is Natural;
    subtype Tiles_RC_Index is Natural;
 
    type Tile_Data is record
       Height        : Natural := 0;
-      Texture_Index : Natural := 0;
+      Texture_Index : Hex_Digit := 0;
       Facing        : Character := 'N';  --  North
       Tile_Type     : Character := ASCII.NUL;
    end record;
@@ -40,7 +41,6 @@ package Tiles_Manager is
    package Tile_Indices_Package is new Ada.Containers.Vectors
       (Natural, Natural);
    subtype Tile_Indices_List is Tile_Indices_Package.Vector;
---     subtype Tile_Indices_Cursor is Tile_Indices_Package.Cursor;
 
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;

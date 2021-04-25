@@ -462,7 +462,7 @@ package body Tiles_Manager is
          declare
             Columns    : constant String := Get_Line (File);
             Hex_Char   : Character;
-            Hex_Int    : Integer;
+            Hex_Int    : Hex_Digit;
          begin
             if Columns'Length < Max_Map_Cols then
                raise Tiles_Manager_Exception with

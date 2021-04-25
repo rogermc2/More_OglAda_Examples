@@ -485,7 +485,7 @@ package body Batch_Manager is
       use Tile_Indices_Package;
       use GL_Maths;
       subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
-      subtype Texture_Index is single range 0.0 .. 1.0;
+      subtype Texture_Single is Single range 0.0 .. 1.0;
       Row_Index         : Natural;
       Col_Index         : Natural;
       Column_List       : Tile_Column_List;
@@ -504,9 +504,9 @@ package body Batch_Manager is
          --  Atlas_Factor = 0.25 (Atlas_Col and Row range 0 .. 63)
          --  Atlas_Factor reduces Atlas_Col and Row range 0 .. 15
          --  Object size 125 x 125 pixels
-         S  : constant Texture_Index :=
+         S  : constant Texture_Single :=
                 Atlas_Factor * (Single (Atlas_Col) + S_Offset);
-         T  : constant Texture_Index :=
+         T  : constant Texture_Single :=
                 Atlas_Factor * (Single (Atlas_Row) + T_Offset);
       begin
          --  ST_Offset = 8.0 / 2048.0 = 1 / 256
@@ -966,7 +966,7 @@ package body Batch_Manager is
                              aTile  : Tiles_Manager.Tile_Data;
                              Side   : Tile_Side; Level : Natural) is
       Offset_Factor     : Singles.Vector2_Array (1 .. 6);
-      Texture_Index     : constant Positive := aTile.Texture_Index;
+      Texture_Index     : constant Tiles_Manager.Hex_Digit := aTile.Texture_Index;
       Half_Atlas_Factor : constant Single := 0.5 * Atlas_Factor;
       Atlas_Row         : constant Tiles_Manager.Tiles_RC_Index
         := Tiles_Manager.Tiles_RC_Index (Texture_Index) / Sets_In_Atlas_Row + 1;
