@@ -437,10 +437,8 @@ package body Manifold is
    begin
       Batches_Across := 0;
       Batches_Down := 0;
---        Batch_Split_Count := 0;
       Max_Map_Cols := 0;
       Max_Map_Rows := 0;
-      Tiles_Manager.Reset_Vars;
    end Reset_Manifold_Vars;
 
    --  ----------------------------------------------------------------------------

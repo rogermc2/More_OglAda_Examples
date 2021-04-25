@@ -432,9 +432,9 @@ package body Main_Loop is
 
                --  Level has been selected, start creating level
                Map_Path := To_Unbounded_String ("src/maps/") & Level_Name;
-               --  Name line
                Game_Utils.Game_Log ("Main_Loop.Run_Game Opening map file " &
                                       To_String (Map_Path));
+               --  load big .map file
                Maps_Manager.Load_Maps (To_String (Map_Path), Game_Map,
                                        Tile_Diff_Tex, Tile_Spec_Tex,
                                        Ramp_Diff_Tex, Ramp_Spec_Tex);
