@@ -411,14 +411,16 @@ package body Tiles_Manager is
                if Has_Element (Tile_Row.To_Cursor (col)) then
                   Tile_Row.Replace_Element (col, aTile);
                else
-                  Tile_Row.Append (aTile);
+                  raise Tiles_Manager_Exception with
+                    "Load_Char_Rows is missing a tile row";
                end if;
             end loop;
+
             if Has_Element (Tile_Rows.To_Cursor (row)) then
                Tile_Rows.Replace_Element (row, Tile_Row);
             else
                raise Tiles_Manager_Exception with
-                 "Load_Char_Rows missing a tile row";
+                 "Load_Char_Rows is missing a tile row";
             end if;
             Prev_Char := aChar;
          end;  --  declare block
@@ -495,7 +497,7 @@ package body Tiles_Manager is
                      Tile_Row.Replace_Element (col, aTile);
                   else
                      raise Tiles_Manager_Exception with
-                       "Load_Hex_Rows missing a tile column";
+                       "Load_Hex_Rows is missing a tile column";
                   end if;
                   --                          if Load_Type = "textures" then
                   --                              Game_Utils.Game_Log
@@ -511,7 +513,7 @@ package body Tiles_Manager is
                Tile_Rows.Replace_Element (row, Tile_Row);
             else
                raise Tiles_Manager_Exception with
-                 "Load_Hex_Rows missing a tile row";
+                 "Load_Hex_Rows is missing a tile row";
             end if;
             Prev_Char := Hex_Char;
          end;  --  declare block

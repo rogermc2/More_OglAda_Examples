@@ -463,6 +463,8 @@ package body Batch_Manager is
    procedure Free_Batch_Data (Batch_Index : Natural) is
       theBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
    begin
+      theBatch.AABB_Mins := (0.0, 0.0, 0.0);
+      theBatch.AABB_Maxs := (0.0, 0.0, 0.0);
       theBatch.Points.Clear;
       theBatch.Ramp_Points.Clear;
       theBatch.Water_Points.Clear;
@@ -923,7 +925,6 @@ package body Batch_Manager is
       Free_Batch_Data (Batch_Index);
 
       theBatch := Batches_Data.Element (Batch_Index);
-      theBatch.Static_Light_Indices.Clear;
       Tile_Indices := theBatch.Tile_Indices;
       if Tile_Indices.Is_Empty then
          raise Batch_Manager_Exception with

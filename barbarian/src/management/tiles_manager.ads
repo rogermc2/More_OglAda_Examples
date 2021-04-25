@@ -12,8 +12,8 @@ package Tiles_Manager is
 
    Max_Map_Cols   : Natural := 0;  --  Set by map file
    Max_Map_Rows   : Natural := 0;  --  Set by map file
-   Batches_Across : Natural := 0;
-   Batches_Down   : Natural := 0;
+   Batches_Across : Natural := 0;  --  Set by Load_Tiles
+   Batches_Down   : Natural := 0;  --  Set by Load_Tiles
 
    Total_Tiles    : Natural := 0;
    subtype Tiles_Index is Natural;
