@@ -484,7 +484,6 @@ package body Batch_Manager is
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
-      --        subtype Tiles_Index is Natural range 0 .. Total_Tiles - 1;
       subtype Atlas_Index is Natural range 0 .. Max_Tile_Cols - 1;
       subtype Texture_Index is single range 0.0 .. 1.0;
       Row_Index         : Natural;
@@ -685,7 +684,6 @@ package body Batch_Manager is
       while Has_Element (Indices_Curs) loop
          Tile_Index := Element (Indices_Curs);
          aTile := Get_Tile (Tile_Index);
-         --           aTile := Get_Tile (Element (Indices_Curs));
          Height := aTile.Height;
          Facing := aTile.Facing;
 
@@ -701,8 +699,6 @@ package body Batch_Manager is
 
          if aTile.Tile_Type = '/' then
             Has_Ramp := True;
-            --              Row_Index := Element (Indices_Curs) (GL.X);
-            --              Col_Index := Element (Indices_Curs) (GL.Y);
             Row_Index := Tile_Index / Max_Map_Cols;
             Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
             --  Put each vertex point into world space
@@ -811,7 +807,6 @@ package body Batch_Manager is
       while Has_Element (Indices_Curs) loop
          Tile_Index := Element (Indices_Curs);
          aTile := Get_Tile (Tile_Index);
-         --           aTile := Get_Tile (Element (Indices_Curs));
          Height := aTile.Height;
          Facing := aTile.Facing;
 
@@ -827,8 +822,6 @@ package body Batch_Manager is
 
          if aTile.Tile_Type = '~' then
             Has_Water := True;
-            --              Row_Index := Element (Indices_Curs) (GL.X);
-            --              Col_Index := Element (Indices_Curs) (GL.Y);
             Row_Index := Tile_Index / Max_Map_Cols;
             Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
             --  Put each vertex point into world space
