@@ -26,8 +26,8 @@ package body Tiles_Manager is
      (Positive, Static_Light_Data);
    type Static_Light_List is new Static_Light_Package.Vector with null record;
 
-   Static_Lights          : Static_Light_List;
-   Tile_Rows              : Tile_Row_List;
+   Static_Lights : Static_Light_List;
+   Tile_Rows     : Tile_Row_List;
 
    procedure Add_Static_Light (Row, Col                  : Tiles_RC_Index;
                                Tile_Height_Offset        : Integer;
@@ -612,15 +612,23 @@ package body Tiles_Manager is
       Max_Map_Cols := Integer'Value (aLine (Pos1 .. Pos2 - 1));
       Max_Map_Rows := Integer'Value (aLine (Pos2 + 1 .. aLine'Last));
       Total_Tiles := Max_Map_Rows * Max_Map_Cols;
+      Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, batches of Max_Map_Cols and Max_Map_Rows: "
+                           & Integer'Image (Max_Map_Cols) & ", " &
+                             Integer'Image (Max_Map_Rows) & ", total tiles " &
+                             Integer'Image (Total_Tiles));
       Batches_Across :=
         Integer (Float'Ceiling (Float (Max_Map_Cols) / Float (Tile_Batch_Width)));
       Batches_Down :=
         Integer (Float'Ceiling (Float (Max_Map_Rows) / Float (Tile_Batch_Width)));
 
       Tile_Rows.Clear;
-      --          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Batches_Across, Batches_Down"
-      --                               & Integer'Image (Batches_Across) & ", " &
-      --                                 Integer'Image (Batches_Down));
+      Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, " &
+                             Integer'Image (Batches_Across * Batches_Down) &
+                             " batches of width " &
+                             Integer'Image (Settings.Tile_Batch_Width) &
+                             "; batchescross, Batches_Down"
+                           & Integer'Image (Batches_Across) & ", " &
+                             Integer'Image (Batches_Down));
       --  Parse_Facings_By_Row initializes Tile_Rows
       Parse_Facings_By_Row (File);
 
