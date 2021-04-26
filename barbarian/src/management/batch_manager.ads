@@ -76,6 +76,7 @@ package Batch_Manager is
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single);
    procedure Add_Batch_To_Batch_List (Batch_Data : Batch_Meta);
+   procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural);
    procedure Clear_Batch_Data;
    function Get_Batch_Index (Column, Row : Positive) return Natural;
    procedure Init_Batch_Data;
@@ -86,7 +87,7 @@ package Batch_Manager is
    function Static_Lights return Static_Light_Vector;
    function Static_Indices  (Batch_Index : Positive)
                              return GL_Maths.Indices_List;
+   procedure Print_Batch (Name : String; Batch_Index : Natural);
    procedure Update_Batch (Index : Natural; Data : Batch_Meta);
-   procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural);
 
 end Batch_Manager;

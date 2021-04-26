@@ -282,6 +282,15 @@ package body Batch_Manager is
 
    --  ------------------------------------------------------------------------
 
+   procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural) is
+      aBatch : Batch_Meta := Batch_List.Element (Index);
+   begin
+      aBatch.Tile_Indices.Append (Tile_Index);
+      Batches_Data.Replace_Element (Index, aBatch);
+   end Add_Tile_To_Batch;
+
+   --  ------------------------------------------------------------------------
+
    procedure Add_West_Points
      (aBatch             : in out Batch_Meta;  Height : Integer;
       Tile_Index         : Natural;
@@ -536,17 +545,17 @@ package body Batch_Manager is
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
-                                Integer'Image (Tile_Index));
+--           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
+--                                  Integer'Image (Tile_Index));
          --           Game_Utils.Game_Log
          --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
          --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
          X := Single (2 * Col_Index) - 25.0;
          Y := Single (2 * Height) - 5.0;
          Z := Single (2 * Row_Index) - 27.0;
-         Game_Utils.Game_Log
-           ("Batch_Manger.Generate_Points X, Z: " &
-              Single'Image (X) & ", " & Single'Image (Y));
+--           Game_Utils.Game_Log
+--             ("Batch_Manger.Generate_Points X, Z: " &
+--                Single'Image (X) & ", " & Single'Image (Y));
          if aTile.Tile_Type = '~' then
             Height := Height - 1;
          end if;
@@ -910,6 +919,14 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
+   procedure Print_Batch (Name : String; Batch_Index : Natural) is
+      aBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
+   begin
+      Tiles_Manager.Print_Tile_Indices (Name, aBatch.Tile_Indices);
+   end Print_Batch;
+
+   --  ----------------------------------------------------------------------------
+
    procedure Regenerate_Batches is
       theBatch     : Batch_Meta;
       Tile_Indices : Tiles_Manager.Tile_Indices_List;
@@ -926,8 +943,9 @@ package body Batch_Manager is
               "Batch_Manager.Regenerate_Batches called with empty Tiles list";
          end if;
 
-         Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batches Generate_Points for Batch_Index"
-                                    & Integer'Image (Batch_Index));
+--           Game_Utils.Game_Log
+--             ("Batch_Manager.Regenerate_Batches Generate_Points for Batch_Index"
+--               & Integer'Image (Batch_Index));
          Generate_Points (theBatch);
          Generate_Ramps (theBatch);
          --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
@@ -936,6 +954,8 @@ package body Batch_Manager is
 
          Batches_Data.Replace_Element (Batch_Index, theBatch);
       end loop;
+
+      Print_Batch ("Batch_Manger.Regenerate_Batches, Batch 0", 0);
 
    exception
       when anError : others =>
@@ -1058,8 +1078,8 @@ package body Batch_Manager is
 
    --  --------------------------------------------------------------------------
 
-   function Static_Indices  (Batch_Index : Positive)
-                             return GL_Maths.Indices_List is
+   function Static_Indices (Batch_Index : Positive)
+                            return GL_Maths.Indices_List is
       aBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
    begin
       return aBatch.Static_Light_Indices;
@@ -1120,15 +1140,6 @@ package body Batch_Manager is
    begin
       Batches_Data.Replace_Element (Index, Data);
    end Update_Batch;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural) is
-      aBatch : Batch_Meta := Batch_List.Element (Index);
-   begin
-      aBatch.Tile_Indices.Append (Tile_Index);
-      Batches_Data.Replace_Element (Index, aBatch);
-   end Add_Tile_To_Batch;
 
    --  ------------------------------------------------------------------------
 
