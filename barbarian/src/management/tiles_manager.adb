@@ -147,6 +147,9 @@ package body Tiles_Manager is
             aBatch.Tile_Indices.Append (Tile_Index);
             Batch_Manager.Add_Batch_To_Batch_List (aBatch);
          end if;
+
+         Print_Tile_Indices ("Tiles_Manager.Add_Tiles_To_Batches Batch: " &
+                              Integer'Image (Batch_Index), aBatch.Tile_Indices);
       end loop;
 
       --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
@@ -699,6 +702,16 @@ package body Tiles_Manager is
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
    end Parse_Facings_By_Row;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Print_Tile_Indices (Name : String; Tiles : Tile_Indices_List) is
+   begin
+      for index in Tiles.First_Index .. Tiles.Last_Index loop
+         Game_Utils.Game_Log (Name & " Tile " & Integer'Image (index) & ": " & Integer'Image (Tiles.Element (index)));
+      end loop;
+
+   end Print_Tile_Indices;
 
    --  ----------------------------------------------------------------------------
 

@@ -926,8 +926,8 @@ package body Batch_Manager is
               "Batch_Manager.Regenerate_Batches called with empty Tiles list";
          end if;
 
-         --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batches Generate_Points for Batch_Index"
-         --                             & Integer'Image (Batch_Index));
+         Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batches Generate_Points for Batch_Index"
+                                    & Integer'Image (Batch_Index));
          Generate_Points (theBatch);
          Generate_Ramps (theBatch);
          --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");

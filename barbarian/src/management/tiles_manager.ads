@@ -58,5 +58,6 @@ package Tiles_Manager is
                          Tile_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                          Ramp_Spec_Tex : in out GL.Objects.Textures.Texture);
    function Number_Of_Tiles return Integer;
+   procedure Print_Tile_Indices (Name : String; Tiles : Tile_Indices_List);
 
 end Tiles_Manager;
