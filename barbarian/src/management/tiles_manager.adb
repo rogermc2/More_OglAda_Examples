@@ -106,11 +106,11 @@ package body Tiles_Manager is
    procedure Add_Tiles_To_Batches is
       use Batch_Manager.Batches_Package;
       Total_Tiles : constant Integer := Max_Map_Rows * Max_Map_Cols;
-      Row         : Natural;
-      Column      : Natural;
+      Columns     : Tile_Column_List;
       B_Across    : Natural;
       B_Down      : Natural;
       aBatch      : Batch_Manager.Batch_Meta;
+      Tile_Index  : Natural;
       Batch_Index : Natural;
    begin
       --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Max_Rows, Max_Cols, Batches_Across " &
@@ -126,38 +126,27 @@ package body Tiles_Manager is
       --  32 x 32 for Introduction.map
       --  Total number of tiles = Max_Map_Rows x Max_Map_Cols
       --  Split Tile indicies into 16 batches of 8 tiles per batch
-      for Tile_Index in 0 .. Total_Tiles - 1 loop
-         Row := Natural (Tile_Index / Max_Map_Cols);
-         --  Row = Tile_Index / 32 truncates towards 0 for integers
-         --                        Tile_Index and Max_Map_Cols]
-         Column := Natural (Tile_Index) - Row * Natural (Max_Map_Cols);
-         --  Column = Tile_Index - 32 * Row;
-         --           Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches row, col " &
-         --                                 Integer'Image (Row) & ", " & Integer'Image (Column));
-         B_Across := Column / Settings.Tile_Batch_Width;
-         --  B_Across = Column / 8
-         B_Down := Row / Settings.Tile_Batch_Width;
-         --   B_Down = Row / 8
-         --           Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches B_Down, B_Across " &
-         --                                  Integer'Image (B_Down) &  ", " &
-         --                                  Integer'Image (B_Across));
-         Batch_Index := Row / 8 * Batches_Across + B_Across;
-         --  Batch_Index = 32 * B_Down + Column / 8;
-         --           Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_Index, Tile_Index" &
-         --                                  Integer'Image (Batch_Index) & ", " &
-         --                                  Integer'Image (Tile_Index) );
-         --  Add_Tile_Index_To_Batch
-         if Batch_Index <= Batch_Manager.Batch_List.Last_Index then
-            Batch_Manager.Add_Tile_To_Batch (Batch_Index, Tile_Index);
-         else
-            aBatch.Tile_Indices.Clear;
-            aBatch.Tile_Indices.Append (Tile_Index);
-            Batch_Manager.Add_Batch_To_Batch_List (aBatch);
-         end if;
+      for Row_Index in Tile_Rows.First_Index .. Tile_Rows.Last_Index loop
+         Columns := Tile_Rows.Element (Row_Index);
+         --  Settings.Tile_Batch_Width = 8
+         B_Down := Row_Index / Settings.Tile_Batch_Width;
+         for Col_Index in Columns.First_Index .. Columns.Last_Index loop
+            B_Across := Col_Index / Settings.Tile_Batch_Width;
+            Batch_Index := B_Down * Batches_Across + B_Across;
+            --  Add_Tile_Index_To_Batch
+            Tile_Index := Row_Index * Max_Map_Cols + Col_Index;
+            if Batch_Index <= Batch_Manager.Batch_List.Last_Index then
+               Batch_Manager.Add_Tile_To_Batch (Batch_Index, Tile_Index);
+            else
+               aBatch.Tile_Indices.Clear;
+               aBatch.Tile_Indices.Append (Tile_Index);
+               Batch_Manager.Add_Batch_To_Batch_List (aBatch);
+            end if;
+         end loop;
       end loop;
 
-      Print_Tile_Indices ("Tiles_Manager.Add_Tiles_To_Batches Batch 1:",
-                           Batch_Manager.Batch_List.Element (1).Tile_Indices);
+      Print_Tile_Indices ("Tiles_Manager.Add_Tiles_To_Batches Batch 0:",
+                          Batch_Manager.Batch_List.Element (0).Tile_Indices);
       --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
       --                               Integer'Image (Batch_List.First_Index) & ", " &
       --                               Integer'Image (Batch_List.Last_Index));
@@ -612,7 +601,8 @@ package body Tiles_Manager is
       Max_Map_Cols := Integer'Value (aLine (Pos1 .. Pos2 - 1));
       Max_Map_Rows := Integer'Value (aLine (Pos2 + 1 .. aLine'Last));
       Total_Tiles := Max_Map_Rows * Max_Map_Cols;
-      Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, batches of Max_Map_Cols and Max_Map_Rows: "
+
+      Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Max_Map_Cols and Max_Map_Rows: "
                            & Integer'Image (Max_Map_Cols) & ", " &
                              Integer'Image (Max_Map_Rows) & ", total tiles " &
                              Integer'Image (Total_Tiles));
@@ -621,14 +611,12 @@ package body Tiles_Manager is
       Batches_Down :=
         Integer (Float'Ceiling (Float (Max_Map_Rows) / Float (Tile_Batch_Width)));
 
-      Tile_Rows.Clear;
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, " &
                              Integer'Image (Batches_Across * Batches_Down) &
-                             " batches of width " &
-                             Integer'Image (Settings.Tile_Batch_Width) &
-                             "; batchescross, Batches_Down"
+                             " batches of Batches_Across and Batches_Down: "
                            & Integer'Image (Batches_Across) & ", " &
                              Integer'Image (Batches_Down));
+      Tile_Rows.Clear;
       --  Parse_Facings_By_Row initializes Tile_Rows
       Parse_Facings_By_Row (File);
 
