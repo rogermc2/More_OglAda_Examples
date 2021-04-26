@@ -918,11 +918,11 @@ package body Batch_Manager is
    end Init_Batch_Data;
 
    --  -------------------------------------------------------------------------
-
+   --  Corresponds to manifold.cpp print_tile_indices
    procedure Print_Batch (Name : String; Batch_Index : Natural) is
-      aBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
    begin
-      Tiles_Manager.Print_Tile_Indices (Name, aBatch.Tile_Indices);
+      Tiles_Manager.Print_Tile_Indices
+          (Name, Batches_Data.Element (Batch_Index).Tile_Indices);
    end Print_Batch;
 
    --  ----------------------------------------------------------------------------
@@ -933,9 +933,7 @@ package body Batch_Manager is
 
    begin
       for Batch_Index in Batches_Data.First_Index .. Batches_Data.Last_Index loop
-
          Free_Batch_Data (Batch_Index);
-
          theBatch := Batches_Data.Element (Batch_Index);
          Tile_Indices := theBatch.Tile_Indices;
          if Tile_Indices.Is_Empty then
@@ -955,7 +953,7 @@ package body Batch_Manager is
          Batches_Data.Replace_Element (Batch_Index, theBatch);
       end loop;
 
-      Print_Batch ("Batch_Manger.Regenerate_Batches, Batch 0", 0);
+--        Print_Batch ("Batch_Manger.Regenerate_Batches, Batch 0", 0);
 
    exception
       when anError : others =>
