@@ -149,7 +149,7 @@ package body Tiles_Manager is
          end if;
 
          Print_Tile_Indices ("Tiles_Manager.Add_Tiles_To_Batches Batch: " &
-                              Integer'Image (Batch_Index), aBatch.Tile_Indices);
+                               Integer'Image (Batch_Index), aBatch.Tile_Indices);
       end loop;
 
       --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
@@ -706,9 +706,14 @@ package body Tiles_Manager is
    --  ----------------------------------------------------------------------------
 
    procedure Print_Tile_Indices (Name : String; Tiles : Tile_Indices_List) is
+      aTile : Tile_Data;
    begin
       for index in Tiles.First_Index .. Tiles.Last_Index loop
-         Game_Utils.Game_Log (Name & " Tile " & Integer'Image (index) & ": " & Integer'Image (Tiles.Element (index)));
+         aTile := Get_Tile (index);
+         Game_Utils.Game_Log (Name & " Tile " & Integer'Image (index) & ": " &
+                                Integer'Image (Tiles.Element (index)) &
+                                " texture index: "
+                              & Integer'Image (aTile.Texture_Index));
       end loop;
 
    end Print_Tile_Indices;
