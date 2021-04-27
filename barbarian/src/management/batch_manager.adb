@@ -403,10 +403,10 @@ package body Batch_Manager is
       Next_Col_Dist        : Single;
       Curr_Dist            : Single;
       Next_Dist            : Single;
+      Result               : Boolean := not Static_Lights.Is_Empty;
    begin
-      if Current_Light_Index < Static_Lights.Last_Index then
-
-         while Has_Element (Next_Light_Cursor) loop
+      if Result then
+         while Has_Element (Next_Light_Cursor) and Result loop
             Current_Light := Static_Lights_List.Element (Current_Light_Index);
             Next (Next_Light_Cursor);
             Next_Light_Index := Element (Next_Light_Cursor);
@@ -422,8 +422,8 @@ package body Batch_Manager is
             Next_Col_Dist := Single (Batch_Centre_Col - Next_Col);
             Curr_Dist := Sqrt (Curr_Row_Dist ** 2 + Curr_Col_Dist ** 2);
             Next_Dist := Sqrt (Next_Row_Dist ** 2 + Next_Col_Dist ** 2);
-
-            if Next_Dist < Curr_Dist then
+            Result := Curr_Dist >= Next_Dist;
+            if not Result then
                Batch_Light_Indices.Swap (Next_Light_Cursor, Current_Light_Cursor);
                if Prev_Light_Cursor /= Batch_Light_Indices.First then
                   Prev_Light_Cursor := Next_Light_Cursor;
@@ -437,8 +437,11 @@ package body Batch_Manager is
 
          This_Batch.Static_Light_Indices := Batch_Light_Indices;
          Batches_Data.Replace_Element (Batch_Index, This_Batch);
+      else
+         raise Batch_Manager_Exception with
+         ("Batch_Manager.Check_For_OOO ERROR: static_light_indices is empty");
       end if;
-      return True;
+      return Result;
 
    exception
       when anError : Constraint_Error =>
@@ -552,7 +555,7 @@ package body Batch_Manager is
          --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
          --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
          X := Single (2 * Col_Index); --  - 25.0;
-         Y := Single (2 * Height)  - 25.0;
+         Y := -Single (2 * Height);
          Z := Single (2 * Row_Index); --  - 27.0;
          --           Game_Utils.Game_Log
          --             ("Batch_Manger.Generate_Points X, Z: " &
