@@ -489,6 +489,7 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    --  Generate_Points for all tiles in a batch
+   --  Based on Manifold.cpp approx line 49: // 3. generate points
    procedure Generate_Points (aBatch : in out Batch_Meta) is
       use Tiles_Manager;
       use Tile_Indices_Package;
@@ -545,20 +546,17 @@ package body Batch_Manager is
          Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
---           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
---                                  Integer'Image (Tile_Index));
+         --           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
+         --                                  Integer'Image (Tile_Index));
          --           Game_Utils.Game_Log
          --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
          --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
-         X := Single (2 * Col_Index) - 25.0;
-         Y := Single (2 * Height) - 5.0;
-         Z := Single (2 * Row_Index) - 27.0;
---           Game_Utils.Game_Log
---             ("Batch_Manger.Generate_Points X, Z: " &
---                Single'Image (X) & ", " & Single'Image (Y));
-         if aTile.Tile_Type = '~' then
-            Height := Height - 1;
-         end if;
+         X := Single (2 * Col_Index); --  - 25.0;
+         Y := Single (2 * Height)  - 25.0;
+         Z := Single (2 * Row_Index); --  - 27.0;
+         --           Game_Utils.Game_Log
+         --             ("Batch_Manger.Generate_Points X, Z: " &
+         --                Single'Image (X) & ", " & Single'Image (Y));
 
          --  Generate flat tiles
          if aTile.Tile_Type /= '/' and aTile.Tile_Type /= '~' then
@@ -596,19 +594,19 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
-         --           if Row_Index < Max_Map_Rows - 1 then
-         --              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         --           end if;
-         --           if Row_Index > 0 then
-         --              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         --           end if;
-         --
-         --           if Col_Index < Column_List.Last_Index then
-         --              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         --           end if;
-         --           if Col_Index > 0 then
-         --              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         --           end if;
+         if Row_Index < Max_Map_Rows - 1 then
+            Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+         if Row_Index > 0 then
+            Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+
+         if Col_Index < Column_List.Last_Index then
+            Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+         if Col_Index > 0 then
+            Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
       end loop;  -- over tile indices
       --        Game_Utils.Game_Log
       --          ("Batch_Manger.Generate_Points Tiles loaded.");
@@ -816,7 +814,7 @@ package body Batch_Manager is
       while Has_Element (Indices_Curs) loop
          Tile_Index := Element (Indices_Curs);
          aTile := Get_Tile (Tile_Index);
-         Height := aTile.Height;
+         Height := aTile.Height - 1;
          Facing := aTile.Facing;
 
          case Facing is
@@ -922,7 +920,7 @@ package body Batch_Manager is
    procedure Print_Batch (Name : String; Batch_Index : Natural) is
    begin
       Tiles_Manager.Print_Tile_Indices
-          (Name, Batches_Data.Element (Batch_Index).Tile_Indices);
+        (Name, Batches_Data.Element (Batch_Index).Tile_Indices);
    end Print_Batch;
 
    --  ----------------------------------------------------------------------------
@@ -935,15 +933,16 @@ package body Batch_Manager is
       for Batch_Index in Batches_Data.First_Index .. Batches_Data.Last_Index loop
          Free_Batch_Data (Batch_Index);
          theBatch := Batches_Data.Element (Batch_Index);
+         theBatch.Static_Light_Indices.Clear;
          Tile_Indices := theBatch.Tile_Indices;
          if Tile_Indices.Is_Empty then
             raise Batch_Manager_Exception with
               "Batch_Manager.Regenerate_Batches called with empty Tiles list";
          end if;
 
---           Game_Utils.Game_Log
---             ("Batch_Manager.Regenerate_Batches Generate_Points for Batch_Index"
---               & Integer'Image (Batch_Index));
+         --           Game_Utils.Game_Log
+         --             ("Batch_Manager.Regenerate_Batches Generate_Points for Batch_Index"
+         --               & Integer'Image (Batch_Index));
          Generate_Points (theBatch);
          Generate_Ramps (theBatch);
          --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
@@ -951,10 +950,20 @@ package body Batch_Manager is
          --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
 
          Batches_Data.Replace_Element (Batch_Index, theBatch);
+         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
+                                Integer'Image (Batch_Index) & " Mins " &
+                                Single'Image (theBatch.AABB_Mins (GL.X)) & " " &
+                                Single'Image (theBatch.AABB_Mins (GL.Y)) & " " &
+                                Single'Image (theBatch.AABB_Mins (GL.Z)));
+         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
+                                Integer'Image (Batch_Index) & " Maxs " &
+                                Single'Image (theBatch.AABB_Maxs (GL.X)) & " " &
+                                Single'Image (theBatch.AABB_Maxs (GL.Y)) & " " &
+                                Single'Image (theBatch.AABB_Maxs (GL.Z)));
       end loop;
 
---        Print_Batch ("Batch_Manger.Regenerate_Batches, Batch 0", 0);
-
+      --        Print_Batch ("Batch_Manger.Regenerate_Batches, Batch 0", 0);
+      Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches");
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Batch_Manger.Regenerate_Batches!");
