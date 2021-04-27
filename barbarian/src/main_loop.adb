@@ -403,6 +403,7 @@ package body Main_Loop is
          Game_Utils.Game_Log ("Main_Loop.Run_Game started");
          Put_Line ("Main_Loop.Run_Game started");
          while Continue and not Quit_Game loop
+            GL_Utils.Frame_Buffer_Resize (Window);   --  added
             Window.Get_Framebuffer_Size (Window_Width, Window_Height);
             Width := Single (Window_Width);
             Height := Single (Window_Height);

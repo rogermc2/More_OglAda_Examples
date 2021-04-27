@@ -546,7 +546,7 @@ package body Batch_Manager is
         aBatch.Tile_Indices.Last_Index loop
          Tile_Index := aBatch.Tile_Indices.Element (index);
          aTile := Get_Tile (Tile_Index);
-         Height := aTile.Height;
+         Height := -aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
          --           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
@@ -555,7 +555,7 @@ package body Batch_Manager is
          --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
          --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
          X := Single (2 * Col_Index); --  - 25.0;
-         Y := -Single (2 * Height);
+         Y := Single (2 * Height);
          Z := Single (2 * Row_Index); --  - 27.0;
          --           Game_Utils.Game_Log
          --             ("Batch_Manger.Generate_Points X, Z: " &

@@ -445,15 +445,18 @@ package body Tiles_Manager is
       Tile_Row   : Tile_Column_List;
    begin
       if Fixed.Index (Header (1 .. Load_Type'Length), Load_Type) = 0 then
-         Game_Utils.Game_Log ("Error: Load_Hex_Rows, Invalid format, " & Load_Type &
-                                " expected: " & Header (1 .. Pos1));
+         Game_Utils.Game_Log ("Error: Load_Hex_Rows, Invalid format, " &
+                              Load_Type &  " expected: " & Header (1 .. Pos1));
          raise Tiles_Manager_Exception with
-           "Load_Hex_Rows, Invalid format, " & Load_Type & " expected: " & Header (1 .. Pos1);
+           "Load_Hex_Rows, Invalid format, " & Load_Type &
+           " expected: " & Header (1 .. Pos1);
       end if;
 
       Pos2 := Fixed.Index (Header (Pos1 + 1 .. Header'Last), "x");
       Num_Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
       Num_Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
+      Game_Utils.Game_Log ("Tiles_Manager.Load_Hex_Rows, " & Load_Type & " Num_Cols, Num_Rows: "
+                            & Integer'Image (Num_Cols) & ", " & Integer'Image (Num_Rows));
 
       for row in 0 .. Num_Rows - 1 loop
          Tile_Row := Tile_Rows.Element (row);  --  List of Tile columns
