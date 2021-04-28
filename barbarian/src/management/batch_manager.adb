@@ -18,6 +18,7 @@ with Shader_Attributes;
 package body Batch_Manager is
 
    type Tile_Side is (North_Side, East_Side, South_Side, West_Side);
+   subtype Hex_Index is Natural range 0 .. 15;
 
    Batches_Data               : Batches_List;
    Static_Lights_List         : Static_Light_Vector;
@@ -52,12 +53,12 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_East_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer;
+     (aBatch             : in out Batch_Meta;  Height : Hex_Index;
       Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
-      N_Height : Integer;
+      N_Height : Hex_Index;
       Diff     : Integer;
       X        : Single;
       Y        : Single;
@@ -113,12 +114,12 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_North_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer;
+     (aBatch             : in out Batch_Meta;  Height : Hex_Index;
       Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       N_Tile   : Tile_Data;
-      N_Height : Integer;
+      N_Height : Hex_Index;
       Diff     : Integer;
       X        : Single;
       Y        : Single;
@@ -174,13 +175,13 @@ package body Batch_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Add_South_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer;
+     (aBatch             : in out Batch_Meta;  Height : Hex_Index;
       Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
       aTile    : constant Tile_Data := Get_Tile (Tile_Index);
       N_Tile   : Tile_Data;
-      N_Height : Integer;
+      N_Height : Hex_Index;
       Diff     : Integer;
       X        : Single;
       Y        : Single;
@@ -292,11 +293,11 @@ package body Batch_Manager is
    --  ------------------------------------------------------------------------
 
    procedure Add_West_Points
-     (aBatch             : in out Batch_Meta;  Height : Integer;
+     (aBatch             : in out Batch_Meta;  Height : Hex_Index;
       Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
-      N_Height : Integer;
+      N_Height : Hex_Index;
       N_Tile   : Tile_Data;
       Diff     : Integer;
       X        : Single;
@@ -505,7 +506,7 @@ package body Batch_Manager is
       aTile             : Tile_Data;  --  includes texture index
       N_Tile            : Tile_Data;
       Tile_Index        : Tiles_Index;
-      Height            : Integer;
+      Height            : Hex_Index;
       X                 : Integer;
       XP1               : Single;
       XM1               : Single;
@@ -514,9 +515,9 @@ package body Batch_Manager is
       ZP1               : Single;
       ZM1               : Single;
 
-      procedure Add_Tex_Coords (Tex_Index            : Atlas_Index;
+      procedure Add_Tex_Coords (Tex_Index            : Hex_Index;
                                 S_Offset, T_Offset   : Single)  is
-         --  Select tile from map file
+         --  Tex_Index is from selected texture from map file (0 .. 15)
          --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
          Atlas_Row : constant Atlas_Index := Tex_Index / Sets_In_Atlas_Row;
          Atlas_Col : constant Atlas_Index := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
@@ -553,7 +554,7 @@ package body Batch_Manager is
         aBatch.Tile_Indices.Last_Index loop
          Tile_Index := aBatch.Tile_Indices.Element (index);
          aTile := Get_Tile (Tile_Index);
-         Height := -aTile.Height;
+         Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
          Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
@@ -564,7 +565,7 @@ package body Batch_Manager is
          X := 2 * Col_Index; --  - 25.0;
          XP1 := Single (X + 1);
          XM1 := Single (X - 1);
-         Y := Single (2 * Height);
+         Y := -Single (2 * aTile.Height);
          Z := 2 * Row_Index; --  - 27.0;
          ZP1 := Single (Z + 1);
          ZM1 := Single (Z - 1);
