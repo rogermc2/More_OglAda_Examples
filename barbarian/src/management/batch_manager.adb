@@ -553,20 +553,22 @@ package body Batch_Manager is
       for index in aBatch.Tile_Indices.First_Index ..
         aBatch.Tile_Indices.Last_Index loop
          Tile_Index := aBatch.Tile_Indices.Element (index);
-         aTile := Get_Tile (Tile_Index);
-         Height := aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
+
+         aTile := Get_Tile (Tile_Index);
+         Height := aTile.Height;
+         Game_Utils.Game_Log ("Batch_Manger.Generate_Points index, Tile_Index: "
+                              & Integer'Image (index) & ", " &
                                 Integer'Image (Tile_Index));
          Game_Utils.Game_Log
            ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
               Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
-         X := 2 * Col_Index; --  - 25.0;
+         X := 2 * Col_Index;
          XP1 := Single (X + 1);
          XM1 := Single (X - 1);
          Y := -Single (2 * aTile.Height);
-         Z := 2 * Row_Index; --  - 27.0;
+         Z := 2 * Row_Index;
          ZP1 := Single (Z + 1);
          ZM1 := Single (Z - 1);
 
@@ -928,50 +930,54 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Regenerate_Batches is
-      theBatch     : Batch_Meta;
+   procedure Regenerate_Batch (aBatch : in out Batch_Meta) is
       Tile_Indices : Tiles_Manager.Tile_Indices_List;
 
    begin
-      for Batch_Index in Batches_Data.First_Index .. Batches_Data.Last_Index loop
-         Free_Batch_Data (Batch_Index);
-         theBatch := Batches_Data.Element (Batch_Index);
-         theBatch.Static_Light_Indices.Clear;
-         Tile_Indices := theBatch.Tile_Indices;
-         if Tile_Indices.Is_Empty then
-            raise Batch_Manager_Exception with
-              "Batch_Manager.Regenerate_Batches called with empty Tiles list";
-         end if;
+      aBatch.Static_Light_Indices.Clear;
+      Tile_Indices := aBatch.Tile_Indices;
+      if Tile_Indices.Is_Empty then
+         raise Batch_Manager_Exception with
+           "Batch_Manager.Regenerate_Batches called with empty Tiles list";
+      end if;
 
-         --           Game_Utils.Game_Log
-         --             ("Batch_Manager.Regenerate_Batches Generate_Points for Batch_Index"
-         --               & Integer'Image (Batch_Index));
-         Generate_Points (theBatch);
-         Generate_Ramps (theBatch);
-         --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
-         Generate_Water (theBatch);
-         --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Water done");
+      Generate_Points (aBatch);
+      Generate_Ramps (aBatch);
+      --        Game_Utils.Game_Log ("Batch_Manager.Regenerate_Batch Generate_Ramps done");
+      Generate_Water (aBatch);
 
-         Batches_Data.Replace_Element (Batch_Index, theBatch);
-         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
-                                Integer'Image (Batch_Index) & " Mins " &
-                                Single'Image (theBatch.AABB_Mins (GL.X)) & " " &
-                                Single'Image (theBatch.AABB_Mins (GL.Y)) & " " &
-                                Single'Image (theBatch.AABB_Mins (GL.Z)));
-         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
-                                Integer'Image (Batch_Index) & " Maxs " &
-                                Single'Image (theBatch.AABB_Maxs (GL.X)) & " " &
-                                Single'Image (theBatch.AABB_Maxs (GL.Y)) & " " &
-                                Single'Image (theBatch.AABB_Maxs (GL.Z)));
-      end loop;
-
-      --        Print_Batch ("Batch_Manger.Regenerate_Batches, Batch 0", 0);
-      Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches");
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Batch_Manger.Regenerate_Batches!");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
+   end Regenerate_Batch;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Regenerate_Batches is
+      aBatch : Batch_Meta;
+   begin
+      for Batch_Index in Batches_Data.First_Index .. Batches_Data.Last_Index loop
+         Free_Batch_Data (Batch_Index);
+         aBatch := Batches_Data.Element (Batch_Index);
+         Regenerate_Batch (aBatch);
+         Batches_Data.Replace_Element (Batch_Index, aBatch);
+
+         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
+                                Integer'Image (Batch_Index) & " Mins " &
+                                Single'Image (aBatch.AABB_Mins (GL.X)) & " " &
+                                Single'Image (aBatch.AABB_Mins (GL.Y)) & " " &
+                                Single'Image (aBatch.AABB_Mins (GL.Z)));
+         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
+                                Integer'Image (Batch_Index) & " Maxs " &
+                                Single'Image (aBatch.AABB_Maxs (GL.X)) & " " &
+                                Single'Image (aBatch.AABB_Maxs (GL.Y)) & " " &
+                                Single'Image (aBatch.AABB_Maxs (GL.Z)));
+
+      end loop;
+
+      --        Print_Batch ("Batch_Manger.Regenerate_Batches, Batch 0", 0);
    end Regenerate_Batches;
 
    --  -------------------------------------------------------------------------

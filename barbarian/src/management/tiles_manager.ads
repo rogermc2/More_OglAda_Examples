@@ -21,7 +21,7 @@ package Tiles_Manager is
    subtype Tiles_RC_Index is Natural;
 
    type Tile_Data is record
-      Height        : Natural := 0;
+      Height        : Hex_Digit := 0;
       Texture_Index : Hex_Digit := 0;
       Facing        : Character := 'N';  --  North
       Tile_Type     : Character := ASCII.NUL;

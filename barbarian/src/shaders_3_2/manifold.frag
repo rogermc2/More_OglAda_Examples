@@ -115,7 +115,8 @@ void main()
 	float light_emission_factor = texel_spec.a;
 	// lights
 	vec3 I = blinn_phong (texel_diff, texel_spec);
-	frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - light_emission_factor);
+	//  frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - light_emission_factor);
+    frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - 0.2 * light_emission_factor);
 	// shadows
 	if (shadow_enabled > 0.0)
         {
@@ -126,8 +127,8 @@ void main()
 		sf_f = mix (sf_f, 1.0, 1.0 - light_emission_factor);
 		frag_colour.rgb *= sf_f;
         }
-        //  Debug:
+        //  rest is Debug:
  //   frag_colour.rgb = texel_diff.rgb;
-    frag_colour = vec4(1.5 * texel_diff.rgb, 1.0);
+ //   frag_colour = vec4(1.5 * texel_diff.rgb, 1.0);
 //        frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
     }
