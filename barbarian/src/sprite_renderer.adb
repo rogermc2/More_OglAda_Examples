@@ -157,6 +157,7 @@ package body Sprite_Renderer is
       Clear_Sprites;
       Create_Character_VBOs;
       Sprite_Shader_Manager.Load_Sprite_Shaders;
+      Sprite_World_Map.Init;
       Game_Utils.Game_Log ("--- Sprites Initialized ---");
    end Init;
 

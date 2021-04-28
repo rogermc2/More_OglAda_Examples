@@ -637,9 +637,6 @@ package body Tiles_Manager is
       Add_Tiles_To_Batches;
       --          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles added To_Batches.");
       Add_Dummy_Manifold_Lights;
-
-      Sprite_World_Map.Init;
-
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles loaded and Manifold generated.");
 
    exception
