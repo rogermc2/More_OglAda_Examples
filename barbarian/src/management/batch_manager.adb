@@ -506,9 +506,13 @@ package body Batch_Manager is
       N_Tile            : Tile_Data;
       Tile_Index        : Tiles_Index;
       Height            : Integer;
-      X                 : Single;
+      X                 : Integer;
+      XP1               : Single;
+      XM1               : Single;
       Y                 : Single;
-      Z                 : Single;
+      Z                 : Integer;
+      ZP1               : Single;
+      ZM1               : Single;
       Tex_Index         : Atlas_Index;
       Atlas_Row         : Atlas_Index;
       Atlas_Col         : Atlas_Index;
@@ -554,9 +558,13 @@ package body Batch_Manager is
          --           Game_Utils.Game_Log
          --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
          --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
-         X := Single (2 * Col_Index); --  - 25.0;
+         X := 2 * Col_Index; --  - 25.0;
+         XP1 := Single (X + 1);
+         XM1 := Single (X - 1);
          Y := Single (2 * Height);
-         Z := Single (2 * Row_Index); --  - 27.0;
+         Z := 2 * Row_Index; --  - 27.0;
+         ZP1 := Single (Z + 1);
+         ZM1 := Single (Z - 1);
          --           Game_Utils.Game_Log
          --             ("Batch_Manger.Generate_Points X, Z: " &
          --                Single'Image (X) & ", " & Single'Image (Y));
@@ -564,12 +572,12 @@ package body Batch_Manager is
          --  Generate flat tiles
          if aTile.Tile_Type /= '/' and aTile.Tile_Type /= '~' then
             --  floor FR, FL, BL, BL, BR, FR
-            aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));  -- FR
-            aBatch.Points.Append ((X - 1.0, Y, Z - 1.0));  -- FL
-            aBatch.Points.Append ((X - 1.0, Y, Z + 1.0));  -- BL
-            aBatch.Points.Append ((X - 1.0, Y, Z + 1.0));  -- BL
-            aBatch.Points.Append ((X + 1.0, Y, Z + 1.0));  -- BR
-            aBatch.Points.Append ((X + 1.0, Y, Z - 1.0));  -- FR
+            aBatch.Points.Append ((XP1, Y, ZM1));  -- FR
+            aBatch.Points.Append ((XM1, Y, ZM1));  -- FL
+            aBatch.Points.Append ((XM1, Y, ZP1));  -- BL
+            aBatch.Points.Append ((XM1, Y, ZP1));  -- BL
+            aBatch.Points.Append ((XP1, Y, ZP1));  -- BR
+            aBatch.Points.Append ((XP1, Y, ZM1));  -- FR
 
             for norm_count in 1 .. 6 loop
                aBatch.Normals.Append ((0.0, 1.0, 0.0));
