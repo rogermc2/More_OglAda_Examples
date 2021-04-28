@@ -439,7 +439,7 @@ package body Batch_Manager is
          Batches_Data.Replace_Element (Batch_Index, This_Batch);
       else
          raise Batch_Manager_Exception with
-         ("Batch_Manager.Check_For_OOO ERROR: static_light_indices is empty");
+           ("Batch_Manager.Check_For_OOO ERROR: static_light_indices is empty");
       end if;
       return Result;
 
@@ -513,11 +513,14 @@ package body Batch_Manager is
       Z                 : Integer;
       ZP1               : Single;
       ZM1               : Single;
-      Tex_Index         : Atlas_Index;
-      Atlas_Row         : Atlas_Index;
-      Atlas_Col         : Atlas_Index;
 
-      procedure Add_Tex_Coords (S_Offset, T_Offset : Single)  is
+      procedure Add_Tex_Coords (Tex_Index            : Atlas_Index;
+                                S_Offset, T_Offset   : Single)  is
+         --  Select tile from map file
+         --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
+         Atlas_Row : constant Atlas_Index := Tex_Index / Sets_In_Atlas_Row;
+         Atlas_Col : constant Atlas_Index := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
+
          --  Atlas_Factor = 0.25 (Atlas_Col and Row range 0 .. 63)
          --  Atlas_Factor reduces Atlas_Col and Row range 0 .. 15
          --  Object size 125 x 125 pixels
@@ -553,11 +556,11 @@ package body Batch_Manager is
          Height := -aTile.Height;
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
-         --           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
-         --                                  Integer'Image (Tile_Index));
-         --           Game_Utils.Game_Log
-         --             ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
-         --                Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
+         Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index: " &
+                                Integer'Image (Tile_Index));
+         Game_Utils.Game_Log
+           ("Batch_Manger.Generate_Points Row_Index, Col_Index: " &
+              Integer'Image (Row_Index) & ", " & Integer'Image (Col_Index));
          X := 2 * Col_Index; --  - 25.0;
          XP1 := Single (X + 1);
          XM1 := Single (X - 1);
@@ -565,9 +568,6 @@ package body Batch_Manager is
          Z := 2 * Row_Index; --  - 27.0;
          ZP1 := Single (Z + 1);
          ZM1 := Single (Z - 1);
-         --           Game_Utils.Game_Log
-         --             ("Batch_Manger.Generate_Points X, Z: " &
-         --                Single'Image (X) & ", " & Single'Image (Y));
 
          --  Generate flat tiles
          if aTile.Tile_Type /= '/' and aTile.Tile_Type /= '~' then
@@ -584,21 +584,12 @@ package body Batch_Manager is
             end loop;
 
             --  Texture_Index from map file (range 0 .. 15, one hex digit)
-            Tex_Index := aTile.Texture_Index;
-            --  Select tile from map file
-            --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
-            Atlas_Row := Tex_Index / Sets_In_Atlas_Row;
-            Atlas_Col := Tex_Index - Atlas_Row * Sets_In_Atlas_Row;
-            --              Game_Utils.Game_Log
-            --                ("Batch_Manger.Generate_Points Tex_Index, Atlas_Row, Atlas_Col: "
-            --                 & Integer'Image (Tex_Index) & ", " & Integer'Image (Atlas_Row)
-            --                 & ", " & Integer'Image (Atlas_Col));
-            Add_Tex_Coords (0.5, 1.0);
-            Add_Tex_Coords (0.0, 1.0);
-            Add_Tex_Coords (0.0, 0.5);
-            Add_Tex_Coords (0.0, 0.5);
-            Add_Tex_Coords (0.5, 0.5);
-            Add_Tex_Coords (0.5, 1.0);
+            Add_Tex_Coords (aTile.Texture_Index, 0.5, 1.0);
+            Add_Tex_Coords (aTile.Texture_Index, 0.0, 1.0);
+            Add_Tex_Coords (aTile.Texture_Index, 0.0, 0.5);
+            Add_Tex_Coords (aTile.Texture_Index, 0.0, 0.5);
+            Add_Tex_Coords (aTile.Texture_Index, 0.5, 0.5);
+            Add_Tex_Coords (aTile.Texture_Index, 0.5, 1.0);
             --              Game_Utils.Game_Log
             --                ("Batch_Manger.Generate_Points Add_Tex_Coords added to tile: " &
             --                Integer'Image (Tile_Index));
