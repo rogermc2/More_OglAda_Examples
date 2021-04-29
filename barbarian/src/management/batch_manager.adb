@@ -460,15 +460,6 @@ package body Batch_Manager is
    procedure Clear_Batch_Data is
    begin
       Batches_Data.Clear;
-      Ramp_Mesh_Points.Clear;
-      Ramp_Mesh_Normals.Clear;
-      Ramp_Mesh_Texcoords.Clear;
-      Ramp_Mesh_Smooth_Points.Clear;
-      Ramp_Mesh_Smooth_Normals.Clear;
-      Ramp_Mesh_Smooth_Texcoords.Clear;
-      Water_Mesh_Points.Clear;
-      Water_Mesh_Normals.Clear;
-      Water_Mesh_Texcoords.Clear;
    end Clear_Batch_Data;
 
    --  ----------------------------------------------------------------------------
