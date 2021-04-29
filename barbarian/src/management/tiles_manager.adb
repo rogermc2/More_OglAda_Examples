@@ -446,7 +446,7 @@ package body Tiles_Manager is
    begin
       if Fixed.Index (Header (1 .. Load_Type'Length), Load_Type) = 0 then
          Game_Utils.Game_Log ("Error: Load_Hex_Rows, Invalid format, " &
-                              Load_Type &  " expected: " & Header (1 .. Pos1));
+                                Load_Type &  " expected: " & Header (1 .. Pos1));
          raise Tiles_Manager_Exception with
            "Load_Hex_Rows, Invalid format, " & Load_Type &
            " expected: " & Header (1 .. Pos1);
@@ -456,7 +456,7 @@ package body Tiles_Manager is
       Num_Cols := Integer'Value (Header (Pos1 .. Pos2 - 1));
       Num_Rows := Integer'Value (Header (Pos2 + 1 .. Header'Last));
       Game_Utils.Game_Log ("Tiles_Manager.Load_Hex_Rows, " & Load_Type & " Num_Cols, Num_Rows: "
-                            & Integer'Image (Num_Cols) & ", " & Integer'Image (Num_Rows));
+                           & Integer'Image (Num_Cols) & ", " & Integer'Image (Num_Rows));
 
       for row in 0 .. Num_Rows - 1 loop
          Tile_Row := Tile_Rows.Element (row);  --  List of Tile columns
@@ -638,6 +638,7 @@ package body Tiles_Manager is
       --          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles added To_Batches.");
       Add_Dummy_Manifold_Lights;
       Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles loaded and Manifold generated.");
+      Print_Tiles;
 
    exception
       when anError : others =>
@@ -658,29 +659,29 @@ package body Tiles_Manager is
    procedure Parse_Facings_By_Row (File : File_Type) is
       use Tile_Row_Package;
       use Tile_Column_Package;
-      Prev_Char  : Character;
-      aTile      : Tile_Data;
-      Tile_Col   : Tile_Column_List;
    begin
       --  Parse_Facings_By_Row initalizes the Tiles list.
       --          Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Max_Map_Rows, Max_Map_Cols "
       --                               & Integer'Image (Max_Map_Rows) & ", " &
       --                                 Integer'Image (Max_Map_Cols));
+      Tile_Rows.Clear;
       for row in 1 .. Max_Map_Rows loop
          declare
             aString     : constant String := Get_Line (File);
             Line_Length : constant Integer := aString'Length;
+            aTile       : Tile_Data;
+            Tile_Col    : Tile_Column_List;
             Text_Char   : Character;
+            Prev_Char   : Character := ASCII.NUL;
          begin
             if Line_Length < Integer (Max_Map_Cols) then
                raise Tiles_Manager_Exception with
                  "Tiles_Manager.Parse_Facings_By_Row, facings line has not enough columns";
             end if;
 
-            Prev_Char := ASCII.NUL;
             Tile_Col.Clear;
             for col in 1 .. Max_Map_Cols loop
-               Text_Char := aString (Integer (col));
+               Text_Char := aString (col);
                if Prev_Char = '\' and then
                  (Text_Char = 'n' or Text_Char = ASCII.NUL) then
                   Tile_Rows.Delete_Last;
@@ -690,9 +691,16 @@ package body Tiles_Manager is
 
                Tile_Col.Append (aTile);
             end loop;
+--              for col in Tile_Col.First_Index .. Tile_Col.Last_Index loop
+--                 Game_Utils.Game_Log (" Parse_Facings_By_Row Tile_Col " & Integer'Image (row) &
+--                                        ", " & Integer'Image (col) & " facings: " &
+--                                        Tile_Col.Element (col).Facing);
+--              end loop;
             Prev_Char := Text_Char;
-         end;
-         Tile_Rows.Append (Tile_Col);
+            Tile_Rows.Append (Tile_Col);
+            Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Tile_Rows size: "
+                                 & Integer'Image (Integer (Tile_Rows.Length)));
+         end;  --  declare block
       end loop;
       --          Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row done Tile Rows range: "
       --                               & Integer'Image (Integer (Tile_Rows.First_Index)) & ", "
@@ -706,7 +714,7 @@ package body Tiles_Manager is
    end Parse_Facings_By_Row;
 
    --  ----------------------------------------------------------------------------
-   --  Corresponds to while loop inmanifold.cpp print_tile_indices
+   --  Corresponds to while loop in manifold.cpp print_tile_indices
    procedure Print_Tile_Indices (Name : String; Tiles : Tile_Indices_List) is
       aTile : Tile_Data;
    begin
@@ -723,4 +731,24 @@ package body Tiles_Manager is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Print_Tiles is
+      aTile : Tile_Data;
+      aRow  : Tile_Column_List;
+   begin
+      Game_Utils.Game_Log ("--- Tiles ---");
+      for row in Tile_Rows.First_Index .. Tile_Rows.Last_Index loop
+         aRow := Tile_Rows.Element (row);
+         for col in aRow.First_Index .. aRow.Last_Index loop
+            aTile := Get_Tile ((Int (row), Int (col)));
+            Game_Utils.Game_Log (" Tile " & Integer'Image (row) &
+                                   ", " & Integer'Image (col) &
+                                   " facing: " & (aTile.Facing) &
+                                   " texture index: "
+                                 & Integer'Image (aTile.Texture_Index));
+         end loop;
+         Game_Utils.Game_Log ("");
+      end loop;
+   end Print_Tiles;
+
+   --  ----------------------------------------------------------------------------
 end Tiles_Manager;
