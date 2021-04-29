@@ -162,7 +162,7 @@ package body Tiles_Manager is
    --  ----------------------------------------------------------------------------
 
    function Get_Facing (Index : Tiles_RC_Index) return Character is
-      aTile  : constant Tile_Data := Get_Tile (Index);
+      aTile  : constant Tile_Data := Get_Tile_By_Index (Index);
    begin
       return aTile.Facing;
    end Get_Facing;
@@ -217,7 +217,7 @@ package body Tiles_Manager is
 
    --  --------------------------------------------------------------------------
 
-   function Get_Tile (Tile_Index : Natural) return Tile_Data is
+   function Get_Tile_By_Index (Tile_Index : Natural) return Tile_Data is
       use Batch_Manager;
       use Tile_Row_Package;
       Row        : constant Natural := Tile_Index / Positive (Max_Map_Cols);
@@ -228,11 +228,11 @@ package body Tiles_Manager is
 
    exception
       when anError : others =>
-         Put ("Tiles_Manager.Get_Tile Natural exception: ");
+         Put ("Tiles_Manager.Get_Tile_By_Index exception: ");
          Put_Line (Ada.Exceptions.Exception_Information (anError));
          raise;
 
-   end Get_Tile;
+   end Get_Tile_By_Index;
 
    --  --------------------------------------------------------------------------
 
@@ -263,7 +263,7 @@ package body Tiles_Manager is
       --                              Integer'Image (Row) & ", " & Integer'Image (Col));
       --        Game_Utils.Game_Log ("Tiles_Manager.Get_Tile_Height Tile_Index: " &
       --                               Integer'Image (Tile_Index));
-      aTile := Get_Tile (Tile_Index);
+      aTile := Get_Tile ((Int (Row), Int (Col)));
       if X < -1.0 or Col > Tiles_RC_Index (Max_Map_Cols) or Z < -1.0 or
         Row > Tiles_RC_Index (Max_Map_Rows) then
          Height := Out_Of_Bounds_Height;
@@ -306,19 +306,15 @@ package body Tiles_Manager is
    --  ----------------------------------------------------------------------------
 
    function Get_Tile_Level (Index : Tiles_RC_Index) return Integer is
-      --        use Batch_Manager;
-      --        aTile : constant Tile_Data := Get_Tile (Index);
    begin
-      return Get_Tile (Index).Height;
+      return Get_Tile_By_Index (Index).Height;
    end Get_Tile_Level;
 
    --  ----------------------------------------------------------------------------
 
    function Get_Tile_Type (Index : Tiles_RC_Index) return Character is
-      --        use Batch_Manager;
-      --        aTile : constant Tile_Data := Get_Tile (Index);
    begin
-      return Get_Tile (Index).Tile_Type;
+      return Get_Tile_By_Index (Index).Tile_Type;
    end Get_Tile_Type;
 
    --  ----------------------------------------------------------------------------
@@ -327,7 +323,7 @@ package body Tiles_Manager is
       --        use Batch_Manager;
       --        aTile : constant Tile_Data := Get_Tile (Index);
    begin
-      return Get_Tile (Index).Tile_Type = '/';
+      return Get_Tile_By_Index (Index).Tile_Type = '/';
    end Is_Ramp;
 
    --  ----------------------------------------------------------------------------
@@ -350,9 +346,9 @@ package body Tiles_Manager is
 
    function Is_Water (Index : Tiles_RC_Index) return Boolean is
       use Batch_Manager;
-      aTile : constant Tile_Data := Get_Tile (Index);
+      aTile : constant Tile_Data := Get_Tile_By_Index (Index);
    begin
-      return Get_Tile (Index).Tile_Type = '~';
+      return Get_Tile_By_Index (Index).Tile_Type = '~';
    end Is_Water;
 
    --  ----------------------------------------------------------------------------
@@ -719,7 +715,7 @@ package body Tiles_Manager is
       aTile : Tile_Data;
    begin
       for index in Tiles.First_Index .. Tiles.Last_Index loop
-         aTile := Get_Tile (index);
+         aTile := Get_Tile_By_Index (index);
          Game_Utils.Game_Log (Name & " Tile " & Integer'Image (index) &
                                 "  tile index: " &
                                 Integer'Image (Tiles.Element (index)) &

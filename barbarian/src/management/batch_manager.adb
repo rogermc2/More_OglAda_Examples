@@ -64,7 +64,7 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile (Tile_Index - 1);
+      N_Tile := Get_Tile_By_Index (Tile_Index - 1);
       N_Height := N_Tile.Height;
       if N_Tile.Tile_Type = '~' then
          N_Height := N_Height - 1;
@@ -99,7 +99,7 @@ package body Batch_Manager is
             aBatch.Normals.Append ((-1.0, 0.0, 0.0));
          end loop;
 
-         Set_Tex_Coords (aBatch, Get_Tile (Tile_Index), East_Side,
+         Set_Tex_Coords (aBatch, Get_Tile_By_Index (Tile_Index), East_Side,
                          Diff - level - 1);
       end loop;
 
@@ -125,7 +125,7 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile (Tile_Index + Max_Map_Cols);
+      N_Tile := Get_Tile_By_Index (Tile_Index + Max_Map_Cols);
       N_Height := N_Tile.Height;
       if N_Tile.Tile_Type = '~' then
          N_Height := N_Height - 1;
@@ -159,7 +159,7 @@ package body Batch_Manager is
                aBatch.Normals.Append ((0.0, 0.0, 1.0));
             end loop;
 
-            Set_Tex_Coords (aBatch, Get_Tile (Tile_Index), North_Side,
+            Set_Tex_Coords (aBatch, Get_Tile_By_Index (Tile_Index), North_Side,
                             Diff - level - 1);
          end loop;
       end if;
@@ -179,7 +179,7 @@ package body Batch_Manager is
       Tile_Index         : Natural;
       Tile_Row, Tile_Col : Tiles_Manager.Tiles_RC_Index) is
       use Tiles_Manager;
-      aTile    : constant Tile_Data := Get_Tile (Tile_Index);
+      aTile    : constant Tile_Data := Get_Tile ((Int (Tile_Row), Int (Tile_Col)));
       N_Tile   : Tile_Data;
       N_Height : Hex_Index;
       Diff     : Integer;
@@ -187,7 +187,7 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile (Tile_Index - Max_Map_Cols);
+      N_Tile := Get_Tile_By_Index (Tile_Index - Max_Map_Cols);
       N_Height := N_Tile.Height;
       if aTile.Tile_Type = '~' then
          N_Height := N_Height - 1;
@@ -304,7 +304,7 @@ package body Batch_Manager is
       Y        : Single;
       Z        : Single;
    begin
-      N_Tile := Get_Tile (Tile_Index + 1);
+      N_Tile := Get_Tile_By_Index (Tile_Index + 1);
       N_Height := N_Tile.Height;
       if N_Tile.Tile_Type = '~' then
          N_Height := N_Height - 1;
@@ -337,8 +337,8 @@ package body Batch_Manager is
             aBatch.Normals.Append ((1.0, 0.0, 0.0));
          end loop;
 
-         Set_Tex_Coords (aBatch, Get_Tile (Tile_Index), West_Side,
-                         Diff - level - 1);
+         Set_Tex_Coords (aBatch, Get_Tile ((Int (Tile_Row), Int (Tile_Col))),
+                         West_Side, Diff - level - 1);
       end loop;
 
    exception
@@ -556,7 +556,7 @@ package body Batch_Manager is
          Row_Index := Tile_Index / Max_Map_Cols;
          Col_Index := Tile_Index - Row_Index * Max_Map_Cols;
 
-         aTile := Get_Tile (Tile_Index);
+         aTile := Get_Tile_By_Index (Tile_Index);
          Height := aTile.Height;
          Game_Utils.Game_Log ("Batch_Manger.Generate_Points index, Tile_Index: "
                               & Integer'Image (index) & ", " &
@@ -695,7 +695,7 @@ package body Batch_Manager is
       --  for all tiles in aBatch
       while Has_Element (Indices_Curs) loop
          Tile_Index := Element (Indices_Curs);
-         aTile := Get_Tile (Tile_Index);
+         aTile := Get_Tile_By_Index (Tile_Index);
          Height := aTile.Height;
          Facing := aTile.Facing;
 
@@ -818,7 +818,7 @@ package body Batch_Manager is
    begin
       while Has_Element (Indices_Curs) loop
          Tile_Index := Element (Indices_Curs);
-         aTile := Get_Tile (Tile_Index);
+         aTile := Get_Tile_By_Index (Tile_Index);
          Height := aTile.Height - 1;
          Facing := aTile.Facing;
 

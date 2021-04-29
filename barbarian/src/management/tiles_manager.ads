@@ -48,7 +48,7 @@ package Tiles_Manager is
    function Get_Facing (Index : Tiles_RC_Index) return Character;
    function Get_Facing (Map : Ints.Vector2) return Character;
    function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
-   function Get_Tile (Tile_Index : Natural) return Tile_Data;
+   function Get_Tile_By_Index (Tile_Index : Natural) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
    function Get_Tile_Type (Index : Tiles_RC_Index) return Character;
