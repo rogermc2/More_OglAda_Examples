@@ -45,12 +45,14 @@ package Tiles_Manager is
    Tiles_Manager_Exception : Exception;
    Out_Of_Bounds_Height    : constant Single := 1024.0;
 
+   procedure Add_Tiles_To_Batches;
    function Get_Facing (Index : Tiles_RC_Index) return Character;
    function Get_Facing (Map : Ints.Vector2) return Character;
    function Get_Tile (Pos : Ints.Vector2) return Tile_Data;
    function Get_Tile_By_Index (Tile_Index : Natural) return Tile_Data;
    function Get_Tile_Height
      (X, Z : Single; Consider_Water, Respect_Ramps : Boolean) return Single;
+   function Get_Tile_Level (Index : Tiles_RC_Index) return Integer;
    function Get_Tile_Type (Index : Tiles_RC_Index) return Character;
    function Get_Tiles_Across return Natural;
    function Is_Tile_Valid (Map : Ints.Vector2) return Boolean;

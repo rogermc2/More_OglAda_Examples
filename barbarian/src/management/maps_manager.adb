@@ -2,7 +2,11 @@
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Types;
+with Maths;
+
 with Audio_Manager;
+with Batch_Manager;
 with Character_Controller;
 with Game_Utils;
 with GUI_Level_Chooser;
@@ -12,6 +16,95 @@ with Text_Manager;
 with Tiles_Manager;
 
 package body Maps_Manager is
+
+   type Static_Light_Data is record
+      Row      : Positive;
+      Column   : Positive;
+      Position : GL.Types.Singles.Vector3 := Maths.Vec3_0;
+      Diffuse  : GL.Types.Singles.Vector3 := Maths.Vec3_0;
+      Specular : GL.Types.Singles.Vector3 := Maths.Vec3_0;
+      Distance : GL.Types.Single := 0.0;
+   end record;
+
+   package Static_Light_Package is new Ada.Containers.Vectors
+     (Positive, Static_Light_Data);
+   type Static_Light_List is new Static_Light_Package.Vector with null record;
+
+   Static_Lights : Static_Light_List;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Add_Static_Light (Row, Col                  : Tiles_Manager.Tiles_RC_Index;
+                               Tile_Height_Offset        : Integer;
+                               Offset, Diffuse, Specular : GL.Types.Singles.Vector3;
+                               Light_Range               : GL.Types.Single);
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Add_Dummy_Manifold_Lights is
+      use Maths;
+   begin
+      Add_Static_Light (1, 1, 0, Vec3_0, Vec3_0, Vec3_0, 0.0);
+      Add_Static_Light (1, 1, 0, Vec3_0, Vec3_0, Vec3_0, 0.0);
+
+   end Add_Dummy_Manifold_Lights;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Add_Static_Light (Row, Col                  : Tiles_Manager.Tiles_RC_Index;
+                               Tile_Height_Offset        : Integer;
+                               Offset, Diffuse, Specular : GL.Types.Singles.Vector3;
+                               Light_Range               : GL.Types.Single) is
+      use GL.Types;
+      use Batch_Manager;
+      use Batches_Package;
+      use Tiles_Manager;
+      Curs          : Batches_Package.Cursor := Batch_List.First;
+      aBatch        : Batch_Meta;
+      Tile_Index    : constant Tiles_RC_Index := Row * Positive (Max_Map_Cols) + Col;
+      X             : constant Single := Single (2 * Col) + Offset (GL.X);
+      Y             : constant Single :=
+                        Single (2 * Get_Tile_Level (Tile_Index) +
+                                  Tile_Height_Offset) + Offset (GL.Y);
+      Z             : constant Single := Single (2 * (Row - 1)) + Offset (GL.Z);
+      Total_Batches : constant Integer := Batches_Across * Batches_Down;
+      --          Sorted        : Boolean := False;
+      New_Light     : Static_Light_Data;
+   begin
+      --        Put_Line ("Tiles_Manager.Add_Static_Light Total_Batches: " &
+      --                 Integer'Image (Total_Batches));
+      New_Light.Row := Positive (Row);
+      New_Light.Column := Positive (Col);
+      New_Light.Position := (X, Y, Z);
+      New_Light.Diffuse := Diffuse;
+      New_Light.Specular := Specular;
+      New_Light.Distance := Light_Range;
+      Static_Lights.Append (New_Light);
+
+      if Batch_List.Is_Empty then
+         raise Tiles_Manager_Exception with
+           "Tiles_Manager.Add_Static_Light Batch_List is empty! ";
+      end if;
+
+      --        Put_Line ("Tiles_Manager.Add_Static_Light Batch_List size: " &
+      --                 Integer'Image (Integer (Batch_List.Length)));
+      for index in 0 .. Total_Batches - 1 loop
+         --           Put_Line ("Tiles_Manager.Add_Static_Light index: " &
+         --                       Integer'Image (index));
+         aBatch := Batch_List.Element (index);
+         aBatch.Static_Light_Indices.Append (Static_Lights.Last_Index);
+         Update_Batch (index, aBatch);
+      end loop;
+
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Tiles_Manager.Add_Static_Light!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
+
+   end Add_Static_Light;
+
+   --  ----------------------------------------------------------------------------
 
    procedure Load_Maps (Map_Path : String; theMap : out Map;
                         Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
@@ -47,6 +140,10 @@ package body Maps_Manager is
       Tiles_Manager.Load_Tiles (Input_File, Tile_Diff_Tex, Tile_Spec_Tex,
                                 Ramp_Diff_Tex, Ramp_Spec_Tex);
       Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Tiles loaded");
+      Tiles_Manager.Add_Tiles_To_Batches;
+      --          Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Tiles added To_Batches.");
+      Add_Dummy_Manifold_Lights;
+      Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Tiles loaded and Manifold generated.");
       Properties_Manager.Load_Properties (Input_File);
       Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Properties loaded");
       Character_Controller.Init;

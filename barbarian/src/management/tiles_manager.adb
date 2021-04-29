@@ -13,95 +13,13 @@ with Texture_Manager;
 
 package body Tiles_Manager is
 
-   type Static_Light_Data is record
-      Row      : Positive;
-      Column   : Positive;
-      Position : GL.Types.Singles.Vector3 := Maths.Vec3_0;
-      Diffuse  : GL.Types.Singles.Vector3 := Maths.Vec3_0;
-      Specular : GL.Types.Singles.Vector3 := Maths.Vec3_0;
-      Distance : GL.Types.Single := 0.0;
-   end record;
-
-   package Static_Light_Package is new Ada.Containers.Vectors
-     (Positive, Static_Light_Data);
-   type Static_Light_List is new Static_Light_Package.Vector with null record;
-
-   Static_Lights : Static_Light_List;
    Tile_Rows     : Tile_Row_List;
 
-   procedure Add_Static_Light (Row, Col                  : Tiles_RC_Index;
-                               Tile_Height_Offset        : Integer;
-                               Offset, Diffuse, Specular : Singles.Vector3;
-                               Light_Range               : Single);
-   function Get_Tile_Level (Index : Tiles_RC_Index) return Integer;
    function Is_Ramp (Index : Tiles_RC_Index) return Boolean;
    function Is_Water (Index : Tiles_RC_Index) return Boolean;
    procedure Parse_Facings_By_Row (File : File_Type);
 
    --  ------------------------------------------------------------------------
-
-   procedure Add_Dummy_Manifold_Lights is
-      use Maths;
-   begin
-      Add_Static_Light (1, 1, 0, Vec3_0, Vec3_0, Vec3_0, 0.0);
-      Add_Static_Light (1, 1, 0, Vec3_0, Vec3_0, Vec3_0, 0.0);
-
-   end Add_Dummy_Manifold_Lights;
-
-   --  ----------------------------------------------------------------------------
-
-   procedure Add_Static_Light (Row, Col                  : Tiles_RC_Index;
-                               Tile_Height_Offset        : Integer;
-                               Offset, Diffuse, Specular : Singles.Vector3;
-                               Light_Range               : Single) is
-      use Batch_Manager;
-      use Batches_Package;
-      Curs          : Batches_Package.Cursor := Batch_List.First;
-      aBatch        : Batch_Meta;
-      Tile_Index    : constant Tiles_RC_Index := Row * Positive (Max_Map_Cols) + Col;
-      X             : constant Single := Single (2 * Col) + Offset (GL.X);
-      Y             : constant Single :=
-                        Single (2 * Get_Tile_Level (Tile_Index) +
-                                  Tile_Height_Offset) + Offset (GL.Y);
-      Z             : constant Single := Single (2 * (Row - 1)) + Offset (GL.Z);
-      Total_Batches : constant Integer := Batches_Across * Batches_Down;
-      --          Sorted        : Boolean := False;
-      New_Light     : Static_Light_Data;
-   begin
-      --        Put_Line ("Tiles_Manager.Add_Static_Light Total_Batches: " &
-      --                 Integer'Image (Total_Batches));
-      New_Light.Row := Positive (Row);
-      New_Light.Column := Positive (Col);
-      New_Light.Position := (X, Y, Z);
-      New_Light.Diffuse := Diffuse;
-      New_Light.Specular := Specular;
-      New_Light.Distance := Light_Range;
-      Static_Lights.Append (New_Light);
-
-      if Batch_List.Is_Empty then
-         raise Tiles_Manager_Exception with
-           "Tiles_Manager.Add_Static_Light Batch_List is empty! ";
-      end if;
-
-      --        Put_Line ("Tiles_Manager.Add_Static_Light Batch_List size: " &
-      --                 Integer'Image (Integer (Batch_List.Length)));
-      for index in 0 .. Total_Batches - 1 loop
-         --           Put_Line ("Tiles_Manager.Add_Static_Light index: " &
-         --                       Integer'Image (index));
-         aBatch := Batch_List.Element (index);
-         aBatch.Static_Light_Indices.Append (Static_Lights.Last_Index);
-         Update_Batch (index, aBatch);
-      end loop;
-
-   exception
-      when anError : others =>
-         Put_Line ("An exception occurred in Tiles_Manager.Add_Static_Light!");
-         Put_Line (Ada.Exceptions.Exception_Information (anError));
-         raise;
-
-   end Add_Static_Light;
-
-   --  ----------------------------------------------------------------------------
 
    procedure Add_Tiles_To_Batches is
       use Batch_Manager.Batches_Package;
@@ -630,10 +548,7 @@ package body Tiles_Manager is
                                    Ramp_Diff_Tex, Ramp_Spec_Tex);
 
       --          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Textures loaded.");
-      Add_Tiles_To_Batches;
-      --          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles added To_Batches.");
-      Add_Dummy_Manifold_Lights;
-      Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Tiles loaded and Manifold generated.");
+
       Print_Tiles;
 
    exception
