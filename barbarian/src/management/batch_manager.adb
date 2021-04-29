@@ -492,6 +492,19 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
+   procedure Free_Manifold_Mesh_Data is
+   begin
+      Ramp_Mesh_Points.Clear;
+      Ramp_Mesh_Texcoords.Clear;
+      Ramp_Mesh_Normals.Clear;
+      Ramp_Mesh_Smooth_Normals.Clear;
+      Water_Mesh_Points.Clear;
+      Water_Mesh_Texcoords.Clear;
+      Water_Mesh_Normals.Clear;
+   end Free_Manifold_Mesh_Data;
+
+   --  -------------------------------------------------------------------------
+
    --  Generate_Points for all tiles in a batch
    --  Based on Manifold.cpp approx line 49: // 3. generate points
    procedure Generate_Points (aBatch : in out Batch_Meta) is
@@ -892,7 +905,7 @@ package body Batch_Manager is
 
    procedure Init_Batch_Data is
    begin
-      Clear_Batch_Data;
+      Free_Manifold_Mesh_Data;
       if not Mesh_Loader.Load_Mesh_Data_Only
         ("src/meshes/ramp_may_2014.apg", Ramp_Mesh_Points,
          Ramp_Mesh_Texcoords, Ramp_Mesh_Normals) then
