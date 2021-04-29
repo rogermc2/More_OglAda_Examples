@@ -314,13 +314,6 @@ package body Manifold is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Free_Manifold_Meta_Data is
-   begin
-      Batch_Manager.Clear_Batch_Data;
-   end Free_Manifold_Meta_Data;
-
-   --  ----------------------------------------------------------------------------
-
    function Get_Light_Index (Column, Row : Positive; Light_Number : Positive)
                              return GL.Types.Int is
       use Ada.Calendar;

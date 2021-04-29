@@ -77,7 +77,7 @@ package Batch_Manager is
                                Light_Range                    : Single);
    procedure Add_Batch_To_Batch_List (Batch_Data : Batch_Meta);
    procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural);
-   procedure Clear_Batch_Data;
+   procedure Free_Manifold_Meta_Data;
    function Get_Batch_Index (Column, Row : Positive) return Natural;
    procedure Init_Mesh_Data;
    function Batch_List return Batches_List;

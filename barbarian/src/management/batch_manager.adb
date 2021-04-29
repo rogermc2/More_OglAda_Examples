@@ -457,10 +457,10 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Clear_Batch_Data is
+   procedure Free_Manifold_Meta_Data is
    begin
       Batches_Data.Clear;
-   end Clear_Batch_Data;
+   end Free_Manifold_Meta_Data;
 
    --  ----------------------------------------------------------------------------
 

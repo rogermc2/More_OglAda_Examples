@@ -12,6 +12,7 @@ with Maths;
 with Utilities;
 
 with Audio;
+with Batch_Manager;
 with Blood_Splats;
 with Character_Controller;
 with Character_Map;
@@ -216,7 +217,7 @@ package body Main_Loop.Game_Support is
       Prop_Renderer.Reset_Properties;
       Character_Map.Free_Character_Map;
       Blood_Splats.Clear_Splats;
-      Manifold.Free_Manifold_Meta_Data;
+      Batch_Manager.Free_Manifold_Meta_Data;
       Manifold.Reset_Manifold_Vars;
       Audio.Stop_All_Sounds;
       Camera.Set_Screen_Shake_Countdown (0.0);
