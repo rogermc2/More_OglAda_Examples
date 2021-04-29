@@ -79,7 +79,7 @@ package Batch_Manager is
    procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural);
    procedure Clear_Batch_Data;
    function Get_Batch_Index (Column, Row : Positive) return Natural;
-   procedure Init_Batch_Data;
+   procedure Init_Mesh_Data;
    function Batch_List return Batches_List;
    function Batches_Empty return Boolean;
    pragma Inline (Batches_Empty);

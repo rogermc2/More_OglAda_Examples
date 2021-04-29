@@ -903,7 +903,7 @@ package body Batch_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init_Batch_Data is
+   procedure Init_Mesh_Data is
    begin
       Free_Manifold_Mesh_Data;
       if not Mesh_Loader.Load_Mesh_Data_Only
@@ -931,7 +931,7 @@ package body Batch_Manager is
            & "src/meshes/water.apg";
       end if;
 
-   end Init_Batch_Data;
+   end Init_Mesh_Data;
 
    --  -------------------------------------------------------------------------
    --  Corresponds to manifold.cpp print_tile_indices

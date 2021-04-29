@@ -384,7 +384,7 @@ package body Manifold is
       Water_Shader_Manager.Set_Ambient_Light ((0.0125, 0.0125, 0.0125));
       Water_Shader_Manager.Set_Cube_Texture (3);
 
-      Batch_Manager.Init_Batch_Data;
+      Batch_Manager.Init_Mesh_Data;
 
    end Init;
 
