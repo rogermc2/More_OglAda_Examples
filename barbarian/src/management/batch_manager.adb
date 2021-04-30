@@ -283,11 +283,11 @@ package body Batch_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural) is
-      aBatch : Batch_Meta := Batch_List.Element (Index);
+   procedure Add_Tile_To_Batch (Batch_Index : Natural; Tile_Index : Natural) is
+      aBatch : Batch_Meta := Batch_List.Element (Batch_Index);
    begin
       aBatch.Tile_Indices.Append (Tile_Index);
-      Batches_Data.Replace_Element (Index, aBatch);
+      Batches_Data.Replace_Element (Batch_Index, aBatch);
    end Add_Tile_To_Batch;
 
    --  ------------------------------------------------------------------------

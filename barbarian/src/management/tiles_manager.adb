@@ -25,8 +25,8 @@ package body Tiles_Manager is
       use Batch_Manager.Batches_Package;
       Total_Tiles : constant Integer := Max_Map_Rows * Max_Map_Cols;
       Columns     : Tile_Column_List;
-      B_Across    : Natural;
-      B_Down      : Natural;
+      B_Across_Index    : Natural;
+      B_Down_Index      : Natural;
       aBatch      : Batch_Manager.Batch_Meta;
       Tile_Index  : Natural;
       Batch_Index : Natural;
@@ -47,20 +47,31 @@ package body Tiles_Manager is
       for Row_Index in Tile_Rows.First_Index .. Tile_Rows.Last_Index loop
          Columns := Tile_Rows.Element (Row_Index);
          --  Settings.Tile_Batch_Width = 8
-         B_Down := Row_Index / Settings.Tile_Batch_Width;
+         B_Down_Index := Row_Index / Settings.Tile_Batch_Width;
          for Col_Index in Columns.First_Index .. Columns.Last_Index loop
-            B_Across := Col_Index / Settings.Tile_Batch_Width;
-            Batch_Index := B_Down * Batches_Across + B_Across;
+            B_Across_Index := Col_Index / Settings.Tile_Batch_Width;
+            Batch_Index := B_Down_Index * Batches_Across + B_Across_Index;
             --  Add_Tile_Index_To_Batch
             Tile_Index := Row_Index * Max_Map_Cols + Col_Index;
+--              Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List.Last_Index, length "
+--                                    & Integer'Image (Batch_Manager.Batch_List.Last_Index)
+--                                    & Integer'Image (Integer (Batch_Manager.Batch_List.Length)));
             if Batch_Index <= Batch_Manager.Batch_List.Last_Index then
+               Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Adding_Tile "
+                                    & Integer'Image (Tile_Index) & " to existing Batch: "
+                                    & Integer'Image (Batch_Index));
                Batch_Manager.Add_Tile_To_Batch (Batch_Index, Tile_Index);
             else
+               Game_Utils.Game_Log ("");
+               Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Adding_Tile "
+                                    & Integer'Image (Tile_Index) & " to new Batch: "
+                                    & Integer'Image (Batch_Index));
                aBatch.Tile_Indices.Clear;
                aBatch.Tile_Indices.Append (Tile_Index);
                Batch_Manager.Add_Batch_To_Batch_List (aBatch);
             end if;
          end loop;
+         Game_Utils.Game_Log ("");
       end loop;
 
       Print_Tile_Indices ("Tiles_Manager.Add_Tiles_To_Batches Batch 0:",
@@ -549,7 +560,7 @@ package body Tiles_Manager is
 
       --          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Textures loaded.");
 
-      Print_Tiles;
+--        Print_Tiles;
 
    exception
       when anError : others =>
@@ -609,8 +620,8 @@ package body Tiles_Manager is
 --              end loop;
             Prev_Char := Text_Char;
             Tile_Rows.Append (Tile_Col);
-            Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Tile_Rows size: "
-                                 & Integer'Image (Integer (Tile_Rows.Length)));
+--              Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row Tile_Rows size: "
+--                                   & Integer'Image (Integer (Tile_Rows.Length)));
          end;  --  declare block
       end loop;
       --          Game_Utils.Game_Log ("Tiles_Manager.Parse_Facings_By_Row done Tile Rows range: "

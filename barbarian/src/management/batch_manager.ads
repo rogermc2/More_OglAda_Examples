@@ -76,7 +76,7 @@ package Batch_Manager is
                                Offset_Pos, Diffuse, Specular  : Singles.Vector3;
                                Light_Range                    : Single);
    procedure Add_Batch_To_Batch_List (Batch_Data : Batch_Meta);
-   procedure Add_Tile_To_Batch (Index : Natural; Tile_Index : Natural);
+   procedure Add_Tile_To_Batch (Batch_Index : Natural; Tile_Index : Natural);
    procedure Free_Manifold_Meta_Data;
    function Get_Batch_Index (Column, Row : Positive) return Natural;
    procedure Init_Mesh_Data;
