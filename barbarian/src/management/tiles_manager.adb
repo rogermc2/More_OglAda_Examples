@@ -57,25 +57,25 @@ package body Tiles_Manager is
 --                                    & Integer'Image (Batch_Manager.Batch_List.Last_Index)
 --                                    & Integer'Image (Integer (Batch_Manager.Batch_List.Length)));
             if Batch_Index <= Batch_Manager.Batch_List.Last_Index then
-               Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Adding_Tile "
-                                    & Integer'Image (Tile_Index) & " to existing Batch: "
-                                    & Integer'Image (Batch_Index));
+--                 Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Adding_Tile "
+--                                      & Integer'Image (Tile_Index) & " to existing Batch: "
+--                                      & Integer'Image (Batch_Index));
                Batch_Manager.Add_Tile_To_Batch (Batch_Index, Tile_Index);
             else
-               Game_Utils.Game_Log ("");
-               Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Adding_Tile "
-                                    & Integer'Image (Tile_Index) & " to new Batch: "
-                                    & Integer'Image (Batch_Index));
+--                 Game_Utils.Game_Log ("");
+--                 Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Adding_Tile "
+--                                      & Integer'Image (Tile_Index) & " to new Batch: "
+--                                      & Integer'Image (Batch_Index));
                aBatch.Tile_Indices.Clear;
                aBatch.Tile_Indices.Append (Tile_Index);
                Batch_Manager.Add_Batch_To_Batch_List (aBatch);
             end if;
          end loop;
-         Game_Utils.Game_Log ("");
+--           Game_Utils.Game_Log ("");
       end loop;
 
-      Print_Tile_Indices ("Tiles_Manager.Add_Tiles_To_Batches Batch 0:",
-                          Batch_Manager.Batch_List.Element (0).Tile_Indices);
+--        Print_Tile_Indices ("Tiles_Manager.Add_Tiles_To_Batches Batch 0:",
+--                            Batch_Manager.Batch_List.Element (0).Tile_Indices);
       --        Game_Utils.Game_Log ("Tiles_Manager.Add_Tiles_To_Batches Batch_List, range " &
       --                               Integer'Image (Batch_List.First_Index) & ", " &
       --                               Integer'Image (Batch_List.Last_Index));
@@ -559,7 +559,6 @@ package body Tiles_Manager is
                                    Ramp_Diff_Tex, Ramp_Spec_Tex);
 
       --          Game_Utils.Game_Log ("Tiles_Manager.Load_Tiles, Textures loaded.");
-
 --        Print_Tiles;
 
    exception

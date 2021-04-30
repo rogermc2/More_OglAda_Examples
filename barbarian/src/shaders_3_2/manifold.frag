@@ -108,13 +108,14 @@ void main()
 		return;
         }
 	// sampling
-	vec4 texel_diff = texture (diff_map, 1.0 * st);
+	vec4 texel_diff = texture (diff_map, st);
 	vec4 texel_spec = texture (spec_map, st);
         
 	frag_colour.a = texel_diff.a;
 	float light_emission_factor = texel_spec.a;
 	// lights
 	vec3 I = blinn_phong (texel_diff, texel_spec);
+    //    I = vec3 (1.0, 1.0, 1.0);
 	//  frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - light_emission_factor);
     frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - 0.2 * light_emission_factor);
 	// shadows
