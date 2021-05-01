@@ -19,7 +19,6 @@ package body Batch_Manager is
 
    type Tile_Side is (North_Side, East_Side, South_Side, West_Side);
    subtype Hex_Index is Natural range 0 .. 15;
-   subtype Atlas_Index is Natural range 0 .. Tiles_Manager.Max_Tile_Cols - 1;
    subtype Texture_Single is Single range 0.0 .. 1.0;
 
    Batches_Data               : Batches_List;
@@ -36,6 +35,8 @@ package body Batch_Manager is
    Water_Mesh_Points          : GL_Maths.Vec3_List;
    Water_Mesh_Normals         : GL_Maths.Vec3_List;
    Water_Mesh_Texcoords       : GL_Maths.Vec2_List;
+
+   subtype Atlas_Index is Natural range 0 .. Sets_In_Atlas_Row - 1;
 
    function Check_For_OOO (Batch_Index : Natural) return Boolean;
    procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
@@ -589,10 +590,14 @@ package body Batch_Manager is
 
             --  Texture_Index from map file (range 0 .. 15, one hex digit)
             --  Sets_In_Atlas_Row = 4
-            --  (Atlas_Row, Atlas_Col) refers to tile position in texture file (PNG)?
+            --  (Atlas_Row, Atlas_Col) refers to texture position in
+            --    texture atlas file (PNG)
             Atlas_Row := aTile.Texture_Index / Sets_In_Atlas_Row;
             Atlas_Col:= aTile.Texture_Index - Atlas_Row * Sets_In_Atlas_Row;
-
+--              Game_Utils.Game_Log
+--                ("Batch_Manger.Generate_Points Texture_Index, Atlas_Row, Atlas_Col: "
+--                 & Integer'Image (aTile.Texture_Index) & ", "
+--                 & Integer'Image (Atlas_Row) & ", " & Integer'Image (Atlas_Col));
             --  Atlas_Factor = 1/4
             --  ST_Offset = 8/2048 = 1/256
             S := Atlas_Factor * (Single (Atlas_Col) + 0.5);
@@ -617,19 +622,19 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
-         if Row_Index < Max_Map_Rows - 1 then
-            Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-         if Row_Index > 0 then
-            Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-
-         if Col_Index < Column_List.Last_Index then
-            Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
-         if Col_Index > 0 then
-            Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         end if;
+--           if Row_Index < Max_Map_Rows - 1 then
+--              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--           if Row_Index > 0 then
+--              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--
+--           if Col_Index < Column_List.Last_Index then
+--              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
+--           if Col_Index > 0 then
+--              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+--           end if;
       end loop;  -- over tile indices
       --        Game_Utils.Game_Log
       --          ("Batch_Manger.Generate_Points Tiles loaded.");
@@ -1039,7 +1044,7 @@ package body Batch_Manager is
                                 Single'Image (aBatch.AABB_Maxs (GL.X)) & " " &
                                 Single'Image (aBatch.AABB_Maxs (GL.Y)) & " " &
                                 Single'Image (aBatch.AABB_Maxs (GL.Z)));
-         Print_Texture_Coordinates_List (Batch_Index);
+--           Print_Texture_Coordinates_List (Batch_Index);
          Print_Texture_Coordinates (Batch_Index);
 
       end loop;
