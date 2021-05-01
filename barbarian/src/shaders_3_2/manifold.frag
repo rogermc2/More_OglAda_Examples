@@ -131,5 +131,5 @@ void main()
         //  rest is Debug:
  //   frag_colour.rgb = texel_diff.rgb;
  //   frag_colour = vec4(1.5 * texel_diff.rgb, 1.0);
-//        frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
+ //       frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
     }

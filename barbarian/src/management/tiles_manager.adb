@@ -672,4 +672,5 @@ package body Tiles_Manager is
    end Print_Tiles;
 
    --  ----------------------------------------------------------------------------
+
 end Tiles_Manager;
