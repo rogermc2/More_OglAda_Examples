@@ -520,7 +520,7 @@ package body Batch_Manager is
         ZM1               : Single;
 
         procedure Add_Tex_Coords (S_Offset, T_Offset,
-                                  ST_Off_X, Offset_Y : Single)  is
+                                  ST_Off_X, ST_Off_Y : Single)  is
         --  Tex_Index is from selected texture from map file (0 .. 15)
         --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
             Atlas_Row : constant Atlas_Index := Tex_Index / Sets_In_Atlas_Row;
@@ -538,7 +538,7 @@ package body Batch_Manager is
             --  For S_Offset = 0:
             --  S - ST_Offset = Atlas_Col/4 - 1 / 256
             --  S - ST_Offset range; -1 / 256  .. 63/4 -1 / 256
-            aBatch.Tex_Coords.Append ((S + ST_Off_X, T + ST_Off_X));
+            aBatch.Tex_Coords.Append ((S + ST_Off_X, T + ST_Off_Y));
         end Add_Tex_Coords;
 
     begin
