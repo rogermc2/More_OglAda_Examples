@@ -571,10 +571,30 @@ package body Batch_Manager is
                aBatch.Normals.Append ((0.0, 1.0, 0.0));
             end loop;
 
+            --  A texture atlas is an image that contains multiple textures.
+            --  A texture atlas can increase rendering speed by batching more
+            --    multiple objects into a single draw_arrays call.
+            --  Also, a texture atlas allows unusually-shaped textures.
+
+            --  Texture coordinates are usually relative to the size of the
+            --    individual texture with (0,0) corresponding to one corner
+            --    and (1,1) corresponding to the opposite corner.
+            --  But what happens when the texture is added to an atlas?
+            --  Consider three points on an original example and their
+            --    corresponding points in an atlas:
+            --  Each of the original coordinates is scaled by (0.5, 0.5) and
+            --    offset by (0.0, 0.5).
+            --  Creating an atlas requires keeping track of the offset and
+            --    scale for each texture so that they can be accessed later.
+
             --  Texture_Index from map file (range 0 .. 15, one hex digit)
+            --  Sets_In_Atlas_Row = 4
+            --  (Atlas_Row, Atlas_Col) refers to tile position in texture file (PNG)?
             Atlas_Row := aTile.Texture_Index / Sets_In_Atlas_Row;
             Atlas_Col:= aTile.Texture_Index - Atlas_Row * Sets_In_Atlas_Row;
 
+            --  Atlas_Factor = 1/4
+            --  ST_Offset = 8/2048 = 1/256
             S := Atlas_Factor * (Single (Atlas_Col) + 0.5);
             T := Atlas_Factor * (Single (Atlas_Row) + 1.0);
             aBatch.Tex_Coords.Append ((S - ST_Offset, T - ST_Offset));
