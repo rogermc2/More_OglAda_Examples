@@ -510,6 +510,7 @@ package body Batch_Manager is
         N_Tile            : Tile_Data;
         Tile_Index        : Tiles_Index;
         Height            : Hex_Index;
+        Tex_Index         : Hex_Index;
         X                 : Integer;
         XP1               : Single;
         XM1               : Single;
@@ -518,8 +519,8 @@ package body Batch_Manager is
         ZP1               : Single;
         ZM1               : Single;
 
-        procedure Add_Tex_Coords (Tex_Index            : Hex_Index;
-                                  S_Offset, T_Offset   : Single)  is
+        procedure Add_Tex_Coords (S_Offset, T_Offset,
+                                  ST_Off_X, Offset_Y : Single)  is
         --  Tex_Index is from selected texture from map file (0 .. 15)
         --  Sets_In_Atlas_Row = 4 (Tiles in Atlas_Row)
             Atlas_Row : constant Atlas_Index := Tex_Index / Sets_In_Atlas_Row;
@@ -537,7 +538,7 @@ package body Batch_Manager is
             --  For S_Offset = 0:
             --  S - ST_Offset = Atlas_Col/4 - 1 / 256
             --  S - ST_Offset range; -1 / 256  .. 63/4 -1 / 256
-            aBatch.Tex_Coords.Append ((S - ST_Offset, T - ST_Offset));
+            aBatch.Tex_Coords.Append ((S + ST_Off_X, T + ST_Off_X));
         end Add_Tex_Coords;
 
     begin
@@ -561,6 +562,7 @@ package body Batch_Manager is
 
             aTile := Get_Tile_By_Index (Tile_Index);
             Height := aTile.Height;
+            Height := 8;
             Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index, Row_Index, Col_Index: "
                                  & Integer'Image (Tile_Index) &
                                    Integer'Image (Row_Index) & ", " &
@@ -588,12 +590,13 @@ package body Batch_Manager is
                 end loop;
 
                 --  Texture_Index from map file (range 0 .. 15, one hex digit)
-                Add_Tex_Coords (aTile.Texture_Index, 0.5, 1.0);
-                Add_Tex_Coords (aTile.Texture_Index, 0.0, 1.0);
-                Add_Tex_Coords (aTile.Texture_Index, 0.0, 0.5);
-                Add_Tex_Coords (aTile.Texture_Index, 0.0, 0.5);
-                Add_Tex_Coords (aTile.Texture_Index, 0.5, 0.5);
-                Add_Tex_Coords (aTile.Texture_Index, 0.5, 1.0);
+                Tex_Index := aTile.Texture_Index;
+                Add_Tex_Coords (0.5, 1.0, -ST_Offset, -ST_Offset);
+                Add_Tex_Coords (0.0, 1.0, ST_Offset, -ST_Offset);
+                Add_Tex_Coords (0.0, 0.5, ST_Offset, ST_Offset);
+                Add_Tex_Coords (0.0, 0.5, ST_Offset, ST_Offset);
+                Add_Tex_Coords ( 0.5, 0.5, -ST_Offset, ST_Offset);
+                Add_Tex_Coords ( 0.5, 1.0, -ST_Offset, -ST_Offset);
                 --              Game_Utils.Game_Log
                 --                ("Batch_Manger.Generate_Points Add_Tex_Coords added to tile: " &
                 --                Integer'Image (Tile_Index));
