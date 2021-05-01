@@ -108,6 +108,10 @@ void main()
 		return;
         }
 	// sampling
+    // gvec4 texture(gsampler2D sampler, vec2 P)
+    // texture samples texels at texture coordinate P from
+    // the texture bound to sampler
+
 	vec4 texel_diff = texture (diff_map, st);
 	vec4 texel_spec = texture (spec_map, st);
         

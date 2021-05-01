@@ -40,6 +40,7 @@ package body Batch_Manager is
    function Check_For_OOO (Batch_Index : Natural) return Boolean;
    procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
    procedure Print_Texture_Coordinates (Batch_Index : Natural);
+   procedure Print_Texture_Coordinates_List (Batch_Index : Natural);
    procedure Set_Tex_Coords (aBatch : in out Batch_Meta;
                              aTile  : Tiles_Manager.Tile_Data;
                              Side   : Tile_Side; Level : Natural);
@@ -544,10 +545,10 @@ package body Batch_Manager is
          aTile := Get_Tile_By_Index (Tile_Index);
          Height := aTile.Height;
          Height := 8;
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index, Row_Index, Col_Index: "
-                              & Integer'Image (Tile_Index) &
-                                Integer'Image (Row_Index) & ", " &
-                                Integer'Image (Col_Index));
+--           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index, Row_Index, Col_Index: "
+--                                & Integer'Image (Tile_Index) &
+--                                  Integer'Image (Row_Index) & ", " &
+--                                  Integer'Image (Col_Index));
          X := 2 * Col_Index;
          XP1 := Single (X + 1);
          XM1 := Single (X - 1);
@@ -929,6 +930,30 @@ package body Batch_Manager is
 
    procedure Print_Texture_Coordinates (Batch_Index : Natural) is
       use Ada.Containers;
+      Tex_Coords : constant Singles.Vector2_Array :=
+                     GL_Maths.To_Vector2_Array
+                       (Batches_Data.Element (Batch_Index).Tex_Coords);
+      Coords     : Singles.Vector2;
+   begin
+      Game_Utils.Game_Log ("Batch_Manger, Texture_Coordinates, Batch " &
+                             Integer'Image (Batch_Index) & ", " &
+                             Integer'Image (Integer (Tex_Coords'Length / 6)) &
+                             " sets");
+      for index in Tex_Coords'Range loop
+         Coords := Tex_Coords (index);
+         Game_Utils.Game_Log (int'Image (index) &
+                                ", " &Single'Image (Coords (GL.X)) &
+                                ", " & Single'Image (Coords (GL.Y)));
+         if index mod 6 = 5 then
+            Game_Utils.Game_Log ("");
+         end if;
+      end loop;
+   end Print_Texture_Coordinates;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Print_Texture_Coordinates_List (Batch_Index : Natural) is
+      use Ada.Containers;
       Tex_Coords : constant GL_Maths.Vec2_List :=
                      Batches_Data.Element (Batch_Index).Tex_Coords;
       Coords     : Singles.Vector2;
@@ -945,7 +970,7 @@ package body Batch_Manager is
             Game_Utils.Game_Log ("");
          end if;
       end loop;
-   end Print_Texture_Coordinates;
+   end Print_Texture_Coordinates_List;
 
    --  ----------------------------------------------------------------------------
 
@@ -994,6 +1019,7 @@ package body Batch_Manager is
                                 Single'Image (aBatch.AABB_Maxs (GL.X)) & " " &
                                 Single'Image (aBatch.AABB_Maxs (GL.Y)) & " " &
                                 Single'Image (aBatch.AABB_Maxs (GL.Z)));
+         Print_Texture_Coordinates_List (Batch_Index);
          Print_Texture_Coordinates (Batch_Index);
 
       end loop;
