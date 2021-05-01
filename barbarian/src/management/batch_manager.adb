@@ -531,9 +531,9 @@ package body Batch_Manager is
          --  Atlas_Factor reduces Atlas_Col and Row range 0 .. 15
          --  Object size 125 x 125 pixels
          S  : constant Texture_Single :=
-                Atlas_Factor * (Single (Atlas_Col) + S_Offset);
+                Atlas_Factor * (Single (Atlas_Col) + 0.5);
          T  : constant Texture_Single :=
-                Atlas_Factor * (Single (Atlas_Row) + T_Offset);
+                Atlas_Factor * (Single (Atlas_Row) + 1.0);
       begin
          --  ST_Offset = 8.0 / 2048.0 = 1 / 256
          --  For S_Offset = 0:
