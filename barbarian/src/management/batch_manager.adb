@@ -941,7 +941,7 @@ package body Batch_Manager is
          Coords := Tex_Coords.Element (index);
          Game_Utils.Game_Log (Single'Image (Coords (GL.X)) &
                                 ", " & Single'Image (Coords (GL.Y)));
-         if index mod 6 = 5 then
+         if index mod 6 = 0 then
             Game_Utils.Game_Log ("");
          end if;
       end loop;
