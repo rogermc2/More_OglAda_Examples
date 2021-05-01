@@ -599,7 +599,7 @@ package body Batch_Manager is
 --                 & Integer'Image (aTile.Texture_Index) & ", "
 --                 & Integer'Image (Atlas_Row) & ", " & Integer'Image (Atlas_Col));
             --  Atlas_Factor = 1/4
-            --  ST_Offset = 8/2048 = 1/256
+            --  ST_Offset = 8/2048 = 1/256 = 0.0039
             S := Atlas_Factor * (Single (Atlas_Col) + 0.5);
             T := Atlas_Factor * (Single (Atlas_Row) + 1.0);
             aBatch.Tex_Coords.Append ((S - ST_Offset, T - ST_Offset));
@@ -611,7 +611,7 @@ package body Batch_Manager is
             aBatch.Tex_Coords.Append ((S + ST_Offset, T + ST_Offset));
             aBatch.Tex_Coords.Append ((S + ST_Offset, T + ST_Offset));
 
-            S := Atlas_Factor * (Single (Atlas_Row) + 0.5);
+            S := Atlas_Factor * (Single (Atlas_Col) + 0.5);
             aBatch.Tex_Coords.Append ((S - ST_Offset, T + ST_Offset));
 
             T := Atlas_Factor * (Single (Atlas_Row) + 1.0);
