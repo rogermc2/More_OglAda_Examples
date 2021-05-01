@@ -78,7 +78,7 @@ package body Camera is
         G_Camera.Screen_Shake_Amplitude := 0.0;
         G_Camera.Screen_Shake_Frequency := 0.0;
         G_Camera.Wind_In_Angle := 0.0;
-        G_Camera.Field_Of_View_Y := 87.0;  --  67.0
+        G_Camera.Field_Of_View_Y := 67.0;  --  67.0
         G_Camera.Aspect := Single (Settings.Framebuffer_Height) /
           Single (Settings.Framebuffer_Width);
         G_Camera.Near := 0.1;  --  0.1
