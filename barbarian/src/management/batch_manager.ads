@@ -83,6 +83,7 @@ package Batch_Manager is
    function Batch_List return Batches_List;
    function Batches_Empty return Boolean;
    pragma Inline (Batches_Empty);
+   procedure Print_Points (Label : String; Batch_Index : Natural);
    procedure Regenerate_Batches;
    function Static_Lights return Static_Light_Vector;
    function Static_Indices  (Batch_Index : Positive)

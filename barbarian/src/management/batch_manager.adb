@@ -40,7 +40,6 @@ package body Batch_Manager is
 
    function Check_For_OOO (Batch_Index : Natural) return Boolean;
    procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
-   procedure Print_Points (Batch_Index : Natural);
    procedure Print_Texture_Coordinates (Batch_Index : Natural);
    procedure Print_Texture_Coordinates_List (Batch_Index : Natural);
    procedure Set_Tex_Coords (aBatch : in out Batch_Meta;
@@ -551,18 +550,27 @@ package body Batch_Manager is
                               & Integer'Image (Tile_Index) &
                                 Integer'Image (Row_Index) & ", " &
                                 Integer'Image (Col_Index));
-         X := 2 * Col_Index;
-         XP1 := Single (X + 1);
-         XM1 := Single (X - 1);
-         Y := -Single (2 * aTile.Height);
-         Z := 2 * Row_Index;
-         ZP1 := Single (Z + 1);
-         ZM1 := Single (Z - 1);
 
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points XP1,XM1: "
-                              & Single'Image (XP1)  & ", " & Single'Image (XM1));
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points ZP1,ZM1: "
-                              & Single'Image (ZP1)  & ", " & Single'Image (ZM1));
+         X := 3 * Col_Index;
+         Y := -Single (2 * aTile.Height);
+         Z := 4 * Row_Index;
+         if Tile_Index = 0 then
+         XP1 := Single (X) + 0.4;
+         XM1 := Single (X) - 0.4;
+         ZP1 := Single (Z) + 0.4;
+         ZM1 := Single (Z) - 0.4;
+         else
+         XP1 := Single (X) + 0.9;
+         XM1 := Single (X) - 0.9;
+         ZP1 := Single (Z) + 0.9;
+         ZM1 := Single (Z) - 0.9;
+         end if;
+
+
+         Game_Utils.Game_Log ("Batch_Manger.Generate_Points XM1,XP1: "
+                              & Single'Image (XM1)  & ", " & Single'Image (XP1));
+         Game_Utils.Game_Log ("Batch_Manger.Generate_Points ZM1, ZP1: "
+                              & Single'Image (ZM1)  & ", " & Single'Image (ZP1));
 
          --  Generate flat tiles
          if aTile.Tile_Type /= '/' and aTile.Tile_Type /= '~' then
@@ -625,6 +633,8 @@ package body Batch_Manager is
             --              Game_Utils.Game_Log
             --                ("Batch_Manger.Generate_Points Add_Tex_Coords added to tile: " &
             --                Integer'Image (Tile_Index));
+         else
+            Game_Utils.Game_Log ("Batch_Manger.Generate_Points ramp or water");
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
@@ -963,14 +973,14 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Print_Points (Batch_Index : Natural) is
+   procedure Print_Points (Label : String; Batch_Index : Natural) is
       use Ada.Containers;
       Points : constant Singles.Vector3_Array :=
                      GL_Maths.To_Vector3_Array
                        (Batches_Data.Element (Batch_Index).Points);
       Coords     : Singles.Vector3;
    begin
-      Game_Utils.Game_Log ("Batch_Manger, Print_Points, Batch " &
+      Game_Utils.Game_Log (Label & " points in batch " &
                              Integer'Image (Batch_Index) & ", " &
                              Integer'Image (Integer (Points'Length / 6)) &
                              " sets");
@@ -1081,7 +1091,7 @@ package body Batch_Manager is
                                 Single'Image (aBatch.AABB_Maxs (GL.X)) & " " &
                                 Single'Image (aBatch.AABB_Maxs (GL.Y)) & " " &
                                 Single'Image (aBatch.AABB_Maxs (GL.Z)));
-         Print_Points (Batch_Index);
+         Print_Points ("Batch_Manger.Regenerate_Batches", Batch_Index);
          Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
                                 Integer'Image (Batch_Index) & " points printed");
          --           Print_Texture_Coordinates_List (Batch_Index);

@@ -162,15 +162,15 @@ package body Manifold is
 
                   if not aBatch.Points.Is_Empty then
                      --  flat tiles
---                       GL_Utils.Bind_Vao (aBatch.Points_VAO);
-                     GL.Objects.Vertex_Arrays.Bind (aBatch.Points_VAO);
-                     Array_Buffer.Bind (aBatch.Points_VBO);
-                     Utilities.Load_Vertex_Buffer
-                       (Array_Buffer, GL_Maths.To_Vector3_Array (aBatch.Points), Static_Draw);
-                     GL.Attributes.Set_Vertex_Attrib_Pointer
-                       (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
-                     GL.Attributes.Enable_Vertex_Attrib_Array
-                       (Shader_Attributes.Attrib_VP);
+                     GL_Utils.Bind_Vao (aBatch.Points_VAO);
+--                       GL.Objects.Vertex_Arrays.Bind (aBatch.Points_VAO);
+--                       Array_Buffer.Bind (aBatch.Points_VBO);
+--                       Utilities.Load_Vertex_Buffer
+--                         (Array_Buffer, GL_Maths.To_Vector3_Array (aBatch.Points), Static_Draw);
+--                       GL.Attributes.Set_Vertex_Attrib_Pointer
+--                         (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
+--                       GL.Attributes.Enable_Vertex_Attrib_Array
+--                         (Shader_Attributes.Attrib_VP);
 
                      Array_Buffer.Bind (aBatch.Normals_VBO);
                      GL.Attributes.Set_Vertex_Attrib_Pointer
