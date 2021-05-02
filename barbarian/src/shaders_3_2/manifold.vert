@@ -24,7 +24,7 @@ void main()
     {
 //    vec3 vp2 = vec3 (vp.r /1, vp.g /1, vp.b /1);
 //    vec3 vn2 = vec3 (vn.r /1, vn.g /1, vn.b /1);
-    vec3 vp2 = vec3(vp.x, vp.y, vp.z - 10.0);
+    vec3 vp2 = vec3(vp.x, vp.y, vp.z);
     vec3 vn2 = vn;
 //    gl_PointSize = 40.0;
         

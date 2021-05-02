@@ -551,21 +551,14 @@ package body Batch_Manager is
                                 Integer'Image (Row_Index) & ", " &
                                 Integer'Image (Col_Index));
 
-         X := 3 * Col_Index;
-         Y := -Single (2 * aTile.Height);
-         Z := 4 * Row_Index;
-         if Tile_Index = 0 then
-         XP1 := Single (X) + 0.4;
-         XM1 := Single (X) - 0.4;
-         ZP1 := Single (Z) + 0.4;
-         ZM1 := Single (Z) - 0.4;
-         else
+         X := 2 * Col_Index;
+         Y := Single (2 * aTile.Height) - 40.0;
+         --           Y := -16.0;
+         Z := 2 * Row_Index;
          XP1 := Single (X) + 0.9;
          XM1 := Single (X) - 0.9;
          ZP1 := Single (Z) + 0.9;
          ZM1 := Single (Z) - 0.9;
-         end if;
-
 
          Game_Utils.Game_Log ("Batch_Manger.Generate_Points XM1,XP1: "
                               & Single'Image (XM1)  & ", " & Single'Image (XP1));
@@ -638,19 +631,19 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
-         --           if Row_Index < Max_Map_Rows - 1 then
-         --              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         --           end if;
-         --           if Row_Index > 0 then
-         --              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         --           end if;
-         --
-         --           if Col_Index < Column_List.Last_Index then
-         --              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         --           end if;
-         --           if Col_Index > 0 then
-         --              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
-         --           end if;
+         if Row_Index < Max_Map_Rows - 1 then
+            Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+         if Row_Index > 0 then
+            Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+
+         if Col_Index < Column_List.Last_Index then
+            Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
+         if Col_Index > 0 then
+            Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         end if;
       end loop;  -- over tile indices
       --        Game_Utils.Game_Log
       --          ("Batch_Manger.Generate_Points Tiles loaded.");
@@ -975,7 +968,7 @@ package body Batch_Manager is
 
    procedure Print_Points (Label : String; Batch_Index : Natural) is
       use Ada.Containers;
-      Points : constant Singles.Vector3_Array :=
+      Points     : constant Singles.Vector3_Array :=
                      GL_Maths.To_Vector3_Array
                        (Batches_Data.Element (Batch_Index).Points);
       Coords     : Singles.Vector3;
@@ -1073,7 +1066,7 @@ package body Batch_Manager is
    procedure Regenerate_Batches is
       aBatch : Batch_Meta;
    begin
-      for Batch_Index in Batches_Data.First_Index .. Batches_Data.First_Index loop
+      for Batch_Index in Batches_Data.First_Index .. Batches_Data.Last_Index loop
          Free_Batch_Data (Batch_Index);
          aBatch := Batches_Data.Element (Batch_Index);
          Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batch regenerating batch " &
@@ -1095,7 +1088,7 @@ package body Batch_Manager is
          Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
                                 Integer'Image (Batch_Index) & " points printed");
          --           Print_Texture_Coordinates_List (Batch_Index);
---           Print_Texture_Coordinates (Batch_Index);
+         --           Print_Texture_Coordinates (Batch_Index);
 
       end loop;
 

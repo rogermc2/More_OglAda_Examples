@@ -155,7 +155,7 @@ package body Maps_Manager is
       Game_Utils.Game_Log ("Maps_Manager.Load_Maps, Comic_Texts loaded");
       Close (Input_File);
 
-       Batch_Manager.Print_Points ("Maps_Manager.Load_Maps", 0);
+--         Batch_Manager.Print_Points ("Maps_Manager.Load_Maps", 0);
 
    exception
       when anError : others =>

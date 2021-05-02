@@ -137,7 +137,7 @@ package body Manifold is
       end if;
 
       Set_Model_Matrix (Singles.Identity4);
-      for index in theBatches.First_Index .. theBatches.First_Index loop
+      for index in theBatches.First_Index .. theBatches.Last_Index loop
          aBatch := theBatches.Element (index);
          Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
                           abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
@@ -173,10 +173,10 @@ package body Manifold is
 --                         (Shader_Attributes.Attrib_VP);
 
                      Array_Buffer.Bind (aBatch.Normals_VBO);
-                     GL.Attributes.Set_Vertex_Attrib_Pointer
-                       (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
-                     GL.Attributes.Enable_Vertex_Attrib_Array
-                       (Shader_Attributes.Attrib_VN);
+--                       GL.Attributes.Set_Vertex_Attrib_Pointer
+--                         (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
+--                       GL.Attributes.Enable_Vertex_Attrib_Array
+--                         (Shader_Attributes.Attrib_VN);
                      --  Bind_Texture sets active unit and binds texture
                      --  to Texture_Target Texture_2D
                      Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
