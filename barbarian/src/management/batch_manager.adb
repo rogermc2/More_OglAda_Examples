@@ -25,7 +25,7 @@ package body Batch_Manager is
    Static_Lights_List         : Static_Light_Vector;
    Atlas_Factor               : constant Single := 0.25;
    Sets_In_Atlas_Row          : constant Positive := 4;
-   ST_Offset                  : constant Single := 8.0 / 2048.0;
+   ST_Offset                  : constant Single := 0.0;  --  8.0 / 2048.0;
    Ramp_Mesh_Points           : GL_Maths.Vec3_List;
    Ramp_Mesh_Normals          : GL_Maths.Vec3_List;
    Ramp_Mesh_Texcoords        : GL_Maths.Vec2_List;
@@ -40,6 +40,7 @@ package body Batch_Manager is
 
    function Check_For_OOO (Batch_Index : Natural) return Boolean;
    procedure Set_AABB_Dimensions (aBatch : in out Batch_Meta);
+   procedure Print_Points (Batch_Index : Natural);
    procedure Print_Texture_Coordinates (Batch_Index : Natural);
    procedure Print_Texture_Coordinates_List (Batch_Index : Natural);
    procedure Set_Tex_Coords (aBatch : in out Batch_Meta;
@@ -506,6 +507,7 @@ package body Batch_Manager is
       use Tiles_Manager;
       use Tile_Indices_Package;
       use GL_Maths;
+      Use GL.Objects.Buffers;
       Row_Index         : Natural;
       Col_Index         : Natural;
       Column_List       : Tile_Column_List;
@@ -528,10 +530,10 @@ package body Batch_Manager is
       aBatch.Points.Clear;
       aBatch.Normals.Clear;
       aBatch.Tex_Coords.Clear;
-      --        Game_Utils.Game_Log
-      --          ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
-      --             Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
-      --             Integer'Image (aBatch.Tile_Indices.Last_Index));
+      Game_Utils.Game_Log
+        ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
+           Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
+           Integer'Image (aBatch.Tile_Indices.Last_Index));
       --        Put_Line ("Batch_Manger.Generate_Points, Tile_Indices.Last_Index: " &
       --                   Integer'Image (Integer (aBatch.Tile_Indices.Last_Index)));
       --        Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tiles" &
@@ -545,11 +547,10 @@ package body Batch_Manager is
 
          aTile := Get_Tile_By_Index (Tile_Index);
          Height := aTile.Height;
---           Height := 8;
---           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index, Row_Index, Col_Index: "
---                                & Integer'Image (Tile_Index) &
---                                  Integer'Image (Row_Index) & ", " &
---                                  Integer'Image (Col_Index));
+         Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index, Row_Index, Col_Index: "
+                              & Integer'Image (Tile_Index) &
+                                Integer'Image (Row_Index) & ", " &
+                                Integer'Image (Col_Index));
          X := 2 * Col_Index;
          XP1 := Single (X + 1);
          XM1 := Single (X - 1);
@@ -594,10 +595,10 @@ package body Batch_Manager is
             --    texture atlas file (PNG)
             Atlas_Row := aTile.Texture_Index / Sets_In_Atlas_Row;
             Atlas_Col:= aTile.Texture_Index - Atlas_Row * Sets_In_Atlas_Row;
---              Game_Utils.Game_Log
---                ("Batch_Manger.Generate_Points Texture_Index, Atlas_Row, Atlas_Col: "
---                 & Integer'Image (aTile.Texture_Index) & ", "
---                 & Integer'Image (Atlas_Row) & ", " & Integer'Image (Atlas_Col));
+            --              Game_Utils.Game_Log
+            --                ("Batch_Manger.Generate_Points Texture_Index, Atlas_Row, Atlas_Col: "
+            --                 & Integer'Image (aTile.Texture_Index) & ", "
+            --                 & Integer'Image (Atlas_Row) & ", " & Integer'Image (Atlas_Col));
             --  Atlas_Factor = 1/4
             --  ST_Offset = 8/2048 = 1/256 = 0.0039
             S := Atlas_Factor * (Single (Atlas_Col) + 0.5);
@@ -622,19 +623,19 @@ package body Batch_Manager is
          end if;
 
          --  check for higher neighbour to north (walls belong to the lower tile)
---           if Row_Index < Max_Map_Rows - 1 then
---              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---           if Row_Index > 0 then
---              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---
---           if Col_Index < Column_List.Last_Index then
---              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
---           if Col_Index > 0 then
---              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
---           end if;
+         --           if Row_Index < Max_Map_Rows - 1 then
+         --              Add_North_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         --           end if;
+         --           if Row_Index > 0 then
+         --              Add_South_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         --           end if;
+         --
+         --           if Col_Index < Column_List.Last_Index then
+         --              Add_West_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         --           end if;
+         --           if Col_Index > 0 then
+         --              Add_East_Points (aBatch, Height, Tile_Index, Row_Index, Col_Index);
+         --           end if;
       end loop;  -- over tile indices
       --        Game_Utils.Game_Log
       --          ("Batch_Manger.Generate_Points Tiles loaded.");
@@ -656,8 +657,12 @@ package body Batch_Manager is
         (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VN);
 
-      aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
-        (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
+      --        aBatch.Tex_Coords_VBO := GL_Utils.Create_2D_VBO
+      --          (GL_Maths.To_Vector2_Array (aBatch.Tex_Coords));
+
+      aBatch.Tex_Coords_VBO.Initialize_Id;
+      Array_Buffer.Bind (aBatch.Tex_Coords_VBO);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, GL_Maths.To_Vector2_Array (aBatch.Tex_Coords), Static_Draw);
       GL.Attributes.Set_Vertex_Attrib_Pointer
         (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (Shader_Attributes.Attrib_VT);
@@ -953,6 +958,33 @@ package body Batch_Manager is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Print_Points (Batch_Index : Natural) is
+      use Ada.Containers;
+      Points : constant Singles.Vector3_Array :=
+                     GL_Maths.To_Vector3_Array
+                       (Batches_Data.Element (Batch_Index).Points);
+      Coords     : Singles.Vector3;
+   begin
+      Game_Utils.Game_Log ("Batch_Manger, Print_Points, Batch " &
+                             Integer'Image (Batch_Index) & ", " &
+                             Integer'Image (Integer (Points'Length / 6)) &
+                             " sets");
+      for index in Points'Range loop
+         if index mod 6 = 0 then
+            Game_Utils.Game_Log ("Tile " & int'Image (index / 6));
+         end if;
+         Coords := Points (index);
+         Game_Utils.Game_Log (int'Image (index) &
+                                ", " & Single'Image (Coords (GL.X)) &
+                                ", " & Single'Image (Coords (GL.Y)));
+         if index mod 6 = 5 then
+            Game_Utils.Game_Log ("");
+         end if;
+      end loop;
+   end Print_Points;
+
+   --  ----------------------------------------------------------------------------
+
    procedure Print_Texture_Coordinates (Batch_Index : Natural) is
       use Ada.Containers;
       Tex_Coords : constant Singles.Vector2_Array :=
@@ -1044,8 +1076,11 @@ package body Batch_Manager is
                                 Single'Image (aBatch.AABB_Maxs (GL.X)) & " " &
                                 Single'Image (aBatch.AABB_Maxs (GL.Y)) & " " &
                                 Single'Image (aBatch.AABB_Maxs (GL.Z)));
---           Print_Texture_Coordinates_List (Batch_Index);
-         Print_Texture_Coordinates (Batch_Index);
+         Print_Points (Batch_Index);
+         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
+                                Integer'Image (Batch_Index) & " points printed");
+         --           Print_Texture_Coordinates_List (Batch_Index);
+--           Print_Texture_Coordinates (Batch_Index);
 
       end loop;
 
@@ -1167,7 +1202,7 @@ package body Batch_Manager is
    --  --------------------------------------------------------------------------
 
    function Static_Indices (Batch_Index : Positive)
-                             return GL_Maths.Indices_List is
+                            return GL_Maths.Indices_List is
       aBatch : Batch_Meta := Batches_Data.Element (Batch_Index);
    begin
       return aBatch.Static_Light_Indices;

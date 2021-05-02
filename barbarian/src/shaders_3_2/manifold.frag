@@ -101,12 +101,13 @@ float eval_shadow (in float l, in vec3 tc, in samplerCube cube)
     }
 
 void main()
-    {
+    {/*
 	if (ol_pass > 0.1)
         {
 		frag_colour = vec4 (0.0, 0.0, 0.0, 1.0);
 		return;
         }
+    */
 	// sampling
     // gvec4 texture(gsampler2D sampler, vec2 P)
     // texture samples texels at texture coordinate P from
@@ -115,14 +116,15 @@ void main()
 	vec4 texel_diff = texture (diff_map, st);
 	vec4 texel_spec = texture (spec_map, st);
         
-	frag_colour.a = texel_diff.a;
-	float light_emission_factor = texel_spec.a;
+//	frag_colour.a = texel_diff.a;
+//	float light_emission_factor = texel_spec.a;
 	// lights
-	vec3 I = blinn_phong (texel_diff, texel_spec);
+	 vec3 I = blinn_phong (texel_diff, texel_spec);
     //  I = vec3 (1.0, 1.0, 1.0);
 	//  frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - light_emission_factor);
-    frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - 0.2 * light_emission_factor);
+//    frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - 0.2 * light_emission_factor);
 	// shadows
+/*
 	if (shadow_enabled > 0.0)
         {
 		vec3 dir = texcoords - caster_pos_wor;
@@ -132,8 +134,9 @@ void main()
 		sf_f = mix (sf_f, 1.0, 1.0 - light_emission_factor);
 		frag_colour.rgb *= sf_f;
         }
+ */
         //  rest is Debug:
  //   frag_colour.rgb = texel_diff.rgb;
-    frag_colour = vec4(1.5 * texel_diff.rgb, 1.0);
- //       frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
+    frag_colour = vec4(texel_diff.rgb, 1.0);
+        frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
     }
