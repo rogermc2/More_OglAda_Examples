@@ -53,8 +53,8 @@ package body Main_Loop is
 
    procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
 
-      --          Black                   : constant Colors.Color := (0.0, 0.0, 0.0, 0.0);
-      Grey                    : constant Colors.Color := (0.4, 0.4, 0.4, 0.0);
+      Black                   : constant Colors.Color := (0.0, 0.0, 0.0, 0.0);
+      Grey                    : constant Colors.Color := (0.8, 0.8, 0.8, 0.0);
       --     Red            : constant Colors.Color := (1.0, 0.0, 0.0, 1.0);
       --     Green          : constant Colors.Color  := (0.0, 0.5, 0.0, 1.0);
       Blue                    : constant Colors.Color := (0.0, 0.0, 0.5, 1.0);
@@ -402,6 +402,7 @@ package body Main_Loop is
       begin
          Game_Utils.Game_Log ("Main_Loop.Run_Game started");
          Put_Line ("Main_Loop.Run_Game started");
+         Utilities.Clear_Background_Colour_And_Depth (Grey);
          while Continue and not Quit_Game loop
             GL_Utils.Frame_Buffer_Resize (Window);   --  added
             Window.Get_Framebuffer_Size (Window_Width, Window_Height);
@@ -490,7 +491,7 @@ package body Main_Loop is
       begin
          --  initial main menu loop
          Main_Menu.Start_Menu_Title_Bounce;
-         Utilities.Clear_Background_Colour_And_Depth (Grey);
+         Utilities.Clear_Background_Colour_And_Depth (Black);
 
          if not Skip_Intro_Screen_And_Main_Menu then
             Main_Menu.Set_Menu_Open (True);

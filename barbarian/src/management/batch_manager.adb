@@ -545,7 +545,7 @@ package body Batch_Manager is
 
          aTile := Get_Tile_By_Index (Tile_Index);
          Height := aTile.Height;
-         Height := 8;
+--           Height := 8;
 --           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index, Row_Index, Col_Index: "
 --                                & Integer'Image (Tile_Index) &
 --                                  Integer'Image (Row_Index) & ", " &

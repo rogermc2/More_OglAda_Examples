@@ -137,7 +137,7 @@ package body Manifold is
       end if;
 
       Set_Model_Matrix (Singles.Identity4);
-      for index in theBatches.First_Index .. theBatches.Last_Index loop
+      for index in theBatches.First_Index .. theBatches.First_Index loop
          aBatch := theBatches.Element (index);
          Rad_Dist := Min (abs (Camera_Pos (GL.X) - aBatch.AABB_Mins (GL.X)),
                           abs (Camera_Pos (GL.X) - aBatch.AABB_Maxs (GL.X)));
