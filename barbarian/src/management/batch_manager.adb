@@ -559,6 +559,11 @@ package body Batch_Manager is
          ZP1 := Single (Z + 1);
          ZM1 := Single (Z - 1);
 
+         Game_Utils.Game_Log ("Batch_Manger.Generate_Points XP1,XM1: "
+                              & Single'Image (XP1)  & ", " & Single'Image (XM1));
+         Game_Utils.Game_Log ("Batch_Manger.Generate_Points ZP1,ZM1: "
+                              & Single'Image (ZP1)  & ", " & Single'Image (ZM1));
+
          --  Generate flat tiles
          if aTile.Tile_Type /= '/' and aTile.Tile_Type /= '~' then
             --  floor FR, FL, BL, BL, BR, FR
@@ -976,7 +981,7 @@ package body Batch_Manager is
          Coords := Points (index);
          Game_Utils.Game_Log (int'Image (index) &
                                 ", " & Single'Image (Coords (GL.X)) &
-                                ", " & Single'Image (Coords (GL.Y)));
+                                ", " & Single'Image (Coords (GL.Z)));
          if index mod 6 = 5 then
             Game_Utils.Game_Log ("");
          end if;
@@ -1058,7 +1063,7 @@ package body Batch_Manager is
    procedure Regenerate_Batches is
       aBatch : Batch_Meta;
    begin
-      for Batch_Index in Batches_Data.First_Index .. Batches_Data.Last_Index loop
+      for Batch_Index in Batches_Data.First_Index .. Batches_Data.First_Index loop
          Free_Batch_Data (Batch_Index);
          aBatch := Batches_Data.Element (Batch_Index);
          Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batch regenerating batch " &
