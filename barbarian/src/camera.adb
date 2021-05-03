@@ -7,6 +7,7 @@ with Blood_Splats;
 with FB_Effects;
 with Frustum;
 with Game_Utils;
+with GL_Maths;
 with Manifold;
 with Prop_Renderer;
 with Settings;
@@ -72,12 +73,12 @@ package body Camera is
       G_Camera.World_Position := (2.0, 10.0, 2.0);  --  2.0, 10.0, 2.0
       Prev_Cam_Pos := G_Camera.World_Position;
       G_Camera.Shake_Mod_Position := (0.0, 0.0, 0.0);
-      G_Camera.Original_Screen_Shake_Time := 1.0;
       G_Camera.Screen_Shake_Countdown_Secs := 0.0;
       G_Camera.Wind_In_Countdown := 0.0;
       G_Camera.Original_Screen_Shake_Amplitude := 0.0;
       G_Camera.Screen_Shake_Amplitude := 0.0;
       G_Camera.Screen_Shake_Frequency := 0.0;
+      G_Camera.Original_Screen_Shake_Time := 1.0;
       G_Camera.Wind_In_Angle := 0.0;
       G_Camera.Field_Of_View_Y := 67.0;  --  67.0
       G_Camera.Aspect := Single (Settings.Framebuffer_Width) /
@@ -95,10 +96,13 @@ package body Camera is
       --                                           Up       => (0.0, 1.0, 0.0),
       --                                           Look_At  => G_Camera.View_Matrix);
       --          else
-      Maths.Init_Lookat_Transform (Position => G_Camera.World_Position,
-                                   Target   => (2.0, 0.0, 2.0),
-                                   Up       => (0.0, 0.0, -1.0),
-                                   Look_At  => G_Camera.View_Matrix);
+      --        Maths.Init_Lookat_Transform (Position => G_Camera.World_Position,
+      --                                     Target   => (2.0, 0.0, 2.0),
+      --                                     Up       => (0.0, 0.0, -1.0),
+      --                                     Look_At  => G_Camera.View_Matrix);
+      G_Camera.View_Matrix := GL_Maths.Look_At (Camera_Pos => G_Camera.World_Position,
+                                                Target_Pos => (2.0, 0.0, 2.0),
+                                                Up         => (0.0, 0.0, -1.0));
       --        Utilities.Print_Matrix ("Camera.Init Camera.View_Matrix",
       --                                G_Camera.View_Matrix);
       --          end if;
@@ -202,145 +206,149 @@ package body Camera is
          Cam_Target := World_Position + G_Camera.Shake_Mod_Position;
          Cam_Target (GL.Y) := Cam_Target (GL.Y) - 1.0;
          --              if not First_Person then
-         Maths.Init_Lookat_Transform
+         --           Maths.Init_Lookat_Transform
+         --             (World_Position + G_Camera.Shake_Mod_Position, Cam_Target,
+         --              (0.0, 0.0, -1.0), G_Camera.View_Matrix);
+         G_Camera.View_Matrix := GL_Maths.Look_At
            (World_Position + G_Camera.Shake_Mod_Position, Cam_Target,
-            (0.0, 0.0, -1.0), G_Camera.View_Matrix);
-         if G_Camera.Wind_In_Angle > 0.0 then
-            Rot_Matrix := Rotate_Z_Degree (Identity4, G_Camera.Wind_In_Angle);
+            (0.0, 0.0, -1.0));
+
+            if G_Camera.Wind_In_Angle > 0.0 then
+               Rot_Matrix := Rotate_Z_Degree (Identity4, G_Camera.Wind_In_Angle);
             G_Camera.View_Matrix := Rot_Matrix * G_Camera.View_Matrix;
-         end if;
-         --              else --  First_Person
-         --                  Dir := G_Camera.World_Position - Prev_Cam_Pos;
-         --                  Dir (GL.Y) := 0.0;
-         --                  if Abs (Dir (GL.X) + Dir (GL.Z)) > 0.0 then
-         --                      Far_Point_Dir := Dir;
-         --                  end if;
-         --                  Far_Point_Pos := G_Camera.World_Position;
-         --                  Far_Point_Pos (GL.Y) := Far_Point_Pos (GL.Y) - 11.0;
-         --                  Init_Lookat_Transform (Far_Point_Pos + G_Camera.Shake_Mod_Position,
-         --                                         Far_Point_Pos + Far_Point_Dir,
-         --                                         (0.0, 1.0, 0.0), G_Camera.View_Matrix);
-         --              end if;
-         G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
-         G_Camera.Is_Dirty := True;
-         Frustum.Re_Extract_Frustum_Planes
-           (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
-            G_Camera.World_Position, G_Camera.View_Matrix);
-      end if;
-   end Set_Camera_Position;
+            end if;
+            --              else --  First_Person
+            --                  Dir := G_Camera.World_Position - Prev_Cam_Pos;
+            --                  Dir (GL.Y) := 0.0;
+            --                  if Abs (Dir (GL.X) + Dir (GL.Z)) > 0.0 then
+            --                      Far_Point_Dir := Dir;
+            --                  end if;
+            --                  Far_Point_Pos := G_Camera.World_Position;
+            --                  Far_Point_Pos (GL.Y) := Far_Point_Pos (GL.Y) - 11.0;
+            --                  Init_Lookat_Transform (Far_Point_Pos + G_Camera.Shake_Mod_Position,
+            --                                         Far_Point_Pos + Far_Point_Dir,
+            --                                         (0.0, 1.0, 0.0), G_Camera.View_Matrix);
+            --              end if;
+            G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
+            G_Camera.Is_Dirty := True;
+            Frustum.Re_Extract_Frustum_Planes
+              (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
+               G_Camera.World_Position, G_Camera.View_Matrix);
+            end if;
+            end Set_Camera_Position;
 
-   --  ------------------------------------------------------------------------
+            --  ------------------------------------------------------------------------
 
-   procedure Set_End_Camera is
-      use GL.Types.Singles;
-      Ambient : constant Vector3 := (0.04, 0.04, 0.04);
-   begin
-      G_Camera.World_Position := Prop_Renderer.Get_End_Camera_Position;
-      G_Camera.View_Matrix := Prop_Renderer.Get_End_Camera_Matrix;
-      G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
-      G_Camera.Is_Dirty := True;
-      Frustum.Re_Extract_Frustum_Planes
-        (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
-         Frustum.Frustum_Camera_Position, G_Camera.View_Matrix);
+            procedure Set_End_Camera is
+            use GL.Types.Singles;
+            Ambient : constant Vector3 := (0.04, 0.04, 0.04);
+            begin
+            G_Camera.World_Position := Prop_Renderer.Get_End_Camera_Position;
+            G_Camera.View_Matrix := Prop_Renderer.Get_End_Camera_Matrix;
+            G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
+            G_Camera.Is_Dirty := True;
+            Frustum.Re_Extract_Frustum_Planes
+              (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
+               Frustum.Frustum_Camera_Position, G_Camera.View_Matrix);
 
-      --  Raise brightness a little because torch won't be there
-      Sprite_Renderer.Set_Ambient_Light_Level (Ambient);
-      Manifold.Set_Manifold_Ambient_Light (Ambient);
-      Prop_Renderer.Set_Ambient_Light_Level (Ambient);
-      Blood_Splats.Set_Ambient_Light_Level (Ambient);
+            --  Raise brightness a little because torch won't be there
+            Sprite_Renderer.Set_Ambient_Light_Level (Ambient);
+            Manifold.Set_Manifold_Ambient_Light (Ambient);
+            Prop_Renderer.Set_Ambient_Light_Level (Ambient);
+            Blood_Splats.Set_Ambient_Light_Level (Ambient);
 
-      FB_Effects.Set_WW_FB_Effect (FB_Effects.FB_Default_Effect);
+            FB_Effects.Set_WW_FB_Effect (FB_Effects.FB_Default_Effect);
 
-   end Set_End_Camera;
+            end Set_End_Camera;
 
-   --  ------------------------------------------------------------------------
+            --  ------------------------------------------------------------------------
 
-   --      procedure Set_First_Person (State : Boolean) is
-   --      begin
-   --          First_Person := State;
-   --          Set_Camera_Position (G_Camera.World_Position);
-   --          Frustum.Enable_Frustum_Cull (not State);
-   --      end Set_First_Person;
+            --      procedure Set_First_Person (State : Boolean) is
+            --      begin
+            --          First_Person := State;
+            --          Set_Camera_Position (G_Camera.World_Position);
+            --          Frustum.Enable_Frustum_Cull (not State);
+            --      end Set_First_Person;
 
-   --  ------------------------------------------------------------------------
+            --  ------------------------------------------------------------------------
 
-   procedure Set_Is_Dirty (State : Boolean) is
-   begin
-      G_Camera.Is_Dirty := State;
-   end Set_Is_Dirty;
+            procedure Set_Is_Dirty (State : Boolean) is
+            begin
+            G_Camera.Is_Dirty := State;
+            end Set_Is_Dirty;
 
-   --  ------------------------------------------------------------------------
+            --  ------------------------------------------------------------------------
 
-   procedure Set_Screen_Shake_Countdown (Countdown : Float) is
-   begin
-      G_Camera.Screen_Shake_Countdown_Secs := Countdown;
-   end Set_Screen_Shake_Countdown;
+            procedure Set_Screen_Shake_Countdown (Countdown : Float) is
+            begin
+            G_Camera.Screen_Shake_Countdown_Secs := Countdown;
+            end Set_Screen_Shake_Countdown;
 
-   --  ------------------------------------------------------------------------
+            --  ------------------------------------------------------------------------
 
-   function View_Matrix return Singles.Matrix4 is
-   begin
-      return G_Camera.View_Matrix;
-   end View_Matrix;
+            function View_Matrix return Singles.Matrix4 is
+            begin
+            return G_Camera.View_Matrix;
+            end View_Matrix;
 
-   --  ------------------------------------------------------------------------
+            --  ------------------------------------------------------------------------
 
-   procedure Update_Camera_Effects (Elapsed_Time : Float) is
-      use GL.Types;
-      use Maths.Single_Math_Functions;
+            procedure Update_Camera_Effects (Elapsed_Time : Float) is
+            use GL.Types;
+            use Maths.Single_Math_Functions;
 
-      Time_Factor : Float := 1.0;
-      XZ          : Single;
-      Count_Down  : Float;
-      Dist        : Single;
-   begin
-      if G_Camera.Screen_Shake_Countdown_Secs >= 0.0 then
-         G_Camera.Screen_Shake_Countdown_Secs :=
-           G_Camera.Screen_Shake_Countdown_Secs - Elapsed_Time;
+            Time_Factor : Float := 1.0;
+            XZ          : Single;
+            Count_Down  : Float;
+            Dist        : Single;
+            begin
+            if G_Camera.Screen_Shake_Countdown_Secs >= 0.0 then
+            G_Camera.Screen_Shake_Countdown_Secs :=
+              G_Camera.Screen_Shake_Countdown_Secs - Elapsed_Time;
 
-         if G_Camera.Screen_Shake_Countdown_Secs <= 0.0 then
+            if G_Camera.Screen_Shake_Countdown_Secs <= 0.0 then
             G_Camera.Shake_Mod_Position := (0.0, 0.0, 0.0);
-         end if;
+            end if;
 
-         Time_Factor := 1.0 -
-           (G_Camera.Original_Screen_Shake_Time -
-              G_Camera.Screen_Shake_Countdown_Secs) /
-             G_Camera.Original_Screen_Shake_Time;
-         G_Camera.Screen_Shake_Amplitude :=
-           Time_Factor * G_Camera.Original_Screen_Shake_Amplitude;
-         XZ := Sin (Single (G_Camera.Screen_Shake_Countdown_Secs *
-                      G_Camera.Screen_Shake_Frequency)) *
-             Single (G_Camera.Screen_Shake_Amplitude);
-         G_Camera.Shake_Mod_Position (GL.X) := XZ;
-         G_Camera.Shake_Mod_Position (GL.Z) := XZ;
+            Time_Factor := 1.0 -
+              (G_Camera.Original_Screen_Shake_Time -
+                   G_Camera.Screen_Shake_Countdown_Secs) /
+                  G_Camera.Original_Screen_Shake_Time;
+            G_Camera.Screen_Shake_Amplitude :=
+              Time_Factor * G_Camera.Original_Screen_Shake_Amplitude;
+            XZ := Sin (Single (G_Camera.Screen_Shake_Countdown_Secs *
+                         G_Camera.Screen_Shake_Frequency)) *
+                Single (G_Camera.Screen_Shake_Amplitude);
+            G_Camera.Shake_Mod_Position (GL.X) := XZ;
+            G_Camera.Shake_Mod_Position (GL.Z) := XZ;
 
-         --  Update Camera_Position with Shake_Mod_Position
-         Set_Camera_Position (G_Camera.World_Position);
-      end if;
+            --  Update Camera_Position with Shake_Mod_Position
+            Set_Camera_Position (G_Camera.World_Position);
+            end if;
 
-      if G_Camera.Wind_In_Countdown >= 0.0 then
-         G_Camera.Wind_In_Countdown :=
-           G_Camera.Wind_In_Countdown - Elapsed_Time;
-         Count_Down := Maths.Max_Float (G_Camera.Wind_In_Countdown, 0.0);
-         Dist := Single (40.0 / 3.0 * Count_Down);
-         G_Camera.Shake_Mod_Position := (0.0, Dist, 0.0);
-         G_Camera.Wind_In_Angle := Maths.Degree (1024.0 / 3.0 * Count_Down);
-         Game_Utils.Game_Log ("Camera.Update_Camera_Effects Wind_In_Angle " &
-                                Maths.Degree'Image (G_Camera.Wind_In_Angle));
+            if G_Camera.Wind_In_Countdown >= 0.0 then
+            G_Camera.Wind_In_Countdown :=
+              G_Camera.Wind_In_Countdown - Elapsed_Time;
+            Count_Down := Maths.Max_Float (G_Camera.Wind_In_Countdown, 0.0);
+            Dist := Single (40.0 / 3.0 * Count_Down);
+            G_Camera.Shake_Mod_Position := (0.0, Dist, 0.0);
+            G_Camera.Wind_In_Angle := Maths.Degree (1024.0 / 3.0 * Count_Down);
+            Game_Utils.Game_Log ("Camera.Update_Camera_Effects Wind_In_Angle " &
+                                   Maths.Degree'Image (G_Camera.Wind_In_Angle));
 
-         --  Update Camera_Position with Shake_Mod_Position
-         Set_Camera_Position (G_Camera.World_Position);
-         FB_Effects.Set_Feedback_Screw (G_Camera.Wind_In_Countdown);
-      end if;
-   end Update_Camera_Effects;
+            --  Update Camera_Position with Shake_Mod_Position
+            Set_Camera_Position (G_Camera.World_Position);
+            FB_Effects.Set_Feedback_Screw (G_Camera.Wind_In_Countdown);
+            end if;
+            end Update_Camera_Effects;
 
-   --  ------------------------------------------------------------------------
+            --  ------------------------------------------------------------------------
 
-   function World_Position return Singles.Vector3 is
-   begin
-      return G_Camera.World_Position;
-   end World_Position;
+            function World_Position return Singles.Vector3 is
+            begin
+            return G_Camera.World_Position;
+            end World_Position;
 
-   --  ------------------------------------------------------------------------
+            --  ------------------------------------------------------------------------
 
-end Camera;
+            end Camera;

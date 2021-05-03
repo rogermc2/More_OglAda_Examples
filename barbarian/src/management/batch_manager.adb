@@ -552,7 +552,7 @@ package body Batch_Manager is
 --                                  Integer'Image (Col_Index));
 
          X := 2 * Col_Index;
-         Y := Single (2 * aTile.Height) - 45.0;
+         Y := Single (2 * aTile.Height);  --  - 45.0;
          --           Y := -16.0;
          Z := 2 * Row_Index;
          XP1 := Single (X) + 0.95;
