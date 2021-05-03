@@ -96,10 +96,6 @@ package body Camera is
       --                                           Up       => (0.0, 1.0, 0.0),
       --                                           Look_At  => G_Camera.View_Matrix);
       --          else
-      --        Maths.Init_Lookat_Transform (Position => G_Camera.World_Position,
-      --                                     Target   => (2.0, 0.0, 2.0),
-      --                                     Up       => (0.0, 0.0, -1.0),
-      --                                     Look_At  => G_Camera.View_Matrix);
       G_Camera.View_Matrix := GL_Maths.Look_At (Camera_Pos => G_Camera.World_Position,
                                                 Target_Pos => (2.0, 0.0, 2.0),
                                                 Up         => (0.0, 0.0, -1.0));
@@ -156,10 +152,10 @@ package body Camera is
       G_Camera.Aspect := Width / Height;
       G_Camera.Near := Near;
       G_Camera.Far := Far;
-      Init_Perspective_Transform
-        (FOV_Y, Width, Height, Near, Far, G_Camera.Projection_Matrix);
-      Init_Perspective_Transform
-        (FOV_Y, Width, Height, 0.01, 1000.0, G_Camera.GUI_Proj_Matrix);
+      G_Camera.Projection_Matrix := Perspective_Matrix
+        (FOV_Y, Width / Height, Near, Far);
+      G_Camera.GUI_Proj_Matrix := Perspective_Matrix
+        (FOV_Y, Width / Height, 0.01, 1000.0);
       G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
       G_Camera.Is_Dirty := True;
       Frustum.Re_Extract_Frustum_Planes
@@ -206,9 +202,6 @@ package body Camera is
          Cam_Target := World_Position + G_Camera.Shake_Mod_Position;
          Cam_Target (GL.Y) := Cam_Target (GL.Y) - 1.0;
          --              if not First_Person then
-         --           Maths.Init_Lookat_Transform
-         --             (World_Position + G_Camera.Shake_Mod_Position, Cam_Target,
-         --              (0.0, 0.0, -1.0), G_Camera.View_Matrix);
          G_Camera.View_Matrix := GL_Maths.Look_At
            (World_Position + G_Camera.Shake_Mod_Position, Cam_Target,
             (0.0, 0.0, -1.0));

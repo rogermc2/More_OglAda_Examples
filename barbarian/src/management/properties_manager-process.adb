@@ -661,9 +661,6 @@ package body Properties_Manager.Process is
               Rotate_Y_Degree (Identity4, New_Props.Heading_Deg);
             Target := End_Camera_Position +
               To_Vector3 (Rot_Matrix * (0.0, 0.0, -1.0, 1.0));
-            --                  Init_Lookat_Transform
-            --                    (End_Camera_Position, Target, (0.0, 1.0, 0.0),
-            --                     End_Camera_Matrix);
             End_Camera_Matrix := GL_Maths.Look_At (End_Camera_Position, Target,
                                                    (0.0, 1.0, 0.0));
          when others => null;

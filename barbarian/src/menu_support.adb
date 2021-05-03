@@ -156,8 +156,6 @@ package body Menu_Support is
       end if;
       Bounce_Matrix := Maths.Translation_Matrix ((0.0, Y, 0.0));
 
-      --          Maths.Init_Lookat_Transform
-      --          (Cam_Pos, Cam_Target, (0.0, 1.0, 1.0), Title_V);
       Title_V := GL_Maths.Look_At (Cam_Pos, Cam_Target, (0.0, 1.0, 1.0));
       Title_V := Bounce_Matrix * Title_V;
       Title_Bounce_Timer := Title_Bounce_Timer + Elapsed;

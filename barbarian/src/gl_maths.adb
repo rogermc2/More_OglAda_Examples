@@ -116,19 +116,19 @@ package body GL_Maths is
                      return Singles.Matrix4 is
       use Singles;
       use Maths;
-      -- inverse translation
-      P       :  Singles.Matrix4 := Maths.Translation_Matrix (-Camera_Pos);
+      Position : constant Singles.Matrix4 :=
+                  Maths.Translation_Matrix (-Camera_Pos);
       -- distance vector
-      Dist    : Singles.Vector3 := Target_Pos - Camera_Pos;
+      Dist     : constant Singles.Vector3 := Target_Pos - Camera_Pos;
       -- forward vector
-      Forward : Singles.Vector3 := Maths.Normalized (Dist);
+      Forward  : constant Singles.Vector3 := Maths.Normalized (Dist);
       -- right vector
-      Right   : Singles.Vector3 :=
+      Right    : constant Singles.Vector3 :=
                   Maths.Normalized (Cross_Product (Forward, Up));
       -- real up vector
-      Up_New  : Singles.Vector3 :=
+      Up_New   : constant Singles.Vector3 :=
                   Maths.Normalized (Cross_Product (Right, Forward));
-      Look    : Singles.Matrix4 := Identity4;
+      Look     : Singles.Matrix4 := Identity4;
       begin
          Look (GL.X, GL.X) := Right (GL.X);     --  r.x
          Look (GL.Y, GL.X) := Right (GL.Y);     --  r.y
@@ -142,7 +142,7 @@ package body GL_Maths is
          Look (GL.Y, GL.Z) := -Forward (GL.Y);  --  -f.y
          Look (GL.Z, GL.Z) := -Forward (GL.Z);  --  -f.z
 
-         return Look * p;
+         return Look * Position;
       end Look_At;
 
       --  -------------------------------------------------------------------------

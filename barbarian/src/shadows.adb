@@ -279,8 +279,6 @@ package body Shadows is
       G_Shadows.Caster_Pos_World := (0.0, 0.0, 0.0);
 
       for index in Int range 1 .. 6 loop
-         --              Init_Lookat_Transform (Caster_Pos, Target_Pos (index),
-         --                                     Up (index), LA_Matrix);
          LA_Matrix := GL_Maths.Look_At (Caster_Pos, Target_Pos (index),
                                         Up (index));
          G_Shadows.Caster_Vs (index) := LA_Matrix;
@@ -314,9 +312,6 @@ package body Shadows is
       if Settings.Shadows_Enabled then
          G_Shadows.Caster_Pos_World := Caster_Pos;
          for index in Int range 1 ..6 loop
---              Maths.Init_Lookat_Transform
---                (Caster_Pos, Target_Pos (index), Up (index),
---                 G_Shadows.Caster_Vs (index));
             G_Shadows.Caster_Vs (index) := GL_Maths.Look_At
               (Caster_Pos, Target_Pos (index), Up (index));
          end loop;

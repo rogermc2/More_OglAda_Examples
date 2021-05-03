@@ -238,8 +238,6 @@ package body Main_Menu_Initialization is
     begin
         Cursor_Shader_Manager.Init (Cursor_Shader_Program);
         Cursor_M := Singles.Identity4;
---          Maths.Init_Lookat_Transform ((0.0, 0.0, 10.0), (0.0, 0.0, 0.0),
---                                       (0.0, 1.0, 0.0), Cursor_V);
       Cursor_V := GL_Maths.Look_At ((0.0, 0.0, 10.0), (0.0, 0.0, 0.0),
                                      (0.0, 1.0, 0.0));
         GL.Objects.Programs.Use_Program (Cursor_Shader_Program);
@@ -558,8 +556,6 @@ package body Main_Menu_Initialization is
         Text.Set_Text_Visible (Title_Version_Text, False);
 
         Title_Shader_Manager.Init (Title_Shader_Program);
---          Maths.Init_Lookat_Transform (Camera_Position, Camera_Target,
---                                       (0.0, 1.0, 0.0), Title_V);
       Title_V := GL_Maths.Look_At (Camera_Position, Camera_Target,
                                      (0.0, 1.0, 0.0));
 
