@@ -103,13 +103,13 @@ package body Main_Loop is
       procedure Do_Menu_Not_Open (Window     : in out Input_Callback.Barbarian_Window;
                                   Delta_Time : Float;
                                   Is_Running : in out Boolean) is
-         Back_Colour   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.0);
+--           Back_Colour   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.0);
       begin
          --                              Game_Utils.Game_Log
          --                                ("Main_Loop.Game_Loop Is_Running Main Menu not open");
---           GUI.Update_GUIs (Delta_Time);
---           Text.Update_Comic_Texts (Delta_Time);
---           Text.Update_Particle_Texts (Delta_Time);
+         GUI.Update_GUIs (Delta_Time);
+         Text.Update_Comic_Texts (Delta_Time);
+         Text.Update_Particle_Texts (Delta_Time);
          --  Check_Victory_Defeat checks that if the
          --  "defeated" gui is up then controls aren't
          --  updated except space to restart.
@@ -118,7 +118,7 @@ package body Main_Loop is
          --  Major states stacks don't change or anything
          Is_Running := Game_Support.Check_Victory_Defeat;
          if Is_Running then
---              Camera.Update_Camera_Effects (Delta_Time);
+            Camera.Update_Camera_Effects (Delta_Time);
             Update_Logic_Steps (Window, Delta_Time);
             if Main_Menu.End_Story_Open then
                --  Just won the game
@@ -141,7 +141,6 @@ package body Main_Loop is
       procedure Do_Menu_Open (Window         : in out Input_Callback.Barbarian_Window;
                               Delta_Time     : Float;
                               Main_Menu_Quit : in out Boolean) is
-         --                                Main_Menu_Quit, Is_Running : in out Boolean) is
       begin
          --   Game_Utils.Game_Log ("Main_Loop.Do_Menu_Open");
          Main_Menu_Quit := not Main_Menu.Update_Main_Menu

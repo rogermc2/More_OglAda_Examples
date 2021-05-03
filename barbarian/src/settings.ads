@@ -106,7 +106,7 @@ private
       Video_Record_Mode            : Boolean := False;
       Render_OLS                   : Boolean := False;
       Shadows_Enabled              : Boolean := false;
-      Fb_Effects_Enabled           : Boolean := False;
+      Fb_Effects_Enabled           : Boolean := True;
       Particles_Enabled            : Boolean := True;
       Particle_Mipmaps_Enabled     : Boolean := True;
       Auto_Blood_Wipe              : Boolean := False;
