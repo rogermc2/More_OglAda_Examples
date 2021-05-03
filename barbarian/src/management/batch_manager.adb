@@ -529,10 +529,10 @@ package body Batch_Manager is
       aBatch.Points.Clear;
       aBatch.Normals.Clear;
       aBatch.Tex_Coords.Clear;
-      Game_Utils.Game_Log
-        ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
-           Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
-           Integer'Image (aBatch.Tile_Indices.Last_Index));
+--        Game_Utils.Game_Log
+--          ("Batch_Manger.Generate_Points Tile_Indices.First_Index, Last: " &
+--             Integer'Image (aBatch.Tile_Indices.First_Index) & ", " &
+--             Integer'Image (aBatch.Tile_Indices.Last_Index));
       --        Put_Line ("Batch_Manger.Generate_Points, Tile_Indices.Last_Index: " &
       --                   Integer'Image (Integer (aBatch.Tile_Indices.Last_Index)));
       --        Put_Line ("Batch_Manger.Generate_Points, Number_Of_Tiles" &
@@ -546,10 +546,10 @@ package body Batch_Manager is
 
          aTile := Get_Tile_By_Index (Tile_Index);
          Height := aTile.Height;
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index, Row_Index, Col_Index: "
-                              & Integer'Image (Tile_Index) &
-                                Integer'Image (Row_Index) & ", " &
-                                Integer'Image (Col_Index));
+--           Game_Utils.Game_Log ("Batch_Manger.Generate_Points Tile_Index, Row_Index, Col_Index: "
+--                                & Integer'Image (Tile_Index) &
+--                                  Integer'Image (Row_Index) & ", " &
+--                                  Integer'Image (Col_Index));
 
          X := 2 * Col_Index;
          Y := Single (2 * aTile.Height) - 45.0;
@@ -560,10 +560,10 @@ package body Batch_Manager is
          ZP1 := Single (Z) + 0.95;
          ZM1 := Single (Z) - 0.95;
 
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points XM1,XP1: "
-                              & Single'Image (XM1)  & ", " & Single'Image (XP1));
-         Game_Utils.Game_Log ("Batch_Manger.Generate_Points ZM1, ZP1: "
-                              & Single'Image (ZM1)  & ", " & Single'Image (ZP1));
+--           Game_Utils.Game_Log ("Batch_Manger.Generate_Points XM1,XP1: "
+--                                & Single'Image (XM1)  & ", " & Single'Image (XP1));
+--           Game_Utils.Game_Log ("Batch_Manger.Generate_Points ZM1, ZP1: "
+--                                & Single'Image (ZM1)  & ", " & Single'Image (ZP1));
 
          --  Generate flat tiles
          if aTile.Tile_Type /= '/' and aTile.Tile_Type /= '~' then
@@ -1069,24 +1069,22 @@ package body Batch_Manager is
       for Batch_Index in Batches_Data.First_Index .. Batches_Data.Last_Index loop
          Free_Batch_Data (Batch_Index);
          aBatch := Batches_Data.Element (Batch_Index);
-         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batch regenerating batch " &
-                                Integer'Image (Batch_Index));
          Regenerate_Batch (aBatch);
          Batches_Data.Replace_Element (Batch_Index, aBatch);
 
-         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
-                                Integer'Image (Batch_Index) & " Mins " &
-                                Single'Image (aBatch.AABB_Mins (GL.X)) & " " &
-                                Single'Image (aBatch.AABB_Mins (GL.Y)) & " " &
-                                Single'Image (aBatch.AABB_Mins (GL.Z)));
-         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
-                                Integer'Image (Batch_Index) & " Maxs " &
-                                Single'Image (aBatch.AABB_Maxs (GL.X)) & " " &
-                                Single'Image (aBatch.AABB_Maxs (GL.Y)) & " " &
-                                Single'Image (aBatch.AABB_Maxs (GL.Z)));
-         Print_Points ("Batch_Manger.Regenerate_Batches", Batch_Index);
-         Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
-                                Integer'Image (Batch_Index) & " points printed");
+--           Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
+--                                  Integer'Image (Batch_Index) & " Mins " &
+--                                  Single'Image (aBatch.AABB_Mins (GL.X)) & " " &
+--                                  Single'Image (aBatch.AABB_Mins (GL.Y)) & " " &
+--                                  Single'Image (aBatch.AABB_Mins (GL.Z)));
+--           Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
+--                                  Integer'Image (Batch_Index) & " Maxs " &
+--                                  Single'Image (aBatch.AABB_Maxs (GL.X)) & " " &
+--                                  Single'Image (aBatch.AABB_Maxs (GL.Y)) & " " &
+--                                  Single'Image (aBatch.AABB_Maxs (GL.Z)));
+--           Print_Points ("Batch_Manger.Regenerate_Batches", Batch_Index);
+--           Game_Utils.Game_Log ("Batch_Manger.Regenerate_Batches batch " &
+--                                  Integer'Image (Batch_Index) & " points printed");
          --           Print_Texture_Coordinates_List (Batch_Index);
          --           Print_Texture_Coordinates (Batch_Index);
 

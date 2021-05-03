@@ -105,8 +105,8 @@ package body Main_Loop is
                                   Is_Running : in out Boolean) is
 --           Back_Colour   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.0);
       begin
-         --                              Game_Utils.Game_Log
-         --                                ("Main_Loop.Game_Loop Is_Running Main Menu not open");
+        Game_Utils.Game_Log
+              ("Main_Loop.Game_Loop Is_Running Main Menu not open");
          GUI.Update_GUIs (Delta_Time);
          Text.Update_Comic_Texts (Delta_Time);
          Text.Update_Particle_Texts (Delta_Time);
