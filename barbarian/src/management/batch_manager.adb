@@ -552,13 +552,13 @@ package body Batch_Manager is
                                 Integer'Image (Col_Index));
 
          X := 2 * Col_Index;
-         Y := Single (2 * aTile.Height) - 40.0;
+         Y := Single (2 * aTile.Height) - 45.0;
          --           Y := -16.0;
          Z := 2 * Row_Index;
-         XP1 := Single (X) + 0.9;
-         XM1 := Single (X) - 0.9;
-         ZP1 := Single (Z) + 0.9;
-         ZM1 := Single (Z) - 0.9;
+         XP1 := Single (X) + 0.95;
+         XM1 := Single (X) - 0.95;
+         ZP1 := Single (Z) + 0.95;
+         ZM1 := Single (Z) - 0.95;
 
          Game_Utils.Game_Log ("Batch_Manger.Generate_Points XM1,XP1: "
                               & Single'Image (XM1)  & ", " & Single'Image (XP1));

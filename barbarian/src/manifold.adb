@@ -162,31 +162,11 @@ package body Manifold is
 
                   if not aBatch.Points.Is_Empty then
                      --  flat tiles
-                     GL_Utils.Bind_Vao (aBatch.Points_VAO);
---                       GL.Objects.Vertex_Arrays.Bind (aBatch.Points_VAO);
---                       Array_Buffer.Bind (aBatch.Points_VBO);
---                       Utilities.Load_Vertex_Buffer
---                         (Array_Buffer, GL_Maths.To_Vector3_Array (aBatch.Points), Static_Draw);
---                       GL.Attributes.Set_Vertex_Attrib_Pointer
---                         (Shader_Attributes.Attrib_VP, 3, Single_Type, False, 0, 0);
---                       GL.Attributes.Enable_Vertex_Attrib_Array
---                         (Shader_Attributes.Attrib_VP);
-
-                     Array_Buffer.Bind (aBatch.Normals_VBO);
---                       GL.Attributes.Set_Vertex_Attrib_Pointer
---                         (Shader_Attributes.Attrib_VN, 3, Single_Type, False, 0, 0);
---                       GL.Attributes.Enable_Vertex_Attrib_Array
---                         (Shader_Attributes.Attrib_VN);
                      --  Bind_Texture sets active unit and binds texture
                      --  to Texture_Target Texture_2D
                      Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
                      Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-
-                     Array_Buffer.Bind (aBatch.Tex_Coords_VBO);
-                     GL.Attributes.Set_Vertex_Attrib_Pointer
-                       (Shader_Attributes.Attrib_VT, 2, Single_Type, False, 0, 0);
-                     GL.Attributes.Enable_Vertex_Attrib_Array
-                       (Shader_Attributes.Attrib_VT);
+                     GL_Utils.Bind_Vao (aBatch.Points_VAO);
                      --  Draws start scene
                      Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
                      --                       Draw_Arrays (Points, 0, 1);
@@ -199,7 +179,7 @@ package body Manifold is
                      if Settings.Render_OLS then
                         Set_Front_Face (Clockwise);
                         Set_Outline_Pass (1.0);
-                        --                          Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+                        Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
                         Set_Outline_Pass (0.0);
                         Set_Front_Face (Counter_Clockwise);
                      end if;
@@ -217,7 +197,7 @@ package body Manifold is
          end if;
       end loop;
 
-      --        Draw_Water_Manifold_Around;
+      Draw_Water_Manifold_Around;
 
    exception
       when anError : others =>
