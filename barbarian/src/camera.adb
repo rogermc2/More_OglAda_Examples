@@ -201,8 +201,6 @@ package body Camera is
          G_Camera.World_Position := World_Position;
          Cam_Target := World_Position + G_Camera.Shake_Mod_Position;
          Cam_Target (GL.Y) := Cam_Target (GL.Y) - 1.0;
-         Utilities.Print_Vector ("Camera.Set_Camera_Position Target",
-                                 Cam_Target);
          --              if not First_Person then
          Maths.Init_Lookat_Transform
            (World_Position + G_Camera.Shake_Mod_Position, Cam_Target,
@@ -223,11 +221,11 @@ package body Camera is
          --                                         Far_Point_Pos + Far_Point_Dir,
          --                                         (0.0, 1.0, 0.0), G_Camera.View_Matrix);
          --              end if;
-         --              G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
-         --              G_Camera.Is_Dirty := True;
-         --              Frustum.Re_Extract_Frustum_Planes
-         --                (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
-         --                 G_Camera.World_Position, G_Camera.View_Matrix);
+         G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
+         G_Camera.Is_Dirty := True;
+         Frustum.Re_Extract_Frustum_Planes
+           (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far,
+            G_Camera.World_Position, G_Camera.View_Matrix);
       end if;
    end Set_Camera_Position;
 
@@ -297,9 +295,6 @@ package body Camera is
       Dist        : Single;
    begin
       if G_Camera.Screen_Shake_Countdown_Secs >= 0.0 then
---           Game_Utils.Game_Log ("Camera.Update_Camera_Effects Elapsed_Time, Screen_Shake_Countdown_Secs"
---                                & Float'Image (Elapsed_Time) & ", " &
---                                  Float'Image (G_Camera.Screen_Shake_Countdown_Secs));
          G_Camera.Screen_Shake_Countdown_Secs :=
            G_Camera.Screen_Shake_Countdown_Secs - Elapsed_Time;
 
@@ -316,18 +311,14 @@ package body Camera is
          XZ := Sin (Single (G_Camera.Screen_Shake_Countdown_Secs *
                       G_Camera.Screen_Shake_Frequency)) *
              Single (G_Camera.Screen_Shake_Amplitude);
---           Put_Line ("Camera.Update_Camera_Effects XZ: " & Single'Image (XZ));
          G_Camera.Shake_Mod_Position (GL.X) := XZ;
          G_Camera.Shake_Mod_Position (GL.Z) := XZ;
 
---           --  Update Camera_Position with Shake_Mod_Position
+         --  Update Camera_Position with Shake_Mod_Position
          Set_Camera_Position (G_Camera.World_Position);
       end if;
 
       if G_Camera.Wind_In_Countdown >= 0.0 then
---           Game_Utils.Game_Log ("Camera.Update_Camera_Effects Elapsed_Time, Wind_In_Countdown"
---                             & Float'Image (Elapsed_Time) & ", " &
---                             Float'Image (G_Camera.Wind_In_Countdown));
          G_Camera.Wind_In_Countdown :=
            G_Camera.Wind_In_Countdown - Elapsed_Time;
          Count_Down := Maths.Max_Float (G_Camera.Wind_In_Countdown, 0.0);
@@ -335,7 +326,7 @@ package body Camera is
          G_Camera.Shake_Mod_Position := (0.0, Dist, 0.0);
          G_Camera.Wind_In_Angle := Maths.Degree (1024.0 / 3.0 * Count_Down);
          Game_Utils.Game_Log ("Camera.Update_Camera_Effects Wind_In_Angle " &
-                           Maths.Degree'Image (G_Camera.Wind_In_Angle));
+                                Maths.Degree'Image (G_Camera.Wind_In_Angle));
 
          --  Update Camera_Position with Shake_Mod_Position
          Set_Camera_Position (G_Camera.World_Position);
