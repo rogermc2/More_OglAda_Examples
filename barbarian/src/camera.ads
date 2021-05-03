@@ -39,10 +39,8 @@ private
       View_Matrix                     : Singles.Matrix4 := Singles.Identity4;
       Projection_Matrix               : Singles.Matrix4 :=
                                             (others => (others => 0.0));
-      Clip_Plane                      : Singles.Matrix4 :=
-                                            (others => (others => 0.0));
       GUI_Proj_Matrix                 : Singles.Matrix4 := Singles.Identity4;
-      World_Position                  : Singles.Vector3 := (0.0, 0.0, 0.0);
+      World_Position                  : Singles.Vector3 := (2.0, 10.0, 2.0);
       Shake_Mod_Position              : Singles.Vector3 := (0.0, 0.0, 0.0);
       Original_Screen_Shake_Time      : Float := 1.0;
       Screen_Shake_Countdown_Secs     : Float := 0.0;

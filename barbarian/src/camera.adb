@@ -74,13 +74,13 @@ package body Camera is
         G_Camera.Original_Screen_Shake_Time := 0.0;
         G_Camera.Screen_Shake_Countdown_Secs := 0.0;
         G_Camera.Wind_In_Countdown := 0.0;
-        G_Camera.Original_Screen_Shake_Amplitude := 1.0;
+        G_Camera.Original_Screen_Shake_Amplitude := 0.0;
         G_Camera.Screen_Shake_Amplitude := 0.0;
         G_Camera.Screen_Shake_Frequency := 0.0;
         G_Camera.Wind_In_Angle := 0.0;
         G_Camera.Field_Of_View_Y := 67.0;  --  67.0
-        G_Camera.Aspect := Single (Settings.Framebuffer_Height) /
-          Single (Settings.Framebuffer_Width);
+        G_Camera.Aspect := Single (Settings.Framebuffer_Width) /
+          Single (Settings.Framebuffer_Height);
         G_Camera.Near := 0.1;  --  0.1
         G_Camera.Far := Settings.Far_Clip;
         Far_Point_Dir := (0.0, 0.0, -1.0);
@@ -104,11 +104,8 @@ package body Camera is
 
         G_Camera.Projection_Matrix := Perspective_Matrix
           (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near, G_Camera.Far);
---          Utilities.Print_Matrix ("Camera.Projection_Matrix", G_Camera.Projection_Matrix);
         G_Camera.GUI_Proj_Matrix := Perspective_Matrix
           (G_Camera.Field_Of_View_Y, G_Camera.Aspect, 0.01, 1000.0);
-        G_Camera.Clip_Plane := Perspective_Matrix
-          (G_Camera.Field_Of_View_Y, G_Camera.Aspect, 0.1, 1000.0);
         G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
         G_Camera.Is_Dirty  := True;
         G_Camera.Manual_Override := False;
@@ -160,12 +157,9 @@ package body Camera is
           (FOV_Y, Width, Height, 0.01, 1000.0, G_Camera.GUI_Proj_Matrix);
         G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
         G_Camera.Is_Dirty := True;
---          Utilities.Print_Matrix ("Recalculate_Perspective Camera.View_Matrix",
---                                  G_Camera.View_Matrix);
---          Utilities.Print_Matrix ("Recalculate_Perspective Camera.Projection_Matrix",
---                                  G_Camera.Projection_Matrix);
         Frustum.Re_Extract_Frustum_Planes
-          (FOV_Y, G_Camera.Aspect, Near, Far, G_Camera.World_Position, G_Camera.View_Matrix);
+        (FOV_Y, G_Camera.Aspect, Near, Far, G_Camera.World_Position,
+         G_Camera.View_Matrix);
     end Recalculate_Perspective;
 
     --  ------------------------------------------------------------------------

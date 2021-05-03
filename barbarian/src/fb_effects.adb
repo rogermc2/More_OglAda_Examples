@@ -115,7 +115,6 @@ package body FB_Effects is
       Wibbly_Pass : Boolean := False;
    begin
       if Settings.Fb_Effects_Enabled then
---           Utilities.Clear_Background_Colour_And_Depth (Grey);
          FB_Effect_Elapsed := FB_Effect_Elapsed + Delta_Time;
          Ww_Fb_Effect_Elapsed := Ww_Fb_Effect_Elapsed + Delta_Time;
          Wibbly_Pass := Ww_Fb_Current_Effect /= FB_Default_Effect;

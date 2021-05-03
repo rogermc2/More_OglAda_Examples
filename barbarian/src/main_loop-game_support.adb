@@ -150,7 +150,7 @@ package body Main_Loop.Game_Support is
       --  if Draw_Debug_Quads then
       --    Draw_Shadow_Debug;
       --  end if;
---        FB_Effects.Draw_FB_Effects (Single (Delta_Time));
+      FB_Effects.Draw_FB_Effects (Single (Delta_Time));
       -- Debug:
       --        if Settings.Show_FPS then
       --           Update_FPS_Box;
@@ -245,6 +245,7 @@ package body Main_Loop.Game_Support is
       Delta_Time := Current_Time - Last_Time;
       Delta_Time_Ms := 1000.0 * Delta_Time;
       Last_Time := Current_Time;
+
       Avg_Frame_Time_Accum_Ms := Avg_Frame_Time_Accum_Ms + Delta_Time_Ms;
       Curr_Frame_Time_Accum_Ms := Curr_Frame_Time_Accum_Ms + Delta_Time_Ms;
       Avg_Frames_Count := Avg_Frames_Count + 1;
