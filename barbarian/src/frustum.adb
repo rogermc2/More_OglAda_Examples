@@ -17,12 +17,12 @@ with Shader_Attributes;
 package body Frustum is
 
    --  All normals
-   Norm_Right        : Singles.Vector3 := Maths.Vec3_0;
-   Norm_Left         : Singles.Vector3 := Maths.Vec3_0;
-   Norm_Top          : Singles.Vector3 := Maths.Vec3_0;
-   Norm_Bottom       : Singles.Vector3 := Maths.Vec3_0;
-   Norm_Near         : Singles.Vector3 := Maths.Vec3_0;
-   Norm_Far          : Singles.Vector3 := Maths.Vec3_0;
+   Normed_Right        : Singles.Vector3 := Maths.Vec3_0;
+   Normed_Left         : Singles.Vector3 := Maths.Vec3_0;
+   Normed_Top          : Singles.Vector3 := Maths.Vec3_0;
+   Normed_Bottom       : Singles.Vector3 := Maths.Vec3_0;
+   Normed_Near         : Singles.Vector3 := Maths.Vec3_0;
+   Normed_Far          : Singles.Vector3 := Maths.Vec3_0;
    --  Centre points
    Far_Centre        : Singles.Vector3 := Maths.Vec3_0;
    Near_Centre       : Singles.Vector3 := Maths.Vec3_0;
@@ -37,7 +37,7 @@ package body Frustum is
    Near_Bot_Right    : Singles.Vector3 := Maths.Vec3_0;
 
    F_Camera_Position                : Singles.Vector3 := Maths.Vec3_0;
-   Frustrum_Cull_Enabled            : Boolean := False;  -- True;
+   Frustrum_Cull_Enabled            : Boolean := True;
    Frustrum_Update_Enabled          : Boolean := True;
    Frustum_Wireframe_Shader_Program : GL.Objects.Programs.Program;
    Frustum_Wireframe_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -214,10 +214,10 @@ package body Frustum is
    function Is_Aabb_In_Frustum (Mins, Maxs : in out Singles.Vector3)
                                  return Boolean is
       use Singles;
-      Min3   : constant Vector3 := Mins;
-      Result : Boolean := not Frustrum_Cull_Enabled;
+      Min3       : constant Vector3 := Mins;
+      In_Frustum : Boolean := not Frustrum_Cull_Enabled;
    begin
-      if not Result then
+      if not In_Frustum then
          for index in Vector3'Range loop
             if Mins (index) > Maxs (index) then
                Mins (index) := Maxs (index);
@@ -225,25 +225,25 @@ package body Frustum is
             end if;
          end loop;
 
-         Result := Compare_Plane_Aab (Mins, Maxs, Norm_Near, Near_Top_Right);
-         if Result then
-            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Right, Near_Top_Right);
+         In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Near, Near_Top_Right);
+         if In_Frustum then
+            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Right, Near_Top_Right);
          end if;
-         if Result then
-            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Left, Near_Top_Right);
+         if In_Frustum then
+            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Left, Near_Top_Right);
          end if;
-         if Result then
-            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Top, Near_Top_Right);
+         if In_Frustum then
+            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Top, Near_Top_Right);
          end if;
-         if Result then
-            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Bottom, Near_Top_Right);
+         if In_Frustum then
+            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Bottom, Near_Top_Right);
          end if;
-         if Result then
-            Result := Compare_Plane_Aab (Mins, Maxs, Norm_Far, Near_Top_Right);
+         if In_Frustum then
+            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Far, Near_Top_Right);
          end if;
       end if;
 
-      return Result;
+      return In_Frustum;
    end Is_Aabb_In_Frustum;
 
    --  ------------------------------------------------------------------------
@@ -262,13 +262,13 @@ package body Frustum is
       end Is_Negative;
    begin
       if not In_Planes then
-         Out_Of_Planes := Is_Negative (Norm_Right, F_Camera_Position) or else
-           Is_Negative (Norm_Left, F_Camera_Position) or else
-           Is_Negative (Norm_Top, F_Camera_Position) or else
-           Is_Negative (Norm_Bottom, F_Camera_Position) or else
-           Is_Negative (Norm_Near, Near_Centre) or else
-           Is_Negative (Norm_Far, Far_Centre) or else
-           Is_Negative (Norm_Left, Near_Centre);
+         Out_Of_Planes := Is_Negative (Normed_Right, F_Camera_Position) or else
+           Is_Negative (Normed_Left, F_Camera_Position) or else
+           Is_Negative (Normed_Top, F_Camera_Position) or else
+           Is_Negative (Normed_Bottom, F_Camera_Position) or else
+           Is_Negative (Normed_Near, Near_Centre) or else
+           Is_Negative (Normed_Far, Far_Centre) or else
+           Is_Negative (Normed_Left, Near_Centre);
          In_Planes := not Out_Of_Planes;
       end if;
       return In_Planes;
@@ -340,13 +340,13 @@ package body Frustum is
          Fc_Hat := Normalized (Near_Centre + 0.5 * Up_World * Near_Height - Cam_Pos);
          Fd_Hat := Normalized (Near_Centre - 0.5 * Up_World * Near_Height - Cam_Pos);
 
-         --        Game_Utils.Game_Log ("Frustum.Re_Extract_Frustum_Planes Norm_Right");
-         Norm_Right := Normalized (Cross_Product (Up_World, Fa_Hat));
-         Norm_Left := Normalized (Cross_Product (Fb_Hat, Up_World));
-         Norm_Top := Normalized (Cross_Product (Fc_Hat, Right_World));
-         Norm_Bottom := Normalized (Cross_Product (Right_World, Fd_Hat));
-         Norm_Near := Normalized (Fwd_World);
-         Norm_Far := Normalized (-Fwd_World);
+         --        Game_Utils.Game_Log ("Frustum.Re_Extract_Frustum_Planes Normed_Right");
+         Normed_Right := Normalized (Cross_Product (Up_World, Fa_Hat));
+         Normed_Left := Normalized (Cross_Product (Fb_Hat, Up_World));
+         Normed_Top := Normalized (Cross_Product (Fc_Hat, Right_World));
+         Normed_Bottom := Normalized (Cross_Product (Right_World, Fd_Hat));
+         Normed_Near := Normalized (Fwd_World);
+         Normed_Far := Normalized (-Fwd_World);
       end if;
    end Re_Extract_Frustum_Planes;
 
