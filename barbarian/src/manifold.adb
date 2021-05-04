@@ -97,8 +97,8 @@ package body Manifold is
         Tile_Index1   : Int;
         Tile_Index2   : Int;
     begin
-       Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
-                  Integer'Image (Integer (theBatches.Length)));
+--          Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
+--                      Integer'Image (Integer (theBatches.Length)));
         --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
@@ -145,58 +145,58 @@ package body Manifold is
                 Rad_Dist := Min (abs (Camera_Pos (GL.Z) - aBatch.AABB_Mins (GL.Z)),
                                  abs (Camera_Pos (GL.Z) - aBatch.AABB_Maxs (GL.Z)));
                 if Rad_Dist <= 2.0 * Radius then
-                    Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Mins",
-                                            aBatch.AABB_Mins);
-                    Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Maxs",
-                                            aBatch.AABB_Maxs);
-                    --                 if Frustum.Is_Aabb_In_Frustum
-                    --                   (aBatch.AABB_Mins, aBatch.AABB_Maxs) then
-                    if (aBatch.Static_Light_Indices.Is_Empty) then
-                        raise Manifold_Exception with
-                          "Manifold.Draw_Manifold_Around - Static_Light_Indices is empty";
-                    end if;
-
-                    Light_Indices := aBatch.Static_Light_Indices;
-                    Light_Cursor := Light_Indices.First;
-                    Light_Index1 := Light_Indices.First_Index;
-                    Light_Index2 := Light_Index1 + 1;
-                    Tile_Index1 := Int (Light_Indices.Element (Light_Index1));
-                    Tile_Index2 := Int (Light_Indices.Element (Light_Index2));
-                    Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
-
-                    if not aBatch.Points.Is_Empty then
-                        --  flat tiles
-                        --  Bind_Texture sets active unit and binds texture
-                        --  to Texture_Target Texture_2D
-                        Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
-                        Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
-                        GL_Utils.Bind_Vao (aBatch.Points_VAO);
-                        --  Draws start scene
-                        Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
-                        --                       Draw_Arrays (Points, 0, 1);
-                    end if;
-
-                    if not aBatch.Ramp_Points.Is_Empty then
-                        --  ramps
-                        GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
-
-                        if Settings.Render_OLS then
-                            Set_Front_Face (Clockwise);
-                            Set_Outline_Pass (1.0);
-                            Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
-                            Set_Outline_Pass (0.0);
-                            Set_Front_Face (Counter_Clockwise);
+                    --                      Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Mins",
+                    --                                              aBatch.AABB_Mins);
+                    --                      Utilities.Print_Vector ("Manifold.Draw_Manifold_Around AABB_Maxs",
+                    --                                              aBatch.AABB_Maxs);
+                    if Frustum.Is_Aabb_In_Frustum
+                      (aBatch.AABB_Mins, aBatch.AABB_Maxs) then
+                        if (aBatch.Static_Light_Indices.Is_Empty) then
+                            raise Manifold_Exception with
+                              "Manifold.Draw_Manifold_Around - Static_Light_Indices is empty";
                         end if;
-                        --  regular pass
-                        --  Bind_Texture sets active unit and binds texture
-                        --  to Texture_Target Texture_2D
-                        Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
-                        Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
-                        --                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
-                        Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
-                        --                              Draw_Arrays (Points, 0, 1);
+
+                        Light_Indices := aBatch.Static_Light_Indices;
+                        Light_Cursor := Light_Indices.First;
+                        Light_Index1 := Light_Indices.First_Index;
+                        Light_Index2 := Light_Index1 + 1;
+                        Tile_Index1 := Int (Light_Indices.Element (Light_Index1));
+                        Tile_Index2 := Int (Light_Indices.Element (Light_Index2));
+                        Set_Static_Light_Indices ((Tile_Index1, Tile_Index2));
+
+                        if not aBatch.Points.Is_Empty then
+                            --  flat tiles
+                            --  Bind_Texture sets active unit and binds texture
+                            --  to Texture_Target Texture_2D
+                            Texture_Manager.Bind_Texture (0, Tile_Diff_Tex);
+                            Texture_Manager.Bind_Texture (1, Tile_Spec_Tex);
+                            GL_Utils.Bind_Vao (aBatch.Points_VAO);
+                            --  Draws start scene
+                            Draw_Arrays (Triangles, 0, Int (aBatch.Points.Length));
+                            --                       Draw_Arrays (Points, 0, 1);
+                        end if;
+
+                        if not aBatch.Ramp_Points.Is_Empty then
+                            --  ramps
+                            GL.Objects.Vertex_Arrays.Bind (aBatch.Ramp_Vao);
+
+                            if Settings.Render_OLS then
+                                Set_Front_Face (Clockwise);
+                                Set_Outline_Pass (1.0);
+                                Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+                                Set_Outline_Pass (0.0);
+                                Set_Front_Face (Counter_Clockwise);
+                            end if;
+                            --  regular pass
+                            --  Bind_Texture sets active unit and binds texture
+                            --  to Texture_Target Texture_2D
+                            Texture_Manager.Bind_Texture (0, Ramp_Diff_Tex);
+                            Texture_Manager.Bind_Texture (1, Ramp_Spec_Tex);
+                            --                       Put_Line ("Manifold.Draw_Manifold_Around regular pass Draw_Arrays");
+                            Draw_Arrays (Triangles, 0, Int (aBatch.Ramp_Points.Length));
+                            --                              Draw_Arrays (Points, 0, 1);
+                        end if;
                     end if;
-                    --                 end if;
                 end if;
             end if;
         end loop;
@@ -318,7 +318,7 @@ package body Manifold is
     --  ----------------------------------------------------------------------------
 
     function Get_Light_Index (Column, Row : Positive; Light_Number : Positive)
-                             return GL.Types.Int is
+                              return GL.Types.Int is
         use Ada.Calendar;
         use GL.Types;
         use Batch_Manager;

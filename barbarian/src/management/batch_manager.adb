@@ -1101,7 +1101,6 @@ package body Batch_Manager is
       Update_AABB_Dimensions  (aBatch, aBatch.Points);
       Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
       Update_AABB_Dimensions  (aBatch, aBatch.Water_Points);
-
    end Set_AABB_Dimensions;
 
    --  -------------------------------------------------------------------------

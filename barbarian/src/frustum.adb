@@ -216,10 +216,10 @@ package body Frustum is
    function Is_Aabb_In_Frustum (Mins, Maxs : in out Singles.Vector3)
                                  return Boolean is
       use Singles;
-      Min3       : constant Vector3 := Mins;
-      In_Frustum : Boolean := not Frustrum_Cull_Enabled;
+      Min3   : constant Vector3 := Mins;
+      Cull   : Boolean := Frustrum_Cull_Enabled;
    begin
-      if not In_Frustum then
+      if Cull then
          for index in Vector3'Range loop
             if Mins (index) > Maxs (index) then
                Mins (index) := Maxs (index);
@@ -227,25 +227,25 @@ package body Frustum is
             end if;
          end loop;
 
-         In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Near, Near_Top_Right);
-         if In_Frustum then
-            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Right, Near_Top_Right);
+         Cull := Compare_Plane_Aabb (Mins, Maxs, Normed_Near, Near_Top_Right);
+         if Cull then
+            Cull := Compare_Plane_Aabb (Mins, Maxs, Normed_Right, Near_Top_Right);
          end if;
-         if In_Frustum then
-            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Left, Near_Top_Right);
+         if Cull then
+            Cull := Compare_Plane_Aabb (Mins, Maxs, Normed_Left, Near_Top_Right);
          end if;
-         if In_Frustum then
-            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Top, Near_Top_Right);
+         if Cull then
+            Cull := Compare_Plane_Aabb (Mins, Maxs, Normed_Top, Near_Top_Right);
          end if;
-         if In_Frustum then
-            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Bottom, Near_Top_Right);
+         if Cull then
+            Cull := Compare_Plane_Aabb (Mins, Maxs, Normed_Bottom, Near_Top_Right);
          end if;
-         if In_Frustum then
-            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Far, Near_Top_Right);
+         if Cull then
+            Cull := Compare_Plane_Aabb (Mins, Maxs, Normed_Far, Near_Top_Right);
          end if;
       end if;
 
-      return In_Frustum;
+      return not Cull;
    end Is_Aabb_In_Frustum;
 
    --  ------------------------------------------------------------------------
