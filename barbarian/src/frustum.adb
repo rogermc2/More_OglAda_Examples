@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with GL.Attributes;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
@@ -47,7 +49,7 @@ package body Frustum is
 
    --  ------------------------------------------------------------------------
 
-   function Compare_Plane_Aab (Mins, Maxs, Plane, Plane_Point :
+   function Compare_Plane_Aabb (Mins, Maxs, Plane, Plane_Point :
                                Singles.Vector3) return Boolean is
       use GL;
       use GL.Types.Singles;
@@ -72,10 +74,10 @@ package body Frustum is
 
       Dist := Farthest_Point - Plane_Point;
       return Dot_Product (Plane, Dist) >= 0.0;
-   end Compare_Plane_Aab;
+   end Compare_Plane_Aabb;
 
    --  ------------------------------------------------------------------------
-   --  Init debug variables for frustum wireframe
+   --  Init debug variables for frustum wireframe used by editor
    procedure Draw_Frustum_Box is
       use GL.Objects.Buffers;
       use GL.Toggles;
@@ -225,21 +227,21 @@ package body Frustum is
             end if;
          end loop;
 
-         In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Near, Near_Top_Right);
+         In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Near, Near_Top_Right);
          if In_Frustum then
-            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Right, Near_Top_Right);
+            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Right, Near_Top_Right);
          end if;
          if In_Frustum then
-            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Left, Near_Top_Right);
+            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Left, Near_Top_Right);
          end if;
          if In_Frustum then
-            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Top, Near_Top_Right);
+            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Top, Near_Top_Right);
          end if;
          if In_Frustum then
-            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Bottom, Near_Top_Right);
+            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Bottom, Near_Top_Right);
          end if;
          if In_Frustum then
-            In_Frustum := Compare_Plane_Aab (Mins, Maxs, Normed_Far, Near_Top_Right);
+            In_Frustum := Compare_Plane_Aabb (Mins, Maxs, Normed_Far, Near_Top_Right);
          end if;
       end if;
 
@@ -307,6 +309,7 @@ package body Frustum is
       OffsetP     : Singles.Vector3;
    begin
       if Frustrum_Cull_Enabled and Frustrum_Update_Enabled then
+         Put_Line ("Frustum.Re_Extract_Frustum_Planes");
          Inv_Matrix := Inverse (To_Real_Matrix4 (Mat));
          F_Camera_Position := Cam_Pos;
          Fwd_World := From_Real_Vector3 (Inv_Matrix * Fwd_Local);

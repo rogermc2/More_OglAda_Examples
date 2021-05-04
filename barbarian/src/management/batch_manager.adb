@@ -552,8 +552,7 @@ package body Batch_Manager is
 --                                  Integer'Image (Col_Index));
 
          X := 2 * Col_Index;
-         Y := Single (2 * aTile.Height)  - 45.0;
-         --           Y := -16.0;
+         Y := Single (2 * aTile.Height);
          Z := 2 * Row_Index;
          XP1 := Single (X) + 0.95;
          XM1 := Single (X) - 0.95;
@@ -1100,12 +1099,8 @@ package body Batch_Manager is
       aBatch.AABB_Mins := (100000.0, 100000.0, 100000.0);
       aBatch.AABB_Maxs := (-100000.0, -100000.0, -100000.0);
       Update_AABB_Dimensions  (aBatch, aBatch.Points);
-
-   exception
-      when anError : others =>
-         Put_Line ("An exception occurred in Tiles_Manager.Set_AABB_Dimensions!");
-         Put_Line (Ada.Exceptions.Exception_Information (anError));
-         raise;
+      Update_AABB_Dimensions  (aBatch, aBatch.Ramp_Points);
+      Update_AABB_Dimensions  (aBatch, aBatch.Water_Points);
 
    end Set_AABB_Dimensions;
 
@@ -1261,6 +1256,11 @@ package body Batch_Manager is
          Next (Curs);
       end loop;
 
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Batch_Manager.Update_AABB_Dimensions!");
+         Put_Line (Ada.Exceptions.Exception_Information (anError));
+         raise;
    end Update_AABB_Dimensions;
 
    --  -------------------------------------------------------------------------
