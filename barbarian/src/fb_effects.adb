@@ -34,7 +34,7 @@ with Texture_Manager;
 
 package body FB_Effects is
    use GL.Types;
-   Grey                    : constant Colors.Color := (0.6, 0.6, 0.6, 1.0);
+   Grey                    : constant Colors.Color := (0.8, 0.8, 0.8, 1.0);
    Num_Shader_Effects      : constant Integer := 9;
    FB_Effect_Elapsed       : Single := 0.0;
    Ww_Fb_Current_Effect    : FB_Effect := FB_Default_Effect;

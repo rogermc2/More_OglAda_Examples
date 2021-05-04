@@ -103,7 +103,6 @@ package body Main_Loop is
       procedure Do_Menu_Not_Open (Window     : in out Input_Callback.Barbarian_Window;
                                   Delta_Time : Float;
                                   Is_Running : in out Boolean) is
---           Back_Colour   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.0, 0.0);
       begin
         Game_Utils.Game_Log
               ("Main_Loop.Game_Loop Is_Running Main Menu not open");

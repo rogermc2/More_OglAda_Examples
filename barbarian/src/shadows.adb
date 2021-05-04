@@ -53,7 +53,7 @@ package body Shadows is
       Render_Buffer    : GL.Objects.Renderbuffers.Renderbuffer;
    end record;
 
-   Background : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
+   Background : constant GL.Types.Colors.Color := (0.8, 0.8, 0.8, 1.0);
    G_Shadows  : Shadow_Data;
 
    procedure Load_Cube_Map_Texture

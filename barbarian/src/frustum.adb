@@ -36,14 +36,9 @@ package body Frustum is
    Near_Bot_Left     : Singles.Vector3 := Maths.Vec3_0;
    Near_Bot_Right    : Singles.Vector3 := Maths.Vec3_0;
 
-   F_Camera_Position : Singles.Vector3 := Maths.Vec3_0;
-
-   Cull_Enabled      : Boolean := False;
-   --     Cull_Enabled      : Boolean := True;
-   Update_Enabled    : Boolean := True;
-
-   --      Prev_Vp_Size   : Integer := 0;
-
+   F_Camera_Position                : Singles.Vector3 := Maths.Vec3_0;
+   Frustrum_Cull_Enabled            : Boolean := False;  -- True;
+   Frustrum_Update_Enabled          : Boolean := True;
    Frustum_Wireframe_Shader_Program : GL.Objects.Programs.Program;
    Frustum_Wireframe_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Frustum_Solid_VAO                : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -150,14 +145,14 @@ package body Frustum is
 
    procedure Enable_Frustum_Cull (State : Boolean) is
    begin
-      Cull_Enabled := State;
+      Frustrum_Cull_Enabled := State;
    end Enable_Frustum_Cull;
 
    --  ------------------------------------------------------------------------
 
    procedure Enable_Update (State : Boolean) is
    begin
-      Update_Enabled := State;
+      Frustrum_Update_Enabled := State;
    end Enable_Update;
 
    --  ------------------------------------------------------------------------
@@ -171,7 +166,7 @@ package body Frustum is
    --  Set to false to stop frustum culling alogether for testing
    function Frustum_Cull_Enabled return Boolean is
    begin
-      return Cull_Enabled;
+      return Frustrum_Cull_Enabled;
    end Frustum_Cull_Enabled;
 
    --  ------------------------------------------------------------------------
@@ -179,7 +174,7 @@ package body Frustum is
    --  Set To False To Stop Frustum Plane Extraction
    function Frustum_Update_Enabled return Boolean is
    begin
-      return Update_Enabled;
+      return Frustrum_Update_Enabled;
    end Frustum_Update_Enabled;
 
    --  ------------------------------------------------------------------------
@@ -220,7 +215,7 @@ package body Frustum is
                                  return Boolean is
       use Singles;
       Min3   : constant Vector3 := Mins;
-      Result : Boolean := not Cull_Enabled;
+      Result : Boolean := not Frustrum_Cull_Enabled;
    begin
       if not Result then
          for index in Vector3'Range loop
@@ -291,26 +286,27 @@ package body Frustum is
       use Maths.Single_Math_Functions;
       use GL_Maths;
       use GL_Maths.Singles_Array_Package;
+      --  Single_Matrix and Single_Vector are Ada Real
       Inv_Matrix  : Single_Matrix (1 .. 4, 1 .. 4);
       Fwd_Local   : constant Single_Vector (1 .. 4) := (0.0, 0.0, -1.0, 0.0);
-      Fwd_World   : Singles.Vector3;
       Up_Local    : constant Single_Vector (1 .. 4) := (0.0, 1.0, 0.0, 0.0);
+      FOV_Rad     : constant Single := Single (To_Radians (Fovy_Deg));
+      Scale       : constant Single := 2.0 * Tan (0.5 * FOV_Rad);
+      Fwd_World   : Singles.Vector3;
       Up_World    : Singles.Vector3;
       Right_World : Singles.Vector3;
       Near_Height : Single;
       Near_Width  : Single;
       Far_Height  : Single;
       Far_Width   : Single;
-      FOV_Rad     : constant Single := Single (To_Radians (Fovy_Deg));
       Fa_Hat      : Singles.Vector3;
       Fb_Hat      : Singles.Vector3;
       Fc_Hat      : Singles.Vector3;
       Fd_Hat      : Singles.Vector3;
-      Scale       : constant Single := 2.0 * Tan (0.5 * FOV_Rad);
       OffsetM     : Singles.Vector3;
       OffsetP     : Singles.Vector3;
    begin
-      if Cull_Enabled and Update_Enabled then
+      if Frustrum_Cull_Enabled and Frustrum_Update_Enabled then
          Inv_Matrix := Inverse (To_Real_Matrix4 (Mat));
          F_Camera_Position := Cam_Pos;
          Fwd_World := From_Real_Vector3 (Inv_Matrix * Fwd_Local);
