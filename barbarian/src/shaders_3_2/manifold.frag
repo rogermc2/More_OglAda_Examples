@@ -121,7 +121,7 @@ void main()
 	 vec3 I = blinn_phong (texel_diff, texel_spec);
     //  I = vec3 (1.0, 1.0, 1.0);
 	//  frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - light_emission_factor);
-    frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - 0.2 * light_emission_factor);
+    frag_colour.rgb = 5 * mix (I, 2.0 * texel_diff.rgb, 1.0 - 0.5 * light_emission_factor);
 	// shadows
 	if (shadow_enabled > 0.0)
         {
@@ -129,11 +129,11 @@ void main()
 		float l = length (dir);
 		float sf_f = eval_shadow (l, dir, cube_texture);
 		// shadow affected by emission map
-		sf_f = mix (sf_f, 1.0, 1.0 - light_emission_factor);
+		sf_f = mix (5 * sf_f, 1.0, 1.0 - light_emission_factor);
 		frag_colour.rgb *= sf_f;
         }
         //  rest is Debug:
  //   frag_colour.rgb = texel_diff.rgb;
-    frag_colour = vec4(2.0 * texel_diff.rgb, 1.0);
+//    frag_colour = vec4(2.0 * texel_diff.rgb, 1.0);
  //       frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
     }

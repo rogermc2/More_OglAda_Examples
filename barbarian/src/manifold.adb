@@ -97,15 +97,15 @@ package body Manifold is
         Tile_Index1   : Int;
         Tile_Index2   : Int;
     begin
---          Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
---                      Integer'Image (Integer (theBatches.Length)));
+        --          Put_Line ("Manifold.Draw_Manifold_Around theBatches size: " &
+        --                      Integer'Image (Integer (theBatches.Length)));
         --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         Use_Program (Manifold_Program);
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
-                     Utilities.Print_Vector ("Manifold.Draw_Manifold_Around Camera World_Position",
-                                             Camera.World_Position);
+            Utilities.Print_Vector ("Manifold.Draw_Manifold_Around Camera World_Position",
+                                    Camera.World_Position);
             --           Put_Line ("Manifold.Draw_Manifold_Around, Number_Of_Tiles" &
             --                       Integer'Image (Tiles_Manager.Number_Of_Tiles));
             --           Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around View_Matrix",
@@ -123,13 +123,13 @@ package body Manifold is
             Set_Dynamic_Light_Range (Manifold_Dyn_Light_Range);
         end if;
 
-        --        if Settings.Shadows_Enabled then
-        --           Set_Shadow_Enabled (1.0);
-        --           Set_Caster_Position (Shadows.Caster_Position);
-        --           Shadows.Bind_Cube_Shadow_Texture (3);
-        --        else
-        Set_Shadow_Enabled (0.0);
-        --        end if;
+        if Settings.Shadows_Enabled then
+            Set_Shadow_Enabled (1.0);
+            Set_Caster_Position (Shadows.Caster_Position);
+            Shadows.Bind_Cube_Shadow_Texture (3);
+        else
+            Set_Shadow_Enabled (0.0);
+        end if;
 
         if theBatches.Is_Empty then
             raise Manifold_Exception with
