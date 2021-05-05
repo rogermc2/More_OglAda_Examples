@@ -309,7 +309,7 @@ package body Frustum is
       OffsetP     : Singles.Vector3;
    begin
       if Frustrum_Cull_Enabled and Frustrum_Update_Enabled then
-         Put_Line ("Frustum.Re_Extract_Frustum_Planes");
+--           Put_Line ("Frustum.Re_Extract_Frustum_Planes");
          Inv_Matrix := Inverse (To_Real_Matrix4 (Mat));
          F_Camera_Position := Cam_Pos;
          Fwd_World := From_Real_Vector3 (Inv_Matrix * Fwd_Local);
@@ -324,15 +324,15 @@ package body Frustum is
          Far_Centre := Cam_Pos + Fwd_World * Far;
          Near_Centre := Cam_Pos + Fwd_World * Near;
 
-         OffsetM :=  0.5 * Up_World * Far_Height - 0.5 * Right_World * Far_Width;
-         OffsetP :=  0.5 * Up_World * Far_Height + 0.5 * Right_World * Far_Width;
+         OffsetM :=  0.5 * (Up_World * Far_Height - Right_World * Far_Width);
+         OffsetP :=  0.5 * (Up_World * Far_Height + Right_World * Far_Width);
          Far_Top_Left := Far_Centre + OffsetM;
          Far_Top_Right := Far_Centre + OffsetP;
          Far_Bot_Left := Far_Centre - OffsetM;
          Far_Bot_Right := Far_Centre - OffsetP;
 
-         OffsetM :=  0.5 * Up_World * Near_Height - 0.5 * Right_World * Near_Width;
-         OffsetP :=  0.5 * Up_World * Near_Height + 0.5 * Right_World * Near_Width;
+         OffsetM :=  0.5 * (Up_World * Near_Height - Right_World * Near_Width);
+         OffsetP :=  0.5 * (Up_World * Near_Height + Right_World * Near_Width);
          Near_Top_Left := Far_Centre + OffsetM;
          Near_Top_Right := Far_Centre + OffsetP;
          Near_Bot_Left := Far_Centre - OffsetM;
