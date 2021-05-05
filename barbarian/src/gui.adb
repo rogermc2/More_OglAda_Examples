@@ -205,7 +205,7 @@ package body GUI is
 
    --  --------------------------------------------------------------------------
 
-   procedure Change_Crong_Head (Health_Factor : Single) is
+   procedure Change_Crong_Head (Health_Factor : Float) is
       Health_Sprite_Index : Positive := 6;
    begin
       if Health_Factor > 0.8 then
@@ -224,14 +224,14 @@ package body GUI is
 
    --  --------------------------------------------------------------------------
 
-   procedure Change_Health_Bar (Index : Int; Health_Factor : Single;
+   procedure Change_Health_Bar (Index : Integer; Health_Factor : Float;
                                 Name  : String) is
       S_FB_Width    : constant Single := Single (Settings.Framebuffer_Width);
       S_FB_Height   : constant Single := Single (Settings.Framebuffer_Height);
       S_HBar_Width  : constant Single := Single (Health_Bar_Width_Px);
       S_HBar_Height : constant Single := Single (Health_Bar_Height_Px);
    begin
-      Health_Bar_Factor (Index) := Health_Factor;
+      Health_Bar_Factor (Int (Index)) := Single (Health_Factor);
       if Index = 1 then
          if Name /= Bottom_Health_Name then
             Bottom_Health_Name := To_Unbounded_String (Name);

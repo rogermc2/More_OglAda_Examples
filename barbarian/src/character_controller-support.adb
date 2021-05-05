@@ -107,7 +107,7 @@ package body Character_Controller.Support is
         Item_Type     : Property_Type := Generic_Prop;
         Value         : constant Integer := Prop_Renderer.Pick_Up_Item_In
           (Character.Map, Pos, Radius, Player_Health, Item_Type);
-        Health_Factor : Single;
+        Health_Factor : Float;
     begin
         case Item_Type is
             when Treasure_Prop =>
@@ -116,9 +116,9 @@ package body Character_Controller.Support is
                 FB_Effects.FB_Gold_Flash;
             when Food_Prop =>
                 Character.Current_Health := Character.Current_Health + Value;
-                Health_Factor := Single (Player_Health) /
-                  Single (Spec.Initial_Health);
-                GUI.Change_Health_Bar (Int (Player_ID), Health_Factor,
+                Health_Factor := Float (Player_Health) /
+                  Float (Spec.Initial_Health);
+                GUI.Change_Health_Bar (Player_ID, Health_Factor,
                                        To_String (Spec.Name));
                 gui.Change_Crong_Head (Health_Factor);
                 FB_Effects.FB_Green_Flash;

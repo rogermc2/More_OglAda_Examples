@@ -266,6 +266,7 @@ package body Main_Loop is
          Mesh_Loader.Init;
          Camera.Init;
          if Changed_Camera_Height then
+            --  Camera_Height changed via input parameters
             Camera.Set_Camera_Height (Camera_Height);
          end if;
          Text.Init_Text_Rendering

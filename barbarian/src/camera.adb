@@ -70,7 +70,7 @@ package body Camera is
         --          Dir               : Singles.Vector3;
         --          First_Person_Pos  : Singles.Vector3;
     begin
-        G_Camera.World_Position := (2.0, 50.0, 2.0);  --  2.0, 10.0, 2.0
+        G_Camera.World_Position := (2.0, 10.0, 2.0);  --  2.0, 10.0, 2.0
         Prev_Cam_Pos := G_Camera.World_Position;
         G_Camera.Shake_Mod_Position := (0.0, 0.0, 0.0);
         G_Camera.Screen_Shake_Countdown_Secs := 0.0;
@@ -85,7 +85,6 @@ package body Camera is
           Single (Settings.Framebuffer_Height);
         G_Camera.Near := 0.1;  --  0.1
         G_Camera.Far := Settings.Far_Clip;    --  40.0
-        G_Camera.Far := 100.0;
 
         Far_Point_Dir := (0.0, 0.0, -1.0);
         --          if First_Person then   --  only set true in Debug Mode
@@ -112,7 +111,7 @@ package body Camera is
         G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
         G_Camera.Is_Dirty  := True;
         G_Camera.Manual_Override := False;
-        G_Camera.Height := 13.0;
+        G_Camera.Height := 13.0;  --  13.0;
     end Init;
 
     --  ------------------------------------------------------------------------
@@ -160,7 +159,7 @@ package body Camera is
           (FOV_Y, Width / Height, 0.01, 1000.0);
         G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
         G_Camera.Is_Dirty := True;
-        Put_Line ("Camera.Recalculate_Perspective calling Re_Extract_Frustum_Planes");
+--          Put_Line ("Camera.Recalculate_Perspective calling Re_Extract_Frustum_Planes");
         Frustum.Re_Extract_Frustum_Planes
           (FOV_Y, G_Camera.Aspect, Near, Far, G_Camera.World_Position,
            G_Camera.View_Matrix);
@@ -199,7 +198,7 @@ package body Camera is
         Cam_Target    : Singles.Vector3;
         Rot_Matrix    : Singles.Matrix4;
     begin
-        Put_Line ("Camera.Set_Camera_Position");
+--          Put_Line ("Camera.Set_Camera_Position");
         if not G_Camera.Manual_Override then
             Prev_Cam_Pos := G_Camera.World_Position;
             G_Camera.World_Position := World_Position;
@@ -228,7 +227,7 @@ package body Camera is
             --              end if;
             G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
             G_Camera.Is_Dirty := True;
-            Put_Line ("Camera.Set_Camera_Position calling Re_Extract_Frustum_Planes");
+--              Put_Line ("Camera.Set_Camera_Position calling Re_Extract_Frustum_Planes");
             Frustum.Re_Extract_Frustum_Planes
               (G_Camera.Field_Of_View_Y, G_Camera.Aspect, G_Camera.Near,
                G_Camera.Far, G_Camera.World_Position, G_Camera.View_Matrix);
