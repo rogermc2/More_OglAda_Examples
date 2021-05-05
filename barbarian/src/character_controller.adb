@@ -101,7 +101,7 @@ package body Character_Controller is
    function Damage_Character (Character       : in out Barbarian_Character;
                               Damage, Doer_ID : Natural;
                               Angle           : Maths.Degree; Weapon : Weapon_Type)
-                               return Boolean;
+                              return Boolean;
    procedure Damage_Doer_1 (Character   : in out Barbarian_Character;
                             Character_1 : Barbarian_Character);
    procedure Decapitated_Head_Check (Character : Barbarian_Character;
@@ -366,7 +366,7 @@ package body Character_Controller is
    --  -------------------------------------------------------------------------
 
    function Current_Weapon (Character : Barbarian_Character)
-                             return Specs_Manager.Weapon_Type is
+                            return Specs_Manager.Weapon_Type is
    begin
       return Character.Current_Weapon;
    end Current_Weapon;
@@ -377,7 +377,7 @@ package body Character_Controller is
      (Self_Id        : Positive; World_Pos : Singles.Vector3;
       Damage_Range   : Single; Damage : Natural; Throw_Back_Mps : Single;
       Exclude_Id     : Positive; Weapon : Specs_Manager.Weapon_Type)
-       return Natural is
+      return Natural is
       use Maths;
       use Character_Map;
       use Character_Map_Package;
@@ -440,7 +440,7 @@ package body Character_Controller is
    function Damage_Character (Character       : in out Barbarian_Character;
                               Damage, Doer_ID : Natural;
                               Angle           : Maths.Degree;  Weapon : Weapon_Type)
-                               return Boolean is
+                              return Boolean is
       use Singles;
       use Particle_System;
       use Projectile_Manager;
@@ -727,7 +727,7 @@ package body Character_Controller is
    --  -------------------------------------------------------------------------
 
    function Get_Character_Position (Character_ID : Positive)
-                                     return Singles.Vector3  is
+                                    return Singles.Vector3  is
       theChar : constant Barbarian_Character := Characters.Element (Character_ID);
    begin
       return theChar.World_Pos;
@@ -738,7 +738,7 @@ package body Character_Controller is
    function Get_Character_Height_Near (Excluded_Char   : Barbarian_Character;
                                        Also_Exclude_ID : Natural;
                                        Next_Pos        : Singles.Vector3)
-                                        return Single is
+                                       return Single is
       use Singles;
       use Maths;
       use Character_Map;
@@ -929,7 +929,7 @@ package body Character_Controller is
    --  -------------------------------------------------------------------------
 
    function Javelin_Count (Character : in out Barbarian_Character)
-                            return Natural is
+                           return Natural is
    begin
       return Character.Javelin_Count;
    end Javelin_Count;
@@ -1681,63 +1681,13 @@ package body Character_Controller is
    procedure  Update_Character_Motion (Character : in out Barbarian_Character;
                                        Seconds   : Float) is
       use Singles;
-      use Prop_Renderer_Support;
-      Item_Type     : Property_Type := Generic_Prop;
       S_I           : Positive;
       aSpec         : Spec_Data;
-      Camera_Pos    : Singles.Vector3;
-      Caster_Pos    : Singles.Vector3;
       Sprite_Pos    : Singles.Vector3;
-      Value         : Integer;
-      Max_Health    : Float;
-      Health_Factor : Float;
    begin
       S_I := Character.Specs_Index;
       aSpec := Specs_Manager.Get_Spec (S_I);
       Character.Velocity := (0.0, 0.0, 0.0);
-      --   update camera position
-      --  is_moving - is a physics actual motion thing
-      --  is_walking - intent to move, animation
-      --  (left this out - doesnt affect cam)
-      --  first_update - reset camera on level start
-
-      if Character.Is_Moving or Character.First_Update then
-         Character.First_Update := False;
-         if Settings.Shadows_Enabled then
-            Caster_Pos := Character.World_Pos;
-            Caster_Pos (GL.Y) := Caster_Pos (GL.Y) + 1.3;
-            Shadows.Set_Caster_Position (Caster_Pos);
-         end if;
-         if not GUI.Show_Victory then
-            Camera_Pos := Character.World_Pos;
-            Camera_Pos (GL.Y) := Camera_Pos (GL.Y) +
-              Camera.Camera_Height_Increment;
-            Camera.Set_Camera_Position (Camera_Pos);
-         end if;
-         Value := Prop_Renderer.Pick_Up_Item_In
-           (Character.Map, Character.World_Pos, aSpec.Width_Radius,
-            Character.Current_Health, Item_Type);
-         case Item_Type is
-            when Treasure_Prop =>
-               Set_Gold_Current (Gold_Current + Value);
-               GUI.Set_GUI_Gold (Gold_Current);
-               FB_Effects.FB_Gold_Flash;
-            when Food_Prop =>
-               Character.Current_Health := Character.Current_Health + Value;
-               Max_Health := Float (aSpec.Initial_Health);
-               Health_Factor := Float (Character.Current_Health) / Max_Health;
-               GUI.Change_Health_Bar (1, Health_Factor,
-                                      To_String (aSpec.Name));
-               GUI.Change_Crong_Head (Health_Factor);
-
-               FB_Effects.FB_Green_Flash;
-            when Hammer_Prop =>
-               Character.Has_Hammer := True;
-               Change_Weapon (Character, Hammer_Wt);
-            when others  => Null;
-         end case;
-
-      end if;
 
       if Character.Is_Walking or Character.Is_On_Ground then
          Update_Desired_Velocity (Character);
@@ -2106,9 +2056,8 @@ package body Character_Controller is
       end if;
 
       if Character.Is_Moving or Character.First_Update then
-         Character_Controller.Support.Update_Camera_Position (Character);
-         Character_Controller.Support.Grab_Nearby_Gold
-           (Character, Player_ID);
+         Update_Camera_Position (Character);
+         Grab_Nearby_Gold (Character, Player_ID);
          --  check if moved into tavern
          if  Prop_Renderer.Check_Tile_For_Property
            (Character.Map, Prop_Renderer_Support.Tavern_Prop) then
@@ -2126,9 +2075,9 @@ package body Character_Controller is
                Audio.Play_Sound (Hello_Friend_Sound_File, False);
             end if;
          end if;
+         Character.First_Update := False;
       end if;
 
-      Character.First_Update := False;
       Lamp_Time := Lamp_Time + Lamp_Freq * Single (Seconds);
       Lamp_Position (GL.X) :=
         Lamp_Position (GL.X) + Sin (Lamp_Time) * Lamp_Amplitude;
