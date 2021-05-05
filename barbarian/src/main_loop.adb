@@ -88,8 +88,8 @@ package body Main_Loop is
       Dump_Video                      : Boolean := False;
       --     Draw_Debug_Quads         : Boolean;
       --      Param                   : Integer := 0;
-      Camera_Height                   : constant GL.Types.Single := 13.0;
-      Changed_Camera_Height           : constant Boolean := False;
+      Camera_Height_Increment         : constant GL.Types.Single := 13.0;
+      Changed_Camera_Height_Increment : constant Boolean := False;
       Fps_Text_Index                  : Integer;
 
       Initialize_Exception            : Exception;
@@ -265,9 +265,9 @@ package body Main_Loop is
          Controller_Textures_Manager.Load_Controller_Textures;
          Mesh_Loader.Init;
          Camera.Init;
-         if Changed_Camera_Height then
+         if Changed_Camera_Height_Increment then
             --  Camera_Height changed via input parameters
-            Camera.Set_Camera_Height (Camera_Height);
+            Camera.Set_Camera_Height (Camera_Height_Increment);
          end if;
          Text.Init_Text_Rendering
            ("src/textures/comicscript.png", "src/fonts/comicscript.meta",
