@@ -267,7 +267,7 @@ package body Main_Loop is
          Camera.Init;
          if Changed_Camera_Height_Increment then
             --  Camera_Height changed via input parameters
-            Camera.Set_Camera_Height (Camera_Height_Increment);
+            Camera.Set_Camera_Height_Increment (Camera_Height_Increment);
          end if;
          Text.Init_Text_Rendering
            ("src/textures/comicscript.png", "src/fonts/comicscript.meta",

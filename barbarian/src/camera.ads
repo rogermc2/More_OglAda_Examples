@@ -9,7 +9,7 @@ package Camera is
 
    type Camera_Data is private;
 
-   function Camera_Height return Single;
+   function Camera_Height_Increment return Single;
    procedure Set_Camera_Wind_In;
    function Default_Camera return Camera_Data;
    function Far return Single;
@@ -23,7 +23,7 @@ package Camera is
    procedure Recalculate_Perspective (FOV_Y                    : Maths.Degree;
                                       Width, Height, Near, Far : Single);
    procedure Screen_Shake (Seconds, Amplitude, Hz : Float);
-   procedure Set_Camera_Height (Height : Single);
+   procedure Set_Camera_Height_Increment (Increment : Single);
    procedure Set_Camera_Position (World_Position : Singles.Vector3);
    procedure Set_End_Camera;
    procedure Set_Is_Dirty (State : Boolean);
@@ -53,7 +53,7 @@ private
       Aspect                          : Single := 0.0;
       Near                            : Single := 0.1;
       Far                             : Single := Settings.Far_Clip;
-      Height                          : Single := 13.0;
+      Height_Increment                : Single := 13.0;
       Is_Dirty                        : Boolean := True;
       Manual_Override                 : Boolean := False;
    end record;

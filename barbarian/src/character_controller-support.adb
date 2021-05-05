@@ -189,7 +189,8 @@ package body Character_Controller.Support is
 
         if not GUI.Show_Victory then
             Camera_Pos := Character.World_Pos;
-            Camera_Pos (GL.Y) := Camera_Pos (GL.Y) + Camera.Camera_Height;
+         Camera_Pos (GL.Y) :=
+           Camera_Pos (GL.Y) + Camera.Camera_Height_Increment;
         end if;
 
     end Update_Camera_Position;

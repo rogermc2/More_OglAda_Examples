@@ -22,10 +22,10 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
-    function Camera_Height return Single is
+    function Camera_Height_Increment return Single is
     begin
-        return G_Camera.Height;
-    end Camera_Height;
+        return G_Camera.Height_Increment;
+    end Camera_Height_Increment;
 
     --  ------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ package body Camera is
         G_Camera.PV := G_Camera.Projection_Matrix * G_Camera.View_Matrix;
         G_Camera.Is_Dirty  := True;
         G_Camera.Manual_Override := False;
-        G_Camera.Height := 13.0;  --  13.0;
+        G_Camera.Height_Increment := 13.0;  --  13.0;
     end Init;
 
     --  ------------------------------------------------------------------------
@@ -183,10 +183,10 @@ package body Camera is
 
     --  ------------------------------------------------------------------------
 
-    procedure Set_Camera_Height (Height : Single) is
+    procedure Set_Camera_Height_Increment (Increment : Single) is
     begin
-        G_Camera.Height := Height;
-    end Set_Camera_Height;
+        G_Camera.Height_Increment := Increment;
+    end Set_Camera_Height_Increment;
 
     --  ------------------------------------------------------------------------
 

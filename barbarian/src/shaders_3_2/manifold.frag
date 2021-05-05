@@ -112,16 +112,16 @@ void main()
     // texture samples texels at texture coordinate P from
     // the texture bound to sampler
 
-	vec4 texel_diff = texture (diff_map, st);
-	vec4 texel_spec = texture (spec_map, st);
+	vec4 texel_diffuse = texture (diff_map, st);
+	vec4 texel_specular = texture (spec_map, st);
         
-	frag_colour.a = texel_diff.a;
-	float light_emission_factor = texel_spec.a;
+	frag_colour.a = texel_diffuse.a;
+	float light_emission_factor = texel_specular.a;
 	// lights
-	 vec3 I = blinn_phong (texel_diff, texel_spec);
+	 vec3 I = blinn_phong (texel_diffuse, texel_specular);
     //  I = vec3 (1.0, 1.0, 1.0);
-	//  frag_colour.rgb = mix (I, texel_diff.rgb, 1.0 - light_emission_factor);
-    frag_colour.rgb = 5 * mix (I, 2.0 * texel_diff.rgb, 1.0 - 0.5 * light_emission_factor);
+	//  frag_colour.rgb = mix (I, texel_diffuse, 1.0 - light_emission_factor);
+    frag_colour.rgb = 5 * mix (I, 2.0 * texel_diffuse.rgb, 1.0 - 0.5 * light_emission_factor);
 	// shadows
 	if (shadow_enabled > 0.0)
         {
@@ -133,7 +133,7 @@ void main()
 		frag_colour.rgb *= sf_f;
         }
         //  rest is Debug:
- //   frag_colour.rgb = texel_diff.rgb;
-//    frag_colour = vec4(2.0 * texel_diff.rgb, 1.0);
+ //   frag_colour.rgb = texel_diffuse;
+    frag_colour = vec4(2.0 * texel_diffuse.rgb, 1.0);
  //       frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
     }
