@@ -31,7 +31,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Lines_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer      : GL.Objects.Buffers.Buffer;
 --     Num_Point_Bytes    : GL.Types.Int;
-   Stride             : constant GL.Types.Int := 0;
    --      Num_Dimension      : constant GL.Types.Int := 2;
 
    --  ----------------------------------------------------------------------------
@@ -69,21 +68,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Update is
-   begin
-      Utilities.Clear_Colour;
-      Draw_Points;
-      Draw_Lines;
-
-   exception
-      when anError : others =>
-         Put_Line ("An exceptiom occurred in Update.");
-         Put_Line (Exception_Information (anError));
-         raise;
-   end Update;
-
-   --  ----------------------------------------------------------------------------
-
    procedure Setup_Graphic is
       use GL.Attributes;
       use GL.Types;
@@ -94,6 +78,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Point_Bytes : constant Long := Points_Data'Size / 8;
       Line_Bytes  : constant Long := Lines_Data'Size / 8;
       Buffer_Size : constant Long := Point_Bytes + Line_Bytes;
+      Stride      : constant Int := Singles.Vector2'Size / 8;
    begin
 --        Num_Point_Bytes := Int (Point_Bytes);
       GL.Buffers.Set_Color_Clear_Value (Background);
@@ -131,6 +116,21 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Put_Line (Exception_Information (anError));
          raise;
    end Setup_Graphic;
+
+   --  ----------------------------------------------------------------------------
+
+   procedure Update is
+   begin
+      Utilities.Clear_Colour;
+      Draw_Points;
+      Draw_Lines;
+
+   exception
+      when anError : others =>
+         Put_Line ("An exceptiom occurred in Update.");
+         Put_Line (Exception_Information (anError));
+         raise;
+   end Update;
 
    --  ----------------------------------------------------------------------------
 
