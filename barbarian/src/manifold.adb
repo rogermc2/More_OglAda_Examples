@@ -104,17 +104,7 @@ package body Manifold is
         if Camera.Is_Dirty then
             Set_View_Matrix (Camera.View_Matrix);
             Set_Projection_Matrix (Camera.Projection_Matrix);
-            Utilities.Print_Vector ("Manifold.Draw_Manifold_Around Camera World_Position",
-                                    Camera.World_Position);
-            --           Put_Line ("Manifold.Draw_Manifold_Around, Number_Of_Tiles" &
-            --                       Integer'Image (Tiles_Manager.Number_Of_Tiles));
-            --           Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around View_Matrix",
-            --                                  Camera.View_Matrix);
-            --           Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Projection_Matrix",
-            --                                  Camera.Projection_Matrix);
         end if;
-        --        Utilities.Print_Matrix ("Manifold.Draw_Manifold_Around Camera.View_Matrix",
-        --                                Camera.View_Matrix);
 
         if Manifold_Dyn_Light_Dirty then
             Set_Dynamic_Light_Pos (Manifold_Dyn_Light_Pos);
