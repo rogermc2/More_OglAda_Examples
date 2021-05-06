@@ -27,16 +27,32 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Rendering_Program  : GL.Objects.Programs.Program;
     Vertex_Array       : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Vertex_Buffer      : GL.Objects.Buffers.Buffer;
+    Num_Dimension      : constant GL.Types.Int := 2;
+
+    --  ----------------------------------------------------------------------------
+
+    procedure Draw_Points is
+        use GL.Types;
+        Num_Points    : constant Int := 3;
+    begin
+        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Num_Points);
+
+    exception
+        when anError : others =>
+            Put_Line ("An exceptiom occurred in Draw_Points.");
+            Put_Line (Exception_Information (anError));
+            raise;
+    end Draw_Points;
+
+    --  ----------------------------------------------------------------------------
 
     procedure Update is
         use GL.Types;
-        Num_Dimension : constant Int := 2;
-        Num_Points    : constant Int := 3;
     begin
         Utilities.Clear_Colour;
         GL.Attributes.Set_Vertex_Attrib_Pointer  (0, Num_Dimension, Single_Type, False, 0, 0);
         GL.Attributes.Enable_Vertex_Attrib_Array (0);
-        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Num_Points);
+        Draw_Points;
         GL.Attributes.Disable_Vertex_Attrib_Array (0);
 
     exception
