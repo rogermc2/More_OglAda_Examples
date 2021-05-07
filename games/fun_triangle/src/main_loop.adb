@@ -72,7 +72,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Triangle_VAO.Initialize_Id;
       Gradient_VAO.Initialize_Id;
 
-      GL.Objects.Programs.Use_Program (Triangle_Program);
       Triangle_VAO.Bind;
       Triangle_Buffer.Initialize_Id;
       Array_Buffer.Bind (Triangle_Buffer);
