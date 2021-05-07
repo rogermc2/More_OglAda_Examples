@@ -118,7 +118,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Points_VAO.Initialize_Id;
       Lines_VAO.Initialize_Id;
       Triangle_VAO.Initialize_Id;
-      Gradient_Buffer.Initialize_Id;
+      Gradient_VAO.Initialize_Id;
 
       Points_VAO.Bind;
       Points_Buffer.Initialize_Id;
@@ -134,6 +134,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Enable_Vertex_Attrib_Array (1);
       Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
 
+      GL.Objects.Programs.Use_Program (Triangle_Program);
       Triangle_VAO.Bind;
       Triangle_Buffer.Initialize_Id;
       Array_Buffer.Bind (Triangle_Buffer);
