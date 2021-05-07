@@ -30,17 +30,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Lines_Program      : GL.Objects.Programs.Program;
    Points_VAO         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Lines_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Vertex_Buffer      : GL.Objects.Buffers.Buffer;
-   Num_Point_Bytes    : GL.Types.Int;
-   --      Num_Dimension      : constant GL.Types.Int := 2;
+   Points_Buffer      : GL.Objects.Buffers.Buffer;
+   Lines_Buffer       : GL.Objects.Buffers.Buffer;
 
    --  ----------------------------------------------------------------------------
 
    procedure Draw_Lines is
-      use GL.Types;
    begin
       GL.Objects.Programs.Use_Program (Lines_Program);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 4);
+      Lines_VAO.Bind;
+      GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Lines, 0, 4);
 
    exception
       when anError : others =>
@@ -52,12 +51,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  ----------------------------------------------------------------------------
 
    procedure Draw_Points is
-      use GL.Types;
    begin
       GL.Objects.Programs.Use_Program (Points_Program);
+      Points_VAO.Bind;
       -- Point size is set in the vertex shader
       GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 4);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Points, 0, 3);
       GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
 
    exception
@@ -76,13 +75,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Objects.Buffers;
       use GL.Objects.Shaders;
       use Vertex_Data;
-      Point_Bytes : constant Long := Points_Data'Size / 8;
-      Line_Bytes  : constant Long := Lines_Data'Size / 8;
-      Buffer_Size : constant Long := Point_Bytes + Line_Bytes;
-      Stride      : constant Int := Singles.Vector2'Size / 8;
    begin
-      Num_Point_Bytes := Int (Point_Bytes);
       GL.Buffers.Set_Color_Clear_Value (Background);
+
       Points_Program := Program_From
         ((Src ("src/shaders/points_shader.glsl", Vertex_Shader),
          Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
@@ -90,31 +85,22 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         ((Src ("src/shaders/lines_shader.glsl", Vertex_Shader),
          Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
 
-      Vertex_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Vertex_Buffer);
-      Array_Buffer.Allocate (Buffer_Size, Static_Draw);
-      Utilities.Load_Vertex_Sub_Buffer (Array_Buffer, 0, Points_Data);
-      Utilities.Load_Vertex_Sub_Buffer (Array_Buffer, Int (Point_Bytes),
-                                        Lines_Data);
-
       Points_VAO.Initialize_Id;
       Lines_VAO.Initialize_Id;
 
-      GL.Objects.Programs.Use_Program (Points_Program);
       Points_VAO.Bind;
+      Points_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Points_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Points_Data, Static_Draw);
       Enable_Vertex_Attrib_Array (0);
---        Enable_Vertex_Attrib_Array (1);
-      Array_Buffer.Bind (Vertex_Buffer);
-      Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, Stride, 0);
---        Set_Vertex_Attrib_Pointer (1, 4, Single_Type, False, Stride, Int (Point_Bytes));
+      Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
 
-      GL.Objects.Programs.Use_Program (Lines_Program);
       Lines_VAO.Bind;
---        Enable_Vertex_Attrib_Array (0);
+      Lines_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Lines_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Lines_Data, Static_Draw);
       Enable_Vertex_Attrib_Array (1);
-      Array_Buffer.Bind (Vertex_Buffer);
---        Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, Stride, Num_Point_Bytes);
-      Set_Vertex_Attrib_Pointer (1, 4, Single_Type, False, Stride, Num_Point_Bytes);
+      Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
 
 exception
       when anError : others =>
