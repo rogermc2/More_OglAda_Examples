@@ -8,6 +8,6 @@ out vec4 fragment_colour;
 
 void main()
     {
-    vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
-    fragment_colour = texture(texture2D, flipped_texcoord);
+    vec2 flipped_texcoord = vec2(v_texcoord.x, 1.0 - v_texcoord.y);
+    fragment_colour = texture(texture2d, flipped_texcoord);
     }

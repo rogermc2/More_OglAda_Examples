@@ -31,8 +31,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Quad_Program       : GL.Objects.Programs.Program;
    Texture_Program    : GL.Objects.Programs.Program;
    Quad_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Texture_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Quad_Buffer        : GL.Objects.Buffers.Buffer;
    Quad_Colour_Buffer : GL.Objects.Buffers.Buffer;
+   Texture_Buffer     : GL.Objects.Buffers.Buffer;
    aTexture           : GL.Objects.Textures.Texture;
    Texture_Uniform    : GL.Uniforms.Uniform;
 
@@ -47,6 +49,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    end Draw_Quad;
 
    --  ----------------------------------------------------------------------------
+
+   procedure Draw_Texture is
+   begin
+      GL.Objects.Programs.Use_Program (Texture_Program);
+      Texture_VAO.Bind;
+      GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
+
+   end Draw_Texture;
+
+   --  -------------------------------------------------------------------------
 
    procedure Setup_Graphic is
       use GL.Attributes;
@@ -63,8 +75,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Src ("src/shaders/quad_fragment_shader.glsl", Fragment_Shader)));
 
       Texture_Program := Program_From
-        ((Src ("src/shaders/quad_vertex_shader.glsl", Vertex_Shader),
-         Src ("src/shaders/quad_fragment_shader.glsl", Fragment_Shader)));
+        ((Src ("src/shaders/tex_vertex_shader.glsl", Vertex_Shader),
+         Src ("src/shaders/tex_fragment_shader.glsl", Fragment_Shader)));
       GL.Objects.Programs.Use_Program (Texture_Program);
       Texture_Uniform :=
         GL.Objects.Programs.Uniform_Location (Texture_Program, "texture2d");
@@ -72,13 +84,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Objects.Programs.Use_Program (Quad_Program);
 
-      Textures_Manager.Load_Texture (aTexture        => aTexture,
-                                     Image_File_Name => "src/flower.bmp",
-                                     Wrap            => True);
-
       Quad_VAO.Initialize_Id;
-
       Quad_VAO.Bind;
+      Texture_VAO.Initialize_Id;
+      Texture_VAO.Bind;
+
       Quad_Buffer.Initialize_Id;
       Array_Buffer.Bind (Quad_Buffer);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,
@@ -93,6 +103,21 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Enable_Vertex_Attrib_Array (1);
       Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False, 0, 0);
 
+      Texture_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Texture_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,
+                                    Static_Draw);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Texture_Coords,
+                                    Static_Draw);
+      Enable_Vertex_Attrib_Array (0);
+      Enable_Vertex_Attrib_Array (1);
+      Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+      Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
+
+      Textures_Manager.Load_Texture (aTexture        => aTexture,
+                                     Image_File_Name => "src/flower.bmp",
+                                     Wrap            => True);
+
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Setup_Graphic.");
@@ -106,6 +131,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Utilities.Clear_Colour;
       Draw_Quad;
+      Draw_Texture;
    end Update;
 
    --  ----------------------------------------------------------------------------
