@@ -26,21 +26,22 @@ with Vertex_Data;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
-   Rendering_Program  : GL.Objects.Programs.Program;
+   Points_Program     : GL.Objects.Programs.Program;
+   Lines_Program      : GL.Objects.Programs.Program;
    Points_VAO         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Lines_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer      : GL.Objects.Buffers.Buffer;
---     Num_Point_Bytes    : GL.Types.Int;
+   Num_Point_Bytes    : GL.Types.Int;
    --      Num_Dimension      : constant GL.Types.Int := 2;
 
    --  ----------------------------------------------------------------------------
 
    procedure Draw_Lines is
---        use GL.Types;
---        Num_Points    : constant Int := 3;
+      use GL.Types;
    begin
-      --        GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, Num_Point_Bytes, Num_Points);
-      null;
+      GL.Objects.Programs.Use_Program (Lines_Program);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Lines, 0, 4);
+
    exception
       when anError : others =>
          Put_Line ("An exceptiom occurred in Draw_Lines.");
@@ -52,11 +53,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Draw_Points is
       use GL.Types;
-      Num_Points    : constant Int := 3;
    begin
+      GL.Objects.Programs.Use_Program (Points_Program);
       -- Point size is set in the vertex shader
       GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, Num_Points);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 4);
       GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
 
    exception
@@ -80,12 +81,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Buffer_Size : constant Long := Point_Bytes + Line_Bytes;
       Stride      : constant Int := Singles.Vector2'Size / 8;
    begin
---        Num_Point_Bytes := Int (Point_Bytes);
+      Num_Point_Bytes := Int (Point_Bytes);
       GL.Buffers.Set_Color_Clear_Value (Background);
-      Rendering_Program := Program_From
-        ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
+      Points_Program := Program_From
+        ((Src ("src/shaders/points_shader.glsl", Vertex_Shader),
          Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
-      GL.Objects.Programs.Use_Program (Rendering_Program);
+      Lines_Program := Program_From
+        ((Src ("src/shaders/lines_shader.glsl", Vertex_Shader),
+         Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
 
       Vertex_Buffer.Initialize_Id;
       Array_Buffer.Bind (Vertex_Buffer);
@@ -97,20 +100,23 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Points_VAO.Initialize_Id;
       Lines_VAO.Initialize_Id;
 
+      GL.Objects.Programs.Use_Program (Points_Program);
       Points_VAO.Bind;
       Enable_Vertex_Attrib_Array (0);
-      Enable_Vertex_Attrib_Array (1);
+--        Enable_Vertex_Attrib_Array (1);
       Array_Buffer.Bind (Vertex_Buffer);
       Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, Stride, 0);
-      Set_Vertex_Attrib_Pointer (1, 4, Single_Type, False, Stride, Int (Point_Bytes));
+--        Set_Vertex_Attrib_Pointer (1, 4, Single_Type, False, Stride, Int (Point_Bytes));
 
+      GL.Objects.Programs.Use_Program (Lines_Program);
       Lines_VAO.Bind;
-      Enable_Vertex_Attrib_Array (0);
+--        Enable_Vertex_Attrib_Array (0);
       Enable_Vertex_Attrib_Array (1);
       Array_Buffer.Bind (Vertex_Buffer);
-      Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, Stride, 0);
-      Set_Vertex_Attrib_Pointer (1, 4, Single_Type, False, Stride, Int (Point_Bytes));
-   exception
+--        Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, Stride, Num_Point_Bytes);
+      Set_Vertex_Attrib_Pointer (1, 4, Single_Type, False, Stride, Num_Point_Bytes);
+
+exception
       when anError : others =>
          Put_Line ("An exceptiom occurred in Setup_Graphic.");
          Put_Line (Exception_Information (anError));
