@@ -25,6 +25,6 @@ exception
         Put_Line (Exception_Information (anError));
 
     when anError :  others =>
-        Put_Line ("An exceptiom occurred in OpenGL_Triangle.");
+        Put_Line ("An exception occurred in OpenGL_Triangle.");
         Put_Line (Exception_Information (anError));
 end OpenGL_Triangle;
