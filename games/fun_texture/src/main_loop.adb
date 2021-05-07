@@ -26,32 +26,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
    Triangle_Program   : GL.Objects.Programs.Program;
-   Triangle_VAO       : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Gradient_VAO       : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Triangle_Buffer    : GL.Objects.Buffers.Buffer;
-   Gradient_Buffer    : GL.Objects.Buffers.Buffer;
-   Colour_Buffer      : GL.Objects.Buffers.Buffer;
-   Grad_Colour_Buffer : GL.Objects.Buffers.Buffer;
+   Quad_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Quad_Buffer        : GL.Objects.Buffers.Buffer;
+   Quad_Colour_Buffer : GL.Objects.Buffers.Buffer;
 
    --  ----------------------------------------------------------------------------
 
-   procedure Draw_Gradient_Triangle is
+   procedure Draw_Quad is
    begin
       GL.Objects.Programs.Use_Program (Triangle_Program);
-      Gradient_VAO.Bind;
-      GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 3);
+      Quad_VAO.Bind;
+      GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
 
-   end Draw_Gradient_Triangle;
-
-   --  ----------------------------------------------------------------------------
-
-   procedure Draw_Solid_Triangle is
-   begin
-      GL.Objects.Programs.Use_Program (Triangle_Program);
-      Triangle_VAO.Bind;
-      GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 3);
-
-   end Draw_Solid_Triangle;
+   end Draw_Quad;
 
    --  ----------------------------------------------------------------------------
 
@@ -69,33 +56,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
          Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
 
-      Triangle_VAO.Initialize_Id;
-      Gradient_VAO.Initialize_Id;
+      Quad_VAO.Initialize_Id;
 
-      Triangle_VAO.Bind;
-      Triangle_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Triangle_Buffer);
-      Utilities.Load_Vertex_Buffer (Array_Buffer, Solid_Vertices, Static_Draw);
-      Enable_Vertex_Attrib_Array (0);
-      Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
-
-      Colour_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Colour_Buffer);
-      Utilities.Load_Vertex_Buffer (Array_Buffer, Solid_Colours, Static_Draw);
-      Enable_Vertex_Attrib_Array (1);
-      Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False, 0, 0);
-
-      Gradient_VAO.Bind;
-      Gradient_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Gradient_Buffer);
-      Utilities.Load_Vertex_Buffer (Array_Buffer, Gradient_Vertices,
+      Quad_VAO.Bind;
+      Quad_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Quad_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,
                                     Static_Draw);
       Enable_Vertex_Attrib_Array (0);
       Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
 
-      Grad_Colour_Buffer.Initialize_Id;
-      Array_Buffer.Bind (Grad_Colour_Buffer);
-      Utilities.Load_Vertex_Buffer (Array_Buffer, Gradient_Colours,
+      Quad_Colour_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Quad_Colour_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Colours,
                                     Static_Draw);
       Enable_Vertex_Attrib_Array (1);
       Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False, 0, 0);
@@ -112,8 +85,7 @@ exception
    procedure Update is
    begin
       Utilities.Clear_Colour;
-      Draw_Solid_Triangle;
-      Draw_Gradient_Triangle;
+      Draw_Quad;
    end Update;
 
    --  ----------------------------------------------------------------------------
