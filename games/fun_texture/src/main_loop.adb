@@ -61,14 +61,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Buffers.Set_Color_Clear_Value (Background);
 
       Quad_Program := Program_From
-        ((Src ("src/shaders/tex_vertex_shader.glsl", Vertex_Shader),
-         Src ("src/shaders/tex_fragment_shader.glsl", Fragment_Shader)));
+        ((Src ("src/shaders/quad_vertex_shader.glsl", Vertex_Shader),
+         Src ("src/shaders/quad_fragment_shader.glsl", Fragment_Shader)));
       GL.Objects.Programs.Use_Program (Quad_Program);
       Texture_Uniform :=
         GL.Objects.Programs.Uniform_Location (Quad_Program, "texture");
       GL.Uniforms.Set_Int (Texture_Uniform, 0);
 
-      Setup_Texture ("src/car.bmp");
+      Setup_Texture ("src/flower.bmp");
 
       Quad_VAO.Initialize_Id;
 
@@ -100,9 +100,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Objects.Textures;
       use GL.Objects.Textures.Targets;
    begin
-      GL.Objects.Textures.Set_Active_Unit (0);
-      aTexture.Initialize_Id;
-      Texture_2D.Bind (aTexture);
+--        GL.Objects.Textures.Set_Active_Unit (0);
+--        aTexture.Initialize_Id;
+--        Texture_2D.Bind (aTexture);
       Textures_Manager.Load_Texture (aTexture        => aTexture,
                                      Image_File_Name => anImage,
                                      Wrap            => True);

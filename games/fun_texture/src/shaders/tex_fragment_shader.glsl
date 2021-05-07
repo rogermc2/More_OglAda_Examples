@@ -1,13 +1,13 @@
-#version 410
+#version 410 core
 
-in vec3 colours;
-in vec2 texcoord;
+in vec2 v_texcoord;
 
-uniform sampler2D texture;
+uniform sampler2D texture2D;
 
 out vec4 fragment_colour;
 
 void main()
     {
-   fragment_colour = vec4(colours, 1.0);
+    vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
+    fragment_colour = texture(texture2D, flipped_texcoord);
     }

@@ -19,4 +19,16 @@ package Vertex_Data is
                       (0.0, 1.0, 0.0),
                       (0.0, 1.0, 0.0));
 
+
+   Texture_Coords : constant Singles.Vector2_Array (1 .. 8) :=
+                      ((0.0, 0.0),
+                       (0.0, 0.0),
+                       (1.0, 0.0),
+                       (0.5, 0.0),
+                       (1.0, 1.0),
+                       (0.5, 0.5),
+                       (0.0, 1.0),
+                       (0.0, 0.5));
+
+
 end Vertex_Data;
