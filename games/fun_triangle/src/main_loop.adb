@@ -32,10 +32,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Points_VAO         : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Lines_VAO          : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Triangle_VAO       : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Gradient_VAO       : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Points_Buffer      : GL.Objects.Buffers.Buffer;
    Lines_Buffer       : GL.Objects.Buffers.Buffer;
    Triangle_Buffer    : GL.Objects.Buffers.Buffer;
+   Gradient_Buffer    : GL.Objects.Buffers.Buffer;
    Colour_Buffer      : GL.Objects.Buffers.Buffer;
+   Grad_Colour_Buffer : GL.Objects.Buffers.Buffer;
 
    --  ----------------------------------------------------------------------------
 
@@ -72,18 +75,23 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Draw_Solid_Triangle is
+   procedure Draw_Gradient_Triangle is
    begin
       GL.Objects.Programs.Use_Program (Triangle_Program);
-      Triangle_VAO.Bind;
+      Gradient_VAO.Bind;
       GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 3);
 
-   exception
-      when anError : others =>
-         Put_Line ("An exceptiom occurred in Draw_Solid_Triangle.");
-         Put_Line (Exception_Information (anError));
-         raise;
-   end Draw_Solid_Triangle;
+   end Draw_Gradient_Triangle;
+
+   --  ----------------------------------------------------------------------------
+
+--     procedure Draw_Solid_Triangle is
+--     begin
+--        GL.Objects.Programs.Use_Program (Triangle_Program);
+--        Triangle_VAO.Bind;
+--        GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 3);
+--
+--     end Draw_Solid_Triangle;
 
    --  ----------------------------------------------------------------------------
 
@@ -110,6 +118,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Points_VAO.Initialize_Id;
       Lines_VAO.Initialize_Id;
       Triangle_VAO.Initialize_Id;
+      Gradient_Buffer.Initialize_Id;
 
       Points_VAO.Bind;
       Points_Buffer.Initialize_Id;
@@ -138,9 +147,27 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Enable_Vertex_Attrib_Array (1);
       Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False, 0, 0);
 
+      Gradient_VAO.Bind;
+      Gradient_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Gradient_Buffer);
+      Put_Line ("Setup_Graphic Gradient_Buffer bound");
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Gradient_Vertices, Static_Draw);
+      Put_Line ("Setup_Graphic Gradient_Buffer Gradient_Vertices loaded");
+      Enable_Vertex_Attrib_Array (0);
+      Put_Line ("Setup_Graphic Vertex_Attrib_Array enabled");
+      Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+      Put_Line ("Setup_Graphic Gradient_Buffer done");
+
+      Grad_Colour_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Grad_Colour_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Gradient_Colours, Static_Draw);
+      Enable_Vertex_Attrib_Array (1);
+      Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False, 0, 0);
+      Put_Line ("Setup_Graphic done");
+
 exception
       when anError : others =>
-         Put_Line ("An exceptiom occurred in Setup_Graphic.");
+         Put_Line ("An exception occurred in Setup_Graphic.");
          Put_Line (Exception_Information (anError));
          raise;
    end Setup_Graphic;
@@ -150,11 +177,12 @@ exception
    procedure Update is
    begin
       Utilities.Clear_Colour;
-      Draw_Solid_Triangle;
+--        Draw_Solid_Triangle;
+      Draw_Gradient_Triangle;
 
    exception
       when anError : others =>
-         Put_Line ("An exceptiom occurred in Update.");
+         Put_Line ("An exception occurred in Update.");
          Put_Line (Exception_Information (anError));
          raise;
    end Update;
@@ -173,12 +201,13 @@ begin
         (Main_Window.Key_State (Glfw.Input.Keys.Escape) = Glfw.Input.Pressed);
       Running := Running and not Main_Window.Should_Close;
    end loop;
+
 exception
    when Program_Loader.Shader_Loading_Error =>
       -- message was already written to stdout
       null;
    when anError : others =>
-      Put_Line ("An exceptiom occurred in Setup_Graphic.");
+      Put_Line ("An exception occurred in Main_Loop.");
       Put_Line (Exception_Information (anError));
       raise;
 end Main_Loop;

@@ -29,6 +29,6 @@ package Vertex_Data is
    Gradient_Colours : constant GL.Types.Singles.Vector3_Array (1 .. 3) :=
                    ((1.0, 0.0, 0.0),
                     (0.0, 1.0, 0.0),
-                    (0.4, 0.0, 1.0));
+                    (0.0, 0.0, 1.0));
 
 end Vertex_Data;
