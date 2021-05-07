@@ -9,8 +9,6 @@ package Load_BMP_File is
 
     Header_Error : Exception;
 
---      procedure Load_BMP (File_Name : String;
---                          theTexture : out GL.Objects.Textures.Texture);
     procedure Load_BMP_To_Texture (File_Name  : String; Wrap : Boolean;
                                    theTexture : out GL.Objects.Textures.Texture);
     procedure Print_BMP_Header (Header : BMP_Header);

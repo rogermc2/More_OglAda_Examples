@@ -9,7 +9,6 @@ with GL.Objects.Programs;
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Objects.Shaders;
-with GL.Objects.Textures.Targets;
 with GL.Types;
 with GL.Types.Colors;
 with GL.Uniforms;
@@ -30,13 +29,12 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
    Quad_Program       : GL.Objects.Programs.Program;
+   Texture_Program    : GL.Objects.Programs.Program;
    Quad_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Quad_Buffer        : GL.Objects.Buffers.Buffer;
    Quad_Colour_Buffer : GL.Objects.Buffers.Buffer;
    aTexture           : GL.Objects.Textures.Texture;
    Texture_Uniform    : GL.Uniforms.Uniform;
-
-   procedure Setup_Texture (anImage : String);
 
    --  ----------------------------------------------------------------------------
 
@@ -63,12 +61,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Quad_Program := Program_From
         ((Src ("src/shaders/quad_vertex_shader.glsl", Vertex_Shader),
          Src ("src/shaders/quad_fragment_shader.glsl", Fragment_Shader)));
-      GL.Objects.Programs.Use_Program (Quad_Program);
+
+      Texture_Program := Program_From
+        ((Src ("src/shaders/quad_vertex_shader.glsl", Vertex_Shader),
+         Src ("src/shaders/quad_fragment_shader.glsl", Fragment_Shader)));
+      GL.Objects.Programs.Use_Program (Texture_Program);
       Texture_Uniform :=
-        GL.Objects.Programs.Uniform_Location (Quad_Program, "texture");
+        GL.Objects.Programs.Uniform_Location (Texture_Program, "texture2d");
       GL.Uniforms.Set_Int (Texture_Uniform, 0);
 
-      Setup_Texture ("src/flower.bmp");
+      GL.Objects.Programs.Use_Program (Quad_Program);
+
+      Textures_Manager.Load_Texture (aTexture        => aTexture,
+                                     Image_File_Name => "src/flower.bmp",
+                                     Wrap            => True);
 
       Quad_VAO.Initialize_Id;
 
@@ -95,30 +101,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    end Setup_Graphic;
 
    --  -------------------------------------------------------------------------
-
-   procedure Setup_Texture (anImage : String) is
-      use GL.Objects.Textures;
-      use GL.Objects.Textures.Targets;
-   begin
---        GL.Objects.Textures.Set_Active_Unit (0);
---        aTexture.Initialize_Id;
---        Texture_2D.Bind (aTexture);
-      Textures_Manager.Load_Texture (aTexture        => aTexture,
-                                     Image_File_Name => anImage,
-                                     Wrap            => True);
-      Put_Line ("Setup_Textures; image " & anImage & " loaded.");
-
-      Texture_2D.Set_Magnifying_Filter (Nearest);
-      Texture_2D.Set_Minifying_Filter (Nearest);
-
-
-   exception
-      when others =>
-         Put_Line ("An exception occurred in Setup_Texture.");
-         raise;
-   end Setup_Texture;
-
-   --  ----------------------------------------------------------------------------
 
    procedure Update is
    begin
