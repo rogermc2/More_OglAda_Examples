@@ -41,11 +41,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Lines_VAO.Bind;
       GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Lines, 0, 4);
 
-   exception
-      when anError : others =>
-         Put_Line ("An exceptiom occurred in Draw_Lines.");
-         Put_Line (Exception_Information (anError));
-         raise;
    end Draw_Lines;
 
    --  ----------------------------------------------------------------------------
@@ -59,11 +54,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Points, 0, 3);
       GL.Toggles.Disable (GL.Toggles.Vertex_Program_Point_Size);
 
-   exception
-      when anError : others =>
-         Put_Line ("An exceptiom occurred in Draw_Points.");
-         Put_Line (Exception_Information (anError));
-         raise;
    end Draw_Points;
 
    --  ----------------------------------------------------------------------------
@@ -104,7 +94,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
 exception
       when anError : others =>
-         Put_Line ("An exceptiom occurred in Setup_Graphic.");
+         Put_Line ("An exception occurred in Setup_Graphic.");
          Put_Line (Exception_Information (anError));
          raise;
    end Setup_Graphic;
@@ -117,11 +107,6 @@ exception
       Draw_Points;
       Draw_Lines;
 
-   exception
-      when anError : others =>
-         Put_Line ("An exceptiom occurred in Update.");
-         Put_Line (Exception_Information (anError));
-         raise;
    end Update;
 
    --  ----------------------------------------------------------------------------
@@ -143,7 +128,7 @@ exception
       -- message was already written to stdout
       null;
    when anError : others =>
-      Put_Line ("An exceptiom occurred in Setup_Graphic.");
+      Put_Line ("An exception occurred in Main_Loop.");
       Put_Line (Exception_Information (anError));
       raise;
 end Main_Loop;
