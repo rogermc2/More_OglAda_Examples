@@ -28,12 +28,9 @@ with Vertex_Data;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
---     Quad_Program       : GL.Objects.Programs.Program;
    Texture_Program    : GL.Objects.Programs.Program;
---     Quad_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Texture_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Quad_Buffer        : GL.Objects.Buffers.Buffer;
---     Quad_Colour_Buffer : GL.Objects.Buffers.Buffer;
    Texture_Buffer     : GL.Objects.Buffers.Buffer;
    aTexture           : GL.Objects.Textures.Texture;
    Texture_Uniform    : GL.Uniforms.Uniform;
@@ -60,10 +57,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       GL.Buffers.Set_Color_Clear_Value (Background);
 
---        Quad_Program := Program_From
---          ((Src ("src/shaders/quad_vertex_shader.glsl", Vertex_Shader),
---           Src ("src/shaders/quad_fragment_shader.glsl", Fragment_Shader)));
-
       Texture_Program := Program_From
         ((Src ("src/shaders/tex_vertex_shader.glsl", Vertex_Shader),
          Src ("src/shaders/tex_fragment_shader.glsl", Fragment_Shader)));
@@ -72,10 +65,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Objects.Programs.Uniform_Location (Texture_Program, "texture2d");
       GL.Uniforms.Set_Int (Texture_Uniform, 0);
 
---        GL.Objects.Programs.Use_Program (Quad_Program);
-
---        Quad_VAO.Initialize_Id;
---        Quad_VAO.Bind;
       Texture_VAO.Initialize_Id;
       Texture_VAO.Bind;
 
