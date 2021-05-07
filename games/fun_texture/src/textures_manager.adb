@@ -19,7 +19,6 @@ package body Textures_Manager is
         GL.Objects.Textures.Set_Active_Unit (0);
         Texture_2D.Set_Magnifying_Filter (Nearest);
         Texture_2D.Set_Minifying_Filter (Nearest);
-        Texture_2D.Generate_Mipmap;
 
     exception
         when anError : others =>
