@@ -19,13 +19,15 @@ with Program_Loader;
 with Utilities;
 
 with Sprite_Manager;
+with Textures_Manager;
 with Vertex_Data;
 
 --  ------------------------------------------------------------------------
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
---     Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
+   --     Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
+   Textures           : Textures_Manager.Texture_List;
    Texture_Program    : GL.Objects.Programs.Program;
    Texture_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Quad_Buffer        : GL.Objects.Buffers.Buffer;
@@ -57,7 +59,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Objects.Shaders;
       use Vertex_Data;
    begin
---        GL.Buffers.Set_Color_Clear_Value (Background);
+      --        GL.Buffers.Set_Color_Clear_Value (Background);
 
       Texture_Program := Program_From
         ((Src ("src/shaders/robo2d_vertex_shader.glsl", Vertex_Shader),
@@ -84,9 +86,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Enable_Vertex_Attrib_Array (1);
       Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
 
---        Textures_Manager.Load_Texture (aTexture        => aTexture,
---                                       Image_File_Name => "src/flower.bmp",
---                                       Wrap            => True);
+      --        Textures_Manager.Load_Texture (aTexture        => aTexture,
+      --                                       Image_File_Name => "src/flower.bmp",
+      --                                       Wrap            => True);
 
    exception
       when anError : others =>
@@ -94,6 +96,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Put_Line (Exception_Information (anError));
          raise;
    end Setup_Graphic;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Start_Game is
+      Images   : Textures_Manager.Image_Sources (1 .. 1);
+   begin
+      Textures_Manager.Load_Textures (Textures, Images);
+   end Start_Game;
 
    --  -------------------------------------------------------------------------
 
