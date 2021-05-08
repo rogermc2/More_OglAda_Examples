@@ -39,7 +39,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Draw_Texture is
    begin
-      GL.Objects.Programs.Use_Program (Texture_Program);
       Texture_VAO.Bind;
       GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
 

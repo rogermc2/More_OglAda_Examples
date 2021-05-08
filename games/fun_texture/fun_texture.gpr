@@ -1,6 +1,5 @@
 with  "../../common/common.gpr";
 with "opengl.gpr";
-limited with "opengl-images.gpr";
 limited with "opengl-glfw.gpr";
 
 project Fun_Texture is
