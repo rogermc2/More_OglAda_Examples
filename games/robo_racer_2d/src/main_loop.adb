@@ -42,6 +42,57 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Load_Sprites (Screen : in out Glfw.Windows.Window) is
+        use Sprite_Manager;
+        Screen_Width        : Glfw.Size;
+        Screen_Height       : Glfw.Size;
+   begin
+      Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+
+      Set_Frame_Size (Background, 1877.0, 600.0);
+      Set_Number_Of_Frames (Background, 1);
+      Add_Texture (Background, "resources/background.png", False);
+
+      Set_Frame_Size (Robot_Right, 100.0, 125.0);
+      Set_Number_Of_Frames (Robot_Right, 4);
+      Set_Position (Robot_Right, 0.0, Float (Screen_Height) - 130.0);
+      Add_Texture (Robot_Right, "resources/robot_right_00.png");
+      Add_Texture (Robot_Right, "resources/robot_right_01.png");
+      Add_Texture (Robot_Right, "resources/robot_right_02.png");
+      Add_Texture (Robot_Right, "resources/robot_right_03.png");
+
+      Set_Frame_Size (Robot_Left, 100.0, 125.0);
+      Set_Number_Of_Frames (Robot_Left, 4);
+      Set_Position (Robot_Left, 0.0, Float (Screen_Height) - 130.0);
+      Add_Texture (Robot_Left, "resources/robot_left_00.png");
+      Add_Texture (Robot_Left, "resources/robot_left_01.png");
+      Add_Texture (Robot_Left, "resources/robot_left_02.png");
+      Add_Texture (Robot_Left, "resources/robot_left_03.png");
+
+      Set_Frame_Size (Robot_Right_Strip, 125.0, 100.0);
+      Set_Number_Of_Frames (Robot_Right_Strip, 4);
+      Set_Position (Robot_Right_Strip, 0.0, Float (Screen_Height) - 130.0);
+      Add_Texture (Robot_Right_Strip, "resources/robot_right_strip.png");
+
+      Set_Frame_Size (Robot_Left_Strip, 125.0, 100.0);
+      Set_Number_Of_Frames (Robot_Left_Strip, 4);
+      Set_Position (Robot_Left_Strip, 0.0, Float (Screen_Height) - 130.0);
+      Add_Texture (Robot_Left_Strip, "resources/robot_left_strip.png");
+
+      Set_Visible (Background, True);
+      Set_Active (Background, True);
+      Set_Velocity (Background, -50.0);
+
+      Set_Visible (Robot_Right, True);
+      Set_Active (Robot_Right, True);
+      Set_Velocity (Robot_Right, 50.0);
+
+      Player := Robot_Right;
+
+   end Load_Sprites;
+
+   --  -------------------------------------------------------------------------
+
    procedure Draw_Texture is
    begin
       Texture_VAO.Bind;
@@ -51,15 +102,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Setup_Graphic is
+   procedure Start_Game (Screen : in out Glfw.Windows.Window) is
       use GL.Attributes;
       use GL.Types;
       use Program_Loader;
       use GL.Objects.Buffers;
       use GL.Objects.Shaders;
       use Vertex_Data;
+      Images   : Textures_Manager.Image_Sources (1 .. 1);
+
    begin
       --        GL.Buffers.Set_Color_Clear_Value (Background);
+
+      Textures_Manager.Load_Textures (Textures, Images);
+      Load_Sprites (Screen);
 
       Texture_Program := Program_From
         ((Src ("src/shaders/robo2d_vertex_shader.glsl", Vertex_Shader),
@@ -92,17 +148,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Setup_Graphic.");
+         Put_Line ("An exception occurred in Start_Game.");
          Put_Line (Exception_Information (anError));
          raise;
-   end Setup_Graphic;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Start_Game is
-      Images   : Textures_Manager.Image_Sources (1 .. 1);
-   begin
-      Textures_Manager.Load_Textures (Textures, Images);
    end Start_Game;
 
    --  -------------------------------------------------------------------------
@@ -117,8 +165,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    use Glfw.Input;
    Running  : Boolean := True;
+   Window   : Glfw.Windows.Window;
 begin
-   Setup_Graphic;
+   Start_Game (Window);
    while Running loop
       Update;
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);

@@ -131,6 +131,13 @@ package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Velocity (aSprite : in out Sprite; Velocity : Float) is
+   begin
+      aSprite.Velocity := Velocity;
+   end Set_Velocity;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Visible (aSprite : in out Sprite; Visible : Boolean) is
    begin
       aSprite.Is_Visible := Visible;
