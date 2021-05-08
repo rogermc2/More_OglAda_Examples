@@ -9,8 +9,8 @@ package Sprite_Manager is
    type Point is private;
    type Sprite is private;
 
-   function Add_Texture (aSprite : in out Sprite; File_Name : String;
-                         Use_Transparency : Boolean := True) return Boolean;
+   procedure Add_Texture (aSprite : in out Sprite; File_Name : String;
+                          Transparency : Boolean := True);
    procedure Flip_Horizontal (aSprite : in out Sprite; Flip : Boolean);
    procedure Flip_Vertical (aSprite : in out Sprite; Flip : Boolean);
    function Get_Current_Frame (aSprite : Sprite)
@@ -20,7 +20,6 @@ package Sprite_Manager is
    function Is_Active (aSprite : Sprite) return Boolean;
    function Is_Collidable (aSprite : Sprite) return Boolean;
    function Is_Visible (aSprite : Sprite) return Boolean;
-   function New_Sprite (Num_Textures : Integer := 1) return Sprite;
    procedure Render (aSprite : Sprite);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
@@ -50,7 +49,7 @@ private
    end record;
 
    type Sprite is record
-      Textures          : Textures_Manager.Texture_List (0 .. 1);
+      Textures          : Textures_Manager.Texture_List;
       Texture_Index     : Integer := 0;
       Current_Frame     : Integer := 0;
       Num_Frames        : Integer := 0;

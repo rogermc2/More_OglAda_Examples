@@ -1,13 +1,26 @@
 
+with GL.Images;
+with GL.Pixels;
 
 package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
-   function Add_Texture (aSprite : in out Sprite; File_Name : String;
-                         Use_Transparency : Boolean := True) return Boolean is
+   procedure Add_Texture (aSprite     : in out Sprite; File_Name : String;
+                          Transparency : Boolean := True) is
+      use Textures_Manager;
+      aTexture : GL.Objects.Textures.Texture;
    begin
-      return False;
+      GL.Images.Load_File_To_Texture (Path           => File_Name,
+                                      Texture        => aTexture,
+                                      Texture_Format => GL.Pixels.RGBA,
+                                      Try_TGA        => True);
+      Add_Texture_To_List (aSprite.Textures, aTexture);
+
+      aSprite.Is_Sprite_Sheet := Get_Last_Index (aSprite.Textures) = 1 and
+        aSprite.Num_Frames > 1;
+      aSprite.Use_Transparency := Transparency;
+
    end Add_Texture;
 
    --  ------------------------------------------------------------------------
@@ -31,9 +44,9 @@ package body Sprite_Manager is
       Result : GL.Objects.Textures.Texture;
    begin
       if aSprite.Is_Sprite_Sheet then
-         Result := aSprite.Textures (1);
+         Result := Textures_Manager.Get_Texture (aSprite.Textures, 1);
       else
-         Result := aSprite.Textures (aSprite.Current_Frame);
+         Result := Textures_Manager.Get_Texture (aSprite.Textures, aSprite.Current_Frame);
       end if;
       return Result;
    end Get_Current_Frame;
@@ -72,16 +85,6 @@ package body Sprite_Manager is
    begin
       return aSprite.Is_Visible;
    end Is_Visible;
-
-   --  ------------------------------------------------------------------------
-
-   function New_Sprite (Num_Textures : Integer := 1) return Sprite is
-      theSprite : Sprite;
-      Tex_List  : Textures_Manager.Texture_List (1 .. Num_Textures);
-   begin
-      theSprite.Textures := Tex_List;
-      return theSprite;
-   end New_Sprite;
 
    --  ------------------------------------------------------------------------
 
