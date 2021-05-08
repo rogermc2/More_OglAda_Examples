@@ -3,14 +3,12 @@ with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
-with GL.Buffers;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Objects.Shaders;
 with GL.Types;
-with GL.Types.Colors;
+--  with GL.Types.Colors;
 with GL.Uniforms;
 
 with Glfw.Input;
@@ -20,20 +18,25 @@ with Glfw.Windows.Context;
 with Program_Loader;
 with Utilities;
 
-with Textures_Manager;
+with Sprite_Manager;
 with Vertex_Data;
 
 --  ------------------------------------------------------------------------
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-   Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
+--     Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
    Texture_Program    : GL.Objects.Programs.Program;
    Texture_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Quad_Buffer        : GL.Objects.Buffers.Buffer;
    Texture_Buffer     : GL.Objects.Buffers.Buffer;
-   aTexture           : GL.Objects.Textures.Texture;
    Texture_Uniform    : GL.Uniforms.Uniform;
+   Robot_Left         : Sprite_Manager.Sprite;
+   Robot_Right        : Sprite_Manager.Sprite;
+   Robot_Left_Strip  : Sprite_Manager.Sprite;
+   Robot_Right_Strip  : Sprite_Manager.Sprite;
+   Background         : Sprite_Manager.Sprite;
+   Player             : Sprite_Manager.Sprite;
 
    --  ----------------------------------------------------------------------------
 
@@ -54,7 +57,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Objects.Shaders;
       use Vertex_Data;
    begin
-      GL.Buffers.Set_Color_Clear_Value (Background);
+--        GL.Buffers.Set_Color_Clear_Value (Background);
 
       Texture_Program := Program_From
         ((Src ("src/shaders/robo2d_vertex_shader.glsl", Vertex_Shader),
@@ -81,9 +84,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Enable_Vertex_Attrib_Array (1);
       Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
 
-      Textures_Manager.Load_Texture (aTexture        => aTexture,
-                                     Image_File_Name => "src/flower.bmp",
-                                     Wrap            => True);
+--        Textures_Manager.Load_Texture (aTexture        => aTexture,
+--                                       Image_File_Name => "src/flower.bmp",
+--                                       Wrap            => True);
 
    exception
       when anError : others =>

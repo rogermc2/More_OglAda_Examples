@@ -26,7 +26,6 @@ package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
-
    function Get_Current_Frame (aSprite : Sprite)
                                return GL.Objects.Textures.Texture is
       Result : GL.Objects.Textures.Texture;
@@ -73,6 +72,16 @@ package body Sprite_Manager is
    begin
       return aSprite.Is_Visible;
    end Is_Visible;
+
+   --  ------------------------------------------------------------------------
+
+   function New_Sprite (Num_Textures : Integer := 1) return Sprite is
+      theSprite : Sprite;
+      Tex_List  : Textures_Manager.Texture_List (1 .. Num_Textures);
+   begin
+      theSprite.Textures := Tex_List;
+      return theSprite;
+   end New_Sprite;
 
    --  ------------------------------------------------------------------------
 

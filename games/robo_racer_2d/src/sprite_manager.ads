@@ -20,6 +20,7 @@ package Sprite_Manager is
    function Is_Active (aSprite : Sprite) return Boolean;
    function Is_Collidable (aSprite : Sprite) return Boolean;
    function Is_Visible (aSprite : Sprite) return Boolean;
+   function New_Sprite (Num_Textures : Integer := 1) return Sprite;
    procedure Render (aSprite : Sprite);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
@@ -50,15 +51,15 @@ private
 
    type Sprite is record
       Textures          : Textures_Manager.Texture_List (0 .. 1);
-      Texture_Index     : Integer;
-      Current_Frame     : Integer;
+      Texture_Index     : Integer := 0;
+      Current_Frame     : Integer := 0;
       Num_Frames        : Integer := 0;
-      Animation_Delay   : Float := 0.0;
+      Animation_Delay   : Float := 0.25;
       Animation_Elapsed : Float := 0.0;
       Position          : Point := (0.0, 0.0);
       Sprite_Size       : Object_Size;
       Velocity          : Float := 0.0;
-      Is_Collidable     : Boolean := False;
+      Is_Collidable     : Boolean := True;
       Flip_Horizontal   : Boolean := False;
       Flip_Vertical     : Boolean := False;
       Is_Visible        : Boolean := False;
