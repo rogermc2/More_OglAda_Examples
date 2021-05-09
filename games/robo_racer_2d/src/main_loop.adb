@@ -2,12 +2,10 @@
 with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Vertex_Arrays;
 with GL.Objects.Shaders;
+with GL.Objects.Vertex_Arrays;
 with GL.Types;
---  with GL.Types.Colors;
 with GL.Uniforms;
 
 with Glfw.Input;
@@ -18,22 +16,17 @@ with Program_Loader;
 with Utilities;
 
 with Sprite_Manager;
---  with Textures_Manager;
 
 --  ------------------------------------------------------------------------
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-    --     Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
---      Textures           : Textures_Manager.Texture_List;
-    Texture_Program    : GL.Objects.Programs.Program;
-    Texture_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Quad_Buffer        : GL.Objects.Buffers.Buffer;
-    Texture_Buffer     : GL.Objects.Buffers.Buffer;
+    Game_Program       : GL.Objects.Programs.Program;
+    Game_VAO           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Texture_Uniform    : GL.Uniforms.Uniform;
     Robot_Left         : Sprite_Manager.Sprite;
     Robot_Right        : Sprite_Manager.Sprite;
-    Robot_Left_Strip  : Sprite_Manager.Sprite;
+    Robot_Left_Strip   : Sprite_Manager.Sprite;
     Robot_Right_Strip  : Sprite_Manager.Sprite;
     Background         : Sprite_Manager.Sprite;
     Player             : Sprite_Manager.Sprite;
@@ -98,7 +91,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     procedure Draw_Texture is
     begin
-        Texture_VAO.Bind;
+        Game_VAO.Bind;
         GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
 
     end Draw_Texture;
@@ -108,44 +101,32 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     procedure Render is
     begin
         Utilities.Clear_Colour;
---          Sprite_Manager.Render (Background, Texture_Program, Texture_VAO);
-        Sprite_Manager.Render (Robot_Left, Texture_Program, Texture_VAO);
-        Sprite_Manager.Render (Robot_Right, Texture_Program, Texture_VAO);
-        Sprite_Manager.Render (Robot_Left_Strip, Texture_Program, Texture_VAO);
-        Sprite_Manager.Render (Robot_Right_Strip, Texture_Program, Texture_VAO);
+        Sprite_Manager.Render (Background, Game_Program, Game_VAO);
+        Sprite_Manager.Render (Robot_Left, Game_Program, Game_VAO);
+        Sprite_Manager.Render (Robot_Right, Game_Program, Game_VAO);
+        Sprite_Manager.Render (Robot_Left_Strip, Game_Program, Game_VAO);
+        Sprite_Manager.Render (Robot_Right_Strip, Game_Program, Game_VAO);
     end Render;
 
     --  ----------------------------------------------------------------------------
 
     procedure Start_Game (Screen : in out Glfw.Windows.Window) is
         use Program_Loader;
-        use GL.Objects.Buffers;
         use GL.Objects.Shaders;
---          Images   : Textures_Manager.Image_Sources (1 .. 1);
-
     begin
-        --        GL.Buffers.Set_Color_Clear_Value (Background);
-
---          Textures_Manager.Load_Textures (Textures, Images);
         Load_Sprites (Screen);
 
-        Texture_Program := Program_From
+        Game_Program := Program_From
           ((Src ("src/shaders/robo2d_vertex_shader.glsl", Vertex_Shader),
            Src ("src/shaders/robo2d_fragment_shader.glsl", Fragment_Shader)));
-        GL.Objects.Programs.Use_Program (Texture_Program);
+        GL.Objects.Programs.Use_Program (Game_Program);
 
         Texture_Uniform :=
-          GL.Objects.Programs.Uniform_Location (Texture_Program, "texture2d");
+          GL.Objects.Programs.Uniform_Location (Game_Program, "texture2d");
         GL.Uniforms.Set_Int (Texture_Uniform, 0);
 
-        Texture_VAO.Initialize_Id;
-        Texture_VAO.Bind;
-
-        Quad_Buffer.Initialize_Id;
-        Array_Buffer.Bind (Quad_Buffer);
-
-        Texture_Buffer.Initialize_Id;
-        Array_Buffer.Bind (Texture_Buffer);
+        Game_VAO.Initialize_Id;
+        Game_VAO.Bind;
 
     exception
         when anError : others =>

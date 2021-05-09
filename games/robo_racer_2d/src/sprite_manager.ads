@@ -23,7 +23,7 @@ package Sprite_Manager is
    function Is_Collidable (aSprite : Sprite) return Boolean;
    function Is_Visible (aSprite : Sprite) return Boolean;
    procedure Render (aSprite : Sprite;
-                     Texture_Program : GL.Objects.Programs.Program;
+                     Game_Program : GL.Objects.Programs.Program;
                      VAO : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
