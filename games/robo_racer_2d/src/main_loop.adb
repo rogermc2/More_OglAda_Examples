@@ -86,15 +86,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  -------------------------------------------------------------------------
 
---     procedure Draw_Texture is
---     begin
---        Game_VAO.Bind;
---        GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
---
---     end Draw_Texture;
-
-   --  -------------------------------------------------------------------------
-
    procedure Render is
    begin
       Utilities.Clear_Colour;
@@ -137,7 +128,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Update is
    begin
       Utilities.Clear_Colour;
---        Draw_Texture;
    end Update;
 
    --  ----------------------------------------------------------------------------
