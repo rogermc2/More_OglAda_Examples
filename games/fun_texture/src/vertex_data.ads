@@ -13,12 +13,11 @@ package Vertex_Data is
                       (0.0, 0.5));  --  top left
 
    Texture_Coords : constant Singles.Vector2_Array (1 .. 6) :=
-                      ((0.0, 0.0),
-                       (0.0, 1.0),
-                       (1.0, 1.0),
-                       (1.0, 1.0),
+                      ((0.0, 1.0),
+                       (0.0, 0.0),
                        (1.0, 0.0),
-                       (0.0, 0.0));
-
+                       (1.0, 0.0),
+                       (1.0, 1.0),
+                       (0.0, 1.0));
 
 end Vertex_Data;

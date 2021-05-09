@@ -82,7 +82,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
 
       Textures_Manager.Load_Texture (aTexture        => aTexture,
-                                     Image_File_Name => "src/flower.bmp",
+                                     Image_File_Name => "src/resources/car.bmp",
                                      Wrap            => True);
 
    exception
