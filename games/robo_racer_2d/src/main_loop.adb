@@ -18,14 +18,14 @@ with Program_Loader;
 with Utilities;
 
 with Sprite_Manager;
-with Textures_Manager;
+--  with Textures_Manager;
 
 --  ------------------------------------------------------------------------
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --     Background         : constant GL.Types.Colors.Color := ((0.6, 0.6, 0.6, 1.0));
-    Textures           : Textures_Manager.Texture_List;
+--      Textures           : Textures_Manager.Texture_List;
     Texture_Program    : GL.Objects.Programs.Program;
     Texture_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Quad_Buffer        : GL.Objects.Buffers.Buffer;
@@ -47,6 +47,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     begin
         Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
 
+        Put_Line ("Load_Sprites Screen_Width and Screen_Height set.");
         Set_Frame_Size (Background, 1877.0, 600.0);
         Set_Number_Of_Frames (Background, 1);
         Add_Texture (Background, "resources/background.png", False);
@@ -87,6 +88,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Player := Robot_Right;
 
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Load_Sprites.");
+            Put_Line (Exception_Information (anError));
+            raise;
     end Load_Sprites;
 
     --  -------------------------------------------------------------------------
@@ -116,18 +122,21 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         use Program_Loader;
         use GL.Objects.Buffers;
         use GL.Objects.Shaders;
-        Images   : Textures_Manager.Image_Sources (1 .. 1);
+--          Images   : Textures_Manager.Image_Sources (1 .. 1);
 
     begin
         --        GL.Buffers.Set_Color_Clear_Value (Background);
 
-        Textures_Manager.Load_Textures (Textures, Images);
+--          Textures_Manager.Load_Textures (Textures, Images);
         Load_Sprites (Screen);
+        Put_Line ("Start_Game Sprites loaded.");
 
         Texture_Program := Program_From
           ((Src ("src/shaders/robo2d_vertex_shader.glsl", Vertex_Shader),
            Src ("src/shaders/robo2d_fragment_shader.glsl", Fragment_Shader)));
+        Put_Line ("Start_Game Texture_Program loaded.");
         GL.Objects.Programs.Use_Program (Texture_Program);
+
         Texture_Uniform :=
           GL.Objects.Programs.Uniform_Location (Texture_Program, "texture2d");
         GL.Uniforms.Set_Int (Texture_Uniform, 0);
@@ -160,9 +169,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     use Glfw.Input;
     Running  : Boolean := True;
-    Window   : Glfw.Windows.Window;
 begin
-    Start_Game (Window);
+    Start_Game (Main_Window);
     while Running loop
         Render;
         Update;
