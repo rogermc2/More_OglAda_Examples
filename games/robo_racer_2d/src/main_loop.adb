@@ -35,7 +35,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Robot_Right        : Sprite_Manager.Sprite;
     Robot_Left_Strip  : Sprite_Manager.Sprite;
     Robot_Right_Strip  : Sprite_Manager.Sprite;
-    Background         : Sprite_Manager.Sprite;
+--      Background         : Sprite_Manager.Sprite;
     Player             : Sprite_Manager.Sprite;
 
     --  ----------------------------------------------------------------------------
@@ -48,39 +48,39 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
 
         Put_Line ("Load_Sprites Screen_Width and Screen_Height set.");
-        Set_Frame_Size (Background, 1877.0, 600.0);
-        Set_Number_Of_Frames (Background, 1);
-        Add_Texture (Background, "resources/background.png", False);
+--          Set_Frame_Size (Background, 1877.0, 600.0);
+--          Set_Number_Of_Frames (Background, 1);
+--          Add_Texture (Background, "resources/background.png", False);
 
         Set_Frame_Size (Robot_Right, 100.0, 125.0);
         Set_Number_Of_Frames (Robot_Right, 4);
         Set_Position (Robot_Right, 0.0, Float (Screen_Height) - 130.0);
-        Add_Texture (Robot_Right, "resources/robot_right_00.png");
-        Add_Texture (Robot_Right, "resources/robot_right_01.png");
-        Add_Texture (Robot_Right, "resources/robot_right_02.png");
-        Add_Texture (Robot_Right, "resources/robot_right_03.png");
+        Add_Texture (Robot_Right, "src/resources/robot_right_00.png");
+        Add_Texture (Robot_Right, "src/resources/robot_right_01.png");
+        Add_Texture (Robot_Right, "src/resources/robot_right_02.png");
+        Add_Texture (Robot_Right, "src/resources/robot_right_03.png");
 
         Set_Frame_Size (Robot_Left, 100.0, 125.0);
         Set_Number_Of_Frames (Robot_Left, 4);
         Set_Position (Robot_Left, 0.0, Float (Screen_Height) - 130.0);
-        Add_Texture (Robot_Left, "resources/robot_left_00.png");
-        Add_Texture (Robot_Left, "resources/robot_left_01.png");
-        Add_Texture (Robot_Left, "resources/robot_left_02.png");
-        Add_Texture (Robot_Left, "resources/robot_left_03.png");
+        Add_Texture (Robot_Left, "src/resources/robot_left_00.png");
+        Add_Texture (Robot_Left, "src/resources/robot_left_01.png");
+        Add_Texture (Robot_Left, "src/resources/robot_left_02.png");
+        Add_Texture (Robot_Left, "src/resources/robot_left_03.png");
 
         Set_Frame_Size (Robot_Right_Strip, 125.0, 100.0);
         Set_Number_Of_Frames (Robot_Right_Strip, 4);
         Set_Position (Robot_Right_Strip, 0.0, Float (Screen_Height) - 130.0);
-        Add_Texture (Robot_Right_Strip, "resources/robot_right_strip.png");
+        Add_Texture (Robot_Right_Strip, "src/resources/robot_right_strip.png");
 
         Set_Frame_Size (Robot_Left_Strip, 125.0, 100.0);
         Set_Number_Of_Frames (Robot_Left_Strip, 4);
         Set_Position (Robot_Left_Strip, 0.0, Float (Screen_Height) - 130.0);
-        Add_Texture (Robot_Left_Strip, "resources/robot_left_strip.png");
+        Add_Texture (Robot_Left_Strip, "src/resources/robot_left_strip.png");
 
-        Set_Visible (Background, True);
-        Set_Active (Background, True);
-        Set_Velocity (Background, -50.0);
+--          Set_Visible (Background, True);
+--          Set_Active (Background, True);
+--          Set_Velocity (Background, -50.0);
 
         Set_Visible (Robot_Right, True);
         Set_Active (Robot_Right, True);
@@ -109,7 +109,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     procedure Render is
     begin
         Utilities.Clear_Colour;
-        Sprite_Manager.Render (Background, Texture_Program, Texture_VAO);
+--          Sprite_Manager.Render (Background, Texture_Program, Texture_VAO);
         Sprite_Manager.Render (Robot_Left, Texture_Program, Texture_VAO);
         Sprite_Manager.Render (Robot_Right, Texture_Program, Texture_VAO);
         Sprite_Manager.Render (Robot_Left_Strip, Texture_Program, Texture_VAO);
