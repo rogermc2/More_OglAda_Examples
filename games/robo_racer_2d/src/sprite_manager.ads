@@ -1,7 +1,6 @@
 
 with GL.Objects.Programs;
 with GL.Objects.Textures;
-with GL.Objects.Vertex_Arrays;
 
 with Textures_Manager;
 
@@ -11,20 +10,21 @@ package Sprite_Manager is
    type Point is private;
    type Sprite is private;
 
-   procedure Add_Texture (aSprite : in out Sprite; File_Name : String;
+   procedure Add_Texture (aSprite      : in out Sprite; File_Name : String;
                           Transparency : Boolean := True);
+   procedure Clear_Buffers;
    procedure Flip_Horizontal (aSprite : in out Sprite; Flip : Boolean);
    procedure Flip_Vertical (aSprite : in out Sprite; Flip : Boolean);
    function Get_Current_Frame (aSprite : Sprite)
                                return GL.Objects.Textures.Texture;
    function Get_Position (aSprite : Sprite) return Point;
    function Get_Size (aSprite : Sprite) return Object_Size;
+   procedure Init;
    function Is_Active (aSprite : Sprite) return Boolean;
    function Is_Collidable (aSprite : Sprite) return Boolean;
    function Is_Visible (aSprite : Sprite) return Boolean;
-   procedure Render (aSprite : Sprite;
-                     Game_Program : GL.Objects.Programs.Program;
-                     VAO : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object);
+   procedure Render (aSprite      : Sprite;
+                     Game_Program : GL.Objects.Programs.Program);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
    procedure Set_Number_Of_Frames (aSprite : in out Sprite; Num : Integer);

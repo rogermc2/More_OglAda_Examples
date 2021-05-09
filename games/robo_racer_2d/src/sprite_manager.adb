@@ -6,6 +6,7 @@ with GL.Blending;
 with GL.Images;
 with GL.Objects.Buffers;
 with GL.Objects.Textures.Targets;
+with GL.Objects.Vertex_Arrays;
 with GL.Pixels;
 with GL.Toggles;
 with GL.Types;
@@ -14,6 +15,7 @@ with Utilities;
 
 package body Sprite_Manager is
 
+   Sprites_VAO    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Quad_Buffer    : GL.Objects.Buffers.Buffer;
    Texture_Buffer : GL.Objects.Buffers.Buffer;
 
@@ -35,6 +37,16 @@ package body Sprite_Manager is
       aSprite.Use_Transparency := Transparency;
 
    end Add_Texture;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Clear_Buffers is
+   begin
+      Quad_Buffer.Clear;
+      Texture_Buffer.Clear;
+      Quad_Buffer.Initialize_Id;
+      Texture_Buffer.Initialize_Id;
+   end Clear_Buffers;
 
    --  ------------------------------------------------------------------------
 
@@ -80,6 +92,16 @@ package body Sprite_Manager is
 
    --  -------------------------------------------------------------------------
 
+   procedure Init is
+   begin
+      Sprites_VAO.Initialize_Id;
+      Sprites_VAO.Bind;
+      Quad_Buffer.Initialize_Id;
+      Texture_Buffer.Initialize_Id;
+   end Init;
+
+   --  ------------------------------------------------------------------------
+
    function Is_Active (aSprite : Sprite) return Boolean is
    begin
       return aSprite.Is_Active;
@@ -102,8 +124,7 @@ package body Sprite_Manager is
    --  ------------------------------------------------------------------------
 
    procedure Render (aSprite      : Sprite;
-                     Game_Program : GL.Objects.Programs.Program;
-                     VAO          : in out GL.Objects.Vertex_Arrays.Vertex_Array_Object) is
+                     Game_Program : GL.Objects.Programs.Program) is
       use GL.Attributes;
       use GL.Blending;
       use GL.Objects.Textures.Targets;
@@ -122,9 +143,7 @@ package body Sprite_Manager is
       Height         : constant Single := Single (aSprite.Sprite_Size.Height);
    begin
       if aSprite.Is_Visible then
-         VAO.Bind;
-         Quad_Buffer.Initialize_Id;
-         Texture_Buffer.Initialize_Id;
+         Sprites_VAO.Bind;
 
          if aSprite.Use_Transparency then
             GL.Toggles.Enable (GL.Toggles.Blend);
