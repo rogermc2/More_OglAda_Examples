@@ -135,7 +135,6 @@ package body Sprite_Manager is
                          1.0 + Single (aSprite.Texture_Index - 1) /
                          Single (aSprite.Num_Frames);
       Tex_Height     : constant Single := 1.0;
-      --        Tex_Width      : constant Single := 1.0;
       U              : Single := 0.0;
       V              : constant Single := 0.0;
       X              : constant Single := Single (aSprite.Position.X);

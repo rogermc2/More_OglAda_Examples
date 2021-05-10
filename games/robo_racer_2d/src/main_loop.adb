@@ -35,6 +35,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Player             : Sprite_Manager.Sprite;
 
    procedure Resize_GL_Scene  (Screen : in out Glfw.Windows.Window);
+   procedure Update (Delta_Time : Float);
 
    --  ----------------------------------------------------------------------------
 
@@ -144,6 +145,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ----------------------------------------------------------------------------
 
+   procedure Run_Game (Screen : in out Glfw.Windows.Window) is
+      Delta_Time : constant Float := 0.0;
+   begin
+      Render_Sprites (Screen);
+      Update (Delta_Time);
+   end Run_Game;
+
+   --  -------------------------------------------------------------------------
+
    procedure Start_Game (Screen : in out Glfw.Windows.Window) is
       use Program_Loader;
       use GL.Objects.Shaders;
@@ -174,9 +184,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update is
+   procedure Update (Delta_Time : Float) is
    begin
       Utilities.Clear_Colour;
+      Sprite_Manager.Update (Background, Delta_Time);
+      Sprite_Manager.Update (Robot_Left, Delta_Time);
+      Sprite_Manager.Update (Robot_Right, Delta_Time);
+      Sprite_Manager.Update (Robot_Left_Strip, Delta_Time);
+      Sprite_Manager.Update (Robot_Right_Strip, Delta_Time);
    end Update;
 
    --  ----------------------------------------------------------------------------
@@ -186,8 +201,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 begin
    Start_Game (Main_Window);
    while Running loop
-      Render_Sprites (Main_Window);
-      Update;
+      Run_Game (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and not
