@@ -93,6 +93,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Utilities.Clear_Colour;
       Sprite_Manager.Clear_Buffers;
+      GL.Uniforms.Set_Int (Texture_Uniform, 0);
+      GL.Uniforms.Set_Single (Model_Uniform, GL.Types.Singles.Identity4);
+
       Sprite_Manager.Render (Background, Game_Program);
 --        Sprite_Manager.Render (Robot_Left, Game_Program, Game_VAO);
 --        Sprite_Manager.Render (Robot_Right, Game_Program, Game_VAO);
@@ -118,9 +121,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Objects.Programs.Uniform_Location (Game_Program, "model_matrix");
       Texture_Uniform :=
         GL.Objects.Programs.Uniform_Location (Game_Program, "texture2d");
-
-      GL.Uniforms.Set_Int (Texture_Uniform, 0);
-      GL.Uniforms.Set_Single (Model_Uniform, GL.Types.Singles.Identity4);
 
       Sprite_Manager.Init;
 
