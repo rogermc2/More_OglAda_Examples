@@ -23,6 +23,7 @@ with Sprite_Manager;
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    Back               : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
+   Last_Time          : Float := 0.0;
    Game_Program       : GL.Objects.Programs.Program;
    Model_Uniform      : GL.Uniforms.Uniform;
    Projection_Uniform : GL.Uniforms.Uniform;
@@ -146,8 +147,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  ----------------------------------------------------------------------------
 
    procedure Run_Game (Screen : in out Glfw.Windows.Window) is
-      Delta_Time : constant Float := 0.0;
+      Current_Time : constant Float := Float (Glfw.Time);
+      Delta_Time   : constant Float := Current_Time - Last_Time;
    begin
+      Last_Time := Current_Time;
       Render_Sprites (Screen);
       Update (Delta_Time);
    end Run_Game;
