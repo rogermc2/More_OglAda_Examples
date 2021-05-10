@@ -48,7 +48,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Window.Set_Viewport (10, 10, VP_Width, VP_Height);
 
         Put_Line ("Main_Loop.Load_Sprites VP_Width, VP_Height: " &
-                 Size'Image (VP_Width) & ", " & Size'Image (VP_Height));
+                    Size'Image (VP_Width) & ", " & Size'Image (VP_Height));
 
         Set_Frame_Size (Background, 1877.0, 600.0);
         Set_Number_Of_Frames (Background, 1);
@@ -106,10 +106,10 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Uniforms.Set_Int (Texture_Uniform, 0);
 
         Sprite_Manager.Render (Background, Game_Program, Model_Uniform);
-        --        Sprite_Manager.Render (Robot_Left, Game_Program, Game_VAO, Model_Uniform);
-        --        Sprite_Manager.Render (Robot_Right, Game_Program, Game_VAO, Model_Uniform);
-        --        Sprite_Manager.Render (Robot_Left_Strip, Game_Program, Game_VAO, Model_Uniform);
-        --        Sprite_Manager.Render (Robot_Right_Strip, Game_Program, Game_VAO, Model_Uniform);
+--          Sprite_Manager.Render (Robot_Left, Game_Program, Model_Uniform);
+--          Sprite_Manager.Render (Robot_Right, Game_Program, Model_Uniform);
+--          Sprite_Manager.Render (Robot_Left_Strip, Game_Program, Model_Uniform);
+--          Sprite_Manager.Render (Robot_Right_Strip, Game_Program, Model_Uniform);
     end Render;
 
     --  ----------------------------------------------------------------------------
