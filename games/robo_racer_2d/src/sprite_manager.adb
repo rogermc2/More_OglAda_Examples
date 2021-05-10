@@ -131,8 +131,9 @@ package body Sprite_Manager is
       use GL.Types;
       Quad_Vertices  : Singles.Vector2_Array (1 .. 6);
       Texture_Coords : Singles.Vector2_Array (1 .. 6);
-      Tex_Width      : constant Single := Single (aSprite.Texture_Index /
-                                                    aSprite.Num_Frames) + 1.0;
+      Tex_Width      : constant Single :=
+                         1.0 + Single (aSprite.Texture_Index - 1) /
+                         Single (aSprite.Num_Frames);
       Tex_Height     : constant Single := 1.0;
       --        Tex_Width      : constant Single := 1.0;
       U              : Single := 0.0;
