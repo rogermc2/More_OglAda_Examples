@@ -1,6 +1,7 @@
 
 with GL.Objects.Programs;
 with GL.Objects.Textures;
+with GL.Uniforms;
 
 with Textures_Manager;
 
@@ -24,7 +25,8 @@ package Sprite_Manager is
    function Is_Collidable (aSprite : Sprite) return Boolean;
    function Is_Visible (aSprite : Sprite) return Boolean;
    procedure Render (aSprite      : Sprite;
-                     Game_Program : GL.Objects.Programs.Program);
+                     Game_Program : GL.Objects.Programs.Program;
+                     Model_Uniform : GL.Uniforms.Uniform);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
    procedure Set_Number_Of_Frames (aSprite : in out Sprite; Num : Integer);
