@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Programs;
 with GL.Objects.Shaders;
+with GL.Types.Colors;
 with GL.Uniforms;
 
 with Glfw.Input;
@@ -19,7 +20,9 @@ with Sprite_Manager;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
+   Black              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
    Game_Program       : GL.Objects.Programs.Program;
+   Model_Uniform      : GL.Uniforms.Uniform;
    Texture_Uniform    : GL.Uniforms.Uniform;
    Robot_Left         : Sprite_Manager.Sprite;
    Robot_Right        : Sprite_Manager.Sprite;
@@ -103,6 +106,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use Program_Loader;
       use GL.Objects.Shaders;
    begin
+      Utilities.Clear_Background_Colour (Black);
       Load_Sprites (Screen);
 
       Game_Program := Program_From
@@ -110,9 +114,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Src ("src/shaders/robo2d_fragment_shader.glsl", Fragment_Shader)));
       GL.Objects.Programs.Use_Program (Game_Program);
 
+      Model_Uniform :=
+        GL.Objects.Programs.Uniform_Location (Game_Program, "model_matrix");
       Texture_Uniform :=
         GL.Objects.Programs.Uniform_Location (Game_Program, "texture2d");
+
       GL.Uniforms.Set_Int (Texture_Uniform, 0);
+      GL.Uniforms.Set_Single (Model_Uniform, GL.Types.Singles.Identity4);
 
       Sprite_Manager.Init;
 
