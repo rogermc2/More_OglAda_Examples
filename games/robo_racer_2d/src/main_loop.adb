@@ -36,7 +36,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Player             : Sprite_Manager.Sprite;
 
    procedure Resize_GL_Scene  (Screen : in out Glfw.Windows.Window);
-   procedure Update (Delta_Time : Float);
+   procedure Update_Sprites (Delta_Time : Float);
 
    --  ----------------------------------------------------------------------------
 
@@ -146,17 +146,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ----------------------------------------------------------------------------
 
-   procedure Run_Game (Screen : in out Glfw.Windows.Window) is
-      Current_Time : constant Float := Float (Glfw.Time);
-      Delta_Time   : constant Float := Current_Time - Last_Time;
-   begin
-      Last_Time := Current_Time;
-      Render_Sprites (Screen);
-      Update (Delta_Time);
-   end Run_Game;
-
-   --  -------------------------------------------------------------------------
-
    procedure Start_Game (Screen : in out Glfw.Windows.Window) is
       use Program_Loader;
       use GL.Objects.Shaders;
@@ -187,7 +176,18 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update (Delta_Time : Float) is
+   procedure Update_Game (Screen : in out Glfw.Windows.Window) is
+      Current_Time : constant Float := Float (Glfw.Time);
+      Delta_Time   : constant Float := Current_Time - Last_Time;
+   begin
+      Last_Time := Current_Time;
+      Render_Sprites (Screen);
+      Update_Sprites (Delta_Time);
+   end Update_Game;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Update_Sprites (Delta_Time : Float) is
    begin
       Utilities.Clear_Colour;
       Sprite_Manager.Update (Background, Delta_Time);
@@ -195,7 +195,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Sprite_Manager.Update (Robot_Right, Delta_Time);
       Sprite_Manager.Update (Robot_Left_Strip, Delta_Time);
       Sprite_Manager.Update (Robot_Right_Strip, Delta_Time);
-   end Update;
+   end Update_Sprites;
 
    --  ----------------------------------------------------------------------------
 
@@ -204,7 +204,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 begin
    Start_Game (Main_Window);
    while Running loop
-      Run_Game (Main_Window);
+      Update_Game (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
       Running := Running and not
