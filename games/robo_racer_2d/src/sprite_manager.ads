@@ -57,8 +57,8 @@ private
 
    type Sprite is record
       Textures          : Textures_Manager.Texture_List;
-      Texture_Index     : Integer := 0;
-      Current_Frame     : Integer := 0;
+      Texture_Index     : Positive := 1;
+      Current_Frame     : Positive := 1;
       Num_Frames        : Integer := 0;
       Animation_Delay   : Float := 0.25;
       Animation_Elapsed : Float := 0.0;

@@ -71,7 +71,8 @@ package body Sprite_Manager is
         if aSprite.Is_Sprite_Sheet then
             Result := Textures_Manager.Get_Texture (aSprite.Textures, 1);
         else
-            Result := Textures_Manager.Get_Texture (aSprite.Textures, aSprite.Current_Frame);
+            Result := Textures_Manager.Get_Texture
+              (aSprite.Textures, aSprite.Current_Frame);
         end if;
         return Result;
     end Get_Current_Frame;
@@ -175,6 +176,7 @@ package body Sprite_Manager is
             Put_Line ("Sprite_Manager.Render, width, height: " &
                         Single'Image (Width) & ", " & Single'Image (Height));
             Utilities.Print_GL_Array2 ("Quad_Vertices", Quad_Vertices);
+            Utilities.Print_GL_Array2 ("Texture_Coords", Texture_Coords);
 
             GL.Objects.Programs.Use_Program (Game_Program);
 
