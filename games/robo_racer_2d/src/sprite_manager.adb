@@ -10,7 +10,6 @@ with GL.Objects.Vertex_Arrays;
 with GL.Pixels;
 with GL.Toggles;
 with GL.Types;
-with Maths;
 with Utilities;
 
 package body Sprite_Manager is
@@ -124,16 +123,12 @@ package body Sprite_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Render (aSprite      : Sprite;
-                      Game_Program : GL.Objects.Programs.Program;
-                      Model_Uniform : GL.Uniforms.Uniform) is
+    procedure Render (aSprite : Sprite) is
         use GL.Attributes;
         use GL.Blending;
         use GL.Objects.Textures.Targets;
         use GL.Objects.Buffers;
         use GL.Types;
-        use GL.Types.Singles;
-        Model_Matrix   : GL.Types.Singles.Matrix4;
         Quad_Vertices  : Singles.Vector2_Array (1 .. 6);
         Texture_Coords : Singles.Vector2_Array (1 .. 6);
         Tex_Width      : constant Single := Single (aSprite.Texture_Index) /
@@ -177,13 +172,6 @@ package body Sprite_Manager is
                         Single'Image (Width) & ", " & Single'Image (Height));
             Utilities.Print_GL_Array2 ("Quad_Vertices", Quad_Vertices);
             Utilities.Print_GL_Array2 ("Texture_Coords", Texture_Coords);
-
-            GL.Objects.Programs.Use_Program (Game_Program);
-
-            Model_Matrix :=
-              Maths.Translation_Matrix ((-0.005 * Width, -0.005 * Height, 1.0)) *
-                Maths.Scaling_Matrix (0.01);
-            GL.Uniforms.Set_Single (Model_Uniform, Model_Matrix);
 
             Array_Buffer.Bind (Quad_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,

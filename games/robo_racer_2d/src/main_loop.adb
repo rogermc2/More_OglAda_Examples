@@ -12,6 +12,7 @@ with Glfw.Input;
 with Glfw.Input.Keys;
 with Glfw.Windows.Context;
 
+with Maths;
 with Program_Loader;
 with Utilities;
 
@@ -24,6 +25,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Black              : constant GL.Types.Colors.Color := (0.0, 0.0, 0.0, 1.0);
     Game_Program       : GL.Objects.Programs.Program;
     Model_Uniform      : GL.Uniforms.Uniform;
+    Projection_Uniform : GL.Uniforms.Uniform;
     Texture_Uniform    : GL.Uniforms.Uniform;
     Robot_Left         : Sprite_Manager.Sprite;
     Robot_Right        : Sprite_Manager.Sprite;
@@ -31,6 +33,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     Robot_Right_Strip  : Sprite_Manager.Sprite;
     Background         : Sprite_Manager.Sprite;
     Player             : Sprite_Manager.Sprite;
+
+    procedure Resize_GL_Scene  (Screen : in out Glfw.Windows.Window);
 
     --  ----------------------------------------------------------------------------
 
@@ -99,18 +103,45 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
     --  -------------------------------------------------------------------------
 
-    procedure Render is
+    procedure Render (Screen : in out Glfw.Windows.Window) is
     begin
         Utilities.Clear_Colour;
         Sprite_Manager.Clear_Buffers;
+        Resize_GL_Scene (Screen);
+        GL.Objects.Programs.Use_Program (Game_Program);
+        GL.Uniforms.Set_Single (Model_Uniform, GL.Types.Singles.Identity4);
         GL.Uniforms.Set_Int (Texture_Uniform, 0);
 
-        Sprite_Manager.Render (Background, Game_Program, Model_Uniform);
---          Sprite_Manager.Render (Robot_Left, Game_Program, Model_Uniform);
---          Sprite_Manager.Render (Robot_Right, Game_Program, Model_Uniform);
---          Sprite_Manager.Render (Robot_Left_Strip, Game_Program, Model_Uniform);
---          Sprite_Manager.Render (Robot_Right_Strip, Game_Program, Model_Uniform);
+        Sprite_Manager.Render (Background);
+--          Sprite_Manager.Render (Robot_Left);
+        Sprite_Manager.Render (Robot_Right);
+--          Sprite_Manager.Render (Robot_Left_Strip);
+--          Sprite_Manager.Render (Robot_Right_Strip);
     end Render;
+
+    --  ----------------------------------------------------------------------------
+
+    procedure Resize_GL_Scene (Screen : in out Glfw.Windows.Window) is
+        use GL.Objects.Programs;
+        use GL.Types;
+        Screen_Width      : Glfw.Size;
+        Screen_Height     : Glfw.Size;
+        VP_Width          : Size;
+        VP_Height         : Size;
+        Projection_Matrix : Singles.Matrix4 := Singles.Identity4;
+    begin
+        Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+        VP_Width := Size (Screen_Width) - 20;
+        VP_Height := Size (Screen_Height) - 20;
+        GL.Window.Set_Viewport (10, 10, VP_Width, VP_Height);
+
+        Maths.Init_Orthographic_Transform
+          (Single (VP_Height), 0.0, 0.0, Single (VP_Width), 0.0, 1.0,
+           Projection_Matrix);
+
+        Use_Program (Game_Program);
+        GL.Uniforms.Set_Single (Projection_Uniform, Projection_Matrix);
+    end Resize_GL_Scene;
 
     --  ----------------------------------------------------------------------------
 
@@ -128,6 +159,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
         Model_Uniform :=
           GL.Objects.Programs.Uniform_Location (Game_Program, "model_matrix");
+        Projection_Uniform :=
+          GL.Objects.Programs.Uniform_Location (Game_Program, "projection_matrix");
         Texture_Uniform :=
           GL.Objects.Programs.Uniform_Location (Game_Program, "texture2d");
 
@@ -154,7 +187,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 begin
     Start_Game (Main_Window);
     while Running loop
-        Render;
+        Render (Main_Window);
         Update;
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
         Glfw.Input.Poll_Events;
