@@ -92,10 +92,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Active (Robot_Right, True);
       Set_Velocity (Robot_Right, 50.0);
 
-      Set_Visible (Robot_Left, True);
-      Set_Active (Robot_Left, True);
-      Set_Velocity (Robot_Left, -80.0);
-
       Player := Robot_Right;
 
    exception
