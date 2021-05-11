@@ -1,14 +1,12 @@
 
-with GL_Maths;
-
-with Settings;
-
 package body Input_Callback is
    use Glfw.Input.Keys;
 
    type Key_State is array (Key'Range) of Boolean;
    type Joystick_Axes_State is array (Integer range <>) of Float;
    type Joystick_State  is array (Integer range <>) of Boolean;
+   type Character_Array is array (Integer range <>) of Character;
+   type Integer_Array is array (Integer range <>) of Integer;
 
    type Input_State_Data is record
       -- localised name of each key - not supporting wchar_t to protect 256 sz atlas
@@ -26,13 +24,12 @@ package body Input_Callback is
       Num_Joy_Buttons                : Integer := 0;
       Joystick_Axis_Locked           : Joystick_State (1 .. 8) :=
                                          (others => False);
-      Joystick_Axis_Locked_Sign      : GL_Maths.Character_Array (1 .. 8);
+      Joystick_Axis_Locked_Sign      : Character_Array (1 .. 8);
       Joystick_Buttons_Locked        : Joystick_State (1 .. 32) :=
                                          (others => False);
-      Joystick_Buttons               : GL_Maths.Integer_Array (1 .. 32) :=
+      Joystick_Buttons               : Integer_Array (1 .. 32) :=
                                          (others => 0);
       Joystick_Connected             : Boolean := False;
-      --  Steam needs this or the overlay falls to bits
       Mouse_Cursor_Hidden            : Boolean := True;
    end record;
 
@@ -65,7 +62,7 @@ package body Input_Callback is
    end Joystick_Connected;
 
    --  ------------------------------------------------------------------------
-   --  Based on input_handler.key_callback
+
    procedure Key_Changed (Object   : not null access Callback_Window;
                           Key      : Glfw.Input.Keys.Key;
                           Scancode : Glfw.Input.Keys.Scancode;
@@ -93,7 +90,7 @@ package body Input_Callback is
 
    --  ------------------------------------------------------------------------
 
-   function Key_Name (Index: Integer) return Unbounded_String is
+   function Key_Name (Index : Integer) return Unbounded_String is
    begin
       return Input_State.Key_Names (Index);
    end Key_Name;
@@ -136,7 +133,6 @@ package body Input_Callback is
       Result : Boolean := False;
    begin
       Result := Input_State.Joystick_Connected and then
-        not Settings.Joystick_Disabled and then
         Input_State.Joystick_Buttons (3) > 0 and then
         not Input_State.Joystick_Buttons_Locked (3);
 

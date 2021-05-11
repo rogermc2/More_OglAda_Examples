@@ -27,7 +27,7 @@ package Input_Callback is
                           Action   : Glfw.Input.Keys.Action;
                           Mods     : Glfw.Input.Keys.Modifiers);
 
-   function Key_Name (Index: Integer) return Unbounded_String;
+   function Key_Name (Index : Integer) return Unbounded_String;
    function Key_Pressed return Boolean;
    function Last_Key_Down return Glfw.Input.Keys.Key;
    procedure Lock_All_Keys;
