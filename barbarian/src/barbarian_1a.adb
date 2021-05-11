@@ -18,7 +18,7 @@ with Main_Loop;
 procedure Barbarian_1a is
    --  see http://flyx.github.io/OpenGLAda/glfw-v3.html for handling
    --  Glfw callbacks
-   Main_Window  : Input_Callback.Barbarian_Window;
+   Main_Window  : Input_Callback.Callback_Window;
    Window_Title : constant String := "Barbarian 1a";
 
 begin

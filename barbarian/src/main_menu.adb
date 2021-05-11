@@ -521,7 +521,7 @@ package body Main_Menu is
 
    --  ------------------------------------------------------------------------
 
-   function Update_Main_Menu (Window     : in out Input_Callback.Barbarian_Window;
+   function Update_Main_Menu (Window     : in out Input_Callback.Callback_Window;
                               Delta_Time : Float) return Boolean is
       use Glfw.Input.Keys;
       use Input_Handler;

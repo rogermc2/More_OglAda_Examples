@@ -24,7 +24,7 @@ package Main_Menu is
    procedure Set_Joystick_Name (Name : String);
    procedure Set_Menu_Open (State : Boolean);
    procedure Start_Menu_Title_Bounce;
-   function Update_Main_Menu (Window     : in out Input_Callback.Barbarian_Window;
+   function Update_Main_Menu (Window     : in out Input_Callback.Callback_Window;
                               Delta_Time : Float) return Boolean;
 
 end Main_Menu;

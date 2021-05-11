@@ -24,7 +24,7 @@ package GUI_Level_Chooser is
    procedure Set_Hammer_Kills (Value : Integer);
    procedure Set_Pillar_Crushes (Value : Integer);
    function Start_Level_Chooser_Loop
-     (Window : in out Input_Callback.Barbarian_Window;
+     (Window : in out Input_Callback.Callback_Window;
       Credits_Shader_Program : GL.Objects.Programs.Program;
       Custom_Levels : Boolean) return Boolean;
    procedure Unlock_Next_Map (Custom_Maps : Boolean);

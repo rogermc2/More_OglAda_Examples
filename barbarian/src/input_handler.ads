@@ -24,7 +24,7 @@ package Input_Handler is
    function Cycle_Weapons_Action return Integer;
    function Down_Action return Integer;
    function Hammer_Action return Integer;
-   procedure Init (Window : in out Input_Callback.Barbarian_Window);
+   procedure Init (Window : in out Input_Callback.Callback_Window);
    function Is_Action_Down (Action : Action_Range) return Boolean;
    function Javelin_Action return Integer;
    function Joy_Axis_Bindings (Index: Action_Range) return Integer;
@@ -48,7 +48,7 @@ package Input_Handler is
                                 return Integer;
    function Sword_Action return Integer;
    function Up_Action return Integer;
-   function Was_Action_Pressed (Window : in out Input_Callback.Barbarian_Window;
+   function Was_Action_Pressed (Window : in out Input_Callback.Callback_Window;
                                 Action_ID : Action_Range) return Boolean;
    function Wipe_Screen_Action return Integer;
 

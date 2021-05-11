@@ -155,7 +155,7 @@ package body Input_Handler is
 
    --  -------------------------------------------------------------------------
 
-   procedure Init (Window  : in out Input_Callback.Barbarian_Window) is
+   procedure Init (Window  : in out Input_Callback.Callback_Window) is
       --          Hide_Cursor : Boolean := True;
    begin
       Game_Utils.Game_Log ("--- Init Input Handler ---");
@@ -415,7 +415,7 @@ package body Input_Handler is
 
    --  ------------------------------------------------------------------------
 
-   function Was_Action_Pressed (Window : in out Input_Callback.Barbarian_Window;
+   function Was_Action_Pressed (Window : in out Input_Callback.Callback_Window;
                                 Action_ID : Action_Range) return Boolean is
       Result : Boolean := False;
    begin

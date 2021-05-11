@@ -9,7 +9,7 @@ package Input_Callback is
 
    --  see http://flyx.github.io/OpenGLAda/glfw-v3.html for handling
    --  Glfw callbacks
-   type Barbarian_Window is new Glfw.Windows.Window with null record;
+   type Callback_Window is new Glfw.Windows.Window with null record;
    type Key_String is array (Integer range <>) of Unbounded_String;
 
    Max_Keys : constant Integer := 348;
@@ -21,7 +21,7 @@ package Input_Callback is
    function Joystick_Connected return Boolean;
 
    overriding
-   procedure Key_Changed (Object   : not null access Barbarian_Window;
+   procedure Key_Changed (Object   : not null access Callback_Window;
                           Key      : Glfw.Input.Keys.Key;
                           Scancode : Glfw.Input.Keys.Scancode;
                           Action   : Glfw.Input.Keys.Action;
@@ -33,7 +33,7 @@ package Input_Callback is
    procedure Lock_All_Keys;
    procedure Set_Key_Pressed (Pressed : Boolean);
    function Was_Joy_Y_Pressed return Boolean;
-   function Was_Key_Pressed (Window : in out Barbarian_Window;
+   function Was_Key_Pressed (Window : in out Callback_Window;
                              aKey   : Glfw.Input.Keys.Key) return Boolean;
 
 end Input_Callback;

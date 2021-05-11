@@ -51,7 +51,7 @@ with Texture_Manager;
 
 package body Main_Loop is
 
-   procedure Main_Loop (Main_Window : in out Input_Callback.Barbarian_Window) is
+   procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       Black                   : constant Colors.Color := (0.0, 0.0, 0.0, 0.0);
       Grey                    : constant Colors.Color := (0.8, 0.8, 0.8, 0.0);
@@ -95,17 +95,17 @@ package body Main_Loop is
       Initialize_Exception            : Exception;
       Update_Exception                : Exception;
 
-      procedure Update_Logic_Steps (Window  : in out Input_Callback.Barbarian_Window;
+      procedure Update_Logic_Steps (Window  : in out Input_Callback.Callback_Window;
                                     Seconds : Float);
 
       --  ------------------------------------------------------------------------
 
-      procedure Do_Menu_Not_Open (Window     : in out Input_Callback.Barbarian_Window;
+      procedure Do_Menu_Not_Open (Window     : in out Input_Callback.Callback_Window;
                                   Delta_Time : Float;
                                   Is_Running : in out Boolean) is
       begin
-        Game_Utils.Game_Log
-              ("Main_Loop.Game_Loop Is_Running Main Menu not open");
+         Game_Utils.Game_Log
+           ("Main_Loop.Game_Loop Is_Running Main Menu not open");
          GUI.Update_GUIs (Delta_Time);
          Text.Update_Comic_Texts (Delta_Time);
          Text.Update_Particle_Texts (Delta_Time);
@@ -137,9 +137,10 @@ package body Main_Loop is
 
       --  ------------------------------------------------------------------------
 
-      procedure Do_Menu_Open (Window         : in out Input_Callback.Barbarian_Window;
-                              Delta_Time     : Float;
-                              Main_Menu_Quit : in out Boolean) is
+      procedure Do_Menu_Open
+        (Window         : in out Input_Callback.Callback_Window;
+         Delta_Time     : Float;
+         Main_Menu_Quit : in out Boolean) is
       begin
          --   Game_Utils.Game_Log ("Main_Loop.Do_Menu_Open");
          Main_Menu_Quit := not Main_Menu.Update_Main_Menu
@@ -161,7 +162,7 @@ package body Main_Loop is
 
       --  ------------------------------------------------------------------------
 
-      procedure Game_Loop (Window        : in out Input_Callback.Barbarian_Window;
+      procedure Game_Loop (Window        : in out Input_Callback.Callback_Window;
                            Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                            Ramp_Spec_Tex : GL.Objects.Textures.Texture) is
          use Glfw.Input.Keys;
@@ -219,7 +220,7 @@ package body Main_Loop is
 
                if Is_Running then
                   Player_1_View (Window, Fallback_Shader, Tile_Diff_Tex,
-                                  Tile_Spec_Tex, Ramp_Diff_Tex, Ramp_Spec_Tex,
+                                 Tile_Spec_Tex, Ramp_Diff_Tex, Ramp_Spec_Tex,
                                  Delta_Time, Dump_Video,
                                  Save_Screenshot);
                end if;
@@ -248,7 +249,7 @@ package body Main_Loop is
 
       --  --------------------------------------------------------------------
 
-      procedure Init_Modules (Window : in out Input_Callback.Barbarian_Window) is
+      procedure Init_Modules (Window : in out Input_Callback.Callback_Window) is
          Window_Width   : Glfw.Size;
          Window_Height  : Glfw.Size;
          Width          :  Single;
@@ -298,7 +299,7 @@ package body Main_Loop is
       --  ----------------------------------------------------------------------
 
       procedure Introduction
-        (Window                 : in out Input_Callback.Barbarian_Window;
+        (Window                 : in out Input_Callback.Callback_Window;
          Last_Time, Flash_Timer : in out Float; Is_Running : in out Boolean) is
          use Glfw.Input.Keys;
          use Maths.Single_Math_Functions;
@@ -328,7 +329,7 @@ package body Main_Loop is
                Main_Menu.Draw_Title_Only;
             end if;
 
---              GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
+            --              GUI.Draw_Controller_Button_Overlays (Elapsed_Time);
             Glfw.Input.Poll_Events;
             Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
 
@@ -352,7 +353,7 @@ package body Main_Loop is
 
       --  --------------------------------------------------------------------
 
-      procedure Main_Setup (Window     : in out Input_Callback.Barbarian_Window;
+      procedure Main_Setup (Window     : in out Input_Callback.Callback_Window;
                             Is_Running : in out Boolean) is
          use Glfw.Input;
          Current_Time  : Float := Float (Glfw.Time);
@@ -386,7 +387,7 @@ package body Main_Loop is
 
       --  ------------------------------------------------------------------------
 
-      procedure Run_Game (Window : in out Input_Callback.Barbarian_Window) is
+      procedure Run_Game (Window : in out Input_Callback.Callback_Window) is
          Window_Width    : Glfw.Size;
          Window_Height   : Glfw.Size;
          Width           : GL.Types.Single;
@@ -481,7 +482,7 @@ package body Main_Loop is
 
       --  --------------------------------------------------------------------
 
-      procedure Run_Main_Menu (Window     : in out Input_Callback.Barbarian_Window;
+      procedure Run_Main_Menu (Window     : in out Input_Callback.Callback_Window;
                                Is_Running : in out Boolean) is
          use Glfw.Input;
          Current_Time  : Float := Float (Glfw.Time);
@@ -535,7 +536,7 @@ package body Main_Loop is
 
       --  ------------------------------------------------------------------------
 
-      procedure Update_Logic_Steps (Window  : in out Input_Callback.Barbarian_Window;
+      procedure Update_Logic_Steps (Window  : in out Input_Callback.Callback_Window;
                                     Seconds : Float) is
          Accum_Time : Float := Seconds;
          Time_Step  : Integer := 0;

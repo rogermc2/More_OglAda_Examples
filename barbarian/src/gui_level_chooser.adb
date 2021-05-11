@@ -309,7 +309,7 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-   procedure Process_Input (Window       : in out Input_Callback.Barbarian_Window;
+   procedure Process_Input (Window       : in out Input_Callback.Callback_Window;
                             Menu_Open, Started_Loading_Map,
                             Cheat_Unlock : in out Boolean) is
       use Glfw.Input.Keys;
@@ -359,11 +359,12 @@ package body GUI_Level_Chooser is
 
    --  ------------------------------------------------------------------------
 
-   procedure Render_Level_Menu (Window                  : in out Input_Callback.Barbarian_Window;
-                                Credits_Shader_Program  : GL.Objects.Programs.Program;
-                                Delta_Time              : Float;
-                                Use_Custom_Levels, Started_Loading_Map,
-                                Level_Menu_Open         : Boolean) is
+   procedure Render_Level_Menu
+     (Window                  : in out Input_Callback.Callback_Window;
+      Credits_Shader_Program  : GL.Objects.Programs.Program;
+      Delta_Time              : Float;
+      Use_Custom_Levels, Started_Loading_Map,
+      Level_Menu_Open         : Boolean) is
       use Level_Menu_Manager.Levels_Package;
       use Custom_Levels_Manager.Custom_Levels_Package;
       LeveL_Menu    : Level_Menu_Manager.Level_Data;
@@ -514,7 +515,7 @@ package body GUI_Level_Chooser is
    --  ------------------------------------------------------------------------
 
    function Start_Level_Chooser_Loop
-     (Window                 : in out Input_Callback.Barbarian_Window;
+     (Window                 : in out Input_Callback.Callback_Window;
       Credits_Shader_Program : GL.Objects.Programs.Program;
       Custom_Levels          : Boolean) return Boolean is
       use GL.Toggles;

@@ -14,11 +14,11 @@ package Menu_Support is
 
    Menu_Support_Error : Exception;
 
-   procedure Check_Close_Menu_Credits (Window      : in out Barbarian_Window;
+   procedure Check_Close_Menu_Credits (Window      : in out Callback_Window;
                                        Credits_Open, End_Story_Open,
                                        Menu_Closed : in out Boolean;
                                        Text_Timer  : in out Float);
-   function Confirm_Quit_Open (Window            : in out Barbarian_Window;
+   function Confirm_Quit_Open (Window            : in out Callback_Window;
                                Confirm_Quit_Open : in out Boolean)
                                return Boolean;
    procedure Do_Bounce (Title_Bounce_Timer : in out Float; Elapsed : Float;
@@ -33,7 +33,7 @@ package Menu_Support is
       Cursor_Scale          : GL.Types.Single;
       Cursor_Point_Count    : Integer; Elapsed : Float);
    procedure General_Menu_Support
-     (Window                    : in out Barbarian_Window;
+     (Window                    : in out Callback_Window;
       Joystick_Detected_Text    : Integer;
       Joy_Name                  : String;
       Menu_Was_Closed, Graphics_Open, Audio_Open,
@@ -43,14 +43,14 @@ package Menu_Support is
       Since_Last_Key            : in out Float;
       Menu_Cursor_Item          : in out Menu_Strings.Main_Choice_Type);
 
-   procedure Process_Menu_Audio (Window            : in out Barbarian_Window;
+   procedure Process_Menu_Audio (Window            : in out Callback_Window;
                                  Audio_Value_Text  : Audio_Text_Array;
                                  Menu_Audio_Open   : in out Boolean;
                                  Since_Last_Key    : in out Float;
                                  Audio_Cursor_Item : in out Audio_Choice_Type);
    procedure Process_Menu_Cal_GP;
    procedure Process_Menu_Cal_KB
-     (Window                          : in out Barbarian_Window;
+     (Window                          : in out Callback_Window;
       KB_Binding_Text                 : GL_Maths.Integer_Array;
       Greatest_Axis_Text              : Integer;
       Already_Bound_Text              : Integer;
@@ -58,14 +58,14 @@ package Menu_Support is
       Already_Bound, Menu_Cal_KB_Open : in out Boolean;
       Since_Last_Key                  : in out Float);
    function Process_Menu_Graphics
-     (Window                     : in out Barbarian_Window;
+     (Window                     : in out Callback_Window;
       Graphic_Value_Text         : Menu_Strings.Graphic_Value_Array;
       Menu_Gr_Open, Restart_Flag : in out Boolean;
       Since_Last_Key             : in out Float;
       Cursor_Item                : in out Menu_Strings.Graphic_Choice_Type;
       Video_Mode                 : in out Integer)
       return Boolean;
-   procedure Process_Menu_Input (Window                  : in out Barbarian_Window;
+   procedure Process_Menu_Input (Window                  : in out Callback_Window;
                                  Joy_Name                : String;
                                  Since_Last_Key          : in out Float;
                                  Menu_Input_Open, Menu_Cal_KB_Open,

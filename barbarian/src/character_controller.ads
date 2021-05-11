@@ -79,7 +79,7 @@ package Character_Controller is
    function Total_Treasure_Found return Integer;
    procedure Update_Character_Motion (Character : in out Barbarian_Character;
                                       Seconds : Float);
-   procedure Update_Characters (Window  : in out Input_Callback.Barbarian_Window;
+   procedure Update_Characters (Window  : in out Input_Callback.Callback_Window;
                                 Seconds : Float);
    procedure Update_Decay (Character : in out Barbarian_Character;
                            Seconds : Float);

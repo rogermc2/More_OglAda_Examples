@@ -111,7 +111,7 @@ package body GL_Utils is
    --  ------------------------------------------------------------------------
 
    procedure Frame_Buffer_Resize
-     (Window : in out Input_Callback.Barbarian_Window) is
+     (Window : in out Input_Callback.Callback_Window) is
       use GL.Types;
       use Camera;
       Width  : Glfw.Size;
@@ -414,7 +414,7 @@ package body GL_Utils is
 
    --  ------------------------------------------------------------------------
 
-   procedure Window_Resize (Window : in out Input_Callback.Barbarian_Window) is
+   procedure Window_Resize (Window : in out Input_Callback.Callback_Window) is
       use GL.Types;
       use Camera;
       Width  : Glfw.Size;

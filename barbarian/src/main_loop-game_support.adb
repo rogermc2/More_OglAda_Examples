@@ -75,7 +75,7 @@ package body Main_Loop.Game_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Check_Keys (Window          : in out Input_Callback.Barbarian_Window;
+   procedure Check_Keys (Window          : in out Input_Callback.Callback_Window;
                          Save_Screenshot : in out Boolean) is
       use Glfw.Input.Keys;
    begin
@@ -103,7 +103,7 @@ package body Main_Loop.Game_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Player_1_View (Window          : in out Input_Callback.Barbarian_Window;
+   procedure Player_1_View (Window          : in out Input_Callback.Callback_Window;
                             Fallback_Shader : GL.Objects.Programs.Program;
                             Tile_Diff_Tex, Tile_Spec_Tex, Ramp_Diff_Tex,
                             Ramp_Spec_Tex   : GL.Objects.Textures.Texture;

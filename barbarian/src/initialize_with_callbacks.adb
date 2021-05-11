@@ -12,7 +12,7 @@ with Glfw.Windows.Hints;
 with Utilities;
 
 procedure Initialize_With_Callbacks
-  (Main_Window  : in out Input_Callback.Barbarian_Window;
+  (Main_Window  : in out Input_Callback.Callback_Window;
    Window_Title : String; Show_Data : Boolean := True) is
 
    procedure Enable_Callbacks is

@@ -66,7 +66,7 @@ package body Input_Callback is
 
    --  ------------------------------------------------------------------------
    --  Based on input_handler.key_callback
-   procedure Key_Changed (Object   : not null access Barbarian_Window;
+   procedure Key_Changed (Object   : not null access Callback_Window;
                           Key      : Glfw.Input.Keys.Key;
                           Scancode : Glfw.Input.Keys.Scancode;
                           Action   : Glfw.Input.Keys.Action;
@@ -149,7 +149,7 @@ package body Input_Callback is
 
    --  ------------------------------------------------------------------------
 
-   function Was_Key_Pressed (Window : in out Barbarian_Window;
+   function Was_Key_Pressed (Window : in out Callback_Window;
                              aKey   : Key) return Boolean is
       use Glfw.Input;
       Key_Pressed : constant Boolean :=

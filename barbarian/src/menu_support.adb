@@ -57,7 +57,7 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Check_Close_Menu_Credits (Window      : in out Barbarian_Window;
+   procedure Check_Close_Menu_Credits (Window      : in out Callback_Window;
                                        Credits_Open, End_Story_Open,
                                        Menu_Closed : in out Boolean;
                                        Text_Timer  : in out Float) is
@@ -80,9 +80,9 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   function Confirm_Quit_Open (Window            : in out Barbarian_Window;
+   function Confirm_Quit_Open (Window            : in out Callback_Window;
                                Confirm_Quit_Open : in out Boolean)
-                                return Boolean is
+                               return Boolean is
       use Glfw.Input.Keys;
       use Input_Handler;
       Result : Boolean := False;
@@ -217,7 +217,7 @@ package body Menu_Support is
    --  -------------------------------------------------------------------------
 
    procedure General_Menu_Support
-     (Window                                       : in out Barbarian_Window;
+     (Window                                       : in out Callback_Window;
       Joystick_Detected_Text                       : Integer;
       Joy_Name                                     : String;
       Menu_Was_Closed, Graphics_Open, Audio_Open,
@@ -335,13 +335,14 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Cal_KB (Window                             : in out Barbarian_Window;
-                                  KB_Binding_Text                    : GL_Maths.Integer_Array;
-                                  Greatest_Axis_Text                 : Integer;
-                                  Already_Bound_Text                 : Integer;
-                                  Modify_Binding_Mode,
-                                  Already_Bound, Menu_Cal_KB_Open    : in out Boolean;
-                                  Since_Last_Key                     : in out Float) is
+   procedure Process_Menu_Cal_KB
+     (Window                             : in out Callback_Window;
+      KB_Binding_Text                    : GL_Maths.Integer_Array;
+      Greatest_Axis_Text                 : Integer;
+      Already_Bound_Text                 : Integer;
+      Modify_Binding_Mode,
+      Already_Bound, Menu_Cal_KB_Open    : in out Boolean;
+      Since_Last_Key                     : in out Float) is
       use Glfw.Input.Keys;
       use Input_Handler;
       Pos_Index    : Integer := 1;
@@ -421,7 +422,7 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Audio (Window             : in out Barbarian_Window;
+   procedure Process_Menu_Audio (Window             : in out Callback_Window;
                                  Audio_Value_Text   : Audio_Text_Array;
                                  Menu_Audio_Open    : in out Boolean;
                                  Since_Last_Key     : in out Float;
@@ -506,7 +507,7 @@ package body Menu_Support is
    --  -------------------------------------------------------------------------
 
    function Process_Menu_Graphics
-     (Window                     : in out Barbarian_Window;
+     (Window                     : in out Callback_Window;
       Graphic_Value_Text         : Menu_Strings.Graphic_Value_Array;
       Menu_Gr_Open, Restart_Flag : in out Boolean;
       Since_Last_Key             : in out Float;
@@ -771,7 +772,7 @@ package body Menu_Support is
 
    --  -------------------------------------------------------------------------
 
-   procedure Process_Menu_Input (Window                    : in out Barbarian_Window;
+   procedure Process_Menu_Input (Window                    : in out Callback_Window;
                                  Joy_Name                  : String;
                                  Since_Last_Key            : in out Float;
                                  Menu_Input_Open, Menu_Cal_KB_Open,

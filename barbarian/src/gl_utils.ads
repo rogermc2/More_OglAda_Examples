@@ -50,7 +50,7 @@ package GL_Utils is
    function Create_4D_VBO (Data : Vector4_Array)
                            return GL.Objects.Buffers.Buffer;
    function Current_Program return GL.Objects.Programs.Program;
-   procedure Frame_Buffer_Resize (Window : in out Input_Callback.Barbarian_Window);
+   procedure Frame_Buffer_Resize (Window : in out Input_Callback.Callback_Window);
    function Is_Edit_Mode return Boolean;
    function Level_Par_Time return String;
    function Read_Vec2 (Vec : String) return GL.Types.Singles.Vector2;
@@ -80,7 +80,7 @@ package GL_Utils is
    procedure Update_Vertex_Count (Change : Integer);
    function Verify_Bound_Framebuffer return Boolean;
    function Video_Seconds_Total return Integer;
-   procedure Window_Resize (Window : in out Input_Callback.Barbarian_Window);
+   procedure Window_Resize (Window : in out Input_Callback.Callback_Window);
 
 private
    type Gfx_Stats is record

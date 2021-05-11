@@ -130,7 +130,7 @@ package body Character_Controller is
                                         Seconds            : Float);
    procedure Update_Desired_Velocity (Character : in out Barbarian_Character);
 
-   procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
+   procedure Update_Player (Window    : in out Input_Callback.Callback_Window;
                             Player_ID : Integer; Seconds : Float);
 
    --  -------------------------------------------------------------------------
@@ -1066,7 +1066,7 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   procedure Open_Door (Window    : in out Input_Callback.Barbarian_Window;
+   procedure Open_Door (Window    : in out Input_Callback.Callback_Window;
                         Character : Barbarian_Character) is
       use Maths;
       Hand_U : Int := Map (Character) (GL.X);
@@ -1558,7 +1558,7 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Characters (Window  : in out Input_Callback.Barbarian_Window;
+   procedure Update_Characters (Window  : in out Input_Callback.Callback_Window;
                                 Seconds : Float) is
       use Maths;
       use Tiles_Manager;
@@ -2000,7 +2000,7 @@ package body Character_Controller is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update_Player (Window    : in out Input_Callback.Barbarian_Window;
+   procedure Update_Player (Window    : in out Input_Callback.Callback_Window;
                             Player_ID : Integer; Seconds : Float) is
       use GL.Types.Singles;
       use Maths;
