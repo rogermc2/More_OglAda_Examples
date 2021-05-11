@@ -31,7 +31,7 @@ package Sprite_Manager is
                                    Use_Transparency : Boolean);
    procedure Set_Velocity (aSprite : in out Sprite; Velocity : Float);
    procedure Set_Visible (aSprite : in out Sprite; Visible : Boolean);
-   procedure Update (aSprite : Sprite; Delta_Time : Float);
+   procedure Update (aSprite : in out Sprite; Delta_Time : Float);
 
 private
    type Object_Size is record

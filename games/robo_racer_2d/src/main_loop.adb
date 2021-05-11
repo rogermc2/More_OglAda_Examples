@@ -181,15 +181,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Delta_Time   : constant Float := Current_Time - Last_Time;
    begin
       Last_Time := Current_Time;
-      Render_Sprites (Screen);
       Update_Sprites (Delta_Time);
+      Render_Sprites (Screen);
    end Update_Game;
 
    --  -------------------------------------------------------------------------
 
    procedure Update_Sprites (Delta_Time : Float) is
    begin
-      Utilities.Clear_Colour;
       Sprite_Manager.Update (Background, Delta_Time);
       Sprite_Manager.Update (Robot_Left, Delta_Time);
       Sprite_Manager.Update (Robot_Right, Delta_Time);
