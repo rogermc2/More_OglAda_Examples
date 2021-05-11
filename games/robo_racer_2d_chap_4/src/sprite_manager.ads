@@ -27,6 +27,7 @@ package Sprite_Manager is
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
    procedure Set_Number_Of_Frames (aSprite : in out Sprite; Num : Integer);
    procedure Set_Position (aSprite : in out Sprite; X, Y : Float);
+   procedure Set_Position (aSprite : in out Sprite; Position : Point);
    procedure Set_Use_Transparency (aSprite          : in out Sprite;
                                    Use_Transparency : Boolean);
    procedure Set_Velocity (aSprite : in out Sprite; Velocity : Float);

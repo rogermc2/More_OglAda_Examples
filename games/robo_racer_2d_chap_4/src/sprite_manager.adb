@@ -228,6 +228,13 @@ package body Sprite_Manager is
 
     --  ------------------------------------------------------------------------
 
+   procedure Set_Position (aSprite : in out Sprite; Position : Point) is
+    begin
+        aSprite.Position := Position;
+    end Set_Position;
+
+    --  ------------------------------------------------------------------------
+
     procedure Set_Use_Transparency (aSprite          : in out Sprite;
                                     Use_Transparency : Boolean) is
     begin
