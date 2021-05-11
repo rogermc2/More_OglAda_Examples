@@ -21,7 +21,7 @@ with Sprite_Manager;
 
 --  ------------------------------------------------------------------------
 
-procedure Main_Loop (Main_Window : in out Input_Callback.Call_Back_Window) is
+procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     Back               : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
     Last_Time          : Float := 0.0;
@@ -36,11 +36,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Call_Back_Window) is
     Background         : Sprite_Manager.Sprite;
     Player             : Sprite_Manager.Sprite;
 
-    procedure Resize_GL_Scene  (Screen : in out Input_Callback.Call_Back_Window);
+    procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
     --  ----------------------------------------------------------------------------
 
-    procedure Load_Sprites (Screen : in out Input_Callback.Call_Back_Window) is
+    procedure Load_Sprites (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
         use Sprite_Manager;
         Screen_Width    : Glfw.Size;
@@ -103,7 +103,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Call_Back_Window) is
 
     --  -------------------------------------------------------------------------
 
-    procedure Process_Input (Screen : in out Input_Callback.Call_Back_Window) is
+    procedure Process_Input (Screen : in out Input_Callback.Callback_Window) is
         use Input_Manager;
         use Sprite_Manager;
     begin
@@ -131,7 +131,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Call_Back_Window) is
 
     --  -------------------------------------------------------------------------
 
-    procedure Render_Sprites (Screen : in out Input_Callback.Call_Back_Window) is
+    procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
     begin
         Utilities.Clear_Colour;
         Sprite_Manager.Clear_Buffers;
@@ -149,7 +149,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Call_Back_Window) is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Resize_GL_Scene (Screen : in out Input_Callback.Call_Back_Window) is
+    procedure Resize_GL_Scene (Screen : in out Input_Callback.Callback_Window) is
         use GL.Objects.Programs;
         use GL.Types;
         Screen_Width      : Glfw.Size;
@@ -174,7 +174,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Call_Back_Window) is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Start_Game (Screen : in out Input_Callback.Call_Back_Window) is
+    procedure Start_Game (Screen : in out Input_Callback.Callback_Window) is
         use Program_Loader;
         use GL.Objects.Shaders;
     begin
@@ -204,7 +204,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Call_Back_Window) is
 
     --  -------------------------------------------------------------------------
 
-    procedure Update (Window : in out Input_Callback.Call_Back_Window;
+    procedure Update (Window : in out Input_Callback.Callback_Window;
                       Delta_Time : Float) is
     begin
         Input_Manager.Update (Window, Delta_Time);
@@ -217,7 +217,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Call_Back_Window) is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Update_Game (Window : in out Input_Callback.Call_Back_Window) is
+    procedure Update_Game (Window : in out Input_Callback.Callback_Window) is
         Current_Time : constant Float := Float (Glfw.Time);
         Delta_Time   : constant Float := Current_Time - Last_Time;
     begin

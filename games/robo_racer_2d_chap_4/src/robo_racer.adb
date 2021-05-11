@@ -14,7 +14,7 @@ with Main_Loop;
 
 procedure Robo_Racer is
 --      Main_Window : Glfw.Windows.Window;
-    Main_Window : Input_Callback.Call_Back_Window;
+    Main_Window : Input_Callback.Callback_Window;
     Window_Title : constant String := "Robo Racer 2D Chapter 4";
 begin
     Glfw.Init;

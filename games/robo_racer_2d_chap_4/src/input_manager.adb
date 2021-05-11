@@ -14,7 +14,7 @@ package body Input_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Update (Window : in out Input_Callback.Call_Back_Window;
+    procedure Update (Window : in out Input_Callback.Callback_Window;
                       Delta_Time : Float) is
         use Glfw.Input.Keys;
         use Input_Callback;

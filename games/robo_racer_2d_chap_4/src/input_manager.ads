@@ -7,7 +7,7 @@ package Input_Manager is
                     Command_Down, Command_Quit);
 
     function Get_Command return Command;
-    procedure Update (Window : in out Input_Callback.Call_Back_Window;
+    procedure Update (Window : in out Input_Callback.Callback_Window;
                       Delta_Time : Float);
 
 end Input_Manager;
