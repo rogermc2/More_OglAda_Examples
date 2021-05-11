@@ -15,7 +15,7 @@ package body Keyboard_Handler is
       elsif Input_Callback.Is_Key_Down (Right) then
          Status.X_Offset := Status.X_Offset + 0.03;
 
-      elsif Input_Callback.Was_Key_Pressed (Window, Up) then
+      elsif Input_Callback.Is_Key_Down (Up) then
          Status.X_Scale := 1.5 * Status.X_Scale;
       elsif Input_Callback.Is_Key_Down (Down) then
          Status.X_Scale := 0.9 * Status.X_Scale;
