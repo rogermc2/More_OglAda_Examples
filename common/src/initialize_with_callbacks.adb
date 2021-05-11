@@ -1,17 +1,18 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Toggles;
+
+with Glfw;
 with Glfw.Input.Mouse;
 with Glfw.Windows;
-with Glfw.Windows.Hints;
 with Glfw.Windows.Context;
-
-with  GL.Toggles;
+with Glfw.Windows.Hints;
 
 with Utilities;
 
 procedure Initialize_With_Callbacks
-  (Main_Window  : in out Input_Callback.Call_Back_Window;
+  (Main_Window  : in out Input_Callback.Callback_Window;
    Window_Title : String; Show_Data : Boolean := True) is
 
    procedure Enable_Callbacks is
