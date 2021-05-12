@@ -31,6 +31,6 @@ package body Keyboard_Handler is
          Status.X_Offset := 0.0;
          Status.X_Scale := 1.0;
       end if;
-   end ;
+   end Key_Down;
 
 end Keyboard_Handler;
