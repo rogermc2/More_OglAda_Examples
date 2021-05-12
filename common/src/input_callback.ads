@@ -32,8 +32,8 @@ package Input_Callback is
    function Last_Key_Down return Glfw.Input.Keys.Key;
    procedure Lock_All_Keys;
    procedure Set_Key_Pressed (Pressed : Boolean);
-   function Was_Joy_Y_Pressed return Boolean;
-   function Was_Key_Pressed (Window : in out Callback_Window;
-                             aKey   : Glfw.Input.Keys.Key) return Boolean;
+--     function Was_Joy_Y_Pressed return Boolean;
+--     function Was_Key_Pressed (Window : in out Callback_Window;
+--                               aKey   : Glfw.Input.Keys.Key) return Boolean;
 
 end Input_Callback;

@@ -128,35 +128,35 @@ package body Input_Callback is
    end Set_Key_Pressed;
 
    --  ------------------------------------------------------------------------
-
-   function Was_Joy_Y_Pressed return Boolean is
-      Result : Boolean := False;
-   begin
-      Result := Input_State.Joystick_Connected and then
-        Input_State.Joystick_Buttons (3) > 0 and then
-        not Input_State.Joystick_Buttons_Locked (3);
-
-      if Result then
-         Input_State.Joystick_Buttons_Locked (3) := True;
-      end if;
-
-      return Result;
-   end Was_Joy_Y_Pressed;
+--
+--     function Was_Joy_Y_Pressed return Boolean is
+--        Result : Boolean := False;
+--     begin
+--        Result := Input_State.Joystick_Connected and then
+--          Input_State.Joystick_Buttons (3) > 0 and then
+--          not Input_State.Joystick_Buttons_Locked (3);
+--
+--        if Result then
+--           Input_State.Joystick_Buttons_Locked (3) := True;
+--        end if;
+--
+--        return Result;
+--     end Was_Joy_Y_Pressed;
 
    --  ------------------------------------------------------------------------
-
-   function Was_Key_Pressed (Window : in out Callback_Window;
-                             aKey   : Key) return Boolean is
-      use Glfw.Input;
-      Key_Pressed : constant Boolean :=
-                      Window'Access.Key_State (aKey) = Pressed and
-                        not Input_State.Keys_Locked (aKey);
-   begin
-      if Key_Pressed then
-         Input_State.Keys_Locked (aKey) := True;
-      end if;
-      return Key_Pressed;
-   end Was_Key_Pressed;
+--
+--     function Was_Key_Pressed (Window : in out Callback_Window;
+--                               aKey   : Key) return Boolean is
+--        use Glfw.Input;
+--        Key_Pressed : constant Boolean :=
+--                        Window'Access.Key_State (aKey) = Pressed and
+--                          not Input_State.Keys_Locked (aKey);
+--     begin
+--        if Key_Pressed then
+--           Input_State.Keys_Locked (aKey) := True;
+--        end if;
+--        return Key_Pressed;
+--     end Was_Key_Pressed;
 
    --  ------------------------------------------------------------------------
 
