@@ -108,8 +108,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       use Input_Manager;
       use Sprite_Manager;
    begin
-      Put_Line ("Main_Loop.Process_Input Command: " &
-                Command'Image (Get_Command));
+--        Put_Line ("Main_Loop.Process_Input Command: " &
+--                  Command'Image (Get_Command));
       case Get_Command is
          when Command_Left =>
             if Player = Robot_Right then

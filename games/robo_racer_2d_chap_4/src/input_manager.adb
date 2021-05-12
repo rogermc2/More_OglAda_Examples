@@ -1,5 +1,5 @@
 
-with Ada.Text_IO; use Ada.Text_IO;
+--  with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Keys;
 
@@ -35,8 +35,8 @@ package body Input_Manager is
          else
             Current_Command := Command_Stop;
          end if;
-      Put_Line ("Input_Manager.Update Command: " &
-                  Command'Image (Get_Command));
+--        Put_Line ("Input_Manager.Update Command: " &
+--                    Command'Image (Current_Command));
       delay (1.0);
     end Update;
 
