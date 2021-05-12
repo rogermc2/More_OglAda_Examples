@@ -1,6 +1,4 @@
 
-with Sprite_Manager;
-
 package body Player_Manager is
 
    Player_List    : array (Player_Index range Player_Index'Range) of
@@ -13,6 +11,13 @@ package body Player_Manager is
    begin
       return Current_Player;
    end Get_Current_Player;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Player  (Player : Player_Index) return Sprite_Manager.Sprite is
+   begin
+      return Player_List (Player);
+   end Get_Player;
 
    --  -------------------------------------------------------------------------
 
@@ -51,8 +56,18 @@ package body Player_Manager is
       Set_Velocity (Player_List (Robot_Right), 50.0);
 
       Current_Player := Robot_Right;
+      Set_Velocity (Player_List (Current_Player), 50.0);
 
    end Init_Players;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Render_Players is
+   begin
+      for index in Player_Index'Range loop
+         Sprite_Manager.Render (Player_List (index));
+      end loop;
+   end Render_Players;
 
    --  -------------------------------------------------------------------------
 
@@ -60,6 +75,15 @@ package body Player_Manager is
    begin
       Current_Player := Player;
    end Set_Current_Player;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Update (Delta_Time : Float) is
+   begin
+      for index in Player_Index'Range loop
+         Sprite_Manager.Update (Player_List (index), Delta_Time);
+      end loop;
+   end Update;
 
    --  -------------------------------------------------------------------------
 

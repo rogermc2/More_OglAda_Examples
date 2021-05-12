@@ -16,6 +16,7 @@ with Maths;
 with Program_Loader;
 with Utilities;
 
+with Player_Manager;
 with Sprite_Manager;
 
 --  ------------------------------------------------------------------------
@@ -28,12 +29,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Model_Uniform      : GL.Uniforms.Uniform;
    Projection_Uniform : GL.Uniforms.Uniform;
    Texture_Uniform    : GL.Uniforms.Uniform;
-   Robot_Left         : Sprite_Manager.Sprite;
-   Robot_Right        : Sprite_Manager.Sprite;
-   Robot_Left_Strip   : Sprite_Manager.Sprite;
-   Robot_Right_Strip  : Sprite_Manager.Sprite;
    Background         : Sprite_Manager.Sprite;
-   Player             : Sprite_Manager.Sprite;
 
    procedure Resize_GL_Scene  (Screen : in out Glfw.Windows.Window);
    procedure Update_Sprites (Delta_Time : Float);
@@ -58,41 +54,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Set_Number_Of_Frames (Background, 1);
       Add_Texture (Background, "src/resources/background.png", False);
 
-      Set_Frame_Size (Robot_Right, 100.0, 125.0);
-      Set_Number_Of_Frames (Robot_Right, 4);
-      Set_Position (Robot_Right, 10.0, 50.0);
-      Add_Texture (Robot_Right, "src/resources/robot_right_00.png");
-      Add_Texture (Robot_Right, "src/resources/robot_right_01.png");
-      Add_Texture (Robot_Right, "src/resources/robot_right_02.png");
-      Add_Texture (Robot_Right, "src/resources/robot_right_03.png");
-
-      Set_Frame_Size (Robot_Left, 100.0, 125.0);
-      Set_Number_Of_Frames (Robot_Left, 4);
-      Set_Position (Robot_Left, 500.0, 50.0);
-      Add_Texture (Robot_Left, "src/resources/robot_left_00.png");
-      Add_Texture (Robot_Left, "src/resources/robot_left_01.png");
-      Add_Texture (Robot_Left, "src/resources/robot_left_02.png");
-      Add_Texture (Robot_Left, "src/resources/robot_left_03.png");
-
-      Set_Frame_Size (Robot_Right_Strip, 125.0, 100.0);
-      Set_Number_Of_Frames (Robot_Right_Strip, 4);
-      Set_Position (Robot_Right_Strip, 0.0, 50.0);
-      Add_Texture (Robot_Right_Strip, "src/resources/robot_right_strip.png");
-
-      Set_Frame_Size (Robot_Left_Strip, 125.0, 100.0);
-      Set_Number_Of_Frames (Robot_Left_Strip, 4);
-      Set_Position (Robot_Left_Strip, 0.0, 50.0);
-      Add_Texture (Robot_Left_Strip, "src/resources/robot_left_strip.png");
+      Player_Manager.Init_Players;
 
       Set_Visible (Background, True);
       Set_Active (Background, True);
       Set_Velocity (Background, -50.0);
-
-      Set_Visible (Robot_Right, True);
-      Set_Active (Robot_Right, True);
-      Set_Velocity (Robot_Right, 50.0);
-
-      Player := Robot_Right;
 
    exception
       when anError : others =>
@@ -113,10 +79,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Uniforms.Set_Int (Texture_Uniform, 0);
 
       Sprite_Manager.Render (Background);
-      Sprite_Manager.Render (Robot_Left);
-      Sprite_Manager.Render (Robot_Right);
-      Sprite_Manager.Render (Robot_Left_Strip);
-      Sprite_Manager.Render (Robot_Right_Strip);
+      Player_Manager.Render_Players;
    end Render_Sprites;
 
    --  ----------------------------------------------------------------------------
@@ -190,10 +153,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Update_Sprites (Delta_Time : Float) is
    begin
       Sprite_Manager.Update (Background, Delta_Time);
-      Sprite_Manager.Update (Robot_Left, Delta_Time);
-      Sprite_Manager.Update (Robot_Right, Delta_Time);
-      Sprite_Manager.Update (Robot_Left_Strip, Delta_Time);
-      Sprite_Manager.Update (Robot_Right_Strip, Delta_Time);
+      Player_Manager.Update (Delta_Time);
    end Update_Sprites;
 
    --  ----------------------------------------------------------------------------
