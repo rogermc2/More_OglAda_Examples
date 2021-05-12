@@ -1,5 +1,5 @@
 
---  with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Blending;
@@ -132,13 +132,19 @@ package body Sprite_Manager is
 
    procedure Jump (aSprite : in out Sprite; Status : Sprite_Status) is
    begin
+      Put_Line ("Sprite_Manager.Jump");
       if Status = Sprite_Down then
-         if aSprite.Position.Y < 470.0 then
-            aSprite.Position.Y := aSprite.Position.Y + 75.0;
-         end if;
-      else
-         if aSprite.Position.Y >= 470.0 then
+         Put_Line ("Sprite_Manager.Jump down, Position.Y: " &
+                  Float'Image (aSprite.Position.Y));
+         if aSprite.Position.Y > 470.0 then
             aSprite.Position.Y := aSprite.Position.Y - 75.0;
+         end if;
+      else  --  Sprite_Up
+         Put_Line ("Sprite_Manager.Jump up" &
+                  Float'Image (aSprite.Position.Y));
+--           if aSprite.Position.Y <= 470.0 then
+         if aSprite.Position.Y <= 470.0 then
+            aSprite.Position.Y := aSprite.Position.Y + 75.0;
          end if;
       end if;
     end Jump;

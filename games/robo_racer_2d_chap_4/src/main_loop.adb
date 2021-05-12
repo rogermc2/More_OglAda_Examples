@@ -107,6 +107,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure Process_Input is
       use Input_Manager;
       use Sprite_Manager;
+      Step : constant Float := 100.0;
    begin
 --        Put_Line ("Main_Loop.Process_Input Command: " &
 --                  Command'Image (Get_Command));
@@ -120,8 +121,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Player := Robot_Left;
             Set_Active (Player, True);
             Set_Visible (Player, True);
-            Set_Velocity (Player, -50.0);
-            Set_Velocity (Background, 50.0);
+            Set_Velocity (Player, -Step);
+            Set_Velocity (Background, Step);
          when Command_Right =>
             if Player = Robot_Left then
                Set_Active (Robot_Left, False);
@@ -131,8 +132,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Player := Robot_Right;
             Set_Active (Player, True);
             Set_Visible (Player, True);
-            Set_Velocity (Player, 50.0);
-            Set_Velocity (Background, -50.0);
+            Set_Velocity (Player, Step);
+            Set_Velocity (Background, -Step);
          when Command_Stop =>
             Set_Velocity (Background, 0.0);
             Set_Velocity (Player, 0.0);
@@ -219,7 +220,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    procedure Update (Delta_Time : Float) is
    begin
-      Input_Manager.Update;
+      Input_Manager.Update_Command;
       Process_Input;
       Sprite_Manager.Update (Background, Delta_Time);
       Sprite_Manager.Update (Robot_Left, Delta_Time);

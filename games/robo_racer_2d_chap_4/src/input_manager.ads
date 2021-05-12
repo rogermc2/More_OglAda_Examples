@@ -5,6 +5,6 @@ package Input_Manager is
                      Command_Down);
 
     function Get_Command return Command;
-    procedure Update;
+    procedure Update_Command;
 
 end Input_Manager;
