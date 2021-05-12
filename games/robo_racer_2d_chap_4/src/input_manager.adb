@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Glfw.Input.Keys;
 
 package body Input_Manager is
@@ -14,8 +16,7 @@ package body Input_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Update (Window : in out Input_Callback.Callback_Window;
-                      Delta_Time : Float) is
+    procedure Update (Window : in out Input_Callback.Callback_Window) is
         use Glfw.Input.Keys;
         use Input_Callback;
     begin
@@ -34,6 +35,9 @@ package body Input_Manager is
          else
             Current_Command := Command_Stop;
          end if;
+      Put_Line ("Input_Manager.Update Command: " &
+                  Command'Image (Get_Command));
+      delay (1.0);
     end Update;
 
     --  ------------------------------------------------------------------------

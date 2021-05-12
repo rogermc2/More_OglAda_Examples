@@ -109,6 +109,13 @@ package body Sprite_Manager is
 
     --  ------------------------------------------------------------------------
 
+   function Is_Clicked (aSprite : Sprite) return Boolean is
+    begin
+        return aSprite.Is_Clicked;
+    end Is_Clicked;
+
+    --  ------------------------------------------------------------------------
+
     function Is_Collidable (aSprite : Sprite) return Boolean is
     begin
         return aSprite.Is_Collidable;
@@ -120,6 +127,21 @@ package body Sprite_Manager is
     begin
         return aSprite.Is_Visible;
     end Is_Visible;
+
+    --  ------------------------------------------------------------------------
+
+   procedure Jump (aSprite : in out Sprite; Status : Sprite_Status) is
+   begin
+      if Status = Sprite_Down then
+         if aSprite.Position.Y < 470.0 then
+            aSprite.Position.Y := aSprite.Position.Y + 75.0;
+         end if;
+      else
+         if aSprite.Position.Y >= 470.0 then
+            aSprite.Position.Y := aSprite.Position.Y - 75.0;
+         end if;
+      end if;
+    end Jump;
 
     --  ------------------------------------------------------------------------
 

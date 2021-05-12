@@ -5,6 +5,7 @@ with Textures_Manager;
 
 package Sprite_Manager is
 
+   type Sprite_Status is (Sprite_Up, Sprite_Down);
    type Object_Size is private;
    type Point is private;
    type Sprite is private;
@@ -20,9 +21,11 @@ package Sprite_Manager is
    function Get_Size (aSprite : Sprite) return Object_Size;
    procedure Init;
    function Is_Active (aSprite : Sprite) return Boolean;
+   function Is_Clicked (aSprite : Sprite) return Boolean;
    function Is_Collidable (aSprite : Sprite) return Boolean;
    function Is_Visible (aSprite : Sprite) return Boolean;
-   procedure Render (aSprite      : Sprite);
+   procedure Jump (aSprite : in out Sprite; Status : Sprite_Status);
+   procedure Render (aSprite : Sprite);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
    procedure Set_Number_Of_Frames (aSprite : in out Sprite; Num : Integer);
@@ -69,6 +72,7 @@ private
       Is_Active         : Boolean := False;
       Is_Sprite_Sheet   : Boolean := False;
       Use_Transparency  : Boolean := False;
+      Is_Clicked        : Boolean := False;
    end record;
 
 end Sprite_Manager;
