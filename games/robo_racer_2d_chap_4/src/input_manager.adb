@@ -3,6 +3,8 @@
 
 with Glfw.Input.Keys;
 
+with Input_Callback;
+
 package body Input_Manager is
 
     Current_Command : Command;
@@ -16,28 +18,23 @@ package body Input_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Update (Window : in out Input_Callback.Callback_Window) is
+    procedure Update is
         use Glfw.Input.Keys;
         use Input_Callback;
     begin
-         if Was_Key_Pressed (Window, Left) or Was_Key_Pressed (Window, A) then
+         if Is_Key_Down (Left) or Is_Key_Down (A) then
             Current_Command := Command_Left;
-         elsif Was_Key_Pressed (Window, Right) or
-          Was_Key_Pressed (Window, D) then
+         elsif Is_Key_Down (Right) or Is_Key_Down (D) then
             Current_Command := Command_Right;
-         elsif Was_Key_Pressed (Window, Up) then
+         elsif Is_Key_Down (Up) then
             Current_Command := Command_Up;
-         elsif Was_Key_Pressed (Window, Down) then
+         elsif Is_Key_Down (Down) then
             Current_Command := Command_Down;
-         elsif Was_Key_Pressed (Window, Escape) or
-          Was_Key_Pressed (Window, Q) then
-            Current_Command := Command_Up;
          else
             Current_Command := Command_Stop;
          end if;
 --        Put_Line ("Input_Manager.Update Command: " &
 --                    Command'Image (Current_Command));
-      delay (1.0);
     end Update;
 
     --  ------------------------------------------------------------------------

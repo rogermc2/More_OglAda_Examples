@@ -137,8 +137,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Velocity (Background, 0.0);
             Set_Velocity (Player, 0.0);
          when Command_Up => Jump (Player, Sprite_Up);
-         when  Command_Down => Jump (Player, Sprite_Down);
-         when Command_Quit => null;
+         when Command_Down => Jump (Player, Sprite_Down);
       end case;
    end Process_Input;
 
@@ -192,6 +191,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       use GL.Objects.Shaders;
    begin
       Utilities.Clear_Background_Colour (Back);
+      Input_Callback.Clear_All_Keys;
       Load_Sprites (Screen);
 
       Game_Program := Program_From
@@ -217,10 +217,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update (Window     : in out Input_Callback.Callback_Window;
-                     Delta_Time : Float) is
+   procedure Update (Delta_Time : Float) is
    begin
-      Input_Manager.Update (Window);
+      Input_Manager.Update;
       Process_Input;
       Sprite_Manager.Update (Background, Delta_Time);
       Sprite_Manager.Update (Robot_Left, Delta_Time);
@@ -236,7 +235,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Delta_Time   : constant Float := Current_Time - Last_Time;
    begin
       Last_Time := Current_Time;
-      Update (Window, Delta_Time);
+      Update (Delta_Time);
       Render_Sprites (Window);
    end Update_Game;
 
