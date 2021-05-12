@@ -92,6 +92,13 @@ package body Sprite_Manager is
 
     --  -------------------------------------------------------------------------
 
+   function Get_Y (aPoint : Point) return Float is
+    begin
+        return aPoint.Y;
+    end Get_Y;
+
+    --  -------------------------------------------------------------------------
+
     procedure Init is
     begin
         Sprites_VAO.Initialize_Id;
@@ -201,11 +208,6 @@ package body Sprite_Manager is
             Quad_Vertices (6) := (X, Y + Height);          --  top left
             Texture_Coords (6) := (U, V + Tex_Height);
 
-            --           Put_Line ("Sprite_Manager.Render, width, height: " &
-            --                       Single'Image (Width) & ", " & Single'Image (Height));
-            --              Utilities.Print_GL_Array2 ("Quad_Vertices", Quad_Vertices);
-            --              Utilities.Print_GL_Array2 ("Texture_Coords", Texture_Coords);
-
             Array_Buffer.Bind (Quad_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,
                                           Static_Draw);
@@ -288,6 +290,8 @@ package body Sprite_Manager is
     procedure Update (aSprite : in out Sprite; Delta_Time : Float) is
     begin
         if aSprite.Is_Active then
+        Put_Line ("Sprite_Manager.Update Position.Y: " &
+                  Float'Image (aSprite.Position.Y));
             aSprite.Animation_Elapsed := aSprite.Animation_Elapsed + Delta_Time;
             if aSprite.Animation_Elapsed >= aSprite.Animation_Delay then
               aSprite.Current_Frame := aSprite.Current_Frame + 1;

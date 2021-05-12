@@ -19,6 +19,7 @@ package Sprite_Manager is
                                return GL.Objects.Textures.Texture;
    function Get_Position (aSprite : Sprite) return Point;
    function Get_Size (aSprite : Sprite) return Object_Size;
+   function Get_Y (aPoint : Point) return Float;
    procedure Init;
    function Is_Active (aSprite : Sprite) return Boolean;
    function Is_Clicked (aSprite : Sprite) return Boolean;

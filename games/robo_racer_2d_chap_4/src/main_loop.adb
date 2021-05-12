@@ -138,7 +138,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Velocity (Background, 0.0);
             Set_Velocity (Player, 0.0);
          when Command_Up => Jump (Player, Sprite_Up);
+        Put_Line ("Main_Loop.Process_Input Command_Up Player Position.Y: " &
+                  Float'Image (Get_Y (Get_Position (Player))));
          when Command_Down => Jump (Player, Sprite_Down);
+        Put_Line ("Main_Loop.Process_Input Command_Down Player Position.Y: " &
+                  Float'Image (Get_Y (Get_Position (Player))));
       end case;
    end Process_Input;
 
