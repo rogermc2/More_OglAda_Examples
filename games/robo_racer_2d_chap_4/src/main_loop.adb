@@ -119,7 +119,17 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Set_Visible (Player, True);
                 Set_Velocity (Player, -50.0);
                 Set_Velocity (Background, 50.0);
-            when Command_Right => null;
+            when Command_Right =>
+                if Player = Robot_Left then
+                    Set_Active (Robot_Left, False);
+                    Set_Visible (Robot_Left, False);
+                    Set_Position (Robot_Right, Get_Position (Robot_Left));
+                end if;
+                Player := Robot_Right;
+                Set_Active (Player, True);
+                Set_Visible (Player, True);
+                Set_Velocity (Player, 50.0);
+                Set_Velocity (Background, -50.0);
             when Command_Stop =>
                 Set_Velocity (Background, 0.0);
                 Set_Velocity (Player, 0.0);
