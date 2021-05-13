@@ -5,8 +5,6 @@ with Ada.Containers.Vectors;
 with Glfw.Input.Mouse;
 with Glfw.Input.Keys;
 
-with Sprite_Manager;
-
 package body Input_Manager is
 
     use Sprite_Manager;
@@ -19,14 +17,7 @@ package body Input_Manager is
 
     --  ------------------------------------------------------------------------
 
-    function Get_Command return Command is
-    begin
-        return Current_Command;
-    end Get_Command;
-
-    --  ------------------------------------------------------------------------
-
-    procedure Add_UI_Element (Element : Sprite) is
+    procedure Add_UI_Element (Element : Sprite_Manager.Sprite) is
     begin
         UI_Elements.Append (Element);
     end Add_UI_Element;
@@ -52,6 +43,20 @@ package body Input_Manager is
         end if;
         return Result;
     end Check_For_Click;
+
+    --  ------------------------------------------------------------------------
+
+    function Get_Command return Command is
+    begin
+        return Current_Command;
+    end Get_Command;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Set_Command_Invalid is
+    begin
+        Current_Command := Command_Invalid;
+    end Set_Command_Invalid;
 
     --  ------------------------------------------------------------------------
 
