@@ -3,6 +3,7 @@ with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Keys;
+with Glfw.Input.Mouse;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
@@ -232,9 +233,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Update (Window : in out Input_Callback.Callback_Window;
                       Delta_Time : Float) is
+        X_Position         : Glfw.Input.Mouse.Coordinate := 0.00001;
+        Y_Position         : Glfw.Input.Mouse.Coordinate := 0.00002;
     begin
         Input_Manager.Update_Command (Window);
         Process_Input (Delta_Time);
+
+        Window'Access.Get_Cursor_Pos (X_Position, Y_Position);
         if Game_State = Game_Running then
             Sprite_Manager.Update (Background, Delta_Time);
             Player_Manager.Update (Delta_Time);
