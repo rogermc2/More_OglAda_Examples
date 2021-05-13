@@ -28,6 +28,7 @@ package Sprite_Manager is
    procedure Jump (aSprite : in out Sprite; Status : Sprite_Status);
    procedure Render (aSprite : Sprite);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
+   procedure Set_Clicked (aSprite : in out Sprite; Clicked : Boolean);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
    procedure Set_Number_Of_Frames (aSprite : in out Sprite; Num : Integer);
    procedure Set_Position (aSprite : in out Sprite; X, Y : Float);

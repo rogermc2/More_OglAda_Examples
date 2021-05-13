@@ -76,6 +76,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Player : constant Player_Index := Get_Current_Player;
    begin
       case Get_Command is
+         when Command_UI => null;
          when Command_Left =>
             if Player = Robot_Right then
                Set_Active (Robot_Right, False);

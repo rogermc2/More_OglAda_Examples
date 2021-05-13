@@ -229,6 +229,13 @@ package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Clicked (aSprite : in out Sprite; Clicked : Boolean) is
+   begin
+      aSprite.Is_Active := Clicked;
+   end Set_Clicked;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float) is
    begin
       aSprite.Sprite_Size := (Width, Height);
