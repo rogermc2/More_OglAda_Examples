@@ -76,6 +76,13 @@ package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
+   function Get_Height (aSprite : Sprite) return Float is
+   begin
+      return aSprite.Sprite_Size.Height;
+   end Get_Height;
+
+   --  ------------------------------------------------------------------------
+
    function Get_Position (aSprite : Sprite) return Point is
    begin
       return aSprite.Position;
@@ -90,9 +97,37 @@ package body Sprite_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Width (aSprite : Sprite) return Float is
+   begin
+      return aSprite.Sprite_Size.Width;
+   end Get_Width;
+
+   --  ------------------------------------------------------------------------
+
+   function Get_X (aPoint : Point) return Float is
+   begin
+      return aPoint.X;
+   end Get_X;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_X (aSprite : Sprite) return Float is
+   begin
+      return aSprite.Position.X;
+   end Get_X;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Y (aPoint : Point) return Float is
    begin
       return aPoint.Y;
+   end Get_Y;
+
+   --  -------------------------------------------------------------------------
+
+   function Get_Y (aSprite : Sprite) return Float is
+   begin
+      return aSprite.Position.Y;
    end Get_Y;
 
    --  -------------------------------------------------------------------------

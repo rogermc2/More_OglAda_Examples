@@ -1,8 +1,10 @@
 
 package body Input_Callback is
    use Glfw.Input.Keys;
+--     use Glfw.Input.Mouse;
 
    type Key_State is array (Key'Range) of Boolean;
+   type Button_State is array (Glfw.Input.Mouse.Button'Range) of Boolean;
    type Joystick_Axes_State is array (Integer range <>) of Float;
    type Joystick_State  is array (Integer range <>) of Boolean;
    type Character_Array is array (Integer range <>) of Character;
@@ -16,6 +18,8 @@ package body Input_Callback is
       Key_Pressed                    : Boolean := False;
       Keys_Down                      : Key_State := (others => False);
       Keys_Locked                    : Key_State := (others => False);
+      Button_Pressed                 : Boolean := False;
+      Button_Down                    : Button_State := (others => False);
       --  Joystick status
       Num_Connected_Joysticks        : Integer := 0;
       Joystick_Axes                  : Joystick_Axes_State (1 .. 8) :=
@@ -46,6 +50,13 @@ package body Input_Callback is
          Input_State.Keys_Down (index) := False;
       end loop;
    end Clear_All_Keys;
+
+   --  ------------------------------------------------------------------------
+
+   function Is_Button_Down (aButton : Glfw.Input.Mouse.Button) return Boolean is
+   begin
+      return Input_State.Button_Down (aButton);
+   end Is_Button_Down;
 
    --  ------------------------------------------------------------------------
 

@@ -180,9 +180,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update (Delta_Time : Float) is
+   procedure Update (Window : in out Input_Callback.Callback_Window;
+                     Delta_Time : Float) is
    begin
-      Input_Manager.Update_Command;
+      Input_Manager.Update_Command (Window);
       Process_Input;
       Sprite_Manager.Update (Background, Delta_Time);
       Player_Manager.Update (Delta_Time);
@@ -195,7 +196,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Delta_Time   : constant Float := Current_Time - Last_Time;
    begin
       Last_Time := Current_Time;
-      Update (Delta_Time);
+      Update (Window, Delta_Time);
       Render_Sprites (Window);
    end Update_Game;
 
