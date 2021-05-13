@@ -41,7 +41,27 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
-    --  ----------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
+
+--     procedure Enable_Mouse_Callbacks (Window : in out Input_Callback.Callback_Window;
+--                                       Enable : Boolean) is
+--        use Glfw.Windows.Callbacks;
+--     begin
+--        if Enable then
+--           Window.Enable_Callback (Mouse_Position);
+--           Window.Enable_Callback (Mouse_Enter);
+--           Window.Enable_Callback (Mouse_Button);
+--           Window.Enable_Callback (Mouse_Scroll);
+--        else
+--           null;
+--           Window.Disable_Callback (Mouse_Position);
+--           Window.Disable_Callback (Mouse_Enter);
+--           Window.Disable_Callback (Mouse_Button);
+--           Window.Disable_Callback (Mouse_Scroll);
+--        end if;
+--     end Enable_Mouse_Callbacks;
+
+   ----------------------------------------------------------------------------
     --  LoadTextures
     procedure Load_Sprites (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
@@ -158,8 +178,23 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
-    procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
+   procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
+      use Glfw.Input;
+--        use GL.Types;
+        Window_Width       : Glfw.Size;
+        Window_Height      : Glfw.Size;
+        X_Position         : Mouse.Coordinate;
+        Y_Position         : Mouse.Coordinate;
     begin
+        Screen'Access.Get_Cursor_Pos (X_Position, Y_Position);
+        Screen'Access.Get_Size (Window_Width, Window_Height);
+
+        --  Reset the cursor to the center of the screen
+        --  otherwise it will soon go outside the window.
+
+        Screen'Access.Set_Cursor_Pos (X_Position,
+                                      Y_Position);
+
         Utilities.Clear_Colour;
         Sprite_Manager.Clear_Buffers;
         Resize_GL_Scene (Screen);
@@ -202,8 +237,21 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Start_Game (Screen : in out Input_Callback.Callback_Window) is
         use Program_Loader;
-        use GL.Objects.Shaders;
+      use GL.Objects.Shaders;
+      use GL.Types;
+        use Glfw.Input;
+        Window_Width       : Glfw.Size;
+        Window_Height      : Glfw.Size;
     begin
+      Screen.Set_Input_Toggle (Sticky_Keys, True);
+      Screen.Set_Cursor_Mode (Mouse.Normal);
+
+        Glfw.Input.Poll_Events;
+
+        Screen'Access.Get_Size (Window_Width, Window_Height);
+        Screen'Access.Set_Cursor_Pos (Mouse.Coordinate (0.5 * Single (Window_Width)),
+                                      Mouse.Coordinate (0.5 * Single (Window_Height)));
+
         Utilities.Clear_Background_Colour (Back);
         Input_Callback.Clear_All_Keys;
         Load_Sprites (Screen);
@@ -221,6 +269,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
           GL.Objects.Programs.Uniform_Location (Game_Program, "texture2d");
 
         Sprite_Manager.Init;
+--          Enable_Mouse_Callbacks (Screen, True);
+--          Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
+--          Screen.Enable_Callback (Glfw.Windows.Callbacks.Position);
 
     exception
         when anError : others =>
