@@ -1,6 +1,4 @@
 
-with Ada.Text_IO; use Ada.Text_IO;
-
 with GL.Attributes;
 with GL.Blending;
 with GL.Images;
@@ -139,19 +137,13 @@ package body Sprite_Manager is
 
    procedure Jump (aSprite : in out Sprite; Status : Sprite_Status) is
    begin
-      Put_Line ("Sprite_Manager.Jump");
       if Status = Sprite_Down then
-         Put_Line ("Sprite_Manager.Jump down, Position.Y: " &
-                     Float'Image (aSprite.Position.Y));
-         if aSprite.Position.Y > 470.0 then
-            aSprite.Position.Y := aSprite.Position.Y - 75.0;
+         if aSprite.Position.Y > 50.0 then
+            aSprite.Position.Y := aSprite.Position.Y - 7.0;
          end if;
       else  --  Sprite_Up
-         Put_Line ("Sprite_Manager.Jump up" &
-                     Float'Image (aSprite.Position.Y));
-         --           if aSprite.Position.Y <= 470.0 then
          if aSprite.Position.Y <= 470.0 then
-            aSprite.Position.Y := aSprite.Position.Y + 75.0;
+            aSprite.Position.Y := aSprite.Position.Y + 7.0;
          end if;
       end if;
    end Jump;
@@ -290,8 +282,6 @@ package body Sprite_Manager is
    procedure Update (aSprite : in out Sprite; Delta_Time : Float) is
    begin
       if aSprite.Is_Active then
-         --          Put_Line ("Sprite_Manager.Update Position.Y: " &
-         --                    Float'Image (aSprite.Position.Y));
          aSprite.Animation_Elapsed := aSprite.Animation_Elapsed + Delta_Time;
          if aSprite.Animation_Elapsed >= aSprite.Animation_Delay then
             aSprite.Current_Frame := aSprite.Current_Frame + 1;

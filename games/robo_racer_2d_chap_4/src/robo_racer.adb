@@ -7,18 +7,15 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw;
 
---  with Initialize;
 with Initialize_With_Callbacks;
 with Input_Callback;
 with Main_Loop;
 
 procedure Robo_Racer is
---      Main_Window : Glfw.Windows.Window;
     Main_Window : Input_Callback.Callback_Window;
     Window_Title : constant String := "Robo Racer 2D Chapter 4";
 begin
     Glfw.Init;
---      Initialize (Main_Window, Window_Title);
     Initialize_With_Callbacks (Main_Window, Window_Title);
     Main_Loop (Main_Window);
     Glfw.Shutdown;

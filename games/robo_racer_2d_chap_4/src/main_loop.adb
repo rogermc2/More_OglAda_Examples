@@ -75,8 +75,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Step : constant Float := 100.0;
       Player : constant Player_Index := Get_Current_Player;
    begin
---        Put_Line ("Main_Loop.Process_Input Command: " &
---                  Command'Image (Get_Command));
       case Get_Command is
          when Command_Left =>
             if Player = Robot_Right then
