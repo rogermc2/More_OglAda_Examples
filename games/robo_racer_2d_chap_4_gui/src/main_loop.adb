@@ -41,27 +41,27 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
-   --  ------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
---     procedure Enable_Mouse_Callbacks (Window : in out Input_Callback.Callback_Window;
---                                       Enable : Boolean) is
---        use Glfw.Windows.Callbacks;
---     begin
---        if Enable then
---           Window.Enable_Callback (Mouse_Position);
---           Window.Enable_Callback (Mouse_Enter);
---           Window.Enable_Callback (Mouse_Button);
---           Window.Enable_Callback (Mouse_Scroll);
---        else
---           null;
---           Window.Disable_Callback (Mouse_Position);
---           Window.Disable_Callback (Mouse_Enter);
---           Window.Disable_Callback (Mouse_Button);
---           Window.Disable_Callback (Mouse_Scroll);
---        end if;
---     end Enable_Mouse_Callbacks;
+    --     procedure Enable_Mouse_Callbacks (Window : in out Input_Callback.Callback_Window;
+    --                                       Enable : Boolean) is
+    --        use Glfw.Windows.Callbacks;
+    --     begin
+    --        if Enable then
+    --           Window.Enable_Callback (Mouse_Position);
+    --           Window.Enable_Callback (Mouse_Enter);
+    --           Window.Enable_Callback (Mouse_Button);
+    --           Window.Enable_Callback (Mouse_Scroll);
+    --        else
+    --           null;
+    --           Window.Disable_Callback (Mouse_Position);
+    --           Window.Disable_Callback (Mouse_Enter);
+    --           Window.Disable_Callback (Mouse_Button);
+    --           Window.Disable_Callback (Mouse_Scroll);
+    --        end if;
+    --     end Enable_Mouse_Callbacks;
 
-   ----------------------------------------------------------------------------
+    ----------------------------------------------------------------------------
     --  LoadTextures
     procedure Load_Sprites (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
@@ -128,21 +128,21 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         case aCommand is
             when Command_UI =>
                 if Is_Clicked (Pause_Button) then
-                   Set_Clicked (Pause_Button, False);
-                   Set_Visible (Pause_Button, False);
-                   Set_Active (Pause_Button, False);
+                    Set_Clicked (Pause_Button, False);
+                    Set_Visible (Pause_Button, False);
+                    Set_Active (Pause_Button, False);
 
-                   Set_Visible (Resume_Button, True);
-                   Set_Active (Resume_Button, True);
-                   Game_State := Game_Paused;
+                    Set_Visible (Resume_Button, True);
+                    Set_Active (Resume_Button, True);
+                    Game_State := Game_Paused;
                 elsif Is_Clicked (Resume_Button) then
-                   Set_Clicked (Resume_Button, False);
-                   Set_Visible (Resume_Button, False);
-                   Set_Active (Resume_Button, False);
+                    Set_Clicked (Resume_Button, False);
+                    Set_Visible (Resume_Button, False);
+                    Set_Active (Resume_Button, False);
 
-                   Set_Visible (Pause_Button, True);
-                   Set_Active (Pause_Button, True);
-                   Game_State := Game_Running;
+                    Set_Visible (Pause_Button, True);
+                    Set_Active (Pause_Button, True);
+                    Game_State := Game_Running;
                 end if;
             when Command_Left =>
                 if Player = Robot_Right then
@@ -178,22 +178,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
-   procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
-      use Glfw.Input;
---        use GL.Types;
-        Window_Width       : Glfw.Size;
-        Window_Height      : Glfw.Size;
-        X_Position         : Mouse.Coordinate;
-        Y_Position         : Mouse.Coordinate;
+    procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
     begin
-        Screen'Access.Get_Cursor_Pos (X_Position, Y_Position);
-        Screen'Access.Get_Size (Window_Width, Window_Height);
-
-        --  Reset the cursor to the center of the screen
-        --  otherwise it will soon go outside the window.
-
-        Screen'Access.Set_Cursor_Pos (X_Position,
-                                      Y_Position);
 
         Utilities.Clear_Colour;
         Sprite_Manager.Clear_Buffers;
@@ -237,17 +223,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Start_Game (Screen : in out Input_Callback.Callback_Window) is
         use Program_Loader;
-      use GL.Objects.Shaders;
-      use GL.Types;
+        use GL.Objects.Shaders;
+        use GL.Types;
         use Glfw.Input;
         Window_Width       : Glfw.Size;
         Window_Height      : Glfw.Size;
     begin
-      Screen.Set_Input_Toggle (Sticky_Keys, True);
-      Screen.Set_Cursor_Mode (Mouse.Normal);
-
-        Glfw.Input.Poll_Events;
-
+--          Screen.Set_Input_Toggle (Sticky_Keys, True);
+        Screen.Set_Cursor_Mode (Mouse.Normal);
         Screen'Access.Get_Size (Window_Width, Window_Height);
         Screen'Access.Set_Cursor_Pos (Mouse.Coordinate (0.5 * Single (Window_Width)),
                                       Mouse.Coordinate (0.5 * Single (Window_Height)));
@@ -269,9 +252,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
           GL.Objects.Programs.Uniform_Location (Game_Program, "texture2d");
 
         Sprite_Manager.Init;
---          Enable_Mouse_Callbacks (Screen, True);
---          Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
---          Screen.Enable_Callback (Glfw.Windows.Callbacks.Position);
+        --          Enable_Mouse_Callbacks (Screen, True);
+        --          Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
+        --          Screen.Enable_Callback (Glfw.Windows.Callbacks.Position);
 
     exception
         when anError : others =>
@@ -282,11 +265,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
-    procedure Update (Window : in out Input_Callback.Callback_Window;
-                      Delta_Time : Float) is
-        X_Position         : Glfw.Input.Mouse.Coordinate := 0.00001;
-        Y_Position         : Glfw.Input.Mouse.Coordinate := 0.00002;
+    procedure Update (Window : in out Input_Callback.Callback_Window) is
+        Current_Time : constant Float := Float (Glfw.Time);
+        Delta_Time   : constant Float := Current_Time - Last_Time;
+        X_Position   : Glfw.Input.Mouse.Coordinate := 0.00001;
+        Y_Position   : Glfw.Input.Mouse.Coordinate := 0.00002;
     begin
+        Last_Time := Current_Time;
+
+        Render_Sprites (Window);
         Input_Manager.Update_Command (Window);
         Process_Input (Delta_Time);
 
@@ -301,23 +288,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  ----------------------------------------------------------------------------
 
-    procedure Update_Game (Window : in out Input_Callback.Callback_Window) is
-        Current_Time : constant Float := Float (Glfw.Time);
-        Delta_Time   : constant Float := Current_Time - Last_Time;
-    begin
-        Last_Time := Current_Time;
-        Update (Window, Delta_Time);
-        Render_Sprites (Window);
-    end Update_Game;
-
-    --  -------------------------------------------------------------------------
-
     use Glfw.Input;
     Running  : Boolean := True;
 begin
     Start_Game (Main_Window);
     while Running loop
-        Update_Game (Main_Window);
+        Update (Main_Window);
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
         Glfw.Input.Poll_Events;
         Running := Running and not
