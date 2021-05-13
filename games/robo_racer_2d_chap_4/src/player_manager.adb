@@ -86,10 +86,8 @@ package body Player_Manager is
    --  -------------------------------------------------------------------------
 
    procedure Set_Active (Player : Player_Index; State : Boolean) is
-      theSprite : Sprite_Manager.Sprite := Player_List (Player);
    begin
-      Sprite_Manager.Set_Active (theSprite, State);
-      Player_List (Player) := theSprite;
+      Sprite_Manager.Set_Active (Player_List (Player), State);
    end Set_Active;
 
    --  -------------------------------------------------------------------------
@@ -103,27 +101,22 @@ package body Player_Manager is
 
    procedure Set_Position (Player   : Player_Index;
                            Position : Sprite_Manager.Point) is
-      theSprite : Sprite_Manager.Sprite := Player_List (Player);
    begin
-      Sprite_Manager.Set_Position (theSprite, Position);
-      Player_List (Player) := theSprite;
+      Sprite_Manager.Set_Position (Player_List (Player), Position);
    end Set_Position;
 
    --  -------------------------------------------------------------------------
+
    procedure Set_Visible (Player : Player_Index; State : Boolean) is
-      theSprite : Sprite_Manager.Sprite := Player_List (Player);
    begin
-      Sprite_Manager.Set_Visible (theSprite, State);
-      Player_List (Player) := theSprite;
+      Sprite_Manager.Set_Visible (Player_List (Player), State);
    end Set_Visible;
 
    --  -------------------------------------------------------------------------
 
    procedure Set_Velocity (Player : Player_Index; Step : Float) is
-      theSprite : Sprite_Manager.Sprite := Player_List (Player);
    begin
-      Sprite_Manager.Set_Velocity (theSprite, Step);
-      Player_List (Player) := theSprite;
+      Sprite_Manager.Set_Velocity (Player_List (Player), Step);
    end Set_Velocity;
 
    --  -------------------------------------------------------------------------

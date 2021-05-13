@@ -85,9 +85,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                Set_Position (Robot_Left, Get_Position (Robot_Right));
             end if;
             Set_Current_Player (Robot_Left);
-            Set_Active (Player, True);
-            Set_Visible (Player, True);
-            Set_Velocity (Player, -Step);
+            Set_Active (Robot_Left, True);
+            Set_Visible (Robot_Left, True);
+            Set_Velocity (Robot_Left, -Step);
             Set_Velocity (Background, Step);
          when Command_Right =>
             if Player = Robot_Left then
@@ -96,9 +96,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                Set_Position (Robot_Right, Get_Position (Robot_Left));
             end if;
             Set_Current_Player (Robot_Right);
-            Set_Active (Player, True);
-            Set_Visible (Player, True);
-            Set_Velocity (Player, Step);
+            Set_Active (Robot_Right, True);
+            Set_Visible (Robot_Right, True);
+            Set_Velocity (Robot_Right, Step);
             Set_Velocity (Background, -Step);
          when Command_Stop =>
             Set_Velocity (Background, 0.0);
