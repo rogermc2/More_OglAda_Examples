@@ -172,12 +172,6 @@ package body Sprite_Manager is
 
             Quad_Vertices (6) := (X, Y + Height);          --  top left
             Texture_Coords (6) := (U, V + Tex_Height);
-
-            --           Put_Line ("Sprite_Manager.Render, width, height: " &
-            --                       Single'Image (Width) & ", " & Single'Image (Height));
-            --              Utilities.Print_GL_Array2 ("Quad_Vertices", Quad_Vertices);
-            --              Utilities.Print_GL_Array2 ("Texture_Coords", Texture_Coords);
-
             Array_Buffer.Bind (Quad_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,
                                           Static_Draw);
