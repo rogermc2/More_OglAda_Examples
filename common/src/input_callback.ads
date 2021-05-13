@@ -16,7 +16,9 @@ package Input_Callback is
 
    Input_Callback_Exception : Exception;
 
+   procedure Clear_All_Keys;
    function Is_Key_Down (aKey : Glfw.Input.Keys.Key) return Boolean;
+   function Joystick_Connected return Boolean;
 
    overriding
    procedure Key_Changed (Object   : not null access Callback_Window;
@@ -25,12 +27,13 @@ package Input_Callback is
                           Action   : Glfw.Input.Keys.Action;
                           Mods     : Glfw.Input.Keys.Modifiers);
 
-   function Key_Name (Index: Integer) return Unbounded_String;
+   function Key_Name (Index : Integer) return Unbounded_String;
    function Key_Pressed return Boolean;
    function Last_Key_Down return Glfw.Input.Keys.Key;
    procedure Lock_All_Keys;
    procedure Set_Key_Pressed (Pressed : Boolean);
-   function Was_Key_Pressed (Window : in out Callback_Window;
-                             aKey   : Glfw.Input.Keys.Key) return Boolean;
+--     function Was_Joy_Y_Pressed return Boolean;
+--     function Was_Key_Pressed (Window : in out Callback_Window;
+--                               aKey   : Glfw.Input.Keys.Key) return Boolean;
 
 end Input_Callback;

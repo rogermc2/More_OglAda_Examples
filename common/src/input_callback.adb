@@ -1,10 +1,12 @@
 
-with Ada.Text_IO; use Ada.Text_IO;
-
 package body Input_Callback is
    use Glfw.Input.Keys;
 
    type Key_State is array (Key'Range) of Boolean;
+   type Joystick_Axes_State is array (Integer range <>) of Float;
+   type Joystick_State  is array (Integer range <>) of Boolean;
+   type Character_Array is array (Integer range <>) of Character;
+   type Integer_Array is array (Integer range <>) of Integer;
 
    type Input_State_Data is record
       -- localised name of each key - not supporting wchar_t to protect 256 sz atlas
@@ -14,6 +16,20 @@ package body Input_Callback is
       Key_Pressed                    : Boolean := False;
       Keys_Down                      : Key_State := (others => False);
       Keys_Locked                    : Key_State := (others => False);
+      --  Joystick status
+      Num_Connected_Joysticks        : Integer := 0;
+      Joystick_Axes                  : Joystick_Axes_State (1 .. 8) :=
+                                         (others => 0.0);
+      Num_Joy_Axes                   : Integer := 0;
+      Num_Joy_Buttons                : Integer := 0;
+      Joystick_Axis_Locked           : Joystick_State (1 .. 8) :=
+                                         (others => False);
+      Joystick_Axis_Locked_Sign      : Character_Array (1 .. 8);
+      Joystick_Buttons_Locked        : Joystick_State (1 .. 32) :=
+                                         (others => False);
+      Joystick_Buttons               : Integer_Array (1 .. 32) :=
+                                         (others => 0);
+      Joystick_Connected             : Boolean := False;
       Mouse_Cursor_Hidden            : Boolean := True;
    end record;
 
@@ -24,10 +40,26 @@ package body Input_Callback is
 
    --  ------------------------------------------------------------------------
 
+   procedure Clear_All_Keys is
+   begin
+      for index in Input_State.Keys_Down'Range loop
+         Input_State.Keys_Down (index) := False;
+      end loop;
+   end Clear_All_Keys;
+
+   --  ------------------------------------------------------------------------
+
    function Is_Key_Down (aKey : Key) return Boolean is
    begin
       return Input_State.Keys_Down (aKey);
    end Is_Key_Down;
+
+   --  ------------------------------------------------------------------------
+
+   function Joystick_Connected return Boolean is
+   begin
+      return Input_State.Joystick_Connected;
+   end Joystick_Connected;
 
    --  ------------------------------------------------------------------------
 
@@ -46,6 +78,7 @@ package body Input_Callback is
          if not Input_State.Keys_Locked (Key) then
             Input_State.Keys_Down (Key) := True;
             Input_State.Key_Pressed := True;
+            Input_State.Keys_Locked (Key) := True;
             Input_State.Last_Key_Down := Key;
          end if;
       elsif Action = Release then
@@ -57,7 +90,7 @@ package body Input_Callback is
 
    --  ------------------------------------------------------------------------
 
-   function Key_Name (Index: Integer) return Unbounded_String is
+   function Key_Name (Index : Integer) return Unbounded_String is
    begin
       return Input_State.Key_Names (Index);
    end Key_Name;
@@ -95,19 +128,35 @@ package body Input_Callback is
    end Set_Key_Pressed;
 
    --  ------------------------------------------------------------------------
+--
+--     function Was_Joy_Y_Pressed return Boolean is
+--        Result : Boolean := False;
+--     begin
+--        Result := Input_State.Joystick_Connected and then
+--          Input_State.Joystick_Buttons (3) > 0 and then
+--          not Input_State.Joystick_Buttons_Locked (3);
+--
+--        if Result then
+--           Input_State.Joystick_Buttons_Locked (3) := True;
+--        end if;
+--
+--        return Result;
+--     end Was_Joy_Y_Pressed;
 
-   function Was_Key_Pressed (Window : in out Callback_Window;
-                             aKey   : Key) return Boolean is
-      use Glfw.Input;
-      Key_Pressed : constant Boolean :=
-                      Window'Access.Key_State (aKey) = Pressed and
-                        not Input_State.Keys_Locked (aKey);
-   begin
-      if Key_Pressed then
-         Input_State.Keys_Locked (aKey) := True;
-      end if;
-      return Key_Pressed;
-   end Was_Key_Pressed;
+   --  ------------------------------------------------------------------------
+--
+--     function Was_Key_Pressed (Window : in out Callback_Window;
+--                               aKey   : Key) return Boolean is
+--        use Glfw.Input;
+--        Key_Pressed : constant Boolean :=
+--                        Window'Access.Key_State (aKey) = Pressed and
+--                          not Input_State.Keys_Locked (aKey);
+--     begin
+--        if Key_Pressed then
+--           Input_State.Keys_Locked (aKey) := True;
+--        end if;
+--        return Key_Pressed;
+--     end Was_Key_Pressed;
 
    --  ------------------------------------------------------------------------
 
