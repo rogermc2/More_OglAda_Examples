@@ -21,9 +21,9 @@ package Sprite_Manager is
    function Get_Height (aSprite : Sprite) return Float;
    function Get_Size (aSprite : Sprite) return Object_Size;
    function Get_Width (aSprite : Sprite) return Float;
-   function Get_X (aPoint : Point) return Float;
+--     function Get_X (aPoint : Point) return Float;
    function Get_X (aSprite : Sprite) return Float;
-   function Get_Y (aPoint : Point) return Float;
+--     function Get_Y (aPoint : Point) return Float;
    function Get_Y (aSprite : Sprite) return Float;
    procedure Init;
    function Is_Active (aSprite : Sprite) return Boolean;
@@ -55,12 +55,12 @@ private
       Y  : Float := 0.0;
    end record;
 
-   type Rectangle is record
-      Top               : Float := 0.0;
-      Bottom            : Float := 0.0;
-      Left              : Float := 0.0;
-      Right             : Float := 0.0;
-   end record;
+--     type Rectangle is record
+--        Top               : Float := 0.0;
+--        Bottom            : Float := 0.0;
+--        Left              : Float := 0.0;
+--        Right             : Float := 0.0;
+--     end record;
 
    type Sprite is record
       Textures          : Textures_Manager.Texture_List;

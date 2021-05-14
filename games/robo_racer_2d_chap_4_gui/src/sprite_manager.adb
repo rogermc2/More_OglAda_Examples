@@ -104,10 +104,10 @@ package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
-   function Get_X (aPoint : Point) return Float is
-   begin
-      return aPoint.X;
-   end Get_X;
+--     function Get_X (aPoint : Point) return Float is
+--     begin
+--        return aPoint.X;
+--     end Get_X;
 
    --  -------------------------------------------------------------------------
 
@@ -118,10 +118,10 @@ package body Sprite_Manager is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Y (aPoint : Point) return Float is
-   begin
-      return aPoint.Y;
-   end Get_Y;
+--     function Get_Y (aPoint : Point) return Float is
+--     begin
+--        return aPoint.Y;
+--     end Get_Y;
 
    --  -------------------------------------------------------------------------
 

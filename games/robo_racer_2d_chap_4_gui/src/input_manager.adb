@@ -27,19 +27,34 @@ package body Input_Manager is
     function Check_For_Click (Window : in out Input_Callback.Callback_Window;
                               UI_Element : Sprite) return Boolean is
         use Glfw.Input;
-        Cursor_X  : Mouse.Coordinate;
-        Cursor_Y  : Mouse.Coordinate;
-        Left      : constant Float := Get_X (UI_Element);
-        Bottom    : constant Float := Get_Y (UI_Element);
-        Result    : Boolean := False;
+        Window_Width   : Glfw.Size;
+        Window_Height  : Glfw.Size;
+        Cursor_X       : Float;  --  Mouse.Coordinate;
+        Cursor_Y       : Float;  -- Mouse.Coordinate;
+        Left           : constant Float := Get_X (UI_Element);
+        Bottom         : constant Float := Get_Y (UI_Element);
+        Result         : Boolean := False;
     begin
         if Input_Callback.Is_Button_Down (Glfw.Input.Mouse.Left_Button) then
+            Window'Access.Get_Size (Window_Width, Window_Height);
             Window'Access.Get_Cursor_Pos (Mouse.Coordinate (Cursor_X),
                                           Mouse.Coordinate (Cursor_Y));
-            Result := Float (Cursor_X) >= Left and
-              Float (Cursor_X) <= Left + Get_Width (UI_Element) and
-              Float (Cursor_Y) >= Bottom and
-              Float (Cursor_Y) <=  Bottom + Get_Height (UI_Element);
+--              Cursor_X := Float (Window_Width) - Cursor_X;
+            Cursor_Y := Float (Window_Height) - Cursor_Y;
+            Result := Cursor_X >= Left and
+              Cursor_X <= Left + Get_Width (UI_Element) and
+              Cursor_Y >= Bottom and
+              Cursor_Y <=  Bottom + Get_Height (UI_Element);
+--              Put_Line ("Input_Manager.Check_For_Click Left, Right, Bottom, Top: " &
+--                          Float'Image (Left) & ", " &
+--                          Float'Image (Left + Get_Width (UI_Element)) &
+--                          Float'Image (Bottom) & ", " &
+--                          Float'Image (Bottom + Get_Height (UI_Element)));
+--              Put_Line ("Input_Manager.Check_For_Click Cursor_X, Cursor_Y: " &
+--                          Float'Image (Cursor_X) & ", " &
+--                          Float'Image (Cursor_Y));
+--              Put_Line ("Input_Manager.Check_For_Click : Result " &
+--                          Boolean'Image (Result));
         end if;
         return Result;
     end Check_For_Click;
@@ -64,6 +79,7 @@ package body Input_Manager is
         use UI_Package;
         use Glfw.Input.Keys;
         use Input_Callback;
+
         procedure Check_Click (Curs : Cursor) is
             Index      : constant Positive := To_Index (Curs);
             UI_Element : Sprite := UI_Elements.Element (Index);
@@ -75,6 +91,7 @@ package body Input_Manager is
                 end if;
             end if;
         end Check_Click;
+
     begin
         UI_Elements.Iterate (Check_Click'Access);
 
