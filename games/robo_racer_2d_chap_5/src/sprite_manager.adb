@@ -104,31 +104,17 @@ package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
---     function Get_X (aPoint : Point) return Float is
+--     function Get_X (aSprite : Sprite) return Float is
 --     begin
---        return aPoint.X;
+--        return aSprite.Position.X;
 --     end Get_X;
 
    --  -------------------------------------------------------------------------
 
-   function Get_X (aSprite : Sprite) return Float is
-   begin
-      return aSprite.Position.X;
-   end Get_X;
-
-   --  -------------------------------------------------------------------------
-
---     function Get_Y (aPoint : Point) return Float is
+--     function Get_Y (aSprite : Sprite) return Float is
 --     begin
---        return aPoint.Y;
+--        return aSprite.Position.Y;
 --     end Get_Y;
-
-   --  -------------------------------------------------------------------------
-
-   function Get_Y (aSprite : Sprite) return Float is
-   begin
-      return aSprite.Position.Y;
-   end Get_Y;
 
    --  -------------------------------------------------------------------------
 

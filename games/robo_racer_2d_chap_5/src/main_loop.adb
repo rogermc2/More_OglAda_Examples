@@ -51,13 +51,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Screen_Height : Glfw.Size;
         Right         : Float;
         --          Top           : constant Float;
-        Position      : Point := Player_Manager.Get_Position (Player);
+        Position      : constant Point := Player_Manager.Get_Position (Player);
     begin
         Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         Right := Float (Screen_Width) - Float (Border_Width);
         --          Top := Size (Screen_Height) - Border_Width;
         if Position.X < Float (Border_Width) or Position.X > Right then
-            Set_Velocity (aSprite, 0.0);
+            Set_Velocity (Player, 0.0);
         end if;
     end Check_Boundaries;
 
@@ -120,7 +120,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Input_Manager;
         use Player_Manager;
         use Sprite_Manager;
-        Step                : constant Float := 100.0;
+        Velocity            : constant Float := 50.0;
         Player              : constant Player_Index := Get_Current_Player;
         aCommand            : Command := Get_Current_Command;
     begin
@@ -160,8 +160,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Set_Current_Player (Robot_Left);
                 Set_Active (Robot_Left, True);
                 Set_Visible (Robot_Left, True);
-                Set_Velocity (Robot_Left, -Step);
-                Set_Velocity (Background, Step);
+                Set_Velocity (Robot_Left, -Velocity);
+                Set_Velocity (Background, Velocity);
             when Command_Right =>
                 if Player = Robot_Left then
                     Set_Active (Robot_Left, False);
@@ -171,8 +171,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Set_Current_Player (Robot_Right);
                 Set_Active (Robot_Right, True);
                 Set_Visible (Robot_Right, True);
-                Set_Velocity (Robot_Right, Step);
-                Set_Velocity (Background, -Step);
+                Set_Velocity (Robot_Right, Velocity);
+                Set_Velocity (Background, -Velocity);
             when Command_Stop =>
                 Set_Velocity (Background, 0.0);
                 Set_Velocity (Player, 0.0);
@@ -275,15 +275,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Delta_Time   : constant Float := Current_Time - Last_Time;
         X_Position   : Glfw.Input.Mouse.Coordinate := 0.00001;
         Y_Position   : Glfw.Input.Mouse.Coordinate := 0.00002;
-        Player       : constant Player_Manager.Player_Index :=
-                         Player_Manager.Get_Current_Player;
     begin
         Last_Time := Current_Time;
 
         Render_Sprites (Window);
         Input_Manager.Update_Command (Window);
         Process_Input (Delta_Time);
-        Check_Boundaries (Window, Player);
+        Check_Boundaries (Window);
 
         Window'Access.Get_Cursor_Pos (X_Position, Y_Position);
         if Game_State = Game_Running then

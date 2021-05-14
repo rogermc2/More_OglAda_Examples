@@ -63,7 +63,6 @@ package body Player_Manager is
       Set_Velocity (Player_List (Robot_Right), 50.0);
 
       Current_Player := Robot_Right;
-      Set_Velocity (Player_List (Current_Player), 50.0);
 
    end Init_Players;
 
