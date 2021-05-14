@@ -56,7 +56,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         Right := Float (Screen_Width) - Float (Border_Width);
         --          Top := Size (Screen_Height) - Border_Width;
-        if Position.X < Float (Border_Width) or Position.X > Right then
+      if Position.X < Float (Border_Width) or Position.X > Right - 100.0 then
+         Put_Line ("Check_Boundaries stop");
             Set_Velocity (Player, 0.0);
         end if;
     end Check_Boundaries;
