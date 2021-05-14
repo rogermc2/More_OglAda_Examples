@@ -115,7 +115,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Sprite_Manager;
         Step      : constant Float := 100.0;
         Player    : constant Player_Index := Get_Current_Player;
-        aCommand  : Command := Get_Command;
+        aCommand  : Command := Get_Current_Command;
     begin
         if Game_State = Game_Paused then
             aCommand := Command_UI;
@@ -125,9 +125,17 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             UI_Timer := 0.0;
         end if;
 
+--          if not (aCommand = Command_Stop) then
+--              Put_Line ("Main_Loop.Process_Input Command:" &
+--                         Command'Image (aCommand));
+--          end if;
+
         case aCommand is
             when Command_UI =>
+                Put_Line ("Main_Loop.Process_Input Pause_Button clicked: " &
+                            Boolean'Image (Is_Clicked (Pause_Button)));
                 if Is_Clicked (Pause_Button) then
+                    Put_Line ("Main_Loop.Process_Input Pause_Button clicked.");
                     Set_Clicked (Pause_Button, False);
                     Set_Visible (Pause_Button, False);
                     Set_Active (Pause_Button, False);
@@ -286,7 +294,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         end if;
     end Update;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     use Glfw.Input;
     Running  : Boolean := True;

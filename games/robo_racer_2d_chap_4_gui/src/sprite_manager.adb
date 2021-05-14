@@ -266,7 +266,7 @@ package body Sprite_Manager is
 
    procedure Set_Clicked (aSprite : in out Sprite; Clicked : Boolean) is
    begin
-      aSprite.Is_Active := Clicked;
+      aSprite.Is_Clicked := Clicked;
    end Set_Clicked;
 
    --  ------------------------------------------------------------------------

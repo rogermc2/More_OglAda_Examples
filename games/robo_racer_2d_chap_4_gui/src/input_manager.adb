@@ -1,6 +1,6 @@
 
 with Ada.Containers.Vectors;
---  with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Mouse;
 with Glfw.Input.Keys;
@@ -39,32 +39,31 @@ package body Input_Manager is
             Window'Access.Get_Size (Window_Width, Window_Height);
             Window'Access.Get_Cursor_Pos (Mouse.Coordinate (Cursor_X),
                                           Mouse.Coordinate (Cursor_Y));
---              Cursor_X := Float (Window_Width) - Cursor_X;
             Cursor_Y := Float (Window_Height) - Cursor_Y;
             Result := Cursor_X >= Left and
               Cursor_X <= Left + Get_Width (UI_Element) and
               Cursor_Y >= Bottom and
               Cursor_Y <=  Bottom + Get_Height (UI_Element);
---              Put_Line ("Input_Manager.Check_For_Click Left, Right, Bottom, Top: " &
---                          Float'Image (Left) & ", " &
---                          Float'Image (Left + Get_Width (UI_Element)) &
---                          Float'Image (Bottom) & ", " &
---                          Float'Image (Bottom + Get_Height (UI_Element)));
---              Put_Line ("Input_Manager.Check_For_Click Cursor_X, Cursor_Y: " &
---                          Float'Image (Cursor_X) & ", " &
---                          Float'Image (Cursor_Y));
---              Put_Line ("Input_Manager.Check_For_Click : Result " &
---                          Boolean'Image (Result));
+            --              Put_Line ("Input_Manager.Check_For_Click Left, Right, Bottom, Top: " &
+            --                          Float'Image (Left) & ", " &
+            --                          Float'Image (Left + Get_Width (UI_Element)) &
+            --                          Float'Image (Bottom) & ", " &
+            --                          Float'Image (Bottom + Get_Height (UI_Element)));
+            --              Put_Line ("Input_Manager.Check_For_Click Cursor_X, Cursor_Y: " &
+            --                          Float'Image (Cursor_X) & ", " &
+            --                          Float'Image (Cursor_Y));
+            --              Put_Line ("Input_Manager.Check_For_Click : Result " &
+            --                          Boolean'Image (Result));
         end if;
         return Result;
     end Check_For_Click;
 
     --  ------------------------------------------------------------------------
 
-    function Get_Command return Command is
+    function Get_Current_Command return Command is
     begin
         return Current_Command;
-    end Get_Command;
+    end Get_Current_Command;
 
     --  ------------------------------------------------------------------------
 
@@ -80,31 +79,38 @@ package body Input_Manager is
         use Glfw.Input.Keys;
         use Input_Callback;
 
-        procedure Check_Click (Curs : Cursor) is
+        procedure Check_Button_Click (Curs : Cursor) is
             Index      : constant Positive := To_Index (Curs);
             UI_Element : Sprite := UI_Elements.Element (Index);
         begin
             if Is_Active (UI_Element) then
                 if Check_For_Click (Window, UI_Element) then
+                    Put_Line ("Input_Manager.Check_Button_Click UI_Element.Position " &
+                    Float'Image (Get_X (UI_Element)) &
+                    Float'Image (Get_Y (UI_Element)));
                     Set_Clicked (UI_Element, True);
+                    Put_Line ("Input_Manager.Check_Button_Click UI_Element clicked " &
+                    Boolean'Image (Is_Clicked (UI_Element)));
                     Current_Command := Command_UI;
                 end if;
             end if;
-        end Check_Click;
+        end Check_Button_Click;
 
     begin
-        UI_Elements.Iterate (Check_Click'Access);
+        UI_Elements.Iterate (Check_Button_Click'Access);
 
-        if Is_Key_Down (Left) or Is_Key_Down (A) then
-            Current_Command := Command_Left;
-        elsif Is_Key_Down (Right) or Is_Key_Down (D) then
-            Current_Command := Command_Right;
-        elsif Is_Key_Down (Up) then
-            Current_Command := Command_Up;
-        elsif Is_Key_Down (Down) then
-            Current_Command := Command_Down;
-        else
-            Current_Command := Command_Stop;
+        if Current_Command /= Command_UI then
+            if Is_Key_Down (Left) or Is_Key_Down (A) then
+                Current_Command := Command_Left;
+            elsif Is_Key_Down (Right) or Is_Key_Down (D) then
+                Current_Command := Command_Right;
+            elsif Is_Key_Down (Up) then
+                Current_Command := Command_Up;
+            elsif Is_Key_Down (Down) then
+                Current_Command := Command_Down;
+            elsif Current_Command /= Command_UI then
+                Current_Command := Command_Stop;
+            end if;
         end if;
     end Update_Command;
 

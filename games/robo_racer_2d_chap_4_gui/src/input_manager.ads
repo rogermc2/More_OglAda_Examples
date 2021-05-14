@@ -8,7 +8,7 @@ package Input_Manager is
                      Command_Down, Command_UI, Command_Invalid);
 
     procedure Add_UI_Element (Element : Sprite_Manager.Sprite);
-    function Get_Command return Command;
+    function Get_Current_Command return Command;
     procedure Set_Command_Invalid;
     procedure Update_Command (Window : in out Input_Callback.Callback_Window);
 
