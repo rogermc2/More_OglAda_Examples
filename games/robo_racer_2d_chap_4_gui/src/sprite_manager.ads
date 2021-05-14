@@ -55,13 +55,6 @@ private
       Y  : Float := 0.0;
    end record;
 
---     type Rectangle is record
---        Top               : Float := 0.0;
---        Bottom            : Float := 0.0;
---        Left              : Float := 0.0;
---        Right             : Float := 0.0;
---     end record;
-
    type Sprite is record
       Textures          : Textures_Manager.Texture_List;
       Texture_Index     : Positive := 1;

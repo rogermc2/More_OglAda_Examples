@@ -27,6 +27,7 @@ package body Player_Manager is
    end Get_Position;
 
    --  -------------------------------------------------------------------------
+
    procedure Init_Players is
       use Sprite_Manager;
    begin

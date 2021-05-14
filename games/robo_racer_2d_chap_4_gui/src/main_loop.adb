@@ -34,8 +34,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Projection_Uniform : GL.Uniforms.Uniform;
     Texture_Uniform    : GL.Uniforms.Uniform;
     Background         : Sprite_Manager.Sprite;
-    Pause_Button       : Sprite_Manager.Sprite;
-    Resume_Button      : Sprite_Manager.Sprite;
     Game_State         : Game_Status := Game_Running;
     UI_Timer           : Float := 0.0;
 
@@ -86,19 +84,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Set_Visible (Background, True);
         Set_Active (Background, True);
 
-        Set_Frame_Size (Pause_Button, 75.0, 38.0);
-        Set_Number_Of_Frames (Pause_Button, 1);
-        Set_Position (Pause_Button, 10.0, 5.0);
-        Add_Texture (Pause_Button, "src/resources/pauseButton.png", False);
-        Set_Visible (Pause_Button, True);
-        Set_Active (Pause_Button, True);
-        Input_Manager.Add_UI_Element (Pause_Button);
-
-        Set_Frame_Size (Resume_Button, 75.0, 38.0);
-        Set_Number_Of_Frames (Resume_Button, 1);
-        Set_Position (Resume_Button, 80.0, 10.0);
-        Add_Texture (Resume_Button, "src/resources/resumeButton.png", False);
-        Input_Manager.Add_UI_Element (Resume_Button);
+        Input_Manager.Init_Buttons;
 
     exception
         when anError : others =>
@@ -113,9 +99,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Input_Manager;
         use Player_Manager;
         use Sprite_Manager;
-        Step      : constant Float := 100.0;
-        Player    : constant Player_Index := Get_Current_Player;
-        aCommand  : Command := Get_Current_Command;
+        Step                : constant Float := 100.0;
+        Player              : constant Player_Index := Get_Current_Player;
+        aCommand            : Command := Get_Current_Command;
     begin
         if Game_State = Game_Paused then
             aCommand := Command_UI;
@@ -125,17 +111,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             UI_Timer := 0.0;
         end if;
 
---          if not (aCommand = Command_Stop) then
---              Put_Line ("Main_Loop.Process_Input Command:" &
---                         Command'Image (aCommand));
---          end if;
-
         case aCommand is
             when Command_UI =>
-                Put_Line ("Main_Loop.Process_Input Pause_Button clicked: " &
-                            Boolean'Image (Is_Clicked (Pause_Button)));
                 if Is_Clicked (Pause_Button) then
-                    Put_Line ("Main_Loop.Process_Input Pause_Button clicked.");
                     Set_Clicked (Pause_Button, False);
                     Set_Visible (Pause_Button, False);
                     Set_Active (Pause_Button, False);
@@ -188,7 +166,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
     begin
-
         Utilities.Clear_Colour;
         Sprite_Manager.Clear_Buffers;
         Resize_GL_Scene (Screen);
@@ -198,8 +175,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
         Sprite_Manager.Render (Background);
         Player_Manager.Render_Players;
-        Sprite_Manager.Render (Pause_Button);
-        Sprite_Manager.Render (Resume_Button);
+        Input_Manager.Render_Button (Input_Manager.Pause_Button);
+        Input_Manager.Render_Button (Input_Manager.Resume_Button);
     end Render_Sprites;
 
     --  ----------------------------------------------------------------------------
@@ -289,8 +266,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         if Game_State = Game_Running then
             Sprite_Manager.Update (Background, Delta_Time);
             Player_Manager.Update (Delta_Time);
-            Sprite_Manager.Update (Pause_Button, Delta_Time);
-            Sprite_Manager.Update (Resume_Button, Delta_Time);
+            Input_Manager.Update (Input_Manager.Pause_Button, Delta_Time);
+            Input_Manager.Update (Input_Manager.Resume_Button, Delta_Time);
         end if;
     end Update;
 
