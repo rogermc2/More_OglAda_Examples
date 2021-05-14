@@ -3,6 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Glfw;
 with Glfw.Input.Keys;
+with Glfw.Input.Mouse;
 with Glfw.Windows;
 
 package Input_Callback is
@@ -16,8 +17,14 @@ package Input_Callback is
 
    Input_Callback_Exception : Exception;
 
+   overriding
+   procedure Mouse_Button_Changed (Object   : not null access Callback_Window;
+                                   Button   : Glfw.Input.Mouse.Button;
+                                   State   : Glfw.Input.Button_State;
+                                   Mods    : Glfw.Input.Keys.Modifiers);
    procedure Clear_All_Keys;
    function Is_Key_Down (aKey : Glfw.Input.Keys.Key) return Boolean;
+   function Is_Button_Down (aButton : Glfw.Input.Mouse.Button) return Boolean;
    function Joystick_Connected return Boolean;
 
    overriding

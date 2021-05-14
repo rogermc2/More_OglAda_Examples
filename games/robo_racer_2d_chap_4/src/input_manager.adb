@@ -33,8 +33,6 @@ package body Input_Manager is
       else
          Current_Command := Command_Stop;
       end if;
-      --        Put_Line ("Input_Manager.Update_Command Command: " &
-      --                    Command'Image (Current_Command));
    end Update_Command;
 
    --  ------------------------------------------------------------------------
