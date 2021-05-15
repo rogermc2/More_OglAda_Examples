@@ -42,6 +42,29 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  ------------------------------------------------------------------------
 
+    procedure Check_Background
+      (Window : in out Input_Callback.Callback_Window) is
+        use Sprite_Manager;
+        Position        : constant Point := Get_Position (Background);
+--          Left_Threshold  : constant Float := 0.0;
+        Right_Threshold : Float;
+        Screen_Width    : Glfw.Size;
+        Screen_Height   : Glfw.Size;
+    begin
+
+        Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+        Right_Threshold := Float (Screen_Width) - Get_Width (Background);
+
+        if Position.X > 0.0 then
+            Set_Position (Background, 0.0, Position.Y);
+        elsif Position.X < Right_Threshold then
+            Set_Position (Background, Right_Threshold, Position.Y);
+        end if;
+
+    end Check_Background;
+
+    ----------------------------------------------------------------------------
+
     procedure Check_Boundaries
       (Window : in out Input_Callback.Callback_Window;
        Player :  Player_Manager.Player_Index) is
@@ -62,7 +85,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Pos_Offset.Y := Position.Y;
             Set_Position (Player, Pos_Offset);
             Set_Velocity (Player, 0.0);
-            Set_Velocity (Background, 0.0);
         elsif
           (Player = Robot_Right or Player = Robot_Right_Strip) and
           Check.Right >= Float (Screen_Width) then
@@ -163,52 +185,52 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         end if;
 
         case aCommand is
-            when Command_UI =>
-                if Is_Clicked (Pause_Button) then
-                    Set_Clicked (Pause_Button, False);
-                    Set_Visible (Pause_Button, False);
-                    Set_Active (Pause_Button, False);
+        when Command_UI =>
+            if Is_Clicked (Pause_Button) then
+                Set_Clicked (Pause_Button, False);
+                Set_Visible (Pause_Button, False);
+                Set_Active (Pause_Button, False);
 
-                    Set_Visible (Resume_Button, True);
-                    Set_Active (Resume_Button, True);
-                    Game_State := Game_Paused;
-                elsif Is_Clicked (Resume_Button) then
-                    Set_Clicked (Resume_Button, False);
-                    Set_Visible (Resume_Button, False);
-                    Set_Active (Resume_Button, False);
+                Set_Visible (Resume_Button, True);
+                Set_Active (Resume_Button, True);
+                Game_State := Game_Paused;
+            elsif Is_Clicked (Resume_Button) then
+                Set_Clicked (Resume_Button, False);
+                Set_Visible (Resume_Button, False);
+                Set_Active (Resume_Button, False);
 
-                    Set_Visible (Pause_Button, True);
-                    Set_Active (Pause_Button, True);
-                    Game_State := Game_Running;
-                end if;
-            when Command_Left =>
-                if Player = Robot_Right then
-                    Set_Active (Robot_Right, False);
-                    Set_Visible (Robot_Right, False);
-                    Set_Position (Robot_Left, Get_Position (Robot_Right));
-                end if;
-                Set_Current_Player (Robot_Left);
-                Set_Active (Robot_Left, True);
-                Set_Visible (Robot_Left, True);
-                Set_Velocity (Robot_Left, -Velocity);
-                Set_Velocity (Background, Velocity);
-            when Command_Right =>
-                if Player = Robot_Left then
-                    Set_Active (Robot_Left, False);
-                    Set_Visible (Robot_Left, False);
-                    Set_Position (Robot_Right, Get_Position (Robot_Left));
-                end if;
-                Set_Current_Player (Robot_Right);
-                Set_Active (Robot_Right, True);
-                Set_Visible (Robot_Right, True);
-                Set_Velocity (Robot_Right, Velocity);
-                Set_Velocity (Background, -Velocity);
-            when Command_Stop =>
-                Set_Velocity (Background, 0.0);
-                Set_Velocity (Player, 0.0);
-            when Command_Up => Jump (Player, Sprite_Up);
-            when Command_Down => Jump (Player, Sprite_Down);
-            when Command_Invalid => null;
+                Set_Visible (Pause_Button, True);
+                Set_Active (Pause_Button, True);
+                Game_State := Game_Running;
+            end if;
+        when Command_Left =>
+            if Player = Robot_Right then
+                Set_Active (Robot_Right, False);
+                Set_Visible (Robot_Right, False);
+                Set_Position (Robot_Left, Get_Position (Robot_Right));
+            end if;
+            Set_Current_Player (Robot_Left);
+            Set_Active (Robot_Left, True);
+            Set_Visible (Robot_Left, True);
+            Set_Velocity (Robot_Left, -Velocity);
+            Set_Velocity (Background, Velocity);
+        when Command_Right =>
+            if Player = Robot_Left then
+                Set_Active (Robot_Left, False);
+                Set_Visible (Robot_Left, False);
+                Set_Position (Robot_Right, Get_Position (Robot_Left));
+            end if;
+            Set_Current_Player (Robot_Right);
+            Set_Active (Robot_Right, True);
+            Set_Visible (Robot_Right, True);
+            Set_Velocity (Robot_Right, Velocity);
+            Set_Velocity (Background, -Velocity);
+        when Command_Stop =>
+            Set_Velocity (Background, 0.0);
+            Set_Velocity (Player, 0.0);
+        when Command_Up => Jump (Player, Sprite_Up);
+        when Command_Down => Jump (Player, Sprite_Down);
+        when Command_Invalid => null;
         end case;
         Set_Command_Invalid;
     end Process_Input;
@@ -312,6 +334,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Input_Manager.Update_Command (Window);
         Process_Input (Delta_Time);
         Check_Boundaries (Window, Player_Manager.Get_Current_Player);
+        Check_Background (Window);
 
         Window'Access.Get_Cursor_Pos (X_Position, Y_Position);
         if Game_State = Game_Running then
