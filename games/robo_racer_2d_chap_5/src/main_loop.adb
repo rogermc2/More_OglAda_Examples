@@ -29,7 +29,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Back                   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
     Border_Width           : constant GL.Types.Size := 2;
     UI_Threshold           : constant float := 0.2;
-    Pickup_Spawn_Threshold : constant Float := 15.0;
+    Pickup_Spawn_Threshold : constant Float := 5.0;  --  15.0;
     Last_Time              : Float := 0.0;
     Game_Program           : GL.Objects.Programs.Program;
     Model_Uniform          : GL.Uniforms.Uniform;
@@ -293,10 +293,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Player_Manager;
         Screen_Width  : Glfw.Size;
         Screen_Height : Glfw.Size;
-        Spawn_Margins  : Object_Size;
-        Player_Size  : Object_Size;
-        Spawn_X : Float;
-        Spawn_Y : Float;
+        Spawn_Margins : Object_Size;
+        Player_Size   : Object_Size;
+        Spawn_X       : Float;
+        Spawn_Y       : Float;
     begin
         if not Is_Visible (Pickup) then
             Pickup_Spawn_Timer := Pickup_Spawn_Timer + Delta_Time;
@@ -352,8 +352,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
         Sprite_Manager.Init;
         Enable_Mouse_Callbacks (Screen, True);
-        Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
-        Screen.Enable_Callback (Glfw.Windows.Callbacks.Position);
 
     exception
         when anError : others =>

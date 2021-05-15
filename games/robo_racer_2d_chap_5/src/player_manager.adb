@@ -22,13 +22,6 @@ package body Player_Manager is
 
    --  -------------------------------------------------------------------------
 
-   function Get_Player  (Player : Player_Index) return Sprite_Manager.Sprite is
-   begin
-      return Player_List (Player);
-   end Get_Player;
-
-   --  -------------------------------------------------------------------------
-
    function Get_Position  (Player : Player_Index) return Sprite_Manager.Point is
    begin
       return Sprite_Manager.Get_Position (Player_List (Player));
