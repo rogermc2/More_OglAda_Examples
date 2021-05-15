@@ -50,14 +50,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Screen_Width  : Glfw.Size;
         Screen_Height : Glfw.Size;
         Right         : Float;
-        --          Top           : constant Float;
         Position      : constant Point := Player_Manager.Get_Position (Player);
     begin
         Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         Right := Float (Screen_Width) - Float (Border_Width);
-        --          Top := Size (Screen_Height) - Border_Width;
-      if Position.X < Float (Border_Width) or Position.X > Right - 100.0 then
-         Put_Line ("Check_Boundaries stop");
+        if ((Player = Robot_Left or Player = Robot_Left_Strip) and
+              Position.X < Float (Border_Width)) or
+          ((Player = Robot_Right or Player = Robot_Right_Strip) and
+               Position.X > Right - 95.0) then
             Set_Velocity (Player, 0.0);
         end if;
     end Check_Boundaries;
