@@ -6,7 +6,6 @@ with Textures_Manager;
 package Sprite_Manager is
 
    type Sprite_Status is (Sprite_Up, Sprite_Down);
-   type Object_Size is private;
    type Sprite is private;
 
    type Point is record
@@ -19,6 +18,11 @@ package Sprite_Manager is
       Right  : Float := 0.0;
       Top    : Float := 0.0;
       Bottom : Float := 0.0;
+   end record;
+
+   type Object_Size is record
+      Width  : Float := 0.0;
+      Height : Float := 0.0;
    end record;
 
    procedure Add_Texture (aSprite      : in out Sprite; File_Name : String;
@@ -49,15 +53,12 @@ package Sprite_Manager is
    procedure Set_Position (aSprite : in out Sprite; Position : Point);
    procedure Set_Use_Transparency (aSprite          : in out Sprite;
                                    Use_Transparency : Boolean);
+   procedure Set_Value (aSprite : in out Sprite; Value : Natural);
    procedure Set_Velocity (aSprite : in out Sprite; Velocity : Float);
    procedure Set_Visible (aSprite : in out Sprite; Visible : Boolean);
    procedure Update (aSprite : in out Sprite; Delta_Time : Float);
 
 private
-   type Object_Size is record
-      Width  : Float := 0.0;
-      Height : Float := 0.0;
-   end record;
 
    type Sprite is record
       Textures          : Textures_Manager.Texture_List;
@@ -70,6 +71,7 @@ private
       Sprite_Size       : Object_Size;
       Velocity          : Float := 0.0;
       Collision         : Rectangle;
+      Value             : Integer := 0;
       Is_Collidable     : Boolean := True;
       Flip_Horizontal   : Boolean := False;
       Flip_Vertical     : Boolean := False;

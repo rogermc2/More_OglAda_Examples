@@ -11,6 +11,7 @@ package Player_Manager is
                                       return Sprite_Manager.Rectangle;
    function Get_Player (Player : Player_Index) return Sprite_Manager.Sprite;
    function Get_Position (Player : Player_Index) return Sprite_Manager.Point;
+   function Get_Size (Player : Player_Index) return Sprite_Manager.Object_Size;
    procedure Init_Players;
    procedure Jump (Player : Player_Index; Status : Sprite_Manager.Sprite_Status);
    procedure Render_Players;

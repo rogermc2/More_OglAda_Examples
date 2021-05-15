@@ -314,6 +314,13 @@ package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Value (aSprite : in out Sprite; Value : Natural) is
+   begin
+      aSprite.Value := Value;
+   end Set_Value;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Velocity (aSprite : in out Sprite; Velocity : Float) is
    begin
       aSprite.Velocity := Velocity;

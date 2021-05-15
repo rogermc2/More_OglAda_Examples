@@ -36,6 +36,13 @@ package body Player_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Size (Player : Player_Index) return Sprite_Manager.Object_Size is
+   begin
+      return Sprite_Manager.Get_Size (Player_List (Player));
+   end Get_Size;
+
+   --  -------------------------------------------------------------------------
+
    procedure Init_Players is
       use Sprite_Manager;
    begin

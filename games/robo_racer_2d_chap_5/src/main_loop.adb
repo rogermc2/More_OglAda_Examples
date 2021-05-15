@@ -26,17 +26,20 @@ with Sprite_Manager;
 procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     type Game_Status is (Game_Running, Game_Paused);
 
-    Back               : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
-    Border_Width       : constant GL.Types.Size := 2;
-    UI_Threshold       : constant float := 0.2;
-    Last_Time          : Float := 0.0;
-    Game_Program       : GL.Objects.Programs.Program;
-    Model_Uniform      : GL.Uniforms.Uniform;
-    Projection_Uniform : GL.Uniforms.Uniform;
-    Texture_Uniform    : GL.Uniforms.Uniform;
-    Background         : Sprite_Manager.Sprite;
-    Game_State         : Game_Status := Game_Running;
-    UI_Timer           : Float := 0.0;
+    Back                   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
+    Border_Width           : constant GL.Types.Size := 2;
+    UI_Threshold           : constant float := 0.2;
+    Pickup_Spawn_Threshold : constant Float := 15.0;
+    Last_Time              : Float := 0.0;
+    Game_Program           : GL.Objects.Programs.Program;
+    Model_Uniform          : GL.Uniforms.Uniform;
+    Projection_Uniform     : GL.Uniforms.Uniform;
+    Texture_Uniform        : GL.Uniforms.Uniform;
+    Background             : Sprite_Manager.Sprite;
+    Pickup                 : Sprite_Manager.Sprite;
+    Game_State             : Game_Status := Game_Running;
+    UI_Timer               : Float := 0.0;
+    Pickup_Spawn_Timer     : Float := 0.0;
 
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
@@ -46,7 +49,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       (Window : in out Input_Callback.Callback_Window) is
         use Sprite_Manager;
         Position        : constant Point := Get_Position (Background);
---          Left_Threshold  : constant Float := 0.0;
+        --          Left_Threshold  : constant Float := 0.0;
         Right_Threshold : Float;
         Screen_Width    : Glfw.Size;
         Screen_Height   : Glfw.Size;
@@ -159,6 +162,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Player_Manager.Set_Collision (Player_Manager.Robot_Left, Collision);
         Player_Manager.Set_Collision (Player_Manager.Robot_Right, Collision);
 
+        Set_Frame_Size (Pickup, 26.0, 50.0);
+        Set_Number_Of_Frames (Pickup, 1);
+        Set_Value (Pickup, 50);
+        Add_Texture (Pickup, "src/resources/oil.png", False);
+
     exception
         when anError : others =>
             Put_Line ("An exception occurred in Load_Sprites.");
@@ -250,6 +258,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Player_Manager.Render_Players;
         Input_Manager.Render_Button (Input_Manager.Pause_Button);
         Input_Manager.Render_Button (Input_Manager.Resume_Button);
+        Sprite_Manager.Render (Pickup);
     end Render_Sprites;
 
     --  ----------------------------------------------------------------------------
@@ -276,7 +285,40 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         GL.Uniforms.Set_Single (Projection_Uniform, Projection_Matrix);
     end Resize_GL_Scene;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
+
+    procedure Spawn_Pickup (Screen : in out Input_Callback.Callback_Window;
+                            Delta_Time : Float) is
+        use Sprite_Manager;
+        use Player_Manager;
+        Screen_Width  : Glfw.Size;
+        Screen_Height : Glfw.Size;
+        Spawn_Margins  : Object_Size;
+        Player_Size  : Object_Size;
+        Spawn_X : Float;
+        Spawn_Y : Float;
+    begin
+        if not Is_Visible (Pickup) then
+            Pickup_Spawn_Timer := Pickup_Spawn_Timer + Delta_Time;
+            if Pickup_Spawn_Timer > Pickup_Spawn_Threshold then
+                Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+                Spawn_Margins := Get_Size (Pickup);
+                Spawn_X := Abs (Float (Maths.Random_Float)) *
+                  (Float (Screen_Width) - 2.0 * Spawn_Margins.Width);
+                Player_Size := Get_Size (Get_Current_Player);
+                Spawn_Y :=
+                  Float (Screen_Height) - Abs (Float (Maths.Random_Float)) *
+                  (Player_Size.Height - 1.5 * Spawn_Margins.Height) -
+                  Spawn_Margins.Height;
+                Set_Position (Pickup, Spawn_X, Spawn_Y);
+                Set_Visible (Pickup, True);
+                Set_Active (Pickup, True);
+                Pickup_Spawn_Timer := 0.0;
+            end if;
+        end if;
+    end Spawn_Pickup;
+
+    --  ------------------------------------------------------------------------
 
     procedure Start_Game (Screen : in out Input_Callback.Callback_Window) is
         use Program_Loader;
@@ -342,6 +384,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Player_Manager.Update (Delta_Time);
             Input_Manager.Update (Input_Manager.Pause_Button, Delta_Time);
             Input_Manager.Update (Input_Manager.Resume_Button, Delta_Time);
+            Sprite_Manager.Update (Pickup, Delta_Time);
+            Spawn_Pickup (Window, Delta_Time);
         end if;
     end Update;
 
