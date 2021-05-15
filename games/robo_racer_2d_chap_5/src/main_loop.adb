@@ -43,24 +43,22 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     --  ------------------------------------------------------------------------
 
     procedure Check_Boundaries
-      (Window : in out Input_Callback.Callback_Window) is
+      (Window : in out Input_Callback.Callback_Window;
+       Player :  Player_Manager.Player_Index) is
         use Sprite_Manager;
         use Player_Manager;
-        Player        : constant Player_Index := Get_Current_Player;
+        Check         : constant Rectangle := Get_Collision_Rectangle (Player);
         Screen_Width  : Glfw.Size;
         Screen_Height : Glfw.Size;
-        Right         : Float;
-        Position      : constant Point := Player_Manager.Get_Position (Player);
     begin
         Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
-        Right := Float (Screen_Width) - Float (Border_Width);
         if (Player = Robot_Left or Player = Robot_Left_Strip) and
-              Position.X < 0.0 then
+          Check.Left <= 0.0 then
             Set_Velocity (Player, 0.0);
             Set_Velocity (Background, 0.0);
         elsif
           (Player = Robot_Right or Player = Robot_Right_Strip) and
-               Position.X > Right - 95.0 then
+          Check.Right >= Float (Screen_Width) - 5.0 then
             Set_Velocity (Player, 0.0);
         end if;
     end Check_Boundaries;
@@ -94,6 +92,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Screen_Height   : Glfw.Size;
         VP_Width        : Size;
         VP_Height       : Size;
+        Collision       : Rectangle;
     begin
         Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         VP_Width := Size (Screen_Width) - 2 * Border_Width;
@@ -110,6 +109,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Set_Active (Background, True);
 
         Input_Manager.Init_Buttons;
+        Collision.Left := 34.0;
+        Collision.Right := -10.0;
+        Player_Manager.Set_Collision (Player_Manager.Robot_Left, Collision);
+        Player_Manager.Set_Collision (Player_Manager.Robot_Right, Collision);
 
     exception
         when anError : others =>
@@ -285,7 +288,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Render_Sprites (Window);
         Input_Manager.Update_Command (Window);
         Process_Input (Delta_Time);
-        Check_Boundaries (Window);
+        Check_Boundaries (Window, Player_Manager.Get_Current_Player);
 
         Window'Access.Get_Cursor_Pos (X_Position, Y_Position);
         if Game_State = Game_Running then

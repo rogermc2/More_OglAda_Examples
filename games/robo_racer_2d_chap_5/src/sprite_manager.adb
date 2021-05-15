@@ -61,6 +61,20 @@ package body Sprite_Manager is
 
    --  ------------------------------------------------------------------------
 
+   function Get_Collision_Rectangle  (aSprite : Sprite) return Rectangle is
+        theRect : Rectangle;
+   begin
+      theRect.Left := aSprite.Position.X + aSprite.Collision.Left;
+      theRect.Right := aSprite.Position.X + aSprite.Sprite_Size.Width +
+          aSprite.Collision.Right;
+      theRect.Top := aSprite.Position.Y + aSprite.Collision.Top;
+      theRect.Bottom := aSprite.Position.Y + aSprite.Sprite_Size.Height +
+          aSprite.Collision.Bottom;
+      return theRect;
+   end Get_Collision_Rectangle;
+
+   --  ------------------------------------------------------------------------
+
    function Get_Current_Frame (aSprite : Sprite)
                                 return GL.Objects.Textures.Texture is
       Result : GL.Objects.Textures.Texture;
@@ -254,6 +268,13 @@ package body Sprite_Manager is
    begin
       aSprite.Is_Clicked := Clicked;
    end Set_Clicked;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Collision (aSprite : in out Sprite; Rect : Rectangle) is
+   begin
+      aSprite.Collision := Rect;
+   end Set_Collision;
 
    --  ------------------------------------------------------------------------
 

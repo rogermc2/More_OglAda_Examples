@@ -7,6 +7,14 @@ package body Player_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Collision_Rectangle (Player : Player_Index)
+                                     return Sprite_Manager.Rectangle is
+   begin
+      return Sprite_Manager.Get_Collision_Rectangle (Player_List (Player));
+   end Get_Collision_Rectangle;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Current_Player return Player_Index is
    begin
       return Current_Player;
@@ -89,6 +97,14 @@ package body Player_Manager is
    begin
       Sprite_Manager.Set_Active (Player_List (Player), State);
    end Set_Active;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Collision (Player : Player_Index;
+                            Rect : Sprite_Manager.Rectangle) is
+   begin
+      Sprite_Manager.Set_Collision (Player_List (Player), Rect);
+   end Set_Collision;
 
    --  -------------------------------------------------------------------------
 
