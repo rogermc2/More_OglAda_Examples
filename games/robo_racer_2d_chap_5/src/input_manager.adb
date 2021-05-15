@@ -157,7 +157,7 @@ package body Input_Manager is
             Current_Command := Command_Up;
          elsif Is_Key_Down (Down) then
             Current_Command := Command_Down;
-         elsif Is_Key_Down (S) then
+         else
             Current_Command := Command_Stop;
          end if;
       end if;
