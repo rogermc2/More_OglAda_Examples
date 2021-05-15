@@ -52,21 +52,36 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Screen_Width  : Glfw.Size;
         Screen_Height : Glfw.Size;
         Offset        : Float;
-        X             : Float;
-        Y             : Float;
+        Pos_Offset    : Point;
     begin
         Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         if (Player = Robot_Left or Player = Robot_Left_Strip) and
           Check.Left <= 0.0 then
             Offset := Check.Left;
-            X := Position.X - Offset;
-            Y := Position.Y;
-            Set_Position (Player, (X, Y));
+            Pos_Offset.X := Position.X - Offset;
+            Pos_Offset.Y := Position.Y;
+            Set_Position (Player, Pos_Offset);
             Set_Velocity (Player, 0.0);
             Set_Velocity (Background, 0.0);
         elsif
           (Player = Robot_Right or Player = Robot_Right_Strip) and
           Check.Right >= Float (Screen_Width) then
+            Offset := Float (Screen_Width) - Check.Right;
+            Pos_Offset.X := Position.X + Offset;
+            Pos_Offset.Y := Position.Y;
+            Set_Position (Player, Pos_Offset);
+            Set_Velocity (Player, 0.0);
+        elsif Check.Bottom < 0.0 then
+            Offset := Check.Bottom;
+            Pos_Offset.X := Position.X;
+            Pos_Offset.Y := Position.Y - Offset;
+            Set_Position (Player, Pos_Offset);
+            Set_Velocity (Player, 0.0);
+        elsif Check.Top > Float (Screen_Height) then
+            Offset := Check.Top;
+            Pos_Offset.X := Position.X;
+            Pos_Offset.Y := Position.Y + Offset;
+            Set_Position (Player, Pos_Offset);
             Set_Velocity (Player, 0.0);
         end if;
     end Check_Boundaries;
