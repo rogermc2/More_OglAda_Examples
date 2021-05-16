@@ -26,19 +26,23 @@ with Sprite_Manager;
 procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     type Game_Status is (Game_Running, Game_Paused);
 
-    Back                   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
+    Back                   : constant GL.Types.Colors.Color :=
+                               (0.6, 0.6, 0.6, 1.0);
     Border_Width           : constant GL.Types.Size := 2;
     UI_Threshold           : constant float := 0.2;
-    Pickup_Spawn_Threshold : constant Float := 2.5;  --  15.0;
+    Enemy_Spawn_Threshold  : constant Float := 3.5;
+    Pickup_Spawn_Threshold : constant Float := 2.5;
     Last_Time              : Float := 0.0;
     Game_Program           : GL.Objects.Programs.Program;
     Model_Uniform          : GL.Uniforms.Uniform;
     Projection_Uniform     : GL.Uniforms.Uniform;
     Texture_Uniform        : GL.Uniforms.Uniform;
     Background             : Sprite_Manager.Sprite;
+    Enemy                  : Sprite_Manager.Sprite;
     Pickup                 : Sprite_Manager.Sprite;
     Game_State             : Game_Status := Game_Running;
     UI_Timer               : Float := 0.0;
+    Enemy_Spawn_Timer            : Float := 0.0;
     Pickup_Spawn_Timer     : Float := 0.0;
 
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
@@ -188,6 +192,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Set_Value (Pickup, 50);
         Add_Texture (Pickup, "src/resources/oil.png", True);
 
+        Set_Frame_Size (Enemy, 32.0, 50.0);
+        Set_Number_Of_Frames (Enemy, 1);
+        Set_Value (Enemy, -50);
+        Set_Collidable (Enemy, True);
+        Add_Texture (Enemy, "src/resources/water.png", True);
+
         Centre.X := 0.5 * Get_Size (Pickup).Width;
         Offset_Y := 3.0 * 0.25 * Get_Size (Pickup).Height;
         Centre.Y := Offset_Y;
@@ -290,9 +300,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Input_Manager.Render_Button (Input_Manager.Pause_Button);
         Input_Manager.Render_Button (Input_Manager.Resume_Button);
         Sprite_Manager.Render (Pickup);
+        Sprite_Manager.Render (Enemy);
     end Render_Sprites;
 
-    --  ----------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Resize_GL_Scene (Screen : in out Input_Callback.Callback_Window) is
         use GL.Objects.Programs;
@@ -315,6 +326,38 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Use_Program (Game_Program);
         GL.Uniforms.Set_Single (Projection_Uniform, Projection_Matrix);
     end Resize_GL_Scene;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Spawn_Enemy (Screen : in out Input_Callback.Callback_Window;
+                            Delta_Time : Float) is
+        use Sprite_Manager;
+        use Player_Manager;
+        Screen_Width  : Glfw.Size;
+        Screen_Height : Glfw.Size;
+        Spawn_Margins : Object_Size;
+        Player_Size   : Object_Size;
+        Spawn_X       : Float;
+        Spawn_Y       : Float;
+    begin
+        if not Is_Visible (Enemy) then
+            Enemy_Spawn_Timer := Enemy_Spawn_Timer + Delta_Time;
+            if Enemy_Spawn_Timer > Enemy_Spawn_Threshold then
+                Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+                Spawn_Margins := Get_Size (Enemy);
+                Spawn_X := Abs (Float (Maths.Random_Float)) *
+                  (Float (Screen_Width) - 2.0 * Spawn_Margins.Width);
+                Player_Size := Get_Size (Get_Current_Player);
+                Spawn_Y :=
+                  Float (Screen_Height) - Spawn_Margins.Height
+                  - (Abs (Float (Maths.Random_Float)) *
+                       Player_Size.Height + 2.0 * Spawn_Margins.Height);
+                Set_Position (Enemy, Spawn_X, Spawn_Y);
+                Set_Visible (Enemy, True);
+                Set_Active (Enemy, True);
+            end if;
+        end if;
+    end Spawn_Enemy;
 
     --  ------------------------------------------------------------------------
 
@@ -415,6 +458,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Input_Manager.Update (Input_Manager.Resume_Button, Delta_Time);
             Sprite_Manager.Update (Pickup, Delta_Time);
             Spawn_Pickup (Window, Delta_Time);
+            Sprite_Manager.Update (Enemy, Delta_Time);
+            Spawn_Enemy (Window, Delta_Time);
             Check_Collisions;
         end if;
     end Update;

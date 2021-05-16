@@ -372,7 +372,7 @@ package body Sprite_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Set_Value (aSprite : in out Sprite; Value : Natural) is
+    procedure Set_Value (aSprite : in out Sprite; Value : Integer) is
     begin
         aSprite.Value := Value;
     end Set_Value;
@@ -404,7 +404,8 @@ package body Sprite_Manager is
                 end if;
                 aSprite.Animation_Elapsed := 0.0;
             end if;
-            aSprite.Position.X := aSprite.Position.X + aSprite.Velocity * Delta_Time;
+            aSprite.Position.X := aSprite.Position.X +
+              aSprite.Velocity * Delta_Time;
         end if;
     end Update;
 

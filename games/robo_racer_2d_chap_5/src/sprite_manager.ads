@@ -60,7 +60,7 @@ package Sprite_Manager is
    procedure Set_Radius (aSprite : in out Sprite; Radius : Float);
    procedure Set_Use_Transparency (aSprite          : in out Sprite;
                                    Use_Transparency : Boolean);
-   procedure Set_Value (aSprite : in out Sprite; Value : Natural);
+   procedure Set_Value (aSprite : in out Sprite; Value : Integer);
    procedure Set_Velocity (aSprite : in out Sprite; Velocity : Float);
    procedure Set_Visible (aSprite : in out Sprite; Visible : Boolean);
    procedure Update (aSprite : in out Sprite; Delta_Time : Float);
