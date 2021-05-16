@@ -53,14 +53,16 @@ package body Input_Manager is
       Set_Frame_Size (UI_Elements (Pause_Button), 75.0, 38.0);
       Set_Number_Of_Frames (UI_Elements (Pause_Button), 1);
       Set_Position (UI_Elements (Pause_Button), 10.0, 5.0);
-      Add_Texture (UI_Elements (Pause_Button), "src/resources/pauseButton.png", False);
+      Add_Texture (UI_Elements
+                   (Pause_Button), "src/resources/pauseButton.png", False);
       Set_Visible (UI_Elements (Pause_Button), True);
       Set_Active (UI_Elements (Pause_Button), True);
 
       Set_Frame_Size (UI_Elements (Resume_Button), 75.0, 38.0);
       Set_Number_Of_Frames (UI_Elements (Resume_Button), 1);
       Set_Position (UI_Elements (Resume_Button), 80.0, 10.0);
-      Add_Texture (UI_Elements (Resume_Button), "src/resources/resumeButton.png", False);
+      Add_Texture (UI_Elements
+                   (Resume_Button), "src/resources/resumeButton.png", False);
 
    end Init_Buttons;
 
