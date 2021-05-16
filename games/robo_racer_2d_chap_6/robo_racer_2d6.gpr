@@ -1,0 +1,16 @@
+with  "../../common/common.gpr";
+with "opengl.gpr";
+limited with "opengl-images.gpr";
+limited with "opengl-glfw.gpr";
+
+project Robo_Racer_2D6 is
+
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj/";
+   for Exec_Dir use ".";
+   for Main use ("robo_racer_6");
+
+   package Compiler renames Common.Compiler;
+
+end Robo_Racer_2D6;
+
