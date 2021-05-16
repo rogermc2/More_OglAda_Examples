@@ -29,7 +29,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Back                   : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 1.0);
     Border_Width           : constant GL.Types.Size := 2;
     UI_Threshold           : constant float := 0.2;
-    Pickup_Spawn_Threshold : constant Float := 5.0;  --  15.0;
+    Pickup_Spawn_Threshold : constant Float := 2.5;  --  15.0;
     Last_Time              : Float := 0.0;
     Game_Program           : GL.Objects.Programs.Program;
     Model_Uniform          : GL.Uniforms.Uniform;
@@ -49,7 +49,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       (Window : in out Input_Callback.Callback_Window) is
         use Sprite_Manager;
         Position        : constant Point := Get_Position (Background);
-        --          Left_Threshold  : constant Float := 0.0;
         Right_Threshold : Float;
         Screen_Width    : Glfw.Size;
         Screen_Height   : Glfw.Size;
@@ -113,6 +112,25 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     ----------------------------------------------------------------------------
 
+    procedure Check_Collisions is
+        use Sprite_Manager;
+        use Player_Manager;
+        Index   : constant Player_Index := Get_Current_Player;
+        Player  : Sprite := Get_Player (Index);
+    begin
+
+        if Intersect_Circle (Player, Pickup) then
+            Set_Active (Pickup, False);
+            Set_Visible (Pickup, False);
+            Set_Value (Player,
+                       Get_Value (Player) + Sprite_Manager.Get_Value (Pickup));
+            Pickup_Spawn_Timer := 0.0;
+        end if;
+
+    end Check_Collisions;
+
+    ----------------------------------------------------------------------------
+
     procedure Enable_Mouse_Callbacks
       (Window : in out Input_Callback.Callback_Window;
        Enable : Boolean) is
@@ -140,6 +158,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Screen_Height   : Glfw.Size;
         VP_Width        : Size;
         VP_Height       : Size;
+        Centre          : Point;
+        Radius          : Float;
+        Offset_Y        : Float;
         Collision       : Rectangle;
     begin
         Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
@@ -166,6 +187,16 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Set_Number_Of_Frames (Pickup, 1);
         Set_Value (Pickup, 50);
         Add_Texture (Pickup, "src/resources/oil.png", True);
+
+        Centre.X := 0.5 * Get_Size (Pickup).Width;
+        Offset_Y := 3.0 * 0.25 * Get_Size (Pickup).Height;
+        Centre.Y := Offset_Y;
+        Set_Centre (Pickup, Centre);
+        Radius := 0.5 * Get_Size (Pickup).Width;
+        Set_Radius (Pickup, Radius);
+        Player_Manager.Set_Collidable (Player_Manager.Robot_Left, True);
+        Player_Manager.Set_Collidable (Player_Manager.Robot_Right, True);
+        Set_Collidable (Pickup, True);
 
     exception
         when anError : others =>
@@ -307,9 +338,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   (Float (Screen_Width) - 2.0 * Spawn_Margins.Width);
                 Player_Size := Get_Size (Get_Current_Player);
                 Spawn_Y :=
-                  Float (Screen_Height) - Abs (Float (Maths.Random_Float)) *
-                  (Player_Size.Height - 1.5 * Spawn_Margins.Height) -
-                  Spawn_Margins.Height;
+                  Float (Screen_Height) - Spawn_Margins.Height
+                  - (Abs (Float (Maths.Random_Float)) *
+                       Player_Size.Height + 1.5 * Spawn_Margins.Height);
                 Set_Position (Pickup, Spawn_X, Spawn_Y);
                 Set_Visible (Pickup, True);
                 Set_Active (Pickup, True);
@@ -384,6 +415,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Input_Manager.Update (Input_Manager.Resume_Button, Delta_Time);
             Sprite_Manager.Update (Pickup, Delta_Time);
             Spawn_Pickup (Window, Delta_Time);
+            Check_Collisions;
         end if;
     end Update;
 

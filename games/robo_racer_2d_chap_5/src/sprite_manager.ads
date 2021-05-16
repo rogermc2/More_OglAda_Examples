@@ -30,14 +30,18 @@ package Sprite_Manager is
    procedure Clear_Buffers;
    procedure Flip_Horizontal (aSprite : in out Sprite; Flip : Boolean);
    procedure Flip_Vertical (aSprite : in out Sprite; Flip : Boolean);
+   function Get_Centre (aSprite : Sprite) return Point;
    function Get_Collision_Rectangle  (aSprite : Sprite) return Rectangle;
    function Get_Current_Frame (aSprite : Sprite)
                                return GL.Objects.Textures.Texture;
-   function Get_Position (aSprite : Sprite) return Point;
    function Get_Height (aSprite : Sprite) return Float;
+   function Get_Position (aSprite : Sprite) return Point;
+   function Get_Radius (aSprite : Sprite) return Float;
    function Get_Size (aSprite : Sprite) return Object_Size;
+   function Get_Value (aSprite : Sprite) return Integer;
    function Get_Width (aSprite : Sprite) return Float;
    procedure Init;
+   function Intersect_Circle (Sprite1, Sprite2 : Sprite) return Boolean;
    function Is_Active (aSprite : Sprite) return Boolean;
    function Is_Clicked (aSprite : Sprite) return Boolean;
    function Is_Collidable (aSprite : Sprite) return Boolean;
@@ -45,12 +49,15 @@ package Sprite_Manager is
    procedure Jump (aSprite : in out Sprite; Status : Sprite_Status);
    procedure Render (aSprite : Sprite);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
+   procedure Set_Centre (aSprite : in out Sprite; Centre : Point);
    procedure Set_Clicked (aSprite : in out Sprite; Clicked : Boolean);
+   procedure Set_Collidable (aSprite : in out Sprite; Collidable : Boolean);
    procedure Set_Collision (aSprite : in out Sprite; Rect : Rectangle);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
    procedure Set_Number_Of_Frames (aSprite : in out Sprite; Num : Integer);
    procedure Set_Position (aSprite : in out Sprite; X, Y : Float);
    procedure Set_Position (aSprite : in out Sprite; Position : Point);
+   procedure Set_Radius (aSprite : in out Sprite; Radius : Float);
    procedure Set_Use_Transparency (aSprite          : in out Sprite;
                                    Use_Transparency : Boolean);
    procedure Set_Value (aSprite : in out Sprite; Value : Natural);
@@ -69,6 +76,8 @@ private
       Animation_Elapsed : Float := 0.0;
       Position          : Point := (0.0, 0.0);
       Sprite_Size       : Object_Size;
+      Centre            : Point;
+      Radius            : Float := 0.0;
       Velocity          : Float := 0.0;
       Collision         : Rectangle;
       Value             : Integer := 0;

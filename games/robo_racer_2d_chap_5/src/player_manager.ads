@@ -9,12 +9,14 @@ package Player_Manager is
    function Get_Current_Player return Player_Index;
    function Get_Collision_Rectangle  (Player : Player_Index)
                                       return Sprite_Manager.Rectangle;
+   function Get_Player (Player : Player_Index) return Sprite_Manager.Sprite;
    function Get_Position (Player : Player_Index) return Sprite_Manager.Point;
    function Get_Size (Player : Player_Index) return Sprite_Manager.Object_Size;
    procedure Init_Players;
    procedure Jump (Player : Player_Index; Status : Sprite_Manager.Sprite_Status);
    procedure Render_Players;
    procedure Set_Active (Player : Player_Index; State : Boolean);
+   procedure Set_Collidable (Player : Player_Index; Collidable : Boolean);
    procedure Set_Collision (Player : Player_Index;
                             Rect : Sprite_Manager.Rectangle);
    procedure Set_Current_Player (Player : Player_Index);

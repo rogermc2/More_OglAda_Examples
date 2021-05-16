@@ -22,6 +22,13 @@ package body Player_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Player (Player : Player_Index) return Sprite_Manager.Sprite is
+   begin
+      return Player_List (Player);
+   end Get_Player;
+
+   --  -------------------------------------------------------------------------
+
    function Get_Position  (Player : Player_Index) return Sprite_Manager.Point is
    begin
       return Sprite_Manager.Get_Position (Player_List (Player));
@@ -38,6 +45,8 @@ package body Player_Manager is
 
    procedure Init_Players is
       use Sprite_Manager;
+      Centre   : Point;
+      Radius   : Float;
    begin
 
       Set_Frame_Size (Player_List (Robot_Right), 100.0, 125.0);
@@ -70,6 +79,15 @@ package body Player_Manager is
       Set_Active (Player_List (Robot_Right), True);
       Set_Velocity (Player_List (Robot_Right), 50.0);
 
+      Centre.X := 0.5 * Get_Size (Player_List (Robot_Right)).Width;
+      Centre.Y := 0.5 * Get_Size (Player_List (Robot_Right)).Height;
+      Radius := 0.5 * (Centre.X + Centre.Y);
+
+      Set_Centre (Player_List (Robot_Right), Centre);
+      Set_Radius (Player_List (Robot_Right), Radius);
+      Set_Centre (Player_List (Robot_Left), Centre);
+      Set_Radius (Player_List (Robot_Left), Radius);
+
       Current_Player := Robot_Right;
 
    end Init_Players;
@@ -97,6 +115,13 @@ package body Player_Manager is
    begin
       Sprite_Manager.Set_Active (Player_List (Player), State);
    end Set_Active;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Collidable (Player : Player_Index; Collidable : Boolean) is
+   begin
+      Sprite_Manager.Set_Collidable (Player_List (Player), Collidable);
+   end Set_Collidable;
 
    --  -------------------------------------------------------------------------
 
