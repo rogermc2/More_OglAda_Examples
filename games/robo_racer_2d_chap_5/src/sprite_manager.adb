@@ -86,7 +86,7 @@ package body Sprite_Manager is
     --  ------------------------------------------------------------------------
 
     function Get_Current_Frame (aSprite : Sprite)
-                               return GL.Objects.Textures.Texture is
+                                return GL.Objects.Textures.Texture is
         Result : GL.Objects.Textures.Texture;
     begin
         if aSprite.Is_Sprite_Sheet then
@@ -128,7 +128,7 @@ package body Sprite_Manager is
 
     --  -------------------------------------------------------------------------
 
-   function Get_Value (aSprite : Sprite) return Integer is
+    function Get_Value (aSprite : Sprite) return Integer is
     begin
         return aSprite.Value;
     end Get_Value;
@@ -153,7 +153,7 @@ package body Sprite_Manager is
     --  ------------------------------------------------------------------------
 
     function Intersect_Circle (Sprite1, Sprite2 : Sprite) return Boolean is
-        Result : Boolean := False;
+        Result    : Boolean := False;
         P1        : Point;
         P2        : Point;
         X         : Float;
@@ -163,7 +163,7 @@ package body Sprite_Manager is
         Rad_2_Sq  : Float;
 
     begin
-        if Sprite1.Is_Collidable and Sprite1.Is_Collidable and
+        if Sprite1.Is_Collidable and Sprite2.Is_Collidable and
           Sprite1.Is_Active and Sprite2.Is_Active then
             P1 := Get_Centre (Sprite1);
             P2 := Get_Centre (Sprite2);
@@ -176,6 +176,52 @@ package body Sprite_Manager is
         end if;
         return Result;
     end Intersect_Circle;
+
+    --  ------------------------------------------------------------------------
+
+    function Intersect_Rectangle (Sprite1, Sprite2 : Sprite) return Boolean is
+        Result : Boolean := False;
+        Rect1  : Rectangle;
+        Rect2  : Rectangle;
+    begin
+        if Sprite1.Is_Collidable and Sprite2.Is_Collidable and
+          Sprite1.Is_Active and Sprite2.Is_Active then
+            Rect1 := Get_Collision_Rectangle (Sprite1);
+            Rect2 := Get_Collision_Rectangle (Sprite2);
+            if Rect1.Left >= Rect2.Left and Rect1.Left <= Rect2.Right and
+              Rect1.Top >= Rect2.Top and Rect1.Top <= Rect2.Bottom then
+                Result := True;
+            elsif Rect1.Right >= Rect2.Left and Rect1.Right <= Rect2.Right and
+              Rect1.Top >= Rect2.Top and Rect1.Top <= Rect2.Bottom then
+                Result := True;
+            elsif Rect1.Left >= Rect2.Left and Rect1.Right <= Rect2.Right and
+              Rect1.Top >= Rect2.Top and Rect1.Top <= Rect2.Bottom then
+                Result := True;
+            elsif  Rect1.Right >= Rect2.Left and Rect1.Right <= Rect2.Right and
+              Rect1.Top < Rect2.Top and Rect1.Bottom > Rect2.Bottom then
+                Result := True;
+            elsif  Rect1.Top >= Rect2.Top and Rect1.Bottom <= Rect2.Bottom and
+              Rect1.Left < Rect2.Left and Rect1.Right > Rect2.Right then
+                Result := True;
+            elsif Rect2.Left >= Rect1.Left and Rect2.Right <= Rect1.Right and
+              Rect2.Top >= Rect1.Top and Rect2.Top <= Rect1.Bottom then
+                Result := True;
+            elsif Rect2.Right >= Rect1.Left and Rect2.Right <= Rect1.Right and
+              Rect2.Top >= Rect1.Top and Rect2.Top <= Rect1.Bottom then
+                Result := True;
+            elsif Rect2.Left >= Rect1.Left and Rect2.Right <= Rect1.Right and
+              Rect2.Top < Rect1.Top and Rect2.Top > Rect1.Bottom then
+                Result := True;
+            elsif  Rect1.Top >= Rect2.Top and Rect1.Bottom <= Rect2.Bottom and
+              Rect1.Left < Rect2.Left and Rect1.Right > Rect2.Right then
+                Result := True;
+            elsif  Rect2.Top >= Rect1.Top and Rect2.Bottom <= Rect1.Bottom and
+              Rect2.Left < Rect1.Left and Rect2.Right > Rect1.Right then
+                Result := True;
+            end if;
+        end if;
+        return Result;
+    end Intersect_Rectangle;
 
     --  ------------------------------------------------------------------------
 
@@ -315,7 +361,7 @@ package body Sprite_Manager is
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Collidable (aSprite : in out Sprite; Collidable : Boolean) is
+    procedure Set_Collidable (aSprite : in out Sprite; Collidable : Boolean) is
     begin
         aSprite.Is_Collidable := Collidable;
     end Set_Collidable;

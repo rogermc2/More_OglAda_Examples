@@ -29,7 +29,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Back                   : constant GL.Types.Colors.Color :=
                                (0.6, 0.6, 0.6, 1.0);
     Border_Width           : constant GL.Types.Size := 2;
-    UI_Threshold           : constant float := 0.2;
+    UI_Threshold           : constant float := 0.1;
     Enemy_Spawn_Threshold  : constant Float := 3.5;
     Pickup_Spawn_Threshold : constant Float := 2.5;
     Last_Time              : Float := 0.0;
@@ -129,6 +129,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Value (Player,
                        Get_Value (Player) + Sprite_Manager.Get_Value (Pickup));
             Pickup_Spawn_Timer := 0.0;
+        end if;
+
+        if Intersect_Rectangle (Player, Enemy) then
+            Set_Active (Enemy, False);
+            Set_Visible (Enemy, False);
+            Set_Value (Player,
+                       Get_Value (Player) + Sprite_Manager.Get_Value (Enemy));
+            Enemy_Spawn_Timer := 0.0;
         end if;
 
     end Check_Collisions;

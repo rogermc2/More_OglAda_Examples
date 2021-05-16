@@ -42,6 +42,7 @@ package Sprite_Manager is
    function Get_Width (aSprite : Sprite) return Float;
    procedure Init;
    function Intersect_Circle (Sprite1, Sprite2 : Sprite) return Boolean;
+   function Intersect_Rectangle (Sprite1, Sprite2 : Sprite) return Boolean;
    function Is_Active (aSprite : Sprite) return Boolean;
    function Is_Clicked (aSprite : Sprite) return Boolean;
    function Is_Collidable (aSprite : Sprite) return Boolean;
