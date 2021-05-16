@@ -30,7 +30,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Back                         : constant GL.Types.Colors.Color :=
                                     (0.6, 0.6, 0.6, 1.0);
    Border_Width                 : constant GL.Types.Size := 2;
-   Splash_Threshold             : constant Float := 2.5;
+   Splash_Threshold             : constant Float := 5.0;
    UI_Threshold                 : constant float := 0.1;
    Enemy_Spawn_Threshold        : constant Float := 3.5;
    Pickup_Spawn_Threshold       : constant Float := 2.5;
@@ -325,10 +325,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Put_Line ("Splash_Screen Render_Sprites Game_State : " &
                Game_Status'Image (Game_State));
       case Game_State is
-         when Game_Splash | Game_Loading  =>
+         when Game_Loading  =>
             Sprite_Manager.Render (Splash_Screen);
             Put_Line ("Splash_Screen rendered");
-         when Game_Menu | Game_Credits |
+         when Game_Splash | Game_Menu | Game_Credits |
               Game_Next_Level | Game_Over => null;
          when  Game_Running | Game_Paused =>
             Utilities.Clear_Colour;
