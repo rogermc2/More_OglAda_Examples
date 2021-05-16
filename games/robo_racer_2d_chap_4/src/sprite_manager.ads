@@ -18,8 +18,13 @@ package Sprite_Manager is
    function Get_Current_Frame (aSprite : Sprite)
                                return GL.Objects.Textures.Texture;
    function Get_Position (aSprite : Sprite) return Point;
+   function Get_Height (aSprite : Sprite) return Float;
    function Get_Size (aSprite : Sprite) return Object_Size;
-   function Get_Y (aPoint : Point) return Float;
+   function Get_Width (aSprite : Sprite) return Float;
+--     function Get_X (aPoint : Point) return Float;
+   function Get_X (aSprite : Sprite) return Float;
+--     function Get_Y (aPoint : Point) return Float;
+   function Get_Y (aSprite : Sprite) return Float;
    procedure Init;
    function Is_Active (aSprite : Sprite) return Boolean;
    function Is_Clicked (aSprite : Sprite) return Boolean;
@@ -28,6 +33,7 @@ package Sprite_Manager is
    procedure Jump (aSprite : in out Sprite; Status : Sprite_Status);
    procedure Render (aSprite : Sprite);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
+   procedure Set_Clicked (aSprite : in out Sprite; Clicked : Boolean);
    procedure Set_Frame_Size (aSprite : in out Sprite; Width, Height : Float);
    procedure Set_Number_Of_Frames (aSprite : in out Sprite; Num : Integer);
    procedure Set_Position (aSprite : in out Sprite; X, Y : Float);
@@ -47,13 +53,6 @@ private
    type Point is record
       X  : Float := 0.0;
       Y  : Float := 0.0;
-   end record;
-
-   type Rectangle is record
-      Top               : Float := 0.0;
-      Bottom            : Float := 0.0;
-      Left              : Float := 0.0;
-      Right             : Float := 0.0;
    end record;
 
    type Sprite is record
