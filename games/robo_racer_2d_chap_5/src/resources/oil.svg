@@ -45,7 +45,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -54,14 +54,15 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       id="g1475"
-       style="fill:#0000ff">
+       id="g37"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
       <path
-         style="fill:#0000ff;fill-opacity:1;stroke:#000000;stroke-width:0.26458300000000001px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="M 49.437499,259.29166 160.5625,258.53571"
          id="path18" />
       <path
-         style="fill:#0000ff;fill-opacity:1;stroke:#000000;stroke-width:1.7333;stroke-linecap:round"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.7333;stroke-linecap:round"
          id="path43"
          sodipodi:type="arc"
          sodipodi:cx="90.090988"
@@ -74,33 +75,33 @@
          transform="matrix(1,0,-0.05363225,-0.99856076,0,0)"
          d="m 145.27551,-278.25607 a 55.184525,53.371445 0 0 1 -53.94326,53.35794 55.184525,53.371445 0 0 1 -56.369947,-50.95759 l 55.128685,-2.40035 z" />
       <rect
-         style="fill:#0000ff;fill-rule:evenodd;stroke-width:0.264583"
+         style="fill:#000000;fill-rule:evenodd;stroke-width:0.264583"
          id="rect18"
          width="7.5595202"
          height="111.12499"
          x="101.22024"
          y="115.66071" />
       <path
-         style="fill:#0000ff;fill-opacity:1;stroke:#000000;stroke-width:0.34516200000000002px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.345162px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 101.22024,115.66071 c 12.63804,-21.912471 40.5564,-16.657167 40.5564,-16.657167 l -0.90506,3.143417 c -0.29137,1.01196 -12.51768,1.02148 -12.51768,1.02148 0,0 -6.89711,0.60444 -13.06138,6.35 l -6.51277,6.14227 z"
          id="path848"
          sodipodi:nodetypes="ccscscc" />
       <rect
-         style="fill:#0000ff;fill-opacity:1;stroke-width:0.264583"
+         style="fill:#000000;fill-opacity:1;stroke-width:0.264583"
          id="rect859"
          width="13.758333"
          height="5.8208332"
          x="159.27916"
          y="118.53333" />
       <rect
-         style="fill:#0000ff;fill-opacity:1;stroke-width:0.264583"
+         style="fill:#000000;fill-opacity:1;stroke-width:0.264583"
          id="rect861"
          width="13.758333"
          height="5.2916665"
          x="169.8625"
          y="152.39999" />
       <rect
-         style="fill:#0000ff;fill-opacity:1;stroke-width:0.264583"
+         style="fill:#000000;fill-opacity:1;stroke-width:0.264583"
          id="rect863"
          width="14.287499"
          height="7.4083333"
