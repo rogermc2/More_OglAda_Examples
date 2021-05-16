@@ -165,7 +165,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Set_Frame_Size (Pickup, 26.0, 50.0);
         Set_Number_Of_Frames (Pickup, 1);
         Set_Value (Pickup, 50);
-        Add_Texture (Pickup, "src/resources/oil.png", False);
+        Add_Texture (Pickup, "src/resources/oil1.png", False);
 
     exception
         when anError : others =>
