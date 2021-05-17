@@ -1,6 +1,6 @@
-with  "../../common/common.gpr";
-limited with "opengl-text.gpr";
+with "../../common/common.gpr";
 with "opengl.gpr";
+limited with "opengl-text.gpr";
 limited with "opengl-glfw.gpr";
 
 project Text_Rendering is
