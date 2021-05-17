@@ -291,6 +291,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Set_Visible (Resume_Button, True);
                   Set_Active (Resume_Button, True);
                   Game_State := Game_Paused;
+
                elsif Is_Clicked (Resume_Button) then
                   Set_Clicked (Resume_Button, False);
                   Set_Visible (Resume_Button, False);
@@ -299,7 +300,28 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Set_Visible (Pause_Button, True);
                   Set_Active (Pause_Button, True);
                   Game_State := Game_Running;
+
+               elsif Is_Clicked (Play_Button) then
+                  Set_Clicked (Play_Button, False);
+                  Set_Active (Play_Button, False);
+                  Set_Active (Exit_Button, False);
+                  Set_Active (Credits_Button, False);
+                  Game_State := Game_Running;
+
+               elsif Is_Clicked (Credits_Button) then
+                  Set_Clicked (Credits_Button, False);
+                  Set_Active (Play_Button, False);
+                  Set_Active (Exit_Button, False);
+                  Set_Active (Credits_Button, False);
+               Game_State := Game_Credits;
+
+               elsif Is_Clicked (Exit_Button) then
+                  Set_Clicked (Exit_Button, False);
+                  Set_Active (Play_Button, False);
+                  Set_Active (Exit_Button, False);
+                  Set_Active (Credits_Button, False);
                end if;
+
             when Command_Left =>
                if Player = Robot_Right then
                   Set_Active (Robot_Right, False);
@@ -347,13 +369,17 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       case Game_State is
          when Game_Splash | Game_Loading  =>
-            Put_Line ("Main_Loop.Render_Sprites render Splash_Screen.");
             Sprite_Manager.Render (Splash_Screen);
+
          when Game_Menu =>
-            Put_Line ("Main_Loop.Render_Sprites Game_Menu.");
             Sprite_Manager.Render (Menu_Screen);
+            Input_Manager.Render_Button (Input_Manager.Play_Button);
+            Input_Manager.Render_Button (Input_Manager.Credits_Button);
+            Input_Manager.Render_Button (Input_Manager.Exit_Button);
+
          when Game_Credits |
               Game_Next_Level | Game_Over => null;
+
          when  Game_Running | Game_Paused =>
             Sprite_Manager.Render (Background);
             Player_Manager.Render_Players;
@@ -522,6 +548,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          when Game_Menu =>
             Put_Line ("Main_Loop.Update Game_Menu.");
             Sprite_Manager.Update (Menu_Screen, Delta_Time);
+            Input_Manager.Set_Active (Input_Manager.Play_Button, True);
+            Input_Manager.Set_Active (Input_Manager.Credits_Button, True);
+            Input_Manager.Set_Active (Input_Manager.Exit_Button, True);
+            Input_Manager.Update (Input_Manager.Play_Button, Delta_Time);
+            Input_Manager.Update (Input_Manager.Credits_Button, Delta_Time);
+            Input_Manager.Update (Input_Manager.Exit_Button, Delta_Time);
             Input_Manager.Update (Delta_Time);
             Process_Input (Delta_Time);
 
