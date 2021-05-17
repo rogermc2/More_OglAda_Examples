@@ -64,6 +64,34 @@ package body Input_Manager is
       Add_Texture (UI_Elements
                    (Resume_Button), "src/resources/resumeButton.png", False);
 
+      Set_Frame_Size (UI_Elements (Play_Button), 75.0, 38.0);
+      Set_Number_Of_Frames (UI_Elements (Play_Button), 1);
+      Set_Position (UI_Elements (Play_Button), 390.0, 300.0);
+      Set_Visible (UI_Elements (Play_Button), True);
+      Add_Texture (UI_Elements
+                   (Play_Button), "src/resources/playButton.png", False);
+
+      Set_Frame_Size (UI_Elements (Credits_Button), 75.0, 38.0);
+      Set_Number_Of_Frames (UI_Elements (Credits_Button), 1);
+      Set_Position (UI_Elements (Credits_Button), 390.0, 250.0);
+      Set_Visible (UI_Elements (Credits_Button), True);
+      Add_Texture (UI_Elements
+                   (Credits_Button), "src/resources/creditsButton.png", False);
+
+      Set_Frame_Size (UI_Elements (Exit_Button), 75.0, 38.0);
+      Set_Number_Of_Frames (UI_Elements (Exit_Button), 1);
+      Set_Position (UI_Elements (Exit_Button), 390.0, 100.0);
+      Set_Visible (UI_Elements (Exit_Button), True);
+      Add_Texture (UI_Elements
+                   (Exit_Button), "src/resources/exitButton.png", False);
+
+      Set_Frame_Size (UI_Elements (Menu_Button), 75.0, 38.0);
+      Set_Number_Of_Frames (UI_Elements (Menu_Button), 1);
+      Set_Position (UI_Elements (Menu_Button), 390.0, 150.0);
+      Set_Visible (UI_Elements (Menu_Button), True);
+      Add_Texture (UI_Elements
+                   (Menu_Button), "src/resources/menuButton.png", False);
+
    end Init_Buttons;
 
    --  -------------------------------------------------------------------------
@@ -124,9 +152,18 @@ package body Input_Manager is
 
    --  ------------------------------------------------------------------------
 
+   procedure Update (Delta_Time : Float) is
+   begin
+      for index in Input_Manager.Button_Index'Range loop
+         Sprite_Manager.Update (UI_Elements (index), Delta_Time);
+      end loop;
+   end Update;
+
+   --  ------------------------------------------------------------------------
+
    procedure Update (Button : Button_Index; Delta_Time : Float) is
    begin
-      Sprite_Manager.Update (UI_Elements (Button), Delta_Time);
+         Sprite_Manager.Update (UI_Elements (Button), Delta_Time);
    end Update;
 
    --  ------------------------------------------------------------------------

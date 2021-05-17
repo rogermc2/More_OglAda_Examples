@@ -3,7 +3,8 @@ with Input_Callback;
 
 package Input_Manager is
 
-    type Button_Index is (Pause_Button, Resume_Button);
+   type Button_Index is (Pause_Button, Resume_Button, Play_Button, Menu_Button,
+                         Credits_Button, Exit_Button);
     type Command is (Command_Left, Command_Right, Command_Stop, Command_Up,
                      Command_Down, Command_UI, Command_Invalid);
 
@@ -17,6 +18,7 @@ package Input_Manager is
     procedure Set_Clicked (Button : Button_Index; Clicked : Boolean);
     procedure Set_Command_Invalid;
     procedure Set_Visible (Button : Button_Index; State : Boolean);
+    procedure Update (Delta_Time : Float);
     procedure Update (Button : Button_Index; Delta_Time : Float);
     procedure Update_Command (Window : in out Input_Callback.Callback_Window);
 
