@@ -30,7 +30,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Back                         : constant GL.Types.Colors.Color :=
                                     (0.6, 0.6, 0.6, 1.0);
    Border_Width                 : constant GL.Types.Size := 2;
-   Splash_Threshold             : constant Float := 5.0;
+   Splash_Threshold             : constant Float := 2.5;
    UI_Threshold                 : constant float := 0.1;
    Enemy_Spawn_Threshold        : constant Float := 3.5;
    Pickup_Spawn_Threshold       : constant Float := 2.5;
@@ -41,6 +41,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Texture_Uniform              : GL.Uniforms.Uniform;
    Background                   : Sprite_Manager.Sprite;
    Splash_Screen                : Sprite_Manager.Sprite;
+   Menu_Screen                  : Sprite_Manager.Sprite;
    Enemy                        : Sprite_Manager.Sprite;
    Pickup                       : Sprite_Manager.Sprite;
    Game_State                   : Game_Status := Game_Splash;
@@ -241,6 +242,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Player_Manager.Set_Collidable (Player_Manager.Robot_Right, True);
       Set_Collidable (Pickup, True);
 
+      Set_Frame_Size (Menu_Screen, 800.0, 600.0);
+      Set_Number_Of_Frames (Menu_Screen, 1);
+      Set_Active (Menu_Screen, True);
+      Set_Visible (Menu_Screen, True);
+      Add_Texture (Menu_Screen, "src/resources/main_menu.png", True);
+
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Load_Sprites.");
@@ -331,6 +338,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
    begin
       Utilities.Clear_Colour;
+      Sprite_Manager.Clear_Buffers;
       Resize_GL_Scene (Screen);
       GL.Objects.Programs.Use_Program (Game_Program);
       GL.Uniforms.Set_Single
@@ -339,11 +347,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       case Game_State is
          when Game_Splash | Game_Loading  =>
+            Put_Line ("Main_Loop.Render_Sprites render Splash_Screen.");
             Sprite_Manager.Render (Splash_Screen);
-         when Game_Menu | Game_Credits |
+         when Game_Menu =>
+            Put_Line ("Main_Loop.Render_Sprites Game_Menu.");
+            Sprite_Manager.Render (Menu_Screen);
+         when Game_Credits |
               Game_Next_Level | Game_Over => null;
          when  Game_Running | Game_Paused =>
-
             Sprite_Manager.Render (Background);
             Player_Manager.Render_Players;
             Input_Manager.Render_Button (Input_Manager.Pause_Button);
@@ -497,8 +508,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       case Game_State is
          when Game_Splash =>
             Load_Splash;
+            Splash_Timer := 0.0;
             Game_State := Game_Loading;
          when Game_Loading =>
+            Splash_Timer := Splash_Timer + Delta_Time;
             Load_Sprites (Window);
             Sprite_Manager.Update (Splash_Screen, Delta_Time);
             Splash_Timer := Splash_Timer + Delta_Time;
@@ -506,11 +519,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                Game_State := Game_Menu;
             end if;
 
-         when Game_Menu | Game_Credits | Game_Paused |
-              Game_Next_Level | Game_Over =>
-            for index in Input_Manager.Button_Index'Range loop
-               Input_Manager.Update (index, Delta_Time);
-            end loop;
+         when Game_Menu =>
+            Put_Line ("Main_Loop.Update Game_Menu.");
+            Sprite_Manager.Update (Menu_Screen, Delta_Time);
+            Input_Manager.Update (Delta_Time);
+            Process_Input (Delta_Time);
+
+         when Game_Credits | Game_Paused | Game_Next_Level | Game_Over =>
+            Input_Manager.Update (Delta_Time);
             Process_Input (Delta_Time);
 
          when Game_Running =>

@@ -124,9 +124,18 @@ package body Input_Manager is
 
    --  ------------------------------------------------------------------------
 
+   procedure Update (Delta_Time : Float) is
+   begin
+      for index in Input_Manager.Button_Index'Range loop
+         Sprite_Manager.Update (UI_Elements (index), Delta_Time);
+      end loop;
+   end Update;
+
+   --  ------------------------------------------------------------------------
+
    procedure Update (Button : Button_Index; Delta_Time : Float) is
    begin
-      Sprite_Manager.Update (UI_Elements (Button), Delta_Time);
+         Sprite_Manager.Update (UI_Elements (Button), Delta_Time);
    end Update;
 
    --  ------------------------------------------------------------------------
