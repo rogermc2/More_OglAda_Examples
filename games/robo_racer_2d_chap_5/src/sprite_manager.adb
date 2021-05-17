@@ -296,7 +296,7 @@ package body Sprite_Manager is
             end if;
 
             Texture_2D.Bind (Get_Current_Frame (aSprite));
-            if aSprite.Texture_Index <= aSprite.Num_Frames then
+            if aSprite.Texture_Index < aSprite.Num_Frames then
                 U := Single (aSprite.Current_Frame) * Tex_Width;
             end if;
 

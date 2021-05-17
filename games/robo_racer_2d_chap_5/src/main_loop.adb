@@ -297,7 +297,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
     begin
         Utilities.Clear_Colour;
-        Sprite_Manager.Clear_Buffers;
         Resize_GL_Scene (Screen);
         GL.Objects.Programs.Use_Program (Game_Program);
         GL.Uniforms.Set_Single (Model_Uniform, GL.Types.Singles.Identity4);
