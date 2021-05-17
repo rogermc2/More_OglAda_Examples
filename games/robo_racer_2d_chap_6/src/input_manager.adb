@@ -85,6 +85,13 @@ package body Input_Manager is
       Add_Texture (UI_Elements
                    (Exit_Button), "src/resources/exitButton.png", False);
 
+      Set_Frame_Size (UI_Elements (Menu_Button), 75.0, 38.0);
+      Set_Number_Of_Frames (UI_Elements (Menu_Button), 1);
+      Set_Position (UI_Elements (Menu_Button), 390.0, 150.0);
+      Set_Visible (UI_Elements (Menu_Button), True);
+      Add_Texture (UI_Elements
+                   (Menu_Button), "src/resources/menuButton.png", False);
+
    end Init_Buttons;
 
    --  -------------------------------------------------------------------------

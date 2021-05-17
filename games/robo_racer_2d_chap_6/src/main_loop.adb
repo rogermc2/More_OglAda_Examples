@@ -42,6 +42,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Background                   : Sprite_Manager.Sprite;
    Splash_Screen                : Sprite_Manager.Sprite;
    Menu_Screen                  : Sprite_Manager.Sprite;
+   Credits_Screen               : Sprite_Manager.Sprite;
    Enemy                        : Sprite_Manager.Sprite;
    Pickup                       : Sprite_Manager.Sprite;
    Game_State                   : Game_Status := Game_Splash;
@@ -246,7 +247,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Set_Number_Of_Frames (Menu_Screen, 1);
       Set_Active (Menu_Screen, True);
       Set_Visible (Menu_Screen, True);
-      Add_Texture (Menu_Screen, "src/resources/main_menu.png", True);
+      Add_Texture (Menu_Screen, "src/resources/main_menu.png", False);
+
+      Set_Frame_Size (Credits_Screen, 800.0, 600.0);
+      Set_Number_Of_Frames (Credits_Screen, 1);
+      Set_Visible (Credits_Screen, True);
+      Add_Texture (Credits_Screen, "src/resources/credits1.png", False);
 
    exception
       when anError : others =>
@@ -320,6 +326,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Set_Active (Play_Button, False);
                   Set_Active (Exit_Button, False);
                   Set_Active (Credits_Button, False);
+
+               elsif Is_Clicked (Menu_Button) then
+                  Set_Clicked (Menu_Button, False);
+                  Set_Active (Menu_Button, False);
+                  Game_State := Game_Menu;
                end if;
 
             when Command_Left =>
@@ -377,8 +388,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Input_Manager.Render_Button (Input_Manager.Credits_Button);
             Input_Manager.Render_Button (Input_Manager.Exit_Button);
 
-         when Game_Credits |
-              Game_Next_Level | Game_Over => null;
+         when Game_Credits =>
+            Sprite_Manager.Render (Credits_Screen);
+            Input_Manager.Render_Button (Input_Manager.Menu_Button);
+
+         when Game_Next_Level | Game_Over => null;
 
          when  Game_Running | Game_Paused =>
             Sprite_Manager.Render (Background);
@@ -536,6 +550,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Load_Splash;
             Splash_Timer := 0.0;
             Game_State := Game_Loading;
+
          when Game_Loading =>
             Splash_Timer := Splash_Timer + Delta_Time;
             Load_Sprites (Window);
@@ -557,7 +572,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Input_Manager.Update (Delta_Time);
             Process_Input (Delta_Time);
 
-         when Game_Credits | Game_Paused | Game_Next_Level | Game_Over =>
+         when Game_Credits =>
+            Sprite_Manager.Update (Credits_Screen, Delta_Time);
+            Input_Manager.Set_Active (Input_Manager.Menu_Button, True);
+            Input_Manager.Update (Input_Manager.Menu_Button, Delta_Time);
+            Input_Manager.Update (Delta_Time);
+            Process_Input (Delta_Time);
+
+         when Game_Paused | Game_Next_Level | Game_Over =>
             Input_Manager.Update (Delta_Time);
             Process_Input (Delta_Time);
 
