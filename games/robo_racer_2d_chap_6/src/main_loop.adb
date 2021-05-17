@@ -561,7 +561,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             end if;
 
          when Game_Menu =>
-            Put_Line ("Main_Loop.Update Game_Menu.");
             Sprite_Manager.Update (Menu_Screen, Delta_Time);
             Input_Manager.Set_Active (Input_Manager.Play_Button, True);
             Input_Manager.Set_Active (Input_Manager.Credits_Button, True);
