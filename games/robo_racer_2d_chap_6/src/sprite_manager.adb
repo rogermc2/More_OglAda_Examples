@@ -296,7 +296,7 @@ package body Sprite_Manager is
             end if;
 
             Texture_2D.Bind (Get_Current_Frame (aSprite));
-            if aSprite.Texture_Index <= aSprite.Num_Frames then
+            if aSprite.Texture_Index < aSprite.Num_Frames then
                 U := Single (aSprite.Current_Frame) * Tex_Width;
             end if;
 
@@ -329,7 +329,6 @@ package body Sprite_Manager is
                                           Static_Draw);
             Enable_Vertex_Attrib_Array (1);
             Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
-
             GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
 
             if aSprite.Use_Transparency then
