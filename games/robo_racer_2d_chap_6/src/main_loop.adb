@@ -17,6 +17,7 @@ with Maths;
 with Program_Loader;
 with Utilities;
 
+with Font_Manger;
 with Input_Manager;
 with Player_Manager;
 with Sprite_Manager;
@@ -122,13 +123,25 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    ----------------------------------------------------------------------------
 
+   procedure Draw_Credits is
+      use GL.Types;
+      use Font_Manger;
+      Start_X : constant GL.Types.Single := 325.0;
+      Start_Y : constant GL.Types.Single := 250.0;
+      Space_Y : constant GL.Types.Single := 30.0;
+   begin
+      Draw_Text ("Robert Madsen", Start_X, Start_Y, 0.0, 0.0, 1.0);
+      Draw_Text ("Roger Mc Murtrie", Start_X, Start_Y - Space_Y, 0.0, 0.0, 1.0);
+   end Draw_Credits;
+
+   ----------------------------------------------------------------------------
+
    procedure Draw_Score is
    begin
       null;
    end Draw_Score;
 
    ----------------------------------------------------------------------------
-
 
    procedure Check_Collisions is
       use Sprite_Manager;
@@ -252,7 +265,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Set_Frame_Size (Credits_Screen, 800.0, 600.0);
       Set_Number_Of_Frames (Credits_Screen, 1);
       Set_Visible (Credits_Screen, True);
-      Add_Texture (Credits_Screen, "src/resources/credits1.png", False);
+      Add_Texture (Credits_Screen, "src/resources/credits.png", False);
 
    exception
       when anError : others =>
@@ -390,6 +403,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
          when Game_Credits =>
             Sprite_Manager.Render (Credits_Screen);
+            Draw_Credits;
             Input_Manager.Render_Button (Input_Manager.Menu_Button);
 
          when Game_Next_Level | Game_Over => null;
