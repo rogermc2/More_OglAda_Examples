@@ -6,6 +6,6 @@ package Levels_Manager is
     Game_State  : Game_Status := Game_Splash;
 
     procedure Next_Level (Game_State : in out Game_Status;
-                         Pickup_Spawn_Threshold : in out Float);
+                          Level_Timer, Pickup_Spawn_Threshold : in out Float);
 
 end Levels_Manager;

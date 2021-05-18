@@ -5,11 +5,10 @@ package body Levels_Manager is
     Pickup_Spawn_Adjustment : constant Float := 0.25;
     Enemies_Hit             : Integer := 0;
     Pickups_Received        : Integer := 0;
-    Level_Timer             : Float := 0.0;
     Level_Max_Time          : Float := 30.0;
 
     procedure Next_Level (Game_State : in out Game_Status;
-                          Pickup_Spawn_Threshold : in out Float) is
+                          Level_Timer, Pickup_Spawn_Threshold : in out Float) is
     begin
         if Pickups_Received < Pickups_Threshold then
             Game_State := Game_Over;

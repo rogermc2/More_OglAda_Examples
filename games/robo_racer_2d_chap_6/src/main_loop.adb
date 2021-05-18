@@ -49,6 +49,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Splash_Timer                 : Float := 0.0;
     Pickup_Spawn_Timer           : Float := 0.0;
     Enemy_Spawn_Timer            : Float := 0.0;
+    Level_Timer                  : Float := 0.0;
 
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
