@@ -16,14 +16,14 @@ with Text_Management;
 
 package body Text_Manager is
 
+
+   Font_File             : constant String := "../fonts/NotoSerif-Regular.ttf";
    Render_Text_Program   : GL.Objects.Programs.Program;
    Dimensions_ID         : GL.Uniforms.Uniform;
    Texture_ID            : GL.Uniforms.Uniform;
    MVP_Matrix_ID         : GL.Uniforms.Uniform;
    Colour_ID             : GL.Uniforms.Uniform;
    MVP_Matrix            : GL.Types.Singles.Matrix4;
-
-   Font_File_1     : constant String := "../fonts/NotoSerif-Regular.ttf";
 
    --  ------------------------------------------------------------------------
 
@@ -117,7 +117,7 @@ package body Text_Manager is
       Dimensions_ID := GL.Objects.Programs.Uniform_Location
         (Render_Text_Program, "dimensions");
 
-      Text_Management.Setup (Font_File_1);
+      Text_Management.Setup (Font_File);
 
 exception
       when anError : others =>

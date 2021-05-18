@@ -44,6 +44,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Splash_Screen                : Sprite_Manager.Sprite;
    Menu_Screen                  : Sprite_Manager.Sprite;
    Credits_Screen               : Sprite_Manager.Sprite;
+   Next_Level_Screen            : Sprite_Manager.Sprite;
    Enemy                        : Sprite_Manager.Sprite;
    Enemies_Hit                  : Integer := 0;
    Pickup                       : Sprite_Manager.Sprite;
@@ -281,6 +282,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Set_Visible (Credits_Screen, True);
       Add_Texture (Credits_Screen, "src/resources/credits.png", False);
 
+      Set_Frame_Size (Next_Level_Screen, 800.0, 600.0);
+      Set_Number_Of_Frames (Next_Level_Screen, 1);
+      Set_Active (Next_Level_Screen, True);
+      Set_Visible (Next_Level_Screen, True);
+      Add_Texture (Next_Level_Screen, "src/resources/level.png", False);
+
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Load_Sprites.");
@@ -359,6 +366,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Set_Clicked (Menu_Button, False);
                   Set_Active (Menu_Button, False);
                   Game_State := Game_Menu;
+
+               elsif Is_Clicked (Continue_Button) then
+                  Set_Clicked (Continue_Button, False);
+                  Set_Active (Continue_Button, False);
+                  Game_State := Game_Running;
+                  Pickups_Received := 0;
+                  Enemies_Hit := 0;
                end if;
 
             when Command_Left =>
@@ -422,7 +436,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Draw_Credits (Screen);
             Input_Manager.Render_Button (Input_Manager.Menu_Button);
 
-         when Game_Next_Level | Game_Over => null;
+         when Game_Next_Level =>
+            Sprite_Manager.Render (Next_Level_Screen);
+            Levels_Manager.Game_Stats (Screen, Pickups_Received, Enemies_Hit);
+            Input_Manager.Render_Button (Input_Manager.Continue_Button);
+
+         when Game_Over => null;
 
          when  Game_Running | Game_Paused =>
             Sprite_Manager.Render (Background);
@@ -569,6 +588,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    --  -------------------------------------------------------------------------
 
    procedure Update (Window : in out Input_Callback.Callback_Window) is
+      use Input_Manager;
       use Levels_Manager;
       Current_Time : constant Float := Float (Glfw.Time);
       Delta_Time   : constant Float := Current_Time - Last_Time;
@@ -595,31 +615,38 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
          when Game_Menu =>
             Sprite_Manager.Update (Menu_Screen, Delta_Time);
-            Input_Manager.Set_Active (Input_Manager.Play_Button, True);
-            Input_Manager.Set_Active (Input_Manager.Credits_Button, True);
-            Input_Manager.Set_Active (Input_Manager.Exit_Button, True);
-            Input_Manager.Update (Input_Manager.Play_Button, Delta_Time);
-            Input_Manager.Update (Input_Manager.Credits_Button, Delta_Time);
-            Input_Manager.Update (Input_Manager.Exit_Button, Delta_Time);
-            Input_Manager.Update (Delta_Time);
+            Set_Active (Input_Manager.Play_Button, True);
+            Set_Active (Input_Manager.Credits_Button, True);
+            Set_Active (Exit_Button, True);
+            Update (Play_Button, Delta_Time);
+            Update (Credits_Button, Delta_Time);
+            Update (Exit_Button, Delta_Time);
+            Update (Delta_Time);
             Process_Input (Delta_Time);
 
          when Game_Credits =>
             Sprite_Manager.Update (Credits_Screen, Delta_Time);
-            Input_Manager.Set_Active (Input_Manager.Menu_Button, True);
-            Input_Manager.Update (Input_Manager.Menu_Button, Delta_Time);
-            Input_Manager.Update (Delta_Time);
+            Set_Active (Menu_Button, True);
+            Update (Menu_Button, Delta_Time);
+            Update (Delta_Time);
             Process_Input (Delta_Time);
 
-         when Game_Paused | Game_Next_Level | Game_Over =>
-            Input_Manager.Update (Delta_Time);
+         when Game_Next_Level =>
+            Sprite_Manager.Update (Next_Level_Screen, Delta_Time);
+            Set_Active (Continue_Button, True);
+            Update (Continue_Button, Delta_Time);
+            Update (Delta_Time);
+            Process_Input (Delta_Time);
+
+         when Game_Paused | Game_Over =>
+            Update (Delta_Time);
             Process_Input (Delta_Time);
 
          when Game_Running =>
             Sprite_Manager.Update (Background, Delta_Time);
             Player_Manager.Update (Delta_Time);
-            Input_Manager.Update (Input_Manager.Pause_Button, Delta_Time);
-            Input_Manager.Update (Input_Manager.Resume_Button, Delta_Time);
+            Update (Pause_Button, Delta_Time);
+            Update (Resume_Button, Delta_Time);
             Sprite_Manager.Update (Pickup, Delta_Time);
             Spawn_Pickup (Window, Delta_Time);
             Sprite_Manager.Update (Enemy, Delta_Time);
@@ -633,7 +660,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       end case;
 
       Render_Sprites (Window);
-      Input_Manager.Update_Command (Window);
+      Update_Command (Window);
       Process_Input (Delta_Time);
       Check_Boundaries (Window, Player_Manager.Get_Current_Player);
       Check_Background (Window);

@@ -4,7 +4,7 @@ with Input_Callback;
 package Input_Manager is
 
    type Button_Index is (Pause_Button, Resume_Button, Play_Button, Menu_Button,
-                         Credits_Button, Exit_Button);
+                         Credits_Button, Continue_Button, Exit_Button);
     type Command is (Command_Left, Command_Right, Command_Stop, Command_Up,
                      Command_Down, Command_UI, Command_Invalid);
 

@@ -92,6 +92,14 @@ package body Input_Manager is
       Add_Texture (UI_Elements
                    (Menu_Button), "src/resources/menuButton.png", False);
 
+
+      Set_Frame_Size (UI_Elements (Continue_Button), 75.0, 38.0);
+      Set_Number_Of_Frames (UI_Elements (Continue_Button), 1);
+      Set_Position (UI_Elements (Continue_Button), 390.0, 200.0);
+      Set_Active (UI_Elements (Continue_Button), True);
+      Set_Visible (UI_Elements (Continue_Button), True);
+      Add_Texture (UI_Elements
+                   (Menu_Button), "src/resources/continueButton.png", False);
    end Init_Buttons;
 
    --  -------------------------------------------------------------------------
