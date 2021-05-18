@@ -17,7 +17,7 @@ with Maths;
 with Program_Loader;
 with Utilities;
 
-with Font_Manger;
+with Text_Manager;
 with Input_Manager;
 with Player_Manager;
 with Sprite_Manager;
@@ -123,15 +123,16 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    ----------------------------------------------------------------------------
 
-   procedure Draw_Credits is
+   procedure Draw_Credits (Window : in out Input_Callback.Callback_Window) is
       use GL.Types;
-      use Font_Manger;
+      use Text_Manager;
       Start_X : constant GL.Types.Single := 325.0;
       Start_Y : constant GL.Types.Single := 250.0;
       Space_Y : constant GL.Types.Single := 30.0;
    begin
-      Draw_Text ("Robert Madsen", Start_X, Start_Y, 0.0, 0.0, 1.0);
-      Draw_Text ("Roger Mc Murtrie", Start_X, Start_Y - Space_Y, 0.0, 0.0, 1.0);
+      Draw_Text (Window, "Robert Madsen", Start_X, Start_Y, 0.0, 0.0, 1.0);
+      Draw_Text (Window, "Roger Mc Murtrie", Start_X, Start_Y - Space_Y,
+                 0.0, 0.0, 1.0);
    end Draw_Credits;
 
    ----------------------------------------------------------------------------
@@ -403,7 +404,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
          when Game_Credits =>
             Sprite_Manager.Render (Credits_Screen);
-            Draw_Credits;
+            Draw_Credits (Screen);
             Input_Manager.Render_Button (Input_Manager.Menu_Button);
 
          when Game_Next_Level | Game_Over => null;
@@ -521,8 +522,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       --          Screen.Set_Input_Toggle (Sticky_Keys, True);
       Screen.Set_Cursor_Mode (Mouse.Normal);
       Screen'Access.Get_Size (Window_Width, Window_Height);
-      Screen'Access.Set_Cursor_Pos (Mouse.Coordinate (0.5 * Single (Window_Width)),
-                                    Mouse.Coordinate (0.5 * Single (Window_Height)));
+      Screen'Access.Set_Cursor_Pos
+          (Mouse.Coordinate (0.5 * Single (Window_Width)),
+           Mouse.Coordinate (0.5 * Single (Window_Height)));
 
       Utilities.Clear_Background_Colour (Back);
       Input_Callback.Clear_All_Keys;
@@ -538,6 +540,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Texture_Uniform :=
         GL.Objects.Programs.Uniform_Location (Game_Program, "texture2d");
 
+      Text_Manager.Initialize (Screen);
       Sprite_Manager.Init;
       Enable_Mouse_Callbacks (Screen, True);
 
