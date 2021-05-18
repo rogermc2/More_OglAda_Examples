@@ -42,7 +42,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Pickup                 : Sprite_Manager.Sprite;
     Game_State             : Game_Status := Game_Running;
     UI_Timer               : Float := 0.0;
-    Enemy_Spawn_Timer            : Float := 0.0;
+    Enemy_Spawn_Timer      : Float := 0.0;
     Pickup_Spawn_Timer     : Float := 0.0;
 
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
