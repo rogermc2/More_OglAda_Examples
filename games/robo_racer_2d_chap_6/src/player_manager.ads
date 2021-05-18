@@ -12,6 +12,7 @@ package Player_Manager is
    function Get_Player (Player : Player_Index) return Sprite_Manager.Sprite;
    function Get_Position (Player : Player_Index) return Sprite_Manager.Point;
    function Get_Size (Player : Player_Index) return Sprite_Manager.Object_Size;
+   function Get_Value (Player : Player_Index) return Integer;
    procedure Init_Players;
    procedure Jump (Player : Player_Index; Status : Sprite_Manager.Sprite_Status);
    procedure Render_Players;
@@ -22,6 +23,7 @@ package Player_Manager is
    procedure Set_Current_Player (Player : Player_Index);
    procedure Set_Position (Player   : Player_Index;
                            Position : Sprite_Manager.Point);
+   procedure Set_Value (Player : Player_Index; Value : Integer);
    procedure Set_Visible (Player : Player_Index; State : Boolean);
    procedure Set_Velocity (Player : Player_Index; Step : Float);
    procedure Update (Delta_Time : Float);

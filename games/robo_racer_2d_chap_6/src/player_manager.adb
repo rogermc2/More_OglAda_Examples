@@ -43,6 +43,13 @@ package body Player_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Value (Player : Player_Index) return Integer is
+   begin
+      return Sprite_Manager.Get_Value (Player_List (Player));
+   end Get_Value;
+
+   --  -------------------------------------------------------------------------
+
    procedure Init_Players is
       use Sprite_Manager;
       Centre   : Point;
@@ -145,6 +152,13 @@ package body Player_Manager is
    begin
       Sprite_Manager.Set_Position (Player_List (Player), Position);
    end Set_Position;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Value (Player : Player_Index; Value : Integer) is
+   begin
+      Sprite_Manager.Set_Value (Player_List (Player), Value);
+   end Set_Value;
 
    --  -------------------------------------------------------------------------
 
