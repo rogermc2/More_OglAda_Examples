@@ -17,16 +17,15 @@ with Maths;
 with Program_Loader;
 with Utilities;
 
-with Text_Manager;
 with Input_Manager;
+with Levels_Manager;
 with Player_Manager;
 with Sprite_Manager;
+with Text_Manager;
 
 --  ------------------------------------------------------------------------
 
 procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
-    type Game_Status is (Game_Splash, Game_Loading, Game_Menu, Game_Credits,
-                         Game_Running, Game_Next_Level, Game_Paused, Game_Over);
 
     Back                         : constant GL.Types.Colors.Color :=
                                      (0.6, 0.6, 0.6, 1.0);
@@ -34,7 +33,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Splash_Threshold             : constant Float := 2.5;
     UI_Threshold                 : constant float := 0.1;
     Enemy_Spawn_Threshold        : constant Float := 3.5;
-    Pickup_Spawn_Threshold       : constant Float := 2.5;
+    Pickup_Spawn_Threshold       : Float := 2.5;
     Last_Time                    : Float := 0.0;
     Game_Program                 : GL.Objects.Programs.Program;
     Model_Uniform                : GL.Uniforms.Uniform;
@@ -46,7 +45,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Credits_Screen               : Sprite_Manager.Sprite;
     Enemy                        : Sprite_Manager.Sprite;
     Pickup                       : Sprite_Manager.Sprite;
-    Game_State                   : Game_Status := Game_Splash;
     UI_Timer                     : Float := 0.0;
     Splash_Timer                 : Float := 0.0;
     Pickup_Spawn_Timer           : Float := 0.0;
@@ -201,6 +199,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     ----------------------------------------------------------------------------
 
     procedure Load_Splash is
+        use Levels_Manager;
         use Sprite_Manager;
     begin
         Game_State := Game_Splash;
@@ -288,6 +287,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Process_Input (Delta_Time : Float) is
         use Input_Manager;
+        use Levels_Manager;
         use Player_Manager;
         use Sprite_Manager;
         Velocity            : constant Float := 50.0;
@@ -392,6 +392,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     --  -------------------------------------------------------------------------
 
     procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
+        use Levels_Manager;
     begin
         Utilities.Clear_Colour;
         Sprite_Manager.Clear_Buffers;
@@ -563,6 +564,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     --  -------------------------------------------------------------------------
 
     procedure Update (Window : in out Input_Callback.Callback_Window) is
+        use Levels_Manager;
         Current_Time : constant Float := Float (Glfw.Time);
         Delta_Time   : constant Float := Current_Time - Last_Time;
         X_Position   : Glfw.Input.Mouse.Coordinate := 0.00001;
