@@ -126,8 +126,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure Draw_Credits (Window : in out Input_Callback.Callback_Window) is
       use GL.Types;
       use Text_Manager;
-      Start_X : constant GL.Types.Single := 325.0;
-      Start_Y : constant GL.Types.Single := 250.0;
+      Start_X : constant GL.Types.Single := 360.0;
+      Start_Y : constant GL.Types.Single := 350.0;
       Space_Y : constant GL.Types.Single := 30.0;
    begin
       Draw_Text (Window, "Robert Madsen", Start_X, Start_Y, 0.0, 0.0, 1.0);

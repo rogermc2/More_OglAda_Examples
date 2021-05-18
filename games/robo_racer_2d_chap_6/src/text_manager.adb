@@ -30,9 +30,9 @@ package body Text_Manager is
    procedure Draw_Text (Window  : in out Input_Callback.Callback_Window;
                         Text : String; X, Y, R, G, B : GL.Types.Single) is
       use GL.Types;
-      Scale_1       : constant GL.Types.Single := 1.0;
+      Scale         : constant GL.Types.Single := 0.2;
       Window_Width  : Glfw.Size;
-      Window_Height  : Glfw.Size;
+      Window_Height : Glfw.Size;
    begin
       Window.Get_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
@@ -42,7 +42,7 @@ package body Text_Manager is
                                          MVP_Matrix);
 
       Text_Management.Render_Text (Render_Text_Program, Text, X, Y,
-                                   Scale_1, (R, G, B, 1.0), Texture_ID,
+                                   Scale, (R, G, B, 1.0), Texture_ID,
                                    MVP_Matrix_ID, Dimensions_ID, Colour_ID,
                                    MVP_Matrix);
    exception
