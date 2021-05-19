@@ -16,14 +16,16 @@ package body Levels_Manager is
     Pickups_Threshold       : constant Integer := 5;
     Pickup_Spawn_Adjustment : constant Float := 0.25;
 
-    --  -------------------------------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Game_Stats (Window   : in out Input_Callback.Callback_Window;
                           Pickups_Received, Enemies_Hit : Integer) is
         use GL.Types;
         use Player_Manager;
-        Pickups_Stat  : constant String := "Pickups: " & Integer'Image (Pickups_Received);
-        Enemies_Stat  : constant String := "Enemies Hit:" & Integer'Image (Enemies_Hit);
+        Pickups_Stat  : constant String :=
+                          "Pickups: " & Integer'Image (Pickups_Received);
+        Enemies_Stat  : constant String :=
+                          "Enemies Hit:" & Integer'Image (Enemies_Hit);
         Score         : constant String :=
                           "Score: " & Integer'Image (Get_Value (Get_Current_Player));
         Screen_Width  : Glfw.Size;
