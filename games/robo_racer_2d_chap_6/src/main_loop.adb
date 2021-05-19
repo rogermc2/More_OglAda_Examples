@@ -440,8 +440,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
             when Game_Credits =>
                 Sprite_Manager.Render (Credits_Screen);
-                Draw_Credits (Screen);
                 Input_Manager.Render_Button (Input_Manager.Menu_Button);
+                Draw_Credits (Screen);
 
             when Game_Next_Level =>
                 Sprite_Manager.Render (Next_Level_Screen);
