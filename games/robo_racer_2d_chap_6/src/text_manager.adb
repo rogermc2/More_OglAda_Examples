@@ -18,6 +18,7 @@ package body Text_Manager is
 
 
    Font_File             : constant String := "../fonts/NotoSerif-Regular.ttf";
+--        Text_List       : Text_Management.Text_Array (1 .. 2);
    Render_Text_Program   : GL.Objects.Programs.Program;
    Dimensions_ID         : GL.Uniforms.Uniform;
    Texture_ID            : GL.Uniforms.Uniform;
@@ -53,42 +54,6 @@ package body Text_Manager is
    end Draw_Text;
 
    --  -------------------------------------------------------------------------
-
---     procedure Render (Window  : in out Glfw.Windows.Window) is
---        use Ada.Strings.Unbounded;
---        use GL.Types;
---        Window_Width    : Glfw.Size;
---        Window_Height   : Glfw.Size;
---        Pos_X           : constant GL.Types.Single := 10.0;
---        Pos_Y           : constant GL.Types.Single := 150.0;
---        Scale_1         : constant GL.Types.Single := 0.4;
---        Scale_2         : constant GL.Types.Single := 0.2;
---        Scale_3         : constant GL.Types.Single := 0.3;
---        Text_List       : Text_Management.Text_Array (1 .. 2);
---     begin
---        Window.Get_Size (Window_Width, Window_Height);
---        GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
---                                GL.Types.Int (Window_Height));
---        Maths.Init_Orthographic_Transform (Single (Window_Height), 0.0, 0.0,
---                                           Single (Window_Width), 0.1, -100.0,
---                                           MVP_Matrix);
---        Text_Management.Render_Text (Render_Text_Program, "Hello", 300.0, Pos_Y + 250.0,
---                                     Scale_1, Text_Colour, Texture_ID, MVP_Matrix_ID,
---                                     Dimensions_ID, Colour_ID, MVP_Matrix);
---        Text_List (1) :=
---          (To_Unbounded_String ("1234567890 !@#$%^&*()_+=,./?;':""{}[]\|~`"),
---           Pos_X + 20.0, Pos_Y + 150.0, Scale_1, Text_Colour);
---        Text_List (2) :=
---          (To_Unbounded_String ("The Quick Brown Fox jumps over the zoo's Lazy Dog."),
---           Pos_X, Pos_Y, Scale_3, Text_Colour);
---        Text_Management.Render_Text (Render_Text_Program, Text_List, Texture_ID,
---                                     MVP_Matrix_ID, Dimensions_ID, Colour_ID, MVP_Matrix);
---        Text_Management.Render_Text (Render_Text_Program, "Hello again!", 300.0, 50.0,
---                                     Scale_2, Text_Colour, Texture_ID, MVP_Matrix_ID,
---                                     Dimensions_ID, Colour_ID, MVP_Matrix);
---     end Render;
-
-   --  ------------------------------------------------------------------------
 
    procedure Initialize  (Window  : in out Input_Callback.Callback_Window) is
       use GL.Objects.Programs;
