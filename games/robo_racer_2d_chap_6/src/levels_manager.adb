@@ -18,8 +18,8 @@ package body Levels_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Game_Stats (Window   : in out Input_Callback.Callback_Window;
-                          Pickups_Received, Enemies_Hit : Integer) is
+    procedure Draw_Game_Stats (Window   : in out Input_Callback.Callback_Window;
+                               Pickups_Received, Enemies_Hit : Integer) is
         use GL.Types;
         use Player_Manager;
         Pickups_Stat  : constant String :=
@@ -34,20 +34,20 @@ package body Levels_Manager is
     begin
         Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         Height := Single (Screen_Height);
-        Put_Line ("Text_Manager.Draw_Text " & Enemies_Stat);
+        Put_Line ("Levels_Manager.Draw_Game_Stats " & Enemies_Stat);
         Text_Manager.Draw_Text (Window, Enemies_Stat, 350.0, Height - 270.0, 0.0, 0.0, 1.0);
-        Put_Line ("Text_Manager.Draw_Text Enemies_Stat drawn");
-        --        Put_Line ("Text_Manager.Draw_Text " & Pickups_Stat);
+        Put_Line ("Levels_Manager.Draw_Game_Stats Enemies_Stat drawn");
+        --        Put_Line ("Levels_Manager.Draw_Text " & Pickups_Stat);
         --        Text_Manager.Draw_Text (Window, Pickups_Stat, 350.0, Height - 320.0, 0.0, 0.0, 1.0);
-        --        Put_Line ("Text_Manager.Draw_Text " & Score);
+        --        Put_Line ("Levels_Manager.Draw_Text " & Score);
         --        Text_Manager.Draw_Text (Window, Score, 350.0, Height - 370.0, 0.0, 0.0, 1.0);
 
     exception
         when anError : others =>
-            Put_Line ("An exception occurred in Text_Manager.Draw_Text.");
+            Put_Line ("An exception occurred in Text_Manager.Draw_Game_Stats.");
             Put_Line (Exception_Information (anError));
             raise;
-    end Game_Stats;
+    end Draw_Game_Stats;
 
     --  -------------------------------------------------------------------------------------------------
 

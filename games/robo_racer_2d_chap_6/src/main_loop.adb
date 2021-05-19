@@ -156,37 +156,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     ----------------------------------------------------------------------------
 
-    procedure Draw_Stats (Window : in out Input_Callback.Callback_Window) is
-        use GL.Types;
-        use Player_Manager;
-        Screen_Width     : Glfw.Size;
-        Screen_Height    : Glfw.Size;
-        Score        : constant String := "Score: " &
-                         Integer'Image (Get_Value (Get_Current_Player));
-    begin
-        Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
-        Levels_Manager.Game_Stats (Window, Pickups_Received, Enemies_Hit);
-        declare
-            Pickup_Stats  : constant String := "Pickups: " &
-                              Integer'Image (Pickups_Received);
-            Enemies_Stats : constant String := "Enemies Hit: " &
-                              Integer'Image (Enemies_Hit);
-        begin
-            Text_Manager.Draw_Text
-              (Window, Enemies_Stats, 350.0, Single (Screen_Height) - 270.0,
-               0.0, 0.0, 1.0);
-            Text_Manager.Draw_Text
-              (Window, Pickup_Stats, 350.0, Single (Screen_Height) - 320.0,
-               0.0, 0.0, 1.0);
-            Text_Manager.Draw_Text
-              (Window, Score, 350.0, Single (Screen_Height) - 370.0,
-               0.0, 0.0, 1.0);
-        end; --  declare
-    end Draw_Stats;
-
-    ----------------------------------------------------------------------------
-
-
     procedure Check_Collisions is
         use Sprite_Manager;
         use Player_Manager;
@@ -476,8 +445,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
             when Game_Next_Level =>
                 Sprite_Manager.Render (Next_Level_Screen);
-                Levels_Manager.Game_Stats (Screen, Pickups_Received, Enemies_Hit);
-                Draw_Stats (Screen);
+                Levels_Manager.Draw_Game_Stats (Screen, Pickups_Received,
+                                                Enemies_Hit);
                 Input_Manager.Render_Button (Input_Manager.Continue_Button);
 
             when Game_Over => null;
