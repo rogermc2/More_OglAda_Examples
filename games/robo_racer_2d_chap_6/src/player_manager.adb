@@ -1,9 +1,10 @@
 
 package body Player_Manager is
 
-   Player_List    : array (Player_Index range Player_Index'Range) of
+   Player_Velocity : constant Float := 200.0;
+   Player_List     : array (Player_Index range Player_Index'Range) of
      Sprite_Manager.Sprite;
-   Current_Player : Player_Index := Robot_Right;
+   Current_Player  : Player_Index := Robot_Right;
 
    --  -------------------------------------------------------------------------
 
@@ -84,7 +85,7 @@ package body Player_Manager is
 
       Set_Visible (Player_List (Robot_Right), True);
       Set_Active (Player_List (Robot_Right), True);
-      Set_Velocity (Player_List (Robot_Right), 50.0);
+      Set_Velocity (Player_List (Robot_Right), Player_Velocity);
 
       Centre.X := 0.5 * Get_Size (Player_List (Robot_Right)).Width;
       Centre.Y := 0.5 * Get_Size (Player_List (Robot_Right)).Height;

@@ -18,8 +18,8 @@ package body Levels_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Draw_Game_Stats (Window   : in out Input_Callback.Callback_Window;
-                               Pickups_Received, Enemies_Hit : Integer) is
+    procedure Draw_Stats (Window   : in out Input_Callback.Callback_Window;
+                          Pickups_Received, Enemies_Hit : Integer) is
         use GL.Types;
         use Player_Manager;
         Pickups_Stat  : constant String :=
@@ -47,7 +47,7 @@ package body Levels_Manager is
             Put_Line ("An exception occurred in Text_Manager.Draw_Game_Stats.");
             Put_Line (Exception_Information (anError));
             raise;
-    end Draw_Game_Stats;
+    end Draw_Stats;
 
     --  -------------------------------------------------------------------------------------------------
 

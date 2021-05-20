@@ -445,12 +445,17 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Draw_Credits (Screen);
 
             when Game_Next_Level =>
+                Put_Line ("Main_Loop.Update Game_Next_Level");
                 Sprite_Manager.Render (Next_Level_Screen);
-                Levels_Manager.Draw_Game_Stats (Screen, Pickups_Received,
-                                                Enemies_Hit);
+                Levels_Manager.Draw_Stats (Screen, Pickups_Received,
+                                           Enemies_Hit);
                 Render_Button (Game_Program, Continue_Button);
 
-            when Game_Over => null;
+            when Game_Over =>
+                Sprite_Manager.Render (Game_Over_Screen);
+                Levels_Manager.Draw_Stats (Screen, Pickups_Received,
+                                           Enemies_Hit);
+                Render_Button (Game_Program, Replay_Button);
 
             when  Game_Running | Game_Paused =>
                 Sprite_Manager.Render (Background);
@@ -646,7 +651,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Process_Input (Delta_Time);
 
             when Game_Running =>
-                Input_Manager.Update (Delta_Time);
+                Update (Delta_Time);
                 Sprite_Manager.Update (Background, Delta_Time);
                 Player_Manager.Update (Delta_Time);
                 Update (Pause_Button, Delta_Time);
@@ -665,6 +670,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 end if;
 
             when Game_Next_Level =>
+                Put_Line ("Main_Loop.Update Game_Next_Level");
                 Sprite_Manager.Update (Next_Level_Screen, Delta_Time);
                 Set_Active (Continue_Button, True);
                 Update (Continue_Button, Delta_Time);
