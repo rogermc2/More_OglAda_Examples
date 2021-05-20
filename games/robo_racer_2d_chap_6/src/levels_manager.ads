@@ -4,7 +4,8 @@ with Input_Callback;
 package Levels_Manager is
 
     type Game_Status is (Game_Splash, Game_Loading, Game_Menu, Game_Credits,
-                         Game_Running, Game_Next_Level, Game_Paused, Game_Over);
+                         Game_Running, Game_Next_Level, Game_Paused, Game_Over,
+                          Game_Quit);
 
     procedure Draw_Stats (Window   : in out Input_Callback.Callback_Window;
                           Pickups_Received, Enemies_Hit : Integer);
