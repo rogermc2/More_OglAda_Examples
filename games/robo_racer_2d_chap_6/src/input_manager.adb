@@ -124,8 +124,10 @@ package body Input_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Render_Button (Button : Button_Index) is
+   procedure Render_Button (Render_Program : GL.Objects.Programs.Program;
+                            Button : Button_Index) is
    begin
+      GL.Objects.Programs.Use_Program (Render_Program);
       Sprite_Manager.Render (UI_Elements (Button));
    end Render_Button;
 

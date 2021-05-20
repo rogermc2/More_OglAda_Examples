@@ -1,4 +1,6 @@
 
+with GL.Objects.Programs;
+
 with Input_Callback;
 
 package Input_Manager is
@@ -14,7 +16,8 @@ package Input_Manager is
     function Is_Clicked (Button : Button_Index) return Boolean;
     function Is_Visible (Button : Button_Index) return Boolean;
     procedure Init_Buttons;
-    procedure Render_Button (Button : Button_Index);
+    procedure Render_Button (Render_Program : GL.Objects.Programs.Program;
+                             Button : Button_Index);
     procedure Set_Active (Button : Button_Index; State : Boolean);
     procedure Set_Clicked (Button : Button_Index; Clicked : Boolean);
     procedure Set_Command_Invalid;

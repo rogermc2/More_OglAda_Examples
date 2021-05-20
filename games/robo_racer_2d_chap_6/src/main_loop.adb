@@ -418,6 +418,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     --  -------------------------------------------------------------------------
 
     procedure Render_Sprites (Screen : in out Input_Callback.Callback_Window) is
+        use Input_Manager;
         use Levels_Manager;
     begin
         Utilities.Clear_Colour;
@@ -434,28 +435,28 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
             when Game_Menu =>
                 Sprite_Manager.Render (Menu_Screen);
-                Input_Manager.Render_Button (Input_Manager.Play_Button);
-                Input_Manager.Render_Button (Input_Manager.Credits_Button);
-                Input_Manager.Render_Button (Input_Manager.Exit_Button);
+                Render_Button (Game_Program, Play_Button);
+                Render_Button (Game_Program, Credits_Button);
+                Render_Button (Game_Program, Exit_Button);
 
             when Game_Credits =>
                 Sprite_Manager.Render (Credits_Screen);
-                Input_Manager.Render_Button (Input_Manager.Menu_Button);
+                Render_Button (Game_Program, Menu_Button);
                 Draw_Credits (Screen);
 
             when Game_Next_Level =>
                 Sprite_Manager.Render (Next_Level_Screen);
                 Levels_Manager.Draw_Game_Stats (Screen, Pickups_Received,
                                                 Enemies_Hit);
-                Input_Manager.Render_Button (Input_Manager.Continue_Button);
+                Render_Button (Game_Program, Continue_Button);
 
             when Game_Over => null;
 
             when  Game_Running | Game_Paused =>
                 Sprite_Manager.Render (Background);
                 Player_Manager.Render_Players;
-                Input_Manager.Render_Button (Input_Manager.Pause_Button);
-                Input_Manager.Render_Button (Input_Manager.Resume_Button);
+                Render_Button (Game_Program, Pause_Button);
+                Render_Button (Game_Program, Resume_Button);
                 Sprite_Manager.Render (Pickup);
                 Sprite_Manager.Render (Enemy);
                 Draw_Score (Screen);
