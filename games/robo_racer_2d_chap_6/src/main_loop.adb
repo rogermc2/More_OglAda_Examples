@@ -452,9 +452,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Render_Button (Game_Program, Continue_Button);
 
             when Game_Over =>
+                Put_Line ("Main_Loop.Update Game_Over");
                 Sprite_Manager.Render (Game_Over_Screen);
                 Levels_Manager.Draw_Stats (Screen, Pickups_Received,
                                            Enemies_Hit);
+                Put_Line ("Main_Loop.Update Game_Over stats drawn");
                 Render_Button (Game_Program, Replay_Button);
 
             when  Game_Running | Game_Paused =>

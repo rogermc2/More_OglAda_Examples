@@ -26,21 +26,20 @@ package body Levels_Manager is
                           "Pickups: " & Integer'Image (Pickups_Received);
         Enemies_Stat  : constant String :=
                           "Enemies Hit:" & Integer'Image (Enemies_Hit);
-        Score         : constant String :=
-                          "Score: " & Integer'Image (Get_Value (Get_Current_Player));
+        Score         : constant String
+          := "Score: " & Integer'Image (Get_Value (Get_Current_Player));
         Screen_Width  : Glfw.Size;
         Screen_Height : Glfw.Size;
         Height        : Single;
     begin
         Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         Height := Single (Screen_Height);
-        Put_Line ("Levels_Manager.Draw_Game_Stats " & Enemies_Stat);
-        Text_Manager.Draw_Text (Window, Enemies_Stat, 350.0, Height - 270.0, 0.0, 0.0, 1.0);
-        Put_Line ("Levels_Manager.Draw_Game_Stats Enemies_Stat drawn");
-        --        Put_Line ("Levels_Manager.Draw_Text " & Pickups_Stat);
-        --        Text_Manager.Draw_Text (Window, Pickups_Stat, 350.0, Height - 320.0, 0.0, 0.0, 1.0);
-        --        Put_Line ("Levels_Manager.Draw_Text " & Score);
-        --        Text_Manager.Draw_Text (Window, Score, 350.0, Height - 370.0, 0.0, 0.0, 1.0);
+        Text_Manager.Draw_Text (Window, Enemies_Stat, 350.0, Height - 270.0,
+                                0.0, 0.0, 1.0);
+        Text_Manager.Draw_Text (Window, Pickups_Stat, 350.0, Height - 300.0,
+                                0.0, 0.0, 1.0);
+        Text_Manager.Draw_Text (Window, Score, 350.0, Height - 320.0,
+                                0.0, 0.0, 1.0);
 
     exception
         when anError : others =>
