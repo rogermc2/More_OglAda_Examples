@@ -683,10 +683,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Process_Input (Delta_Time);
 
          when Game_Over =>
+            Put_Line ("Main_Loop.Update Game_Over");
             Sprite_Manager.Update (Game_Over_Screen, Delta_Time);
+            Set_Active (Pause_Button, False);
+            Set_Visible (Pause_Button, False);
             Set_Active (Replay_Button, True);
+            Set_Visible (Replay_Button, True);
             Update (Replay_Button, Delta_Time);
             Set_Active (Exit_Button, True);
+            Set_Visible (Exit_Button, True);
             Update (Exit_Button, Delta_Time);
             Update (Delta_Time);
             Process_Input (Delta_Time);
