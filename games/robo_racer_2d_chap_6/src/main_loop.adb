@@ -646,6 +646,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Process_Input (Delta_Time);
 
             when Game_Running =>
+                Input_Manager.Update (Delta_Time);
                 Sprite_Manager.Update (Background, Delta_Time);
                 Player_Manager.Update (Delta_Time);
                 Update (Pause_Button, Delta_Time);
