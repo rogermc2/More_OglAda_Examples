@@ -245,7 +245,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Set_Visible (Background, True);
       Set_Active (Background, True);
 
-      Input_Manager.Init_Buttons;
+      Input_Manager.Init_Buttons (Screen);
       Collision.Left := 34.0;
       Collision.Right := -10.0;
       Player_Manager.Set_Collision (Player_Manager.Robot_Left, Collision);
