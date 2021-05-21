@@ -443,7 +443,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Render_Button (Game_Program, Exit_Button);
 
          when Game_Credits =>
-            Put_Line ("Main_Loop.Render_Sprites Game_Credits");
             Sprite_Manager.Render (Credits_Screen);
             Render_Button (Game_Program, Menu_Button);
             Draw_Credits (Screen);
@@ -650,15 +649,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Sprite_Manager.Update (Credits_Screen, Delta_Time);
             Set_Active (Menu_Button, True);
             Update (Menu_Button, Delta_Time);
-            Put_Line ("Main_Loop.Update Game_Credits 3 Game_State: " &
-                        Game_Status'Image (Get_Game_State));
             Update (Delta_Time);
-            Put_Line ("Main_Loop.Update Game_Credits 4 Game_State: " &
-                        Game_Status'Image (Get_Game_State));
             Process_Input (Delta_Time);
-
-            Put_Line ("Main_Loop.Update Game_Credits 5 Game_State: " &
-                        Game_Status'Image (Get_Game_State));
 
          when Game_Paused =>
             Update (Delta_Time);
@@ -709,8 +701,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Running := False;
       end case;
 
-      Put_Line ("Main_Loop.Update Game_State: " &
-               Game_Status'Image (Get_Game_State));
       if Running then
          Render_Sprites (Window);
          Update_Command (Window);
