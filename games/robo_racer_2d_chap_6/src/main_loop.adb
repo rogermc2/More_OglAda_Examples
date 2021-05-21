@@ -245,7 +245,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Set_Visible (Background, True);
       Set_Active (Background, True);
 
-      Input_Manager.Init_Buttons (Screen);
+      Input_Manager.Load_Buttons (Screen);
+
       Collision.Left := 34.0;
       Collision.Right := -10.0;
       Player_Manager.Set_Collision (Player_Manager.Robot_Left, Collision);
@@ -290,8 +291,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Set_Visible (Next_Level_Screen, True);
       Add_Texture (Next_Level_Screen, "src/resources/level.png", False);
 
-      Set_Frame_Size (Next_Level_Screen, 800.0, 600.0);
-      Set_Number_Of_Frames (Next_Level_Screen, 1);
+      Set_Frame_Size (Game_Over_Screen, 800.0, 600.0);
+      Set_Number_Of_Frames (Game_Over_Screen, 1);
       Set_Active (Game_Over_Screen, True);
       Set_Visible (Game_Over_Screen, True);
       Add_Texture (Game_Over_Screen, "src/resources/gameover.png", False);
@@ -448,7 +449,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Draw_Credits (Screen);
 
          when Game_Next_Level =>
-            Put_Line ("Main_Loop.Render_Sprites Game_Next_Level");
             Sprite_Manager.Render (Next_Level_Screen);
             Levels_Manager.Draw_Stats (Screen, Pickups_Received,
                                        Enemies_Hit);
@@ -457,6 +457,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          when Game_Over =>
             Sprite_Manager.Render (Game_Over_Screen);
             Render_Button (Game_Program, Replay_Button);
+            Render_Button (Game_Program, Exit_Button);
             Levels_Manager.Draw_Stats (Screen, Pickups_Received,
                                        Enemies_Hit);
 
@@ -676,7 +677,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             end if;
 
          when Game_Next_Level =>
-            Put_Line ("Main_Loop.Update Game_Next_Level");
             Sprite_Manager.Update (Next_Level_Screen, Delta_Time);
             Set_Active (Continue_Button, True);
             Update (Continue_Button, Delta_Time);
@@ -684,7 +684,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Process_Input (Delta_Time);
 
          when Game_Over =>
-            Put_Line ("Main_Loop.Update Game_Over");
             Sprite_Manager.Update (Game_Over_Screen, Delta_Time);
             Set_Active (Pause_Button, False);
             Set_Visible (Pause_Button, False);

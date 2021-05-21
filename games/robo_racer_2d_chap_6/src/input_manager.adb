@@ -48,7 +48,7 @@ package body Input_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Buttons (Screen : in out Input_Callback.Callback_Window) is
+   procedure Load_Buttons (Screen : in out Input_Callback.Callback_Window) is
         B_Height      : constant Float := 75.0;
         B_Width       : constant Float := 38.0;
         Screen_Width  : Glfw.Size;
@@ -105,8 +105,17 @@ package body Input_Manager is
       Set_Position (UI_Elements (Continue_Button), 390.0, S_Height - 400.0);
       Set_Visible (UI_Elements (Continue_Button), True);
       Add_Texture (UI_Elements
-                   (Menu_Button), "src/resources/continueButton.png", False);
-   end Init_Buttons;
+                   (Continue_Button), "src/resources/continueButton.png", False);
+
+
+      Set_Frame_Size (UI_Elements (Replay_Button), B_Height, B_Width);
+      Set_Number_Of_Frames (UI_Elements (Replay_Button), 1);
+      Set_Position (UI_Elements (Replay_Button), 390.0, 90.0);
+      Set_Visible (UI_Elements (Replay_Button), True);
+      Add_Texture (UI_Elements
+                   (Replay_Button), "src/resources/replayButton.png", False);
+
+   end Load_Buttons;
 
    --  -------------------------------------------------------------------------
 
