@@ -17,6 +17,8 @@ with Maths;
 with Program_Loader;
 with Utilities;
 
+with Fmod_Common;
+with Fmod;
 with Input_Manager;
 with Levels_Manager;
 with Player_Manager;
@@ -629,10 +631,16 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       use GL.Objects.Shaders;
       use GL.Types;
       use Glfw.Input;
+      use Fmod_Common;
       Window_Width       : Glfw.Size;
       Window_Height      : Glfw.Size;
+      F_Result           : Fmod_Result;
+      Audio              : Fmod.F_System;
    begin
-      --          Screen.Set_Input_Toggle (Sticky_Keys, True);
+      F_Result := Fmod.System_Create (Audio);
+      if F_Result = Fmod_Ok then
+         Put_Line ("Start_Game audio system created");
+      end if;
       Screen.Set_Cursor_Mode (Mouse.Normal);
       Screen'Access.Get_Size (Window_Width, Window_Height);
       Screen'Access.Set_Cursor_Pos
