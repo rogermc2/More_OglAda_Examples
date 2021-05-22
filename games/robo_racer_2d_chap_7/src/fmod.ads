@@ -86,5 +86,8 @@ package Fmod is
 
                          Fmod_Result_Forceint  --  = 65536A
                         );
+    pragma Convention (C, Fmod_Result);
+
+    --  for Fmod_Result use (16#65536A#);
 
 end Fmod;
