@@ -540,7 +540,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       Set_Visible (Pickup, False);
       Set_Visible (Enemy, False);
-      Input_Manager.Set_Visible (Input_Manager.Pause_Button, False);
+      Input_Manager.Set_Visible (Input_Manager.Pause_Button, True);
+      Input_Manager.Set_Active (Input_Manager.Pause_Button, True);
+      Input_Manager.Set_Active (Input_Manager.Resume_Button, True);
 
       Set_Velocity (Background, 0.0);
       Player_Manager.Set_Position (Robot_Left, (0.5 * Float (Screen_Width) - 50.0,
