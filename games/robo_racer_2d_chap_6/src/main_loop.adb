@@ -674,7 +674,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Delta_Time   : constant Float := Current_Time - Last_Time;
       X_Position   : Glfw.Input.Mouse.Coordinate := 0.00001;
       Y_Position   : Glfw.Input.Mouse.Coordinate := 0.00002;
-      Next_State   : Game_Status;
+      Next_State   : Game_Status := Game_Over;
    begin
       Last_Time := Current_Time;
       Window'Access.Get_Cursor_Pos (X_Position, Y_Position);
@@ -733,7 +733,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Check_Collisions;
             Level_Timer := Level_Timer + Delta_Time;
             if Level_Timer > Level_Max_Time then
-               Next_State := Get_Game_State;
                Next_Level (Next_State, Level_Timer, Pickup_Spawn_Threshold,
                            Pickups_Received);
                Set_Game_State (Next_State);
