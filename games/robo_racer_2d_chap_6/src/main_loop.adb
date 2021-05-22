@@ -391,6 +391,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Set_Visible (Robot_Right, False);
                   Set_Position (Robot_Left, Get_Position (Robot_Right));
                end if;
+               Set_Value (Robot_Left, Get_Value (Get_Current_Player));
                Set_Current_Player (Robot_Left);
                Set_Active (Robot_Left, True);
                Set_Visible (Robot_Left, True);
@@ -403,14 +404,17 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Set_Visible (Robot_Left, False);
                   Set_Position (Robot_Right, Get_Position (Robot_Left));
                end if;
+               Set_Value (Robot_Right, Get_Value (Get_Current_Player));
                Set_Current_Player (Robot_Right);
                Set_Active (Robot_Right, True);
                Set_Visible (Robot_Right, True);
                Set_Velocity (Robot_Right, Velocity);
                Set_Velocity (Background, -Velocity);
+
             when Command_Stop =>
                Set_Velocity (Background, 0.0);
                Set_Velocity (Player, 0.0);
+
             when Command_Up => Jump (Player, Sprite_Up);
             when Command_Down => Jump (Player, Sprite_Down);
             when Command_Invalid => null;
