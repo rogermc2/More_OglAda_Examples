@@ -48,51 +48,74 @@ package body Input_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Buttons is
+   procedure Load_Buttons (Screen : in out Input_Callback.Callback_Window) is
+        B_Height      : constant Float := 75.0;
+        B_Width       : constant Float := 38.0;
+        Screen_Width  : Glfw.Size;
+        Screen_Height : Glfw.Size;
+        S_Height      : Float;
    begin
-      Set_Frame_Size (UI_Elements (Pause_Button), 75.0, 38.0);
+      Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+      S_Height := Float (Screen_Height);
+
+      Set_Frame_Size (UI_Elements (Pause_Button), B_Height, B_Width);
       Set_Number_Of_Frames (UI_Elements (Pause_Button), 1);
-      Set_Position (UI_Elements (Pause_Button), 10.0, 5.0);
+      Set_Position (UI_Elements (Pause_Button), 10.0, 10.0);
       Add_Texture (UI_Elements
                    (Pause_Button), "src/resources/pauseButton.png", False);
       Set_Visible (UI_Elements (Pause_Button), True);
       Set_Active (UI_Elements (Pause_Button), True);
 
-      Set_Frame_Size (UI_Elements (Resume_Button), 75.0, 38.0);
+      Set_Frame_Size (UI_Elements (Resume_Button), B_Height, B_Width);
       Set_Number_Of_Frames (UI_Elements (Resume_Button), 1);
       Set_Position (UI_Elements (Resume_Button), 80.0, 10.0);
       Add_Texture (UI_Elements
                    (Resume_Button), "src/resources/resumeButton.png", False);
 
-      Set_Frame_Size (UI_Elements (Play_Button), 75.0, 38.0);
+      Set_Frame_Size (UI_Elements (Play_Button), B_Height, B_Width);
       Set_Number_Of_Frames (UI_Elements (Play_Button), 1);
-      Set_Position (UI_Elements (Play_Button), 390.0, 300.0);
+      Set_Position (UI_Elements (Play_Button), 390.0, S_Height - 350.0);
       Set_Visible (UI_Elements (Play_Button), True);
       Add_Texture (UI_Elements
                    (Play_Button), "src/resources/playButton.png", False);
 
-      Set_Frame_Size (UI_Elements (Credits_Button), 75.0, 38.0);
+      Set_Frame_Size (UI_Elements (Credits_Button), B_Height, B_Width);
       Set_Number_Of_Frames (UI_Elements (Credits_Button), 1);
-      Set_Position (UI_Elements (Credits_Button), 390.0, 250.0);
+      Set_Position (UI_Elements (Credits_Button), 390.0, S_Height - 400.0);
       Set_Visible (UI_Elements (Credits_Button), True);
       Add_Texture (UI_Elements
                    (Credits_Button), "src/resources/creditsButton.png", False);
 
-      Set_Frame_Size (UI_Elements (Exit_Button), 75.0, 38.0);
+      Set_Frame_Size (UI_Elements (Exit_Button), B_Height, B_Width);
       Set_Number_Of_Frames (UI_Elements (Exit_Button), 1);
-      Set_Position (UI_Elements (Exit_Button), 390.0, 100.0);
+      Set_Position (UI_Elements (Exit_Button), 390.0, 40.0);
       Set_Visible (UI_Elements (Exit_Button), True);
       Add_Texture (UI_Elements
                    (Exit_Button), "src/resources/exitButton.png", False);
 
-      Set_Frame_Size (UI_Elements (Menu_Button), 75.0, 38.0);
+      Set_Frame_Size (UI_Elements (Menu_Button), B_Height, B_Width);
       Set_Number_Of_Frames (UI_Elements (Menu_Button), 1);
-      Set_Position (UI_Elements (Menu_Button), 390.0, 150.0);
+      Set_Position (UI_Elements (Menu_Button), 390.0, S_Height - 450.0);
       Set_Visible (UI_Elements (Menu_Button), True);
       Add_Texture (UI_Elements
                    (Menu_Button), "src/resources/menuButton.png", False);
 
-   end Init_Buttons;
+      Set_Frame_Size (UI_Elements (Continue_Button), B_Height, B_Width);
+      Set_Number_Of_Frames (UI_Elements (Continue_Button), 1);
+      Set_Position (UI_Elements (Continue_Button), 390.0, S_Height - 400.0);
+      Set_Visible (UI_Elements (Continue_Button), True);
+      Add_Texture (UI_Elements
+                   (Continue_Button), "src/resources/continueButton.png", False);
+
+
+      Set_Frame_Size (UI_Elements (Replay_Button), B_Height, B_Width);
+      Set_Number_Of_Frames (UI_Elements (Replay_Button), 1);
+      Set_Position (UI_Elements (Replay_Button), 390.0, 90.0);
+      Set_Visible (UI_Elements (Replay_Button), True);
+      Add_Texture (UI_Elements
+                   (Replay_Button), "src/resources/replayButton.png", False);
+
+   end Load_Buttons;
 
    --  -------------------------------------------------------------------------
 
@@ -117,8 +140,10 @@ package body Input_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Render_Button (Button : Button_Index) is
+   procedure Render_Button (Render_Program : GL.Objects.Programs.Program;
+                            Button : Button_Index) is
    begin
+      GL.Objects.Programs.Use_Program (Render_Program);
       Sprite_Manager.Render (UI_Elements (Button));
    end Render_Button;
 

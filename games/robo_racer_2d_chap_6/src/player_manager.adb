@@ -1,9 +1,10 @@
 
 package body Player_Manager is
 
-   Player_List    : array (Player_Index range Player_Index'Range) of
+   Player_Velocity : constant Float := 200.0;
+   Player_List     : array (Player_Index range Player_Index'Range) of
      Sprite_Manager.Sprite;
-   Current_Player : Player_Index := Robot_Right;
+   Current_Player  : Player_Index := Robot_Right;
 
    --  -------------------------------------------------------------------------
 
@@ -43,6 +44,13 @@ package body Player_Manager is
 
    --  -------------------------------------------------------------------------
 
+   function Get_Value (Player : Player_Index) return Integer is
+   begin
+      return Sprite_Manager.Get_Value (Player_List (Player));
+   end Get_Value;
+
+   --  -------------------------------------------------------------------------
+
    procedure Init_Players is
       use Sprite_Manager;
       Centre   : Point;
@@ -77,7 +85,7 @@ package body Player_Manager is
 
       Set_Visible (Player_List (Robot_Right), True);
       Set_Active (Player_List (Robot_Right), True);
-      Set_Velocity (Player_List (Robot_Right), 50.0);
+      Set_Velocity (Player_List (Robot_Right), Player_Velocity);
 
       Centre.X := 0.5 * Get_Size (Player_List (Robot_Right)).Width;
       Centre.Y := 0.5 * Get_Size (Player_List (Robot_Right)).Height;
@@ -145,6 +153,13 @@ package body Player_Manager is
    begin
       Sprite_Manager.Set_Position (Player_List (Player), Position);
    end Set_Position;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Set_Value (Player : Player_Index; Value : Integer) is
+   begin
+      Sprite_Manager.Set_Value (Player_List (Player), Value);
+   end Set_Value;
 
    --  -------------------------------------------------------------------------
 

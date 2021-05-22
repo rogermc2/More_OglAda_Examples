@@ -1,10 +1,13 @@
 
+with GL.Objects.Programs;
+
 with Input_Callback;
 
 package Input_Manager is
 
    type Button_Index is (Pause_Button, Resume_Button, Play_Button, Menu_Button,
-                         Credits_Button, Exit_Button);
+                         Credits_Button, Continue_Button, Replay_Button,
+                         Exit_Button);
     type Command is (Command_Left, Command_Right, Command_Stop, Command_Up,
                      Command_Down, Command_UI, Command_Invalid);
 
@@ -12,8 +15,9 @@ package Input_Manager is
     function Is_Active (Button : Button_Index) return Boolean;
     function Is_Clicked (Button : Button_Index) return Boolean;
     function Is_Visible (Button : Button_Index) return Boolean;
-    procedure Init_Buttons;
-    procedure Render_Button (Button : Button_Index);
+    procedure Load_Buttons (Screen : in out Input_Callback.Callback_Window);
+    procedure Render_Button (Render_Program : GL.Objects.Programs.Program;
+                             Button : Button_Index);
     procedure Set_Active (Button : Button_Index; State : Boolean);
     procedure Set_Clicked (Button : Button_Index; Clicked : Boolean);
     procedure Set_Command_Invalid;
