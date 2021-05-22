@@ -13,7 +13,7 @@ package body Levels_Manager is
     pragma Warnings (Off);
 
     Game_State              : Game_Status := Game_Splash;
-    Pickups_Threshold       : constant Integer := 5;
+    Pickups_Threshold       : Integer := 5;
     Pickup_Spawn_Adjustment : constant Float := 0.25;
 
     --  ------------------------------------------------------------------------
@@ -71,13 +71,20 @@ package body Levels_Manager is
         end if;
     end Next_Level;
 
-    --  -------------------------------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Set_Game_State (State : Game_Status) is
     begin
         Game_State := State;
     end Set_Game_State;
 
-    --  -------------------------------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
+
+    procedure Set_Pickups_Threshold (Threshold : Integer) is
+    begin
+        Pickups_Threshold := Threshold;
+    end Set_Pickups_Threshold;
+
+   --  ------------------------------------------------------------------------
 
 end Levels_Manager;

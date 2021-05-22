@@ -30,9 +30,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Back                         : constant GL.Types.Colors.Color :=
                                     (0.6, 0.6, 0.6, 1.0);
    Border_Width                 : constant GL.Types.Size := 2;
-   Splash_Threshold             : constant Float := 2.5;
+   Splash_Threshold             : Float := 2.5;
    UI_Threshold                 : constant float := 0.1;
-   Enemy_Spawn_Threshold        : constant Float := 3.5;
+   Enemy_Spawn_Threshold        : Float := 3.5;
    Level_Max_Time               : constant Float := 30.0;
    Pickup_Spawn_Threshold       : Float := 2.5;
    Last_Time                    : Float := 0.0;
@@ -57,6 +57,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Level_Timer                  : Float := 0.0;
 
    procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
+   procedure Restart_Game (Screen : in out Input_Callback.Callback_Window);
 
    --  ------------------------------------------------------------------------
 
@@ -322,7 +323,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          when Game_Menu | Game_Credits  | Game_Paused |
               Game_Next_Level | Game_Over =>
             aCommand := Command_UI;
-         when  Game_Running | Game_Quit => null;
+         when  Game_Running | Game_Restart | Game_Quit => null;
       end case;
 
       if Continue then
@@ -383,6 +384,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Pickups_Received := 0;
                   Enemies_Hit := 0;
                   Set_Game_State (Game_Running);
+
+               elsif Is_Clicked (Replay_Button) then
+                  Set_Clicked (Replay_Button, False);
+                  Set_Active (Replay_Button, False);
+                  Set_Active (Exit_Button, False);
+                  Set_Game_State (Game_Restart);
                end if;
 
             when Command_Left =>
@@ -421,6 +428,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          end case;
          Set_Command_Invalid;
       end if;
+
    end Process_Input;
 
    --  -------------------------------------------------------------------------
@@ -457,6 +465,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Levels_Manager.Draw_Stats (Screen, Pickups_Received,
                                        Enemies_Hit);
             Render_Button (Game_Program, Continue_Button);
+
+         when Game_Restart => null;
 
          when Game_Over =>
             Sprite_Manager.Render (Game_Over_Screen);
@@ -500,7 +510,50 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       Use_Program (Game_Program);
       GL.Uniforms.Set_Single (Projection_Uniform, Projection_Matrix);
+
    end Resize_GL_Scene;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Restart_Game (Screen : in out Input_Callback.Callback_Window) is
+      use Player_Manager;
+      use Sprite_Manager;
+      Screen_Width  : Glfw.Size;
+      Screen_Height : Glfw.Size;
+   begin
+      Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+
+      Set_Value (Robot_Left, 0);
+      Set_Value (Robot_Right, 0);
+
+      Splash_Threshold := 5.0;
+      Splash_Timer := 0.0;
+      Pickup_Spawn_Threshold := 5.0;
+      Pickup_Spawn_Timer := 0.0;
+      Enemy_Spawn_Threshold := 7.0;
+      Enemy_Spawn_Timer := 0.0;
+
+      Level_Timer := 0.0;
+      Levels_Manager.Set_Pickups_Threshold (5);
+      Pickups_Received := 0;
+      Enemies_Hit := 0;
+
+      Set_Visible (Pickup, False);
+      Set_Visible (Enemy, False);
+      Input_Manager.Set_Visible (Input_Manager.Pause_Button, False);
+
+      Set_Velocity (Background, 0.0);
+      Player_Manager.Set_Position (Robot_Left, (0.5 * Float (Screen_Width) - 50.0,
+                    130.0));
+      Player_Manager.Set_Position (Robot_Right, (0.5 * Float (Screen_Width) - 50.0,
+                    30.0));
+      Set_Visible (Robot_Left, False);
+      Set_Visible (Robot_Right, True);
+      Set_Active (Robot_Right, True);
+      Set_Velocity (Robot_Right, 0.0);
+      Set_Current_Player (Robot_Right);
+
+   end Restart_Game;
 
    --  ------------------------------------------------------------------------
 
@@ -660,6 +713,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          when Game_Paused =>
             Update (Delta_Time);
             Process_Input (Delta_Time);
+
+         when Game_Restart =>
+            Restart_Game (Window);
+            Set_Game_State (Game_Running);
 
          when Game_Running =>
             Update (Delta_Time);
