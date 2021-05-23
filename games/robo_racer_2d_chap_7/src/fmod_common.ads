@@ -1,7 +1,6 @@
 
 package Fmod_Common is
 
-
     type Fmod_Init_Flags is (Fmod_Init_Normal,
                              Fmod_Init_Stream_From_Update,
                              Fmod_Init_Mix_From_Update,
