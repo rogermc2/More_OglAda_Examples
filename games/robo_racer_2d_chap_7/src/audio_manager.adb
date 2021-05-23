@@ -16,10 +16,10 @@ package body Audio_Manager is
     begin
         F_Result := Fmod.Close_System;
         if F_Result = Fmod_Ok then
-            Put_Line ("Audio_Manager.Init audio system closed");
+            Put_Line ("Audio_Manager.Close audio system closed");
         else
             raise Audio_Exception with
-              "Audio_Manager.Init audio system closure failed"
+              "Audio_Manager.Close audio system closure failed"
               & " with failure code " & Fmod_Result'Image (F_Result);
         end if;
 
@@ -49,6 +49,23 @@ package body Audio_Manager is
         end if;
 
     end Init_Fmod;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Load_Audio is
+        use Fmod_Common;
+        F_Result : Fmod_Result;
+    begin
+        F_Result := Fmod.Close_System;
+        if F_Result = Fmod_Ok then
+            Put_Line ("Audio_Manager.Init audio system closed");
+        else
+            raise Audio_Exception with
+              "Audio_Manager.Load_Audio audio loading failed"
+              & " with failure Load_Audio " & Fmod_Result'Image (F_Result);
+        end if;
+
+    end Load_Audio;
 
     --  -------------------------------------------------------------------------
 

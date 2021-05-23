@@ -5,5 +5,6 @@ package Audio_Manager is
 
     procedure Close;
     procedure Init_Fmod;
+    procedure Load_Audio;
 
 end Audio_Manager;

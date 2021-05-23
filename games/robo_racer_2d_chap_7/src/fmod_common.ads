@@ -1,4 +1,7 @@
 
+with Interfaces.C.Strings; use Interfaces.C.Strings;
+with GL.Types; use GL.Types;
+
 package Fmod_Common is
 
     type Fmod_Init_Flags is (Fmod_Init_Normal,
@@ -15,6 +18,48 @@ package Fmod_Common is
                              Fmod_Init_Profile_Meter_All,
                              Fmod_Init_Memory_Tracking);
     pragma Convention (C, Fmod_Init_Flags);
+
+    type Fmod_Mode is (Fmod_Default,
+                       Fmod_Loop_Off,
+                       Fmod_Loop_Normal,
+                       Fmod_Loop_Bidi,
+                       Fmod_2D,
+                       Fmod_3D,
+                       Fmod_Createstream,
+                       Fmod_Createsample,
+                       Fmod_Createcompressedsample,
+                       Fmod_Openuser,
+                       Fmod_Openmemory,
+                       Fmod_Openraw,
+                       Fmod_Openonly,
+                       Fmod_Accuratetime,
+                       Fmod_Mpegsearch,
+                       Fmod_Nonblocking,
+                       Fmod_Unique,
+                       Fmod_3D_Headrelative,
+                       Fmod_3D_Worldrelative,
+                       Fmod_3D_Inverserolloff,
+                       Fmod_3D_Linearrolloff,
+                       Fmod_3D_Linearsquarerolloff,
+                       Fmod_3D_Inversetaperedrolloff,
+                       Fmod_Ignoretags,
+                       Fmod_3D_Customrolloff,
+                       Fmod_Lowmem,
+                       Fmod_Openmemory_Point,
+                       Fmod_3D_Ignoregeometry,
+                       Fmod_Virtual_Playfromstart);
+    pragma Convention (C, Fmod_Mode);
+
+    type Fmod_Sound_Format is (Fmod_Sound_Format_None,
+                               Fmod_Sound_Format_Pcm8,
+                               Fmod_Sound_Format_Pcm16,
+                               Fmod_Sound_Format_Pcm24,
+                               Fmod_Sound_Format_Pcm32,
+                               Fmod_Sound_Format_Pcmfloat,
+                               Fmod_Sound_Format_Bitstream,
+                               Fmod_Sound_Format_Max,
+                               Fmod_Sound_Format_Forceint);
+    pragma Convention (C, Fmod_Sound_Format);
 
     type Fmod_Result is (Fmod_Ok,
                          Fmod_Err_Badcommand,
@@ -101,6 +146,45 @@ package Fmod_Common is
                          Fmod_Result_Forceint);
     pragma Convention (C, Fmod_Result);
 
+    type Fmod_Create_Sound_EXINFO is record
+        Cbsize      : Int;
+        Length : UInt;
+        Fileoffset : UInt;
+        Numchannels : Int;
+        Defaultfrequency : Int;
+        Format : Fmod_Sound_Format;
+        Decodebuffersize : UInt;
+        Initialsubsound : Int;
+        Numsubsounds : Int;
+        Inclusionlist : access Int;
+        Inclusionlistnum : Int;
+        Pcmreadcallback : Fmod_Sound_Pcmread_Callback;
+        Pcmsetposcallback : Fmod_Sound_Pcmsetpos_Callback;
+        Nonblockcallback : Fmod_Sound_Nonblock_Callback;
+        Dlsname : chars_ptr;
+        Encryptionkey : chars_ptr;
+        Maxpolyphony : Int;
+        Userdata : GLvoid_Ptr;
+        Suggestedsoundtype :  Fmod_Sound_Type;
+        Fileuseropen :  Fmod_File_Open_Callback;
+        Fileuserclose : Fmod_File_Close_Callback;
+        Fileuserread : Fmod_File_Read_Callback;
+        Fileuserseek : Fmod_File_Seek_Callback;
+        Fileuserasyncread : Fmod_File_Asyncread_Callback;
+        Fileuserasynccancel : Fmod_File_Asynccancel_Callback;
+        Fileuserdata : GLvoid_Ptr;
+        Filebuffersize : Int;
+        Channelorder : Fmod_Channelorder;
+        Initialsoundgroup : access Fmod_Soundgroup;
+        Initialseekposition : Int;
+        Initialseekpostype : Fmod_Timeunit;
+        Ignoresetfilesystem : Int;
+        Audioqueuepolicy : UInt;
+        Minmidigranularity : UInt;
+        Nonblockthreadid : Int;
+        Fsbguid : access Fmod_Guid;
+    end record;
+
 private
 
     for Fmod_Init_Flags use (Fmod_Init_Normal                => 16#00000000#,
@@ -116,6 +200,45 @@ private
                              Fmod_Init_Thread_Unsafe         => 16#00100000#,
                              Fmod_Init_Profile_Meter_All     => 16#00200000#,
                              Fmod_Init_Memory_Tracking       => 16#00400000#);
+
+    for Fmod_Mode use (Fmod_Default => 16#00000000#,
+                       Fmod_Loop_Off                 => 16#00000001#,
+                       Fmod_Loop_Normal              => 16#00000002#,
+                       Fmod_Loop_Bidi                => 16#00000004#,
+                       Fmod_2D                       => 16#00000008#,
+                       Fmod_3D                       => 16#00000010#,
+                       Fmod_Createstream             => 16#00000080#,
+                       Fmod_Createsample             => 16#00000100#,
+                       Fmod_Createcompressedsample   => 16#00000200#,
+                       Fmod_Openuser                 => 16#00000400#,
+                       Fmod_Openmemory               => 16#00000800#,                       Fmod_Openraw                  => 16#00001000#,
+                       Fmod_Openonly                 => 16#00002000#,
+                       Fmod_Accuratetime             => 16#00004000#,
+                       Fmod_Mpegsearch               => 16#00008000#,
+                       Fmod_Nonblocking              => 16#00010000#,
+                       Fmod_Unique                   => 16#00020000#,
+                       Fmod_3D_Headrelative          => 16#00040000#,
+                       Fmod_3D_Worldrelative         => 16#00080000#,
+                       Fmod_3D_Inverserolloff        => 16#00100000#,
+                       Fmod_3D_Linearrolloff         => 16#00200000#,
+                       Fmod_3D_Linearsquarerolloff   => 16#00400000#,
+                       Fmod_3D_Inversetaperedrolloff => 16#00800000#,
+                       Fmod_Ignoretags               => 16#02000000#,
+                       Fmod_3D_Customrolloff         => 16#04000000#,
+                       Fmod_Lowmem                   => 16#08000000#,
+                       Fmod_Openmemory_Point         => 16#10000000#,
+                       Fmod_3D_Ignoregeometry        => 16#40000000#,
+                       Fmod_Virtual_Playfromstart    => 16#80000000#);
+
+    for Fmod_Sound_Format use (Fmod_Sound_Format_None       => 16#000001#,
+                               Fmod_Sound_Format_Pcm8       => 16#000002#,
+                               Fmod_Sound_Format_Pcm16      => 16#000003#,
+                               Fmod_Sound_Format_Pcm24      => 16#000004#,
+                               Fmod_Sound_Format_Pcm32      => 16#000005#,
+                               Fmod_Sound_Format_Pcmfloat   => 16#000006#,
+                               Fmod_Sound_Format_Bitstream  => 16#000007#,
+                               Fmod_Sound_Format_Max        => 16#000008#,
+                               Fmod_Sound_Format_Forceint   => 16#065536#);
 
     for Fmod_Result use (Fmod_Ok => 16#000000#,
                          Fmod_Err_Badcommand => 16#000001#,
