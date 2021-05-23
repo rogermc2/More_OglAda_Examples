@@ -633,7 +633,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Window_Width       : Glfw.Size;
       Window_Height      : Glfw.Size;
    begin
-      Audio_Manager.Init;
       Screen.Set_Cursor_Mode (Mouse.Normal);
       Screen'Access.Get_Size (Window_Width, Window_Height);
       Screen'Access.Set_Cursor_Pos
@@ -683,6 +682,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       case Get_Game_State is
          when Game_Splash =>
             Load_Splash;
+            Audio_Manager.Init_Fmod;
             Splash_Timer := 0.0;
             Set_Game_State (Game_Loading);
 

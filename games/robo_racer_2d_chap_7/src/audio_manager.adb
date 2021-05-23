@@ -27,7 +27,7 @@ package body Audio_Manager is
 
     --  -------------------------------------------------------------------------
 
-    procedure Init is
+    procedure Init_Fmod is
         use Fmod_Common;
         F_Result : Fmod_Result;
     begin
@@ -39,16 +39,16 @@ package body Audio_Manager is
                 Put_Line ("Audio_Manager.Init audio system initialized");
             else
                 raise Audio_Exception with
-                  "Audio_Manager.Init audio system initialization failed"
+                  "Audio_Manager.Init_Fmod audio system initialization failed"
                   & " with failure code " & Fmod_Result'Image (F_Result);
             end if;
         else
             raise Audio_Exception with
-              "Audio_Manager.Init audio system creation failed"
+              "Audio_Manager.Init_Fmod audio system creation failed"
               & " with failure code " & Fmod_Result'Image (F_Result);
         end if;
 
-    end Init;
+    end Init_Fmod;
 
     --  -------------------------------------------------------------------------
 
