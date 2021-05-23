@@ -3,24 +3,21 @@ with Fmod.API;
 
 package body Fmod is
 
-   Audio     : aliased Fmod.API.Fmod_System;
-   Audio_Ptr : Fmod.API.F_System_Handle;
-   pragma Convention (C, Audio_Ptr);
+   Audio_Handle : Fmod.API.GLvoid_Handle := null;
+   pragma Convention (C, Audio_Handle);
 
    --  -------------------------------------------------------------------------
 
    function Close_System return Fmod_Result is
    begin
-      Audio_Ptr.all := Audio;
-      return Fmod.API.System_Close (Audio_Ptr);
+      return Fmod.API.System_Close (Audio_Handle.all);
    end Close_System;
 
    --  -------------------------------------------------------------------------
 
    function Create_System return Fmod_Result is
    begin
-      Audio_Ptr.all := Audio;
-      return Fmod.API.System_Create (Audio_Ptr);
+      return Fmod.API.System_Create (Audio_Handle);
    end Create_System;
 
    --  -------------------------------------------------------------------------
@@ -28,8 +25,7 @@ package body Fmod is
    function Init_System (maxchannels     : Int; flags : Fmod_Init_Flags;
                          extradriverdata : System.Address) return Fmod_Result is
    begin
-      Audio_Ptr.all := Audio;
-      return Fmod.API.System_Init (Audio_Ptr, maxchannels, flags,
+      return Fmod.API.System_Init (Audio_Handle.all, maxchannels, flags,
                                    extradriverdata);
    end Init_System;
 

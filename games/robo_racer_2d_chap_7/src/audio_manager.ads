@@ -1,8 +1,9 @@
 
 package Audio_Manager is
 
-   Audio_Exception : Exception;
+    Audio_Exception : Exception;
 
-   procedure Init;
+    procedure Close;
+    procedure Init;
 
 end Audio_Manager;
