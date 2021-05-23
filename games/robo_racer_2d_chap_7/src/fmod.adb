@@ -3,7 +3,7 @@ with Fmod.API;
 
 package body Fmod is
 
-   Audio_Handle : Fmod.API.GLvoid_Handle := null;
+   Audio_Handle : Fmod_Common.GLvoid_Handle := null;
    pragma Convention (C, Audio_Handle);
 
    --  -------------------------------------------------------------------------
