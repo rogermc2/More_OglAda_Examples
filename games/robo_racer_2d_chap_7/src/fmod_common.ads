@@ -15,6 +15,7 @@ package Fmod_Common is
                              Fmod_Init_Thread_Unsafe,
                              Fmod_Init_Profile_Meter_All,
                              Fmod_Init_Memory_Tracking);
+    pragma Convention (C, Fmod_Init_Flags);
 
     type Fmod_Result is (Fmod_Ok,
                          Fmod_Err_Badcommand,
@@ -98,9 +99,7 @@ package Fmod_Common is
                          Fmod_Err_Not_Locked,
                          Fmod_Err_Record_Disconnected,
                          Fmod_Err_Toomanysamples,
-
-                         Fmod_Result_Forceint  --  = 65536A
-                        );
+                         Fmod_Result_Forceint);
     pragma Convention (C, Fmod_Result);
 
 private
