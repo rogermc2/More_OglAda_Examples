@@ -1,4 +1,6 @@
 
+with Interfaces.C;
+
 with Fmod.API;
 
 package body Fmod is
@@ -12,6 +14,17 @@ package body Fmod is
    begin
       return Fmod.API.System_Close (Audio_Handle.all);
    end Close_System;
+
+   --  -------------------------------------------------------------------------
+
+   function Create_Sound (name_or_data : String;
+                         mode : Fmod_Mode;
+                         extradriverdata : System.Address) return Fmod_Result is
+      use Interfaces.C;
+   begin
+      return Fmod.API.Create_Sound
+        (Audio_Handle.all, Interfaces.C.To_C (name_or_data), mode, extradriverdata);
+   end Create_Sound;
 
    --  -------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 
-with Interfaces.C.Strings;
+with Interfaces.C;
 with System;
 
 with Fmod_Common;
@@ -7,7 +7,7 @@ with Fmod_Common;
 package Fmod.API is
 
    function Create_Sound (aSystem     : in out Fmod_Common.GLvoid_Ptr;
-                         name_or_data : Interfaces.C.Strings.chars_ptr;
+                         name_or_data : Interfaces.C.char_array;
                          mode : Fmod_Mode;
                          extradriverdata : System.Address) return Fmod_Result;
    pragma Import (StdCall, Create_Sound, "FMOD_System_CreateSound");
