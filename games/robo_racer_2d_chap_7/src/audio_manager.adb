@@ -8,12 +8,12 @@ with Fmod;
 
 package body Audio_Manager is
 
-    sfx_Jump          : Fmod_Common.Fmod_Sound;
-    sfx_Movement      : Fmod_Common.Fmod_Sound;
-    sfx_Oilcan        : Fmod_Common.Fmod_Sound;
-    sfx_Water         : Fmod_Common.Fmod_Sound;
-    Channel_Movement  : System.Address;
-    Fmod_Channel_Free : Fmod_Common.Fmod_Channelgroup;
+    sfx_Jump         : Fmod_Common.Fmod_Sound_Handle;
+    sfx_Movement     : Fmod_Common.Fmod_Sound_Handle;
+    sfx_Oilcan       : Fmod_Common.Fmod_Sound_Handle;
+    sfx_Water        : Fmod_Common.Fmod_Sound_Handle;
+    Channel_Movement : Fmod_Common.Fmod_Channel_Handle;
+    Channel_Group    : Fmod_Common.Fmod_Channelgroup_Ptr;
 
     --  -------------------------------------------------------------------------
 
@@ -80,8 +80,8 @@ package body Audio_Manager is
 
         if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Load_Audio audio loaded");
-            F_Result := Fmod.Play_Sound (sfx_Movement, Fmod_Channel_Free,
-                                        True, Channel_Movement);
+             F_Result := Fmod.Play_Sound (sfx_Movement, Channel_Group, True,
+                                          Channel_Movement);
             if F_Result = Fmod_Ok then
                 Put_Line ("Audio_Manager.Load_Audio sound played");
             end if;

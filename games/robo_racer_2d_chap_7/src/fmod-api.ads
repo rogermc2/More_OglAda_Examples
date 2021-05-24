@@ -10,14 +10,14 @@ package Fmod.API is
                            name_or_data : Interfaces.C.char_array;
                            mode : Fmod_Mode;
                            exinfo : access Fmod_Create_Sound_Exinfo;
-                           sound : Fmod_Sound) return Fmod_Result;
+                           sound : in out Fmod_Sound_Handle) return Fmod_Result;
     pragma Import (StdCall, Create_Sound, "FMOD_System_CreateSound");
 
     function Play_Sound (aSystem : in out Fmod_Common.GLvoid_Ptr;
-                         sound : access Fmod_Sound;
-                         channelgroup : access Fmod_Channelgroup;
+                         sound : Fmod_Sound_Ptr;
+                         channelgroup : in out Fmod_Channelgroup_Ptr;
                          paused : Fmod_Bool;
-                         channel : System.Address) return Fmod_Result;
+                         channel : in out Fmod_Channel_Handle) return Fmod_Result;
     pragma Import (StdCall, Play_Sound, "FMOD_System_PlaySound");
 
     function System_Close (aSystem : in out Fmod_Common.GLvoid_Ptr) return Fmod_Result;

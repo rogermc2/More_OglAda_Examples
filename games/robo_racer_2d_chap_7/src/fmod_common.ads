@@ -202,8 +202,15 @@ package Fmod_Common is
 
    type Fmod_Channel is null record;
    type Fmod_Channel_Ptr is access Fmod_Channel;
+   type Fmod_Channel_Handle is access Fmod_Channel_Ptr;
+
    type Fmod_Channelgroup is null record;
+   type Fmod_Channelgroup_Ptr is access Fmod_Channelgroup;
+
    type Fmod_Sound is null record;
+   type Fmod_Sound_Ptr is access Fmod_Sound;
+   type Fmod_Sound_Handle is access Fmod_Sound_Ptr;
+
    type Fmod_Soundgroup is null record;
 
    type Fmod_Asyncreadinfo;
