@@ -3,8 +3,6 @@ with System;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Types;
-
 with Fmod_Common;
 with Fmod;
 
@@ -63,11 +61,6 @@ package body Audio_Manager is
 
     procedure Load_Audio is
         use Fmod_Common;
-        Sound            : Fmod_Sound_Ptr;
-        Open_State       : Fmod_Open_State_Ptr;
-        Percent_Buffered : GL.Types.UInt_Pointers.Pointer;
-        Starving         : Fmod_Bool_Ptr;
-        Disk_Busy        : Fmod_Bool_Ptr;
         F_Result         : Fmod_Result;
     begin
         F_Result := Fmod.Create_Sound ("src/audio/oil.wav", Fmod_Default,
@@ -87,14 +80,7 @@ package body Audio_Manager is
 
         if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Load_Audio audio loaded");
-            F_Result := Fmod.Get_Open_State
-              (Sound, Open_State, Percent_Buffered, Starving, Disk_Busy);
-            if F_Result = Fmod_Ok then
-                Put_Line ("Audio_Manager.Load_Audio Get_Open_State done ");
-            else
-                Put_Line ("Audio_Manager.Load_Audio Get_Open_State failed." &
-                            " with error " & Fmod_Result'Image (F_Result));
-            end if;
+--              Fmod.Print_Open_State;
             F_Result := Fmod.Play_Sound (sfx_Movement, Channel_Group, False,
                                          Channel_Movement);
             if F_Result = Fmod_Ok then
