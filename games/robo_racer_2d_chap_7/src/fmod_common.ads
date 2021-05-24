@@ -187,6 +187,8 @@ package Fmod_Common is
                         Fmod_Result_Forceint);
    pragma Convention (C, Fmod_Result);
 
+   subtype Fmod_Bool is Int;
+
    type GLvoid is null record;
    pragma Convention (C_Pass_By_Copy, GLvoid);
 
@@ -197,6 +199,8 @@ package Fmod_Common is
    pragma Convention (C, GLvoid_Handle);
 
    subtype Fmod_Timeunit is UInt;  -- fmod_common.h:105
+
+   type Fmod_Channelgroup is null record;
    type Fmod_Sound is null record;
    type Fmod_Soundgroup is null record;
 
