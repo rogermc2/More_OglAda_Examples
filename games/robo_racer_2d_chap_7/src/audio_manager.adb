@@ -8,7 +8,10 @@ with Fmod;
 
 package body Audio_Manager is
 
-    sfx_Oilcan : Fmod_Common.Fmod_Sound;
+    sfx_Jump     : Fmod_Common.Fmod_Sound;
+    sfx_Movement : Fmod_Common.Fmod_Sound;
+    sfx_Oilcan   : Fmod_Common.Fmod_Sound;
+    sfx_Water    : Fmod_Common.Fmod_Sound;
 
     --  -------------------------------------------------------------------------
 
@@ -61,7 +64,20 @@ package body Audio_Manager is
         F_Result := Fmod.Create_Sound ("src/audio/oil.wav", Fmod_Default,
                                        null, sfx_Oilcan);
         if F_Result = Fmod_Ok then
-            Put_Line ("Audio_Manager.Init audio loaded");
+            F_Result := Fmod.Create_Sound ("src/audio/water.wav", Fmod_Default,
+                                           null, sfx_Water);
+            if F_Result = Fmod_Ok then
+                F_Result := Fmod.Create_Sound ("src/audio/jump.wav", Fmod_Default,
+                                               null, sfx_Jump);
+                if F_Result = Fmod_Ok then
+                    F_Result := Fmod.Create_Sound ("src/audio/movement.wav", Fmod_Default,
+                                                   null, sfx_Movement);
+                end if;
+            end if;
+        end if;
+
+        if F_Result = Fmod_Ok then
+            Put_Line ("Audio_Manager.Load_Audio audio loaded");
         else
             raise Audio_Exception with
               "Audio_Manager.Load_Audio audio loading failed"

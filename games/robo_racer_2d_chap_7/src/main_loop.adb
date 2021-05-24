@@ -683,6 +683,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          when Game_Splash =>
             Load_Splash;
             Audio_Manager.Init_Fmod;
+            Audio_Manager.Load_Audio;
             Splash_Timer := 0.0;
             Set_Game_State (Game_Loading);
 
