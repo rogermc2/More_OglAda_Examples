@@ -17,13 +17,13 @@ package body Fmod is
 
    --  -------------------------------------------------------------------------
 
-   function Create_Sound (name_or_data : String;
-                         mode : Fmod_Mode;
-                         extradriverdata : System.Address) return Fmod_Result is
-      use Interfaces.C;
+   function Create_Sound (name_or_data : String; mode : Fmod_Mode;
+                           exinfo : access Fmod_Create_Sound_Exinfo;
+                           sound : Fmod_Sound) return Fmod_Result is
    begin
       return Fmod.API.Create_Sound
-        (Audio_Handle.all, Interfaces.C.To_C (name_or_data), mode, extradriverdata);
+        (Audio_Handle.all, Interfaces.C.To_C (name_or_data), mode,
+         exinfo, sound);
    end Create_Sound;
 
    --  -------------------------------------------------------------------------

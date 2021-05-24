@@ -8,6 +8,8 @@ with Fmod;
 
 package body Audio_Manager is
 
+    sfx_Oilcan : Fmod_Common.Fmod_Sound;
+
     --  -------------------------------------------------------------------------
 
     procedure Close is
@@ -56,7 +58,8 @@ package body Audio_Manager is
         use Fmod_Common;
         F_Result : Fmod_Result;
     begin
-        F_Result := Fmod.Create_Sound ();
+        F_Result := Fmod.Create_Sound ("src/audio/oil.wav", Fmod_Default,
+                                       null, sfx_Oilcan);
         if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Init audio loaded");
         else
