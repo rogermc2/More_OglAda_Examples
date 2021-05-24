@@ -36,6 +36,29 @@ package body Fmod is
     end Create_System;
 
     --  -------------------------------------------------------------------------
+--  Get_Open_State parameters
+--  openstate: address of a variable that receives the open state of a sound.
+--  Optional. Specify 0 or NULL to ignore.
+--  percentbuffered: address of a variable that receives the percentage of the
+--  file buffer filled progress of a stream.
+--  Optional. Specify 0 or NULL to ignore.
+--  starving: address of a variable that receives the starving state of a sound.
+--  If a stream has decoded more than the stream file buffer has ready for it,
+--  it will return TRUE.
+--  Optional. Specify 0 or NULL to ignore.
+--  diskbusy: address of a variable that receives the disk busy state of a sound.
+--  That is, whether or not the disk is currently being accessed for the sound.
+    function Get_Open_State (sound : in out Fmod_Sound_Ptr;
+                             openstate : in out Fmod_Open_State_Ptr;
+                             percentbuffered : in out UInt_Pointers.Pointer;
+                             starving, diskbusy : in out Fmod_Bool_Ptr)
+                             return Fmod_Result is
+    begin
+        return Fmod.API.Get_Open_State (sound, openstate, percentbuffered,
+                                        starving, diskbusy);
+    end Get_Open_State;
+
+    --  ------------------------------------------------------------------------
 
     function Init_System (maxchannels     : Int; flags : Fmod_Init_Flags;
                           extradriverdata : System.Address) return Fmod_Result is

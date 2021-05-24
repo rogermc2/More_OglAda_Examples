@@ -12,6 +12,11 @@ package Fmod is
                            exinfo : access Fmod_Create_Sound_Exinfo;
                            sound : in out Fmod_Sound_Handle) return Fmod_Result;
     function Create_System return Fmod_Result;
+    function Get_Open_State (sound : in out Fmod_Sound_Ptr;
+                             openstate : in out Fmod_Open_State_Ptr;
+                             percentbuffered : in out UInt_Pointers.Pointer;
+                             starving, diskbusy : in out Fmod_Bool_Ptr)
+                             return Fmod_Result;
     function Init_System (maxchannels : Int; flags : Fmod_Init_Flags;
                           extradriverdata : System.Address) return Fmod_Result;
 
