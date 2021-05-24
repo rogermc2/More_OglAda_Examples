@@ -200,6 +200,8 @@ package Fmod_Common is
 
    subtype Fmod_Timeunit is UInt;  -- fmod_common.h:105
 
+   type Fmod_Channel is null record;
+   type Fmod_Channel_Ptr is access Fmod_Channel;
    type Fmod_Channelgroup is null record;
    type Fmod_Sound is null record;
    type Fmod_Soundgroup is null record;
