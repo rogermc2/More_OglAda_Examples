@@ -9,12 +9,12 @@ with System.Address_Image;
 
 package body Audio_Manager is
 
-   sfx_Jump         : Fmod_Common.Fmod_Sound_Handle;
-   sfx_Movement     : Fmod_Common.Fmod_Sound_Handle;
-   sfx_Oilcan       : Fmod_Common.Fmod_Sound_Handle;
-   sfx_Water        : Fmod_Common.Fmod_Sound_Handle;
-   Channel_Movement : Fmod_Common.Fmod_Channel_Handle;
-   Channel_Group    : Fmod_Common.Fmod_Channelgroup_Ptr;
+   sfx_Jump         : Fmod_Common.Fmod_Sound_Handle := null;
+   sfx_Movement     : Fmod_Common.Fmod_Sound_Handle := null;
+   sfx_Oilcan       : Fmod_Common.Fmod_Sound_Handle := null;
+   sfx_Water        : Fmod_Common.Fmod_Sound_Handle := null;
+   Channel_Movement : Fmod_Common.Fmod_Channel_Handle := null;
+   Channel_Group    : Fmod_Common.Fmod_Channelgroup_Ptr := null;
 
 
    procedure Print_Handle (n : Fmod_Common.Fmod_Sound_Handle);
@@ -90,6 +90,8 @@ package body Audio_Manager is
          --              Fmod.Print_Open_State;
          --  Play_Sound uses the Sound handle returned by Create_Sound
          --  and returns a Channel handle.
+         --  The default behavior is always FMOD_CHANNEL_FREE.
+
          F_Result := Fmod.Play_Sound (sfx_Movement, Channel_Group, False,
                                       Channel_Movement);
          if F_Result = Fmod_Ok then
