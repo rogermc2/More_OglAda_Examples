@@ -18,7 +18,7 @@ int main(void)
   FMOD::Sound *sound = nullptr;
   FMOD::ChannelGroup *channelGroup = nullptr;
   FMOD::Channel *channel = nullptr;
-  string Error_Msg;
+  int In;
 
   // Create the main system object.
   result = FMOD::System_Create(&system);
@@ -45,7 +45,7 @@ int main(void)
     }
 
   // Create the sound.
-  system->createSound("./src/oil.wav", FMOD_DEFAULT, nullptr, &sound);
+  system->createSound("./src/movement.wav", FMOD_DEFAULT, nullptr, &sound);
   if (result != FMOD_OK)
     {
       cout << "FMOD createSound error! " << result << FMOD_ErrorString(result) << endl << endl;
@@ -60,6 +60,9 @@ int main(void)
       cout << "FMOD playSound fopen failed, error " << strerror (errno) << endl;
       exit(-1);
     }
+  cout << "Press return to quit" << endl;
+  // cin >> In;
+  result = system->release ();
   cout << "FMOD tutorial done" << endl << endl;
   return 0;
 }
