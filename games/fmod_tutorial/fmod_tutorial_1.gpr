@@ -10,7 +10,7 @@ project Fmod_Tutorial_1 is
    end Compiler;
 
    package Linker is
-      for Switches ("c++") use ("-L../fmod_api/core/lib", "-lfmodL");
+      for Switches ("c++") use ("-L../fmod_api/core/lib", "-lfmod");
    end Linker;
 
 end Fmod_Tutorial_1;
