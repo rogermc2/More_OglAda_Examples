@@ -5,19 +5,19 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Fmod_Common;
 with Fmod;
-with System.Address_Image;
+--  with System.Address_Image;
 
 package body Audio_Manager is
 
-   sfx_Jump         : Fmod_Common.Fmod_Sound_Handle := null;
-   sfx_Movement     : Fmod_Common.Fmod_Sound_Handle := null;
-   sfx_Oilcan       : Fmod_Common.Fmod_Sound_Handle := null;
-   sfx_Water        : Fmod_Common.Fmod_Sound_Handle := null;
-   Channel_Movement : Fmod_Common.Fmod_Channel_Handle := null;
+   sfx_Jump         : Fmod_Common.Fmod_Sound_Ptr := null;
+   sfx_Movement     : Fmod_Common.Fmod_Sound_Ptr := null;
+   sfx_Oilcan       : Fmod_Common.Fmod_Sound_Ptr := null;
+   sfx_Water        : Fmod_Common.Fmod_Sound_Ptr := null;
+   Channel_Oil      : Fmod_Common.Fmod_Channel_Handle := null;
    Channel_Group    : Fmod_Common.Fmod_Channelgroup_Ptr := null;
 
 
-   procedure Print_Handle (n : Fmod_Common.Fmod_Sound_Handle);
+--     procedure Print_Handle (n : Fmod_Common.Fmod_Sound_Handle);
 
    --  -------------------------------------------------------------------------
 
@@ -45,6 +45,7 @@ package body Audio_Manager is
       F_Result := Fmod.Create_System;
       if F_Result = Fmod_Ok then
          Put_Line ("Audio_Manager.Init audio system created");
+         Fmod.Print_Open_State ("Audio_Manager.Init system created");
          F_Result := Fmod.Init_System (50, Fmod_Init_Normal, System.Null_Address);
          if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Init audio system initialized");
@@ -83,21 +84,22 @@ package body Audio_Manager is
             end if;
          end if;
       end if;
-      Print_Handle (sfx_Oilcan);
+
+      Fmod.Print_Open_State ("Audio_Manager.Load_Audio sound created");
+--        Print_Handle (sfx_Oilcan);
 
       if F_Result = Fmod_Ok then
          Put_Line ("Audio_Manager.Load_Audio audio loaded");
-         --              Fmod.Print_Open_State;
+         Fmod.Print_Open_State ("Audio_Manager.Load_Audio audio loaded");
          --  Play_Sound uses the Sound handle returned by Create_Sound
          --  and returns a Channel handle.
          --  The default behavior is always FMOD_CHANNEL_FREE.
 
-         F_Result := Fmod.Play_Sound (sfx_Movement, Channel_Group, False,
-                                      Channel_Movement);
+         F_Result := Fmod.Play_Sound (sfx_Oilcan, Channel_Group, False,
+                                      Channel_Oil);
          if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Load_Audio sound played");
          else
-         Fmod.Debug_Initialize (FMOD_DEBUG_LEVEL_WARNIN, FMOD_DEBUG_TYPE_TRACE, FMOD_DEBUG_MODE_CALLBACK, FMODLogCallback);
             Put_Line ("Audio_Manager.Load_Audio play sound failed " &
                         "with error: " & Fmod_Result'Image (F_Result));
             end if;
@@ -111,10 +113,10 @@ package body Audio_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Print_Handle (n : Fmod_Common.Fmod_Sound_Handle) is
-begin
-   Put_Line ("sfx_Oilcan at address " & System.Address_Image (n.all'address)); --'
-end Print_Handle;
+--     procedure Print_Handle (n : Fmod_Common.Fmod_Sound_Handle) is
+--  begin
+--     Put_Line ("sfx_Oilcan at address " & System.Address_Image (n.all'address)); --'
+--  end Print_Handle;
 
    --  ------------------------------------------------------------------------
 

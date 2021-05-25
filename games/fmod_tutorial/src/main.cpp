@@ -12,13 +12,12 @@ using namespace std;
 
 int main(void)
 {
-  char debugText [256];
   FMOD_RESULT result;
   FMOD::System *system = NULL;
   FMOD::Sound *sound = nullptr;
   FMOD::ChannelGroup *channelGroup = nullptr;
   FMOD::Channel *channel = nullptr;
-  int In;
+  string In;
 
   // Create the main system object.
   result = FMOD::System_Create(&system);
@@ -36,22 +35,14 @@ int main(void)
       exit(-1);
     }
 
-  // Create the channel group.
-  result = system->createChannelGroup("inGameSoundEffects", &channelGroup);
-  if (result != FMOD_OK)
-    {
-      cout << "FMOD createChannelGroup error! " << result << FMOD_ErrorString(result) << endl << endl;
-      exit(-1);
-    }
-
   // Create the sound.
-  system->createSound("./src/movement.wav", FMOD_DEFAULT, nullptr, &sound);
+  system->createSound("./src/oil.wav", FMOD_DEFAULT, nullptr, &sound);
   if (result != FMOD_OK)
     {
       cout << "FMOD createSound error! " << result << FMOD_ErrorString(result) << endl << endl;
       exit(-1);
     }
-  channel->setVolume(1.0);
+
   // Play the sound.
   result = system->playSound(sound, nullptr, false, &channel);
   if (result != FMOD_OK)
@@ -61,7 +52,7 @@ int main(void)
       exit(-1);
     }
   cout << "Press return to quit" << endl;
-  // cin >> In;
+  getline (cin, In);
   result = system->release ();
   cout << "FMOD tutorial done" << endl << endl;
   return 0;
