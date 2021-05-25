@@ -1,6 +1,8 @@
 
 with Interfaces.C;
 
+with System.Address_Image;
+
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Fmod.API;
@@ -9,6 +11,8 @@ package body Fmod is
 
     Audio_Handle : Fmod_Common.GLvoid_Handle := null;
     pragma Convention (C, Audio_Handle);
+
+    procedure Print_Handle (Msg : String; n : Fmod_Common.GLvoid_Handle);
 
     --  -------------------------------------------------------------------------
 
@@ -23,6 +27,7 @@ package body Fmod is
                            exinfo       : access Fmod_Create_Sound_Exinfo;
                            sound        : in out Fmod_Sound_Ptr) return Fmod_Result is
     begin
+        Print_Handle ("Fmod.Create_Sound", Audio_Handle);
         return Fmod.API.Create_Sound
           (Audio_Handle.all, Interfaces.C.To_C (name_or_data), mode,
            exinfo, sound);
@@ -31,8 +36,10 @@ package body Fmod is
     --  -------------------------------------------------------------------------
 
     function Create_System return Fmod_Result is
+        Result : constant Fmod_Result := Fmod.API.System_Create (Audio_Handle);
     begin
-        return Fmod.API.System_Create (Audio_Handle);
+        Print_Handle ("Fmod.Create_System", Audio_Handle);
+        return Result;
     end Create_System;
 
     --  -------------------------------------------------------------------------
@@ -95,6 +102,7 @@ package body Fmod is
     function Init_System (maxchannels     : Int; flags : Fmod_Init_Flags;
                           extradriverdata : System.Address) return Fmod_Result is
     begin
+        Print_Handle ("Fmod.Init_System", Audio_Handle);
         return Fmod.API.System_Init (Audio_Handle.all, maxchannels, flags,
                                      extradriverdata);
     end Init_System;
@@ -110,10 +118,17 @@ package body Fmod is
         if paused then
             Pause := 1;
         end if;
-        --          Put_Line ("Fmod.Play_Sound");
+        Print_Handle ("Fmod.Play_Sound", Audio_Handle);
         return Fmod.API.Play_Sound (Audio_Handle.all, sound,
                                     channelgroup, Pause, channel);
     end Play_Sound;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Print_Handle (Msg : String; n : Fmod_Common.GLvoid_Handle) is
+    begin
+        Put_Line (Msg & " handle at address " & System.Address_Image (n.all'address)); --'
+    end Print_Handle;
 
     --  -------------------------------------------------------------------------
 
