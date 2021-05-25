@@ -203,11 +203,11 @@ package Fmod_Common is
     subtype Fmod_Bool is Int;
     type Fmod_Bool_Ptr is access Fmod_Bool;
 
-    type GLvoid is null record;
-    pragma Convention (C_Pass_By_Copy, GLvoid);
-
-    type GLvoid_Ptr is access GLvoid;
-    pragma Convention (C, GLvoid_Ptr);
+--      type GLvoid is null record;
+--      pragma Convention (C_Pass_By_Copy, GLvoid);
+--
+--      type GLvoid_Ptr is access GLvoid;
+--      pragma Convention (C, GLvoid_Ptr);
 
 --      type GLvoid_Handle is access GLvoid_Ptr;
 --      pragma Convention (C, GLvoid_Handle);
@@ -340,7 +340,7 @@ package Fmod_Common is
         Dlsname             : chars_ptr;
         Encryptionkey       : chars_ptr;
         Maxpolyphony        : Int;
-        Userdata            : GLvoid_Ptr;
+        Userdata            : System.Address;
         Suggestedsoundtype  : Fmod_Sound_Type;
         Fileuseropen        : Fmod_File_Open_Callback;
         Fileuserclose       : Fmod_File_Close_Callback;
@@ -348,7 +348,7 @@ package Fmod_Common is
         Fileuserseek        : Fmod_File_Seek_Callback;
         Fileuserasyncread   : Fmod_File_Asyncread_Callback;
         Fileuserasynccancel : Fmod_File_Asynccancel_Callback;
-        Fileuserdata        : GLvoid_Ptr;
+        Fileuserdata        : System.Address;
         Filebuffersize      : Int;
         Channelorder        : Fmod_ChannelOrder;
         Initialsoundgroup   : access Fmod_Soundgroup;
