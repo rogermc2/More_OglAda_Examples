@@ -14,7 +14,7 @@ project Robo_Racer_2D7 is
    package Compiler renames Common.Compiler;
 
    package Linker is
-      for Switches ("ada") use ("-L../fmod_api/core/lib", "-lfmod", "-g");
+      for Switches ("ada") use ("-L../fmod_api/core/lib", "-lfmodL", "-g");
    end Linker;
 
    package Naming is

@@ -97,6 +97,7 @@ package body Audio_Manager is
          if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Load_Audio sound played");
          else
+         Fmod.Debug_Initialize (FMOD_DEBUG_LEVEL_WARNIN, FMOD_DEBUG_TYPE_TRACE, FMOD_DEBUG_MODE_CALLBACK, FMODLogCallback);
             Put_Line ("Audio_Manager.Load_Audio play sound failed " &
                         "with error: " & Fmod_Result'Image (F_Result));
             end if;
