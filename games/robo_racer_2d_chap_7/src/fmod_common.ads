@@ -209,23 +209,39 @@ package Fmod_Common is
     type GLvoid_Ptr is access GLvoid;
     pragma Convention (C, GLvoid_Ptr);
 
-    type GLvoid_Handle is access GLvoid_Ptr;
-    pragma Convention (C, GLvoid_Handle);
+--      type GLvoid_Handle is access GLvoid_Ptr;
+--      pragma Convention (C, GLvoid_Handle);
 
     subtype Fmod_Timeunit is UInt;  -- fmod_common.h:105
 
+    type Fmod_System is null record;
+    pragma Convention (C_Pass_By_Copy, Fmod_System);
+    type Fmod_System_Ptr is access Fmod_System;
+    pragma Convention (C, Fmod_System_Ptr);
+    type Fmod_System_Handle is access Fmod_System_Ptr;
+    pragma Convention (C, Fmod_System_Handle);
+
     type Fmod_Channel is null record;
+    pragma Convention (C_Pass_By_Copy, Fmod_Channel);
     type Fmod_Channel_Ptr is access Fmod_Channel;
+    pragma Convention (C, Fmod_Channel_Ptr);
     type Fmod_Channel_Handle is access Fmod_Channel_Ptr;
+    pragma Convention (C, Fmod_Channel_Handle);
 
     type Fmod_Channelgroup is null record;
+    pragma Convention (C_Pass_By_Copy, Fmod_Channelgroup);
     type Fmod_Channelgroup_Ptr is access Fmod_Channelgroup;
+    pragma Convention (C, Fmod_Channelgroup_Ptr);
 
     type Fmod_Sound is null record;
+    pragma Convention (C_Pass_By_Copy, Fmod_Sound);
     type Fmod_Sound_Ptr is access Fmod_Sound;
+    pragma Convention (C, Fmod_Sound_Ptr);
     type Fmod_Sound_Handle is access Fmod_Sound_Ptr;
+    pragma Convention (C, Fmod_Sound_Handle);
 
     type Fmod_Soundgroup is null record;
+    pragma Convention (C_Pass_By_Copy, Fmod_Soundgroup);
 
     type Fmod_Asyncreadinfo;
     type Fmod_File_Asyncdone_Func is access

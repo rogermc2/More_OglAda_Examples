@@ -9,10 +9,10 @@ with Fmod.API;
 
 package body Fmod is
 
-    Audio_Handle : Fmod_Common.GLvoid_Handle := null;
+    Audio_Handle : Fmod_Common.Fmod_System_Handle := null;
     pragma Convention (C, Audio_Handle);
 
-    procedure Print_Handle (Msg : String; n : Fmod_Common.GLvoid_Handle);
+    procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle);
 
     --  -------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ package body Fmod is
 
     --  -------------------------------------------------------------------------
 
-    procedure Print_Handle (Msg : String; n : Fmod_Common.GLvoid_Handle) is
+    procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle) is
     begin
         Put_Line (Msg & " handle at address " & System.Address_Image (n.all'address)); --'
     end Print_Handle;
