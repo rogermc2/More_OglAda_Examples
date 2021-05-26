@@ -55,25 +55,20 @@ package body Fmod is
     --  Optional. Specify 0 or NULL to ignore.
     --  diskbusy: address of a variable that receives the disk busy state of a sound.
     --  That is, whether or not the disk is currently being accessed for the sound.
-    function Get_Open_State (sound              : out Fmod_Sound;
+    function Get_Open_State (sound              : Fmod_Sound_Ptr;
                              openstate          : out Fmod_Open_State;
                              percentbuffered    : out UInt;
                              starving, diskbusy : out Boolean)
                             return Fmod_Result is
-        Sound_Ptr     : Fmod_Sound_Ptr;
         Openstate_Ptr : Fmod_Open_State_Ptr;
         PB_Ptr        : UInt_Pointers.Pointer;
         Starving_Ptr  : Fmod_Bool_Ptr;
         Disk_Busy_Ptr : Fmod_Bool_Ptr;
         Result        : constant Fmod_Result
-          := Fmod.API.Get_Open_State (Sound_Ptr, Openstate_Ptr, PB_Ptr,
+          := Fmod.API.Get_Open_State (sound, Openstate_Ptr, PB_Ptr,
                                       Starving_Ptr, Disk_Busy_Ptr);
     begin
-        if Sound_Ptr /= null then
-            sound := Sound_Ptr.all;
-            --        else
-            --           Put_Line ("   Fmod.Get_Open_State Sound_Ptr is null.");
-        end if;
+        if sound /= null then
         if Openstate_Ptr /= null then
             openstate := Openstate_Ptr.all;
             --        else
@@ -93,6 +88,9 @@ package body Fmod is
             --        else
             --           Put_Line ("   Fmod.Get_Open_State Disk_Busy_Ptr is null.");
         end if;
+            --        else
+            --           Put_Line ("   Fmod.Get_Open_State Sound_Ptr is null.");
+        end if;
 
         return Result;
     end Get_Open_State;
@@ -109,7 +107,7 @@ package body Fmod is
 
     --  -------------------------------------------------------------------------
 
-    function Play_Sound (sound        : in out Fmod_Sound_Ptr;
+    function Play_Sound (sound        : Fmod_Sound_Ptr;
                          channelgroup : in out Fmod_Channelgroup_Ptr;
                          paused       : Boolean; channel : in out Fmod_Channel_Handle)
                         return Fmod_Result is
@@ -132,8 +130,8 @@ package body Fmod is
 
     --  -------------------------------------------------------------------------
 
-    procedure Print_Open_State (Message : String) is
-        Sound            : Fmod_Sound;
+    procedure Print_Open_State (Message : String;
+                                Sound : Fmod_Common.Fmod_Sound_Ptr) is
         Open_State       : Fmod_Open_State;
         Percent_Buffered : UInt;
         Starving         : Boolean;
