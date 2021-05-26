@@ -21,9 +21,9 @@ package Fmod is
                          extradriverdata : System.Address) return Fmod_Result;
 
    function Play_Sound (sound        : Fmod_Sound_Ptr;
-                        channelgroup : in out Fmod_Channelgroup_Ptr;
+                        channelgroup : Fmod_Channelgroup_Ptr;
                         paused       : Boolean;
-                        channel      : in out Fmod_Channel_Handle)
+                        channel      : out Fmod_Channel_Handle)
                          return Fmod_Result;
    procedure Print_Open_State (Message : String;
                                Sound : Fmod_Common.Fmod_Sound_Ptr);

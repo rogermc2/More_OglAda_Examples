@@ -14,7 +14,7 @@ package body Audio_Manager is
    sfx_Oilcan       : Fmod_Common.Fmod_Sound_Ptr := null;
    sfx_Water        : Fmod_Common.Fmod_Sound_Ptr := null;
    Channel_Oil      : Fmod_Common.Fmod_Channel_Handle := null;
-   Channel_Group    : Fmod_Common.Fmod_Channelgroup_Ptr := null;
+   Channel_Group    : constant Fmod_Common.Fmod_Channelgroup_Ptr := null;
 
 
 --     procedure Print_Handle (n : Fmod_Common.Fmod_Sound_Handle);

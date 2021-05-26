@@ -11,31 +11,31 @@ package Fmod.API is
                            mode : Fmod_Mode;
                            exinfo : access Fmod_Create_Sound_Exinfo;
                            sound : out Fmod_Sound_Ptr) return Fmod_Result;
-    pragma Import (StdCall, Create_Sound, "FMOD_System_CreateSound");
+    pragma Import (C, Create_Sound, "FMOD_System_CreateSound");
 
     function Get_Open_State (sound : Fmod_Sound_Ptr;
                              openstate : out Fmod_Open_State_Ptr;
                              percentbuffered : out UInt_Pointers.Pointer;
                              starving, diskbusy : out Fmod_Bool_Ptr)
                              return Fmod_Result;
-    pragma Import (StdCall, Get_Open_State, "FMOD_Sound_GetOpenState");
+    pragma Import (C, Get_Open_State, "FMOD_Sound_GetOpenState");
 
-    function Play_Sound (aSystem : Fmod_System_Ptr;
-                         sound : Fmod_Sound_Ptr;
-                         channelgroup : in out Fmod_Channelgroup_Ptr;
+    function Play_Sound (aSystem : access Fmod_System;
+                         sound : access Fmod_Sound;
+                         channelgroup : access Fmod_Channelgroup;
                          paused : Fmod_Bool;
-                         channel : in out Fmod_Channel_Handle) return Fmod_Result;
-    pragma Import (StdCall, Play_Sound, "FMOD_System_PlaySound");
+                         channel : out Fmod_Channel_Handle) return Fmod_Result;
+    pragma Import (C, Play_Sound, "FMOD_System_PlaySound");
 
     function System_Close (aSystem : in out Fmod_System_Ptr) return Fmod_Result;
-    pragma Import (StdCall, System_Close, "FMOD_System_Close");
+    pragma Import (C, System_Close, "FMOD_System_Close");
 
     function System_Create (aSystem : in out Fmod_System_Handle) return Fmod_Result;
-    pragma Import (StdCall, System_Create, "FMOD_System_Create");
+    pragma Import (C, System_Create, "FMOD_System_Create");
 
     function System_Init (aSystem         : in out Fmod_System_Ptr;
                           maxchannels     : Int; flags : Fmod_Init_Flags;
                           extradriverdata : System.Address) return Fmod_Result;
-    pragma Import (StdCall, System_Init, "FMOD_System_Init");
+    pragma Import (C, System_Init, "FMOD_System_Init");
 
 end Fmod.API;
