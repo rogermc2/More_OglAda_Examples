@@ -10,13 +10,13 @@ package Fmod.API is
                            name_or_data : Interfaces.C.char_array;
                            mode : Fmod_Mode;
                            exinfo : access Fmod_Create_Sound_Exinfo;
-                           sound : in out Fmod_Sound_Ptr) return Fmod_Result;
+                           sound : out Fmod_Sound_Ptr) return Fmod_Result;
     pragma Import (StdCall, Create_Sound, "FMOD_System_CreateSound");
 
     function Get_Open_State (sound : Fmod_Sound_Ptr;
-                             openstate : in out Fmod_Open_State_Ptr;
-                             percentbuffered : in out UInt_Pointers.Pointer;
-                             starving, diskbusy : in out Fmod_Bool_Ptr)
+                             openstate : out Fmod_Open_State_Ptr;
+                             percentbuffered : out UInt_Pointers.Pointer;
+                             starving, diskbusy : out Fmod_Bool_Ptr)
                              return Fmod_Result;
     pragma Import (StdCall, Get_Open_State, "FMOD_Sound_GetOpenState");
 

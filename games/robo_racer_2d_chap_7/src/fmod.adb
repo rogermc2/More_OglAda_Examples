@@ -59,7 +59,7 @@ package body Fmod is
                              openstate          : out Fmod_Open_State;
                              percentbuffered    : out UInt;
                              starving, diskbusy : out Boolean)
-                            return Fmod_Result is
+                             return Fmod_Result is
         Openstate_Ptr : Fmod_Open_State_Ptr;
         PB_Ptr        : UInt_Pointers.Pointer;
         Starving_Ptr  : Fmod_Bool_Ptr;
@@ -69,27 +69,28 @@ package body Fmod is
                                       Starving_Ptr, Disk_Busy_Ptr);
     begin
         if sound /= null then
-        if Openstate_Ptr /= null then
-            openstate := Openstate_Ptr.all;
-            --        else
-            --           Put_Line ("   Fmod.Get_Open_State Openstate_Ptr is null.");
-        end if;
-        --        percentbuffered := PB_Ptr.all;
-        percentbuffered := 0;
+            if Openstate_Ptr /= null then
+                openstate := Openstate_Ptr.all;
+            else
+                openstate := Fmod_Openstate_Null;
+                Put_Line ("   Fmod.Get_Open_State Openstate_Ptr is null.");
+            end if;
+            --        percentbuffered := PB_Ptr.all;
+            percentbuffered := 0;
 
-        if Starving_Ptr /= null then
-            starving := Starving_Ptr.all /= 0;
-            --        else
-            --           Put_Line ("   Fmod.Get_Open_State Starving_Ptr is null.");
-        end if;
+            if Starving_Ptr /= null then
+                starving := Starving_Ptr.all /= 0;
+            else
+                Put_Line ("   Fmod.Get_Open_State Starving_Ptr is null.");
+            end if;
 
-        if Disk_Busy_Ptr /= null then
-            diskbusy := Disk_Busy_Ptr.all /= 0;
-            --        else
-            --           Put_Line ("   Fmod.Get_Open_State Disk_Busy_Ptr is null.");
-        end if;
-            --        else
-            --           Put_Line ("   Fmod.Get_Open_State Sound_Ptr is null.");
+            if Disk_Busy_Ptr /= null then
+                diskbusy := Disk_Busy_Ptr.all /= 0;
+            else
+                Put_Line ("   Fmod.Get_Open_State Disk_Busy_Ptr is null.");
+            end if;
+        else
+            Put_Line ("   Fmod.Get_Open_State Sound_Ptr is null.");
         end if;
 
         return Result;
@@ -110,13 +111,13 @@ package body Fmod is
     function Play_Sound (sound        : Fmod_Sound_Ptr;
                          channelgroup : in out Fmod_Channelgroup_Ptr;
                          paused       : Boolean; channel : in out Fmod_Channel_Handle)
-                        return Fmod_Result is
+                         return Fmod_Result is
         Pause  : Fmod_Bool := 0;
     begin
         if paused then
             Pause := 1;
         end if;
-        Print_Handle ("Fmod.Play_Sound", Audio_Handle);
+--          Print_Handle ("Fmod.Play_Sound", Audio_Handle);
         return Fmod.API.Play_Sound (Audio_Handle.all, sound,
                                     channelgroup, Pause, channel);
     end Play_Sound;

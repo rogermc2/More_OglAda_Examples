@@ -71,6 +71,7 @@ package Fmod_Common is
                              Fmod_Openstate_Playing,
                              Fmod_Openstate_Setposition,
                              Fmod_Openstate_Max,
+                             Fmod_Openstate_Null,
                              Fmod_Openstate_Forceint);
     pragma Convention (C, Fmod_Open_State);
     type Fmod_Open_State_Ptr is access Fmod_Open_State;
@@ -424,6 +425,7 @@ private
                              Fmod_Openstate_Playing     => 6,
                              Fmod_Openstate_Setposition => 7,
                              Fmod_Openstate_Max         => 8,
+                             Fmod_Openstate_Null        => 15,
                              Fmod_Openstate_Forceint    => 16#065536#);
 
     for Fmod_Sound_Format use (Fmod_Sound_Format_None       => 0,
