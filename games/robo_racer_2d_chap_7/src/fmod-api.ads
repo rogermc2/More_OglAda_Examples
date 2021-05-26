@@ -10,7 +10,7 @@ package Fmod.API is
                            name_or_data : Interfaces.C.char_array;
                            mode : Fmod_Mode;
                            exinfo : access Fmod_Create_Sound_Exinfo;
-                           sound : out Fmod_Sound_Ptr) return Fmod_Result;
+                           sound : in out Fmod_Sound_Handle) return Fmod_Result;
     pragma Import (C, Create_Sound, "FMOD_System_CreateSound");
 
     function Get_Open_State (sound : Fmod_Sound_Ptr;

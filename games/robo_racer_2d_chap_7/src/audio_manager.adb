@@ -9,10 +9,10 @@ with Fmod;
 
 package body Audio_Manager is
 
-   sfx_Jump         : Fmod_Common.Fmod_Sound_Ptr := null;
-   sfx_Movement     : Fmod_Common.Fmod_Sound_Ptr := null;
-   sfx_Oilcan       : Fmod_Common.Fmod_Sound_Ptr := null;
-   sfx_Water        : Fmod_Common.Fmod_Sound_Ptr := null;
+   sfx_Jump         : Fmod_Common.Fmod_Sound_Handle := null;
+   sfx_Movement     : Fmod_Common.Fmod_Sound_Handle := null;
+   sfx_Oilcan       : Fmod_Common.Fmod_Sound_Handle := null;
+   sfx_Water        : Fmod_Common.Fmod_Sound_Handle := null;
    Channel_Oil      : Fmod_Common.Fmod_Channel_Handle := null;
    Channel_Group    : constant Fmod_Common.Fmod_Channelgroup_Ptr := null;
 
@@ -88,17 +88,17 @@ package body Audio_Manager is
          Put_Line ("Audio_Manager.Load_Audio audio loaded");
 
          Fmod.Print_Open_State ("Audio_Manager.Load_Audio audio loaded",
-                                sfx_Oilcan);
+                                sfx_Oilcan.all);
          --  Play_Sound uses the Sound handle returned by Create_Sound
          --  and returns a Channel handle.
          --  The default behavior is always FMOD_CHANNEL_FREE.
 
-         F_Result := Fmod.Play_Sound (sfx_Oilcan, Channel_Group, False,
+         F_Result := Fmod.Play_Sound (sfx_Oilcan.all, Channel_Group, False,
                                       Channel_Oil);
          if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Load_Audio sound played");
             Fmod.Print_Open_State ("Audio_Manager.Load_Audio audio played",
-                                   sfx_Oilcan);
+                                   sfx_Oilcan.all);
          else
             Put_Line ("Audio_Manager.Load_Audio play sound failed " &
                         "with error: " & Fmod_Result'Image (F_Result));
