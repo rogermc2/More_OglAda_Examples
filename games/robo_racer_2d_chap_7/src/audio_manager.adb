@@ -84,9 +84,6 @@ package body Audio_Manager is
          end if;
       end if;
 
-      Fmod.Print_Open_State ("Audio_Manager.Load_Audio sound created", sfx_Oilcan);
---        Print_Handle (sfx_Oilcan);
-
       if F_Result = Fmod_Ok then
          Put_Line ("Audio_Manager.Load_Audio audio loaded");
          Fmod.Print_Open_State ("Audio_Manager.Load_Audio audio loaded", sfx_Oilcan);
