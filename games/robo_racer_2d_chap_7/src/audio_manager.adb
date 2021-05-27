@@ -14,7 +14,7 @@ package body Audio_Manager is
    sfx_Oilcan       : Fmod_Common.Fmod_Sound_Handle := null;
    sfx_Water        : Fmod_Common.Fmod_Sound_Handle := null;
    Channel_Oil      : Fmod_Common.Fmod_Channel_Handle := null;
-   Channel_Group    : constant Fmod_Common.Fmod_Channelgroup_Ptr := null;
+--     Channel_Group    : constant Fmod_Common.Fmod_Channelgroup_Ptr := null;
 
 
 --     procedure Print_Handle (n : Fmod_Common.Fmod_Sound_Handle);
@@ -93,7 +93,7 @@ package body Audio_Manager is
          --  and returns a Channel handle.
          --  The default behavior is always FMOD_CHANNEL_FREE.
 
-         F_Result := Fmod.Play_Sound (sfx_Oilcan, Channel_Group, False,
+         F_Result := Fmod.Play_Sound (sfx_Oilcan, null, False,
                                       Channel_Oil);
          if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Load_Audio sound played");

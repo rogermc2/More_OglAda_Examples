@@ -22,7 +22,7 @@ package Fmod.API is
 
     function Play_Sound (aSystem : Fmod_System_Handle;
                          sound : Fmod_Sound_Ptr;
-                         channelgroup : access Fmod_Channelgroup;
+                         channelgroup : Fmod_Channelgroup_Ptr;
                          paused : Fmod_Bool;
                          channel : out Fmod_Channel_Handle) return Fmod_Result;
     pragma Import (C, Play_Sound, "FMOD_System_PlaySound");
