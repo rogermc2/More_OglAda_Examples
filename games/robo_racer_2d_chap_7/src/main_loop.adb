@@ -404,6 +404,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                Set_Visible (Robot_Left, True);
                Set_Velocity (Robot_Left, -Velocity);
                Set_Velocity (Background, Velocity);
+               Audio_Manager.Pause_Movement_Channel (False);
 
             when Command_Right =>
                if Player = Robot_Left then
@@ -417,6 +418,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                Set_Visible (Robot_Right, True);
                Set_Velocity (Robot_Right, Velocity);
                Set_Velocity (Background, -Velocity);
+               Audio_Manager.Pause_Movement_Channel (False);
 
             when Command_Stop =>
                Set_Velocity (Background, 0.0);
