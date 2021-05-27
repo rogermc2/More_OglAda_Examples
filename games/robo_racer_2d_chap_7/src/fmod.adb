@@ -1,7 +1,7 @@
 
 with Interfaces.C;
 
-with System.Address_Image;
+--  with System.Address_Image;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -12,9 +12,9 @@ package body Fmod is
    Audio_Handle : Fmod_Common.Fmod_System_Handle := null;
    pragma Convention (C, Audio_Handle);
 
-   procedure Print_Channel_Handle (Msg : String; n : Fmod_Common.Fmod_Channel_Handle);
-   procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle);
-   procedure Print_Sound_Handle (Msg : String; n : Fmod_Common.Fmod_Sound_Handle);
+--     procedure Print_Channel_Handle (Msg : String; n : Fmod_Common.Fmod_Channel_Handle);
+--     procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle);
+--     procedure Print_Sound_Handle (Msg : String; n : Fmod_Common.Fmod_Sound_Handle);
 
    --  -------------------------------------------------------------------------
 
@@ -118,38 +118,34 @@ package body Fmod is
       if paused then
          Pause := 1;
       end if;
-      Print_Handle ("Fmod.Play_Sound Audio_Handle", Audio_Handle);
-      Print_Sound_Handle ("Fmod.Play_Sound sound", sound);
-      Result := Fmod.API.Play_Sound (Audio_Handle, sound.all,
+      Result := Fmod.API.Play_Sound (Audio_Handle, sound,
                                      channelgroup, Pause, channel);
-      Print_Channel_Handle ("Fmod.Play_Sound channel", channel);
       return Result;
    end Play_Sound;
 
    --  -------------------------------------------------------------------------
 
-   procedure Print_Channel_Handle (Msg : String; n : Fmod_Common.Fmod_Channel_Handle) is
-      --        n_ptr : constant Fmod_Common.Fmod_Channel_Ptr := n.all;
-   begin
-
-      if n /= null then
-         Put_Line (Msg & " Channel handle at address " & System.Address_Image (n.all'address));
-         --        Put_Line (Msg & " Channel pointer at address " & System.Address_Image (n_ptr.all'address));
-      else
-         Put_Line (Msg & " channel handle is null");
-      end if;
-         New_Line;
-      end Print_Channel_Handle;
+--     procedure Print_Channel_Handle (Msg : String; n : Fmod_Common.Fmod_Channel_Handle) is
+--     begin
+--
+--        if n /= null then
+--           Put_Line (Msg & " Channel handle at address " & System.Address_Image (n.all'address));
+--           --        Put_Line (Msg & " Channel pointer at address " & System.Address_Image (n_ptr.all'address));
+--        else
+--           Put_Line (Msg & " channel handle is null");
+--        end if;
+--           New_Line;
+--        end Print_Channel_Handle;
 
       --  -------------------------------------------------------------------------
 
-      procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle) is
-         n_ptr : constant Fmod_Common.Fmod_System_Ptr := n.all;
-      begin
-         Put_Line (Msg & " System handle at address " & System.Address_Image (n.all'address));
-         Put_Line (Msg & " System pointer at address " & System.Address_Image (n_ptr.all'address));
-         New_Line;
-      end Print_Handle;
+--        procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle) is
+--           n_ptr : constant Fmod_Common.Fmod_System_Ptr := n.all;
+--        begin
+--           Put_Line (Msg & " System handle at address " & System.Address_Image (n.all'address));
+--           Put_Line (Msg & " System pointer at address " & System.Address_Image (n_ptr.all'address));
+--           New_Line;
+--        end Print_Handle;
 
       --  -------------------------------------------------------------------------
 
@@ -180,13 +176,13 @@ package body Fmod is
 
       --  -------------------------------------------------------------------------
 
-      procedure Print_Sound_Handle (Msg : String; n : Fmod_Common.Fmod_Sound_Handle) is
-         n_ptr : constant Fmod_Common.Fmod_Sound_Ptr := n.all;
-      begin
-         Put_Line (Msg & " Sound handle at address " & System.Address_Image (n.all'address));
-         Put_Line (Msg & " Sound pointer at address " & System.Address_Image (n_ptr.all'address));
-         New_Line;
-      end Print_Sound_Handle;
+--        procedure Print_Sound_Handle (Msg : String; n : Fmod_Common.Fmod_Sound_Handle) is
+--           n_ptr : constant Fmod_Common.Fmod_Sound_Ptr := n.all;
+--        begin
+--           Put_Line (Msg & " Sound handle at address " & System.Address_Image (n.all'address));
+--           Put_Line (Msg & " Sound pointer at address " & System.Address_Image (n_ptr.all'address));
+--           New_Line;
+--        end Print_Sound_Handle;
 
       --  -------------------------------------------------------------------------
 

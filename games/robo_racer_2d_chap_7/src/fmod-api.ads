@@ -21,7 +21,7 @@ package Fmod.API is
     pragma Import (C, Get_Open_State, "FMOD_Sound_GetOpenState");
 
     function Play_Sound (aSystem : Fmod_System_Handle;
-                         sound : Fmod_Sound_Ptr;
+                         sound : Fmod_Sound_Handle;
                          channelgroup : Fmod_Channelgroup_Ptr;
                          paused : Fmod_Bool;
                          channel : out Fmod_Channel_Handle) return Fmod_Result;
