@@ -12,7 +12,7 @@ package body Audio_Manager is
    sfx_Movement     : Fmod_Common.Fmod_Sound_Handle := null;
    sfx_Oilcan       : Fmod_Common.Fmod_Sound_Handle := null;
    sfx_Water        : Fmod_Common.Fmod_Sound_Handle := null;
-   Channel_Oil      : Fmod_Common.Fmod_Channel_Handle := null;
+   Movement_Channel : Fmod_Common.Fmod_Channel_Handle := null;
 
    --  -------------------------------------------------------------------------
 
@@ -64,21 +64,20 @@ package body Audio_Manager is
             F_Result := Fmod.Create_Sound ("src/audio/jump.wav", Fmod_Default,
                                            null, sfx_Jump);
             if F_Result = Fmod_Ok then
-               F_Result := Fmod.Create_Sound ("src/audio/movement.wav", Fmod_Default,
+               F_Result := Fmod.Create_Sound
+                 ("src/audio/movement.wav", Fmod_Loop_Normal,
                                               null, sfx_Movement);
             end if;
          end if;
       end if;
 
       if F_Result = Fmod_Ok then
---           Fmod.Print_Open_State ("Audio_Manager.Load_Audio audio loaded",
---                                  sfx_Oilcan);
          --  Play_Sound uses the Sound handle returned by Create_Sound
          --  and returns a Channel handle.
          --  The default behavior is always FMOD_CHANNEL_FREE.
 
          F_Result := Fmod.Play_Sound (sfx_Oilcan, null, False,
-                                      Channel_Oil);
+                                      Movement_Channel);
          if F_Result /= Fmod_Ok then
             Put_Line ("Audio_Manager.Load_Audio play sound failed " &
                         "with error:" &
@@ -94,6 +93,13 @@ package body Audio_Manager is
       end if;
 
    end Load_Audio;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Pause_Movement_Channel (Pause : Boolean) is
+   begin
+      Fmod.Pause_Channel (Movement_Channel, Pause);
+   end Pause_Movement_Channel;
 
    --  -------------------------------------------------------------------------
 

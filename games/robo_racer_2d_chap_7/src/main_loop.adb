@@ -332,7 +332,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          if UI_Timer > UI_Threshold then
             UI_Timer := 0.0;
          end if;
-
          case aCommand is
             when Command_UI =>
                if Is_Clicked (Pause_Button) then
@@ -422,6 +421,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             when Command_Stop =>
                Set_Velocity (Background, 0.0);
                Set_Velocity (Player, 0.0);
+               Audio_Manager.Pause_Movement_Channel (True);
 
             when Command_Up => Jump (Player, Sprite_Up);
             when Command_Down => Jump (Player, Sprite_Down);
@@ -694,6 +694,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Splash_Timer := Splash_Timer + Delta_Time;
             if Splash_Timer > Splash_Threshold then
                Set_Game_State (Game_Menu);
+               Audio_Manager.Pause_Movement_Channel (True);
             end if;
 
          when Game_Menu =>

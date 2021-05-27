@@ -12,9 +12,9 @@ package body Fmod is
    Audio_Handle : Fmod_Common.Fmod_System_Handle := null;
    pragma Convention (C, Audio_Handle);
 
---     procedure Print_Channel_Handle (Msg : String; n : Fmod_Common.Fmod_Channel_Handle);
---     procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle);
---     procedure Print_Sound_Handle (Msg : String; n : Fmod_Common.Fmod_Sound_Handle);
+   --     procedure Print_Channel_Handle (Msg : String; n : Fmod_Common.Fmod_Channel_Handle);
+   --     procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle);
+   --     procedure Print_Sound_Handle (Msg : String; n : Fmod_Common.Fmod_Sound_Handle);
 
    --  -------------------------------------------------------------------------
 
@@ -127,6 +127,23 @@ package body Fmod is
 
    --  -------------------------------------------------------------------------
 
+   procedure Pause_Channel (Channel : Fmod_Channel_Handle; Pause : Boolean) is
+      F_Pause  : Fmod_Bool := 0;
+      Result   : Fmod_Result;
+   begin
+      if Pause then
+         F_Pause := 1;
+      end if;
+      Result := Fmod.API.Set_Paused (Channel, F_Pause);
+      if Result /= Fmod_Ok then
+         raise Fmod_Exception with
+           "Fmod.Pause_Channel failed with failure code " &
+           Fmod_Result'Image (Result);
+      end if;
+   end Pause_Channel;
+
+   --  -------------------------------------------------------------------------
+
    function Play_Sound (sound        : Fmod_Sound_Handle;
                         channelgroup : Fmod_Channelgroup_Ptr;
                         paused       : Boolean; channel : out Fmod_Channel_Handle)
@@ -144,65 +161,65 @@ package body Fmod is
 
    --  -------------------------------------------------------------------------
 
---     procedure Print_Channel_Handle (Msg : String; n : Fmod_Common.Fmod_Channel_Handle) is
---     begin
---
---        if n /= null then
---           Put_Line (Msg & " Channel handle at address " & System.Address_Image (n.all'address));
---           --        Put_Line (Msg & " Channel pointer at address " & System.Address_Image (n_ptr.all'address));
---        else
---           Put_Line (Msg & " channel handle is null");
---        end if;
---           New_Line;
---        end Print_Channel_Handle;
+   --     procedure Print_Channel_Handle (Msg : String; n : Fmod_Common.Fmod_Channel_Handle) is
+   --     begin
+   --
+   --        if n /= null then
+   --           Put_Line (Msg & " Channel handle at address " & System.Address_Image (n.all'address));
+   --           --        Put_Line (Msg & " Channel pointer at address " & System.Address_Image (n_ptr.all'address));
+   --        else
+   --           Put_Line (Msg & " channel handle is null");
+   --        end if;
+   --           New_Line;
+   --        end Print_Channel_Handle;
 
-      --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
---        procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle) is
---           n_ptr : constant Fmod_Common.Fmod_System_Ptr := n.all;
---        begin
---           Put_Line (Msg & " System handle at address " & System.Address_Image (n.all'address));
---           Put_Line (Msg & " System pointer at address " & System.Address_Image (n_ptr.all'address));
---           New_Line;
---        end Print_Handle;
+   --        procedure Print_Handle (Msg : String; n : Fmod_Common.Fmod_System_Handle) is
+   --           n_ptr : constant Fmod_Common.Fmod_System_Ptr := n.all;
+   --        begin
+   --           Put_Line (Msg & " System handle at address " & System.Address_Image (n.all'address));
+   --           Put_Line (Msg & " System pointer at address " & System.Address_Image (n_ptr.all'address));
+   --           New_Line;
+   --        end Print_Handle;
 
-      --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
-      procedure Print_Open_State (Message : String;
-                                  Sound   : Fmod_Common.Fmod_Sound_Handle) is
-         Open_State       : Fmod_Open_State := Fmod_Openstate_Null;
-         Percent_Buffered : UInt;
-         Starving         : Boolean;
-         Disk_Busy        : Boolean;
-         Result           : constant Fmod_Result :=
-                              Get_Open_State (Sound, Open_State, Percent_Buffered,
-                                              Starving, Disk_Busy);
-      begin
-         New_Line;
-         Put_Line (Message & " Open State Status:");
-         if Result = Fmod_Ok then
-            Put_Line ("   Open State: " & Fmod_Open_State'Image (Open_State));
-            if Open_State /= Fmod_Openstate_Null then
-               Put_Line ("   Percent Buffered: " & UInt'Image (Percent_Buffered));
-               Put_Line ("   Starving: " & Boolean'Image (Starving));
-               Put_Line ("   Disk Busy: " & Boolean'Image (Disk_Busy));
-            end if;
-         else
-            Put_Line ("Fmod Result: " & Fmod_Result'Image (Result));
+   procedure Print_Open_State (Message : String;
+                               Sound   : Fmod_Common.Fmod_Sound_Handle) is
+      Open_State       : Fmod_Open_State := Fmod_Openstate_Null;
+      Percent_Buffered : UInt;
+      Starving         : Boolean;
+      Disk_Busy        : Boolean;
+      Result           : constant Fmod_Result :=
+                           Get_Open_State (Sound, Open_State, Percent_Buffered,
+                                           Starving, Disk_Busy);
+   begin
+      New_Line;
+      Put_Line (Message & " Open State Status:");
+      if Result = Fmod_Ok then
+         Put_Line ("   Open State: " & Fmod_Open_State'Image (Open_State));
+         if Open_State /= Fmod_Openstate_Null then
+            Put_Line ("   Percent Buffered: " & UInt'Image (Percent_Buffered));
+            Put_Line ("   Starving: " & Boolean'Image (Starving));
+            Put_Line ("   Disk Busy: " & Boolean'Image (Disk_Busy));
          end if;
-         New_Line;
-      end Print_Open_State;
+      else
+         Put_Line ("Fmod Result: " & Fmod_Result'Image (Result));
+      end if;
+      New_Line;
+   end Print_Open_State;
 
-      --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
---        procedure Print_Sound_Handle (Msg : String; n : Fmod_Common.Fmod_Sound_Handle) is
---           n_ptr : constant Fmod_Common.Fmod_Sound_Ptr := n.all;
---        begin
---           Put_Line (Msg & " Sound handle at address " & System.Address_Image (n.all'address));
---           Put_Line (Msg & " Sound pointer at address " & System.Address_Image (n_ptr.all'address));
---           New_Line;
---        end Print_Sound_Handle;
+   --        procedure Print_Sound_Handle (Msg : String; n : Fmod_Common.Fmod_Sound_Handle) is
+   --           n_ptr : constant Fmod_Common.Fmod_Sound_Ptr := n.all;
+   --        begin
+   --           Put_Line (Msg & " Sound handle at address " & System.Address_Image (n.all'address));
+   --           Put_Line (Msg & " Sound pointer at address " & System.Address_Image (n_ptr.all'address));
+   --           New_Line;
+   --        end Print_Sound_Handle;
 
-      --  -------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
-   end Fmod;
+end Fmod;

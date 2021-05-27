@@ -24,7 +24,7 @@ package Fmod is
                              return Fmod_Result;
    function Init_System (maxchannels     : Int; flags : Fmod_Init_Flags;
                          extradriverdata : System.Address) return Fmod_Result;
-
+   procedure Pause_Channel (Channel : Fmod_Channel_Handle; Pause : Boolean);
    function Play_Sound (sound        : Fmod_Sound_Handle;
                         channelgroup : Fmod_Channelgroup_Ptr;
                         paused       : Boolean;
