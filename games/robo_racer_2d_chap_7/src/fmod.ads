@@ -9,7 +9,7 @@ package Fmod is
 
    function Close_System return Fmod_Result;
    function Create_Sound (name_or_data : String; mode : Fmod_Mode;
-                          exinfo       : access Fmod_Create_Sound_Exinfo;
+                          exinfo       : Fmod_Create_Sound_Exinfo_Ptr;
                           sound        : in out Fmod_Sound_Handle) return Fmod_Result;
    function Create_System return Fmod_Result;
    function Get_Open_State (sound              : Fmod_Sound_Handle;

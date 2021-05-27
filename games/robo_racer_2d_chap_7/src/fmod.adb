@@ -25,7 +25,7 @@ package body Fmod is
    --  -------------------------------------------------------------------------
 
    function Create_Sound (name_or_data : String; mode : Fmod_Mode;
-                          exinfo       : access Fmod_Create_Sound_Exinfo;
+                          exinfo       : Fmod_Create_Sound_Exinfo_Ptr;
                           sound        : in out Fmod_Sound_Handle) return Fmod_Result is
    begin
       --        Print_Handle ("Fmod.Create_Sound", Audio_Handle);
@@ -56,6 +56,9 @@ package body Fmod is
    --  Optional. Specify 0 or NULL to ignore.
    --  diskbusy: address of a variable that receives the disk busy state of a sound.
    --  That is, whether or not the disk is currently being accessed for the sound.
+   --  Get_Open_State determines if a sound has finished loading / opening or not.
+   --  While it is loading (not ready), sound functions are not accessible for
+   --  that sound.
    function Get_Open_State (sound              : Fmod_Sound_Handle;
                             openstate          : out Fmod_Open_State;
                             percentbuffered    : out UInt;
@@ -76,8 +79,6 @@ package body Fmod is
    begin
       if sound /= null then
          if Result = Fmod_Ok then
-            Put_Line ("Fmod.Get_Open_State Result " &
-                        Fmod_Result'Image (Result));
             openstate := State;
             percentbuffered := UInt (PB);
             starving := Starve /= 0;

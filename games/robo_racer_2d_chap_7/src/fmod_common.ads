@@ -362,6 +362,8 @@ package Fmod_Common is
         Fsbguid             : access Fmod_Guid;
     end record;
     pragma Convention (C_Pass_By_Copy, Fmod_Create_Sound_Exinfo);
+    type Fmod_Create_Sound_Exinfo_Ptr is access Fmod_Create_Sound_Exinfo;
+    pragma Convention (C, Fmod_Create_Sound_Exinfo_Ptr);
 
 private
 
