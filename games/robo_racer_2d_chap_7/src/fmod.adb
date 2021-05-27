@@ -27,7 +27,7 @@ package body Fmod is
 
    function Create_Sound (name_or_data : String; mode : Fmod_Mode;
                           exinfo       : Fmod_Create_Sound_Exinfo_Ptr;
-                          sound        : in out Fmod_Sound_Handle) return Fmod_Result is
+                          sound        : out Fmod_Sound_Handle) return Fmod_Result is
    begin
       --        Print_Handle ("Fmod.Create_Sound", Audio_Handle);
       return Fmod.API.Create_Sound
