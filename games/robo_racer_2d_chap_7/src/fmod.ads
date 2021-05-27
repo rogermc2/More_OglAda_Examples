@@ -13,9 +13,9 @@ package Fmod is
                           sound        : in out Fmod_Sound_Handle) return Fmod_Result;
    function Create_System return Fmod_Result;
    function Get_Open_State (sound              : Fmod_Sound_Ptr;
-                            openstate          : out Fmod_Open_State;
-                            percentbuffered    : out UInt;
-                            starving, diskbusy : out Boolean)
+                            openstate          : in out Fmod_Open_State;
+                            percentbuffered    : in out UInt;
+                            starving, diskbusy : in out Boolean)
                              return Fmod_Result;
    function Init_System (maxchannels     : Int; flags : Fmod_Init_Flags;
                          extradriverdata : System.Address) return Fmod_Result;

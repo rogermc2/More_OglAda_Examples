@@ -1,5 +1,5 @@
 
-with Interfaces.C;
+with Interfaces.C; use Interfaces.C;
 with System;
 
 with Fmod_Common;
@@ -14,9 +14,9 @@ package Fmod.API is
     pragma Import (C, Create_Sound, "FMOD_System_CreateSound");
 
     function Get_Open_State (sound : Fmod_Sound_Ptr;
-                             openstate : out Fmod_Open_State_Ptr;
-                             percentbuffered : out UInt_Pointers.Pointer;
-                             starving, diskbusy : out Fmod_Bool_Ptr)
+                             openstate : in out Fmod_Open_State_Ptr;
+                             percentbuffered : access unsigned;
+                             starving, diskbusy : in out Fmod_Bool_Ptr)
                              return Fmod_Result;
     pragma Import (C, Get_Open_State, "FMOD_Sound_GetOpenState");
 
@@ -34,7 +34,7 @@ package Fmod.API is
     pragma Import (C, System_Create, "FMOD_System_Create");
 
     function System_Init (aSystem         : in out Fmod_System_Ptr;
-                          maxchannels     : Int; flags : Fmod_Init_Flags;
+                          maxchannels     : Interfaces.C.int; flags : Fmod_Init_Flags;
                           extradriverdata : System.Address) return Fmod_Result;
     pragma Import (C, System_Init, "FMOD_System_Init");
 

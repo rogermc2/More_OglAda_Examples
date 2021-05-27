@@ -56,12 +56,14 @@ package body Fmod is
     --  diskbusy: address of a variable that receives the disk busy state of a sound.
     --  That is, whether or not the disk is currently being accessed for the sound.
     function Get_Open_State (sound              : Fmod_Sound_Ptr;
-                             openstate          : out Fmod_Open_State;
-                             percentbuffered    : out UInt;
-                             starving, diskbusy : out Boolean)
+                             openstate          : in out Fmod_Open_State;
+                             percentbuffered    : in out UInt;
+                             starving, diskbusy : in out Boolean)
                             return Fmod_Result is
+        use Interfaces.C;
         Openstate_Ptr : Fmod_Open_State_Ptr;
-        PB_Ptr        : UInt_Pointers.Pointer;
+        PB            : aliased unsigned;
+        PB_Ptr        : constant access unsigned := PB'Access;
         Starving_Ptr  : Fmod_Bool_Ptr;
         Disk_Busy_Ptr : Fmod_Bool_Ptr;
         Result        : constant Fmod_Result
@@ -109,8 +111,9 @@ package body Fmod is
                           extradriverdata : System.Address) return Fmod_Result is
     begin
         --        Print_Handle ("Fmod.Init_System", Audio_Handle);
-        return Fmod.API.System_Init (Audio_Handle.all, maxchannels, flags,
-                                     extradriverdata);
+        return Fmod.API.System_Init
+          (Audio_Handle.all, Interfaces.C.int (maxchannels), flags,
+           extradriverdata);
     end Init_System;
 
     --  -------------------------------------------------------------------------
@@ -140,10 +143,10 @@ package body Fmod is
 
     procedure Print_Open_State (Message : String;
                                 Sound   : Fmod_Common.Fmod_Sound_Ptr) is
-        Open_State       : Fmod_Open_State;
-        Percent_Buffered : UInt;
-        Starving         : Boolean;
-        Disk_Busy        : Boolean;
+        Open_State       : Fmod_Open_State := Fmod_Openstate_Null;
+        Percent_Buffered : UInt := 0;
+        Starving         : Boolean := False;
+        Disk_Busy        : Boolean := False;
         Result           : constant Fmod_Result :=
                              Get_Open_State (Sound, Open_State, Percent_Buffered,
                                              Starving, Disk_Busy);
