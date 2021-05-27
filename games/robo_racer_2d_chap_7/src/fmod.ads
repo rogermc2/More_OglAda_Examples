@@ -12,7 +12,7 @@ package Fmod is
                           exinfo       : access Fmod_Create_Sound_Exinfo;
                           sound        : in out Fmod_Sound_Handle) return Fmod_Result;
    function Create_System return Fmod_Result;
-   function Get_Open_State (sound              : Fmod_Sound_Ptr;
+   function Get_Open_State (sound              : Fmod_Sound_Handle;
                             openstate          : in out Fmod_Open_State;
                             percentbuffered    : in out UInt;
                             starving, diskbusy : in out Boolean)
@@ -26,5 +26,5 @@ package Fmod is
                         channel      : out Fmod_Channel_Handle)
                          return Fmod_Result;
    procedure Print_Open_State (Message : String;
-                               Sound : Fmod_Common.Fmod_Sound_Ptr);
+                               Sound : Fmod_Common.Fmod_Sound_Handle);
 end Fmod;

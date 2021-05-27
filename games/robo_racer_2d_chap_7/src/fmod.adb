@@ -55,7 +55,7 @@ package body Fmod is
     --  Optional. Specify 0 or NULL to ignore.
     --  diskbusy: address of a variable that receives the disk busy state of a sound.
     --  That is, whether or not the disk is currently being accessed for the sound.
-    function Get_Open_State (sound              : Fmod_Sound_Ptr;
+    function Get_Open_State (sound              : Fmod_Sound_Handle;
                              openstate          : in out Fmod_Open_State;
                              percentbuffered    : in out UInt;
                              starving, diskbusy : in out Boolean)
@@ -142,7 +142,7 @@ package body Fmod is
     --  -------------------------------------------------------------------------
 
     procedure Print_Open_State (Message : String;
-                                Sound   : Fmod_Common.Fmod_Sound_Ptr) is
+                                Sound   : Fmod_Common.Fmod_Sound_Handle) is
         Open_State       : Fmod_Open_State := Fmod_Openstate_Null;
         Percent_Buffered : UInt := 0;
         Starving         : Boolean := False;
