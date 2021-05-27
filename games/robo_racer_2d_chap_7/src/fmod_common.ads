@@ -258,8 +258,8 @@ package Fmod_Common is
         buffer    : System.Address;  -- fmod_common.h:713
         bytesread : aliased UInt;  -- fmod_common.h:714
         done      : Fmod_File_Asyncdone_Func;  -- fmod_common.h:715
-    end record
-      with Convention => C_Pass_By_Copy;  -- fmod_common.h:706
+    end record;
+    pragma Convention (C_Pass_By_Copy, Fmod_Asyncreadinfo);
 
     type Fmod_Guid_Data4_array is array (0 .. 7) of
       aliased Interfaces.C.unsigned_char;
@@ -268,60 +268,60 @@ package Fmod_Common is
         Data2 : aliased Interfaces.C.unsigned_short;  -- fmod_common.h:736
         Data3 : aliased Interfaces.C.unsigned_short;  -- fmod_common.h:737
         Data4 : aliased Fmod_Guid_Data4_array;  -- fmod_common.h:738
-    end record
-      with Convention => C_Pass_By_Copy;  -- fmod_common.h:733
+    end record;
+    pragma Convention (C_Pass_By_Copy, Fmod_Guid);
 
     type Fmod_Sound_Pcmread_Callback is access function
       (arg1 : access Fmod_Sound;
        arg2 : System.Address;
-       arg3 : UInt) return Fmod_Result
-      with Convention => C;  -- fmod_common.h:689
+       arg3 : UInt) return Fmod_Result;
+    pragma Convention (C, Fmod_Sound_Pcmread_Callback);
 
     type Fmod_Sound_Pcmsetpos_Callback is access function
       (arg1 : access Fmod_Sound;
        arg2 : Int;
        arg3 : UInt;
-       arg4 : Fmod_Timeunit) return Fmod_Result
-      with Convention => C;  -- fmod_common.h:690
+       arg4 : Fmod_Timeunit) return Fmod_Result;
+    pragma Convention (C, Fmod_Sound_Pcmsetpos_Callback);
 
     type Fmod_File_Open_Callback is access function
       (arg1 : Interfaces.C.Strings.chars_ptr;
        arg2 : access UInt;
        arg3 : System.Address;
-       arg4 : System.Address) return Fmod_Result
-      with Convention => C;  -- fmod_common.h:691
+       arg4 : System.Address) return Fmod_Result;
+    pragma Convention (C, Fmod_File_Open_Callback);
 
     type Fmod_Sound_Nonblock_Callback is access
-      function (arg1 : access Fmod_Sound; arg2 : Fmod_Result) return Fmod_Result
-      with Convention => C;  -- fmod_common.h:688
+      function (arg1 : access Fmod_Sound; arg2 : Fmod_Result) return Fmod_Result;
+    pragma Convention (C, Fmod_Sound_Nonblock_Callback);
 
     type Fmod_File_Close_Callback is access
-      function (arg1 : System.Address; arg2 : System.Address) return Fmod_Result
-      with Convention => C;  -- fmod_common.h:692
+      function (arg1 : System.Address; arg2 : System.Address) return Fmod_Result;
+    pragma Convention (C, Fmod_File_Close_Callback);
 
     type Fmod_File_Read_Callback is access function
       (arg1 : System.Address;
        arg2 : System.Address;
        arg3 : UInt;
        arg4 : access UInt;
-       arg5 : System.Address) return Fmod_Result
-      with Convention => C;  -- fmod_common.h:693
+       arg5 : System.Address) return Fmod_Result;
+    pragma Convention (C, Fmod_File_Read_Callback);
 
     type Fmod_File_Seek_Callback is access function
       (arg1 : System.Address;
        arg2 : UInt;
-       arg3 : System.Address) return Fmod_Result
-      with Convention => C;  -- fmod_common.h:694
+       arg3 : System.Address) return Fmod_Result;
+    pragma Convention (C, Fmod_File_Seek_Callback);
 
     type Fmod_File_Asyncread_Callback is access
       function (arg1 : access Fmod_Asyncreadinfo; arg2 : System.Address)
-                return Fmod_Result
-      with Convention => C;  -- fmod_common.h:695
+                return Fmod_Result;
+    pragma Convention (C, Fmod_File_Asyncread_Callback);
 
     type Fmod_File_Asynccancel_Callback is access
       function (arg1 : access Fmod_Asyncreadinfo; arg2 : System.Address)
-                return Fmod_Result
-      with Convention => C;  -- fmod_common.h:696
+                return Fmod_Result;
+    pragma Convention (C, Fmod_File_Asynccancel_Callback);
 
     type Fmod_Create_Sound_Exinfo is record
         Cbsize              : Int;
@@ -361,6 +361,7 @@ package Fmod_Common is
         Nonblockthreadid    : Int;
         Fsbguid             : access Fmod_Guid;
     end record;
+    pragma Convention (C_Pass_By_Copy, Fmod_Create_Sound_Exinfo);
 
 private
 
