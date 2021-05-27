@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 
 #include "fmod_common.h"
@@ -20,7 +21,7 @@ int main(void)
   if (result != FMOD_OK)
     {
       printf ("FMOD error! %s\n\n", FMOD_ErrorString(result));
-      return -1;
+      exit (-1);
     }
 
   // Initialize FMOD
@@ -28,7 +29,7 @@ int main(void)
   if (result != FMOD_OK)
     {
       printf ("FMOD init error! %s\n\n", FMOD_ErrorString(result));
-      return -1;
+      exit (-1);
     }
 
   // Create the sound.
@@ -37,7 +38,7 @@ int main(void)
   if (result != FMOD_OK)
     {
       printf ("FMOD createSound error! %s\n\n", FMOD_ErrorString(result));
-      return -1;
+      exit (-1);
     }
 
   // Play the sound.
@@ -47,11 +48,11 @@ int main(void)
       printf ("FMOD playSound error! %s\n\n", FMOD_ErrorString(result));
       printf ("FMOD playSound fopen failed, error %s\n\n",
 	      FMOD_ErrorString(result));
-      return -1;
+      exit (-1);
     }
   printf ("Press return to quit\n");
   In = getchar ();
   result = FMOD_System_Release (system);
   printf ("FMOD tutorial done\n\n");
-  return 0;
+  exit (0);
 }
