@@ -29,7 +29,6 @@ package body Fmod is
                           exinfo       : Fmod_Create_Sound_Exinfo_Ptr;
                           sound        : out Fmod_Sound_Handle) return Fmod_Result is
    begin
-      --        Print_Handle ("Fmod.Create_Sound", Audio_Handle);
       return Fmod.API.Create_Sound
         (Audio_Handle.all, Interfaces.C.To_C (name_or_data), mode,
          exinfo, sound);
@@ -40,9 +39,30 @@ package body Fmod is
    function Create_System return Fmod_Result is
       Result : constant Fmod_Result := Fmod.API.System_Create (Audio_Handle);
    begin
-      --        Print_Handle ("Fmod.Create_System", Audio_Handle);
       return Result;
    end Create_System;
+
+   --  -------------------------------------------------------------------------
+
+   function Create_And_Initialize_System
+     (maxchannels     : Int; flags : Fmod_Init_Flags;
+      extradriverdata : System.Address) return Fmod_Result is
+      Result : Fmod_Result := Fmod.API.System_Create (Audio_Handle);
+   begin
+      if Result = Fmod_Ok then
+         Result := Init_System (maxchannels, flags, extradriverdata);
+         if Result /= Fmod_Ok then
+            raise Fmod_Exception with
+              "Fmod.Init_System audio system initialization failed"
+              & " with failure code " & Fmod_Result'Image (Result);
+         end if;
+      else
+         raise Fmod_Exception with
+           "Fmod.Init_System audio system creation failed"
+           & " with failure code " & Fmod_Result'Image (Result);
+      end if;
+      return Result;
+   end Create_And_Initialize_System;
 
    --  -------------------------------------------------------------------------
    --  Get_Open_State parameters
@@ -100,7 +120,6 @@ package body Fmod is
    function Init_System (maxchannels     : Int; flags : Fmod_Init_Flags;
                          extradriverdata : System.Address) return Fmod_Result is
    begin
-      --        Print_Handle ("Fmod.Init_System", Audio_Handle);
       return Fmod.API.System_Init
         (Audio_Handle.all, Interfaces.C.int (maxchannels), flags,
          extradriverdata);
