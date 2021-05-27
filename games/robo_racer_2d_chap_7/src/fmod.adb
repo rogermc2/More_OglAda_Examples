@@ -118,7 +118,7 @@ package body Fmod is
 
     --  -------------------------------------------------------------------------
 
-    function Play_Sound (sound        : Fmod_Sound_Ptr;
+    function Play_Sound (sound        : Fmod_Sound_Handle;
                          channelgroup : Fmod_Channelgroup_Ptr;
                          paused       : Boolean; channel : out Fmod_Channel_Handle)
                         return Fmod_Result is
@@ -128,7 +128,7 @@ package body Fmod is
             Pause := 1;
         end if;
         --          Print_Handle ("Fmod.Play_Sound", Audio_Handle);
-        return Fmod.API.Play_Sound (Audio_Handle.all, sound,
+        return Fmod.API.Play_Sound (Audio_Handle, sound.all,
                                     channelgroup, Pause, channel);
     end Play_Sound;
 

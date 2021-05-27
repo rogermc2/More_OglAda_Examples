@@ -20,7 +20,7 @@ package Fmod is
    function Init_System (maxchannels     : Int; flags : Fmod_Init_Flags;
                          extradriverdata : System.Address) return Fmod_Result;
 
-   function Play_Sound (sound        : Fmod_Sound_Ptr;
+   function Play_Sound (sound        : Fmod_Sound_Handle;
                         channelgroup : Fmod_Channelgroup_Ptr;
                         paused       : Boolean;
                         channel      : out Fmod_Channel_Handle)

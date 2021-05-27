@@ -93,7 +93,7 @@ package body Audio_Manager is
          --  and returns a Channel handle.
          --  The default behavior is always FMOD_CHANNEL_FREE.
 
-         F_Result := Fmod.Play_Sound (sfx_Oilcan.all, Channel_Group, False,
+         F_Result := Fmod.Play_Sound (sfx_Oilcan, Channel_Group, False,
                                       Channel_Oil);
          if F_Result = Fmod_Ok then
             Put_Line ("Audio_Manager.Load_Audio sound played");
