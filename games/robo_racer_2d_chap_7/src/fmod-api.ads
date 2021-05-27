@@ -14,9 +14,9 @@ package Fmod.API is
     pragma Import (C, Create_Sound, "FMOD_System_CreateSound");
 
     function Get_Open_State (sound : Fmod_Sound_Handle;
-                             openstate : in out Fmod_Open_State_Ptr;
+                             openstate : access Fmod_Open_State;
                              percentbuffered : access unsigned;
-                             starving, diskbusy : in out Fmod_Bool_Ptr)
+                             starving, diskbusy : access Fmod_Bool)
                              return Fmod_Result;
     pragma Import (C, Get_Open_State, "FMOD_Sound_GetOpenState");
 

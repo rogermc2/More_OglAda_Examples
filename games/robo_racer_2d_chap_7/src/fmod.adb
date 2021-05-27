@@ -56,16 +56,19 @@ package body Fmod is
     --  diskbusy: address of a variable that receives the disk busy state of a sound.
     --  That is, whether or not the disk is currently being accessed for the sound.
     function Get_Open_State (sound              : Fmod_Sound_Handle;
-                             openstate          : in out Fmod_Open_State;
-                             percentbuffered    : in out UInt;
-                             starving, diskbusy : in out Boolean)
+                             openstate          : out Fmod_Open_State;
+                             percentbuffered    : out UInt;
+                             starving, diskbusy : out Boolean)
                             return Fmod_Result is
         use Interfaces.C;
-        Openstate_Ptr : Fmod_Open_State_Ptr;
+        State         : aliased Fmod_Open_State;
+        Openstate_Ptr : constant access Fmod_Open_State := State'Access;
         PB            : aliased unsigned;
         PB_Ptr        : constant access unsigned := PB'Access;
-        Starving_Ptr  : Fmod_Bool_Ptr;
-        Disk_Busy_Ptr : Fmod_Bool_Ptr;
+        Starve        : aliased Fmod_Bool;
+        Starving_Ptr  : constant access Fmod_Bool := Starve'Access;
+        Disk_Busy     : aliased Fmod_Bool;
+        Disk_Busy_Ptr : constant access Fmod_Bool := Disk_Busy'Access;
         Result        : constant Fmod_Result
           := Fmod.API.Get_Open_State (sound, Openstate_Ptr, PB_Ptr,
                                       Starving_Ptr, Disk_Busy_Ptr);
@@ -74,26 +77,10 @@ package body Fmod is
             if Result = Fmod_Ok then
                 Put_Line ("Fmod.Get_Open_State Result " &
                            Fmod_Result'Image (Result));
-                if Openstate_Ptr /= null then
-                    openstate := Openstate_Ptr.all;
-                else
-                    openstate := Fmod_Openstate_Null;
-                    Put_Line ("   Fmod.Get_Open_State Openstate_Ptr is null.");
-                end if;
-                --        percentbuffered := PB_Ptr.all;
-                percentbuffered := 0;
-
-                if Starving_Ptr /= null then
-                    starving := Starving_Ptr.all /= 0;
-                else
-                    Put_Line ("   Fmod.Get_Open_State Starving_Ptr is null.");
-                end if;
-
-                if Disk_Busy_Ptr /= null then
-                    diskbusy := Disk_Busy_Ptr.all /= 0;
-                else
-                    Put_Line ("   Fmod.Get_Open_State Disk_Busy_Ptr is null.");
-                end if;
+                openstate := State;
+                percentbuffered := UInt (PB);
+                starving := Starve /= 0;
+                diskbusy := Disk_Busy /= 0;
             else
                 Put_Line ("Fmod.Get_Open_State failed with " &
                            Fmod_Result'Image (Result));
@@ -144,9 +131,9 @@ package body Fmod is
     procedure Print_Open_State (Message : String;
                                 Sound   : Fmod_Common.Fmod_Sound_Handle) is
         Open_State       : Fmod_Open_State := Fmod_Openstate_Null;
-        Percent_Buffered : UInt := 0;
-        Starving         : Boolean := False;
-        Disk_Busy        : Boolean := False;
+        Percent_Buffered : UInt;
+        Starving         : Boolean;
+        Disk_Busy        : Boolean;
         Result           : constant Fmod_Result :=
                              Get_Open_State (Sound, Open_State, Percent_Buffered,
                                              Starving, Disk_Busy);
@@ -154,7 +141,7 @@ package body Fmod is
         New_Line;
         Put_Line (Message & " Open State Status:");
         if Result = Fmod_Ok then
-            Put_Line ("Open State: " & Fmod_Open_State'Image (Open_State));
+            Put_Line ("   Open State: " & Fmod_Open_State'Image (Open_State));
             if Open_State /= Fmod_Openstate_Null then
                 Put_Line ("   Percent Buffered: " & UInt'Image (Percent_Buffered));
                 Put_Line ("   Starving: " & Boolean'Image (Starving));
