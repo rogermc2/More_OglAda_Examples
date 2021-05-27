@@ -1,5 +1,5 @@
 
-#include <string.h>
+#include <stdio.h>
 #include <errno.h>
 
 #include "fmod_common.h"
@@ -20,36 +20,38 @@ int main(void)
   if (result != FMOD_OK)
     {
       printf ("FMOD error! %s\n\n", FMOD_ErrorString(result));
-      exit(-1);
+      return -1;
     }
 
   // Initialize FMOD
-  result = init(system, 512, FMOD_INIT_NORMAL, 0);
+  result = FMOD_System_Init(system, 512, FMOD_INIT_NORMAL, 0);
   if (result != FMOD_OK)
     {
       printf ("FMOD init error! %s\n\n", FMOD_ErrorString(result));
-      exit(-1);
+      return -1;
     }
 
   // Create the sound.
-  createSound(system, "../src/oil.wav", FMOD_DEFAULT, nullptr, &sound);
+  result = FMOD_System_CreateSound(system, "./src/oil.wav", FMOD_DEFAULT,
+				   NULL, &sound);
   if (result != FMOD_OK)
     {
-      printf ("FMOD createSound error! %s\n\n", FMOD_ErrorString(result));;
-      exit(-1);
+      printf ("FMOD createSound error! %s\n\n", FMOD_ErrorString(result));
+      return -1;
     }
 
   // Play the sound.
-  result = system->playSound(sound, nullptr, false, &channel);
+  result = FMOD_System_PlaySound (system, sound, NULL, 0, &channel);
   if (result != FMOD_OK)
     {
-      cout << "FMOD playSound error! " << result << FMOD_ErrorString(result) << endl;
-      cout << "FMOD playSound fopen failed, error " << strerror (errno) << endl;
-      exit(-1);
+      printf ("FMOD playSound error! %s\n\n", FMOD_ErrorString(result));
+      printf ("FMOD playSound fopen failed, error %s\n\n",
+	      FMOD_ErrorString(result));
+      return -1;
     }
-  cout << "Press return to quit" << endl;
-  getline (cin, In);
-  result = system->release ();
-  cout << "FMOD tutorial done" << endl << endl;
+  printf ("Press return to quit\n");
+  In = getchar ();
+  result = FMOD_System_Release (system);
+  printf ("FMOD tutorial done\n\n");
   return 0;
 }
