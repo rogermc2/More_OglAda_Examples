@@ -14,6 +14,10 @@ int main(void)
   FMOD_SOUND *sound = NULL;
   FMOD_CHANNELGROUP *channelGroup = NULL;
   FMOD_CHANNEL *channel = NULL;
+  FMOD_OPENSTATE openstate;
+  unsigned percentbuffered;
+  FMOD_BOOL starving;
+  FMOD_BOOL diskbusy;
   char In;
 
   // Create the main system object.
@@ -40,7 +44,12 @@ int main(void)
       printf ("FMOD createSound error! %s\n\n", FMOD_ErrorString(result));
       exit (-1);
     }
-
+  result = FMOD_Sound_GetOpenState (sound, &openstate, &percentbuffered,
+				    &starving, &diskbusy);
+  printf ("FMOD OpenState: %u\n", openstate);
+  printf ("FMOD percentbuffered: %u\n", percentbuffered);
+  printf ("FMOD starving: %u\n", starving);
+  printf ("FMOD diskbusy: %u\n\n", diskbusy);
   // Play the sound.
   result = FMOD_System_PlaySound (system, sound, NULL, 0, &channel);
   if (result != FMOD_OK)

@@ -27,7 +27,7 @@ package Fmod.API is
                          channel : out Fmod_Channel_Handle) return Fmod_Result;
     pragma Import (C, Play_Sound, "FMOD_System_PlaySound");
 
-    function System_Close (aSystem : in out Fmod_System_Ptr) return Fmod_Result;
+    function System_Close (aSystem : Fmod_System_Handle) return Fmod_Result;
     pragma Import (C, System_Close, "FMOD_System_Close");
 
     function System_Create (aSystem : in out Fmod_System_Handle) return Fmod_Result;

@@ -20,7 +20,7 @@ package body Fmod is
 
    function Close_System return Fmod_Result is
    begin
-      return Fmod.API.System_Close (Audio_Handle.all);
+      return Fmod.API.System_Close (Audio_Handle);
    end Close_System;
 
    --  -------------------------------------------------------------------------
