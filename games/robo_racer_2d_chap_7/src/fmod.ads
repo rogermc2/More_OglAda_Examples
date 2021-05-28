@@ -31,4 +31,8 @@ package Fmod is
                           channel      : out Fmod_Channel_Handle);
     procedure Print_Open_State (Message : String;
                                 Sound : Fmod_Common.Fmod_Sound_Handle);
+    procedure Release_Channel_Group (Group : Fmod_Channelgroup_Handle);
+    procedure Release_Sound (Sound : Fmod_Sound_Handle);
+    procedure Release_System;
+
 end Fmod;

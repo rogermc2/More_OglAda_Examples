@@ -234,6 +234,8 @@ package Fmod_Common is
     pragma Convention (C_Pass_By_Copy, Fmod_Channelgroup);
     type Fmod_Channelgroup_Ptr is access Fmod_Channelgroup;
     pragma Convention (C, Fmod_Channelgroup_Ptr);
+    type Fmod_Channelgroup_Handle is access Fmod_Channelgroup_Ptr;
+    pragma Convention (C, Fmod_Channelgroup_Handle);
 
     type Fmod_Sound is null record;
     pragma Convention (C_Pass_By_Copy, Fmod_Sound);

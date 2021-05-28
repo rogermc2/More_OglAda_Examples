@@ -163,7 +163,7 @@ package body Fmod is
                                        channelgroup, Pause, channel);
         if Result /= Fmod_Ok then
             Fmod.Print_Open_State ("Fmod.Play_Sound play sound Open_State",
-                                    sound);
+                                   sound);
             raise Fmod_Exception with
               "Fmod.Play_Sound failed with failure code " &
               Fmod_Result'Image (Result);
@@ -233,4 +233,38 @@ package body Fmod is
 
     --  -------------------------------------------------------------------------
 
-end Fmod;
+    procedure Release_Channel_Group (Group : Fmod_Channelgroup_Handle) is
+        Result  : constant Fmod_Result :=
+                    Fmod.API.Release_Channel_Group (Group);
+    begin
+        if Result /= Fmod_Ok then
+            Put_Line ("Fmod.Release_Channel_Group failed with failure code " &
+                        Fmod_Result'Image (Result));
+        end if;
+    end Release_Channel_Group;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Release_Sound (Sound : Fmod_Sound_Handle) is
+        Result  : constant Fmod_Result := Fmod.API.Release_Sound (Sound);
+    begin
+        if Result /= Fmod_Ok then
+            Put_Line ("Fmod.Release_Sound failed with failure code " &
+                        Fmod_Result'Image (Result));
+        end if;
+    end Release_Sound;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Release_System is
+        Result  : constant Fmod_Result := Fmod.API.Release_System (Audio_Handle);
+    begin
+        if Result /= Fmod_Ok then
+            Put_Line ("Fmod.Release_System failed with failure code " &
+                        Fmod_Result'Image (Result));
+        end if;
+    end Release_System;
+
+    --  -------------------------------------------------------------------------
+
+    end Fmod;
