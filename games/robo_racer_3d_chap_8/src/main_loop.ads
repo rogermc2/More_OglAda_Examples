@@ -1,4 +1,4 @@
 
-with Input_Callback;
+with Glfw.Windows;
 
-procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window);
+procedure Main_Loop (Main_Window : in out Glfw.Windows.Window);

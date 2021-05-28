@@ -5,7 +5,7 @@ with GL.Attributes;
 with GL.Types;
 
 with Utilities;
-with Vertex_Data;
+with Cube_Data;
 
 package body Buffers_Manager is
 
@@ -20,29 +20,28 @@ package body Buffers_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Setup_Buffers (Vertex_Buffer  : in out GL.Objects.Buffers.Buffer;
-                            Element_Buffer : in out GL.Objects.Buffers.Buffer) is
+   procedure Setup_Buffers
+     (Vertex_Buffer, Colour_Buffer : in out GL.Objects.Buffers.Buffer) is
       use GL.Types;
       use GL.Objects.Buffers;
 
-      Stride : constant GL.Types.Size := Singles.Vector2'Size / 8;
    begin
       Make_Buffer (GL.Objects.Buffers.Array_Buffer, Vertex_Buffer);
       Utilities.Load_Vertex_Buffer
-        (Array_Buffer, Vertex_Data.Vertices, Static_Draw);
+        (Array_Buffer, Cube_Data.Vertex_Data, Static_Draw);
 
-      Make_Buffer (GL.Objects.Buffers.Element_Array_Buffer, Element_Buffer);
-      Vertex_Data.Load_Element_Buffer (Element_Array_Buffer,
-                                       Vertex_Data.Elements, Static_Draw);
+      Make_Buffer (GL.Objects.Buffers.Array_Buffer, Colour_Buffer);
+      Utilities.Load_Vertex_Buffer (Array_Buffer, Cube_Data.Colour_Data,
+                                    Static_Draw);
 
       GL.Attributes.Set_Vertex_Attrib_Pointer (Index  => 0, Count  => 3,
                                                Kind   => GL.Types.Single_Type,
                                                Normalized => False,
-                                               Stride => Stride, Offset => 0);
+                                               Stride => 0, Offset => 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
-      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 2, GL.Types.Single_Type,
-                                               False, Stride, 3);
+      GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, GL.Types.Single_Type,
+                                               False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
    exception
       when others =>
