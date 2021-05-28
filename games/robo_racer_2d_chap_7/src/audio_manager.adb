@@ -54,22 +54,18 @@ package body Audio_Manager is
     procedure Load_Audio is
         use Fmod_Common;
         Channel : Fmod_Common.Fmod_Channel_Handle;
+        pragma Unreferenced (Channel);
     begin
         --  Create_Sound returns a Sound handle which is a handle to the
         --  loaded sound.
-        Fmod.Create_Sound ("src/audio/oil.wav", Fmod_Default,
-                           null, sfx_Oilcan);
+        Fmod.Create_Sound ("src/audio/oil.wav", Fmod_Default, null, sfx_Oilcan);
         Fmod.Create_Sound ("src/audio/water.wav", Fmod_Default,
                            null, sfx_Water);
-        Fmod.Create_Sound ("src/audio/jump.wav", Fmod_Default,
-                           null, sfx_Jump);
+        Fmod.Create_Sound ("src/audio/jump.wav", Fmod_Default, null, sfx_Jump);
         Fmod.Create_Sound
-          ("src/audio/movement.wav", Fmod_Loop_Normal_Or_2D,
-           null, sfx_Movement);
-
+          ("src/audio/movement.wav", Fmod_Loop_Normal_Or_2D, null, sfx_Movement);
         Fmod.Create_Sound ("src/audio/button.wav", Fmod_Default,
                            null, sfx_Button);
-
         Fmod.Create_Sound ("src/audio/jollybot.mp3", Fmod_Loop_Normal_Or_2D,
                            null, Background_Music);
 
@@ -78,10 +74,7 @@ package body Audio_Manager is
         --  The default behavior is always FMOD_CHANNEL_FREE.
 
         Fmod.Play_Sound (sfx_Movement, null, False, Movement_Channel);
-
-        pragma Warnings (Off);
         Fmod.Play_Sound (Background_Music, null, False, Channel);
-        pragma Warnings (On);
 
     end Load_Audio;
 
@@ -97,6 +90,7 @@ package body Audio_Manager is
     procedure Play_Sound (aSound : Sound) is
         Sound_Handle : Fmod_Common.Fmod_Sound_Handle;
         Channel      : Fmod_Common.Fmod_Channel_Handle;
+        pragma Unreferenced (Channel);
     begin
         case aSound is
             when Button_Sound => Sound_Handle := sfx_Button;
@@ -106,9 +100,7 @@ package body Audio_Manager is
             when Water_Sound => Sound_Handle := sfx_Water;
         end case;
 
-        pragma Warnings (Off);
         Fmod.Play_Sound (Sound_Handle, null, False, Channel);
-        pragma Warnings (On);
 
         end Play_Sound;
 
