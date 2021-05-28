@@ -337,6 +337,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             case aCommand is
             when Command_UI =>
                 if Is_Clicked (Pause_Button) then
+                    Audio_Manager.Play_Sound (Audio_Manager.Button_Sound);
                     Set_Clicked (Pause_Button, False);
                     Set_Visible (Pause_Button, False);
                     Set_Active (Pause_Button, False);
@@ -346,6 +347,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                     Set_Game_State (Game_Paused);
 
                 elsif Is_Clicked (Resume_Button) then
+                    Audio_Manager.Play_Sound (Audio_Manager.Button_Sound);
                     Set_Clicked (Resume_Button, False);
                     Set_Visible (Resume_Button, False);
                     Set_Active (Resume_Button, False);
@@ -355,6 +357,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                     Set_Game_State (Game_Running);
 
                 elsif Is_Clicked (Play_Button) then
+                    Audio_Manager.Play_Sound (Audio_Manager.Button_Sound);
                     Set_Clicked (Play_Button, False);
                     Set_Active (Play_Button, False);
                     Set_Active (Exit_Button, False);
@@ -362,6 +365,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                     Set_Game_State (Game_Running);
 
                 elsif Is_Clicked (Credits_Button) then
+                    Audio_Manager.Play_Sound (Audio_Manager.Button_Sound);
                     Set_Clicked (Credits_Button, False);
                     Set_Active (Play_Button, False);
                     Set_Active (Exit_Button, False);
@@ -369,6 +373,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                     Set_Game_State (Game_Credits);
 
                 elsif Is_Clicked (Exit_Button) then
+                    Audio_Manager.Play_Sound (Audio_Manager.Button_Sound);
                     Set_Clicked (Exit_Button, False);
                     Set_Active (Play_Button, False);
                     Set_Active (Exit_Button, False);
@@ -376,11 +381,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                     Set_Game_State (Game_Quit);
 
                 elsif Is_Clicked (Menu_Button) then
+                    Audio_Manager.Play_Sound (Audio_Manager.Button_Sound);
                     Set_Clicked (Menu_Button, False);
                     Set_Active (Menu_Button, False);
                     Set_Game_State (Game_Menu);
 
                 elsif Is_Clicked (Continue_Button) then
+                    Audio_Manager.Play_Sound (Audio_Manager.Button_Sound);
                     Set_Clicked (Continue_Button, False);
                     Set_Active (Continue_Button, False);
                     Pickups_Received := 0;
@@ -388,6 +395,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                     Set_Game_State (Game_Running);
 
                 elsif Is_Clicked (Replay_Button) then
+                    Audio_Manager.Play_Sound (Audio_Manager.Button_Sound);
                     Set_Clicked (Replay_Button, False);
                     Set_Active (Replay_Button, False);
                     Set_Active (Exit_Button, False);

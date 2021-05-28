@@ -114,6 +114,7 @@ package body Audio_Manager is
         Result       : Fmod_Result;
     begin
       case aSound is
+            when Button_Sound => Sound_Handle := sfx_Button;
             when Jump_Sound => Sound_Handle := sfx_Jump;
             when Movement_Sound => Sound_Handle := sfx_Movement;
             when Oilcan_Sound => Sound_Handle := sfx_Oilcan;
