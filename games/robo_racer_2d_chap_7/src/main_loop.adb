@@ -18,6 +18,7 @@ with Program_Loader;
 with Utilities;
 
 with Audio_Manager;
+with Fmod;
 with Input_Manager;
 with Levels_Manager;
 with Player_Manager;
@@ -789,6 +790,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Process_Input (Delta_Time);
             Check_Boundaries (Window, Player_Manager.Get_Current_Player);
             Check_Background (Window);
+        else
+            Audio_Manager.Close_Audio;
+            Fmod.Release_System;
         end if;
 
     end Update;

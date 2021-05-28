@@ -102,7 +102,21 @@ package body Audio_Manager is
 
         Fmod.Play_Sound (Sound_Handle, null, False, Channel);
 
-        end Play_Sound;
+    end Play_Sound;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Close_Audio is
+        use Fmod;
+    begin
+        Release_Sound (Background_Music);
+        Release_Sound (sfx_Button);
+        Release_Sound (sfx_Jump);
+        Release_Sound (sfx_Movement);
+        Release_Sound (sfx_Oilcan);
+        Release_Sound (sfx_Water);
+
+    end Close_Audio;
 
     --  -------------------------------------------------------------------------
 

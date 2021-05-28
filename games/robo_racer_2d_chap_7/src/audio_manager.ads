@@ -10,5 +10,6 @@ package Audio_Manager is
    procedure Load_Audio;
    procedure Pause_Movement_Channel (Pause : Boolean);
    procedure Play_Sound (aSound : Sound);
+   procedure Close_Audio;
 
 end Audio_Manager;
