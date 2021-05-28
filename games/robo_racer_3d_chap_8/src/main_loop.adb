@@ -35,8 +35,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Colour_Buffer            : GL.Objects.Buffers.Buffer;
    Game_Program             : GL.Objects.Programs.Program;
    Model_Uniform            : GL.Uniforms.Uniform;
+   View_Uniform             : GL.Uniforms.Uniform;
    Projection_Uniform       : GL.Uniforms.Uniform;
-   Texture_Uniform          : GL.Uniforms.Uniform;
+   Rotation                 : Maths.Degree := 0.0;
    --      Full_Screen                  : Boolean := False;
 
    procedure Resize_GL_Scene  (Screen : in out Glfw.Windows.Window);
@@ -46,7 +47,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    procedure Draw_Cube is
       use GL.Objects.Buffers;
       use GL.Types;
+      use GL.Types.Singles;
+      use Maths;
+      View_Matrix  : Singles.Matrix4 := Singles.Identity4;
+      Trans_Matrix : constant Singles.Matrix4 := Translation_Matrix ((0.0, 0.0, -0.7));
+      Rot_Matrix   : constant Singles.Matrix4 := Rotation_Matrix (Rotation, (1.0, 1.0, 1.0));
    begin
+      Utilities.Clear_Colour_Buffer_And_Depth;
+
+      View_Matrix := Rot_Matrix * Trans_Matrix * View_Matrix;
+      GL.Uniforms.Set_Single (View_Uniform, View_Matrix);
       --  First attribute buffer : vertices
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       Array_Buffer.Bind (Vertex_Buffer);
@@ -65,6 +75,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       GL.Attributes.Disable_Vertex_Attrib_Array (0);
       GL.Attributes.Disable_Vertex_Attrib_Array (1);
+      Rotation := Rotation - 0.5;
    end Draw_Cube;
 
    --  ------------------------------------------------------------------------
@@ -76,7 +87,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Programs.Use_Program (Game_Program);
       GL.Uniforms.Set_Single
         (Model_Uniform, GL.Types.Singles.Identity4);
-      GL.Uniforms.Set_Int (Texture_Uniform, 0);
       Draw_Cube;
 
    end Render;
@@ -133,8 +143,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         GL.Objects.Programs.Uniform_Location (Game_Program, "model_matrix");
       Projection_Uniform :=
         GL.Objects.Programs.Uniform_Location (Game_Program, "projection_matrix");
-      Texture_Uniform :=
-        GL.Objects.Programs.Uniform_Location (Game_Program, "texture2d");
+      View_Uniform :=
+        GL.Objects.Programs.Uniform_Location (Game_Program, "view_matrix");
+      GL.Uniforms.Set_Single (Model_Uniform, Singles.Identity4);
 
    exception
       when anError : others =>
