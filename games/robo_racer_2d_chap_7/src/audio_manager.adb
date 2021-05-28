@@ -103,4 +103,26 @@ package body Audio_Manager is
 
     --  -------------------------------------------------------------------------
 
+    procedure Play_Sound (aSound : Sound) is
+        use Fmod_Common;
+        Sound_Handle : Fmod_Common.Fmod_Sound_Handle;
+        Result      : Fmod_Result;
+    begin
+      case aSound is
+            when Jump_Sound => Sound_Handle := sfx_Jump;
+            when Movement_Sound => Sound_Handle := sfx_Movement;
+            when Oilcan_Sound => Sound_Handle := sfx_Oilcan;
+            when Water_Sound => Sound_Handle := sfx_Water;
+      end case;
+
+      Result := Fmod.Play_Sound (Sound_Handle, null, False, Movement_Channel);
+      if Result /= Fmod_Ok then
+         raise Audio_Exception with
+           "Audio_Manager.Play_Sound failed with failure code " &
+           Fmod_Result'Image (Result);
+      end if;
+    end Play_Sound;
+
+    --  -------------------------------------------------------------------------
+
 end Audio_Manager;
