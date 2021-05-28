@@ -714,6 +714,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Update (Credits_Button, Delta_Time);
                 Update (Exit_Button, Delta_Time);
                 Update (Delta_Time);
+                Audio_Manager.Pause_Movement_Channel (True);
                 Process_Input (Delta_Time);
 
             when Game_Credits =>
@@ -757,6 +758,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Process_Input (Delta_Time);
 
             when Game_Over =>
+                Audio_Manager.Pause_Movement_Channel (True);
                 Sprite_Manager.Update (Game_Over_Screen, Delta_Time);
                 Set_Active (Pause_Button, False);
                 Set_Visible (Pause_Button, False);

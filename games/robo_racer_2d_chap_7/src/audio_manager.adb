@@ -8,6 +8,7 @@ with Fmod;
 
 package body Audio_Manager is
 
+    sfx_Button       : Fmod_Common.Fmod_Sound_Handle := null;
     sfx_Jump         : Fmod_Common.Fmod_Sound_Handle := null;
     sfx_Movement     : Fmod_Common.Fmod_Sound_Handle := null;
     sfx_Oilcan       : Fmod_Common.Fmod_Sound_Handle := null;
@@ -70,6 +71,9 @@ package body Audio_Manager is
                 end if;
             end if;
         end if;
+
+        F_Result := Fmod.Create_Sound ("src/audio/button.wav", Fmod_Default,
+                                        null, sfx_Button);
 
         if F_Result = Fmod_Ok then
             --  Play_Sound uses the Sound handle returned by Create_Sound
