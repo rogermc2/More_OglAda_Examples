@@ -45,7 +45,7 @@ package body Buffers_Manager is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Setup_Buffers.");
+         Put_Line ("An exception occurred in Buffers_Manager.Setup_Buffers.");
          raise;
    end Setup_Buffers;
 

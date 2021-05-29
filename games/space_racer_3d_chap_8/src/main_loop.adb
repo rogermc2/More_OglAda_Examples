@@ -7,7 +7,6 @@ with Glfw.Input.Keys;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
-with GL.Attributes;
 with GL.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
@@ -47,14 +46,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       View_Matrix := Rot_Matrix * Trans_Matrix * View_Matrix;
       Shader_Manager.Set_View_Matrix (View_Matrix);
-      Buffers_Manager.Setup_Buffers;
 
+      Buffers_Manager.Vertices_Array_Object.Bind;
       GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
                                             First => 0,
                                             Count => 12 * 3);
-
-      GL.Attributes.Disable_Vertex_Attrib_Array (0);
-      GL.Attributes.Disable_Vertex_Attrib_Array (1);
       Rotation := Rotation - 0.5;
    end Draw_Cube;
 
