@@ -11,17 +11,15 @@ with GL.Attributes;
 with GL.Buffers;
 with GL.Objects.Buffers;
 with GL.Objects.Programs;
-with GL.Objects.Shaders;
 with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
-with GL.Uniforms;
 with GL.Window;
 
 with Maths;
-with Program_Loader;
 with Utilities;
 
 with Buffers_Manager;
+with Shader_Manager;
 
 --  ------------------------------------------------------------------------
 
@@ -34,9 +32,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Vertex_Buffer            : GL.Objects.Buffers.Buffer;
    Colour_Buffer            : GL.Objects.Buffers.Buffer;
    Game_Program             : GL.Objects.Programs.Program;
-   Model_Uniform            : GL.Uniforms.Uniform;
-   View_Uniform             : GL.Uniforms.Uniform;
-   Projection_Uniform       : GL.Uniforms.Uniform;
    Rotation                 : Maths.Degree := 0.0;
    --      Full_Screen                  : Boolean := False;
 
@@ -56,7 +51,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Colour_Buffer_And_Depth;
 
       View_Matrix := Rot_Matrix * Trans_Matrix * View_Matrix;
-      GL.Uniforms.Set_Single (View_Uniform, View_Matrix);
+      Shader_Manager.Set_View_Matrix (View_Matrix);
       --  First attribute buffer : vertices
       GL.Attributes.Enable_Vertex_Attrib_Array (0);
       Array_Buffer.Bind (Vertex_Buffer);
@@ -85,8 +80,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Colour;
       Resize_GL_Scene (Screen);
       GL.Objects.Programs.Use_Program (Game_Program);
-      GL.Uniforms.Set_Single
-        (Model_Uniform, GL.Types.Singles.Identity4);
+      Shader_Manager.Set_Model_Matrix (GL.Types.Singles.Identity4);
       Draw_Cube;
 
    end Render;
@@ -112,15 +106,13 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
          Projection_Matrix);
 
       Use_Program (Game_Program);
-      GL.Uniforms.Set_Single (Projection_Uniform, Projection_Matrix);
+      Shader_Manager.Set_Projection_Matrix (Projection_Matrix);
 
    end Resize_GL_Scene;
 
    --  ------------------------------------------------------------------------
 
    procedure Start_Game (Screen : in out Glfw.Windows.Window) is
-      use Program_Loader;
-      use GL.Objects.Shaders;
       use GL.Types;
       Window_Width       : Glfw.Size;
       Window_Height      : Glfw.Size;
@@ -130,22 +122,11 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
 
+      Shader_Manager.Init_Shaders (Game_Program);
+
       Vertices_Array_Object.Initialize_Id;
       Vertices_Array_Object.Bind;
       Buffers_Manager.Setup_Buffers (Vertex_Buffer, Colour_Buffer);
-
-      Game_Program := Program_From
-        ((Src ("src/shaders/vertext_3D_shader.glsl", Vertex_Shader),
-         Src ("src/shaders/fragment_3D_shader.glsl", Fragment_Shader)));
-      GL.Objects.Programs.Use_Program (Game_Program);
-
-      Model_Uniform :=
-        GL.Objects.Programs.Uniform_Location (Game_Program, "model_matrix");
-      Projection_Uniform :=
-        GL.Objects.Programs.Uniform_Location (Game_Program, "projection_matrix");
-      View_Uniform :=
-        GL.Objects.Programs.Uniform_Location (Game_Program, "view_matrix");
-      GL.Uniforms.Set_Single (Model_Uniform, Singles.Identity4);
 
    exception
       when anError : others =>
@@ -178,11 +159,9 @@ begin
    end loop;
 
 exception
-   when Program_Loader.Shader_Loading_Error =>
-      -- message was already written to stdout
-      null;
    when anError : others =>
       Put_Line ("An exception occurred in Main_Loop.");
       Put_Line (Exception_Information (anError));
       raise;
+
 end Main_Loop;
