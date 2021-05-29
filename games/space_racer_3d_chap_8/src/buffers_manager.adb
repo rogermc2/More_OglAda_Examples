@@ -3,6 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Objects.Buffers;
+with GL.Objects.Vertex_Arrays;
 with GL.Types;
 
 with Utilities;
@@ -10,8 +11,16 @@ with Cube_Data;
 
 package body Buffers_Manager is
 
+   Cube_VAO       : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer  : GL.Objects.Buffers.Buffer;
    Colour_Buffer  : GL.Objects.Buffers.Buffer;
+
+  --  --------------------------------------------------------------------------
+
+   procedure Bind_Cube_VAO is
+   begin
+      Cube_VAO.Bind;
+   end Bind_Cube_VAO;
 
   --  --------------------------------------------------------------------------
 
