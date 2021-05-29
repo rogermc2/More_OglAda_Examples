@@ -19,7 +19,7 @@ package body Shader_Manager is
     begin
 
         Game_Program := Program_From
-          ((Src ("src/shaders/vertext_3D_shader.glsl", Vertex_Shader),
+          ((Src ("src/shaders/vertex_3D_shader.glsl", Vertex_Shader),
            Src ("src/shaders/fragment_3D_shader.glsl", Fragment_Shader)));
         GL.Objects.Programs.Use_Program (Game_Program);
 
