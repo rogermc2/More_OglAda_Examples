@@ -17,6 +17,7 @@ with Maths;
 with Utilities;
 
 with Buffers_Manager;
+with Model;
 with Shader_Manager;
 
 --  ------------------------------------------------------------------------
@@ -27,7 +28,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                 (0.6, 0.6, 0.6, 0.0);
    Border_Width             : constant GL.Types.Size := 2;
    Game_Program             : GL.Objects.Programs.Program;
-   Rotation                 : Maths.Degree := 0.0;
+--     Rotation                 : Maths.Degree := 0.0;
    --      Full_Screen                  : Boolean := False;
 
    procedure Resize_GL_Scene  (Screen : in out Glfw.Windows.Window);
@@ -52,7 +53,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
                                             First => 0,
                                             Count => 4 * 3);
-      Rotation := Rotation - 0.5;
+--        Rotation := Rotation - 0.5;
    end Draw_Pyramid;
 
    --  ------------------------------------------------------------------------
@@ -103,6 +104,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shader_Manager.Init_Shaders (Game_Program);
       Buffers_Manager.Setup_Buffers;
+      Model.Initialize ("src/ship.obj");
 
    exception
       when anError : others =>
