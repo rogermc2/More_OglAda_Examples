@@ -2,6 +2,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
+with GL.Objects.Buffers;
 with GL.Types;
 
 with Utilities;
@@ -9,28 +10,26 @@ with Cube_Data;
 
 package body Buffers_Manager is
 
+   Vertex_Buffer  : GL.Objects.Buffers.Buffer;
+   Colour_Buffer  : GL.Objects.Buffers.Buffer;
+
   --  --------------------------------------------------------------------------
 
-   procedure Make_Buffer (Target : GL.Objects.Buffers.Buffer_Target;
-                          Buffer : in out GL.Objects.Buffers.Buffer) is
-   begin
-      Buffer.Initialize_Id;
-      Target.Bind (Buffer);
-   end Make_Buffer;
-
-   --  -------------------------------------------------------------------------
-
-   procedure Setup_Buffers
-     (Vertex_Buffer, Colour_Buffer : in out GL.Objects.Buffers.Buffer) is
+   procedure Setup_Buffers is
       use GL.Types;
       use GL.Objects.Buffers;
 
    begin
-      Make_Buffer (GL.Objects.Buffers.Array_Buffer, Vertex_Buffer);
+      Vertices_Array_Object.Initialize_Id;
+      Vertices_Array_Object.Bind;
+
+      Vertex_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Vertex_Buffer);
       Utilities.Load_Vertex_Buffer
         (Array_Buffer, Cube_Data.Vertex_Data, Static_Draw);
 
-      Make_Buffer (GL.Objects.Buffers.Array_Buffer, Colour_Buffer);
+      Colour_Buffer.Initialize_Id;
+      Array_Buffer.Bind (Colour_Buffer);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Cube_Data.Colour_Data,
                                     Static_Draw);
 
@@ -43,6 +42,7 @@ package body Buffers_Manager is
       GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, GL.Types.Single_Type,
                                                False, 0, 0);
       GL.Attributes.Enable_Vertex_Attrib_Array (1);
+
    exception
       when others =>
          Put_Line ("An exception occurred in Setup_Buffers.");

@@ -9,7 +9,6 @@ with Glfw.Windows.Context;
 
 with GL.Attributes;
 with GL.Buffers;
-with GL.Objects.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
@@ -28,9 +27,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Back                     : constant GL.Types.Colors.Color :=
                                 (0.6, 0.6, 0.6, 0.0);
    Border_Width             : constant GL.Types.Size := 2;
-   Vertices_Array_Object    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Vertex_Buffer            : GL.Objects.Buffers.Buffer;
-   Colour_Buffer            : GL.Objects.Buffers.Buffer;
    Game_Program             : GL.Objects.Programs.Program;
    Rotation                 : Maths.Degree := 0.0;
    --      Full_Screen                  : Boolean := False;
@@ -40,7 +36,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Draw_Cube is
-      use GL.Objects.Buffers;
       use GL.Types;
       use GL.Types.Singles;
       use Maths;
@@ -52,17 +47,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       View_Matrix := Rot_Matrix * Trans_Matrix * View_Matrix;
       Shader_Manager.Set_View_Matrix (View_Matrix);
-      --  First attribute buffer : vertices
-      GL.Attributes.Enable_Vertex_Attrib_Array (0);
-      Array_Buffer.Bind (Vertex_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer
-        (0, 3, Single_Type, False, 0, 0);
-
-      --  Second attribute buffer : Colours
-      GL.Attributes.Enable_Vertex_Attrib_Array (1);
-      Array_Buffer.Bind (Colour_Buffer);
-      GL.Attributes.Set_Vertex_Attrib_Pointer
-        (1, 3, Single_Type, False, 0, 0);
+      Buffers_Manager.Setup_Buffers;
 
       GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
                                             First => 0,
@@ -123,10 +108,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Buffers.Set_Depth_Function (LEqual);
 
       Shader_Manager.Init_Shaders (Game_Program);
-
-      Vertices_Array_Object.Initialize_Id;
-      Vertices_Array_Object.Bind;
-      Buffers_Manager.Setup_Buffers (Vertex_Buffer, Colour_Buffer);
+      Buffers_Manager.Setup_Buffers;
 
    exception
       when anError : others =>
