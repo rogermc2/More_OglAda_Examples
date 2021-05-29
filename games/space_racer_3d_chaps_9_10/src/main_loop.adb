@@ -24,10 +24,12 @@ with Shader_Manager;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
-   Back                     : constant GL.Types.Colors.Color :=
+   Back          : constant GL.Types.Colors.Color :=
                                 (0.6, 0.6, 0.6, 0.0);
-   Border_Width             : constant GL.Types.Size := 2;
-   Game_Program             : GL.Objects.Programs.Program;
+   Border_Width  : constant GL.Types.Size := 2;
+   Game_Program  : GL.Objects.Programs.Program;
+   aModel        : Model.Model_Data;
+   Model_Colour  : constant GL.Types.Colors.Basic_Color := (0.5, 0.5, 0.5);
 --     Rotation                 : Maths.Degree := 0.0;
    --      Full_Screen                  : Boolean := False;
 
@@ -104,7 +106,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shader_Manager.Init_Shaders (Game_Program);
       Buffers_Manager.Setup_Buffers;
-      Model.Initialize ("src/ship.obj");
+      Model.Initialize (aModel, "src/ship.obj", Model_Colour);
 
    exception
       when anError : others =>

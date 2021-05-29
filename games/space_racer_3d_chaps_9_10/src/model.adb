@@ -14,20 +14,22 @@ package body Model is
    Model_Normals_Buffer : GL.Objects.Buffers.Buffer;
    Model_UVs_Buffer     : GL.Objects.Buffers.Buffer;
 
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
    procedure Bind_Model_VAO is
    begin
       Model_VAO.Bind;
    end Bind_Model_VAO;
 
-  --  --------------------------------------------------------------------------
+   --  --------------------------------------------------------------------------
 
-    procedure Initialize (File_Path : String) is
-        use GL.Objects.Buffers;
-        use GL.Types;
-        Vertex_Count : Int;
+   procedure Initialize (aModel : in out Model_Data; File_Path : String;
+                         Colour : GL.Types.Colors.Basic_Color) is
+      use GL.Objects.Buffers;
+      use GL.Types;
+      Vertex_Count : Int;
    begin
+      aModel.Model_Colour := Colour;
       Model_VAO.Initialize_Id;
       Model_VAO.Bind;
 
@@ -62,15 +64,27 @@ package body Model is
 
       end;
 
-    end Initialize;
+   end Initialize;
 
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
-    procedure Render is
-    begin
-        null;
-    end Render;
+   procedure Render is
+   begin
+      null;
+   end Render;
 
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
+
+   procedure Update (aModel : in out Model_Data; Delta_Time : Float) is
+      use GL.Types.Singles;
+      Target_Position  : Vector3 := aModel.Position;
+      Current_Position : Vector3 := aModel.Position;
+      Target_Rotation  : Vector3 := aModel.Heading_Rotation;
+      Distance         : Float := aModel.Velocity * Delta_Time;
+   begin
+      null;
+   end Update;
+
+   --  ------------------------------------------------------------------------
 
 end Model;
