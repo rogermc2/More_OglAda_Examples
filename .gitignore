@@ -11,3 +11,4 @@ bin
 *.o
 *.ooutline
 * copy.gpr
+*.pbxproj
