@@ -10,7 +10,6 @@ with Glfw.Windows.Context;
 with GL.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
-with GL.Toggles;
 with GL.Types.Colors;
 with GL.Window;
 
@@ -39,22 +38,20 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       use GL.Types;
       use GL.Types.Singles;
       use Maths;
-      View_Matrix  : Singles.Matrix4 := Singles.Identity4;
-      Trans_Matrix : constant Singles.Matrix4 := Translation_Matrix ((0.0, 0.0, -0.7));
+      Model_Matrix  : Singles.Matrix4 := Singles.Identity4;
+      Trans_Matrix : constant Singles.Matrix4 := Translation_Matrix ((0.0, 0.0, -0.9));
       Rot_Matrix   : constant Singles.Matrix4 := Rotation_Matrix (Rotation, (1.0, 1.0, 1.0));
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
 
-      View_Matrix := Rot_Matrix * Trans_Matrix * View_Matrix;
---        Utilities.Print_Matrix ("View_Matrix", View_Matrix);
+      Model_Matrix := Rot_Matrix * Trans_Matrix;
       GL.Objects.Programs.Use_Program (Game_Program);
-      Shader_Manager.Set_View_Matrix (View_Matrix);
+      Shader_Manager.Set_Model_Matrix (Model_Matrix);
 
       Buffers_Manager.Cube_VAO.Bind;
       GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
                                             First => 0,
                                             Count => 12 * 3);
-      --        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       Rotation := Rotation - 0.5;
    end Draw_Cube;
 
@@ -85,9 +82,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (Border_Width, Border_Width, VP_Width, VP_Height);
 
       Maths.Init_Perspective_Transform
-        (Maths.Degree (65.0), Single (Screen_Width), Single (Screen_Height), 0.1, 100.0,
+        (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height), 0.1, 100.0,
          Projection_Matrix);
---        Utilities.Print_Matrix ("Projection_Matrix", Projection_Matrix);
       Use_Program (Game_Program);
       Shader_Manager.Set_Projection_Matrix (Projection_Matrix);
 
@@ -104,7 +100,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
-      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Shader_Manager.Init_Shaders (Game_Program);
       Buffers_Manager.Setup_Buffers;
