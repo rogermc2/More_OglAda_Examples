@@ -7,9 +7,10 @@ with Glfw.Input.Keys;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
-with GL.Buffers;
+--  with GL.Buffers;
 with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
+with GL.Toggles;
 with GL.Types.Colors;
 with GL.Window;
 
@@ -52,6 +53,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
                                             First => 0,
                                             Count => 12 * 3);
+--        GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       Rotation := Rotation - 0.5;
    end Draw_Cube;
 
@@ -93,14 +95,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    --  ------------------------------------------------------------------------
 
    procedure Start_Game (Screen : in out Glfw.Windows.Window) is
-      use GL.Types;
+--        use GL.Types;
       Window_Width       : Glfw.Size;
       Window_Height      : Glfw.Size;
    begin
       Screen'Access.Get_Size (Window_Width, Window_Height);
 
       Utilities.Clear_Background_Colour_And_Depth (Back);
-      GL.Buffers.Set_Depth_Function (LEqual);
+--      GL.Buffers.Set_Depth_Function (LEqual);
+      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Shader_Manager.Init_Shaders (Game_Program);
       Buffers_Manager.Setup_Buffers;
