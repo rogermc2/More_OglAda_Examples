@@ -34,26 +34,26 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Draw_Cube is
+   procedure Draw_Pyramid is
       use GL.Types;
       use GL.Types.Singles;
       use Maths;
-      Model_Matrix  : Singles.Matrix4 := Singles.Identity4;
-      Trans_Matrix : constant Singles.Matrix4 := Translation_Matrix ((0.0, 0.0, -0.9));
-      Rot_Matrix   : constant Singles.Matrix4 := Rotation_Matrix (Rotation, (1.0, 1.0, 1.0));
+      Model_Matrix : Singles.Matrix4 := Singles.Identity4;
+      Trans_Matrix : constant Singles.Matrix4 := Translation_Matrix ((-1.5, 0.0, -6.0));
+--        Rot_Matrix   : constant Singles.Matrix4 := Singles.Identity4;
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
 
-      Model_Matrix := Rot_Matrix * Trans_Matrix;
+      Model_Matrix := Trans_Matrix;
       GL.Objects.Programs.Use_Program (Game_Program);
       Shader_Manager.Set_Model_Matrix (Model_Matrix);
 
       Buffers_Manager.Cube_VAO.Bind;
       GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
                                             First => 0,
-                                            Count => 12 * 3);
+                                            Count => 4 * 3);
       Rotation := Rotation - 0.5;
-   end Draw_Cube;
+   end Draw_Pyramid;
 
    --  ------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Utilities.Clear_Colour;
       Resize_GL_Scene (Screen);
-      Draw_Cube;
+      Draw_Pyramid;
 
    end Render;
 

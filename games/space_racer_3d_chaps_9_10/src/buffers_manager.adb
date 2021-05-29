@@ -32,7 +32,6 @@ package body Buffers_Manager is
                                                Kind   => GL.Types.Single_Type,
                                                Normalized => False,
                                                Stride => 0, Offset => 0);
-
       Colour_Buffer.Initialize_Id;
       Array_Buffer.Bind (Colour_Buffer);
       Utilities.Load_Vertex_Buffer (Array_Buffer, Pyramid_Data.Colour_Data,
