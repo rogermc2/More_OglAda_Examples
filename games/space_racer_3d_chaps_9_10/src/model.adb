@@ -1,6 +1,7 @@
 
 with GL.Attributes;
 with GL.Objects.Buffers;
+with GL.Objects.Vertex_Arrays;
 with GL.Types;
 
 with Load_Object_File;
@@ -8,11 +9,19 @@ with Utilities;
 
 package body Model is
 
-   Vertex_Buffer            : GL.Objects.Buffers.Buffer;
-   Normals_Buffer           : GL.Objects.Buffers.Buffer;
-   UVs_Buffer               : GL.Objects.Buffers.Buffer;
+   Model_VAO        : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Vertex_Buffer    : GL.Objects.Buffers.Buffer;
+   Normals_Buffer   : GL.Objects.Buffers.Buffer;
+   UVs_Buffer       : GL.Objects.Buffers.Buffer;
 
     --  ------------------------------------------------------------------------
+
+   procedure Bind_Model_VAO is
+   begin
+      Model_VAO.Bind;
+   end Bind_Model_VAO;
+
+  --  --------------------------------------------------------------------------
 
     procedure Initialize (File_Path : String) is
         use GL.Objects.Buffers;

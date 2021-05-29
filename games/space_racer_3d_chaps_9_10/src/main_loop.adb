@@ -48,7 +48,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Objects.Programs.Use_Program (Game_Program);
       Shader_Manager.Set_Model_Matrix (Model_Matrix);
 
-      Buffers_Manager.Cube_VAO.Bind;
+      Buffers_Manager.Bind_Pyramid_VAO;
       GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
                                             First => 0,
                                             Count => 4 * 3);
