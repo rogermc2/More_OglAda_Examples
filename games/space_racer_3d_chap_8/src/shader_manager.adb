@@ -30,35 +30,40 @@ package body Shader_Manager is
         View_Uniform :=
           GL.Objects.Programs.Uniform_Location (Game_Program, "view_matrix");
 
-exception
-   when anError : others =>
-      Put_Line ("An exception occurred in Shader_Manager.Init_Shaders.");
-      Put_Line (Exception_Information (anError));
-      raise;
+        GL.Objects.Programs.Use_Program (Game_Program);
+        GL.Uniforms.Set_Single (Model_Uniform, GL.Types.Singles.Identity4);
+        GL.Uniforms.Set_Single (Projection_Uniform, GL.Types.Singles.Identity4);
+        GL.Uniforms.Set_Single (View_Uniform, GL.Types.Singles.Identity4);
+
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Shader_Manager.Init_Shaders.");
+            Put_Line (Exception_Information (anError));
+            raise;
     end Init_Shaders;
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Model_Matrix (Model_Matrix : GL.Types.Singles.Matrix4) is
-   begin
-      GL.Uniforms.Set_Single (Model_Uniform, Model_Matrix);
-   end Set_Model_Matrix;
+    procedure Set_Model_Matrix (Model_Matrix : GL.Types.Singles.Matrix4) is
+    begin
+        GL.Uniforms.Set_Single (Model_Uniform, Model_Matrix);
+    end Set_Model_Matrix;
 
-   --   ---------------------------------------------------------------------------------
+    --   ---------------------------------------------------------------------------------
 
-   procedure Set_Projection_Matrix (Projection_Matrix : GL.Types.Singles.Matrix4) is
-   begin
-      GL.Uniforms.Set_Single (Projection_Uniform, Projection_Matrix);
-   end Set_Projection_Matrix;
+    procedure Set_Projection_Matrix (Projection_Matrix : GL.Types.Singles.Matrix4) is
+    begin
+        GL.Uniforms.Set_Single (Projection_Uniform, Projection_Matrix);
+    end Set_Projection_Matrix;
 
-   --   ---------------------------------------------------------------------------------
+    --   ---------------------------------------------------------------------------------
 
-   procedure Set_View_Matrix (View_Matrix : GL.Types.Singles.Matrix4) is
-   begin
-      GL.Uniforms.Set_Single (View_Uniform, View_Matrix);
-   end Set_View_Matrix;
+    procedure Set_View_Matrix (View_Matrix : GL.Types.Singles.Matrix4) is
+    begin
+        GL.Uniforms.Set_Single (View_Uniform, View_Matrix);
+    end Set_View_Matrix;
 
-   --   ---------------------------------------------------------------------------------
+    --   ---------------------------------------------------------------------------------
 
 
 end Shader_Manager;

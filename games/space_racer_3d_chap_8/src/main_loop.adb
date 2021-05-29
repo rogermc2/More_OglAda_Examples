@@ -45,6 +45,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Colour_Buffer_And_Depth;
 
       View_Matrix := Rot_Matrix * Trans_Matrix * View_Matrix;
+      GL.Objects.Programs.Use_Program (Game_Program);
       Shader_Manager.Set_View_Matrix (View_Matrix);
 
       Buffers_Manager.Vertices_Array_Object.Bind;
@@ -60,8 +61,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Utilities.Clear_Colour;
       Resize_GL_Scene (Screen);
-      GL.Objects.Programs.Use_Program (Game_Program);
-      Shader_Manager.Set_Model_Matrix (GL.Types.Singles.Identity4);
       Draw_Cube;
 
    end Render;
