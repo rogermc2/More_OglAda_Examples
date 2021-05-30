@@ -1,4 +1,6 @@
 
+with Ada.Containers.Doubly_Linked_Lists;
+
 with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
@@ -17,16 +19,27 @@ private
 
 --     type Rotation_Vector is
 --        array (GL.Index_3D range GL.X .. GL.Z) of Maths.Degree;
+    use GL.Types.Singles;
+    package Vertices_Package is new
+      Ada.Containers.Doubly_Linked_Lists (Vector3);
+      subtype Vertex_List is Vertices_Package.List;
+
+    package UV_Package is new
+      Ada.Containers.Doubly_Linked_Lists (Vector2);
+      subtype UV_List is UV_Package.List;
 
    type Model_Data is record
    Model_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Model_Vertex_Buffer  : GL.Objects.Buffers.Buffer;
    Model_Normals_Buffer : GL.Objects.Buffers.Buffer;
    Model_UVs_Buffer     : GL.Objects.Buffers.Buffer;
-   Position             : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
-   Heading              : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
-   Base_Rotation        : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
-   Heading_Rotation     : GL.Types.Singles.Vector3 := (0.0, 0.0, 0.0);
+   Vertices             : Vertex_List := Vertices_Package.Empty_List;
+   Normals              : Vertex_List := Vertices_Package.Empty_List;
+   UVs                  : UV_List := UV_Package.Empty_List;
+   Position             : Vector3 := (0.0, 0.0, 0.0);
+   Heading              : Vector3 := (0.0, 0.0, 0.0);
+   Base_Rotation        : Vector3 := (0.0, 0.0, 0.0);
+   Heading_Rotation     : Vector3 := (0.0, 0.0, 0.0);
    Model_Colour         : GL.Types.Colors.Basic_Color := (0.0, 0.0, 0.0);
    Velocity             : GL.Types.Single := 0.0;
    Radius               : GL.Types.Single := 1.0;
