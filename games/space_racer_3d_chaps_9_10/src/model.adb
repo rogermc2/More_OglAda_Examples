@@ -36,7 +36,6 @@ package body Model is
         aModel.Model_VAO.Bind;
 
         Vertex_Count := Load_Object_File.Mesh_Size (File_Path);
---          Put_Line ("Model.Initialize Vertex_Count " & Int'Image (Vertex_Count));
         declare
             Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
             UVs              : Singles.Vector2_Array (1 .. Vertex_Count);
@@ -46,8 +45,6 @@ package body Model is
             Load_Object_File.Load_Object (File_Path, Vertices, UVs, Normals);
             for index in 1 .. Vertex_Count loop
                 aModel.Vertices.Append (Vertices (index));
-                aModel.Normals.Append (Normals (index));
-                aModel.UVs.Append (UVs (index));
             end loop;
 
             aModel.Model_Vertex_Buffer.Initialize_Id;
@@ -56,14 +53,6 @@ package body Model is
             GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False,
                                                      0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (0);
-
-            aModel.Model_Normals_Buffer.Initialize_Id;
-            Array_Buffer.Bind (aModel.Model_Normals_Buffer);
-            Utilities.Load_Vertex_Buffer (Array_Buffer, Normals, Static_Draw);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False,
-                                                     0, 0);
-            GL.Attributes.Enable_Vertex_Attrib_Array (1);
-
         end;
 
    exception
@@ -85,10 +74,8 @@ package body Model is
         View_Matrix   : Matrix4 := Singles.Identity4;
         Num_Vertices  : constant Int := Int (aModel.Vertices.Length);
         Vertices      : Singles.Vector3_Array (1 .. Num_Vertices);
-        Normals       : Singles.Vector3_Array (1 .. Num_Vertices);
         Index         : Int := 0;
         V_Cursor      : Cursor := aModel.Vertices.First;
-        N_Cursor      : Cursor := aModel.Normals.First;
     begin
         if aModel.Is_Visible then
             Maths.Init_Rotation_Transform
@@ -97,9 +84,7 @@ package body Model is
             while Has_Element (V_Cursor) loop
                 Index := Index + 1;
                 Vertices (Index) := Element  (V_Cursor);
-                Normals (Index) := Element  (N_Cursor);
                 Next (V_Cursor);
-                Next (N_Cursor);
             end loop;
 
             if aModel.Is_Ship then
@@ -122,14 +107,6 @@ package body Model is
             GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False,
                                                      0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (0);
-
-            GL.Attributes.Disable_Vertex_Attrib_Array (1);
-            aModel.Model_Normals_Buffer.Clear;
-            Array_Buffer.Bind (aModel.Model_Normals_Buffer);
-            Utilities.Load_Vertex_Buffer (Array_Buffer, Normals, Static_Draw);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (1, 3, Single_Type, False,
-                                                     0, 0);
-            GL.Attributes.Enable_Vertex_Attrib_Array (1);
 
             GL.Objects.Programs.Use_Program (Model_Program);
             Set_Colour (aModel.Model_Colour);
