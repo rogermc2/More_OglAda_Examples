@@ -1,7 +1,7 @@
 #version 410 core
 
 layout (location = 0) in vec3 points3d;
-layout (location = 1) in vec3 normals;
+// layout (location = 1) in vec3 normals;
 // layout (location = 1) in vec2 uvs_in;
 
 uniform mat4 model_matrix;
