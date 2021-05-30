@@ -1,4 +1,7 @@
 
+with Ada.Exceptions; use Ada.Exceptions;
+with Ada.Text_IO; use Ada.Text_IO;
+
 with GL.Attributes;
 with GL.Objects.Programs;
 with GL.Types;
@@ -33,13 +36,16 @@ package body Model is
         aModel.Model_VAO.Bind;
 
         Vertex_Count := Load_Object_File.Mesh_Size (File_Path);
+        Put_Line ("Model.Initialize Vertex_Count " & Int'Image (Vertex_Count));
         declare
             Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
             UVs              : Singles.Vector2_Array (1 .. Vertex_Count);
             Normals          : Singles.Vector3_Array (1 .. Vertex_Count);
         begin
             Shader_Manager_Model.Init_Shaders (Model_Program);
+            Put_Line ("Model.Initialize Load_Object_File ");
             Load_Object_File.Load_Object (File_Path, Vertices, UVs, Normals);
+            Put_Line ("Model.Initialize Object_File loaded");
             for index in 1 .. Vertex_Count loop
                 aModel.Vertices.Append (Vertices (index));
                 aModel.Normals.Append (Normals (index));
@@ -60,15 +66,13 @@ package body Model is
                                                      0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (1);
 
---              aModel.Model_UVs_Buffer.Initialize_Id;
---              Array_Buffer.Bind (aModel.Model_UVs_Buffer);
---              Utilities.Load_Vertex_Buffer (Array_Buffer, UVs, Static_Draw);
---              GL.Attributes.Set_Vertex_Attrib_Pointer (2, 2, Single_Type, False,
---                                                       0, 0);
---              GL.Attributes.Enable_Vertex_Attrib_Array (2);
-
         end;
 
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Model.Initialize.");
+         Put_Line (Exception_Information (anError));
+         raise;
     end Initialize;
 
     --  ------------------------------------------------------------------------
@@ -135,6 +139,29 @@ package body Model is
             Set_View_Matrix (View_Matrix);
         end if;
     end Render;
+
+    --  ------------------------------------------------------------------------
+
+   procedure Set_Base_Rotation (aModel   : in out Model_Data;
+                                Rotation : GL.Types.Singles.Vector3) is
+   begin
+      aModel.Base_Rotation := Rotation;
+    end Set_Base_Rotation;
+
+    --  ------------------------------------------------------------------------
+
+   procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean) is
+   begin
+      aModel.Is_Ship := State;
+    end Set_Is_Ship;
+
+    --  ------------------------------------------------------------------------
+
+   procedure Set_Velocity (aModel   : in out Model_Data;
+                           Velocity : GL.Types.Single) is
+   begin
+      aModel.Velocity := Velocity;
+    end Set_Velocity;
 
     --  ------------------------------------------------------------------------
 

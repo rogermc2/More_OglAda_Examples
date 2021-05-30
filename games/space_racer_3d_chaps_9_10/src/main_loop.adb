@@ -28,8 +28,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                 (0.6, 0.6, 0.6, 0.0);
    Border_Width  : constant GL.Types.Size := 2;
    Game_Program  : GL.Objects.Programs.Program;
-   aModel        : Model.Model_Data;
-   Model_Colour  : constant GL.Types.Colors.Basic_Color := (0.5, 0.5, 0.5);
+   Ship          : Model.Model_Data;
+   Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
+   Asteriods     : array (1 .. 3) of Model.Model_Data;
 --     Rotation                 : Maths.Degree := 0.0;
    --      Full_Screen                  : Boolean := False;
 
@@ -106,7 +107,15 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shader_Manager_Game.Init_Shaders (Game_Program);
       Buffers_Manager.Setup_Buffers;
-      Model.Initialize (aModel, "src/ship.obj", Model_Colour);
+      Model.Initialize (Ship, "src/ship.obj", Ship_Colour);
+      Model.Set_Is_Ship (Ship, True);
+      Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
+      Model.Set_Velocity (Ship, 1.0);
+
+      Model.Initialize (Asteriods (1), "src/asteroid.obj",  (1.0, 0.0, 0.0));
+--        Model.Initialize (Asteriods (2), "src/asteroid.obj",  (0.0, 1.0, 0.0));
+--        Model.Initialize (Asteriods (3), "src/asteroid.obj",  (0.0, 1.0, 1.0));
+
 
    exception
       when anError : others =>
