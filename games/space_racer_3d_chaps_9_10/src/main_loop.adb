@@ -8,17 +8,12 @@ with Glfw.Windows;
 with Glfw.Windows.Context;
 
 with GL.Buffers;
-with GL.Objects.Programs;
-with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
 with GL.Window;
 
-with Maths;
 with Utilities;
 
-with Buffers_Manager;
 with Model;
-with Shader_Manager_Game;
 
 --  ------------------------------------------------------------------------
 
@@ -27,7 +22,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Back          : constant GL.Types.Colors.Color :=
                                 (0.6, 0.6, 0.6, 0.0);
    Border_Width  : constant GL.Types.Size := 2;
-   Game_Program  : GL.Objects.Programs.Program;
    Ship          : Model.Model_Data;
    Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
    Asteriods     : array (1 .. 3) of Model.Model_Data;
@@ -39,59 +33,34 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Draw_Pyramid is
-      use GL.Types;
-      use GL.Types.Singles;
-      use Maths;
-      Model_Matrix : Singles.Matrix4 := Singles.Identity4;
-      Trans_Matrix : constant Singles.Matrix4 := Translation_Matrix ((-1.5, 0.0, -6.0));
---        Rot_Matrix   : constant Singles.Matrix4 := Singles.Identity4;
-   begin
-      Utilities.Clear_Colour_Buffer_And_Depth;
-
-      Model_Matrix := Trans_Matrix;
-      GL.Objects.Programs.Use_Program (Game_Program);
-      Shader_Manager_Game.Set_Model_Matrix (Model_Matrix);
-
-      Buffers_Manager.Bind_Pyramid_VAO;
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
-                                            First => 0,
-                                            Count => 4 * 3);
---        Rotation := Rotation - 0.5;
-   end Draw_Pyramid;
-
-   --  ------------------------------------------------------------------------
-
    procedure Render (Screen : in out Glfw.Windows.Window) is
    begin
       Utilities.Clear_Colour;
       Resize_GL_Scene (Screen);
-      Draw_Pyramid;
-
+      Model.Render (Ship);
    end Render;
 
    --  ------------------------------------------------------------------------
 
    procedure Resize_GL_Scene (Screen : in out Glfw.Windows.Window) is
-      use GL.Objects.Programs;
       use GL.Types;
       Screen_Width      : Glfw.Size;
       Screen_Height     : Glfw.Size;
       VP_Width          : Size;
       VP_Height         : Size;
-      Projection_Matrix : Singles.Matrix4 := Singles.Identity4;
+--        Projection_Matrix : Singles.Matrix4 := Singles.Identity4;
    begin
       Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
       VP_Width := Size (Screen_Width) - 2 * Border_Width;
       VP_Height := Size (Screen_Height) - 2 * Border_Width;
       GL.Window.Set_Viewport (Border_Width, Border_Width, VP_Width, VP_Height);
 
-      Maths.Init_Perspective_Transform
-        (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height),
-         0.1, 100.0,
-         Projection_Matrix);
-      Use_Program (Game_Program);
-      Shader_Manager_Game.Set_Projection_Matrix (Projection_Matrix);
+--        Maths.Init_Perspective_Transform
+--          (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height),
+--           0.1, 100.0,
+--           Projection_Matrix);
+--        Use_Program (Game_Program);
+--        Shader_Manager_Game.Set_Projection_Matrix (Projection_Matrix);
 
    end Resize_GL_Scene;
 
@@ -107,8 +76,6 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
 
-      Shader_Manager_Game.Init_Shaders (Game_Program);
-      Buffers_Manager.Setup_Buffers;
       Model.Initialize (Ship, "src/tri_ship.obj", Ship_Colour);
       Model.Set_Is_Ship (Ship, True);
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
