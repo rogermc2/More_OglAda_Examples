@@ -18,7 +18,7 @@ with Utilities;
 
 with Buffers_Manager;
 with Model;
-with Shader_Manager;
+with Shader_Manager_Game;
 
 --  ------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Model_Matrix := Trans_Matrix;
       GL.Objects.Programs.Use_Program (Game_Program);
-      Shader_Manager.Set_Model_Matrix (Model_Matrix);
+      Shader_Manager_Game.Set_Model_Matrix (Model_Matrix);
 
       Buffers_Manager.Bind_Pyramid_VAO;
       GL.Objects.Vertex_Arrays.Draw_Arrays (Mode  => Triangles,
@@ -88,7 +88,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
         (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height), 0.1, 100.0,
          Projection_Matrix);
       Use_Program (Game_Program);
-      Shader_Manager.Set_Projection_Matrix (Projection_Matrix);
+      Shader_Manager_Game.Set_Projection_Matrix (Projection_Matrix);
 
    end Resize_GL_Scene;
 
@@ -104,7 +104,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
 
-      Shader_Manager.Init_Shaders (Game_Program);
+      Shader_Manager_Game.Init_Shaders (Game_Program);
       Buffers_Manager.Setup_Buffers;
       Model.Initialize (aModel, "src/ship.obj", Model_Colour);
 

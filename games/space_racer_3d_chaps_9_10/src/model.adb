@@ -66,17 +66,17 @@ package body Model is
         use Singles;
 --          Current_Position : Vector3 := aModel.Position;
 --          Target_Rotation  : Vector3 := aModel.Heading_Rotation;
-        Rotation_Matrix  : Matrix4 := Singles.Identity4;
         Model_Matrix     : Matrix4 := Singles.Identity4;
+        View_Matrix  : Matrix4 := Singles.Identity4;
     begin
         if aModel.Is_Visible then
             Maths.Init_Rotation_Transform
-              (aModel.Base_Rotation, Rotation_Matrix);
+              (aModel.Base_Rotation, Model_Matrix);
             if aModel.Is_Ship then
-                Maths.Init_Rotation_Transform
-                  (aModel.Heading_Rotation, Model_Matrix);
-                Model_Matrix := Maths.Translation_Matrix (aModel.Position) *
-                  Model_Matrix;
+            Maths.Init_Rotation_Transform
+              (aModel.Base_Rotation, View_Matrix);
+                View_Matrix := Maths.Translation_Matrix (aModel.Position) *
+                  View_Matrix;
             end if;
         end if;
     end Render;

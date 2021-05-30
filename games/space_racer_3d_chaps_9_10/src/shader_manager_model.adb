@@ -9,6 +9,7 @@ with Program_Loader;
 
 package body Shader_Manager_Model is
 
+    Colour_Uniform      : GL.Uniforms.Uniform;
     Model_Uniform       : GL.Uniforms.Uniform;
     View_Uniform        : GL.Uniforms.Uniform;
     Projection_Uniform  : GL.Uniforms.Uniform;
@@ -23,6 +24,8 @@ package body Shader_Manager_Model is
            Src ("src/shaders/fragment_model_shader.glsl", Fragment_Shader)));
         GL.Objects.Programs.Use_Program (Game_Program);
 
+        Colour_Uniform :=
+          GL.Objects.Programs.Uniform_Location (Game_Program, "colour");
         Model_Uniform :=
           GL.Objects.Programs.Uniform_Location (Game_Program, "model_matrix");
         Projection_Uniform :=
@@ -43,6 +46,16 @@ package body Shader_Manager_Model is
     end Init_Shaders;
 
     --  ------------------------------------------------------------------------
+
+    procedure Set_Colour (Colour : GL.Types.Colors.Basic_Color) is
+        use GL.Types.Colors;
+        Colour_Vec : constant GL.Types.Singles.Vector3 :=
+                       (Colour (R), Colour (G), Colour (B));
+    begin
+        GL.Uniforms.Set_Single (Colour_Uniform, Colour_Vec);
+    end Set_Colour;
+
+    --   -----------------------------------------------------------------------
 
     procedure Set_Model_Matrix (Model_Matrix : GL.Types.Singles.Matrix4) is
     begin
