@@ -16,6 +16,8 @@ package Model is
    procedure Set_Base_Rotation (aModel   : in out Model_Data;
                                 Rotation : GL.Types.Singles.Vector3);
    procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean);
+   procedure Set_Position (aModel   : in out Model_Data;
+                           Position : GL.Types.Singles.Vector3);
    procedure Set_Velocity (aModel   : in out Model_Data;
                            Velocity : GL.Types.Single);
    procedure Update (aModel : in out Model_Data; Delta_Time : Float);

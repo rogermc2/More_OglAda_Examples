@@ -108,15 +108,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Shader_Manager_Game.Init_Shaders (Game_Program);
       Buffers_Manager.Setup_Buffers;
-      Model.Initialize (Ship, "src/ship.obj", Ship_Colour);
+      Model.Initialize (Ship, "src/tri_ship.obj", Ship_Colour);
       Model.Set_Is_Ship (Ship, True);
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
       Model.Set_Velocity (Ship, 1.0);
 
-      Model.Initialize (Asteriods (1), "src/asteroid.obj",  (1.0, 0.0, 0.0));
---        Model.Initialize (Asteriods (2), "src/asteroid.obj",  (0.0, 1.0, 0.0));
---        Model.Initialize (Asteriods (3), "src/asteroid.obj",  (0.0, 1.0, 1.0));
+      Model.Initialize (Asteriods (1), "src/tri_asteroid.obj",  (1.0, 0.0, 0.0));
+      Model.Set_Position (Asteriods (1), (0.0, 0.0, -10.0));
 
+      Model.Initialize (Asteriods (2), "src/tri_asteroid.obj",  (0.0, 1.0, 0.0));
+      Model.Set_Position (Asteriods (2), (5.0, 0.0, -15.0));
+
+      Model.Initialize (Asteriods (3), "src/tri_asteroid.obj",  (0.0, 1.0, 1.0));
+      Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
 
    exception
       when anError : others =>

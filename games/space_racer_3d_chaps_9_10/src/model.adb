@@ -36,16 +36,14 @@ package body Model is
         aModel.Model_VAO.Bind;
 
         Vertex_Count := Load_Object_File.Mesh_Size (File_Path);
-        Put_Line ("Model.Initialize Vertex_Count " & Int'Image (Vertex_Count));
+--          Put_Line ("Model.Initialize Vertex_Count " & Int'Image (Vertex_Count));
         declare
             Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
             UVs              : Singles.Vector2_Array (1 .. Vertex_Count);
             Normals          : Singles.Vector3_Array (1 .. Vertex_Count);
         begin
             Shader_Manager_Model.Init_Shaders (Model_Program);
-            Put_Line ("Model.Initialize Load_Object_File ");
             Load_Object_File.Load_Object (File_Path, Vertices, UVs, Normals);
-            Put_Line ("Model.Initialize Object_File loaded");
             for index in 1 .. Vertex_Count loop
                 aModel.Vertices.Append (Vertices (index));
                 aModel.Normals.Append (Normals (index));
@@ -154,6 +152,14 @@ package body Model is
    begin
       aModel.Is_Ship := State;
     end Set_Is_Ship;
+
+    --  ------------------------------------------------------------------------
+
+   procedure Set_Position (aModel   : in out Model_Data;
+                           Position : GL.Types.Singles.Vector3) is
+   begin
+      aModel.Position := Position;
+    end Set_Position;
 
     --  ------------------------------------------------------------------------
 
