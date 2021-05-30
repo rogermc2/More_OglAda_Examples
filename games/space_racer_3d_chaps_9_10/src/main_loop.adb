@@ -29,6 +29,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Border_Width  : constant GL.Types.Size := 2;
    Game_Program  : GL.Objects.Programs.Program;
    aModel        : Model.Model_Data;
+   Asteroids     : array (1 .. 3) of Model.Model_Data;
    Model_Colour  : constant GL.Types.Colors.Basic_Color := (0.5, 0.5, 0.5);
 --     Rotation                 : Maths.Degree := 0.0;
    --      Full_Screen                  : Boolean := False;
@@ -85,7 +86,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (Border_Width, Border_Width, VP_Width, VP_Height);
 
       Maths.Init_Perspective_Transform
-        (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height), 0.1, 100.0,
+        (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height),
+         0.1, 100.0,
          Projection_Matrix);
       Use_Program (Game_Program);
       Shader_Manager_Game.Set_Projection_Matrix (Projection_Matrix);
@@ -107,6 +109,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shader_Manager_Game.Init_Shaders (Game_Program);
       Buffers_Manager.Setup_Buffers;
       Model.Initialize (aModel, "src/ship.obj", Model_Colour);
+      Model.Initialize (Asteroids (1), "src/asteroid.obj", (1.0, 0.0, 0.0));
 
    exception
       when anError : others =>

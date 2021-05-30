@@ -3,7 +3,7 @@ with GL.Attributes;
 with GL.Objects.Programs;
 with GL.Types;
 
-with Load_Object_File;
+with Load_Object_File2;
 with Maths;
 with Utilities;
 
@@ -32,14 +32,14 @@ package body Model is
         aModel.Model_VAO.Initialize_Id;
         aModel.Model_VAO.Bind;
 
-        Vertex_Count := Load_Object_File.Mesh_Size (File_Path);
+        Vertex_Count := Load_Object_File2.Mesh_Size (File_Path);
         declare
             Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
             UVs              : Singles.Vector2_Array (1 .. Vertex_Count);
             Normals          : Singles.Vector3_Array (1 .. Vertex_Count);
         begin
             Shader_Manager_Model.Init_Shaders (Model_Program);
-            Load_Object_File.Load_Object (File_Path, Vertices, UVs, Normals);
+            Load_Object_File2.Load_Object (File_Path, Vertices, UVs, Normals);
             for index in 1 .. Vertex_Count loop
                 aModel.Vertices.Append (Vertices (index));
                 aModel.Normals.Append (Normals (index));
