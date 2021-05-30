@@ -31,6 +31,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    Ship          : Model.Model_Data;
    Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
    Asteriods     : array (1 .. 3) of Model.Model_Data;
+   Last_Time     : Float := Float (Glfw.Time);
 --     Rotation                 : Maths.Degree := 0.0;
    --      Full_Screen                  : Boolean := False;
 
@@ -131,9 +132,16 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update (Window : in out Glfw.Windows.Window) is
+   procedure Update is
+
+   Current_Time : constant Float := Float (Glfw.Time);
+   Delta_Time   : constant Float := Current_Time - Last_Time;
    begin
-      null;
+      Last_Time := Current_Time;
+      Model.Update (Ship, Delta_Time);
+      for index in Asteriods'Range loop
+         Model.Update (Asteriods (index), Delta_Time);
+      end loop;
    end Update;
 
    --  ------------------------------------------------------------------------
@@ -143,7 +151,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 begin
    Start_Game (Main_Window);
    while Running loop
-      Update (Main_Window);
+      Update;
       Render (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;
