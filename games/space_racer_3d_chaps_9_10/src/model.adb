@@ -35,7 +35,7 @@ package body Model is
         aModel.Model_VAO.Initialize_Id;
         aModel.Model_VAO.Bind;
 
-        Vertex_Count := Load_Object_File.Mesh_Size (File_Path);
+        Vertex_Count := Load_Object_File2.Mesh_Size (File_Path);
         Put_Line ("Model.Initialize Vertex_Count " & Int'Image (Vertex_Count));
         declare
             Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
@@ -44,7 +44,7 @@ package body Model is
         begin
             Shader_Manager_Model.Init_Shaders (Model_Program);
             Put_Line ("Model.Initialize Load_Object_File ");
-            Load_Object_File.Load_Object (File_Path, Vertices, UVs, Normals);
+            Load_Object_File2.Load_Object (File_Path, Vertices, UVs, Normals);
             Put_Line ("Model.Initialize Object_File loaded");
             for index in 1 .. Vertex_Count loop
                 aModel.Vertices.Append (Vertices (index));
