@@ -10,10 +10,14 @@ package Model is
    procedure Bind_Model_VAO (aModel : in out Model_Data);
    procedure Initialize (aModel : in out Model_Data; File_Path : String;
                          Colour : GL.Types.Colors.Basic_Color);
-   procedure Render;
+   procedure Render (aModel : in out Model_Data);
    procedure Update (aModel : in out Model_Data; Delta_Time : Float);
 
 private
+
+--     type Rotation_Vector is
+--        array (GL.Index_3D range GL.X .. GL.Z) of Maths.Degree;
+
    type Model_Data is record
    Model_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Model_Vertex_Buffer  : GL.Objects.Buffers.Buffer;
