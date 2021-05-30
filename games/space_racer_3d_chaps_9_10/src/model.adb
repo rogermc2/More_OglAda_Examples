@@ -6,7 +6,7 @@ with GL.Attributes;
 with GL.Objects.Programs;
 with GL.Types;
 
-with Load_Object_File;
+with Load_Object_File2;
 with Maths;
 with Utilities;
 

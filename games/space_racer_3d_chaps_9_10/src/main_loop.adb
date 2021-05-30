@@ -86,7 +86,8 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       GL.Window.Set_Viewport (Border_Width, Border_Width, VP_Width, VP_Height);
 
       Maths.Init_Perspective_Transform
-        (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height), 0.1, 100.0,
+        (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height),
+         0.1, 100.0,
          Projection_Matrix);
       Use_Program (Game_Program);
       Shader_Manager_Game.Set_Projection_Matrix (Projection_Matrix);
