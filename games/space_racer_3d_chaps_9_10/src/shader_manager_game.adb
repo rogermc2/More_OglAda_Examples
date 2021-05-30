@@ -7,7 +7,7 @@ with GL.Uniforms;
 
 with Program_Loader;
 
-package body Shader_Manager is
+package body Shader_Manager_Game is
 
     Model_Uniform       : GL.Uniforms.Uniform;
     View_Uniform        : GL.Uniforms.Uniform;
@@ -66,4 +66,4 @@ package body Shader_Manager is
     --   ---------------------------------------------------------------------------------
 
 
-end Shader_Manager;
+end Shader_Manager_Game;
