@@ -2,20 +2,21 @@
 with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Attributes;
+--  with GL.Attributes;
 with GL.Objects.Programs;
 with GL.Types;
 
-with Load_Object_File;
+--  with Load_Object_File;
 with Maths;
 with Utilities;
 
+with Buffers_Manager;
 with Shader_Manager_Model;
 
 package body Model is
     use GL.Types;
 
-   Model_Program  : GL.Objects.Programs.Program;
+    Model_Program  : GL.Objects.Programs.Program;
 
     --  ------------------------------------------------------------------------
 
@@ -28,38 +29,55 @@ package body Model is
 
     procedure Initialize (aModel : in out Model_Data; File_Path : String;
                           Colour : GL.Types.Colors.Basic_Color) is
-        use GL.Objects.Buffers;
-        Vertex_Count : Int;
+    --          use GL.Objects.Buffers;
+    --          Vertex_Count : Int;
+    --          UV_Count     : Int;
+    --          Normal_Count : Int;
+    --          Faces_Count  : Int;
+    --          Indices_Count : Integer;
+    --          Mesh_Count   : Int;
+    --          Usemtl_Count : Integer;
     begin
+        Shader_Manager_Model.Init_Shaders (Model_Program);
         aModel.Model_Colour := Colour;
         aModel.Model_VAO.Initialize_Id;
         aModel.Model_VAO.Bind;
 
-        Vertex_Count := Load_Object_File.Mesh_Size (File_Path);
-        declare
-            Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
-            UVs              : Singles.Vector2_Array (1 .. Vertex_Count);
-            Normals          : Singles.Vector3_Array (1 .. Vertex_Count);
-        begin
-            Shader_Manager_Model.Init_Shaders (Model_Program);
-            Load_Object_File.Load_Object (File_Path, Vertices, UVs, Normals);
-            for index in 1 .. Vertex_Count loop
-                aModel.Vertices.Append (Vertices (index));
-            end loop;
+        Buffers_Manager.Load_Buffers
+          (File_Path, aModel.Model_Vertex_Buffer, aModel.Model_Element_Buffer,
+           aModel.Vertex_Count, aModel.Indices_Size);
 
-            aModel.Model_Vertex_Buffer.Initialize_Id;
-            Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
-            Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices, Static_Draw);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False,
-                                                     0, 0);
-            GL.Attributes.Enable_Vertex_Attrib_Array (0);
-        end;
+--            (File_Path, aModel.Model_Vertex_Buffer, aModel.Model_UVs_Buffer,
+--             aModel.Model_Normals_Buffer, aModel.Model_Element_Buffer,
+--             aModel.Vertex_Count, aModel.Indices_Size);
+        --          Load_Object_File.Get_Array_Sizes
+        --            (File_Path, Vertex_Count, UV_Count, Normal_Count, Faces_Count,
+        --             Indices_Count, Usemtl_Count);
+        --          Vertex_Count := Load_Object_File.Mesh_Size (File_Path);
+        --          Put_Line ("Model.Initialize Vertex_Count: " &
+        --                      Int'Image (Vertex_Count));
+        --          declare
+        --              Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
+        --              UVs              : Singles.Vector2_Array (1 .. Vertex_Count);
+        --              Normals          : Singles.Vector3_Array (1 .. Vertex_Count);
+        --          begin        --              Load_Object_File.Load_Object (File_Path, Vertices, UVs, Normals);
+        --              for index in 1 .. Vertex_Count loop
+        --                  aModel.Vertices.Append (Vertices (index));
+        --              end loop;
+        --
+        --              aModel.Model_Vertex_Buffer.Initialize_Id;
+        --              Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
+        --              Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices, Static_Draw);
+        --              GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False,
+        --                                                       0, 0);
+        --              GL.Attributes.Enable_Vertex_Attrib_Array (0);
+        --          end;
 
-   exception
-      when anError : others =>
-         Put_Line ("An exception occurred in Model.Initialize.");
-         Put_Line (Exception_Information (anError));
-         raise;
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Model.Initialize.");
+            Put_Line (Exception_Information (anError));
+            raise;
     end Initialize;
 
     --  ------------------------------------------------------------------------
@@ -92,12 +110,14 @@ package body Model is
                   View_Matrix;
             end if;
 
+            Put_Line ("Model.Render View_Matrix set.");
             if not aModel.Is_Ship then
                 for v_index in Vertices'Range loop
                     Vertices (v_index) := Vertices (v_index) + aModel.Position;
                 end loop;
             end if;
 
+            Put_Line ("Model.Render Array_Buffer.Bind.");
             Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices, Static_Draw);
 
@@ -106,49 +126,59 @@ package body Model is
             Set_Model_Matrix (Model_Matrix);
             Set_View_Matrix (View_Matrix);
 
-            GL.Objects.Vertex_Arrays.Draw_Arrays
-              (Triangles, 0, Vertices'Length / 3);
+            Put_Line ("Model.Render Element_Array_Buffer.Bind.");
+            GL.Objects.Buffers.Element_Array_Buffer.Bind
+              (aModel.Model_Element_Buffer);
+            GL.Objects.Buffers.Draw_Elements
+              (Triangles, aModel.Indices_Size, UInt_Type, 0);
+--              GL.Objects.Vertex_Arrays.Draw_Arrays
+--                (Triangles, 0, Vertices'Length / 3);
         end if;
 
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Model.Render.");
+            Put_Line (Exception_Information (anError));
+            raise;
     end Render;
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Base_Rotation (aModel   : in out Model_Data;
-                                Rotation : GL.Types.Singles.Vector3) is
-   begin
-      aModel.Base_Rotation := Rotation;
+    procedure Set_Base_Rotation (aModel   : in out Model_Data;
+                                 Rotation : GL.Types.Singles.Vector3) is
+    begin
+        aModel.Base_Rotation := Rotation;
     end Set_Base_Rotation;
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean) is
-   begin
-      aModel.Is_Ship := State;
+    procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean) is
+    begin
+        aModel.Is_Ship := State;
     end Set_Is_Ship;
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4) is
-   begin
-      GL.Objects.Programs.Use_Program (Model_Program);
-      Shader_Manager_Model.Set_Projection_Matrix (Projection_Matrix);
-   end Set_Perspective;
+    procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4) is
+    begin
+        GL.Objects.Programs.Use_Program (Model_Program);
+        Shader_Manager_Model.Set_Projection_Matrix (Projection_Matrix);
+    end Set_Perspective;
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Position (aModel   : in out Model_Data;
-                           Position : GL.Types.Singles.Vector3) is
-   begin
-      aModel.Position := Position;
+    procedure Set_Position (aModel   : in out Model_Data;
+                            Position : GL.Types.Singles.Vector3) is
+    begin
+        aModel.Position := Position;
     end Set_Position;
 
     --  ------------------------------------------------------------------------
 
-   procedure Set_Velocity (aModel   : in out Model_Data;
-                           Velocity : GL.Types.Single) is
-   begin
-      aModel.Velocity := Velocity;
+    procedure Set_Velocity (aModel   : in out Model_Data;
+                            Velocity : GL.Types.Single) is
+    begin
+        aModel.Velocity := Velocity;
     end Set_Velocity;
 
     --  ------------------------------------------------------------------------
@@ -168,6 +198,11 @@ package body Model is
         Target_Position := Target_Position + Delta_Position;
         aModel.Position := Target_Position;
 
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Model.Render.");
+            Put_Line (Exception_Information (anError));
+            raise;
     end Update;
 
     --  ------------------------------------------------------------------------

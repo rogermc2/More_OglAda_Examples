@@ -39,6 +39,9 @@ private
       Model_Vertex_Buffer  : GL.Objects.Buffers.Buffer;
       Model_Normals_Buffer : GL.Objects.Buffers.Buffer;
       Model_UVs_Buffer     : GL.Objects.Buffers.Buffer;
+      Model_Element_Buffer : GL.Objects.Buffers.Buffer;
+      Vertex_Count         : GL.Types.Int := 0;
+      Indices_Size         : GL.Types.Int := 0;
       Vertices             : Vertex_List := Vertices_Package.Empty_List;
       Normals              : Vertex_List := Vertices_Package.Empty_List;
       UVs                  : UV_List := UV_Package.Empty_List;

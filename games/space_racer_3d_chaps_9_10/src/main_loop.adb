@@ -15,7 +15,6 @@ with Maths;
 with Utilities;
 
 with Model;
-with Shader_Manager_Model;
 
 --  ------------------------------------------------------------------------
 
@@ -25,7 +24,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                 (0.6, 0.6, 0.6, 0.0);
    Ship          : Model.Model_Data;
    Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
-   Asteriods     : array (1 .. 3) of Model.Model_Data;
+--     Asteriods     : array (1 .. 3) of Model.Model_Data;
    Last_Time     : Float := Float (Glfw.Time);
 
    procedure Resize_GL_Scene  (Screen : in out Glfw.Windows.Window);
@@ -36,9 +35,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Utilities.Clear_Colour;
       Resize_GL_Scene (Screen);
-      for index in Asteriods'Range loop
-            Model.Render (Asteriods (index));
-      end loop;
+--        for index in Asteriods'Range loop
+--              Model.Render (Asteriods (index));
+--        end loop;
       Model.Render (Ship);
    end Render;
 
@@ -60,8 +59,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Maths.Init_Perspective_Transform
         (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height),
          0.1, 100.0, Projection_Matrix);
-
-      Shader_Manager_Model.Set_Projection_Matrix (Projection_Matrix);
+       Model.Set_Perspective (Projection_Matrix);
 
    end Resize_GL_Scene;
 
@@ -77,19 +75,19 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
 
-      Model.Initialize (Ship, "src/tri_ship.obj", Ship_Colour);
+      Model.Initialize (Ship, "src/resources/tri_ship.obj", Ship_Colour);
       Model.Set_Is_Ship (Ship, True);
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
       Model.Set_Velocity (Ship, 1.0);
 
-      Model.Initialize (Asteriods (1), "src/tri_asteroid.obj", (1.0, 0.0, 0.0));
-      Model.Set_Position (Asteriods (1), (0.0, 0.0, -10.0));
-
-      Model.Initialize (Asteriods (2), "src/tri_asteroid.obj", (0.0, 1.0, 0.0));
-      Model.Set_Position (Asteriods (2), (5.0, 0.0, -15.0));
-
-      Model.Initialize (Asteriods (3), "src/tri_asteroid.obj", (0.0, 1.0, 1.0));
-      Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
+--        Model.Initialize (Asteriods (1), "src/resources/tri_asteroid.obj", (1.0, 0.0, 0.0));
+--        Model.Set_Position (Asteriods (1), (0.0, 0.0, -10.0));
+--
+--        Model.Initialize (Asteriods (2), "src/resources/tri_asteroid.obj", (0.0, 1.0, 0.0));
+--        Model.Set_Position (Asteriods (2), (5.0, 0.0, -15.0));
+--
+--        Model.Initialize (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
+--        Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
 
    exception
       when anError : others =>
