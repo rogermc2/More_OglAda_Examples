@@ -25,7 +25,7 @@ package body Shader_Manager_Model is
         GL.Objects.Programs.Use_Program (Game_Program);
 
         Colour_Uniform :=
-          GL.Objects.Programs.Uniform_Location (Game_Program, "colour");
+          GL.Objects.Programs.Uniform_Location (Game_Program, "colour_in");
         Model_Uniform :=
           GL.Objects.Programs.Uniform_Location (Game_Program, "model_matrix");
         Projection_Uniform :=
