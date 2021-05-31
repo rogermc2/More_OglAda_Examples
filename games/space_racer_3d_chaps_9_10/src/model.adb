@@ -68,8 +68,6 @@ package body Model is
         use GL.Objects.Buffers;
         use Shader_Manager_Model;
         use Vertices_Package;
---          Current_Position : Vector3 := aModel.Position;
---          Target_Rotation  : Vector3 := aModel.Heading_Rotation;
         Model_Matrix  : Matrix4 := Singles.Identity4;
         View_Matrix   : Matrix4 := Singles.Identity4;
         Num_Vertices  : constant Int := Int (aModel.Vertices.Length);
@@ -100,19 +98,18 @@ package body Model is
                 end loop;
             end if;
 
-            GL.Attributes.Disable_Vertex_Attrib_Array (0);
-            aModel.Model_Vertex_Buffer.Clear;
             Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices, Static_Draw);
-            GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False,
-                                                     0, 0);
-            GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
             GL.Objects.Programs.Use_Program (Model_Program);
             Set_Colour (aModel.Model_Colour);
             Set_Model_Matrix (Model_Matrix);
             Set_View_Matrix (View_Matrix);
+
+            GL.Objects.Vertex_Arrays.Draw_Arrays
+              (Triangles, 0, Vertices'Length / 3);
         end if;
+
     end Render;
 
     --  ------------------------------------------------------------------------
@@ -129,6 +126,14 @@ package body Model is
    begin
       aModel.Is_Ship := State;
     end Set_Is_Ship;
+
+    --  ------------------------------------------------------------------------
+
+   procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4) is
+   begin
+      GL.Objects.Programs.Use_Program (Model_Program);
+      Shader_Manager_Model.Set_Projection_Matrix (Projection_Matrix);
+   end Set_Perspective;
 
     --  ------------------------------------------------------------------------
 
