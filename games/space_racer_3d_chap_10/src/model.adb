@@ -54,6 +54,8 @@ package body Model is
       Model_Matrix  : Matrix4 := Singles.Identity4;
       View_Matrix   : Matrix4 := Singles.Identity4;
    begin
+      GL.Objects.Programs.Use_Program (Model_Program);
+
       if aModel.Is_Visible then
          Maths.Init_Rotation_Transform
            (aModel.Base_Rotation, Model_Matrix);
@@ -62,7 +64,7 @@ package body Model is
          if aModel.Is_Ship then
             Maths.Init_Rotation_Transform
               (aModel.Base_Rotation, View_Matrix);
-            View_Matrix := Maths.Scaling_Matrix ((0.01, 0.01, 1.0)) *
+            View_Matrix :=
               Maths.Translation_Matrix (aModel.Position) * View_Matrix;
          end if;
 
@@ -71,15 +73,16 @@ package body Model is
               Model_Matrix;
          end if;
 
-         GL.Objects.Programs.Use_Program (Model_Program);
+         Model_Matrix := Maths.Scaling_Matrix ((0.001, 1.0, 0.005));
          Set_Colour (aModel.Model_Colour);
          Set_Model_Matrix (Model_Matrix);
          Set_View_Matrix (View_Matrix);
 
          Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
-         GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False,
-                                                  0, 0);
+         GL.Attributes.Set_Vertex_Attrib_Pointer
+           (0, 3, Single_Type, False, 0, 0);
          GL.Attributes.Enable_Vertex_Attrib_Array (0);
+
          GL.Objects.Buffers.Element_Array_Buffer.Bind
            (aModel.Model_Element_Buffer);
          GL.Objects.Buffers.Draw_Elements
