@@ -1,5 +1,5 @@
 
-with Ada.Containers.Doubly_Linked_Lists;
+--  with Ada.Containers.Doubly_Linked_Lists;
 
 with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
@@ -26,13 +26,13 @@ package Model is
 private
    use GL.Types.Singles;
 
-   package Vertices_Package is new
-     Ada.Containers.Doubly_Linked_Lists (Vector3);
-   subtype Vertex_List is Vertices_Package.List;
-
-   package UV_Package is new
-     Ada.Containers.Doubly_Linked_Lists (Vector2);
-   subtype UV_List is UV_Package.List;
+--     package Vertices_Package is new
+--       Ada.Containers.Doubly_Linked_Lists (Vector3);
+--     subtype Vertex_List is Vertices_Package.List;
+--
+--     package UV_Package is new
+--       Ada.Containers.Doubly_Linked_Lists (Vector2);
+--     subtype UV_List is UV_Package.List;
 
    type Model_Data is record
       Model_VAO            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
@@ -42,9 +42,9 @@ private
       Model_Element_Buffer : GL.Objects.Buffers.Buffer;
       Vertex_Count         : GL.Types.Int := 0;
       Indices_Size         : GL.Types.Int := 0;
-      Vertices             : Vertex_List := Vertices_Package.Empty_List;
-      Normals              : Vertex_List := Vertices_Package.Empty_List;
-      UVs                  : UV_List := UV_Package.Empty_List;
+--        Vertices             : Vertex_List := Vertices_Package.Empty_List;
+--        Normals              : Vertex_List := Vertices_Package.Empty_List;
+--        UVs                  : UV_List := UV_Package.Empty_List;
       Position             : Vector3 := (0.0, 0.0, 0.0);
       Heading              : Vector3 := (0.0, 0.0, 0.0);
       Base_Rotation        : Vector3 := (0.0, 0.0, 0.0);
