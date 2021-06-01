@@ -33,8 +33,8 @@ package body Load_Buffers is
         Indexed_Vertices_Array := To_UInt_Array (Vertex_Indices);
         Set_Vertex_Count (aModel, Int (Vertices.Length));
         Set_Indices_Size (aModel, Indices_Size);
-        Utilities.Print_GL_Array3 ("Vertices_Array", Vertices_Array);
-        Utilities.Print_GL_UInt_Array ("Indexed_Vertices_Array", Indexed_Vertices_Array);
+--          Utilities.Print_GL_Array3 ("Vertices_Array", Vertices_Array);
+--          Utilities.Print_GL_UInt_Array ("Indexed_Vertices_Array", Indexed_Vertices_Array);
 
         Bind_Vertex_VBO (aModel);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
@@ -45,8 +45,6 @@ package body Load_Buffers is
         Bind_Element_VBO (aModel);
         Utilities.Load_Element_Buffer
           (Element_Array_Buffer, Indexed_Vertices_Array, Static_Draw);
-        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 0, 0);
-        GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
     exception
         when others =>
