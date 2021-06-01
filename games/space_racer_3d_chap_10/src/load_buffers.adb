@@ -33,6 +33,8 @@ package body Load_Buffers is
         Indexed_Vertices_Array := To_UInt_Array (Vertex_Indices);
         Set_Vertex_Count (aModel, Int (Vertices.Length));
         Set_Indices_Size (aModel, Indices_Size);
+        Utilities.Print_GL_Array3 ("Vertices_Array", Vertices_Array);
+        Utilities.Print_GL_UInt_Array ("Indexed_Vertices_Array", Indexed_Vertices_Array);
 
         Bind_Vertex_VBO (aModel);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices_Array, Static_Draw);

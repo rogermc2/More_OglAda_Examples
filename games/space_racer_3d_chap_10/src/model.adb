@@ -114,9 +114,9 @@ package body Model is
             Set_Model_Matrix (Model_Matrix);
             Set_View_Matrix (View_Matrix);
 
-            Put_Line (" Model.Render Indices_Size, vertex count " &
-                        Int'Image (aModel.Indices_Size) &
-                        Int'Image (aModel.Vertex_Count));
+--              Put_Line (" Model.Render Indices_Size, vertex count " &
+--                          Int'Image (aModel.Indices_Size) &
+--                          Int'Image (aModel.Vertex_Count));
             Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
             GL.Objects.Buffers.Element_Array_Buffer.Bind
               (aModel.Model_Element_Buffer);
