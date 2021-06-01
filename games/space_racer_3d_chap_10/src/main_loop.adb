@@ -33,7 +33,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
    procedure Render (Screen : in out Glfw.Windows.Window) is
    begin
-      Utilities.Clear_Colour;
+      Utilities.Clear_Colour_Buffer_And_Depth;
       Resize_GL_Scene (Screen);
 --        for index in Asteriods'Range loop
 --              Model.Render (Asteriods (index));
