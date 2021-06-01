@@ -10,6 +10,7 @@ with Load_Obj_File;
 with Maths;
 --  with Utilities;
 
+with Load_Buffers;
 with Shader_Manager_Model;
 
 package body Model is
@@ -23,6 +24,20 @@ package body Model is
     begin
         aModel.Model_VAO.Bind;
     end Bind_Model_VAO;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Bind_Vertex_VBO (aModel : in out Model_Data) is
+    begin
+        GL.Objects.Buffers.Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
+    end Bind_Vertex_VBO;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Bind_Element_VBO (aModel : in out Model_Data) is
+    begin
+        GL.Objects.Buffers.Array_Buffer.Bind (aModel.Model_Element_Buffer);
+    end Bind_Element_VBO;
 
     --  ------------------------------------------------------------------------
 
@@ -44,10 +59,8 @@ package body Model is
         Load_Object (File_Path, Vertices, Normals, UVs, Vertex_Indices,
                      Normal_Indices, UV_Indices);
 
-        Load_Obj_Buffers.Load_Buffers
-          (File_Path, aModel.Model_Vertex_Buffer, aModel.Model_UVs_Buffer,
-           aModel.Model_Normals_Buffer, aModel.Model_Element_Buffer,
-           aModel.Vertex_Count, aModel.Indices_Size);
+        Initialize_VBOs (aModel);
+        Load_Buffers.Load_Buffers (aModel, Vertices, Vertex_Indices);
 
     exception
         when anError : others =>
@@ -58,11 +71,22 @@ package body Model is
 
     --  ------------------------------------------------------------------------
 
+    procedure Initialize_VBOs (aModel : in out Model_Data) is
+    begin
+        aModel.Model_Vertex_Buffer.Initialize_Id;
+        GL.Objects.Buffers.Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
+
+        aModel.Model_Element_Buffer.Initialize_Id;
+        GL.Objects.Buffers.Element_Array_Buffer.Bind (aModel.Model_Element_Buffer);
+    end Initialize_VBOs;
+
+    --  ------------------------------------------------------------------------
+
     procedure Render (aModel : in out Model_Data) is
         use GL.Objects.Buffers;
         use Shader_Manager_Model;
         Model_Matrix  : Matrix4 := Singles.Identity4;
-        View_Matrix   : constant Matrix4 := Singles.Identity4;
+        View_Matrix   : Matrix4 := Singles.Identity4;
     begin
         GL.Objects.Programs.Use_Program (Model_Program);
 
@@ -71,19 +95,19 @@ package body Model is
               (aModel.Base_Rotation, Model_Matrix);
             aModel.Model_VAO.Bind;
 
-            --           if aModel.Is_Ship then
-            --              Maths.Init_Rotation_Transform
-            --                (aModel.Base_Rotation, View_Matrix);
-            --              View_Matrix :=
-            --                Maths.Translation_Matrix (aModel.Position) * View_Matrix;
-            --           end if;
+            if aModel.Is_Ship then
+                Maths.Init_Rotation_Transform
+                  (aModel.Base_Rotation, View_Matrix);
+                View_Matrix :=
+                  Maths.Translation_Matrix (aModel.Position) * View_Matrix;
+            end if;
 
             if not aModel.Is_Ship then
                 Model_Matrix := Maths.Translation_Matrix (aModel.Position) *
                   Model_Matrix;
             end if;
 
-            Model_Matrix := Maths.Scaling_Matrix ((0.02, 0.02, 1.0));
+            --              Model_Matrix := Maths.Scaling_Matrix ((0.02, 0.02, 1.0));
             Set_Colour (aModel.Model_Colour);
             Set_Model_Matrix (Model_Matrix);
             Set_View_Matrix (View_Matrix);
@@ -92,13 +116,13 @@ package body Model is
             GL.Attributes.Set_Vertex_Attrib_Pointer
               (0, 3, Single_Type, False, 0, 0);
             GL.Attributes.Enable_Vertex_Attrib_Array (0);
-            --
-            --           GL.Objects.Buffers.Element_Array_Buffer.Bind
-            --             (aModel.Model_Element_Buffer);
-            --           GL.Objects.Buffers.Draw_Elements
-            --             (Triangles, aModel.Indices_Size, UInt_Type, 0);
-            GL.Objects.Vertex_Arrays.Draw_Arrays
-              (Triangles, 0, aModel.Vertex_Count);
+
+            GL.Objects.Buffers.Element_Array_Buffer.Bind
+              (aModel.Model_Element_Buffer);
+            GL.Objects.Buffers.Draw_Elements
+              (Triangles, aModel.Indices_Size, UInt_Type, 0);
+            --              GL.Objects.Vertex_Arrays.Draw_Arrays
+            --                (Triangles, 0, aModel.Vertex_Count);
         end if;
 
     exception

@@ -65,21 +65,7 @@ package body Load_Obj_File is
        UVs : out Obj_Array2;
        Vertex_Indices, Normal_Indices, UV_Indices : out Obj_Int3_Array) is
         Text_File_ID   : Ada.Text_IO.File_Type;
---          Num_Vertices   : GL.Types.Int;
---          UV_Count       : GL.Types.Int;
---          Normal_Count   : GL.Types.Int;
---          Mesh_Count     : Integer;
---          Usemtl_Count   : Integer;
---          Vertex_Count   : GL.Types.Int;
     begin
---          declare
---              use GL.Types;
---              Raw_Vertices   : Singles.Vector3_Array (1 .. Num_Vertices);
---              Raw_UVs        : Singles.Vector2_Array (1 .. UV_Count);
---              Raw_Normals    : Singles.Vector3_Array (1 .. Normal_Count);
---              Vertex_Indices : Ints.Vector3_Array (1 .. Vertex_Count);
---              UV_Indices     : Ints.Vector3_Array (1 .. Vertex_Count);
---              Normal_Indices : Ints.Vector3_Array (1 .. Vertex_Count);
         begin
             Open (Text_File_ID, In_File, File_Name);
             Load_Data (Text_File_ID, Vertices, UVs, Normals,
