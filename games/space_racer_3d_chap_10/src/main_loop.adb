@@ -75,7 +75,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
 
-      Model.Initialize (Ship, "src/resources/tri_ship.obj", Ship_Colour);
+      Model.Initialize (Ship, "src/resources/ship.obj", Ship_Colour);
       Model.Set_Is_Ship (Ship, True);
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
       Model.Set_Velocity (Ship, 1.0);
