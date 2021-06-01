@@ -1,6 +1,7 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with GL.Attributes;
 with  GL.Objects.Buffers;
 with  GL.Types;
 
@@ -15,13 +16,7 @@ package body Load_Buffers is
     function To_UInt_Array (Array_In : Load_Obj_File.Obj_Int3_Array)
                             return GL.Types.UInt_Array;
 
-    --  ----------------------------------------------
-    --      procedure Load_Buffers
-    --        (Path   : String; aModel : in out Model.Model_Data;
-    --         Vertices, Normals : Load_Obj_File.Obj_Array3;
-    --         UVs  : Load_Obj_File.Obj_Array2;
-    --         Vertex_Indices, Normal_Indices,
-    --         UV_Indices : Load_Obj_File.Obj_Int3_Array)
+    --  --------------------------------------------------------------------
 
     procedure Load_Buffers
       (aModel : in out Model.Model_Data;
@@ -30,19 +25,26 @@ package body Load_Buffers is
         use GL.Types;
         use GL.Objects.Buffers;
         use Model;
-
         Vertices_Array         : Singles.Vector3_Array (1 .. Int (Vertices.Length));
-        Indexed_Vertices_Array : UInt_Array (1 .. 3 * Int (Vertex_Indices.Length));
+        Indices_Size           : constant Int := 3 * Int (Vertex_Indices.Length);
+        Indexed_Vertices_Array : UInt_Array (1 .. Indices_Size);
     begin
         Vertices_Array := To_Array3 (Vertices);
         Indexed_Vertices_Array := To_UInt_Array (Vertex_Indices);
+        Set_Vertex_Count (aModel, Int (Vertices.Length));
+        Set_Indices_Size (aModel, Indices_Size);
 
         Bind_Vertex_VBO (aModel);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Vertices_Array, Static_Draw);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False,
+                                                 0, 0);
+        GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
         Bind_Element_VBO (aModel);
         Utilities.Load_Element_Buffer
           (Element_Array_Buffer, Indexed_Vertices_Array, Static_Draw);
+        GL.Attributes.Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 0, 0);
+        GL.Attributes.Enable_Vertex_Attrib_Array (0);
 
     exception
         when others =>

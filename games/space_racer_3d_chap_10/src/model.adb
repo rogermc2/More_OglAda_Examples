@@ -2,8 +2,8 @@
 with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Attributes;
 with GL.Objects.Programs;
+with GL.Toggles;
 with GL.Types;
 
 with Load_Obj_File;
@@ -88,6 +88,7 @@ package body Model is
         Model_Matrix  : Matrix4 := Singles.Identity4;
         View_Matrix   : Matrix4 := Singles.Identity4;
     begin
+        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
         GL.Objects.Programs.Use_Program (Model_Program);
 
         if aModel.Is_Visible then
@@ -96,10 +97,11 @@ package body Model is
             aModel.Model_VAO.Bind;
 
             if aModel.Is_Ship then
-                Maths.Init_Rotation_Transform
-                  (aModel.Base_Rotation, View_Matrix);
+--                  Maths.Init_Rotation_Transform
+--                    (aModel.Base_Rotation, View_Matrix);
                 View_Matrix :=
-                  Maths.Translation_Matrix (aModel.Position) * View_Matrix;
+--                    Maths.Translation_Matrix (aModel.Position) * View_Matrix;
+                  Maths.Translation_Matrix ((0.5, 0.3, 1.0)) * View_Matrix;
             end if;
 
             if not aModel.Is_Ship then
@@ -107,22 +109,22 @@ package body Model is
                   Model_Matrix;
             end if;
 
-            --              Model_Matrix := Maths.Scaling_Matrix ((0.02, 0.02, 1.0));
+--              Model_Matrix := Maths.Scaling_Matrix ((0.02, 0.02, 0.02));
             Set_Colour (aModel.Model_Colour);
             Set_Model_Matrix (Model_Matrix);
             Set_View_Matrix (View_Matrix);
 
+            Put_Line (" Model.Render Indices_Size, vertex count " &
+                        Int'Image (aModel.Indices_Size) &
+                        Int'Image (aModel.Vertex_Count));
             Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
-            GL.Attributes.Set_Vertex_Attrib_Pointer
-              (0, 3, Single_Type, False, 0, 0);
-            GL.Attributes.Enable_Vertex_Attrib_Array (0);
-
             GL.Objects.Buffers.Element_Array_Buffer.Bind
               (aModel.Model_Element_Buffer);
-            GL.Objects.Buffers.Draw_Elements
-              (Triangles, aModel.Indices_Size, UInt_Type, 0);
-            --              GL.Objects.Vertex_Arrays.Draw_Arrays
-            --                (Triangles, 0, aModel.Vertex_Count);
+--              GL.Objects.Buffers.Draw_Elements
+--                (Triangles, aModel.Indices_Size, UInt_Type, 0);
+                GL.Objects.Vertex_Arrays.Draw_Arrays
+                          (Triangles, 0, aModel.Vertex_Count);
+            GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
         end if;
 
     exception
@@ -142,6 +144,13 @@ package body Model is
 
     --  ------------------------------------------------------------------------
 
+    procedure Set_Indices_Size (aModel : in out Model_Data;
+                                Size : GL.Types.Int) is
+    begin
+        aModel.Indices_Size := Size;
+    end Set_Indices_Size;
+
+    --  --------------------------------------------------------------
     procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean) is
     begin
         aModel.Is_Ship := State;
@@ -170,6 +179,14 @@ package body Model is
     begin
         aModel.Velocity := Velocity;
     end Set_Velocity;
+
+    --  ------------------------------------------------------------------------
+
+    procedure Set_Vertex_Count (aModel : in out Model_Data;
+                                Count : GL.Types.Int) is
+    begin
+        aModel.Vertex_Count := Count;
+    end Set_Vertex_Count;
 
     --  ------------------------------------------------------------------------
 

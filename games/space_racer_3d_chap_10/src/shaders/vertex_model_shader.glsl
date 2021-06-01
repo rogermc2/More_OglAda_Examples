@@ -15,9 +15,11 @@ out vec3 frag_colour;
 
 void main()
     {
-//    gl_PointSize = 40.0;
-    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(points3d, 1.0);
+    gl_PointSize = 40.0;
+//    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(points3d, 1.0);
 //    gl_Position = view_matrix * model_matrix * vec4(points3d, 1.0);
+//    gl_Position = view_matrix * model_matrix * vec4(0.0, 0.0, 0.0, 1.0);
+    gl_Position = view_matrix * model_matrix * vec4(points3d, 1.0);
     frag_colour = colour_in;
 //    uvs = uvs_in;
     }
