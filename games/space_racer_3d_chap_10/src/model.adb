@@ -3,7 +3,7 @@ with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Programs;
-with GL.Toggles;
+--  with GL.Toggles;
 with GL.Types;
 
 with Load_Obj_File;
@@ -85,26 +85,18 @@ package body Model is
    --  ------------------------------------------------------------------------
 
    procedure Render (aModel : in out Model_Data) is
-      use Maths;
+--        use Maths;
       use GL.Objects.Buffers;
       use Shader_Manager_Model;
       Model_Matrix : Matrix4 := Singles.Identity4;
       View_Matrix  : Matrix4 := Singles.Identity4;
       Rot_Matrix   : Matrix4 := Singles.Identity4;
    begin
-      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+--        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       GL.Objects.Programs.Use_Program (Model_Program);
 
       if aModel.Is_Visible then
-         Model_Matrix := Scaling_Matrix ((0.5, 0.5, 0.5));
---           Rot_Matrix := Rotation_Matrix
---             (Degree (aModel.Base_Rotation (GL.X)), (1.0, 0.0, 0.0));
---           Rot_Matrix := Rotation_Matrix
---             (Degree (aModel.Base_Rotation (GL.Y)), (0.0, 1.0, 0.0)) *
---               Rot_Matrix;
---           Rot_Matrix := Rotation_Matrix
---             (Degree (aModel.Base_Rotation (GL.Z)), (0.0, 0.0, 1.0)) *
---               Rot_Matrix;
+--           Model_Matrix := Scaling_Matrix ((0.6, 0.6, 0.6));
 
          Maths.Init_Rotation_Transform
            (aModel.Base_Rotation, Rot_Matrix);
@@ -128,8 +120,10 @@ package body Model is
          aModel.Model_VAO.Bind;
          Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
          Element_Array_Buffer.Bind (aModel.Model_Element_Buffer);
-         Draw_Elements (Triangles, aModel.Indices_Size, UInt_Type, 0);
-         --              GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+
+         Draw_Elements (Triangle_Strip_Adjacency, aModel.Indices_Size,
+                        UInt_Type, 0);
+--           GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       end if;
 
    exception
