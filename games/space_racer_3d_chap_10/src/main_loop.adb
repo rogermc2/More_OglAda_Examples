@@ -24,7 +24,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
                                 (0.6, 0.6, 0.6, 0.0);
    Ship          : Model.Model_Data;
    Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
---     Asteriods     : array (1 .. 3) of Model.Model_Data;
+   Asteriods     : array (1 .. 3) of Model.Model_Data;
    Last_Time     : Float := Float (Glfw.Time);
 
    procedure Resize_GL_Scene  (Screen : in out Glfw.Windows.Window);
@@ -35,9 +35,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
       Resize_GL_Scene (Screen);
---        for index in Asteriods'Range loop
---              Model.Render (Asteriods (index));
---        end loop;
+      for index in Asteriods'Range loop
+            Model.Render (Asteriods (index));
+      end loop;
       Model.Render (Ship);
    end Render;
 
@@ -80,14 +80,14 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
       Model.Set_Velocity (Ship, 1.0);
 
---        Model.Initialize (Asteriods (1), "src/resources/tri_asteroid.obj", (1.0, 0.0, 0.0));
---        Model.Set_Position (Asteriods (1), (0.0, 0.0, -10.0));
---
---        Model.Initialize (Asteriods (2), "src/resources/tri_asteroid.obj", (0.0, 1.0, 0.0));
---        Model.Set_Position (Asteriods (2), (5.0, 0.0, -15.0));
---
---        Model.Initialize (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
---        Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
+      Model.Initialize (Asteriods (1), "src/resources/tri_asteroid.obj", (1.0, 0.0, 0.0));
+      Model.Set_Position (Asteriods (1), (0.0, 0.0, -10.0));
+
+      Model.Initialize (Asteriods (2), "src/resources/tri_asteroid.obj", (0.0, 1.0, 0.0));
+      Model.Set_Position (Asteriods (2), (5.0, 0.0, -15.0));
+
+      Model.Initialize (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
+      Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
 
    exception
       when anError : others =>
@@ -105,9 +105,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
    begin
       Last_Time := Current_Time;
       Model.Update (Ship, Delta_Time);
---        for index in Asteriods'Range loop
---           Model.Update (Asteriods (index), Delta_Time);
---        end loop;
+      for index in Asteriods'Range loop
+         Model.Update (Asteriods (index), Delta_Time);
+      end loop;
    end Update;
 
    --  ------------------------------------------------------------------------
