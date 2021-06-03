@@ -8,7 +8,6 @@ with GL.Types;
 
 with Load_Obj_File;
 with Maths;
---  with Utilities;
 
 with Load_Buffers;
 with Shader_Manager_Model;
@@ -92,7 +91,6 @@ package body Model is
       View_Matrix  : Matrix4 := Singles.Identity4;
       Rot_Matrix   : Matrix4 := Singles.Identity4;
    begin
---        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       GL.Objects.Programs.Use_Program (Model_Program);
 
       if aModel.Is_Visible then
@@ -119,10 +117,8 @@ package body Model is
          aModel.Model_VAO.Bind;
          Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
          Element_Array_Buffer.Bind (aModel.Model_Element_Buffer);
-
          Draw_Elements (Triangle_Strip_Adjacency, aModel.Indices_Size,
                         UInt_Type, 0);
---           GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       end if;
 
    exception
