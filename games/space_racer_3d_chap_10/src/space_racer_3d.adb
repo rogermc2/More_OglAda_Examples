@@ -1,4 +1,4 @@
---  Program Space_Racer_3D Chapter 9
+--  Program Space_Racer_3D Chapter 10
 --  Author Roger Mc Murtrie
 --  Created 29 May 2021
 
@@ -13,7 +13,7 @@ with Main_Loop;
 
 procedure Space_Racer_3D is
     Main_Window : Glfw.Windows.Window;
-    Window_Title : constant String := "Space Racer 3D Chapter 9";
+    Window_Title : constant String := "Space Racer 3D Chapter 10";
 begin
     Glfw.Init;
     Initialize (Main_Window, Window_Title);
