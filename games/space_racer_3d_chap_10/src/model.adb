@@ -96,12 +96,11 @@ package body Model is
       GL.Objects.Programs.Use_Program (Model_Program);
 
       if aModel.Is_Visible then
---           Model_Matrix := Scaling_Matrix ((0.6, 0.6, 0.6));
-
          Maths.Init_Rotation_Transform
            (aModel.Base_Rotation, Rot_Matrix);
          Model_Matrix :=  Rot_Matrix * Model_Matrix;
          if aModel.Is_Ship then
+            Model_Matrix := Maths.Scaling_Matrix ((0.8, 0.8, 0.8));
             Maths.Init_Rotation_Transform
               (aModel.Base_Rotation, View_Matrix);
             View_Matrix :=
