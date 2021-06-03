@@ -77,7 +77,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
 
       Model.Initialize (Ship, "src/resources/ship.obj", Ship_Colour);
       Model.Set_Is_Ship (Ship, True);
-      Model.Set_Position (Ship, (0.0, 0.0, -2.0));
+      Model.Set_Position (Ship, (0.0, 0.0, -4.0));
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
       Model.Set_Velocity (Ship, 0.1);
 
