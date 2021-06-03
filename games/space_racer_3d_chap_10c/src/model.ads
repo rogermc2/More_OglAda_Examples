@@ -12,12 +12,16 @@ package Model is
     procedure Bind_Element_VBO (aModel : in out Model_Data);
     procedure Bind_Model_VAO (aModel : in out Model_Data);
     procedure Bind_Vertex_VBO (aModel : in out Model_Data);
+    function Heading (aModel : in out Model_Data)
+                      return GL.Types.Singles.Vector3;
     procedure Initialize (aModel : in out Model_Data; File_Path : String;
                           Colour : GL.Types.Colors.Basic_Color);
     procedure Initialize_VBOs (aModel : in out Model_Data);
     procedure Render (aModel : in out Model_Data);
     procedure Set_Base_Rotation (aModel   : in out Model_Data;
                                  Rotation : GL.Types.Singles.Vector3);
+    procedure Set_Heading_Rotation (aModel   : in out Model_Data;
+                                    Rotation : GL.Types.Singles.Vector3);
     procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean);
     procedure Set_Indices_Size (aModel : in out Model_Data; Size : GL.Types.Int);
     procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4);
@@ -27,6 +31,7 @@ package Model is
                             Velocity : GL.Types.Single);
     procedure Set_Vertex_Count (aModel : in out Model_Data; Count : GL.Types.Int);
     procedure Update (aModel : in out Model_Data; Delta_Time : Float);
+    function Velocity (aModel : in out Model_Data) return GL.Types.Single;
 
 private
     use GL.Types.Singles;

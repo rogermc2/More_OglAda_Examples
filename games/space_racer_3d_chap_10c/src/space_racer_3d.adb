@@ -6,17 +6,17 @@ with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw;
-with Glfw.Windows;
 
-with Initialize;
+with Initialize_With_Callbacks;
+with Input_Callback;
 with Main_Loop;
 
 procedure Space_Racer_3D is
-    Main_Window : Glfw.Windows.Window;
+    Main_Window : Input_Callback.Callback_Window;
     Window_Title : constant String := "Space Racer 3D Chapter 10";
 begin
     Glfw.Init;
-    Initialize (Main_Window, Window_Title);
+    Initialize_With_Callbacks (Main_Window, Window_Title);
     Main_Loop (Main_Window);
     Glfw.Shutdown;
 
