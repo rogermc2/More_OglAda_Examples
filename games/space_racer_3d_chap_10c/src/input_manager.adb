@@ -17,6 +17,7 @@ package body Input_Manager is
    function Check_For_Click (Window     : in out Input_Callback.Callback_Window;
                              UI_Element : Sprite) return Boolean is
       use Glfw.Input;
+      use Input_Callback;
       Window_Width   : Glfw.Size;
       Window_Height  : Glfw.Size;
       Cursor_X       : Float;  --  Mouse.Coordinate;
@@ -26,7 +27,7 @@ package body Input_Manager is
       Bottom         : constant Float := Position.Y;
       Result         : Boolean := False;
    begin
-      if Input_Callback.Is_Button_Down (Glfw.Input.Mouse.Left_Button) then
+      if Is_Button_Down (Glfw.Input.Mouse.Left_Button) then
          Window'Access.Get_Size (Window_Width, Window_Height);
          Window'Access.Get_Cursor_Pos (Mouse.Coordinate (Cursor_X),
                                        Mouse.Coordinate (Cursor_Y));
@@ -178,10 +179,30 @@ package body Input_Manager is
    --  ------------------------------------------------------------------------
 
    procedure Update (Delta_Time : Float) is
+        use Input_Callback;
    begin
       for index in Input_Manager.Button_Index'Range loop
          Sprite_Manager.Update (UI_Elements (index), Delta_Time);
       end loop;
+
+      if Is_Key_Down (Glfw.Input.Keys.Escape) or
+          Is_Key_Down (Glfw.Input.Keys.Q) then
+          Current_Command := Command_Quit;
+      elsif Is_Key_Down (Glfw.Input.Keys.Left) or
+          Is_Key_Down (Glfw.Input.Keys.A) then
+          Current_Command := Command_Left;
+      elsif Is_Key_Down (Glfw.Input.Keys.Right) or
+          Is_Key_Down (Glfw.Input.Keys.D) then
+          Current_Command := Command_Left;
+      elsif Is_Key_Down (Glfw.Input.Keys.Up) or
+          Is_Key_Down (Glfw.Input.Keys.A) then
+          Current_Command := Command_Left;
+      elsif Is_Key_Down (Glfw.Input.Keys.Down) or
+          Is_Key_Down (Glfw.Input.Keys.S) then
+          Current_Command := Command_Left;
+      elsif Is_Key_Down (Glfw.Input.Keys.Space) then
+          Current_Command := Command_Stop;
+      end if;
    end Update;
 
    --  ------------------------------------------------------------------------
