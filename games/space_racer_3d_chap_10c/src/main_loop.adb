@@ -40,19 +40,20 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Model;
         Rotation : Singles.Vector3 := Heading (Ship);
         aCommand : constant Command := Get_Current_Command;
---          Continue : Boolean := True;
+        --          Continue : Boolean := True;
     begin
-            UI_Timer := UI_Timer + Delta_Time;
-            if UI_Timer > UI_Threshold then
-                UI_Timer := 0.0;
-            end if;
+        UI_Timer := UI_Timer + Delta_Time;
+        if UI_Timer > UI_Threshold then
+            UI_Timer := 0.0;
+        end if;
+
         case aCommand is
             when Command_Stop =>
-            if Velocity (Ship) > 0.0 then
-                Set_Velocity (Ship, 0.0);
-            else
-                Set_Velocity (Ship, 0.1);
-            end if;
+                if Velocity (Ship) > 0.0 then
+                    Set_Velocity (Ship, 0.0);
+                else
+                    Set_Velocity (Ship, 0.1);
+                end if;
 
             when Command_Down =>
                 Rotation (GL.X) := Rotation (GL.X) - 1.0;
@@ -104,7 +105,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
             when others => null;
         end case;
---          Set_Command_Invalid;
+        --          Set_Command_Invalid;
 
     end Process_Input;
 

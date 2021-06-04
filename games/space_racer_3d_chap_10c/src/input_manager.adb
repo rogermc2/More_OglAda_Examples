@@ -178,39 +178,19 @@ package body Input_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Update (Delta_Time : Float) is
-        use Input_Callback;
-    begin
-        for index in Input_Manager.Button_Index'Range loop
-            Sprite_Manager.Update (GUI_Elements (index), Delta_Time);
-        end loop;
-
-        if Is_Key_Down (Glfw.Input.Keys.Escape) or
-          Is_Key_Down (Glfw.Input.Keys.Q) then
-            Current_Command := Command_Quit;
-        elsif Is_Key_Down (Glfw.Input.Keys.Left) or
-          Is_Key_Down (Glfw.Input.Keys.A) then
-            Current_Command := Command_Left;
-        elsif Is_Key_Down (Glfw.Input.Keys.Right) or
-          Is_Key_Down (Glfw.Input.Keys.D) then
-            Current_Command := Command_Left;
-        elsif Is_Key_Down (Glfw.Input.Keys.Up) or
-          Is_Key_Down (Glfw.Input.Keys.A) then
-            Current_Command := Command_Left;
-        elsif Is_Key_Down (Glfw.Input.Keys.Down) or
-          Is_Key_Down (Glfw.Input.Keys.S) then
-            Current_Command := Command_Left;
-        elsif Is_Key_Down (Glfw.Input.Keys.Space) then
-            Current_Command := Command_Stop;
-        end if;
-    end Update;
+--      procedure Update (Delta_Time : Float) is
+--      begin
+--          for index in Input_Manager.Button_Index'Range loop
+--              Sprite_Manager.Update (GUI_Elements (index), Delta_Time);
+--          end loop;
+--      end Update;
 
     --  ------------------------------------------------------------------------
 
-    procedure Update (Button : Button_Index; Delta_Time : Float) is
-    begin
-        Sprite_Manager.Update (GUI_Elements (Button), Delta_Time);
-    end Update;
+--      procedure Update_GUI (Button : Button_Index; Delta_Time : Float) is
+--      begin
+--          Sprite_Manager.Update (GUI_Elements (Button), Delta_Time);
+--      end Update_GUI;
 
     --  ------------------------------------------------------------------------
 
@@ -234,18 +214,24 @@ package body Input_Manager is
         end loop;
 
         if Current_Command /= Command_GUI then
-            if Is_Key_Down (Left) or Is_Key_Down (A) then
+            if Is_Key_Down (Escape) or Is_Key_Down (Q) then
+                Current_Command := Command_Quit;
+            elsif Is_Key_Down (Left) or Is_Key_Down (A) then
                 Current_Command := Command_Left;
-            elsif Is_Key_Down (Right) or Is_Key_Down (D) then
-                Current_Command := Command_Right;
-            elsif Is_Key_Down (Up) then
-                Current_Command := Command_Up;
-            elsif Is_Key_Down (Down) then
-                Current_Command := Command_Down;
-            else
+            elsif Is_Key_Down (Right) or
+              Is_Key_Down (D) then
+                Current_Command := Command_Left;
+            elsif Is_Key_Down (Up) or Is_Key_Down (A) then
+                Current_Command := Command_Left;
+            elsif Is_Key_Down (Down) or Is_Key_Down (Glfw.Input.Keys.S) then
+                Current_Command := Command_Left;
+            elsif Is_Key_Down (Space) then
                 Current_Command := Command_Stop;
+            else
+                Current_Command := Command_Invalid;
             end if;
         end if;
+
     end Update_Command;
 
     --  ------------------------------------------------------------------------
