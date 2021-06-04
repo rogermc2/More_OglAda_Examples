@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input;
 with Glfw.Input.Keys;
+with Glfw.Input.Mouse;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
@@ -16,6 +17,7 @@ with Utilities;
 
 with Input_Manager;
 with Model;
+with Sprite_Manager;
 
 --  ------------------------------------------------------------------------
 
@@ -23,16 +25,36 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     Back          : constant GL.Types.Colors.Color :=
                       (0.6, 0.6, 0.6, 0.0);
-    UI_Threshold  : constant float := 0.1;
+    GUI_Threshold : constant float := 0.1;
     Ship          : Model.Model_Data;
     Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
     Asteriods     : array (1 .. 3) of Model.Model_Data;
     Last_Time     : Float := Float (Glfw.Time);
-    UI_Timer      : Float := 0.0;
+    GUI_Timer     : Float := 0.0;
 
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
     --  ------------------------------------------------------------------------
+
+    procedure Enable_Mouse_Callbacks
+      (Window : in out Input_Callback.Callback_Window;
+       Enable : Boolean) is
+        use Glfw.Windows.Callbacks;
+    begin
+        if Enable then
+            Window.Enable_Callback (Mouse_Position);
+            Window.Enable_Callback (Mouse_Enter);
+            Window.Enable_Callback (Mouse_Button);
+            Window.Enable_Callback (Mouse_Scroll);
+        else
+            Window.Disable_Callback (Mouse_Position);
+            Window.Disable_Callback (Mouse_Enter);
+            Window.Disable_Callback (Mouse_Button);
+            Window.Disable_Callback (Mouse_Scroll);
+        end if;
+    end Enable_Mouse_Callbacks;
+
+   --  ------------------------------------------------------------------------
 
     procedure Process_Input_Command (Delta_Time : Float) is
         use GL.Types;
@@ -42,11 +64,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         aCommand : constant Command := Get_Current_Command;
         --          Continue : Boolean := True;
     begin
-        UI_Timer := UI_Timer + Delta_Time;
-        if UI_Timer > UI_Threshold then
-            UI_Timer := 0.0;
+        GUI_Timer := GUI_Timer + Delta_Time;
+        if GUI_Timer > GUI_Threshold then
+            GUI_Timer := 0.0;
         end if;
 
+--          Put_Line ("Main_Loop.Process_Input_Command, Command" &
+--                   Command'Image (aCommand));
         case aCommand is
             when Command_Stop =>
                 if Velocity (Ship) > 0.0 then
@@ -148,10 +172,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Start_Game (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
+        use Glfw.Input;
         Window_Width  : Glfw.Size;
         Window_Height : Glfw.Size;
     begin
+        Screen.Set_Cursor_Mode (Mouse.Normal);
         Screen'Access.Get_Size (Window_Width, Window_Height);
+        Screen'Access.Set_Cursor_Pos
+          (Mouse.Coordinate (0.5 * Single (Window_Width)),
+           Mouse.Coordinate (0.5 * Single (Window_Height)));
 
         Utilities.Clear_Background_Colour_And_Depth (Back);
         GL.Buffers.Set_Depth_Function (LEqual);
@@ -171,6 +200,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
         Model.Initialize (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
         Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
+
+        Sprite_Manager.Init;
+        Enable_Mouse_Callbacks (Screen, True);
+--          Screen.Enable_Callback (Glfw.Windows.Callbacks.Key);
+--          Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
 
     exception
         when anError : others =>

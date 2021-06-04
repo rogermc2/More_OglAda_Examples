@@ -335,6 +335,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             if UI_Timer > UI_Threshold then
                 UI_Timer := 0.0;
             end if;
+
             case aCommand is
             when Command_UI =>
                 if Is_Clicked (Pause_Button) then
