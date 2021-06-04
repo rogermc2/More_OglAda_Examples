@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Glfw.Input.Mouse;
 with Glfw.Input.Keys;
 
@@ -187,10 +189,10 @@ package body Input_Manager is
 
     --  ------------------------------------------------------------------------
 
---      procedure Update_GUI (Button : Button_Index; Delta_Time : Float) is
---      begin
---          Sprite_Manager.Update (GUI_Elements (Button), Delta_Time);
---      end Update_GUI;
+    procedure Update_GUI (Button : Button_Index; Delta_Time : Float) is
+    begin
+        Sprite_Manager.Update (GUI_Elements (Button), Delta_Time);
+    end Update_GUI;
 
     --  ------------------------------------------------------------------------
 
@@ -213,19 +215,26 @@ package body Input_Manager is
             Check_Button_Click (index);
         end loop;
 
-        if Current_Command /= Command_GUI then
+        if Current_Command /= Command_GUI and Key_Pressed then
+--              Put_Line ("Input_Manager.Update_Command, Key pressed?" & Boolean'Image (Key_Pressed));
+
             if Is_Key_Down (Escape) or Is_Key_Down (Q) then
+                Put_Line ("Input_Manager.Update_Command, Q key pressed");
                 Current_Command := Command_Quit;
             elsif Is_Key_Down (Left) or Is_Key_Down (A) then
+                Put_Line ("Input_Manager.Update_Command, Left key pressed");
                 Current_Command := Command_Left;
-            elsif Is_Key_Down (Right) or
-              Is_Key_Down (D) then
-                Current_Command := Command_Left;
+            elsif Is_Key_Down (Right) or Is_Key_Down (D) then
+                Put_Line ("Input_Manager.Update_Command, right key pressed");
+                Current_Command := Command_Right;
             elsif Is_Key_Down (Up) or Is_Key_Down (A) then
-                Current_Command := Command_Left;
-            elsif Is_Key_Down (Down) or Is_Key_Down (Glfw.Input.Keys.S) then
-                Current_Command := Command_Left;
+                Put_Line ("Input_Manager.Update_Command, up key pressed");
+                Current_Command := Command_Up;
+            elsif Is_Key_Down (Down) or Is_Key_Down (S) then
+                Put_Line ("Input_Manager.Update_Command, down key pressed");
+                Current_Command := Command_Down;
             elsif Is_Key_Down (Space) then
+                Put_Line ("Input_Manager.Update_Command, space key pressed");
                 Current_Command := Command_Stop;
             else
                 Current_Command := Command_Invalid;

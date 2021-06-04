@@ -34,7 +34,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  ------------------------------------------------------------------------
 
-    procedure Process_Input (Delta_Time : Float) is
+    procedure Process_Input_Command (Delta_Time : Float) is
         use GL.Types;
         use Input_Manager;
         use Model;
@@ -56,6 +56,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 end if;
 
             when Command_Down =>
+                Put_Line ("Main_Loop.Process_Input_Command, Command_Down");
                 Rotation (GL.X) := Rotation (GL.X) - 1.0;
                 if Rotation (GL.X) < 0.0 then
                     Rotation (GL.X) := 359.0;
@@ -107,7 +108,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         end case;
         --          Set_Command_Invalid;
 
-    end Process_Input;
+    end Process_Input_Command;
 
     --  -------------------------------------------------------------------------
 
@@ -186,8 +187,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Delta_Time   : constant Float := Current_Time - Last_Time;
     begin
         Last_Time := Current_Time;
+        Input_Callback.Clear_All_Keys;
         Input_Manager.Update_Command (Window);
-        Process_Input (Delta_Time);
+        Process_Input_Command (Delta_Time);
         Model.Update (Ship, Delta_Time);
         for index in Asteriods'Range loop
             Model.Update (Asteriods (index), Delta_Time);
