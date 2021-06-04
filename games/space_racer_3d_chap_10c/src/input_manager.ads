@@ -9,7 +9,7 @@ package Input_Manager is
                          Credits_Button, Continue_Button, Replay_Button,
                          Exit_Button);
     type Command is (Command_Left, Command_Right, Command_Stop, Command_Up,
-                     Command_Down, Command_UI, Command_Quit, Command_Invalid);
+                     Command_Down, Command_GUI, Command_Quit, Command_Invalid);
 
     function Get_Current_Command return Command;
     function Is_Active (Button : Button_Index) return Boolean;
