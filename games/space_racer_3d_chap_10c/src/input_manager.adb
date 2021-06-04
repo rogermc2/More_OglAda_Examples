@@ -198,7 +198,6 @@ package body Input_Manager is
    procedure Update_Command (Window : in out Input_Callback.Callback_Window) is
       use Glfw.Input.Keys;
       use Input_Callback;
---        Last_Key : Glfw.Input.Keys.Key;
 
       procedure Check_Button_Click (Index : Button_Index) is
       begin
@@ -216,11 +215,9 @@ package body Input_Manager is
       end loop;
 
       if Key_Pressed and then Current_Command /= Command_GUI then
---          Last_Key := Last_Key_Down;
---          Put_Line ("Input_Manager.Update_Command, last Key_Pressed " &
---                   Key'Image (Last_Key));
          if Is_Key_Down (Q) then
             Current_Command := Command_Quit;
+            Set_Key_Pressed (False);
          elsif Is_Key_Down (Left) or Is_Key_Down (A) then
             Current_Command := Command_Left;
          elsif Is_Key_Down (Right) or Is_Key_Down (D) then
@@ -231,10 +228,11 @@ package body Input_Manager is
             Current_Command := Command_Down;
          elsif Is_Key_Down (Space) then
             Current_Command := Command_Stop;
+            Set_Key_Pressed (False);
          else
             Current_Command := Command_Invalid;
+            Set_Key_Pressed (False);
          end if;
-         Set_Key_Pressed (False);
       end if;
    end Update_Command;
 

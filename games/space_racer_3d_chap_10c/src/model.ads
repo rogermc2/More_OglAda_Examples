@@ -14,12 +14,16 @@ package Model is
     procedure Bind_Vertex_VBO (aModel : in out Model_Data);
     function Heading (aModel : in out Model_Data)
                       return GL.Types.Singles.Vector3;
+    function Heading_Rotation (aModel : in out Model_Data)
+                      return GL.Types.Singles.Vector3;
     procedure Initialize (aModel : in out Model_Data; File_Path : String;
                           Colour : GL.Types.Colors.Basic_Color);
     procedure Initialize_VBOs (aModel : in out Model_Data);
     procedure Render (aModel : in out Model_Data);
     procedure Set_Base_Rotation (aModel   : in out Model_Data;
                                  Rotation : GL.Types.Singles.Vector3);
+    procedure Set_Heading (aModel   : in out Model_Data;
+                           Heading : GL.Types.Singles.Vector3);
     procedure Set_Heading_Rotation (aModel   : in out Model_Data;
                                     Rotation : GL.Types.Singles.Vector3);
     procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean);

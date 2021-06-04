@@ -51,6 +51,14 @@ package body Model is
 
     --  ------------------------------------------------------------------------
 
+    function Heading_Rotation (aModel : in out Model_Data)
+                      return GL.Types.Singles.Vector3 is
+    begin
+        return aModel.Heading_Rotation;
+    end Heading_Rotation;
+
+    --  ------------------------------------------------------------------------
+
     procedure Initialize (aModel : in out Model_Data; File_Path : String;
                           Colour : GL.Types.Colors.Basic_Color) is
         use Load_Obj_File;
@@ -150,6 +158,14 @@ package body Model is
 
     --  ------------------------------------------------------------------------
 
+    procedure Set_Heading (aModel  : in out Model_Data;
+                           Heading : GL.Types.Singles.Vector3) is
+    begin
+        aModel.Heading := Heading;
+    end Set_Heading;
+
+    --  ------------------------------------------------------------------------
+
     procedure Set_Heading_Rotation (aModel   : in out Model_Data;
                                     Rotation : GL.Types.Singles.Vector3) is
     begin
@@ -210,15 +226,14 @@ package body Model is
         use Maths.Single_Math_Functions;
         Distance         : constant Single :=
                              aModel.Velocity * Single (Delta_Time);
-        Target_Position  : Vector3 := aModel.Position;
+        Target_Rotation  : constant Vector3 := aModel.Heading_Rotation;
         Delta_Position   : Vector3;
     begin
-        Delta_Position (GL.X) := Cos (Target_Position (GL.Z)) * Distance;
-        Delta_Position (GL.Y) := -Sin (Target_Position (GL.Z)) * Distance;
-        Delta_Position (GL.Z) := Sin (Target_Position (GL.X)) * Distance;
+        Delta_Position (GL.Y) := Cos (Target_Rotation (GL.Z)) * Distance;
+        Delta_Position (GL.X) := -Sin (Target_Rotation (GL.Z)) * Distance;
+        Delta_Position (GL.Z) := Sin (Target_Rotation (GL.X)) * Distance;
 
-        Target_Position := Target_Position + Delta_Position;
-        aModel.Position := Target_Position;
+        aModel.Position := aModel.Position + Delta_Position;
 
     exception
         when anError : others =>
