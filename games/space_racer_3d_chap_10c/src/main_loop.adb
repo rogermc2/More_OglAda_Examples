@@ -73,6 +73,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 --                   Command'Image (aCommand));
         case aCommand is
             when Command_Stop =>
+                Put_Line ("Main_Loop.Process_Input_Command, Command_Down");
                 if Velocity (Ship) > 0.0 then
                     Set_Velocity (Ship, 0.0);
                 else
@@ -93,6 +94,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Set_Heading_Rotation (Ship, Rotation);
 
             when Command_Up =>
+                Put_Line ("Main_Loop.Process_Input_Command, Command_Up");
                 Rotation (GL.X) := Rotation (GL.X) + 1.0;
                 if Rotation (GL.X) > 359.0 then
                     Rotation (GL.X) := 0.0;
@@ -105,6 +107,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Set_Heading_Rotation (Ship, Rotation);
 
             when Command_Left =>
+                Put_Line ("Main_Loop.Process_Input_Command, Command_Left");
                 Rotation (GL.X) := Rotation (GL.Z) + 1.0;
                 if Rotation (GL.Z) > 359.0 then
                     Rotation (GL.Z) := 0.0;
@@ -117,6 +120,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Set_Heading_Rotation (Ship, Rotation);
 
             when Command_Right =>
+                Put_Line ("Main_Loop.Process_Input_Command, Command_Right");
                 Rotation (GL.X) := Rotation (GL.Z) - 1.0;
                 if Rotation (GL.Z) < 0.0 then
                     Rotation (GL.Z) := 359.0;
@@ -130,7 +134,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
             when others => null;
         end case;
-        --          Set_Command_Invalid;
+        Set_Command_Invalid;
 
     end Process_Input_Command;
 
@@ -203,8 +207,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
         Sprite_Manager.Init;
         Enable_Mouse_Callbacks (Screen, True);
---          Screen.Enable_Callback (Glfw.Windows.Callbacks.Key);
---          Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
+        Screen.Enable_Callback (Glfw.Windows.Callbacks.Key);
+        Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
 
     exception
         when anError : others =>
@@ -221,7 +225,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Delta_Time   : constant Float := Current_Time - Last_Time;
     begin
         Last_Time := Current_Time;
-        Input_Callback.Clear_All_Keys;
         Input_Manager.Update_Command (Window);
         Process_Input_Command (Delta_Time);
         Model.Update (Ship, Delta_Time);
