@@ -33,34 +33,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
    --  ------------------------------------------------------------------------
---
---     procedure Enable_Mouse_Callbacks
---       (Window : in out Input_Callback.Callback_Window;
---        Enable : Boolean) is
---        use Glfw.Windows.Callbacks;
---     begin
---        if Enable then
---           Window.Enable_Callback (Mouse_Position);
---           Window.Enable_Callback (Mouse_Enter);
---           Window.Enable_Callback (Mouse_Button);
---           Window.Enable_Callback (Mouse_Scroll);
---        else
---           Window.Disable_Callback (Mouse_Position);
---           Window.Disable_Callback (Mouse_Enter);
---           Window.Disable_Callback (Mouse_Button);
---           Window.Disable_Callback (Mouse_Scroll);
---        end if;
---     end Enable_Mouse_Callbacks;
 
-   --  ------------------------------------------------------------------------
-
-   procedure Process_Input_Command is
+   procedure Process_Input_Command (Window : in out Input_Callback.Callback_Window) is
       use GL.Types;
       use Input_Manager;
       use Model;
       Rotation : Singles.Vector3 := Heading_Rotation (Ship);
       aCommand : constant Command := Get_Current_Command;
    begin
+      Input_Manager.Update_Command (Window);
 --        Put_Line ("Process_Input_Command aCommand " &
 --                       Command'Image (aCommand));
       case aCommand is
@@ -126,7 +107,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Heading_Rotation (Ship, Rotation);
          when others => null;
       end case;
-      Set_Command_None;
 
    end Process_Input_Command;
 
@@ -198,7 +178,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
 
       Sprite_Manager.Init;
---        Enable_Mouse_Callbacks (Screen, True);
       Screen.Enable_Callback (Glfw.Windows.Callbacks.Key);
       Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
 
@@ -217,8 +196,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Delta_Time   : constant Float := Current_Time - Last_Time;
    begin
       Last_Time := Current_Time;
-      Input_Manager.Update_Command (Window);
-      Process_Input_Command;
+      Process_Input_Command (Window);
       Model.Update (Ship, Delta_Time);
       for index in Asteriods'Range loop
          Model.Update (Asteriods (index), Delta_Time);
