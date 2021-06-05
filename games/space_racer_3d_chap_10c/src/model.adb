@@ -8,7 +8,7 @@ with GL.Types;
 
 with Load_Obj_File;
 with Maths;
---  with Utilities;
+with Utilities;
 
 with Load_Buffers;
 with Shader_Manager_Model;
@@ -244,9 +244,9 @@ package body Model is
       Delta_Position (GL.Z) := Sin (Target_Rotation (GL.X)) * Distance;
 
       aModel.Position := aModel.Position + Delta_Position;
---        Utilities.Print_Vector ("aModel.Update Rotation", Target_Rotation);
+      Utilities.Print_Vector ("aModel.Update Rotation", aModel.Heading_Rotation);
 --        Utilities.Print_Vector ("aModel.Update Delta_Position", Delta_Position);
---        Utilities.Print_Vector ("aModel.Update Position", aModel.Position);
+      Utilities.Print_Vector ("aModel.Update Position", aModel.Position);
 --        delay (1.0);
    exception
       when anError : others =>
