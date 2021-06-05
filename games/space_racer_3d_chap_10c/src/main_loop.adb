@@ -82,7 +82,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Rotation (GL.X) := 45.0;
                end if;
             end if;
-            Set_Heading_Rotation (Ship, Rotation);
+--              Set_Heading_Rotation (Ship, Rotation);
 
          when Command_Left =>
             Rotation := Heading_Rotation (Ship);

@@ -237,7 +237,7 @@ package body Model is
                            aModel.Velocity * Single (Delta_Time);
       Target_Rotation  : constant Vector3 :=
                            To_Radian (aModel.Heading_Rotation);
-      Delta_Position   : Vector3;
+      Delta_Position   : Vector3 := (0.0, 0.0, 0.0);
    begin
          Delta_Position (GL.Y) := Cos (Target_Rotation (GL.Z)) * Distance;
          Delta_Position (GL.X) := -Sin (Target_Rotation (GL.Z)) * Distance;

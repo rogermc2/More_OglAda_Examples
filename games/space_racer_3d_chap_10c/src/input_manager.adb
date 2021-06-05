@@ -242,7 +242,7 @@ package body Input_Manager is
       else
          Current_Command := Command_None;
       end if;
-      Set_Key_Pressed (False);
+
    end Update_Command;
 
    --  ------------------------------------------------------------------------
