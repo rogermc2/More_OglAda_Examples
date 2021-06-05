@@ -1,5 +1,5 @@
 
---  with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Mouse;
 with Glfw.Input.Keys;
@@ -179,6 +179,13 @@ package body Input_Manager is
 
    --  ------------------------------------------------------------------------
 
+   procedure Set_Command_None is
+   begin
+      Current_Command := Command_None;
+   end Set_Command_None;
+
+   --  ------------------------------------------------------------------------
+
    procedure Update (Delta_Time : Float) is
    begin
       for index in Input_Manager.Button_Index'Range loop
@@ -215,9 +222,10 @@ package body Input_Manager is
       end loop;
 
       if Key_Pressed and then Current_Command /= Command_GUI then
+         Put_Line ("Input_Manager.Update_Command Last Key " &
+                     Key'Image (Last_Key_Down));
          if Is_Key_Down (Q) then
             Current_Command := Command_Quit;
-            Set_Key_Pressed (False);
          elsif Is_Key_Down (Left) or Is_Key_Down (A) then
             Current_Command := Command_Left;
          elsif Is_Key_Down (Right) or Is_Key_Down (D) then
@@ -228,12 +236,13 @@ package body Input_Manager is
             Current_Command := Command_Down;
          elsif Is_Key_Down (Space) then
             Current_Command := Command_Stop;
-            Set_Key_Pressed (False);
          else
             Current_Command := Command_Invalid;
-            Set_Key_Pressed (False);
          end if;
+      else
+         Current_Command := Command_None;
       end if;
+      Set_Key_Pressed (False);
    end Update_Command;
 
    --  ------------------------------------------------------------------------

@@ -21,6 +21,7 @@ package Input_Manager is
     procedure Set_Active (Button : Button_Index; State : Boolean);
     procedure Set_Clicked (Button : Button_Index; Clicked : Boolean);
     procedure Set_Command_Invalid;
+    procedure Set_Command_None;
     procedure Set_Visible (Button : Button_Index; State : Boolean);
     procedure Update (Delta_Time : Float);
     procedure Update_Button (Button : Button_Index; Delta_Time : Float);

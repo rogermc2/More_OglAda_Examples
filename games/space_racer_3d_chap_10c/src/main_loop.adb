@@ -25,12 +25,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    Back          : constant GL.Types.Colors.Color :=
                      (0.6, 0.6, 0.6, 0.0);
-   GUI_Threshold : constant float := 0.1;
    Ship          : Model.Model_Data;
    Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
    Asteriods     : array (1 .. 3) of Model.Model_Data;
    Last_Time     : Float := Float (Glfw.Time);
-   GUI_Timer     : Float := 0.0;
 
    procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
@@ -56,18 +54,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Process_Input_Command (Delta_Time : Float) is
+   procedure Process_Input_Command is
       use GL.Types;
       use Input_Manager;
       use Model;
       Rotation : Singles.Vector3 := Heading_Rotation (Ship);
       aCommand : constant Command := Get_Current_Command;
    begin
-      GUI_Timer := GUI_Timer + Delta_Time;
-      if GUI_Timer > GUI_Threshold then
-         GUI_Timer := 0.0;
-      end if;
-
+--        Put_Line ("Process_Input_Command aCommand " &
+--                       Command'Image (aCommand));
       case aCommand is
          when Command_Stop =>
             if Velocity (Ship) > 0.0 then
@@ -77,7 +72,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             end if;
 
          when Command_Down =>
-            Rotation (GL.X) := Rotation (GL.X) - 1.0;
+            Rotation (GL.X) := Rotation (GL.X) - 20.0;
+            Put_Line ("Process_Input_Command down Rotation" &
+                     Single'Image (Rotation (GL.X)));
             if Rotation (GL.X) < 0.0 then
                Rotation (GL.X) := 359.0;
             end if;
@@ -86,10 +83,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Rotation (GL.X) := 315.0;
                end if;
             end if;
+            Put_Line ("Process_Input_Command down set Rotation" &
+                     Single'Image (Rotation (GL.X)));
             Set_Heading_Rotation (Ship, Rotation);
 
          when Command_Up =>
             Rotation (GL.X) := Rotation (GL.X) + 1.0;
+            Put_Line ("Process_Input_Command up Rotation" &
+                     Single'Image (Rotation (GL.X)));
             if Rotation (GL.X) > 359.0 then
                Rotation (GL.X) := 0.0;
             end if;
@@ -101,7 +102,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Heading_Rotation (Ship, Rotation);
 
          when Command_Left =>
-            Rotation (GL.Z) := Rotation (GL.Z) + 1.0;
+            Rotation (GL.Z) := Rotation (GL.Z) + 10.0;
             if Rotation (GL.Z) > 359.0 then
                Rotation (GL.Z) := 0.0;
             end if;
@@ -113,7 +114,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Heading_Rotation (Ship, Rotation);
 
          when Command_Right =>
-            Rotation (GL.Z) := Rotation (GL.Z) - 1.0;
+            Rotation (GL.Z) := Rotation (GL.Z) - 10.0;
             if Rotation (GL.Z) < 0.0 then
                Rotation (GL.Z) := 359.0;
             end if;
@@ -123,10 +124,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                end if;
             end if;
             Set_Heading_Rotation (Ship, Rotation);
-
          when others => null;
       end case;
-      Set_Command_Invalid;
+      Set_Command_None;
 
    end Process_Input_Command;
 
@@ -199,8 +199,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       Sprite_Manager.Init;
 --        Enable_Mouse_Callbacks (Screen, True);
---        Screen.Enable_Callback (Glfw.Windows.Callbacks.Key);
---        Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
+      Screen.Enable_Callback (Glfw.Windows.Callbacks.Key);
+      Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
 
    exception
       when anError : others =>
@@ -218,7 +218,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    begin
       Last_Time := Current_Time;
       Input_Manager.Update_Command (Window);
-      Process_Input_Command (Delta_Time);
+      Process_Input_Command;
       Model.Update (Ship, Delta_Time);
       for index in Asteriods'Range loop
          Model.Update (Asteriods (index), Delta_Time);
