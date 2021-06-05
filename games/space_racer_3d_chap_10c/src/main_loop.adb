@@ -38,7 +38,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       use GL.Types;
       use Input_Manager;
       use Model;
-      Rotation : Singles.Vector3 := Heading_Rotation (Ship);
+      Rotation : Singles.Vector3;
       aCommand : constant Command := Get_Current_Command;
    begin
       Input_Manager.Update_Command (Window);
@@ -53,6 +53,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             end if;
 
          when Command_Down =>
+            Rotation := Heading_Rotation (Ship);
             Rotation (GL.X) := Rotation (GL.X) - 20.0;
             Put_Line ("Process_Input_Command down Rotation" &
                      Single'Image (Rotation (GL.X)));
@@ -69,6 +70,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Heading_Rotation (Ship, Rotation);
 
          when Command_Up =>
+            Rotation := Heading_Rotation (Ship);
             Rotation (GL.X) := Rotation (GL.X) + 1.0;
             Put_Line ("Process_Input_Command up Rotation" &
                      Single'Image (Rotation (GL.X)));
@@ -83,6 +85,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Heading_Rotation (Ship, Rotation);
 
          when Command_Left =>
+            Rotation := Heading_Rotation (Ship);
             Rotation (GL.Z) := Rotation (GL.Z) + 10.0;
             if Rotation (GL.Z) > 359.0 then
                Rotation (GL.Z) := 0.0;
@@ -95,6 +98,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Set_Heading_Rotation (Ship, Rotation);
 
          when Command_Right =>
+            Rotation := Heading_Rotation (Ship);
             Rotation (GL.Z) := Rotation (GL.Z) - 10.0;
             if Rotation (GL.Z) < 0.0 then
                Rotation (GL.Z) := 359.0;
