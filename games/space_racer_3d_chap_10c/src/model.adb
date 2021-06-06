@@ -105,7 +105,7 @@ package body Model is
       use GL.Objects.Buffers;
       use Shader_Manager_Model;
       Model_Matrix : Matrix4 := Singles.Identity4;
-      View_Matrix  : Matrix4 := Singles.Identity4;
+      View_Matrix  : constant Matrix4 := Singles.Identity4;
       Rot_Matrix   : Matrix4 := Singles.Identity4;
    begin
       --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
@@ -116,11 +116,9 @@ package body Model is
            (aModel.Base_Rotation, Rot_Matrix);
          Model_Matrix :=  Rot_Matrix * Model_Matrix;
          if aModel.Is_Ship then
-            Model_Matrix := Maths.Scaling_Matrix ((0.8, 0.8, 0.8));
-            Maths.Init_Rotation_Transform
-              (aModel.Base_Rotation, View_Matrix);
-            View_Matrix :=
-              Maths.Translation_Matrix (aModel.Position) * View_Matrix;
+            Model_Matrix := Maths.Scaling_Matrix ((0.8, 0.8, 0.8)) * Model_Matrix;
+            Model_Matrix :=
+              Maths.Translation_Matrix (aModel.Position) * Model_Matrix;
          end if;
 
          if not aModel.Is_Ship then
