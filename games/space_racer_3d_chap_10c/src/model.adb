@@ -1,6 +1,6 @@
 
 with Ada.Exceptions; use Ada.Exceptions;
---  with Ada.Numerics;
+with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Programs;
@@ -219,22 +219,22 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
---     function To_Radian (Degrees : GL.Types.Singles.Vector3)
---                         return GL.Types.Singles.Vector3 is
---        use Ada.Numerics;
---     begin
---        return Pi / 180.0 * Degrees;
---     end To_Radian;
+   function To_Radian (Degrees : GL.Types.Singles.Vector3)
+                       return GL.Types.Singles.Vector3 is
+      use Ada.Numerics;
+   begin
+      return Pi / 180.0 * Degrees;
+   end To_Radian;
 
-   --  ------------------------------------------------------------------------
+   ------------------------------------------------------------------------
 
    procedure Update (aModel : in out Model_Data; Delta_Time : Float) is
       use Maths;
       use Maths.Single_Math_Functions;
       Distance         : constant Single :=
                            aModel.Velocity * Single (Delta_Time);
-      Target_Rotation  : constant Vector3 := aModel.Heading_Rotation;
---                             To_Radian (aModel.Heading_Rotation);
+      Target_Rotation  : constant Vector3 :=
+                           To_Radian (aModel.Heading_Rotation);
       Delta_Position   : Vector3 := (0.0, 0.0, 0.0);
    begin
          Delta_Position (GL.Y) := Cos (Target_Rotation (GL.Z)) * Distance;
