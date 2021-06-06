@@ -29,6 +29,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
    Asteriods     : array (1 .. 3) of Model.Model_Data;
    Last_Time     : Float := Float (Glfw.Time);
+   Command_Done  : Boolean := False;
 
    procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
@@ -42,21 +43,24 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       aCommand : constant Command := Get_Current_Command;
    begin
       Input_Manager.Update_Command (Window);
---        Put_Line ("Process_Input_Command aCommand " &
---                       Command'Image (aCommand));
+      --        Put_Line ("Process_Input_Command aCommand " &
+      --                       Command'Image (aCommand));
       case aCommand is
          when Command_Stop =>
-            if Velocity (Ship) > 0.0 then
-               Set_Velocity (Ship, 0.0);
-            else  --  Start
-               Set_Velocity (Ship, 0.1);
+            if not Command_Done then
+               if Velocity (Ship) > 0.0 then
+                  Set_Velocity (Ship, 0.0);
+               else  --  Start
+                  Set_Velocity (Ship, 0.1);
+               end if;
+               Command_Done := True;
             end if;
 
          when Command_Down =>
             Rotation := Heading_Rotation (Ship);
             Rotation (GL.X) := Rotation (GL.X) - 20.0;
---              Put_Line ("Process_Input_Command down Rotation" &
---                       Single'Image (Rotation (GL.X)));
+            --              Put_Line ("Process_Input_Command down Rotation" &
+            --                       Single'Image (Rotation (GL.X)));
             if Rotation (GL.X) < 0.0 then
                Rotation (GL.X) := 359.0;
             end if;
@@ -65,15 +69,15 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Rotation (GL.X) := 315.0;
                end if;
             end if;
---              Put_Line ("Process_Input_Command down set Rotation" &
---                       Single'Image (Rotation (GL.X)));
+            --              Put_Line ("Process_Input_Command down set Rotation" &
+            --                       Single'Image (Rotation (GL.X)));
             Set_Heading_Rotation (Ship, Rotation);
 
          when Command_Up =>
             Rotation := Heading_Rotation (Ship);
             Rotation (GL.X) := Rotation (GL.X) + 1.0;
---              Put_Line ("Process_Input_Command up Rotation" &
---                       Single'Image (Rotation (GL.X)));
+            --              Put_Line ("Process_Input_Command up Rotation" &
+            --                       Single'Image (Rotation (GL.X)));
             if Rotation (GL.X) > 359.0 then
                Rotation (GL.X) := 0.0;
             end if;
@@ -109,7 +113,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                end if;
             end if;
             Set_Heading_Rotation (Ship, Rotation);
-         when others => null;
+         when others =>
+            Command_Done := False;
       end case;
 
    end Process_Input_Command;
@@ -202,9 +207,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Last_Time := Current_Time;
       Process_Input_Command (Window);
       Model.Update (Ship, Delta_Time);
---        for index in Asteriods'Range loop
---           Model.Update (Asteriods (index), Delta_Time);
---        end loop;
+      --        for index in Asteriods'Range loop
+      --           Model.Update (Asteriods (index), Delta_Time);
+      --        end loop;
    end Update;
 
    --  ------------------------------------------------------------------------
