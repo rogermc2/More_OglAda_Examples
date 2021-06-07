@@ -1,5 +1,5 @@
 
-with Ada.Text_IO; use Ada.Text_IO;
+--  with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Mouse;
 with Glfw.Input.Keys;
@@ -222,8 +222,6 @@ package body Input_Manager is
       end loop;
 
       if Key_Pressed and then Current_Command /= Command_GUI then
-         Put_Line ("Input_Manager.Update_Command Last Key " &
-                     Key'Image (Last_Key_Down));
          if Is_Key_Down (Q) then
             Current_Command := Command_Quit;
          elsif Is_Key_Down (Left) or Is_Key_Down (A) then

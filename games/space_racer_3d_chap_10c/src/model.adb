@@ -8,7 +8,7 @@ with GL.Types;
 
 with Load_Obj_File;
 with Maths;
-with Utilities;
+--  with Utilities;
 
 with Load_Buffers;
 with Shader_Manager_Model;
@@ -43,11 +43,11 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   --     function Heading (aModel : in out Model_Data)
-   --                        return GL.Types.Singles.Vector3 is
-   --     begin
-   --        return aModel.Heading;
-   --     end Heading;
+   function Heading (aModel : in out Model_Data)
+                     return GL.Types.Singles.Vector3 is
+   begin
+      return aModel.Heading;
+   end Heading;
 
    --  ------------------------------------------------------------------------
 
@@ -160,11 +160,11 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   --     procedure Set_Heading (aModel  : in out Model_Data;
-   --                            Heading : GL.Types.Singles.Vector3) is
-   --     begin
-   --        aModel.Heading := Heading;
-   --     end Set_Heading;
+   procedure Set_Heading (aModel  : in out Model_Data;
+                          Heading : GL.Types.Singles.Vector3) is
+   begin
+      aModel.Heading := Heading;
+   end Set_Heading;
 
    --  ------------------------------------------------------------------------
 
@@ -241,15 +241,14 @@ package body Model is
                            To_Radian (aModel.Heading_Rotation);
       Delta_Position   : Vector3 := (0.0, 0.0, 0.0);
    begin
-         Delta_Position (GL.Y) := Cos (Target_Rotation (GL.Z)) * Distance;
-         Delta_Position (GL.X) := -Sin (Target_Rotation (GL.Z)) * Distance;
-         Delta_Position (GL.Z) := Sin (Target_Rotation (GL.X)) * Distance;
+      Delta_Position (GL.Y) := Cos (Target_Rotation (GL.Z)) * Distance;
+      Delta_Position (GL.X) := -Sin (Target_Rotation (GL.Z)) * Distance;
+      Delta_Position (GL.Z) := Sin (Target_Rotation (GL.X)) * Distance;
 
-         aModel.Position := aModel.Position + Delta_Position;
---           Utilities.Print_Vector ("aModel.Update Rotation", aModel.Heading_Rotation);
-         --        Utilities.Print_Vector ("aModel.Update Delta_Position", Delta_Position);
-         Utilities.Print_Vector ("aModel.Update Position", aModel.Position);
-      --        delay (1.0);
+      aModel.Position := aModel.Position + Delta_Position;
+      --           Utilities.Print_Vector ("aModel.Update Rotation", aModel.Heading_Rotation);
+      --        Utilities.Print_Vector ("aModel.Update Delta_Position", Delta_Position);
+      --           Utilities.Print_Vector ("aModel.Update Position", aModel.Position);
 
    exception
       when anError : others =>

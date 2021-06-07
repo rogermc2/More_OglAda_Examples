@@ -4,7 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input;
 with Glfw.Input.Keys;
-with Glfw.Input.Mouse;
+--  with Glfw.Input.Mouse;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
@@ -43,8 +43,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       aCommand : constant Command := Get_Current_Command;
    begin
       Input_Manager.Update_Command (Window);
-      --        Put_Line ("Process_Input_Command aCommand " &
-      --                       Command'Image (aCommand));
       case aCommand is
          when Command_Stop =>
             if not Command_Done then
@@ -58,9 +56,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
          when Command_Down =>
             Rotation := Heading_Rotation (Ship);
+            Utilities.Print_Vector ("Rotation", Rotation);
             Rotation (GL.X) := Rotation (GL.X) - 1.0;
-            --              Put_Line ("Process_Input_Command down Rotation" &
-            --                       Single'Image (Rotation (GL.X)));
             if Rotation (GL.X) < 0.0 then
                Rotation (GL.X) := 359.0;
             end if;
@@ -69,15 +66,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                   Rotation (GL.X) := 315.0;
                end if;
             end if;
-            --              Put_Line ("Process_Input_Command down set Rotation" &
-            --                       Single'Image (Rotation (GL.X)));
             Set_Heading_Rotation (Ship, Rotation);
+            Utilities.Print_Vector ("Rotation x - 1", Rotation);
 
          when Command_Up =>
             Rotation := Heading_Rotation (Ship);
             Rotation (GL.X) := Rotation (GL.X) + 1.0;
-            --              Put_Line ("Process_Input_Command up Rotation" &
-            --                       Single'Image (Rotation (GL.X)));
             if Rotation (GL.X) > 359.0 then
                Rotation (GL.X) := 0.0;
             end if;
@@ -155,17 +149,18 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  ------------------------------------------------------------------------
 
-   procedure Start_Game (Screen : in out Input_Callback.Callback_Window) is
+--     procedure Start_Game (Screen : in out Input_Callback.Callback_Window) is
+   procedure Start_Game is
       use GL.Types;
-      use Glfw.Input;
-      Window_Width  : Glfw.Size;
-      Window_Height : Glfw.Size;
+--        use Glfw.Input;
+--        Window_Width  : Glfw.Size;
+--        Window_Height : Glfw.Size;
    begin
-      Screen.Set_Cursor_Mode (Mouse.Normal);
-      Screen'Access.Get_Size (Window_Width, Window_Height);
-      Screen'Access.Set_Cursor_Pos
-        (Mouse.Coordinate (0.5 * Single (Window_Width)),
-         Mouse.Coordinate (0.5 * Single (Window_Height)));
+--        Screen.Set_Cursor_Mode (Mouse.Normal);
+--        Screen'Access.Get_Size (Window_Width, Window_Height);
+--        Screen'Access.Set_Cursor_Pos
+--          (Mouse.Coordinate (0.5 * Single (Window_Width)),
+--           Mouse.Coordinate (0.5 * Single (Window_Height)));
 
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
@@ -173,7 +168,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
       Model.Initialize (Ship, "src/resources/ship.obj", Ship_Colour);
       Model.Set_Is_Ship (Ship, True);
-      Model.Set_Position (Ship, (0.0, 0.0, -4.0));
+      Model.Set_Position (Ship, (0.0, -0.5, -4.0));
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
       Model.Set_Velocity (Ship, 0.1);
 
@@ -215,7 +210,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    use Glfw.Input;
    Running  : Boolean := True;
 begin
-   Start_Game (Main_Window);
+--     Start_Game (Main_Window);
+   Start_Game;
    while Running loop
       Update (Main_Window);
       Render (Main_Window);
