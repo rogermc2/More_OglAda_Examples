@@ -187,8 +187,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
 
       Sprite_Manager.Init;
-      Screen.Enable_Callback (Glfw.Windows.Callbacks.Key);
-      Screen.Enable_Callback (Glfw.Windows.Callbacks.Char);
 
    exception
       when anError : others =>
@@ -207,9 +205,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Last_Time := Current_Time;
       Process_Input_Command (Window);
       Model.Update (Ship, Delta_Time);
-      --        for index in Asteriods'Range loop
-      --           Model.Update (Asteriods (index), Delta_Time);
-      --        end loop;
+      for index in Asteriods'Range loop
+         Model.Update (Asteriods (index), Delta_Time);
+      end loop;
    end Update;
 
    --  ------------------------------------------------------------------------
