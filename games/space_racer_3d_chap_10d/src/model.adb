@@ -43,15 +43,44 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   function Heading (aModel : in out Model_Data)
-                     return GL.Types.Singles.Vector3 is
+   function Centre (aModel : Model_Data) return GL.Types.Singles.Vector3 is
+   begin
+      return aModel.Centre;
+   end Centre;
+
+   --  ------------------------------------------------------------------------
+
+   function Collided_With (thisModel, Target : Model.Model_Data)
+                           return Boolean is
+      P1        : constant Singles.Vector3 := thisModel.Centre;
+      P2        : constant Singles.Vector3 := Target.Centre;
+      P_Delta   : Singles.Vector3;
+      Dist_Sq   : Single;
+      Rad_1_Sq  : Single;
+      Rad_2_Sq  : Single;
+      Result    : Boolean := False;
+   begin
+      if thisModel.Is_Collidable and Target.Is_Collidable then
+         P_Delta := P2 - P1;
+         Dist_Sq := P_Delta (GL.X) ** 2 + P_Delta (GL.Y) ** 2 +
+           P_Delta (GL.Z) ** 2;
+         Rad_1_Sq := thisModel.Radius ** 2;
+         Rad_2_Sq := Target.Radius ** 2;
+         Result := Dist_Sq <= Rad_1_Sq + Rad_2_Sq;
+      end if;
+      return Result;
+   end Collided_With;
+
+   --  ------------------------------------------------------------------------
+
+   function Heading (aModel : Model_Data) return GL.Types.Singles.Vector3 is
    begin
       return aModel.Heading;
    end Heading;
 
    --  ------------------------------------------------------------------------
 
-   function Heading_Rotation (aModel : in out Model_Data)
+   function Heading_Rotation (aModel : Model_Data)
                               return GL.Types.Singles.Vector3 is
    begin
       return aModel.Heading_Rotation;
@@ -97,6 +126,13 @@ package body Model is
       aModel.Model_Element_Buffer.Initialize_Id;
       GL.Objects.Buffers.Element_Array_Buffer.Bind (aModel.Model_Element_Buffer);
    end Initialize_VBOs;
+
+   --  ------------------------------------------------------------------------
+
+   function Position (aModel : Model_Data) return GL.Types.Singles.Vector3 is
+   begin
+      return aModel.Position;
+   end Position;
 
    --  ------------------------------------------------------------------------
 
@@ -259,7 +295,7 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   function Velocity (aModel : in out Model_Data) return GL.Types.Single is
+   function Velocity (aModel : Model_Data) return GL.Types.Single is
    begin
       return aModel.Velocity;
    end Velocity;

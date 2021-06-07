@@ -12,13 +12,14 @@ package Model is
    procedure Bind_Element_VBO (aModel : in out Model_Data);
    procedure Bind_Model_VAO (aModel : in out Model_Data);
    procedure Bind_Vertex_VBO (aModel : in out Model_Data);
-   function Heading (aModel : in out Model_Data)
-                      return GL.Types.Singles.Vector3;
-   function Heading_Rotation (aModel : in out Model_Data)
-                               return GL.Types.Singles.Vector3;
+   function Centre (aModel : Model_Data) return GL.Types.Singles.Vector3;
+   function Heading (aModel : Model_Data) return GL.Types.Singles.Vector3;
+   function Heading_Rotation (aModel : Model_Data)
+                              return GL.Types.Singles.Vector3;
    procedure Initialize (aModel : in out Model_Data; File_Path : String;
                          Colour : GL.Types.Colors.Basic_Color);
    procedure Initialize_VBOs (aModel : in out Model_Data);
+   function Position (aModel : Model_Data) return GL.Types.Singles.Vector3;
    procedure Render (aModel : in out Model_Data);
    procedure Set_Base_Rotation (aModel   : in out Model_Data;
                                 Rotation : GL.Types.Singles.Vector3);
@@ -35,7 +36,7 @@ package Model is
                            Velocity : GL.Types.Single);
    procedure Set_Vertex_Count (aModel : in out Model_Data; Count : GL.Types.Int);
    procedure Update (aModel : in out Model_Data; Delta_Time : Float);
-   function Velocity (aModel : in out Model_Data) return GL.Types.Single;
+   function Velocity (aModel : Model_Data) return GL.Types.Single;
 
 private
    use GL.Types.Singles;
@@ -48,6 +49,7 @@ private
       Indices_Size         : GL.Types.Int := 0;
       Position             : Vector3 := (0.0, 0.0, 0.0);
       Heading              : Vector3 := (0.0, 0.0, 0.0);
+      Centre               : Vector3 := (0.0, 0.0, 0.0);
       Base_Rotation        : Vector3 := (0.0, 0.0, 0.0);
       Heading_Rotation     : Vector3 := (0.0, 0.0, 0.0);
       Model_Colour         : GL.Types.Colors.Basic_Color := (0.0, 0.0, 0.0);

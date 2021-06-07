@@ -402,7 +402,7 @@ package body Sprite_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Set_Radius (aSprite : in out Sprite; Radius : Float) is
+    procedure Set_Radius (aModel : in out Model; Radius : Float) is
     begin
         aSprite.Radius := Radius;
     end Set_Radius;
