@@ -116,7 +116,11 @@ package body Model is
            (aModel.Base_Rotation, Rot_Matrix);
          Model_Matrix :=  Rot_Matrix * Model_Matrix;
          if aModel.Is_Ship then
-            Model_Matrix := Maths.Scaling_Matrix ((0.8, 0.8, 0.8)) * Model_Matrix;
+            Model_Matrix := Maths.Scaling_Matrix ((0.8, 0.8, 0.8))
+              * Model_Matrix;
+            Maths.Init_Rotation_Transform
+              (aModel.Heading_Rotation, Rot_Matrix);
+            Model_Matrix :=  Rot_Matrix * Model_Matrix;
             Model_Matrix :=
               Maths.Translation_Matrix (aModel.Position) * Model_Matrix;
          end if;
