@@ -212,8 +212,8 @@ package body Model is
          end if;
 
          Set_Colour (Program_3D, aModel.Model_Colour);
-         Set_Model_Matrix (Model_Matrix);
-         Set_View_Matrix (View_Matrix);
+         Set_Model_Matrix (Program_3D, Model_Matrix);
+         Set_View_Matrix (Program_3D, View_Matrix);
 
          aModel.Model_VAO.Bind;
          Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
@@ -290,7 +290,7 @@ package body Model is
                               Projection_Matrix : GL.Types.Singles.Matrix4) is
    begin
       GL.Objects.Programs.Use_Program (Program);
-      Shader_Manager.Set_Projection_Matrix (Projection_Matrix);
+      Shader_Manager.Set_Projection_Matrix (Program_3D, Projection_Matrix);
    end Set_Perspective;
 
    --  ------------------------------------------------------------------------
