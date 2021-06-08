@@ -8,6 +8,7 @@ with Glfw.Windows;
 with Glfw.Windows.Context;
 
 with GL.Buffers;
+with GL.Objects.Programs;
 with GL.Types.Colors;
 with GL.Window;
 
@@ -15,6 +16,7 @@ with Maths;
 with Utilities;
 
 with Input_Manager;
+with Levels_Manager;
 with Model;
 
 --  ------------------------------------------------------------------------
@@ -23,8 +25,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    Back          : constant GL.Types.Colors.Color :=
                      (0.6, 0.6, 0.6, 0.0);
-   Ship          : Model.Model_Data;
+   Data          : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 0.0);
    Ship_Colour   : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
+   Program_2D    : GL.Objects.Programs.Program;
+   Ship          : Model.Model_Data;
    Asteriods     : array (1 .. 3) of Model.Model_Data;
    Last_Time     : Float := Float (Glfw.Time);
    Command_Done  : Boolean := False;
@@ -50,6 +54,22 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          end if;
       end loop;
    end Check_Collisions;
+
+   --  -------------------------------------------------------------------------
+
+   procedure Enable_2D (Screen : in out Input_Callback.Callback_Window) is
+      use GL.Types;
+      Screen_Width      : Glfw.Size;
+      Screen_Height     : Glfw.Size;
+      Projection_Matrix : Singles.Matrix4;
+   begin
+      Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+      Maths.Init_Orthographic_Transform
+        (Top => Single (Screen_Height), Bottom => 0.0,
+         Left => 0.0, Right => Single (Screen_Width),
+         Z_Near => 0.0, Z_Far => 1.0, Transform => Projection_Matrix);
+      Model.Set_Perspective (Program_2D, Projection_Matrix);
+   end Enable_2D;
 
    --  -------------------------------------------------------------------------
 
@@ -131,14 +151,32 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  -------------------------------------------------------------------------
 
+   procedure Render_2D (Screen : in out Input_Callback.Callback_Window) is
+   begin
+      Enable_2D (Screen);
+   end Render_2D;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Render_3D is
+      use Levels_Manager;
+   begin
+      if Get_Game_State = Game_Running then
+         for index in Asteriods'Range loop
+            Model.Render (Asteriods (index));
+         end loop;
+         Model.Render (Ship);
+      end if;
+   end Render_3D;
+
+   --  ------------------------------------------------------------------------
+
    procedure Render (Screen : in out Input_Callback.Callback_Window) is
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
       Resize_GL_Scene (Screen);
-      for index in Asteriods'Range loop
-         Model.Render (Asteriods (index));
-      end loop;
-      Model.Render (Ship);
+      Render_3D;
+      Render_2D (Screen);
    end Render;
 
    --  ------------------------------------------------------------------------
@@ -159,7 +197,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Maths.Init_Perspective_Transform
         (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height),
          0.1, 100.0, Projection_Matrix);
-      Model.Set_Perspective (Projection_Matrix);
+      Model.Set_Perspective (Program_2D, Projection_Matrix);
 
    end Resize_GL_Scene;
 
@@ -172,19 +210,21 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       GL.Buffers.Set_Depth_Function (LEqual);
       Input_Callback.Clear_All_Keys;
 
-      Model.Initialize (Ship, "src/resources/ship.obj", Ship_Colour);
+      Model.Initialize_2D (Data);
+
+      Model.Initialize_3D (Ship, "src/resources/ship.obj", Ship_Colour);
       Model.Set_Is_Ship (Ship, True);
       Model.Set_Position (Ship, (0.0, -0.5, -4.0));
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
       Model.Set_Velocity (Ship, 0.1);
 
-      Model.Initialize (Asteriods (1), "src/resources/tri_asteroid.obj", (1.0, 0.0, 0.0));
+      Model.Initialize_3D (Asteriods (1), "src/resources/tri_asteroid.obj", (1.0, 0.0, 0.0));
       Model.Set_Position (Asteriods (1), (0.0, 0.0, -10.0));
 
-      Model.Initialize (Asteriods (2), "src/resources/tri_asteroid.obj", (0.0, 1.0, 0.0));
+      Model.Initialize_3D (Asteriods (2), "src/resources/tri_asteroid.obj", (0.0, 1.0, 0.0));
       Model.Set_Position (Asteriods (2), (5.0, 0.0, -15.0));
 
-      Model.Initialize (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
+      Model.Initialize_3D (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
       Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
 
    exception

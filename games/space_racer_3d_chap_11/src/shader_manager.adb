@@ -7,7 +7,7 @@ with GL.Uniforms;
 
 with Program_Loader;
 
-package body Shader_Manager_Model is
+package body Shader_Manager is
 
     Colour_Uniform      : GL.Uniforms.Uniform;
     Model_Uniform       : GL.Uniforms.Uniform;
@@ -20,8 +20,8 @@ package body Shader_Manager_Model is
     begin
 
         Game_Program := Program_From
-          ((Src ("src/shaders/vertex_model_shader.glsl", Vertex_Shader),
-           Src ("src/shaders/fragment_model_shader.glsl", Fragment_Shader)));
+          ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
+           Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
         GL.Objects.Programs.Use_Program (Game_Program);
 
         Colour_Uniform :=
@@ -78,4 +78,4 @@ package body Shader_Manager_Model is
 
     --   ---------------------------------------------------------------------------------
 
-end Shader_Manager_Model;
+end Shader_Manager;

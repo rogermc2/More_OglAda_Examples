@@ -3,7 +3,7 @@ with GL.Objects.Programs;
 with GL.Types;
 with GL.Types.Colors;
 
-package Shader_Manager_Model is
+package Shader_Manager_2D is
 
     procedure Init_Shaders (Game_Program : in out GL.Objects.Programs.Program);
     procedure Set_Colour (Colour : GL.Types.Colors.Basic_Color);
@@ -11,4 +11,4 @@ package Shader_Manager_Model is
     procedure Set_Projection_Matrix (Projection_Matrix : GL.Types.Singles.Matrix4);
     procedure Set_View_Matrix (View_Matrix : GL.Types.Singles.Matrix4);
 
-end Shader_Manager_Model;
+end Shader_Manager_2D;

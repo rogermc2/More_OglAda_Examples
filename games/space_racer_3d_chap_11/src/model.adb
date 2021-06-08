@@ -3,7 +3,6 @@ with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Objects.Programs;
 with GL.Types;
 
 with Load_Obj_File;
@@ -11,12 +10,18 @@ with Maths;
 --  with Utilities;
 
 with Load_Buffers;
-with Shader_Manager_Model;
+with Shader_Manager;
 
 package body Model is
    use GL.Types;
 
-   Model_Program  : GL.Objects.Programs.Program;
+   Program_3D    : GL.Objects.Programs.Program;
+   VAO_2D            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
+   Vertex_Buffer_2D  : GL.Objects.Buffers.Buffer;
+   Element_Buffer_2D : GL.Objects.Buffers.Buffer;
+
+   procedure Initialize_2D_VBO;
+   procedure Initialize_3D_VBOs (aModel : in out Model_Data);
 
    --  ------------------------------------------------------------------------
 
@@ -93,8 +98,43 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   procedure Initialize (aModel : in out Model_Data; File_Path : String;
-                         Colour : GL.Types.Colors.Basic_Color) is
+   procedure Initialize_2D (Shader_Program : in out GL.Objects.Programs.Program;
+                            Colour         : GL.Types.Colors.Basic_Color) is
+      Vertices       : Obj_Array3;
+      Normals        : Obj_Array3;
+      UVs            : Obj_Array2;
+      Vertex_Indices : Obj_Int3_Array;
+      Normal_Indices : Obj_Int3_Array;
+      UV_Indices     : Obj_Int3_Array;
+   begin
+      Shader_Manager.Init_Shaders (Shader_Program);
+      Initialize_2D_VBO;
+      Load_Buffers.Load_Buffers (aModel, Vertices, Vertex_Indices);
+
+   exception
+      when anError : others =>
+         Put_Line ("An exception occurred in Model.Initialize_2D.");
+         Put_Line (Exception_Information (anError));
+         raise;
+   end Initialize_2D;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Initialize_2D_VBO is
+   begin
+      VAO_2D.Initialize_Id;
+      VAO_2D.Bind;
+
+      Vertex_Buffer_2D.Initialize_Id;
+      GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer_2D);
+      Element_Buffer_2D.Initialize_Id;
+      GL.Objects.Buffers.Element_Array_Buffer.Bind (Element_Buffer_2D);
+   end Initialize_2D_VBO;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Initialize_3D (aModel : in out Model_Data; File_Path : String;
+                            Colour : GL.Types.Colors.Basic_Color) is
       use Load_Obj_File;
       Vertices       : Obj_Array3;
       Normals        : Obj_Array3;
@@ -103,25 +143,25 @@ package body Model is
       Normal_Indices : Obj_Int3_Array;
       UV_Indices     : Obj_Int3_Array;
    begin
-      Shader_Manager_Model.Init_Shaders (Model_Program);
+      Shader_Manager.Init_Shaders (Model_3D_Program);
       aModel.Model_Colour := Colour;
 
       Load_Object (File_Path, Vertices, Normals, UVs, Vertex_Indices,
                    Normal_Indices, UV_Indices);
 
-      Initialize_VBOs (aModel);
+      Initialize_3D_VBOs (aModel);
       Load_Buffers.Load_Buffers (aModel, Vertices, Vertex_Indices);
 
    exception
       when anError : others =>
-         Put_Line ("An exception occurred in Model.Initialize.");
+         Put_Line ("An exception occurred in Model.Initialize_3D.");
          Put_Line (Exception_Information (anError));
          raise;
-   end Initialize;
+   end Initialize_3D;
 
    --  ------------------------------------------------------------------------
 
-   procedure Initialize_VBOs (aModel : in out Model_Data) is
+   procedure Initialize_3D_VBOs (aModel : in out Model_Data) is
    begin
       aModel.Model_VAO.Initialize_Id;
       aModel.Model_VAO.Bind;
@@ -130,7 +170,7 @@ package body Model is
       GL.Objects.Buffers.Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
       aModel.Model_Element_Buffer.Initialize_Id;
       GL.Objects.Buffers.Element_Array_Buffer.Bind (aModel.Model_Element_Buffer);
-   end Initialize_VBOs;
+   end Initialize_3D_VBOs;
 
    --  ------------------------------------------------------------------------
 
@@ -143,13 +183,13 @@ package body Model is
 
    procedure Render (aModel : in out Model_Data) is
       use GL.Objects.Buffers;
-      use Shader_Manager_Model;
+      use Shader_Manager;
       Model_Matrix : Matrix4 := Singles.Identity4;
       View_Matrix  : constant Matrix4 := Singles.Identity4;
       Rot_Matrix   : Matrix4 := Singles.Identity4;
    begin
       --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-      GL.Objects.Programs.Use_Program (Model_Program);
+      GL.Objects.Programs.Use_Program (Model_3D_Program);
 
       if aModel.Is_Visible then
          Maths.Init_Rotation_Transform
@@ -245,10 +285,11 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4) is
+   procedure Set_Perspective (Program           : GL.Objects.Programs.Program;
+                              Projection_Matrix : GL.Types.Singles.Matrix4) is
    begin
-      GL.Objects.Programs.Use_Program (Model_Program);
-      Shader_Manager_Model.Set_Projection_Matrix (Projection_Matrix);
+      GL.Objects.Programs.Use_Program (Program);
+      Shader_Manager.Set_Projection_Matrix (Projection_Matrix);
    end Set_Perspective;
 
    --  ------------------------------------------------------------------------
