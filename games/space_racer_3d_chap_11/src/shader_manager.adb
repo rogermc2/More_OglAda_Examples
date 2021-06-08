@@ -14,26 +14,25 @@ package body Shader_Manager is
     View_Uniform        : GL.Uniforms.Uniform;
     Projection_Uniform  : GL.Uniforms.Uniform;
 
-    procedure Init_Shaders (Game_Program : in out GL.Objects.Programs.Program) is
+    procedure Init_Shaders (theProgram : in out GL.Objects.Programs.Program) is
         use GL.Objects.Shaders;
         use Program_Loader;
     begin
-
-        Game_Program := Program_From
+        theProgram := Program_From
           ((Src ("src/shaders/vertex_shader.glsl", Vertex_Shader),
            Src ("src/shaders/fragment_shader.glsl", Fragment_Shader)));
-        GL.Objects.Programs.Use_Program (Game_Program);
+        GL.Objects.Programs.Use_Program (theProgram);
 
         Colour_Uniform :=
-          GL.Objects.Programs.Uniform_Location (Game_Program, "colour_in");
+          GL.Objects.Programs.Uniform_Location (theProgram, "colour_in");
         Model_Uniform :=
-          GL.Objects.Programs.Uniform_Location (Game_Program, "model_matrix");
+          GL.Objects.Programs.Uniform_Location (theProgram, "model_matrix");
         Projection_Uniform :=
-          GL.Objects.Programs.Uniform_Location (Game_Program, "projection_matrix");
+          GL.Objects.Programs.Uniform_Location (theProgram, "projection_matrix");
         View_Uniform :=
-          GL.Objects.Programs.Uniform_Location (Game_Program, "view_matrix");
+          GL.Objects.Programs.Uniform_Location (theProgram, "view_matrix");
 
-        GL.Objects.Programs.Use_Program (Game_Program);
+        GL.Objects.Programs.Use_Program (theProgram);
         GL.Uniforms.Set_Single (Model_Uniform, GL.Types.Singles.Identity4);
         GL.Uniforms.Set_Single (Projection_Uniform, GL.Types.Singles.Identity4);
         GL.Uniforms.Set_Single (View_Uniform, GL.Types.Singles.Identity4);
@@ -47,11 +46,13 @@ package body Shader_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Set_Colour (Colour : GL.Types.Colors.Basic_Color) is
+    procedure Set_Colour (Program : GL.Objects.Programs.Program;
+                          Colour : GL.Types.Colors.Basic_Color) is
         use GL.Types.Colors;
         Colour_Vec : constant GL.Types.Singles.Vector3 :=
                        (Colour (R), Colour (G), Colour (B));
-    begin
+   begin
+      GL.Objects.Programs.Use_Program (Program);
         GL.Uniforms.Set_Single (Colour_Uniform, Colour_Vec);
     end Set_Colour;
 

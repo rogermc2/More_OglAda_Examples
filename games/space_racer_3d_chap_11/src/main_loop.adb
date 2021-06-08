@@ -210,7 +210,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       GL.Buffers.Set_Depth_Function (LEqual);
       Input_Callback.Clear_All_Keys;
 
-      Model.Initialize_2D (Data);
+      Model.Initialize_2D (Program_2D, Data);
 
       Model.Initialize_3D (Ship, "src/resources/ship.obj", Ship_Colour);
       Model.Set_Is_Ship (Ship, True);

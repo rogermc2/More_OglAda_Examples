@@ -100,16 +100,17 @@ package body Model is
 
    procedure Initialize_2D (Shader_Program : in out GL.Objects.Programs.Program;
                             Colour         : GL.Types.Colors.Basic_Color) is
-      Vertices       : Obj_Array3;
-      Normals        : Obj_Array3;
-      UVs            : Obj_Array2;
-      Vertex_Indices : Obj_Int3_Array;
-      Normal_Indices : Obj_Int3_Array;
-      UV_Indices     : Obj_Int3_Array;
+--        Vertices       : Obj_Array3;
+--        Normals        : Obj_Array3;
+--        UVs            : Obj_Array2;
+--        Vertex_Indices : Obj_Int3_Array;
+--        Normal_Indices : Obj_Int3_Array;
+--        UV_Indices     : Obj_Int3_Array;
    begin
       Shader_Manager.Init_Shaders (Shader_Program);
+      Shader_Manager.Set_Colour (Shader_Program, Colour);
       Initialize_2D_VBO;
-      Load_Buffers.Load_Buffers (aModel, Vertices, Vertex_Indices);
+--        Load_Buffers.Load_Buffers (aModel, Vertices, Vertex_Indices);
 
    exception
       when anError : others =>
@@ -143,7 +144,7 @@ package body Model is
       Normal_Indices : Obj_Int3_Array;
       UV_Indices     : Obj_Int3_Array;
    begin
-      Shader_Manager.Init_Shaders (Model_3D_Program);
+      Shader_Manager.Init_Shaders (Program_3D);
       aModel.Model_Colour := Colour;
 
       Load_Object (File_Path, Vertices, Normals, UVs, Vertex_Indices,
@@ -189,7 +190,7 @@ package body Model is
       Rot_Matrix   : Matrix4 := Singles.Identity4;
    begin
       --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-      GL.Objects.Programs.Use_Program (Model_3D_Program);
+      GL.Objects.Programs.Use_Program (Program_3D);
 
       if aModel.Is_Visible then
          Maths.Init_Rotation_Transform
@@ -210,7 +211,7 @@ package body Model is
               Model_Matrix;
          end if;
 
-         Set_Colour (aModel.Model_Colour);
+         Set_Colour (Program_3D, aModel.Model_Colour);
          Set_Model_Matrix (Model_Matrix);
          Set_View_Matrix (View_Matrix);
 
