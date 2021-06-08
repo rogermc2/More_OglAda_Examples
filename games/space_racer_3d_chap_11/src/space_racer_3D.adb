@@ -1,6 +1,6 @@
---  Program Space_Racer_3D Chapter 10
+--  Program Space_Racer_3D Chapter 11
 --  Author Roger Mc Murtrie
---  Created 7 June 2021
+--  Created 8 June 2021
 
 with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
@@ -13,7 +13,7 @@ with Main_Loop;
 
 procedure Space_Racer_3D is
     Main_Window : Input_Callback.Callback_Window;
-    Window_Title : constant String := "Space Racer 3D Chapter 10";
+    Window_Title : constant String := "Space Racer 3D Chapter 11";
 begin
     Glfw.Init;
     Initialize_With_Callbacks (Main_Window, Window_Title);
