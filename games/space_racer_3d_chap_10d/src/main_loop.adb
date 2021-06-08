@@ -4,7 +4,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input;
 with Glfw.Input.Keys;
---  with Glfw.Input.Mouse;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
@@ -17,7 +16,6 @@ with Utilities;
 
 with Input_Manager;
 with Model;
---  with Sprite_Manager;
 
 --  ------------------------------------------------------------------------
 
@@ -55,7 +53,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  -------------------------------------------------------------------------
 
---     procedure Process_Input_Command (Window : in out Input_Callback.Callback_Window)
    procedure Process_Input_Command is
       use GL.Types;
       use Input_Manager;
@@ -77,7 +74,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
          when Command_Down =>
             Rotation := Heading_Rotation (Ship);
-            Utilities.Print_Vector ("Rotation", Rotation);
             Rotation (GL.X) := Rotation (GL.X) - 1.0;
             if Rotation (GL.X) < 0.0 then
                Rotation (GL.X) := 359.0;
@@ -88,7 +84,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                end if;
             end if;
             Set_Heading_Rotation (Ship, Rotation);
-            Utilities.Print_Vector ("Rotation x - 1", Rotation);
 
          when Command_Up =>
             Rotation := Heading_Rotation (Ship);
