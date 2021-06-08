@@ -17,7 +17,7 @@ with Utilities;
 
 with Input_Manager;
 with Model;
-with Sprite_Manager;
+--  with Sprite_Manager;
 
 --  ------------------------------------------------------------------------
 
@@ -30,19 +30,40 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    Asteriods     : array (1 .. 3) of Model.Model_Data;
    Last_Time     : Float := Float (Glfw.Time);
    Command_Done  : Boolean := False;
+   Score         : Integer := 0;
+   Asteriods_Hit : Integer := 0;
 
    procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
-   --  ------------------------------------------------------------------------
+   --  -------------------------------------------------------------------------
 
-   procedure Process_Input_Command (Window : in out Input_Callback.Callback_Window) is
+   procedure Check_Collisions is
+      Item      : Model.Model_Data;
+      Collision : Boolean := False;
+   begin
+      for index in Asteriods'Range loop
+         Item := Asteriods (index);
+         Collision := Model.Collided_With (Ship, Item);
+         if Collision then
+            Model.Set_Is_Collidable (Item, False);
+            Model.Set_Is_Visible (Item, False);
+            Score := Score + 1;
+            Asteriods_Hit := Asteriods_Hit + 1;
+         end if;
+      end loop;
+   end Check_Collisions;
+
+   --  -------------------------------------------------------------------------
+
+--     procedure Process_Input_Command (Window : in out Input_Callback.Callback_Window)
+   procedure Process_Input_Command is
       use GL.Types;
       use Input_Manager;
       use Model;
       Rotation : Singles.Vector3;
       aCommand : constant Command := Get_Current_Command;
    begin
-      Input_Manager.Update_Command (Window);
+      Input_Manager.Update_Command;
       case aCommand is
          when Command_Stop =>
             if not Command_Done then
@@ -149,19 +170,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  ------------------------------------------------------------------------
 
---     procedure Start_Game (Screen : in out Input_Callback.Callback_Window) is
    procedure Start_Game is
       use GL.Types;
---        use Glfw.Input;
---        Window_Width  : Glfw.Size;
---        Window_Height : Glfw.Size;
    begin
---        Screen.Set_Cursor_Mode (Mouse.Normal);
---        Screen'Access.Get_Size (Window_Width, Window_Height);
---        Screen'Access.Set_Cursor_Pos
---          (Mouse.Coordinate (0.5 * Single (Window_Width)),
---           Mouse.Coordinate (0.5 * Single (Window_Height)));
-
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
       Input_Callback.Clear_All_Keys;
@@ -181,8 +192,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Model.Initialize (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
       Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
 
-      Sprite_Manager.Init;
-
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Start_Game.");
@@ -192,13 +201,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Update (Window : in out Input_Callback.Callback_Window) is
+   procedure Update is
 
       Current_Time : constant Float := Float (Glfw.Time);
       Delta_Time   : constant Float := Current_Time - Last_Time;
    begin
       Last_Time := Current_Time;
-      Process_Input_Command (Window);
+      Process_Input_Command;
+      Check_Collisions;
       Model.Update (Ship, Delta_Time);
       for index in Asteriods'Range loop
          Model.Update (Asteriods (index), Delta_Time);
@@ -210,10 +220,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    use Glfw.Input;
    Running  : Boolean := True;
 begin
---     Start_Game (Main_Window);
    Start_Game;
    while Running loop
-      Update (Main_Window);
+      Update;
       Render (Main_Window);
       Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
       Glfw.Input.Poll_Events;

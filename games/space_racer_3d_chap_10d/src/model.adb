@@ -44,8 +44,13 @@ package body Model is
    --  ------------------------------------------------------------------------
 
    function Centre (aModel : Model_Data) return GL.Types.Singles.Vector3 is
+      theCentre : Singles.Vector3 := aModel.Position;
    begin
-      return aModel.Centre;
+      if aModel.Is_Ship then
+         theCentre (GL.Y) := aModel.Position (GL.Z);
+         theCentre (GL.Z) := -aModel.Position (GL.Y);
+      end if;
+      return theCentre;
    end Centre;
 
    --  ------------------------------------------------------------------------
@@ -137,7 +142,6 @@ package body Model is
    --  ------------------------------------------------------------------------
 
    procedure Render (aModel : in out Model_Data) is
-      --        use Maths;
       use GL.Objects.Buffers;
       use Shader_Manager_Model;
       Model_Matrix : Matrix4 := Singles.Identity4;
@@ -220,10 +224,24 @@ package body Model is
 
    --  -------------------------------------------------------------------------
 
+   procedure Set_Is_Collidable (aModel : in out Model_Data; State : Boolean) is
+   begin
+      aModel.Is_Collidable := State;
+   end Set_Is_Collidable;
+
+   --  ------------------------------------------------------------------------
+
    procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean) is
    begin
       aModel.Is_Ship := State;
    end Set_Is_Ship;
+
+   --  ------------------------------------------------------------------------
+
+   procedure Set_Is_Visible (aModel : in out Model_Data; State : Boolean) is
+   begin
+      aModel.Is_Visible := State;
+   end Set_Is_Visible;
 
    --  ------------------------------------------------------------------------
 

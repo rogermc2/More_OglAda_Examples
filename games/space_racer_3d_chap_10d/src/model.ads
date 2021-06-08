@@ -1,6 +1,4 @@
 
---  with Ada.Containers.Doubly_Linked_Lists;
-
 with GL.Objects.Buffers;
 with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
@@ -13,6 +11,8 @@ package Model is
    procedure Bind_Model_VAO (aModel : in out Model_Data);
    procedure Bind_Vertex_VBO (aModel : in out Model_Data);
    function Centre (aModel : Model_Data) return GL.Types.Singles.Vector3;
+   function Collided_With (thisModel, Target : Model.Model_Data)
+                           return Boolean;
    function Heading (aModel : Model_Data) return GL.Types.Singles.Vector3;
    function Heading_Rotation (aModel : Model_Data)
                               return GL.Types.Singles.Vector3;
@@ -27,7 +27,9 @@ package Model is
                           Heading  : GL.Types.Singles.Vector3);
    procedure Set_Heading_Rotation (aModel   : in out Model_Data;
                                    Rotation : GL.Types.Singles.Vector3);
+   procedure Set_Is_Collidable (aModel : in out Model_Data; State : Boolean);
    procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean);
+   procedure Set_Is_Visible (aModel : in out Model_Data; State : Boolean);
    procedure Set_Indices_Size (aModel : in out Model_Data; Size : GL.Types.Int);
    procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4);
    procedure Set_Position (aModel   : in out Model_Data;
