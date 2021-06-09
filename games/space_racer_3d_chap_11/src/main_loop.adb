@@ -214,10 +214,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Screen_Height   : Glfw.Size;
         VP_Width        : Float;
         VP_Height       : Float;
-        Centre          : Point;
-        Radius          : Float;
-        Offset_Y        : Float;
-        Collision       : Rectangle;
     begin
         Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         VP_Width := Float (Screen_Width);
