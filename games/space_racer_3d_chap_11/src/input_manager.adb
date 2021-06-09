@@ -58,20 +58,6 @@ package body Input_Manager is
       Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
       S_Height := Float (Screen_Height);
 
-      Set_Frame_Size (UI_Elements (Pause_Button), B_Height, B_Width);
-      Set_Number_Of_Frames (UI_Elements (Pause_Button), 1);
-      Set_Position (UI_Elements (Pause_Button), 10.0, 10.0);
-      Add_Texture (UI_Elements
-                   (Pause_Button), "src/resources/pauseButton.png", False);
-      Set_Visible (UI_Elements (Pause_Button), True);
-      Set_Active (UI_Elements (Pause_Button), True);
-
-      Set_Frame_Size (UI_Elements (Resume_Button), B_Height, B_Width);
-      Set_Number_Of_Frames (UI_Elements (Resume_Button), 1);
-      Set_Position (UI_Elements (Resume_Button), 80.0, 10.0);
-      Add_Texture (UI_Elements
-                   (Resume_Button), "src/resources/resumeButton.png", False);
-
       Set_Frame_Size (UI_Elements (Play_Button), B_Height, B_Width);
       Set_Number_Of_Frames (UI_Elements (Play_Button), 1);
       Set_Position (UI_Elements (Play_Button), 390.0, S_Height - 350.0);
@@ -99,14 +85,6 @@ package body Input_Manager is
       Set_Visible (UI_Elements (Menu_Button), True);
       Add_Texture (UI_Elements
                    (Menu_Button), "src/resources/menuButton.png", False);
-
-      Set_Frame_Size (UI_Elements (Continue_Button), B_Height, B_Width);
-      Set_Number_Of_Frames (UI_Elements (Continue_Button), 1);
-      Set_Position (UI_Elements (Continue_Button), 390.0, S_Height - 400.0);
-      Set_Visible (UI_Elements (Continue_Button), True);
-      Add_Texture (UI_Elements
-                   (Continue_Button), "src/resources/continueButton.png", False);
-
 
       Set_Frame_Size (UI_Elements (Replay_Button), B_Height, B_Width);
       Set_Number_Of_Frames (UI_Elements (Replay_Button), 1);

@@ -30,11 +30,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                          (0.6, 0.6, 0.6, 0.0);
     Data             : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 0.0);
     Ship_Colour      : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
-    Splash_Threshold : Float := 5.0;
-    UI_Threshold     : constant float := 0.1;
-    UI_Timer         : Float := 0.0;
-    Splash_Timer     : Float := 0.0;
-    Background       : Sprite_Manager.Sprite;
+--      Splash_Threshold : constant Float := 5.0;
+--      UI_Threshold     : constant float := 0.1;
+--      UI_Timer         : Float := 0.0;
+--      Splash_Timer     : Float := 0.0;
     Splash_Screen    : Sprite_Manager.Sprite;
     Menu_Screen      : Sprite_Manager.Sprite;
     Credits_Screen   : Sprite_Manager.Sprite;
@@ -64,7 +63,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Collision := Model.Collided_With (Ship, Item);
             if Collision then
                 Model.Set_Is_Collidable (Item, False);
-                Model.Set_Is_Visible (Item, False);
                 Score := Score + 1;
                 Asteriods_Hit := Asteriods_Hit + 1;
             end if;
@@ -208,6 +206,53 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     end Load_Splash;
 
     ----------------------------------------------------------------------------
+    --  LoadTextures
+    procedure Load_Sprites (Screen : in out Input_Callback.Callback_Window) is
+        use GL.Types;
+        use Sprite_Manager;
+        Screen_Width    : Glfw.Size;
+        Screen_Height   : Glfw.Size;
+        VP_Width        : Float;
+        VP_Height       : Float;
+        Centre          : Point;
+        Radius          : Float;
+        Offset_Y        : Float;
+        Collision       : Rectangle;
+    begin
+        Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+        VP_Width := Float (Screen_Width);
+        VP_Height := Float (Screen_Height);
+      GL.Window.Set_Viewport (0, 0, Int (Screen_Width), Int (Screen_Height));
+
+        Input_Manager.Load_Buttons (Screen);
+
+        Set_Frame_Size (Menu_Screen, VP_Width, VP_Height);
+        Set_Number_Of_Frames (Menu_Screen, 1);
+        Set_Active (Menu_Screen, True);
+        Set_Visible (Menu_Screen, True);
+        Set_Position (Menu_Screen, 0.0, 0.0);
+        Add_Texture (Menu_Screen, "src/resources/main_menu.png", False);
+
+        Set_Frame_Size (Credits_Screen, VP_Width, VP_Height);
+        Set_Number_Of_Frames (Credits_Screen, 1);
+        Set_Active (Menu_Screen, True);
+        Set_Visible (Credits_Screen, True);
+        Add_Texture (Credits_Screen, "src/resources/credits.png", False);
+
+        Set_Frame_Size (Game_Over_Screen, VP_Width, VP_Height);
+        Set_Number_Of_Frames (Game_Over_Screen, 1);
+        Set_Active (Game_Over_Screen, True);
+        Set_Visible (Game_Over_Screen, True);
+        Add_Texture (Game_Over_Screen, "src/resources/gameover.png", False);
+
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Main_Loop.Load_Sprites.");
+            Put_Line (Exception_Information (anError));
+            raise;
+    end Load_Sprites;
+
+    --  -------------------------------------------------------------------------
 
     procedure Process_Input_Command (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
@@ -383,7 +428,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Input_Manager;
         use Levels_Manager;
         use Model;
-        use Sprite_Manager;
         Current_Time : constant Float := Float (Glfw.Time);
         Delta_Time   : constant Float := Current_Time - Last_Time;
     begin
