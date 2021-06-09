@@ -80,6 +80,33 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
+   procedure Draw_Credits (Window : in out Input_Callback.Callback_Window) is
+        use GL.Types;
+        Screen_Width       : Glfw.Size;
+        Screen_Height      : Glfw.Size;
+        Height             : Single;
+        Start_X            : Single;
+        Start_Y            : Single;
+        Space_Y            : constant Single := 30.0;
+    begin
+      Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+      Start_X := 0.4 * Single (Screen_Width);
+      Height := Single (Screen_Height);
+      Start_Y := Height - 300.0;
+      Text_Manager.Draw_Text (Window, "Robert Marsden", Start_X, Start_Y,
+                                0.0, 1.0, 0.0);
+      Text_Manager.Draw_Text (Window, "Roger Mc Murtrie",
+                              Start_X, Start_Y + Space_Y, 0.0, 1.0, 0.0);
+
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Main_Loop.Draw_Credits.");
+            Put_Line (Exception_Information (anError));
+            raise;
+    end Draw_Credits;
+
+    --  -------------------------------------------------------------------------------------------------
+
    procedure Draw_Stats (Window : in out Input_Callback.Callback_Window) is
         use GL.Types;
         Screen_Width       : Glfw.Size;
