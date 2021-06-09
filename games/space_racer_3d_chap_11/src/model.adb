@@ -15,7 +15,7 @@ with Shader_Manager;
 package body Model is
    use GL.Types;
 
-   Program_3D    : GL.Objects.Programs.Program;
+   Program_3D        : GL.Objects.Programs.Program;
    VAO_2D            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
    Vertex_Buffer_2D  : GL.Objects.Buffers.Buffer;
    Element_Buffer_2D : GL.Objects.Buffers.Buffer;
@@ -182,6 +182,7 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
+    pragma Warnings (Off);
    procedure Render (aModel : in out Model_Data) is
       use GL.Objects.Buffers;
       use Shader_Manager;
@@ -189,7 +190,7 @@ package body Model is
       View_Matrix  : constant Matrix4 := Singles.Identity4;
       Rot_Matrix   : Matrix4 := Singles.Identity4;
    begin
-      --        GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+--        Put_Line ("Model.Render.");
       GL.Objects.Programs.Use_Program (Program_3D);
 
       if aModel.Is_Visible then
@@ -221,7 +222,7 @@ package body Model is
 
          Draw_Elements (Triangle_Strip_Adjacency, aModel.Indices_Size,
                         UInt_Type, 0);
-         --           GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+--           GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
       end if;
 
    exception
@@ -286,10 +287,9 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Perspective (Program           : GL.Objects.Programs.Program;
-                              Projection_Matrix : GL.Types.Singles.Matrix4) is
+   procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4) is
    begin
-      GL.Objects.Programs.Use_Program (Program);
+      GL.Objects.Programs.Use_Program (Program_3D);
       Shader_Manager.Set_Projection_Matrix (Program_3D, Projection_Matrix);
    end Set_Perspective;
 

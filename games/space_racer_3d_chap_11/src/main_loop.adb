@@ -9,6 +9,7 @@ with Glfw.Windows.Context;
 
 with GL.Buffers;
 with GL.Objects.Programs;
+with GL.Toggles;
 with GL.Types.Colors;
 with GL.Window;
 
@@ -16,7 +17,7 @@ with Maths;
 with Utilities;
 
 with Input_Manager;
-with Levels_Manager;
+--  with Levels_Manager;
 with Model;
 
 --  ------------------------------------------------------------------------
@@ -56,7 +57,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    end Check_Collisions;
 
    --  -------------------------------------------------------------------------
-
+   pragma Warnings (Off);
    procedure Enable_2D (Screen : in out Input_Callback.Callback_Window) is
       use GL.Types;
       Screen_Width      : Glfw.Size;
@@ -68,7 +69,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         (Top => Single (Screen_Height), Bottom => 0.0,
          Left => 0.0, Right => Single (Screen_Width),
          Z_Near => 0.0, Z_Far => 1.0, Transform => Projection_Matrix);
-      Model.Set_Perspective (Program_2D, Projection_Matrix);
+--        Model.Set_Perspective (Program_2D, Projection_Matrix);
    end Enable_2D;
 
    --  -------------------------------------------------------------------------
@@ -159,14 +160,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render_3D is
-      use Levels_Manager;
+--        use Levels_Manager;
    begin
-      if Get_Game_State = Game_Running then
+--        if Get_Game_State = Game_Running then
          for index in Asteriods'Range loop
             Model.Render (Asteriods (index));
          end loop;
          Model.Render (Ship);
-      end if;
+--        end if;
    end Render_3D;
 
    --  ------------------------------------------------------------------------
@@ -197,7 +198,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Maths.Init_Perspective_Transform
         (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height),
          0.1, 100.0, Projection_Matrix);
-      Model.Set_Perspective (Program_2D, Projection_Matrix);
+      Model.Set_Perspective (Projection_Matrix);
 
    end Resize_GL_Scene;
 
@@ -209,6 +210,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Utilities.Clear_Background_Colour_And_Depth (Back);
       GL.Buffers.Set_Depth_Function (LEqual);
       Input_Callback.Clear_All_Keys;
+      GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
       Model.Initialize_2D (Program_2D, Data);
 
