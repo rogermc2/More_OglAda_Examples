@@ -80,6 +80,45 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
+   procedure Draw_Stats (Window : in out Input_Callback.Callback_Window) is
+        use GL.Types;
+        Screen_Width       : Glfw.Size;
+        Screen_Height      : Glfw.Size;
+        Height             : Single;
+        Start_X            : Single;
+        Start_Y            : Single;
+        Space_Y            : constant Single := 30.0;
+        Asteroids_Hit_Text : constant String :=
+                              "Asteroids Hit: " & Integer'Image (Score);
+        Score_Text         : constant String :=
+                              "Score: " & Integer'Image (Score);
+        Max_Speed_Text     : constant String :=
+                              "Speed: " & Single'Image (Speed);
+        Mission_Time_Text  : constant String :=
+                              "Mission_Time: " & Float'Image (Mission_Time);
+    begin
+      Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+      Start_X := 0.4 * Single (Screen_Width);
+      Height := Single (Screen_Height);
+      Start_Y := Height - 275.0;
+      Text_Manager.Draw_Text (Window, Asteroids_Hit_Text, Start_X, Start_Y,
+                                0.0, 1.0, 0.0);
+      Text_Manager.Draw_Text (Window, Max_Speed_Text,
+                              Start_X, Start_Y + Space_Y, 0.0, 1.0, 0.0);
+      Text_Manager.Draw_Text (Window, Mission_Time_Text,
+                              Start_X, Start_Y + 2.0 * Space_Y, 0.0, 1.0, 0.0);
+      Text_Manager.Draw_Text (Window, Score_Text,
+                              Start_X, Start_Y + 3.0 * Space_Y, 0.0, 1.0, 0.0);
+
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Main_Loop.Draw_Stats.");
+            Put_Line (Exception_Information (anError));
+            raise;
+    end Draw_Stats;
+
+    --  -------------------------------------------------------------------------------------------------
+
     procedure Draw_UI (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
         use Text_Manager;
