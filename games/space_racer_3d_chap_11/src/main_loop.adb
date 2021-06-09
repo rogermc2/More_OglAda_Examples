@@ -18,8 +18,9 @@ with Utilities;
 
 with Input_Manager;
 with Levels_Manager;
-with Sprite_Manager;
 with Model;
+with Sprite_Manager;
+with Text_Manager;
 
 --  ------------------------------------------------------------------------
 
@@ -43,11 +44,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Asteriods        : array (1 .. 3) of Model.Model_Data;
     Last_Time        : Float := Float (Glfw.Time);
     Command_Done     : Boolean := False;
+    Speed            : GL.Types.Single := 1.0;
     Max_Speed        : GL.Types.Single := 0.0;
     Mission_Time     : Float := 0.0;
     Score            : Integer := 0;
     Asteriods_Hit    : Integer := 0;
 
+    procedure Draw_UI (Screen : in out Input_Callback.Callback_Window);
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
 
     --  -------------------------------------------------------------------------
@@ -69,7 +72,43 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     end Check_Collisions;
 
     --  -------------------------------------------------------------------------
-    pragma Warnings (Off);
+
+    procedure Disable_2D is
+    begin
+        null;
+    end Disable_2D;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Draw_UI (Screen : in out Input_Callback.Callback_Window) is
+        use GL.Types;
+        use Text_Manager;
+        Screen_Width      : Glfw.Size;
+        Screen_Height     : Glfw.Size;
+        Start_Y           : Single;
+        X1                : constant Single := 50.0;
+        X2                : Single;
+        X3                : Single;
+        Score_Text        : constant String :=
+                              "Score: " & Integer'Image (Score);
+        Speed_Text        : constant String :=
+                              "Speed: " & Single'Image (Speed);
+        Mission_Time_Text : constant String :=
+                              "Mission_Time: " & Float'Image (Mission_Time);
+    begin
+        Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+        Start_Y := Single (Screen_Height) - 50.0;
+        X2 := Single (Screen_Width) / 2.0 - 50.0;
+        X3 := Single (Screen_Width) - 250.0;
+
+        Draw_Text (Screen, Score_Text, X1, Start_Y, 0.0, 1.0, 0.0);
+        Draw_Text (Screen, Speed_Text, X2, Start_Y, 0.0, 1.0, 0.0);
+        Draw_Text (Screen, Mission_Time_Text, X3, Start_Y, 0.0, 1.0, 0.0);
+
+    end Draw_UI;
+
+    --  -------------------------------------------------------------------------
+
     procedure Enable_2D (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
         Screen_Width      : Glfw.Size;
@@ -87,7 +126,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     --  -------------------------------------------------------------------------
 
     procedure Load_Splash (Screen : in out Input_Callback.Callback_Window) is
-        use GL.Types;
         use Levels_Manager;
         use Sprite_Manager;
         Screen_Width  : Glfw.Size;
@@ -186,6 +224,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     procedure Render_2D (Screen : in out Input_Callback.Callback_Window) is
     begin
         Enable_2D (Screen);
+        Sprite_Manager.Render (Splash_Screen);
+        Disable_2D;
     end Render_2D;
 
     --  ------------------------------------------------------------------------
@@ -280,7 +320,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Sprite_Manager;
         Current_Time : constant Float := Float (Glfw.Time);
         Delta_Time   : constant Float := Current_Time - Last_Time;
-        Speed        : Single;
     begin
         Last_Time := Current_Time;
 
