@@ -1,4 +1,7 @@
 
+with Ada.Exceptions; use Ada.Exceptions;
+with Ada.Text_IO; use Ada.Text_IO;
+
 with GL.Attributes;
 with GL.Blending;
 with GL.Images;
@@ -143,11 +146,14 @@ package body Sprite_Manager is
     --  ------------------------------------------------------------------------
 
     procedure Init is
+        use GL.Objects.Buffers;
     begin
         Sprites_VAO.Initialize_Id;
         Sprites_VAO.Bind;
         Quad_Buffer.Initialize_Id;
+        Array_Buffer.Bind (Quad_Buffer);
         Texture_Buffer.Initialize_Id;
+        Array_Buffer.Bind (Texture_Buffer);
     end Init;
 
     --  ------------------------------------------------------------------------
@@ -268,7 +274,8 @@ package body Sprite_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Render (aSprite : Sprite) is
+    procedure Render (aSprite : Sprite;
+                      Shader_Program : GL.Objects.Programs.Program) is
         use GL.Attributes;
         use GL.Blending;
         use GL.Objects.Textures.Targets;
@@ -288,7 +295,9 @@ package body Sprite_Manager is
         Height         : constant Single := Single (aSprite.Sprite_Size.Height);
     begin
         if aSprite.Is_Visible then
+            GL.Objects.Programs.Use_Program (Shader_Program);
             Sprites_VAO.Bind;
+            Clear_Buffers;
 
             if aSprite.Use_Transparency then
                 GL.Toggles.Enable (GL.Toggles.Blend);
@@ -321,12 +330,19 @@ package body Sprite_Manager is
             Array_Buffer.Bind (Quad_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,
                                           Static_Draw);
-            Enable_Vertex_Attrib_Array (0);
-            Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+            Put_Line ("Sprite_Manager.Render Quad_Vertices loaded.");
 
+            Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 0, 0);
+            Put_Line ("Sprite_Manager.Render Attrib_Array (0) Pointer set.");
+            Enable_Vertex_Attrib_Array (0);
+            Put_Line ("Sprite_Manager.Render Attrib_Array (0) enabled.");
+
+            Put_Line ("Sprite_Manager.Render Texture_Buffer bind.");
             Array_Buffer.Bind (Texture_Buffer);
+            Put_Line ("Sprite_Manager.Render Texture_Buffer bound.");
             Utilities.Load_Vertex_Buffer (Array_Buffer, Texture_Coords,
                                           Static_Draw);
+            Put_Line ("Sprite_Manager.Render Texture_Buffer loaded.");
             Enable_Vertex_Attrib_Array (1);
             Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
             GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
@@ -334,7 +350,16 @@ package body Sprite_Manager is
             if aSprite.Use_Transparency then
                 GL.Toggles.Disable (GL.Toggles.Blend);
             end if;
+
+            Disable_Vertex_Attrib_Array (0);
+            Disable_Vertex_Attrib_Array (1);
         end if;
+
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Sprite_Manager.Render.");
+            Put_Line (Exception_Information (anError));
+            raise;
     end Render;
 
     --  ------------------------------------------------------------------------

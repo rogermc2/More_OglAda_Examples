@@ -122,7 +122,7 @@ package body Input_Manager is
                             Button : Button_Index) is
    begin
       GL.Objects.Programs.Use_Program (Render_Program);
-      Sprite_Manager.Render (UI_Elements (Button));
+      Sprite_Manager.Render (UI_Elements (Button), Render_Program);
    end Render_Button;
 
    --  -------------------------------------------------------------------------

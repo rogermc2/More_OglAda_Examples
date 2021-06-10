@@ -1,4 +1,5 @@
 
+with GL.Objects.Programs;
 with GL.Objects.Textures;
 
 with Textures_Manager;
@@ -48,7 +49,8 @@ package Sprite_Manager is
    function Is_Collidable (aSprite : Sprite) return Boolean;
    function Is_Visible (aSprite : Sprite) return Boolean;
    procedure Jump (aSprite : in out Sprite; Status : Sprite_Status);
-   procedure Render (aSprite : Sprite);
+   procedure Render (aSprite : Sprite;
+                     Shader_Program : GL.Objects.Programs.Program);
    procedure Set_Active (aSprite : in out Sprite; Active : Boolean);
    procedure Set_Centre (aSprite : in out Sprite; Centre : Point);
    procedure Set_Clicked (aSprite : in out Sprite; Clicked : Boolean);

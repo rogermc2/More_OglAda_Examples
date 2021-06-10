@@ -19,6 +19,7 @@ with Utilities;
 with Input_Manager;
 with Levels_Manager;
 with Model;
+with Shader_Manager;
 with Sprite_Manager;
 with Text_Manager;
 
@@ -30,10 +31,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                          (0.6, 0.6, 0.6, 0.0);
     Data             : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 0.0);
     Ship_Colour      : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
---      Splash_Threshold : constant Float := 5.0;
---      UI_Threshold     : constant float := 0.1;
---      UI_Timer         : Float := 0.0;
---      Splash_Timer     : Float := 0.0;
+    --      Splash_Threshold : constant Float := 5.0;
+    --      UI_Threshold     : constant float := 0.1;
+    --      UI_Timer         : Float := 0.0;
+    --      Splash_Timer     : Float := 0.0;
     Splash_Screen    : Sprite_Manager.Sprite;
     Menu_Screen      : Sprite_Manager.Sprite;
     Credits_Screen   : Sprite_Manager.Sprite;
@@ -78,7 +79,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
-   procedure Draw_Credits (Window : in out Input_Callback.Callback_Window) is
+    procedure Draw_Credits (Window : in out Input_Callback.Callback_Window) is
         use GL.Types;
         Screen_Width       : Glfw.Size;
         Screen_Height      : Glfw.Size;
@@ -87,14 +88,14 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Start_Y            : Single;
         Space_Y            : constant Single := 30.0;
     begin
-      Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
-      Start_X := 0.4 * Single (Screen_Width);
-      Height := Single (Screen_Height);
-      Start_Y := Height - 300.0;
-      Text_Manager.Draw_Text (Window, "Robert Marsden", Start_X, Start_Y,
+        Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+        Start_X := 0.4 * Single (Screen_Width);
+        Height := Single (Screen_Height);
+        Start_Y := Height - 300.0;
+        Text_Manager.Draw_Text (Window, "Robert Marsden", Start_X, Start_Y,
                                 0.0, 1.0, 0.0);
-      Text_Manager.Draw_Text (Window, "Roger Mc Murtrie",
-                              Start_X, Start_Y + Space_Y, 0.0, 1.0, 0.0);
+        Text_Manager.Draw_Text (Window, "Roger Mc Murtrie",
+                                Start_X, Start_Y + Space_Y, 0.0, 1.0, 0.0);
 
     exception
         when anError : others =>
@@ -105,7 +106,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------------------------------
 
-   procedure Draw_Stats (Window : in out Input_Callback.Callback_Window) is
+    procedure Draw_Stats (Window : in out Input_Callback.Callback_Window) is
         use GL.Types;
         Screen_Width       : Glfw.Size;
         Screen_Height      : Glfw.Size;
@@ -114,26 +115,26 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Start_Y            : Single;
         Space_Y            : constant Single := 30.0;
         Asteroids_Hit_Text : constant String :=
-                              "Asteroids Hit: " & Integer'Image (Score);
+                               "Asteroids Hit: " & Integer'Image (Score);
         Score_Text         : constant String :=
-                              "Score: " & Integer'Image (Score);
+                               "Score: " & Integer'Image (Score);
         Max_Speed_Text     : constant String :=
-                              "Speed: " & Single'Image (Speed);
+                               "Speed: " & Single'Image (Speed);
         Mission_Time_Text  : constant String :=
-                              "Mission_Time: " & Float'Image (Mission_Time);
+                               "Mission_Time: " & Float'Image (Mission_Time);
     begin
-      Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
-      Start_X := 0.4 * Single (Screen_Width);
-      Height := Single (Screen_Height);
-      Start_Y := Height - 275.0;
-      Text_Manager.Draw_Text (Window, Asteroids_Hit_Text, Start_X, Start_Y,
+        Window.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+        Start_X := 0.4 * Single (Screen_Width);
+        Height := Single (Screen_Height);
+        Start_Y := Height - 275.0;
+        Text_Manager.Draw_Text (Window, Asteroids_Hit_Text, Start_X, Start_Y,
                                 0.0, 1.0, 0.0);
-      Text_Manager.Draw_Text (Window, Max_Speed_Text,
-                              Start_X, Start_Y + Space_Y, 0.0, 1.0, 0.0);
-      Text_Manager.Draw_Text (Window, Mission_Time_Text,
-                              Start_X, Start_Y + 2.0 * Space_Y, 0.0, 1.0, 0.0);
-      Text_Manager.Draw_Text (Window, Score_Text,
-                              Start_X, Start_Y + 3.0 * Space_Y, 0.0, 1.0, 0.0);
+        Text_Manager.Draw_Text (Window, Max_Speed_Text,
+                                Start_X, Start_Y + Space_Y, 0.0, 1.0, 0.0);
+        Text_Manager.Draw_Text (Window, Mission_Time_Text,
+                                Start_X, Start_Y + 2.0 * Space_Y, 0.0, 1.0, 0.0);
+        Text_Manager.Draw_Text (Window, Score_Text,
+                                Start_X, Start_Y + 3.0 * Space_Y, 0.0, 1.0, 0.0);
 
     exception
         when anError : others =>
@@ -179,12 +180,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Screen_Height     : Glfw.Size;
         Projection_Matrix : Singles.Matrix4;
     begin
-        Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
-        Maths.Init_Orthographic_Transform
+        Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);        Maths.Init_Orthographic_Transform
           (Top => Single (Screen_Height), Bottom => 0.0,
            Left => 0.0, Right => Single (Screen_Width),
            Z_Near => 0.0, Z_Far => 1.0, Transform => Projection_Matrix);
-        --        Model.Set_Perspective (Program_2D, Projection_Matrix);
+        Shader_Manager.Set_Projection_Matrix (Program_2D, Projection_Matrix);
     end Enable_2D;
 
     --  -------------------------------------------------------------------------
@@ -218,7 +218,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         VP_Width := Float (Screen_Width);
         VP_Height := Float (Screen_Height);
-      GL.Window.Set_Viewport (0, 0, Int (Screen_Width), Int (Screen_Height));
+        GL.Window.Set_Viewport (0, 0, Int (Screen_Width), Int (Screen_Height));
 
         Input_Manager.Load_Buttons (Screen);
 
@@ -329,9 +329,34 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     --  -------------------------------------------------------------------------
 
     procedure Render_2D (Screen : in out Input_Callback.Callback_Window) is
+        use Input_Manager;
+        use Levels_Manager;
     begin
         Enable_2D (Screen);
-        Sprite_Manager.Render (Splash_Screen);
+        Put_Line ("Main_Loop.Render Game_State: " &
+                 Game_Status'Image (Get_Game_State));
+        case Get_Game_State is
+        when Game_Loading =>
+            Sprite_Manager.Render (Splash_Screen, Program_2D);
+            Put_Line ("Main_Loop.Render Game_Loading Splash_Screen rendered.");
+        when Game_Menu =>
+            Sprite_Manager.Render (Menu_Screen, Program_2D);
+            Render_Button (Program_2D, Play_Button);
+            Render_Button (Program_2D, Credits_Button);
+            Render_Button (Program_2D, Exit_Button);
+        when Game_Credits =>
+            Sprite_Manager.Render (Credits_Screen, Program_2D);
+            Render_Button (Program_2D, Menu_Button);
+            Draw_Credits (Screen);
+        when Game_Running => Draw_UI (Screen);
+        when Game_Splash =>
+            Sprite_Manager.Render (Splash_Screen, Program_2D);
+            Put_Line ("Main_Loop.Render Game_Splash Splash_Screen rendered.");
+        when Game_Over =>
+            Sprite_Manager.Render (Game_Over_Screen, Program_2D);
+            Draw_Stats  (Screen);
+        when others => null;
+        end case;
         Disable_2D;
     end Render_2D;
 
@@ -353,9 +378,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     procedure Render (Screen : in out Input_Callback.Callback_Window) is
     begin
         Utilities.Clear_Colour_Buffer_And_Depth;
+        Sprite_Manager.Clear_Buffers;
         Resize_GL_Scene (Screen);
         Render_3D;
+        Put_Line ("Main_Loop.Render Render_2D.");
         Render_2D (Screen);
+        Put_Line ("Main_Loop.Render Renderered.");
     end Render;
 
     --  ------------------------------------------------------------------------
@@ -408,6 +436,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
 
         Load_Splash (Screen);
+        Load_Sprites (Screen);
 
     exception
         when anError : others =>

@@ -1,13 +1,4 @@
 
-with Ada.Exceptions; use Ada.Exceptions;
-with Ada.Text_IO; use Ada.Text_IO;
-
-with Glfw;
-
-with GL.Types;
-
-with Text_Manager;
-
 package body Levels_Manager is
 
    Game_State              : Game_Status := Game_Splash;
