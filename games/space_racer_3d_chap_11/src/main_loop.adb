@@ -449,6 +449,7 @@ pragma Warnings (Off);
 --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
         Initialize_2D (Program_2D, Data);
+        Sprite_Manager.Init;
 
         Model.Initialize_3D (Ship, "src/resources/ship.obj", Ship_Colour);
         Model.Set_Is_Ship (Ship, True);

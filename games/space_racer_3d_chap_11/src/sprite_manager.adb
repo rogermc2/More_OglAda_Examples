@@ -1,5 +1,5 @@
 
-with Ada.Text_IO; use Ada.Text_IO;
+--  with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Blending;
@@ -324,9 +324,7 @@ package body Sprite_Manager is
             Array_Buffer.Bind (Quad_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,
                                           Static_Draw);
-            Put_Line ("Sprite_Manger.Render Vertex_Buffer loaded");
             Enable_Vertex_Attrib_Array (0);
-            Put_Line ("Sprite_Manger.Render Vertex_Buffer Attrib_Array (0) enabled");
             Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
 
             Array_Buffer.Bind (Texture_Buffer);
