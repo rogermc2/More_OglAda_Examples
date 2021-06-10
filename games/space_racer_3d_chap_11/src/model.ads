@@ -1,6 +1,5 @@
 
 with GL.Objects.Buffers;
-with GL.Objects.Programs;
 with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
 
@@ -17,8 +16,6 @@ package Model is
    function Heading (aModel : Model_Data) return GL.Types.Singles.Vector3;
    function Heading_Rotation (aModel : Model_Data)
                               return GL.Types.Singles.Vector3;
-   procedure Initialize_2D (Shader_Program : in out GL.Objects.Programs.Program;
-                            Colour : GL.Types.Colors.Basic_Color);
    procedure Initialize_3D (aModel : in out Model_Data; File_Path : String;
                             Colour : GL.Types.Colors.Basic_Color);
    function Position (aModel : Model_Data) return GL.Types.Singles.Vector3;

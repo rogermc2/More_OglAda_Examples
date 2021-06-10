@@ -1,12 +1,11 @@
 
-with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Attributes;
 with GL.Blending;
 with GL.Images;
 with GL.Objects.Buffers;
---  with GL.Objects.Textures.Targets;
+with GL.Objects.Textures.Targets;
 with GL.Objects.Vertex_Arrays;
 with GL.Pixels;
 with GL.Toggles;
@@ -17,7 +16,7 @@ package body Sprite_Manager is
 
     Sprites_VAO    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
     Quad_Buffer    : GL.Objects.Buffers.Buffer;
---      Texture_Buffer : GL.Objects.Buffers.Buffer;
+    Texture_Buffer : GL.Objects.Buffers.Buffer;
 
     --  ------------------------------------------------------------------------
 
@@ -41,14 +40,11 @@ package body Sprite_Manager is
     --  ------------------------------------------------------------------------
 
     procedure Clear_Buffers is
-        use GL.Objects.Buffers;
     begin
         Quad_Buffer.Clear;
---          Texture_Buffer.Clear;
+        Texture_Buffer.Clear;
         Quad_Buffer.Initialize_Id;
-        Array_Buffer.Bind (Quad_Buffer);
---          Texture_Buffer.Initialize_Id;
---          Array_Buffer.Bind (Texture_Buffer);
+        Texture_Buffer.Initialize_Id;
     end Clear_Buffers;
 
     --  ------------------------------------------------------------------------
@@ -149,14 +145,11 @@ package body Sprite_Manager is
     --  ------------------------------------------------------------------------
 
     procedure Init is
-        use GL.Objects.Buffers;
     begin
         Sprites_VAO.Initialize_Id;
         Sprites_VAO.Bind;
         Quad_Buffer.Initialize_Id;
-        Array_Buffer.Bind (Quad_Buffer);
---          Texture_Buffer.Initialize_Id;
---          Array_Buffer.Bind (Texture_Buffer);
+        Texture_Buffer.Initialize_Id;
     end Init;
 
     --  ------------------------------------------------------------------------
@@ -277,15 +270,13 @@ package body Sprite_Manager is
 
     --  ------------------------------------------------------------------------
 
-    procedure Render (aSprite : Sprite;
-                      Shader_Program : GL.Objects.Programs.Program) is
+    procedure Render (aSprite : Sprite) is
         use GL.Attributes;
         use GL.Blending;
---          use GL.Objects.Textures.Targets;
+        use GL.Objects.Textures.Targets;
         use GL.Objects.Buffers;
         use GL.Types;
         Quad_Vertices  : Singles.Vector2_Array (1 .. 6);
-        pragma Warnings (Off);
         Texture_Coords : Singles.Vector2_Array (1 .. 6);
         Tex_Width      : constant Single :=
                            1.0 + Single (aSprite.Texture_Index - 1) /
@@ -299,7 +290,6 @@ package body Sprite_Manager is
         Height         : constant Single := Single (aSprite.Sprite_Size.Height);
     begin
         if aSprite.Is_Visible then
-            GL.Objects.Programs.Use_Program (Shader_Program);
             Sprites_VAO.Bind;
             Clear_Buffers;
 
@@ -308,10 +298,10 @@ package body Sprite_Manager is
                 Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
             end if;
 
---              Texture_2D.Bind (Get_Current_Frame (aSprite));
---              if aSprite.Texture_Index < aSprite.Num_Frames then
---                  U := Single (aSprite.Current_Frame) * Tex_Width;
---              end if;
+            Texture_2D.Bind (Get_Current_Frame (aSprite));
+            if aSprite.Texture_Index < aSprite.Num_Frames then
+                U := Single (aSprite.Current_Frame) * Tex_Width;
+            end if;
 
             Quad_Vertices (1) := (X, Y + Height);          --  top left
             Texture_Coords (1) := (U, V + Tex_Height);
@@ -334,38 +324,22 @@ package body Sprite_Manager is
             Array_Buffer.Bind (Quad_Buffer);
             Utilities.Load_Vertex_Buffer (Array_Buffer, Quad_Vertices,
                                           Static_Draw);
-            Put_Line ("Sprite_Manager.Render Quad_Vertices loaded.");
-            --  You need to enable the vertex attributes that your VBO is exposing
-            --  AND your shader is consuming.
-            --  If your shader expects an attribute your VBO doesn't provide,
-            --  you must disable said attribute, or you will get an
-            --  access violation during rendering.
-            Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 0, 0);
-            Put_Line ("Sprite_Manager.Render Attrib_Array (0) Pointer set.");
+            Put_Line ("Sprite_Manger.Render Vertex_Buffer loaded");
             Enable_Vertex_Attrib_Array (0);
-            Put_Line ("Sprite_Manager.Render Attrib_Array (0) enabled.");
+            Put_Line ("Sprite_Manger.Render Vertex_Buffer Attrib_Array (0) enabled");
+            Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
 
---              Array_Buffer.Bind (Texture_Buffer);
---              Utilities.Load_Vertex_Buffer (Array_Buffer, Texture_Coords,
---                                            Static_Draw);
---              Enable_Vertex_Attrib_Array (1);
---              Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
-
+            Array_Buffer.Bind (Texture_Buffer);
+            Utilities.Load_Vertex_Buffer (Array_Buffer, Texture_Coords,
+                                          Static_Draw);
+            Enable_Vertex_Attrib_Array (1);
+            Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
             GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
 
             if aSprite.Use_Transparency then
                 GL.Toggles.Disable (GL.Toggles.Blend);
             end if;
-
-            Disable_Vertex_Attrib_Array (0);
-            Disable_Vertex_Attrib_Array (1);
         end if;
-
-    exception
-        when anError : others =>
-            Put_Line ("An exception occurred in Sprite_Manager.Render.");
-            Put_Line (Exception_Information (anError));
-            raise;
     end Render;
 
     --  ------------------------------------------------------------------------

@@ -3,7 +3,8 @@ with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with  GL.Attributes;
+with GL.Attributes;
+with GL.Objects.Programs;
 with GL.Types;
 
 with Load_Obj_File;
@@ -16,12 +17,8 @@ with Shader_Manager;
 package body Model is
    use GL.Types;
 
-   Program_3D        : GL.Objects.Programs.Program;
-   VAO_2D            : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-   Vertex_Buffer_2D  : GL.Objects.Buffers.Buffer;
-   Element_Buffer_2D : GL.Objects.Buffers.Buffer;
+   Program_3D : GL.Objects.Programs.Program;
 
-   procedure Initialize_2D_VBO;
    procedure Initialize_3D_VBOs (aModel : in out Model_Data);
 
    --  ------------------------------------------------------------------------
@@ -99,35 +96,6 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   procedure Initialize_2D (Shader_Program : in out GL.Objects.Programs.Program;
-                            Colour         : GL.Types.Colors.Basic_Color) is
-   begin
-      Shader_Manager.Init_Shaders (Shader_Program);
-      Shader_Manager.Set_Colour (Shader_Program, Colour);
-      Initialize_2D_VBO;
-
-   exception
-      when anError : others =>
-         Put_Line ("An exception occurred in Model.Initialize_2D.");
-         Put_Line (Exception_Information (anError));
-         raise;
-   end Initialize_2D;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Initialize_2D_VBO is
-   begin
-      VAO_2D.Initialize_Id;
-      VAO_2D.Bind;
-
-      Vertex_Buffer_2D.Initialize_Id;
-      GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer_2D);
-      Element_Buffer_2D.Initialize_Id;
-      GL.Objects.Buffers.Element_Array_Buffer.Bind (Element_Buffer_2D);
-   end Initialize_2D_VBO;
-
-   --  ------------------------------------------------------------------------
-
    procedure Initialize_3D (aModel : in out Model_Data; File_Path : String;
                             Colour : GL.Types.Colors.Basic_Color) is
       use Load_Obj_File;
@@ -185,9 +153,9 @@ package body Model is
       Rot_Matrix   : Matrix4 := Singles.Identity4;
    begin
 --        Put_Line ("Model.Render.");
-      GL.Objects.Programs.Use_Program (Program_3D);
 
       if aModel.Is_Visible then
+         GL.Objects.Programs.Use_Program (Program_3D);
          Maths.Init_Rotation_Transform
            (aModel.Base_Rotation, Rot_Matrix);
          Model_Matrix :=  Rot_Matrix * Model_Matrix;
