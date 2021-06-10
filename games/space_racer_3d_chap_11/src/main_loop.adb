@@ -408,12 +408,9 @@ pragma Warnings (Off);
     procedure Render (Screen : in out Input_Callback.Callback_Window) is
     begin
         Utilities.Clear_Colour_Buffer_And_Depth;
---          Sprite_Manager.Clear_Buffers;
         Resize_GL_Scene (Screen);
---          Render_3D;
-        Put_Line ("Main_Loop.Render Render_2D.");
+        Render_3D;
         Render_2D (Screen);
-        Put_Line ("Main_Loop.Render Renderered.");
     end Render;
 
     --  ------------------------------------------------------------------------
