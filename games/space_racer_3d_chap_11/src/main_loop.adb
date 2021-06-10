@@ -8,11 +8,9 @@ with Glfw.Windows;
 with Glfw.Windows.Context;
 
 with GL.Buffers;
-with GL.Objects.Buffers;
 with GL.Objects.Programs;
 --  with GL.Toggles;
 with GL.Types.Colors;
-with GL.Objects.Vertex_Arrays;
 with GL.Window;
 
 with Maths;
@@ -31,14 +29,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     Back             : constant GL.Types.Colors.Color :=
                          (0.6, 0.6, 0.6, 0.0);
-    Data             : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 0.0);
+    Colour_2D        : constant GL.Types.Colors.Basic_Color := (0.4, 0.4, 0.9);
     Ship_Colour      : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
     --      Splash_Threshold : constant Float := 5.0;
     --      UI_Threshold     : constant float := 0.1;
     --      UI_Timer         : Float := 0.0;
     --      Splash_Timer     : Float := 0.0;
-    VAO_2D           : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Vertex_Buffer_2D : GL.Objects.Buffers.Buffer;
     Splash_Screen    : Sprite_Manager.Sprite;
     Menu_Screen      : Sprite_Manager.Sprite;
     Credits_Screen   : Sprite_Manager.Sprite;
@@ -56,9 +52,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Draw_UI (Screen : in out Input_Callback.Callback_Window);
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
-    procedure Initialize_2D (Shader_Program : in out GL.Objects.Programs.Program;
-                             Colour         : GL.Types.Colors.Basic_Color);
-    procedure Initialize_2D_VBO;
+    procedure Initialize_2D (Colour : GL.Types.Colors.Basic_Color);
 
     --  -------------------------------------------------------------------------
 
@@ -198,24 +192,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
-   procedure Initialize_2D (Shader_Program : in out GL.Objects.Programs.Program;
-                            Colour         : GL.Types.Colors.Basic_Color) is
+   procedure Initialize_2D (Colour : GL.Types.Colors.Basic_Color) is
    begin
-      Shader_Manager.Init_Shaders (Shader_Program);
-      Shader_Manager.Set_Colour (Shader_Program, Colour);
-      Initialize_2D_VBO;
+      Shader_Manager.Init_Shaders (Program_2D);
+      Shader_Manager.Set_Colour (Program_2D, Colour);
+      Sprite_Manager.Init;
    end Initialize_2D;
-
-   --  ------------------------------------------------------------------------
-
-   procedure Initialize_2D_VBO is
-   begin
-      VAO_2D.Initialize_Id;
-      VAO_2D.Bind;
-
-      Vertex_Buffer_2D.Initialize_Id;
-      GL.Objects.Buffers.Array_Buffer.Bind (Vertex_Buffer_2D);
-   end Initialize_2D_VBO;
 
    --  ------------------------------------------------------------------------
 
@@ -363,12 +345,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Levels_Manager;
     begin
         Enable_2D (Screen);
-        Put_Line ("Main_Loop.Render Game_State: " &
+        Put_Line ("Main_Loop.Render_2D Game_State: " &
                  Game_Status'Image (Get_Game_State));
         case Get_Game_State is
         when Game_Loading =>
             Sprite_Manager.Render (Splash_Screen);
-            Put_Line ("Main_Loop.Render Game_Loading Splash_Screen rendered.");
         when Game_Menu =>
             Sprite_Manager.Render (Menu_Screen);
             Render_Button (Program_2D, Play_Button);
@@ -380,8 +361,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Draw_Credits (Screen);
         when Game_Running => Draw_UI (Screen);
         when Game_Splash =>
+            Put_Line ("Main_Loop.Render_2D Splash_Screen");
             Sprite_Manager.Render (Splash_Screen);
-            Put_Line ("Main_Loop.Render Game_Splash Splash_Screen rendered.");
         when Game_Over =>
             Sprite_Manager.Render (Game_Over_Screen);
             Draw_Stats  (Screen);
@@ -391,7 +372,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     end Render_2D;
 
     --  ------------------------------------------------------------------------
-pragma Warnings (Off);
+
     procedure Render_3D is
         use Levels_Manager;
     begin
@@ -445,8 +426,8 @@ pragma Warnings (Off);
         Input_Callback.Clear_All_Keys;
 --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
-        Initialize_2D (Program_2D, Data);
-        Sprite_Manager.Init;
+        Text_Manager.Initialize (Screen);
+        Initialize_2D (Colour_2D);
 
         Model.Initialize_3D (Ship, "src/resources/ship.obj", Ship_Colour);
         Model.Set_Is_Ship (Ship, True);
