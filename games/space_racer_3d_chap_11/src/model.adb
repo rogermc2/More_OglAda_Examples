@@ -3,6 +3,7 @@ with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Numerics;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with  GL.Attributes;
 with GL.Types;
 
 with Load_Obj_File;
@@ -100,17 +101,10 @@ package body Model is
 
    procedure Initialize_2D (Shader_Program : in out GL.Objects.Programs.Program;
                             Colour         : GL.Types.Colors.Basic_Color) is
---        Vertices       : Obj_Array3;
---        Normals        : Obj_Array3;
---        UVs            : Obj_Array2;
---        Vertex_Indices : Obj_Int3_Array;
---        Normal_Indices : Obj_Int3_Array;
---        UV_Indices     : Obj_Int3_Array;
    begin
       Shader_Manager.Init_Shaders (Shader_Program);
       Shader_Manager.Set_Colour (Shader_Program, Colour);
       Initialize_2D_VBO;
---        Load_Buffers.Load_Buffers (aModel, Vertices, Vertex_Indices);
 
    exception
       when anError : others =>
@@ -182,8 +176,8 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-    pragma Warnings (Off);
    procedure Render (aModel : in out Model_Data) is
+   use GL.Attributes;
       use GL.Objects.Buffers;
       use Shader_Manager;
       Model_Matrix : Matrix4 := Singles.Identity4;
@@ -219,10 +213,13 @@ package body Model is
          aModel.Model_VAO.Bind;
          Array_Buffer.Bind (aModel.Model_Vertex_Buffer);
          Element_Array_Buffer.Bind (aModel.Model_Element_Buffer);
+         Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 0, 0);
+         Enable_Vertex_Attrib_Array (0);
 
          Draw_Elements (Triangle_Strip_Adjacency, aModel.Indices_Size,
                         UInt_Type, 0);
 --           GL.Objects.Vertex_Arrays.Draw_Arrays (Points, 0, 1);
+         Disable_Vertex_Attrib_Array (0);
       end if;
 
    exception

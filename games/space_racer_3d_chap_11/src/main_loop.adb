@@ -7,6 +7,7 @@ with Glfw.Input.Keys;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
+with GL.Attributes;
 with GL.Buffers;
 with GL.Objects.Programs;
 with GL.Toggles;
@@ -379,6 +380,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     begin
         Utilities.Clear_Colour_Buffer_And_Depth;
         Sprite_Manager.Clear_Buffers;
+        GL.Attributes.Disable_Vertex_Attrib_Array (0);
+        GL.Attributes.Disable_Vertex_Attrib_Array (1);
         Resize_GL_Scene (Screen);
         Render_3D;
         Put_Line ("Main_Loop.Render Render_2D.");
