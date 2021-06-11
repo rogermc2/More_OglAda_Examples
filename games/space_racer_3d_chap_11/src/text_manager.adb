@@ -37,6 +37,8 @@ package body Text_Manager is
       Window.Get_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
+      GL.Toggles.Enable (GL.Toggles.Cull_Face);
+
       Maths.Init_Orthographic_Transform (Single (Window_Height), 0.0, 0.0,
                                          Single (Window_Width), 0.1, -100.0,
                                          MVP_Matrix);
@@ -45,6 +47,8 @@ package body Text_Manager is
                                    Scale, (R, G, B, 1.0), Texture_ID,
                                    MVP_Matrix_ID, Dimensions_ID, Colour_ID,
                                    MVP_Matrix);
+      GL.Toggles.Disable (GL.Toggles.Cull_Face);
+
    exception
       when anError : others =>
          Put_Line ("An exception occurred in Text_Manager.Draw_Text.");
@@ -65,7 +69,6 @@ package body Text_Manager is
       Window.Get_Size (Window_Width, Window_Height);
       GL.Window.Set_Viewport (0, 0, GL.Types.Int (Window_Width),
                               GL.Types.Int (Window_Height));
-      GL.Toggles.Enable (GL.Toggles.Cull_Face);
 
       Render_Text_Program := Program_From
         ((Src ("src/shaders/text_vertex_shader.glsl", Vertex_Shader),

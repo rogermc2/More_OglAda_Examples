@@ -479,7 +479,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Maths.Init_Perspective_Transform
           (Maths.Degree (45.0), Single (Screen_Width), Single (Screen_Height),
            0.1, 100.0, Projection_Matrix);
-        Model.Set_Perspective (Projection_Matrix);
+        Model.Set_3D_Perspective (Projection_Matrix);
 
     end Resize_GL_Scene;
 

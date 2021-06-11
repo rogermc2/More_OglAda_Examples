@@ -145,7 +145,7 @@ package body Model is
    --  ------------------------------------------------------------------------
 
    procedure Render (aModel : in out Model_Data) is
-   use GL.Attributes;
+      use GL.Attributes;
       use GL.Objects.Buffers;
       use Shader_Manager;
       Model_Matrix : Matrix4 := Singles.Identity4;
@@ -157,6 +157,7 @@ package body Model is
          Maths.Init_Rotation_Transform
            (aModel.Base_Rotation, Rot_Matrix);
          Model_Matrix :=  Rot_Matrix * Model_Matrix;
+
          if aModel.Is_Ship then
             Model_Matrix := Maths.Scaling_Matrix ((0.8, 0.8, 0.8))
               * Model_Matrix;
@@ -250,11 +251,11 @@ package body Model is
 
    --  ------------------------------------------------------------------------
 
-   procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4) is
+   procedure Set_3D_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4) is
    begin
       GL.Objects.Programs.Use_Program (Program_3D);
       Shader_Manager.Set_Projection_Matrix (Program_3D, Projection_Matrix);
-   end Set_Perspective;
+   end Set_3D_Perspective;
 
    --  ------------------------------------------------------------------------
 

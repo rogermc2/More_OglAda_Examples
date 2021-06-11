@@ -30,7 +30,7 @@ package Model is
    procedure Set_Is_Ship (aModel : in out Model_Data; State : Boolean);
    procedure Set_Is_Visible (aModel : in out Model_Data; State : Boolean);
    procedure Set_Indices_Size (aModel : in out Model_Data; Size : GL.Types.Int);
-   procedure Set_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4);
+   procedure Set_3D_Perspective (Projection_Matrix : GL.Types.Singles.Matrix4);
    procedure Set_Position (aModel   : in out Model_Data;
                            Position : GL.Types.Singles.Vector3);
    procedure Set_Velocity (aModel   : in out Model_Data;
