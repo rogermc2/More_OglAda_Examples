@@ -48,8 +48,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Asteriods_Hit    : Integer := 0;
 
     procedure Draw_UI (Screen : in out Input_Callback.Callback_Window);
-    procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
     procedure Initialize_2D;
+    procedure Process_UI_Command (Screen : in out Input_Callback.Callback_Window);
+    procedure Resize_GL_Scene (Screen : in out Input_Callback.Callback_Window);
+    procedure Start_Game  (Screen : in out Input_Callback.Callback_Window);
 
     --  -------------------------------------------------------------------------
 
@@ -190,13 +192,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
-   procedure Initialize_2D is
-   begin
-      Shader_Manager_UI.Init_Shaders;
-      Sprite_Manager.Init;
-   end Initialize_2D;
+    procedure Initialize_2D is
+    begin
+        Shader_Manager_UI.Init_Shaders;
+        Sprite_Manager.Init;
+    end Initialize_2D;
 
-   --  ------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Load_Splash (Screen : in out Input_Callback.Callback_Window) is
         use Levels_Manager;
@@ -329,11 +331,55 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                     end if;
                 end if;
                 Set_Heading_Rotation (Ship, Rotation);
+            when Command_UI => Process_UI_Command (Screen);
             when others =>
                 Command_Done := False;
         end case;
 
     end Process_Input_Command;
+
+    --  -------------------------------------------------------------------------
+
+    procedure Process_UI_Command (Screen : in out Input_Callback.Callback_Window) is
+        use Input_Manager;
+        use Levels_Manager;
+    begin
+        if Is_Clicked (Play_Button) then
+            Set_Clicked (Play_Button, False);
+            Set_Active (Play_Button, False);
+            Set_Clicked (Exit_Button, False);
+            Set_Active (Credits_Button, False);
+            Set_Game_State (Game_Running);
+
+        elsif Is_Clicked (Credits_Button) then
+            Set_Clicked (Credits_Button, False);
+            Set_Active (Credits_Button, False);
+            Set_Clicked (Play_Button, False);
+            Set_Active (Exit_Button, False);
+            Set_Game_State (Game_Credits);
+
+        elsif Is_Clicked (Menu_Button) then
+            Set_Clicked (Menu_Button, False);
+            Set_Active (Menu_Button, False);
+            Set_Active (Play_Button, True);
+            Set_Active (Exit_Button, True);
+            Set_Game_State (Game_Credits);
+            case Get_Game_State is
+            when Game_Credits => Set_Game_State (Game_Menu);
+            when Game_Over => Start_Game (Screen);
+            when others => null;
+            end case;
+
+        elsif Is_Clicked (Exit_Button) then
+            Set_Clicked (Exit_Button, False);
+            Set_Active (Exit_Button, False);
+            Set_Clicked (Play_Button, False);
+            Set_Active (Play_Button, True);
+            Set_Active (Credits_Button, True);
+            Set_Game_State (Game_Quit);
+        end if;
+
+    end Process_UI_Command;
 
     --  -------------------------------------------------------------------------
 
@@ -343,7 +389,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     begin
         Enable_2D (Screen);
         Put_Line ("Main_Loop.Render_2D Game_State: " &
-                 Game_Status'Image (Get_Game_State));
+                    Game_Status'Image (Get_Game_State));
         case Get_Game_State is
         when Game_Loading =>
             Sprite_Manager.Render (Splash_Screen);
@@ -421,7 +467,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Utilities.Clear_Background_Colour_And_Depth (Back);
         GL.Buffers.Set_Depth_Function (LEqual);
         Input_Callback.Clear_All_Keys;
---          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
+        --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
         Text_Manager.Initialize (Screen);
         Initialize_2D;
@@ -501,11 +547,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             when others => null;
         end case;
 
-        Check_Collisions;
-        Model.Update (Ship, Delta_Time);
-        for index in Asteriods'Range loop
-            Model.Update (Asteriods (index), Delta_Time);
-        end loop;
+        if Running then
+            Check_Collisions;
+            Model.Update (Ship, Delta_Time);
+            for index in Asteriods'Range loop
+                Model.Update (Asteriods (index), Delta_Time);
+            end loop;
+        end if;
     end Update;
 
     --  ------------------------------------------------------------------------
@@ -516,7 +564,9 @@ begin
     Start_Game (Main_Window);
     while Running loop
         Update (Main_Window, Running);
-        Render (Main_Window);
+        if Running then
+            Render (Main_Window);
+        end if;
         Glfw.Windows.Context.Swap_Buffers (Main_Window'Access);
         Glfw.Input.Poll_Events;
         Running := Running and not
