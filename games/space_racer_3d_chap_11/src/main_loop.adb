@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input;
 with Glfw.Input.Keys;
+with Glfw.Input.Mouse;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
@@ -29,7 +30,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Back             : constant GL.Types.Colors.Color :=
                          (0.6, 0.6, 0.6, 0.0);
     Ship_Colour      : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
-    Splash_Threshold : constant Float := 5.0;
+    Splash_Threshold : constant Float := 2.5;
     --      UI_Threshold     : constant float := 0.1;
     --      UI_Timer         : Float := 0.0;
     Splash_Timer     : Float := 0.0;
@@ -95,7 +96,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Text_Manager.Draw_Text (Window, "Robert Marsden", Start_X, Start_Y,
                                 0.0, 1.0, 0.0);
         Text_Manager.Draw_Text (Window, "Roger Mc Murtrie",
-                                Start_X, Start_Y + Space_Y, 0.0, 1.0, 0.0);
+                                Start_X, Start_Y - Space_Y, 0.0, 1.0, 0.0);
 
     exception
         when anError : others =>
@@ -163,8 +164,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     begin
         Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
         Start_Y := Single (Screen_Height) - 50.0;
-        X2 := Single (Screen_Width) / 2.0 - 50.0;
-        X3 := Single (Screen_Width) - 250.0;
+        X2 := Single (Screen_Width) - 590.0;
+        X3 := Single (Screen_Width) - 350.0;
 
         Draw_Text (Screen, Score_Text, X1, Start_Y, 0.0, 1.0, 0.0);
         Draw_Text (Screen, Speed_Text, X2, Start_Y, 0.0, 1.0, 0.0);
@@ -191,6 +192,26 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     end Enable_2D;
 
     --  -------------------------------------------------------------------------
+
+    procedure Enable_Mouse_Callbacks
+      (Window : in out Input_Callback.Callback_Window;
+       Enable : Boolean) is
+        use Glfw.Windows.Callbacks;
+    begin
+        if Enable then
+            Window.Enable_Callback (Mouse_Position);
+            Window.Enable_Callback (Mouse_Enter);
+            Window.Enable_Callback (Mouse_Button);
+            Window.Enable_Callback (Mouse_Scroll);
+        else
+            Window.Disable_Callback (Mouse_Position);
+            Window.Disable_Callback (Mouse_Enter);
+            Window.Disable_Callback (Mouse_Button);
+            Window.Disable_Callback (Mouse_Scroll);
+        end if;
+    end Enable_Mouse_Callbacks;
+
+    ----------------------------------------------------------------------------
 
     procedure Initialize_2D is
     begin
@@ -393,22 +414,28 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         case Get_Game_State is
         when Game_Loading =>
             Sprite_Manager.Render (Splash_Screen);
+
         when Game_Menu =>
             Sprite_Manager.Render (Menu_Screen);
             Render_Button (Play_Button);
             Render_Button (Credits_Button);
             Render_Button (Exit_Button);
+
         when Game_Credits =>
             Sprite_Manager.Render (Credits_Screen);
             Render_Button (Menu_Button);
             Draw_Credits (Screen);
+
         when Game_Running => Draw_UI (Screen);
+
         when Game_Splash =>
             Put_Line ("Main_Loop.Render_2D Splash_Screen");
             Sprite_Manager.Render (Splash_Screen);
+
         when Game_Over =>
             Sprite_Manager.Render (Game_Over_Screen);
             Draw_Stats  (Screen);
+
         when others => null;
         end case;
         Disable_2D;
@@ -463,7 +490,16 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Start_Game  (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
+        use Glfw.Input;
+        Window_Width  : Glfw.Size;
+        Window_Height : Glfw.Size;
     begin
+        Screen.Set_Cursor_Mode (Mouse.Normal);
+        Screen'Access.Get_Size (Window_Width, Window_Height);
+        Screen'Access.Set_Cursor_Pos
+          (Mouse.Coordinate (0.5 * Single (Window_Width)),
+           Mouse.Coordinate (0.5 * Single (Window_Height)));
+
         Utilities.Clear_Background_Colour_And_Depth (Back);
         GL.Buffers.Set_Depth_Function (LEqual);
         Input_Callback.Clear_All_Keys;
@@ -471,6 +507,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
         Text_Manager.Initialize (Screen);
         Initialize_2D;
+        Enable_Mouse_Callbacks (Screen, True);
 
         Model.Initialize_3D (Ship, "src/resources/ship.obj", Ship_Colour);
         Model.Set_Is_Ship (Ship, True);
