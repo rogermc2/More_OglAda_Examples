@@ -29,10 +29,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Back             : constant GL.Types.Colors.Color :=
                          (0.6, 0.6, 0.6, 0.0);
     Ship_Colour      : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
-    --      Splash_Threshold : constant Float := 5.0;
+    Splash_Threshold : constant Float := 5.0;
     --      UI_Threshold     : constant float := 0.1;
     --      UI_Timer         : Float := 0.0;
-    --      Splash_Timer     : Float := 0.0;
+    Splash_Timer     : Float := 0.0;
     Splash_Screen    : Sprite_Manager.Sprite;
     Menu_Screen      : Sprite_Manager.Sprite;
     Credits_Screen   : Sprite_Manager.Sprite;
@@ -513,6 +513,27 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         case Get_Game_State is
             when Game_Splash | Game_Loading =>
                 Sprite_Manager.Update (Splash_Screen, Delta_Time);
+                Splash_Timer := Splash_Timer + Delta_Time;
+                if Splash_Timer > Splash_Threshold then
+                    Set_Game_State (Game_Menu);
+                end if;
+
+            when Game_Menu =>
+                Sprite_Manager.Update (Menu_Screen, Delta_Time);
+                Set_Active (Play_Button, True);
+                Set_Active (Credits_Button, True);
+                Set_Active (Exit_Button, True);
+                Update_Button (Play_Button, Delta_Time);
+                Update_Button (Exit_Button, Delta_Time);
+                Input_Manager.Update (Delta_Time);
+                Process_Input_Command (Window);
+
+            when Game_Credits =>
+                Sprite_Manager.Update (Credits_Screen, Delta_Time);
+                Set_Active (Menu_Button, True);
+                Update_Button (Menu_Button, Delta_Time);
+                Input_Manager.Update (Delta_Time);
+                Process_Input_Command (Window);
 
             when Game_Running =>
                 Input_Manager.Update_Command (Window);
@@ -529,6 +550,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 if Position (Ship) (GL.Z) > 10.0 then
                     Set_Game_State (Game_Over);
                     Input_Manager.Set_Active (Menu_Button, True);
+                    Sprite_Manager.Set_Active (Game_Over_Screen, True);
                 end if;
 
             when Game_Over =>
@@ -539,12 +561,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Update_Button (Exit_Button, Delta_Time);
                 Update (Delta_Time);
                 Process_Input_Command (Window);
-                Update (Ship, Delta_Time);
-                Check_Collisions;
 
             when Game_Quit =>
                 Running := False;
-            when others => null;
+
+            when Game_Next_Level | Game_Paused | Game_Restart => null;
         end case;
 
         if Running then
