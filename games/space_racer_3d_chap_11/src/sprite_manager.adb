@@ -10,7 +10,10 @@ with GL.Objects.Vertex_Arrays;
 with GL.Pixels;
 with GL.Toggles;
 with GL.Types;
+
 with Utilities;
+
+with Shader_Manager_UI;
 
 package body Sprite_Manager is
 
@@ -297,7 +300,9 @@ package body Sprite_Manager is
                 GL.Toggles.Enable (GL.Toggles.Blend);
                 Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
             end if;
-
+            Shader_Manager_UI.Use_2D_Program;
+            GL.Objects.Textures.Set_Active_Unit (0);
+--              Shader_Manager_UI.Set_Texture (0);
             Texture_2D.Bind (Get_Current_Frame (aSprite));
             if aSprite.Texture_Index < aSprite.Num_Frames then
                 U := Single (aSprite.Current_Frame) * Tex_Width;
@@ -334,10 +339,14 @@ package body Sprite_Manager is
             Set_Vertex_Attrib_Pointer (1, 2, Single_Type, False, 0, 0);
             GL.Objects.Vertex_Arrays.Draw_Arrays (GL.Types.Triangles, 0, 6);
 
+            Disable_Vertex_Attrib_Array (0);
+            Disable_Vertex_Attrib_Array (1);
+
             if aSprite.Use_Transparency then
                 GL.Toggles.Disable (GL.Toggles.Blend);
             end if;
         end if;
+
     end Render;
 
     --  ------------------------------------------------------------------------

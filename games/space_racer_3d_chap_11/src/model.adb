@@ -152,8 +152,6 @@ package body Model is
       View_Matrix  : constant Matrix4 := Singles.Identity4;
       Rot_Matrix   : Matrix4 := Singles.Identity4;
    begin
---        Put_Line ("Model.Render.");
-
       if aModel.Is_Visible then
          GL.Objects.Programs.Use_Program (Program_3D);
          Maths.Init_Rotation_Transform

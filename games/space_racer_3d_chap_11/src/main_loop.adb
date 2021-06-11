@@ -409,8 +409,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         use Levels_Manager;
     begin
         Enable_2D (Screen);
-        Put_Line ("Main_Loop.Render_2D Game_State: " &
-                    Game_Status'Image (Get_Game_State));
         case Get_Game_State is
         when Game_Loading =>
             Sprite_Manager.Render (Splash_Screen);
@@ -429,7 +427,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         when Game_Running => Draw_UI (Screen);
 
         when Game_Splash =>
-            Put_Line ("Main_Loop.Render_2D Splash_Screen");
             Sprite_Manager.Render (Splash_Screen);
 
         when Game_Over =>

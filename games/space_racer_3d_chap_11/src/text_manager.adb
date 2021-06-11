@@ -18,7 +18,6 @@ package body Text_Manager is
 
 
    Font_File             : constant String := "../fonts/NotoSerif-Regular.ttf";
---        Text_List       : Text_Management.Text_Array (1 .. 2);
    Render_Text_Program   : GL.Objects.Programs.Program;
    Dimensions_ID         : GL.Uniforms.Uniform;
    Texture_ID            : GL.Uniforms.Uniform;
