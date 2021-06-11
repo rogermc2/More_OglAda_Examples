@@ -67,10 +67,10 @@ package body Shader_Manager_UI is
 
    --   ---------------------------------------------------------------------------------
 
-   procedure Set_Texture (Texture  : GL.Types.UInt) is
+   procedure Set_Texture_Unit (Unit  : GL.Types.Int) is
    begin
-      GL.Uniforms.Set_UInt (Texture_Uniform, Texture);
-   end Set_Texture;
+      GL.Uniforms.Set_Int (Texture_Uniform, Unit);
+   end Set_Texture_Unit;
 
    --   -----------------------------------------------------------------------
 

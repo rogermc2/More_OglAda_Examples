@@ -300,10 +300,12 @@ package body Sprite_Manager is
                 GL.Toggles.Enable (GL.Toggles.Blend);
                 Set_Blend_Func (Src_Alpha, One_Minus_Src_Alpha);
             end if;
+
             Shader_Manager_UI.Use_2D_Program;
             GL.Objects.Textures.Set_Active_Unit (0);
---              Shader_Manager_UI.Set_Texture (0);
+            Shader_Manager_UI.Set_Texture_Unit (0);
             Texture_2D.Bind (Get_Current_Frame (aSprite));
+
             if aSprite.Texture_Index < aSprite.Num_Frames then
                 U := Single (aSprite.Current_Frame) * Tex_Width;
             end if;
