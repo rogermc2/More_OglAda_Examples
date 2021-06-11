@@ -8,7 +8,6 @@ with Glfw.Windows;
 with Glfw.Windows.Context;
 
 with GL.Buffers;
-with GL.Objects.Programs;
 --  with GL.Toggles;
 with GL.Types.Colors;
 with GL.Window;
@@ -19,7 +18,7 @@ with Utilities;
 with Input_Manager;
 with Levels_Manager;
 with Model;
-with Shader_Manager;
+with Shader_Manager_UI;
 with Sprite_Manager;
 with Text_Manager;
 
@@ -29,7 +28,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     Back             : constant GL.Types.Colors.Color :=
                          (0.6, 0.6, 0.6, 0.0);
-    Colour_2D        : constant GL.Types.Colors.Basic_Color := (0.4, 0.4, 0.9);
     Ship_Colour      : constant GL.Types.Colors.Basic_Color := (0.0, 0.0, 1.0);
     --      Splash_Threshold : constant Float := 5.0;
     --      UI_Threshold     : constant float := 0.1;
@@ -39,7 +37,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
     Menu_Screen      : Sprite_Manager.Sprite;
     Credits_Screen   : Sprite_Manager.Sprite;
     Game_Over_Screen : Sprite_Manager.Sprite;
-    Program_2D       : GL.Objects.Programs.Program;
     Ship             : Model.Model_Data;
     Asteriods        : array (1 .. 3) of Model.Model_Data;
     Last_Time        : Float := Float (Glfw.Time);
@@ -52,7 +49,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Draw_UI (Screen : in out Input_Callback.Callback_Window);
     procedure Resize_GL_Scene  (Screen : in out Input_Callback.Callback_Window);
-    procedure Initialize_2D (Colour : GL.Types.Colors.Basic_Color);
+    procedure Initialize_2D;
 
     --  -------------------------------------------------------------------------
 
@@ -177,25 +174,25 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     procedure Enable_2D (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;
+        use Shader_Manager_UI;
         Screen_Width      : Glfw.Size;
         Screen_Height     : Glfw.Size;
         Projection_Matrix : Singles.Matrix4;
     begin
         Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
-        GL.Objects.Programs.Use_Program (Program_2D);
+        Use_2D_Program;
         Maths.Init_Orthographic_Transform
           (Top => Single (Screen_Height), Bottom => 0.0,
            Left => 0.0, Right => Single (Screen_Width),
            Z_Near => 0.0, Z_Far => 1.0, Transform => Projection_Matrix);
-        Shader_Manager.Set_Projection_Matrix (Program_2D, Projection_Matrix);
+        Shader_Manager_UI.Set_Projection_Matrix (Projection_Matrix);
     end Enable_2D;
 
     --  -------------------------------------------------------------------------
 
-   procedure Initialize_2D (Colour : GL.Types.Colors.Basic_Color) is
+   procedure Initialize_2D is
    begin
-      Shader_Manager.Init_Shaders (Program_2D);
-      Shader_Manager.Set_Colour (Program_2D, Colour);
+      Shader_Manager_UI.Init_Shaders;
       Sprite_Manager.Init;
    end Initialize_2D;
 
@@ -352,12 +349,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             Sprite_Manager.Render (Splash_Screen);
         when Game_Menu =>
             Sprite_Manager.Render (Menu_Screen);
-            Render_Button (Program_2D, Play_Button);
-            Render_Button (Program_2D, Credits_Button);
-            Render_Button (Program_2D, Exit_Button);
+            Render_Button (Play_Button);
+            Render_Button (Credits_Button);
+            Render_Button (Exit_Button);
         when Game_Credits =>
             Sprite_Manager.Render (Credits_Screen);
-            Render_Button (Program_2D, Menu_Button);
+            Render_Button (Menu_Button);
             Draw_Credits (Screen);
         when Game_Running => Draw_UI (Screen);
         when Game_Splash =>
@@ -427,7 +424,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
         Text_Manager.Initialize (Screen);
-        Initialize_2D (Colour_2D);
+        Initialize_2D;
 
         Model.Initialize_3D (Ship, "src/resources/ship.obj", Ship_Colour);
         Model.Set_Is_Ship (Ship, True);

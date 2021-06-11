@@ -2,7 +2,6 @@
 with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 
-with GL.Objects.Programs;
 with GL.Objects.Shaders;
 with GL.Uniforms;
 
@@ -47,6 +46,13 @@ package body Shader_Manager_UI is
 
    --  ------------------------------------------------------------------------
 
+   function Program_UI return GL.Objects.Programs.Program is
+   begin
+      return UI_Program;
+   end Program_UI;
+
+   --   ---------------------------------------------------------------------------------
+
    procedure Set_Model_Matrix (Model_Matrix : GL.Types.Singles.Matrix4) is
    begin
       GL.Uniforms.Set_Single (Model_Uniform, Model_Matrix);
@@ -72,6 +78,13 @@ package body Shader_Manager_UI is
    begin
       GL.Uniforms.Set_Single (View_Uniform, View_Matrix);
    end Set_View_Matrix;
+
+   --   ---------------------------------------------------------------------------------
+
+   procedure Use_2D_Program is
+   begin
+      GL.Objects.Programs.Use_Program (UI_Program);
+   end Use_2D_Program;
 
    --   ---------------------------------------------------------------------------------
 

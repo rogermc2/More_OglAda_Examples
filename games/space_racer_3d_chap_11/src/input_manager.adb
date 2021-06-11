@@ -2,6 +2,9 @@
 with Glfw.Input.Mouse;
 with Glfw.Input.Keys;
 
+with GL.Objects.Programs;
+
+with Shader_Manager_UI;
 with Sprite_Manager;
 
 package body Input_Manager is
@@ -118,10 +121,9 @@ package body Input_Manager is
 
    --  -------------------------------------------------------------------------
 
-   procedure Render_Button (Render_Program : GL.Objects.Programs.Program;
-                            Button : Button_Index) is
+   procedure Render_Button (Button : Button_Index) is
    begin
-      GL.Objects.Programs.Use_Program (Render_Program);
+      GL.Objects.Programs.Use_Program (Shader_Manager_UI.Program_UI);
       Sprite_Manager.Render (UI_Elements (Button));
    end Render_Button;
 
