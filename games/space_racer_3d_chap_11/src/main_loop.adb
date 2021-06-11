@@ -513,13 +513,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         Model.Set_Velocity (Ship, 0.1);
 
         Model.Initialize_3D (Asteriods (1), "src/resources/tri_asteroid.obj", (1.0, 0.0, 0.0));
-        Model.Set_Position (Asteriods (1), (0.0, 0.0, -10.0));
+        Model.Set_Position (Asteriods (1), (0.0, 0.0, -20.0));
 
         Model.Initialize_3D (Asteriods (2), "src/resources/tri_asteroid.obj", (0.0, 1.0, 0.0));
-        Model.Set_Position (Asteriods (2), (5.0, 0.0, -15.0));
+        Model.Set_Position (Asteriods (2), (5.0, 0.0, -25.0));
 
         Model.Initialize_3D (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
-        Model.Set_Position (Asteriods (3), (5.0, 5.0, -20.0));
+        Model.Set_Position (Asteriods (3), (5.0, 5.0, -30.0));
 
         Load_Splash (Screen);
         Load_Sprites (Screen);

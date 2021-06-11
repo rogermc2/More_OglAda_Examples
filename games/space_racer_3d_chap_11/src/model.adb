@@ -60,8 +60,8 @@ package body Model is
 
    function Collided_With (thisModel, Target : Model.Model_Data)
                            return Boolean is
-      P1        : constant Singles.Vector3 := thisModel.Centre;
-      P2        : constant Singles.Vector3 := Target.Centre;
+      P1        : constant Singles.Vector3 := Centre (thisModel);
+      P2        : constant Singles.Vector3 := Centre (Target);
       P_Delta   : Singles.Vector3;
       Dist_Sq   : Single;
       Rad_1_Sq  : Single;
@@ -74,6 +74,8 @@ package body Model is
            P_Delta (GL.Z) ** 2;
          Rad_1_Sq := thisModel.Radius ** 2;
          Rad_2_Sq := Target.Radius ** 2;
+         Put_Line ("Model.Collided_With Dist_Sq, Dist_Sq" &
+                  Single'Image (Dist_Sq) & "" & Single'Image (Rad_1_Sq + Rad_2_Sq));
          Result := Dist_Sq <= Rad_1_Sq + Rad_2_Sq;
       end if;
       return Result;

@@ -50,7 +50,6 @@ private
       Indices_Size         : GL.Types.Int := 0;
       Position             : Vector3 := (0.0, 0.0, 0.0);
       Heading              : Vector3 := (0.0, 0.0, 0.0);
-      Centre               : Vector3 := (0.0, 0.0, 0.0);
       Base_Rotation        : Vector3 := (0.0, 0.0, 0.0);
       Heading_Rotation     : Vector3 := (0.0, 0.0, 0.0);
       Model_Colour         : GL.Types.Colors.Basic_Color := (0.0, 0.0, 0.0);
