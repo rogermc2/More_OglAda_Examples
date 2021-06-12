@@ -1,4 +1,4 @@
---  Program Space_Racer_3D Chapter 12
+--  Program Boilerplate_3D, Chapter 12
 --  Author Roger Mc Murtrie
 --  Created 12 June 2021
 
@@ -11,9 +11,9 @@ with Initialize_With_Callbacks;
 with Input_Callback;
 with Main_Loop;
 
-procedure Space_Racer_3D is
+procedure Boilerplate_3D is
     Main_Window : Input_Callback.Callback_Window;
-    Window_Title : constant String := "Space Racer 3D Chapter 12";
+    Window_Title : constant String := "Boilerplate 3D";
 begin
     Glfw.Init;
     Initialize_With_Callbacks (Main_Window, Window_Title);
@@ -22,10 +22,10 @@ begin
 
 exception
     when anError : Constraint_Error =>
-        Put ("Space_Racer_3D returned a constraint error: ");
+        Put ("Boilerplate_3D returned a constraint error: ");
         Put_Line (Exception_Information (anError));
 
     when anError :  others =>
-        Put_Line ("An exception occurred in Space_Racer_3D.");
+        Put_Line ("An exception occurred in Boilerplate_3D.");
         Put_Line (Exception_Information (anError));
-end Space_Racer_3D;
+end Boilerplate_3D;
