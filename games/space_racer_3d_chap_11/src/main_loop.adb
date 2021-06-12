@@ -70,13 +70,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
     --  -------------------------------------------------------------------------
 
-    procedure Disable_2D is
-    begin
-        null;
-    end Disable_2D;
-
-    --  -------------------------------------------------------------------------
-
     procedure Draw_Credits (Window : in out Input_Callback.Callback_Window) is
         use GL.Types;
         Screen_Width       : Glfw.Size;
@@ -356,7 +349,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             when Command_UI =>
                 Process_UI_Command (Screen);
 
-            when Command_Invalid => null;
+            when Command_Invalid => Command_Done := False;
         end case;
 
     end Process_Input_Command;
@@ -445,7 +438,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
             when others => null;
         end case;
-        Disable_2D;
+
     end Render_2D;
 
     --  ------------------------------------------------------------------------
