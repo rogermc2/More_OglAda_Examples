@@ -1,4 +1,5 @@
 
+with Ada.Exceptions; use Ada.Exceptions;
 with Ada.Streams.Stream_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -77,12 +78,12 @@ package body Load_BMP_File is
 
             theTexture.Initialize_Id;
             Texture_2D.Bind (theTexture);
---              GL.Pixels.Set_Pack_Alignment (GL.Pixels.Bytes);
+            --              GL.Pixels.Set_Pack_Alignment (GL.Pixels.Bytes);
 
             Put_Line ("Load_BMP_File.Load_BMP_To_Texture Pixel_Format: " &
-                    GL.Pixels.Internal_Format'Image (Pixel_Format));
+                        GL.Pixels.Internal_Format'Image (Pixel_Format));
             Put_Line ("Load_BMP_File.Load_BMP_To_Texture Source_Format: " &
-                    GL.Pixels.Data_Format'Image (Source_Format));
+                        GL.Pixels.Data_Format'Image (Source_Format));
             Texture_2D.Load_From_Data
               (Level => 0, Internal_Format => Pixel_Format,
                Width => Int (Header.Width), Height => Int (Header.Height),
@@ -102,40 +103,41 @@ package body Load_BMP_File is
             end if;
 
             Texture_2D.Generate_Mipmap;
-    end;  -- declare block
+        end;  -- declare block
 
-exception
-    when others =>
-        Put_Line ("An exception occurred in Load_BMP_File.Load_BMP_To_Texture.");
-        raise;
-end Load_BMP_To_Texture;
+    exception
+        when anError : others =>
+            Put_Line ("An exception occurred in Load_BMP_File.Load_BMP_To_Texture.");
+            Put_Line (Exception_Information (anError));
+            raise;
+    end Load_BMP_To_Texture;
 
     -- -------------------------------------------------------------------------
 
-procedure Print_BMP_Header (Header : BMP_Header) is
+    procedure Print_BMP_Header (Header : BMP_Header) is
         use GL.Types;
-begin
+    begin
         Put_Line ("BMP parameters:");
         Put_Line ("Load_BMP_File.Load_BMP width, Height: " &
-                   UInt'Image (Header.Width) & "  " & UInt'Image (Header.Height));
+                    UInt'Image (Header.Width) & "  " & UInt'Image (Header.Height));
         Put_Line ("Load_BMP_File.Load_BMP Num_Colour_Planes: " &
                     UInt'Image (Header.Num_Colour_Planes));
         Put_Line ("Load_BMP_File.Load_BMP Bits_Per_Pixel: " &
                     UInt'Image (Header.Bits_Per_Pixel));
         Put_Line ("Load_BMP_File.Load_BMP Compression: " &
-                   UInt'Image (Header.Compression));
+                    UInt'Image (Header.Compression));
         Put_Line ("Load_BMP_File.Load_BMP Pixel_Data_Size: " &
-                   UInt'Image (Header.Pixel_Data_Size));
+                    UInt'Image (Header.Pixel_Data_Size));
         Put_Line ("Load_BMP_File.Load_BMP Horizontal_Resolution: " &
-                   UInt'Image (Header.Horizontal_Resolution));
+                    UInt'Image (Header.Horizontal_Resolution));
         Put_Line ("Load_BMP_File.Load_BMP Vertical_Resolution: " &
-                   UInt'Image (Header.Vertical_Resolution));
+                    UInt'Image (Header.Vertical_Resolution));
         Put_Line ("Load_BMP_File.Load_BMP Num_Palette_Colours: " &
-                   UInt'Image (Header.Num_Palette_Colours));
+                    UInt'Image (Header.Num_Palette_Colours));
         Put_Line ("Load_BMP_File.Load_BMP Important_Colours: " &
-                   UInt'Image (Header.Important_Colours));
+                    UInt'Image (Header.Important_Colours));
         New_Line;
-end Print_BMP_Header;
+    end Print_BMP_Header;
 
     -- -------------------------------------------------------------------------
 
