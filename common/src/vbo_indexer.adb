@@ -99,7 +99,7 @@ package body VBO_Indexer is
                                    Index, Found);
          VBO_Indices_Index := VBO_Indices_Index + 1;
          if Found then
-            -- A similar vertex is already in the VBO so use it instead
+            --  A similar vertex is already in the VBO so use it instead
             VBO_Indices (VBO_Indices_Index) := Index;
          else
             --  No other vertex can be used instead so add it to the VBO.
@@ -151,7 +151,7 @@ package body VBO_Indexer is
                                    Vertices_Out, UVs_Out, Index, Found);
          VBO_Indices_Index := VBO_Indices_Index + 1;
          if Found then
-            -- A similar vertex is already in the VBO so use it instead
+            --  A similar vertex is already in the VBO so use it instead
             VBO_Indices (VBO_Indices_Index) := Index;
          else
             --  No other vertex can be used instead so add it to the VBO.
@@ -175,7 +175,7 @@ package body VBO_Indexer is
    function Is_Near (V1, V2 : GL.Types.Single) return Boolean is
       use GL.Types;
    begin
-      return Abs (V2 - V1) < 0.01;
+      return abs (V2 - V1) < 0.01;
    end Is_Near;
 
    --  -------------------------------------------------------------------------

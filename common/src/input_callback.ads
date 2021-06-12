@@ -15,7 +15,7 @@ package Input_Callback is
 
    Max_Keys : constant Integer := 348;
 
-   Input_Callback_Exception : Exception;
+   Input_Callback_Exception : exception;
 
    overriding
    procedure Mouse_Button_Changed (Object   : not null access Callback_Window;

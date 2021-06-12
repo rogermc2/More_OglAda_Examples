@@ -11,8 +11,8 @@ package body Textures_Manager is
 
     procedure Load_Texture (File_Name : String;
                             aTexture : in out GL.Objects.Textures.Texture) is
-    use GL.Objects.Textures;
-    use GL.Objects.Textures.Targets;
+      use GL.Objects.Textures;
+      use GL.Objects.Textures.Targets;
     begin
         Set_Active_Unit (0);
         Put_Line ("Textures_Manager.Load_Texture load texture.");

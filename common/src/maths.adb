@@ -14,22 +14,22 @@ package body Maths is
 
    Zero_Matrix4 : constant GL.Types.Singles.Matrix4 :=
                     (others => (others => 0.0));
-   Gen : Ada.Numerics.Float_Random.Generator;
+   Gen          : Ada.Numerics.Float_Random.Generator;
 
    --  ------------------------------------------------------------------------
 
-    function "=" (Left, Right : Maths.Vector8) return Boolean is
-    begin
-        return Left (X) = Right (X) and Left (Y) = Right (Y) and Left (Z) = Right (Z)
+   function "=" (Left, Right : Maths.Vector8) return Boolean is
+   begin
+      return Left (X) = Right (X) and Left (Y) = Right (Y) and Left (Z) = Right (Z)
         and Left (NX) = Right (NX) and Left (NY) = Right (NY) and Left (NZ) = Right (NZ)
         and Left (U) = Right (U) and Left (V) = Right (V);
-    end "=";
+   end "=";
 
-    --   ----------------------------------------------------------------------
-    generic
+   --   ----------------------------------------------------------------------
+   generic
       type Index_Type is (<>);
       type Vector_Type is array (Index_Type) of aliased GL.Types.Single;
-    function Stride return Int;
+   function Stride return Int;
 
    function Stride return Int is
    begin
@@ -39,28 +39,28 @@ package body Maths is
    function Stride_4 is new Stride (Index_4, Vector4);
    function Stride4 return Int is
    begin
-        return Stride_4;
+      return Stride_4;
    end Stride4;
 
    function Stride_5 is new Stride (Index_5, Vector5);
    function Stride5 return Int is
    begin
-        return Stride_5;
+      return Stride_5;
    end Stride5;
 
    function Stride_6 is new Stride (Index_8, Vector8);
    function Stride6 return Int is
    begin
-        return Stride_6;
+      return Stride_6;
    end Stride6;
 
    function Stride_8 is new Stride (Index_8, Vector8);
    function Stride8 return Int is
    begin
-        return Stride_8;
+      return Stride_8;
    end Stride8;
 
---  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
    function Cube_Root (Value : Single) return Single is
    begin
@@ -173,9 +173,10 @@ package body Maths is
 
    --  ------------------------------------------------------------------------
 
-   procedure Init_Perspective_Transform (View_Angle                   : Degree;
-                                         Width, Height, Z_Near, Z_Far : Single;
-                                         Transform                    : out GL.Types.Singles.Matrix4) is
+   procedure Init_Perspective_Transform
+     (View_Angle                   : Degree;
+      Width, Height, Z_Near, Z_Far : Single;
+      Transform                    : out GL.Types.Singles.Matrix4) is
    begin
       Transform := Perspective_Matrix (View_Angle, Width / Height,
                                        Z_Near, Z_Far);
@@ -349,14 +350,14 @@ package body Maths is
    --  ------------------------------------------------------------------------
 
    function Random_Float return Single is
-        use Ada.Numerics.Float_Random;
-    begin
-        return 2.0 * Single (Random (Gen)) - 1.0;
-    end Random_Float;
+      use Ada.Numerics.Float_Random;
+   begin
+      return 2.0 * Single (Random (Gen)) - 1.0;
+   end Random_Float;
 
-    --  ------------------------------------------------------------------------
+   --  ------------------------------------------------------------------------
 
-    function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
+   function Random_Vector (Min_Magnitude, Max_Magnitude : Single)
                             return Singles.Vector3 is
       use Ada.Numerics.Float_Random;
       use GL.Types.Singles;

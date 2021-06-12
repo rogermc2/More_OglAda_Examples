@@ -10,7 +10,7 @@ package body Input_Callback is
     type Integer_Array is array (Integer range <>) of Integer;
 
     type Input_State_Data is record
-    -- localised name of each key - not supporting wchar_t to protect 256 sz atlas
+    --  localised name of each key - not supporting wchar_t to protect 256 sz atlas
         Key_Names                      : Key_String (1 .. Max_Keys) :=
                                            (others => To_Unbounded_String (""));
         Last_Key_Down                  : Key := Unknown;
@@ -108,7 +108,7 @@ package body Input_Callback is
         use type Glfw.Input.Keys.Key;
         use type Glfw.Input.Keys.Action;
     begin
-        If Key = Glfw.Input.Keys.Escape then
+        if Key = Glfw.Input.Keys.Escape then
             Object.Set_Should_Close (True);
         end if;
         if Action = Press then

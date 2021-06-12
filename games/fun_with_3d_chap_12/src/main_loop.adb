@@ -80,7 +80,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    --  ------------------------------------------------------------------------
 
    procedure Render_2D (Screen : in out Input_Callback.Callback_Window) is
-    begin
+   begin
       Enable_2D (Screen);
    end Render_2D;
 

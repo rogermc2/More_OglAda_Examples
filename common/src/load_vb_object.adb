@@ -39,8 +39,7 @@ package body Load_VB_Object is
       Frame : VBM_Frame_Header;
    begin
       if Object.Header.Num_Frames > 0 then
-         if Frame_Index > 0 and then
-           Frame_Index <= Object.Header.Num_Frames then
+         if Frame_Index > 0 and then (Frame_Index <= Object.Header.Num_Frames) then
             Frame := Object.Frame_Headers.Element (Integer (Frame_Index));
             Count := Frame.Num_Vertices;
          else
@@ -115,7 +114,7 @@ package body Load_VB_Object is
                                  Tex_Coord0_Index);
          Load_Indices (Data_Stream, VBM_Object);
 
-         -- unbind the current array object
+         --  unbind the current array object
          GL.Objects.Vertex_Arrays.Null_Array_Object.Bind;
 
          Load_Materials (Data_Stream, VBM_Object);

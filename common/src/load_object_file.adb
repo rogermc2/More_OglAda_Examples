@@ -41,7 +41,7 @@ package body Load_Object_File is
         Mesh_Index          : Int := 0;
     begin
         for Index in UV_Indices'Range loop
-            -- Get vector of three indices, one for each vertex of a triangle
+            --  Get vector of three indices, one for each vertex of a triangle
             Raw_Vertex_Indices :=  Vertex_Indices (Index);
             Raw_UVs_Indices :=  UV_Indices (Index);
             Raw_Normals_Indices :=  Normal_Indices (Index);
@@ -51,7 +51,7 @@ package body Load_Object_File is
                 Raw_Vertex_Index := Raw_Vertex_Indices (elem);
                 Raw_UVs_Index := Raw_UVs_Indices (elem);
                 Raw_Normal_Index := Raw_Normals_Indices (elem);
-                -- for each vertex of a triangle, get the vertex components (x, y, z)
+                --  for each vertex of a triangle, get the vertex components (x, y, z)
                 Mesh_Vertices (Mesh_Index) := Raw_Vertices (Raw_Vertex_Index);
                 if Raw_UVs_Index > 0 then
                     Mesh_UVs (Mesh_Index) := Raw_UVs (Raw_UVs_Index);
@@ -309,7 +309,7 @@ package body Load_Object_File is
 
     --  -------------------------------------------------------------------------
 
-    Procedure Read_Index (Data : Ada.Strings.Unbounded.Unbounded_String;
+    procedure Read_Index (Data : Ada.Strings.Unbounded.Unbounded_String;
                           Start : in out Positive; Index : out GL.Types.Int) is
         use Ada.Strings.Unbounded;
         Size     : constant Natural := Length (Data);
