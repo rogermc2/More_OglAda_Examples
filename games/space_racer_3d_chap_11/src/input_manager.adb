@@ -1,5 +1,5 @@
 
-with Ada.Text_IO; use Ada.Text_IO;
+--  with Ada.Text_IO; use Ada.Text_IO;
 
 with Glfw.Input.Mouse;
 with Glfw.Input.Keys;
@@ -183,7 +183,6 @@ package body Input_Manager is
       begin
          if Is_Active (UI_Elements (Index)) then
             if Check_For_Click (Window, UI_Elements (Index)) then
-               Put_Line ("Input_Manager.Update_Command.Check_Button_Click clicked ");
                Set_Clicked (UI_Elements (Index), True);
                Current_Command := Command_UI;
             end if;
