@@ -351,9 +351,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                end if;
             end if;
             Set_Heading_Rotation (Ship, Rotation);
+
+         when Command_Quit =>
+                Levels_Manager.Set_Game_State (Levels_Manager.Game_Over);
+
          when Command_UI => Process_UI_Command (Screen);
-         when others =>
-            Command_Done := False;
+
+         when Command_Invalid => null;
       end case;
 
    end Process_Input_Command;
@@ -517,14 +521,17 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Model.Set_Position (Ship, (0.0, -0.5, -4.0));
       Model.Set_Base_Rotation (Ship, (90.0, 0.0, 0.0));
 
-      Model.Initialize_3D (Asteriods (1), "src/resources/tri_asteroid.obj", (1.0, 0.0, 0.0));
-      Model.Set_Position (Asteriods (1), (0.0, 0.0, -20.0));
+      Model.Initialize_3D (Asteriods (1), "src/resources/tri_asteroid.obj",
+                           (1.0, 0.0, 0.0));
+      Model.Set_Position (Asteriods (1), (0.0, 0.0, -14.0));
 
-      Model.Initialize_3D (Asteriods (2), "src/resources/tri_asteroid.obj", (0.0, 1.0, 0.0));
-      Model.Set_Position (Asteriods (2), (5.0, 0.0, -25.0));
+      Model.Initialize_3D (Asteriods (2), "src/resources/tri_asteroid.obj",
+                           (0.0, 1.0, 0.0));
+      Model.Set_Position (Asteriods (2), (5.0, 0.0, -19.0));
 
-      Model.Initialize_3D (Asteriods (3), "src/resources/tri_asteroid.obj", (0.0, 1.0, 1.0));
-      Model.Set_Position (Asteriods (3), (5.0, 5.0, -30.0));
+      Model.Initialize_3D (Asteriods (3), "src/resources/tri_asteroid.obj",
+                           (0.0, 1.0, 1.0));
+      Model.Set_Position (Asteriods (3), (5.0, 5.0, -24.0));
 
       Load_Splash (Screen);
       Load_Sprites (Screen);
