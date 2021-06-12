@@ -1,5 +1,5 @@
 
-with Ada.Text_IO; use Ada.Text_IO;
+--  with Ada.Text_IO; use Ada.Text_IO;
 
 with GL.Objects.Textures.Targets;
 
@@ -15,9 +15,7 @@ package body Textures_Manager is
       use GL.Objects.Textures.Targets;
     begin
         Set_Active_Unit (0);
-        Put_Line ("Textures_Manager.Load_Texture load texture.");
         Load_BMP_File.Load_BMP_To_Texture (File_Name, False, aTexture);
-        Put_Line ("Textures_Manager.Load_Texture texture loaded.");
         Texture_2D.Set_Minifying_Filter (Linear);
         Texture_2D.Set_Magnifying_Filter (Linear);
 

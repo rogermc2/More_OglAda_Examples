@@ -60,7 +60,8 @@ package body Load_BMP_File is
             Data_Size := 4 * Header.Width * Header.Height;
             Source_Format := GL.Pixels.RGBA;
          when others => raise Image_Error with
-              "TexturesManger Load_Image; " & File_Name & "format not supported.";
+              "TexturesManger Load_Image; " & File_Name &
+                  "format not supported.";
       end case;
 
       Set_Index (File_ID, Ada.Streams.Stream_IO.Count (Header.Data_Offset));
@@ -103,8 +104,8 @@ package body Load_BMP_File is
             Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Repeat); --  Wrap_S
             Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Repeat); --  Wrap_T
          else
-            Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp);
-            Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp);
+            Texture_2D.Set_X_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
+            Texture_2D.Set_Y_Wrapping (GL.Objects.Textures.Clamp_To_Edge);
          end if;
 
          Texture_2D.Generate_Mipmap;
