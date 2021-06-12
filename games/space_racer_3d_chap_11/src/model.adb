@@ -74,8 +74,6 @@ package body Model is
            P_Delta (GL.Z) ** 2;
          Rad_1_Sq := thisModel.Radius ** 2;
          Rad_2_Sq := Target.Radius ** 2;
---           Put_Line ("Model.Collided_With Dist_Sq, Dist_Sq" &
---                    Single'Image (Dist_Sq) & "" & Single'Image (Rad_1_Sq + Rad_2_Sq));
          Result := Dist_Sq <= Rad_1_Sq + Rad_2_Sq;
       end if;
       return Result;

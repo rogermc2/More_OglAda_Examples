@@ -1,4 +1,6 @@
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Glfw.Input.Mouse;
 with Glfw.Input.Keys;
 
@@ -13,7 +15,7 @@ package body Input_Manager is
    UI_Elements    : array (Button_Index range Button_Index'Range) of
      Sprite_Manager.Sprite;
 
-   Current_Command : Command := Command_Stop;
+   Current_Command : Command := Command_Invalid;
 
    --  ------------------------------------------------------------------------
 
@@ -181,6 +183,7 @@ package body Input_Manager is
       begin
          if Is_Active (UI_Elements (Index)) then
             if Check_For_Click (Window, UI_Elements (Index)) then
+               Put_Line ("Input_Manager.Update_Command.Check_Button_Click clicked ");
                Set_Clicked (UI_Elements (Index), True);
                Current_Command := Command_UI;
             end if;
@@ -192,8 +195,10 @@ package body Input_Manager is
          Check_Button_Click (index);
       end loop;
 
-      if Current_Command /= Command_UI and Key_Pressed then
-         if Is_Key_Down (Left) or Is_Key_Down (A) then
+      if Current_Command /= Command_UI and then Key_Pressed then
+         if Is_Key_Down (Q) then
+            Current_Command := Command_Quit;
+         elsif Is_Key_Down (Left) or Is_Key_Down (A) then
             Current_Command := Command_Left;
          elsif Is_Key_Down (Right) or Is_Key_Down (D) then
             Current_Command := Command_Right;
@@ -201,8 +206,10 @@ package body Input_Manager is
             Current_Command := Command_Up;
          elsif Is_Key_Down (Down) then
             Current_Command := Command_Down;
-         else
+         elsif Is_Key_Down (Space) then
             Current_Command := Command_Stop;
+         else
+            Current_Command := Command_Invalid;
          end if;
       end if;
    end Update_Command;

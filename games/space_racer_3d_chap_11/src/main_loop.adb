@@ -402,6 +402,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          Set_Active (Play_Button, True);
          Set_Active (Credits_Button, True);
          Set_Game_State (Game_Quit);
+      else
+         Set_Command_Invalid;
       end if;
 
    end Process_UI_Command;
