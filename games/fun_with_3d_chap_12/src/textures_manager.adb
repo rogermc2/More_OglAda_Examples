@@ -51,7 +51,7 @@ package body Textures_Manager is
         Utilities.Load_Vertex_Buffer (Array_Buffer, Cube_Data.Vertex_Data,
                                       Static_Draw);
         Enable_Vertex_Attrib_Array (0);
-        Set_Vertex_Attrib_Pointer (0, 2, Single_Type, False, 0, 0);
+        Set_Vertex_Attrib_Pointer (0, 3, Single_Type, False, 0, 0);
 
         Texture_Buffer.Initialize_Id;
         Array_Buffer.Bind (Texture_Buffer);
