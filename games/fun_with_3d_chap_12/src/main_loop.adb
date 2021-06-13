@@ -27,7 +27,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    Back             : constant GL.Types.Colors.Color :=
                         (0.6, 0.6, 0.6, 0.0);
---     Rotation_Vector  : GL.Types.Singles.Vector3 := (1.0, 1.0, 1.0);
+   Rotation_Vector  : GL.Types.Singles.Vector3 := (1.0, 1.0, 1.0);
    Texture_Marble   : GL.Objects.Textures.Texture;
 
    procedure Initialize_2D;
@@ -51,9 +51,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    begin
       Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
       GL.Window.Set_Viewport (0, 0, Int (Screen_Width), Int (Screen_Height));
---        Rotation_Vector := (-45.0, 45.0, 0.0);
-      Rot_Matrix := Rotation_Matrix (Degree (45.0), (0.0, 0.0, 1.0));
---        Init_Rotation_Transform (Rotation_Vector, Rotation_Matrix);
+      Rotation_Vector := (-45.0, 45.0, 0.0);
+--        Rot_Matrix := Rotation_Matrix (Degree (45.0), (0.0, 0.0, 1.0));
+      Init_Rotation_Transform (Rotation_Vector, Rot_Matrix);
 --        Utilities.Print_Matrix ("Rotation_Matrix", Rotation_Matrix);
       Model_Matrix := Translation_Matrix ((-0.0, -0.0, 0.0)) * Rot_Matrix *
           Scaling_Matrix (0.6) * Model_Matrix;
