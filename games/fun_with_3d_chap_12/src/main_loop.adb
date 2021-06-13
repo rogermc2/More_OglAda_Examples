@@ -62,7 +62,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    end Draw_Textured_Cube;
 
    --  ------------------------------------------------------------------------
-
+pragma Warnings (Off);
    procedure Enable_2D (Screen : in out Input_Callback.Callback_Window) is
       use GL.Types;
       use Shader_Manager_UI;
@@ -103,14 +103,16 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    procedure Initialize_2D is
    begin
-      Shader_Manager_UI.Init_Shaders;
+--        Shader_Manager_UI.Init_Shaders;
+        null;
    end Initialize_2D;
 
    --  ------------------------------------------------------------------------
 
    procedure Render_2D (Screen : in out Input_Callback.Callback_Window) is
    begin
-      Enable_2D (Screen);
+--        Enable_2D (Screen);
+        null;
    end Render_2D;
 
    --  ------------------------------------------------------------------------
@@ -163,7 +165,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 --        GL.Buffers.Set_Depth_Function (LEqual);
       Input_Callback.Clear_All_Keys;
       --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-
+      Shader_Manager_Texture.Init_Shaders;
       Textures_Manager.Init (Texture_Marble);
       Initialize_2D;
       Enable_Mouse_Callbacks (Screen, True);
