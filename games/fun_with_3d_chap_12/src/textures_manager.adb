@@ -16,7 +16,7 @@ with Shader_Manager_Texture;
 package body Textures_Manager is
 
     Texture_VAO    : GL.Objects.Vertex_Arrays.Vertex_Array_Object;
-    Quad_Buffer    : GL.Objects.Buffers.Buffer;
+    Cube_Buffer    : GL.Objects.Buffers.Buffer;
     Texture_Buffer : GL.Objects.Buffers.Buffer;
 
     procedure Load_Texture (File_Name : String;
@@ -46,8 +46,8 @@ package body Textures_Manager is
         Shader_Manager_Texture.Use_Texture_Program;
         Shader_Manager_Texture.Set_Texture_Unit (0);
 
-        Quad_Buffer.Initialize_Id;
-        Array_Buffer.Bind (Quad_Buffer);
+        Cube_Buffer.Initialize_Id;
+        Array_Buffer.Bind (Cube_Buffer);
         Utilities.Load_Vertex_Buffer (Array_Buffer, Cube_Data.Vertex_Data,
                                       Static_Draw);
         Enable_Vertex_Attrib_Array (0);

@@ -36,19 +36,27 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Draw_Textured_Cube is
+   procedure Draw_Textured_Cube
+      (Screen : in out Input_Callback.Callback_Window) is
       use Maths;
       use GL.Types;
       use GL.Types.Singles;
       use Shader_Manager_Texture;
        View_Matrix       : constant Matrix4 := Identity4;
-       Rotation_Matrix   : Matrix4;
-       Model_Matrix      : Matrix4 := Identity4;
-       Projection_Matrix : constant Matrix4 := Identity4;
+--         Rotation_Matrix   : Matrix4;
+       Model_Matrix      : constant Matrix4 := Identity4;
+       Projection_Matrix :  Matrix4 := Identity4;
+       Screen_Width      : Glfw.Size;
+       Screen_Height     : Glfw.Size;
    begin
-      Maths.Init_Rotation_Transform (Rotation_Vector, Rotation_Matrix);
-      Model_Matrix := Translation_Matrix ((0.0, 0.0, -5.0)) * Rotation_Matrix *
-          Model_Matrix;
+      Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+
+--        Maths.Init_Rotation_Transform (Rotation_Vector, Rotation_Matrix);
+--        Model_Matrix := Translation_Matrix ((0.0, 0.0, -5.0)) * Rotation_Matrix *
+--            Model_Matrix;
+      Init_Orthographic_Transform
+          (Single (Screen_Height), 0.0, 0.0, Single (Screen_Width), 0.1, 10.0,
+           Projection_Matrix);
       Use_Texture_Program;
       Set_Model_Matrix (Model_Matrix);
       Set_View_Matrix (View_Matrix);
@@ -62,7 +70,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    end Draw_Textured_Cube;
 
    --  ------------------------------------------------------------------------
-pragma Warnings (Off);
+
    procedure Enable_2D (Screen : in out Input_Callback.Callback_Window) is
       use GL.Types;
       use Shader_Manager_UI;
@@ -103,7 +111,7 @@ pragma Warnings (Off);
 
    procedure Initialize_2D is
    begin
---        Shader_Manager_UI.Init_Shaders;
+      Shader_Manager_UI.Init_Shaders;
         null;
    end Initialize_2D;
 
@@ -111,15 +119,15 @@ pragma Warnings (Off);
 
    procedure Render_2D (Screen : in out Input_Callback.Callback_Window) is
    begin
---        Enable_2D (Screen);
+      Enable_2D (Screen);
         null;
    end Render_2D;
 
    --  ------------------------------------------------------------------------
 
-   procedure Render_3D is
+   procedure Render_3D (Screen : in out Input_Callback.Callback_Window) is
    begin
-      Draw_Textured_Cube;
+      Draw_Textured_Cube (Screen);
    end Render_3D;
 
    --  ------------------------------------------------------------------------
@@ -128,7 +136,7 @@ pragma Warnings (Off);
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
       Resize_GL_Scene (Screen);
-      Render_3D;
+      Render_3D (Screen);
       Render_2D (Screen);
    end Render;
 
