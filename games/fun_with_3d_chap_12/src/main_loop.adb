@@ -10,12 +10,14 @@ with Glfw.Windows.Context;
 
 --  with GL.Toggles;
 with GL.Objects.Textures;
+with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
 with GL.Window;
 
 with Maths;
 with Utilities;
 
+with Shader_Manager_Texture;
 with Shader_Manager_UI;
 with Textures_Manager;
 
@@ -25,6 +27,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    Back             : constant GL.Types.Colors.Color :=
                         (0.6, 0.6, 0.6, 0.0);
+   Rotation_Vector  : GL.Types.Singles.Vector3 := (1.0, 1.0, 1.0);
    Texture_Marble   : GL.Objects.Textures.Texture;
 
    procedure Initialize_2D;
@@ -32,6 +35,33 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure Start_Game  (Screen : in out Input_Callback.Callback_Window);
 
    --  -------------------------------------------------------------------------
+
+   procedure Draw_Textured_Cube is
+      use Maths;
+      use GL.Types;
+      use GL.Types.Singles;
+      use Shader_Manager_Texture;
+       View_Matrix       : constant Matrix4 := Identity4;
+       Rotation_Matrix   : Matrix4;
+       Model_Matrix      : Matrix4 := Identity4;
+       Projection_Matrix : constant Matrix4 := Identity4;
+   begin
+      Maths.Init_Rotation_Transform (Rotation_Vector, Rotation_Matrix);
+      Model_Matrix := Translation_Matrix ((0.0, 0.0, -5.0)) * Rotation_Matrix *
+          Model_Matrix;
+      Use_Texture_Program;
+      Set_Model_Matrix (Model_Matrix);
+      Set_View_Matrix (View_Matrix);
+      Set_Projection_Matrix (Projection_Matrix);
+
+      Textures_Manager.Bind (Texture_Marble);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
+
+      Rotation_Vector := Rotation_Vector + (0.01, 0.02, 0.3);
+
+   end Draw_Textured_Cube;
+
+   --  ------------------------------------------------------------------------
 
    procedure Enable_2D (Screen : in out Input_Callback.Callback_Window) is
       use GL.Types;
@@ -87,7 +117,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    procedure Render_3D is
    begin
-      null;
+      Draw_Textured_Cube;
    end Render_3D;
 
    --  ------------------------------------------------------------------------
