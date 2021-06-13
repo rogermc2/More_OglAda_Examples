@@ -209,7 +209,7 @@ package body Maths is
       Rz (X, X) := Cos (Zrad);
       Rz (X, Y) := -Sin (Zrad);
       Rz (Y, X) := Sin (Zrad);
-      Rz (Z, Z) := Cos (Zrad);
+      Rz (Y, Y) := Cos (Zrad);
 
       Transform := Rz * Ry * Rx;
 
