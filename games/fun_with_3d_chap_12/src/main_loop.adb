@@ -43,27 +43,30 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       use GL.Types.Singles;
       use Shader_Manager_Texture;
        View_Matrix       : constant Matrix4 := Identity4;
---         Rotation_Matrix   : Matrix4;
-       Model_Matrix      : constant Matrix4 := Identity4;
-       Projection_Matrix :  Matrix4 := Identity4;
+       Rotation_Matrix   : Matrix4;
+       Model_Matrix      : Matrix4 := Identity4;
+       Projection_Matrix : Matrix4 := Identity4;
        Screen_Width      : Glfw.Size;
        Screen_Height     : Glfw.Size;
    begin
       Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
+      GL.Window.Set_Viewport (0, 0, Int (Screen_Width), Int (Screen_Height));
 
---        Maths.Init_Rotation_Transform (Rotation_Vector, Rotation_Matrix);
---        Model_Matrix := Translation_Matrix ((0.0, 0.0, -5.0)) * Rotation_Matrix *
---            Model_Matrix;
+      Init_Rotation_Transform (Rotation_Vector, Rotation_Matrix);
+      Model_Matrix := Translation_Matrix ((1.0, 1.0, 7.0)) * Rotation_Matrix *
+          Scaling_Matrix (0.6) * Model_Matrix;
       Init_Orthographic_Transform
-          (Single (Screen_Height), 0.0, 0.0, Single (Screen_Width), 0.1, 10.0,
-           Projection_Matrix);
+          (2.0, 0.0, 0.0, 2.0, 0.0, 10.0, Projection_Matrix);
+      Utilities.Print_Matrix ("Projection_Matrix", Projection_Matrix);
+--        Put_Line ("Screen_Width, Screen_Height" & Single'Image (Single (Screen_Width))
+--                  & ", " & Single'Image (Single (Screen_Height)));
       Use_Texture_Program;
       Set_Model_Matrix (Model_Matrix);
       Set_View_Matrix (View_Matrix);
       Set_Projection_Matrix (Projection_Matrix);
 
       Textures_Manager.Bind (Texture_Marble);
-      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 6);
+      GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 36);
 
       Rotation_Vector := Rotation_Vector + (0.01, 0.02, 0.3);
 
