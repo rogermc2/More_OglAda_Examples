@@ -8,7 +8,6 @@ with Glfw.Input.Mouse;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
-with GL.Buffers;
 --  with GL.Toggles;
 with GL.Objects.Textures;
 with GL.Types.Colors;
@@ -131,11 +130,11 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          Mouse.Coordinate (0.5 * Single (Window_Height)));
 
       Utilities.Clear_Background_Colour_And_Depth (Back);
-      GL.Buffers.Set_Depth_Function (LEqual);
+--        GL.Buffers.Set_Depth_Function (LEqual);
       Input_Callback.Clear_All_Keys;
       --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
 
-      Textures_Manager.Load_Texture ("src/resources/marble.bmp", Texture_Marble);
+      Textures_Manager.Init (Texture_Marble);
       Initialize_2D;
       Enable_Mouse_Callbacks (Screen, True);
 
