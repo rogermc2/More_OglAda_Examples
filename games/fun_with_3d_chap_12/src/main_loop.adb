@@ -26,8 +26,7 @@ with Textures_Manager;
 
 procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
-   Back             : constant GL.Types.Colors.Color :=
-                        (0.6, 0.6, 0.6, 0.0);
+   Back             : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 0.0);
    Rotation_Vector  : GL.Types.Singles.Vector3 := (1.0, 1.0, 1.0);
    Texture_Marble   : GL.Objects.Textures.Texture;
 
@@ -37,8 +36,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  -------------------------------------------------------------------------
 
-   procedure Draw_Textured_Cube
-      (Screen : in out Input_Callback.Callback_Window) is
+   procedure Draw_Textured_Cube is
       use Maths;
       use GL.Types;
       use GL.Types.Singles;
@@ -46,18 +44,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
        View_Matrix       : constant Matrix4 := Identity4;
        Rot_Matrix        : Matrix4 := Identity4;
        Model_Matrix      : Matrix4 := Identity4;
-       Projection_Matrix : constant Matrix4 := Identity4;
-       Screen_Width      : Glfw.Size;
-       Screen_Height     : Glfw.Size;
+       Projection_Matrix : Matrix4 := Identity4;
    begin
-      Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
-      GL.Window.Set_Viewport (0, 0, Int (Screen_Width), Int (Screen_Height));
       Init_Rotation_Transform (Rotation_Vector, Rot_Matrix);
-      Model_Matrix := Translation_Matrix ((-0.0, -0.0, 0.0)) * Rot_Matrix *
-          Scaling_Matrix (0.6) * Model_Matrix;
---        Init_Orthographic_Transform
---            (2.0, 0.0, 0.0, 2.0, 0.0, 10.0, Projection_Matrix);
---        Utilities.Print_Matrix ("Projection_Matrix", Projection_Matrix);
+      Model_Matrix := Translation_Matrix ((0.0, 0.0, 5.0)) * Rot_Matrix *
+          Model_Matrix;
+      Init_Orthographic_Transform
+          (5.0, -5.0, -5.0, 5.0, 0.0, 10.0, Projection_Matrix);
       Use_Texture_Program;
       Set_Model_Matrix (Model_Matrix);
       Set_View_Matrix (View_Matrix);
@@ -113,7 +106,6 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure Initialize_2D is
    begin
       Shader_Manager_UI.Init_Shaders;
-        null;
    end Initialize_2D;
 
    --  ------------------------------------------------------------------------
@@ -121,14 +113,13 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    procedure Render_2D (Screen : in out Input_Callback.Callback_Window) is
    begin
       Enable_2D (Screen);
-        null;
    end Render_2D;
 
    --  ------------------------------------------------------------------------
 
-   procedure Render_3D (Screen : in out Input_Callback.Callback_Window) is
+   procedure Render_3D is
    begin
-      Draw_Textured_Cube (Screen);
+      Draw_Textured_Cube;
    end Render_3D;
 
    --  ------------------------------------------------------------------------
@@ -137,7 +128,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    begin
       Utilities.Clear_Colour_Buffer_And_Depth;
       Resize_GL_Scene (Screen);
-      Render_3D (Screen);
+      Render_3D;
       Render_2D (Screen);
    end Render;
 

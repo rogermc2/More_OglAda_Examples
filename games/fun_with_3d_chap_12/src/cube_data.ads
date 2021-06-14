@@ -3,7 +3,7 @@ with GL.Types; use GL.Types;
 
 package Cube_Data is
 
-    --  The vertices. Three consecutive floats give a 3D vertex;
+    --  Three consecutive floats give a 3D vertex;
     --  Three consecutive vertices give a triangle.
     --  A cube has 6 faces with 2 triangles each,
     --  so this makes 6*2 = 12 triangles and 12*3 = 36 vertices
