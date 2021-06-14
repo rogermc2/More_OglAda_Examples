@@ -8,10 +8,11 @@ with Glfw.Input.Mouse;
 with Glfw.Windows;
 with Glfw.Windows.Context;
 
---  with GL.Buffers;
+with GL.Buffers;
 with GL.Objects.Textures;
 with GL.Objects.Vertex_Arrays;
 with GL.Types.Colors;
+with GL.Toggles;
 with GL.Window;
 
 with Maths;
@@ -51,17 +52,12 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
    begin
       Screen.Get_Framebuffer_Size (Screen_Width, Screen_Height);
       GL.Window.Set_Viewport (0, 0, Int (Screen_Width), Int (Screen_Height));
-      Rotation_Vector := (-45.0, 45.0, 0.0);
---        Rot_Matrix := Rotation_Matrix (Degree (45.0), (0.0, 0.0, 1.0));
       Init_Rotation_Transform (Rotation_Vector, Rot_Matrix);
---        Utilities.Print_Matrix ("Rotation_Matrix", Rotation_Matrix);
       Model_Matrix := Translation_Matrix ((-0.0, -0.0, 0.0)) * Rot_Matrix *
           Scaling_Matrix (0.6) * Model_Matrix;
 --        Init_Orthographic_Transform
 --            (2.0, 0.0, 0.0, 2.0, 0.0, 10.0, Projection_Matrix);
 --        Utilities.Print_Matrix ("Projection_Matrix", Projection_Matrix);
---        Put_Line ("Screen_Width, Screen_Height" & Single'Image (Single (Screen_Width))
---                  & ", " & Single'Image (Single (Screen_Height)));
       Use_Texture_Program;
       Set_Model_Matrix (Model_Matrix);
       Set_View_Matrix (View_Matrix);
@@ -70,7 +66,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
       Textures_Manager.Bind (Texture_Marble);
       GL.Objects.Vertex_Arrays.Draw_Arrays (Triangles, 0, 36);
 
---        Rotation_Vector := Rotation_Vector + (0.1, 0.2, 0.3);
+      Rotation_Vector := Rotation_Vector + (0.1, 0.2, 0.3);
 
    end Draw_Textured_Cube;
 
@@ -175,7 +171,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
          Mouse.Coordinate (0.5 * Single (Window_Height)));
 
       Utilities.Clear_Background_Colour_And_Depth (Back);
---        GL.Buffers.Set_Depth_Function (LEqual);
+        GL.Toggles.Enable (GL.Toggles.Depth_Test);
+        GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
       Input_Callback.Clear_All_Keys;
       --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
       Shader_Manager_Texture.Init_Shaders;
