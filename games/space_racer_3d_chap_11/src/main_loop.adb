@@ -95,7 +95,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             raise;
     end Draw_Credits;
 
-    --  -------------------------------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Draw_Stats (Window : in out Input_Callback.Callback_Window) is
         use GL.Types;
@@ -134,7 +134,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             raise;
     end Draw_Stats;
 
-    --  -------------------------------------------------------------------------------------------------
+    --  ------------------------------------------------------------------------
 
     procedure Draw_UI (Screen : in out Input_Callback.Callback_Window) is
         use GL.Types;

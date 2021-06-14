@@ -16,12 +16,12 @@ package Textures_Manager is
    function Get_Texture (theTextures : Texture_List; Index : Positive) return
      GL.Objects.Textures.Texture;
 
-   Image_Error : Exception;
+   Image_Error : exception;
 
 private
    use GL.Objects.Textures;
    package Textures_Package is new Ada.Containers.Vectors
      (Positive, GL.Objects.Textures.Texture);
-   type Texture_List is new Textures_Package.Vector with null Record;
+   type Texture_List is new Textures_Package.Vector with null record;
 
 end Textures_Manager;
