@@ -27,6 +27,8 @@ with Textures_Manager;
 procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    Back             : constant GL.Types.Colors.Color := (0.6, 0.6, 0.6, 0.0);
+--     Vec4_Zero        : constant GL.Types.Singles.Vector4 :=
+--                             (0.0, 0.0, 0.0, 0.0);
    Rotation_Vector  : GL.Types.Singles.Vector3 := (1.0, 1.0, 1.0);
    Texture_Marble   : GL.Objects.Textures.Texture;
 
@@ -110,6 +112,19 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
 
    --  ------------------------------------------------------------------------
 
+   procedure Initialize_3D is
+      Ambient_Colour  : constant GL.Types.Singles.Vector4 :=
+                          (0.0, 0.0, 1.0, 1.0);
+      use Shader_Manager_Texture;
+   begin
+      Init_Shaders;
+      Use_Texture_Program;
+      Set_Ambient_Light (Ambient_Colour);
+      Textures_Manager.Init (Texture_Marble);
+   end Initialize_3D;
+
+   --  ------------------------------------------------------------------------
+
    procedure Render_2D (Screen : in out Input_Callback.Callback_Window) is
    begin
       Enable_2D (Screen);
@@ -166,9 +181,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
         GL.Buffers.Set_Depth_Function (GL.Types.LEqual);
       Input_Callback.Clear_All_Keys;
       --          GL.Toggles.Enable (GL.Toggles.Vertex_Program_Point_Size);
-      Shader_Manager_Texture.Init_Shaders;
-      Textures_Manager.Init (Texture_Marble);
       Initialize_2D;
+      Initialize_3D;
       Enable_Mouse_Callbacks (Screen, True);
 
    exception
