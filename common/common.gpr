@@ -12,7 +12,7 @@ project Common is
    for Library_Ali_Dir use "lib";
 
    package Compiler extends Opengl.Compiler is
-      for Default_Switches ("ada") use ("-gnat12", "-fstack-check", "-E", "-gnata", "-gnatwael", "-gnatyNM100abcefhiklprt");
+      for Default_Switches ("ada") use ("-gnat12", "-fstack-check", "-E", "-gnato", "-gnatVD", "-gnatwal", "-gnatyNM100abcefhklprt");
    end Compiler;
 
 end Common;

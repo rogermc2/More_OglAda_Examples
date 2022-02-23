@@ -9,11 +9,14 @@ with Program_Loader;
 
 package body Shader_Manager_Texture is
 
+   Vec4_Zero           : constant GL.Types.Singles.Vector4 :=
+                           (0.0, 0.0, 0.0, 0.0);
    Texture_Program     : GL.Objects.Programs.Program;
-   Texture_Uniform     : GL.Uniforms.Uniform;
+   Ambient_Uniform     : GL.Uniforms.Uniform;
    Model_Uniform       : GL.Uniforms.Uniform;
-   View_Uniform        : GL.Uniforms.Uniform;
    Projection_Uniform  : GL.Uniforms.Uniform;
+   Texture_Uniform     : GL.Uniforms.Uniform;
+   View_Uniform        : GL.Uniforms.Uniform;
 
    procedure Init_Shaders is
       use GL.Objects.Shaders;
@@ -24,6 +27,8 @@ package body Shader_Manager_Texture is
          Src ("src/shaders/tex_fragment_shader.glsl", Fragment_Shader)));
       GL.Objects.Programs.Use_Program (Texture_Program);
 
+      Ambient_Uniform :=
+        GL.Objects.Programs.Uniform_Location (Texture_Program, "ambient");
       Texture_Uniform :=
         GL.Objects.Programs.Uniform_Location (Texture_Program, "texture2d");
       Model_Uniform :=
@@ -33,6 +38,7 @@ package body Shader_Manager_Texture is
       View_Uniform :=
         GL.Objects.Programs.Uniform_Location (Texture_Program, "view_matrix");
 
+      GL.Uniforms.Set_Single (Ambient_Uniform, Vec4_Zero);
       GL.Uniforms.Set_Single (Model_Uniform, GL.Types.Singles.Identity4);
       GL.Uniforms.Set_Single (Projection_Uniform, GL.Types.Singles.Identity4);
       GL.Uniforms.Set_Single (View_Uniform, GL.Types.Singles.Identity4);
@@ -50,6 +56,13 @@ package body Shader_Manager_Texture is
    begin
       return Texture_Program;
    end Program_Texture;
+
+   --   ---------------------------------------------------------------------------------
+
+   procedure Set_Ambient_Light (Colour : GL.Types.Singles.Vector4) is
+   begin
+      GL.Uniforms.Set_Single (Ambient_Uniform, Colour);
+   end Set_Ambient_Light;
 
    --   ---------------------------------------------------------------------------------
 
