@@ -35,11 +35,11 @@ package Maths is
      Ada.Numerics.Generic_Elementary_Functions (GL.Types.Single);
 
    package Vector5_Pointers is new Interfaces.C.Pointers
-     (Size, Vector5, Vector5_Array, Vector5'(others => <>));
+     (Size, Vector5, Vector5_Array, Vector5'(others => 0.0));
    package Vector6_Pointers is new Interfaces.C.Pointers
-     (Size, Vector6, Vector6_Array, Vector6'(others => <>));
+     (Size, Vector6, Vector6_Array, Vector6'(others => 0.0));
    package Vector8_Pointers is new Interfaces.C.Pointers
-     (Size, Vector8, Vector8_Array, Vector8'(others => <>));
+     (Size, Vector8, Vector8_Array, Vector8'(others => 0.0));
 
    Math_Exception : exception;
 

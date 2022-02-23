@@ -1,7 +1,7 @@
 with "opengl-glfw";
 with "opengl-text";
 with "opengl";
-with "deps/gid/gid";
+with "../deps/gid/gid";
 
 project Common is
 
