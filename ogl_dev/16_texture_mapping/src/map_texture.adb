@@ -15,6 +15,7 @@ procedure Map_Texture is
     Main_Window  : Glfw.Windows.Window;
     Window_Title : constant String := "OGLDev Tutorial 16 - Basic_Texture_Mapping";
 begin
+   pragma Warnings (Off);
     Glfw.Init;
     Initialize (Main_Window, Window_Title);
     Main_Loop (Main_Window);

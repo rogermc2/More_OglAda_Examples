@@ -1,6 +1,7 @@
-with "opengl-glfw.gpr";
-with "opengl-text.gpr";
-with "opengl.gpr";
+with "opengl-glfw";
+with "opengl-text";
+with "opengl";
+with "../deps/gid/gid";
 
 project Common is
 
@@ -10,7 +11,9 @@ project Common is
    for Library_Dir use ".";
    for Library_Ali_Dir use "lib";
 
-   package Compiler renames Opengl.Compiler;
+   package Compiler extends Opengl.Compiler is
+      for Default_Switches ("ada") use ("-gnat12", "-fstack-check", "-E", "-gnato", "-gnatVD", "-gnatwal", "-gnatyNM100abcefhklprt");
+   end Compiler;
 
 end Common;
 

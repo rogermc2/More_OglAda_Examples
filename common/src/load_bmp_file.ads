@@ -3,14 +3,12 @@ with GL.Objects.Textures;
 with GL.Types;
 
 package Load_BMP_File is
-    Image_Error : Exception;
+    Image_Error : exception;
 
     type BMP_Header is private;
 
-    Header_Error : Exception;
+    Header_Error : exception;
 
---      procedure Load_BMP (File_Name : String;
---                          theTexture : out GL.Objects.Textures.Texture);
     procedure Load_BMP_To_Texture (File_Name  : String; Wrap : Boolean;
                                    theTexture : out GL.Objects.Textures.Texture);
     procedure Print_BMP_Header (Header : BMP_Header);
