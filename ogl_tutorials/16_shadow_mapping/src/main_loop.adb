@@ -23,11 +23,11 @@ with Glfw.Windows.Context;
 
 with Controls;
 with Load_DDS;
+with Load_Obj_Buffers;
 with Program_Loader;
 with Maths;
 with Utilities;
 
-with Buffers_Manager;
 with Textures_Manager;
 
 procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
@@ -223,9 +223,9 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
       Shadow_Map_ID := GL.Objects.Programs.Uniform_Location
         (Render_Program, "shadowMap");
 
-        Buffers_Manager.Load_Buffers (Vertex_Buffer, UVs_Buffer,
-                                      Normals_Buffer, Element_Buffer,
-                                      Vertex_Count, Indices_Size);
+      Load_Obj_Buffers.Load_Buffers
+        ("src/textures/room_thickwalls.obj", Vertex_Buffer, UVs_Buffer,
+          Normals_Buffer, Element_Buffer, Vertex_Count, Indices_Size);
         Textures_Manager.Init (Frame_Buffer, Depth_Texture);
 
    exception

@@ -49,21 +49,21 @@ package body Utilities is
    --  -------------------------------------------------------------------
 
    procedure Print_Ints_Vector2 is
-       new Print_Int_Vector (GL.Index_2D, GL.Types.Ints.Vector2);
+     new Print_Int_Vector (GL.Index_2D, GL.Types.Ints.Vector2);
    procedure Print_Singles_Vector2 is
-       new Print_Singles_Vector (GL.Index_2D, GL.Types.Singles.Vector2);
+     new Print_Singles_Vector (GL.Index_2D, GL.Types.Singles.Vector2);
    procedure Print_Ints_Vector3 is
-       new Print_Int_Vector (GL.Index_3D, GL.Types.Ints.Vector3);
+     new Print_Int_Vector (GL.Index_3D, GL.Types.Ints.Vector3);
    procedure Print_Singles_Vector3 is
-       new Print_Singles_Vector (GL.Index_3D, GL.Types.Singles.Vector3);
+     new Print_Singles_Vector (GL.Index_3D, GL.Types.Singles.Vector3);
    procedure Print_Singles_Vector4 is
-       new Print_Singles_Vector (GL.Index_Homogeneous, GL.Types.Singles.Vector4);
+     new Print_Singles_Vector (GL.Index_Homogeneous, GL.Types.Singles.Vector4);
    procedure Print_Singles_Vector5 is
-       new Print_Singles_Vector (Maths.Index_5, Maths.Vector5);
+     new Print_Singles_Vector (Maths.Index_5, Maths.Vector5);
    procedure Print_Singles_Vector6 is
-       new Print_Singles_Vector (Maths.Index_6, Maths.Vector6);
+     new Print_Singles_Vector (Maths.Index_6, Maths.Vector6);
    procedure Print_Singles_Vector8 is
-       new Print_Singles_Vector (Maths.Index_8, Maths.Vector8);
+     new Print_Singles_Vector (Maths.Index_8, Maths.Vector8);
 
    --  ---------------------------------------------------------------
 
@@ -152,29 +152,29 @@ package body Utilities is
    --  ------------------------------------------------------------------------
 
    function Flatten (anArray : Ints_Vector4_Array4) return GL.Types.Int_Array is
-        use GL.Types;
-        Out_Size        : constant Int := 16 * anArray'Length;
-        Flattened_Array : Int_Array (1 .. Out_Size);
-        Vec4_Array      : Ints.Vector4_Array  (1 .. 4);
-        Vec4            : Ints.Vector4;
-        Out_Index       : Int := 0;
+      use GL.Types;
+      Out_Size        : constant Int := 16 * anArray'Length;
+      Flattened_Array : Int_Array (1 .. Out_Size);
+      Vec4_Array      : Ints.Vector4_Array  (1 .. 4);
+      Vec4            : Ints.Vector4;
+      Out_Index       : Int := 0;
    begin
-        for Index in anArray'First .. anArray'Last loop
-            Vec4_Array := anArray (Index);
-            for Inner_Index in Int range 1 .. 4 loop
-                Vec4 := Vec4_Array (Inner_Index);
-                for Inner2_Index in GL.Index_Homogeneous'First .. GL.Index_Homogeneous'Last loop
-                    Out_Index := Out_Index + 1;
-                    Flattened_Array (Out_Index) := Vec4 (Inner2_Index);
-                end loop;
+      for Index in anArray'First .. anArray'Last loop
+         Vec4_Array := anArray (Index);
+         for Inner_Index in Int range 1 .. 4 loop
+            Vec4 := Vec4_Array (Inner_Index);
+            for Inner2_Index in GL.Index_Homogeneous'First .. GL.Index_Homogeneous'Last loop
+               Out_Index := Out_Index + 1;
+               Flattened_Array (Out_Index) := Vec4 (Inner2_Index);
             end loop;
-        end loop;
-        return Flattened_Array;
+         end loop;
+      end loop;
+      return Flattened_Array;
    end Flatten;
 
    --  ------------------------------------------------------------------------
 
-  procedure Print_Array6 (Name : String; anArray : Maths.Vector6_Array) is
+   procedure Print_Array6 (Name : String; anArray : Maths.Vector6_Array) is
    begin
       Put_Line (Name & ": ");
       for Index in anArray'First .. anArray'Last loop
@@ -185,7 +185,7 @@ package body Utilities is
 
    --  -------------------------------------------------------------------------
 
-   procedure Print_Byte_Array (Name : String; anArray : Byte_Array;
+   procedure Print_Byte_Array (Name          : String; anArray : Byte_Array;
                                Start, Finish : GL.Types.UInt) is
       use GL.Types;
       Count : Integer := 1;
@@ -194,7 +194,7 @@ package body Utilities is
       if Int (Start) >= anArray'First and then Int (Finish) <= anArray'Last then
          for Index in Start .. Finish loop
             Put (UInt'Image (Index) & ": " &
-                     Byte'Image (anArray (Int (Index))) & "   ");
+                   Byte'Image (anArray (Int (Index))) & "   ");
             Count := Count + 1;
             if Count > 5 then
                New_Line;
@@ -221,7 +221,7 @@ package body Utilities is
    --  ------------------------------------------------------------------------
 
    procedure Print_GL_Array2 (Name : String; anArray : GL.Types.Ints.Vector2_Array) is
-    begin
+   begin
       Put_Line (Name & ": ");
       for Index in anArray'First .. anArray'Last loop
          Print_Ints_Vector2 ("", anArray (Index));
@@ -287,7 +287,7 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
-   procedure Print_GL_Int_Array (Name : String; anArray : GL.Types.Int_Array;
+   procedure Print_GL_Int_Array (Name          : String; anArray : GL.Types.Int_Array;
                                  Start, Finish : GL.Types.Int) is
       use GL.Types;
       Count : Integer := 1;
@@ -296,7 +296,7 @@ package body Utilities is
       if Start >= anArray'First and then Finish <= anArray'Last then
          for Index in Start .. Finish loop
             Put (Int'Image (Index) & ": " & Int'Image (anArray (Index)) &
-                     "   ");
+                   "   ");
             Count := Count + 1;
             if Count > 3 then
                New_Line;
@@ -325,7 +325,7 @@ package body Utilities is
 
    procedure Print_Matrix (Name    : String;
                            aMatrix : GL.Types.Ints.Matrix4) is
-   use GL.Types;
+      use GL.Types;
    begin
       Put_Line (Name & ":");
       for Row in  aMatrix'Range loop
@@ -378,7 +378,7 @@ package body Utilities is
       if Start >= anArray'First and then Finish <= anArray'Last then
          for Index in Start .. Finish loop
             Put (Int'Image (Index) & ": " & Single'Image (anArray (Index)) &
-                     "   ");
+                   "   ");
             Count := Count + 1;
             if Count > 4 then
                New_Line;
@@ -393,7 +393,7 @@ package body Utilities is
 
    --  ------------------------------------------------------------------------
 
-   procedure Print_UByte_Array (Name : String; anArray : UByte_Array;
+   procedure Print_UByte_Array (Name          : String; anArray : UByte_Array;
                                 Start, Finish : GL.Types.UInt) is
       use GL.Types;
       Count : Integer := 1;
@@ -402,7 +402,7 @@ package body Utilities is
       if Int (Start) >= anArray'First and then Int (Finish) <= anArray'Last then
          for Index in Start .. Finish loop
             Put (UInt'Image (Index) & ": " &
-                     UByte'Image (anArray (Int (Index))) & "   ");
+                   UByte'Image (anArray (Int (Index))) & "   ");
             Count := Count + 1;
             if Count > 5 then
                New_Line;
@@ -463,7 +463,7 @@ package body Utilities is
    procedure Set_Uniform_Location (Shader_Program : GL.Objects.Programs.Program;
                                    Location       : String;
                                    theUniform     : in out GL.Uniforms.Uniform) is
-   use GL.Uniforms;
+      use GL.Uniforms;
    begin
       theUniform := GL.Objects.Programs.Uniform_Location (Shader_Program, Location);
       if theUniform < 0 then
@@ -478,11 +478,11 @@ package body Utilities is
       Renderer                  : Unbounded_String;
       Shading_Language_Version  : Unbounded_String;
    begin
-      GL_Version := To_Unbounded_String (GL.Types.Int'image (GL.Context.Major_Version) & "." &
-                                             GL.Types.Int'image (GL.Context.Minor_Version));
+      GL_Version := To_Unbounded_String (GL.Types.Int'Image (GL.Context.Major_Version) & "." &
+                                         GL.Types.Int'Image (GL.Context.Minor_Version));
       Renderer := To_Unbounded_String (GL.Context.Renderer);
       Shading_Language_Version :=
-          To_Unbounded_String (GL.Context.Primary_Shading_Language_Version);
+        To_Unbounded_String (GL.Context.Primary_Shading_Language_Version);
       New_Line;
       Put_Line ("OpenGL version supported: " & To_String (GL_Version));
       Put_Line ("Renderer: " & To_String (Renderer));
@@ -505,7 +505,7 @@ package body Utilities is
       Put_Line (Shaders.Source (Shader1));
 
       while Shaders.Lists.Has_Next (List_Cursor)  loop
-      Put_Line (" Show_Shader_Program_Data loop entry");
+         Put_Line (" Show_Shader_Program_Data loop entry");
          List_Cursor := Shaders.Lists.Next (List_Cursor);
          declare
             ShaderN  : constant Shaders.Shader :=

@@ -335,6 +335,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             if UI_Timer > UI_Threshold then
                 UI_Timer := 0.0;
             end if;
+
             case aCommand is
             when Command_UI =>
                 if Is_Clicked (Pause_Button) then
@@ -719,9 +720,9 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Set_Active (Input_Manager.Play_Button, True);
                 Set_Active (Input_Manager.Credits_Button, True);
                 Set_Active (Exit_Button, True);
-                Update (Play_Button, Delta_Time);
-                Update (Credits_Button, Delta_Time);
-                Update (Exit_Button, Delta_Time);
+                Update_Button (Play_Button, Delta_Time);
+                Update_Button (Credits_Button, Delta_Time);
+                Update_Button (Exit_Button, Delta_Time);
                 Update (Delta_Time);
                 Audio_Manager.Pause_Movement_Channel (True);
                 Process_Input (Delta_Time);
@@ -729,7 +730,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             when Game_Credits =>
                 Sprite_Manager.Update (Credits_Screen, Delta_Time);
                 Set_Active (Menu_Button, True);
-                Update (Menu_Button, Delta_Time);
+                Update_Button (Menu_Button, Delta_Time);
                 Update (Delta_Time);
                 Process_Input (Delta_Time);
 
@@ -745,8 +746,8 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Update (Delta_Time);
                 Sprite_Manager.Update (Background, Delta_Time);
                 Player_Manager.Update (Delta_Time);
-                Update (Pause_Button, Delta_Time);
-                Update (Resume_Button, Delta_Time);
+                Update_Button (Pause_Button, Delta_Time);
+                Update_Button (Resume_Button, Delta_Time);
                 Sprite_Manager.Update (Pickup, Delta_Time);
                 Spawn_Pickup (Window, Delta_Time);
                 Sprite_Manager.Update (Enemy, Delta_Time);
@@ -762,7 +763,7 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
             when Game_Next_Level =>
                 Sprite_Manager.Update (Next_Level_Screen, Delta_Time);
                 Set_Active (Continue_Button, True);
-                Update (Continue_Button, Delta_Time);
+                Update_Button (Continue_Button, Delta_Time);
                 Update (Delta_Time);
                 Process_Input (Delta_Time);
 
@@ -773,10 +774,10 @@ procedure Main_Loop (Main_Window : in out Input_Callback.Callback_Window) is
                 Set_Visible (Pause_Button, False);
                 Set_Active (Replay_Button, True);
                 Set_Visible (Replay_Button, True);
-                Update (Replay_Button, Delta_Time);
+                Update_Button (Replay_Button, Delta_Time);
                 Set_Active (Exit_Button, True);
                 Set_Visible (Exit_Button, True);
-                Update (Exit_Button, Delta_Time);
+                Update_Button (Exit_Button, Delta_Time);
                 Update (Delta_Time);
                 Process_Input (Delta_Time);
 

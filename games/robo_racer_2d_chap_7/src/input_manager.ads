@@ -23,7 +23,7 @@ package Input_Manager is
     procedure Set_Command_Invalid;
     procedure Set_Visible (Button : Button_Index; State : Boolean);
     procedure Update (Delta_Time : Float);
-    procedure Update (Button : Button_Index; Delta_Time : Float);
+    procedure Update_Button (Button : Button_Index; Delta_Time : Float);
     procedure Update_Command (Window : in out Input_Callback.Callback_Window);
 
 end Input_Manager;

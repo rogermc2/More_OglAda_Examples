@@ -5,9 +5,10 @@ with Load_Object_File;
 with Utilities;
 with VBO_Indexer;
 
-package body Buffers_Manager is
+package body Load_Obj_Buffers is
 
-    procedure Load_Buffers (Vertex_Buffer : in out GL.Objects.Buffers.Buffer;
+   procedure Load_Buffers (Path : String;
+                           Vertex_Buffer : in out GL.Objects.Buffers.Buffer;
                             UVs_Buffer : in out GL.Objects.Buffers.Buffer;
                             Normals_Buffer : in out GL.Objects.Buffers.Buffer;
                             Element_Buffer : in out GL.Objects.Buffers.Buffer;
@@ -17,7 +18,7 @@ package body Buffers_Manager is
 
       Vertices_Size   : Int;
    begin
-      Vertex_Count := Load_Object_File.Mesh_Size ("src/textures/room_thickwalls.obj");
+      Vertex_Count := Load_Object_File.Mesh_Size (Path);
       declare
          Vertices         : Singles.Vector3_Array (1 .. Vertex_Count);
          UVs              : Singles.Vector2_Array (1 .. Vertex_Count);
@@ -28,8 +29,7 @@ package body Buffers_Manager is
          Temp_Indices     : UInt_Array (1 .. Vertex_Count);
 
       begin
-         Load_Object_File.Load_Object ("src/textures/room_thickwalls.obj",
-                                       Vertices, UVs, Normals);
+         Load_Object_File.Load_Object (Path, Vertices, UVs, Normals);
          VBO_Indexer.Index_VBO (Vertices, UVs,  Normals,
                                 Indexed_Vertices, Indexed_UVs, Indexed_Normals,
                                 Temp_Indices, Indices_Size, Vertices_Size);
@@ -63,11 +63,10 @@ package body Buffers_Manager is
 
    exception
       when others =>
-         Put_Line ("An exception occurred in Load_Buffers.");
+         Put_Line ("An exception occurred in Load_Obj_Buffers.Load_Buffers.");
          raise;
    end Load_Buffers;
 
    --  ------------------------------------------------------------------------
-    --  ------------------------------------------------------------------------
 
-end Buffers_Manager;
+end Load_Obj_Buffers;

@@ -186,10 +186,10 @@ package body Input_Manager is
 
    --  ------------------------------------------------------------------------
 
-   procedure Update (Button : Button_Index; Delta_Time : Float) is
+   procedure Update_Button (Button : Button_Index; Delta_Time : Float) is
    begin
          Sprite_Manager.Update (UI_Elements (Button), Delta_Time);
-   end Update;
+   end Update_Button;
 
    --  ------------------------------------------------------------------------
 
@@ -212,7 +212,7 @@ package body Input_Manager is
          Check_Button_Click (index);
       end loop;
 
-      if Current_Command /= Command_UI then
+      if Current_Command /= Command_UI and Key_Pressed then
          if Is_Key_Down (Left) or Is_Key_Down (A) then
             Current_Command := Command_Left;
          elsif Is_Key_Down (Right) or Is_Key_Down (D) then

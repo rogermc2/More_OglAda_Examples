@@ -20,13 +20,13 @@ package body Program_Loader is
    --  ------------------------------------------------------------------------
 
    procedure Program_Add (Shader_Program : GL.Objects.Programs.Program;
-                          List : Shader_Sources) is
+                          List           : Shader_Sources) is
    begin
-       for I in List'Range loop
+      for I in List'Range loop
          declare
             My_Shader : GL.Objects.Shaders.Shader (List (I).Kind);
             File_Path : constant String :=
-              Ada.Strings.Unbounded.To_String (List (I).Path);
+                          Ada.Strings.Unbounded.To_String (List (I).Path);
          begin
             if Ada.Directories.Exists (File_Path) then
                My_Shader.Initialize_Id;
@@ -53,7 +53,7 @@ package body Program_Loader is
    --  ------------------------------------------------------------------------
 
    function Program_From (List : Shader_Sources)
-                           return GL.Objects.Programs.Program is
+                          return GL.Objects.Programs.Program is
       Shader_Program : GL.Objects.Programs.Program;
    begin
       Shader_Program.Initialize_Id;
@@ -72,7 +72,7 @@ package body Program_Loader is
    --  ------------------------------------------------------------------------
 
    function Src (Path : String; Kind : GL.Objects.Shaders.Shader_Type)
-                  return Shader_Source is
+                 return Shader_Source is
    begin
       return Shader_Source'(
                             Path => Ada.Strings.Unbounded.To_Unbounded_String (Path),
