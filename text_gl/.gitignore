@@ -6,4 +6,6 @@ bin
 hello_character
 store_character
 render_text
+text_render_text
+gltext_simple
 
