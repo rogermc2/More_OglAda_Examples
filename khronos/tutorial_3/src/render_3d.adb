@@ -1,4 +1,4 @@
---  Program Basic
+--  Program Render_3D
 --  Author Roger Mc Murtrie
 --  Created 10 August 2020
 --  Based on khronos.org OpenGL Tutorial 3

@@ -1,4 +1,4 @@
---  Program Basic
+--  Program Geometry
 --  Author Roger Mc Murtrie
 --  Created 11 August 2020
 --  Based on khronos.org OpenGL Tutorial 4

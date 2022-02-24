@@ -1,4 +1,4 @@
---  Program Basic
+--  Program VAO_VBO
 --  Author Roger Mc Murtrie
 --  Created 10 August 2020
 --  Based on khronos.org OpenGL Tutorial 2
