@@ -24,6 +24,7 @@ procedure Main_Loop (Main_Window : in out Glfw.Windows.Window) is
     end Display;
 
 --  ----------------------------------------------------------------------------
+
 begin
     GL.Window.Set_Viewport (0, 0, 512, 512);
     Display (Red);
